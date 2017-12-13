@@ -4,14 +4,6 @@ import (
 	"github.com/revel/revel"
 )
 
-var (
-	// AppVersion revel app version (ldflags)
-	AppVersion string
-
-	// BuildTime revel app build-time (ldflags)
-	BuildTime string
-)
-
 func init() {
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{
