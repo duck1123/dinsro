@@ -61,6 +61,18 @@ func InitDB() {
 		dbmap.AddTableWithName(models.User{}, "users")
 		dbmap.CreateTables()
 
+		var err error
+
+		user := models.User{Name: "admin"}
+		if err = dbmap.Insert(&user); err != nil {
+			panic(err)
+		}
+
+		transaction := models.Transaction{UserId: user.Id}
+		if err = dbmap.Insert(&transaction); err != nil {
+			panic(err)
+		}
+
 		return nil
 	})
 }
