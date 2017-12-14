@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app"
 	"github.com/revel/revel"
 )
@@ -56,6 +57,7 @@ func InitDB() {
 		dbmap := db.Map
 		db.TraceOn(revel.AppLog)
 
+		dbmap.AddTableWithName(models.User{}, "users")
 		dbmap.CreateTables()
 
 		return nil
