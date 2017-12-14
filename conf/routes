@@ -7,6 +7,7 @@ module:testrunner
 # module:jobs
 
 GET     /                                       App.Index
+GET     /api/v1/users                           Users.IndexApi
 GET     /users                                  Users.Index
 GET     /users/:id                              Users.Show
 GET     /transactions                           Transactions.Index
