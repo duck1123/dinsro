@@ -8,6 +8,7 @@ module:testrunner
 
 GET     /                                       App.Index
 GET     /users                                  Users.Index
+GET     /users/:id                              Users.Show
 GET     /transactions                           Transactions.Index
 
 # Ignore favicon requests
