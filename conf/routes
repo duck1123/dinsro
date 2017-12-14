@@ -8,7 +8,9 @@ module:testrunner
 
 GET     /                                       App.Index
 GET     /api/v1/transactions                    Transactions.IndexApi
+GET     /api/v1/transactions/:id                Transactions.ShowApi
 GET     /api/v1/users                           Users.IndexApi
+GET     /api/v1/users/:id                       Users.ShowApi
 GET     /users                                  Users.Index
 GET     /users/:id                              Users.Show
 GET     /transactions                           Transactions.Index
