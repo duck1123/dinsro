@@ -32,6 +32,11 @@ func (c Users) IndexApi() revel.Result {
 }
 
 func (c Users) Show(id uint32) revel.Result {
-	user := models.User{Id: 1}
+	user := models.User{Id: 1, Name: "Foo"}
 	return c.Render(user)
+}
+
+func (c Users) ShowApi(id uint32) revel.Result {
+	user := models.User{Id: 1, Name: "Foo"}
+	return c.RenderJSON(user)
 }
