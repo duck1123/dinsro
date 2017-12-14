@@ -10,11 +10,22 @@ type Transactions struct {
 	gorpController.Controller
 }
 
+func (c Transactions) getService() services.TransactionService {
+	return services.TransactionService{Db: c.Db}
+}
+
 func (c Transactions) Index() revel.Result {
-	service := services.TransactionService{Db: c.Db}
-	transactions, err := service.Index()
+	transactions, err := c.getService().Index()
 	if err != nil {
 		panic(err)
 	}
 	return c.Render(transactions)
+}
+
+func (c Transactions) IndexApi() revel.Result {
+	transactions, err := c.getService().Index()
+	if err != nil {
+		panic(err)
+	}
+	return c.RenderJSON(transactions)
 }
