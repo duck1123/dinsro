@@ -1,21 +1,20 @@
 {{set . "title" "Index Users"}}
 {{template "header.html" .}}
 
-<h1>Index Users</h1>
+<h1>Show User</h1>
 
 <div class="content">
-  <ul>
-    {{range .users}}
-    <li>
-      <a href="/users/{{.Id}}">{{.Name}}</a>
-    </li>
-    {{end}}
-  </ul>
+  <p>TODO: show</p>
+  <p>{{.user.Id}}</p>
+  <p>{{.user.Name}}</p>
 </div>
 <div class="nav">
   <ul>
     <li>
       <a href="/transactions">Transactions</a>
+    </li>
+    <li>
+      <a href="/users">Users</a>
     </li>
   </ul>
 </div>
