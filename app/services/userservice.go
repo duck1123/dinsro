@@ -10,8 +10,9 @@ type UserService struct {
 }
 
 func (s UserService) Get(id uint32) (user models.User, err error) {
-	user = models.User{Id: id, Name: "Foo"}
-	return user, nil
+	builder := s.Db.SqlStatementBuilder.Select("*").From(user.TableName()).Where("id = ?", id)
+	err = s.Db.SelectOne(&user, builder)
+	return user, err
 }
 
 func (s UserService) Index() (users []*models.User, err error) {
