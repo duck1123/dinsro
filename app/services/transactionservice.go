@@ -11,12 +11,13 @@ type TransactionService struct {
 
 func (s TransactionService) Create(transaction *models.Transaction) (id uint32, err error) {
 	err = s.Db.Insert(transaction)
-
-	if err != nil {
-		return 0, err
-	}
-
 	return transaction.Id, err
+}
+
+func (s TransactionService) Get(id uint32) (transaction models.Transaction, err error) {
+	builder := s.Db.SqlStatementBuilder.Select("*").From(transaction.TableName()).Where("id = ?", id)
+	err = s.Db.SelectOne(&transaction, builder)
+	return transaction, err
 }
 
 func (s TransactionService) Index() (transactions []*models.Transaction, err error) {
