@@ -32,12 +32,20 @@ func (c Transactions) IndexApi() revel.Result {
 }
 
 func (c Transactions) Show(id uint32) revel.Result {
-	transaction := models.Transaction{Id: 1}
+	transaction, err := c.getService().Get(id)
+	if err != nil {
+		c.Response.Status = 404
+		panic(err)
+	}
 	return c.Render(transaction)
 }
 
 func (c Transactions) ShowApi(id uint32) revel.Result {
-	transaction := models.Transaction{Id: 1}
+	transaction, err := c.getService().Get(id)
+	if err != nil {
+		c.Response.Status = 404
+		panic(err)
+	}
 	return c.RenderJSON(transaction)
 }
 
