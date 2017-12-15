@@ -57,6 +57,7 @@ func InitDB() {
 		dbmap := db.Map
 		db.TraceOn(revel.AppLog)
 
+		dbmap.AddTableWithName(models.Transaction{}, "transactions")
 		dbmap.AddTableWithName(models.User{}, "users")
 		dbmap.CreateTables()
 

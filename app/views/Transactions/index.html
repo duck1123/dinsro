@@ -1,0 +1,17 @@
+{{set . "title" "Index Transactions"}}
+{{template "header.html" .}}
+
+<h1>Index Transactions</h1>
+
+<div class="content">
+  <p>{{.transactions}}</p>
+  <ul>
+    {{range .transactions}}
+    <li>
+      <p>{{.Id}}</p>
+    </li>
+    {{end}}
+  </ul>
+</div>
+
+{{template "footer.html" .}}
