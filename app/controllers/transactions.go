@@ -40,3 +40,7 @@ func (c Transactions) ShowApi(id uint32) revel.Result {
 	transaction := models.Transaction{Id: 1}
 	return c.RenderJSON(transaction)
 }
+
+func (c Transactions) CreateApi(transaction models.Transaction) revel.Result {
+	return c.RenderJSON(transaction)
+}

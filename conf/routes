@@ -14,6 +14,7 @@ GET     /api/v1/users/:id                       Users.ShowApi
 GET     /users                                  Users.Index
 GET     /users/:id                              Users.Show
 GET     /transactions                           Transactions.Index
+POST    /transactions                           Transactions.CreateApi
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
