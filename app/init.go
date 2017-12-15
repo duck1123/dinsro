@@ -1,15 +1,9 @@
 package app
 
 import (
+	"github.com/duck1123/dinsro/app/models"
+	"github.com/revel/modules/orm/gorp/app"
 	"github.com/revel/revel"
-)
-
-var (
-	// AppVersion revel app version (ldflags)
-	AppVersion string
-
-	// BuildTime revel app build-time (ldflags)
-	BuildTime string
 )
 
 func init() {
@@ -33,6 +27,8 @@ func init() {
 	// revel.DevMode and revel.RunMode only work inside of OnAppStart. See Example Startup Script
 	// ( order dependent )
 	// revel.OnAppStart(ExampleStartupScript)
+	revel.OnAppStart(InitDB, 5)
+
 	// revel.OnAppStart(InitDB)
 	// revel.OnAppStart(FillCache)
 }
@@ -55,3 +51,28 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
 //		// Dev mode
 //	}
 //}
+
+func InitDB() {
+	gorp.Db.SetDbInit(func(db *gorp.DbGorp) error {
+		dbmap := db.Map
+		db.TraceOn(revel.AppLog)
+
+		dbmap.AddTableWithName(models.Transaction{}, "transactions")
+		dbmap.AddTableWithName(models.User{}, "users")
+		dbmap.CreateTables()
+
+		var err error
+
+		user := models.User{Name: "admin"}
+		if err = dbmap.Insert(&user); err != nil {
+			panic(err)
+		}
+
+		transaction := models.Transaction{UserId: user.Id}
+		if err = dbmap.Insert(&transaction); err != nil {
+			panic(err)
+		}
+
+		return nil
+	})
+}
