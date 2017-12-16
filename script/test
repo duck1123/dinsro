@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+revel test github.com/duck1123/dinsro
