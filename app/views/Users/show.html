@@ -1,0 +1,22 @@
+{{set . "title" "Index Users"}}
+{{template "header.html" .}}
+
+<h1>Show User</h1>
+
+<div class="content">
+  <p>TODO: show</p>
+  <p>{{.user.Id}}</p>
+  <p>{{.user.Name}}</p>
+</div>
+<div class="nav">
+  <ul>
+    <li>
+      <a href="/transactions">Transactions</a>
+    </li>
+    <li>
+      <a href="/users">Users</a>
+    </li>
+  </ul>
+</div>
+
+{{template "footer.html" .}}
