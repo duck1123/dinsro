@@ -2,22 +2,44 @@ import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { setAuthentication } from '../actions/authentication';
 
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
   },
+  input: {
+    display: 'none',
+  },
 });
 
 const Login = (props) => {
-  const { classes } = props;
+  const {
+    authEmail,
+    classes,
+    color,
+    logout,
+  } = props;
+
+  if (authEmail) {
+    return (
+      <Button
+        className={classes.button}
+        color={color}
+        onClick={logout}
+      >
+        Logout
+      </Button>
+    );
+  }
 
   return (
-    <Link to="/login" href="/login">
+    <Link to="/login">
       <Button
-        color={props.color}
         className={classes.button}
+        color={props.color}
       >
         Login
       </Button>
@@ -26,12 +48,30 @@ const Login = (props) => {
 };
 
 Login.propTypes = {
-  color: PropTypes.string,
+  authEmail: PropTypes.string,
   classes: PropTypes.instanceOf(Object).isRequired,
+  color: PropTypes.string,
+  logout: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
+  authEmail: null,
   color: 'contrast',
 };
 
-export default withStyles(styles)(Login);
+const mapStateToProps = (state) => {
+  return {
+    authEmail: state.authentication.email,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: () => dispatch(setAuthentication(null)),
+  };
+};
+
+const StyledLogin = withStyles(styles)(Login);
+const ConnectedLogin = connect(mapStateToProps, mapDispatchToProps)(StyledLogin);
+
+export default ConnectedLogin;
