@@ -2,19 +2,20 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { usersFetchData } from '../actions/users';
+import { userFetchData } from '../actions/users';
 
 class ShowUser extends React.Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    fetchUsers: PropTypes.func.isRequired,
     hasErrored: PropTypes.bool.isRequired,
     users: PropTypes.arrayOf(Object).isRequired,
+    match: PropTypes.instanceOf(Object).isRequired,
+    fetchUser: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
     console.log('ListUsers component mounted', this.props);
-    this.props.fetchUsers();
+    this.props.fetchUser(this.props.match.params.id);
   }
 
   render() {
@@ -28,18 +29,8 @@ class ShowUser extends React.Component {
 
     return (
       <div>
-        <p>List Users</p>
+        <p>Show User</p>
         <p>Loading?: {this.props.isLoading ? 'true' : 'false'}</p>
-        <ul>
-          {
-            this.props.users.map(user => (
-              <li key={user.id}>
-                <a href={`/users/${user.id}`}>
-                  {user.name}
-                </a>
-              </li>))
-          }
-        </ul>
       </div>
     );
   }
@@ -47,7 +38,6 @@ class ShowUser extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.users,
     hasErrored: state.usersHasErrored,
     isLoading: state.usersIsLoading,
   };
@@ -55,7 +45,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUsers: () => dispatch(usersFetchData()),
+    fetchUser: id => dispatch(userFetchData(id)),
   };
 };
 

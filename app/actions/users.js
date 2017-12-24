@@ -19,6 +19,26 @@ export const usersFetchDataSuccess = (users) => {
   };
 };
 
+export const userFetchData = (id) => {
+  return (dispatch) => {
+    dispatch(usersIsLoading(true));
+
+    fetch(`/api/v1/users/${id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+
+        dispatch(usersIsLoading(false));
+
+        return response;
+      })
+      .then(response => response.json())
+      .then(users => dispatch(usersFetchDataSuccess(users)))
+      .catch(() => dispatch(usersHasErrored(true)));
+  };
+};
+
 export const usersFetchData = (token) => {
   return (dispatch) => {
     dispatch(usersAreLoading(true));
