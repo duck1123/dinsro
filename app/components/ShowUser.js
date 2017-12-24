@@ -1,59 +1,62 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { userFetchData } from '../actions/user';
+import { withRouter } from 'react-router-dom';
+import { usersFetchData } from '../actions/users';
 
 class ShowUser extends React.Component {
   static propTypes = {
-    fetchUser: PropTypes.func.isRequired,
-    hasErrored: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    token: PropTypes.string.isRequired,
-    user: PropTypes.instanceOf(Object).isRequired,
-    userId: PropTypes.number.isRequired,
+    fetchUsers: PropTypes.func.isRequired,
+    hasErrored: PropTypes.bool.isRequired,
+    users: PropTypes.arrayOf(Object).isRequired,
   }
 
   componentDidMount() {
-    const { token, userId } = this.props;
-    this.props.fetchUser(userId, token);
+    console.log('ListUsers component mounted', this.props);
+    this.props.fetchUsers();
   }
 
   render() {
-    const { isLoading, hasErrored, userId } = this.props;
-    if (hasErrored) {
+    if (this.props.hasErrored) {
       return <p>Sorry! There was an error loading the items</p>;
     }
 
-    if (isLoading) {
+    if (this.props.isLoading) {
       return <p>Loading…</p>;
     }
 
-    const { user } = this.props;
-
     return (
       <div>
-        <h1>User: {user.name} ({userId})</h1>
+        <p>List Users</p>
+        <p>Loading?: {this.props.isLoading ? 'true' : 'false'}</p>
+        <ul>
+          {
+            this.props.users.map(user => (
+              <li key={user.id}>
+                <a href={`/users/${user.id}`}>
+                  {user.name}
+                </a>
+              </li>))
+          }
+        </ul>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const userId = parseInt(ownProps.match.params.id, 10);
-  const { data, errored, loading } = state.user[userId] || {};
+const mapStateToProps = (state) => {
   return {
-    hasErrored: typeof errored === 'undefined' ? false : errored,
-    isLoading: typeof loading === 'undefined' ? false : loading,
-    token: state.authentication.token,
-    user: typeof data === 'undefined' ? {} : data,
-    userId,
+    users: state.users,
+    hasErrored: state.usersHasErrored,
+    isLoading: state.usersIsLoading,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: (userId, token) => dispatch(userFetchData(userId, token)),
+    fetchUsers: () => dispatch(usersFetchData()),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowUser);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ShowUser));
