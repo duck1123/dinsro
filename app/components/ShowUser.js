@@ -15,7 +15,7 @@ class ShowUser extends React.Component {
   }
 
   componentDidMount() {
-    console.log('ListUsers component mounted', this.props);
+    console.log('ShowUser component mounted', this.props);
     this.props.fetchUser(this.props.match.params.id);
   }
 
