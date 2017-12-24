@@ -1,13 +1,13 @@
-export const closeDrawerAction = () => {
+export const toggleDrawerAction = (opened) => {
   return {
-    type: 'CLOSE_DRAWER',
-    open: false,
+    type: 'TOGGLE_DRAWER',
+    open: opened,
   };
 };
 
-export const openDrawerAction = () => {
+export const toggleDrawerAction2 = (opened) => {
   return {
-    type: 'OPEN_DRAWER',
-    open: true,
+    type: 'TOGGLE_DRAWER2',
+    open: opened,
   };
 };

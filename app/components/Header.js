@@ -6,17 +6,21 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Login from '../components/Login';
-import { closeDrawerAction, openDrawerAction } from '../actions/drawer';
+import { toggleDrawerAction } from '../actions/drawer';
 
 class Header extends Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
-    closeDrawer: PropTypes.func.isRequired,
-    openDrawer: PropTypes.func.isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
+    dismiss: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
-    this.props.openDrawer();
+    this.props.toggleDrawer(true);
+  }
+
+  dismiss() {
+    this.props.toggleDrawer(false);
   }
 
   render() {
@@ -31,8 +35,8 @@ class Header extends Component {
           width={200}
           open={this.props.open}
         >
-          <MenuItem onClick={this.props.closeDrawer}>Menu Item</MenuItem>
-          <MenuItem onClick={this.props.closeDrawer}>Menu Item 2</MenuItem>
+          <MenuItem onClick={this.props.dismiss}>Menu Item</MenuItem>
+          <MenuItem onClick={this.props.dismiss}>Menu Item 2</MenuItem>
         </Drawer>
       </div>
     );
@@ -41,14 +45,14 @@ class Header extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    open: state.open,
+    open: state.drawerToggled,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    closeDrawer: () => dispatch(closeDrawerAction()),
-    openDrawer: () => dispatch(openDrawerAction()),
+    toggleDrawer: opened => dispatch(toggleDrawerAction(opened)),
+    dismiss: () => dispatch(toggleDrawerAction(false)),
   };
 };
 
