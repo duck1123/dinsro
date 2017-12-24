@@ -1,7 +1,7 @@
 export function drawerHasClosed(state = false, action) {
   switch (action.type) {
     case 'CLOSE_DRAWER':
-      return action.open;
+      return false;
 
     default:
       return state;
@@ -10,8 +10,8 @@ export function drawerHasClosed(state = false, action) {
 
 export function drawerHasOpened(state = true, action) {
   switch (action.type) {
-    case 'CLOSE_OPENED':
-      return action.open;
+    case 'OPEN_DRAWER':
+      return true;
 
     default:
       return state;
