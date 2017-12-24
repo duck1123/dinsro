@@ -1,10 +1,10 @@
 const { resolve } = require('path');
 
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
-const WebpackNotifierPlugin = require('webpack-notifier');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const OpenBrowserPlugin = require('open-browser-webpack-plugin');
+var LiveReloadPlugin = require('webpack-livereload-plugin');
 
 const port = '9000';
 
@@ -13,8 +13,10 @@ const config  = {
 
   entry: [
     'react-hot-loader/patch',
-    './assets/scss/main.scss',
+    // 'webpack-dev-server/client?http://localhost:' + port,
+    // 'webpack/hot/only-dev-server',
     './main.js',
+    './assets/scss/main.scss',
   ],
 
   output: {
@@ -49,6 +51,7 @@ const config  = {
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
     new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
+    // new OpenBrowserPlugin({ url: 'http://dinsro.localtest.me:' + port }),
     new webpack.HotModuleReplacementPlugin(),
   ],
 
