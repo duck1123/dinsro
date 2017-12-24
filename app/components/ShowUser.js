@@ -30,7 +30,7 @@ class ShowUser extends React.Component {
 
     return (
       <div>
-        <p>Show User {this.props.user.id}</p>
+        <h1>Show User {this.props.user.id}</h1>
         <p>Name: {this.props.user.name}</p>
         <p>Loading?: {this.props.isLoading ? 'true' : 'false'}</p>
       </div>
