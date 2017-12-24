@@ -4,6 +4,7 @@ import App from '../containers/App';
 import Header from '../components/Header';
 import ListUsers from '../components/ListUsers';
 import LoginPage from '../components/LoginPage';
+import ShowUser from '../components/ShowUser';
 
 const Root = () => {
   return (
@@ -13,6 +14,7 @@ const Root = () => {
         <Route exact path="/" component={App} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/users" component={ListUsers} />
+        <Route path="/users/:id" component={ShowUser} />
       </div>
     </Router>
   );
