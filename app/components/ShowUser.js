@@ -10,6 +10,7 @@ class ShowUser extends React.Component {
     hasErrored: PropTypes.bool.isRequired,
     users: PropTypes.arrayOf(Object).isRequired,
     match: PropTypes.instanceOf(Object).isRequired,
+    user: PropTypes.instanceOf(Object).isRequired,
     fetchUser: PropTypes.func.isRequired,
   }
 
@@ -29,7 +30,8 @@ class ShowUser extends React.Component {
 
     return (
       <div>
-        <p>Show User</p>
+        <p>Show User {this.props.user.id}</p>
+        <p>Name: {this.props.user.name}</p>
         <p>Loading?: {this.props.isLoading ? 'true' : 'false'}</p>
       </div>
     );
@@ -38,8 +40,9 @@ class ShowUser extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    hasErrored: state.usersHasErrored,
-    isLoading: state.usersIsLoading,
+    user: state.user,
+    hasErrored: state.userHasErrored,
+    isLoading: state.userIsLoading,
   };
 };
 
