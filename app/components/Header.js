@@ -5,6 +5,7 @@ import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import AppBarMenuButton from '../components/AppBarMenuButton';
 import Login from '../components/Login';
 import { toggleDrawerAction } from '../actions/drawer';
 
@@ -16,10 +17,6 @@ class Header extends Component {
   }
 
   componentDidMount() {
-    this.props.toggleDrawer(true);
-  }
-
-  dismiss() {
     this.props.toggleDrawer(false);
   }
 
@@ -28,6 +25,7 @@ class Header extends Component {
       <div>
         <AppBar
           title="Dinsro"
+          iconElementLeft={<AppBarMenuButton />}
           iconElementRight={<Login />}
         />
         <Drawer
