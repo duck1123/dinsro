@@ -4,6 +4,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Login from '../components/Login';
 
 const styles = {
@@ -31,6 +32,14 @@ const Header = (props) => {
           <Login color="contrast" />
         </Toolbar>
       </AppBar>
+      <ul>
+        <li>
+          <Link to="/" href="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/users" href="/users">Users</Link>
+        </li>
+      </ul>
     </div>
   );
 };
