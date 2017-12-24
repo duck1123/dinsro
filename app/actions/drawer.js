@@ -1,6 +1,11 @@
-export const closeDrawerAction = (bool) => {
+export const closeDrawerAction = () => {
   return {
-    type: 'USER_HAS_ERRORED',
-    hasErrored: bool,
+    type: 'CLOSE_DRAWER',
+  };
+};
+
+export const openDrawerAction = () => {
+  return {
+    type: 'OPEN_DRAWER',
   };
 };
