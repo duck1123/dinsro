@@ -1,42 +1,49 @@
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Login from '../components/Login';
+import { closeDrawerAction } from '../actions/drawer';
 
-const styles = {
-  root: {
-    width: '100%',
-  },
-  flex: {
-    flex: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
+class Header extends Component {
+  static propTypes = {
+    open: PropTypes.bool.isRequired,
+    closeDrawer: PropTypes.func.isRequired,
+  }
+
+  render() {
+    return (
+      <div>
+        <AppBar
+          title="Dinsro"
+          iconElementRight={<Login />}
+        />
+        <Drawer
+          docked={false}
+          width={200}
+          open={this.props.open}
+        >
+          <MenuItem onClick={this.props.closeDrawer}>Menu Item</MenuItem>
+          <MenuItem onClick={this.props.closeDrawer}>Menu Item 2</MenuItem>
+        </Drawer>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    open: state.open,
+  };
 };
 
-const Header = (props) => {
-  const { classes } = props;
-  return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography type="title" color="inherit" className={classes.flex}>
-            Dinsro
-          </Typography>
-          <Login color="contrast" />
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+const mapDispatchToProps = (dispatch) => {
+  return {
+    closeDrawer: () => dispatch(closeDrawerAction()),
+  };
 };
 
-Header.propTypes = {
-  classes: PropTypes.instanceOf(Object).isRequired,
-};
-
-export default withStyles(styles)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
