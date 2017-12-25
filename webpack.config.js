@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
+const WebpackNotifierPlugin = require('webpack-notifier');
 
 const port = '9000';
 
@@ -35,6 +36,7 @@ const config  = {
     new ExtractTextPlugin('bundle.css'),
     new webpack.HotModuleReplacementPlugin(),
     new LiveReloadPlugin({}),
+    new WebpackNotifierPlugin({excludeWarnings: true, alwaysNotify: false}),
     new webpack.LoaderOptionsPlugin({
       test: /\.js$/,
       options: {
