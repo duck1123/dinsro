@@ -49,9 +49,9 @@ func (c Users) Register() revel.Result {
 	}
 
 	newUser := &models.User{Name: "Demo User",
-		Email:          email,
+		Email:        email,
 		PasswordHash: bcryptPassword,
-		Token:          []byte(token)}
+		Token:        []byte(token)}
 
 	// Validate user struct
 	newUser.Validate(c.Validation)
@@ -81,6 +81,14 @@ func (c Users) IndexApi() revel.Result {
 	return c.RenderJSON(users)
 }
 
+func (c Users) IndexTransactions(id uint32) revel.Result {
+	transactions, err := GetTransactionsService().IndexByUser(id)
+	if err != nil {
+		panic(err)
+	}
+	return c.RenderJSON(transactions)
+}
+
 func (c Users) ShowApi(id uint32) revel.Result {
 	user, err := GetUserService().Get(id)
 	if err != nil {
@@ -88,4 +96,3 @@ func (c Users) ShowApi(id uint32) revel.Result {
 	}
 	return c.RenderJSON(user)
 }
-
