@@ -17,6 +17,7 @@ GET     /api/v1/transactions                    Transactions.IndexApi
 GET     /api/v1/transactions/:id                Transactions.ShowApi
 GET     /api/v1/users                           Users.IndexApi
 GET     /api/v1/users/:id                       Users.ShowApi
+GET     /api/v1/users/:id/transactions          Users.IndexTransactions
 
 GET     /                                       App.Index
 GET     /*path                                  App.Index
