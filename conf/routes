@@ -13,6 +13,7 @@ GET     /favicon.ico                            404
 GET     /public/*filepath                       Static.Serve("public")
 
 POST    /api/v1/authenticate                    Authentication.Authenticate
+POST    /api/v1/register                        Users.Register
 GET     /api/v1/transactions                    Transactions.IndexApi
 GET     /api/v1/transactions/:id                Transactions.ShowApi
 GET     /api/v1/users                           Users.IndexApi
