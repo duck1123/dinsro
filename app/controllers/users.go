@@ -24,3 +24,11 @@ func (c Users) ShowApi(id uint32) revel.Result {
 	}
 	return c.RenderJSON(user)
 }
+
+func (c Users) IndexTransactions(id uint32) revel.Result {
+	transactions, err := c.getTransactionsService().IndexByUser(id)
+	if err != nil {
+		panic(err)
+	}
+	return c.RenderJSON(transactions)
+}
