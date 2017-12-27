@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { userFetchData } from '../actions/user';
+import { userFetchData } from '../actions/users';
+import ListTransactions from './ListTransactions';
 
 class ShowUser extends React.Component {
   static propTypes = {
@@ -33,6 +34,7 @@ class ShowUser extends React.Component {
     return (
       <div>
         <h1>User: {user.name} ({userId})</h1>
+        <ListTransactions />
       </div>
     );
   }
