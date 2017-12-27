@@ -8,7 +8,7 @@ export function drawerHasClosed(state = false, action) {
   }
 }
 
-export function drawerToggled(state = true, action) {
+export function drawerToggled(state = false, action) {
   switch (action.type) {
     case 'TOGGLE_DRAWER':
       return action.open;

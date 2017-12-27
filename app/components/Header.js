@@ -12,12 +12,7 @@ import { toggleDrawerAction } from '../actions/drawer';
 class Header extends Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
-    toggleDrawer: PropTypes.func.isRequired,
     dismiss: PropTypes.func.isRequired,
-  }
-
-  componentDidMount() {
-    this.props.toggleDrawer(false);
   }
 
   render() {
@@ -49,7 +44,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    toggleDrawer: opened => dispatch(toggleDrawerAction(opened)),
     dismiss: () => dispatch(toggleDrawerAction(false)),
   };
 };
