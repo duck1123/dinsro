@@ -4,8 +4,9 @@ export const closeDrawerAction = () => {
   };
 };
 
-export const openDrawerAction = () => {
+export const openDrawerAction = (action) => {
   return {
     type: 'OPEN_DRAWER',
+    action,
   };
 };
