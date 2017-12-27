@@ -6,7 +6,8 @@
 module:testrunner
 # module:jobs
 
-POST    /api/v1/authenticate                    Authentication.Authenticate
+POST    /api/v1/authenticate                    Users.Login
+POST    /api/v1/register                        Users.Register
 GET     /api/v1/transactions                    Transactions.IndexApi
 GET     /api/v1/transactions/:id                Transactions.ShowApi
 GET     /api/v1/users                           Users.IndexApi
