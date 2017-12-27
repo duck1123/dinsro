@@ -6,12 +6,17 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Login from '../components/Login';
-import { closeDrawerAction } from '../actions/drawer';
+import { closeDrawerAction, openDrawerAction } from '../actions/drawer';
 
 class Header extends Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     closeDrawer: PropTypes.func.isRequired,
+    openDrawer: PropTypes.func.isRequired,
+  }
+
+  componentDidMount() {
+    this.props.openDrawer();
   }
 
   render() {
@@ -43,6 +48,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     closeDrawer: () => dispatch(closeDrawerAction()),
+    openDrawer: () => dispatch(openDrawerAction()),
   };
 };
 
