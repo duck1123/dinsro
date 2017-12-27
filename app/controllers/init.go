@@ -62,8 +62,8 @@ func init() {
 	// test
 	revel.InterceptFunc(AddLog, revel.BEFORE, &App{})
 
-	revel.InterceptMethod((*GorpController).Begin, revel.BEFORE)
+	revel.InterceptMethod((*gorpController.Controller).Begin, revel.BEFORE)
 	revel.InterceptFunc(Authenticate, revel.BEFORE, &App{})
-	revel.InterceptMethod((*GorpController).Commit, revel.AFTER)
-	revel.InterceptMethod((*GorpController).Rollback, revel.FINALLY)
+	revel.InterceptMethod((*gorpController.Controller).Commit, revel.AFTER)
+	revel.InterceptMethod((*gorpController.Controller).Rollback, revel.FINALLY)
 }
