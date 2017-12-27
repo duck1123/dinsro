@@ -88,18 +88,21 @@ func (c Users) Login() revel.Result {
 	email := c.Params.Get("email")
 	password := c.Params.Get("password")
 
+	errorMsg := make(map[string]string)
+	errorMsg["result"] = "Authentication Failed"
+
 	user, err := c.getService().GetByEmail(email)
 	if err != nil {
 		log.Println(err)
 		c.Response.Status = http.StatusBadRequest
-		return c.RenderJSON("invalid *email or password")
+		return c.RenderJSON(errorMsg)
 	}
 
 	err = bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password))
 	if err != nil {
 		log.Println(err)
 		c.Response.Status = http.StatusBadRequest
-		return c.RenderJSON("invalid email or *password")
+		return c.RenderJSON(errorMsg)
 	}
 
 	// get token
