@@ -58,7 +58,7 @@ func getTokenString(c *revel.Controller) (tokenString string, err error) {
 }
 
 func init() {
-	revel.OnAppStart(InitDB1)
+	//revel.OnAppStart(InitDB1)
 	// test
 	revel.InterceptFunc(AddLog, revel.BEFORE, &App{})
 
