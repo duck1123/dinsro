@@ -40,9 +40,10 @@ class ShowUser extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
-    hasErrored: state.userHasErrored,
-    isLoading: state.userIsLoading,
+    user: state.user.data,
+    hasErrored: state.user.errored,
+    isLoading: state.user.loading,
+    token: state.authentication.token,
   };
 };
 
