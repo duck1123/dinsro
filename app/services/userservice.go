@@ -34,9 +34,9 @@ func (s UserService) GetByEmail(email string) (user *models.User, err error) {
 	builder := s.Db.SqlStatementBuilder.
 		Select("*").
 		From("users"). // TODO: extract this
-		Where("email = ?", email)
+		Where("Email = ?", email)
 
-	err = s.Db.SelectOne(user, builder)
+	err = s.Db.SelectOne(&user, builder)
 	if err != nil {
 		return nil, err
 	}
