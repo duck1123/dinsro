@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/revel/modules/orm/gorp/app/controllers"
 	"github.com/revel/revel"
 	"log"
 	"net/http"
@@ -34,11 +35,6 @@ func Authenticate(c *revel.Controller) revel.Result {
 		log.Println(err)
 		c.Response.Status = http.StatusBadRequest
 		return c.RenderJSON("email not found in db")
-	}
-	_, err = getUser(email.(string))
-	if err != nil {
-		c.Response.Status = http.StatusUnauthorized
-		return c.RenderJSON("auth failed")
 	}
 	return nil
 }
