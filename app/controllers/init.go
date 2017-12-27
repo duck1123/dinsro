@@ -59,3 +59,8 @@ func getTokenString(c *revel.Controller) (tokenString string, err error) {
 	tokenString = tokenSlice[1]
 	return tokenString, nil
 }
+
+func init() {
+	revel.InterceptFunc(Authenticate, revel.BEFORE, &Transactions{})
+	revel.InterceptFunc(Authenticate, revel.BEFORE, &Users{})
+}
