@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/duck1123/dinsro/app/models"
@@ -43,18 +42,13 @@ func (c Users) Register() revel.Result {
 	}
 
 	// check if the email have already exists in DB
-	results, err := Dbm.Select(models.User{}, `select * from User where Email = ?`, email)
+	user, err := c.getService().GetByEmail(email)
 	if err != nil {
 		log.Println(err)
 	}
-	var users []*models.User
-	for _, r := range results {
-		u := r.(*models.User)
-		users = append(users, u)
-	}
-	if users != nil {
+	if user != nil {
 		c.Response.Status = http.StatusConflict
-		return c.RenderJSON("user have already exists.")
+		return c.RenderJSON("user already exists.")
 	}
 
 	// Crete user struct
@@ -95,7 +89,7 @@ func (c Users) Login() revel.Result {
 	email := c.Params.Get("email")
 	password := c.Params.Get("password")
 
-	user, err := getUser(email)
+	user, err := c.getService().GetByEmail(email)
 	if err != nil {
 		log.Println(err)
 		c.Response.Status = http.StatusBadRequest
@@ -117,21 +111,6 @@ func (c Users) Login() revel.Result {
 	msg["token"] = tokenString
 	c.Response.Status = http.StatusCreated
 	return c.RenderJSON(msg)
-}
-
-func getUser(email string) (*models.User, error) {
-	log.Println("before select", email)
-	users, err := Dbm.Select(models.User{}, `select * from User where Email = ?`, email)
-	log.Println("after select 1")
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	log.Println("after select 2")
-	if len(users) == 0 {
-		return nil, errors.New("user not found")
-	}
-	return users[0].(*models.User), nil
 }
 
 func (c Users) IndexApi() revel.Result {

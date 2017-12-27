@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app"
+	"log"
 	"time"
 )
 
@@ -34,7 +35,8 @@ func (s UserService) GetByEmail(email string) (user *models.User, err error) {
 		Select("*").
 		From("users"). // TODO: extract this
 		Where("email = ?", email)
-	err = s.Db.SelectOne(&user, builder)
+
+	err = s.Db.SelectOne(user, builder)
 	if err != nil {
 		return nil, err
 	}
