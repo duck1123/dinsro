@@ -29,20 +29,9 @@ var emailRegexp = regexp.MustCompile(`[a-zA-Z0-9_\-]+@[a-zA-Z0-9_\-]+\.[a-zA-Z0-
 func (user *User) Validate(v *revel.Validation) {
 	ValidateEmail(v, user.Email).Key("user.Email")
 
-	ValidatePassword(v, user.Password).
-		Key("user.Password")
-
 	v.Check(user.Name,
 		revel.Required{},
 		revel.MaxSize{Max: 100},
-	)
-}
-
-func ValidatePassword(v *revel.Validation, password string) *revel.ValidationResult {
-	return v.Check(password,
-		revel.Required{},
-		revel.MaxSize{Max: 15},
-		revel.MinSize{Min: 5},
 	)
 }
 

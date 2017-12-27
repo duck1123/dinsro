@@ -59,7 +59,6 @@ func (c Users) Register() revel.Result {
 
 	newUser := &models.User{Name: "Demo User",
 		Email:          email,
-		Password:       password,
 		HashedPassword: bcryptPassword,
 		Token:          []byte(token)}
 
