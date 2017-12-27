@@ -2,11 +2,21 @@ package controllers
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/duck1123/dinsro/app/services"
+	"github.com/revel/modules/orm/gorp/app"
 	"github.com/revel/revel"
 	"log"
 	"net/http"
 	"strings"
 )
+
+func GetUserService() services.UserService {
+	return services.UserService{Db: gorp.Db}
+}
+
+func GetTransactionsService() services.TransactionService {
+	return services.TransactionService{Db: gorp.Db}
+}
 
 func AddLog(c *revel.Controller) revel.Result {
 	log.Println("InterceptFunc Test.")

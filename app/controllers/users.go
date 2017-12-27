@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/duck1123/dinsro/app/models"
-	"github.com/duck1123/dinsro/app/services"
 	"github.com/revel/modules/orm/gorp/app/controllers"
 	"github.com/revel/revel"
 	"golang.org/x/crypto/bcrypt"
@@ -17,14 +16,6 @@ var hmacSecret = []byte{97, 48, 97, 50, 97, 98, 105, 49, 99, 102, 83, 53, 57, 98
 
 type Users struct {
 	gorpController.Controller
-}
-
-func (c Users) getService() services.UserService {
-	return services.UserService{Db: c.Db}
-}
-
-func (c Users) getTransactionsService() services.TransactionService {
-	return services.TransactionService{Db: c.Db}
 }
 
 // Register create a user and returns token to client.
@@ -42,7 +33,7 @@ func (c Users) Register() revel.Result {
 	}
 
 	// check if the email have already exists in DB
-	user, err := c.getService().GetByEmail(email)
+	user, err := GetUserService().GetByEmail(email)
 	if err != nil {
 		log.Println(err)
 	}
@@ -116,7 +107,7 @@ func (c Users) Login() revel.Result {
 }
 
 func (c Users) IndexApi() revel.Result {
-	users, err := c.getService().Index()
+	users, err := GetUserService().Index()
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +115,7 @@ func (c Users) IndexApi() revel.Result {
 }
 
 func (c Users) ShowApi(id uint32) revel.Result {
-	user, err := c.getService().Get(id)
+	user, err := GetUserService().Get(id)
 	if err != nil {
 		panic(err)
 	}
@@ -132,7 +123,7 @@ func (c Users) ShowApi(id uint32) revel.Result {
 }
 
 func (c Users) IndexTransactions(id uint32) revel.Result {
-	transactions, err := c.getTransactionsService().IndexByUser(id)
+	transactions, err := GetTransactionsService().IndexByUser(id)
 	if err != nil {
 		panic(err)
 	}
