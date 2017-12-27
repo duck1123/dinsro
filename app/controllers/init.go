@@ -57,5 +57,6 @@ func init() {
 	// test
 	revel.InterceptFunc(AddLog, revel.BEFORE, &App{})
 
-	revel.InterceptFunc(Authenticate, revel.BEFORE, &App{})
+	revel.InterceptFunc(Authenticate, revel.BEFORE, &Transactions{})
+	revel.InterceptFunc(Authenticate, revel.BEFORE, &Users{})
 }
