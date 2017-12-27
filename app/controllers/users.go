@@ -72,7 +72,7 @@ func (c Users) Register() revel.Result {
 	}
 
 	// Save user info to DB
-	if err := Dbm.Insert(newUser); err != nil {
+	if err := c.Db.Insert(newUser); err != nil {
 		panic(err)
 	}
 
