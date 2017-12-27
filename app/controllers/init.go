@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/revel/modules/orm/gorp/app/controllers"
 	"github.com/revel/revel"
 	"log"
 	"net/http"
@@ -58,8 +57,5 @@ func init() {
 	// test
 	revel.InterceptFunc(AddLog, revel.BEFORE, &App{})
 
-	revel.InterceptMethod((*gorpController.Controller).Begin, revel.BEFORE)
 	revel.InterceptFunc(Authenticate, revel.BEFORE, &App{})
-	revel.InterceptMethod((*gorpController.Controller).Commit, revel.AFTER)
-	revel.InterceptMethod((*gorpController.Controller).Rollback, revel.FINALLY)
 }
