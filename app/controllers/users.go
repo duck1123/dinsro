@@ -63,7 +63,11 @@ func (c Users) Register() revel.Result {
 
 	token := encodeToken(email)
 
-	newUser := &models.User{0, "Demo User", email, password, bcryptPassword, []byte(token)}
+	newUser := &models.User{Name: "Demo User",
+		Email:          email,
+		Password:       password,
+		HashedPassword: bcryptPassword,
+		Token:          []byte(token)}
 
 	// Validate user struct
 	newUser.Validate(c.Validation)
