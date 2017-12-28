@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { userFetchData } from '../actions/users';
+import ListTransactions from './ListTransactions';
 
 class ShowUser extends React.Component {
   static propTypes = {
@@ -33,6 +34,7 @@ class ShowUser extends React.Component {
         <h1>Show User {this.props.user.id}</h1>
         <p>Name: {this.props.user.name}</p>
         <p>Loading?: {this.props.isLoading ? 'true' : 'false'}</p>
+        <ListTransactions />
       </div>
     );
   }

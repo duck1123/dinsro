@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
@@ -22,10 +23,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = () => {
   return {
-    fetchUsers: token => dispatch(usersFetchData(token)),
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListUsers));
+export default connect(mapStateToProps, mapDispatchToProps)(ListTransactions);
