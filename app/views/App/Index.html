@@ -1,21 +1,13 @@
-{{set . "title" "Home"}}
-{{template "header.html" .}}
-
-<header class="jumbotron" style="background-color:#A9F16C">
-  <div class="container">
-    <div class="row">
-      <h1>It works!</h1>
-      <p></p>
-    </div>
-  </div>
-</header>
-
-<div class="container">
-  <div class="row">
-    <div class="span6">
-      {{template "flash.html" .}}
-    </div>
-  </div>
-</div>
-
-{{template "footer.html" .}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dinsro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="/public/img/favicon.png">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="/public/js/bundle.js"></script>
+  </body>
+</html>

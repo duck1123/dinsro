@@ -1,0 +1,5 @@
+--ignore-dir=.idea
+--ignore-dir=public/js
+--ignore-dir=app/tmp
+--ignore-dir=test-results
+

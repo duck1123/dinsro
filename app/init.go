@@ -63,12 +63,17 @@ func InitDB() {
 
 		var err error
 
-		user := models.User{Name: "admin"}
-		if err = dbmap.Insert(&user); err != nil {
+		admin := models.User{Name: "admin"}
+		if err = dbmap.Insert(&admin); err != nil {
 			panic(err)
 		}
 
-		transaction := models.Transaction{UserId: user.Id}
+		bob := models.User{Name: "bob"}
+		if err = dbmap.Insert(&bob); err != nil {
+			panic(err)
+		}
+
+		transaction := models.Transaction{UserId: bob.Id}
 		if err = dbmap.Insert(&transaction); err != nil {
 			panic(err)
 		}
