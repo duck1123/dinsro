@@ -12,12 +12,16 @@ class ShowUser extends React.Component {
     users: PropTypes.arrayOf(Object).isRequired,
     match: PropTypes.instanceOf(Object).isRequired,
     user: PropTypes.instanceOf(Object).isRequired,
+    transactions: PropTypes.instanceOf(Object).isRequired,
     fetchUser: PropTypes.func.isRequired,
+    token: PropTypes.string.isRequired,
   }
 
   componentDidMount() {
     console.log('ShowUser component mounted', this.props);
-    this.props.fetchUser(this.props.match.params.id);
+    const { id } = this.props.match.params;
+    const { token } = this.props;
+    this.props.fetchUser(id, token);
   }
 
   render() {
@@ -46,12 +50,14 @@ const mapStateToProps = (state) => {
     hasErrored: state.user.errored,
     isLoading: state.user.loading,
     token: state.authentication.token,
+    transactions: state.transactions,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: id => dispatch(userFetchData(id)),
+    fetchUser: (userId, token) => dispatch(userFetchData(userId, token)),
+    loadTransactions: (userId, token) => dispatch(fetchUserTransactions(userId, token)),
   };
 };
 
