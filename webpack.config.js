@@ -8,7 +8,7 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
 const port = '9000';
 
 const config  = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-source-map',
 
   entry: [
     'react-hot-loader/patch',
