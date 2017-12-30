@@ -20,3 +20,15 @@ func (s UserService) Index() (users []*models.User, err error) {
 	_, err = s.Db.Select(&users, builder)
 	return users, err
 }
+
+func (s UserService) GetByEmail(email string) (user *models.User, err error) {
+	builder := s.Db.SqlStatementBuilder.
+		Select("*").
+		From("users"). // TODO: extract this
+		Where("email = ?", email)
+	err = s.Db.SelectOne(&user, builder)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
