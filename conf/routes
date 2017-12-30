@@ -12,6 +12,7 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /public/*filepath                       Static.Serve("public")
 
+POST    /api/v1/authenticate                    Authentication.Authenticate
 GET     /api/v1/transactions                    Transactions.IndexApi
 GET     /api/v1/transactions/:id                Transactions.ShowApi
 GET     /api/v1/users                           Users.IndexApi
