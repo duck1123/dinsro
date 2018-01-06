@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/duck1123/dinsro/app/controllers"
 	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app"
 	"github.com/revel/revel"
@@ -72,7 +73,10 @@ func InitDB() {
 			Email:        "admin@example.com",
 			PasswordHash: bcryptPassword,
 		}
-		if err = dbmap.Insert(&admin); err != nil {
+
+		userService := controllers.GetUserService()
+
+		if err = userService.Create(&admin); err != nil {
 			panic(err)
 		}
 
@@ -81,12 +85,16 @@ func InitDB() {
 			Email:        "bob@example.com",
 			PasswordHash: bcryptPassword,
 		}
-		if err = dbmap.Insert(&bob); err != nil {
+
+		if err = userService.Create(&bob); err != nil {
 			panic(err)
 		}
 
+		transactionService := controllers.GetTransactionsService()
+
 		transaction := models.Transaction{UserId: bob.Id}
-		if err = dbmap.Insert(&transaction); err != nil {
+
+		if err = transactionService.Create(&transaction); err != nil {
 			panic(err)
 		}
 
