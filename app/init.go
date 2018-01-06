@@ -69,12 +69,13 @@ func InitDB() {
 		password := "perfectloops"
 		bcryptPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
+		adminTime := time.Now()
 		admin := models.User{
 			Name:         "admin",
 			Email:        "admin@example.com",
 			PasswordHash: bcryptPassword,
-			Created:      time.Now(),
-			Updated:      time.Now(),
+			Created:      adminTime,
+			Updated:      adminTime,
 		}
 
 		userService := controllers.GetUserService()
@@ -83,12 +84,13 @@ func InitDB() {
 			panic(err)
 		}
 
+		bobTime := time.Now()
 		bob := models.User{
 			Name:         "bob",
 			Email:        "bob@example.com",
 			PasswordHash: bcryptPassword,
-			Created:      time.Now(),
-			Updated:      time.Now(),
+			Created:      bobTime,
+			Updated:      bobTime,
 		}
 
 		if err = userService.Create(&bob); err != nil {
