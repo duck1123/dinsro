@@ -32,6 +32,9 @@ const formData = {
   },
 };
 
+const submit = () => {
+};
+
 class AddTransaction extends Component {
   static propTypes = {
     ...propTypes,
@@ -42,10 +45,14 @@ class AddTransaction extends Component {
     const {
       classes,
       error,
+      handleSubmit,
       submitting,
     } = this.props;
     return (
-      <form>
+      <form
+        className={classes.container}
+        onSubmit={handleSubmit(submit)}
+      >
         <Field
           name="value"
           className={classes.inputField}
