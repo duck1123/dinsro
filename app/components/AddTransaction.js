@@ -6,7 +6,9 @@ import {
   Field,
   reduxForm,
   propTypes,
+  SubmissionError,
 } from 'redux-form';
+import { connect } from 'react-redux';
 import { TextField } from 'redux-form-material-ui';
 
 const styles = {
@@ -23,11 +25,34 @@ const styles = {
 const formData = {
   form: 'addTransaction',
   initialValues: {
-    value: 0,
+    value: 43,
   },
 };
 
-const submit = () => {
+const submissionError = () => {
+  throw new SubmissionError({
+    _error: 'Login Failed!',
+  });
+};
+
+const submit = (token) => {
+  return (values, dispatch) => {
+    return fetch('/api/v1/transactions', {
+      method: 'POST',
+      body: JSON.stringify(values),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      if (response.status !== 201) {
+        submissionError();
+      }
+      return response.json();
+    }, () => {
+      submissionError();
+    });
+  };
 };
 
 class AddTransaction extends Component {
@@ -42,11 +67,12 @@ class AddTransaction extends Component {
       error,
       handleSubmit,
       submitting,
+      token,
     } = this.props;
     return (
       <form
         className={classes.container}
-        onSubmit={handleSubmit(submit)}
+        onSubmit={handleSubmit(submit(token))}
       >
         <Field
           name="value"
@@ -69,4 +95,19 @@ class AddTransaction extends Component {
   }
 }
 
-export default reduxForm(formData)(withStyles(styles)(AddTransaction));
+const mapStateToProps = (state) => {
+  return {
+    token: state.authentication.token,
+  };
+};
+
+const mapDispatchToProps = () => {
+  return {
+  };
+};
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(reduxForm(formData)(withStyles(styles)(AddTransaction)));
