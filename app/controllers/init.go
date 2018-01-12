@@ -36,12 +36,13 @@ func Authenticate(c *revel.Controller) revel.Result {
 		return c.RenderJSON(models.AuthenticationError{Message: "email not found in db"})
 	}
 
-	_, err = GetUserService().GetByEmail(email.(string))
+	user, err := GetUserService().GetByEmail(email.(string))
 	if err != nil {
 		c.Response.Status = http.StatusUnauthorized
 		return c.RenderJSON(models.AuthenticationError{Message: "auth failed"})
 	}
 
+	c.Args["userId"] = user.Id
 	return nil
 }
 
