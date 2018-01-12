@@ -3,10 +3,12 @@ package controllers
 import (
 	"github.com/duck1123/dinsro/app/interceptors"
 	"github.com/duck1123/dinsro/app/models"
+	"github.com/revel/modules/orm/gorp/app/controllers"
 	"github.com/revel/revel"
 )
 
 type Transactions struct {
+	gorpController.Controller
 	interceptors.AuthenticatedController
 }
 
