@@ -59,7 +59,7 @@ class AddTransaction extends Component {
   static propTypes = {
     ...propTypes,
     userId: PropTypes.number.isRequired,
-  }
+  };
 
   render() {
     const {
