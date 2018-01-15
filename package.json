@@ -35,7 +35,8 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "cross-env": "5.1.1",
-    "material-ui": "^0.20.0",
+    "material-ui": "^1.0.0-beta.25",
+    "material-ui-icons": "^1.0.0-beta.17",
     "prop-types": "^15.6.0",
     "react": "16.2.0",
     "react-dom": "16.2.0",
@@ -43,6 +44,7 @@
     "react-redux": "^5.0.6",
     "react-router-dom": "4.2.2",
     "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
@@ -81,6 +83,7 @@
     "url-loader": "0.6.2",
     "webpack": "3.9.1",
     "webpack-dev-server": "2.9.5",
-    "webpack-livereload-plugin": "^1.0.0"
+    "webpack-livereload-plugin": "^1.0.0",
+    "webpack-notifier": "^1.5.0"
   }
 }
