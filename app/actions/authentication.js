@@ -7,5 +7,5 @@ export const setAuthentication = (authData) => {
 };
 
 export const removeAuthentication = () => {
-  return setAuthentication({email: null, token: null});
+  return setAuthentication({ email: null, token: null });
 };
