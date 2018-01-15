@@ -27,7 +27,7 @@ class ListTransactions extends Component {
 
 ListTransactions.propTypes = {
   fetchTransactions: PropTypes.func.isRequired,
-  token: PropTypes.string,
+  token: PropTypes.string.isRequired,
   transactions: PropTypes.arrayOf(Object).isRequired,
   userId: PropTypes.number.isRequired,
 };
