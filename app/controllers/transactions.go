@@ -30,6 +30,7 @@ func (c Transactions) ShowApi(id uint32) revel.Result {
 }
 
 func (c Transactions) CreateApi(transaction models.Transaction) revel.Result {
+	transaction.UserId = c.Args["userId"].(uint32)
 	GetTransactionsService().Create(&transaction)
 	return c.RenderJSON(transaction)
 }
