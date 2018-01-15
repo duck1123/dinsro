@@ -6,7 +6,6 @@ import (
 	"github.com/revel/modules/orm/gorp/app"
 	"github.com/revel/revel"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 func init() {
@@ -69,31 +68,23 @@ func InitDB() {
 		password := "perfectloops"
 		bcryptPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
-		adminTime := time.Now()
 		admin := models.User{
 			Name:         "admin",
 			Email:        "admin@example.com",
 			PasswordHash: bcryptPassword,
-			Created:      adminTime,
-			Updated:      adminTime,
 		}
 
-		userService := controllers.GetUserService()
-
-		if err = userService.Create(&admin); err != nil {
+		if err = controllers.GetUserService().Create(&admin); err != nil {
 			panic(err)
 		}
 
-		bobTime := time.Now()
 		bob := models.User{
 			Name:         "bob",
 			Email:        "bob@example.com",
 			PasswordHash: bcryptPassword,
-			Created:      bobTime,
-			Updated:      bobTime,
 		}
 
-		if err = userService.Create(&bob); err != nil {
+		if err = controllers.GetUserService().Create(&bob); err != nil {
 			panic(err)
 		}
 
