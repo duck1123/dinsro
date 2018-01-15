@@ -83,6 +83,7 @@ class AddTransaction extends Component {
           className={classes.inputField}
           component={TextField}
           error={error}
+          parse={parseInt}
           label="Value"
         />
         <Button
