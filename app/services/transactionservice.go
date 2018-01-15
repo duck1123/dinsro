@@ -3,15 +3,18 @@ package services
 import (
 	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app"
+	"time"
 )
 
 type TransactionService struct {
 	Db *gorp.DbGorp
 }
 
-func (s TransactionService) Create(transaction *models.Transaction) (id uint32, err error) {
-	err = s.Db.Insert(transaction)
-	return transaction.Id, err
+func (s TransactionService) Create(transaction *models.Transaction) error {
+	modifyTime := time.Now()
+	transaction.Created = modifyTime
+	transaction.Updated = modifyTime
+	return s.Db.Insert(transaction)
 }
 
 func (s TransactionService) Get(id uint32) (transaction models.Transaction, err error) {

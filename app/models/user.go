@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"github.com/revel/revel"
 	"regexp"
+	"time"
 )
 
 type User struct {
-	Id           uint32 `json:"id" db:"id, primarykey, autoincrement"`
-	Name         string `json:"name" db:"name"`
-	Email        string `json:"email" db:"email"`
-	PasswordHash []byte `json:"-" db:"passwordHash"`
-	Token        []byte `json:"token" db:"token"`
+	Id           uint32    `json:"id" db:"id, primarykey, autoincrement"`
+	Name         string    `json:"name" db:"name"`
+	Email        string    `json:"email" db:"email"`
+	PasswordHash []byte    `json:"-" db:"passwordHash"`
+	Created      time.Time `json:"created" db:"created"`
+	Updated      time.Time `json:"updated" db:"updated"`
 }
 
 func (User) TableName() string {
