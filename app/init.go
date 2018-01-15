@@ -92,10 +92,17 @@ func InitDB() {
 
 		transactionService := controllers.GetTransactionsService()
 
-		transaction := models.Transaction{UserId: bob.Id}
+		transactions := []models.Transaction{
+			{UserId: bob.Id, Value: 500},
+			{UserId: bob.Id, Value: 600},
+			{UserId: bob.Id, Value: 700},
+			{UserId: bob.Id, Value: 800},
+		}
 
-		if err = transactionService.Create(&transaction); err != nil {
-			panic(err)
+		for _, transaction := range transactions {
+			if err = transactionService.Create(&transaction); err != nil {
+				panic(err)
+			}
 		}
 
 		return nil
