@@ -32,7 +32,7 @@ const formData = {
 
 const submissionError = () => {
   throw new SubmissionError({
-    _error: 'Login Failed!',
+    _error: 'Submission Failed!',
   });
 };
 
