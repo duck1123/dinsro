@@ -17,7 +17,7 @@ class ListTransactions extends Component {
           { transactions.map(transaction => (
             <li key={transaction.id} >
               <p>Id: {transaction.id}</p>
-              <p>User Id: {transaction.userId}</p>
+              <p>Value: {transaction.value}</p>
             </li>
           ))}
         </ul>
