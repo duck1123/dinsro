@@ -1,27 +1,30 @@
-export const userTransactionsHaveErrored = (bool) => {
+export const userTransactionsHaveErrored = (userId, bool = true) => {
   return {
     type: 'USER_TRANSACTIONS_HAVE_ERRORED',
     errored: bool,
+    userId,
   };
 };
 
-export const userTransactionsAreLoading = (bool) => {
+export const userTransactionsAreLoading = (userId, bool = true) => {
   return {
     type: 'USER_TRANSACTIONS_ARE_LOADING',
     isLoading: bool,
+    userId,
   };
 };
 
-export const userTransactionsFetchDataSuccess = (transactions) => {
+export const userTransactionsFetchDataSuccess = (userId, transactions) => {
   return {
     type: 'USER_TRANSACTIONS_FETCH_DATA_SUCCESS',
     transactions,
+    userId,
   };
 };
 
 export const fetchUserTransactions = (userId, token) => {
   return (dispatch) => {
-    dispatch(userTransactionsAreLoading(true));
+    dispatch(userTransactionsAreLoading(userId));
 
     fetch(`/api/v1/users/${userId}/transactions`, {
       headers: {
@@ -36,7 +39,7 @@ export const fetchUserTransactions = (userId, token) => {
         return response;
       })
       .then(response => response.json())
-      .then(transactions => dispatch(userTransactionsFetchDataSuccess(transactions)))
-      .catch(() => dispatch(userTransactionsHaveErrored(true)));
+      .then(transactions => dispatch(userTransactionsFetchDataSuccess(userId, transactions)))
+      .catch(() => dispatch(userTransactionsHaveErrored(userId)));
   };
 };
