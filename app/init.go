@@ -74,7 +74,9 @@ func InitDB() {
 			PasswordHash: bcryptPassword,
 		}
 
-		if err = controllers.GetUserService().Create(&admin); err != nil {
+		userService := controllers.GetUserService()
+
+		if err = userService.Create(&admin); err != nil {
 			panic(err)
 		}
 
@@ -84,7 +86,7 @@ func InitDB() {
 			PasswordHash: bcryptPassword,
 		}
 
-		if err = controllers.GetUserService().Create(&bob); err != nil {
+		if err = userService.Create(&bob); err != nil {
 			panic(err)
 		}
 
