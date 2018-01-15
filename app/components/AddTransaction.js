@@ -10,6 +10,7 @@ import {
 } from 'redux-form';
 import { connect } from 'react-redux';
 import { TextField } from 'redux-form-material-ui';
+import { fetchUserTransactions } from '../actions/usertransactions';
 
 const styles = {
   container: {
@@ -35,7 +36,7 @@ const submissionError = () => {
   });
 };
 
-const submit = (token) => {
+const submit = (userId, token) => {
   return (values, dispatch) => {
     return fetch('/api/v1/transactions', {
       method: 'POST',
@@ -51,6 +52,8 @@ const submit = (token) => {
       return response.json();
     }, () => {
       submissionError();
+    }).then(() => {
+      dispatch(fetchUserTransactions(userId, token));
     });
   };
 };
@@ -68,11 +71,12 @@ class AddTransaction extends Component {
       handleSubmit,
       submitting,
       token,
+      userId,
     } = this.props;
     return (
       <form
         className={classes.container}
-        onSubmit={handleSubmit(submit(token))}
+        onSubmit={handleSubmit(submit(userId, token))}
       >
         <Field
           name="value"
