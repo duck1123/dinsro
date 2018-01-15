@@ -1,9 +1,12 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { fetchUserTransactions } from '../actions/usertransactions';
 
 class ListUserTransactions extends Component {
-  static propTypes = {
-    items: PropTypes.arrayOf(Object).isRequired,
+  componentDidMount() {
+    const { id, token } = this.props;
+    this.props.fetchCollection(id, token);
   }
 
   render() {
@@ -24,17 +27,23 @@ class ListUserTransactions extends Component {
 }
 
 ListUserTransactions.propTypes = {
+  fetchCollection: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
   items: PropTypes.arrayOf(Object).isRequired,
+  token: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {
   return {
     items: state.items.data,
+    token: state.authentication.token,
   };
 };
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = (dispatch) => {
   return {
+    fetchCollection: (id, token) =>
+      dispatch(fetchUserTransactions(id, token)),
   };
 };
 
