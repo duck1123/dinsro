@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+func GetAccountService() services.AccountService {
+	return services.AccountService{Db: gorp.Db}
+}
+
 func GetUserService() services.UserService {
 	return services.UserService{Db: gorp.Db}
 }
