@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect';
 import App from '../containers/App';
 import Header from '../components/Header';
+import ListAccounts from '../components/ListAccounts';
 import ListUsers from '../components/ListUsers';
 import LoginPage from '../components/LoginPage';
 import ShowUser from '../components/ShowUser';
@@ -23,6 +24,7 @@ const Root = () => {
       <div>
         <Header />
         <Route exact path="/" component={App} />
+        <Route exact path="/accounts" component={ListAccounts} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/users" component={userIsAuthenticated(ListUsers)} />
         <Route path="/users/:id" component={ShowUser} />
