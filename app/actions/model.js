@@ -53,6 +53,8 @@ const getPath = (model, id) => {
   switch (model) {
     case 'account':
       return `/api/v1/accounts/${id}`;
+    case 'transaction':
+      return `/api/v1/transactions/${id}`;
     case 'user':
       return `/api/v1/users/${id}`;
     default:

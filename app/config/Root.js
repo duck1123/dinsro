@@ -7,6 +7,7 @@ import ListAccounts from '../components/ListAccounts';
 import ListUsers from '../components/ListUsers';
 import LoginPage from '../components/LoginPage';
 import ShowAccount from '../components/ShowAccount';
+import ShowTransaction from '../components/ShowTransaction';
 import ShowUser from '../components/ShowUser';
 
 const userIsAuthenticated = connectedRouterRedirect({
@@ -28,6 +29,7 @@ const Root = () => {
         <Route exact path="/accounts" component={ListAccounts} />
         <Route exact path="/accounts/:id" component={ShowAccount} />
         <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/transactions/:id" component={ShowTransaction} />
         <Route exact path="/users" component={userIsAuthenticated(ListUsers)} />
         <Route path="/users/:id" component={ShowUser} />
       </div>
