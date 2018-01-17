@@ -1,12 +1,19 @@
 package controllers
 
 import (
+	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app/controllers"
 	"github.com/revel/revel"
 )
 
 type Accounts struct {
 	gorpController.Controller
+}
+
+func (c Accounts) Create(account models.Account) revel.Result {
+	account.OwnerId = c.Args["userId"].(uint32)
+	GetAccountService().Create(&account)
+	return c.RenderJSON(account)
 }
 
 func (c Accounts) Index() revel.Result {
