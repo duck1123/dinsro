@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { userFetchData } from '../actions/user';
+import { fetchAccount } from '../actions/account';
 
 class ShowAccount extends React.Component {
   static propTypes = {
@@ -52,7 +52,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: (userId, token) => dispatch(userFetchData(userId, token)),
+    fetchAccount: (userId, token) => dispatch(fetchAccount(userId, token)),
   };
 };
 
