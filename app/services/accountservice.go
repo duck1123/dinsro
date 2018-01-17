@@ -34,6 +34,15 @@ func (s AccountService) Index() (accounts []*models.Account, err error) {
 	return accounts, err
 }
 
+func (s AccountService) IndexByUser(id uint32) (accounts []*models.Account, err error) {
+	builder := s.Db.SqlStatementBuilder.
+		Select("*").
+		From("accounts").
+		Where("ownerId = ?", id)
+	_, err = s.Db.Select(&accounts, builder)
+	return accounts, err
+}
+
 func (s AccountService) GetByEmail(email string) (account *models.Account, err error) {
 	builder := s.Db.SqlStatementBuilder.
 		Select("*").
