@@ -4,6 +4,7 @@ import accounts from './accounts';
 import authentication from './authentication';
 import transactions from './transactions';
 import user from './user';
+import useraccounts from './useraccounts';
 import users from './users';
 
 export default combineReducers({
@@ -12,5 +13,6 @@ export default combineReducers({
   form,
   transactions,
   user,
+  useraccounts,
   users,
 });
