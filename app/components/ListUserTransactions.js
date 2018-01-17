@@ -30,7 +30,7 @@ ListUserTransactions.propTypes = {
   fetchCollection: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   items: PropTypes.arrayOf(Object).isRequired,
-  token: PropTypes.string,
+  token: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => {
