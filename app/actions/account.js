@@ -26,7 +26,7 @@ export const fetchAccount = (id, token) => {
   return (dispatch) => {
     dispatch(accountIsLoading(id, true));
 
-    fetch(`/api/v1/account/${id}`, {
+    fetch(`/api/v1/accounts/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

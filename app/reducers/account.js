@@ -3,8 +3,8 @@ export default (state = {}, action) => {
     case 'ACCOUNT_FETCH_DATA_SUCCESS':
       return {
         ...state,
-        [action.accountId]: {
-          data: action.account,
+        [action.id]: {
+          data: action.data,
           loading: false,
           errored: false,
         },
@@ -12,7 +12,7 @@ export default (state = {}, action) => {
     case 'ACCOUNT_IS_LOADING':
       return {
         ...state,
-        [action.accountId]: {
+        [action.id]: {
           data: {},
           errored: false,
           loading: true,
@@ -21,7 +21,7 @@ export default (state = {}, action) => {
     case 'ACCOUNT_HAS_ERRORED':
       return {
         ...state,
-        [action.accountId]: {
+        [action.id]: {
           data: {},
           errored: true,
           loading: false,

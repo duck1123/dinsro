@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fetchAccounts } from '../actions/accounts';
 
 class ListAccounts extends Component {
@@ -20,8 +21,16 @@ class ListAccounts extends Component {
       <div>
         <p>ListAccounts</p>
         {
-          this.props.accounts.map(a => (
-            <p key={a.id}>{a.name} - {a.id}</p>
+          this.props.accounts.map(account => (
+            <p>
+              Name:
+              <Link
+                to={`/accounts/${account.id}`}
+              >
+                {account.name}
+              </Link>
+              - Id: {account.id}
+            </p>
           ))
         }
       </div>

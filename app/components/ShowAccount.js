@@ -5,7 +5,7 @@ import { fetchAccount } from '../actions/account';
 
 class ShowAccount extends React.Component {
   static propTypes = {
-    accountId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     fetchAccount: PropTypes.func.isRequired,
     hasErrored: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
@@ -14,8 +14,8 @@ class ShowAccount extends React.Component {
   }
 
   componentDidMount() {
-    const { token, accountId } = this.props;
-    this.props.fetchAccount(accountId, token);
+    const { token, id } = this.props;
+    this.props.fetchAccount(id, token);
   }
 
   render() {
@@ -28,31 +28,31 @@ class ShowAccount extends React.Component {
       return <p>Loading…</p>;
     }
 
-    const { account } = this.props;
+    const { account, id } = this.props;
 
     return (
       <div>
-        <h1>Account: {account.name}</h1>
+        <h1>Account: {account.name} ({id})</h1>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const accountId = parseInt(ownProps.match.params.id, 10);
-  const { data, errored, loading } = state.account[accountId] || {};
+  const id = parseInt(ownProps.match.params.id, 10);
+  const { data, errored, loading } = state.account[id] || {};
   return {
     hasErrored: typeof errored === 'undefined' ? false : errored,
     isLoading: typeof loading === 'undefined' ? false : loading,
     token: state.authentication.token,
     account: typeof data === 'undefined' ? {} : data,
-    accountId,
+    id,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAccount: (userId, token) => dispatch(fetchAccount(userId, token)),
+    fetchAccount: (id, token) => dispatch(fetchAccount(id, token)),
   };
 };
 
