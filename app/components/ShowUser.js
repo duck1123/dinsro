@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { userFetchData } from '../actions/user';
 import AddTransaction from './AddTransaction';
+import ListUserAccounts from './ListUserAccounts';
 import ListTransactions from './ListTransactions';
 
 class ShowUser extends React.Component {
@@ -37,6 +38,7 @@ class ShowUser extends React.Component {
         <h1>User: {user.name} ({userId})</h1>
         <AddTransaction userId={userId} />
         <ListTransactions userId={userId} />
+        <ListUserAccounts userId={userId} />
       </div>
     );
   }
