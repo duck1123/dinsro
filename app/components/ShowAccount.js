@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { fetchAccount } from '../actions/account';
+import ListAccountTransactions from './ListAccountTransactions';
 
 class ShowAccount extends React.Component {
   static propTypes = {
@@ -33,6 +34,7 @@ class ShowAccount extends React.Component {
     return (
       <div>
         <h1>Account: {account.name} ({id})</h1>
+        <ListAccountTransactions id={id} />
       </div>
     );
   }
