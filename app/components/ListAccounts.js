@@ -22,7 +22,7 @@ class ListAccounts extends Component {
         <p>ListAccounts</p>
         {
           this.props.accounts.map(account => (
-            <p>
+            <p key={account.id}>
               Name:
               <Link
                 to={`/accounts/${account.id}`}
