@@ -24,6 +24,14 @@ func (c Accounts) Index() revel.Result {
 	return c.RenderJSON(accounts)
 }
 
+func (c Accounts) IndexTransactions(id uint32) revel.Result {
+	transactions, err := GetTransactionsService().IndexByAccount(id)
+	if err != nil {
+		panic(err)
+	}
+	return c.RenderJSON(transactions)
+}
+
 func (c Accounts) Show(id uint32) revel.Result {
 	accounts, err := GetAccountService().Get(id)
 	if err != nil {

@@ -103,10 +103,10 @@ func InitDB() {
 		transactionService := controllers.GetTransactionsService()
 
 		transactions := []models.Transaction{
-			{UserId: bob.Id, Value: 500},
-			{UserId: bob.Id, Value: 600},
-			{UserId: bob.Id, Value: 700},
-			{UserId: bob.Id, Value: 800},
+			{UserId: bob.Id, Value: 500, AccountId: account.Id},
+			{UserId: bob.Id, Value: 600, AccountId: account.Id},
+			{UserId: bob.Id, Value: 700, AccountId: account.Id},
+			{UserId: bob.Id, Value: 800, AccountId: account.Id},
 		}
 
 		for _, transaction := range transactions {

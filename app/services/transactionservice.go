@@ -29,6 +29,12 @@ func (s TransactionService) Index() (transactions []*models.Transaction, err err
 	return transactions, err
 }
 
+func (s TransactionService) IndexByAccount(id uint32) (transactions []*models.Transaction, err error) {
+	builder := s.Db.SqlStatementBuilder.Select("*").From("transactions").Where("accountId = ?", id)
+	_, err = s.Db.Select(&transactions, builder)
+	return transactions, err
+}
+
 func (s TransactionService) IndexByUser(id uint32) (transactions []*models.Transaction, err error) {
 	builder := s.Db.SqlStatementBuilder.Select("*").From("transactions").Where("userId = ?", id)
 	_, err = s.Db.Select(&transactions, builder)
