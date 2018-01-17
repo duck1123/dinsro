@@ -1,32 +1,46 @@
 export default (state = {}, action) => {
-  const { id } = action;
+  const {
+    id,
+    model,
+  } = action;
+
+  const modelData = state[model] || {};
 
   switch (action.type) {
     case 'MODEL_LOADED':
       return {
         ...state,
-        [id]: {
-          data: action.data,
-          loading: false,
-          errored: false,
+        [model]: {
+          ...modelData,
+          [id]: {
+            data: action.data,
+            loading: false,
+            errored: false,
+          },
         },
       };
     case 'MODEL_LOADING':
       return {
         ...state,
-        [id]: {
-          data: {},
-          errored: false,
-          loading: true,
+        [model]: {
+          ...modelData,
+          [id]: {
+            data: {},
+            loading: true,
+            errored: false,
+          },
         },
       };
     case 'MODEL_ERRORED':
       return {
         ...state,
-        [id]: {
-          data: {},
-          errored: true,
-          loading: false,
+        [model]: {
+          ...modelData,
+          [id]: {
+            data: {},
+            loading: false,
+            errored: true,
+          },
         },
       };
     default:
