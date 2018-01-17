@@ -66,6 +66,7 @@ func getTokenString(c *revel.Controller) (tokenString string, err error) {
 }
 
 func init() {
+	revel.InterceptFunc(Authenticate, revel.BEFORE, &Accounts{})
 	revel.InterceptFunc(Authenticate, revel.BEFORE, &Transactions{})
 	revel.InterceptFunc(Authenticate, revel.BEFORE, &Users{})
 }
