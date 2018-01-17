@@ -17,7 +17,7 @@ func (c Accounts) Index() revel.Result {
 	return c.RenderJSON(accounts)
 }
 
-func (c Users) Show(id uint32) revel.Result {
+func (c Accounts) Show(id uint32) revel.Result {
 	accounts, err := GetAccountService().Get(id)
 	if err != nil {
 		panic(err)

@@ -13,11 +13,14 @@ GET     /favicon.ico                            404
 GET     /public/*filepath                       Static.Serve("public")
 
 POST    /api/v1/authenticate                    Authentication.Authenticate
+GET     /api/v1/accounts                        Accounts.Index
+GET     /api/v1/accounts/:id                    Accounts.Show
 GET     /api/v1/transactions                    Transactions.IndexApi
 POST    /api/v1/transactions                    Transactions.CreateApi
 GET     /api/v1/transactions/:id                Transactions.ShowApi
 GET     /api/v1/users                           Users.IndexApi
 GET     /api/v1/users/:id                       Users.ShowApi
+GET     /api/v1/users/:id/accounts              Users.IndexAccounts
 GET     /api/v1/users/:id/transactions          Users.IndexTransactions
 
 GET     /                                       App.Index

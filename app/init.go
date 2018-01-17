@@ -59,6 +59,7 @@ func InitDB() {
 		dbmap := db.Map
 		db.TraceOn(revel.AppLog)
 
+		dbmap.AddTableWithName(models.Account{}, "accounts")
 		dbmap.AddTableWithName(models.Transaction{}, "transactions")
 		dbmap.AddTableWithName(models.User{}, "users")
 		dbmap.CreateTables()
@@ -89,6 +90,15 @@ func InitDB() {
 		if err = userService.Create(&bob); err != nil {
 			panic(err)
 		}
+
+		accountService := controllers.GetAccountService()
+
+		account := models.Account{
+			Name:    "Main",
+			OwnerId: bob.Id,
+		}
+
+		accountService.Create(&account)
 
 		transactionService := controllers.GetTransactionsService()
 
