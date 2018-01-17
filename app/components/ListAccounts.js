@@ -2,26 +2,29 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchAccounts } from '../actions/accounts';
+import { fetchCollection } from '../actions/model';
 
 class ListAccounts extends Component {
   static propTypes = {
     accounts: PropTypes.arrayOf(Object).isRequired,
-    fetchAccounts: PropTypes.func.isRequired,
+    errored: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+    fetchCollection: PropTypes.func.isRequired,
     token: PropTypes.string.isRequired,
   };
 
 
   componentDidMount() {
-    this.props.fetchAccounts(this.props.token);
+    this.props.fetchCollection('accounts', this.props.token);
   }
 
   render() {
+    const { accounts, errored, loading } = this.props;
     return (
       <div>
-        <p>ListAccounts</p>
+        <p>List Accounts {errored} {loading}</p>
         {
-          this.props.accounts.map(account => (
+          accounts.map(account => (
             <p key={account.id}>
               Name:
               <Link
@@ -39,15 +42,23 @@ class ListAccounts extends Component {
 }
 
 const mapStateToProps = (state) => {
+  const model = state.models.accounts || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model;
   return {
+    errored,
+    loading,
     token: state.authentication.token,
-    accounts: state.accounts.data,
+    accounts: data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAccounts: token => dispatch(fetchAccounts(token)),
+    fetchCollection: (model, token) => dispatch(fetchCollection(model, token)),
   };
 };
 

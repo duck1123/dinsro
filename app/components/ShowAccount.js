@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchModel } from '../actions/account';
+import { fetchModel } from '../actions/model';
 import ListAccountTransactions from './ListAccountTransactions';
 
 class ShowAccount extends React.Component {
