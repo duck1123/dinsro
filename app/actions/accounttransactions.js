@@ -26,7 +26,7 @@ export const fetchAccountTransactions = (id, token) => {
   return (dispatch) => {
     dispatch(accountTransactionsAreLoading(id));
 
-    fetch(`/api/v1/account/${id}/transactions`, {
+    fetch(`/api/v1/accounts/${id}/transactions`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

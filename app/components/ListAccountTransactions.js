@@ -23,7 +23,7 @@ class ListAccountTransactions extends Component {
                 <Link
                   to={`/transactions/${transaction.id}`}
                 >
-                  {transaction.name}
+                  {transaction.value}
                 </Link>
                 - Id: {transaction.id}
               </p>
