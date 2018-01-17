@@ -1,22 +1,25 @@
-export const accountHasErrored = (id, hasErrored) => {
+export const accountHasErrored = (id, errored) => {
   return {
-    type: 'ACCOUNT_HAS_ERRORED',
+    type: 'MODEL_ERRORED',
+    model: 'account',
     id,
-    hasErrored,
+    errored,
   };
 };
 
-export const accountIsLoading = (id, isLoading) => {
+export const accountIsLoading = (id, loading) => {
   return {
-    type: 'ACCOUNT_IS_LOADING',
-    isLoading,
+    type: 'MODEL_LOADING',
+    model: 'account',
     id,
+    loading,
   };
 };
 
 export const accountFetchDataSuccess = (id, data) => {
   return {
-    type: 'ACCOUNT_FETCH_DATA_SUCCESS',
+    type: 'MODEL_LOADED',
+    model: 'account',
     id,
     data,
   };

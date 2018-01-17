@@ -42,7 +42,8 @@ class ShowAccount extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const id = parseInt(ownProps.match.params.id, 10);
-  const { data, errored, loading } = state.account[id] || {};
+  const model = state.models.account || {};
+  const { data, errored, loading } = model[id] || {};
   return {
     hasErrored: typeof errored === 'undefined' ? false : errored,
     isLoading: typeof loading === 'undefined' ? false : loading,
