@@ -1,35 +1,44 @@
-export const accountHasErrored = (id, errored) => {
+export const modelHasErrored = (model, id, errored) => {
   return {
     type: 'MODEL_ERRORED',
-    model: 'account',
+    model,
     id,
     errored,
   };
 };
 
-export const accountIsLoading = (id, loading) => {
+export const modelIsLoading = (model, id, loading) => {
   return {
     type: 'MODEL_LOADING',
-    model: 'account',
+    model,
     id,
     loading,
   };
 };
 
-export const accountFetchDataSuccess = (id, data) => {
+export const modelLoaded = (model, id, data) => {
   return {
     type: 'MODEL_LOADED',
-    model: 'account',
+    model,
     id,
     data,
   };
 };
 
-export const fetchAccount = (id, token) => {
-  return (dispatch) => {
-    dispatch(accountIsLoading(id, true));
+const getPath = (model, id) => {
+  switch (model) {
+    case 'account':
+      return `/api/v1/accounts/${id}`;
+    default:
+      return 'NULL';
+  }
+}
 
-    fetch(`/api/v1/accounts/${id}`, {
+export const fetchModel = (model, id, token) => {
+  return (dispatch) => {
+    dispatch(modelIsLoading(model, id, true));
+
+    fetch(getPath(model, id), {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -40,7 +49,7 @@ export const fetchAccount = (id, token) => {
 
       return response;
     }).then(response => response.json())
-      .then(data => dispatch(accountFetchDataSuccess(id, data)))
-      .catch(() => dispatch(accountHasErrored(id, true)));
+      .then(data => dispatch(modelLoaded(model, id, data)))
+      .catch(() => dispatch(modelHasErrored(model, id, true)));
   };
 };

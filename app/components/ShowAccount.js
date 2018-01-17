@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchAccount } from '../actions/account';
+import { fetchModel } from '../actions/model';
 import ListAccountTransactions from './ListAccountTransactions';
 
 class ShowAccount extends React.Component {
   static propTypes = {
     id: PropTypes.number.isRequired,
-    fetchAccount: PropTypes.func.isRequired,
+    fetchModel: PropTypes.func.isRequired,
     hasErrored: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
     token: PropTypes.string.isRequired,
@@ -16,7 +16,7 @@ class ShowAccount extends React.Component {
 
   componentDidMount() {
     const { token, id } = this.props;
-    this.props.fetchAccount(id, token);
+    this.props.fetchModel('account', id, token);
   }
 
   render() {
@@ -55,7 +55,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAccount: (id, token) => dispatch(fetchAccount(id, token)),
+    fetchModel: (model, id, token) => dispatch(fetchModel(model, id, token)),
   };
 };
 
