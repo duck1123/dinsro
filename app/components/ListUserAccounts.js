@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fetchUserAccounts } from '../actions/useraccounts';
 
 class ListUserAccounts extends Component {
@@ -16,7 +17,15 @@ class ListUserAccounts extends Component {
         <ul>
           { accounts.map(account => (
             <li key={account.id} >
-              <p>Name: {account.name} - Id: {account.id}</p>
+              <p>
+                Name:
+                <Link
+                  to={`/accounts/${account.id}`}
+                >
+                  {account.name}
+                </Link>
+                - Id: {account.id}
+              </p>
             </li>
           ))}
         </ul>
