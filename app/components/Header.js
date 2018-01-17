@@ -34,10 +34,13 @@ const Header = (props) => {
       </AppBar>
       <ul>
         <li>
-          <Link to="/" href="/">Home</Link>
+          <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="/users" href="/users">Users</Link>
+          <Link to="/accounts">Accounts</Link>
+        </li>
+        <li>
+          <Link to="/users">Users</Link>
         </li>
       </ul>
     </div>
