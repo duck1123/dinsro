@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchModel } from '../actions/model';
 import AddTransaction from './AddTransaction';
 import ListUserAccounts from './ListUserAccounts';
-import ListTransactions from './ListTransactions';
+import ListUserTransactions from './ListUserTransactions';
 
 class ShowUser extends React.Component {
   static propTypes = {
@@ -37,7 +37,7 @@ class ShowUser extends React.Component {
       <div>
         <h1>User: {user.name} ({id})</h1>
         <AddTransaction userId={id} />
-        <ListTransactions userId={id} />
+        <ListUserTransactions userId={id} />
         <ListUserAccounts userId={id} />
       </div>
     );

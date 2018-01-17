@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUserTransactions } from '../actions/usertransactions';
 
-class ListTransactions extends Component {
+class ListUserTransactions extends Component {
   componentDidMount() {
     this.props.fetchTransactions(this.props.userId, this.props.token);
   }
@@ -12,7 +12,7 @@ class ListTransactions extends Component {
     const { transactions } = this.props;
     return (
       <div>
-        <h1>List Transactions</h1>
+        <h1>List User Transactions</h1>
         <ul>
           { transactions.map(transaction => (
             <li key={transaction.id} >
@@ -25,7 +25,7 @@ class ListTransactions extends Component {
   }
 }
 
-ListTransactions.propTypes = {
+ListUserTransactions.propTypes = {
   fetchTransactions: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   transactions: PropTypes.arrayOf(Object).isRequired,
@@ -46,4 +46,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListTransactions);
+export default connect(mapStateToProps, mapDispatchToProps)(ListUserTransactions);
