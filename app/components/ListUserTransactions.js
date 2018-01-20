@@ -1,8 +1,22 @@
+import { withStyles } from 'material-ui/styles';
+import Paper from 'material-ui/Paper';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchUserTransactions } from '../actions/usertransactions';
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 700,
+  },
+});
 
 class ListUserTransactions extends Component {
   componentDidMount() {
@@ -10,31 +24,43 @@ class ListUserTransactions extends Component {
   }
 
   render() {
-    const { transactions } = this.props;
+    const { classes, transactions } = this.props;
     return (
       <div>
         <h1>List User Transactions</h1>
-        <ul>
-          { transactions.map(transaction => (
-            <li key={transaction.id} >
-              <p>
-                Value:
-                <Link
-                  to={`/transactions/${transaction.id}`}
-                >
-                  {transaction.value}
-                </Link>
-                - Id: {transaction.id}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead >
+              <TableRow >
+                <TableCell>Id</TableCell>
+                <TableCell>Value</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              { transactions.map(transaction => (
+                <TableRow key={transaction.id} >
+                  <TableCell>
+                    {transaction.id}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      to={`/transactions/${transaction.id}`}
+                    >
+                      {transaction.value}
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
       </div>
     );
   }
 }
 
 ListUserTransactions.propTypes = {
+  classes: PropTypes.instanceOf(Object).isRequired,
   fetchTransactions: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   transactions: PropTypes.arrayOf(Object).isRequired,
@@ -55,4 +81,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListUserTransactions);
+const LUT1 = connect(mapStateToProps, mapDispatchToProps)(ListUserTransactions)
+
+export default withStyles(styles)(LUT1);

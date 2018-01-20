@@ -1,3 +1,4 @@
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -14,21 +15,18 @@ class ListUserAccounts extends Component {
     return (
       <div>
         <h1>List User Accounts</h1>
-        <ul>
+        <List>
           { accounts.map(account => (
-            <li key={account.id} >
-              <p>
-                Name:
-                <Link
-                  to={`/accounts/${account.id}`}
-                >
-                  {account.name}
-                </Link>
-                - Id: {account.id}
-              </p>
-            </li>
+            <ListItem
+              button
+              component={Link}
+              to={`/accounts/${account.id}`}
+              key={account.id}
+            >
+              <ListItemText primary={account.name} />
+            </ListItem>
           ))}
-        </ul>
+        </List>
       </div>
     );
   }
