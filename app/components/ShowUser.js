@@ -36,9 +36,9 @@ class ShowUser extends React.Component {
     return (
       <div>
         <h1>User: {user.name} ({id})</h1>
+        <ListUserAccounts userId={id} />
         <AddTransaction userId={id} />
         <ListUserTransactions userId={id} />
-        <ListUserAccounts userId={id} />
       </div>
     );
   }
