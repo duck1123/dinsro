@@ -27,7 +27,7 @@ class ListUserTransactions extends Component {
     const { classes, transactions } = this.props;
     return (
       <div>
-        <h1>List User Transactions</h1>
+        <h2>List User Transactions</h2>
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead >
