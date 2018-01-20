@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fetchModel } from '../actions/model';
 
 class ShowTransaction extends Component {
@@ -33,8 +34,22 @@ class ShowTransaction extends Component {
     return (
       <div>
         <h1>Transaction: {transaction.value} ({id})</h1>
-        <p>Account: {transaction.accountId}</p>
-        <p>User: {transaction.userId}</p>
+        <p>
+          Account:
+          <Link
+            to={`/accounts/${transaction.accountId}`}
+          >
+            {transaction.accountId}
+          </Link>
+        </p>
+        <p>
+          User:
+          <Link
+            to={`/users/${transaction.userId}`}
+          >
+            {transaction.userId}
+          </Link>
+        </p>
       </div>
     );
   }
