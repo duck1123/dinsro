@@ -4,6 +4,7 @@ import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect';
 import App from '../containers/App';
 import Header from '../components/Header';
 import ListAccounts from '../components/ListAccounts';
+import ListTransactions from '../components/ListTransactions';
 import ListUsers from '../components/ListUsers';
 import LoginPage from '../components/LoginPage';
 import ShowAccount from '../components/ShowAccount';
@@ -29,6 +30,7 @@ const Root = () => {
         <Route exact path="/accounts" component={ListAccounts} />
         <Route exact path="/accounts/:id" component={ShowAccount} />
         <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/transactions" component={ListTransactions} />
         <Route exact path="/transactions/:id" component={ShowTransaction} />
         <Route exact path="/users" component={userIsAuthenticated(ListUsers)} />
         <Route path="/users/:id" component={ShowUser} />
