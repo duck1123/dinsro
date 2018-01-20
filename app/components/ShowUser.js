@@ -8,6 +8,7 @@ import ListUserTransactions from './ListUserTransactions';
 
 class ShowUser extends React.Component {
   static propTypes = {
+    authEmail: PropTypes.string.isRequired,
     fetchUser: PropTypes.func.isRequired,
     errored: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -22,7 +23,14 @@ class ShowUser extends React.Component {
   }
 
   render() {
-    const { loading, errored, id } = this.props;
+    const {
+      authEmail,
+      loading,
+      errored,
+      id,
+      user,
+    } = this.props;
+
     if (errored) {
       return <p>Sorry! There was an error loading the items</p>;
     }
@@ -31,13 +39,15 @@ class ShowUser extends React.Component {
       return <p>Loading…</p>;
     }
 
-    const { user } = this.props;
-
     return (
       <div>
         <h1>User: {user.name} ({id})</h1>
         <ListUserAccounts userId={id} />
-        <AddTransaction userId={id} />
+        {
+          (authEmail === user.email) ? (
+            <AddTransaction userId={id} />
+          ) : null
+        }
         <ListUserTransactions userId={id} />
       </div>
     );
@@ -49,11 +59,12 @@ const mapStateToProps = (state, ownProps) => {
   const model = state.models.user || {};
   const { data, errored, loading } = model[id] || {};
   return {
-    hasErrored: typeof errored === 'undefined' ? false : errored,
-    isLoading: typeof loading === 'undefined' ? false : loading,
+    authEmail: state.authentication.email,
+    errored: typeof errored === 'undefined' ? false : errored,
+    id,
+    loading: typeof loading === 'undefined' ? false : loading,
     token: state.authentication.token,
     user: typeof data === 'undefined' ? {} : data,
-    id,
   };
 };
 
