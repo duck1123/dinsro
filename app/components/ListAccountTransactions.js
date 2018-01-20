@@ -19,14 +19,14 @@ class ListAccountTransactions extends Component {
           { transactions.map(transaction => (
             <li key={transaction.id} >
               <p>
-                Name:
+                Value:
                 <Link
                   to={`/transactions/${transaction.id}`}
                 >
                   {transaction.value}
                 </Link>
-                - Id: {transaction.id}
               </p>
+              <p>Created: {transaction.created}</p>
             </li>
           ))}
         </ul>
