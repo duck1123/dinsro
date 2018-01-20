@@ -1,14 +1,29 @@
+import { withStyles } from 'material-ui/styles';
+import List, { ListItem, ListItemText } from 'material-ui/List';
+import Paper from 'material-ui/Paper';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { usersFetchData } from '../actions/users';
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 700,
+  },
+});
 
 class ListUsers extends React.Component {
   static propTypes = {
+    classes: PropTypes.instanceOf(Object).isRequired,
+    errored: PropTypes.bool.isRequired,
     fetchUsers: PropTypes.func.isRequired,
-    hasErrored: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     token: PropTypes.string,
     users: PropTypes.arrayOf(Object).isRequired,
   }
@@ -22,20 +37,36 @@ class ListUsers extends React.Component {
   }
 
   render() {
+    const {
+      classes,
+      errored,
+      loading,
+    } = this.props;
+
+    if (errored) {
+      return <p>Sorry! There was an error loading the items</p>;
+    }
+
+    if (loading) {
+      return <p>Loading…</p>;
+    }
+
     return (
       <div>
         <h1>List Users</h1>
-        { this.props.hasErrored ? <p>Sorry! There was an error loading the items</p> : null }
-        { this.props.isLoading ? <p>Loading…</p> : (
-          <ul>
+        <Paper className={classes.root}>
+          <List>
             { this.props.users.map(user => (
-              <li key={user.id}>
-                <Link to={`/users/${user.id}`}>
-                  {user.name}
-                </Link>
-              </li>))}
-          </ul>
-        )}
+              <ListItem
+                key={user.id}
+                component={Link}
+                to={`/users/${user.id}`}
+              >
+                <ListItemText primary={user.name} />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
       </div>
     );
   }
@@ -43,8 +74,8 @@ class ListUsers extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    hasErrored: state.users.errored,
-    isLoading: state.users.loading,
+    errored: state.users.errored,
+    loading: state.users.loading,
     token: state.authentication.token,
     users: state.users.data,
   };
@@ -56,4 +87,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);
+const LU = connect(mapStateToProps, mapDispatchToProps)(ListUsers);
+
+export default withStyles(styles)(LU);
