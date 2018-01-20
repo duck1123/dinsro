@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fetchUserTransactions } from '../actions/usertransactions';
 
 class ListUserTransactions extends Component {
@@ -16,7 +17,15 @@ class ListUserTransactions extends Component {
         <ul>
           { transactions.map(transaction => (
             <li key={transaction.id} >
-              <p>Value: {transaction.value} - Id: {transaction.id}</p>
+              <p>
+                Value:
+                <Link
+                  to={`/transactions/${transaction.id}`}
+                >
+                  {transaction.value}
+                </Link>
+                - Id: {transaction.id}
+              </p>
             </li>
           ))}
         </ul>
