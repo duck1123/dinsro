@@ -1,8 +1,22 @@
+import { withStyles } from 'material-ui/styles';
+import Paper from 'material-ui/Paper';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchAccountTransactions } from '../actions/accounttransactions';
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 700,
+  },
+});
 
 class ListAccountTransactions extends Component {
   componentDidMount() {
@@ -11,31 +25,41 @@ class ListAccountTransactions extends Component {
   }
 
   render() {
-    const { transactions } = this.props;
+    const { classes, transactions } = this.props;
     return (
       <div>
         <h1>List Account Transactions</h1>
-        <ul>
-          { transactions.map(transaction => (
-            <li key={transaction.id} >
-              <p>
-                Value:
-                <Link
-                  to={`/transactions/${transaction.id}`}
-                >
-                  {transaction.value}
-                </Link>
-              </p>
-              <p>Created: {transaction.created}</p>
-            </li>
-          ))}
-        </ul>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Value</TableCell>
+                <TableCell>Created</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              { transactions.map(transaction => (
+                <TableRow key={transaction.id} >
+                  <TableCell>
+                    <Link
+                      to={`/transactions/${transaction.id}`}
+                    >
+                      {transaction.value}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{transaction.created}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
       </div>
     );
   }
 }
 
 ListAccountTransactions.propTypes = {
+  classes: PropTypes.instanceOf(Object).isRequired,
   fetchAccountTransactions: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   transactions: PropTypes.arrayOf(Object).isRequired,
@@ -56,4 +80,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListAccountTransactions);
+const LAT = connect(mapStateToProps, mapDispatchToProps)(ListAccountTransactions);
+
+export default withStyles(styles)(LAT);
