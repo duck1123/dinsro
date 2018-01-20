@@ -66,6 +66,8 @@ const getCollectionPath = (model) => {
   switch (model) {
     case 'accounts':
       return '/api/v1/accounts';
+    case 'transactions':
+      return '/api/v1/transactions';
     case 'user':
       return '/api/v1/users';
     default:
