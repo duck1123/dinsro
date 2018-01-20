@@ -14,7 +14,7 @@ class ListUserAccounts extends Component {
     const { accounts } = this.props;
     return (
       <div>
-        <h1>List User Accounts</h1>
+        <h2>List User Accounts</h2>
         <List>
           { accounts.map(account => (
             <ListItem
