@@ -68,7 +68,7 @@ const getCollectionPath = (model) => {
       return '/api/v1/accounts';
     case 'transactions':
       return '/api/v1/transactions';
-    case 'user':
+    case 'users':
       return '/api/v1/users';
     default:
       return 'NULL';

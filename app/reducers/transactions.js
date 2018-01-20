@@ -8,8 +8,6 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-  console.log('state:', state);
-  console.log('action:', action);
   switch (action.type) {
     case 'USER_TRANSACTIONS_HAVE_ERRORED':
       return {

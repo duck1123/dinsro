@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { usersFetchData } from '../actions/users';
+import { fetchCollection } from '../actions/model';
 
 const styles = theme => ({
   root: {
@@ -22,7 +22,7 @@ class ListUsers extends React.Component {
   static propTypes = {
     classes: PropTypes.instanceOf(Object).isRequired,
     errored: PropTypes.bool.isRequired,
-    fetchUsers: PropTypes.func.isRequired,
+    fetchCollection: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     token: PropTypes.string,
     users: PropTypes.arrayOf(Object).isRequired,
@@ -33,7 +33,7 @@ class ListUsers extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchUsers(this.props.token);
+    this.props.fetchCollection('users', this.props.token);
   }
 
   render() {
@@ -73,17 +73,23 @@ class ListUsers extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const model = state.models.users || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model;
   return {
-    errored: state.users.errored,
-    loading: state.users.loading,
+    errored,
+    loading,
     token: state.authentication.token,
-    users: state.users.data,
+    users: data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUsers: token => dispatch(usersFetchData(token)),
+    fetchCollection: (model, token) => dispatch(fetchCollection(model, token)),
   };
 };
 
