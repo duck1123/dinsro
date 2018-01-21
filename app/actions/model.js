@@ -1,3 +1,5 @@
+// Errored
+
 export const collectionHasErrored = (model, errored) => {
   return {
     type: 'COLLECTION_ERRORED',
@@ -14,6 +16,17 @@ export const modelHasErrored = (model, id, errored) => {
     errored,
   };
 };
+
+export const subcollectionHasErrored = (model, id, errored) => {
+  return {
+    type: 'SUBCOLLECTION_ERRORED',
+    id,
+    model,
+    errored,
+  };
+};
+
+// Loading
 
 export const collectionIsLoading = (model, loading) => {
   return {
@@ -32,14 +45,16 @@ export const modelIsLoading = (model, id, loading) => {
   };
 };
 
-export const modelLoaded = (model, id, data) => {
+export const subcollectionIsLoading = (model, id, loading) => {
   return {
-    type: 'MODEL_LOADED',
-    model,
+    type: 'SUBCOLLECTION_LOADING',
     id,
-    data,
+    model,
+    loading,
   };
 };
+
+// Loaded
 
 export const collectionLoaded = (model, data) => {
   return {
@@ -49,18 +64,25 @@ export const collectionLoaded = (model, data) => {
   };
 };
 
-const getPath = (model, id) => {
-  switch (model) {
-    case 'account':
-      return `/api/v1/accounts/${id}`;
-    case 'transaction':
-      return `/api/v1/transactions/${id}`;
-    case 'user':
-      return `/api/v1/users/${id}`;
-    default:
-      return 'NULL';
-  }
-}
+export const modelLoaded = (model, id, data) => {
+  return {
+    type: 'MODEL_LOADED',
+    model,
+    id,
+    data,
+  };
+};
+
+export const subcollectionLoaded = (model, id, data) => {
+  return {
+    data,
+    id,
+    model,
+    type: 'SUBCOLLECTION_LOADED',
+  };
+};
+
+// Paths
 
 const getCollectionPath = (model) => {
   switch (model) {
@@ -74,6 +96,30 @@ const getCollectionPath = (model) => {
       return 'NULL';
   }
 }
+
+const getModelPath = (model, id) => {
+  switch (model) {
+    case 'account':
+      return `/api/v1/accounts/${id}`;
+    case 'transaction':
+      return `/api/v1/transactions/${id}`;
+    case 'user':
+      return `/api/v1/users/${id}`;
+    default:
+      return 'NULL';
+  }
+}
+
+const getSubcollectionPath = (model, id) => {
+  switch (model) {
+    case 'accountTransactions':
+      return `/api/v1/accounts/${id}/transactions`;
+    default:
+      return 'NULL';
+  }
+}
+
+// Fetch
 
 export const fetchCollection = (model, token) => {
   return (dispatch) => {
@@ -99,7 +145,7 @@ export const fetchModel = (model, id, token) => {
   return (dispatch) => {
     dispatch(modelIsLoading(model, id, true));
 
-    fetch(getPath(model, id), {
+    fetch(getModelPath(model, id), {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -112,5 +158,25 @@ export const fetchModel = (model, id, token) => {
     }).then(response => response.json())
       .then(data => dispatch(modelLoaded(model, id, data)))
       .catch(() => dispatch(modelHasErrored(model, id, true)));
+  };
+};
+
+export const fetchSubcollection = (model, id, token) => {
+  return (dispatch) => {
+    dispatch(subcollectionIsLoading(model, id, true));
+
+    fetch(getSubcollectionPath(model, id), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+
+      return response;
+    }).then(response => response.json())
+      .then(data => dispatch(subcollectionLoaded(model, id, data)))
+      .catch(() => dispatch(subcollectionHasErrored(model, id, true)));
   };
 };
