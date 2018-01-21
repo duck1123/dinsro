@@ -24,19 +24,27 @@ func (s TransactionService) Get(id uint32) (transaction models.Transaction, err 
 }
 
 func (s TransactionService) Index() (transactions []*models.Transaction, err error) {
-	builder := s.Db.SqlStatementBuilder.Select("*").From("transactions")
+	builder := s.Db.SqlStatementBuilder.
+		Select("*").From("transactions").OrderBy("updated desc")
+
 	_, err = s.Db.Select(&transactions, builder)
 	return transactions, err
 }
 
 func (s TransactionService) IndexByAccount(id uint32) (transactions []*models.Transaction, err error) {
-	builder := s.Db.SqlStatementBuilder.Select("*").From("transactions").Where("accountId = ?", id)
+	builder := s.Db.SqlStatementBuilder.Select("*").
+		From("transactions").
+		Where("accountId = ?", id).
+		OrderBy("updated desc")
 	_, err = s.Db.Select(&transactions, builder)
 	return transactions, err
 }
 
 func (s TransactionService) IndexByUser(id uint32) (transactions []*models.Transaction, err error) {
-	builder := s.Db.SqlStatementBuilder.Select("*").From("transactions").Where("userId = ?", id)
+	builder := s.Db.SqlStatementBuilder.Select("*").
+		From("transactions").
+		Where("userId = ?", id).
+		OrderBy("updated desc")
 	_, err = s.Db.Select(&transactions, builder)
 	return transactions, err
 }
