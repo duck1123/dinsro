@@ -42,13 +42,13 @@ class ShowUser extends React.Component {
     return (
       <div>
         <h1>User: {user.name} ({id})</h1>
-        <ListUserAccounts userId={id} />
+        <ListUserAccounts id={id} />
         {
           (authEmail === user.email) ? (
-            <AddTransaction userId={id} />
+            <AddTransaction id={id} />
           ) : null
         }
-        <ListUserTransactions userId={id} />
+        <ListUserTransactions id={id} />
       </div>
     );
   }

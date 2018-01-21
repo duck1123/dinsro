@@ -3,20 +3,36 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchUserAccounts } from '../actions/useraccounts';
+import { fetchSubcollection } from '../actions/model';
+
+const modelKey = 'userAccounts';
 
 class ListUserAccounts extends Component {
   componentDidMount() {
-    this.props.fetchUserAccounts(this.props.userId, this.props.token);
+    const { id, token } = this.props;
+    this.props.fetchSubcollection(id, token);
   }
 
   render() {
-    const { accounts } = this.props;
+    const {
+      errored,
+      loading,
+      items,
+    } = this.props;
+
+    if (errored) {
+      return <p>Sorry! There was an error loading the items</p>;
+    }
+
+    if (loading) {
+      return <p>Loading…</p>;
+    }
+
     return (
       <div>
         <h2>List User Accounts</h2>
         <List>
-          { accounts.map(account => (
+          { items.map(account => (
             <ListItem
               button
               component={Link}
@@ -33,23 +49,35 @@ class ListUserAccounts extends Component {
 }
 
 ListUserAccounts.propTypes = {
-  fetchUserAccounts: PropTypes.func.isRequired,
+  errored: PropTypes.bool.isRequired,
+  fetchSubcollection: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  items: PropTypes.arrayOf(Object).isRequired,
+  loading: PropTypes.bool.isRequired,
   token: PropTypes.string.isRequired,
-  accounts: PropTypes.arrayOf(Object).isRequired,
-  userId: PropTypes.number.isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const id = ownProps.id || parseInt(ownProps.match.params.id, 10);
+  const model = state.models[modelKey] || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model[id] || {};
   return {
+    errored,
+    id,
+    loading,
     token: state.authentication.token,
-    accounts: state.useraccounts.data,
+    items: data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUserAccounts: (userId, token) =>
-      dispatch(fetchUserAccounts(userId, token)),
+    fetchSubcollection: (model, id, token) =>
+      dispatch(fetchSubcollection(model, id, token)),
   };
 };
 
