@@ -28,6 +28,18 @@ export default (state = {}, action) => {
           },
         },
       };
+    case 'SUBCOLLECTION_LOADED':
+      return {
+        ...state,
+        [model]: {
+          ...modelData,
+          [id]: {
+            data: action.data,
+            loading: false,
+            errored: false,
+          },
+        },
+      };
     case 'COLLECTION_LOADING':
       return {
         ...state,
@@ -49,6 +61,18 @@ export default (state = {}, action) => {
           },
         },
       };
+    case 'SUBCOLLECTION_LOADING':
+      return {
+        ...state,
+        [model]: {
+          ...modelData,
+          [id]: {
+            data: [],
+            loading: true,
+            errored: false,
+          },
+        },
+      };
     case 'COLLECTION_ERRORED':
       return {
         ...state,
@@ -65,6 +89,18 @@ export default (state = {}, action) => {
           ...modelData,
           [id]: {
             data: {},
+            loading: false,
+            errored: true,
+          },
+        },
+      };
+    case 'SUBCOLLECTION_ERRORED':
+      return {
+        ...state,
+        [model]: {
+          ...modelData,
+          [id]: {
+            data: [],
             loading: false,
             errored: true,
           },

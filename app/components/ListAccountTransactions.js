@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchAccountTransactions } from '../actions/accounttransactions';
+import { fetchSubcollection } from '../actions/model';
 
 const styles = theme => ({
   root: {
@@ -21,7 +21,7 @@ const styles = theme => ({
 class ListAccountTransactions extends Component {
   componentDidMount() {
     const { token, id } = this.props;
-    this.props.fetchAccountTransactions(id, token);
+    this.props.fetchSubcollection('accountTransactions', id, token);
   }
 
   render() {
@@ -60,23 +60,31 @@ class ListAccountTransactions extends Component {
 
 ListAccountTransactions.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  fetchAccountTransactions: PropTypes.func.isRequired,
+  fetchSubcollection: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   transactions: PropTypes.arrayOf(Object).isRequired,
   id: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => {
+  const model = state.models.accountTransactions || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model;
   return {
+    errored,
+    loading,
     token: state.authentication.token,
-    transactions: state.accountTransactions.data,
+    transactions: data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAccountTransactions: (id, token) =>
-      dispatch(fetchAccountTransactions(id, token)),
+    fetchSubcollection: (model, id, token) =>
+      dispatch(fetchSubcollection(model, id, token)),
   };
 };
 
