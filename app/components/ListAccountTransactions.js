@@ -66,15 +66,17 @@ ListAccountTransactions.propTypes = {
   id: PropTypes.number.isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const id = ownProps.id || parseInt(ownProps.match.params.id, 10);
   const model = state.models.accountTransactions || {};
   const {
     data = [],
     errored = false,
     loading = false,
-  } = model;
+  } = model[id] || {};
   return {
     errored,
+    id,
     loading,
     token: state.authentication.token,
     transactions: data,
