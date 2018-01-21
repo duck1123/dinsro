@@ -93,7 +93,7 @@ const getCollectionPath = (model) => {
     case 'users':
       return '/api/v1/users';
     default:
-      return 'NULL';
+      throw new Error(`No path defined for collection: ${model}`);
   }
 }
 
@@ -106,7 +106,7 @@ const getModelPath = (model, id) => {
     case 'user':
       return `/api/v1/users/${id}`;
     default:
-      return 'NULL';
+      throw new Error(`No path defined for model: ${model}(${id})`);
   }
 }
 
@@ -114,8 +114,12 @@ const getSubcollectionPath = (model, id) => {
   switch (model) {
     case 'accountTransactions':
       return `/api/v1/accounts/${id}/transactions`;
+    case 'userAccounts':
+      return `/api/v1/users/${id}/accounts`;
+    case 'userTransactions':
+      return `/api/v1/users/${id}/transactions`;
     default:
-      return 'NULL';
+      throw new Error(`No path defined for subcollection: ${model}(${id})`);
   }
 }
 

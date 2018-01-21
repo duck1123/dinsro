@@ -65,7 +65,7 @@ const submit = (userId, token) => {
 class AddTransaction extends Component {
   static propTypes = {
     ...propTypes,
-    userId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
   };
 
   render() {
@@ -75,12 +75,12 @@ class AddTransaction extends Component {
       handleSubmit,
       submitting,
       token,
-      userId,
+      id,
     } = this.props;
     return (
       <form
         className={classes.container}
-        onSubmit={handleSubmit(submit(userId, token))}
+        onSubmit={handleSubmit(submit(id, token))}
       >
         <Field
           name="value"

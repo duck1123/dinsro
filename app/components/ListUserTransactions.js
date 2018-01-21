@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchUserTransactions } from '../actions/usertransactions';
+import { fetchSubcollection } from '../actions/model';
+
+const modelKey = 'userTransactions';
 
 const styles = theme => ({
   root: {
@@ -20,11 +22,26 @@ const styles = theme => ({
 
 class ListUserTransactions extends Component {
   componentDidMount() {
-    this.props.fetchTransactions(this.props.userId, this.props.token);
+    const { id, token } = this.props;
+    this.props.fetchSubcollection(modelKey, id, token);
   }
 
   render() {
-    const { classes, transactions } = this.props;
+    const {
+      classes,
+      errored,
+      loading,
+      items,
+    } = this.props;
+
+    if (errored) {
+      return <p>Sorry! There was an error loading the items</p>;
+    }
+
+    if (loading) {
+      return <p>Loading…</p>;
+    }
+
     return (
       <div>
         <h2>List User Transactions</h2>
@@ -37,7 +54,7 @@ class ListUserTransactions extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              { transactions.map(transaction => (
+              { items.map(transaction => (
                 <TableRow key={transaction.id} >
                   <TableCell>
                     {transaction.id}
@@ -61,23 +78,35 @@ class ListUserTransactions extends Component {
 
 ListUserTransactions.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  fetchTransactions: PropTypes.func.isRequired,
+  errored: PropTypes.bool.isRequired,
+  fetchSubcollection: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  items: PropTypes.arrayOf(Object).isRequired,
+  loading: PropTypes.bool.isRequired,
   token: PropTypes.string.isRequired,
-  transactions: PropTypes.arrayOf(Object).isRequired,
-  userId: PropTypes.number.isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const id = ownProps.id || parseInt(ownProps.match.params.id, 10);
+  const model = state.models[modelKey] || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model[id] || {};
   return {
+    errored,
+    id,
+    loading,
     token: state.authentication.token,
-    transactions: state.transactions.data,
+    items: data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchTransactions: (userId, token) =>
-      dispatch(fetchUserTransactions(userId, token)),
+    fetchSubcollection: (model, id, token) =>
+      dispatch(fetchSubcollection(model, id, token)),
   };
 };
 

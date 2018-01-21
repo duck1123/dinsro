@@ -10,7 +10,7 @@ const modelKey = 'userAccounts';
 class ListUserAccounts extends Component {
   componentDidMount() {
     const { id, token } = this.props;
-    this.props.fetchSubcollection(id, token);
+    this.props.fetchSubcollection(modelKey, id, token);
   }
 
   render() {
