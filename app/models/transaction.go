@@ -20,4 +20,7 @@ func (Transaction) TableName() string {
 
 func (transaction *Transaction) Validate(v *revel.Validation) {
 	v.Required(transaction.Value)
+	v.Min(int(transaction.AccountId), 1).Key("accountId")
+	v.Min(int(transaction.UserId), 1).Key("userId")
+	v.Min(int(transaction.Value), 1).Key("value")
 }

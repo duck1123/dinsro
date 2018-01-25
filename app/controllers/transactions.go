@@ -33,13 +33,17 @@ func (c Transactions) ShowApi(id uint32) revel.Result {
 func (c Transactions) CreateApi(transaction models.Transaction) revel.Result {
 	transaction.UserId = c.Args["userId"].(uint32)
 	transaction.Validate(c.Validation)
-	c.Validation.Required(transaction.AccountId).Message("Account ID is required")
 
 	if c.Validation.HasErrors() {
 		c.Response.SetStatus(http.StatusBadRequest)
-		return c.RenderText("oops")
+		return c.RenderJSON(c.Validation.Errors)
 	}
 
-	GetTransactionsService().Create(&transaction)
+	err := GetTransactionsService().Create(&transaction)
+
+	if err != nil {
+		panic(err)
+	}
+
 	return c.RenderJSON(transaction)
 }
