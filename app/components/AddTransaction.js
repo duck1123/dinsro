@@ -68,11 +68,22 @@ class AddTransaction extends Component {
     const {
       classes,
       error,
+      errored,
       handleSubmit,
+      loading,
       submitting,
       token,
       id,
     } = this.props;
+
+    if (errored) {
+      return <p>Sorry! There was an error loading the items</p>;
+    }
+
+    if (loading) {
+      return <p>Loading…</p>;
+    }
+
     return (
       <form
         className={classes.container}
@@ -82,7 +93,7 @@ class AddTransaction extends Component {
           name="value"
           className={classes.inputField}
           component={TextField}
-          error={error}
+          error={error != null}
           parse={parseInt}
           label="Value"
         />
@@ -94,15 +105,28 @@ class AddTransaction extends Component {
         >
           Add
         </Button>
-
+        { this.props.userAccounts.map(account => (
+          <p>{account.name}</p>
+        ))}
       </form>
     );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const modelKey = 'userAccounts';
+  const id = ownProps.id || parseInt(ownProps.match.params.id, 10);
+  const model = state.models[modelKey] || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model[id] || {};
   return {
+    errored,
+    loading,
     token: state.authentication.token,
+    userAccounts: data,
   };
 };
 
