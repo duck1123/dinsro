@@ -1,5 +1,6 @@
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import MenuItem from 'material-ui/Menu/MenuItem';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
@@ -36,6 +37,25 @@ const submissionError = () => {
   });
 };
 
+const currencies = [
+  {
+    value: 'USD',
+    label: '$',
+  },
+  {
+    value: 'EUR',
+    label: '€',
+  },
+  {
+    value: 'BTC',
+    label: '฿',
+  },
+  {
+    value: 'JPY',
+    label: '¥',
+  },
+];
+
 const submit = (userId, token) => {
   return (values, dispatch) => {
     return fetch('/api/v1/transactions', {
@@ -63,6 +83,13 @@ class AddTransaction extends Component {
     ...propTypes,
     id: PropTypes.number.isRequired,
   };
+
+  handleChange = name => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
 
   render() {
     const {
@@ -105,6 +132,28 @@ class AddTransaction extends Component {
         >
           Add
         </Button>
+        <Field
+          id="select-currency"
+          select
+          component={TextField}
+          label="Select"
+          className={classes.textField}
+          value={this.props.currency}
+          onChange={this.handleChange('currency')}
+          SelectProps={{
+            MenuProps: {
+              className: classes.menu,
+            },
+          }}
+          helperText="Please select your currency"
+          margin="normal"
+        >
+          {currencies.map(option => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Field>
         { this.props.userAccounts.map(account => (
           <p>{account.name}</p>
         ))}
