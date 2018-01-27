@@ -7,11 +7,11 @@ import (
 
 type Transaction struct {
 	Id        uint32    `json:"id"         db:"id, primarykey, autoincrement"`
-	AccountId uint32    `json:"accountId"  db:"accountId"`
-	UserId    uint32    `json:"userId"     db:"userId"`
-	Value     uint32    `json:"value"      db:"value"`
-	Created   time.Time `json:"created"    db:"created"`
-	Updated   time.Time `json:"updated"    db:"updated"`
+	AccountId uint32    `json:"accountId"  db:"accountId, notnull"`
+	UserId    uint32    `json:"userId"     db:"userId, notnull"`
+	Value     uint32    `json:"value"      db:"value, notnull"`
+	Created   time.Time `json:"created"    db:"created, notnull"`
+	Updated   time.Time `json:"updated"    db:"updated, notnull"`
 }
 
 func (Transaction) TableName() string {
