@@ -31,6 +31,7 @@ func (c Transactions) ShowApi(id uint32) revel.Result {
 
 func (c Transactions) CreateApi(transaction models.Transaction) revel.Result {
 	transaction.UserId = c.Args["userId"].(uint32)
+	c.Validation.Required(transaction.AccountId).Message("Account ID is required")
 	GetTransactionsService().Create(&transaction)
 	return c.RenderJSON(transaction)
 }
