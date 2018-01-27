@@ -1,5 +1,7 @@
 import { withStyles } from 'material-ui/styles';
+import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
+import DeleteIcon from 'material-ui-icons/Delete';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -14,9 +16,6 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
   },
 });
 
@@ -51,13 +50,18 @@ class ListUserTransactions extends Component {
               <TableRow >
                 <TableCell>Id</TableCell>
                 <TableCell>Value</TableCell>
+                <TableCell>Created</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               { items.map(item => (
                 <TableRow key={item.id} >
                   <TableCell>
-                    {item.id}
+                    <Link
+                      to={`/transactions/${item.id}`}
+                    >
+                      {item.id}
+                    </Link>
                   </TableCell>
                   <TableCell>
                     <Link
@@ -65,6 +69,14 @@ class ListUserTransactions extends Component {
                     >
                       {item.value}
                     </Link>
+                  </TableCell>
+                  <TableCell>
+                    {item.created}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton className={classes.button} aria-label="Delete">
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
