@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/revel/revel"
 	"github.com/revel/revel/testing"
+	"net/http"
 )
 
 type UsersTest struct {
@@ -14,7 +15,15 @@ func (t *UsersTest) Before() {
 }
 
 func (t *UsersTest) TestIndexAccounts() {
-	t.Get("/api/v1/users/1/accounts")
+	path := "/api/v1/users/1/accounts"
+	req, err := http.NewRequest(http.MethodGet, path, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	testRequest := t.NewTestRequest(req)
+	revel.AppLog.Info(testRequest.Proto)
+	//t.Get()
 	//contentType := t.Response.Header.Get()
 	//t.AssertHeader("Content-Type", "app")
 	t.AssertOk()
