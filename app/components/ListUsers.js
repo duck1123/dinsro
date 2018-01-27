@@ -2,7 +2,7 @@ import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchCollection } from '../actions/model';
@@ -18,7 +18,7 @@ const styles = theme => ({
   },
 });
 
-export class ListUsers extends React.Component {
+export class ListUsersUnconnected extends Component {
   static propTypes = {
     classes: PropTypes.instanceOf(Object).isRequired,
     errored: PropTypes.bool.isRequired,
@@ -93,6 +93,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const LU = connect(mapStateToProps, mapDispatchToProps)(ListUsers);
+const LU = connect(mapStateToProps, mapDispatchToProps)(ListUsersUnconnected);
 
 export default withStyles(styles)(LU);
