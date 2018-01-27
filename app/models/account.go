@@ -5,9 +5,9 @@ import (
 )
 
 type Account struct {
-	Id      uint32    `json:"id" db:"id, primarykey, autoincrement"`
-	Name    string    `json:"name" db:"name"`
-	OwnerId uint32    `json:"ownerId" db:"ownerId"`
-	Created time.Time `json:"created" db:"created"`
-	Updated time.Time `json:"updated" db:"updated"`
+	Id      uint32    `json:"id"      db:"id, primarykey, autoincrement"`
+	Name    string    `json:"name"    db:"name, notnull"`
+	OwnerId uint32    `json:"ownerId" db:"ownerId, notnull"`
+	Created time.Time `json:"created" db:"created, notnull"`
+	Updated time.Time `json:"updated" db:"updated, notnull"`
 }
