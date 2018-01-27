@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchUserTransactions } from '../actions/usertransactions';
+import { fetchSubcollection } from '../actions/model';
+
+const modelKey = 'userTransactions';
 
 const styles = theme => ({
   root: {
@@ -21,11 +23,25 @@ const styles = theme => ({
 class ListUserTransactions extends Component {
   componentDidMount() {
     const { id, token } = this.props;
-    this.props.fetchCollection(id, token);
+    this.props.fetchSubcollection(modelKey, id, token);
   }
 
   render() {
-    const { classes, items } = this.props;
+    const {
+      classes,
+      errored,
+      items,
+      loading,
+    } = this.props;
+
+    if (errored) {
+      return <p>Sorry! There was an error loading the items</p>;
+    }
+
+    if (loading) {
+      return <p>Loading…</p>;
+    }
+
     return (
       <div>
         <h2>List User Transactions</h2>
@@ -62,26 +78,38 @@ class ListUserTransactions extends Component {
 
 ListUserTransactions.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  fetchCollection: PropTypes.func.isRequired,
+  errored: PropTypes.bool.isRequired,
+  fetchSubcollection: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   items: PropTypes.arrayOf(Object).isRequired,
+  loading: PropTypes.bool.isRequired,
   token: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const id = ownProps.id || parseInt(ownProps.match.params.id, 10);
+  const model = state.models[modelKey] || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model[id] || {};
   return {
-    items: state.items.data,
+    errored,
+    id,
+    items: data,
+    loading,
     token: state.authentication.token,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCollection: (id, token) =>
-      dispatch(fetchUserTransactions(id, token)),
+    fetchSubcollection: (model, id, token) =>
+      dispatch(fetchSubcollection(model, id, token)),
   };
 };
 
-const LUT1 = connect(mapStateToProps, mapDispatchToProps)(ListUserTransactions)
+const LUT1 = connect(mapStateToProps, mapDispatchToProps)(ListUserTransactions);
 
 export default withStyles(styles)(LUT1);
