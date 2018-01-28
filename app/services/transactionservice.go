@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app"
+	"github.com/revel/revel"
 	"time"
 )
 
@@ -17,8 +18,12 @@ func (s TransactionService) Create(transaction *models.Transaction) error {
 	return s.Db.Insert(transaction)
 }
 
-func (s TransactionService) Get(id uint32) (transaction models.Transaction, err error) {
+func (s TransactionService) Get(id uint32, updated *time.Time) (transaction models.Transaction, err error) {
 	builder := s.Db.SqlStatementBuilder.Select("*").From(transaction.TableName()).Where("id = ?", id)
+	if updated != nil {
+		revel.AppLog.Info("Applying updated")
+		builder.Where("updated < ?", updated)
+	}
 	err = s.Db.SelectOne(&transaction, builder)
 	return transaction, err
 }

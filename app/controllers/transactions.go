@@ -6,6 +6,7 @@ import (
 	"github.com/revel/modules/orm/gorp/app/controllers"
 	"github.com/revel/revel"
 	"net/http"
+	"time"
 )
 
 type Transactions struct {
@@ -22,7 +23,17 @@ func (c Transactions) IndexApi() revel.Result {
 }
 
 func (c Transactions) ShowApi(id uint32) revel.Result {
-	transaction, err := GetTransactionsService().Get(id)
+	header := c.Request.Header.Get("If-Modified-Since")
+
+	t, err := time.Parse(time.RFC1123, header)
+
+	if err != nil {
+		panic(err)
+	}
+
+	println("time " + t.String())
+
+	transaction, err := GetTransactionsService().Get(id, &t)
 	if err != nil {
 		c.Response.Status = 404
 		panic(err)
