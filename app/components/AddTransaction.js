@@ -124,14 +124,6 @@ class AddTransaction extends Component {
           parse={parseInt}
           label="Value"
         />
-        <Button
-          type="submit"
-          className={classes.submitButton}
-          disabled={submitting}
-          color="primary"
-        >
-          Add
-        </Button>
         <Field
           id="select-currency"
           select
@@ -157,6 +149,14 @@ class AddTransaction extends Component {
         { this.props.userAccounts.map(account => (
           <p>{account.name}</p>
         ))}
+        <Button
+          className={classes.submitButton}
+          color="primary"
+          disabled={submitting}
+          type="submit"
+        >
+          Add
+        </Button>
       </form>
     );
   }
