@@ -7,7 +7,7 @@ import { fetchSubcollection } from '../actions/model';
 
 const modelKey = 'userAccounts';
 
-class ListUserAccounts extends Component {
+export class ListUserAccountsUnconnected extends Component {
   componentDidMount() {
     const { id, token } = this.props;
     this.props.fetchSubcollection(modelKey, id, token);
@@ -48,7 +48,7 @@ class ListUserAccounts extends Component {
   }
 }
 
-ListUserAccounts.propTypes = {
+ListUserAccountsUnconnected.propTypes = {
   errored: PropTypes.bool.isRequired,
   fetchSubcollection: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
@@ -81,4 +81,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListUserAccounts);
+export default connect(mapStateToProps, mapDispatchToProps)(ListUserAccountsUnconnected);
