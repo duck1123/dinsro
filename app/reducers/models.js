@@ -7,6 +7,15 @@ export default (state = {}, action) => {
   const modelData = state[model] || {};
 
   switch (action.type) {
+    case 'COLLECTION_LOADED':
+      return {
+        ...state,
+        [model]: {
+          data: action.data,
+          loading: false,
+          errored: false,
+        },
+      };
     case 'MODEL_LOADED':
       return {
         ...state,
@@ -19,6 +28,15 @@ export default (state = {}, action) => {
           },
         },
       };
+    case 'COLLECTION_LOADING':
+      return {
+        ...state,
+        [model]: {
+          data: [],
+          loading: true,
+          errored: false,
+        },
+      };
     case 'MODEL_LOADING':
       return {
         ...state,
@@ -29,6 +47,15 @@ export default (state = {}, action) => {
             loading: true,
             errored: false,
           },
+        },
+      };
+    case 'COLLECTION_ERRORED':
+      return {
+        ...state,
+        [model]: {
+          data: [],
+          loading: false,
+          errored: true,
         },
       };
     case 'MODEL_ERRORED':
