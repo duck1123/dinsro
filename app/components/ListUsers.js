@@ -18,7 +18,7 @@ const styles = theme => ({
   },
 });
 
-class ListUsers extends React.Component {
+export class ListUsers extends React.Component {
   static propTypes = {
     classes: PropTypes.instanceOf(Object).isRequired,
     errored: PropTypes.bool.isRequired,
