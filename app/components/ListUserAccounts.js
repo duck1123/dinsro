@@ -52,7 +52,10 @@ ListUserAccountsUnconnected.propTypes = {
   errored: PropTypes.bool.isRequired,
   fetchSubcollection: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
-  items: PropTypes.arrayOf(Object).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+  })).isRequired,
   loading: PropTypes.bool.isRequired,
   token: PropTypes.string.isRequired,
 };
