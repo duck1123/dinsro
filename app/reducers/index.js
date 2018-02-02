@@ -5,7 +5,6 @@ import authentication from './authentication';
 import models from './models';
 import transactions from './transactions';
 import useraccounts from './useraccounts';
-import users from './users';
 
 export default combineReducers({
   accountTransactions,
@@ -14,5 +13,4 @@ export default combineReducers({
   models,
   transactions,
   useraccounts,
-  users,
 });
