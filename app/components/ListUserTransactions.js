@@ -50,6 +50,7 @@ class ListUserTransactions extends Component {
               <TableRow >
                 <TableCell>Id</TableCell>
                 <TableCell>Value</TableCell>
+                <TableCell>Account</TableCell>
                 <TableCell>Created</TableCell>
               </TableRow>
             </TableHead>
@@ -68,6 +69,13 @@ class ListUserTransactions extends Component {
                       to={`/transactions/${item.id}`}
                     >
                       {item.value}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      to={`/accounts/${item.accountId}`}
+                    >
+                      {item.accountId}
                     </Link>
                   </TableCell>
                   <TableCell>
