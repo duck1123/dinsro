@@ -29,7 +29,7 @@ const Header = (props) => {
           <Typography type="title" color="inherit" className={classes.flex}>
             Dinsro
           </Typography>
-          <Login color="contrast" />
+          <Login color="secondary" />
         </Toolbar>
       </AppBar>
       <ul>
