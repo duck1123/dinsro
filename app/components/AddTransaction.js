@@ -80,6 +80,12 @@ const submit = (userId, token) => {
   };
 };
 
+const handleChange = (event, newValue, previousValue) => {
+  console.log('event', event);
+  console.log('newValue', newValue);
+  console.log('previousValue', previousValue);
+};
+
 class AddTransaction extends Component {
   static propTypes = {
     ...propTypes,
@@ -88,9 +94,7 @@ class AddTransaction extends Component {
 
   render() {
     const {
-      accountId,
       classes,
-      currency,
       error,
       errored,
       handleSubmit,
@@ -132,17 +136,21 @@ class AddTransaction extends Component {
             label="Currency"
             margin="normal"
             name="currency"
+            onChange={handleChange}
+            onBlur={(event) => { event.preventDefault(); }}
             select
             SelectProps={{
               MenuProps: {
                 className: classes.menu,
               },
             }}
-            value={currency}
           >
+            <MenuItem value={0}>
+              <em>None</em>
+            </MenuItem>
             {currencies.map(option => (
               <MenuItem key={option.value} value={option.value}>
-                {option.label}
+                {option.label} ({option.value})
               </MenuItem>
             ))}
           </Field>
@@ -155,13 +163,13 @@ class AddTransaction extends Component {
             label="Account"
             margin="normal"
             name="accountId"
+            onBlur={(event) => { event.preventDefault(); }}
             select
             SelectProps={{
               MenuProps: {
                 className: classes.menu,
               },
             }}
-            value={accountId}
           >
             { userAccounts.map(item => (
               <MenuItem key={item.id} value={item.id}>
@@ -192,18 +200,8 @@ const mapStateToProps = (state, ownProps) => {
     errored = false,
     loading = false,
   } = model[id] || {};
-  const {
-    addTransaction = {
-      values: {
-        accountId: 0,
-        currency: 'BTC',
-      },
-    },
-  } = state.form;
 
   return {
-    accountId: addTransaction.values.accountId,
-    currency: addTransaction.values.currency,
     errored,
     loading,
     token: state.authentication.token,
