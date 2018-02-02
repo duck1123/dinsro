@@ -93,20 +93,24 @@ func InitDB() {
 
 		accountService := controllers.GetAccountService()
 
-		account := models.Account{
-			Name:    "Main",
-			OwnerId: bob.Id,
+		accounts := []*models.Account{
+			{Name: "Main", OwnerId: bob.Id},
+			{Name: "Secondary", OwnerId: bob.Id},
 		}
 
-		accountService.Create(&account)
+		for _, account := range accounts {
+			if err = accountService.Create(account); err != nil {
+				panic(err)
+			}
 
+		}
 		transactionService := controllers.GetTransactionsService()
 
 		transactions := []models.Transaction{
-			{UserId: bob.Id, Value: 500, AccountId: account.Id},
-			{UserId: bob.Id, Value: 600, AccountId: account.Id},
-			{UserId: bob.Id, Value: 700, AccountId: account.Id},
-			{UserId: bob.Id, Value: 800, AccountId: account.Id},
+			{UserId: bob.Id, Value: 500, AccountId: accounts[0].Id},
+			{UserId: bob.Id, Value: 600, AccountId: accounts[0].Id},
+			{UserId: bob.Id, Value: 700, AccountId: accounts[0].Id},
+			{UserId: bob.Id, Value: 800, AccountId: accounts[0].Id},
 		}
 
 		for _, transaction := range transactions {
