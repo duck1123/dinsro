@@ -32,14 +32,14 @@ export class ListUserAccountsUnconnected extends Component {
       <div>
         <h2>List User Accounts</h2>
         <List>
-          { items.map(account => (
+          { items.map(item => (
             <ListItem
               button
               component={Link}
-              to={`/accounts/${account.id}`}
-              key={account.id}
+              to={`/accounts/${item.id}`}
+              key={item.id}
             >
-              <ListItemText primary={account.name} />
+              <ListItemText primary={item.name} />
             </ListItem>
           ))}
         </List>
