@@ -88,7 +88,9 @@ class AddTransaction extends Component {
 
   render() {
     const {
+      accountId,
       classes,
+      currency,
       error,
       errored,
       handleSubmit,
@@ -112,56 +114,62 @@ class AddTransaction extends Component {
         className={classes.container}
         onSubmit={handleSubmit(submit(id, token))}
       >
-        <Field
-          name="value"
-          className={classes.inputField}
-          component={TextField}
-          error={error != null}
-          parse={parseInt}
-          label="Value"
-        />
-        <Field
-          className={classes.textField}
-          component={TextField}
-          helperText="Please select your currency"
-          label="Currency"
-          margin="normal"
-          name="currency"
-          select
-          SelectProps={{
-            MenuProps: {
-              className: classes.menu,
-            },
-          }}
-          value="currency"
-        >
-          {currencies.map(currency => (
-            <MenuItem key={currency.value} value={currency.value}>
-              {currency.label}
-            </MenuItem>
-          ))}
-        </Field>
-        <Field
-          className={classes.textField}
-          component={TextField}
-          helperText="Please select your account"
-          label="Account"
-          margin="normal"
-          name="accountId"
-          select
-          SelectProps={{
-            MenuProps: {
-              className: classes.menu,
-            },
-          }}
-          value="accountId"
-        >
-          { userAccounts.map(item => (
-            <MenuItem key={item.id} value={item.id}>
-              {item.name}
-            </MenuItem>
-          ))}
-        </Field>
+        <div>
+          <Field
+            name="value"
+            className={classes.inputField}
+            component={TextField}
+            error={error != null}
+            parse={parseInt}
+            label="Value"
+          />
+        </div>
+        <div>
+          <Field
+            className={classes.textField}
+            component={TextField}
+            helperText="Please select your currency"
+            label="Currency"
+            margin="normal"
+            name="currency"
+            select
+            SelectProps={{
+              MenuProps: {
+                className: classes.menu,
+              },
+            }}
+            value={currency}
+          >
+            {currencies.map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Field>
+        </div>
+        <div>
+          <Field
+            className={classes.textField}
+            component={TextField}
+            helperText="Please select your account"
+            label="Account"
+            margin="normal"
+            name="accountId"
+            select
+            SelectProps={{
+              MenuProps: {
+                className: classes.menu,
+              },
+            }}
+            value={accountId}
+          >
+            { userAccounts.map(item => (
+              <MenuItem key={item.id} value={item.id}>
+                {item.name}
+              </MenuItem>
+            ))}
+          </Field>
+        </div>
         <Button
           className={classes.submitButton}
           color="primary"
@@ -184,7 +192,18 @@ const mapStateToProps = (state, ownProps) => {
     errored = false,
     loading = false,
   } = model[id] || {};
+  const {
+    addTransaction = {
+      values: {
+        accountId: 0,
+        currency: 'BTC',
+      },
+    },
+  } = state.form;
+
   return {
+    accountId: addTransaction.values.accountId,
+    currency: addTransaction.values.currency,
     errored,
     loading,
     token: state.authentication.token,
