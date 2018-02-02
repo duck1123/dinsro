@@ -26,11 +26,11 @@ export class ListUsersUnconnected extends Component {
     loading: PropTypes.bool.isRequired,
     token: PropTypes.string,
     users: PropTypes.arrayOf(Object).isRequired,
-  }
+  };
 
   static defaultProps = {
     token: null,
-  }
+  };
 
   componentDidMount() {
     this.props.fetchCollection('users', this.props.token);

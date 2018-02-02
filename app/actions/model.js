@@ -95,7 +95,7 @@ const getCollectionPath = (model) => {
     default:
       throw new Error(`No path defined for collection: ${model}`);
   }
-}
+};
 
 const getModelPath = (model, id) => {
   switch (model) {
@@ -108,7 +108,7 @@ const getModelPath = (model, id) => {
     default:
       throw new Error(`No path defined for model: ${model}(${id})`);
   }
-}
+};
 
 const getSubcollectionPath = (model, id) => {
   switch (model) {
@@ -121,7 +121,7 @@ const getSubcollectionPath = (model, id) => {
     default:
       throw new Error(`No path defined for subcollection: ${model}(${id})`);
   }
-}
+};
 
 // Fetch
 

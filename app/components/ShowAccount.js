@@ -12,7 +12,7 @@ class ShowAccount extends React.Component {
     isLoading: PropTypes.bool.isRequired,
     token: PropTypes.string.isRequired,
     account: PropTypes.instanceOf(Object).isRequired,
-  }
+  };
 
   componentDidMount() {
     const { token, id } = this.props;
