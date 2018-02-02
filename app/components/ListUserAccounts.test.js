@@ -1,7 +1,6 @@
 import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { MemoryRouter } from 'react-router';
 import sinon from 'sinon';
 import { ListUserAccountsUnconnected as ListUserAccounts } from './ListUserAccounts';
