@@ -1,3 +1,4 @@
+import Paper from 'material-ui/Paper';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -40,7 +41,7 @@ class ShowUser extends React.Component {
     }
 
     return (
-      <div>
+      <Paper>
         <h1>User: {user.name} ({id})</h1>
         <ListUserAccounts id={id} />
         {
@@ -49,7 +50,7 @@ class ShowUser extends React.Component {
           ) : null
         }
         <ListUserTransactions id={id} />
-      </div>
+      </Paper>
     );
   }
 }
