@@ -27,6 +27,8 @@ const styles = {
 const formData = {
   form: 'addTransaction',
   initialValues: {
+    accountId: 1,
+    currency: 'BTC',
     value: 43,
   },
 };
@@ -84,23 +86,17 @@ class AddTransaction extends Component {
     id: PropTypes.number.isRequired,
   };
 
-  handleChange = name => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
-
   render() {
     const {
       classes,
       error,
       errored,
       handleSubmit,
+      id,
       loading,
       submitting,
       token,
-      id,
+      userAccounts,
     } = this.props;
 
     if (errored) {
@@ -125,30 +121,47 @@ class AddTransaction extends Component {
           label="Value"
         />
         <Field
-          id="select-currency"
-          select
-          component={TextField}
-          label="Select"
           className={classes.textField}
-          value={this.props.currency}
-          onChange={this.handleChange('currency')}
+          component={TextField}
+          helperText="Please select your currency"
+          label="Currency"
+          margin="normal"
+          name="currency"
+          select
           SelectProps={{
             MenuProps: {
               className: classes.menu,
             },
           }}
-          helperText="Please select your currency"
-          margin="normal"
+          value="currency"
         >
-          {currencies.map(option => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
+          {currencies.map(currency => (
+            <MenuItem key={currency.value} value={currency.value}>
+              {currency.label}
             </MenuItem>
           ))}
         </Field>
-        { this.props.userAccounts.map(account => (
-          <p>{account.name}</p>
-        ))}
+        <Field
+          className={classes.textField}
+          component={TextField}
+          helperText="Please select your account"
+          label="Account"
+          margin="normal"
+          name="accountId"
+          select
+          SelectProps={{
+            MenuProps: {
+              className: classes.menu,
+            },
+          }}
+          value="accountId"
+        >
+          { userAccounts.map(item => (
+            <MenuItem key={item.id} value={item.id}>
+              {item.name}
+            </MenuItem>
+          ))}
+        </Field>
         <Button
           className={classes.submitButton}
           color="primary"
