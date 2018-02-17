@@ -23,21 +23,33 @@ func (c Transactions) IndexApi() revel.Result {
 }
 
 func (c Transactions) ShowApi(id uint32) revel.Result {
+	log := c.Log.New("id", id)
 	header := c.Request.Header.Get("If-Modified-Since")
 
-	t, err := time.Parse(time.RFC1123, header)
+	t := time.Now().UTC()
 
-	if err != nil {
-		panic(err)
+	log.Info("Header: " + header)
+
+	if header != "" {
+		t1123, err := time.Parse(time.RFC1123, header)
+
+		t = t1123.UTC()
+
+		if err != nil {
+			panic(err)
+		}
+
+		log.Info("time " + t.String())
 	}
-
-	println("time " + t.String())
 
 	transaction, err := GetTransactionsService().Get(id, &t)
+
 	if err != nil {
 		c.Response.Status = 404
-		panic(err)
+
+		// panic(err)
 	}
+
 	return c.RenderJSON(transaction)
 }
 

@@ -21,8 +21,8 @@ func (s TransactionService) Create(transaction *models.Transaction) error {
 func (s TransactionService) Get(id uint32, updated *time.Time) (transaction models.Transaction, err error) {
 	builder := s.Db.SqlStatementBuilder.Select("*").From(transaction.TableName()).Where("id = ?", id)
 	if updated != nil {
-		revel.AppLog.Info("Applying updated")
-		builder.Where("updated < ?", updated)
+		revel.AppLog.Info("Applying updated: " + updated.String())
+		builder = builder.Where("updated < ?", updated)
 	}
 	err = s.Db.SelectOne(&transaction, builder)
 	return transaction, err

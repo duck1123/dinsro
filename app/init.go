@@ -57,7 +57,7 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
 func InitDB() {
 	gorp.Db.SetDbInit(func(db *gorp.DbGorp) error {
 		dbmap := db.Map
-		// db.TraceOn(revel.AppLog)
+		db.TraceOn(revel.AppLog)
 
 		dbmap.AddTableWithName(models.Account{}, "accounts")
 		dbmap.AddTableWithName(models.Transaction{}, "transactions")
@@ -94,7 +94,7 @@ func InitDB() {
 		accountService := controllers.GetAccountService()
 
 		accounts := []*models.Account{
-			{Name: "Main", OwnerId: bob.Id},
+			{Name: "Main",      OwnerId: bob.Id},
 			{Name: "Secondary", OwnerId: bob.Id},
 		}
 
