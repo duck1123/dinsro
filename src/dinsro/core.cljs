@@ -6,11 +6,12 @@
 
 (enable-console-print!)
 
+(println "Hello world!")
 (def conn (d/create-conn {}))
 
 (d/transact! conn
   [{:db/id -1
-    :app/title "Hello, DtaScript!"
+    :app/title "Hello, DataScript!"
     :app/count 0}])
 
 (defmulti read om/dispatch)
@@ -31,13 +32,10 @@
                     [(update-in entity [:app/count] inc)]))})
 
 (defui Counter
-  static om/IQuery
-
-  (query [this]
-    [{:app/counter [:db/id :app/title :app/count]}])
-
+  ;; static om/IQuery
+  ;; (query [this]
+  ;;   [{:app/counter [:db/id :app/title :app/count]}])
   Object
-
   (render [this]
     (let [{:keys [app/title app/count] :as entity}
           (get-in (om/props this) [:app/counter 0])]
