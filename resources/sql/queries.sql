@@ -1,3 +1,9 @@
+-- :name create-transaction! :! :n
+-- :doc creates a new transaction record
+INSERT INTO transactions
+(id, user_id, created, updated)
+VALUES (:id, :user_id, :created, :updated)
+
 -- :name create-user! :i!
 -- :doc creates a new user record
 INSERT INTO users
