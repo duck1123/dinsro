@@ -7,3 +7,10 @@ CREATE TABLE users (
   updated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
   UNIQUE (email)
 );
+
+CREATE TABLE transactions (
+  id VARCHAR(20) PRIMARY KEY,
+  user_id VARCHAR(20),
+  created TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  updated TIMESTAMP NOT NULL DEFAULT current_timestamp()
+);
