@@ -1,42 +1,21 @@
-# Welcome to Dinsro
+# dinsro
 
-A high-productivity web framework for the [Go language](http://www.golang.org/).
+generated using Luminus version "2.9.12.59"
 
+FIXME
 
-### Start the web server:
+## Prerequisites
 
-   revel run myapp
+You will need [Leiningen][1] 2.0 or above installed.
 
-### Go to http://dinsro.localtest.me:9000/ and you'll see:
+[1]: https://github.com/technomancy/leiningen
 
-    "It works"
+## Running
 
-## Code Layout
+To start a web server for the application, run:
 
-The directory structure of a generated Revel application:
+    lein run
 
-    conf/             Configuration directory
-        app.conf      Main app configuration file
-        routes        Routes definition file
+## License
 
-    app/              App sources
-        init.go       Interceptor registration
-        controllers/  App controllers go here
-        views/        Templates directory
-
-    messages/         Message files
-
-    public/           Public static assets
-        css/          CSS files
-        js/           Javascript files
-        images/       Image files
-
-    tests/            Test suites
-
-
-## Help
-
-* The [Getting Started with Revel](http://revel.github.io/tutorial/gettingstarted.html).
-* The [Revel guides](http://revel.github.io/manual/index.html).
-* The [Revel sample apps](http://revel.github.io/examples/index.html).
-* The [API documentation](https://godoc.org/github.com/revel/revel).
+Copyright © 2018 FIXME
