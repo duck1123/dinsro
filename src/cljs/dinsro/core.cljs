@@ -5,15 +5,14 @@
             [goog.history.EventType :as HistoryEventType]
             [markdown.core :refer [md->html]]
             [dinsro.ajax :refer [load-interceptors!]]
+            [dinsro.components :as c]
             [ajax.core :refer [GET POST]])
   (:import goog.History))
 
 (defonce session (r/atom {:page :home}))
 
 (defn nav-link [uri title page]
-  [:li.nav-item
-   {:class (when (= page (:page @session)) "active")}
-   [:a.nav-link {:href uri} title]])
+  (c/nav-link (:page @session) uri title page))
 
 (defn navbar []
   [:nav.navbar.navbar-dark.bg-primary.navbar-expand-md
@@ -29,22 +28,12 @@
      [nav-link "#/" "Home" :home]
      [nav-link "#/about" "About" :about]]]])
 
-(defn about-page []
-  [:div.container
-   [:div.row
-    [:div.col-md-12
-     [:img {:src "/img/warning_clojure.png"}]]]])
-
 (defn home-page []
-  [:div.container
-   (when-let [docs (:docs @session)]
-     [:div.row>div.col-sm-12
-      [:div {:dangerouslySetInnerHTML
-             {:__html (md->html docs)}}]])])
+  (c/home-page (:docs @session)))
 
 (def pages
   {:home #'home-page
-   :about #'about-page})
+   :about #'c/about-page})
 
 (defn page []
   [(pages (:page @session))])
