@@ -1,5 +1,5 @@
 FROM java:8-alpine
-MAINTAINER Your Name <you@example.com>
+MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
 ADD target/uberjar/dinsro.jar /dinsro/app.jar
 
