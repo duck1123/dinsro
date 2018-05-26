@@ -32,9 +32,12 @@
 
 (defui Counter
   static om/IQuery
+
   (query [this]
     [{:app/counter [:db/id :app/title :app/count]}])
+
   Object
+
   (render [this]
     (let [{:keys [app/title app/count] :as entity}
           (get-in (om/props this) [:app/counter 0])]
