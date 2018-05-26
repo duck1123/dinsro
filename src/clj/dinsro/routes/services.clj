@@ -7,5 +7,5 @@
   {:swagger {:ui "/swagger-ui"
              :spec "/swagger.json"
              :data {:info {:version "1.0.0"
-                           :title "Sample API"
+                           :title "Dinsro"
                            :description "Sample Services"}}}})
