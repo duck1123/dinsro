@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+func GetAccountService() services.AccountService {
+	return services.AccountService{Db: gorp.Db}
+}
+
 func GetUserService() services.UserService {
 	return services.UserService{Db: gorp.Db}
 }
@@ -36,12 +40,13 @@ func Authenticate(c *revel.Controller) revel.Result {
 		return c.RenderJSON(models.AuthenticationError{Message: "email not found in db"})
 	}
 
-	_, err = GetUserService().GetByEmail(email.(string))
+	user, err := GetUserService().GetByEmail(email.(string))
 	if err != nil {
 		c.Response.Status = http.StatusUnauthorized
 		return c.RenderJSON(models.AuthenticationError{Message: "auth failed"})
 	}
 
+	c.Args["userId"] = user.Id
 	return nil
 }
 
@@ -61,6 +66,7 @@ func getTokenString(c *revel.Controller) (tokenString string, err error) {
 }
 
 func init() {
+	revel.InterceptFunc(Authenticate, revel.BEFORE, &Accounts{})
 	revel.InterceptFunc(Authenticate, revel.BEFORE, &Transactions{})
 	revel.InterceptFunc(Authenticate, revel.BEFORE, &Users{})
 }

@@ -41,9 +41,7 @@ func decodeToken(tokenString string) (jwt.MapClaims, error) {
 		return hmacSecret, nil
 	})
 	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok && token.Valid {
-		fmt.Println("email and nbf:", claims["email"], claims["nbf"])
-	} else {
+	if !(ok && token.Valid) {
 		return nil, err
 	}
 	return claims, nil

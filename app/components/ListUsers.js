@@ -1,59 +1,98 @@
-import React from 'react';
+import { withStyles } from 'material-ui/styles';
+import List, { ListItem, ListItemText } from 'material-ui/List';
+import Paper from 'material-ui/Paper';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { usersFetchData } from '../actions/users';
+import { fetchCollection } from '../actions/model';
 
-class ListUsers extends React.Component {
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 700,
+  },
+});
+
+export class ListUsersUnconnected extends Component {
   static propTypes = {
-    fetchUsers: PropTypes.func.isRequired,
-    hasErrored: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired,
+    classes: PropTypes.instanceOf(Object).isRequired,
+    errored: PropTypes.bool.isRequired,
+    fetchCollection: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
     token: PropTypes.string,
     users: PropTypes.arrayOf(Object).isRequired,
-  }
+  };
 
   static defaultProps = {
     token: null,
-  }
+  };
 
   componentDidMount() {
-    this.props.fetchUsers(this.props.token);
+    this.props.fetchCollection('users', this.props.token);
   }
 
   render() {
+    const {
+      classes,
+      errored,
+      loading,
+    } = this.props;
+
+    if (errored) {
+      return <p>Sorry! There was an error loading the items</p>;
+    }
+
+    if (loading) {
+      return <p>Loading…</p>;
+    }
+
     return (
       <div>
         <h1>List Users</h1>
-        { this.props.hasErrored ? <p>Sorry! There was an error loading the items</p> : null }
-        { this.props.isLoading ? <p>Loading…</p> : (
-          <ul>
+        <Paper className={classes.root}>
+          <List>
             { this.props.users.map(user => (
-              <li key={user.id}>
-                <Link to={`/users/${user.id}`}>
-                  {user.name}
-                </Link>
-              </li>))}
-          </ul>
-        )}
+              <ListItem
+                key={user.id}
+                component={Link}
+                to={`/users/${user.id}`}
+              >
+                <ListItemText primary={user.name} />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
+  const model = state.models.users || {};
+  const {
+    data = [],
+    errored = false,
+    loading = false,
+  } = model;
   return {
-    hasErrored: state.users.errored,
-    isLoading: state.users.loading,
+    errored,
+    loading,
     token: state.authentication.token,
-    users: state.users.data,
+    users: data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUsers: token => dispatch(usersFetchData(token)),
+    fetchCollection: (model, token) => dispatch(fetchCollection(model, token)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);
+const LU = connect(mapStateToProps, mapDispatchToProps)(ListUsersUnconnected);
+
+export default withStyles(styles)(LU);

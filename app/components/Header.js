@@ -4,6 +4,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Login from '../components/Login';
 
 const styles = {
@@ -28,9 +29,23 @@ const Header = (props) => {
           <Typography type="title" color="inherit" className={classes.flex}>
             Dinsro
           </Typography>
-          <Login color="contrast" />
+          <Login color="secondary" />
         </Toolbar>
       </AppBar>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/accounts">Accounts</Link>
+        </li>
+        <li>
+          <Link to="/transactions">Transactions</Link>
+        </li>
+        <li>
+          <Link to="/users">Users</Link>
+        </li>
+      </ul>
     </div>
   );
 };

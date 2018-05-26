@@ -1,58 +1,77 @@
+import Paper from 'material-ui/Paper';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { userFetchData } from '../actions/user';
+import { fetchModel } from '../actions/model';
+import AddTransaction from './AddTransaction';
+import ListUserAccounts from './ListUserAccounts';
+import ListUserTransactions from './ListUserTransactions';
 
 class ShowUser extends React.Component {
   static propTypes = {
+    authEmail: PropTypes.string.isRequired,
     fetchUser: PropTypes.func.isRequired,
-    hasErrored: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired,
+    errored: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     token: PropTypes.string.isRequired,
     user: PropTypes.instanceOf(Object).isRequired,
-    userId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
   }
 
   componentDidMount() {
-    const { token, userId } = this.props;
-    this.props.fetchUser(userId, token);
+    const { token, id } = this.props;
+    this.props.fetchUser(id, token);
   }
 
   render() {
-    const { isLoading, hasErrored, userId } = this.props;
-    if (hasErrored) {
+    const {
+      authEmail,
+      loading,
+      errored,
+      id,
+      user,
+    } = this.props;
+
+    if (errored) {
       return <p>Sorry! There was an error loading the items</p>;
     }
 
-    if (isLoading) {
+    if (loading) {
       return <p>Loading…</p>;
     }
 
-    const { user } = this.props;
-
     return (
-      <div>
-        <h1>User: {user.name} ({userId})</h1>
-      </div>
+      <Paper>
+        <h1>User: {user.name} ({id})</h1>
+        <ListUserAccounts id={id} />
+        {
+          (authEmail === user.email) ? (
+            <AddTransaction id={id} />
+          ) : null
+        }
+        <ListUserTransactions id={id} />
+      </Paper>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const userId = parseInt(ownProps.match.params.id, 10);
-  const { data, errored, loading } = state.user[userId] || {};
+  const id = parseInt(ownProps.match.params.id, 10);
+  const model = state.models.user || {};
+  const { data, errored, loading } = model[id] || {};
   return {
-    hasErrored: typeof errored === 'undefined' ? false : errored,
-    isLoading: typeof loading === 'undefined' ? false : loading,
+    authEmail: state.authentication.email,
+    errored: typeof errored === 'undefined' ? false : errored,
+    id,
+    loading: typeof loading === 'undefined' ? false : loading,
     token: state.authentication.token,
     user: typeof data === 'undefined' ? {} : data,
-    userId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: (userId, token) => dispatch(userFetchData(userId, token)),
+    fetchUser: (userId, token) => dispatch(fetchModel('user', userId, token)),
   };
 };
 

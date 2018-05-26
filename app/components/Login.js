@@ -56,7 +56,7 @@ Login.propTypes = {
 
 Login.defaultProps = {
   authEmail: null,
-  color: 'contrast',
+  color: 'secondary',
 };
 
 const mapStateToProps = (state) => {
