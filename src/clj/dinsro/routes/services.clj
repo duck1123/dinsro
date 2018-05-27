@@ -26,9 +26,16 @@
     (GET "/" []
       :return [m/User]
       :summary "Index users"
-      (if-let [user (db/get-user {:id "0"})]
-        (ok [user])
-        (ok [])))
+      (let [users (db/list-users)]
+        (ok users)))
+
+    (GET "/:userId" []
+      :return m/User
+      :summary "Read User"
+      :path-params [userId :- s/Int]
+      (if-let [user (db/read-user {:id userId})]
+        (ok user)
+        (status (ok) 404)))
 
     (POST "/" []
       :body [registration-data m/RegistrationData]
