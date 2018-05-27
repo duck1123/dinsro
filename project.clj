@@ -3,7 +3,8 @@
   :description "FIXME: write description"
   :url "https://github.com/duck1123/dinsro"
 
-  :dependencies [[cider/cider-nrepl "0.17.0"]
+  :dependencies [[camel-snake-kebab "0.4.0"]
+                 [cider/cider-nrepl "0.17.0"]
                  [clj-time "0.14.4"]
                  [cljs-ajax "0.7.3"]
                  [com.h2database/h2 "1.4.197"]
