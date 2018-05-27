@@ -16,5 +16,12 @@
 
 (s/defschema RegistrationData
   {:name  s/Str
-   :email s/Str
-   :password s/Str})
+   :email s/Str})
+
+(s/defschema Account
+  {:id       s/Int
+   :name     s/Str
+   :email    s/Str
+   :owner-id s/Int
+   :created  DateTime
+   :updated  DateTime})

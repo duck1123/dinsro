@@ -14,3 +14,11 @@ CREATE TABLE transactions (
   created TIMESTAMP NOT NULL DEFAULT current_timestamp(),
   updated TIMESTAMP NOT NULL DEFAULT current_timestamp()
 );
+
+CREATE TABLE accounts (
+  id bigint PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(30) NOT NULL,
+  owner_id bigint NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  updated TIMESTAMP NOT NULL DEFAULT current_timestamp()
+);
