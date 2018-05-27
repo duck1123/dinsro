@@ -12,13 +12,15 @@ CREATE TABLE transactions (
   id VARCHAR(20) PRIMARY KEY,
   user_id VARCHAR(20),
   created TIMESTAMP NOT NULL DEFAULT current_timestamp(),
-  updated TIMESTAMP NOT NULL DEFAULT current_timestamp()
+  updated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  CONSTRAINT `transaction_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 );
 
 CREATE TABLE accounts (
   id bigint PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(30) NOT NULL,
-  owner_id bigint NOT NULL,
+  user_id bigint NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT current_timestamp(),
-  updated TIMESTAMP NOT NULL DEFAULT current_timestamp()
+  updated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  CONSTRAINT `account_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 );
