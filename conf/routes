@@ -6,28 +6,17 @@
 module:testrunner
 # module:jobs
 
-GET     /                                       App.Index
-GET     /api/v1/transactions                    Transactions.IndexApi
-GET     /api/v1/transactions/:id                Transactions.ShowApi
-GET     /api/v1/users                           Users.IndexApi
-GET     /api/v1/users/:id                       Users.ShowApi
-GET     /users                                  Users.Index
-GET     /users/:id                              Users.Show
-GET     /transactions                           Transactions.Index
-POST    /transactions                           Transactions.CreateApi
-
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/*filepath                       Static.Serve("public")
 
-# Catch all, this will route any request into the controller path
-#
-#                    **** WARNING ****
-# Enabling this exposes any controller and function to the web.
-# ** This is a serious security issue if used online **
-#
-# For rapid development uncomment the following to add new controller.action endpoints
-# without having to add them to the routes table.
-*       /:controller/:action                    :controller.:action
+POST    /api/v1/authenticate                    Authentication.Authenticate
+GET     /api/v1/transactions                    Transactions.IndexApi
+GET     /api/v1/transactions/:id                Transactions.ShowApi
+GET     /api/v1/users                           Users.IndexApi
+GET     /api/v1/users/:id                       Users.ShowApi
+
+GET     /                                       App.Index
+GET     /*path                                  App.Index

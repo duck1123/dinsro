@@ -1,9 +1,11 @@
 package app
 
 import (
+	"github.com/duck1123/dinsro/app/controllers"
 	"github.com/duck1123/dinsro/app/models"
 	"github.com/revel/modules/orm/gorp/app"
 	"github.com/revel/revel"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func init() {
@@ -63,13 +65,36 @@ func InitDB() {
 
 		var err error
 
-		user := models.User{Name: "admin"}
-		if err = dbmap.Insert(&user); err != nil {
+		password := "perfectloops"
+		bcryptPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+		admin := models.User{
+			Name:         "admin",
+			Email:        "admin@example.com",
+			PasswordHash: bcryptPassword,
+		}
+
+		userService := controllers.GetUserService()
+
+		if err = userService.Create(&admin); err != nil {
 			panic(err)
 		}
 
-		transaction := models.Transaction{UserId: user.Id}
-		if err = dbmap.Insert(&transaction); err != nil {
+		bob := models.User{
+			Name:         "bob",
+			Email:        "bob@example.com",
+			PasswordHash: bcryptPassword,
+		}
+
+		if err = userService.Create(&bob); err != nil {
+			panic(err)
+		}
+
+		transactionService := controllers.GetTransactionsService()
+
+		transaction := models.Transaction{UserId: bob.Id}
+
+		if err = transactionService.Create(&transaction); err != nil {
 			panic(err)
 		}
 
