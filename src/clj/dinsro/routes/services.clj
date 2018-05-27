@@ -5,6 +5,11 @@
             [compojure.api.sweet :refer :all]
             [schema.core :as s]))
 
+(defn prepare-user
+  [registration-data]
+  (merge {:password_hash ""}
+         registration-data))
+
 (def site-info
   {:version "1.0.0"
    :title "Dinsro"
@@ -23,4 +28,11 @@
       :summary "Index users"
       (if-let [user (db/get-user {:id "0"})]
         (ok [user])
-        (ok [])))))
+        (ok [])))
+
+    (POST "/" []
+      :body [registration-data m/RegistrationData]
+      :summary "Create User"
+      (let [user (prepare-user registration-data)]
+        (db/create-user! user))
+      (ok))))

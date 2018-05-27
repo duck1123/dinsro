@@ -1,6 +1,15 @@
 (ns dinsro.models
-  (:require [schema.core :as s]))
+  (:require [schema.core :as s])
+  (:import org.joda.time.DateTime))
 
 (s/defschema User
-  {:id   Long
-   :name s/Str})
+  {(s/optional-key :id)      s/Int
+   :name                     s/Str
+   :email                    s/Str
+   :password_hash            s/Str
+   (s/optional-key :created) DateTime
+   (s/optional-key :updated) DateTime})
+
+(s/defschema RegistrationData
+  {:name  s/Str
+   :email s/Str})
