@@ -3,6 +3,7 @@
             [dinsro.ajax :refer [load-interceptors!]]
             [dinsro.components :as c]
             [dinsro.components.navbar :refer [navbar navlist]]
+            [dinsro.components.register :refer [registration-page]]
             [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
@@ -24,9 +25,12 @@
   (c/users-page session))
 
 (def pages
-  {:home #'home-page
-   :users #'users-page
-   :about #'c/about-page})
+  {
+   :about    #'c/about-page
+   :home     #'home-page
+   :register #'registration-page
+   :users    #'users-page
+   })
 
 (defn page []
   [ui/mui-theme-provider theme-defaults
@@ -45,6 +49,9 @@
 
 (secretary/defroute about-path "/about" []
   (swap! session assoc :page :about))
+
+(secretary/defroute register-path "/register" []
+  (swap! session assoc :page :register))
 
 (secretary/defroute users-path "/users" []
   (swap! session assoc :page :users))
