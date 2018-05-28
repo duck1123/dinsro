@@ -8,9 +8,10 @@
    ;; [list-user-accounts {:id id}]
    [:ul
     (for [user users]
-      ^{:key user}
-      [:li
-       [:p (get user "id") " - " (get user "name")]])]])
+      (let [id (get user "id")]
+        [:li {:key user}
+         [:a {:href (str "#/users/" id)}
+          (get user "name")]]))]])
 
 (defn users-page
   []
