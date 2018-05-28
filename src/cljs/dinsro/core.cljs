@@ -8,8 +8,14 @@
             [goog.history.EventType :as HistoryEventType]
             [markdown.core :refer [md->html]]
             [reagent.core :as r]
+            [re-material-ui-1.core :as ui]
             [secretary.core :as secretary :include-macros true])
   (:import goog.History))
+
+;; create a new theme based on the dark theme from Material UI
+(defonce theme-defaults
+  {:theme
+   (ui/create-mui-theme-fn (clj->js {:type "light"}))})
 
 (defn home-page []
   (c/home-page (:docs @session)))
@@ -23,7 +29,8 @@
    :about #'c/about-page})
 
 (defn page []
-  [(pages (:page @session))])
+  [ui/mui-theme-provider theme-defaults
+   [(pages (:page @session))]])
 
 ;; -------------------------
 ;; Routes
