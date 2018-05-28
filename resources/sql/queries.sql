@@ -13,7 +13,3 @@ WHERE id = :id
 -- :doc retrieves a user record given the id
 SELECT * FROM users
 WHERE id = :id
-
--- :name list-users :*
--- :doc retrieves all users
-SELECT * FROM users
