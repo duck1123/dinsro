@@ -13,13 +13,17 @@
          [:a {:href (str "#/users/" id)}
           (get user "name")]]))]])
 
+(defn fetch-users
+  [users-state]
+  (ajax/GET "/api/users"
+    {:response-format :json
+     :handler (fn [r] (reset! users-state r))}))
+
 (defn users-page
   []
-  (let [users (r/atom [])]
-    (ajax/GET "/api/users"
-      {:response-format :json
-       :handler (fn [r] (reset! users r))})
+  (let [users-state (r/atom [])]
+    (fetch-users users-state)
     (fn []
       [:div
        [:h1 "Users"]
-       [index-users @users]])))
+       [index-users @users-state]])))
