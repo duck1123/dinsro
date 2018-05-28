@@ -19,16 +19,10 @@
   {:theme
    (ui/create-mui-theme-fn (clj->js {:type "light"}))})
 
-(defn home-page []
-  (c/home-page (:docs @session)))
-
-(defn users-page []
-  (c/users-page session))
-
 (def pages
   {
    :about    #'c/about-page
-   :home     #'home-page
+   :home     #'c/home-page
    :register #'registration-page
    :users    #'users-page
    })

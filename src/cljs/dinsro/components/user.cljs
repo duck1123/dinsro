@@ -1,4 +1,6 @@
-(ns dinsro.components.user)
+(ns dinsro.components.user
+  (:require [ajax.core :as ajax]
+            [reagent.core :as r]))
 
 (defn index-users
   [users]
@@ -11,7 +13,7 @@
        [:p (get user "id") " - " (get user "name")]])]])
 
 (defn users-page
-  [session]
+  []
   (let [users (r/atom [])]
     (ajax/GET "/api/users"
       {:response-format :json

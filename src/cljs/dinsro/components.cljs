@@ -1,5 +1,6 @@
 (ns dinsro.components
   (:require [ajax.core :as ajax]
+            [dinsro.state :refer [session]]
             [markdown.core :refer [md->html]]
             [reagent.core :as r]))
 
@@ -9,9 +10,9 @@
     [:div.col-md-12
      [:img {:src "/img/warning_clojure.png"}]]]])
 
-(defn home-page [docs]
+(defn home-page []
   [:div.container
-   (when docs
+   (when-let [docs (:docs @session)]
      [:div.row>div.col-sm-12
       [:div {:dangerouslySetInnerHTML
              {:__html (md->html docs)}}]])])
