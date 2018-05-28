@@ -3,16 +3,23 @@
             [re-material-ui-1.core :as ui]))
 
 (defn nav-link [uri title page]
-  [:li.nav-item
-   {:class (when (= page (:page @session)) "active")}
-   [:a.nav-link {:href uri} title]])
+  [ui/list-item {:button true
+                 :component "a"
+                 :href uri}
+   [ui/list-item-text title]])
 
 (defn navbar []
   (fn []
-    [ui/app-bar {:position "static" :color "default"}
-     [ui/toolbar
-      [ui/icon-button {:color "inherit" :aria-label "Menu"}
-       [ui/menu-icon]]
-      [ui/typography {:variant "title" :color "inherit"}
-       "Dinsro"]
-      [ui/button {:color "inherit"} "Login"]]]))
+    [:div
+     [ui/app-bar {:position "static" :color "default"}
+      [ui/toolbar
+       [ui/icon-button {:color "inherit" :aria-label "Menu"}
+        [ui/menu-icon]]
+       [ui/typography {:variant "title" :color "inherit"}
+        "Dinsro"]
+       [ui/button {:color "inherit"} "Login"]]]
+     [ui/menu-list
+      [nav-link "#/" "Home" :home]
+      [nav-link "#/users" "Users" :users]
+      [nav-link "#/register" "Register" :register]
+      [nav-link "#/about" "About" :about]]]))
