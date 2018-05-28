@@ -2,7 +2,9 @@
   (:require [dinsro.state :refer [session]]))
 
 (defn nav-link [uri title page]
-  (c/nav-link (:page @session) uri title page))
+  [:li.nav-item
+   {:class (when (= page (:page @session)) "active")}
+   [:a.nav-link {:href uri} title]])
 
 (defn navbar []
   [:nav.navbar.navbar-dark.bg-primary.navbar-expand-md
