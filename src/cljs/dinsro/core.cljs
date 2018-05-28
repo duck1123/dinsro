@@ -1,11 +1,11 @@
 (ns dinsro.core
-  (:require [reagent.core :as r]
-            [secretary.core :as secretary :include-macros true]
+  (:require [ajax.core :refer [GET POST]]
+            [dinsro.ajax :refer [load-interceptors!]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
             [markdown.core :refer [md->html]]
-            [dinsro.ajax :refer [load-interceptors!]]
-            [ajax.core :refer [GET POST]])
+            [reagent.core :as r]
+            [secretary.core :as secretary :include-macros true])
   (:import goog.History))
 
 (defonce session (r/atom {:page :home}))
