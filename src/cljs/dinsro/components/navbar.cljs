@@ -1,5 +1,6 @@
 (ns dinsro.components.navbar
-  (:require [dinsro.state :refer [session]]))
+  (:require [dinsro.state :refer [session]]
+            [re-material-ui-1.core :as ui]))
 
 (defn nav-link [uri title page]
   [:li.nav-item
@@ -7,16 +8,11 @@
    [:a.nav-link {:href uri} title]])
 
 (defn navbar []
-  [:nav.navbar.navbar-dark.bg-primary.navbar-expand-md
-   {:role "navigation"}
-   [:button.navbar-toggler.hidden-sm-up
-    {:type "button"
-     :data-toggle "collapse"
-     :data-target "#collapsing-navbar"}
-    [:span.navbar-toggler-icon]]
-   [:a.navbar-brand {:href "#/"} "dinsro"]
-   [:div#collapsing-navbar.collapse.navbar-collapse
-    [:ul.nav.navbar-nav.mr-auto
-     [nav-link "#/" "Home" :home]
-     [nav-link "#/users" "Users" :users]
-     [nav-link "#/about" "About" :about]]]])
+  (fn []
+    [ui/app-bar {:position "static" :color "default"}
+     [ui/toolbar
+      [ui/icon-button {:color "inherit" :aria-label "Menu"}
+       [ui/menu-icon]]
+      [ui/typography {:variant "title" :color "inherit"}
+       "Dinsro"]
+      [ui/button {:color "inherit"} "Login"]]]))
