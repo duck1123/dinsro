@@ -8,4 +8,4 @@
     (for [user users]
       ^{:key user}
       [:li
-       [:p (:id user) " - " (:name user)]])]])
+       [:p (get user "id") " - " (get user "name")]])]])
