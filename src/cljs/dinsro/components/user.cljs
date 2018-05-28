@@ -1,6 +1,8 @@
 (ns dinsro.components.user
   (:require [ajax.core :as ajax]
-            [reagent.core :as r]))
+            [dinsro.state :refer [session]]
+            [reagent.core :as r]
+            [re-material-ui-1.core :as ui]))
 
 (defn index-users
   [users]
@@ -9,9 +11,10 @@
    [:ul
     (for [user users]
       (let [id (get user "id")]
-        [:li {:key user}
-         [:a {:href (str "#/users/" id)}
-          (get user "name")]]))]])
+        [:li {:key id}
+         [:p
+          [:a {:href (str "#/users/" id)}
+           (get user "name")]]]))]])
 
 (defn fetch-users
   [users-state]
@@ -27,3 +30,9 @@
       [:div
        [:h1 "Users"]
        [index-users @users-state]])))
+
+(defn show-user
+  []
+  [:div
+   [:h1 "Show Users"]
+   [:p "ID: " (:user-id @session)]])

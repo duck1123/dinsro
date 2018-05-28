@@ -4,7 +4,7 @@
             [dinsro.components :as c]
             [dinsro.components.navbar :refer [navbar navlist]]
             [dinsro.components.register :refer [registration-page]]
-            [dinsro.components.user :refer [users-page]]
+            [dinsro.components.user :as users]
             [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
@@ -21,10 +21,11 @@
 
 (def pages
   {
-   :about    #'c/about-page
-   :home     #'c/home-page
-   :register #'registration-page
-   :users    #'users-page
+   :about     #'c/about-page
+   :home      #'c/home-page
+   :register  #'registration-page
+   :show-user #'users/show-user
+   :users     #'users/users-page
    })
 
 (defn page []
@@ -50,6 +51,10 @@
 
 (secretary/defroute users-path "/users" []
   (swap! session assoc :page :users))
+
+(secretary/defroute user-path "/users/:id" [id]
+  (swap! session assoc :user-id id)
+  (swap! session assoc :page :show-user))
 
 ;; -------------------------
 ;; History
