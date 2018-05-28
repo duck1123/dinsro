@@ -40,14 +40,14 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
+(secretary/defroute home-path "/" []
   (swap! session assoc :page :home))
 
-(secretary/defroute "/users" []
-  (swap! session assoc :page :users))
-
-(secretary/defroute "/about" []
+(secretary/defroute about-path "/about" []
   (swap! session assoc :page :about))
+
+(secretary/defroute users-path "/users" []
+  (swap! session assoc :page :users))
 
 ;; -------------------------
 ;; History
