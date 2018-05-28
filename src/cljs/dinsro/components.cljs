@@ -1,5 +1,6 @@
 (ns dinsro.components
-  (:require [markdown.core :refer [md->html]]))
+  (:require [dinsro.components.user :as user]
+            [markdown.core :refer [md->html]]))
 
 (defn about-page []
   [:div.container
@@ -14,20 +15,9 @@
       [:div {:dangerouslySetInnerHTML
              {:__html (md->html docs)}}]])])
 
-(defn index-users
-  [users]
-  [:div
-   ;; [list-user-accounts {:id id}]
-   (map
-    (fn [user]
-      [:ul
-       [:li
-        [:p (:id user) " - " (:name user)]]])
-    users)])
-
 (defn users-page
   [session]
   [:div
    [:h1 "Users"]
    (let [users []]
-     [index-users users])])
+     [user/index-users users])])
