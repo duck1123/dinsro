@@ -9,3 +9,14 @@
       ^{:key user}
       [:li
        [:p (get user "id") " - " (get user "name")]])]])
+
+(defn users-page
+  [session]
+  (let [users (r/atom [])]
+    (ajax/GET "/api/users"
+      {:response-format :json
+       :handler (fn [r] (reset! users r))})
+    (fn []
+      [:div
+       [:h1 "Users"]
+       [index-users @users]])))

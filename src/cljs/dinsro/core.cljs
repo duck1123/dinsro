@@ -4,6 +4,7 @@
             [dinsro.components :as c]
             [dinsro.components.navbar :refer [navbar navlist]]
             [dinsro.components.register :refer [registration-page]]
+            [dinsro.components.user :refer [users-page]]
             [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
