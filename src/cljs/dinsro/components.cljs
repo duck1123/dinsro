@@ -13,3 +13,21 @@
      [:div.row>div.col-sm-12
       [:div {:dangerouslySetInnerHTML
              {:__html (md->html docs)}}]])])
+
+(defn index-users
+  [users]
+  [:div
+   ;; [list-user-accounts {:id id}]
+   (map
+    (fn [user]
+      [:ul
+       [:li
+        [:p (:id user) " - " (:name user)]]])
+    users)])
+
+(defn users-page
+  [session]
+  [:div
+   [:h1 "Users"]
+   (let [users []]
+     [index-users users])])
