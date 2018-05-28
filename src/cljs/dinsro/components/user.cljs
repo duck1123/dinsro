@@ -8,12 +8,15 @@
   [users]
   [:div
    ;; [list-user-accounts {:id id}]
-   [:ul
+   [ui/menu-list
     (for [user users]
       (let [id (get user "id")]
-        [:li {:key id}
-         [:p
-          [:a {:href (str "#/users/" id)}
+        [ui/list-item {:key id
+                       :button true
+                       :component "a"
+                       :href (str "#/users/" id)}
+         [ui/list-item-text
+          [:span
            (get user "name")]]]))]])
 
 (defn fetch-users
