@@ -3,6 +3,7 @@
    [dinsro.env :refer [defaults]]
    [dinsro.layout :refer [error-page]]
             [dinsro.middleware :as middleware]
+            [dinsro.routes.authentication :refer [authentication-routes]]
             [dinsro.routes.home :refer [home-routes]]
             [dinsro.routes.services :refer [service-routes]]
             [compojure.core :refer [routes wrap-routes]]
@@ -22,7 +23,8 @@
   (middleware/wrap-base
    (ring/ring-handler
     (ring/router
-     [(home-routes)])
+     [(home-routes)
+      (authentication-routes)])
     (ring/routes
      (ring/create-resource-handler
       {:path "/"})
