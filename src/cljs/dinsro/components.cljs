@@ -1,5 +1,6 @@
 (ns dinsro.components
-  (:require [dinsro.components.user :as user]
+  (:require [ajax.core :as ajax]
+            [dinsro.components.user :as user]
             [markdown.core :refer [md->html]]))
 
 (defn about-page []
@@ -19,5 +20,5 @@
   [session]
   [:div
    [:h1 "Users"]
-   (let [users []]
+   (let [users (ajax/GET "/api/users")]
      [user/index-users users])])

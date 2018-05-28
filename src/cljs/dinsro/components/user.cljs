@@ -5,8 +5,7 @@
   [:div
    ;; [list-user-accounts {:id id}]
    [:ul
-    (map
-     (fn [user]
-       [:li
-        [:p (:id user) " - " (:name user)]])
-     users)]])
+    (for [user users]
+      ^{:key user}
+      [:li
+       [:p (:id user) " - " (:name user)]])]])
