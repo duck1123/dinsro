@@ -16,4 +16,5 @@
 
 (s/defschema RegistrationData
   {:name  s/Str
-   :email s/Str})
+   :email s/Str
+   :password s/Str})
