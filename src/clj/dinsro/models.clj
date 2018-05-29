@@ -10,6 +10,10 @@
    (s/optional-key :created) DateTime
    (s/optional-key :updated) DateTime})
 
+(s/defschema AuthenticationData
+  {:email  s/Str
+   :password s/Str})
+
 (s/defschema RegistrationData
   {:name  s/Str
    :email s/Str})

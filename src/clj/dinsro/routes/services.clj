@@ -20,6 +20,15 @@
              :spec "/swagger.json"
              :data {:info site-info}}}
 
+  (context "/api" []
+    :tags ["Authentication"]
+
+    (POST "/authenticate" []
+      :summary "Authenticate"
+      :body [authentication-data m/AuthenticationData]
+      (let [{:keys [email password]} authentication-data]
+        (ok))))
+
   (context "/api/users" []
     :tags ["Users"]
 
