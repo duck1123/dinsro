@@ -23,6 +23,7 @@
   {
    :about     #'c/about-page
    :home      #'c/home-page
+   :login     #'c/login-page
    :register  #'registration-page
    :show-user #'users/show-user
    :users     #'users/users-page
@@ -45,6 +46,9 @@
 
 (secretary/defroute about-path "/about" []
   (swap! session assoc :page :about))
+
+(secretary/defroute login-page "/login" []
+  (swap! session assoc :page :login))
 
 (secretary/defroute register-path "/register" []
   (swap! session assoc :page :register))

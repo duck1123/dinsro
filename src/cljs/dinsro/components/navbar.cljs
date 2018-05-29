@@ -23,4 +23,5 @@
   [ui/menu-list
    [nav-link "#/" "Home" :home]
    [nav-link "#/users" "Users" :users]
+   [nav-link "#/register" "Register" :register]
    [nav-link "#/about" "About" :about]])

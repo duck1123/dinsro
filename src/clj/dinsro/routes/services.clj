@@ -6,8 +6,9 @@
 
 (defn prepare-user
   [registration-data]
-  (merge {:password_hash ""}
-         registration-data))
+  (let [{:keys [password]} registration-data]
+    (merge {:password_hash (bcrypt/encrypt password)}
+           registration-data)))
 
 (def site-info
   {:version "1.0.0"
