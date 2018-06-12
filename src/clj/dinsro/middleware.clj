@@ -1,6 +1,6 @@
 (ns dinsro.middleware
   (:require [buddy.auth :refer [authenticated?]]
-            [buddy.auth.middleware :refer [wrap-authentication]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth.backends.session :refer [session-backend]]
             [dinsro.env :refer [defaults]]
@@ -83,12 +83,15 @@
   (restrict handler {:handler authenticated?
                      :on-error on-error}))
 
+(defonce auth-backend (session-backend))
+
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
       wrap-webjars
       wrap-flash
+      (wrap-authorization auth-backend)
+      (wrap-authentication auth-backend)
       (wrap-session {:cookie-attrs {:http-only true}})
-      (wrap-authentication (session-backend))
       (wrap-defaults
        (-> site-defaults
            (assoc-in [:security :anti-forgery] false)

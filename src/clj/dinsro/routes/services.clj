@@ -15,40 +15,45 @@
    :title "Dinsro"
    :description "Sample Services"})
 
-(defapi service-routes
-  {:swagger {:ui "/swagger-ui"
-             :spec "/swagger.json"
-             :data {:info site-info}}}
+(def service-routes
+  (api
+   {:swagger {:ui "/swagger-ui"
+              :spec "/swagger.json"
+              :data {:info site-info}}}
 
-  (context "/api" []
-    :tags ["Authentication"]
+   (context "/api" []
+     :tags ["Authentication"]
 
-    (POST "/authenticate" []
-      :summary "Authenticate"
-      :body [authentication-data m/AuthenticationData]
-      (let [{:keys [email password]} authentication-data]
-        (ok))))
+     (POST "/authenticate" []
+           :summary "Authenticate"
+           :body [authentication-data m/AuthenticationData]
+           (let [{:keys [email password]} authentication-data]
+             (ok)))
 
-  (context "/api/users" []
-    :tags ["Users"]
+     (POST "/register" []
+           :summary "Register"
+           (ok)))
 
-    (GET "/" []
-      :return [m/User]
-      :summary "Index users"
-      (let [users (db/list-users)]
-        (ok users)))
+   (context "/api/users" []
+     :tags ["Users"]
 
-    (GET "/:userId" []
-      :return m/User
-      :summary "Read User"
-      :path-params [userId :- s/Int]
-      (if-let [user (db/read-user {:id userId})]
-        (ok user)
-        (status (ok) 404)))
+     (GET "/" []
+       :return [m/User]
+       :summary "Index users"
+       (let [users (db/list-users)]
+         (ok users)))
 
-    (POST "/" []
-      :body [registration-data m/RegistrationData]
-      :summary "Create User"
-      (let [user (prepare-user registration-data)]
-        (db/create-user! user))
-      (ok))))
+     (GET "/:userId" []
+       :return m/User
+       :summary "Read User"
+       :path-params [userId :- s/Int]
+       (if-let [user (db/read-user {:id userId})]
+         (ok user)
+         (status (ok) 404)))
+
+     (POST "/" []
+           :body [registration-data m/RegistrationData]
+           :summary "Create User"
+           (let [user (prepare-user registration-data)]
+             (db/create-user! user))
+           (ok)))))
