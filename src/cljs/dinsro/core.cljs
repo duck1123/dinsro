@@ -30,7 +30,9 @@
 
 (defn page []
   [ui/mui-theme-provider theme-defaults
-   [(pages (:page @session))]])
+   [:div
+    [navlist]
+    [(pages (:page @session))]]])
 
 ;; -------------------------
 ;; Routes
