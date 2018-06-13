@@ -1,6 +1,7 @@
 (ns dinsro.core
   (:require [ajax.core :refer [GET POST]]
             [dinsro.ajax :refer [load-interceptors!]]
+            [dinsro.components :as c]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
             [markdown.core :refer [md->html]]
@@ -29,22 +30,12 @@
      [nav-link "#/" "Home" :home]
      [nav-link "#/about" "About" :about]]]])
 
-(defn about-page []
-  [:div.container
-   [:div.row
-    [:div.col-md-12
-     [:img {:src "/img/warning_clojure.png"}]]]])
-
 (defn home-page []
-  [:div.container
-   (when-let [docs (:docs @session)]
-     [:div.row>div.col-sm-12
-      [:div {:dangerouslySetInnerHTML
-             {:__html (md->html docs)}}]])])
+  (c/home-page (:docs @session)))
 
 (def pages
   {:home #'home-page
-   :about #'about-page})
+   :about #'c/about-page})
 
 (defn page []
   [(pages (:page @session))])
