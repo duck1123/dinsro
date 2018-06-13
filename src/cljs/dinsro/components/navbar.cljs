@@ -6,7 +6,7 @@
   [ui/list-item {:button true
                  :component "a"
                  :href uri}
-   [ui/list-item-text title]])
+   [ui/list-item-text [:div title]]])
 
 (defn navbar []
   (fn []
