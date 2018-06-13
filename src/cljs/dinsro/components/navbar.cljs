@@ -17,9 +17,10 @@
         [ui/menu-icon]]
        [ui/typography {:variant "title" :color "inherit"}
         "Dinsro"]
-       [ui/button {:color "inherit"} "Login"]]]
-     [ui/menu-list
-      [nav-link "#/" "Home" :home]
-      [nav-link "#/users" "Users" :users]
-      [nav-link "#/register" "Register" :register]
-      [nav-link "#/about" "About" :about]]]))
+       [ui/button {:color "inherit" :href "#/login"} "Login"]]]]))
+
+(defn navlist []
+  [ui/menu-list
+   [nav-link "#/" "Home" :home]
+   [nav-link "#/users" "Users" :users]
+   [nav-link "#/about" "About" :about]])

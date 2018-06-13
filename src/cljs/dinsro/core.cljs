@@ -2,7 +2,7 @@
   (:require [ajax.core :refer [GET POST]]
             [dinsro.ajax :refer [load-interceptors!]]
             [dinsro.components :as c]
-            [dinsro.components.navbar :refer [navbar]]
+            [dinsro.components.navbar :refer [navbar navlist]]
             [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
