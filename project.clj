@@ -22,6 +22,7 @@
                  [metosin/compojure-api "1.1.12"]
                  [metosin/muuntaja "0.5.0"]
                  [metosin/ring-http-response "0.9.0"]
+                 [metosin/spec-tools "0.7.1"]
                  [mount "0.1.12"]
                  [org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.339" :scope "provided"]
