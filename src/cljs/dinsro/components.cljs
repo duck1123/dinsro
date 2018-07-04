@@ -1,8 +1,4 @@
-(ns dinsro.components
-  (:require [ajax.core :as ajax]
-            [dinsro.state :refer [session]]
-            [markdown.core :refer [md->html]]
-            [reagent.core :as r]))
+(ns dinsro.components)
 
 (defn about-page []
   [:div.container
@@ -12,7 +8,4 @@
 
 (defn home-page []
   [:div.container
-   (when-let [docs (:docs @session)]
-     [:div.row>div.col-sm-12
-      [:div {:dangerouslySetInnerHTML
-             {:__html (md->html docs)}}]])])
+   [:h1 "Home Page"]])
