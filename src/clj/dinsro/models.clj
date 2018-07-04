@@ -6,7 +6,7 @@
   {(s/optional-key :id)      s/Int
    :name                     s/Str
    :email                    s/Str
-   :password_hash            s/Str
+   :password-hash            s/Str
    (s/optional-key :created) DateTime
    (s/optional-key :updated) DateTime})
 
