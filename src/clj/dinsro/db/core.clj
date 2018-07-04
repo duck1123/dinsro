@@ -10,8 +10,6 @@
           :start (conman/connect! {:jdbc-url (env :database-url)})
           :stop (conman/disconnect! *db*))
 
-(conman/bind-connection *db* "sql/queries.sql")
-
 (defn result-one-snake->kebab
   [this result options]
   (->> (hugsql.adapter/result-one this result options)
@@ -33,3 +31,5 @@
 
 (defmethod hugsql.core/hugsql-result-fn :many [sym]
   'dinsro.db.core/result-many-snake->kebab)
+
+(conman/bind-connection *db* "sql/queries.sql")
