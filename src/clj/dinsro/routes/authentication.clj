@@ -14,4 +14,5 @@
 
     (POST "/register" []
           :summary "Register"
+          :body [params m/RegistrationData]
           (register))))
