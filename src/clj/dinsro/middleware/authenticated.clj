@@ -1,7 +1,6 @@
 (ns dinsro.middleware.authenticated
-    (:require
-     [buddy.auth :refer [authenticated?]]
-     [ring.util.http-response :refer [unauthorized]]))
+  (:require [buddy.auth :refer [authenticated?]]
+            [ring.util.http-response :refer [unauthorized]]))
 
 (defn authenticated-mw
   "Middleware used in routes that require authentication. If request is not
