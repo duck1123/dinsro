@@ -7,5 +7,7 @@
     (ok)))
 
 (defn register
-  []
+  [data
+   ;; :- :dinsro.specs/register-request
+   ]
   (ok))
