@@ -11,5 +11,17 @@ WHERE id = :id
 
 -- :name read-user :? :1
 -- :doc retrieves a user record given the id
+SELECT * FROM users WHERE id = :id
+
+-- :name list-accounts :*
+-- :doc retrieves all accounts
+SELECT * FROM accounts
+
+-- :name list-transactions :*
+-- :doc retrieves all transactions
+SELECT * FROM transactions
+
+-- :name list-users :? :many
+-- :doc retrieves all users
 SELECT * FROM users
 WHERE id = :id
