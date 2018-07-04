@@ -36,6 +36,16 @@
 
 (defn show-user
   []
-  [:div
-   [:h1 "Show Users"]
-   [:p "ID: " (:user-id @session)]])
+  (let [user-a (r/atom {})]
+    (ajax/GET (str "/api/v1/users/" (:user-id @session))
+      {:response-format :json
+       :handler (fn [u] (reset! user-a u))})
+    (fn []
+      (let [{id "id"
+             name "name"
+             email "email"} @user-a]
+        [:div
+         [:h1 "Show Users"]
+         [:p "Id: " id]
+         [:p "name: " name]
+         [:p "email: " email]]))))
