@@ -1,16 +1,16 @@
 (defproject dinsro "0.1.0-SNAPSHOT"
 
   :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/duck1123/dinsro"
 
-  :dependencies [[cider/cider-nrepl "0.15.1"]
+  :dependencies [[cider/cider-nrepl "0.17.0"]
                  [clj-time "0.14.4"]
                  [cljs-ajax "0.7.3"]
-                 [com.h2database/h2 "1.4.196"]
+                 [com.h2database/h2 "1.4.197"]
                  [compojure "1.6.1"]
-                 [conman "0.7.8"]
+                 [conman "0.8.1"]
                  [cprop "0.1.11"]
-                 [funcool/struct "1.2.0"]
+                 [funcool/struct "1.3.0"]
                  [luminus-immutant "0.2.4"]
                  [luminus-migrations "0.5.0"]
                  [luminus-nrepl "0.1.4"]
@@ -21,18 +21,18 @@
                  [metosin/ring-http-response "0.9.0"]
                  [mount "0.1.12"]
                  [org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.10.238" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.339" :scope "provided"]
                  [org.clojure/tools.cli "0.3.7"]
                  [org.clojure/tools.logging "0.4.1"]
-                 [org.webjars.bower/tether "1.4.3"]
-                 [org.webjars/bootstrap "4.1.0"]
-                 [org.webjars/font-awesome "5.0.13"]
-                 [reagent "0.8.0"]
+                 [org.webjars.bower/tether "1.4.4"]
+                 [org.webjars/bootstrap "4.1.1"]
+                 [org.webjars/font-awesome "5.1.0"]
+                 [reagent "0.8.1"]
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.6.3"]
-                 [ring/ring-defaults "0.3.1"]
+                 [ring/ring-defaults "0.3.2"]
                  [secretary "1.2.3"]
-                 [selmer "1.11.7"]]
+                 [selmer "1.11.8"]]
 
   :min-lein-version "2.0.0"
 
@@ -83,7 +83,7 @@
                   :dependencies [[binaryage/devtools "0.9.10"]
                                  [com.cemerick/piggieback "0.2.2"]
                                  [doo "0.1.10"]
-                                 [expound "0.6.0"]
+                                 [expound "0.7.1"]
                                  [figwheel-sidecar "0.5.16"]
                                  [pjstadig/humane-test-output "0.8.3"]
                                  [prone "1.6.0"]
@@ -92,7 +92,7 @@
                   :plugins      [[com.jakemccrary/lein-test-refresh "0.19.0"]
                                  [lein-doo "0.1.10"]
                                  [lein-figwheel "0.5.16"]
-                                 [org.clojure/clojurescript "1.10.238"]]
+                                 [org.clojure/clojurescript "1.10.339"]]
                   :cljsbuild
                   {:builds
                    {:app

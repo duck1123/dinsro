@@ -44,7 +44,7 @@
 (cheshire/add-encoder
   org.joda.time.DateTime
   (fn [c jsonGenerator]
-    (.writeString jsonGenerator (-> ^ReadableInstant c .getMillis .toString))))
+    (.writeString jsonGenerator (-> ^ReadableInstant c .toString))))
 
 (def restful-format-options
   (update
