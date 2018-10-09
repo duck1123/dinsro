@@ -2,6 +2,7 @@
   (:require [ajax.core :refer [GET POST]]
             [dinsro.ajax :refer [load-interceptors!]]
             [dinsro.components :as c]
+            [dinsro.components.login-page :refer [login-page]]
             [dinsro.components.navbar :refer [navbar navlist]]
             [dinsro.components.register :refer [registration-page]]
             [dinsro.components.user :as users]
@@ -23,7 +24,7 @@
   {
    :about     #'c/about-page
    :home      #'c/home-page
-   :login     #'c/login-page
+   :login     #'login-page
    :register  #'registration-page
    :show-user #'users/show-user
    :users     #'users/users-page
@@ -47,7 +48,7 @@
 (secretary/defroute about-path "/about" []
   (swap! session assoc :page :about))
 
-(secretary/defroute login-page "/login" []
+(secretary/defroute login-page-path "/login" []
   (swap! session assoc :page :login))
 
 (secretary/defroute register-path "/register" []
