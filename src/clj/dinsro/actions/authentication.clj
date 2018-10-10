@@ -22,8 +22,8 @@
 (defn register
   "Register a user"
   [data]
-  {:pre [(s/valid? :dinsro.specs/register-request data)]}
-  (create-user-response data)
+  ;; {:pre [(s/valid? :dinsro.specs/register-request data)]}
+  (create-user-response (s/assert :dinsro.specs/register-request data))
   (ok))
 
 (s/fdef register
