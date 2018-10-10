@@ -1,5 +1,6 @@
 (ns dinsro.actions.authentication
-  (:require [ring.util.http-response :refer :all]))
+  (:require [dinsro.actions.user.create-user :refer [create-user-response]]
+            [ring.util.http-response :refer :all]))
 
 (defn authenticate
   [authentication-data]
@@ -7,7 +8,7 @@
     (ok)))
 
 (defn register
-  [data
-   ;; :- :dinsro.specs/register-request
-   ]
+  "Register a user"
+  [data]
+  (create-user-response data)
   (ok))

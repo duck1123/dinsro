@@ -1,6 +1,6 @@
 (ns dinsro.routes.authentication
   (:require [compojure.api.sweet :refer [context GET POST DELETE PATCH]]
-            ;; [dinsro.actions.authentication :refer [authenticate register]]
+            [dinsro.actions.authentication :refer [#_authenticate register]]
             [dinsro.layout :as layout]
             ;; [dinsro.middleware :as middleware]
             [dinsro.models :as m]
@@ -14,4 +14,11 @@
   (layout/render "home.html"))
 
 (defn authentication-routes []
-  (list ["/authenticate" {:post {:handler authenticate-handler}}]))
+  (list
+   ["/authenticate" {:post {:handler authenticate-handler
+                            ;; :body [authentication-data m/AuthenticationData]
+                            }}]
+   ["/register" {:post register
+                 ;;           :summary "Register"
+                 ;;           :body [params m/RegistrationData]
+                 }]))
