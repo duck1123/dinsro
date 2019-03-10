@@ -39,7 +39,7 @@
 
 ;; -------------------------
 ;; Routes
-(secretary/set-config! :prefix "#")
+;; (secretary/set-config! :prefix "")
 
 (secretary/defroute home-path "/" []
   (swap! session assoc :page :home))
