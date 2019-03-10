@@ -22,8 +22,8 @@
 (defn fetch-users
   [users-state]
   (ajax/GET "/api/v1/users"
-    {:response-format :json
-     :handler (fn [r] (reset! users-state r))}))
+            {:response-format :json
+             :handler (fn [r] (reset! users-state r))}))
 
 (defn users-page
   []

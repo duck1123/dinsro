@@ -1,6 +1,5 @@
 (ns dinsro.handler
   (:require
-   [dinsro.env :refer [defaults]]
    [dinsro.layout :refer [error-page]]
             [dinsro.middleware :as middleware]
             [dinsro.routes.authentication :refer [authentication-routes]]

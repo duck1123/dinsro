@@ -39,8 +39,7 @@
            :label "name"
            :auto-complete "name"
            :value (:name @s "")
-           :on-change (fn [e]
-                        (swap! s assoc :name e.target.value))
+           :on-change (fn [e] (swap! s assoc :name e.target.value))
            :margin "normal"}]]
         [:div
          [ui/text-field
@@ -48,8 +47,7 @@
            :label "email"
            :auto-complete "email"
            :value (:email @s "")
-           :on-change (fn [e]
-                        (swap! s assoc :email e.target.value))
+           :on-change (fn [e] (swap! s assoc :email e.target.value))
            :margin "normal"}]]
         [:div
          [ui/text-field
@@ -58,8 +56,7 @@
            :type "password"
            :value (:password @s)
            :autoComplete "current-password"
-           :on-change (fn [e]
-                        (swap! s assoc :password e.target.value))
+           :on-change (fn [e] (swap! s assoc :password e.target.value))
            :margin "normal"}]]
         [:div
          [ui/text-field
@@ -68,8 +65,7 @@
            :type "password"
            :value (:confirm-password @s)
            :autoComplete "current-password"
-           :on-change (fn [e]
-                        (swap! s assoc :confirm-password e.target.value))
+           :on-change (fn [e] (swap! s assoc :confirm-password e.target.value))
            :margin "normal"}]]
         [:div
          [ui/button

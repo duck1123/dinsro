@@ -36,7 +36,6 @@
   (when repl-server
     (repl/stop repl-server)))
 
-
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
     (timbre/info component "stopped"))

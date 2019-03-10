@@ -10,8 +10,8 @@
   :once
   (fn [f]
     (mount/start
-      #'dinsro.config/env
-      #'dinsro.db.core/*db*)
+     #'dinsro.config/env
+     #'dinsro.db.core/*db*)
     (migrations/migrate ["migrate"] (select-keys env [:database-url]))
     (f)))
 
