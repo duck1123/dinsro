@@ -78,7 +78,6 @@
    :headers {"Content-Type" "text/plain"}
    :body    (str "Access to " (:uri request) " is not authorized")})
 
-
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
                      :on-error on-error}))
