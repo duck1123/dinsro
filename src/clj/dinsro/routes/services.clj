@@ -1,11 +1,18 @@
 (ns dinsro.routes.services
-  (:require [ring.util.http-response :refer :all]
-            [compojure.api.sweet :refer :all]
-            [schema.core :as s]))
+  (:require [compojure.api.sweet :refer :all]
+            [dinsro.routes.authentication :refer [authentication-routes]]
+            [dinsro.routes.users :refer [users-routes]]))
 
-(defapi service-routes
-  {:swagger {:ui "/swagger-ui"
-             :spec "/swagger.json"
-             :data {:info {:version "1.0.0"
-                           :title "Dinsro"
-                           :description "Sample Services"}}}})
+(def site-info
+  {:version "1.0.0"
+   :title "Dinsro"
+   :description "Sample Services"})
+
+(def service-routes
+  (api
+   {:swagger {:ui "/swagger-ui"
+              :spec "/swagger.json"
+              :data {:info site-info}}}
+
+   authentication-routes
+   users-routes))

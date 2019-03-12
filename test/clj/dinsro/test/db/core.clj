@@ -18,19 +18,17 @@
 (deftest test-users
   (jdbc/with-db-transaction [t-conn *db*]
     (jdbc/db-set-rollback-only! t-conn)
-    (is (= 1 (db/create-user!
-               t-conn
-               {:id         "1"
-                :first_name "Sam"
-                :last_name  "Smith"
-                :email      "sam.smith@example.com"
-                :pass       "pass"})))
-    (is (= {:id         "1"
-            :first_name "Sam"
-            :last_name  "Smith"
-            :email      "sam.smith@example.com"
-            :pass       "pass"
-            :admin      nil
-            :last_login nil
-            :is_active  nil}
-           (db/get-user t-conn {:id "1"})))))
+    (let [name "Sam"
+          email "sam.smith@example.com"
+          password-hash "pass"
+          params {:name name
+                  :email email
+                  :password_hash password-hash}
+          created-user (db/create-user! t-conn params)
+          id (get created-user :id)
+          response (db/read-user t-conn {:id id})]
+      (doseq [[key expected] [[:id            1]
+                              [:name          name]
+                              [:email         email]
+                              [:password-hash password-hash]]]
+        (is (get response key) expected)))))
