@@ -10,6 +10,8 @@
                  [clj-time "0.15.1"]
                  [cljs-ajax "0.8.0"]
                  [clojure.java-time "0.3.2"]
+                 [com.fasterxml.jackson.core/jackson-core "2.9.8"]
+                 [com.fasterxml.jackson.datatype/jackson-datatype-jdk8 "2.9.8"]
                  [com.h2database/h2 "1.4.199"]
                  [com.taoensso/timbre "4.10.0"]
                  [compojure "1.6.1"]
