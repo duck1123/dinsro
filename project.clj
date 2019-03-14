@@ -34,6 +34,7 @@
                  [org.webjars/bootstrap "4.1.3"]
                  [org.webjars/font-awesome "5.3.1"]
                  [reagent "0.8.1"]
+                 [re-material-ui-1 "0.1.0-SNAPSHOT"]
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.7.0"]
                  [ring/ring-defaults "0.3.2"]

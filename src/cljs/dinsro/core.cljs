@@ -2,34 +2,20 @@
   (:require [ajax.core :refer [GET POST]]
             [dinsro.ajax :refer [load-interceptors!]]
             [dinsro.components :as c]
+            [dinsro.components.navbar :refer [navbar]]
+            [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
             [markdown.core :refer [md->html]]
             [reagent.core :as r]
+            [re-material-ui-1.core :as ui]
             [secretary.core :as secretary :include-macros true])
   (:import goog.History))
 
-(defonce session (r/atom {:page :home}))
-
-(defn nav-link [uri title page]
-  [:li.nav-item
-   {:class (when (= page (:page @session)) "active")}
-   [:a.nav-link {:href uri} title]])
-
-(defn navbar []
-  [:nav.navbar.navbar-dark.bg-primary.navbar-expand-md
-   {:role "navigation"}
-   [:button.navbar-toggler.hidden-sm-up
-    {:type "button"
-     :data-toggle "collapse"
-     :data-target "#collapsing-navbar"}
-    [:span.navbar-toggler-icon]]
-   [:a.navbar-brand {:href "#/"} "dinsro"]
-   [:div#collapsing-navbar.collapse.navbar-collapse
-    [:ul.nav.navbar-nav.mr-auto
-     [nav-link "#/" "Home" :home]
-     [nav-link "#/users" "Users" :users]
-     [nav-link "#/about" "About" :about]]]])
+;; create a new theme based on the dark theme from Material UI
+(defonce theme-defaults
+  {:theme
+   (ui/create-mui-theme-fn (clj->js {:type "light"}))})
 
 (defn home-page []
   (c/home-page (:docs @session)))
@@ -43,7 +29,12 @@
    :about #'c/about-page})
 
 (defn page []
-  [(pages (:page @session))])
+  [ui/mui-theme-provider theme-defaults
+   [ui/grid {:container true}
+    [ui/grid {:item true :xs 1}
+     [navlist]]
+    [ui/grid {:item true :xs 11}
+     [(pages (:page @session))]]]])
 
 ;; -------------------------
 ;; Routes
