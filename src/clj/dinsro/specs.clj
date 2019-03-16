@@ -7,19 +7,18 @@
   (re-matches #"^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$" jwt))
 
 (defn uuid-str-gen []
-  (gen/fmap (fn [uuid] (.toString uuid)) (s/gen uuid?)))
+  (gen/fmap str (s/gen uuid?)))
 
 (defn valid-uuid-str?
   "Ensures a match of the original uuid str with the result of coercing that str to
   and from a uuid"
   [uuid-str]
   (let [as-uuid (java.util.UUID/fromString uuid-str)]
-    (= uuid-str (.toString as-uuid))))
+    (= uuid-str (str as-uuid))))
 
 (def non-empty-string-alphanumeric
   "Generator for non-empty alphanumeric strings"
-  (gen/such-that #(not= "" %)
-    (gen/string-alphanumeric)))
+  (gen/such-that #(not= "" %) (gen/string-alphanumeric)))
 
 (def email-gen
   "Generator for email addresses"
@@ -32,24 +31,14 @@
       non-empty-string-alphanumeric)))
 
 (s/def ::message string?)
-(s/def ::id
-  (s/with-gen
-    valid-uuid-str?
-    #(uuid-str-gen)))
+(s/def ::id (s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::username string?)
-(s/def ::email
-  (s/with-gen
-    #(re-matches #".+@.+\..+" %)
-    (fn [] email-gen)))
+(s/def ::name string?)
+(s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen)))
 (s/def ::password (s/and string? #(< 7 (count %))))
 (s/def ::permissions string?)
-(s/def ::token (s/with-gen
-                 valid-jwt?
-                 #(s/gen #{"J9.eyJ.5n"})))
-(s/def ::refresh-token
-  (s/with-gen
-    valid-uuid-str?
-    #(uuid-str-gen)))
+(s/def ::token (s/with-gen valid-jwt? #(s/gen #{"J9.eyJ.5n"})))
+(s/def ::refresh-token (s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::exp int?)
 ;; = Auth ======================================================================
 (s/def ::auth-response (s/keys :req-un [::id ::username ::permissions ::token ::refresh-token]))
@@ -71,10 +60,7 @@
 (s/def ::request-reset-request (s/keys :req-un [::useruser-email ::from-email ::subject ::email-body-html ::email-body-plain ::response-base-link]))
 (s/def ::request-reset-response (s/keys :req-un [::message]))
 ;; = Password Reset ============================================================
-(s/def ::resetKey
-  (s/with-gen
-    valid-uuid-str?
-    #(uuid-str-gen)))
+(s/def ::resetKey (s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::new-password ::password)
 (s/def ::reset-request (s/keys :req-un [::resetKey ::new-password]))
 (s/def ::reset-response (s/keys :req-un [::message]))

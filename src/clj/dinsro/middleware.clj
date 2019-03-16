@@ -42,13 +42,13 @@
 (def joda-time-writer
   (transit/write-handler
     (constantly "m")
-    (fn [v] (-> ^ReadableInstant v .getMillis))
-    (fn [v] (-> ^ReadableInstant v .getMillis .toString))))
+    (fn [^ReadableInstant v] (.getMillis v))
+    (fn [^ReadableInstant v] (str (.getMillis v)))))
 
 (cheshire/add-encoder
   org.joda.time.DateTime
   (fn [c jsonGenerator]
-    (.writeString jsonGenerator (-> ^ReadableInstant c .toString))))
+    (.writeString jsonGenerator (str c))))
 
 (def restful-format-options
   (update
