@@ -2,7 +2,7 @@
   (:require [ajax.core :refer [GET POST]]
             [dinsro.ajax :refer [load-interceptors!]]
             [dinsro.components :as c]
-            [dinsro.components.navbar :refer [navbar]]
+            [dinsro.components.navbar :refer [navbar navlist]]
             [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
@@ -40,14 +40,14 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
+(secretary/defroute home-path "/" []
   (swap! session assoc :page :home))
 
-(secretary/defroute "/users" []
-  (swap! session assoc :page :users))
-
-(secretary/defroute "/about" []
+(secretary/defroute about-path "/about" []
   (swap! session assoc :page :about))
+
+(secretary/defroute users-path "/users" []
+  (swap! session assoc :page :users))
 
 ;; -------------------------
 ;; History
@@ -62,15 +62,11 @@
 
 ;; -------------------------
 ;; Initialize app
-(defn fetch-docs! []
-  (GET "/docs" {:handler #(swap! session assoc :docs %)}))
-
 (defn mount-components []
   (r/render [#'navbar] (.getElementById js/document "navbar"))
   (r/render [#'page] (.getElementById js/document "app")))
 
 (defn init! []
   (load-interceptors!)
-  (fetch-docs!)
   (hook-browser-navigation!)
   (mount-components))
