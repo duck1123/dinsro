@@ -30,4 +30,3 @@ SELECT * FROM transactions
 -- :name list-users :? :many
 -- :doc retrieves all users
 SELECT * FROM users
-WHERE id = :id
