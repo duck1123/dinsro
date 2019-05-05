@@ -1,4 +1,4 @@
-FROM java:8-alpine
+FROM openjdk:8-alpine
 MAINTAINER Daniel E. Renfer <duck@kronkltd.net>
 
 ADD target/uberjar/dinsro.jar /dinsro/app.jar

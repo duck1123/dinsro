@@ -1,5 +1,6 @@
 (ns dinsro.core
   (:require [dinsro.handler :as handler]
+            [dinsro.nrepl :as nrepl]
             [luminus.repl-server :as repl]
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
@@ -49,19 +50,4 @@
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
-  (mount/start #'dinsro.config/env)
-  (cond
-    (nil? (:database-url env))
-    (do
-      (log/error "Database configuration not found, :database-url environment variable must be set before running")
-      (System/exit 1))
-    (some #{"init"} args)
-    (do
-      (migrations/init (select-keys env [:database-url :init-script]))
-      (System/exit 0))
-    (migrations/migration? args)
-    (do
-      (migrations/migrate args (select-keys env [:database-url]))
-      (System/exit 0))
-    :else
-    (start-app args)))
+  (start-app args))
