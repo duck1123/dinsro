@@ -1,4 +1,4 @@
-(ns dinsro.test.handler
+(ns dinsro.handler-test
   (:require [clojure.test :refer :all]
             [ring.mock.request :refer :all]
             [dinsro.handler :refer :all]
