@@ -6,8 +6,7 @@
 
 (defn default-headers [request]
   (if (local-uri? request)
-    (-> request
-        (update :headers #(merge {"x-csrf-token" js/csrfToken} %)))
+    (update request :headers #(merge {"x-csrf-token" js/csrfToken} %))
     request))
 
 (defn load-interceptors! []
