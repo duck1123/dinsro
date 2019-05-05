@@ -1,4 +1,4 @@
-(ns dinsro.test.db.core
+(ns dinsro.db.core-test
   (:require [dinsro.db.core :refer [*db*] :as db]
             [luminus-migrations.core :as migrations]
             [clojure.test :refer :all]
