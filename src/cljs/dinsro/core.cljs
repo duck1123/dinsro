@@ -66,7 +66,9 @@
   (r/render [#'navbar] (.getElementById js/document "navbar"))
   (r/render [#'page] (.getElementById js/document "app")))
 
-(defn init! []
+(defn init!
+  "initialize the application"
+  []
   (load-interceptors!)
   (hook-browser-navigation!)
   (mount-components))
