@@ -14,13 +14,9 @@
       response/ok
       (response/header "Content-Type" "text/plain; charset=utf-8")))
 
-(defn authenticate-handler
-  [request]
-  (println "authenticate")
-  (layout/render "home.html"))
-
 (defn home-routes []
-  ["" {:middleware [middleware/wrap-csrf
+  ["" {:middleware [
+                    ;; middleware/wrap-csrf
                     middleware/wrap-formats]}
    #_["/swagger.json"
     {:get {:no-doc true
@@ -29,7 +25,4 @@
            :handler (swagger/create-swagger-handler)}}]
 
    ["/" {:get home-page}]
-   ["/api/v1"
-    ["/authenticate" {:post authenticate-handler}]
-    ]
    ["/docs" {:get docs-page}]])

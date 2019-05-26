@@ -5,12 +5,14 @@
             [dinsro.middleware :as middleware]
             [dinsro.routes.authentication :refer [authentication-routes]]
             [dinsro.routes.home :refer [home-routes]]
-            [dinsro.routes.services :refer [service-routes]]
+            ;; [dinsro.routes.services :refer [service-routes]]
             [compojure.core :refer [routes wrap-routes]]
             [compojure.route :as route]
             [dinsro.env :refer [defaults]]
             [mount.core :as mount]
+            [reitit.coercion.spec]
             [reitit.ring :as ring]
+            [reitit.ring.coercion :as rrc]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.webjars :refer [wrap-webjars]]))
 
@@ -24,7 +26,10 @@
    (ring/ring-handler
     (ring/router
      [(home-routes)
-      (authentication-routes)])
+      (authentication-routes)]
+     {:data {:middleware [rrc/coerce-exceptions-middleware
+                          rrc/coerce-request-middleware
+                          rrc/coerce-response-middleware]}})
     (ring/routes
      (ring/create-resource-handler
       {:path "/"})

@@ -61,8 +61,8 @@
   (-> ((:middleware defaults) handler)
       ;; wrap-webjars
       wrap-flash
-      (wrap-authorization auth-backend)
-      (wrap-authentication auth-backend)
+      ;; (wrap-authorization auth-backend)
+      ;; (wrap-authentication auth-backend)
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-defaults
        (-> site-defaults
