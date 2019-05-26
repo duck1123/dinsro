@@ -4,7 +4,7 @@
             [mount.core :as mount]
             [ring.mock.request :refer :all]))
 
-  (def url-root "/api/v1")
+(def url-root "/api/v1")
 
 (use-fixtures
   :once
