@@ -18,11 +18,5 @@
   ["" {:middleware [
                     ;; middleware/wrap-csrf
                     middleware/wrap-formats]}
-   #_["/swagger.json"
-    {:get {:no-doc true
-           :swagger {:info {:title "my-api"
-                            :description "with reitit-ring"}}
-           :handler (swagger/create-swagger-handler)}}]
-
    ["/" {:get home-page}]
    ["/docs" {:get docs-page}]])
