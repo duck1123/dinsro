@@ -8,10 +8,12 @@
             [cognitect.transit :as transit]
             [clojure.tools.logging :as log]
             [dinsro.config :refer [env]]
+            [dinsro.env :refer [defaults]]
             [dinsro.layout :refer [error-page]]
             [dinsro.middleware.formats :as formats]
             [immutant.web.middleware :refer [wrap-session]]
             [muuntaja.core :as muuntaja]
+            ;; [muuntaja.format.json :refer [json-format]]
             [muuntaja.format.transit :as transit-format]
             [muuntaja.middleware :refer [wrap-format wrap-params]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
@@ -61,8 +63,8 @@
   (-> ((:middleware defaults) handler)
       ;; wrap-webjars
       wrap-flash
-      (wrap-authorization auth-backend)
-      (wrap-authentication auth-backend)
+      ;; (wrap-authorization auth-backend)
+      ;; (wrap-authentication auth-backend)
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-defaults
        (-> site-defaults

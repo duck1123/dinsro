@@ -15,7 +15,8 @@
       (response/header "Content-Type" "text/plain; charset=utf-8")))
 
 (defn home-routes []
-  ["" {:middleware [middleware/wrap-csrf
+  ["" {:middleware [
+                    ;; middleware/wrap-csrf
                     middleware/wrap-formats]}
    ["/" {:get home-page}]
    ["/docs" {:get docs-page}]])

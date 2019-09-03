@@ -8,7 +8,8 @@
             [cider.nrepl :refer [cider-nrepl-handler]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
-            [mount.core :as mount])
+            [mount.core :as mount]
+            [taoensso.timbre :as timbre])
   (:gen-class))
 
 (def cli-options
@@ -38,7 +39,7 @@
 
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
-    (log/info component "stopped"))
+    (timbre/info component "stopped"))
   (shutdown-agents))
 
 (defn start-app [args]
@@ -46,8 +47,23 @@
                         (parse-opts cli-options)
                         mount/start-with-args
                         :started)]
-    (log/info component "started"))
+    (timbre/info component "started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
-  (start-app args))
+  (mount/start #'dinsro.config/env)
+  (cond
+    (nil? (:database-url env))
+    (do
+      (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
+      (System/exit 1))
+    (some #{"init"} args)
+    (do
+      (migrations/init (select-keys env [:database-url :init-script]))
+      (System/exit 0))
+    (migrations/migration? args)
+    (do
+      (migrations/migrate args (select-keys env [:database-url]))
+      (System/exit 0))
+    :else
+    (start-app args)))
