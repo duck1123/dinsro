@@ -1,23 +1,25 @@
 (ns dinsro.middleware
   (:require [buddy.auth :refer [authenticated?]]
-            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth.backends.session :refer [session-backend]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [dinsro.env :refer [defaults]]
             [cheshire.generate :as cheshire]
             [cognitect.transit :as transit]
             [clojure.tools.logging :as log]
+            [dinsro.config :refer [env]]
+            [dinsro.env :refer [defaults]]
             [dinsro.layout :refer [error-page]]
-            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-            [ring.middleware.webjars :refer [wrap-webjars]]
+            [dinsro.middleware.formats :as formats]
+            [immutant.web.middleware :refer [wrap-session]]
             [muuntaja.core :as muuntaja]
-            [muuntaja.format.json :refer [json-format]]
+            ;; [muuntaja.format.json :refer [json-format]]
             [muuntaja.format.transit :as transit-format]
             [muuntaja.middleware :refer [wrap-format wrap-params]]
-            [dinsro.config :refer [env]]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [ring.middleware.flash :refer [wrap-flash]]
-            [immutant.web.middleware :refer [wrap-session]]
-            [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
+            [ring.middleware.webjars :refer [wrap-webjars]])
   (:import [javax.servlet ServletContext]
            [org.joda.time ReadableInstant]))
 
@@ -39,35 +41,8 @@
        {:status 403
         :title "Invalid anti-forgery token"})}))
 
-(def joda-time-writer
-  (transit/write-handler
-    (constantly "m")
-    (fn [v] (-> ^ReadableInstant v .getMillis))
-    (fn [v] (-> ^ReadableInstant v .getMillis .toString))))
-
-(cheshire/add-encoder
-  org.joda.time.DateTime
-  (fn [c jsonGenerator]
-    (.writeString jsonGenerator (-> ^ReadableInstant c .toString))))
-
-(def restful-format-options
-  (update
-    muuntaja/default-options
-    :formats
-    merge
-    {"application/json"
-     json-format
-
-     "application/transit+json"
-     {:decoder [(partial transit-format/make-transit-decoder :json)]
-      :encoder [#(transit-format/make-transit-encoder
-                   :json
-                   (merge
-                     %
-                     {:handlers {org.joda.time.DateTime joda-time-writer}}))]}}))
-
 (defn wrap-formats [handler]
-  (let [wrapped (-> handler wrap-params (wrap-format restful-format-options))]
+  (let [wrapped (-> handler wrap-params (wrap-format formats/instance))]
     (fn [request]
       ;; disable wrap-formats for websockets
       ;; since they're not compatible with this middleware
@@ -86,10 +61,10 @@
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
-      wrap-webjars
+      ;; wrap-webjars
       wrap-flash
-      (wrap-authorization auth-backend)
-      (wrap-authentication auth-backend)
+      ;; (wrap-authorization auth-backend)
+      ;; (wrap-authentication auth-backend)
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-defaults
        (-> site-defaults

@@ -11,13 +11,20 @@
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
-(defn start []
+(defn start
+  "Starts application.
+  You'll usually want to run this on startup."
+  []
   (mount/start-without #'dinsro.core/repl-server))
 
-(defn stop []
+(defn stop
+  "Stops application."
+  []
   (mount/stop-except #'dinsro.core/repl-server))
 
-(defn restart []
+(defn restart
+  "Restarts application."
+  []
   (stop)
   (start))
 

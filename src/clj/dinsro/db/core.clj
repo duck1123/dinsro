@@ -12,13 +12,14 @@
 
 (defn result-one-snake->kebab
   [this result options]
-  (->> (hugsql.adapter/result-one this result options)
-       (transform-keys ->kebab-case-keyword)))
+  (transform-keys
+   ->kebab-case-keyword
+   (hugsql.adapter/result-one this result options)))
 
 (defn result-many-snake->kebab
   [this result options]
-  (->> (hugsql.adapter/result-many this result options)
-       (map #(transform-keys ->kebab-case-keyword %))))
+  (map #(transform-keys ->kebab-case-keyword %)
+       (hugsql.adapter/result-many this result options)))
 
 (defmethod hugsql.core/hugsql-result-fn :1 [sym]
   'dinsro.db.core/result-one-snake->kebab)

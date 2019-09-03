@@ -2,7 +2,10 @@
   (:require [ajax.core :refer [GET POST]]
             [dinsro.ajax :refer [load-interceptors!]]
             [dinsro.components :as c]
+            [dinsro.components.login-page :refer [login-page]]
             [dinsro.components.navbar :refer [navbar navlist]]
+            [dinsro.components.register :refer [registration-page]]
+            [dinsro.components.user :as users]
             [dinsro.state :refer [session]]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
@@ -17,16 +20,15 @@
   {:theme
    (ui/create-mui-theme-fn (clj->js {:type "light"}))})
 
-(defn home-page []
-  (c/home-page (:docs @session)))
-
-(defn users-page []
-  (c/users-page session))
-
 (def pages
-  {:home #'home-page
-   :users #'users-page
-   :about #'c/about-page})
+  {
+   :about     #'c/about-page
+   :home      #'c/home-page
+   :login     #'login-page
+   :register  #'registration-page
+   :show-user #'users/show-user
+   :users     #'users/users-page
+   })
 
 (defn page []
   [ui/mui-theme-provider theme-defaults
@@ -38,7 +40,7 @@
 
 ;; -------------------------
 ;; Routes
-(secretary/set-config! :prefix "#")
+;; (secretary/set-config! :prefix "")
 
 (secretary/defroute home-path "/" []
   (swap! session assoc :page :home))
@@ -46,8 +48,18 @@
 (secretary/defroute about-path "/about" []
   (swap! session assoc :page :about))
 
+(secretary/defroute login-page-path "/login" []
+  (swap! session assoc :page :login))
+
+(secretary/defroute register-path "/register" []
+  (swap! session assoc :page :register))
+
 (secretary/defroute users-path "/users" []
   (swap! session assoc :page :users))
+
+(secretary/defroute user-path "/users/:id" [id]
+  (swap! session assoc :user-id id)
+  (swap! session assoc :page :show-user))
 
 ;; -------------------------
 ;; History
@@ -66,7 +78,9 @@
   (r/render [#'navbar] (.getElementById js/document "navbar"))
   (r/render [#'page] (.getElementById js/document "app")))
 
-(defn init! []
+(defn init!
+  "initialize the application"
+  []
   (load-interceptors!)
   (hook-browser-navigation!)
   (mount-components))
