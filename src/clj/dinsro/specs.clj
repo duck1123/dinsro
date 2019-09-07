@@ -12,7 +12,7 @@
 (defn valid-uuid-str?
   "Ensures a match of the original uuid str with the result of coercing that str to
   and from a uuid"
-  [uuid-str]
+  [^String uuid-str]
   (let [as-uuid (java.util.UUID/fromString uuid-str)]
     (= uuid-str (str as-uuid))))
 
@@ -23,12 +23,12 @@
 (def email-gen
   "Generator for email addresses"
   (gen/fmap
-    (fn [[name host tld]]
-      (str name "@" host "." tld))
-    (gen/tuple
-      non-empty-string-alphanumeric
-      non-empty-string-alphanumeric
-      non-empty-string-alphanumeric)))
+   (fn [[name host tld]]
+     (str name "@" host "." tld))
+   (gen/tuple
+    non-empty-string-alphanumeric
+    non-empty-string-alphanumeric
+    non-empty-string-alphanumeric)))
 
 (s/def ::message string?)
 (s/def ::id (s/with-gen valid-uuid-str? uuid-str-gen))
