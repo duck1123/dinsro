@@ -43,8 +43,9 @@
 ;; = Auth ======================================================================
 (s/def ::auth-response (s/keys :req-un [::id ::username ::permissions ::token ::refresh-token]))
 (s/def ::token-contents (s/keys :req-un [::id ::username ::email ::permissions ::exp]))
+(s/def ::authentication-data (s/keys :req-un [::email ::password]))
 ;; = User ======================================================================
-(s/def ::register-request (s/keys :req-un [::username ::email ::password]))
+(s/def ::register-request (s/keys :req-un [::name ::email ::password]))
 (s/def ::register-response (s/keys :req-un [::username]))
 ;; = Patch User ================================================================
 (s/def ::patch-pass-request (s/keys :req-un [::password]))

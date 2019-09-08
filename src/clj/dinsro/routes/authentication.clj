@@ -14,5 +14,4 @@
   (layout/render "home.html"))
 
 (defn authentication-routes []
-  ["/api/v1" {}
-   ["/authenticate" {:post {:handler authenticate-handler}}]])
+  (list ["/authenticate" {:post {:handler authenticate-handler}}]))

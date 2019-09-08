@@ -26,6 +26,10 @@ DELETE FROM transactions WHERE id = :id
 -- :doc deletes a user record given the id
 DELETE FROM users WHERE id = :id
 
+-- :name delete-users! :!
+-- :doc delete all users
+DELETE FROM users
+
 -- :name read-account :? :1
 -- :doc retrieves an account record given the id
 SELECT * FROM accounts WHERE id = :id

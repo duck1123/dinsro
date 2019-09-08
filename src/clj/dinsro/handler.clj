@@ -6,6 +6,7 @@
             [dinsro.routes.authentication :refer [authentication-routes]]
             [dinsro.routes.home :refer [home-routes]]
             ;; [dinsro.routes.services :refer [service-routes]]
+            [dinsro.routes.user :refer [user-routes]]
             [compojure.core :refer [routes wrap-routes]]
             [compojure.route :as route]
             [dinsro.env :refer [defaults]]
@@ -26,7 +27,9 @@
    (ring/ring-handler
     (ring/router
      [(home-routes)
-      (authentication-routes)]
+      ["/api/v1" {}
+       (user-routes)
+       (authentication-routes)]]
      {:data {:middleware [rrc/coerce-exceptions-middleware
                           rrc/coerce-request-middleware
                           rrc/coerce-response-middleware]}})

@@ -1,7 +1,8 @@
 (ns dinsro.actions.user.list-user
-  (:require [dinsro.db.core :as db]
+  (:require [clojure.data.json :as json]
+            [dinsro.db.core :as db]
             [ring.util.http-response :refer :all]))
 
 (defn list-user-response []
   (let [users (db/list-users)]
-    (ok users)))
+    (content-type (ok (json/json-str users)) "application/json")))
