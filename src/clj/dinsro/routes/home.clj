@@ -10,7 +10,9 @@
   (layout/render "home.html"))
 
 (defn docs-page [request]
-  (-> (io/resource "docs/docs.md" slurp)
+  (-> (io/resource "docs/docs.md")
+      slurp
+      ;; TODO: Convert markdown
       response/ok
       (response/header "Content-Type" "text/plain; charset=utf-8")))
 
