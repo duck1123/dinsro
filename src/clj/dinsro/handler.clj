@@ -5,7 +5,6 @@
             [dinsro.middleware :as middleware]
             [dinsro.routes.authentication :refer [authentication-routes]]
             [dinsro.routes.home :refer [home-routes]]
-            ;; [dinsro.routes.services :refer [service-routes]]
             [dinsro.routes.user :refer [user-routes]]
             [compojure.core :refer [routes wrap-routes]]
             [compojure.route :as route]
