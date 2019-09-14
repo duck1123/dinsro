@@ -3,7 +3,7 @@
             [ring.util.http-response :refer :all]))
 
 (defn read-user-response
-  [userId]
-  (if-let [user (db/read-user {:id userId})]
+  [{{user-id :userId} :path-params}]
+  (if-let [user (db/read-user {:id user-id})]
     (ok user)
     (status (ok) 404)))

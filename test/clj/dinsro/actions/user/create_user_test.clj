@@ -20,4 +20,4 @@
   (let [registration-data {:name "bob"
                            :email "bob@example.com"
                            :password "hunter22"}]
-    (is (create-user-response registration-data))))
+    (is (create-user-response {:registration-data registration-data}))))

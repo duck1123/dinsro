@@ -8,14 +8,17 @@
 (defn prepare-user
   [registration-data]
   (let [{:keys [password]} registration-data]
-    (merge {:password_hash (bcrypt/encrypt password)}
-           registration-data)))
+    (if password
+      (merge {:password_hash (bcrypt/encrypt password)}
+             registration-data)
+      nil)))
 
-(defn create-user-response [registration-data]
+(defn create-user-response
+  [{:keys [registration-data] :as request}]
   {:pre [(s/valid? :dinsro.specs/register-request registration-data)]}
-  (let [user (prepare-user registration-data)]
-    (db/create-user! user))
-  (ok))
+  (if-let [user (prepare-user registration-data)]
+    (do (db/create-user! user)
+        (ok "ok"))))
 
 (s/fdef create-user-response
   :args (s/cat :data :dinsro.specs/register-request))

@@ -22,3 +22,19 @@
           read-body (json/read-str body :key-fn keyword)]
       (is (= 200 status))
       (is (= expected-body read-body)))))
+
+(deftest read-users
+  (testing "successful"
+    (db/delete-users!)
+    (let [name "test"
+          email "duck@kronkltd.net"
+          params {:name name
+                  :email email
+                  :password_hash "foo"}
+          {:keys [id]} (db/create-user! params)
+          path (str "/api/v1/users/" id)
+          {:keys [body status]} (app (request :get path))
+          {received-email :email
+           received-id :id} body]
+      (is (= received-email email))
+      (is (= received-id id)))))

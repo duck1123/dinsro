@@ -35,7 +35,7 @@
 (s/def ::username string?)
 (s/def ::name string?)
 (s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen)))
-(s/def ::password (s/and string? #(< 7 (count %))))
+(s/def ::password string? #_(s/and string? #(< 7 (count %))))
 (s/def ::permissions string?)
 (s/def ::token (s/with-gen valid-jwt? #(s/gen #{"J9.eyJ.5n"})))
 (s/def ::refresh-token (s/with-gen valid-uuid-str? uuid-str-gen))
