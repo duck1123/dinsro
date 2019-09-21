@@ -3,6 +3,7 @@
             [crypto.password.bcrypt :as bcrypt]
             [dinsro.actions.user.create-user :refer [create-user-response]]
             [dinsro.db.core :as db]
+            [dinsro.model.user :as model.user]
             [dinsro.specs :as specs]
             [ring.util.http-response :refer :all]
             [taoensso.timbre :as timbre]))
@@ -29,10 +30,12 @@
 
 (defn register
   "Register a user"
-  [data]
-  ;; {:pre [(s/valid? :dinsro.specs/register-request data)]}
-  (create-user-response (s/assert :dinsro.specs/register-request data))
-  (ok))
+  [{:keys [params] :as request}]
+  (if (s/valid? ::specs/register-request params)
+    (do
+      (model.user/create-user! params)
+      (ok))
+    (bad-request)))
 
 (s/fdef register
-  :args (s/cat :data :dinsro.specs/register-request))
+  :args (s/cat :params :dinsro.specs/register-request))

@@ -37,3 +37,19 @@
            request (-> (mock/request :post path) (mock/json-body body))
            response ((handler/app) request)]
        (is (= status/unauthorized (:status response)))))))
+
+(deftest register-test
+  (let [email "test@example.com"
+        password "hunter2"
+        path (str url-root "/register")]
+    (testing "successful"
+      (db/delete-users!)
+      (let [params {:email email :name "Bob" :password password}
+            request (-> (mock/request :post path) (mock/json-body params))
+            response ((handler/app) request)]
+        (is (= status/ok (:status response)))))
+    (testing "invalid params"
+      (let [params {}
+            request (-> (mock/request :post path) (mock/json-body params))
+            response ((handler/app) request)]
+        (is (= status/bad-request (:status response)))))))
