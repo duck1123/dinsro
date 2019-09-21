@@ -22,7 +22,6 @@
                  [luminus-immutant "0.2.5"]
                  [luminus-migrations "0.6.5"]
                  [luminus-transit "0.1.1"]
-                 [luminus-nrepl "0.1.6"]
                  [luminus/ring-ttl-session "0.3.3"]
                  [markdown-clj "1.10.0"]
                  [metosin/compojure-api "2.0.0-alpha19"]
