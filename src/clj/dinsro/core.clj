@@ -11,6 +11,14 @@
             [taoensso.timbre :as timbre])
   (:gen-class))
 
+;; log uncaught exceptions in threads
+(Thread/setDefaultUncaughtExceptionHandler
+ (reify Thread$UncaughtExceptionHandler
+   (uncaughtException [_ thread ex]
+     (log/error {:what :uncaught-exception
+                 :exception ex
+                 :where (str "Uncaught exception on" (.getName thread))}))))
+
 (def cli-options
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
