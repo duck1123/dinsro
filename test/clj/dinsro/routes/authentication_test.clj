@@ -1,21 +1,21 @@
 (ns dinsro.routes.authentication-test
   (:require [clojure.test :refer :all]
+            [dinsro.config :as config]
             [dinsro.handler :as handler]
             [mount.core :as mount]
-            [ring.mock.request :refer :all]))
+            [ring.mock.request :as mock]))
 
 (def url-root "/api/v1")
 
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'dinsro.config/env
-                 #'dinsro.handler/app)
+    (mount/start #'config/env #'handler/app-routes)
     (f)))
 
 (deftest authenticate-test
   (testing "successful"
-    (let [response (handler/app (request :post (str url-root "/authenticate")))]
+    (let [path (str url-root "/authenticate")
+          request (mock/request :post path)
+          response ((handler/app) request)]
       (is (= 200 (:status response))))))
-
-(deftest register-test)

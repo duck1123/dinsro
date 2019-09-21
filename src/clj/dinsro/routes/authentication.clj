@@ -1,6 +1,5 @@
 (ns dinsro.routes.authentication
-  (:require [compojure.api.sweet :refer [context GET POST DELETE PATCH]]
-            [dinsro.actions.authentication :refer [#_authenticate register]]
+  (:require [dinsro.actions.authentication :refer [authenticate register]]
             [dinsro.layout :as layout]
             ;; [dinsro.middleware :as middleware]
             [dinsro.models :as m]
