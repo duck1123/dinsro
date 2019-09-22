@@ -93,8 +93,7 @@
 
    :project/dev {:jvm-opts ["-Dconf=dev-config.edn"
                             "-Dclojure.spec.check-asserts=true"
-                            "-Dlogback.configurationFile=resources/logback.xml"
-                            ]
+                            "-Dlogback.configurationFile=resources/logback.xml"]
                  :dependencies [[binaryage/devtools "0.9.10"]
                                 [cider/piggieback "0.4.1"]
                                 [com.cemerick/piggieback "0.2.2"]
