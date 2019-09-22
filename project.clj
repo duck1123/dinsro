@@ -147,7 +147,7 @@
                :source-paths ["src/cljc" "src/cljs" "test/cljs"]
                :compiler
                {:output-to "target/test.js"
-                :main "dinsro.doo-runner"
+                :main "starter.doo"
                 :optimizations :none}}]}}
    :profiles/dev {}
    :profiles/test {}})
