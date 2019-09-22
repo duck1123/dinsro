@@ -28,8 +28,8 @@
           created-user (db/create-user! t-conn params)
           id (get created-user :id)
           response (db/read-user t-conn {:id id})]
-      (doseq [[key expected] [[:id            1]
-                              [:name          name]
-                              [:email         email]
-                              [:password-hash password-hash]]]
-        (is (get response key) expected)))))
+      (are [key expected] (= (get response key) expected)
+        :id            id
+        :name          name
+        :email         email
+        :password-hash password-hash))))
