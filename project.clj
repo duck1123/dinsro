@@ -126,7 +126,6 @@
                       :optimizations :none
                       :pretty-print true}}]}
 
-                  :doo {:build "test"}
                   :source-paths ["env/dev/clj"]
                   :resource-paths ["env/dev/resources"]
                   :repl-options {:init-ns user
@@ -136,13 +135,19 @@
    :project/test
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
+    :doo {:debug true
+          :alias {:default [:chrome]}
+          :build "test"
+          :coverage {:packages [dinsro]
+                     ;; :reporter {:check {:global {:statements 100}
+                     ;;                    :each {:statements 60}}}
+                     }}
     :cljsbuild
     {:builds [{:id "test"
                :source-paths ["src/cljc" "src/cljs" "test/cljs"]
                :compiler
                {:output-to "target/test.js"
                 :main "dinsro.doo-runner"
-                :optimizations :whitespace
-                :pretty-print true}}]}}
+                :optimizations :none}}]}}
    :profiles/dev {}
    :profiles/test {}})

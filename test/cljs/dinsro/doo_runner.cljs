@@ -1,5 +1,5 @@
 (ns dinsro.doo-runner
-  (:require [doo.runner :refer-macros [doo-tests]]
-            [dinsro.core-test]))
+  (:require [doo.runner :refer-macros [doo-tests doo-all-tests]]
+            dinsro.core-test))
 
-(doo-tests 'dinsro.core-test)
+(doo-all-tests #"dinsro\..*(?:-test)$")
