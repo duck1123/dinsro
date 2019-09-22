@@ -37,6 +37,7 @@
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
                  [reagent "0.8.1"]
+                 [re-material-ui-1 "0.1.0-SNAPSHOT"]
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.7.1"]
                  [ring/ring-defaults "0.3.2"]
