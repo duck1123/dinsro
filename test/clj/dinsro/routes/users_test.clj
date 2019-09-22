@@ -1,5 +1,6 @@
 (ns dinsro.routes.users-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.data.json :as json]
+            [clojure.test :refer :all]
             [ring.mock.request :as mock]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -33,7 +34,15 @@
           path (str "/api/v1/users/" id)
           request (mock/request :get path)
           {:keys [body status]} ((handler/app) request)
-          {received-email :email
-           received-id :id} body]
-      (is (= received-email email))
-      (is (= received-id id)))))
+          received-user (json/read-str (slurp body) :key-fn keyword)
+          {received-email :email received-id :id} received-user]
+      (are [a b] (= a b)
+        received-email email
+        received-id    id)))
+  (testing "not found"
+    (db/delete-users!)
+    (let [id 1
+          path (str "/api/v1/users/" id)
+          request (mock/request :get path)
+          {:keys [status]} ((handler/app) request)]
+      (is (= status 404) "Should return a not-found response"))))

@@ -30,6 +30,10 @@ DELETE FROM users WHERE id = :id
 -- :doc delete all users
 DELETE FROM users
 
+-- :name find-user-by-email :? :1
+-- :dock returns the user with a given email
+SELECT * FROM users WHERE email = :email
+
 -- :name read-account :? :1
 -- :doc retrieves an account record given the id
 SELECT * FROM accounts WHERE id = :id

@@ -4,7 +4,8 @@
             [taoensso.timbre :as timbre]))
 
 (defn read-user-response
-  [{{user-id :userId} :path-params}]
-  (if-let [user (db/read-user {:id user-id})]
-    (ok user)
-    (status (ok) 404)))
+  [request]
+  (let [{{user-id :userId} :path-params} request]
+    (if-let [user (db/read-user {:id user-id})]
+      (ok user)
+      (status (ok) 404))))

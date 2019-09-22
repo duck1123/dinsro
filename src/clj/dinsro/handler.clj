@@ -21,7 +21,8 @@
   (ring/ring-handler
    (ring/router
     [(home-routes)
-     ["/api/v1" {}
+     ["/api/v1" {:middleware [#_middleware/wrap-csrf
+                              middleware/wrap-formats]}
       (user-routes)
       (authentication-routes)]])
    (ring/routes
