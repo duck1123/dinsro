@@ -4,7 +4,8 @@
             [clojure.test :refer :all]
             [clojure.java.jdbc :as jdbc]
             [dinsro.config :refer [env]]
-            [mount.core :as mount]))
+            [mount.core :as mount]
+            [taoensso.timbre :as timbre]))
 
 (use-fixtures
   :once

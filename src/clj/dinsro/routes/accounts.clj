@@ -7,7 +7,8 @@
             [dinsro.middleware.authenticated :refer [authenticated-mw]]
             [dinsro.models :as m]
             [ring.util.http-response :refer :all]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [taoensso.timbre :as timbre]))
 
 (def account-routes
   (context "/api/v1/accounts" []

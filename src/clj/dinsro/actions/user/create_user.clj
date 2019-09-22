@@ -3,7 +3,8 @@
             [crypto.password.bcrypt :as bcrypt]
             [dinsro.db.core :as db]
             dinsro.specs
-            [ring.util.http-response :refer :all]))
+            [ring.util.http-response :refer :all]
+            [taoensso.timbre :as timbre]))
 
 (defn prepare-user
   [registration-data]
