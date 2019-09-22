@@ -1,6 +1,5 @@
 (ns dinsro.routes.users-test
-  (:require [clojure.data.json :as json]
-            [clojure.test :refer :all]
+  (:require [clojure.test :refer :all]
             [ring.mock.request :as mock]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -20,10 +19,9 @@
     (let [path "/api/v1/users"
           request (mock/request :get path)
           {:keys [body status]} ((handler/app) request)
-          expected-body []
-          read-body (json/read-str body :key-fn keyword)]
+          expected-body []]
       (is (= 200 status))
-      (is (= expected-body read-body)))))
+      (is (= expected-body body)))))
 
 (deftest read-users
   (testing "successful"
