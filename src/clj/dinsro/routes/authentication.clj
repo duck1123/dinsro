@@ -1,20 +1,18 @@
 (ns dinsro.routes.authentication
   (:require [dinsro.actions.authentication :refer [authenticate register]]
             [dinsro.layout :as layout]
-            ;; [dinsro.middleware :as middleware]
             [dinsro.models :as m]
-            [reitit.coercion.spec]
-            [reitit.ring.coercion :as rrc]
-            [reitit.ring :as ring]))
+            [taoensso.timbre :as timbre]))
 
 (defn authenticate-handler
   [request]
-  (println "authenticate")
-  (layout/render "home.html"))
+  (let [{:keys [authentication-data]} request]
+    (authenticate (assoc request :authentication-data authentication-data))))
 
 (defn authentication-routes []
   (list
    ["/authenticate" {:post {:handler authenticate-handler
+                            :summary "Authenticate"
                             ;; :body [authentication-data m/AuthenticationData]
                             }}]
    ["/register" {:post register

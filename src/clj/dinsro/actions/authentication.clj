@@ -4,17 +4,25 @@
             [dinsro.actions.user.create-user :refer [create-user-response]]
             [dinsro.db.core :as db]
             [dinsro.specs :as specs]
-            [ring.util.http-response :refer :all]))
+            [ring.util.http-response :refer :all]
+            [taoensso.timbre :as timbre]))
+
+(defn check-auth
+  [email password]
+  {:pre [(s/valid? ::specs/email email)]}
+  (if-let [user (db/find-user-by-email {:email email})]
+    (let [{:keys [password-hash]} user]
+      (bcrypt/check password password-hash))))
+
+(s/fdef check-auth
+  :args (s/cat :email ::specs/email))
 
 (defn authenticate
-  [authentication-data]
-  (let [{:keys [email password]} authentication-data]
-    (let [user (db/read-user {:id 1})
-          {:keys [password-hash]} user
-          {:keys [password]} authentication-data
-          hassed-password (bcrypt/check password password-hash)]
-      (println hassed-password))
-    (ok)))
+  [request]
+  (let [{{:keys [email password]} :params} request]
+    (if (check-auth email password)
+      (ok)
+      (unauthorized))))
 
 (s/fdef authenticate
   :args (s/cat :authentication-data :dinsro.specs/authentication-data))
