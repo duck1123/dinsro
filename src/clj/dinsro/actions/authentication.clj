@@ -26,7 +26,7 @@
       (unauthorized))))
 
 (s/fdef authenticate
-  :args (s/cat :authentication-data :dinsro.specs/authentication-data))
+  :args (s/cat :authentication-data ::specs/authentication-data))
 
 (defn register
   "Register a user"
@@ -38,4 +38,4 @@
     (bad-request)))
 
 (s/fdef register
-  :args (s/cat :params :dinsro.specs/register-request))
+  :args (s/cat :params ::specs/register-request))
