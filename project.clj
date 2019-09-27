@@ -54,7 +54,6 @@
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.11"]
-            [lein-immutant "2.1.0"]
             [lein-kibit "0.1.2"]]
 
   :clean-targets
