@@ -1,5 +1,6 @@
 (ns dinsro.view
-  (:require [dinsro.components.login-page :as login]
+  (:require [dinsro.components.accounts-page :as index-accounts]
+            [dinsro.components.login-page :as login]
             [dinsro.components.register :as register]
             [dinsro.components.user :as index-users]
             [dinsro.views.about :as about]
@@ -75,21 +76,23 @@
       [nav-burger]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start
-       [nav-link "Users" :index-users-page]]
+       [nav-link "Accounts"    :index-accounts-page]
+       [nav-link "Users"       :users]]
       [:div.navbar-end
-       [nav-link "About" :about-page]
+       [nav-link "About"       :about-page]
        (when (not authenticated)
          [:<>
-          [nav-link "Login" :login]
+          [nav-link "Login"    :login]
           [nav-link "Register" :register-page]])]]]))
 
 (defn root-component []
   [:div
    [navbar]
    [kf/switch-route (fn [route] (get-in route [:data :name]))
-    :about-page       about/page
-    :home-page        home/page
-    :index-users-page index-users/page
-    :login-page       login/page
-    :register-page    register/page
-    nil               [:div ""]]])
+    :about-page          about/page
+    :home-page           home/page
+    :index-accounts-page index-accounts/page
+    :index-users-page    index-users/page
+    :login-page          login/page
+    :register-page       register/page
+    nil                  [:div ""]]])

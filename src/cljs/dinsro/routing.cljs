@@ -4,6 +4,7 @@
 (def routes
   [["/"          :home-page]
    ["/about"     :about-page]
+   ["/accounts"  :index-accounts-page]
    ["/api/v1"
     ["/accounts" :api-index-accounts]
     ["/users"    :api-index-users]]
