@@ -1,22 +1,12 @@
 (ns dinsro.components.user
   (:require [ajax.core :as ajax]
             [dinsro.state :refer [session]]
+            [re-frame.core :refer [subscribe dispatch]]
             [reagent.core :as r]))
 
 (defn index-users
   [users]
-  [:div
-   ;; [list-user-accounts {:id id}]
-   #_[ui/menu-list
-    (for [user users]
-      (let [id (get user "id")]
-        [ui/list-item {:key id
-                       :button true
-                       :component "a"
-                       :href (str "#/users/" id)}
-         [ui/list-item-text
-          [:span
-           (get user "name")]]]))]])
+  [:div])
 
 (defn fetch-users
   [users-state]
@@ -26,12 +16,10 @@
 
 (defn users-page
   []
-  [:div
-   [:h1 "Users Page"]
-   #_[index-users @users-state]
-   #_(let [users-state (r/atom [])]
-       (fetch-users users-state)
-       (fn []))])
+  (let [s @(subscribe [:users])]
+    [:div
+     [:h1 "Users Page"]
+     [index-users s]]))
 
 (defn show-user
   []

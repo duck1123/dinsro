@@ -1,6 +1,7 @@
 (ns dinsro.view
-  (:require [dinsro.components.login-page :refer [login-page]]
+  (:require [dinsro.components.login-page :as login]
             [dinsro.components.register :as register]
+            [dinsro.components.user :as index-users]
             [dinsro.views.about :as about]
             [dinsro.views.home :as home]
             [kee-frame.core :as kf]
@@ -73,7 +74,8 @@
       [auth-toggle-button]
       [nav-burger]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
-      [:div.navbar-start]
+      [:div.navbar-start
+       [nav-link "Users" :index-users-page]]
       [:div.navbar-end
        [nav-link "About" :about-page]
        (when (not authenticated)
@@ -85,8 +87,9 @@
   [:div
    [navbar]
    [kf/switch-route (fn [route] (get-in route [:data :name]))
-    :about-page     about/page
-    :home-page      home/page
-    :login          login-page
-    ::register/page register/page
-    nil             [:div ""]]])
+    :about-page       about/page
+    :home-page        home/page
+    :index-users-page index-users/page
+    :login-page       login/page
+    :register-page    register/page
+    nil               [:div ""]]])

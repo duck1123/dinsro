@@ -8,7 +8,8 @@
     ["/accounts" :api-index-accounts]
     ["/users"    :api-index-users]]
    ["/login"     :login-page]
-   ["/register"  :register-page]])
+   ["/register"  :register-page]
+   ["/users"     :index-users-page]])
 
 (rf/reg-sub
  :nav/route
