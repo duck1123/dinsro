@@ -6,5 +6,4 @@
 (defn list-user-response
   [request]
   (let [users (db/list-users)]
-    (-> (ok users)
-        (content-type "application/json"))))
+    (ok {:users users})))

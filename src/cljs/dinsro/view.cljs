@@ -1,5 +1,5 @@
 (ns dinsro.view
-  (:require [dinsro.components.user :refer [users-page]]
+  (:require [dinsro.components.login-page :refer [login-page]]
             [kee-frame.core :as kf]
             [markdown.core :refer [md->html]]
             [re-frame.core :as rf]
@@ -61,13 +61,15 @@
         :aria-expanded false
         :on-click #(rf/dispatch [:toggle-navbar])
         :class (when expanded? :is-active)}
-       [:span][:span][:span]]]
-     [:div#nav-menu.navbar-menu
-      {:class (when expanded? :is-active)}
-      [:div.navbar-start
-       [nav-link "Home" :home]]
+       [:span {:aria-hidden true}]
+       [:span {:aria-hidden true}]
+       [:span {:aria-hidden true}]]]
+     [:div.navbar-menu {:class (when expanded? :is-active)}
+      [:div.navbar-start]
       [:div.navbar-end
-       [nav-link "About" :about]]]]))
+       [nav-link "About" :about]
+       (if (not authenticated)
+         [nav-link (str "Login " authenticated) :login])]]]))
 
 (defn about-page []
   [:section.section>div.container>div.content
@@ -83,4 +85,5 @@
    [kf/switch-route (fn [route] (get-in route [:data :name]))
     :home home-page
     :about about-page
+    :login login-page
     nil [:div ""]]])

@@ -6,5 +6,5 @@
 (defn user-routes  []
   ["/users" {}
    [""        {:get  {:handler list-user-response}
-                :post {:handler create-user-response}}]
+               :post {:handler create-user-response}}]
    ["/:userId" {:get  {:handler read-user-response}}]])
