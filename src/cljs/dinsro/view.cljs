@@ -77,12 +77,13 @@
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start
        [nav-link "Accounts"    :index-accounts-page]
-       [nav-link "Users"       :users]]
+       [nav-link "Users"       :index-users-page]]
       [:div.navbar-end
        [nav-link "About"       :about-page]
-       (when (not authenticated)
+       (if authenticated
+         [nav-link "Settings"  :settings-page]
          [:<>
-          [nav-link "Login"    :login]
+          [nav-link "Login"    :login-page]
           [nav-link "Register" :register-page]])]]]))
 
 (defn root-component []
@@ -95,4 +96,5 @@
     :index-users-page    index-users/page
     :login-page          login/page
     :register-page       register/page
+    :settings-page       settings/page
     nil                  [:div ""]]])

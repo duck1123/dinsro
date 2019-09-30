@@ -10,6 +10,7 @@
     ["/users"    :api-index-users]]
    ["/login"     :login-page]
    ["/register"  :register-page]
+   ["/settings"  :settings-page]
    ["/users"     :index-users-page]])
 
 (rf/reg-sub
