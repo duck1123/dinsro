@@ -1,7 +1,6 @@
 (ns dinsro.components.login-page
   (:require [ajax.core :as ajax]
-            [reagent.core :as r]
-            [re-material-ui-1.core :as ui]))
+            [reagent.core :as r]))
 
 (def container-styles
   {:display "flex"
@@ -10,7 +9,8 @@
 
 (defn form-item
   [body]
-  [ui/grid {:item true :xs 12} body])
+  [:div body]
+  #_[ui/grid {:item true :xs 12} body])
 
 (defn handle-submit
   [params]
@@ -24,7 +24,7 @@
     (fn []
       [:div
        [:h1 "Login Page"]
-       [ui/grid {:container true :alignItems "center" :justify "center"}
+       #_[ui/grid {:container true :alignItems "center" :justify "center"}
         [ui/grid {:item true :xs 6}
          [ui/paper
           [:form

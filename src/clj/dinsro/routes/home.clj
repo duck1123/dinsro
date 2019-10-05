@@ -2,7 +2,6 @@
   (:require [dinsro.layout :as layout]
             [dinsro.db.core :as db]
             [dinsro.middleware :as middleware]
-            [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]))
 

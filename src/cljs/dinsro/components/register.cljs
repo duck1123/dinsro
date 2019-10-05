@@ -1,7 +1,6 @@
 (ns dinsro.components.register
   (:require [ajax.core :as ajax]
-            [reagent.core :as r]
-            [re-material-ui-1.core :as ui]))
+            [reagent.core :as r]))
 
 (def default-registration-info
   {:email "bob@example.com"
@@ -36,7 +35,7 @@
     [:div
      [:p s]]
     [:div
-     [ui/text-field
+     #_[ui/text-field
       {:id "name"
        :label "name"
        :auto-complete "name"
@@ -44,7 +43,7 @@
        :on-change (fn [e] (swap! s assoc :name e.target.value))
        :margin "normal"}]]
     [:div
-     [ui/text-field
+     #_[ui/text-field
       {:id "email"
        :label "email"
        :auto-complete "email"
@@ -52,7 +51,7 @@
        :on-change (fn [e] (swap! s assoc :email e.target.value))
        :margin "normal"}]]
     [:div
-     [ui/text-field
+     #_[ui/text-field
       {:id "password"
        :label "Password"
        :type "password"
@@ -61,7 +60,7 @@
        :on-change (fn [e] (swap! s assoc :password e.target.value))
        :margin "normal"}]]
     [:div
-     [ui/text-field
+     #_[ui/text-field
       {:id "confirmPassword"
        :label "Confirm Password"
        :type "password"
@@ -70,7 +69,7 @@
        :on-change (fn [e] (swap! s assoc :confirm-password e.target.value))
        :margin "normal"}]]
     [:div
-     [ui/button
+     #_[ui/button
       {:variant "raised"
        :on-click (fn [e]
                    (js/console.log "clicked" @s)

@@ -4,7 +4,6 @@
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
             [dinsro.config :refer [env]]
-            [cider.nrepl :refer [cider-nrepl-handler]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [mount.core :as mount]
@@ -36,9 +35,8 @@
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)
-    (nrepl/start { :bind (env :nrepl-bind)
-                  :port (env :nrepl-port)
-                   :handler cider-nrepl-handler }))
+    (nrepl/start {:bind (env :nrepl-bind)
+                  :port (env :nrepl-port)}))
   :stop
   (when repl-server
     (nrepl/stop repl-server)))

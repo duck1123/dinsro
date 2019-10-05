@@ -1,86 +1,53 @@
 (ns dinsro.core
-  (:require [ajax.core :refer [GET POST]]
-            [dinsro.ajax :refer [load-interceptors!]]
-            [dinsro.components :as c]
-            [dinsro.components.login-page :refer [login-page]]
-            [dinsro.components.navbar :refer [navbar navlist]]
-            [dinsro.components.register :refer [registration-page]]
-            [dinsro.components.user :as users]
-            [dinsro.state :refer [session]]
-            [goog.events :as events]
-            [goog.history.EventType :as HistoryEventType]
-            [markdown.core :refer [md->html]]
-            [reagent.core :as r]
-            [re-material-ui-1.core :as ui]
-            [secretary.core :as secretary :include-macros true])
-  (:import goog.History))
+  (:require [ajax.core :as http]
+            [dinsro.ajax :as ajax]
+            [dinsro.routing :as routing]
+            [dinsro.view :as view]
+            [kee-frame.core :as kf]
+            [re-frame.core :as rf]))
 
-;; create a new theme based on the dark theme from Material UI
-(defonce theme-defaults
-  {:theme
-   (ui/create-mui-theme-fn (clj->js {:type "light"}))})
+(rf/reg-event-fx
+  ::load-about-page
+  (constantly nil))
 
-(def pages
-  {
-   :about     #'c/about-page
-   :home      #'c/home-page
-   :login     #'login-page
-   :register  #'registration-page
-   :show-user #'users/show-user
-   :users     #'users/users-page
-   })
+(kf/reg-controller
+  ::about-controller
+  {:params (constantly true)
+   :start  [::load-about-page]})
 
-(defn page []
-  [ui/mui-theme-provider theme-defaults
-   [ui/grid {:container true}
-    [ui/grid {:item true :xs 1}
-     [navlist]]
-    [ui/grid {:item true :xs 11}
-     [(pages (:page @session))]]]])
+(rf/reg-sub
+  :docs
+  (fn [db _]
+    (:docs db)))
 
-;; -------------------------
-;; Routes
-;; (secretary/set-config! :prefix "")
+(kf/reg-chain
+  ::load-home-page
+  (fn [_ _]
+    {:http-xhrio {:method          :get
+                  :uri             "/docs"
+                  :response-format (http/raw-response-format)
+                  :on-failure      [:common/set-error]}})
+  (fn [{:keys [db]} [_ docs]]
+    {:db (assoc db :docs docs)}))
 
-(secretary/defroute home-path "/" []
-  (swap! session assoc :page :home))
 
-(secretary/defroute about-path "/about" []
-  (swap! session assoc :page :about))
-
-(secretary/defroute login-page-path "/login" []
-  (swap! session assoc :page :login))
-
-(secretary/defroute register-path "/register" []
-  (swap! session assoc :page :register))
-
-(secretary/defroute users-path "/users" []
-  (swap! session assoc :page :users))
-
-(secretary/defroute user-path "/users/:id" [id]
-  (swap! session assoc :user-id id)
-  (swap! session assoc :page :show-user))
-
-;; -------------------------
-;; History
-;; must be called after routes have been defined
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-     HistoryEventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+(kf/reg-controller
+  ::home-controller
+  {:params (constantly true)
+   :start  [::load-home-page]})
 
 ;; -------------------------
 ;; Initialize app
-(defn mount-components []
-  (r/render [#'navbar] (.getElementById js/document "navbar"))
-  (r/render [#'page] (.getElementById js/document "app")))
+(defn ^:dev/after-load mount-components
+  ([] (mount-components true))
+  ([debug?]
+    (rf/clear-subscription-cache!)
+    (kf/start! {:debug?         (boolean debug?)
+                :routes         routing/routes
+                :hash-routing?  true
+                :initial-db     {}
+                :root-component [view/root-component]})))
 
-(defn init!
-  "initialize the application"
-  []
-  (load-interceptors!)
-  (hook-browser-navigation!)
-  (mount-components))
+(defn init! [debug?]
+  (ajax/load-interceptors!)
+  (mount-components debug?))
