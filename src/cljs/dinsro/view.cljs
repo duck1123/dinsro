@@ -15,7 +15,7 @@
   (r/with-let [expanded? (r/atom false)]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
-      [:a.navbar-item {:href "/"} "Dinsro"]
+      [:a.navbar-item {:href "/" :style {:font-weight :bold}} "Dinsro"]
       [:div.navbar-burger.burger
        {:role :button
         :aria-label :menu
