@@ -5,6 +5,16 @@
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
+(rf/reg-sub
+ :navbar-expanded
+ (fn [db _] (get db :navbar-expanded)))
+
+(rf/reg-event-db
+ :toggle-navbar
+ (fn [db [_ _]]
+   ;; TODO: I think this is a stream
+   (assoc db :navbar-expanded (not (get db :navbar-expanded)))))
+
 (defn nav-link [title page]
   [:a.navbar-item
    {:href   (kf/path-for [page])
@@ -12,19 +22,21 @@
    title])
 
 (defn navbar []
-  (r/with-let [expanded? (r/atom false)]
+  (let [expanded? @(rf/subscribe [:navbar-expanded])]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
-      [:a.navbar-item {:href "/" :style {:font-weight :bold}} "Dinsro"]
+      [:a.navbar-item
+       {:href "/" :style {:font-weight :bold}}
+       "Dinsro"]
       [:div.navbar-burger.burger
        {:role :button
         :aria-label :menu
         :aria-expanded false
-        :on-click #(swap! expanded? not)
-        :class (when @expanded? :is-active)}
+        :on-click #(rf/dispatch [:toggle-navbar])
+        :class (when expanded? :is-active)}
        [:span][:span][:span]]]
      [:div#nav-menu.navbar-menu
-      {:class (when @expanded? :is-active)}
+      {:class (when expanded? :is-active)}
       [:div.navbar-start
        [nav-link "Home" :home]]
       [:div.navbar-end
