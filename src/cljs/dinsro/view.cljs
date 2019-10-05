@@ -26,9 +26,9 @@
      [:div#nav-menu.navbar-menu
       {:class (when @expanded? :is-active)}
       [:div.navbar-start
-       [nav-link "Home" :home]]]
-     [:div.navbar-end
-      [nav-link "About" :about]]]))
+       [nav-link "Home" :home]]
+      [:div.navbar-end
+       [nav-link "About" :about]]]]))
 
 (defn about-page []
   [:section.section>div.container>div.content
