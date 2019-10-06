@@ -1,5 +1,6 @@
 (ns dinsro.components.register
   (:require [ajax.core :as ajax]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [reagent.core :as r]))
 
 (def default-registration-info

@@ -71,6 +71,7 @@
   :profiles
   {:uberjar {:omit-source true
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+             :dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]
              :cljsbuild
              {:builds [{:id "min"
                         :source-paths ["src/cljc" "src/cljs" "env/prod/cljs"]
@@ -97,6 +98,8 @@
                  :dependencies [[binaryage/devtools "0.9.10"]
                                 [cider/piggieback "0.4.1"]
                                 [clj-webdriver/clj-webdriver "0.7.2"]
+                                [day8.re-frame/re-frame-10x "0.4.1"]
+                                [day8.re-frame/tracing "0.5.1"]
                                 [doo "0.1.11"]
                                 [figwheel-sidecar "0.5.19"]
                                 [org.apache.httpcomponents/httpcore "4.4"]
@@ -104,7 +107,6 @@
                                 [org.seleniumhq.selenium/selenium-server "2.48.2" :exclusions [org.bouncycastle/bcprov-jdk15on org.bouncycastle/bcpkix-jdk15on]]
                                 [pjstadig/humane-test-output "0.9.0"]
                                 [prone "2019-07-08"]
-                                [re-frisk "0.5.4.1"]
                                 [ring/ring-devel "1.7.1"]
                                 [ring/ring-mock "0.4.0"]]
 
@@ -124,8 +126,9 @@
                       :output-dir "target/cljsbuild/public/js/out"
                       :source-map true
                       :optimizations :none
-                      :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
-                      :preloads [re-frisk.preload]
+                      :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
+                                        "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+                      :preloads [day8.re-frame-10x.preload]
                       :pretty-print true}}]}
 
                  :doo {:build "test"}
