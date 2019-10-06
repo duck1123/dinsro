@@ -1,5 +1,10 @@
 (ns dinsro.view
-  (:require [dinsro.components.navbar :refer [navbar]]
+  (:require [dinsro.components.about :as about]
+            [dinsro.components.accounts-page :as accounts]
+            [dinsro.components.login-page :as login]
+            [dinsro.components.navbar :refer [navbar]]
+            [dinsro.components.register :as register]
+            [dinsro.components.settings :as settings]
             [dinsro.components.index-users :as index-users]
             [dinsro.views.about :as about]
             [dinsro.views.accounts :as index-accounts]
@@ -22,4 +27,5 @@
     :index-users-page    index-users/page
     :login-page          login/page
     :register-page       register/page
+    :settings-page       settings/page
     nil                  [:div ""]]])
