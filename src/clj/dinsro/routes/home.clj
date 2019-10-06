@@ -2,7 +2,6 @@
   (:require [dinsro.layout :as layout]
             [dinsro.db.core :as db]
             [dinsro.middleware :as middleware]
-            [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]))
 
@@ -10,7 +9,9 @@
   (layout/render "home.html"))
 
 (defn docs-page [request]
-  (-> (io/resource "docs/docs.md" slurp)
+  (-> (io/resource "docs/docs.md")
+      slurp
+      ;; TODO: Convert markdown
       response/ok
       (response/header "Content-Type" "text/plain; charset=utf-8")))
 

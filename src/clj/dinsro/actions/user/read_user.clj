@@ -1,9 +1,11 @@
 (ns dinsro.actions.user.read-user
   (:require [dinsro.db.core :as db]
-            [ring.util.http-response :refer :all]))
+            [ring.util.http-response :refer :all]
+            [taoensso.timbre :as timbre]))
 
 (defn read-user-response
-  [userId]
-  (if-let [user (db/read-user {:id userId})]
-    (ok user)
-    (status (ok) 404)))
+  [request]
+  (let [{{user-id :userId} :path-params} request]
+    (if-let [user (db/read-user {:id user-id})]
+      (ok user)
+      (status (ok) 404))))

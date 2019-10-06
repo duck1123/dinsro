@@ -1,18 +1,21 @@
 (ns dinsro.routes.authentication
-  (:require [compojure.api.sweet :refer [context GET POST DELETE PATCH]]
-            ;; [dinsro.actions.authentication :refer [authenticate register]]
+  (:require [dinsro.actions.authentication :refer [authenticate register]]
             [dinsro.layout :as layout]
-            ;; [dinsro.middleware :as middleware]
             [dinsro.models :as m]
-            [reitit.coercion.spec]
-            [reitit.ring.coercion :as rrc]
-            [reitit.ring :as ring]))
+            [taoensso.timbre :as timbre]))
 
 (defn authenticate-handler
   [request]
-  (println "authenticate")
-  (layout/render "home.html"))
+  (let [{:keys [authentication-data]} request]
+    (authenticate (assoc request :authentication-data authentication-data))))
 
 (defn authentication-routes []
-  ["/api/v1" {}
-   ["/authenticate" {:post {:handler authenticate-handler}}]])
+  (list
+   ["/authenticate" {:post {:handler authenticate-handler
+                            :summary "Authenticate"
+                            ;; :body [authentication-data m/AuthenticationData]
+                            }}]
+   ["/register" {:post register
+                 ;;           :summary "Register"
+                 ;;           :body [params m/RegistrationData]
+                 }]))

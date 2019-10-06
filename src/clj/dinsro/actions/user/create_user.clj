@@ -1,15 +1,15 @@
 (ns dinsro.actions.user.create-user
-  (:require [crypto.password.bcrypt :as bcrypt]
-            [dinsro.db.core :as db]
-            [ring.util.http-response :refer :all]))
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.model.user :as model.user]
+            dinsro.specs
+            [ring.util.http-response :refer :all]
+            [taoensso.timbre :as timbre]))
 
-(defn prepare-user
-  [registration-data]
-  (let [{:keys [password]} registration-data]
-    (merge {:password_hash (bcrypt/encrypt password)}
-           registration-data)))
+(defn create-user-response
+  [{:keys [registration-data] :as request}]
+  {:pre [(s/valid? :dinsro.specs/register-request registration-data)]}
+  (if (model.user/create-user! registration-data)
+    (ok "ok")))
 
-(defn create-user-response [registration-data]
-  (let [user (prepare-user registration-data)]
-    (db/create-user! user))
-  (ok))
+(s/fdef create-user-response
+  :args (s/cat :data :dinsro.specs/register-request))

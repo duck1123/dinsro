@@ -1,4 +1,5 @@
 (ns user
+  "Userspace functions you can run by default in your local REPL."
   (:require [dinsro.config :refer [env]]
             [clojure.spec.alpha :as s]
             [expound.alpha :as expound]

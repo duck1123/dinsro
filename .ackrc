@@ -1,4 +1,5 @@
 --ignore-dir=.idea
+--ignore-dir=coverage
 --ignore-dir=public/js
 --ignore-dir=app/tmp
 --ignore-dir=log

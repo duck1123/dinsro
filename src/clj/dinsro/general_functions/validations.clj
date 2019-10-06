@@ -1,6 +1,5 @@
 (ns dinsro.general-functions.validations
-    (:require
-     [compojure.api.coercion.spec :as cs]))
+  (:require [compojure.api.coercion.spec :as cs]))
 
 (def spec
   (cs/create-coercion

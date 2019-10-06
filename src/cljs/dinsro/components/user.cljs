@@ -1,14 +1,13 @@
 (ns dinsro.components.user
   (:require [ajax.core :as ajax]
             [dinsro.state :refer [session]]
-            [reagent.core :as r]
-            [re-material-ui-1.core :as ui]))
+            [reagent.core :as r]))
 
 (defn index-users
   [users]
   [:div
    ;; [list-user-accounts {:id id}]
-   [ui/menu-list
+   #_[ui/menu-list
     (for [user users]
       (let [id (get user "id")]
         [ui/list-item {:key id
@@ -22,17 +21,17 @@
 (defn fetch-users
   [users-state]
   (ajax/GET "/api/v1/users"
-    {:response-format :json
-     :handler (fn [r] (reset! users-state r))}))
+            {:response-format :json
+             :handler (fn [r] (reset! users-state r))}))
 
 (defn users-page
   []
-  (let [users-state (r/atom [])]
-    (fetch-users users-state)
-    (fn []
-      [:div
-       [:h1 "Users"]
-       [index-users @users-state]])))
+  [:div
+   [:h1 "Users Page"]
+   #_[index-users @users-state]
+   #_(let [users-state (r/atom [])]
+       (fetch-users users-state)
+       (fn []))])
 
 (defn show-user
   []

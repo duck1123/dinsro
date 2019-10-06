@@ -1,10 +1,11 @@
 (ns dinsro.db.core
   (:require [camel-snake-kebab.extras :refer [transform-keys]]
             [camel-snake-kebab.core :refer [->kebab-case-keyword]]
-            [clj-time.jdbc]
+            [clj-time.jdbc :as jdbc]
             [conman.core :as conman]
+            [dinsro.config :refer [env]]
             [mount.core :refer [defstate]]
-            [dinsro.config :refer [env]]))
+            [java-time.pre-java8 :as jt]))
 
 (defstate ^:dynamic *db*
           :start (conman/connect! {:jdbc-url (env :database-url)})

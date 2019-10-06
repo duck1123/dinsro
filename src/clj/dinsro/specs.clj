@@ -12,7 +12,7 @@
 (defn valid-uuid-str?
   "Ensures a match of the original uuid str with the result of coercing that str to
   and from a uuid"
-  [uuid-str]
+  [^String uuid-str]
   (let [as-uuid (java.util.UUID/fromString uuid-str)]
     (= uuid-str (str as-uuid))))
 
@@ -23,19 +23,19 @@
 (def email-gen
   "Generator for email addresses"
   (gen/fmap
-    (fn [[name host tld]]
-      (str name "@" host "." tld))
-    (gen/tuple
-      non-empty-string-alphanumeric
-      non-empty-string-alphanumeric
-      non-empty-string-alphanumeric)))
+   (fn [[name host tld]]
+     (str name "@" host "." tld))
+   (gen/tuple
+    non-empty-string-alphanumeric
+    non-empty-string-alphanumeric
+    non-empty-string-alphanumeric)))
 
 (s/def ::message string?)
 (s/def ::id (s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::username string?)
 (s/def ::name string?)
 (s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen)))
-(s/def ::password (s/and string? #(< 7 (count %))))
+(s/def ::password string? #_(s/and string? #(< 7 (count %))))
 (s/def ::permissions string?)
 (s/def ::token (s/with-gen valid-jwt? #(s/gen #{"J9.eyJ.5n"})))
 (s/def ::refresh-token (s/with-gen valid-uuid-str? uuid-str-gen))
@@ -43,8 +43,9 @@
 ;; = Auth ======================================================================
 (s/def ::auth-response (s/keys :req-un [::id ::username ::permissions ::token ::refresh-token]))
 (s/def ::token-contents (s/keys :req-un [::id ::username ::email ::permissions ::exp]))
+(s/def ::authentication-data (s/keys :req-un [::email ::password]))
 ;; = User ======================================================================
-(s/def ::register-request (s/keys :req-un [::username ::email ::password]))
+(s/def ::register-request (s/keys :req-un [::name ::email ::password]))
 (s/def ::register-response (s/keys :req-un [::username]))
 ;; = Patch User ================================================================
 (s/def ::patch-pass-request (s/keys :req-un [::password]))

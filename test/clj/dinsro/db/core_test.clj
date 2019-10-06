@@ -1,17 +1,18 @@
-(ns dinsro.test.db.core
+(ns dinsro.db.core-test
   (:require [dinsro.db.core :refer [*db*] :as db]
             [luminus-migrations.core :as migrations]
             [clojure.test :refer :all]
             [clojure.java.jdbc :as jdbc]
             [dinsro.config :refer [env]]
-            [mount.core :as mount]))
+            [mount.core :as mount]
+            [taoensso.timbre :as timbre]))
 
 (use-fixtures
   :once
   (fn [f]
     (mount/start
-      #'dinsro.config/env
-      #'dinsro.db.core/*db*)
+     #'dinsro.config/env
+     #'dinsro.db.core/*db*)
     (migrations/migrate ["migrate"] (select-keys env [:database-url]))
     (f)))
 
@@ -27,8 +28,8 @@
           created-user (db/create-user! t-conn params)
           id (get created-user :id)
           response (db/read-user t-conn {:id id})]
-      (doseq [[key expected] [[:id            1]
-                              [:name          name]
-                              [:email         email]
-                              [:password-hash password-hash]]]
-        (is (get response key) expected)))))
+      (are [key expected] (= (get response key) expected)
+        :id            id
+        :name          name
+        :email         email
+        :password-hash password-hash))))

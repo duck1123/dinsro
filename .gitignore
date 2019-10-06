@@ -13,8 +13,10 @@ test-config.edn
 test-results/
 /classes
 /checkouts
+/coverage
 /lib
 /log
+/out
 /pom.xml
 /public/js/
 /resources/public/js/

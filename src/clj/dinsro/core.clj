@@ -1,16 +1,22 @@
 (ns dinsro.core
   (:require [dinsro.handler :as handler]
             [dinsro.nrepl :as nrepl]
-            [luminus.repl-server :as repl]
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
             [dinsro.config :refer [env]]
-            [cider.nrepl :refer [cider-nrepl-handler]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [mount.core :as mount]
             [taoensso.timbre :as timbre])
   (:gen-class))
+
+;; log uncaught exceptions in threads
+(Thread/setDefaultUncaughtExceptionHandler
+ (reify Thread$UncaughtExceptionHandler
+   (uncaughtException [_ thread ex]
+     (log/error {:what :uncaught-exception
+                 :exception ex
+                 :where (str "Uncaught exception on" (.getName thread))}))))
 
 (def cli-options
   [["-p" "--port PORT" "Port number"
@@ -20,7 +26,7 @@
   :start
   (http/start
     (-> env
-        (assoc  :handler #'handler/app)
+        (assoc :handler (handler/app))
         (update :io-threads #(or % (* 2 (.availableProcessors (Runtime/getRuntime)))))
         (update :port #(or (-> env :options :port) %))))
   :stop
@@ -29,13 +35,11 @@
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)
-    (repl/start { :bind (env :nrepl-bind)
-                  :port (env :nrepl-port)
-                   :handler cider-nrepl-handler }))
+    (nrepl/start {:bind (env :nrepl-bind)
+                  :port (env :nrepl-port)}))
   :stop
   (when repl-server
-    (repl/stop repl-server)))
-
+    (nrepl/stop repl-server)))
 
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
