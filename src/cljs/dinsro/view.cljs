@@ -46,6 +46,19 @@
       :on-click #(rf/dispatch [:toggle-auth])}
      (if authenticated "in" "out")]))
 
+(defn nav-burger
+  []
+  (let [expanded? @(rf/subscribe [:navbar-expanded])]
+    [:div.navbar-burger.burger
+     {:role :button
+      :aria-label :menu
+      :aria-expanded false
+      :on-click #(rf/dispatch [:toggle-navbar])
+      :class (when expanded? :is-active)}
+     [:span {:aria-hidden true}]
+     [:span {:aria-hidden true}]
+     [:span {:aria-hidden true}]]))
+
 (defn navbar []
   (let [authenticated @(rf/subscribe [:authenticated])
         expanded? @(rf/subscribe [:navbar-expanded])]
@@ -55,15 +68,7 @@
        {:href "/" :style {:font-weight :bold}}
        "Dinsro"]
       [auth-toggle-button]
-      [:div.navbar-burger.burger
-       {:role :button
-        :aria-label :menu
-        :aria-expanded false
-        :on-click #(rf/dispatch [:toggle-navbar])
-        :class (when expanded? :is-active)}
-       [:span {:aria-hidden true}]
-       [:span {:aria-hidden true}]
-       [:span {:aria-hidden true}]]]
+      [nav-burger]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start]
       [:div.navbar-end
