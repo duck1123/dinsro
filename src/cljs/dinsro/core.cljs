@@ -19,9 +19,7 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      :hash-routing?  true
-     :initial-db     {::state/authenticated false
-                      ::login-page/email    "foo@example.com"
-                      ::login-page/password "hunter2"}
+     :initial-db     {::state/authenticated false}
      :root-component [view/root-component]})))
 
 (defn init! [debug?]
