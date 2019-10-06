@@ -76,15 +76,15 @@
       [nav-burger]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start
-       [nav-link "Accounts"    :index-accounts-page]
-       [nav-link "Users"       :index-users-page]]
+       (nav-link "Accounts"    :index-accounts-page)
+       (nav-link "Users"       :index-users-page)]
       [:div.navbar-end
-       [nav-link "About"       :about-page]
+       (nav-link "About"       :about-page)
        (if authenticated
-         [nav-link "Settings"  :settings-page]
+         (nav-link "Settings"  :settings-page)
          [:<>
-          [nav-link "Login"    :login-page]
-          [nav-link "Register" :register-page]])]]]))
+          (nav-link "Login"    :login-page)
+          (nav-link "Register" :register-page)])]]]))
 
 (defn root-component []
   [:div
