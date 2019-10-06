@@ -1,5 +1,6 @@
 (ns dinsro.core
   (:require [ajax.core :as http]
+            [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
             [dinsro.routing :as routing]
             [dinsro.view :as view]
