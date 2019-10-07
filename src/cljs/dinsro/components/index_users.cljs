@@ -9,14 +9,33 @@
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))
 
 (kf/reg-event-db
+ :index-users-loaded
+ (fn [db [{users :users}]]
+   (assoc db ::users users)))
+
+(kf/reg-event-db
+ :filter-user
+ (fn [db [_ id]]
+   (->> @(rf/subscribe [::users])
+        (keep #(when (not= (:id %) id) %))
+        (assoc db ::users))))
+
+(kf/reg-event-fx
+ :delete-user-success
+ (fn [cofx [{:keys [id]}]]
+   {:dispatch [:filter-user id]}))
+
+(kf/reg-event-db
  :index-users-failed
  (fn [db _]
    (assoc db :failed true)))
 
 (kf/reg-event-db
- :index-users-loaded
- (fn [db [{users :users}]]
-   (assoc db ::users users)))
+ :delete-user-failure
+ (fn [db [{:keys [id]}]]
+   (-> db
+       (assoc :failed true)
+       (assoc :delete-user-failure-id id))))
 
 (kf/reg-event-fx
  ::do-fetch-users
@@ -30,18 +49,8 @@
     :on-failure      [:index-users-failed]}}))
 
 (kf/reg-event-fx
- :delete-user-success
- (fn [_ _]
-   {}))
-
-(kf/reg-event-fx
- :delete-user-failure
- (fn [_ _]
-   {}))
-
-(kf/reg-event-fx
- ::delete-user
- (fn [_ [{:keys [id] :as user}]]
+ ::do-delete-user
+ (fn [cofx [{:keys [id] :as user}]]
    {:http-xhrio
     {:uri             (str "/api/v1/users/" id)
      :method          :delete

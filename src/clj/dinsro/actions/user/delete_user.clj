@@ -7,4 +7,4 @@
   [request]
   (let [user-id (Integer/parseInt (:userId (:path-params request)))]
     (db/delete-user! {:id user-id})
-    (ok)))
+    (ok {:id user-id})))
