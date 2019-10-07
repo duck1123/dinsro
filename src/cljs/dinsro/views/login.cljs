@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.string :as string]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components :as c]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -13,16 +14,6 @@
 (rf/reg-sub :state :state)
 
 (rf/reg-sub
- :failure
- (fn [db _] (rf/subscribe [:state]))
- (fn [state _] (case state
-                 :email-required "email required"
-                 :password-required "password required"
-                 :user-not-exist "user not found"
-                 :invalid-password "invalid password"
-                 nil)))
-
-(rf/reg-sub
  :login-disabled?
  (fn [db _] (rf/subscribe [:state]))
  (fn [state _] (not= state :ready)))
@@ -31,25 +22,6 @@
  :no-email
  (fn [db _] (rf/subscribe [::email]))
  (fn [email _] (string/blank? email)))
-
-(def login-state-machine
-  {nil         {:init               :ready}
-   :ready      {:login-no-password  :password-required
-                :login-no-email     :email-required
-                :try-login          :logging-in}
-   :logging-in {:login-bad-password :invalid-password}})
-
-(defn next-state
-  [state-machine current-state transition]
-  (get-in state-machine [current-state transition]))
-
-(defn update-next-state
-  [db event]
-  (update db :state (partial next-state login-state-machine) event))
-
-(defn handle-next-state
-  [db [event _]]
-  (update-next-state db event))
 
 (rf/reg-event-db
  :change-email
@@ -98,21 +70,8 @@
   [:div.section
    [:div.container
     [:form.is-centered
-     [:div.field
-      [:label.label "Email"]
-      [:div.control
-       [:input.input
-        {:value @(rf/subscribe [::email])
-         :on-change #(rf/dispatch [:change-email (-> % .-target .-value)])}]]
-      (when-let [failure @(rf/subscribe [:no-email])]
-        [:p.help.is-danger "This email is invalid"])]
-     [:div.field
-      [:label.label "Password"]
-      [:div.control
-       [:input.input
-        {:value @(rf/subscribe [::password])
-         :on-change #(rf/dispatch [:change-password (-> % .-target .-value)])
-         :type "password"}]]]
+     [c/email-input "Email" ::email :change-email]
+     [c/password-input "Password" ::password :change-password]
      [:div.field
       [:div.control
        [:a.button.is-primary
