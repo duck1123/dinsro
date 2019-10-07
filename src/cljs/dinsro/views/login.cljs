@@ -14,6 +14,13 @@
 (rf/reg-sub :state :state)
 
 (rf/reg-sub
+ ::login-data
+ :<- [::email]
+ :<- [::password]
+ (fn [[email password] b]
+   {:email email :password password}))
+
+(rf/reg-sub
  :login-disabled?
  (fn [db _] (rf/subscribe [:state]))
  (fn [state _] (not= state :ready)))
@@ -61,13 +68,12 @@
 (rf/reg-event-fx
  :login-click
  (fn-traced [{:keys [db]} _]
-   (let [email (::email db)
-         password (::password db)]
-     {:db (assoc db :loading true)
-      :dispatch [:submit-login {:email email :password password}]})))
+   {:db (assoc db :loading true)
+    :dispatch [:submit-login @(rf/subscribe [::login-data])]}))
 
 (defn page []
   [:div.section
+   [:p (str @(rf/subscribe [::login-data]))]
    [:div.container
     [:form.is-centered
      [c/email-input "Email" ::email :change-email]
