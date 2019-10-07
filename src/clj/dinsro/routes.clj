@@ -2,6 +2,7 @@
   (:require [dinsro.actions.authentication :as a.authentication]
             [dinsro.actions.home :as a.home]
             [dinsro.actions.user.create-user :refer [create-user-response]]
+            [dinsro.actions.user.delete-user :refer [delete-user-response]]
             [dinsro.actions.user.list-user :refer [list-user-response]]
             [dinsro.actions.user.read-user :refer [read-user-response]]
             [dinsro.middleware :as middleware]))
@@ -16,4 +17,5 @@
     ["/users"
      [""                {:get    list-user-response
                          :post   create-user-response}]
-     ["/:userId"        {:get    read-user-response}]]]])
+     ["/:userId"        {:get    read-user-response
+                         :delete {:handler delete-user-response}}]]]])
