@@ -6,10 +6,12 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::items (fn [db _] (get db ::items [])))
+(rf/reg-sub ::error-message (fn [db _] (get db ::error-message "")))
+(rf/reg-sub ::loading       (fn [db _] (get db ::loading       false)))
+(rf/reg-sub ::items         (fn [db _] (get db ::items         [])))
 
 (kf/reg-event-db
- :index-users-loaded
+ :index-users-success
  (fn [db [{users :users}]]
    (assoc db ::users users)))
 
@@ -45,7 +47,7 @@
     :method          :get
     :timeout         8000
     :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [:index-users-loaded]
+    :on-success      [:index-users-success]
     :on-failure      [:index-users-failed]}}))
 
 (kf/reg-event-fx
@@ -62,7 +64,10 @@
 (kf/reg-event-fx
  ::init-component
  (fn [{:keys [db]} _]
-   {:db (-> db (assoc ::users []))
+   {:db (-> db
+            (assoc :failed false)
+            (assoc ::users [])
+            (assoc ::loading false))
     :dispatch [::do-fetch-users]}))
 
 (kf/reg-controller
@@ -83,7 +88,7 @@
                  :margin-bottom "15px"}}
         [:p "Name: " name]
         [:p "Email " email]
-        [:a.button {:on-click #(rf/dispatch [::delete-user user])} "Delete"]]))
+        [:a.button {:on-click #(rf/dispatch [::do-delete-user user])} "Delete"]]))
     [:div [:p "No Users"]]))
 
 (defn page
