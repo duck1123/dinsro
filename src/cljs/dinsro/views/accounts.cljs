@@ -1,5 +1,7 @@
-(ns dinsro.views.accounts)
+(ns dinsro.views.accounts
+  (:require [taoensso.timbre :as timbre]))
 
 (defn page
   []
-  [:p "Accounts 2"])
+  [:section.section>div.container>div.content
+   [:h1 "Index Accounts"]])
