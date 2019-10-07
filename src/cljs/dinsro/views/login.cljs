@@ -53,7 +53,7 @@
             (assoc :loading false))}))
 
 (rf/reg-event-fx
- :submit-login
+ ::do-authenticate
  (fn [_ [_ data]]
    {:http-xhrio
     {:method :post
@@ -69,7 +69,7 @@
  :login-click
  (fn-traced [{:keys [db]} _]
    {:db (assoc db :loading true)
-    :dispatch [:submit-login @(rf/subscribe [::login-data])]}))
+    :dispatch [::do-authenticate @(rf/subscribe [::login-data])]}))
 
 (defn page []
   [:div.section
