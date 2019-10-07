@@ -19,24 +19,15 @@
    (assoc db ::users users)))
 
 (kf/reg-event-fx
- ::init-component
- (fn-traced
-  [{:keys [db]} _]
-  (let [users [{:name "bob"} {:name "larry"}]]
-    {:db (-> db (assoc ::items users))
-     :http-xhrio
-     {:uri             "/api/v1/users"
-      :method          :get
-      :timeout         8000
-      :response-format (ajax/json-response-format {:keywords? true})
-      :on-success      [:index-users-loaded]
-      :on-failure      [:index-users-failed]}})))
-
-(kf/reg-controller
- :index-users
- {:params (fn [{{:keys [name]} :data}]
-            (= name ::page))
-  :start [::init-component]})
+ ::do-fetch-users
+ (fn-traced [_ _]
+  {:http-xhrio
+   {:uri             "/api/v1/users"
+    :method          :get
+    :timeout         8000
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [:index-users-loaded]
+    :on-failure      [:index-users-failed]}}))
 
 (kf/reg-event-fx
  :delete-user-success
@@ -59,17 +50,31 @@
      :on-success      [:delete-user-success]
      :on-failure      [:delete-user-failure]}}))
 
+(kf/reg-event-fx
+ ::init-component
+ (fn [{:keys [db]} _]
+   {:db (-> db (assoc ::users []))
+    :dispatch [::do-fetch-users]}))
+
+(kf/reg-controller
+ :index-users
+ {:params (fn [{{:keys [name]} :data}]
+            (= name ::page))
+  :start [::init-component]})
+
 (defn index-users
   [users]
   (if-let [users @(rf/subscribe [::users])]
-    [:div
-     (into
-      [:ul]
-      (for [user users]
-        ^{:key (:id user)}
-        [:li
-         [:a.button {:on-click #(rf/dispatch [::delete-user user])} "Delete"]
-         [:pre [:code (str user)]]]))]
+    (into
+     [:div.section]
+     (for [{:keys [name email] :as user} users]
+       ^{:key (:id user)}
+       [:div.column
+        {:style {:border "1px black solid"
+                 :margin-bottom "15px"}}
+        [:p "Name: " name]
+        [:p "Email " email]
+        [:a.button {:on-click #(rf/dispatch [::delete-user user])} "Delete"]]))
     [:div [:p "No Users"]]))
 
 (defn page
