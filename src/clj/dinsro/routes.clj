@@ -14,7 +14,7 @@
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/authenticate"    {:post   a.authentication/authenticate}]
     ["/register"        {:post   a.authentication/register}]
-    ["/users"
+    ["/users" {:middleware [middleware/wrap-restricted]}
      [""                {:get    list-user-response
                          :post   create-user-response}]
      ["/:userId"        {:get    read-user-response
