@@ -20,9 +20,10 @@
     (let [path "/api/v1/users"
           request (mock/request :get path)
           {:keys [body status]} ((handler/app) request)
-          expected-body []]
+          expected-body {:users []}
+          parsed-body (json/read-str (slurp body) :key-fn keyword)]
       (is (= 200 status))
-      (is (= expected-body body)))))
+      (is (= expected-body parsed-body)))))
 
 (deftest read-users
   (testing "successful"
