@@ -6,8 +6,3 @@
 
 (deftest test-home
   (is (= true true)))
-
-(deftest paths
-  ;; TODO: not good tests
-  (is (= (core/home-path) "/"))
-  (is (= (core/about-path) "/about")))
