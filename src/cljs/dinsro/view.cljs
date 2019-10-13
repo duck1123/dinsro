@@ -1,7 +1,7 @@
 (ns dinsro.view
   (:require [dinsro.components.about :as about]
             [dinsro.components.accounts-page :as accounts]
-            [dinsro.components.login-page :as login]
+            [dinsro.components.login :as login]
             [dinsro.components.navbar :refer [navbar]]
             [dinsro.components.register :as register]
             [dinsro.components.settings :as settings]
@@ -12,9 +12,6 @@
             [dinsro.views.login :as login]
             [dinsro.views.register :as register]
             [kee-frame.core :as kf]
-            [markdown.core :refer [md->html]]
-            [re-frame.core :as rf]
-            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (defn root-component []

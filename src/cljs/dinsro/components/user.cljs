@@ -12,3 +12,8 @@
      [:p "Id: " id]
      [:p "name: " name]
      [:p "email: " email]]))
+
+(defn page
+  []
+  [:section.section>div.container>div.content
+   [:h1 "Show User"]])

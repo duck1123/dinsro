@@ -2,5 +2,5 @@
 
 (defn page
   []
-  [:div
-   [:p "Settings Page"]])
+  [:section.section>div.container>div.content
+   [:h1 "Settings Page"]])
