@@ -1,6 +1,7 @@
 (ns dinsro.routes
   (:require [dinsro.actions.authentication :as a.authentication]
             [dinsro.actions.home :as a.home]
+            [dinsro.actions.status :as actions.status]
             [dinsro.actions.user.create-user :refer [create-user-response]]
             [dinsro.actions.user.delete-user :refer [delete-user-response]]
             [dinsro.actions.user.list-user :refer [list-user-response]]
@@ -14,6 +15,7 @@
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/authenticate"    {:post   a.authentication/authenticate}]
     ["/register"        {:post   a.authentication/register}]
+    ["/status"          {:get    actions.status/status-response}]
     ["/users" {:middleware [middleware/wrap-restricted]}
      [""                {:get    list-user-response
                          :post   create-user-response}]
