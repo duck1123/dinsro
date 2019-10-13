@@ -33,6 +33,7 @@
 (s/def ::message string?)
 (s/def ::id (s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::username string?)
+(s/def ::user-id number?)
 (s/def ::name string?)
 (s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen)))
 (s/def ::password string? #_(s/and string? #(< 7 (count %))))

@@ -16,7 +16,8 @@
             [muuntaja.middleware :refer [wrap-format wrap-params]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
-            [ring-ttl-session.core :refer [ttl-memory-store]])
+            [ring-ttl-session.core :refer [ttl-memory-store]]
+            [taoensso.timbre :as timbre])
   (:import [javax.servlet ServletContext]
            [org.joda.time ReadableInstant]))
 

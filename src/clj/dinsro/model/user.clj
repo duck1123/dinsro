@@ -16,4 +16,4 @@
 (defn create-user!
   [params]
   (if-let [user (prepare-user params)]
-    (db/create-user! user)))
+    (merge user (db/create-user! user))))
