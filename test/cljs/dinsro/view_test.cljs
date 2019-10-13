@@ -3,8 +3,5 @@
             [pjstadig.humane-test-output]
             [dinsro.view :as view]))
 
-(deftest about-page-test
-  (is (vector? (view/about-page))))
-
 (deftest home-page-test
   (is (vector? (view/home-page))))

@@ -1,5 +1,6 @@
 (ns dinsro.view
-  (:require [dinsro.components.login-page :refer [login-page]]
+  (:require [dinsro.components.about :as about]
+            [dinsro.components.login-page :refer [login-page]]
             [kee-frame.core :as kf]
             [markdown.core :refer [md->html]]
             [re-frame.core :as rf]
@@ -72,13 +73,9 @@
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start]
       [:div.navbar-end
-       [nav-link "About" :about]
+       [nav-link "About" ::about/page]
        (if (not authenticated)
          [nav-link (str "Login " authenticated) :login])]]]))
-
-(defn about-page []
-  [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]])
 
 (defn home-page []
   [:section.section>div.container>div.content
@@ -88,7 +85,7 @@
   [:div
    [navbar]
    [kf/switch-route (fn [route] (get-in route [:data :name]))
-    :home home-page
-    :about about-page
-    :login login-page
-    nil [:div ""]]])
+    ::about/page about/page
+    :home        home-page
+    :login       login-page
+    nil          [:div ""]]])

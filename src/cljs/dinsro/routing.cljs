@@ -1,10 +1,10 @@
 (ns dinsro.routing
-  (:require
-   [re-frame.core :as rf]))
+  (:require [dinsro.components.about :as about]
+            [re-frame.core :as rf]))
 
 (def routes
-  [["/" :home]
-   ["/about" :about]
+  [["/"      :home]
+   ["/about" ::about/page]
    ["/login" :login]])
 
 (rf/reg-sub

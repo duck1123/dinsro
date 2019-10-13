@@ -9,15 +9,6 @@
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
-(rf/reg-event-fx
-  ::load-about-page
-  (constantly nil))
-
-(kf/reg-controller
-  ::about-controller
-  {:params (constantly true)
-   :start  [::load-about-page]})
-
 ;; -------------------------
 ;; Initialize app
 (defn ^:dev/after-load mount-components
