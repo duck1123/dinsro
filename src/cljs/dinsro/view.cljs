@@ -1,5 +1,6 @@
 (ns dinsro.view
   (:require [dinsro.components.login-page :refer [login-page]]
+            [dinsro.components.register :as register]
             [dinsro.views.about :as about]
             [dinsro.views.home :as home]
             [kee-frame.core :as kf]
@@ -75,14 +76,17 @@
       [:div.navbar-start]
       [:div.navbar-end
        [nav-link "About" :about-page]
-       (if (not authenticated)
-         [nav-link (str "Login " authenticated) :login-page])]]]))
+       (when (not authenticated)
+         [:<>
+          [nav-link "Login" :login]
+          [nav-link "Register" :register-page]])]]]))
 
 (defn root-component []
   [:div
    [navbar]
    [kf/switch-route (fn [route] (get-in route [:data :name]))
-    :about-page  about/page
-    :home-page   home/page
-    :login-page  login-page
-    nil          [:div ""]]])
+    :about-page     about/page
+    :home-page      home/page
+    :login          login-page
+    ::register/page register/page
+    nil             [:div ""]]])

@@ -2,9 +2,13 @@
   (:require [re-frame.core :as rf]))
 
 (def routes
-  [["/"      :home-page]
-   ["/about" :about-page]
-   ["/login" :login-page]])
+  [["/"          :home-page]
+   ["/about"     :about-page]
+   ["/api/v1"
+    ["/accounts" :api-index-accounts]
+    ["/users"    :api-index-users]]
+   ["/login"     :login-page]
+   ["/register"  :register-page]])
 
 (rf/reg-sub
  :nav/route

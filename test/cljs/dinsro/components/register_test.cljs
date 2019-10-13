@@ -14,10 +14,10 @@
    :after  (fn []
              (set! rv/debug false))})
 
-(deftest registration-page-
-  (is (vector? (register/registration-page- (r/atom {})))))
+;; (deftest registration-page-
+;;   (is (vector? (register/registration-page- (r/atom {})))))
 
-(deftest registration-page-component
+(deftest page-component
   (when r/is-client
     (let [name "Berry"
           email "foo@bar.com"
@@ -27,7 +27,9 @@
                             :email email
                             :password password
                             :confirm-password confirm-password})]
-      (with-mounted-component [register/registration-page- app-step ""]
+      (is (vector? (timbre/spy :info (register/page))))
+
+      #_(with-mounted-component [register/page app-step ""]
         (fn [c div]
           (are [value] (found-in (re-pattern value) div)
             name

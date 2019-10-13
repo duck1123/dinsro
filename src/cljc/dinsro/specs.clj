@@ -36,6 +36,7 @@
 (s/def ::name string?)
 (s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen)))
 (s/def ::password string? #_(s/and string? #(< 7 (count %))))
+(s/def ::password-hash string?)
 (s/def ::permissions string?)
 (s/def ::token (s/with-gen valid-jwt? #(s/gen #{"J9.eyJ.5n"})))
 (s/def ::refresh-token (s/with-gen valid-uuid-str? uuid-str-gen))
@@ -51,6 +52,7 @@
 (s/def ::patch-pass-request (s/keys :req-un [::password]))
 (s/def ::patch-pass-response (s/keys :req-un [::id ::username ::email]))
 (s/def ::change-username-request (s/keys :req-un [::username]))
+(s/def ::user (s/keys :req-un [::name ::email ::password-hash]))
 ;; = Request Password Reset ====================================================
 (s/def ::useruser-email ::email)
 (s/def ::from-email ::email)
