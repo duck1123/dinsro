@@ -1,7 +1,9 @@
 (ns dinsro.components.navbar
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components.logout :as c.logout]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
+            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 ;; Subscriptions
@@ -53,7 +55,9 @@
       [:div.navbar-end
        (nav-link "About"       :about-page)
        (if authenticated
-         (nav-link "Settings"  :settings-page)
+         [:<>
+          (nav-link "Settings" :settings-page)
+          [:a.navbar-item {:on-click #(rf/dispatch [::c.logout/do-logout])} "Logout"]]
          [:<>
           (nav-link "Login"    :login-page)
           (nav-link "Register" :register-page)])]]]))

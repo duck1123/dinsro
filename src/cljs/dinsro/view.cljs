@@ -1,9 +1,5 @@
 (ns dinsro.view
-  (:require [dinsro.components.about :as about]
-            [dinsro.components.accounts-page :as accounts]
-            [dinsro.components.login :as login]
-            [dinsro.components.navbar :refer [navbar]]
-            [dinsro.components.register :as register]
+  (:require [dinsro.components.navbar :refer [navbar]]
             [dinsro.components.settings :as settings]
             [dinsro.components.index-users :as index-users]
             [dinsro.views.about :as about]
