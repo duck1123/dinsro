@@ -4,4 +4,4 @@
 
 (defn status-response
   [request]
-  (ok {:userId 1}))
+  (ok {:identity (get-in request [:session :identity])}))
