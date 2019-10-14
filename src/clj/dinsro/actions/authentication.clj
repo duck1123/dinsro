@@ -20,7 +20,8 @@
   [request]
   (let [{{:keys [email password]} :params :keys [session]} request]
     (if (check-auth email password)
-      (assoc (ok) :session (assoc session :identity email))
+      (assoc (ok {:identity email})
+             :session (assoc session :identity email))
       (unauthorized))))
 
 (defn register

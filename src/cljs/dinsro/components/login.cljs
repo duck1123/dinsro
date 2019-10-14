@@ -8,10 +8,9 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::email ::email)
+(rf/reg-sub ::email    ::email)
 (rf/reg-sub ::password ::password)
-
-(rf/reg-sub :state :state)
+(rf/reg-sub :state     :state)
 
 (rf/reg-sub
  ::login-data
@@ -51,6 +50,11 @@
    {:db (-> db
             (assoc :login-failed true)
             (assoc :loading false))}))
+
+(rf/reg-event-db
+ :login-succeeded
+ (fn [db [_ {:keys [identity]}]]
+   (assoc db :authenticated identity)))
 
 (rf/reg-event-fx
  ::do-authenticate
