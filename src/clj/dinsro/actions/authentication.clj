@@ -32,3 +32,7 @@
       (model.user/create-user! params)
       (ok))
     (bad-request)))
+
+(defn logout
+  [request]
+  (assoc-in (ok) [:session :identity] nil))

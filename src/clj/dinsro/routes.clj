@@ -14,6 +14,7 @@
               ["/" "/about" "/login" "/register" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/authenticate"    {:post   a.authentication/authenticate}]
+    ["/logout"          {:get    a.authentication/logout}]
     ["/register"        {:post   a.authentication/register}]
     ["/status"          {:get    actions.status/status-response}]
     ["/users" {:middleware [middleware/wrap-restricted]}
