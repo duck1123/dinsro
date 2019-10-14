@@ -5,7 +5,34 @@
             [dinsro.routing :as routing]
             [dinsro.view :as view]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as timbre]))
+
+(rf/reg-event-db
+ :status-loaded
+ (fn [db [_ {:keys [identity]}]]
+   (assoc db :authenticate identity)))
+
+(rf/reg-event-fx
+ :status-errored
+ (fn [_ _]
+   (timbre/warn "status errored")))
+
+(rf/reg-event-fx
+ :init-status
+ (fn
+  [_ _]
+   (timbre/info "init")
+   {:http-xhrio {:uri "/api/v1/status"
+                 :method :get
+                 :response-format (http/json-response-format {:keywords? true})
+                 :on-success [:status-loaded]
+                 :on-failure [:status-errored]}}))
+
+(kf/reg-controller
+ :status-controller
+ {:params (constantly true)
+  :start [:init-status]})
 
 ;; -------------------------
 ;; Initialize app
