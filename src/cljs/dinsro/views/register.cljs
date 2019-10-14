@@ -1,15 +1,9 @@
 (ns dinsro.views.register
-  (:require [ajax.core :as ajax]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
-            [dinsro.components.registration-form :refer [registration-form]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reagent.core :as r]
+  (:require [dinsro.components.forms.account :as forms.account]
             [taoensso.timbre :as timbre]))
 
 (defn page
   []
   [:section.section>div.container>div.content
-   [:h1 "Registration Page"]
-   [registration-form]])
+   [:h1 "Index Accounts"]
+   [forms.account/new-account-form]])
