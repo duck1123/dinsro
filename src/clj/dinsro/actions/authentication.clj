@@ -35,4 +35,4 @@
 
 (defn logout
   [request]
-  (assoc-in (ok) [:session :identity] nil))
+  (assoc-in (ok {:identity nil}) [:session :identity] nil))
