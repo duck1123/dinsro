@@ -1,6 +1,7 @@
 (ns dinsro.actions.status
-  (:require [taoensso.timbre :as timbre]))
+  (:require [ring.util.http-response :refer [ok]]
+            [taoensso.timbre :as timbre]))
 
 (defn status-response
   [request]
-  {:userId 1})
+  (ok {:userId 1}))
