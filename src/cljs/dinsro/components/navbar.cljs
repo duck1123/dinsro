@@ -50,14 +50,18 @@
       [nav-burger]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start
-       (nav-link "Accounts"    :index-accounts-page)
-       (nav-link "Users"       :index-users-page)]
+       (when authenticated
+         [:<>
+          (nav-link "Accounts"    :index-accounts-page)
+          (nav-link "Users"       :index-users-page)])]
       [:div.navbar-end
-       (nav-link "About"       :about-page)
+       (nav-link "About"          :about-page)
        (if authenticated
+         [:div.navbar-item.has-dropdown.is-hoverable
+          [:a.navbar-link authenticated]
+          [:div.navbar-dropdown
+           (nav-link "Settings"    ::settings/page)
+           [:a.navbar-item {:on-click #(rf/dispatch [::logout/do-logout])} "Logout"]]]
          [:<>
-          (nav-link "Settings" :settings-page)
-          [:a.navbar-item {:on-click #(rf/dispatch [::c.logout/do-logout])} "Logout"]]
-         [:<>
-          (nav-link "Login"    :login-page)
-          (nav-link "Register" :register-page)])]]]))
+          (nav-link "Login"       :login-page)
+          (nav-link "Register"    :register-page)])]]]))
