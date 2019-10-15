@@ -1,7 +1,7 @@
 -- :name create-account! :! :n
 -- :doc creates a new account record
-INSERT INTO accounts (name, owner_id)
-VALUES (:id, :user-id)
+INSERT INTO accounts (name, user_id)
+VALUES (:name, :user-id)
 
 -- :name create-transaction! :! :n
 -- :doc creates a new transaction record

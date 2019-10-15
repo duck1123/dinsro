@@ -1,5 +1,6 @@
 (ns dinsro.routes
-  (:require [dinsro.actions.authentication :as a.authentication]
+  (:require [dinsro.actions.accounts :as a.accounts]
+            [dinsro.actions.authentication :as a.authentication]
             [dinsro.actions.home :as a.home]
             [dinsro.actions.status :as actions.status]
             [dinsro.actions.user.create-user :refer [create-user-response]]
@@ -13,6 +14,8 @@
          (map (fn [path] [path {:get a.home/home-handler}])
               ["/" "/about" "/login" "/register" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
+    ["/accounts"
+     [""                {:post   a.accounts/create-account}]]
     ["/authenticate"    {:post   a.authentication/authenticate}]
     ["/logout"          {:get    a.authentication/logout}]
     ["/register"        {:post   a.authentication/register}]
