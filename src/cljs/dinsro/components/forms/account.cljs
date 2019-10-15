@@ -21,7 +21,8 @@
  ::do-submit-succeeded
  (fn-traced
   [_ data]
-  (timbre/info "Submit success" data)))
+  (timbre/info "Submit success" data)
+  {:dispatch [:dinsro.components.accounts/do-fetch-accounts]}))
 
 (kf/reg-event-fx
  ::do-submit-failed

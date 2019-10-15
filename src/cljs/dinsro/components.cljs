@@ -30,5 +30,5 @@
   [:div.field
    [:div.control
     [:a.button.is-primary
-     {:on-click #(rf/dispatch [field])}
+     {:on-click #(rf/dispatch [click-handler])}
      label]]])

@@ -11,7 +11,8 @@
 (kf/reg-event-fx
  ::do-delete-account-success
  (fn [_ _]
-   (timbre/info "delete account success")))
+   (timbre/info "delete account success")
+   {:dispatch [::do-fetch-accounts]}))
 
 (kf/reg-event-fx
  ::do-delete-account-failed

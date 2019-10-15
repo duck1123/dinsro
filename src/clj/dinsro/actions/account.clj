@@ -25,5 +25,6 @@
     (http/not-found {})))
 
 (defn delete-account
-  [request]
+  [{{:keys [accountId]} :path-params}]
+  (model.account/delete-account! accountId)
   (http/ok {:status "ok"}))

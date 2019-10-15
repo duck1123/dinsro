@@ -11,3 +11,7 @@
   (when-let [account (prepare-account params)]
     (timbre/info "Creating account" account)
     (merge account (db/create-account! account))))
+
+(defn delete-account!
+  [id]
+  (db/delete-account! {:id id}))
