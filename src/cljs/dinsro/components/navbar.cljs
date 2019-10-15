@@ -53,7 +53,8 @@
        (when authenticated
          [:<>
           (nav-link "Accounts"    :index-accounts-page)
-          (nav-link "Users"       :index-users-page)])]
+          (nav-link "Users"       :index-users-page)
+          (nav-link "Currencies"  :index-currencies-page)])]
       [:div.navbar-end
        (nav-link "About"          :about-page)
        (if authenticated

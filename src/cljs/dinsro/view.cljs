@@ -5,6 +5,7 @@
             [dinsro.views.about :as about]
             [dinsro.views.home :as home]
             [dinsro.views.index-accounts :as index-accounts]
+            [dinsro.views.index-currencies :as index-currencies]
             [dinsro.views.login :as login]
             [dinsro.views.register :as register]
             [kee-frame.core :as kf]
@@ -14,11 +15,12 @@
   [:div
    [navbar]
    [kf/switch-route (fn [route] (get-in route [:data :name]))
-    :about-page          about/page
-    :home-page           home/page
-    :index-accounts-page index-accounts/page
-    :index-users-page    index-users/page
-    :login-page          login/page
-    :register-page       register/page
-    :settings-page       settings/page
-    nil                  [:div ""]]])
+    :about-page            about/page
+    :home-page             home/page
+    :index-accounts-page   index-accounts/page
+    :index-currencies-page index-currencies/page
+    :index-users-page      index-users/page
+    :login-page            login/page
+    :register-page         register/page
+    :settings-page         settings/page
+    nil                    [:div ""]]])

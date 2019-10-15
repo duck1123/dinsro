@@ -21,7 +21,7 @@
  ::submit-clicked
  (fn-traced
   [{:keys [db]} _]
-  {:dispatch [::e/do-submit @(rf/subscribe [::account-data])]}))
+  {:dispatch [::e.accounts/do-submit @(rf/subscribe [::account-data])]}))
 
 (defn new-account-form
   []

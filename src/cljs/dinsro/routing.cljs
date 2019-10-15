@@ -9,6 +9,7 @@
     ["/authenticate" :api-authenticate]
     ["/accounts"     :api-index-accounts]
     ["/users"        :api-index-users]]
+   ["/currencies"    :index-currencies-page]
    ["/login"         :login-page]
    ["/register"      :register-page]
    ["/settings"      :settings-page]
