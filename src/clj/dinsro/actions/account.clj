@@ -23,3 +23,7 @@
   (if-let [account (db/read-account {:id accountId})]
     (http/ok account)
     (http/not-found {})))
+
+(defn delete-account
+  [request]
+  (http/ok {:status "ok"}))

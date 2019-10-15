@@ -17,7 +17,8 @@
     ["/accounts"
      [""                {:post   a.accounts/create-account
                          :get    a.accounts/index-accounts}]
-     ["/:accountId"     {:get    a.accounts/read-account}]]
+     ["/:accountId"     {:get    a.accounts/read-account
+                         :delete actions.account/delete-account}]]
     ["/authenticate"    {:post   a.authentication/authenticate}]
     ["/logout"          {:get    a.authentication/logout}]
     ["/register"        {:post   a.authentication/register}]

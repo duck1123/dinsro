@@ -6,28 +6,49 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::accounts ::accounts)
+(rf/reg-sub ::accounts (fn [db _] (get db ::accounts [])))
 
-(rf/reg-event-db
+(kf/reg-event-fx
+ ::do-delete-account-success
+ (fn [_ _]
+   (timbre/info "delete account success")))
+
+(kf/reg-event-fx
+ ::do-delete-account-failed
+ (fn-traced [_ _]
+   (timbre/info "delete account failed")))
+
+(kf/reg-event-db
  ::do-fetch-accounts-success
- (fn [db [_ {:keys [items]}]]
+ (fn-traced [db [_ {:keys [items]}]]
    (timbre/info "fetch accounts success" items)
    (assoc db ::accounts items)))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-fetch-accounts-failed
- (fn [_ _]
+ (fn-traced [_ _]
    (timbre/info "fetch accounts failed")))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-fetch-accounts
- (fn [_ _]
+ (fn-traced [_ _]
    {:http-xhrio
-    {:uri "/api/v1/accounts"
-     :method :get
+    {:uri             "/api/v1/accounts"
+     :method          :get
      :response-format (ajax/json-response-format {:keywords? true})
      :on-success      [::do-fetch-accounts-success]
      :on-failure      [::do-fetch-accounts-failed]}}))
+
+(kf/reg-event-fx
+ ::do-delete-account
+ (fn-traced [_ [_ id]]
+   {:http-xhrio
+    {:uri             (str "/api/v1/accounts/" id)
+     :method          :delete
+     :format          (ajax/json-request-format)
+     :response-format (ajax/json-response-format {:keywords? true})
+     :on-success      [::do-delete-account-success]
+     :on-failure      [::do-delete-account-failed]}}))
 
 (defn index-accounts
   []
@@ -43,4 +64,5 @@
          {:style {:border "1px black solid"
                   :margin-bottom "15px"}}
          [:p id]
-         [:p name]]))]))
+         [:p name]
+         [:a.button {:on-click #(rf/dispatch [::do-delete-account id])} "Delete"]]))]))
