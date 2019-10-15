@@ -1,4 +1,4 @@
-(ns dinsro.views.accounts
+(ns dinsro.views.index-accounts
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components.forms.account :refer [new-account-form] :as forms.account]
