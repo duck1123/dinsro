@@ -10,4 +10,4 @@
   [params]
   (when-let [account (prepare-account params)]
     (timbre/info "Creating account" account)
-    (merge account {:id (db/create-account! account)})))
+    (merge account (db/create-account! account))))

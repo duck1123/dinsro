@@ -15,7 +15,9 @@
               ["/" "/about" "/login" "/register" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts"
-     [""                {:post   a.accounts/create-account}]]
+     [""                {:post   a.accounts/create-account
+                         :get    a.accounts/index-accounts}]
+     ["/:accountId"     {:get    a.accounts/read-account}]]
     ["/authenticate"    {:post   a.authentication/authenticate}]
     ["/logout"          {:get    a.authentication/logout}]
     ["/register"        {:post   a.authentication/register}]
