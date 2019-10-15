@@ -1,8 +1,6 @@
 (ns dinsro.events.accounts
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
-            ;; [dinsro.components.accounts :as c.accounts]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -15,7 +13,7 @@
  (fn-traced
   [_ data]
   (timbre/info "Submit success" data)
-  {:dispatch [:dinsro.components.accounts/do-fetch-accounts]}))
+  {:dispatch [::do-fetch-accounts]}))
 
 (rf/reg-event-fx
  ::do-submit-failed
@@ -48,8 +46,10 @@
 (rf/reg-event-fx
  ::do-submit
  (fn-traced
-  [_ [_ data]]
-  {:http-xhrio
+  [{:keys [db]} [_ data]]
+  {:db (assoc db ::do-submit-loading true)
+
+   :http-xhrio
    {:method :post
     :uri "/api/v1/accounts"
     :params data
