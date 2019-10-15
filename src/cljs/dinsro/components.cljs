@@ -24,3 +24,11 @@
 (defn password-input
   [label field change-handler]
   (input-field label field change-handler :password))
+
+(defn primary-button
+  [label click-handler]
+  [:div.field
+   [:div.control
+    [:a.button.is-primary
+     {:on-click #(rf/dispatch [field])}
+     label]]])

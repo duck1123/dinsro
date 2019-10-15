@@ -74,3 +74,13 @@
  (fn-traced [{:keys [db]} _]
    {:db (assoc db :loading true)
     :dispatch [::do-authenticate @(rf/subscribe [::login-data])]}))
+
+(defn page []
+  [:section.section>div.container>div.content
+   [:h1 "Login"]
+   [:p (str @(rf/subscribe [::login-data]))]
+   [:div.container
+    [:form.is-centered
+     [c/email-input "Email" ::email :change-email]
+     [c/password-input "Password" ::password :change-password]
+     [c/primary-button "Login" :login-click]]]])
