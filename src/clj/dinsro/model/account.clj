@@ -4,11 +4,10 @@
 
 (defn prepare-account
   [params]
-  #_(assoc params :user-id "bob@example.com")
   params)
 
 (defn create-account!
   [params]
   (when-let [account (prepare-account params)]
     (timbre/info "Creating account" account)
-    (merge account (db/create-account! account))))
+    (merge account {:id (db/create-account! account)})))

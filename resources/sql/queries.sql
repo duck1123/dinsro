@@ -1,4 +1,4 @@
--- :name create-account! :! :n
+-- :name create-account! :i!
 -- :doc creates a new account record
 INSERT INTO accounts (name, user_id)
 VALUES (:name, :user-id)

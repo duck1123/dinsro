@@ -7,5 +7,5 @@
 
 (defn create-account
   [{:keys [params]}]
-  (model.account/create-account! (assoc params :user-id 1))
+  (model.account/create-account! (assoc params :user-id 2))
   (http/ok {:status "ok"}))

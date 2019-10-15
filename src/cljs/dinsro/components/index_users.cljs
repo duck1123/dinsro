@@ -81,11 +81,12 @@
   (if-let [users @(rf/subscribe [::users])]
     (into
      [:div.section]
-     (for [{:keys [name email] :as user} users]
+     (for [{:keys [id name email] :as user} users]
        ^{:key (:id user)}
        [:div.column
         {:style {:border "1px black solid"
                  :margin-bottom "15px"}}
+        [:p "Id: " id]
         [:p "Name: " name]
         [:p "Email " email]
         [:a.button {:on-click #(rf/dispatch [::do-delete-user user])} "Delete"]]))
