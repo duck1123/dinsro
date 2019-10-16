@@ -1,6 +1,7 @@
 (ns dinsro.events.users
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components.login :as login]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -26,9 +27,13 @@
  (fn [cofx [{:keys [id]}]]
    {:dispatch [:filter-user id]}))
 
-(kf/reg-event-db
+(kf/reg-event-fx
  ::do-fetch-users-failed
- (fn [db event] (assoc db :failed true)))
+ (fn [{:keys [db]} [_ response]]
+   (let [s (:status response)]
+     (if (= s 403)
+       {:navigate-to [::login/page]}
+       {:db (assoc db :failed true)}))))
 
 (kf/reg-event-db
  ::do-delete-user-failed
