@@ -8,14 +8,20 @@
 
 (defn index-currencies
   []
-  (let [currencies [{:id 1} {:id 2}]]
+  (let [currencies [{:id 1 :name "sats" :is-primary true}
+                    {:id 2 :name "dollars" :exchange "0.8"}]]
+
     [:div
      [:p "Index Currencies"]
      (into
       [:div.section]
-      (for [{:keys [id] :as currency} currencies]
+      (for [{:keys [id name is-primary exchange] :as currency} currencies]
         ^{:key id}
         [:div.column
          {:style {:border "1px black solid"
                   :margin-bottom "15px"}}
-         [:p id]]))]))
+         [:p "Id: " id]
+         [:p "Name: " name]
+         (if is-primary
+           [:p "Primary"]
+           [:p "Exchange " exchange])]))]))

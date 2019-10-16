@@ -1,6 +1,7 @@
 (ns dinsro.routes
   (:require [dinsro.actions.accounts :as a.accounts]
             [dinsro.actions.authentication :as a.authentication]
+            [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
             [dinsro.actions.status :as actions.status]
             [dinsro.actions.user.create-user :refer [create-user-response]]
@@ -20,6 +21,8 @@
      ["/:accountId"     {:get    a.accounts/read-account
                          :delete actions.account/delete-account}]]
     ["/authenticate"    {:post   a.authentication/authenticate}]
+    ["/currencies"
+     [""                {:get    a.currencies/index-currencies}]]
     ["/logout"          {:get    a.authentication/logout}]
     ["/register"        {:post   a.authentication/register}]
     ["/status"          {:get    actions.status/status-response}]
