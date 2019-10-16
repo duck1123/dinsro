@@ -5,5 +5,5 @@
 
 (defn index
   [request]
-  (let [currencies (m.currencies/index)]
-    (http/ok {:currencies currencies})))
+  (let [items (m.currencies/index)]
+    (http/ok {:items items})))

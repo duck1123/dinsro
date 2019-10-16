@@ -8,7 +8,7 @@
 (kf/reg-event-fx
  ::init-page
  (fn-traced [_ _]
-   {:dispatch [::e.currencies/do-fetch-currencies]}))
+   {:dispatch [::e.currencies/do-fetch-index]}))
 
 (kf/reg-controller
  ::page-controller
@@ -17,8 +17,8 @@
 
 (defn page
   []
-  (let [currencies @(rf/subscribe [::e.currencies/currencies])]
+  (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
      [:h1 "Index Currencies"]
-     #_[:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
+     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
      [index-currencies currencies]]))

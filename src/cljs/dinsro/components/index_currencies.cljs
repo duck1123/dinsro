@@ -6,7 +6,8 @@
   [currencies]
   [:div
    [:p "Index Currencies"]
-   (if (seq currencies)
+   (if-not (seq currencies)
+     [:div "No Currencies"]
      (into
       [:div.section]
       (for [{:keys [id name is-primary exchange] :as currency} currencies]
@@ -18,5 +19,4 @@
          [:p "Name: " name]
          (if is-primary
            [:p "Primary"]
-           [:p "Exchange " exchange])]))
-     [:div "No Currencies"])])
+           [:p "Exchange " exchange])])))])
