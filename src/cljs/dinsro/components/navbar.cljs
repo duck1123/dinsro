@@ -8,8 +8,8 @@
 
 ;; Subscriptions
 
-(rf/reg-sub :authenticated   (fn [db] (get db :authenticated false)))
-(rf/reg-sub :navbar-expanded (fn [db] (get db :navbar-expanded false)))
+(rf/reg-sub :authenticated   (fn [db _] (get db :authenticated false)))
+(rf/reg-sub :navbar-expanded (fn [db _] (get db :navbar-expanded false)))
 
 ;; Events
 

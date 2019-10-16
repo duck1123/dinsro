@@ -23,4 +23,4 @@
     :login-page            login/page
     :register-page         register/page
     :settings-page         settings/page
-    nil                    [:div ""]]])
+    nil                    [:div "Not Found"]]])

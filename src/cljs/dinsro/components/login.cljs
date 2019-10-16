@@ -9,10 +9,10 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::email    ::email)
+(rf/reg-sub ::email    (fn [db _] (get db ::email "bob@example.com")))
 (rf/reg-event-db :change-email (fn [db [_ email]] (assoc db ::email email)))
 
-(rf/reg-sub ::password ::password)
+(rf/reg-sub ::password (fn [db _] (get db ::password "hunter2")))
 (rf/reg-event-db :change-password (fn [db [_ password]] (assoc db ::password password)))
 
 (rf/reg-sub
