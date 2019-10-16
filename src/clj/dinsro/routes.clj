@@ -22,7 +22,7 @@
                          :delete actions.account/delete-account}]]
     ["/authenticate"    {:post   a.authentication/authenticate}]
     ["/currencies"
-     [""                {:get    a.currencies/index-currencies}]]
+     [""                {:get    a.currencies/index}]]
     ["/logout"          {:get    a.authentication/logout}]
     ["/register"        {:post   a.authentication/register}]
     ["/status"          {:get    actions.status/status-response}]
