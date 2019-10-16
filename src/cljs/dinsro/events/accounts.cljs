@@ -4,7 +4,7 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::accounts ::accounts)
+(rf/reg-sub ::accounts (fn [db _] (get db ::accounts [])))
 
 (rf/reg-sub ::do-submit-loading ::do-submit-loading)
 

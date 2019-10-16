@@ -25,8 +25,8 @@
   [{:keys [db]} [_ data]]
   {:db (assoc db ::do-fetch-currencies-loading true)
    :http-xhrio
-   {:method          :post
+   {:method          :get
     :uri             "/api/v1/currencies"
     :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-currencies-succeeded]
+    :on-success      [::do-fetch-currencies-success]
     :on-failure      [::do-fetch-currencies-failed]}}))

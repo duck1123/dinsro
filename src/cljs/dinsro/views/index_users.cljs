@@ -10,7 +10,7 @@
 
 (rf/reg-event-fx
  ::init-page
- (fn [{:keys [db]} _]
+ (fn-traced [{:keys [db]} _]
    {:db (-> db
             (assoc :failed false)
             (assoc ::e.users/users [])
@@ -19,13 +19,12 @@
 
 (kf/reg-controller
  ::page-controller
- {:params (fn [{{:keys [name]} :data}]
-            (or (= name ::page) nil))
+ {:params #(when (= (get-in % [:data :name]) ::page) true)
   :start [::init-page]})
 
 (defn page
   []
-  [:section.section>div.container>div.content
-   [:h1 "Users Page"]
-   [:a.button {:on-click #(rf/dispatch [::init-component])} "Reset"]
-   [index-users @(rf/subscribe [::e.users/users])]])
+  (let [users @(rf/subscribe [::e.users/users])]
+    [:section.section>div.container>div.content
+     [:h1 "Users Page"]
+     [index-users users]]))

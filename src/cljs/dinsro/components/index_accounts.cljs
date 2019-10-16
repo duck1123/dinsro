@@ -9,7 +9,6 @@
   []
   (let [accounts @(rf/subscribe [::e.accounts/accounts])]
     [:div
-     [:a.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-accounts])} "Load"]
      [:p "Index accounts"]
      (into
       [:div.section]
