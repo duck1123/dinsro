@@ -4,7 +4,7 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::accounts (fn [db _] (get db ::accounts [])))
+(rf/reg-sub ::items (fn [db _] (get db ::items [])))
 
 (rf/reg-sub ::do-submit-loading ::do-submit-loading)
 
@@ -33,15 +33,15 @@
    (timbre/info "delete account failed")))
 
 (rf/reg-event-db
- ::do-fetch-accounts-success
+ ::do-fetch-index-success
  (fn [db [_ {:keys [items]}]]
-   (timbre/info "fetch accounts success" items)
-   (assoc db ::accounts items)))
+   (timbre/info "fetch records success" items)
+   (assoc db ::items items)))
 
 (rf/reg-event-fx
- ::do-fetch-accounts-failed
+ ::do-fetch-index-failed
  (fn [_ _]
-   (timbre/info "fetch accounts failed")))
+   (timbre/info "fetch records failed")))
 
 (rf/reg-event-fx
  ::do-submit
@@ -59,14 +59,14 @@
     :on-failure [::do-submit-failed]}}))
 
 (rf/reg-event-fx
- ::do-fetch-accounts
+ ::do-fetch-index
  (fn [_ _]
    {:http-xhrio
     {:uri "/api/v1/accounts"
      :method :get
      :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-fetch-accounts-success]
-     :on-failure      [::do-fetch-accounts-failed]}}))
+     :on-success      [::do-fetch-index-success]
+     :on-failure      [::do-fetch-index-failed]}}))
 
 (rf/reg-event-fx
  ::do-delete-account

@@ -10,7 +10,7 @@
 (rf/reg-event-fx
  ::init-page
  (fn-traced [{:keys [db]} _]
-   {:dispatch [::e.accounts/do-fetch-accounts]}))
+   {:dispatch [::e.accounts/do-fetch-index]}))
 
 (kf/reg-controller
  ::page-controller
@@ -19,8 +19,9 @@
 
 (defn page
   []
-  [:section.section>div.container>div.content
-   [:h1 "Index Accounts"]
-   [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
-   [new-account-form]
-   [index-accounts]])
+  (let [accounts @(rf/subscribe [::e.accounts/items])]
+    [:section.section>div.container>div.content
+     [:h1 "Index Accounts"]
+     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
+     [new-account-form]
+     [index-accounts accounts]]))

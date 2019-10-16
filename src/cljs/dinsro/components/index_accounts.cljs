@@ -6,17 +6,18 @@
             [taoensso.timbre :as timbre]))
 
 (defn index-accounts
-  []
-  (let [accounts @(rf/subscribe [::e.accounts/accounts])]
-    [:div
-     [:p "Index accounts"]
+  [accounts]
+  [:div
+   [:p "Index accounts"]
+   (if-not (seq accounts)
+     [:div "No Accounts"]
      (into
       [:div.section]
       (for [{:keys [id name] :as account} accounts]
         ^{:key (:id account)}
         [:div.column
-         {:style {:border "1px black solid"
+         {:style {:border        "1px black solid"
                   :margin-bottom "15px"}}
          [:p id]
          [:p name]
-         [:a.button {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])} "Delete"]]))]))
+         [:a.button {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])} "Delete"]])))])
