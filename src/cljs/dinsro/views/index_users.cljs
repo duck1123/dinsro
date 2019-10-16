@@ -8,14 +8,13 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::init-page
  (fn-traced [{:keys [db]} _]
    {:db (-> db
             (assoc :failed false)
             (assoc ::e.users/users [])
-            (assoc ::loading false))
-    :dispatch [::e.users/do-fetch-users]}))
+            (assoc ::loading false))}))
 
 (kf/reg-controller
  ::page-controller
