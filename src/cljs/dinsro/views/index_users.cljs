@@ -14,7 +14,8 @@
    {:db (-> db
             (assoc :failed false)
             (assoc ::e.users/users [])
-            (assoc ::loading false))}))
+            (assoc ::loading false))
+    :dispatch [::e.users/do-fetch-users]}))
 
 (kf/reg-controller
  ::page-controller
@@ -26,4 +27,5 @@
   (let [users @(rf/subscribe [::e.users/users])]
     [:section.section>div.container>div.content
      [:h1 "Users Page"]
+     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
      [index-users users]]))
