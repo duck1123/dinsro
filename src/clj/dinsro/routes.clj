@@ -8,9 +8,10 @@
             [dinsro.middleware :as middleware]))
 
 (def routes
-  [["" {:middleware [#_middleware/wrap-csrf
-                     middleware/wrap-formats]}
-    ["/" {:get a.home/home-handler}]]
+  [(into [""]
+         (map (fn [path] [path {:get a.home/home-handler}])
+              ["/" "/about" "/accounts" "/currencies" "/login"
+               "/register" "/settings" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts" {}
      [""                {:post   a.account/create-handler
