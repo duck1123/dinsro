@@ -1,7 +1,6 @@
 (ns dinsro.actions.authentication
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
-            [dinsro.actions.user.create-user :refer [create-user-response]]
             [dinsro.db.core :as db]
             [dinsro.model.user :as model.user]
             [dinsro.specs :as specs]
@@ -16,7 +15,7 @@
     (let [{:keys [password-hash]} user]
       (hashers/check password password-hash))))
 
-(defn authenticate
+(defn authenticate-handler
   [request]
   (let [{{:keys [email password]} :params :keys [session]} request]
     (if (check-auth email password)
@@ -24,7 +23,7 @@
              :session (assoc session :identity email))
       (unauthorized))))
 
-(defn register
+(defn register-handler
   "Register a user"
   [{:keys [params] :as request}]
   (if (s/valid? ::specs/register-request params)
@@ -33,6 +32,6 @@
       (ok))
     (bad-request)))
 
-(defn logout
+(defn logout-handler
   [request]
   (assoc-in (ok {:identity nil}) [:session :identity] nil))

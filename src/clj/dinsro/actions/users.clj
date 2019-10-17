@@ -6,27 +6,27 @@
             [ring.util.http-response :refer :all]
             [taoensso.timbre :as timbre]))
 
-(defn create
+(defn create-handler
   [{:keys [registration-data] :as request}]
   {:pre [(s/valid? :dinsro.specs/register-request registration-data)]}
   (if (model.user/create-user! registration-data)
     (ok "ok")))
 
-(s/fdef create-user-response
+(s/fdef create-handler
   :args (s/cat :data :dinsro.specs/register-request))
 
-(defn delete
+(defn delete-handler
   [request]
   (let [user-id (timbre/spy :info (Integer/parseInt (:userId (:path-params request))))]
     (db/delete-user! {:id user-id})
     (ok {:id user-id})))
 
-(defn index
+(defn index-handler
   [request]
   (let [users (db/list-users)]
     (ok {:users users})))
 
-(defn read
+(defn read-handler
   [request]
   (let [{{user-id :userId} :path-params} request]
     (if-let [user (db/read-user {:id user-id})]

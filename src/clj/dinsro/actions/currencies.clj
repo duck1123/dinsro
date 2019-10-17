@@ -3,7 +3,7 @@
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(defn index
+(defn index-handler
   [request]
   (let [items (m.currencies/index)]
     (http/ok {:items items})))

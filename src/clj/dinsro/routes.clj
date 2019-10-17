@@ -4,30 +4,31 @@
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
             [dinsro.actions.status :as a.status]
-            [dinsro.actions.users :as a.users]))
+            [dinsro.actions.users :as a.users]
+            [dinsro.middleware :as middleware]))
 
 (def routes
   [["" {:middleware [#_middleware/wrap-csrf
                      middleware/wrap-formats]}
-    ["/" {:get a.home/home-page}]]
+    ["/" {:get a.home/home-handler}]]
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts" {}
-     ["" {:post a.account/create
-          :get  a.account/index}]
-     ["/:accountId" {:get    a.account/read
-                     :delete a.account/delete}]]
+     [""                {:post   a.account/create-handler
+                         :get    a.account/index-handler}]
+     ["/:accountId"     {:get    a.account/read-handler
+                         :delete a.account/delete-handler}]]
     ["/authenticate" {}
-     ["" {:post a.authentication/authenticate}]]
+     [""                {:post   a.authentication/authenticate-handler}]]
     ["/currencies" {}
-     ["" {:get a.currencies/index}]]
+     [""                {:get    a.currencies/index-handler}]]
     ["/logout" {}
-     ["" {:post a.authentication/logout}]]
+     [""                {:post   a.authentication/logout-handler}]]
     ["/register" {}
-     ["" {:post a.authentication/register}]]
+     [""                {:post   a.authentication/register-handler}]]
     ["/status" {}
-     ["" a.status/status-response]]
+     [""                {:get    a.status/status-handler}]]
     ["/users" {:middleware [middleware/wrap-restricted]}
-     [""         {:get  {:handler a.users/index}
-                  :post {:handler a.users/create}}]
-     ["/:userId" {:get    {:handler a.users/read}
-                  :delete {:handler a.users/delete}}]]]])
+     [""                {:get    a.users/index-handler
+                         :post   a.users/create-handler}]
+     ["/:userId"        {:get    a.users/read-handler
+                         :delete a.users/delete-handler}]]]])

@@ -1,8 +1,7 @@
 (ns dinsro.handler
-  (:require [dinsro.layout :refer [error-page] :as layout]
+  (:require [dinsro.env :refer [defaults]]
+            [dinsro.layout :refer [error-page] :as layout]
             [dinsro.middleware :as middleware]
-            [dinsro.routes :as routes]
-            [dinsro.env :refer [defaults]]
             [dinsro.routes :as routes]
             [mount.core :as mount]
             [reitit.coercion.spec]
@@ -14,11 +13,6 @@
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
   :stop  ((or (:stop defaults) (fn []))))
-
-(defn authenticate-handler
-  [request]
-  (let [{:keys [authentication-data]} request]
-    (authentication/authenticate (assoc request :authentication-data authentication-data))))
 
 (mount/defstate app-routes
   :start
