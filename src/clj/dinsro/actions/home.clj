@@ -1,5 +1,5 @@
 (ns dinsro.actions.home
   (:require [dinsro.layout :as layout]))
 
-(defn home-handler [request]
+(defn home-page [request]
   (layout/render "home.html"))

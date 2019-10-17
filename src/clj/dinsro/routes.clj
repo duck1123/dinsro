@@ -1,33 +1,33 @@
 (ns dinsro.routes
-  (:require [dinsro.actions.accounts :as a.accounts]
+  (:require [dinsro.actions.account :as a.account]
             [dinsro.actions.authentication :as a.authentication]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
-            [dinsro.actions.status :as actions.status]
-            [dinsro.actions.user.create-user :refer [create-user-response]]
-            [dinsro.actions.user.delete-user :refer [delete-user-response]]
-            [dinsro.actions.user.list-user :refer [list-user-response]]
-            [dinsro.actions.user.read-user :refer [read-user-response]]
-            [dinsro.middleware :as middleware]))
+            [dinsro.actions.status :as a.status]
+            [dinsro.actions.users :as a.users]))
 
 (def routes
-  [(into [""]
-         (map (fn [path] [path {:get a.home/home-handler}])
-              ["/" "/about" "/login" "/register" "/users"]))
+  [["" {:middleware [#_middleware/wrap-csrf
+                     middleware/wrap-formats]}
+    ["/" {:get a.home/home-page}]]
    ["/api/v1" {:middleware [middleware/wrap-formats]}
-    ["/accounts"
-     [""                {:post   a.accounts/create-account
-                         :get    a.accounts/index-accounts}]
-     ["/:accountId"     {:get    a.accounts/read-account
-                         :delete actions.account/delete-account}]]
-    ["/authenticate"    {:post   a.authentication/authenticate}]
-    ["/currencies"
-     [""                {:get    a.currencies/index}]]
-    ["/logout"          {:get    a.authentication/logout}]
-    ["/register"        {:post   a.authentication/register}]
-    ["/status"          {:get    actions.status/status-response}]
+    ["/accounts" {}
+     ["" {:post a.account/create
+          :get  a.account/index}]
+     ["/:accountId" {:get    a.account/read
+                     :delete a.account/delete}]]
+    ["/authenticate" {}
+     ["" {:post a.authentication/authenticate}]]
+    ["/currencies" {}
+     ["" {:get a.currencies/index}]]
+    ["/logout" {}
+     ["" {:post a.authentication/logout}]]
+    ["/register" {}
+     ["" {:post a.authentication/register}]]
+    ["/status" {}
+     ["" a.status/status-response]]
     ["/users" {:middleware [middleware/wrap-restricted]}
-     [""                {:get    list-user-response
-                         :post   create-user-response}]
-     ["/:userId"        {:get    read-user-response
-                         :delete {:handler delete-user-response}}]]]])
+     [""         {:get  {:handler a.users/index}
+                  :post {:handler a.users/create}}]
+     ["/:userId" {:get    {:handler a.users/read}
+                  :delete {:handler a.users/delete}}]]]])
