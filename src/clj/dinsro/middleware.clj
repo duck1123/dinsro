@@ -1,6 +1,6 @@
 (ns dinsro.middleware
   (:require [buddy.auth :refer [authenticated?]]
-            [buddy.auth.accessrules :refer [restrict]]
+            [buddy.auth.accessrules :refer [wrap-access-rules restrict]]
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.backends.token :refer [jwe-backend]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
@@ -59,7 +59,11 @@
 
 
 (defn wrap-restricted [handler]
-  (restrict handler {:handler authenticated?
+  (restrict handler {:handler (fn [request]
+                                (timbre/info "identity" (get-in request [:session :identity]))
+                                (timbre/info "real identity" (get request :identity))
+                                (timbre/spy :info
+                                            (authenticated? (timbre/spy :info request))))
                      :on-error on-error}))
 
 (def secret (random-bytes 32))
@@ -70,15 +74,19 @@
                           :enc :a128gcm}}))
 
 (defn token [username]
-  (let [claims {:user (keyword username)
+  (let [claims {:user (keyword (timbre/spy :info username))
                 :exp (plus (now) (minutes 60))}]
     (encrypt claims secret {:alg :a256kw :enc :a128gcm})))
 
+(def rules
+  [{:uri "/api/v1/users" :handler authenticated?}])
+
 (defn wrap-auth [handler]
-  (let [backend token-backend]
+  (let [backend (session-backend)]
     (-> handler
+        ;; (wrap-access-rules {:rules rules :on-error on-error})
         (wrap-authentication backend)
-        (wrap-authorization backend))))
+        #_(wrap-authorization backend))))
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
