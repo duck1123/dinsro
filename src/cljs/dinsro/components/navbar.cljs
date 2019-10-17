@@ -18,11 +18,18 @@
  (fn-traced [db _]
    (update db :navbar-expanded not)))
 
+(kf/reg-event-fx
+ :nav-link-activated
+ (fn-traced
+   [{:keys [db]} _]
+   {:dispatch [:toggle-navbar]}))
+
 ;; Components
 
 (defn nav-link [title page]
   [:a.navbar-item
    {:href   (kf/path-for [page])
+    :on-click #(rf/dispatch [:nav-link-activated])
     :class (when (= page @(rf/subscribe [:nav/page])) "is-active")}
    title])
 
