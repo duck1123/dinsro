@@ -13,21 +13,17 @@
               ["/" "/about" "/accounts" "/currencies" "/login"
                "/register" "/settings" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
-    ["/accounts" {}
+    ["/accounts"
      [""                {:post   a.account/create-handler
                          :get    a.account/index-handler}]
      ["/:accountId"     {:get    a.account/read-handler
                          :delete a.account/delete-handler}]]
-    ["/authenticate" {}
-     [""                {:post   a.authentication/authenticate-handler}]]
-    ["/currencies" {}
+    ["/authenticate"    {:post   a.authentication/authenticate-handler}]
+    ["/currencies"
      [""                {:get    a.currencies/index-handler}]]
-    ["/logout" {}
-     [""                {:post   a.authentication/logout-handler}]]
-    ["/register" {}
-     [""                {:post   a.authentication/register-handler}]]
-    ["/status" {}
-     [""                {:get    a.status/status-handler}]]
+    ["/logout"          {:post   a.authentication/logout-handler}]
+    ["/register"        {:post   a.authentication/register-handler}]
+    ["/status"          {:get    a.status/status-handler}]
     ["/users" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.users/index-handler
                          :post   a.users/create-handler}]
