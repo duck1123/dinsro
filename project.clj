@@ -15,6 +15,7 @@
                  [conman "0.8.4"]
                  [cprop "0.1.14"]
                  [day8.re-frame/http-fx "0.1.6"]
+                 [expound "0.7.2"]
                  [funcool/struct "1.4.0"]
                  [kee-frame "0.3.3" :exclusions [metosin/reitit-core org.clojure/core.async]]
                  [luminus-jetty "0.1.7"]
