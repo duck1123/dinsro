@@ -3,6 +3,7 @@
             [dinsro.actions.authentication :as a.authentication]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
+            [dinsro.actions.rates :as a.rates]
             [dinsro.actions.status :as a.status]
             [dinsro.actions.users :as a.users]
             [dinsro.middleware :as middleware]))
@@ -22,6 +23,9 @@
     ["/currencies"
      [""                {:get    a.currencies/index-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
+    ["/rates"
+     [""                {:get    a.rates/index-handler}]
+     ]
     ["/register"        {:post   a.authentication/register-handler}]
     ["/status"          {:get    a.status/status-handler}]
     ["/users" {:middleware [middleware/wrap-restricted]}
