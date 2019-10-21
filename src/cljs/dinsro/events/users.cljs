@@ -10,6 +10,12 @@
 (rf/reg-sub ::loading (fn [db _] (get db ::loading false)))
 (rf/reg-sub ::users   (fn [db _] (get db ::users [])))
 
+(rf/reg-sub
+ ::item
+ :<- [::users]
+ (fn [items [_ id]]
+   (first (filter #(= (:id %) id) items))))
+
 (kf/reg-event-db
  ::do-fetch-users-success
  (fn [db [{users :users}]]

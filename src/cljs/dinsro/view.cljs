@@ -11,6 +11,7 @@
             [dinsro.views.register :as register]
             [dinsro.views.show-account :as show-account]
             [dinsro.views.show-currency :as show-currency]
+            [dinsro.views.show-user :as show-user]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
 
@@ -29,4 +30,5 @@
     :settings-page         settings/page
     :show-account-page     show-account/page
     :show-currency-page    show-currency/page
+    :show-user-page        show-user/page
     nil                    [:div "Not Found"]]])

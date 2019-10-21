@@ -20,7 +20,9 @@
    ["/rates"          :index-rates-page]
    ["/register"       :register-page]
    ["/settings"       :settings-page]
-   ["/users"          :index-users-page]])
+   ["/users"
+    [""               :index-users-page]
+    ["/:id"           :show-user-page]]])
 
 (rf/reg-sub
  :nav/route
