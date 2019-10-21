@@ -2,20 +2,23 @@
   (:require [re-frame.core :as rf]))
 
 (def routes
-  [["/"              :home-page]
-   ["/about"         :about-page]
-   ["/accounts"      :index-accounts-page]
-   ["/api/v1"
-    ["/authenticate" :api-authenticate]
-    ["/accounts"     :api-index-accounts]
-    ["/rates"        :api-index-rates]
-    ["/users"        :api-index-users]]
-   ["/currencies"    :index-currencies-page]
-   ["/login"         :login-page]
-   ["/rates"         :index-rates-page]
-   ["/register"      :register-page]
-   ["/settings"      :settings-page]
-   ["/users"         :index-users-page]])
+  [["/"               :home-page]
+   ["/about"          :about-page]
+   ["/accounts"       :index-accounts-page]
+   ["/api"
+    ["/v1"
+     ["/authenticate" :api-authenticate]
+     ["/accounts"     :api-index-accounts]
+     ["/rates"        :api-index-rates]
+     ["/users"        :api-index-users]]]
+   ["/currencies"
+    [""               :index-currencies-page]
+    ["/:id"           :show-currency-page]]
+   ["/login"          :login-page]
+   ["/rates"          :index-rates-page]
+   ["/register"       :register-page]
+   ["/settings"       :settings-page]
+   ["/users"          :index-users-page]])
 
 (rf/reg-sub
  :nav/route

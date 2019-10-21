@@ -9,6 +9,7 @@
             [dinsro.views.index-users :as index-users]
             [dinsro.views.login :as login]
             [dinsro.views.register :as register]
+            [dinsro.views.show-currency :as show-currency]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
 
@@ -25,4 +26,5 @@
     :login-page            login/page
     :register-page         register/page
     :settings-page         settings/page
+    :show-currency-page    show-currency/page
     nil                    [:div "Not Found"]]])

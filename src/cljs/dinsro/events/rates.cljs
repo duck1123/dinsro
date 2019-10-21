@@ -7,7 +7,15 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::items (fn [db _] (get db ::items [])))
+(def rate {:id 1 :value 12158})
+
+(rf/reg-sub ::items (fn [db _] (get db ::items [rate (update (update rate :value inc) :id inc)])))
+
+(rf/reg-sub
+ ::item
+ :<- [::items]
+ (fn [items [_ id]]
+   (first (filter #(= (:id %) id) items))))
 
 (rf/reg-event-fx
  ::do-submit

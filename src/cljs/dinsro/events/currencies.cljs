@@ -8,6 +8,12 @@
 (rf/reg-sub ::items                  (fn [db _] (get db ::items                  [])))
 (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
+(rf/reg-sub
+ ::item
+ :<- [::items]
+ (fn [items [_ id]]
+   (first (filter #(= (:id %) id) items))))
+
 (kf/reg-event-db
  ::do-fetch-index-success
  (fn-traced [db [_ {:keys [items]}]]

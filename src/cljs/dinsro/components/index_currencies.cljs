@@ -1,5 +1,7 @@
 (ns dinsro.components.index-currencies
-  (:require [re-frame.core :as rf]
+  (:require [dinsro.views.show-currency :as show-currency]
+            [kee-frame.core :as kf]
+            [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (defn index-currencies
@@ -16,7 +18,7 @@
          {:style {:border        "1px black solid"
                   :margin-bottom "15px"}}
          [:p "Id: " id]
-         [:p "Name: " name]
+         [:p "Name: " [:a {:href (kf/path-for [::show-currency/page {:id id}])} name]]
          (if is-primary
            [:p "Primary"]
            [:p "Exchange " exchange])])))])
