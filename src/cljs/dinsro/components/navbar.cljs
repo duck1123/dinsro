@@ -61,7 +61,8 @@
          [:<>
           (nav-link "Accounts"    :index-accounts-page)
           (nav-link "Users"       :index-users-page)
-          (nav-link "Currencies"  :index-currencies-page)])]
+          (nav-link "Currencies"  :index-currencies-page)
+          (nav-link "Rates"       :index-rates-page)])]
       [:div.navbar-end
        (nav-link "About"          :about-page)
        (if authenticated

@@ -5,6 +5,7 @@
             [dinsro.views.home :as home]
             [dinsro.views.index-accounts :as index-accounts]
             [dinsro.views.index-currencies :as index-currencies]
+            [dinsro.views.index-rates :as index-rates]
             [dinsro.views.index-users :as index-users]
             [dinsro.views.login :as login]
             [dinsro.views.register :as register]
@@ -19,6 +20,7 @@
     :home-page             home/page
     :index-accounts-page   index-accounts/page
     :index-currencies-page index-currencies/page
+    :index-rates-page      index-rates/page
     :index-users-page      index-users/page
     :login-page            login/page
     :register-page         register/page
