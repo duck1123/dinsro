@@ -1,49 +1,55 @@
 (ns dinsro.events.accounts
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::items (fn [db _] (get db ::items [])))
+(rf/reg-sub ::item              (fn [db _] (get db ::items             [])))
+(rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
 
-(rf/reg-sub ::do-submit-loading ::do-submit-loading)
+(kf/reg-sub
+ ::item
+ :<- [::items]
+ (fn [items [_ target-item]]
+   (first (filter #(= (:id %) (:id target-item)) items))))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-submit-succeeded
  (fn-traced
   [_ data]
   (timbre/info "Submit success" data)
   {:dispatch [::do-fetch-accounts]}))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-submit-failed
  (fn-traced
   [_ [_ response]]
   (timbre/info "Submit failed" response)))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-delete-account-success
  (fn [_ _]
    (timbre/info "delete account success")
    {:dispatch [::do-fetch-accounts]}))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-delete-account-failed
  (fn [_ _]
    (timbre/info "delete account failed")))
 
-(rf/reg-event-db
+(kf/reg-event-db
  ::do-fetch-index-success
  (fn [db [_ {:keys [items]}]]
    (timbre/info "fetch records success" items)
    (assoc db ::items items)))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-fetch-index-failed
  (fn [_ _]
    (timbre/info "fetch records failed")))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-submit
  (fn-traced
   [{:keys [db]} [_ data]]
@@ -57,7 +63,7 @@
     :on-success [::do-submit-succeeded]
     :on-failure [::do-submit-failed]}}))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-fetch-index
  (fn [_ _]
    {:http-xhrio
@@ -67,7 +73,7 @@
      :on-success      [::do-fetch-index-success]
      :on-failure      [::do-fetch-index-failed]}}))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-delete-account
  (fn [_ [_ id]]
    {:http-xhrio

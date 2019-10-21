@@ -1,5 +1,6 @@
 (ns dinsro.components.index-accounts
   (:require [dinsro.events.accounts :as e.accounts]
+            [dinsro.views.show-account :as v.show-account]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -19,5 +20,5 @@
          {:style {:border        "1px black solid"
                   :margin-bottom "15px"}}
          [:p id]
-         [:p name]
+         [:p [:a {:href (kf/path-for [::v.show-account/page account])} name]]
          [:a.button {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])} "Delete"]])))])
