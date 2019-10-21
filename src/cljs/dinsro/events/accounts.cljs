@@ -48,7 +48,6 @@
  (fn-traced
   [{:keys [db]} [_ data]]
   {:db (assoc db ::do-submit-loading true)
-
    :http-xhrio
    {:method :post
     :uri "/api/v1/accounts"

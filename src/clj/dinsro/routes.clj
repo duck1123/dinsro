@@ -12,7 +12,7 @@
   [(into [""]
          (map (fn [path] [path {:get a.home/home-handler}])
               ["/" "/about" "/accounts" "/currencies" "/login"
-               "/register" "/settings" "/users"]))
+               "/rates" "/register" "/settings" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts"
      [""                {:post   a.account/create-handler

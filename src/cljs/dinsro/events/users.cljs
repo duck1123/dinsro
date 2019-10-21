@@ -46,7 +46,7 @@
  ::do-fetch-users
  (fn [_ _]
    {:http-xhrio
-    {:uri             "/api/v1/users"
+    {:uri             (kf/path-for [:api-index-users])
      :method          :get
      :timeout         8000
      :response-format (ajax/json-response-format {:keywords? true})

@@ -1,11 +1,15 @@
 (ns dinsro.views.index-rates
-  (:require [dinsro.components.index-currencies :refer [index-currencies]]
-            [dinsro.events.currencies :as e.currencies]
+  (:require [dinsro.components.forms.create-rate :refer [create-rate-form]]
+            [dinsro.components.index-rates :refer [index-rates]]
+            [dinsro.events.rates :as e.rates]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (defn page
   []
-  [:section.section>div.container>div.content
-   [:hi "Rates"]])
+  (let [items @(rf/subscribe [::e.rates/items])]
+    [:section.section>div.container>div.content
+     [:hi "Rates"]
+     [create-rate-form]
+     [index-rates items]]))
