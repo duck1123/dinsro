@@ -22,6 +22,6 @@
   (let [accounts @(rf/subscribe [::e.accounts/items])]
     [:section.section>div.container>div.content
      [:h1 "Index Accounts"]
-     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
      [new-account-form]
+     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
      [index-accounts accounts]]))
