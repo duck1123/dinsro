@@ -1,7 +1,9 @@
 (ns dinsro.core
   (:require [ajax.core :as http]
+            [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
+            [dinsro.events.users :as e.users]
             [dinsro.routing :as routing]
             [dinsro.specs :as ds]
             [dinsro.view :as view]
@@ -35,6 +37,19 @@
  {:params (constantly true)
   :start [:init-status]})
 
+(s/def ::failed boolean?)
+
+(s/def ::db-spec
+  (s/keys
+   :req [
+         #_::ds/new-password
+         ::e.users/item
+         ]
+
+   :req-un [::failed ]
+   ;; :opt []
+   :opt-un [:dinsro.events.users/item
+            :kee-frame/route]))
 ;; -------------------------
 ;; Initialize app
 (defn ^:dev/after-load mount-components
@@ -45,7 +60,7 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      ;; :hash-routing?  false
-     :app-db-spec    ::ds/db-spec
+     :app-db-spec    ::db-spec
      :initial-db     {}
      :root-component [view/root-component]})))
 

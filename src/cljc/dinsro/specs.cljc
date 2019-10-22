@@ -70,7 +70,3 @@
 (s/def ::reset-response (s/keys :req-un [::message]))
 ;; = Refresh Token =============================================================
 (s/def ::refresh-token-response (s/keys :req-un [::token ::refresh-token]))
-
-(s/def ::db-spec (s/keys :opt-un [:dinsro.events.users/item
-
-                                  ::new-password :kee-frame/route]))

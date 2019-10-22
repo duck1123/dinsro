@@ -1,7 +1,9 @@
 (ns dinsro.events.users
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components.login :as login]
+            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -9,6 +11,8 @@
 
 (rf/reg-sub ::loading (fn [db _] (get db ::loading false)))
 (rf/reg-sub ::items   (fn [db _] (get db ::items   [])))
+
+(s/def ::items ::ds/user)
 
 (rf/reg-sub
  ::item
