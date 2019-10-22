@@ -10,9 +10,20 @@
    ["/api"
     ["/v1"
      ["/authenticate" :api-authenticate]
-     ["/accounts"     :api-index-accounts]
+     ["/accounts"
+      [""             :api-index-accounts]
+      ["/:id"         :api-show-account]]
+     ["/currencies"
+      [""             :api-index-currencies]
+      ["/:id"         :api-show-currency]]
+     ["/logout"       :api-logout]
      ["/rates"        :api-index-rates]
-     ["/users"        :api-index-users]]]
+     ["/transactions"
+      [""             :api-index-transactions]
+      ["/:id"         :api-show-transaction]]
+     ["/users"
+      [""             :api-index-users]
+      ["/:id"         :api-show-user]]]]
    ["/currencies"
     [""               :index-currencies-page]
     ["/:id"           :show-currency-page]]

@@ -26,7 +26,7 @@
    {:db (assoc db ::loading true)
     :http-xhrio
     {:method          :post
-     :uri             "/api/v1/authenticate"
+     :uri             (kf/path-for :api-authenticate)
      :params          data
      :timeout         8000
      :format          (ajax/json-request-format)
@@ -51,7 +51,7 @@
  ::do-logout
  (fn [_ _]
    {:http-xhrio
-    {:uri             "/api/v1/logout"
+    {:uri             (kf/path-for [:api-logout])
      :method          :post
      :on-success      [::do-logout-success]
      :on-failure      [::do-logout-failure]

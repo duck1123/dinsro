@@ -1,6 +1,7 @@
 (ns dinsro.events.transactions
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -25,7 +26,7 @@
    {:db (assoc db ::do-fetch-index-loading true)
     :http-xhrio
     {:method          :get
-     :uri             "/api/v1/transactions"
+     :uri             (kf/path-for [:api-index-transactions])
      :response-format (ajax/json-response-format {:keywords? true})
      :on-success      [::do-fetch-index-success]
      :on-failure      [::do-fetch-index-failed]}}))

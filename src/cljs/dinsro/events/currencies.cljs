@@ -32,7 +32,7 @@
   {:db (assoc db ::do-fetch-index-loading true)
    :http-xhrio
    {:method          :get
-    :uri             "/api/v1/currencies"
+    :uri             (kf/path-for [:api-index-currencies])
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}}))

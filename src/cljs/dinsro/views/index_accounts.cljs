@@ -14,7 +14,7 @@
 
 (kf/reg-controller
  ::page-controller
- {:params #(when (= (get-in % [:data :name]) ::page) true)
+ {:params #(when (= (get-in % [:data :name]) :index-accounts-page) true)
   :start [::init-page]})
 
 (defn page

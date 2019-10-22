@@ -8,25 +8,25 @@
             [taoensso.timbre :as timbre]))
 
 (rf/reg-sub ::loading (fn [db _] (get db ::loading false)))
-(rf/reg-sub ::users   (fn [db _] (get db ::users [])))
+(rf/reg-sub ::items   (fn [db _] (get db ::items   [])))
 
 (rf/reg-sub
  ::item
- :<- [::users]
+ :<- [::items]
  (fn [items [_ id]]
    (first (filter #(= (:id %) id) items))))
 
 (kf/reg-event-db
  ::do-fetch-users-success
  (fn [db [{users :users}]]
-   (assoc db ::users users)))
+   (assoc db ::items users)))
 
 (kf/reg-event-db
  :filter-user
  (fn [db [_ id]]
-   (->> @(rf/subscribe [::users])
+   (->> @(rf/subscribe [::items])
         (keep #(when (not= (:id %) id) %))
-        (assoc db ::users))))
+        (assoc db ::items))))
 
 (kf/reg-event-fx
  ::do-delete-user-success
@@ -61,9 +61,9 @@
 
 (kf/reg-event-fx
  ::do-delete-user
- (fn [cofx [{:keys [id] :as user}]]
+ (fn [_ [user]]
    {:http-xhrio
-    {:uri             (str "/api/v1/users/" id)
+    {:uri             (kf/path-for [:api-show-user user])
      :method          :delete
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})
