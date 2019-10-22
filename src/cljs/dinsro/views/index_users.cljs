@@ -13,7 +13,7 @@
  (fn-traced [{:keys [db]} _]
    {:db (-> db
             (assoc :failed false)
-            (assoc ::e.users/users [])
+            (assoc ::e.users/items [])
             (assoc ::loading false))
     :dispatch [::e.users/do-fetch-users]}))
 
@@ -24,7 +24,7 @@
 
 (defn page
   []
-  (let [users @(rf/subscribe [::e.users/users])]
+  (let [users @(rf/subscribe [::e.users/items])]
     [:section.section>div.container>div.content
      [:h1 "Users Page"]
      [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]

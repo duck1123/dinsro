@@ -1,7 +1,10 @@
 (ns dinsro.components.index-users
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as st]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.events.users :as e.users]
+            [dinsro.specs :as ds]
             [dinsro.views.show-user :as v.show-user]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -25,3 +28,8 @@
         [:p "Email " email]
         [:a.button {:on-click #(rf/dispatch [::do-delete-user user])} "Delete"]]))
     [:div [:p "No Users"]]))
+
+(s/fdef index-users
+  :args (s/cat :data ::ds/users))
+
+(st/instrument 'index-users)

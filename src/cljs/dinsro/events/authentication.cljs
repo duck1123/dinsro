@@ -26,7 +26,7 @@
    {:db (assoc db ::loading true)
     :http-xhrio
     {:method          :post
-     :uri             (kf/path-for :api-authenticate)
+     :uri             (kf/path-for [:api-authenticate])
      :params          data
      :timeout         8000
      :format          (ajax/json-request-format)

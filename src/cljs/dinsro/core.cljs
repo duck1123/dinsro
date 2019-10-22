@@ -3,6 +3,7 @@
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
             [dinsro.routing :as routing]
+            [dinsro.specs :as ds]
             [dinsro.view :as view]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -44,6 +45,7 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      ;; :hash-routing?  false
+     :app-db-spec    ::ds/db-spec
      :initial-db     {}
      :root-component [view/root-component]})))
 

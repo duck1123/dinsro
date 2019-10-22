@@ -9,7 +9,7 @@
 (defn uuid-str-gen []
   (gen/fmap str (s/gen uuid?)))
 
-(defn valid-uuid-str?
+#_(defn valid-uuid-str?
   "Ensures a match of the original uuid str with the result of coercing that str to
   and from a uuid"
   [^String uuid-str]
@@ -31,7 +31,7 @@
     non-empty-string-alphanumeric)))
 
 (s/def ::message string?)
-(s/def ::id (s/with-gen valid-uuid-str? uuid-str-gen))
+(s/def ::id number? #_(s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::username string?)
 (s/def ::user-id number?)
 (s/def ::name string?)
@@ -40,7 +40,7 @@
 (s/def ::password-hash string?)
 (s/def ::permissions string?)
 (s/def ::token (s/with-gen valid-jwt? #(s/gen #{"J9.eyJ.5n"})))
-(s/def ::refresh-token (s/with-gen valid-uuid-str? uuid-str-gen))
+(s/def ::refresh-token string? #_(s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::exp int?)
 ;; = Auth ======================================================================
 (s/def ::auth-response (s/keys :req-un [::id ::username ::permissions ::token ::refresh-token]))
@@ -64,9 +64,13 @@
 (s/def ::request-reset-request (s/keys :req-un [::useruser-email ::from-email ::subject ::email-body-html ::email-body-plain ::response-base-link]))
 (s/def ::request-reset-response (s/keys :req-un [::message]))
 ;; = Password Reset ============================================================
-(s/def ::resetKey (s/with-gen valid-uuid-str? uuid-str-gen))
+(s/def ::resetKey string? #_(s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::new-password ::password)
 (s/def ::reset-request (s/keys :req-un [::resetKey ::new-password]))
 (s/def ::reset-response (s/keys :req-un [::message]))
 ;; = Refresh Token =============================================================
 (s/def ::refresh-token-response (s/keys :req-un [::token ::refresh-token]))
+
+(s/def ::db-spec (s/keys :opt-un [:dinsro.events.users/item
+
+                                  ::new-password :kee-frame/route]))
