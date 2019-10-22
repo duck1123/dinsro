@@ -1,5 +1,6 @@
 (ns dinsro.views.index-currencies
-  (:require [dinsro.components.index-currencies :refer [index-currencies]]
+  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components.index-currencies :refer [index-currencies]]
             [dinsro.events.currencies :as e.currencies]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
