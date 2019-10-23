@@ -1,4 +1,4 @@
-(ns dinsro.components.logout
+(ns dinsro.views.logout
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]

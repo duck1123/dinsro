@@ -1,4 +1,4 @@
-(ns dinsro.components.settings)
+(ns dinsro.views.settings)
 
 (defn page
   []
