@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
+            [dinsro.components.registration-form :as c.rf]
             [dinsro.events.users :as e.users]
             [dinsro.routing :as routing]
             [dinsro.specs :as ds]
@@ -43,13 +44,20 @@
   (s/keys
    :req [
          #_::ds/new-password
-         ::e.users/item
+
          ]
 
-   :req-un [::failed ]
-   ;; :opt []
-   :opt-un [:dinsro.events.users/item
+   :req-un [ ]
+   :opt [
+         ::e.users/item
+         ::c.rf/name
+         ]
+   :opt-un [::failed
+            :dinsro.events.users/item
             :kee-frame/route]))
+
+;; ::c.registration-form/name
+
 ;; -------------------------
 ;; Initialize app
 (defn ^:dev/after-load mount-components

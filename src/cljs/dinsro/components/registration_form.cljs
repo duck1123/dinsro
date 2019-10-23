@@ -1,15 +1,21 @@
 (ns dinsro.components.registration-form
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::name             (fn [db _] (get db ::name             "")))
-(rf/reg-sub ::email            (fn [db _] (get db ::email            "")))
-(rf/reg-sub ::password         (fn [db _] (get db ::password         "")))
-(rf/reg-sub ::confirm-password (fn [db _] (get db ::confirm-password "")))
+(c/reg-field ::name             "")
+(c/reg-field ::email            "")
+(c/reg-field ::password         "")
+(c/reg-field ::confirm-password "")
+
+(s/def ::name             string?)
+(s/def ::email            string?)
+(s/def ::password         string?)
+(s/def ::confirm-password string?)
 
 (kf/reg-event-db
  ::change-email
@@ -66,7 +72,7 @@
       :on-success      [:register-succeeded]
       :on-failure      [:register-failed]}})))
 
-(rf/reg-event-db
+(kf/reg-event-db
  ::load-register-page
  (fn-traced
   [db _]

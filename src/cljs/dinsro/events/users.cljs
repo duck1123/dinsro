@@ -12,7 +12,7 @@
 (rf/reg-sub ::loading (fn [db _] (get db ::loading false)))
 (rf/reg-sub ::items   (fn [db _] (get db ::items   [])))
 
-(s/def ::items ::ds/user)
+(s/def ::items (s/* ::ds/user))
 
 (rf/reg-sub
  ::item

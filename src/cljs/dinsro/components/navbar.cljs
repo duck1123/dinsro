@@ -1,6 +1,16 @@
 (ns dinsro.components.navbar
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components.logout :as c.logout]
+            [dinsro.components :as c]
+            [dinsro.components.about :as about]
+            [dinsro.components.login :as login]
+            [dinsro.components.logout :as logout]
+            [dinsro.components.register :as register]
+            [dinsro.components.settings :as settings]
+            [dinsro.events.authentication :as e.authentication]
+            [dinsro.views.index-accounts :as index-accounts]
+            [dinsro.views.index-currencies :as index-currencies]
+            [dinsro.views.index-rates :as index-rates]
+            [dinsro.views.index-users :as index-users]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -70,7 +80,7 @@
           [:a.navbar-link authenticated]
           [:div.navbar-dropdown
            (nav-link "Settings"    :settings-page)
-           [:a.navbar-item {:on-click #(rf/dispatch [::c.logout/do-logout])} "Logout"]]]
+           [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} "Logout"]]]
          [:<>
           (nav-link "Login"       :login-page)
           (nav-link "Register"    :register-page)])]]]))
