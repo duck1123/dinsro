@@ -18,7 +18,7 @@
          {:style {:border        "1px black solid"
                   :margin-bottom "15px"}}
          [:p "Id: " id]
-         [:p "Name: " [:a {:href (kf/path-for [::show-currency/page {:id id}])} name]]
+         [:p "Name: " [:a {:href (kf/path-for [:show-currency-page {:id id}])} name]]
          (if is-primary
            [:p "Primary"]
            [:p "Exchange " exchange])])))])
