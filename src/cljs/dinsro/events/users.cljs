@@ -2,7 +2,6 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components.login :as login]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -42,7 +41,7 @@
  (fn [{:keys [db]} [_ response]]
    (let [s (:status response)]
      (if (= s 403)
-       {:navigate-to [::login/page]}
+       {:navigate-to [:login-page]}
        {:db (assoc db :failed true)}))))
 
 (kf/reg-event-db

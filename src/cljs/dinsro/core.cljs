@@ -3,7 +3,7 @@
             [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
-            [dinsro.components.registration-form :as c.rf]
+            [dinsro.components.forms.registration-form :as c.rf]
             [dinsro.events.users :as e.users]
             [dinsro.routing :as routing]
             [dinsro.specs :as ds]
