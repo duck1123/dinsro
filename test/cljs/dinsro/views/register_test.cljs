@@ -1,4 +1,4 @@
-(ns dinsro.components.register-test
+(ns dinsro.views.register-test
   (:require [cljs.test :refer-macros [is are deftest testing use-fixtures]]
             [dinsro.views.register :as register]
             [dinsro.utils :refer [with-mounted-component found-in]]
