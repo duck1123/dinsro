@@ -34,7 +34,7 @@
                        :password password}
           user (model.user/create-user! user-params)
           response (actions.authentication/check-auth email password)]
-      (is response true))))
+      (is (= response true)))))
 
 (deftest authenticate-test
   (let [{:keys [email password] :as user-params} (gen/generate (s/gen ::ds/register-request))
