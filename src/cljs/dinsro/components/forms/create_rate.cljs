@@ -9,10 +9,14 @@
 
 (c/reg-field ::rate          0)
 (c/reg-field ::currency-id   2)
+(c/reg-field ::date (.toISOString (js/Date.)))
+(c/reg-field ::time (timbre/spy :info (.toISOString (js/Date.))))
 (c/reg-field ::form-shown?   false)
 #_(rf/reg-sub      ::form-shown?          (fn-traced [db _] (get db ::form-shown? false)))
 
 (kf/reg-event-db ::change-currency-id   (fn-traced [db [value]] (assoc db ::currency-id (int value))))
+(kf/reg-event-db ::change-date   (fn-traced [db [value]] (assoc db ::date value)))
+(kf/reg-event-db ::change-time   (fn-traced [db [value]] (assoc db ::time value)))
 (kf/reg-event-db
  ::change-rate
  (fn-traced [db [value]]
@@ -22,15 +26,19 @@
  ::form-data
  :<- [::currency-id]
  :<- [::rate]
- (fn-traced [[currency-id rate]]
+ :<- [::date]
+ :<- [::time]
+ (fn-traced [[currency-id rate date time]]
    {:currency-id currency-id
-    :rate        rate}))
+    :rate        rate
+    :date        date
+    :time        time}))
 
 (kf/reg-event-fx
  ::submit-clicked
  (fn-traced
    [_ _]
-   {:dispatech [::e.rates/do-submit #(rf/subscribe [::form-data])]}))
+   {:dispatch [::e.rates/do-submit #(rf/subscribe [::form-data])]}))
 
 (kf/reg-event-db
  ::toggle-form
@@ -46,5 +54,7 @@
     [:pre (str @(rf/subscribe [::form-data]))]
     [:form
      [c/number-input        "Rate"     ::rate        ::change-rate]
+     [c/input-field "Date" ::date ::change-date :date]
+     [c/input-field "Time" ::time ::change-time :time]
      [c/currency-selector "Currency" ::currency-id ::change-currency-id]
      [c/primary-button    "Submit"   ::submit-clicked]]]])
