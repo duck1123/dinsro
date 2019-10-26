@@ -4,6 +4,7 @@
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
             [dinsro.components.forms.registration-form :as c.rf]
+            [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.routing :as routing]
             [dinsro.specs :as ds]
@@ -49,6 +50,7 @@
 
    :req-un [ ]
    :opt [
+         ::e.rates/items
          ::e.users/item
          ::c.rf/name
          ]

@@ -1,6 +1,8 @@
 (ns dinsro.events.rates
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -9,6 +11,7 @@
 (def rate {:id 1 :value 12158})
 
 (rf/reg-sub ::items (fn [db _] (get db ::items [rate (update (update rate :value inc) :id inc)])))
+(s/def ::items (s/* ::ds/rate))
 
 (rf/reg-sub
  ::item

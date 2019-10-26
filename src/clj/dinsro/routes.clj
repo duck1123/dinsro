@@ -11,7 +11,7 @@
 (def routes
   [(into [""]
          (map (fn [path] [path {:get a.home/home-handler}])
-              ["/" "/about" "/accounts" "/currencies" "/login"
+              ["/" "/about" "/accounts" "/currencies" "/currencies/:id" "/login"
                "/rates" "/register" "/settings" "/users"]))
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts"
