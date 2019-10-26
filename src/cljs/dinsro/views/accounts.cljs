@@ -1,4 +1,4 @@
-(ns dinsro.components.accounts)
+(ns dinsro.views.accounts)
 
 (defn page
   []
