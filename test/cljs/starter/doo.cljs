@@ -3,6 +3,6 @@
             dinsro.components.about-test
             dinsro.components.register-test
             dinsro.core-test
-            dinsro.view-test))
+            dinsro.views.home-test))
 
 (doo-all-tests #"dinsro\..*(?:-test)$")

@@ -3,7 +3,7 @@
             [re-frame.core :as rf]))
 
 (def routes
-  [["/"      :home]
+  [["/"      :home-page]
    ["/about" ::about/page]
    ["/login" :login]])
 
