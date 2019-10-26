@@ -27,18 +27,13 @@
 (deftest check-auth
   (testing "successful"
     (db/delete-users!)
-    (let [email "test2@example.com"
-          password "hunter2"
-          user-params {:name "bob"
-                       :email email
-                       :password password}
+    (let [{:keys [email password] :as user-params} (gen/generate (s/gen ::ds/register-request))
           user (model.user/create-user! user-params)
           response (actions.authentication/check-auth email password)]
       (is (= response true)))))
 
 (deftest authenticate-test
-  (let [{:keys [email password] :as user-params} (gen/generate (s/gen ::ds/register-request))
-        #_{:email email :name "Bob" :password password}]
+  (let [{:keys [email password] :as user-params} (gen/generate (s/gen ::ds/register-request))]
    (testing "successful"
       (db/delete-users!)
       (let [user (model.user/create-user! user-params)
