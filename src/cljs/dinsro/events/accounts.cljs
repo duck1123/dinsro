@@ -8,7 +8,7 @@
 (rf/reg-sub ::item              (fn [db _] (get db ::items             [])))
 (rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
 
-(kf/reg-sub
+(rf/reg-sub
  ::item
  :<- [::items]
  (fn [items [_ target-item]]

@@ -8,18 +8,18 @@
 (rf/reg-sub ::items                  (fn [db _] (get db ::items                  [])))
 (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
-(rf/reg-event-db
+(kf/reg-event-db
  ::do-fetch-index-success
  (fn [db [_ {:keys [items]}]]
    (timbre/info "fetch records success" items)
    (assoc db ::items items)))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-fetch-index-failed
  (fn [_ _]
    (timbre/info "fetch records failed")))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::do-fetch-index
  (fn-traced
    [{:keys [db]} [_ data]]
