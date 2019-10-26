@@ -17,7 +17,6 @@
 (kf/reg-event-db
  ::do-fetch-index-success
  (fn-traced [db [{:keys [items]}]]
-   (timbre/info "fetch records success" items)
    (assoc db ::items items)))
 
 (kf/reg-event-fx

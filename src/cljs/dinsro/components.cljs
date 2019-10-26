@@ -30,6 +30,10 @@
   [label field change-handler]
   (input-field label field change-handler :password))
 
+(defn number-input
+  [label field change-handler]
+  (input-field label field change-handler :number))
+
 (defn primary-button
   [label click-handler]
   [:div.field
@@ -39,13 +43,17 @@
      label]]])
 
 (defn currency-selector
-  []
+  [label field change-handler]
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:div.field
-           [:div.control
-            [:label.label "Currency"]
-            [:div.select
-             (->> (for [currency currencies]
-                    ^{:key (:name currency)}
-                    [:option (:name currency)])
-                  (into [:select]))]]]))
+     [:div.control
+      [:label.label label]
+      [:div.select
+       (into
+        [:select
+         {:value @(rf/subscribe [field])
+          :on-change #(rf/dispatch [change-handler (target-value %)])}]
+        (for [currency currencies]
+          ^{:key (:name currency)}
+          (let [{:keys [id name]} currency]
+            [:option {:value id} name])))]]]))
