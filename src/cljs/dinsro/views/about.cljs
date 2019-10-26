@@ -1,4 +1,4 @@
-(ns dinsro.components.about)
+(ns dinsro.views.about)
 
 (defn page []
   [:section.section>div.container>div.content

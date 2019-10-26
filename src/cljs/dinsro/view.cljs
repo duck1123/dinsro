@@ -1,6 +1,6 @@
 (ns dinsro.view
-  (:require [dinsro.components.about :as about]
-            [dinsro.components.login-page :refer [login-page]]
+  (:require [dinsro.components.login-page :refer [login-page]]
+            [dinsro.views.about :as about]
             [dinsro.views.home :as home]
             [kee-frame.core :as kf]
             [markdown.core :refer [md->html]]
@@ -74,15 +74,15 @@
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start]
       [:div.navbar-end
-       [nav-link "About" ::about/page]
+       [nav-link "About" :about-page]
        (if (not authenticated)
-         [nav-link (str "Login " authenticated) :login])]]]))
+         [nav-link (str "Login " authenticated) :login-page])]]]))
 
 (defn root-component []
   [:div
    [navbar]
    [kf/switch-route (fn [route] (get-in route [:data :name]))
-    ::about/page about/page
+    :about-page  about/page
     :home-page   home/page
-    :login       login-page
+    :login-page  login-page
     nil          [:div ""]]])
