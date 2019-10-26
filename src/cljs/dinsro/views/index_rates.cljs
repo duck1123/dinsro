@@ -10,6 +10,6 @@
   []
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
-     [:hi "Rates"]
+     [:h1 "Rates"]
      [create-rate-form]
      [index-rates items]]))

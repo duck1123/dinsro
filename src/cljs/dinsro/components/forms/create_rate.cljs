@@ -7,16 +7,24 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(c/reg-field ::rate "")
-(kf/reg-event-db ::change-rate (fn-traced [db [_ rate]] (assoc db ::rate rate)))
-(rf/reg-sub      ::form-shown? (fn-traced [db _] (get db ::form-shown? false)))
+(c/reg-field ::rate          0)
+(c/reg-field ::currency-id   2)
+(c/reg-field ::form-shown?   false)
+#_(rf/reg-sub      ::form-shown?          (fn-traced [db _] (get db ::form-shown? false)))
+
+(kf/reg-event-db ::change-currency-id   (fn-traced [db [value]] (assoc db ::currency-id (int value))))
+(kf/reg-event-db
+ ::change-rate
+ (fn-traced [db [value]]
+   (assoc db ::rate (let [v (js/parseFloat value)] (if (js/isNaN v) 0 v)))))
 
 (rf/reg-sub
  ::form-data
+ :<- [::currency-id]
  :<- [::rate]
- (fn-traced
-   [rate]
-   {:rate rate}))
+ (fn-traced [[currency-id rate]]
+   {:currency-id currency-id
+    :rate        rate}))
 
 (kf/reg-event-fx
  ::submit-clicked
@@ -31,13 +39,12 @@
 
 (defn create-rate-form
   []
-  (let [form-shown? @(rf/subscribe [::form-shown?])]
-    [:div
-     [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
-     [:div.section {:class (when-not form-shown? "is-hidden")
-                    :style {:border "1px black solid"}}
-      [:p "Create rate"]
-      [:form
-       [c/text-input "Rate" ::rate ::change-rate]
-       [c/currency-selector]
-       [c/primary-button "Submit" ::submit-clicked]]]]))
+  [:<>
+   [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
+   [:div.section {:class (when-not @(rf/subscribe [::form-shown?]) "is-hidden")
+                  :style {:border "1px black solid"}}
+    [:pre (str @(rf/subscribe [::form-data]))]
+    [:form
+     [c/number-input        "Rate"     ::rate        ::change-rate]
+     [c/currency-selector "Currency" ::currency-id ::change-currency-id]
+     [c/primary-button    "Submit"   ::submit-clicked]]]])
