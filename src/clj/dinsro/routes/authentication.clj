@@ -1,7 +1,6 @@
 (ns dinsro.routes.authentication
   (:require [dinsro.actions.authentication :refer [authenticate register]]
             [dinsro.layout :as layout]
-            [dinsro.models :as m]
             [taoensso.timbre :as timbre]))
 
 (defn authenticate-handler
@@ -12,10 +11,5 @@
 (defn authentication-routes []
   (list
    ["/authenticate" {:post {:handler authenticate-handler
-                            :summary "Authenticate"
-                            ;; :body [authentication-data m/AuthenticationData]
-                            }}]
-   ["/register" {:post register
-                 ;;           :summary "Register"
-                 ;;           :body [params m/RegistrationData]
-                 }]))
+                            :summary "Authenticate"}}]
+   ["/register" {:post register}]))
