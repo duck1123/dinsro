@@ -11,12 +11,12 @@
 (rf/reg-sub
  ::item
  :<- [::items]
- (fn [items [_ id]]
+ (fn-traced [items [_ id]]
    (first (filter #(= (:id %) id) items))))
 
 (kf/reg-event-db
  ::do-fetch-index-success
- (fn-traced [db [_ {:keys [items]}]]
+ (fn-traced [db [{:keys [items]}]]
    (timbre/info "fetch records success" items)
    (assoc db ::items items)))
 
@@ -27,8 +27,7 @@
 
 (kf/reg-event-fx
  ::do-fetch-index
- (fn-traced
-  [{:keys [db]} [_ data]]
+ (fn-traced [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-loading true)
    :http-xhrio
    {:method          :get

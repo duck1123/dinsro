@@ -11,36 +11,34 @@
 (rf/reg-sub
  ::item
  :<- [::items]
- (fn [items [_ target-item]]
+ (fn-traced [items [_ target-item]]
    (first (filter #(= (:id %) (:id target-item)) items))))
 
 (kf/reg-event-fx
  ::do-submit-succeeded
- (fn-traced
-  [_ data]
+ (fn-traced [_ data]
   (timbre/info "Submit success" data)
   {:dispatch [::do-fetch-accounts]}))
 
 (kf/reg-event-fx
  ::do-submit-failed
- (fn-traced
-  [_ [_ response]]
+ (fn-traced [[_ response]]
   (timbre/info "Submit failed" response)))
 
 (kf/reg-event-fx
  ::do-delete-account-success
- (fn [_ _]
+ (fn-traced [_ _]
    (timbre/info "delete account success")
    {:dispatch [::do-fetch-accounts]}))
 
 (kf/reg-event-fx
  ::do-delete-account-failed
- (fn [_ _]
+ (fn-traced [_ _]
    (timbre/info "delete account failed")))
 
 (kf/reg-event-db
  ::do-fetch-index-success
- (fn [db [_ {:keys [items]}]]
+ (fn-traced [db [{:keys [items]}]]
    (timbre/info "fetch records success" items)
    (assoc db ::items items)))
 
@@ -51,7 +49,7 @@
 
 (kf/reg-event-fx
  ::do-submit
- (fn-traced [{:keys [db]} [_ data]]
+ (fn-traced [{:keys [db]} [data]]
    {:db (assoc db ::do-submit-loading true)
     :http-xhrio
     {:method          :post

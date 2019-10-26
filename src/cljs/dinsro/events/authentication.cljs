@@ -10,32 +10,30 @@
 
 (kf/reg-event-db
  ::do-authenticate-success
- (fn [db [_ {:keys [identity]}]]
+ (fn-traced [db [{:keys [identity]}]]
    (assoc db :authenticated identity)))
 
-(kf/reg-event-fx
+(kf/reg-event-db
  ::do-authenticate-failure
- (fn [{:keys [db]} event]
-   {:db (-> db
-            (assoc ::login-failed true)
-            (assoc ::loading false))}))
+ (fn-traced [db _]
+   (-> db
+       (assoc ::login-failed true)
+       (assoc ::loading false))))
 
-(kf/reg-event-fx
+(kf/reg-event-db
  ::do-logout-success
  (fn-traced [db _]
-   (timbre/info "logout success")
-   {:db (assoc db :authenticated nil)}))
+   (assoc db :authenticated nil)))
 
+;; You failed to logout. logout anyway
 (kf/reg-event-db
  ::do-logout-failure
  (fn [db _]
-   ;; FIXME: show failure
-   (timbre/info "logout failure")
    (assoc db :authenticated nil)))
 
 (kf/reg-event-fx
  ::do-authenticate
- (fn [{:keys [db]} [_ data]]
+ (fn [{:keys [db]} [data]]
    {:db (assoc db ::loading true)
     :http-xhrio
     {:method          :post

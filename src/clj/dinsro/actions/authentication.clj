@@ -17,8 +17,8 @@
 
 (defn authenticate-handler
   [request]
-  (let [{{:keys [email password]} :params :keys [session]} request]
-    (if (check-auth email password)
+  (let [{{:keys [email password]} :params :keys [session]} (timbre/spy :info request)]
+    (if (check-auth (timbre/spy :info email) (timbre/spy :info password))
       (assoc (ok {:identity email})
              :session (assoc session :identity email))
       (unauthorized))))

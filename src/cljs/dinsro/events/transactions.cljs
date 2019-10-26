@@ -10,7 +10,7 @@
 
 (kf/reg-event-db
  ::do-fetch-index-success
- (fn [db [_ {:keys [items]}]]
+ (fn [db [{:keys [items]}]]
    (timbre/info "fetch records success" items)
    (assoc db ::items items)))
 
@@ -22,7 +22,7 @@
 (kf/reg-event-fx
  ::do-fetch-index
  (fn-traced
-   [{:keys [db]} [_ data]]
+   [{:keys [db]} [data]]
    {:db (assoc db ::do-fetch-index-loading true)
     :http-xhrio
     {:method          :get
