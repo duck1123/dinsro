@@ -30,7 +30,7 @@
     (db/delete-users!)
     (let [name "test"
           email "duck@kronkltd.net"
-          params {:name name :email email :password_hash "foo"}
+          params {:name name :email email :password-hash "foo"}
           {:keys [id]} (db/create-user! params)
           path (str "/api/v1/users/" id)
           request (mock/request :get path)

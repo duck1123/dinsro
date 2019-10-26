@@ -9,7 +9,7 @@
   [registration-data]
   (let [{:keys [password]} registration-data]
     (if password
-      (merge {:password_hash (bcrypt/encrypt password)}
+      (merge {:password-hash (bcrypt/encrypt password)}
              registration-data)
       nil)))
 

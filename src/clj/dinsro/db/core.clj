@@ -4,8 +4,10 @@
             [clj-time.jdbc :as jdbc]
             [conman.core :as conman]
             [dinsro.config :refer [env]]
+            [hugsql.adapter :as adapter]
             [mount.core :refer [defstate]]
-            [java-time.pre-java8 :as jt]))
+            [java-time.pre-java8 :as jt]
+            [taoensso.timbre :as timbre]))
 
 (defstate ^:dynamic *db*
           :start (conman/connect! {:jdbc-url (env :database-url)})
@@ -13,14 +15,13 @@
 
 (defn result-one-snake->kebab
   [this result options]
-  (transform-keys
-   ->kebab-case-keyword
-   (hugsql.adapter/result-one this result options)))
+  (->> (hugsql.adapter/result-one this result options)
+       (transform-keys ->kebab-case-keyword)))
 
 (defn result-many-snake->kebab
   [this result options]
-  (map #(transform-keys ->kebab-case-keyword %)
-       (hugsql.adapter/result-many this result options)))
+  (->> (hugsql.adapter/result-many this result options)
+       (map #(transform-keys ->kebab-case-keyword %))))
 
 (defmethod hugsql.core/hugsql-result-fn :1 [sym]
   'dinsro.db.core/result-one-snake->kebab)

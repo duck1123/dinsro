@@ -12,7 +12,7 @@ VALUES (:id, :user-id)
 -- :doc creates a new user record
 INSERT INTO users
 (name, email, password_hash)
-VALUES (:name, :email, :password_hash)
+VALUES (:name, :email, :password-hash)
 
 -- :name delete-account! :! :n
 -- :doc deletes an account record given the id

@@ -24,7 +24,7 @@
           password-hash "pass"
           params {:name name
                   :email email
-                  :password_hash password-hash}
+                  :password-hash password-hash}
           created-user (db/create-user! t-conn params)
           id (get created-user :id)
           response (db/read-user t-conn {:id id})]
