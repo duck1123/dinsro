@@ -3,6 +3,11 @@
 INSERT INTO accounts (name, user_id)
 VALUES (:name, :user-id)
 
+-- :name create-currency! :! :n
+-- :doc creates a new currency
+INSERT INTO currency (id, name)
+VALUES (:id, :name)
+
 -- :name create-transaction! :! :n
 -- :doc creates a new transaction record
 INSERT INTO transactions (id, user_id)
@@ -18,6 +23,14 @@ VALUES (:name, :email, :password-hash)
 -- :doc deletes an account record given the id
 DELETE FROM accounts WHERE id = :id
 
+-- :name delete-currency! :! :n
+-- :doc deletes a currency record given the id
+DELETE FROM currencies WHERE id = :id
+
+-- :name delete-rate! :! :n
+-- :doc deletes a rate record given the id
+DELETE FROM rates WHERE id = :id
+
 -- :name delete-transaction! :! :n
 -- :doc deletes a transaction record given the id
 DELETE FROM transactions WHERE id = :id
@@ -25,6 +38,14 @@ DELETE FROM transactions WHERE id = :id
 -- :name delete-user! :! :n
 -- :doc deletes a user record given the id
 DELETE FROM users WHERE id = :id
+
+-- :name delete-accounts! :!
+-- :doc delete all accounts
+DELETE FROM accounts
+
+-- :name delete-rates! :!
+-- :doc delete all rates
+DELETE FROM rates
 
 -- :name delete-users! :!
 -- :doc delete all users
@@ -38,6 +59,10 @@ SELECT * FROM users WHERE email = :email
 -- :doc retrieves an account record given the id
 SELECT * FROM accounts WHERE id = :id
 
+-- :name read-currencies :? :1
+-- :doc retrieves a currency record given the id
+SELECT * FROM currencies WHERE id = :id
+
 -- :name read-transaction :? :1
 -- :doc retrieves a transaction record given the id
 SELECT * FROM transactions WHERE id = :id
@@ -49,6 +74,14 @@ SELECT * FROM users WHERE id = :id
 -- :name list-accounts :*
 -- :doc retrieves all accounts
 SELECT * FROM accounts
+
+-- :name list-currencies :*
+-- :doc retrieves all currencies
+SELECT * FROM currencies
+
+-- :name list-rates :*
+-- :doc retrieves all rates
+SELECT * FROM rates
 
 -- :name list-transactions :*
 -- :doc retrieves all transactions
