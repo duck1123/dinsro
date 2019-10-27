@@ -1,9 +1,9 @@
 (ns dinsro.views.register
-  (:require [dinsro.components.forms.account :as forms.account]
+  (:require [dinsro.components.registration-form :refer [registration-form]]
             [taoensso.timbre :as timbre]))
 
 (defn page
   []
   [:section.section>div.container>div.content
-   [:h1 "Index Accounts"]
-   [forms.account/new-account-form]])
+   [:h1 "Registration Page"]
+   [registration-form]])
