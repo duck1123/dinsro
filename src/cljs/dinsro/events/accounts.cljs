@@ -8,17 +8,18 @@
 (rf/reg-sub ::items             (fn [db _] (get db ::items             [])))
 (rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
 
-(rf/reg-sub
- ::item
- :<- [::items]
- (fn-traced [items [_ target-item]]
-   (first (filter #(= (:id %) (:id target-item)) items))))
+(defn sub-item
+  [items [_ target-item]]
+  (first (filter #(= (:id %) (:id target-item)) items)))
 
-(kf/reg-event-fx
- ::do-submit-succeeded
- (fn-traced [_ data]
+(rf/reg-sub ::item :<- [::items] sub-item)
+
+(defn do-submit-succeeded
+  [_ data]
   (timbre/info "Submit success" data)
-  {:dispatch [::do-fetch-index]}))
+  {:dispatch [::do-fetch-index]})
+
+(kf/reg-event-fx ::do-submit-succeeded do-submit-succeeded)
 
 (kf/reg-event-fx
  ::do-submit-failed

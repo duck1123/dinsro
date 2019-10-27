@@ -17,8 +17,10 @@
                  [conman "0.8.4"]
                  [cprop "0.1.14"]
                  [day8.re-frame/http-fx "0.1.6"]
+                 [devcards "0.2.6"]
                  [expound "0.7.2"]
                  [funcool/struct "1.4.0"]
+                 [kamera "0.1.1-SNAPSHOT"]
                  [kee-frame "0.3.3" :exclusions [metosin/reitit-core org.clojure/core.async]]
                  [luminus-jetty "0.1.7"]
                  [luminus-migrations "0.6.6"]
@@ -120,7 +122,8 @@
                   {:builds
                    {:app
                     {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                     :figwheel     {:on-jsload       "dinsro.core/mount-components"}
+                     :figwheel     {:on-jsload       "dinsro.core/mount-components"
+                                    :devcards        true}
                      :compiler     {:main            "dinsro.app"
                                     :asset-path      "/js/out"
                                     :output-to       "target/cljsbuild/public/js/app.js"
