@@ -71,3 +71,4 @@
 ;; = Refresh Token =============================================================
 (s/def ::refresh-token-response (s/keys :req-un [::token ::refresh-token]))
 (s/def ::user-response (s/keys :req-un [::name ::email]))
+(s/def ::rate (s/keys :req-un [::id]))

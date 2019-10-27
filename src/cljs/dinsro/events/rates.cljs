@@ -24,9 +24,30 @@
    {:db (assoc db ::do-submit-loading true)
     :http-xhrio
     {:method          :post
-     :uri             (kf/path-for [:api-index-users])
+     :uri             (kf/path-for [:api-index-rates])
      :params          data
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})
      :on-success      [::do-submit-succeeded]
      :on-failure      [::do-submit-failed]}}))
+
+(kf/reg-event-db
+ ::do-fetch-index-success
+ (fn-traced [db [{:keys [items]}]]
+   (assoc db ::items items)))
+
+(kf/reg-event-fx
+ ::do-fetch-index-failed
+ (fn-traced [_ _]
+   (timbre/info "fetch records failed")))
+
+(kf/reg-event-fx
+ ::do-fetch-index
+ (fn-traced [{:keys [db]} _]
+   {:db (assoc db ::do-fetch-index-loading true)
+    :http-xhrio
+    {:method          :get
+     :uri             (kf/path-for [:api-index-rates])
+     :response-format (ajax/json-response-format {:keywords? true})
+     :on-success      [::do-fetch-index-success]
+     :on-failure      [::do-fetch-index-failed]}}))
