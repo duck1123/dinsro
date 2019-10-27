@@ -8,15 +8,7 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(def rate {:id 1 :value 12158 :time (js/Date.)})
-(def default-rates
-  (map (fn [i]
-         (-> rate
-             (update :value (partial + i))
-             (update :id (partial + i))))
-       (range 7)))
-
-(rf/reg-sub ::items (fn [db _] (get db ::items default-rates)))
+(rf/reg-sub ::items (fn [db _] (get db ::items [])))
 (s/def ::items (s/* ::ds/rate))
 
 (rf/reg-sub

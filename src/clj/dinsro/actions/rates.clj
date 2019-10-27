@@ -6,4 +6,5 @@
 (defn index-handler
   [request]
   (let [items (m.rates/fetch-index)]
-      (http/ok {:items items})))
+    (http/ok {:model :rates
+              :items items})))
