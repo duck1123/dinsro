@@ -1,5 +1,6 @@
 (ns dinsro.events.users
   (:require [ajax.core :as ajax]
+            [cemerick.url :as url]
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.specs :as ds]
@@ -38,10 +39,10 @@
 
 (kf/reg-event-fx
  ::do-fetch-users-failed
- (fn [{:keys [db]} [_ response]]
+ (fn [{:keys [db]} [response]]
    (let [s (:status response)]
      (if (= s 403)
-       {:navigate-to [:login-page]}
+       {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}
        {:db (assoc db :failed true)}))))
 
 (kf/reg-event-db

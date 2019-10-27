@@ -1,5 +1,6 @@
 (ns dinsro.views.login
   (:require [ajax.core :as ajax]
+            [cemerick.url :as url]
             [clojure.string :as string]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
@@ -40,7 +41,8 @@
 (kf/reg-event-fx
  :login-click
  (fn [_ _]
-   {:dispatch [::e.authentication/do-authenticate @(rf/subscribe [::login-data])]}))
+   (let [data @(rf/subscribe [::login-data])]
+     {:dispatch [::e.authentication/do-authenticate data]})))
 
 (defn login-form
   []
@@ -49,9 +51,12 @@
    [c/password-input "Password" ::password :change-password]
    [c/primary-button "Login" :login-click]])
 
-(defn page []
-  [:section.section>div.container>div.content
-   [:h1 "Login"]
-   [:p (str @(rf/subscribe [::login-data]))]
-   [:div.container
-    [login-form]]])
+(defn page [match]
+  (let [{:keys [query-string]} match
+        return-to (get (url/query->map query-string) "return-to")]
+    [:section.section>div.container>div.content
+     [:h1 "Login"]
+     [:p (str @(rf/subscribe [::login-data]))]
+     [:div.container
+      [:p "Return To: " return-to]
+      [login-form]]]))

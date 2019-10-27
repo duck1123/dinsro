@@ -7,16 +7,16 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(c/reg-field ::rate          0)
-(c/reg-field ::currency-id   2)
-(c/reg-field ::date (.toISOString (js/Date.)))
-(c/reg-field ::time (timbre/spy :info (.toISOString (js/Date.))))
-(c/reg-field ::form-shown?   false)
+(c/reg-field ::rate        0)
+(c/reg-field ::currency-id 2)
+(c/reg-field ::date        (.toISOString (js/Date.)))
+(c/reg-field ::time        (timbre/spy :info (.toISOString (js/Date.))))
+(c/reg-field ::form-shown? false)
 #_(rf/reg-sub      ::form-shown?          (fn-traced [db _] (get db ::form-shown? false)))
 
-(kf/reg-event-db ::change-currency-id   (fn-traced [db [value]] (assoc db ::currency-id (int value))))
-(kf/reg-event-db ::change-date   (fn-traced [db [value]] (assoc db ::date value)))
-(kf/reg-event-db ::change-time   (fn-traced [db [value]] (assoc db ::time value)))
+(kf/reg-event-db ::change-currency-id (fn-traced [db [value]] (assoc db ::currency-id (int value))))
+(kf/reg-event-db ::change-date        (fn-traced [db [value]] (assoc db ::date value)))
+(kf/reg-event-db ::change-time        (fn-traced [db [value]] (assoc db ::time value)))
 (kf/reg-event-db
  ::change-rate
  (fn-traced [db [value]]
@@ -43,7 +43,7 @@
 (kf/reg-event-db
  ::toggle-form
  (fn-traced [db _]
-   (assoc db ::form-shown? (not (get db ::form-shown?)))))
+   (update db ::form-shown? not)))
 
 (defn create-rate-form
   []

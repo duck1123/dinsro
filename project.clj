@@ -11,6 +11,7 @@
                  [cljs-ajax "0.8.0"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
+                 [com.cemerick/url "0.1.1"]
                  [com.h2database/h2 "1.4.200"]
                  [com.taoensso/timbre "4.10.0"]
                  [conman "0.8.4"]
