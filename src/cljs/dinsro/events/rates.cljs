@@ -14,7 +14,7 @@
          (-> rate
              (update :value (partial + i))
              (update :id (partial + i))))
-       (range 30)))
+       (range 7)))
 
 (rf/reg-sub ::items (fn [db _] (get db ::items default-rates)))
 (s/def ::items (s/* ::ds/rate))
