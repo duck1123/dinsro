@@ -66,6 +66,7 @@
   ([] (mount-components true))
   ([debug?]
    (rf/clear-subscription-cache!)
+   (s/check-asserts true)
    (kf/start!
     {:debug?         (boolean debug?)
      :routes         routing/routes
