@@ -1,5 +1,6 @@
 (ns dinsro.views.index-currencies
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components.forms.create-currency :refer [create-currency]]
             [dinsro.components.index-currencies :refer [index-currencies]]
             [dinsro.events.currencies :as e.currencies]
             [kee-frame.core :as kf]
@@ -22,4 +23,5 @@
     [:section.section>div.container>div.content
      [:h1 "Index Currencies"]
      [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
+     [create-currency]
      [index-currencies currencies]]))

@@ -18,18 +18,18 @@
  ::do-submit-succeeded
  (fn-traced [_ data]
   (timbre/info "Submit success" data)
-  {:dispatch [::do-fetch-accounts]}))
+  {:dispatch [::do-fetch-index]}))
 
 (kf/reg-event-fx
  ::do-submit-failed
- (fn-traced [[_ response]]
-  (timbre/info "Submit failed" response)))
+ (fn-traced [_ [response]]
+  (timbre/info "Submit failed" (get-in response [:parse-error :status-text]))))
 
 (kf/reg-event-fx
  ::do-delete-account-success
  (fn-traced [_ _]
    (timbre/info "delete account success")
-   {:dispatch [::do-fetch-accounts]}))
+   {:dispatch [::do-fetch-index]}))
 
 (kf/reg-event-fx
  ::do-delete-account-failed
@@ -72,9 +72,9 @@
 
 (kf/reg-event-fx
  ::do-delete-account
- (fn-traced [_ [_ id]]
+ (fn-traced [_ [id]]
    {:http-xhrio
-    {:uri             (kf/path-for [:api-show-account {:id id}])
+    {:uri             (kf/path-for [:api-show-account (timbre/spy :info {:id id})])
      :method          :delete
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})

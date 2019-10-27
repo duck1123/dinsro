@@ -1,5 +1,5 @@
 (ns dinsro.views.register
-  (:require [dinsro.components.registration-form :refer [registration-form]]
+  (:require [dinsro.components.forms.registration-form :refer [registration-form]]
             [taoensso.timbre :as timbre]))
 
 (defn page

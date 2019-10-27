@@ -21,11 +21,11 @@
                          :delete a.account/delete-handler}]]
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
     ["/currencies"
-     [""                {:get    a.currencies/index-handler}]]
+     [""                {:get    a.currencies/index-handler
+                         :post   a.currencies/create-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
     ["/rates"
-     [""                {:get    a.rates/index-handler}]
-     ]
+     [""                {:get    a.rates/index-handler}]]
     ["/register"        {:post   a.authentication/register-handler}]
     ["/status"          {:get    a.status/status-handler}]
     ["/users" {:middleware [middleware/wrap-restricted]}

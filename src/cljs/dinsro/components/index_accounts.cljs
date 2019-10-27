@@ -21,4 +21,7 @@
                   :margin-bottom "15px"}}
          [:p id]
          [:p [:a {:href (kf/path-for [::v.show-account/page account])} name]]
+         [:p "User: " (:user_id account)]
+         [:p "Currency: " (:currency_id account)]
+         [:pre (str account)]
          [:a.button {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])} "Delete"]])))])

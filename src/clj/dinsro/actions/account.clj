@@ -7,9 +7,10 @@
             [taoensso.timbre :as timbre]))
 
 (defn create-handler
-  [{:keys [params]}]
+  [{:keys [params] session :session}]
+  (timbre/spy :info session)
   ;; TODO: fetch
-  (let [user-id 2]
+  (let [user-id 1]
     (model.account/create-account! (assoc params :user-id user-id))
     (http/ok {:status "ok"})))
 

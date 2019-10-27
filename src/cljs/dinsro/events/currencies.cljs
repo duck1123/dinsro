@@ -34,3 +34,26 @@
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}}))
+
+(kf/reg-event-fx
+ ::do-submit-succeeded
+ (fn-traced [_ data]
+   {:dispatch [::do-fetch-index]}))
+
+(kf/reg-event-fx
+ ::do-submit-failed
+ (fn-traced [[_ response]]
+   (timbre/info "Submit failed" response)))
+
+(kf/reg-event-fx
+ ::do-submit
+ (fn-traced [{:keys [db]} [data]]
+   {:db (assoc db ::do-submit-loading true)
+    :http-xhrio
+    {:method          :post
+     :uri             (kf/path-for [:api-index-currencies])
+     :params          data
+     :format          (ajax/json-request-format)
+     :response-format (ajax/json-response-format {:keywords? true})
+     :on-success      [::do-submit-succeeded]
+     :on-failure      [::do-submit-failed]}}))

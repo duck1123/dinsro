@@ -1,11 +1,11 @@
 -- :name create-account! :i!
 -- :doc creates a new account record
-INSERT INTO accounts (name, user_id)
-VALUES (:name, :user-id)
+INSERT INTO accounts (name, user_id, currency_id)
+VALUES (:name, :user-id, :currency-id)
 
 -- :name create-currency! :! :n
 -- :doc creates a new currency
-INSERT INTO currency (id, name)
+INSERT INTO currencies (id, name)
 VALUES (:id, :name)
 
 -- :name create-transaction! :! :n
