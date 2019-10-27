@@ -1,5 +1,7 @@
 (ns dinsro.events.authentication
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
+
             [clojure.string :as string]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
@@ -8,10 +10,22 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
+(c/reg-field ::auth-id nil)
+(s/def ::auth-id string?)
+
+(c/reg-field ::loading false)
+(s/def ::loading boolean?)
+
+(c/reg-field ::login-failed false)
+(s/def ::login-failed boolean?)
+
 (kf/reg-event-db
  ::do-authenticate-success
  (fn-traced [db [{:keys [identity]}]]
-   (assoc db :authenticated identity)))
+   (-> db
+       (assoc ::auth-id identity)
+       (assoc ::loading false)
+       (assoc ::login-failed false))))
 
 (kf/reg-event-db
  ::do-authenticate-failure
@@ -23,13 +37,13 @@
 (kf/reg-event-db
  ::do-logout-success
  (fn-traced [db _]
-   (assoc db :authenticated nil)))
+   (assoc db ::auth-id nil)))
 
 ;; You failed to logout. logout anyway
 (kf/reg-event-db
  ::do-logout-failure
  (fn [db _]
-   (assoc db :authenticated nil)))
+   (assoc db ::auth-id nil)))
 
 (kf/reg-event-fx
  ::do-authenticate
