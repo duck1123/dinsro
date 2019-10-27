@@ -21,7 +21,7 @@
    [:p "Id: " id]
    [:p "Name: " [:a {:href (kf/path-for [::v.show-user/page user])} name]]
    [:p "Email " email]
-   [:a.button {:on-click #(rf/dispatch [::do-delete-user user])} "Delete"]])
+   [:a.button {:on-click #(rf/dispatch [::e.users/do-delete-user user])} "Delete"]])
 
 (defn index-users
   [users]

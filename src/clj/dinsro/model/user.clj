@@ -2,7 +2,7 @@
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
             [dinsro.db.core :as db]
-            dinsro.specs
+            [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))
 
 (defn prepare-user
@@ -14,6 +14,18 @@
       nil)))
 
 (defn create-user!
-  [params]
-  (if-let [user (prepare-user params)]
+  [user-params]
+  (if-let [user (prepare-user user-params)]
     (merge user (db/create-user! user))))
+
+(defn read-user
+  [user-id]
+  (db/read-user {:id user-id}))
+
+(defn list-users
+  []
+  (db/list-users))
+
+(defn delete-user
+  [user-id]
+  (db/delete-user! {:id user-id}))
