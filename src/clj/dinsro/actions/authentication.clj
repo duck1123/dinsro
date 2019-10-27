@@ -16,12 +16,11 @@
       (hashers/check password password-hash))))
 
 (defn authenticate-handler
-  [request]
-  (let [{{:keys [email password]} :params :keys [session]} (timbre/spy :info request)]
-    (if (check-auth (timbre/spy :info email) (timbre/spy :info password))
-      (assoc (ok {:identity email})
-             :session (assoc session :identity email))
-      (unauthorized))))
+  [{{:keys [email password]} :params :keys [session]}]
+  (if (check-auth email password)
+    (assoc (ok {:identity email})
+           :session (assoc session :identity email))
+    (unauthorized)))
 
 (defn register-handler
   "Register a user"

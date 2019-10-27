@@ -9,4 +9,5 @@
     [:div
      [:p (str currency)]
      [:p "Name:" (:name currency)]
+     [:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])} "Load"]
      [index-rates rates]]))

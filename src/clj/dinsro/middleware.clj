@@ -59,11 +59,7 @@
 
 
 (defn wrap-restricted [handler]
-  (restrict handler {:handler (fn [request]
-                                (timbre/info "identity" (get-in request [:session :identity]))
-                                (timbre/info "real identity" (get request :identity))
-                                (timbre/spy :info
-                                            (authenticated? (timbre/spy :info request))))
+  (restrict handler {:handler authenticated?
                      :on-error on-error}))
 
 (def secret (random-bytes 32))
