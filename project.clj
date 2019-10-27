@@ -9,6 +9,7 @@
                  [cheshire "5.9.0"]
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [cljs-ajax "0.8.0"]
+                 [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
                  [com.h2database/h2 "1.4.200"]
                  [com.taoensso/timbre "4.10.0"]
