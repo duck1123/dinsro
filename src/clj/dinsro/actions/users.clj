@@ -3,28 +3,29 @@
             [dinsro.db.core :as db]
             [dinsro.model.user :as m.user]
             [dinsro.specs :as ds]
-            [ring.util.http-response :refer :all]
+            [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
 (defn create-handler
-  [{:keys [registration-data] :as request}]
-  (if (m.user/create-user! registration-data)
-    (ok "ok")))
+  [{:keys [params] :as request}]
+  (if-let [user (m.user/create-user! params)]
+    (http/ok {:user user})
+    (http/bad-request)))
 
 (defn delete-handler
   [request]
   (let [user-id (Integer/parseInt (:userId (:path-params request)))]
     (m.user/delete-user user-id)
-    (ok {:id user-id})))
+    (http/ok {:id user-id})))
 
 (defn index-handler
   [request]
   (let [users (m.user/list-users)]
-    (ok {:users users})))
+    (http/ok {:users users})))
 
 (defn read-handler
   [request]
   (let [{{user-id :userId} :path-params} request]
     (if-let [user (m.user/read-user user-id)]
-      (ok user)
-      (status (ok) 404))))
+      (http/ok user)
+      (http/not-found))))

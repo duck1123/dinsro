@@ -23,4 +23,4 @@
                   :email "test@example.com"
                   :password "hunter2"}
           response (model.user/create-user! params)]
-      (is response true))))
+      (is (timbre/spy :info response) true))))

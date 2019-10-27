@@ -26,8 +26,9 @@
   (db/delete-users!)
   (let [registration-data {:name     "bob"
                            :email    "bob@example.com"
-                           :password "hunter22"}]
-    (is (a.users/create-handler {:registration-data registration-data}))))
+                           :passdword "hunter22"}]
+    (let [response (a.users/create-handler {:params registration-data})]
+      (is (= (:status response) status/ok)))))
 
 (deftest index-handler-test
   (let [path "/users"]

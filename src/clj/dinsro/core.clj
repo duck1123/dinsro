@@ -4,6 +4,7 @@
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
             [dinsro.config :refer [env]]
+            ;; [cider.nrepl :refer [cider-middleware]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [mount.core :as mount]
@@ -39,6 +40,7 @@
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)
+    (timbre/info "starting in core")
     (nrepl/start {:bind (env :nrepl-bind)
                   :handler (nrepl-handler)
                   :port (env :nrepl-port)}))

@@ -5,6 +5,7 @@
 
   :dependencies [[buddy "2.0.0"]
                  [camel-snake-kebab "0.4.0"]
+                 [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
