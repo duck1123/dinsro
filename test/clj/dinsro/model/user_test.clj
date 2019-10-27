@@ -13,14 +13,12 @@
     (mount/start
      #'config/env
      #'db/*db*)
-    (migrations/migrate ["migrate"] (select-keys config/env [:database-url]))
     (f)))
 
 (deftest create-user!
   (testing "successful"
-    (db/delete-users!)
     (let [params {:name "bob"
                   :email "test@example.com"
                   :password "hunter2"}
           response (model.user/create-user! params)]
-      (is (timbre/spy :info response) true))))
+      (is (= response true)))))

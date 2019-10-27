@@ -19,16 +19,7 @@
   :once
   (fn [f]
     (mount/start #'config/env #'db/*db*)
-    (migrations/migrate ["migrate"] (select-keys config/env [:database-url]))
     (f)))
-
-(deftest create-user-response-test
-  (db/delete-users!)
-  (let [registration-data {:name     "bob"
-                           :email    "bob@example.com"
-                           :passdword "hunter22"}]
-    (let [response (a.users/create-handler {:params registration-data})]
-      (is (= (:status response) status/ok)))))
 
 (deftest index-handler-test
   (let [path "/users"]

@@ -19,9 +19,7 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'config/env #'db/*db*)
-    (mount/start #'config/env #'handler/app-routes)
-    (migrations/migrate ["migrate"] (select-keys config/env [:database-url]))
+    (mount/start #'config/env #'db/*db* #'handler/app-routes)
     (f)))
 
 (deftest check-auth
