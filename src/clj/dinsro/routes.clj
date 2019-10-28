@@ -21,7 +21,7 @@
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
-   (include-css (if true #_(env :dev) "/css/site.css" "/css/site.min.css"))])
+   #_(include-css (if true #_(env :dev) "/css/site.css" "/css/site.min.css"))])
 
 (defn cards-page []
   (html5
