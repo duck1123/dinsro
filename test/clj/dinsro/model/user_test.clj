@@ -20,5 +20,6 @@
     (let [params {:name "bob"
                   :email "test@example.com"
                   :password "hunter2"}
+          {:keys [email]} params
           response (model.user/create-user! params)]
-      (is (= response true)))))
+      (is (= (:email response) email)))))
