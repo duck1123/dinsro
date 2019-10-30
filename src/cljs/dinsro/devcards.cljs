@@ -19,4 +19,4 @@
   )
 
 (js/console.log "starting ui")
-(start-devcard-ui!)
+#_(start-devcard-ui!)

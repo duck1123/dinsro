@@ -20,13 +20,11 @@
                  [devcards "0.2.6"]
                  [expound "0.7.2"]
                  [funcool/struct "1.4.0"]
-                 [kamera "0.1.1-SNAPSHOT"]
                  [kee-frame "0.3.3" :exclusions [metosin/reitit-core org.clojure/core.async]]
                  [luminus-jetty "0.1.7"]
                  [luminus-migrations "0.6.6"]
                  [luminus-transit "0.1.2"]
                  [luminus/ring-ttl-session "0.3.3"]
-                 [markdown-clj "1.10.0"]
                  [metosin/muuntaja "0.6.6"]
                  [metosin/reitit "0.3.10"]
                  [metosin/ring-http-response "0.9.1"]
@@ -36,7 +34,6 @@
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520" :scope "provided"]
-                 [org.clojure/core.async "0.5.527"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
@@ -128,8 +125,7 @@
                  :cljsbuild
                  {:builds
                   {:app {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                         :figwheel     {:on-jsload "dinsro.core/mount-components"
-                                        :devcards        true}
+                         :figwheel     {:on-jsload "dinsro.core/mount-components"}
                          :compiler     {:main            "dinsro.app"
                                         :asset-path      "/js/out"
                                         :output-to       "target/cljsbuild/public/js/app.js"

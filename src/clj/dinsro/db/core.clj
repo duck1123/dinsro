@@ -6,6 +6,8 @@
             [dinsro.config :refer [env]]
             [hugsql.adapter :as adapter]
             [mount.core :refer [defstate]]
+            ;; [datascript.core    :as d]
+            ;; [re-posh.core       :refer [connect!]]
             [java-time.pre-java8 :as jt]
             [taoensso.timbre :as timbre]))
 
