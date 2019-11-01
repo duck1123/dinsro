@@ -4,6 +4,7 @@
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.specs :as ds]
+            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def schema
@@ -21,6 +22,20 @@
   []
   (d/transact db/*conn* schema))
 
+;; (defn-spec prepare-user
+;;   [registration-data ::ds/register-request]
+;;   (let [{:keys [password]} registration-data]
+;;     (if password
+;;       (merge {:password-hash (hashers/derive password)}
+;;              registration-data)
+;;       nil)))
+
+;; The return spec comes after the fn name.
+(defn-spec my-inc integer?
+  [a integer?] ; Each argument is followed by its spec.
+  (+ a 1))
+
+
 (defn prepare-user
   [registration-data]
   (let [{:keys [password]} registration-data]
@@ -34,14 +49,14 @@
   (if-let [user (prepare-user user-params)]
     (merge user (db/create-user! user))))
 
-(defn read-user
-  [user-id]
-  (db/read-user {:id user-id}))
-
 (defn list-users
   []
   (db/list-users))
 
-(defn delete-user
-  [user-id]
+(defn-spec delete-user any?
+  [user-id ::ds/id]
   (db/delete-user! {:id user-id}))
+
+(defn-spec read-user ::ds/user
+  [user-id ::ds/id]
+  (db/read-user {:id user-id}))

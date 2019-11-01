@@ -14,7 +14,6 @@
 
 (defstate ^:dynamic *conn*
   :start (let [uri (env :datahike-url)]
-           (d/create-database uri)
            (d/connect uri))
   :stop (d/release *conn*))
 
