@@ -3,13 +3,22 @@
             [camel-snake-kebab.core :refer [->kebab-case-keyword]]
             [clj-time.jdbc :as jdbc]
             [conman.core :as conman]
+            [datahike.api :as d]
             [dinsro.config :refer [env]]
             [hugsql.adapter :as adapter]
             [mount.core :refer [defstate]]
-            ;; [datascript.core    :as d]
-            ;; [re-posh.core       :refer [connect!]]
             [java-time.pre-java8 :as jt]
             [taoensso.timbre :as timbre]))
+
+(def uri "datahike:file:///tmp/example")
+
+(defstate ^:dynamic *conn*
+  :start (let [uri (env :datahike-url)]
+           (d/create-database uri)
+           (d/connect uri))
+  :stop (d/release *conn*))
+
+#_(def conn (d/connect uri))
 
 (defstate ^:dynamic *db*
           :start (conman/connect! {:jdbc-url (env :database-url)})

@@ -1,9 +1,25 @@
 (ns dinsro.model.user
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
+            [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))
+
+(def schema
+  [{:db/ident       :user/name
+    :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :user/password-hash
+    :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :user/email
+    :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}])
+
+(defn init-schema
+  []
+  (d/transact db/*conn* schema))
 
 (defn prepare-user
   [registration-data]
