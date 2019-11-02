@@ -28,8 +28,4 @@
   (testing "success"
     (let [user-id 1
           response (model.user/read-user user-id)]
-      (is (= user-id (:id response))))
-
-    )
-
-  )
+      (is (= user-id (:id response))))))

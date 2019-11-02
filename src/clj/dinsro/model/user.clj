@@ -25,22 +25,8 @@
   []
   (d/transact db/*conn* schema))
 
-;; (defn-spec prepare-user
-;;   [registration-data ::ds/register-request]
-;;   (let [{:keys [password]} registration-data]
-;;     (if password
-;;       (merge {:password-hash (hashers/derive password)}
-;;              registration-data)
-;;       nil)))
-
-;; The return spec comes after the fn name.
-(defn-spec my-inc integer?
-  [a integer?] ; Each argument is followed by its spec.
-  (+ a "a"))
-
-
-(defn prepare-user
-  [registration-data]
+(defn-spec prepare-user any?
+  [registration-data ::ds/register-request]
   (let [{:keys [password]} registration-data]
     (if password
       (merge {:password-hash (hashers/derive password)}
@@ -64,9 +50,9 @@
 
 (defn-spec read-user ::ds/user
   [user-id ::ds/id]
-  (if-let [query '[:find ?e
+  (let [query '[:find ?e
                    :in $ ?user-id
                    :where [?e :user/id ?user-id]]
-           response (d/q query @db/*conn* user-id)
-           uid (ffirst response)]
-    (d/pull @db/*conn* '[*] uid)))
+           response (d/q query @db/*conn* user-id)]
+    (when-let [uid (ffirst response)]
+     (d/pull @db/*conn* '[*] uid))))

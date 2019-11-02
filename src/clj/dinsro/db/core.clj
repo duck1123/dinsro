@@ -13,8 +13,8 @@
 (def uri "datahike:file:///tmp/example")
 
 (defstate ^:dynamic *conn*
-  :start (let [uri (env :datahike-url)]
-           (d/connect uri))
+  "The connection to the datahike database"
+  :start (d/connect (env :datahike-url))
   :stop (d/release *conn*))
 
 #_(def conn (d/connect uri))
@@ -22,6 +22,11 @@
 (defstate ^:dynamic *db*
           :start (conman/connect! {:jdbc-url (env :database-url)})
           :stop (conman/disconnect! *db*))
+
+(defn create-database
+  []
+  (let [uri (env :datahike-url)]
+    (d/create-database uri)))
 
 (defn result-one-snake->kebab
   [this result options]
