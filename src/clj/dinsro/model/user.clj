@@ -47,11 +47,10 @@
              registration-data)
       nil)))
 
-(defn create-user!
-  [user-params]
-  (d/transact db/*conn* {:tx-data [{:user/id 1 :user/email "duck@kronkltd.net"}]})
-  #_(if-let [user (prepare-user user-params)]
-    (merge user (db/create-user! user))))
+(defn-spec create-user! ::ds/id
+  [user-params ::ds/register-request]
+  (let [response (d/transact db/*conn* {:tx-data [user-params]})]
+    (get-in response [:tempids :db/current-tx])))
 
 (defn list-users
   []
@@ -65,14 +64,9 @@
 
 (defn-spec read-user ::ds/user
   [user-id ::ds/id]
-  (if-let [uid (ffirst
-             (d/q
-              {:query '[:find ?e
-                        :in $ ?user-id
-                        :where [?e :user/id
-                                ?user-id
-                                ]]
-               :args [@db/*conn* user-id]}))]
-    (d/pull @db/*conn* '[*] uid))
-
-  #_(db/read-user {:id user-id}))
+  (if-let [query '[:find ?e
+                   :in $ ?user-id
+                   :where [?e :user/id ?user-id]]
+           response (d/q query @db/*conn* user-id)
+           uid (ffirst response)]
+    (d/pull @db/*conn* '[*] uid)))
