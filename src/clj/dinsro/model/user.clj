@@ -8,7 +8,10 @@
             [taoensso.timbre :as timbre]))
 
 (def schema
-  [{:db/ident       :user/name
+  [{:db/ident       :user/id
+    :db/valueType   :db.type/long
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :user/name
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}
    {:db/ident       :user/password-hash
@@ -33,7 +36,7 @@
 ;; The return spec comes after the fn name.
 (defn-spec my-inc integer?
   [a integer?] ; Each argument is followed by its spec.
-  (+ a 1))
+  (+ a "a"))
 
 
 (defn prepare-user
@@ -46,12 +49,15 @@
 
 (defn create-user!
   [user-params]
-  (if-let [user (prepare-user user-params)]
+  (d/transact db/*conn* {:tx-data [{:user/id 1 :user/email "duck@kronkltd.net"}]})
+  #_(if-let [user (prepare-user user-params)]
     (merge user (db/create-user! user))))
 
 (defn list-users
   []
-  (db/list-users))
+  (map
+   (fn [id] (d/pull @db/*conn* '[*] (first id)))
+   (d/q '[:find ?e :where [?e :user/id _]] @db/*conn*)))
 
 (defn-spec delete-user any?
   [user-id ::ds/id]
@@ -59,4 +65,14 @@
 
 (defn-spec read-user ::ds/user
   [user-id ::ds/id]
-  (db/read-user {:id user-id}))
+  (if-let [uid (ffirst
+             (d/q
+              {:query '[:find ?e
+                        :in $ ?user-id
+                        :where [?e :user/id
+                                ?user-id
+                                ]]
+               :args [@db/*conn* user-id]}))]
+    (d/pull @db/*conn* '[*] uid))
+
+  #_(db/read-user {:id user-id}))

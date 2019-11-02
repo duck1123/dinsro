@@ -23,3 +23,13 @@
           {:keys [email]} params
           response (model.user/create-user! params)]
       (is (= (:email response) email)))))
+
+(deftest read-user
+  (testing "success"
+    (let [user-id 1
+          response (model.user/read-user user-id)]
+      (is (= user-id (:id response))))
+
+    )
+
+  )
