@@ -25,10 +25,10 @@
   [id]
   (db/delete-account! {:id id}))
 
+(defn index-account-ids
+  []
+  (map first (d/q '[:find ?e :where [?e :account/name _]] @db/*conn*)))
+
 (defn-spec index-records any?
   []
-  (let [conn @db/*conn*]
-    (map #(d/pull conn '[*] (first %))
-         (d/q '[:find ?e
-                :where [?e :account/id _]]
-              conn))))
+  (d/pull-many @db/*conn* '[*] (index-account-ids)))

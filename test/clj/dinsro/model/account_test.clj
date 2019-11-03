@@ -8,8 +8,12 @@
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 
-(def uri "datahike:mem://example")
+(def uri "datahike:file:///tmp/file-example")
 
 (deftest index-records
   (testing "success"
-    (is (= [{:account/name "foo"}] (m.accounts/index-records)))))
+    (is (= [] (m.accounts/index-records)))
+    (let [expected {:account/name "foo"}
+          actual (m.accounts/index-records)]
+      (is (every? #(= "foo" (:account/name %) (:account/name expected))
+                  actual)))))

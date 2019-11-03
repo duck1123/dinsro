@@ -14,8 +14,12 @@
 
 (defstate ^:dynamic *conn*
   "The connection to the datahike database"
-  :start (d/connect (env :datahike-url))
-  :stop (d/release *conn*))
+  :start (do
+           (timbre/info "starting real connection")
+           (d/connect (env :datahike-url)))
+  :stop (do
+          (timbre/info "stopping real connection")
+          (d/release *conn*)))
 
 #_(def conn (d/connect uri))
 

@@ -4,6 +4,7 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
+            [datahike.core :as dc]
             [dinsro.actions.users :as a.users]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -28,11 +29,11 @@
        (let [response (a.users/index-handler request)]
          (is (= (:status response) status/ok)))))
    (testing "with record"
-     (let [params (gen/generate (s/gen ::ds/user))
+     (let [params       (gen/generate (s/gen ::ds/user))
            created-user (db/create-user! t-conn params)
-           id (get created-user :id)
-           request (mock/request :get path)
-           response (a.users/index-handler request)]
+           id           (get created-user :id)
+           request      (mock/request :get path)
+           response     (a.users/index-handler request)]
        (is (= (:status response) status/ok))
        (is (= 1 (count (:body response))))))))
 

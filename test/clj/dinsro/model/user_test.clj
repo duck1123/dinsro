@@ -1,31 +1,35 @@
 (ns dinsro.model.user-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.test :refer :all]
+            [datahike.core :as dc]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
-            [dinsro.model.user :as model.user]
+            [dinsro.specs :as ds]
+            [dinsro.model.user :as m.user]
             [luminus-migrations.core :as migrations]
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 
-(use-fixtures
+#_(use-fixtures
   :once
   (fn [f]
-    (mount/start
-     #'config/env
-     #'db/*db*)
+    (mount/start #'config/env #'db/*db*)
     (f)))
 
 (deftest create-user!
   (testing "successful"
-    (let [params {:user/name "bob"
-                  :user/email "test@example.com"
-                  :user/password "hunter2"}
-          {:keys [email]} params
-          response (model.user/create-user! params)]
-      (is (= (:email response) email)))))
+    (let [params (gen/generate (s/gen ::m.user/registration-params))
+          {:keys [dinsro.model.user/email]} params
+          id (m.user/create-user! params)
+          user (m.user/read-user id)]
+      (is (= (::m.user/email user) email)))))
 
 (deftest read-user
   (testing "success"
-    (let [user-id 1
-          response (model.user/read-user user-id)]
-      (is (= user-id (:id response))))))
+    (let [params (gen/generate (s/gen ::m.user/registration-params))
+          {:keys [dinsro.model.user/email]} params
+          id (m.user/create-user! params)
+          response (m.user/read-user id)]
+      (is (= id (:db/id response)))
+      (is (= email (::m.user/email response))))))
