@@ -19,7 +19,7 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'config/env #'db/*db*)
+    (mount/start #'config/env #'db/*db* #'db/*conn*)
     (f)))
 
 (deftest index-handler-test

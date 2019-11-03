@@ -4,6 +4,7 @@
             [clj-time.jdbc :as jdbc]
             [conman.core :as conman]
             [datahike.api :as d]
+            [datahike.config :as d.config]
             [dinsro.config :refer [env]]
             [hugsql.adapter :as adapter]
             [mount.core :refer [defstate]]
@@ -16,12 +17,17 @@
   "The connection to the datahike database"
   :start (do
            (timbre/info "starting real connection")
-           (d/connect (env :datahike-url)))
+           (if-let [uri (env :datahike-url)]
+             (do
+               (when-not (d/database-exists? (d.config/uri->config uri))
+                 (timbre/info "Creating database: " uri)
+                 (d/create-database uri))
+               (d/connect uri))
+             (throw (ex-info "Could not find uri" {}))))
+
   :stop (do
           (timbre/info "stopping real connection")
           (d/release *conn*)))
-
-#_(def conn (d/connect uri))
 
 (defstate ^:dynamic *db*
           :start (conman/connect! {:jdbc-url (env :database-url)})

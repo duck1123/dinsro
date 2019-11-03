@@ -11,7 +11,7 @@
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 
-#_(use-fixtures
+(use-fixtures
   :once
   (fn [f]
     (mount/start #'config/env #'db/*db*)
