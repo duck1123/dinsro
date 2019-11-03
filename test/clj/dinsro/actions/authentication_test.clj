@@ -8,7 +8,6 @@
             [dinsro.handler :as handler]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as ds]
-            [dinsro.model.user :as model.user]
             [luminus-migrations.core :as migrations]
             [mount.core :as mount]
             [ring.mock.request :as mock]
@@ -25,30 +24,33 @@
 
 (deftest check-auth
   (testing "successful"
-    (db/delete-users!)
-    (let [{:keys [email password] :as user-params} (gen/generate (s/gen ::ds/register-request))
-          user (model.user/create-user! user-params)
+    (let [user-params (gen/generate (s/gen ::m.users/registration-params))
+          email (::m.users/email user-params)
+          password (::m.users/password user-params)
+          user (m.users/create-user! user-params)
           response (a.authentication/check-auth email password)]
       (is (= response true)))))
 
 (deftest authenticate-test
-  (let [{:keys [email password] :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
-   (testing "successful"
-      (let [user (model.user/create-user! user-params)
+  (let [{:keys [dinsro.model.user/email
+                dinsro.model.user/password]
+         :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
+    (testing "successful"
+      (let [user (m.users/create-user! user-params)
 
             body {:email email :password password}
             path (str url-root "/authenticate")
-            request (-> (mock/request :post path) (mock/json-body body))
-            response ((handler/app) request)]
+            request (-> (mock/request :post path) (assoc :params body))
+            response (a.authentication/authenticate-handler request)]
         (is (= (:status response) status/ok))))
-   (testing "failure"
-     (db/delete-users!)
-     (let [user (model.user/create-user! user-params)
-           body {:email email :password (str password "x")}
-           path (str url-root "/authenticate")
-           request (-> (mock/request :post path) (mock/json-body body))
-           response ((handler/app) request)]
-       (is (= (:status response) status/unauthorized))))))
+    (testing "failure"
+      (db/delete-users!)
+      (let [user (m.users/create-user! user-params)
+            body {:email email :password (str password "x")}
+            path (str url-root "/authenticate")
+            request (-> (mock/request :post path) (assoc :params body))
+            response ((handler/app) request)]
+        (is (= (:status response) status/unauthorized))))))
 
 (deftest register-handler-test
   (let [path (str url-root "/register")]
@@ -56,6 +58,7 @@
       (let [params (gen/generate (s/gen ::m.users/registration-params))
             request (-> (mock/request :post path)
                         (assoc :params params))
+            request (gen/generate (s/gen ::a.authentication/register-request))
             response (a.authentication/register-handler request)]
         (is (= (:status response) status/ok))))
     (testing "invalid params"

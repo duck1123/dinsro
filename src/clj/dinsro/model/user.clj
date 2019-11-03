@@ -66,3 +66,11 @@
 (defn-spec read-user ::user
   [user-id ::id]
   (d/pull @db/*conn* '[*] user-id))
+
+(defn-spec find-by-email ::user
+  [email ::email]
+  (let [query '[:find ?id
+                :in $ ?email
+                :where [?id ::email ?email]]]
+    (first (map (fn [[id]] (d/pull @db/*conn* '[*] id))
+                (d/q query @db/*conn* email)))))

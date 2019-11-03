@@ -8,21 +8,22 @@
             [ring.util.http-response :refer :all]
             [taoensso.timbre :as timbre]))
 
-(defn-spec check-auth any?
-  [email ::specs/email password ::specs/password]
-  {:pre [(s/valid? ::specs/email email)]}
-  (if-let [user (db/find-user-by-email {:email email})]
-    (let [{:keys [password-hash]} user]
+(defn-spec check-auth boolean?
+  [email ::m.users/email
+   password ::m.users/password]
+  (if-let [user (m.users/find-by-email email)]
+    (let [{:keys [dinsro.model.user/password-hash]} user]
       (hashers/check password password-hash))))
 
-(defn authenticate-handler
-  [{{:keys [email password]} :params :keys [session]}]
-  (if (check-auth email password)
-    (assoc (ok {:identity email})
-           :session (assoc session :identity email))
-    (unauthorized)))
+(defn-spec authenticate-handler any?
+  [request any?]
+  (let [{{:keys [email password]} :params :keys [session]} request]
+    (if (check-auth email password)
+      (assoc (ok {:identity email})
+             :session (assoc session :identity email))
+      (unauthorized))))
 
-(s/def :register-handler/params (s/keys :req-un [::params]))
+(s/def :register-handler/params ::m.users/registration-params)
 (s/def ::register-request (s/keys :req-un [:register-handler/params]))
 (s/def :register-handler/body any?)
 (s/def :register-handler/request (s/keys :req-un [:register-handler/body]))
@@ -30,9 +31,9 @@
 
 (defn-spec register-handler ::register-handler-response
   "Register a user"
-  [request :register-handler/request]
+  [request ::register-request]
   (let [{:keys [params]} request]
-    (if (s/valid? ::m.users/registration-params (timbre/spy :info params))
+    (if (s/valid? ::m.users/registration-params params)
       (do
         (m.users/create-user! params)
         (ok))
