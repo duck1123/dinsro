@@ -10,6 +10,12 @@
 
 (def uri "datahike:file:///tmp/file-example")
 
+(use-fixtures
+  :once
+  (fn [f]
+    (mount/start #'config/env #'db/*conn*)
+    (f)))
+
 (deftest index-records
   (testing "success"
     (is (= [] (m.accounts/index-records)))
