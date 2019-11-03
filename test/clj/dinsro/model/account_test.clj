@@ -10,14 +10,6 @@
 
 (def uri "datahike:mem://example")
 
-(use-fixtures
-  :once
-  (fn [f]
-    (mount/start-with-states
-     {#'db/*conn* {:start (fn [] (dc/create-conn))}})
-    (f)))
-
 (deftest index-records
   (testing "success"
-    (is (= [] (m.accounts/index-records)))
-    #_(is (= [{:account/name "foo"}] (m.accounts/index-records) ))))
+    (is (= [{:account/name "foo"}] (m.accounts/index-records)))))

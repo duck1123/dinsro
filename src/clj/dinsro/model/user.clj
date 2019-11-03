@@ -38,11 +38,15 @@
   (let [response (d/transact db/*conn* {:tx-data [user-params]})]
     (get-in response [:tempids :db/current-tx])))
 
+(defn list-user-ids
+  []
+  (d/q '[:find ?e :where [?e :user/email _]] @db/*conn*))
+
 (defn list-users
   []
-  (map
-   (fn [id] (d/pull @db/*conn* '[*] (first id)))
-   (d/q '[:find ?e :where [?e :user/id _]] @db/*conn*)))
+  (->> (list-user-ids)
+       (map first)
+       (d/pull-many @db/*conn* '[*])))
 
 (defn-spec delete-user any?
   [user-id ::ds/id]

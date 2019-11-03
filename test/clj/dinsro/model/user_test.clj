@@ -17,9 +17,9 @@
 
 (deftest create-user!
   (testing "successful"
-    (let [params {:name "bob"
-                  :email "test@example.com"
-                  :password "hunter2"}
+    (let [params {:user/name "bob"
+                  :user/email "test@example.com"
+                  :user/password "hunter2"}
           {:keys [email]} params
           response (model.user/create-user! params)]
       (is (= (:email response) email)))))

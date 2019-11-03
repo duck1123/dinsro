@@ -30,5 +30,5 @@
   (let [conn @db/*conn*]
     (map #(d/pull conn '[*] (first %))
          (d/q '[:find ?e
-                :where [?e :user/id _]]
+                :where [?e :account/id _]]
               conn))))
