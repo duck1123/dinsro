@@ -40,14 +40,13 @@
 (deftest read-handler
   (testing "when found"
     (let [params                (gen/generate (s/gen ::ds/register-request))
-          {:keys [id] :as user} (model.user/create-user! params)
+          id                    (model.user/create-user! params)
           request               {:path-params {:userId id}}
           response              (a.users/read-handler request)]
       (is (= status/ok (:status response)))
-      (are [key] (= (get user key) (get-in response [:body key]))
+      (are [key] (= (get params key) (get-in response [:body key]))
         :id :email)))
   (testing "when not found"
-    (db/delete-users!)
     (let [id       (gen/generate (s/gen ::ds/user-id))
           request  {:path-params {:userId id}}
           response (a.users/read-handler request)]
