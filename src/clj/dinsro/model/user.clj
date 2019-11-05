@@ -9,10 +9,10 @@
             [taoensso.timbre :as timbre])
   (:import datahike.db.TxReport))
 
-(s/def ::id number? #_(s/with-gen valid-uuid-str? uuid-str-gen))
+(s/def ::id pos-int?)
 (s/def ::name string?)
 (s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] ds/email-gen)))
-(s/def ::password string? #_(s/and string? #(< 7 (count %))))
+(s/def ::password string?)
 (s/def ::password-hash string?)
 (s/def ::registration-params (s/keys :req [::name ::email ::password]))
 (s/def ::user (s/keys :req [::name ::email ::password-hash]))
@@ -57,7 +57,7 @@
 (defn list-users
   []
   (->> (list-user-ids)
-       (d/pull-many @db/*conn* '[*])))
+       (d/pull-many @db/*conn* '[::name ::email :db/id])))
 
 (defn-spec delete-user any?
   [user-id ::id]
@@ -65,12 +65,12 @@
 
 (defn-spec read-user ::user
   [user-id ::id]
-  (d/pull @db/*conn* '[*] user-id))
+  (d/pull @db/*conn* '[::name :email] user-id))
 
 (defn-spec find-by-email ::user
   [email ::email]
   (let [query '[:find ?id
                 :in $ ?email
                 :where [?id ::email ?email]]]
-    (first (map (fn [[id]] (d/pull @db/*conn* '[*] id))
+    (first (map (fn [[id]] (d/pull @db/*conn* '[:db/id ::name ::email] id))
                 (d/q query @db/*conn* email)))))

@@ -8,7 +8,7 @@
             [dinsro.actions.users :as a.users]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
-            [dinsro.model.user :as model.user]
+            [dinsro.model.user :as m.users]
             [dinsro.specs :as ds]
             [luminus-migrations.core :as migrations]
             [mount.core :as mount]
@@ -30,7 +30,7 @@
          (is (= (:status response) status/ok)))))
    (testing "with record"
      (let [params       (gen/generate (s/gen ::ds/user))
-           created-user (db/create-user! t-conn params)
+           created-user (m.users/create-user! params)
            id           (get created-user :id)
            request      (mock/request :get path)
            response     (a.users/index-handler request)]
@@ -40,14 +40,14 @@
 (deftest read-handler
   (testing "when found"
     (let [params                (gen/generate (s/gen ::ds/register-request))
-          id                    (model.user/create-user! params)
+          id                    (m.users/create-user! params)
           request               {:path-params {:userId id}}
           response              (a.users/read-handler request)]
       (is (= status/ok (:status response)))
       (are [key] (= (get params key) (get-in response [:body key]))
         :id :email)))
   (testing "when not found"
-    (let [id       (gen/generate (s/gen ::ds/user-id))
+    (let [id       (gen/generate (s/gen ::m.users/id))
           request  {:path-params {:userId id}}
           response (a.users/read-handler request)]
       (is (= (:status response) status/not-found) "Should return a not-found response"))))
