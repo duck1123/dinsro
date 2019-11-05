@@ -2,34 +2,41 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
+            [datahike.api :as d]
             [datahike.core :as dc]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
+            [dinsro.model.user :as m.users]
             [dinsro.specs :as ds]
-            [dinsro.model.user :as m.user]
             [luminus-migrations.core :as migrations]
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 
+(def uri "datahike:file:///tmp/file-example2")
+
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'config/env #'db/*db*)
+    (mount/start #'config/env #'db/*conn*)
+    (d/delete-database uri)
+    (when-not (d/database-exists? (datahike.config/uri->config uri))
+      (d/create-database uri))
+    (d/transact db/*conn* m.users/schema)
     (f)))
 
 (deftest create-user!
   (testing "successful"
-    (let [params (gen/generate (s/gen ::m.user/registration-params))
+    (let [params (gen/generate (s/gen ::m.users/registration-params))
           {:keys [dinsro.model.user/email]} params
-          id (m.user/create-user! params)
-          user (m.user/read-user id)]
-      (is (= (::m.user/email user) email)))))
+          id (m.users/create-user! params)
+          user (m.users/read-user id)]
+      (is (= (::m.users/email user) email)))))
 
 (deftest read-user
   (testing "success"
-    (let [params (gen/generate (s/gen ::m.user/registration-params))
+    (let [params (gen/generate (s/gen ::m.users/registration-params))
           {:keys [dinsro.model.user/email]} params
-          id (m.user/create-user! params)
-          response (m.user/read-user id)]
+          id (m.users/create-user! params)
+          response (m.users/read-user id)]
       (is (= id (:db/id response)))
-      (is (= email (::m.user/email response))))))
+      (is (= email (::m.users/email response))))))

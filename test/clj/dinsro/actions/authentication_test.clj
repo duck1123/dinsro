@@ -19,7 +19,7 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'config/env #'db/*db* #'handler/app-routes)
+    (mount/start #'config/env #'db/*conn*)
     (f)))
 
 (deftest check-auth
@@ -44,12 +44,11 @@
             response (a.authentication/authenticate-handler request)]
         (is (= (:status response) status/ok))))
     (testing "failure"
-      (db/delete-users!)
       (let [user (m.users/create-user! user-params)
             body {:email email :password (str password "x")}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))
-            response ((handler/app) request)]
+            response (a.authentication/authenticate-handler request)]
         (is (= (:status response) status/unauthorized))))))
 
 (deftest register-handler-test

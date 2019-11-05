@@ -4,6 +4,7 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
+            [datahike.api :as d]
             [datahike.core :as dc]
             [dinsro.actions.users :as a.users]
             [dinsro.config :as config]
@@ -16,10 +17,15 @@
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
+(def uri "datahike:file:///tmp/file-example2")
+
 (use-fixtures
   :once
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
+    (d/delete-database uri)
+    (when-not (d/database-exists? (datahike.config/uri->config uri))
+      (d/create-database uri))
     (f)))
 
 (deftest index-handler-test

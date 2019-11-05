@@ -14,12 +14,16 @@
   :once
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
+    (d/delete-database uri)
+    (when-not (d/database-exists? (datahike.config/uri->config uri))
+      (d/create-database uri))
+    (d/transact db/*conn* m.accounts/schema)
     (f)))
 
 (deftest index-records
   (testing "success"
     (is (= [] (m.accounts/index-records)))
-    (let [expected {:account/name "foo"}
+    (let [expected {::m.accounts/name "foo"}
           actual (m.accounts/index-records)]
-      (is (every? #(= "foo" (:account/name %) (:account/name expected))
+      (is (every? #(= "foo" (::m.accounts/name %) (::m.accounts/name expected))
                   actual)))))
