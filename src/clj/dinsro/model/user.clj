@@ -46,9 +46,9 @@
 
 (defn-spec create-user! ::id
   [user-params ::registration-params]
-  (let [user (prepare-user user-params)
+  (let [user (prepare-user (assoc user-params :db/id "user-id"))
         response (d/transact db/*conn* {:tx-data [user]})]
-    (get-in response [:tempids :db/current-tx])))
+    (get-in response [:tempids "user-id"])))
 
 (defn list-user-ids
   []
@@ -65,7 +65,7 @@
 
 (defn-spec read-user ::user
   [user-id ::id]
-  (d/pull @db/*conn* '[::name :email] user-id))
+  (d/pull @db/*conn* '[::name ::email] user-id))
 
 (defn-spec find-by-email ::user
   [email ::email]

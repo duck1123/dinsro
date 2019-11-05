@@ -21,16 +21,18 @@
     (d/delete-database uri)
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
-    (d/transact db/*conn* m.users/schema)
-    (f)))
+    (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* m.users/schema)
+      (f))))
 
 (deftest create-user!
   (testing "successful"
-    (let [params (gen/generate (s/gen ::m.users/registration-params))
+    (let [id-key "user-id"
+          params (gen/generate (s/gen ::m.users/registration-params))
           {:keys [dinsro.model.user/email]} params
           id (m.users/create-user! params)
           user (m.users/read-user id)]
-      (is (= (::m.users/email user) email)))))
+      (is (= email (::m.users/email user))))))
 
 (deftest read-user
   (testing "success"
@@ -38,5 +40,4 @@
           {:keys [dinsro.model.user/email]} params
           id (m.users/create-user! params)
           response (m.users/read-user id)]
-      (is (= id (:db/id response)))
       (is (= email (::m.users/email response))))))

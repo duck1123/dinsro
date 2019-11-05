@@ -28,6 +28,11 @@
       (d/create-database uri))
     (f)))
 
+(deftest create-user-response-test
+  (let [registration-data (gen/generate (s/gen ::m.users/registration-params))]
+    (let [response (a.users/create-handler {:params registration-data})]
+      (is (= (:status response) status/ok)))))
+
 (deftest index-handler-test
   (let [path "/users"]
    (testing "successful"
@@ -45,7 +50,7 @@
 
 (deftest read-handler
   (testing "when found"
-    (let [params                (gen/generate (s/gen ::ds/register-request))
+    (let [params                (gen/generate (s/gen ::m.users/registration-params))
           id                    (m.users/create-user! params)
           request               {:path-params {:userId id}}
           response              (a.users/read-handler request)]
