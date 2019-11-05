@@ -2,6 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
+            [datahike.api :as d]
+            [datahike.config :as d.config]
             [dinsro.actions.authentication :as a.authentication]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -16,11 +18,19 @@
 
 (def url-root "/api/v1")
 
+(def uri "datahike:file:///tmp/file-example2")
+
 (use-fixtures
   :once
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
-    (f)))
+    (d/delete-database uri)
+    (when-not (d/database-exists? (d.config/uri->config uri))
+      (d/create-database uri))
+    (with-redefs [db/*conn* (d/connect uri)]
+      #_(d/transact db/*conn* m.accounts/schema)
+      (d/transact db/*conn* m.users/schema)
+      (f))))
 
 (deftest check-auth
   (testing "successful"
@@ -29,7 +39,7 @@
           password (::m.users/password user-params)
           user (m.users/create-user! user-params)
           response (a.authentication/check-auth email password)]
-      (is (= response true)))))
+      (is (= true response)))))
 
 (deftest authenticate-test
   (let [{:keys [dinsro.model.user/email
@@ -37,7 +47,6 @@
          :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
     (testing "successful"
       (let [user (m.users/create-user! user-params)
-
             body {:email email :password password}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))

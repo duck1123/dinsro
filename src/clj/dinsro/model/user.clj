@@ -72,5 +72,5 @@
   (let [query '[:find ?id
                 :in $ ?email
                 :where [?id ::email ?email]]]
-    (first (map (fn [[id]] (d/pull @db/*conn* '[:db/id ::name ::email] id))
+    (first (map (fn [[id]] (d/pull @db/*conn* '[:db/id ::name ::email ::password-hash] id))
                 (d/q query @db/*conn* email)))))

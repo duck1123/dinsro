@@ -8,6 +8,12 @@
             [ring.util.http-response :refer :all]
             [taoensso.timbre :as timbre]))
 
+(s/def :register-handler/params ::m.users/registration-params)
+(s/def ::register-request (s/keys :req-un [:register-handler/params]))
+(s/def :register-handler/body any?)
+(s/def :register-handler/request (s/keys :req-un [:register-handler/body]))
+(s/def ::register-handler-response (s/keys :req-un [:register-handler/body]))
+
 (defn-spec check-auth boolean?
   [email ::m.users/email
    password ::m.users/password]
@@ -22,12 +28,6 @@
       (assoc (ok {:identity email})
              :session (assoc session :identity email))
       (unauthorized))))
-
-(s/def :register-handler/params ::m.users/registration-params)
-(s/def ::register-request (s/keys :req-un [:register-handler/params]))
-(s/def :register-handler/body any?)
-(s/def :register-handler/request (s/keys :req-un [:register-handler/body]))
-(s/def ::register-handler-response (s/keys :req-un [:register-handler/body]))
 
 (defn-spec register-handler ::register-handler-response
   "Register a user"
