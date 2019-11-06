@@ -1,11 +1,10 @@
 (ns dinsro.actions.authentication
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
-            [dinsro.db.core :as db]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as specs]
             [orchestra.core :refer [defn-spec]]
-            [ring.util.http-response :refer :all]
+            [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
 (s/def :register-handler/params ::m.users/registration-params)
@@ -25,9 +24,9 @@
   [request any?]
   (let [{{:keys [email password]} :params :keys [session]} request]
     (if (check-auth email password)
-      (assoc (ok {:identity email})
+      (assoc (http/ok {:identity email})
              :session (assoc session :identity email))
-      (unauthorized))))
+      (http/unauthorized))))
 
 (defn-spec register-handler ::register-handler-response
   "Register a user"
@@ -36,9 +35,9 @@
     (if (s/valid? ::m.users/registration-params params)
       (do
         (m.users/create-user! params)
-        (ok))
-      (bad-request))))
+        (http/ok))
+      (http/bad-request))))
 
 (defn logout-handler
   [request]
-  (assoc-in (ok {:identity nil}) [:session :identity] nil))
+  (assoc-in (http/ok {:identity nil}) [:session :identity] nil))

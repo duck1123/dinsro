@@ -1,7 +1,8 @@
 (ns dinsro.actions.status
-  (:require [ring.util.http-response :refer [ok]]
+  (:require [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
 (defn status-handler
   [request]
-  (ok {:identity (get-in request [:session :identity])}))
+  (let [{{:keys [identity]} :session} request]
+    (http/ok {:identity identity})))

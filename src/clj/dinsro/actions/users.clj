@@ -1,6 +1,5 @@
 (ns dinsro.actions.users
   (:require [clojure.spec.alpha :as s]
-            [dinsro.db.core :as db]
             [dinsro.model.user :as m.user]
             [dinsro.specs :as ds]
             [ring.util.http-response :as http]

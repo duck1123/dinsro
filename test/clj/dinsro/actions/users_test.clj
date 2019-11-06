@@ -11,7 +11,6 @@
             [dinsro.db.core :as db]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as ds]
-            [luminus-migrations.core :as migrations]
             [mount.core :as mount]
             [ring.mock.request :as mock]
             [ring.util.http-status :as status]

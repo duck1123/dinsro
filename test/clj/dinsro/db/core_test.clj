@@ -1,6 +1,5 @@
 (ns dinsro.db.core-test
-  (:require [dinsro.db.core :refer [*db*] :as db]
-            [luminus-migrations.core :as migrations]
+  (:require [dinsro.db.core :as db]
             [clojure.test :refer :all]
             [clojure.java.jdbc :as jdbc]
             [dinsro.config :refer [env]]
@@ -10,7 +9,7 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'dinsro.config/env #'dinsro.db.core/*db*)
+    (mount/start #'dinsro.config/env)
     (f)))
 
 (deftest test-users

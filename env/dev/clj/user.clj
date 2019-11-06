@@ -7,8 +7,6 @@
             [dinsro.figwheel :refer [start-fw stop-fw cljs]]
             [dinsro.core :refer [start-app]]
             [dinsro.db.core]
-            [conman.core :as conman]
-            [luminus-migrations.core :as migrations]
             [orchestra.spec.test :as stest]
             [taoensso.timbre :as timbre]))
 
@@ -30,24 +28,6 @@
   []
   (stop)
   (start))
-
-(defn restart-db []
-  (mount/stop #'dinsro.db.core/*db*)
-  (mount/start #'dinsro.db.core/*db*)
-  (binding [*ns* 'dinsro.db.core]
-    (conman/bind-connection dinsro.db.core/*db* "sql/queries.sql")))
-
-(defn reset-db []
-  (migrations/migrate ["reset"] (select-keys env [:database-url])))
-
-(defn migrate []
-  (migrations/migrate ["migrate"] (select-keys env [:database-url])))
-
-(defn rollback []
-  (migrations/migrate ["rollback"] (select-keys env [:database-url])))
-
-(defn create-migration [name]
-  (migrations/create name (select-keys env [:database-url])))
 
 (defn instrument
   []

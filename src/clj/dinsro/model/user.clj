@@ -61,7 +61,8 @@
 
 (defn-spec delete-user any?
   [user-id ::id]
-  (db/delete-user! {:id user-id}))
+  #_(db/delete-user! {:id user-id})
+  nil)
 
 (defn-spec read-user ::user
   [user-id ::id]

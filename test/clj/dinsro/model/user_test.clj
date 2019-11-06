@@ -8,7 +8,6 @@
             [dinsro.db.core :as db]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as ds]
-            [luminus-migrations.core :as migrations]
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 

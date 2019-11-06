@@ -4,10 +4,10 @@
 
 (defn index
   []
-  (db/list-currencies)
-  #_[{:id 1 :name "sats" :is-primary true}
-   {:id 2 :name "dollars" :exchange 0.7}])
+  #_(db/list-currencies)
+  nil)
 
 (defn create-record
   [params]
-  (db/create-currency! (assoc params :id nil)))
+  #_(db/create-currency! (assoc params :id nil))
+  nil)

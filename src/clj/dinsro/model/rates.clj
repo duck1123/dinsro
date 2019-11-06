@@ -14,4 +14,5 @@
 (defn fetch-index
   []
   #_default-rates
-  (db/list-rates))
+  #_(db/list-rates)
+  nil)

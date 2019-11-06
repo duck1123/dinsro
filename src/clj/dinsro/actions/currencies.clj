@@ -10,6 +10,5 @@
 
 (defn create-handler
   [{:keys [params] :as request}]
-  (timbre/spy :info (:params request))
   (let [item (m.currencies/create-record params)]
     (http/ok {:item item})))

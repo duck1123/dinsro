@@ -23,7 +23,12 @@
 
 (defn delete-account!
   [id]
-  (db/delete-account! {:id id}))
+  #_(db/delete-account! {:id id})
+  nil)
+
+(defn read-account
+  [id]
+  nil)
 
 (defn index-account-ids
   []
