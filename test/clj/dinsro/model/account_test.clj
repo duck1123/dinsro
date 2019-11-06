@@ -22,8 +22,11 @@
 
 (deftest index-records
   (testing "success"
-    (is (= [] (m.accounts/index-records)))
-    (let [expected {::m.accounts/name "foo"}
-          actual (m.accounts/index-records)]
-      (is (every? #(= "foo" (::m.accounts/name %) (::m.accounts/name expected))
-                  actual)))))
+    (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* m.accounts/schema)
+      (is (= [] (m.accounts/index-records)))
+      (d/transact db/*conn* {:tx-data [{::m.accounts/name "foo"}]})
+      (let [expected {::m.accounts/name "foo"}
+            actual (m.accounts/index-records)]
+        (is (every? #(= "foo" (::m.accounts/name %) (::m.accounts/name expected))
+                    actual))))))
