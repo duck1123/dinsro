@@ -4,7 +4,6 @@
   :url "https://github.com/duck1123/dinsro"
 
   :dependencies [[buddy "2.0.0"]
-                 [camel-snake-kebab "0.4.0"]
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
@@ -12,9 +11,7 @@
                  [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
-                 [com.h2database/h2 "1.4.200"]
                  [com.taoensso/timbre "4.10.0"]
-                 [conman "0.8.4"]
                  [cprop "0.1.14"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [devcards "0.2.6"]
@@ -24,7 +21,6 @@
                  [org.eclipse.jetty/jetty-server "9.3.7.v20160115"]
                  [kee-frame "0.3.3" :exclusions [metosin/reitit-core org.clojure/core.async]]
                  [luminus-jetty "0.1.7"]
-                 [luminus-migrations "0.6.6"]
                  [luminus-transit "0.1.2"]
                  [luminus/ring-ttl-session "0.3.3"]
                  [metosin/muuntaja "0.6.6"]
