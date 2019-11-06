@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.model.account :as m.accounts]
             [dinsro.specs :as ds]
+            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 

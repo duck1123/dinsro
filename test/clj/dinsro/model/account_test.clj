@@ -1,5 +1,7 @@
 (ns dinsro.model.account-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.test :refer :all]
             [datahike.api :as d]
             [datahike.core :as dc]
             [dinsro.config :as config]
@@ -20,6 +22,13 @@
     (d/transact db/*conn* m.accounts/schema)
     (f)))
 
+(deftest create-account!-test
+  (testing "success"
+    (let [params (gen/generate (s/gen ::m.accounts/params))
+          id (m.accounts/create-account! params)
+          created-record (m.accounts/read-account id)]
+      (is (= 0 created-record)))))
+
 (deftest index-records
   (testing "success"
     (with-redefs [db/*conn* (d/connect uri)]
@@ -30,3 +39,16 @@
             actual (m.accounts/index-records)]
         (is (every? #(= "foo" (::m.accounts/name %) (::m.accounts/name expected))
                     actual))))))
+
+(defn mock-account
+  []
+  {})
+
+(deftest read-account-test
+  (testing "not found"
+    (let [id (gen/generate (s/gen ::m.accounts/id))]
+      (is (= nil (m.accounts/read-account id)))))
+  (testing "found"
+    (let [account (mock-account)
+          id (::m.accounts/id account)]
+      (is (= account (m.accounts/read-account id))))))
