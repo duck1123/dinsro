@@ -31,8 +31,8 @@
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::name :db/id])))
 
-(defn-spec create-record ::currency
+(defn-spec create-record ::id
   [params ::params]
-  (d/transact db/*conn* {:tx-data [params]})
-  #_(db/create-currency! (assoc params :id nil))
-  #_nil)
+  (let [params (assoc params :db/id "currency-id")]
+    (let [response (d/transact db/*conn* {:tx-data [params]})]
+      (get-in response [:tempids "currency-id"]))))
