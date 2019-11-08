@@ -14,9 +14,8 @@
 (s/def ::register-handler-response (s/keys :req-un [:register-handler/body]))
 
 (defn-spec check-auth boolean?
-  [email ::m.users/email
-   password ::m.users/password]
-  (if-let [user (m.users/find-by-email email)]
+  [email ::m.users/email password ::m.users/password]
+  (if-let [user (m.users/This find-by-email email)]
     (let [{:keys [dinsro.model.user/password-hash]} user]
       (hashers/check password password-hash))))
 
@@ -26,7 +25,7 @@
     (if (check-auth email password)
       (assoc (http/ok {:identity email})
              :session (assoc session :identity email))
-      (http/unauthorized))))
+      (http/unauthorized {:status :unathorized}))))
 
 (defn-spec register-handler ::register-handler-response
   "Register a user"
