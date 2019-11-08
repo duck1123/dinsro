@@ -7,15 +7,21 @@
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(s/def :register-handler/params ::m.users/registration-params)
-(s/def ::register-request (s/keys :req-un [:register-handler/params]))
+(s/def :register-handler/optional-params
+  (s/keys :opt [::m.users/name ::m.users/email ::m.users/password]))
+(s/def :register-handler/params
+  (s/keys :req [::m.users/name ::m.users/email ::m.users/password]))
+
+(s/def ::register-request (s/keys :req-un [:register-handler/optional-params]))
+(s/def ::register-request-valid (s/keys :req-un [:register-handler/params]))
+
 (s/def :register-handler/body any?)
 (s/def :register-handler/request (s/keys :req-un [:register-handler/body]))
 (s/def ::register-handler-response (s/keys :req-un [:register-handler/body]))
 
 (defn-spec check-auth boolean?
   [email ::m.users/email password ::m.users/password]
-  (if-let [user (m.users/This find-by-email email)]
+  (if-let [user (m.users/find-by-email email)]
     (let [{:keys [dinsro.model.user/password-hash]} user]
       (hashers/check password password-hash))))
 

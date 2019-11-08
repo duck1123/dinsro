@@ -65,7 +65,7 @@
       (let [params (gen/generate (s/gen ::m.users/registration-params))
             request (-> (mock/request :post path)
                         (assoc :params params))
-            request (gen/generate (s/gen ::a.authentication/register-request))
+            request (gen/generate (s/gen ::a.authentication/register-request-valid))
             response (a.authentication/register-handler request)]
         (is (= (:status response) status/ok))))
     (testing "invalid params"
