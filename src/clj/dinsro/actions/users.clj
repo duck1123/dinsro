@@ -1,15 +1,22 @@
 (ns dinsro.actions.users
   (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [dinsro.model.user :as m.user]
             [dinsro.specs :as ds]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
+(s/def :create-request/params (s/keys :opt [::m.user/name]))
+(s/def ::create-request (s/keys :req-un [:create-request/params]))
+(s/def :create-handler/status 200)
+(s/def ::create-response (s/keys :req-un [:create-handler/status]))
+
 (defn create-handler
   [{:keys [params] :as request}]
-  (if-let [user (m.user/create-user! params)]
-    (http/ok {:user user})
-    (http/bad-request)))
+  (or (try (if-let [user (m.user/create-user! params)]
+             (http/ok {:user user}))
+           (catch Exception e nil))
+      (http/bad-request {:status :invalid})))
 
 (defn delete-handler
   [request]
