@@ -66,7 +66,7 @@
 
 (defn-spec read-user ::user
   [user-id ::id]
-  (d/pull @db/*conn* '[::name ::email] user-id))
+  (d/pull @db/*conn* '[::name ::email ::password-hash] user-id))
 
 (defn-spec find-by-email ::user
   [email ::email]

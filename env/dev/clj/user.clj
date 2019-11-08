@@ -2,7 +2,6 @@
   "Userspace functions you can run by default in your local REPL."
   (:require [dinsro.config :refer [env]]
             [clojure.spec.alpha :as s]
-            [clojure.spec.test.alpha :as stest]
             [expound.alpha :as expound]
             [mount.core :as mount]
             [dinsro.figwheel :refer [start-fw stop-fw cljs]]
