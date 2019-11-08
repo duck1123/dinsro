@@ -8,6 +8,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.account :as m.accounts]
             [mount.core :as mount]
+            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example")
@@ -22,6 +23,12 @@
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* m.accounts/schema)
       (f))))
+
+(defn-spec mock-account ::m.accounts/account
+  []
+  (let [params (gen/generate (s/gen ::m.accounts/params))
+        id (m.accounts/create-account! params)]
+    (m.accounts/read-account id)))
 
 (deftest create-account!
   (testing "success"
@@ -41,15 +48,11 @@
         (is (every? #(= "foo" (::m.accounts/name %) (::m.accounts/name expected))
                     actual))))))
 
-(defn mock-account
-  []
-  {})
-
 (deftest read-account-test
   (testing "not found"
     (let [id (gen/generate (s/gen ::m.accounts/id))]
       (is (= nil (m.accounts/read-account id)))))
   (testing "found"
     (let [account (mock-account)
-          id (::m.accounts/id account)]
+          id (:db/id account)]
       (is (= account (m.accounts/read-account id))))))

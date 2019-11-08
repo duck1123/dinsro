@@ -34,7 +34,9 @@
 
 (defn-spec read-account (s/nilable ::account)
   [id ::id]
-  (d/pull @db/*conn* '[::name] id))
+  (let [record (d/pull @db/*conn* '[*] id)]
+    (when (get record ::name)
+      record)))
 
 (defn-spec index-account-ids (s/* ::id)
   []
