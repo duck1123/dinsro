@@ -39,7 +39,7 @@
        (let [response (a.users/index-handler request)]
          (is (= (:status response) status/ok)))))
    (testing "with record"
-     (let [params       (gen/generate (s/gen ::ds/user))
+     (let [params       (gen/generate (s/gen ::m.users/registration-params))
            created-user (m.users/create-user! params)
            id           (get created-user :id)
            request      (mock/request :get path)
