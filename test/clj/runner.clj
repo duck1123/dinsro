@@ -7,8 +7,4 @@
             dinsro.model.account-test
             dinsro.model.currencies-test
             dinsro.model.user-test
-            [orchestra.spec.test :as stest]
-            )
-  )
-
-(stest/instrument)
+            [orchestra.spec.test :as stest]))
