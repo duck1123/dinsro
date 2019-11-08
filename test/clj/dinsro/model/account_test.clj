@@ -19,15 +19,16 @@
     (d/delete-database uri)
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
-    (d/transact db/*conn* m.accounts/schema)
-    (f)))
+    (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* m.accounts/schema)
+      (f))))
 
-(deftest create-account!-test
+(deftest create-account!
   (testing "success"
     (let [params (gen/generate (s/gen ::m.accounts/params))
           id (m.accounts/create-account! params)
           created-record (m.accounts/read-account id)]
-      (is (= 0 created-record)))))
+      (is (= (get params ::name) (get created-record ::name))))))
 
 (deftest index-records
   (testing "success"
