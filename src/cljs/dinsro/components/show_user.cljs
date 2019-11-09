@@ -1,7 +1,7 @@
 (ns dinsro.components.show-user)
 
 (defn show-user
-  [{:keys [id name email] :as user}]
+  [{:keys [dinsro.model.user/id name email] :as user}]
   [:div
    #_[:p (str user)]
    [:p "Id: " id]

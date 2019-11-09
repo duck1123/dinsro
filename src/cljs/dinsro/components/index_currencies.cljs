@@ -12,13 +12,10 @@
      [:div "No Currencies"]
      (into
       [:div.section]
-      (for [{:keys [id name is-primary exchange] :as currency} currencies]
+      (for [{:keys [db/id dinsro.model.currencies/name] :as currency} currencies]
         ^{:key id}
         [:div.column
          {:style {:border        "1px black solid"
                   :margin-bottom "15px"}}
          [:p "Id: " id]
-         [:p "Name: " [:a {:href (kf/path-for [:show-currency-page {:id id}])} name]]
-         (if is-primary
-           [:p "Primary"]
-           [:p "Exchange " exchange])])))])
+         [:p "Name: " [:a {:href (kf/path-for [:show-currency-page {:id id}])} name]]])))])
