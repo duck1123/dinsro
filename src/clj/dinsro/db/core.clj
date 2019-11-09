@@ -1,5 +1,6 @@
 (ns dinsro.db.core
-  (:require [datahike.api :as d]
+  (:require [clojure.spec.alpha :as s]
+            [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.config :refer [env]]
             [mount.core :refer [defstate]]
@@ -23,3 +24,5 @@
   []
   (let [uri (env :datahike-url)]
     (d/create-database uri)))
+
+(s/def :db/id pos-int?)

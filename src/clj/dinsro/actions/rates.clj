@@ -5,5 +5,5 @@
 
 (defn index-handler
   [request]
-  (let [items (m.rates/fetch-index)]
+  (let [items (m.rates/index-records)]
     (http/ok {:model :rates :items items})))
