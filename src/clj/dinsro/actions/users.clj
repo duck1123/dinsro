@@ -8,7 +8,7 @@
 
 (s/def :create-request/params (s/keys :opt [::m.user/name]))
 (s/def ::create-request (s/keys :req-un [:create-request/params]))
-(s/def :create-handler/status 200)
+(s/def :create-handler/status (constantly 200))
 (s/def ::create-response (s/keys :req-un [:create-handler/status]))
 
 (defn create-handler

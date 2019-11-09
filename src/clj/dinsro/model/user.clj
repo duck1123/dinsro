@@ -61,8 +61,12 @@
 
 (defn-spec delete-user any?
   [user-id ::id]
-  #_(db/delete-user! {:id user-id})
-  nil)
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity user-id]]}))
+
+(defn delete-all
+  []
+  (doseq [id (list-user-ids)]
+    (delete-user id)))
 
 (defn-spec read-user ::user
   [user-id ::id]

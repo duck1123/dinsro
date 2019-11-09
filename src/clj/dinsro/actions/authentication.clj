@@ -7,12 +7,12 @@
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(s/def :register-handler/optional-params
+(s/def :register-handler-optional/params
   (s/keys :opt [::m.users/name ::m.users/email ::m.users/password]))
 (s/def :register-handler/params
   (s/keys :req [::m.users/name ::m.users/email ::m.users/password]))
 
-(s/def ::register-request (s/keys :req-un [:register-handler/optional-params]))
+(s/def ::register-request (s/keys :req-un [:register-handler-optional/params]))
 (s/def ::register-request-valid (s/keys :req-un [:register-handler/params]))
 
 (s/def :register-handler/body any?)
@@ -40,8 +40,8 @@
     (if (s/valid? ::m.users/registration-params params)
       (do
         (m.users/create-user! params)
-        (http/ok))
-      (http/bad-request))))
+        (http/ok {:id (m.users/create-user! params)}))
+      (http/bad-request {:status :failed}))))
 
 (defn logout-handler
   [request]
