@@ -22,6 +22,3 @@
       [:p (:no-rates strings)]
       (->> (for [item items] ^{:key (:id item)} [rate-line item])
            (into [:div])))))
-
-(s/fdef index-rates
-  :args (s/cat :items ::ds/rates))
