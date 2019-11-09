@@ -9,7 +9,7 @@
 
 ;; Subscriptions
 
-(rf/reg-sub :authenticated   (fn [db _] (get db :authenticated false)))
+(rf/reg-sub :auth-id         (fn [db _] (get db ::e.authentication/auth-id)))
 (rf/reg-sub :navbar-expanded (fn [db _] (get db :navbar-expanded false)))
 
 ;; Events
@@ -48,7 +48,7 @@
      [:span {:aria-hidden true}]]))
 
 (defn navbar []
-  (let [authenticated @(rf/subscribe [:authenticated])
+  (let [auth-id @(rf/subscribe [:auth-id])
         expanded? @(rf/subscribe [:navbar-expanded])]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
@@ -58,7 +58,7 @@
       [nav-burger]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start
-       (when authenticated
+       (when auth-id
          [:<>
           (nav-link "Accounts"    :index-accounts-page)
           (nav-link "Users"       :index-users-page)
@@ -66,9 +66,9 @@
           (nav-link "Rates"       :index-rates-page)])]
       [:div.navbar-end
        (nav-link "About"          :about-page)
-       (if authenticated
+       (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
-          [:a.navbar-link authenticated]
+          [:a.navbar-link auth-id]
           [:div.navbar-dropdown
            (nav-link "Settings"    :settings-page)
            [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} "Logout"]]]

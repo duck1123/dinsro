@@ -57,10 +57,10 @@
         name @(rf/subscribe [::name])
         confirm-password @(rf/subscribe [::confirm-password])
         password @(rf/subscribe [::password])
-        params {:name name
-                :email email
-                :password password
-                :confirm-password confirm-password}]
+        params {:dinsro.model.user/name name
+                :dinsro.model.user/email email
+                :dinsro.model.user/password password
+                :dinsro.model.user/confirm-password confirm-password}]
     {:db db
      :http-xhrio
      {:uri             "/api/v1/register"

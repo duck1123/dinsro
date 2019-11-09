@@ -3,12 +3,13 @@
             [clojure.spec.alpha :as s]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as specs]
+            [expound.alpha :as expound]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
 (s/def :register-handler-optional/params
-  (s/keys :opt [::m.users/name ::m.users/email ::m.users/password]))
+  (s/keys :opt-un [::m.users/name ::m.users/email ::m.users/password]))
 (s/def :register-handler/params
   (s/keys :req [::m.users/name ::m.users/email ::m.users/password]))
 
@@ -37,11 +38,15 @@
   "Register a user"
   [request ::register-request]
   (let [{:keys [params]} request]
-    (if (s/valid? ::m.users/registration-params params)
-      (do
-        (m.users/create-user! params)
+    (if (s/valid? :register-handler-optional/params params)
+      (let [{:keys [name email password]} params]
+        (m.users/create-user! {::m.users/name name
+                               ::m.users/email email
+                               ::m.users/password password})
         (http/ok {:id (m.users/create-user! params)}))
-      (http/bad-request {:status :failed}))))
+      (do
+        (expound/expound :register-handler-optional/params params)
+        (http/bad-request {:status :failed})))))
 
 (defn logout-handler
   [request]
