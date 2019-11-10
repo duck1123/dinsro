@@ -27,7 +27,6 @@
     (when-not (d/database-exists? (d.config/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      #_(d/transact db/*conn* m.accounts/schema)
       (d/transact db/*conn* m.users/schema)
       (f))))
 

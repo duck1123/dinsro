@@ -25,7 +25,9 @@
     (d/delete-database uri)
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
-    (f)))
+    (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* m.users/schema)
+      (f))))
 
 (deftest create-user-response-test
   (let [registration-data (gen/generate (s/gen ::m.users/registration-params))]
