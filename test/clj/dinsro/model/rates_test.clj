@@ -13,7 +13,7 @@
 (def uri "datahike:file:///tmp/file-example2")
 
 (use-fixtures
-  :once
+  :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (d/delete-database uri)
@@ -22,10 +22,6 @@
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* m.rates/schema)
       (f))))
-
-(defn-spec mock-record ::m.rates/item
-  []
-  (m.rates/create-record (gen/generate (s/gen ::m.rates/prepared-params))))
 
 (deftest create-record-test
   (testing "success"
@@ -36,12 +32,12 @@
 
 (deftest read-record-test
   (testing "not found"
-    (let [response (m.rates/read-record (gen/generate (s/gen :db/id)))]
+    (let [response (m.rates/read-record (gen/generate (s/gen pos-int?)))]
       (is (nil? response) "Should return nil")))
   (testing "when found"
-    (let [record (mock-record)
+    (let [record (m.rates/mock-record)
           response (m.rates/read-record (:db/id record))]
-      (is (= record response "Return the matching record")))))
+      (is (= record response) "Return the matching record"))))
 
 (deftest update-record-test)
 
@@ -49,6 +45,6 @@
   (testing "no records"
     (is (= [] (m.rates/index-records))))
   (testing "with record"
-    (let [record (mock-record)
+    (let [record (m.rates/mock-record)
           response (m.rates/index-records)]
       (is (= [record] response)))))

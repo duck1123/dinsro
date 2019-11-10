@@ -29,7 +29,7 @@
   [params ::params]
   params)
 
-(defn-spec create-record ::item
+(defn-spec create-record :db/id
   [params ::params]
   (let [tempid (d/tempid "rate-id")
         prepared-params (assoc (prepare-record params) :db/id tempid)
@@ -59,3 +59,7 @@
   []
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(defn-spec mock-record ::item
+  []
+  (read-record (create-record (gen/generate (s/gen ::prepared-params)))))

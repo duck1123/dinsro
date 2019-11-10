@@ -25,4 +25,4 @@
   (let [uri (env :datahike-url)]
     (d/create-database uri)))
 
-(s/def :db/id pos-int?)
+(s/def :db/id int?)

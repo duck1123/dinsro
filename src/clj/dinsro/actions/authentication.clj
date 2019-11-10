@@ -11,7 +11,7 @@
 (s/def :register-handler-optional/params
   (s/keys :opt-un [::m.users/name ::m.users/email ::m.users/password]))
 (s/def :register-handler/params
-  (s/keys :req [::m.users/name ::m.users/email ::m.users/password]))
+  (s/keys :req-un [::m.users/name ::m.users/email ::m.users/password]))
 
 (s/def ::register-request (s/keys :req-un [:register-handler-optional/params]))
 (s/def ::register-request-valid (s/keys :req-un [:register-handler/params]))
@@ -37,15 +37,16 @@
 (defn-spec register-handler ::register-handler-response
   "Register a user"
   [request ::register-request]
-  (let [{:keys [params]} request]
-    (if (s/valid? :register-handler-optional/params params)
-      (let [{:keys [name email password]} params]
-        (m.users/create-user! {::m.users/name name
-                               ::m.users/email email
-                               ::m.users/password password})
+  (let [{{:keys [name email password]} :params} request
+        params {::m.users/name name
+                ::m.users/email email
+                ::m.users/password password}]
+    (if (s/valid? ::m.users/registration-params params)
+      (do
+        (m.users/create-user! params)
         (http/ok {:id (m.users/create-user! params)}))
       (do
-        (expound/expound :register-handler-optional/params params)
+        #_(expound/expound :register-handler-optional/params (timbre/spy :info params))
         (http/bad-request {:status :failed})))))
 
 (defn logout-handler

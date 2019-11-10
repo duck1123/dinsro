@@ -11,7 +11,7 @@
 
 (s/def ::id pos-int?)
 (s/def ::name string?)
-(s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] ds/email-gen)))
+(s/def ::email (s/with-gen #(and % (re-matches #".+@.+\..+" %)) (fn [] ds/email-gen)))
 (s/def ::password string?)
 (s/def ::password-hash string?)
 (s/def ::registration-params (s/keys :req [::name ::email ::password]))
@@ -46,9 +46,10 @@
 
 (defn-spec create-user! ::id
   [user-params ::registration-params]
-  (let [user (prepare-user (assoc user-params :db/id "user-id"))
+  (let [tempid (d/tempid "user-id")
+        user (prepare-user (assoc user-params :db/id tempid))
         response (d/transact db/*conn* {:tx-data [user]})]
-    (get-in response [:tempids "user-id"])))
+    (get-in response [:tempids tempid])))
 
 (defn list-user-ids
   []
@@ -63,7 +64,7 @@
   [user-id ::id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity user-id]]}))
 
-(defn delete-all
+(defn-spec delete-all nil?
   []
   (doseq [id (list-user-ids)]
     (delete-user id)))
