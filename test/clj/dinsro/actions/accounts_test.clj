@@ -6,7 +6,6 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.account :as m.accounts]
-            [dinsro.model.account-test :as m.accounts-test]
             [dinsro.model.user :as m.users]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
@@ -31,7 +30,7 @@
     (let [request {}]
       (is [] (a.accounts/index-handler request))))
   (testing "with-records"
-    (let [user (m.accounts-test/mock-account)
+    (let [user (m.accounts/mock-account)
           request {}
           response (a.accounts/index-handler request)
           {{:keys [items]} :body} response]

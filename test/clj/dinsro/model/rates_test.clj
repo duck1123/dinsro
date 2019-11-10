@@ -39,7 +39,9 @@
           response (m.rates/read-record (:db/id record))]
       (is (= record response) "Return the matching record"))))
 
-(deftest update-record-test)
+;; (deftest update-record-test
+
+;;   )
 
 (deftest index-records
   (testing "no records"

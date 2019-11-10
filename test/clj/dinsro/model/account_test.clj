@@ -47,6 +47,6 @@
     (let [id (gen/generate (s/gen ::m.accounts/id))]
       (is (= nil (m.accounts/read-account id)))))
   (testing "found"
-    (let [account (mock-account)
+    (let [account (m.accounts/mock-account)
           id (:db/id account)]
       (is (= account (m.accounts/read-account id))))))
