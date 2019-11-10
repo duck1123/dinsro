@@ -39,12 +39,12 @@
           response (a.authentication/check-auth email password)]
       (is (= true response)))))
 
-(deftest authenticate-test
+(deftest authenticate-handler
   (let [{:keys [dinsro.model.user/email
                 dinsro.model.user/password]
          :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
     (testing "successful"
-      (let [user (m.users/create-user! user-params)
+      (let [user (m.users/mock-record)
             body {:email email :password password}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))

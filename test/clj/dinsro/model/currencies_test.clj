@@ -26,12 +26,6 @@
       (d/transact db/*conn* m.currencies/schema)
       (f))))
 
-(defn-spec mock-user ::m.users/user
-  []
-  (let [params (gen/generate (s/gen ::m.users/registration-params))
-        id (m.users/create-user! params)]
-    (m.users/read-user id)))
-
 (deftest create-record-test
   (testing "success"))
 

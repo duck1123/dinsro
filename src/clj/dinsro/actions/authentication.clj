@@ -1,5 +1,6 @@
 (ns dinsro.actions.authentication
   (:require [buddy.hashers :as hashers]
+            [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as specs]
@@ -20,6 +21,13 @@
 (s/def :register-handler/request (s/keys :req-un [:register-handler/body]))
 (s/def ::register-handler-response (s/keys :req-un [:register-handler/body]))
 
+(s/def ::authenticate-handler-request (s/keys))
+
+(def param-rename-map
+  {:name     ::m.users/name
+   :email    ::m.users/email
+   :password ::m.users/password})
+
 (defn-spec check-auth boolean?
   [email ::m.users/email password ::m.users/password]
   (if-let [user (m.users/find-by-email email)]
@@ -27,20 +35,19 @@
       (hashers/check password password-hash))))
 
 (defn-spec authenticate-handler any?
-  [request any?]
+  [request ::authenticate-handler-request]
   (let [{{:keys [email password]} :params :keys [session]} request]
     (if (check-auth email password)
-      (assoc (http/ok {:identity email})
-             :session (assoc session :identity email))
+      (-> {:identity email}
+          (http/ok)
+          (assoc-in [:session :identity] email))
       (http/unauthorized {:status :unathorized}))))
 
 (defn-spec register-handler ::register-handler-response
   "Register a user"
   [request ::register-request]
-  (let [{{:keys [name email password]} :params} request
-        params {::m.users/name name
-                ::m.users/email email
-                ::m.users/password password}]
+  (let [{:keys [params]} request
+        params (set/rename-keys params param-rename-map)]
     (if (s/valid? ::m.users/registration-params params)
       (do
         (m.users/create-user! params)

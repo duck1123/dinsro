@@ -80,3 +80,9 @@
                 :where [?id ::email ?email]]]
     (first (map (fn [[id]] (d/pull @db/*conn* '[:db/id ::name ::email ::password-hash] id))
                 (d/q query @db/*conn* email)))))
+
+(defn-spec mock-user ::user
+  []
+  (let [params (gen/generate (s/gen ::registration-params))
+        id (create-user! params)]
+    (read-user id)))
