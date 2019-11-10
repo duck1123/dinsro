@@ -111,39 +111,38 @@
                                 [ring/ring-devel "1.8.0"]
                                 [ring/ring-mock "0.4.0"]]
 
-                 :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
-                                [lein-doo "0.1.11"]
+                 :plugins      [[lein-doo "0.1.11"]
                                 [lein-figwheel "0.5.19"]
                                 [org.clojure/tools.namespace "0.3.0-alpha4"
                                  :exclusions [org.clojure/tools.reader]]
                                 [refactor-nrepl "2.4.0"
-                                 :exclusions [org.clojure/clojure]]
-                                [deraen/lein-sass4clj "0.3.1"]]
+                                 :exclusions [org.clojure/clojure]]]
 
                  :cljsbuild
-                 {:builds
-                  {:app {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                         :figwheel     {:on-jsload "dinsro.core/mount-components"}
-                         :compiler     {:main            "dinsro.app"
-                                        :asset-path      "/js/out"
-                                        :output-to       "target/cljsbuild/public/js/app.js"
-                                        :output-dir      "target/cljsbuild/public/js/out"
-                                        :source-map      true
-                                        :optimizations   :none
-                                        :closure-defines {"re_frame.trace.trace_enabled_QMARK_"        true
-                                                          "day8.re_frame.tracing.trace_enabled_QMARK_" true}
-                                        :preloads        [day8.re-frame-10x.preload]
-                                        :pretty-print    true}}
-                   :devcards
-                   {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                    :figwheel {:devcards true}
-                    :compiler {:main "dinsro.devcards"
-                               :asset-path "js/devcards_out"
-                               :output-to "target/cljsbuild/public/js/app_devcards.js"
-                               :output-dir "target/cljsbuild/public/js/devcards_out"
-                               :source-map-timestamp true
-                               :optimizations :none
-                               :pretty-print true}}}}
+                  {:builds
+                   {:app      {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                               :figwheel     {:on-jsload "dinsro.core/mount-components"}
+                               :compiler     {:main            "dinsro.app"
+                                              :asset-path      "/js/out"
+                                              :output-to       "target/cljsbuild/public/js/app.js"
+                                              :output-dir      "target/cljsbuild/public/js/out"
+                                              :source-map      true
+                                              :optimizations   :none
+                                              :closure-defines
+                                              {"re_frame.trace.trace_enabled_QMARK_"        true
+                                               "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+                                              :preloads        [day8.re-frame-10x.preload]
+                                              :pretty-print    true}}
+
+                    :devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                               :figwheel     {:devcards true}
+                               :compiler     {:main "dinsro.devcards"
+                                              :asset-path "js/devcards_out"
+                                              :output-to "target/cljsbuild/public/js/app_devcards.js"
+                                              :output-dir "target/cljsbuild/public/js/devcards_out"
+                                              :source-map-timestamp true
+                                              :optimizations :none
+                                              :pretty-print true}}}}
 
                  :doo {:build "test"
                        :alias {:default [:chrome]}}
