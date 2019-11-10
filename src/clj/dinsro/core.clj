@@ -64,7 +64,7 @@
 (defn -main [& args]
   (mount/start #'dinsro.config/env)
   (cond
-    (nil? (:database-url env))
+    (nil? (:datahike-url env))
     (do
       (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
       (System/exit 1))
