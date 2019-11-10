@@ -29,7 +29,8 @@
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]
   (or (let [{:keys [params]} request
-         params (prepare-record params)
-         item (m.currencies/create-record params)]
-        (http/ok {:item item}))
+            params (prepare-record params)]
+        (when (s/valid? ::m.currencies/params params)
+          (let [item (m.currencies/create-record (timbre/spy :info params))]
+            (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))

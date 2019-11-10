@@ -14,7 +14,7 @@
 (def uri "datahike:file:///tmp/file-example")
 
 (use-fixtures
-  :once
+  :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (d/delete-database uri)
@@ -32,15 +32,8 @@
       (is (= (get params ::name) (get created-record ::name))))))
 
 (deftest index-records
-  (testing "success"
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.accounts/schema)
-      (is (= [] (m.accounts/index-records)))
-      (d/transact db/*conn* {:tx-data [{::m.accounts/name "foo"}]})
-      (let [expected {::m.accounts/name "foo"}
-            actual (m.accounts/index-records)]
-        (is (every? #(= "foo" (::m.accounts/name %) (::m.accounts/name expected))
-                    actual))))))
+  (testing "success - no record"
+    (is (= [] (m.accounts/index-records)))))
 
 (deftest read-account-test
   (testing "not found"

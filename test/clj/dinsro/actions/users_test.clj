@@ -18,7 +18,7 @@
 (def uri "datahike:file:///tmp/file-example2")
 
 (use-fixtures
-  :once
+  :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (d/delete-database uri)

@@ -8,6 +8,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.currencies :as m.currencies]
             [mount.core :as mount]
+            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
 (def example-request {:name "foo"})
@@ -35,15 +36,15 @@
     (let [request {}
           response (a.currencies/index-handler request)
           items (get-in response [:body :items])]
+      (is (= status/ok (:status response)))
       (is (= [] items))))
   (testing "success - with records"
     (let [record (m.currencies/mock-record)
           request {}
           response (a.currencies/index-handler request)
           items (get-in response [:body :items])]
-      (is (= [record] items)))
-    )
-  )
+      (is (= status/ok (:status response)))
+      (is (= [record] items)))))
 
 (deftest create-handler
   (testing "success"
@@ -51,7 +52,14 @@
           response (a.currencies/create-handler request)
           id (get-in response [:body :item])
           created-record (m.currencies/read-record id)]
-      (is (= (:name request) (::m.currencies/name response))))))
+      (is (= status/ok (:status response)))
+      (is (= (:name request) (::m.currencies/name response)))))
+  (testing "invalid params"
+    (let [params {}
+          request {:params params}
+          response (a.currencies/create-handler request)]
+      (is (= status/bad-request (:status response))
+          "should signal a bad request"))))
 
 (comment
   (gen-spec ::a.currencies/create-handler-request)
