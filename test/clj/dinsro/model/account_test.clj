@@ -13,16 +13,20 @@
 
 (def uri "datahike:file:///tmp/file-example")
 
+(defn test-db
+  [f]
+  (d/delete-database uri)
+  (when-not (d/database-exists? (datahike.config/uri->config uri))
+    (d/create-database uri))
+  (with-redefs [db/*conn* (datahike.core/create-conn #_m.accounts/schema) #_(d/connect uri)]
+    (d/transact db/*conn* m.accounts/schema)
+    (f)))
+
 (use-fixtures
   :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (datahike.config/uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.accounts/schema)
-      (f))))
+    (test-db f)))
 
 (deftest create-account!
   (testing "success"
