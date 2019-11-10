@@ -44,15 +44,15 @@
                 dinsro.model.user/password]
          :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
     (testing "successful"
-      (let [user (m.users/mock-user)
-            body {:email email :password password}
+      (m.users/create-user! user-params)
+      (let [body {:email email :password password}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))
             response (a.authentication/authenticate-handler request)]
         (is (= (:status response) status/ok))))
     (testing "failure"
-      (let [user (m.users/create-user! user-params)
-            body {:email email :password (str password "x")}
+      (m.users/create-user! user-params)
+      (let [body {:email email :password (str password "x")}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))
             response (a.authentication/authenticate-handler request)]
