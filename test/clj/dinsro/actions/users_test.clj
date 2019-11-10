@@ -1,6 +1,5 @@
 (ns dinsro.actions.users-test
   (:require [clojure.data.json :as json]
-            [clojure.java.jdbc :as jdbc]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]

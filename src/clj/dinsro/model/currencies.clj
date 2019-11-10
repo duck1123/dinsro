@@ -1,5 +1,6 @@
 (ns dinsro.model.currencies
   (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [orchestra.core :refer [defn-spec]]
@@ -8,7 +9,7 @@
 (s/def ::id pos-int?)
 (s/def ::name string?)
 (s/def ::params (s/keys :req [::name]))
-(s/def ::currency (s/keys :req [::name]))
+(s/def ::item (s/keys :req [::name]))
 
 (def schema
   [{:db/ident       ::id
@@ -16,17 +17,13 @@
     :db/cardinality :db.cardinality/one}
    {:db/ident       ::name
     :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one}
-
-
-   ]
-  )
+    :db/cardinality :db.cardinality/one}])
 
 (defn-spec index-ids (s/* ::id)
   []
   (map first (d/q '[:find ?e :where [?e ::name _]] @db/*conn*)))
 
-(defn-spec index (s/* ::currency)
+(defn-spec index (s/* ::item)
   []
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::name :db/id])))
@@ -36,3 +33,15 @@
   (let [params (assoc params :db/id "currency-id")]
     (let [response (d/transact db/*conn* {:tx-data [params]})]
       (get-in response [:tempids "currency-id"]))))
+
+(defn-spec read-record (s/nilable ::item)
+  [id :db/id]
+  (let [record (d/pull @db/*conn* '[*] id)]
+    (when (get record ::name)
+      record)))
+
+(defn-spec mock-record ::item
+  []
+  (let [params (gen/generate (s/gen ::params))
+        id (create-record params)]
+    (read-record id)))
