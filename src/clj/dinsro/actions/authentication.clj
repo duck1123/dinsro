@@ -28,7 +28,7 @@
    :email    ::m.users/email
    :password ::m.users/password})
 
-(defn-spec check-auth boolean?
+(defn-spec check-auth (s/nilable boolean?)
   [email ::m.users/email password ::m.users/password]
   (if-let [user (m.users/find-by-email email)]
     (let [{:keys [dinsro.model.user/password-hash]} user]

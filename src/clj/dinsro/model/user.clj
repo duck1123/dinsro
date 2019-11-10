@@ -69,11 +69,11 @@
   (doseq [id (list-user-ids)]
     (delete-user id)))
 
-(defn-spec read-user ::user
+(defn-spec read-user (s/nilable ::user)
   [user-id ::id]
   (d/pull @db/*conn* '[::name ::email ::password-hash] user-id))
 
-(defn-spec find-by-email ::user
+(defn-spec find-by-email (s/nilable ::user)
   [email ::email]
   (let [query '[:find ?id
                 :in $ ?email

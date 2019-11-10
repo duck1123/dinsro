@@ -44,7 +44,7 @@
                 dinsro.model.user/password]
          :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
     (testing "successful"
-      (let [user (m.users/mock-record)
+      (let [user (m.users/mock-user)
             body {:email email :password password}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))
