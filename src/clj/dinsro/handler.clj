@@ -1,7 +1,13 @@
 (ns dinsro.handler
   (:require [dinsro.env :refer [defaults]]
+            [datahike.api :as d]
+            [dinsro.db.core :as db]
             [dinsro.layout :refer [error-page] :as layout]
             [dinsro.middleware :as middleware]
+            [dinsro.model.account :as m.accounts]
+            [dinsro.model.currencies :as m.currencies]
+            [dinsro.model.rates :as m.rates]
+            [dinsro.model.user :as m.users]
             [dinsro.routes :as routes]
             [mount.core :as mount]
             [reitit.coercion.spec]
@@ -31,5 +37,16 @@
       :not-acceptable
       (constantly (error-page {:status 406, :title "406 - Not acceptable"}))}))))
 
+(defn init-schemata
+  []
+  (let [schemata [m.accounts/schema
+                  m.currencies/schema
+                  m.rates/schema
+                  m.users/schema
+                  ]]
+    (doseq [schema schemata]
+      (d/transact db/*conn* schema))))
+
 (defn app []
+  (init-schemata)
   (middleware/wrap-base #'app-routes))

@@ -47,7 +47,9 @@
   "Register a user"
   [request ::register-request]
   (let [{:keys [params]} request
-        params (set/rename-keys params param-rename-map)]
+        params (-> params
+                   (set/rename-keys param-rename-map)
+                   (select-keys (vals param-rename-map)))]
     (if (s/valid? ::m.users/registration-params params)
       (do
         (m.users/create-user! params)
