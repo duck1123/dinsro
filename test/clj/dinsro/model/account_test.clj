@@ -24,12 +24,6 @@
       (d/transact db/*conn* m.accounts/schema)
       (f))))
 
-(defn-spec mock-account ::m.accounts/account
-  []
-  (let [params (gen/generate (s/gen ::m.accounts/params))
-        id (m.accounts/create-account! params)]
-    (m.accounts/read-account id)))
-
 (deftest create-account!
   (testing "success"
     (let [params (gen/generate (s/gen ::m.accounts/params))

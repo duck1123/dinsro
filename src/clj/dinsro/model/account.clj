@@ -1,5 +1,6 @@
 (ns dinsro.model.account
   (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [orchestra.core :refer [defn-spec]]
@@ -38,10 +39,25 @@
     (when (get record ::name)
       record)))
 
-(defn-spec index-account-ids (s/* ::id)
+(defn-spec index-ids (s/* ::id)
   []
   (map first (d/q '[:find ?e :where [?e ::name _]] @db/*conn*)))
 
 (defn-spec index-records (s/* ::account)
   []
-  (d/pull-many @db/*conn* '[*] (index-account-ids)))
+  (d/pull-many @db/*conn* '[*] (index-ids)))
+
+(defn-spec delete-record nil?
+  [id :db/id]
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+
+(defn-spec delete-all nil?
+  []
+  (doseq [id (index-ids)]
+    (delete-record id)))
+
+(defn-spec mock-account ::account
+  []
+  (let [params (gen/generate (s/gen ::params))
+        id (create-account! params)]
+    (read-account id)))

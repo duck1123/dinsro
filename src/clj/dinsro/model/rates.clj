@@ -36,7 +36,7 @@
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
-(defn-spec read-record ::item
+(defn-spec read-record (s/nilable ::item)
   [id :db/id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::value)
@@ -53,7 +53,8 @@
 
 (defn-spec delete-record nil?
   [id :db/id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+  nil)
 
 (defn-spec delete-all nil?
   []
