@@ -18,7 +18,7 @@
   (d/delete-database uri)
   (when-not (d/database-exists? (datahike.config/uri->config uri))
     (d/create-database uri))
-  (with-redefs [db/*conn* (datahike.core/create-conn #_m.accounts/schema) #_(d/connect uri)]
+  (with-redefs [db/*conn* #_(datahike.core/create-conn #_m.accounts/schema) (d/connect uri)]
     (d/transact db/*conn* m.accounts/schema)
     (f)))
 
@@ -26,7 +26,14 @@
   :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
-    (test-db f)))
+    (test-db f)
+    #_(f)
+    ))
+
+(comment
+  @(d/transact! (datahike.core/create-conn) m.accounts/schema)
+
+  )
 
 (deftest create-account!
   (testing "success"
