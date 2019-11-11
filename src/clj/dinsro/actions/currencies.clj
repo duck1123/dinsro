@@ -14,6 +14,7 @@
 (s/def :create-handler/params (s/keys :opt-un [::m.currencies/name]))
 (s/def :create-handler-valid/params (s/keys :req-un [::m.currencies/name]))
 (s/def :create-handler-valid/request (s/keys :req-un [:create-handler-valid/params]))
+(s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
 (s/def ::create-handler-response (s/keys))
 
@@ -31,6 +32,13 @@
   (or (let [{:keys [params]} request
             params (prepare-record params)]
         (when (s/valid? ::m.currencies/params params)
-          (let [item (m.currencies/create-record (timbre/spy :info params))]
+          (let [item (m.currencies/create-record params)]
             (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))
+
+(comment
+  (clojure.spec.gen.alpha/generate (s/gen ::m.currencies/params))
+
+  (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request-valid))
+  (prepare-record (:params (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request-valid))))
+  )
