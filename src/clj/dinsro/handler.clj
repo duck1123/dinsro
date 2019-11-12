@@ -42,8 +42,7 @@
   (let [schemata [m.accounts/schema
                   m.currencies/schema
                   m.rates/schema
-                  m.users/schema
-                  ]]
+                  m.users/schema]]
     (doseq [schema schemata]
       (d/transact db/*conn* schema))))
 

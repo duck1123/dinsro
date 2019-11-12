@@ -1,5 +1,7 @@
 (ns dinsro.actions.accounts-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.test :refer :all]
             [datahike.api :as d]
             [datahike.core :as dc]
             [dinsro.actions.account :as a.accounts]
@@ -9,12 +11,13 @@
             [dinsro.model.user :as m.users]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
+            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")
 
 (use-fixtures
-  :once
+  :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (d/delete-database uri)
@@ -35,3 +38,18 @@
           response (a.accounts/index-handler request)
           {{:keys [items]} :body} response]
       (is (= [user] items)))))
+
+(deftest create-handler
+  (testing "success"
+    (let [request (gen/generate (s/gen ::a.accounts/create-handler-request-valid))
+          response (a.accounts/create-handler request)]
+      (is (= status/ok (:status response)))
+      #_(is (= nil response))))
+  (testing "invalid params"
+    (let [request {}
+          response (a.accounts/create-handler request)]
+      (is (= status/bad-request (:status response)))
+      #_(is (= nil response)))))
+
+(comment
+  (gen/generate (s/gen ::a.accounts/create-handler-request-valid)))
