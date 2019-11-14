@@ -23,15 +23,16 @@
 
 (defn-spec prepare-record ::m.currencies/params
   [params :create-handler/params]
-  (-> params
-      (set/rename-keys param-rename-map)
-      (select-keys (vals param-rename-map))))
+  (let [params (-> params
+                   (set/rename-keys param-rename-map)
+                   (select-keys (vals param-rename-map)))]
+    (when (s/valid? ::m.currencies/params params)
+      params)))
 
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]
-  (or (let [{:keys [params]} request
-            params (prepare-record params)]
-        (when (s/valid? ::m.currencies/params params)
+  (or (let [{:keys [params]} request]
+        (when-let [params (prepare-record params)]
           (let [item (m.currencies/create-record params)]
             (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))
