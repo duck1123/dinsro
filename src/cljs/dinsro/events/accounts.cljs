@@ -1,5 +1,7 @@
 (ns dinsro.events.accounts
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -7,6 +9,13 @@
 
 (rf/reg-sub ::items             (fn [db _] (get db ::items             [])))
 (rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
+
+(s/def ::item (s/keys ))
+(s/def ::items (s/coll-of ::item))
+
+(comment
+  (gen/generate (s/gen ::items))
+  )
 
 (defn sub-item
   [items [_ target-item]]
