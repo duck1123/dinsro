@@ -1,6 +1,7 @@
 (ns dinsro.actions.account
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [dinsro.model.account :as m.accounts]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
@@ -24,11 +25,6 @@
     (when (s/valid? ::m.accounts/params params)
       params)))
 
-(comment
-  (prepare-record {:name "foo"})
-  (prepare-record {})
-  )
-
 (defn-spec create-handler ::create-handler-response
   [{:keys [params session]} ::create-handler-request]
   (or (let [user-id 1]
@@ -48,7 +44,26 @@
     (http/ok account)
     (http/not-found {})))
 
-(defn delete-handler
-  [{{:keys [accountId]} :path-params}]
-  (m.accounts/delete-account! accountId)
+(s/def :delete-handler-request-params/accountId (s/with-gen
+                                                  string?
+                                                  #(gen/fmap str (s/gen pos-int?))))
+(s/def :delete-handler-request/path-params (s/keys :req-un [:delete-handler-request-params/accountId]))
+(s/def ::delete-handler-request (s/keys :req-un [:delete-handler-request/path-params]))
+
+(defn-spec delete-handler any?
+  [{{:keys [accountId]} :path-params} ::delete-handler-request]
+  (m.accounts/delete-account! (Integer/parseInt accountId))
   (http/ok {:status "ok"}))
+
+(comment
+  (prepare-record {:name "foo"})
+  (prepare-record {})
+
+  (gen/generate (gen/fmap str (s/gen pos-int?)))
+
+  (gen/generate (s/gen :delete-handler-request-params/accountId))
+  (gen/generate (s/gen ::delete-handler-request))
+
+  (delete-handler {:path-params {:accountId "1"}})
+
+  )
