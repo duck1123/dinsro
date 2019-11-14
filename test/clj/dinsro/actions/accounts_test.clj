@@ -9,6 +9,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.account :as m.accounts]
             [dinsro.model.user :as m.users]
+            [dinsro.spec.accounts :as s.accounts]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-status :as status]
@@ -25,7 +26,7 @@
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* m.users/schema)
-      (d/transact db/*conn* m.accounts/schema)
+      (d/transact db/*conn* s.accounts/schema)
       (f))))
 
 (deftest index-handler-test
@@ -53,12 +54,12 @@
 
 (deftest delete-handler
   (testing "success"
-    (let [account (m.accounts/mock-account)
+    (let [account (m.accounts/mock-record)
           id (:db/id account)
           request {:path-params {:accountId (str id)}}
           response (a.accounts/delete-handler request)]
       (is (= status/ok (:status response)) "successful status")
-      (is (nil? (m.accounts/read-account id)) "account is deleted"))))
+      (is (nil? (m.accounts/read-record id)) "account is deleted"))))
 
 (comment
   (gen/generate (s/gen ::a.accounts/create-handler-request-valid))

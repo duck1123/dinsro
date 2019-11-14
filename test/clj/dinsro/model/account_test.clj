@@ -7,6 +7,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.account :as m.accounts]
+            [dinsro.spec.accounts :as s.accounts]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
@@ -18,8 +19,8 @@
   (d/delete-database uri)
   (when-not (d/database-exists? (datahike.config/uri->config uri))
     (d/create-database uri))
-  (with-redefs [db/*conn* #_(datahike.core/create-conn #_m.accounts/schema) (d/connect uri)]
-    (d/transact db/*conn* m.accounts/schema)
+  (with-redefs [db/*conn* #_(datahike.core/create-conn #_s.accounts/schema) (d/connect uri)]
+    (d/transact db/*conn* s.accounts/schema)
     (f)))
 
 (use-fixtures
@@ -30,36 +31,36 @@
     #_(f)
     ))
 
-(deftest create-account!
+(deftest create-record
   (testing "success"
-    (let [params (gen/generate (s/gen ::m.accounts/params))
-          id (m.accounts/create-account! params)
-          created-record (m.accounts/read-account id)]
-      (is (= (get params ::name) (get created-record ::name))))))
+    (let [params (gen/generate (s/gen ::s.accounts/params))
+          id (m.accounts/create-record params)
+          created-record (m.accounts/read-record id)]
+      (is (= (get params ::s.accounts/name) (get created-record ::s.accounts/name))))))
 
 (deftest index-records
   (testing "success - no record"
     (is (= [] (m.accounts/index-records)))))
 
-(deftest read-account-test
+(deftest read-record
   (testing "not found"
-    (let [id (gen/generate (s/gen ::m.accounts/id))]
-      (is (= nil (m.accounts/read-account id)))))
+    (let [id (gen/generate (s/gen ::s.accounts/id))]
+      (is (= nil (m.accounts/read-record id)))))
   (testing "found"
-    (let [account (m.accounts/mock-account)
-          id (:db/id account)]
-      (is (= account (m.accounts/read-account id))))))
+    (let [record (m.accounts/mock-record)
+          id (:db/id record)]
+      (is (= record (m.accounts/read-record id))))))
 
 (deftest delete-record
   (testing "success"
-    (let [account (m.accounts/mock-account)
+    (let [account (m.accounts/mock-record)
           id (:db/id account)]
-      (is (not (nil? (m.accounts/read-account id))))
+      (is (not (nil? (m.accounts/read-record id))))
       (let [response (m.accounts/delete-record id)]
         (is (not (nil? response)))
-        (is (nil? (m.accounts/read-account id)))))))
+        (is (nil? (m.accounts/read-record id)))))))
 
 (comment
-  @(d/transact! (datahike.core/create-conn) m.accounts/schema)
+  @(d/transact! (datahike.core/create-conn) s.accounts/schema)
 
   )

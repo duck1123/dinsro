@@ -29,7 +29,7 @@
   [{:keys [params session]} ::create-handler-request]
   (or (let [user-id 1]
         (when-let [params (prepare-record params)]
-          (let [item (m.accounts/create-account! params #_(assoc params :user-id user-id))]
+          (let [item (m.accounts/create-record params #_(assoc params :user-id user-id))]
             (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))
 
@@ -40,7 +40,7 @@
 
 (defn read-handler
   [{{:keys [accountId]} :path-params}]
-  (if-let [account (m.accounts/read-account {:id accountId})]
+  (if-let [account (m.accounts/read-record {:id accountId})]
     (http/ok account)
     (http/not-found {})))
 

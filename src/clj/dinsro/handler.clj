@@ -9,6 +9,7 @@
             [dinsro.model.rates :as m.rates]
             [dinsro.model.user :as m.users]
             [dinsro.routes :as routes]
+            [dinsro.spec.accounts :as s.accounts]
             [mount.core :as mount]
             [reitit.coercion.spec]
             [reitit.ring :as ring]
@@ -39,7 +40,7 @@
 
 (defn init-schemata
   []
-  (let [schemata [m.accounts/schema
+  (let [schemata [s.accounts/schema
                   m.currencies/schema
                   m.rates/schema
                   m.users/schema]]
