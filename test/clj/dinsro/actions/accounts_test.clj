@@ -30,7 +30,7 @@
 
 (deftest index-handler-test
   (testing "success"
-    (let [request {}]
+    (let [request {:params {}}]
       (is [] (a.accounts/index-handler request))))
   (testing "with-records"
     (let [user (m.accounts/mock-account)
@@ -46,10 +46,13 @@
       (is (= status/ok (:status response)))
       #_(is (= nil response))))
   (testing "invalid params"
-    (let [request {}
+    (let [request {:params {}}
           response (a.accounts/create-handler request)]
       (is (= status/bad-request (:status response)))
       #_(is (= nil response)))))
 
 (comment
-  (gen/generate (s/gen ::a.accounts/create-handler-request-valid)))
+  (gen/generate (s/gen ::a.accounts/create-handler-request-valid))
+
+
+  )

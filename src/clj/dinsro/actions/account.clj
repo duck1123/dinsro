@@ -16,17 +16,23 @@
 (def param-rename-map
   {:name ::m.accounts/name})
 
-(defn-spec prepare-record ::m.accounts/params
+(defn-spec prepare-record (s/nilable ::m.accounts/params)
   [params :create-handler/params]
-  (-> params
-      (set/rename-keys param-rename-map)
-      (select-keys (vals param-rename-map))))
+  (let [params (-> params
+                   (set/rename-keys param-rename-map)
+                   (select-keys (vals param-rename-map)))]
+    (when (s/valid? ::m.accounts/params params)
+      params)))
+
+(comment
+  (prepare-record {:name "foo"})
+  (prepare-record {})
+  )
 
 (defn-spec create-handler ::create-handler-response
   [{:keys [params session]} ::create-handler-request]
-  (or (let [user-id 1
-            params (prepare-record params)]
-        (when (s/valid? ::m.accounts/params params)
+  (or (let [user-id 1]
+        (when-let [params (prepare-record params)]
           (let [item (m.accounts/create-account! params #_(assoc params :user-id user-id))]
             (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))
