@@ -20,4 +20,4 @@ EXPOSE 8080
 RUN lein deps
 
 # 6
-CMD ["lein", "run"]
+CMD ["script/server"]
