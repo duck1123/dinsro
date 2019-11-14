@@ -61,7 +61,7 @@
 (kf/reg-event-fx
  ::do-delete-record-success
  (fn [cofx [{:keys [id]}]]
-   {:dispatch [:filter-record id]}))
+   {:dispatch [::do-fetch-index id]}))
 
 (kf/reg-event-db
  ::do-delete-record-failed

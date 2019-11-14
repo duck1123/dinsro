@@ -51,7 +51,8 @@
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
     ["/currencies"
      [""                {:get    a.currencies/index-handler
-                         :post   a.currencies/create-handler}]]
+                         :post   a.currencies/create-handler}]
+     ["/:id"            {:delete a.currencies/delete-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
     ["/rates"
      [""                {:get    a.rates/index-handler}]]
