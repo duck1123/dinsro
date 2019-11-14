@@ -6,7 +6,6 @@
 
 (defn page
   [{{:keys [id]} :path-params :as match}]
-  (timbre/spy :info match)
   (let [account @(rf/subscribe [::e.accounts/item {:id (int id)}])]
     [:section.section>div.container>div.content
      [:h1 "Show Account"]

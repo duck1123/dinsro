@@ -54,9 +54,7 @@
       (do
         (m.users/create-user! params)
         (http/ok {:id (m.users/create-user! params)}))
-      (do
-        #_(expound/expound :register-handler-optional/params (timbre/spy :info params))
-        (http/bad-request {:status :failed})))))
+      (http/bad-request {:status :failed}))))
 
 (defn logout-handler
   [request]

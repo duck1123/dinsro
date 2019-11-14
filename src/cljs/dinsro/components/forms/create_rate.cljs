@@ -10,7 +10,7 @@
 (c/reg-field ::rate        0)
 (c/reg-field ::currency-id 2)
 (c/reg-field ::date        (.toISOString (js/Date.)))
-(c/reg-field ::time        (timbre/spy :info (.toISOString (js/Date.))))
+(c/reg-field ::time        (.toISOString (js/Date.)))
 (c/reg-field ::form-shown? false)
 #_(rf/reg-sub      ::form-shown?          (fn-traced [db _] (get db ::form-shown? false)))
 

@@ -75,7 +75,7 @@
  ::do-delete-account
  (fn-traced [_ [id]]
    {:http-xhrio
-    {:uri             (kf/path-for [:api-show-account (timbre/spy :info {:id id})])
+    {:uri             (kf/path-for [:api-show-account {:id id}])
      :method          :delete
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})
