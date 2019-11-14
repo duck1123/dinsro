@@ -56,11 +56,14 @@
     (let [account (m.accounts/mock-record)
           id (:db/id account)]
       (is (not (nil? (m.accounts/read-record id))))
-      (let [response (m.accounts/delete-record id)]
+      (let [response (m.accounts/delete-record (timbre/spy :info id))]
         (is (not (nil? response)))
         (is (nil? (m.accounts/read-record id)))))))
 
 (comment
   @(d/transact! (datahike.core/create-conn) s.accounts/schema)
-
+  (m.accounts/mock-record)
+  (m.accounts/index-records)
+  (m.accounts/read-record 40)
+  (m.accounts/delete-record 40)
   )

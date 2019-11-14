@@ -57,11 +57,16 @@
     (let [account (m.accounts/mock-record)
           id (:db/id account)
           request {:path-params {:accountId (str id)}}
-          response (a.accounts/delete-handler request)]
+          response (a.accounts/delete-handler (timbre/spy :info request))]
       (is (= status/ok (:status response)) "successful status")
       (is (nil? (m.accounts/read-record id)) "account is deleted"))))
 
 (comment
   (gen/generate (s/gen ::a.accounts/create-handler-request-valid))
+
+  (expound.alpha/expound
+   ::a.accounts/delete-handler-request
+   {:path-params {:accountId "7"}})
+
 
   )

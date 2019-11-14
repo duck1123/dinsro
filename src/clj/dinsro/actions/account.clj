@@ -3,26 +3,27 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.model.account :as m.accounts]
+            [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(s/def :create-handler-valid/params (s/keys :req-un [::m.accounts/name]))
-(s/def :create-handler/params (s/keys :opt-un [::m.accounts/name]))
+(s/def :create-handler-valid/params (s/keys :req-un [::s.accounts/name]))
+(s/def :create-handler/params (s/keys :opt-un [::s.accounts/name]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
 (s/def ::create-handler-response (s/keys))
 
 (def param-rename-map
-  {:name ::m.accounts/name})
+  {:name ::s.accounts/name})
 
-(defn-spec prepare-record (s/nilable ::m.accounts/params)
+(defn-spec prepare-record (s/nilable ::s.accounts/params)
   [params :create-handler/params]
   (let [params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map)))]
-    (when (s/valid? ::m.accounts/params params)
+    (when (s/valid? ::s.accounts/params params)
       params)))
 
 (defn-spec create-handler ::create-handler-response
@@ -53,7 +54,10 @@
 (defn-spec delete-handler any?
   [{{:keys [accountId]} :path-params} ::delete-handler-request]
   (try
-    (m.accounts/delete-record (Integer/parseInt accountId))
+    (let [id (Integer/parseInt accountId)]
+      (m.accounts/delete-record id)
+      ;; nil
+      )
     (http/ok {:status "ok"})
     (catch NumberFormatException e
       (http/bad-request {:input :invalid}))))

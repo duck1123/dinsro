@@ -33,7 +33,7 @@
 
 (defn-spec delete-record TxReport
   [id :db/id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity (timbre/spy :info id)]]}))
 
 (defn-spec delete-all nil?
   []
