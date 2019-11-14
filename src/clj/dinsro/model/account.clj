@@ -31,7 +31,7 @@
   []
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
-(defn-spec delete-record TxReport
+(defn-spec delete-record any?
   [id :db/id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity (timbre/spy :info id)]]}))
 

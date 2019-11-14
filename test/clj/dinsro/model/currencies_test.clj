@@ -10,8 +10,7 @@
             [dinsro.model.user :as m.users]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre])
-  (:import datahike.db.TxReport))
+            [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")
 
@@ -47,7 +46,7 @@
           ]
       (is (not (nil? (m.currencies/read-record id))))
       (let [response (m.currencies/delete-record id)]
-        (is (instance? TxReport response))
+        (is (nil? response))
         (is (nil? (m.currencies/read-record id)))
         )
       )

@@ -41,9 +41,10 @@
     (when (get record ::name)
       record)))
 
-(defn-spec delete-record TxReport
+(defn-spec delete-record nil?
   [id :db/id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+  nil)
 
 (defn-spec delete-all nil?
   []
