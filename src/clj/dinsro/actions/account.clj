@@ -52,18 +52,19 @@
 
 (defn-spec delete-handler any?
   [{{:keys [accountId]} :path-params} ::delete-handler-request]
-  (m.accounts/delete-account! (Integer/parseInt accountId))
-  (http/ok {:status "ok"}))
+  (try
+    (m.accounts/delete-record (Integer/parseInt accountId))
+    (http/ok {:status "ok"})
+    (catch NumberFormatException e
+      (http/bad-request {:input :invalid}))))
 
 (comment
   (prepare-record {:name "foo"})
-  (prepare-record {})
 
   (gen/generate (gen/fmap str (s/gen pos-int?)))
-
   (gen/generate (s/gen :delete-handler-request-params/accountId))
   (gen/generate (s/gen ::delete-handler-request))
 
-  (delete-handler {:path-params {:accountId "1"}})
+  (delete-handler {:path-params {:accountId "s"}})
 
   )

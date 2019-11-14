@@ -4,7 +4,8 @@
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:import datahike.db.TxReport))
 
 (def schema
   [{:db/ident       ::id
@@ -28,11 +29,6 @@
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "account-id")]})]
     (get-in response [:tempids "account-id"])))
 
-(defn-spec delete-account! nil?
-  [id ::id]
-  #_(db/delete-account! {:id id})
-  nil)
-
 (defn-spec read-account (s/nilable ::account)
   [id ::id]
   (let [record (d/pull @db/*conn* '[*] id)]
@@ -47,7 +43,7 @@
   []
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
-(defn-spec delete-record nil?
+(defn-spec delete-record TxReport
   [id :db/id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
 

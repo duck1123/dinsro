@@ -30,11 +30,6 @@
     #_(f)
     ))
 
-(comment
-  @(d/transact! (datahike.core/create-conn) m.accounts/schema)
-
-  )
-
 (deftest create-account!
   (testing "success"
     (let [params (gen/generate (s/gen ::m.accounts/params))
@@ -54,3 +49,17 @@
     (let [account (m.accounts/mock-account)
           id (:db/id account)]
       (is (= account (m.accounts/read-account id))))))
+
+(deftest delete-record
+  (testing "success"
+    (let [account (m.accounts/mock-account)
+          id (:db/id account)]
+      (is (not (nil? (m.accounts/read-account id))))
+      (let [response (m.accounts/delete-record id)]
+        (is (not (nil? response)))
+        (is (nil? (m.accounts/read-account id)))))))
+
+(comment
+  @(d/transact! (datahike.core/create-conn) m.accounts/schema)
+
+  )
