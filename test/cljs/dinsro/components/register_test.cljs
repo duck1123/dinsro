@@ -1,6 +1,6 @@
 (ns dinsro.components.register-test
   (:require [cljs.test :refer-macros [is are deftest testing use-fixtures]]
-            [dinsro.components.register :as register]
+            [dinsro.views.register :as register]
             [dinsro.utils :refer [with-mounted-component found-in]]
             [reagent.core :as r]
             [reagent.ratom :as rv :refer-macros [reaction]]

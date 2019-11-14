@@ -1,4 +1,4 @@
-(ns dinsro.views.login-page
+(ns dinsro.views.login
   (:require [ajax.core :as ajax]
             [clojure.string :as string]
             [day8.re-frame.tracing :refer-macros [fn-traced]]

@@ -2,7 +2,7 @@
   (:require [ajax.core :as http]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
-            [dinsro.components.login-page :as login-page]
+            [dinsro.views.login :as login-page]
             [dinsro.routing :as routing]
             [dinsro.state :as state]
             [dinsro.view :as view]
