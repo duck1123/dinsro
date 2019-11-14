@@ -61,6 +61,16 @@
       (is (= status/bad-request (:status response))
           "should signal a bad request"))))
 
+(deftest delete-handler
+  (testing "success"
+    (let [currency (m.currencies/mock-record)
+          id (:db/id currency)
+          request {:path-params {:id (str id)}}]
+      (is (not (nil? (m.currencies/read-record id))))
+      (let [response (a.currencies/delete-handler request)]
+        (is (= status/ok (:status response)))
+        (is (nil? (m.currencies/read-record id)))))))
+
 (comment
   (gen-spec ::a.currencies/create-handler-request)
 

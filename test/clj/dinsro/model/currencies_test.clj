@@ -10,7 +10,8 @@
             [dinsro.model.user :as m.users]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:import datahike.db.TxReport))
 
 (def uri "datahike:file:///tmp/file-example2")
 
@@ -37,3 +38,18 @@
     (let [params (gen/generate (s/gen ::m.currencies/params))
           currency-id (m.currencies/create-record params)]
       (is (not= [params] (m.currencies/index))))))
+
+(deftest delete-record
+  (testing "success"
+    (let [currency (m.currencies/mock-record)
+          id (:db/id currency)
+
+          ]
+      (is (not (nil? (m.currencies/read-record id))))
+      (let [response (m.currencies/delete-record id)]
+        (is (instance? TxReport response))
+        (is (nil? (m.currencies/read-record id)))
+        )
+      )
+    )
+  )

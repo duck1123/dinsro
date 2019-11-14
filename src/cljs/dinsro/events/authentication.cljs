@@ -11,7 +11,7 @@
             [taoensso.timbre :as timbre]))
 
 (c/reg-field ::auth-id nil)
-(s/def ::auth-id string?)
+(s/def ::auth-id (s/nilable string?))
 
 (c/reg-field ::loading false)
 (s/def ::loading boolean?)

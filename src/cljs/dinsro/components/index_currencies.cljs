@@ -6,8 +6,8 @@
             [taoensso.timbre :as timbre]))
 
 (defn delete-currency-button
-  [id]
-  [:a.button {:on-click #(rf/dispatch [::e.currencies/do-delete-record id])} "Delete"])
+  [currency]
+  [:a.button {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])} "Delete"])
 
 (defn index-currency-line
   [currency]
@@ -17,7 +17,7 @@
               :margin-bottom "15px"}}
      [:p "Id: " id]
      [:p "Name: " [:a {:href (kf/path-for [:show-currency-page {:id id}])} name]]
-     [delete-currency-button id]]))
+     [delete-currency-button currency]]))
 
 (defn index-currencies
   [currencies]

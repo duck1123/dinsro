@@ -57,3 +57,26 @@
      :response-format (ajax/json-response-format {:keywords? true})
      :on-success      [::do-submit-succeeded]
      :on-failure      [::do-submit-failed]}}))
+
+(kf/reg-event-fx
+ ::do-delete-record-success
+ (fn [cofx [{:keys [id]}]]
+   {:dispatch [:filter-record id]}))
+
+(kf/reg-event-db
+ ::do-delete-record-failed
+ (fn [db [{:keys [id]}]]
+   (-> db
+       (assoc ::delete-record-failed true)
+       (assoc ::delete-record-failure-id id))))
+
+(kf/reg-event-fx
+ ::do-delete-record
+ (fn [_ [currency]]
+   {:http-xhrio
+    {:uri             (kf/path-for [:api-show-currency {:id (:db/id (timbre/spy :info currency))}])
+     :method          :delete
+     :format          (ajax/json-request-format)
+     :response-format (ajax/json-response-format {:keywords? true})
+     :on-success      [::do-delete-record-success]
+     :on-failure      [::do-delete-record-failed]}}))

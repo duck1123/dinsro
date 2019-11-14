@@ -4,7 +4,8 @@
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:import datahike.db.TxReport))
 
 (s/def ::id pos-int?)
 (s/def ::name string?)
@@ -39,6 +40,15 @@
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::name)
       record)))
+
+(defn-spec delete-record TxReport
+  [id :db/id]
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+
+(defn-spec delete-all nil?
+  []
+  (doseq [id (index-ids)]
+    (delete-record id)))
 
 (defn-spec mock-record ::item
   []

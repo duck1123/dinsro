@@ -37,6 +37,19 @@
             (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))
 
+(s/def ::delete-handler-response (s/keys))
+(s/def ::delete-handler-request (s/keys))
+
+(defn-spec delete-handler ::delete-handler-response
+  [request ::delete-handler-request]
+  (let [{{:keys [id]} :path-params} request]
+    (or (try
+          (let [id (Integer/parseInt id)]
+            (m.currencies/delete-record id)
+            (http/ok {:id id}))
+          (catch NumberFormatException e nil))
+        (http/bad-request {:status :invalid}))))
+
 (comment
   (clojure.spec.gen.alpha/generate (s/gen ::m.currencies/params))
 
