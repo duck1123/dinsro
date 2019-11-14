@@ -20,7 +20,7 @@
 (defn-spec read-record (s/nilable ::s.accounts/item)
   [id ::s.accounts/id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::name)
+    (when (get record ::s.accounts/name)
       record)))
 
 (defn-spec index-ids (s/* ::s.accounts/id)

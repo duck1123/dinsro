@@ -34,7 +34,7 @@
     (let [request {:params {}}]
       (is [] (a.accounts/index-handler request))))
   (testing "with-records"
-    (let [user (m.accounts/mock-account)
+    (let [user (m.accounts/mock-record)
           request {}
           response (a.accounts/index-handler request)
           {{:keys [items]} :body} response]
