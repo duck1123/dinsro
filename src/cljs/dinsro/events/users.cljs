@@ -68,7 +68,7 @@
  ::do-delete-user
  (fn [_ [user]]
    {:http-xhrio
-    {:uri             (kf/path-for [:api-show-user user])
+    {:uri             (kf/path-for [:api-show-user {:id (:db/id user)}])
      :method          :delete
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})
