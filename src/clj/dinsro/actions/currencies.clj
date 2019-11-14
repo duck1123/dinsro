@@ -21,7 +21,7 @@
 (def param-rename-map
   {:name ::m.currencies/name})
 
-(defn-spec prepare-record ::m.currencies/params
+(defn-spec prepare-record (s/nilable ::m.currencies/params)
   [params :create-handler/params]
   (let [params (-> params
                    (set/rename-keys param-rename-map)
@@ -40,6 +40,6 @@
 (comment
   (clojure.spec.gen.alpha/generate (s/gen ::m.currencies/params))
 
-  (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request-valid))
-  (prepare-record (:params (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request-valid))))
+  (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request))
+  (prepare-record (:params (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request))))
   )
