@@ -13,17 +13,17 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-event-db
+(kf/reg-event-db
  :status-loaded
- (fn [db [_ {:keys [identity]}]]
+ (fn [db [{:keys [identity]}]]
    (assoc db :authenticate identity)))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  :status-errored
  (fn [_ _]
    (timbre/warn "status errored")))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  :init-status
  (fn
   [_ _]

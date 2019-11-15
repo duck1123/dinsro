@@ -11,6 +11,7 @@
             [dinsro.views.show-account :as show-account]
             [dinsro.views.show-currency :as show-currency]
             [dinsro.views.show-user :as show-user]
+            [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
 (def mappings
@@ -66,9 +67,9 @@
  :<- [:kee-frame/route]
  identity)
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  :nav/route-name
- (fn [_ [_ route-name]]
+ (fn [_ [route-name]]
    {:navigate-to [route-name]}))
 
 (rf/reg-sub

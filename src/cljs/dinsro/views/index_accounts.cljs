@@ -7,7 +7,7 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-event-fx
+(kf/reg-event-fx
  ::init-page
  (fn-traced [{:keys [db]} _]
    {:dispatch [::e.accounts/do-fetch-index]}))
