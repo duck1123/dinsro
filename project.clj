@@ -20,6 +20,8 @@
                  [devcards "0.2.6"]
                  [expound "0.7.2"]
                  [funcool/struct "1.4.0"]
+                 [io.replikativ/datahike "0.2.0"]
+                 [org.eclipse.jetty/jetty-server "9.3.7.v20160115"]
                  [kee-frame "0.3.3" :exclusions [metosin/reitit-core org.clojure/core.async]]
                  [luminus-jetty "0.1.7"]
                  [luminus-migrations "0.6.6"]
