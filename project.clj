@@ -53,7 +53,8 @@
   :target-path "target/%s/"
   :main ^:skip-aot dinsro.core
 
-  :plugins [[lein-cljsbuild "1.1.5"]
+  :plugins [[lein-ancient "0.6.15"]
+            [lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.11"]
             [lein-kibit "0.1.2"]]
 
