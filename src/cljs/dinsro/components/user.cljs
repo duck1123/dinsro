@@ -4,22 +4,11 @@
             [re-frame.core :refer [subscribe dispatch]]
             [reagent.core :as r]))
 
-(defn index-users
-  [users]
-  [:div])
-
 (defn fetch-users
   [users-state]
   (ajax/GET "/api/v1/users"
             {:response-format :json
              :handler (fn [r] (reset! users-state r))}))
-
-(defn users-page
-  []
-  (let [s @(subscribe [:users])]
-    [:div
-     [:h1 "Users Page"]
-     [index-users s]]))
 
 (defn show-user
   []

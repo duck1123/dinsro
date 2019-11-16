@@ -94,7 +94,7 @@
      {:db (assoc db :loading true)
       :dispatch [:submit-login {:email email :password password}]})))
 
-(defn login-page []
+(defn page []
   [:div.section
    [:div.container
     [:form.is-centered
