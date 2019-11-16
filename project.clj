@@ -36,6 +36,7 @@
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520" :scope "provided"]
+                 [org.clojure/core.rrb-vector "0.0.14"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
