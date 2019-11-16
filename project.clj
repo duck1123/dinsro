@@ -71,7 +71,10 @@
              :nrepl-middleware [cider.piggieback/wrap-cljs-repl
                                 cider.nrepl/cider-middleware
                                 refactor-nrepl.middleware/wrap-refactor]
-             :ring-handler dinsro.handler/app}
+             ;; :main dinsro.core
+             :ring-handler dinsro.handler/app-routes
+             }
+
 
   :profiles
   {:uberjar {:omit-source true
@@ -120,7 +123,11 @@
 
                  :cljsbuild
                   {:builds
-                   {:app      {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                   {:app      {:source-paths ["src/cljs"
+                                              "src/cljc"
+                                              "env/dev/cljs"
+                                              "test/cljs"
+                                              "test/cljc"]
                                :figwheel     {:on-jsload "dinsro.core/mount-components"}
                                :compiler     {:main            "dinsro.app"
                                               :asset-path      "/js/out"
@@ -134,15 +141,17 @@
                                               :preloads        [day8.re-frame-10x.preload]
                                               :pretty-print    true}}
 
-                    :devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                               :figwheel     {:devcards true}
-                               :compiler     {:main "dinsro.devcards"
-                                              :asset-path "js/devcards_out"
-                                              :output-to "target/cljsbuild/public/js/app_devcards.js"
-                                              :output-dir "target/cljsbuild/public/js/devcards_out"
-                                              :source-map-timestamp true
-                                              :optimizations :none
-                                              :pretty-print true}}}}
+                    ;; :devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                    ;;            :figwheel     {:devcards true}
+                    ;;            :compiler     {:main "dinsro.devcards"
+                    ;;                           :asset-path "js/devcards_out"
+                    ;;                           :output-to "target/cljsbuild/public/js/app_devcards.js"
+                    ;;                           :output-dir "target/cljsbuild/public/js/devcards_out"
+                    ;;                           :source-map-timestamp true
+                    ;;                           :optimizations :none
+                    ;;                           :pretty-print true}}
+
+                    }}
 
                  :doo {:build "test"
                        :alias {:default [:chrome]}}

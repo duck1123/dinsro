@@ -47,6 +47,11 @@
     (doseq [schema schemata]
       (d/transact db/*conn* schema))))
 
+;; (defn app-handler
+;;   [request]
+;;   (mount/)
+;;   )
+
 (defn app []
   (init-schemata)
   (middleware/wrap-base #'app-routes))
