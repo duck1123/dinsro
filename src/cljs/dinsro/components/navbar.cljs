@@ -16,12 +16,6 @@
  (fn-traced [db _]
    (update db :navbar-expanded not)))
 
-(kf/reg-event-db
- :toggle-auth
- (fn-traced [db _]
-   (timbre/warn "This shouldn't be available")
-   (update-in db [:authenticated] not)))
-
 ;; Components
 
 (defn nav-link [title page]
