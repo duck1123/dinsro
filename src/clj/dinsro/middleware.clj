@@ -45,10 +45,21 @@
       ;; since they're not compatible with this middleware
       ((if (:websocket? request) handler wrapped) request))))
 
+(defn on-error [request response]
+  {:status  403
+   :headers {"Content-Type" "text/plain"}
+   :body    (str "Access to " (:uri request) " is not authorized")})
+
+
+(defn wrap-restricted [handler]
+  (restrict handler {:handler authenticated?
+                     :on-error on-error}))
+
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
       (wrap-defaults
        (-> site-defaults
            (assoc-in [:security :anti-forgery] false)
-           (assoc-in  [:session :store] (ttl-memory-store (* 60 30)))))
+           (assoc-in [:session :store] (ttl-memory-store (* 60 30)))
+           (wrap-authentication (session-backend))))
       wrap-internal-error))

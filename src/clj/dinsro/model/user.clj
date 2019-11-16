@@ -1,6 +1,6 @@
 (ns dinsro.model.user
-  (:require [clojure.spec.alpha :as s]
-            [crypto.password.bcrypt :as bcrypt]
+  (:require [buddy.hashers :as hashers]
+            [clojure.spec.alpha :as s]
             [dinsro.db.core :as db]
             dinsro.specs
             [taoensso.timbre :as timbre]))
@@ -9,7 +9,7 @@
   [registration-data]
   (let [{:keys [password]} registration-data]
     (if password
-      (merge {:password-hash (bcrypt/encrypt password)}
+      (merge {:password-hash (hashers/derive password)}
              registration-data)
       nil)))
 

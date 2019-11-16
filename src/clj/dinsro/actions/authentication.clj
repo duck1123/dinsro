@@ -1,6 +1,6 @@
 (ns dinsro.actions.authentication
-  (:require [clojure.spec.alpha :as s]
-            [crypto.password.bcrypt :as bcrypt]
+  (:require [buddy.hashers :as hashers]
+            [clojure.spec.alpha :as s]
             [dinsro.actions.user.create-user :refer [create-user-response]]
             [dinsro.db.core :as db]
             [dinsro.model.user :as model.user]
@@ -14,13 +14,13 @@
   {:pre [(s/valid? ::specs/email email)]}
   (if-let [user (db/find-user-by-email {:email email})]
     (let [{:keys [password-hash]} user]
-      (bcrypt/check password password-hash))))
+      (hashers/check password password-hash))))
 
 (defn authenticate
   [request]
-  (let [{{:keys [email password]} :params} request]
+  (let [{{:keys [email password]} :params :keys [session]} request]
     (if (check-auth email password)
-      (ok)
+      (assoc (ok) :session (assoc session :identity email))
       (unauthorized))))
 
 (defn register

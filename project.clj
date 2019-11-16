@@ -14,7 +14,6 @@
                  [com.taoensso/timbre "4.10.0"]
                  [conman "0.8.4"]
                  [cprop "0.1.14"]
-                 [crypto-password "0.2.1"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [funcool/struct "1.4.0"]
                  [kee-frame "0.3.3" :exclusions [metosin/reitit-core org.clojure/core.async]]
