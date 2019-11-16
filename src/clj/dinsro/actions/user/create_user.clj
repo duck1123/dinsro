@@ -10,6 +10,3 @@
   {:pre [(s/valid? :dinsro.specs/register-request registration-data)]}
   (if (model.user/create-user! registration-data)
     (ok "ok")))
-
-(s/fdef create-user-response
-  :args (s/cat :data :dinsro.specs/register-request))

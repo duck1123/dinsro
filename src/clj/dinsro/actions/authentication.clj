@@ -15,18 +15,12 @@
     (let [{:keys [password-hash]} user]
       (bcrypt/check password password-hash))))
 
-(s/fdef check-auth
-  :args (s/cat :email ::specs/email))
-
 (defn authenticate
   [request]
   (let [{{:keys [email password]} :params} request]
     (if (check-auth email password)
       (ok)
       (unauthorized))))
-
-(s/fdef authenticate
-  :args (s/cat :authentication-data ::specs/authentication-data))
 
 (defn register
   "Register a user"
@@ -36,6 +30,3 @@
       (model.user/create-user! params)
       (ok))
     (bad-request)))
-
-(s/fdef register
-  :args (s/cat :params ::specs/register-request))

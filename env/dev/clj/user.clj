@@ -8,7 +8,9 @@
             [dinsro.core :refer [start-app]]
             [dinsro.db.core]
             [conman.core :as conman]
-            [luminus-migrations.core :as migrations]))
+            [luminus-migrations.core :as migrations]
+            [orchestra.spec.test :as stest]
+            [taoensso.timbre :as timbre]))
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
@@ -46,3 +48,9 @@
 
 (defn create-migration [name]
   (migrations/create name (select-keys env [:database-url])))
+
+(defn instrument
+  []
+  (stest/instrument))
+
+(instrument)

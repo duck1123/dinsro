@@ -17,6 +17,3 @@
   [params]
   (if-let [user (prepare-user params)]
     (db/create-user! user)))
-
-(s/fdef create-user!
-  :args (s/cat :data :dinsro.specs/register-request))

@@ -29,6 +29,7 @@
                  [metosin/spec-tools "0.10.0"]
                  [mount "0.1.16"]
                  [nrepl "0.6.0"]
+                 [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520" :scope "provided"]
                  [org.clojure/core.async "0.4.500"]
