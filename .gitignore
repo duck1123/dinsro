@@ -6,6 +6,7 @@
 *.log
 *.jar
 .nrepl-port
+data
 dev-config.edn
 node_modules/
 profiles.clj
