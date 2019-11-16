@@ -22,6 +22,10 @@
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
 
+(defn nrepl-handler []
+  (require 'cider.nrepl)
+  (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
+
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
@@ -36,6 +40,7 @@
   :start
   (when (env :nrepl-port)
     (nrepl/start {:bind (env :nrepl-bind)
+                  :handler (nrepl-handler)
                   :port (env :nrepl-port)}))
   :stop
   (when repl-server

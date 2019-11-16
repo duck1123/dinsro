@@ -7,6 +7,7 @@
                  [camel-snake-kebab "0.4.0"]
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
+                 [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [cljs-ajax "0.8.0"]
                  [clojure.java-time "0.3.2"]
                  [com.h2database/h2 "1.4.199"]
@@ -55,7 +56,8 @@
   :plugins [[lein-ancient "0.6.15"]
             [lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.11"]
-            [lein-kibit "0.1.2"]]
+            [lein-kibit "0.1.2"]
+            [cider/cider-nrepl "0.23.0-SNAPSHOT"]]
 
   :clean-targets
   ^{:protect false} [:target-path
@@ -66,7 +68,9 @@
              :server-logfile "log/figwheel-logfile.log"
              :nrepl-port 7002
              :css-dirs ["resources/public/css"]
-             :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+             :nrepl-middleware [cider.piggieback/wrap-cljs-repl
+                                cider.nrepl/cider-middleware]}
+
 
   :profiles
   {:uberjar {:omit-source true
