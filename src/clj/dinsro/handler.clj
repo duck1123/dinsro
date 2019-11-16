@@ -1,10 +1,8 @@
 (ns dinsro.handler
   (:require [dinsro.layout :refer [error-page]]
             [dinsro.middleware :as middleware]
-            [dinsro.routes.authentication :refer [authentication-routes]]
-            [dinsro.routes.home :refer [home-routes]]
-            [dinsro.routes.user :refer [user-routes]]
             [dinsro.env :refer [defaults]]
+            [dinsro.routes :as routes]
             [mount.core :as mount]
             [reitit.coercion.spec]
             [reitit.ring :as ring]
@@ -19,11 +17,7 @@
 (mount/defstate app-routes
   :start
   (ring/ring-handler
-   (ring/router
-    [(home-routes)
-     ["/api/v1" {:middleware [middleware/wrap-formats]}
-      (user-routes)
-      (authentication-routes)]])
+   (ring/router routes/routes)
    (ring/routes
     (ring/create-resource-handler
      {:path "/"})
