@@ -29,7 +29,7 @@
   (testing "successful"
     (let [id-key "user-id"
           params (gen/generate (s/gen ::s.users/params))
-          {:keys [dinsro.model.user/email]} params
+          {:keys [dinsro.spec.users/email]} params
           id (m.users/create-user! params)
           user (m.users/read-user id)]
       (is (= email (::s.users/email user))))))
@@ -37,7 +37,7 @@
 (deftest read-user
   (testing "success"
     (let [params (gen/generate (s/gen ::s.users/params))
-          {:keys [dinsro.model.user/email]} params
+          {:keys [dinsro.spec.users/email]} params
           id (m.users/create-user! params)
           response (m.users/read-user id)]
       (is (= email (::s.users/email response))))))
