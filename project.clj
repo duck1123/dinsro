@@ -77,17 +77,16 @@
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]
              :cljsbuild
-             {:builds [{:id "min"
-                        :source-paths ["src/cljc" "src/cljs" "env/prod/cljs"]
-                        :compiler
-                        {:output-dir "target/cljsbuild/public/js"
-                         :output-to "target/cljsbuild/public/js/app.js"
-                         :source-map "target/cljsbuild/public/js/app.js.map"
-                         :optimizations :advanced
-                         :pretty-print false
-                         :closure-warnings
-                         {:externs-validation :off :non-standard-jsdoc :off}
-                         :externs ["react/externs/react.js"]}}]}
+             {:builds
+              {:min {:source-paths ["src/cljc" "src/cljs" "env/prod/cljs"]
+                     :compiler     {:output-dir       "target/cljsbuild/public/js"
+                                    :output-to        "target/cljsbuild/public/js/app.js"
+                                    :source-map       "target/cljsbuild/public/js/app.js.map"
+                                    :optimizations    :advanced
+                                    :pretty-print     false
+                                    :closure-warnings {:externs-validation :off
+                                                       :non-standard-jsdoc :off}
+                                    :externs          ["react/externs/react.js"]}}}}
              :aot :all
              :uberjar-name "dinsro.jar"
              :source-paths ["env/prod/clj"]
@@ -110,25 +109,25 @@
                                 [ring/ring-devel "1.8.0"]
                                 [ring/ring-mock "0.4.0"]]
 
-                  :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
-                                 [lein-doo "0.1.11"]
-                                 [lein-figwheel "0.5.19"]]
+                 :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
+                                [lein-doo "0.1.11"]
+                                [lein-figwheel "0.5.19"]]
 
-                  :cljsbuild
-                  {:builds
-                   {:app
-                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                     :figwheel     {:on-jsload       "dinsro.core/mount-components"}
-                     :compiler     {:main            "dinsro.app"
-                                    :asset-path      "/js/out"
-                                    :output-to       "target/cljsbuild/public/js/app.js"
-                                    :output-dir      "target/cljsbuild/public/js/out"
-                                    :source-map      true
-                                    :optimizations   :none
-                                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
-                                                      "day8.re_frame.tracing.trace_enabled_QMARK_" true}
-                                    :preloads        [day8.re-frame-10x.preload]
-                                    :pretty-print    true}}}}
+                 :cljsbuild
+                 {:builds
+                  {:app
+                   {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                    :figwheel     {:on-jsload       "dinsro.core/mount-components"}
+                    :compiler     {:main            "dinsro.app"
+                                   :asset-path      "/js/out"
+                                   :output-to       "target/cljsbuild/public/js/app.js"
+                                   :output-dir      "target/cljsbuild/public/js/out"
+                                   :source-map      true
+                                   :optimizations   :none
+                                   :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
+                                                     "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+                                   :preloads        [day8.re-frame-10x.preload]
+                                   :pretty-print    true}}}}
 
                  :doo            {:build "test"}
                  :source-paths   ["env/dev/clj"]
@@ -140,11 +139,10 @@
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
     :cljsbuild
-    {:builds [{:id "test"
-               :source-paths ["src/cljc" "src/cljs" "test/cljs"]
-               :compiler
-               {:output-to "target/test.js"
-                :main "starter.doo"
-                :optimizations :none}}]}}
+    {:builds
+     {:test {:source-paths ["src/cljc" "src/cljs" "test/cljs"]
+             :compiler     {:output-to "target/test.js"
+                            :main "starter.doo"
+                            :optimizations :none}}}}}
    :profiles/dev {}
    :profiles/test {}})
