@@ -116,27 +116,26 @@
 
                   :cljsbuild
                   {:builds
-                   [{:id "app"
-                     :source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                     :figwheel {:on-jsload "dinsro.core/mount-components"}
-                     :compiler
-                     {:main "dinsro.app"
-                      :asset-path "/js/out"
-                      :output-to "target/cljsbuild/public/js/app.js"
-                      :output-dir "target/cljsbuild/public/js/out"
-                      :source-map true
-                      :optimizations :none
-                      :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
-                                        "day8.re_frame.tracing.trace_enabled_QMARK_" true}
-                      :preloads [day8.re-frame-10x.preload]
-                      :pretty-print true}}]}
+                   {:app
+                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                     :figwheel     {:on-jsload       "dinsro.core/mount-components"}
+                     :compiler     {:main            "dinsro.app"
+                                    :asset-path      "/js/out"
+                                    :output-to       "target/cljsbuild/public/js/app.js"
+                                    :output-dir      "target/cljsbuild/public/js/out"
+                                    :source-map      true
+                                    :optimizations   :none
+                                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
+                                                      "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+                                    :preloads        [day8.re-frame-10x.preload]
+                                    :pretty-print    true}}}}
 
-                 :doo {:build "test"}
-                  :source-paths ["env/dev/clj"]
-                  :resource-paths ["env/dev/resources"]
-                  :repl-options {:init-ns user}
-                  :injections [(require 'pjstadig.humane-test-output)
-                               (pjstadig.humane-test-output/activate!)]}
+                 :doo            {:build "test"}
+                 :source-paths   ["env/dev/clj"]
+                 :resource-paths ["env/dev/resources"]
+                 :repl-options   {:init-ns user}
+                 :injections     [(require 'pjstadig.humane-test-output)
+                                  (pjstadig.humane-test-output/activate!)]}
    :project/test
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
