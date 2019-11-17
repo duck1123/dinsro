@@ -3,42 +3,30 @@
             [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
+            [dinsro.specs.currencies :as s.currencies]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre])
   (:import datahike.db.TxReport))
 
-(s/def ::id pos-int?)
-(s/def ::name string?)
-(s/def ::params (s/keys :req [::name]))
-(s/def ::item (s/keys :req [::name]))
-
-(def schema
-  [{:db/ident       ::id
-    :db/valueType   :db.type/long
-    :db/cardinality :db.cardinality/one}
-   {:db/ident       ::name
-    :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one}])
-
-(defn-spec index-ids (s/* ::id)
+(defn-spec index-ids (s/* :db/id)
   []
-  (map first (d/q '[:find ?e :where [?e ::name _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
 
-(defn-spec index (s/* ::item)
+(defn-spec index (s/* ::s.currencies/item)
   []
   (->> (index-ids)
-       (d/pull-many @db/*conn* '[::name :db/id])))
+       (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
 
-(defn-spec create-record ::id
-  [params ::params]
+(defn-spec create-record ::s.currencies/id
+  [params ::s.currencies/params]
   (let [params (assoc params :db/id "currency-id")]
     (let [response (d/transact db/*conn* {:tx-data [params]})]
       (get-in response [:tempids "currency-id"]))))
 
-(defn-spec read-record (s/nilable ::item)
+(defn-spec read-record (s/nilable ::s.currencies/item)
   [id :db/id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::name)
+    (when (get record ::s.currencies/name)
       record)))
 
 (defn-spec delete-record nil?
@@ -51,8 +39,8 @@
   (doseq [id (index-ids)]
     (delete-record id)))
 
-(defn-spec mock-record ::item
+(defn-spec mock-record ::s.currencies/item
   []
-  (let [params (gen/generate (s/gen ::params))
+  (let [params (gen/generate (s/gen ::s.currencies/params))
         id (create-record params)]
     (read-record id)))
