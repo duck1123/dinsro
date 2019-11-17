@@ -6,6 +6,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.rates :as m.rates]
+            [dinsro.spec.rates :as s.rates]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
@@ -20,15 +21,15 @@
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.rates/schema)
+      (d/transact db/*conn* s.rates/schema)
       (f))))
 
 (deftest create-record-test
   (testing "success"
-    (let [params (gen/generate (s/gen ::m.rates/params))
+    (let [params (gen/generate (s/gen ::s.rates/params))
           id (m.rates/create-record params)
           record (m.rates/read-record id)]
-      (is (= (::m.rates/value params) (::m.rates/value record)) "Values match"))))
+      (is (= (::s.rates/value params) (::s.rates/value record)) "Values match"))))
 
 (deftest read-record-test
   (testing "not found"
