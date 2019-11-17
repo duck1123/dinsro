@@ -10,6 +10,7 @@
             [dinsro.model.account :as m.accounts]
             [dinsro.model.user :as m.users]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-status :as status]
@@ -25,7 +26,7 @@
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.users/schema)
+      (d/transact db/*conn* s.users/schema)
       (d/transact db/*conn* s.accounts/schema)
       (f))))
 

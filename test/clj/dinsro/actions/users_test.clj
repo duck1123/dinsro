@@ -9,6 +9,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.user :as m.users]
+            [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.mock.request :as mock]
@@ -25,7 +26,7 @@
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.users/schema)
+      (d/transact db/*conn* s.users/schema)
       (f))))
 
 (deftest create-user-response-test

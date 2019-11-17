@@ -7,6 +7,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.currencies :as m.currencies]
+            [dinsro.spec.currencies :as s.currencies]
             [mount.core :as mount]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
@@ -24,7 +25,7 @@
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
       ;; (d/transact db/*conn* m.users/schema)
-      (d/transact db/*conn* m.currencies/schema)
+      (d/transact db/*conn* s.currencies/schema)
       (f))))
 
 (defn gen-spec

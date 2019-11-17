@@ -8,7 +8,6 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(s/def ::id pos-int?)
 (s/def ::name string?)
 (s/def ::email (s/with-gen #(and % (re-matches #".+@.+\..+" %)) (fn [] ds/email-gen)))
 (s/def ::password string?)

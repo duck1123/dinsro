@@ -5,16 +5,16 @@
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.specs :as ds]
-            [dinsro.specs.users :as s.users]
+            [dinsro.spec.users :as s.users]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre])
   (:import datahike.db.TxReport))
 
-(defn-spec init-schema TxReport
-  []
-  (d/transact db/*conn* schema))
+;; (defn-spec init-schema TxReport
+;;   []
+;;   (d/transact db/*conn* schema))
 
-(defn-spec prepare-user ::s.users/items
+(defn-spec prepare-user ::s.users/item
   [registration-data ::s.users/params]
   (let [{:keys [dinsro.spec.users/password]} registration-data]
     (if password
@@ -49,7 +49,7 @@
     (delete-user id)))
 
 (defn-spec read-user (s/nilable ::s.users/item)
-  [user-id ::id]
+  [user-id :db/id]
   (d/pull @db/*conn* '[::s.users/name ::s.users/email ::s.users/password-hash] user-id))
 
 (defn-spec find-by-email (s/nilable ::s.users/item)
@@ -59,7 +59,7 @@
                 :where [?id ::s.users/email ?email]]]
     (first (map read-user (d/q query @db/*conn* email)))))
 
-(defn-spec mock-user ::user
+(defn-spec mock-user ::s.users/item
   []
   (let [params (gen/generate (s/gen ::s.users/params))
         id (create-user! params)]

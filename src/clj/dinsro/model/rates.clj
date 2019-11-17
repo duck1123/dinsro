@@ -7,13 +7,6 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(def default-rates
-  (map (fn [i]
-         (-> rate
-             (update :value (partial + i))
-             (update :id (partial + i))))
-       (range 7)))
-
 (defn-spec prepare-record ::s.rates/params
   [params ::s.rates/params]
   params)
