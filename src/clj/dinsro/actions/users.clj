@@ -31,7 +31,7 @@
 
 (defn read-handler
   [request]
-  (let [{{user-id :userId} :path-params} request]
-    (if-let [user (try (m.user/read-user user-id) (catch Exception e nil))]
+  (let [{{id :userId} :path-params} request]
+    (if-let [user (try (m.user/read-record id) (catch Exception e nil))]
       (http/ok user)
       (http/not-found))))

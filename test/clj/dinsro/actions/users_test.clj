@@ -29,7 +29,7 @@
       (d/transact db/*conn* s.users/schema)
       (f))))
 
-(deftest create-user-response-test
+(deftest create-record-response-test
   (let [registration-data (gen/generate (s/gen ::s.users/params))]
     (let [response (a.users/create-handler {:params registration-data})]
       (is (= (:status response) status/ok)))))
@@ -41,9 +41,9 @@
        (let [response (a.users/index-handler request)]
          (is (= (:status response) status/ok)))))
    (testing "with record"
-     (let [created-user (m.users/mock-user)
-           request      (mock/request :get path)
-           response     (a.users/index-handler request)]
+     (let [user     (m.users/mock-record)
+           request  (mock/request :get path)
+           response (a.users/index-handler request)]
        (is (= (:status response) status/ok))
        (is (= 1 (count (:body response))))))))
 

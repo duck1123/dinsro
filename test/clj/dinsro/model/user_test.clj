@@ -25,19 +25,19 @@
       (d/transact db/*conn* s.users/schema)
       (f))))
 
-(deftest create-user!
+(deftest create-record
   (testing "successful"
     (let [id-key "user-id"
           params (gen/generate (s/gen ::s.users/params))
           {:keys [dinsro.spec.users/email]} params
-          id (m.users/create-user! params)
-          user (m.users/read-user id)]
+          id (m.users/create-record params)
+          user (m.users/read-record id)]
       (is (= email (::s.users/email user))))))
 
-(deftest read-user
+(deftest read-record
   (testing "success"
     (let [params (gen/generate (s/gen ::s.users/params))
           {:keys [dinsro.spec.users/email]} params
-          id (m.users/create-user! params)
-          response (m.users/read-user id)]
+          id (m.users/create-record params)
+          response (m.users/read-record id)]
       (is (= email (::s.users/email response))))))

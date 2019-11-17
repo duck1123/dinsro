@@ -53,7 +53,7 @@
                    (select-keys (vals param-rename-map)))]
     (if (s/valid? ::s.users/params params)
       (do
-        (m.users/create-user! params)
+        (m.users/create-record params)
         (http/ok {:id (m.users/create-user! params)}))
       (http/bad-request {:status :failed}))))
 

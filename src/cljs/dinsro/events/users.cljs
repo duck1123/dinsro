@@ -22,21 +22,21 @@
    (first (filter #(= (:id %) id) items))))
 
 (kf/reg-event-db
- ::do-fetch-users-success
+ ::do-fetch-records-success
  (fn [db [{users :users}]]
    (assoc db ::items users)))
 
 (kf/reg-event-db
- :filter-user
+ :filter-records
  (fn [db [_ id]]
    (->> @(rf/subscribe [::items])
         (keep #(when (not= (:id %) id) %))
         (assoc db ::items))))
 
 (kf/reg-event-fx
- ::do-delete-user-success
+ ::do-delete-record-success
  (fn [cofx [{:keys [id]}]]
-   {:dispatch [:filter-user id]}))
+   {:dispatch [:filter-records id]}))
 
 (kf/reg-event-fx
  ::do-fetch-users-failed
@@ -61,16 +61,16 @@
      :method          :get
      :timeout         8000
      :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-fetch-users-success]
-     :on-failure      [::do-fetch-users-failed]}}))
+     :on-success      [::do-fetch-records-success]
+     :on-failure      [::do-fetch-records-failed]}}))
 
 (kf/reg-event-fx
- ::do-delete-user
+ ::do-delete-record
  (fn [_ [user]]
    {:http-xhrio
     {:uri             (kf/path-for [:api-show-user {:id (:db/id user)}])
      :method          :delete
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-delete-user-success]
-     :on-failure      [::do-delete-user-failed]}}))
+     :on-success      [::do-delete-record-success]
+     :on-failure      [::do-delete-record-failed]}}))

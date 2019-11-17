@@ -61,13 +61,13 @@
   [email ::s.users/email]
   (let [response (d/q find-by-email-query @db/*conn* email)
         id (ffirst response)]
-    (read-user id)))
+    (read-record id)))
 
 (defn-spec mock-record ::s.users/item
   []
   (let [params (gen/generate (s/gen ::s.users/params))
         id (create-user! params)]
-    (read-user id)))
+    (read-record id)))
 
 (comment
   (index-ids)
@@ -75,5 +75,5 @@
   (mock-user)
   (::s.users/email (first (list-users)))
 
-  (find-by-email (::s.users/email (first (list-users))))
+  (find-by-email (::s.users/email (first (index-records))))
   )

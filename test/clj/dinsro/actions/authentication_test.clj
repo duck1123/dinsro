@@ -36,7 +36,7 @@
     (let [user-params (gen/generate (s/gen ::s.users/params))
           email (::s.users/email user-params)
           password (::s.users/password user-params)
-          user (m.users/create-user! user-params)
+          user (m.users/create-record user-params)
           response (a.authentication/check-auth email password)]
       (is (= true response)))))
 
@@ -45,14 +45,14 @@
                 dinsro.spec.users/password]
          :as user-params} (gen/generate (s/gen ::s.users/params))]
     (testing "successful"
-      (m.users/create-user! user-params)
+      (m.users/create-record user-params)
       (let [body {:email email :password password}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))
             response (a.authentication/authenticate-handler request)]
         (is (= (:status response) status/ok))))
     (testing "failure"
-      (m.users/create-user! user-params)
+      (m.users/create-record user-params)
       (let [body {:email email :password (str password "x")}
             path (str url-root "/authenticate")
             request (-> (mock/request :post path) (assoc :params body))

@@ -35,7 +35,7 @@
   (testing "success"
     (is (= [] (m.currencies/index))))
   (testing "with records"
-    (is (not= nil (m.users/mock-user)))
+    (is (not= nil (m.users/mock-record)))
     (let [params (gen/generate (s/gen ::s.currencies/params))
           currency-id (m.currencies/create-record params)]
       (is (not= [params] (m.currencies/index))))))
