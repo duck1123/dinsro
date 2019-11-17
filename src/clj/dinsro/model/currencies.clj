@@ -3,7 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
-            [dinsro.specs.currencies :as s.currencies]
+            [dinsro.spec.currencies :as s.currencies]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre])
   (:import datahike.db.TxReport))

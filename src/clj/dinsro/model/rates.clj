@@ -3,7 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
-            [dinsro.specs.rates :as s.rates]
+            [dinsro.spec.rates :as s.rates]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 

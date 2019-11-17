@@ -1,4 +1,4 @@
-(ns dinsro.specs.rates
+(ns dinsro.spec.rates
   (:require [clojure.spec.alpha :as s]))
 
 (s/def ::value double?)
