@@ -33,7 +33,7 @@
 
 (deftest check-auth
   (testing "successful"
-    (let [user-params (gen/generate (s/gen ::m.users/registration-params))
+    (let [user-params (gen/generate (s/gen ::s.users/params))
           email (::m.users/email user-params)
           password (::m.users/password user-params)
           user (m.users/create-user! user-params)
@@ -41,9 +41,9 @@
       (is (= true response)))))
 
 (deftest authenticate-handler
-  (let [{:keys [dinsro.model.user/email
-                dinsro.model.user/password]
-         :as user-params} (gen/generate (s/gen ::m.users/registration-params))]
+  (let [{:keys [dinsro.spec.users/email
+                dinsro.spec.users/password]
+         :as user-params} (gen/generate (s/gen ::s.users/params))]
     (testing "successful"
       (m.users/create-user! user-params)
       (let [body {:email email :password password}
