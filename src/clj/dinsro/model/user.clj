@@ -12,7 +12,7 @@
   [params ::s.users/params]
   (when-let [password (::s.users/password params)]
     (-> {::s.users/password-hash (hashers/derive password)}
-        (merge registration-data)
+        (merge params)
         (dissoc ::s.users/password))))
 
 (defn-spec create-user! :db/id
