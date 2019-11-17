@@ -4,33 +4,25 @@
             [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
-            [dinsro.specs :as ds]
             [dinsro.spec.users :as s.users]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre])
-  (:import datahike.db.TxReport))
+            [taoensso.timbre :as timbre]))
 
-;; (defn-spec init-schema TxReport
-;;   []
-;;   (d/transact db/*conn* schema))
-
-(defn-spec prepare-user ::s.users/item
-  [registration-data ::s.users/params]
-  (let [{:keys [dinsro.spec.users/password]} registration-data]
-    (if password
-      (-> {::s.users/password-hash (hashers/derive password)}
-          (merge registration-data)
-          (dissoc ::s.users/password))
-      nil)))
+(defn-spec prepare-user (s/nilable ::s.users/item)
+  [params ::s.users/params]
+  (when-let [password (::s.users/password params)]
+    (-> {::s.users/password-hash (hashers/derive password)}
+        (merge registration-data)
+        (dissoc ::s.users/password))))
 
 (defn-spec create-user! :db/id
   [user-params ::s.users/params]
-  (let [tempid (d/tempid "user-id")
-        user (prepare-user (assoc user-params :db/id tempid))
-        response (d/transact db/*conn* {:tx-data [user]})]
-    (get-in response [:tempids tempid])))
+  (let [tempid (d/tempid "user-id")]
+    (let [user (prepare-user (assoc params :db/id tempid))
+          response (d/transact db/*conn* {:tx-data [user]})]
+     (get-in response [:tempids tempid]))))
 
-(defn list-user-ids
+(defn-spec list-user-ids any?
   []
   (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
 
