@@ -30,7 +30,7 @@
       (f))))
 
 (deftest create-user-response-test
-  (let [registration-data (gen/generate (s/gen ::m.users/registration-params))]
+  (let [registration-data (gen/generate (s/gen ::s.users/params))]
     (let [response (a.users/create-handler {:params registration-data})]
       (is (= (:status response) status/ok)))))
 
@@ -49,7 +49,7 @@
 
 (deftest read-handler
   (testing "when found"
-    (let [params                (gen/generate (s/gen ::m.users/registration-params))
+    (let [params                (gen/generate (s/gen ::s.users/params))
           id                    (m.users/create-user! params)
           request               {:path-params {:userId id}}
           response              (a.users/read-handler request)]
@@ -57,7 +57,7 @@
       (are [key] (= (get params key) (get-in response [:body key]))
         :id :email)))
   (testing "when not found"
-    (let [id       (gen/generate (s/gen ::m.users/id))
+    (let [id       (gen/generate (s/gen :db/id))
           request  {:path-params {:userId id}}
           response (a.users/read-handler request)]
       (is (= (:status response) status/not-found) "Should return a not-found response"))))
