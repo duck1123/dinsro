@@ -1,4 +1,5 @@
-(ns dinsro.specs.currencies)
+(ns dinsro.specs.currencies
+  (:require [clojure.spec.alpha :as s]))
 
 (s/def ::id pos-int?)
 (s/def ::name string?)
