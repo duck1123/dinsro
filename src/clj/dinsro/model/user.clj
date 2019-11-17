@@ -57,10 +57,17 @@
   (let [query '[:find ?id
                 :in $ ?email
                 :where [?id ::s.users/email ?email]]]
-    (first (map read-user (d/q query @db/*conn* email)))))
+    (read-user (ffirst (d/q query @db/*conn* email)))))
 
 (defn-spec mock-user ::s.users/item
   []
   (let [params (gen/generate (s/gen ::s.users/params))
         id (create-user! params)]
     (read-user id)))
+
+(comment
+  (mock-user)
+  (::s.users/email (first (list-users)))
+
+  (find-by-email (::s.users/email (first (list-users))))
+  )

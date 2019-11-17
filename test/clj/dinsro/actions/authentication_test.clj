@@ -34,8 +34,8 @@
 (deftest check-auth
   (testing "successful"
     (let [user-params (gen/generate (s/gen ::s.users/params))
-          email (::m.users/email user-params)
-          password (::m.users/password user-params)
+          email (::s.users/email user-params)
+          password (::s.users/password user-params)
           user (m.users/create-user! user-params)
           response (a.authentication/check-auth email password)]
       (is (= true response)))))
