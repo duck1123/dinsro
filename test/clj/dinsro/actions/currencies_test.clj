@@ -54,7 +54,7 @@
           id (get-in response [:body :item])
           created-record (m.currencies/read-record id)]
       (is (= status/ok (:status response)))
-      (is (= (:name request) (::m.currencies/name response)))))
+      (is (= (:name request) (::s.currencies/name response)))))
   (testing "invalid params"
     (let [params {}
           request {:params params}
