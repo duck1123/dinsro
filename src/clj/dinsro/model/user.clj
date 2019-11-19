@@ -18,18 +18,18 @@
     :in $ ?email
     :where [?id ::s.users/email ?email]])
 
-(defn-spec prepare-user (s/nilable ::s.users/item)
+(defn-spec prepare-record (s/nilable ::s.users/item)
   [params ::s.users/params]
   (when-let [password (::s.users/password params)]
     (-> {::s.users/password-hash (hashers/derive password)}
         (merge params)
         (dissoc ::s.users/password))))
 
-(defn-spec create-user! :db/id
+(defn-spec create-record :db/id
   [params ::s.users/params]
   (let [tempid (d/tempid "user-id")]
-    (let [user (prepare-user (assoc params :db/id tempid))
-          response (d/transact db/*conn* {:tx-data [user]})]
+    (let [record (prepare-record (assoc params :db/id tempid))
+          response (d/transact db/*conn* {:tx-data [record]})]
      (get-in response [:tempids tempid]))))
 
 (defn-spec index-ids (s/coll-of :db/id)
@@ -38,13 +38,13 @@
 
 (defn-spec read-record (s/nilable ::s.users/item)
   [user-id :db/id]
-  (d/pull @db/*conn*  user-id))
+  (d/pull @db/*conn* attribute-list user-id))
 
-(defn-spec read-records (s/coll-of (s/nilable ::item))
-  [ids (s/coll-of :ds/id)]
-  (d/pull-many @db/*conn* attribute-list))
+(defn-spec read-records (s/coll-of (s/nilable ::s.users/item))
+  [ids (s/coll-of :db/id)]
+  (d/pull-many @db/*conn* attribute-list ids))
 
-(defn-spec index-records (s/coll-of ::item)
+(defn-spec index-records (s/coll-of ::s.users/item)
   []
   (read-records (index-ids)))
 
@@ -66,7 +66,7 @@
 (defn-spec mock-record ::s.users/item
   []
   (let [params (gen/generate (s/gen ::s.users/params))
-        id (create-user! params)]
+        id (create-record params)]
     (read-record id)))
 
 (comment

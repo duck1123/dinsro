@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.events.users :as e.users]
+            [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [dinsro.views.show-user :as v.show-user]
             [kee-frame.core :as kf]
@@ -14,14 +15,14 @@
 (rf/reg-sub ::error-message (fn [db _] (get db ::error-message "")))
 
 (defn-spec user-line any?
-  [{:keys [db/id dinsro.model.user/name dinsro.model.user/email] :as user} ::e.users/item]
+  [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email] :as user} ::s.users/item]
   [:div.column
    {:style {:border "1px black solid"
             :margin-bottom "15px"}}
    [:p "Id: " id]
    [:p "Name: " [:a {:href (kf/path-for [::v.show-user/page user])} name]]
    [:p "Email " email]
-   [:a.button {:on-click #(rf/dispatch [::e.users/do-delete-user user])} "Delete"]])
+   [:a.button {:on-click #(rf/dispatch [::e.users/do-delete-record user])} "Delete"]])
 
 (defn index-users
   [users]

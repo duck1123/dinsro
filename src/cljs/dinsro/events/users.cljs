@@ -39,7 +39,7 @@
    {:dispatch [:filter-records id]}))
 
 (kf/reg-event-fx
- ::do-fetch-users-failed
+ ::do-fetch-records-failed
  (fn [{:keys [db]} [response]]
    (let [s (:status response)]
      (if (= s 403)
@@ -47,11 +47,11 @@
        {:db (assoc db :failed true)}))))
 
 (kf/reg-event-db
- ::do-delete-user-failed
+ ::do-delete-record-failed
  (fn [db [{:keys [id]}]]
    (-> db
        (assoc :failed true)
-       (assoc :delete-user-failure-id id))))
+       (assoc :delete-record-failure-id id))))
 
 (kf/reg-event-fx
  ::do-fetch-users

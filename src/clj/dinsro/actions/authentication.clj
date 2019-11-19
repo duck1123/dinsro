@@ -54,7 +54,7 @@
     (if (s/valid? ::s.users/params params)
       (do
         (m.users/create-record params)
-        (http/ok {:id (m.users/create-user! params)}))
+        (http/ok {:id (m.users/create-record params)}))
       (http/bad-request {:status :failed}))))
 
 (defn logout-handler

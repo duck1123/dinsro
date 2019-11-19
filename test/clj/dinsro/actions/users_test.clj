@@ -50,7 +50,7 @@
 (deftest read-handler
   (testing "when found"
     (let [params                (gen/generate (s/gen ::s.users/params))
-          id                    (m.users/create-user! params)
+          id                    (m.users/create-record params)
           request               {:path-params {:userId id}}
           response              (a.users/read-handler request)]
       (is (= status/ok (:status response)))
