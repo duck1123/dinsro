@@ -24,4 +24,5 @@
     :db/cardinality :db.cardinality/one}
    {:db/ident       ::email
     :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one}])
+    :db/cardinality :db.cardinality/one
+    :db/unique      :db.unique/identity}])

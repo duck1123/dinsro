@@ -25,16 +25,13 @@
         (merge params)
         (dissoc ::s.users/password))))
 
-(defn-spec create-record :db/id
-  [params ::s.users/params]
-  (let [tempid (d/tempid "user-id")]
-    (let [record (prepare-record (assoc params :db/id tempid))
-          response (d/transact db/*conn* {:tx-data [record]})]
-     (get-in response [:tempids tempid]))))
+(defn-spec find-id-by-email (s/nilable :db/id)
+  [email ::s.users/email]
+  (ffirst (d/q find-by-email-query @db/*conn* email)))
 
-(defn-spec index-ids (s/coll-of :db/id)
-  []
-  (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
+(defn-spec find-by-email (s/nilable ::s.users/item)
+  [email ::s.users/email]
+  (read-record (find-id-by-email email)))
 
 (defn-spec read-record (s/nilable ::s.users/item)
   [user-id :db/id]
@@ -43,6 +40,19 @@
 (defn-spec read-records (s/coll-of (s/nilable ::s.users/item))
   [ids (s/coll-of :db/id)]
   (d/pull-many @db/*conn* attribute-list ids))
+
+(defn-spec create-record :db/id
+  [params ::s.users/params]
+  (if (nil? (find-id-by-email (::s.users/email params)))
+    (let [tempid (d/tempid "user-id")
+          record (prepare-record (assoc params :db/id tempid))
+          response (d/transact db/*conn* {:tx-data [record]})]
+      (get-in response [:tempids tempid]))
+    (throw (RuntimeException. "User already exists"))))
+
+(defn-spec index-ids (s/coll-of :db/id)
+  []
+  (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
 
 (defn-spec index-records (s/coll-of ::s.users/item)
   []
@@ -56,12 +66,6 @@
   []
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(defn-spec find-by-email (s/nilable ::s.users/item)
-  [email ::s.users/email]
-  (let [response (d/q find-by-email-query @db/*conn* email)
-        id (ffirst response)]
-    (read-record id)))
 
 (defn-spec mock-record ::s.users/item
   []

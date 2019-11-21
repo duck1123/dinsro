@@ -32,7 +32,13 @@
           {:keys [dinsro.spec.users/email]} params
           id (m.users/create-record params)
           user (m.users/read-record id)]
-      (is (= email (::s.users/email user))))))
+      (is (= email (::s.users/email user)))))
+  (testing "duplicate creates"
+    (let [params (gen/generate (s/gen ::s.users/params))
+          {:keys [dinsro.spec.users/email]} params
+          id (m.users/create-record params)
+          user (m.users/read-record id)]
+      (is (thrown? RuntimeException (m.users/create-record params))))))
 
 (deftest read-record
   (testing "success"
