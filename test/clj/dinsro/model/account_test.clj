@@ -28,8 +28,7 @@
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (test-db f)
-    #_(f)
-    ))
+    #_(f)))
 
 (deftest create-record
   (testing "success"
