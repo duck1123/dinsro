@@ -8,6 +8,8 @@
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
+;; Create
+
 (s/def :create-rates-valid/params (s/keys :req-un [::s.rates/value]))
 (comment
   (gen/generate (s/gen :create-rates-valid/params))
@@ -19,7 +21,10 @@
   )
 
 (s/def :create-rates-response/items (s/coll-of ::s.rates/item))
-(s/def :create-rates-response/body (s/keys :req-un [:create-rates-response/items]))
+
+(s/def :create-rates-response/item ::s.rates/item)
+
+(s/def :create-rates-response/body (s/keys :req-un [:create-rates-response/item]))
 
 (s/def :create-rates-valid/request (s/keys :req-un [:create-rates-valid/params]))
 (comment
@@ -36,18 +41,6 @@
                    (select-keys (vals param-rename-map)))]
     (when (s/valid? ::s.rates/params params)
       params)))
-
-;; Index
-
-(s/def ::index-handler-request (s/keys))
-(s/def ::index-handler-response (s/keys))
-
-(defn-spec index-handler ::index-handler-response
-  [request ::index-handler-request]
-  (let [items (m.rates/index-records)]
-    (http/ok {:model :rates :items items})))
-
-;; Create
 
 (s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
 (comment
@@ -66,6 +59,16 @@
           (when-let [id (m.rates/create-record params)]
             (http/ok {:item (m.rates/read-record id)}))))
       (http/bad-request {:status :invalid})))
+
+;; Index
+
+(s/def ::index-handler-request (s/keys))
+(s/def ::index-handler-response (s/keys))
+
+(defn-spec index-handler ::index-handler-response
+  [request ::index-handler-request]
+  (let [items (m.rates/index-records)]
+    (http/ok {:model :rates :items items})))
 
 ;; Read
 

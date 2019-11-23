@@ -8,21 +8,21 @@
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(defn index-handler
-  [request]
-  (let [items (m.currencies/index)]
-    (http/ok {:items items})))
-
 (s/def :create-handler/params (s/keys :opt-un [::s.currencies/name]))
 (s/def :create-handler-valid/params (s/keys :req-un [::s.currencies/name]))
 (s/def :create-handler-valid/request (s/keys :req-un [:create-handler-valid/params]))
+
+(s/def :create-currency-response/item ::s.currencies/item)
+(comment
+  (gen/generate (s/gen :create-currency-response/item))
+  )
 
 (s/def :create-currency-response/items (s/coll-of ::s.currencies/item))
 (comment
   (gen/generate (s/gen :create-currency-response/items))
   )
 
-(s/def :create-currency-response/body (s/keys :req-un [:create-currency-response/items]))
+(s/def :create-currency-response/body (s/keys :req-un [:create-currency-response/item]))
 (comment
   (gen/generate (s/gen :create-currency-response/body))
   )
@@ -33,10 +33,6 @@
 (comment
   (gen/generate (s/gen ::create-handler-response))
   )
-
-(s/def ::delete-handler-response (s/keys))
-(s/def ::delete-handler-request (s/keys))
-
 
 (def param-rename-map
   {:name ::s.currencies/name})
@@ -57,6 +53,11 @@
             (http/ok {:item (m.currencies/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
+;; Delete
+
+(s/def ::delete-handler-response (s/keys))
+(s/def ::delete-handler-request (s/keys))
+
 (defn-spec delete-handler ::delete-handler-response
   [request ::delete-handler-request]
   (let [{{:keys [id]} :path-params} request]
@@ -66,6 +67,13 @@
             (http/ok {:id id}))
           (catch NumberFormatException e nil))
         (http/bad-request {:status :invalid}))))
+
+;; Index
+
+(defn index-handler
+  [request]
+  (let [items (m.currencies/index)]
+    (http/ok {:items items})))
 
 (comment
   (clojure.spec.gen.alpha/generate (s/gen ::m.currencies/params))
