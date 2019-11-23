@@ -18,6 +18,16 @@
    (first (filter #(= (:id %) id) items))))
 
 (kf/reg-event-fx
+ ::do-submit-success
+ (fn-traced [_ _]
+   (timbre/info "submit success")))
+
+(kf/reg-event-fx
+ ::do-submit-failed
+ (fn-traced [_ _]
+   (timbre/info "submit failed")))
+
+(kf/reg-event-fx
  ::do-submit
  (fn-traced
    [{:keys [db]} [data]]
@@ -28,7 +38,7 @@
      :params          data
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-submit-succeeded]
+     :on-success      [::do-submit-success]
      :on-failure      [::do-submit-failed]}}))
 
 (kf/reg-event-db

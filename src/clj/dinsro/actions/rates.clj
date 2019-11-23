@@ -7,3 +7,7 @@
   [request]
   (let [items (m.rates/index-records)]
     (http/ok {:model :rates :items items})))
+
+(defn create-handler
+  [request]
+  (http/ok {:status "ok"}))

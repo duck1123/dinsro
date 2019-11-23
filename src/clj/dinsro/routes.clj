@@ -55,7 +55,8 @@
      ["/:id"            {:delete a.currencies/delete-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
     ["/rates"
-     [""                {:get    a.rates/index-handler}]]
+     [""                {:get    a.rates/index-handler
+                         :post   a.rates/create-handler}]]
     ["/register"        {:post   a.authentication/register-handler}]
     ["/status"          {:get    a.status/status-handler}]
     ["/users" {:middleware [middleware/wrap-restricted]}
