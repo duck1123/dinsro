@@ -2,6 +2,7 @@
   (:require [buddy.hashers :as hashers]
             [clojure.set :as set]
             [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [dinsro.model.user :as m.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as specs]
@@ -52,9 +53,8 @@
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map)))]
     (if (s/valid? ::s.users/params params)
-      (do
-        (m.users/create-record params)
-        (http/ok {:id (m.users/create-record params)}))
+      (let [id (m.users/create-record params)]
+        (http/ok {:id id}))
       (http/bad-request {:status :failed}))))
 
 (defn logout-handler

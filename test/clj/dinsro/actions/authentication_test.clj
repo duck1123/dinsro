@@ -45,6 +45,7 @@
                 dinsro.spec.users/password]
          :as user-params} (gen/generate (s/gen ::s.users/params))]
     (testing "successful"
+      (m.users/delete-all)
       (m.users/create-record user-params)
       (let [body {:email email :password password}
             path (str url-root "/authenticate")
@@ -52,6 +53,7 @@
             response (a.authentication/authenticate-handler request)]
         (is (= (:status response) status/ok))))
     (testing "failure"
+      (m.users/delete-all)
       (m.users/create-record user-params)
       (let [body {:email email :password (str password "x")}
             path (str url-root "/authenticate")
@@ -62,10 +64,12 @@
 (deftest register-handler-test
   (let [path (str url-root "/register")]
     (testing "successful"
+      (m.users/delete-all)
       (let [request (gen/generate (s/gen ::a.authentication/register-request-valid))
             response (a.authentication/register-handler request)]
         (is (= (:status response) status/ok))))
     (testing "invalid params"
+      (m.users/delete-all)
       (let [params {}
             request (-> (mock/request :post path) (assoc :params params))
             response (a.authentication/register-handler request)]
