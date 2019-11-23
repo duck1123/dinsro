@@ -1,4 +1,4 @@
-(ns dinsro.actions.account
+(ns dinsro.actions.accounts
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]

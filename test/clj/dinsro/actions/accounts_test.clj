@@ -4,7 +4,7 @@
             [clojure.test :refer :all]
             [datahike.api :as d]
             [datahike.core :as dc]
-            [dinsro.actions.account :as a.accounts]
+            [dinsro.actions.accounts :as a.accounts]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.account :as m.accounts]
