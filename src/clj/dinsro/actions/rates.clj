@@ -85,14 +85,14 @@
 
 ;; Read
 
-(s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
-(comment
-  (gen/generate (s/gen :read-rates-response/body))
-  )
-
 (s/def :read-rates-request/path-params (s/keys :req-un [:db/id]))
 (comment
   (gen/generate (s/gen :read-rates-request/path-params))
+  )
+
+(s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
+(comment
+  (gen/generate (s/gen :read-rates-response/body))
   )
 
 (s/def :read-rates-response/status keyword?)
