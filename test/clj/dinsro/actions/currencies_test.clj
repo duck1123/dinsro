@@ -49,7 +49,7 @@
 
 (deftest create-handler
   (testing "success"
-    (let [request (gen-spec :create-handler-valid/request)
+    (let [request (gen-spec ::a.currencies/create-handler-request-valid)
           response (a.currencies/create-handler request)
           id (get-in response [:body :item])
           created-record (m.currencies/read-record id)]
