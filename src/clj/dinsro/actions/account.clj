@@ -55,9 +55,7 @@
   [{{:keys [accountId]} :path-params} ::delete-handler-request]
   (try
     (let [id (Integer/parseInt accountId)]
-      (m.accounts/delete-record id)
-      ;; nil
-      )
+      (m.accounts/delete-record id))
     (http/ok {:status "ok"})
     (catch NumberFormatException e
       (http/bad-request {:input :invalid}))))
