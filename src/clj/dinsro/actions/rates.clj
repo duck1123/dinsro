@@ -21,7 +21,7 @@
 
 (comment
   (gen/generate (s/gen :create-rates-valid/params))
-  (gen/generate (s/gen :create-rates/params))
+  (gen/generate (s/gen :create-rates-request/params))
   (gen/generate (s/gen :create-rates-valid/request))
   (gen/generate (s/gen ::create-handler-request))
   )
@@ -46,7 +46,7 @@
   )
 
 (defn-spec prepare-record (s/nilable ::s.rates/params)
-  [params :create-rates/params]
+  [params :create-rates-request/params]
   (let [params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map)))]
