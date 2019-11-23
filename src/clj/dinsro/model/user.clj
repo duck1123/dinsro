@@ -39,7 +39,8 @@
 
 (defn-spec find-by-email (s/nilable ::s.users/item)
   [email ::s.users/email]
-  (read-record (find-id-by-email email)))
+  (when-let [id (find-id-by-email email)]
+    (read-record id)))
 
 (defn-spec create-record :db/id
   [params ::s.users/params]

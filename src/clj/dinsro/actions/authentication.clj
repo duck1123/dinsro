@@ -32,7 +32,7 @@
 
 (defn-spec check-auth (s/nilable boolean?)
   [email ::s.users/email password ::s.users/password]
-  (if-let [user (m.users/find-by-email email)]
+  (when-let [user (m.users/find-by-email email)]
     (let [{:keys [dinsro.spec.users/password-hash]} user]
       (hashers/check password password-hash))))
 
@@ -43,7 +43,7 @@
       (-> {:identity email}
           (http/ok)
           (assoc-in [:session :identity] email))
-      (http/unauthorized {:status :unathorized}))))
+      (http/unauthorized {:status :unauthorized}))))
 
 (defn-spec register-handler ::register-handler-response
   "Register a user"
