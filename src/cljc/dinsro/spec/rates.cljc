@@ -1,13 +1,23 @@
 (ns dinsro.spec.rates
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]))
+            [clojure.spec.gen.alpha :as gen]
+            [dinsro.spec.currencies :as s.currencies]))
 
 (s/def ::value (s/and double? pos?))
-(s/def ::currency-id :db-pos/id)
+(def value-spec
+  {:db/ident       ::value
+   :db/valueType   :db.type/double
+   :db/cardinality :db.cardinality/one})
 
-(s/def ::params (s/keys :req [::value ::currency-id]))
-(s/def ::prepared-params (s/keys :req [::value ::currency-id]))
-(s/def ::item (s/keys :req [:db/id ::value ::currency-id]))
+(s/def ::currency ::s.currencies/item-opt)
+(def currency-spec
+  {:db/ident       ::currency
+   :db/valueType   :db.type/ref
+   :db/cardinality :db.cardinality/one})
+
+(s/def ::params (s/keys :req [::value ::currency]))
+(s/def ::prepared-params (s/keys :req [::value ::currency]))
+(s/def ::item (s/keys :req [:db/id ::value ::currency]))
 
 (comment
   (gen/generate (s/gen ::currency-id))
@@ -18,6 +28,4 @@
   )
 
 (def schema
-  [{:db/ident ::value
-    :db/valueType :db.type/double
-    :db/cardinality :db.cardinality/one}])
+  [value-spec currency-spec])
