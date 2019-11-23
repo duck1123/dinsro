@@ -21,11 +21,6 @@
 (s/def :create-rates-response/items (s/coll-of ::s.rates/item))
 (s/def :create-rates-response/body (s/keys :req-un [:create-rates-response/items]))
 
-(s/def :read-rates-response/body (s/keys))
-(comment
-  (gen/generate (s/gen :read-rates-response/body))
-  )
-
 (s/def :create-rates-valid/request (s/keys :req-un [:create-rates-valid/params]))
 (comment
   (gen/generate (s/gen :create-rates-valid/request))
@@ -68,13 +63,23 @@
   [request ::create-handler-request]
   (or (let [{params :params} request]
         (when-let [params (timbre/spy :info (prepare-record params))]
-          (when-let [item (m.rates/create-record params)]
-            (http/ok {:item item}))))
+          (when-let [id (m.rates/create-record params)]
+            (http/ok {:item (m.rates/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 ;; Read
 
-(s/def ::read-handler-request (s/keys))
+(s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
+(comment
+  (gen/generate (s/gen :read-rates-response/body))
+  )
+
+(s/def :read-rates-request/path-params (s/keys :req-un [:db/id]))
+(comment
+  (gen/generate (s/gen :read-rates-request/path-params))
+  )
+
+(s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
 (comment
   (gen/generate (s/gen ::read-handler-request))
   )
@@ -86,4 +91,7 @@
 
 (defn-spec read-handler ::read-handler-response
   [request ::read-handler-request]
-  (http/ok {:status "ok"}))
+  (let [params (:path-params (timbre/spy :info request))]
+    (let [id (:id params)]
+      (let [item (m.rates/read-record id)]
+       (http/ok {:item (timbre/spy :info item)})))))

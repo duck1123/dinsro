@@ -1,5 +1,6 @@
 (ns dinsro.db.core
   (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.config :refer [env]]
@@ -26,3 +27,11 @@
     (d/create-database uri)))
 
 (s/def :db/id int?)
+(comment
+  (gen/generate (s/gen :db/id))
+  )
+
+(s/def :db-pos/id pos-int?)
+(comment
+  (gen/generate (s/gen :db-pos/id))
+  )

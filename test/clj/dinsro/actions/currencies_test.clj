@@ -51,7 +51,7 @@
   (testing "success"
     (let [request (gen-spec ::a.currencies/create-handler-request-valid)
           response (a.currencies/create-handler request)
-          id (get-in response [:body :item])
+          id (get-in response [:body :item :db/id])
           created-record (m.currencies/read-record id)]
       (is (= status/ok (:status response)))
       (is (= (:name request) (::s.currencies/name response)))))

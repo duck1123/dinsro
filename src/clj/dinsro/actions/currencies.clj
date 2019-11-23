@@ -53,8 +53,8 @@
   [request ::create-handler-request]
   (or (let [{:keys [params]} request]
         (when-let [params (prepare-record params)]
-          (let [item (m.currencies/create-record params)]
-            (http/ok {:item item}))))
+          (let [id (m.currencies/create-record params)]
+            (http/ok {:item (m.currencies/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 (defn-spec delete-handler ::delete-handler-response

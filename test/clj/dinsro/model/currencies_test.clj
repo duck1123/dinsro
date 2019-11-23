@@ -4,6 +4,7 @@
             [clojure.test :refer :all]
             [datahike.api :as d]
             [datahike.core :as dc]
+            [datahike.schema :as dhs]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.currencies :as m.currencies]
@@ -31,8 +32,24 @@
 (deftest create-record-test
   (testing "success"))
 
+(deftest read-record
+  (testing "success"
+    (let [item (m.currencies/mock-record)
+          id (:db/id item)
+          response (m.currencies/read-record id)]
+      (is (= item response))))
+  (testing "not found"
+    (let [id (gen/generate (s/gen :db-pos/id))
+          response (m.currencies/read-record id)]
+      (is (nil? response)))))
+
+(comment
+  (gen/generate (s/gen :db/id))
+  )
+
 (deftest index-test
   (testing "success"
+    (m.currencies/delete-all)
     (is (= [] (m.currencies/index))))
   (testing "with records"
     (is (not= nil (m.users/mock-record)))
