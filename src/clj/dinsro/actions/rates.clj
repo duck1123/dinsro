@@ -26,29 +26,6 @@
   (gen/generate (s/gen :read-rates-response/body))
   )
 
-(s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
-(comment
-  (gen/generate (s/gen ::create-handler-request))
-  )
-
-(s/def ::create-handler-response (s/keys :req-un [:create-rates-response/body]))
-(comment
-  (gen/generate (s/gen ::create-handler-response))
-  )
-
-(s/def ::index-handler-request (s/keys))
-(s/def ::index-handler-response (s/keys))
-
-(s/def ::read-handler-request (s/keys))
-(comment
-  (gen/generate (s/gen ::read-handler-request))
-  )
-
-(s/def ::read-handler-response (s/keys :req-un [:read-rates-response/body]))
-(comment
-  (gen/generate (s/gen ::read-handler-response))
-  )
-
 (s/def :create-rates-valid/request (s/keys :req-un [:create-rates-valid/params]))
 (comment
   (gen/generate (s/gen :create-rates-valid/request))
@@ -65,10 +42,27 @@
     (when (s/valid? ::s.rates/params params)
       params)))
 
+;; Index
+
+(s/def ::index-handler-request (s/keys))
+(s/def ::index-handler-response (s/keys))
+
 (defn-spec index-handler ::index-handler-response
   [request ::index-handler-request]
   (let [items (m.rates/index-records)]
     (http/ok {:model :rates :items items})))
+
+;; Create
+
+(s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
+(comment
+  (gen/generate (s/gen ::create-handler-request))
+  )
+
+(s/def ::create-handler-response (s/keys :req-un [:create-rates-response/body]))
+(comment
+  (gen/generate (s/gen ::create-handler-response))
+  )
 
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]
@@ -77,6 +71,18 @@
           (when-let [item (m.rates/create-record params)]
             (http/ok {:item item}))))
       (http/bad-request {:status :invalid})))
+
+;; Read
+
+(s/def ::read-handler-request (s/keys))
+(comment
+  (gen/generate (s/gen ::read-handler-request))
+  )
+
+(s/def ::read-handler-response (s/keys :req-un [:read-rates-response/body]))
+(comment
+  (gen/generate (s/gen ::read-handler-response))
+  )
 
 (defn-spec read-handler ::read-handler-response
   [request ::read-handler-request]
