@@ -25,14 +25,6 @@
         (merge params)
         (dissoc ::s.users/password))))
 
-(defn-spec find-id-by-email (s/nilable :db/id)
-  [email ::s.users/email]
-  (ffirst (d/q find-by-email-query @db/*conn* email)))
-
-(defn-spec find-by-email (s/nilable ::s.users/item)
-  [email ::s.users/email]
-  (read-record (find-id-by-email email)))
-
 (defn-spec read-record (s/nilable ::s.users/item)
   [user-id :db/id]
   (d/pull @db/*conn* attribute-list user-id))
@@ -40,6 +32,14 @@
 (defn-spec read-records (s/coll-of (s/nilable ::s.users/item))
   [ids (s/coll-of :db/id)]
   (d/pull-many @db/*conn* attribute-list ids))
+
+(defn-spec find-id-by-email (s/nilable :db/id)
+  [email ::s.users/email]
+  (ffirst (d/q find-by-email-query @db/*conn* email)))
+
+(defn-spec find-by-email (s/nilable ::s.users/item)
+  [email ::s.users/email]
+  (read-record (find-id-by-email email)))
 
 (defn-spec create-record :db/id
   [params ::s.users/params]
