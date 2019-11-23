@@ -62,8 +62,21 @@
 
 ;; Index
 
+(s/def :index-rates-response/items (s/coll-of ::s.rates/item))
+(comment
+  (gen/generate (s/gen :index-rates-response/items))
+  )
+
+(s/def :index-rates-response/body (s/keys :req-un [:index-rates-response/items]))
+(comment
+  (gen/generate (s/gen :index-rates-response/body))
+  )
+
 (s/def ::index-handler-request (s/keys))
-(s/def ::index-handler-response (s/keys))
+(s/def ::index-handler-response (s/keys :req-un [:index-rates-response/body]))
+(comment
+  (gen/generate (s/gen ::index-handler-response))
+  )
 
 (defn-spec index-handler ::index-handler-response
   [request ::index-handler-request]
@@ -82,19 +95,35 @@
   (gen/generate (s/gen :read-rates-request/path-params))
   )
 
+(s/def :read-rates-response/status keyword?)
+(comment
+  (gen/generate (s/gen :read-rates-response/status))
+  )
+
 (s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
 (comment
   (gen/generate (s/gen ::read-handler-request))
   )
 
-(s/def ::read-handler-response (s/keys :req-un [:read-rates-response/body]))
+(s/def ::read-handler-response-valid (s/keys :req-un [:read-rates-response/body]))
+(comment
+  (gen/generate (s/gen ::read-handler-response-valid))
+  )
+
+(s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response/status]))
+(comment
+  (gen/generate (s/gen ::read-handler-response-not-found))
+  )
+
+(s/def ::read-handler-response (s/or ::read-handler-response-valid ::read-handler-response-not-found))
 (comment
   (gen/generate (s/gen ::read-handler-response))
   )
 
 (defn-spec read-handler ::read-handler-response
   [request ::read-handler-request]
-  (let [params (:path-params (timbre/spy :info request))]
-    (let [id (:id params)]
-      (let [item (m.rates/read-record id)]
-       (http/ok {:item (timbre/spy :info item)})))))
+  (or (let [params (:path-params (timbre/spy :info request))]
+        (let [id (:id params)]
+          (let [item (m.rates/read-record id)]
+            (http/ok {:item (timbre/spy :info item)}))))
+      (http/not-found {:status :not-found})))
