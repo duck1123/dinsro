@@ -9,15 +9,15 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency ::s.currencies/item-opt)
+(s/def ::currency-id :db-pos/id)
 (def currency-spec
-  {:db/ident       ::currency
+  {:db/ident       ::currency-id
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::params (s/keys :req [::value ::currency]))
-(s/def ::prepared-params (s/keys :req [::value ::currency]))
-(s/def ::item (s/keys :req [:db/id ::value ::currency]))
+(s/def ::params (s/keys :req [::value ::currency-id]))
+(s/def ::prepared-params (s/keys :req [::value ::currency-id]))
+(s/def ::item (s/keys :req [:db/id ::value ::currency-id]))
 
 (comment
   (gen/generate (s/gen ::currency-id))

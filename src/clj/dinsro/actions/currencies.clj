@@ -83,7 +83,7 @@
 
 (defn index-handler
   [request]
-  (let [items (m.currencies/index)]
+  (let [items (m.currencies/index-records)]
     (http/ok {:items items})))
 
 (comment

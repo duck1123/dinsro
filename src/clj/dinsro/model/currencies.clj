@@ -12,7 +12,7 @@
   []
   (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
 
-(defn-spec index (s/* ::s.currencies/item)
+(defn-spec index-records (s/coll-of ::s.currencies/item)
   []
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
@@ -44,3 +44,9 @@
   (let [params (gen/generate (s/gen ::s.currencies/params))
         id (create-record params)]
     (read-record id)))
+
+(comment
+  (delete-all)
+  (index-records)
+  (mock-record)
+  )

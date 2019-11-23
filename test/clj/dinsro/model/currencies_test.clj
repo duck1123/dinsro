@@ -47,15 +47,15 @@
   (gen/generate (s/gen :db/id))
   )
 
-(deftest index-test
+(deftest index-records
   (testing "success"
     (m.currencies/delete-all)
-    (is (= [] (m.currencies/index))))
+    (is (= [] (m.currencies/index-records))))
   (testing "with records"
     (is (not= nil (m.users/mock-record)))
     (let [params (gen/generate (s/gen ::s.currencies/params))
           id (m.currencies/create-record params)]
-      (is (not= [params] (m.currencies/index))))))
+      (is (not= [params] (m.currencies/index-records))))))
 
 (deftest delete-record
   (testing "success"

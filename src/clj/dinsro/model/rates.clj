@@ -48,5 +48,12 @@
   (read-record (create-record (gen/generate (s/gen ::s.rates/prepared-params)))))
 
 (comment
+  (gen/generate (s/gen ::s.rates/prepared-params))
+  (delete-all)
+  (index-records)
   (mock-record)
+
+  (read-record 59)
+
+  (d/entity @db/*conn* 59)
   )
