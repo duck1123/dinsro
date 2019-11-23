@@ -100,6 +100,11 @@
   (gen/generate (s/gen :read-rates-response/status))
   )
 
+(s/def :read-rates-response-not-found/body (s/keys :req-un [:read-rates-response/status]))
+(comment
+  (gen/generate (s/gen :read-rates-response-not-found/body))
+  )
+
 (s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
 (comment
   (gen/generate (s/gen ::read-handler-request))
@@ -110,7 +115,7 @@
   (gen/generate (s/gen ::read-handler-response-valid))
   )
 
-(s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response/status]))
+(s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response-not-found/body]))
 (comment
   (gen/generate (s/gen ::read-handler-response-not-found))
   )
