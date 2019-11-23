@@ -42,11 +42,12 @@
 (deftest create-handler
   (testing "success"
     (let [request (gen/generate (s/gen ::a.rates/create-handler-request-valid))
-          response (a.rates/create-handler request)
-          id (get-in (timbre/spy :info response) [:body :item :db/id])
-          created-record (m.rates/read-record id)]
+          response (a.rates/create-handler request)]
       (is (= status/ok (:status response)))
-      (is (= (:name request) (::s.rates/name response)))))
+      (let [id (get-in response [:body :item :db/id])]
+        (is (not (nil? ident?)))
+        (let [created-record (m.rates/read-record id)]
+         (is (= (:name request) (::s.rates/name response)))))))
   (testing "invalid params"
     (let [params {}
           request {:params params}

@@ -12,12 +12,13 @@
 ;; Create
 
 (def param-rename-map
-  {:value ::s.rates/value})
+  {:value ::s.rates/value
+   :currency-id ::s.rates/currency-id})
 
-(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/value]))
+(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/value ::s.rates/currency-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 
-(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/value]))
+(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/value ::s.rates/currency-id]))
 (s/def ::create-handler-request (s/keys :req-un [:create-rates-request/params]))
 
 (comment
