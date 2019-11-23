@@ -19,7 +19,7 @@
   (d/delete-database uri)
   (when-not (d/database-exists? (datahike.config/uri->config uri))
     (d/create-database uri))
-  (with-redefs [db/*conn* #_(datahike.core/create-conn #_s.accounts/schema) (d/connect uri)]
+  (with-redefs [db/*conn* (d/connect uri)]
     (d/transact db/*conn* s.accounts/schema)
     (f)))
 
@@ -56,7 +56,7 @@
     (let [account (m.accounts/mock-record)
           id (:db/id account)]
       (is (not (nil? (m.accounts/read-record id))))
-      (let [response (m.accounts/delete-record (timbre/spy :info id))]
+      (let [response (m.accounts/delete-record id)]
         (is (not (nil? response)))
         (is (nil? (m.accounts/read-record id)))))))
 
