@@ -27,9 +27,29 @@
   (gen/generate (s/gen :create-currency-response/body))
   )
 
+
+(s/def :create-currency-response/status keyword?)
+(comment
+  (gen/generate (s/gen :create-currency-response/status))
+  )
+
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
-(s/def ::create-handler-response (s/keys :req-un [:create-currency-response/body]))
+(comment
+  (gen/generate (s/gen ::create-handler-request))
+  )
+
+(s/def ::create-handler-response-invalid (s/keys :req-un [:create-currency-response/status]))
+(comment
+  (gen/generate (s/gen ::create-handler-response-invalid))
+  )
+
+(s/def ::create-handler-response-valid (s/keys :req-un [:create-currency-response/body]))
+(comment
+  (gen/generate (s/gen ::create-handler-response-valid))
+  )
+
+(s/def ::create-handler-response (s/or ::create-handler-response-valid ::create-handler-response-invalid))
 (comment
   (gen/generate (s/gen ::create-handler-response))
   )
