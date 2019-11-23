@@ -54,7 +54,7 @@
        (assoc :delete-record-failure-id id))))
 
 (kf/reg-event-fx
- ::do-fetch-users
+ ::do-fetch-records
  (fn [_ _]
    {:http-xhrio
     {:uri             (kf/path-for [:api-index-users])

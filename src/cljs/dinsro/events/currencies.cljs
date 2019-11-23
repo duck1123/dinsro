@@ -12,7 +12,8 @@
  ::item
  :<- [::items]
  (fn-traced [items [_ id]]
-   (first (filter #(= (:id %) id) items))))
+   (timbre/spy :info id)
+   (first (filter #(= (:db/id %) id) items))))
 
 (kf/reg-event-db
  ::do-fetch-index-success

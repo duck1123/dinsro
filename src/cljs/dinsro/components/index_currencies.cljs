@@ -11,7 +11,7 @@
 
 (defn index-currency-line
   [currency]
-  (let [{:keys [db/id dinsro.model.currencies/name]} currency]
+  (let [{:keys [db/id dinsro.spec.currencies/name]} currency]
     [:div.column
      {:style {:border        "1px black solid"
               :margin-bottom "15px"}}
