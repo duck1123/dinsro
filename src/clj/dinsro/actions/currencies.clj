@@ -1,6 +1,7 @@
 (ns dinsro.actions.currencies
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [orchestra.core :refer [defn-spec]]
@@ -15,9 +16,25 @@
 (s/def :create-handler/params (s/keys :opt-un [::s.currencies/name]))
 (s/def :create-handler-valid/params (s/keys :req-un [::s.currencies/name]))
 (s/def :create-handler-valid/request (s/keys :req-un [:create-handler-valid/params]))
+
+(s/def :create-currency-response/items (s/coll-of ::s.currencies/item))
+(comment
+  (gen/generate (s/gen :create-currency-response/items))
+  )
+
+(s/def :create-currency-response/body (s/keys :req-un [:create-currency-response/items]))
+(comment
+  (gen/generate (s/gen :create-currency-response/body))
+  )
+
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
-(s/def ::create-handler-response (s/keys))
+(s/def ::create-handler-response (s/keys :req-un [:create-currency-response/body]))
+(comment
+  (gen/generate (s/gen ::create-handler-response))
+  )
+
+
 (s/def ::delete-handler-response (s/keys))
 (s/def ::delete-handler-request (s/keys))
 

@@ -46,3 +46,7 @@
 (defn-spec mock-record ::s.rates/item
   []
   (read-record (create-record (gen/generate (s/gen ::s.rates/prepared-params)))))
+
+(comment
+  (mock-record)
+  )

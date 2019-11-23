@@ -41,9 +41,9 @@
 
 (deftest create-handler
   (testing "success"
-    (let [request (gen-spec :create-handler-valid/request)
+    (let [request (gen/generate (s/gen :create-rates-valid/request))
           response (a.rates/create-handler request)
-          id (get-in response [:body :item])
+          id (get-in (timbre/spy :info response) [:body :item :db/id])
           created-record (m.rates/read-record id)]
       (is (= status/ok (:status response)))
       (is (= (:name request) (::s.rates/name response)))))
@@ -53,3 +53,15 @@
           response (a.rates/create-handler request)]
       (is (= status/bad-request (:status response))
           "should signal a bad request"))))
+
+(deftest read-handler
+  (testing "success"
+    (let [rate (m.rates/mock-record)
+          id (:db/id rate)
+          request {:path-params {:id id}}
+          response (a.rates/read-handler request)]
+      (is (= status/ok (:status response))))
+
+
+    )
+  )
