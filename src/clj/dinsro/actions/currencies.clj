@@ -31,8 +31,8 @@
 (s/def :create-currency-response/body (s/keys :req-un [:create-currency-response/item]))
 (s/def ::create-handler-response-valid (s/keys :req-un [:create-currency-response/body]))
 
-(s/def ::create-handler-response (s/or ::create-handler-response-valid
-                                       ::create-handler-response-invalid))
+(s/def ::create-handler-response (s/or :valid   ::create-handler-response-valid
+                                       :invalid ::create-handler-response-invalid))
 
 (comment
   (gen/generate (s/gen :create-currency-response/item))

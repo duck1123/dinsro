@@ -14,21 +14,21 @@
 (def param-rename-map
   {:value ::s.rates/value})
 
-(s/def :create-rates-valid/params (s/keys :req-un [::s.rates/value]))
-(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/name]))
-(s/def :create-rates-request-valid/request (s/keys :req-un [:create-rates-request/params]))
+(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/value]))
+(s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
+
+(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/value]))
 (s/def ::create-handler-request (s/keys :req-un [:create-rates-request/params]))
 
 (comment
-  (gen/generate (s/gen :create-rates-valid/params))
-  (gen/generate (s/gen :create-rates-request/params))
-  (gen/generate (s/gen :create-rates-valid/request))
+  (gen/generate (s/gen ::create-handler-request-valid))
   (gen/generate (s/gen ::create-handler-request))
   )
 
-(s/def :create-rates-response-valid-body/item ::s.rates/item)
-(s/def :create-rates-response-valid/body (s/keys :req-un [:create-rates-response-valid-body/item]))
-(s/def ::create-handler-response-valid (s/keys :req-un [:create-rates-response-valid/body]))
+(s/def :create-rates-response-valid/body (s/keys :req-un [::s.rates/item]))
+(s/def :create-rates-response-valid/status #{status/ok})
+(s/def ::create-handler-response-valid (s/keys :req-un [:create-rates-response-valid/body
+                                                        :create-rates-response-valid/status]))
 
 (s/def :create-rates-response-invalid-body/status #{:invalid})
 (s/def :create-rates-response-invalid/body (s/keys :req-un [:create-rates-response-invalid-body/status]))
@@ -36,8 +36,8 @@
 (s/def ::create-handler-response-invalid (s/keys :req-un [:create-rates-response-invalid/body
                                                           :create-rates-response-invalid/status]))
 
-(s/def ::create-handler-response (s/or ::create-handler-response-invalid
-                                       ::create-handler-response-valid))
+(s/def ::create-handler-response (s/or :invalid ::create-handler-response-invalid
+                                       :valid   ::create-handler-response-valid))
 
 (comment
   (gen/generate (s/gen ::create-handler-response-valid))
@@ -94,7 +94,8 @@
 (s/def :read-rates-response-not-found/body (s/keys :req-un [:read-rates-response-not-found-body/status]))
 (s/def ::read-handler-response-valid (s/keys :req-un [:read-rates-response/body]))
 (s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response-not-found/body]))
-(s/def ::read-handler-response (s/or ::read-handler-response-not-found ::read-handler-response-valid))
+(s/def ::read-handler-response (s/or :not-found ::read-handler-response-not-found
+                                     :valid     ::read-handler-response-valid))
 
 (comment
   (gen/generate (s/gen :read-rates-response/body))

@@ -41,7 +41,7 @@
 
 (deftest create-handler
   (testing "success"
-    (let [request (gen/generate (s/gen :create-rates-valid/request))
+    (let [request (gen/generate (s/gen ::a.rates/create-handler-request-valid))
           response (a.rates/create-handler request)
           id (get-in (timbre/spy :info response) [:body :item :db/id])
           created-record (m.rates/read-record id)]
@@ -60,8 +60,4 @@
           id (:db/id rate)
           request {:path-params {:id id}}
           response (a.rates/read-handler request)]
-      (is (= status/ok (:status response))))
-
-
-    )
-  )
+      (is (= status/ok (:status response))))))
