@@ -34,7 +34,6 @@
   (gen/generate (s/gen ::create-handler-response))
   )
 
-
 (s/def ::delete-handler-response (s/keys))
 (s/def ::delete-handler-request (s/keys))
 
