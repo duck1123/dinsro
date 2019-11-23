@@ -38,7 +38,7 @@
 
 (defn-spec authenticate-handler any?
   [request ::authenticate-handler-request]
-  (let [{{:keys [email password]} :params :keys [session]} request]
+  (let [{{:keys [email password]} :params} (timbre/spy :info request)]
     (if (check-auth email password)
       (-> {:identity email}
           (http/ok)
