@@ -79,29 +79,32 @@
 
 ;; Delete
 
-(s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat ))
 (s/def ::do-delete-record-success-cofx (s/keys))
-(s/def ::do-delete-record-failed-cofx (s/keys))
 
 (defn-spec do-delete-record-success (s/keys)
   [cofx ::do-delete-record-success-cofx _ any?]
   {:dispatch [::do-fetch-index]})
+
+(s/def ::do-delete-record-failed-cofx (s/keys))
 
 (defn-spec do-delete-record-failed (s/keys)
   [cofx ::do-delete-record-failed-cofx _ any?]
   (timbre/error "Delete record failed")
   {:dispatch [::do-fetch-index]})
 
+(s/def ::do-delete-record-cofx (s/keys))
+(s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
+
 (defn-spec do-delete-record (s/keys)
-  [cofx ::do-delete-cofx _ any?]
-  {:http-xhrio
-   {:uri             (kf/path-for [:api-show-rate {:id id}])
-    :method          :delete
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-delete-record-success]
-    :on-failure      [::do-delete-record-failed]}})
+  [cofx ::do-delete-record-cofx [item] ::do-delete-record-event]
+  (let [id (:db/id item)]
+    {:http-xhrio
+     {:uri             (kf/path-for [:api-show-rate {:id id}])
+      :method          :delete
+      :format          (ajax/json-request-format)
+      :response-format (ajax/json-response-format {:keywords? true})
+      :on-success      [::do-delete-record-success]
+      :on-failure      [::do-delete-record-failed]}}))
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)

@@ -27,7 +27,7 @@
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
      [:h1 "Rates"]
-     [rate-chart items]
+     #_[rate-chart items]
      [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
      [create-rate-form]
      [index-rates items]]))

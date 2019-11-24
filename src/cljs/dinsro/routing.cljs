@@ -44,7 +44,9 @@
       [""             :api-index-currencies]
       ["/:id"         :api-show-currency]]
      ["/logout"       :api-logout]
-     ["/rates"        :api-index-rates]
+     ["/rates"
+      [""             :api-index-rates]
+      ["/:id"         :api-show-rate]]
      ["/transactions"
       [""             :api-index-transactions]
       ["/:id"         :api-show-transaction]]

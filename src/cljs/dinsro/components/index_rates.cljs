@@ -13,7 +13,7 @@
    :value "Value: "})
 
 (defn-spec rate-line vector?
-  [item :s.rates/item]
+  [item ::s.rates/item]
   (let [strings rate-line-strings
         id (:db/id item)
         value (::s.rates/value item)
