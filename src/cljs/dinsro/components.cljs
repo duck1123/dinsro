@@ -1,6 +1,7 @@
 (ns dinsro.components
   (:require [dinsro.events.currencies :as e.currencies]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as timbre]))
 
 (def target-value #(-> % .-target .-value))
 
@@ -50,6 +51,6 @@
      [:div.select
       (into [:select {:value @(rf/subscribe [field])
                       :on-change #(rf/dispatch [change-handler (target-value %)])}]
-            (for [{:keys [db/id dinsro.model.currencies/name]} currencies]
+            (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
               ^{:key name}
               [:option {:value id} name]))]]))

@@ -59,7 +59,6 @@
         (is (= status/bad-request (:status response))
             "should signal a bad request"))))
 
-
 (deftest read-handler
   (testing "success"
     (let [rate (m.rates/mock-record)
