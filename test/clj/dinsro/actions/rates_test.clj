@@ -44,7 +44,7 @@
 (deftest create-handler-valid
   (testing "success"
     (let [request (gen/generate (s/gen ::a.rates/create-handler-request-valid))
-          response (a.rates/create-handler request)]
+          response (a.rates/create-handler (timbre/spy :info request))]
       (is (= status/ok (:status response)))
       (let [id (get-in response [:body :item :db/id])]
         (is (not (nil? ident?)))

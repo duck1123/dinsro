@@ -13,7 +13,7 @@
 ;; Create
 
 (def param-rename-map
-  {:value       ::s.rates/value
+  {:rate       ::s.rates/value
    ;; :currency-id ::s.rates/currency-id
    })
 
@@ -52,13 +52,16 @@
 (defn-spec prepare-record (s/nilable ::s.rates/params)
   [params :create-rates-request/params]
   (let [currency-id (:currency-id params)
+        rate (double (:rate params))
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
-                   (assoc ::s.rates/currency {:db/id currency-id}))]
+                   (assoc ::s.rates/currency {:db/id currency-id})
+                   (assoc ::s.rates/value rate)
+                   )]
     (if (s/valid? ::s.rates/params params)
       params
-      #_(do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
+      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
           nil))))
 
 (defn-spec create-handler ::create-handler-response
