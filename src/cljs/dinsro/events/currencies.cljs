@@ -12,7 +12,6 @@
  ::item
  :<- [::items]
  (fn-traced [items [_ id]]
-   (timbre/spy :info id)
    (first (filter #(= (:db/id %) id) items))))
 
 (kf/reg-event-db
@@ -75,7 +74,7 @@
  ::do-delete-record
  (fn [_ [currency]]
    {:http-xhrio
-    {:uri             (kf/path-for [:api-show-currency {:id (:db/id (timbre/spy :info currency))}])
+    {:uri             (kf/path-for [:api-show-currency {:id (:db/id currency)}])
      :method          :delete
      :format          (ajax/json-request-format)
      :response-format (ajax/json-response-format {:keywords? true})

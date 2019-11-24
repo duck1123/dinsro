@@ -6,6 +6,6 @@
 
 (defn page
   [{{:keys [id]} :path-params}]
-  (let [currency @(rf/subscribe [::e.currencies/item (int (timbre/spy :info id))])]
+  (let [currency @(rf/subscribe [::e.currencies/item (int id)])]
     [:section.section>div.container>div.content
      [show-currency currency]]))

@@ -64,7 +64,7 @@
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]
   (or (let [{params :params} request]
-        (when-let [params (timbre/spy :info (prepare-record params))]
+        (when-let [params (prepare-record params)]
           (when-let [id (m.rates/create-record params)]
             (http/ok {:item (m.rates/read-record id)}))))
       (http/bad-request {:status :invalid})))
@@ -116,8 +116,8 @@
 
 (defn-spec read-handler ::read-handler-response
   [request ::read-handler-request]
-  (or (let [params (:path-params (timbre/spy :info request))]
+  (or (let [params (:path-params request)]
         (let [id (:id params)]
           (let [item (m.rates/read-record id)]
-            (http/ok {:item (timbre/spy :info item)}))))
+            (http/ok {:item item}))))
       (http/not-found {:status :not-found})))

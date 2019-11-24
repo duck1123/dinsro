@@ -38,7 +38,7 @@
  ::submit-clicked
  (fn-traced
    [_ _]
-   {:dispatch [::e.rates/do-submit #(rf/subscribe [::form-data])]}))
+   {:dispatch [::e.rates/do-submit @(rf/subscribe [::form-data])]}))
 
 (kf/reg-event-db
  ::toggle-form

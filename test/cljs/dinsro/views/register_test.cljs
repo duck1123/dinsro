@@ -27,7 +27,7 @@
                             :email email
                             :password password
                             :confirm-password confirm-password})]
-      (is (vector? (timbre/spy :info (register/page))))
+      (is (vector? (register/page)))
 
       #_(with-mounted-component [register/page app-step ""]
         (fn [c div]
