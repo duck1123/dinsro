@@ -124,3 +124,9 @@
           (let [item (m.rates/read-record id)]
             (http/ok {:item item}))))
       (http/not-found {:status :not-found})))
+
+;; Delete
+
+(defn-spec delete-handler any?
+  [request any?]
+  (http/ok))
