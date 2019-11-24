@@ -19,15 +19,15 @@
  (fn [items [_ id]]
    (first (filter #(= (:id %) id) items))))
 
-(kf/reg-event-fx
- ::do-submit-success
- (fn-traced [_ _]
-   {:dispatch [::do-fetch-index]}))
+;; Submit
 
-(kf/reg-event-fx
- ::do-submit-failed
- (fn-traced [_ _]
-   {:dispatch [::do-fetch-index]}))
+(defn do-submit-success
+  [_ _]
+  {:dispatch [::do-fetch-index]})
+
+(defn do-submit-failed
+  [_ _]
+  {:dispatch [::do-fetch-index]})
 
 (defn-spec do-submit (s/keys)
   [{:keys [db]} any?
@@ -42,19 +42,11 @@
     :on-success      [::do-submit-success]
     :on-failure      [::do-submit-failed]}})
 
-(kf/reg-event-fx
- ::do-submit do-submit
- #_(fn-traced
-   [{:keys [db]} [data]]
-   {:db (assoc db ::do-submit-loading true)
-    :http-xhrio
-    {:method          :post
-     :uri             (kf/path-for [:api-index-rates])
-     :params          data
-     :format          (ajax/json-request-format)
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-submit-success]
-     :on-failure      [::do-submit-failed]}}))
+(kf/reg-event-fx ::do-submit         do-submit)
+(kf/reg-event-fx ::do-submit-failed  do-submit-failed)
+(kf/reg-event-fx ::do-submit-success do-submit-success)
+
+;; Index
 
 (kf/reg-event-db
  ::do-fetch-index-success
