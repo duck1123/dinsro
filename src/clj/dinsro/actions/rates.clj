@@ -2,6 +2,7 @@
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+            [expound.alpha :as expound]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.rates :as s.rates]
             [orchestra.core :refer [defn-spec]]
@@ -12,13 +13,15 @@
 ;; Create
 
 (def param-rename-map
-  {:value ::s.rates/value
-   :currency-id ::s.rates/currency-id})
+  {:value       ::s.rates/value
+   ;; :currency-id ::s.rates/currency-id
+   })
 
-(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/value ::s.rates/currency-id]))
+(s/def ::currency-id :db-pos/id)
+(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/value ::currency-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 
-(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/value ::s.rates/currency-id]))
+(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/value ::currency-id]))
 (s/def ::create-handler-request (s/keys :req-un [:create-rates-request/params]))
 
 (comment
@@ -48,11 +51,15 @@
 
 (defn-spec prepare-record (s/nilable ::s.rates/params)
   [params :create-rates-request/params]
-  (let [params (-> params
+  (let [currency-id (:currency-id params)
+        params (-> params
                    (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map)))]
-    (when (s/valid? ::s.rates/params params)
-      params)))
+                   (select-keys (vals param-rename-map))
+                   (assoc ::s.rates/currency {:db/id currency-id}))]
+    (if (s/valid? ::s.rates/params params)
+      params
+      #_(do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
+          nil))))
 
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]

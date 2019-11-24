@@ -6,6 +6,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.rates :as m.rates]
+            [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
@@ -21,6 +22,7 @@
     (when-not (d/database-exists? (datahike.config/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* s.currencies/schema)
       (d/transact db/*conn* s.rates/schema)
       (f))))
 

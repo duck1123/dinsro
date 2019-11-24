@@ -9,7 +9,7 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency ::s.currencies/item-opt)
+(s/def ::currency (s/keys :req [:db/id]))
 (def currency-spec
   {:db/ident       ::currency
    :db/valueType   :db.type/ref

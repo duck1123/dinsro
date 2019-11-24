@@ -9,6 +9,7 @@
             [dinsro.db.core :as db]
             [dinsro.handler :as handler]
             [dinsro.model.rates :as m.rates]
+            [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
             [mount.core :as mount]
@@ -26,6 +27,7 @@
     (when-not (d/database-exists? (d.config/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* s.currencies/schema)
       (d/transact db/*conn* s.rates/schema)
       (f))))
 
@@ -39,7 +41,7 @@
         (is (= [] items)))
       #_(is (= true response)))))
 
-(deftest create-handler
+(deftest create-handler-valid
   (testing "success"
     (let [request (gen/generate (s/gen ::a.rates/create-handler-request-valid))
           response (a.rates/create-handler request)]
@@ -47,13 +49,16 @@
       (let [id (get-in response [:body :item :db/id])]
         (is (not (nil? ident?)))
         (let [created-record (m.rates/read-record id)]
-         (is (= (:name request) (::s.rates/name response)))))))
+         (is (= (:name request) (::s.rates/name response))))))))
+
+(deftest create-handler-invalid
   (testing "invalid params"
-    (let [params {}
-          request {:params params}
-          response (a.rates/create-handler request)]
-      (is (= status/bad-request (:status response))
-          "should signal a bad request"))))
+      (let [params {}
+            request {:params params}
+            response (a.rates/create-handler request)]
+        (is (= status/bad-request (:status response))
+            "should signal a bad request"))))
+
 
 (deftest read-handler
   (testing "success"
