@@ -4,13 +4,14 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (c/reg-field ::name             "")
 (c/reg-field ::email            "")
-(c/reg-field ::password         "")
-(c/reg-field ::confirm-password "")
+(c/reg-field ::password         "hunter2")
+(c/reg-field ::confirm-password "hunter2")
 
 (s/def ::name             string?)
 (s/def ::email            string?)
@@ -49,10 +50,8 @@
   [_ _]
   nil))
 
-(kf/reg-event-fx
- ::submit-clicked
- (fn-traced
-  [{:keys [db]} event]
+(defn-spec submit-clicked nil? #_(s/keys)
+  [{:keys [db]} (s/keys) _ any?]
   (let [email @(rf/subscribe [::email])
         name @(rf/subscribe [::name])
         confirm-password @(rf/subscribe [::confirm-password])
@@ -70,7 +69,9 @@
       :response-format (ajax/json-response-format {:keywords? true})
       :params          params
       :on-success      [:register-succeeded]
-      :on-failure      [:register-failed]}})))
+      :on-failure      [:register-failed]}}))
+
+(kf/reg-event-fx ::submit-clicked submit-clicked)
 
 (kf/reg-event-db
  ::load-register-page
@@ -79,15 +80,15 @@
   (-> db
       (assoc ::name "Bob")
       (assoc ::email "bob@example.com")
-      (assoc ::password "")
-      (assoc ::confirm-password ""))))
+      (assoc ::password "hunter2")
+      (assoc ::confirm-password "hunter2"))))
 
 (kf/reg-controller
  ::registration-form
  {:params (constantly true)
   :start [::load-register-page]})
 
-(defn registration-form
+(defn-spec registration-form (s/keys)
   []
   [:form {:style {:border "1px solid red"}}
    [c/text-input     "Name"             ::name             ::change-name]
