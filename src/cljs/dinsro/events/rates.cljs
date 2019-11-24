@@ -22,12 +22,12 @@
 (kf/reg-event-fx
  ::do-submit-success
  (fn-traced [_ _]
-   (timbre/info "submit success")))
+   {:dispatch [::do-fetch-index]}))
 
 (kf/reg-event-fx
  ::do-submit-failed
  (fn-traced [_ _]
-   (timbre/info "submit failed")))
+   {:dispatch [::do-fetch-index]}))
 
 (defn-spec do-submit (s/keys)
   [{:keys [db]} any?
