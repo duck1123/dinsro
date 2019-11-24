@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
@@ -13,11 +14,42 @@
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))
 (s/def ::items (s/coll-of ::s.rates/item))
 
+(s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
+
+(defn-spec items-by-currency ::items
+  [items ::items [_ {:keys [db/id]}] ::items-by-currency-event]
+  (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
+
+(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
+
 (rf/reg-sub
  ::item
  :<- [::items]
  (fn [items [_ id]]
    (first (filter #(= (:id %) id) items))))
+
+;; Index
+
+(kf/reg-event-db
+ ::do-fetch-index-success
+ (fn-traced [db [{:keys [items]}]]
+   (assoc db ::items items)))
+
+(kf/reg-event-fx
+ ::do-fetch-index-failed
+ (fn-traced [_ _]
+   (timbre/info "fetch records failed")))
+
+(kf/reg-event-fx
+ ::do-fetch-index
+ (fn-traced [{:keys [db]} _]
+   {:db (assoc db ::do-fetch-index-loading true)
+    :http-xhrio
+    {:method          :get
+     :uri             (kf/path-for [:api-index-rates])
+     :response-format (ajax/json-response-format {:keywords? true})
+     :on-success      [::do-fetch-index-success]
+     :on-failure      [::do-fetch-index-failed]}}))
 
 ;; Submit
 
@@ -42,32 +74,9 @@
     :on-success      [::do-submit-success]
     :on-failure      [::do-submit-failed]}})
 
-(kf/reg-event-fx ::do-submit         do-submit)
 (kf/reg-event-fx ::do-submit-failed  do-submit-failed)
 (kf/reg-event-fx ::do-submit-success do-submit-success)
-
-;; Index
-
-(kf/reg-event-db
- ::do-fetch-index-success
- (fn-traced [db [{:keys [items]}]]
-   (assoc db ::items items)))
-
-(kf/reg-event-fx
- ::do-fetch-index-failed
- (fn-traced [_ _]
-   (timbre/info "fetch records failed")))
-
-(kf/reg-event-fx
- ::do-fetch-index
- (fn-traced [{:keys [db]} _]
-   {:db (assoc db ::do-fetch-index-loading true)
-    :http-xhrio
-    {:method          :get
-     :uri             (kf/path-for [:api-index-rates])
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-fetch-index-success]
-     :on-failure      [::do-fetch-index-failed]}}))
+(kf/reg-event-fx ::do-submit         do-submit)
 
 ;; Delete
 

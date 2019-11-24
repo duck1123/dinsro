@@ -19,7 +19,7 @@
  ::item
  :<- [::items]
  (fn [items [_ id]]
-   (first (filter #(= (:id %) id) items))))
+   (first (filter #(= (:db/id %) id) items))))
 
 (kf/reg-event-db
  ::do-fetch-records-success

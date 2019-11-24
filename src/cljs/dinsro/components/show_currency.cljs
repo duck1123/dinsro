@@ -6,7 +6,7 @@
 
 (defn show-currency
   [currency]
-  (let [rates @(rf/subscribe [::e.rates/items])]
+  (let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
     [:div
      [:p (str currency)]
      [:p "Name:" (::s.currencies/name currency)]

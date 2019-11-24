@@ -36,11 +36,23 @@
    :headers {"Content-Type" "text/html"}
    :body (cards-page)})
 
+(def view-mappings
+  ["/"
+   "/about"
+   "/accounts"
+   "/accounts/:id"
+   "/currencies"
+   "/currencies/:id"
+   "/login"
+   "/rates"
+   "/rates/:id"
+   "/register"
+   "/settings"
+   "/users"
+   "/users/:id"])
+
 (def routes
-  [(into [""]
-         (map (fn [path] [path {:get a.home/home-handler}])
-              ["/" "/about" "/accounts" "/currencies" "/currencies/:id" "/login"
-               "/rates" "/register" "/settings" "/users"]))
+  [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
    ["/cards" {:get {:handler cards-handler}}]
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts"

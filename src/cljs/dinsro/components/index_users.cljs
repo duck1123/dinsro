@@ -20,7 +20,7 @@
    {:style {:border "1px black solid"
             :margin-bottom "15px"}}
    [:p "Id: " id]
-   [:p "Name: " [:a {:href (kf/path-for [::v.show-user/page user])} name]]
+   [:p "Name: " [:a {:href (kf/path-for [:show-user-page {:id id}])} name]]
    [:p "Email " email]
    [:a.button {:on-click #(rf/dispatch [::e.users/do-delete-record user])} "Delete"]])
 
