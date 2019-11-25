@@ -3,7 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.currencies :as s.currencies]))
 
-(s/def ::value (s/and double? pos?))
+(s/def ::rate (s/and double? pos?))
 (def rate-spec
   {:db/ident       ::rate
    :db/valueType   :db.type/double
@@ -17,7 +17,7 @@
 
 (s/def ::params (s/keys :req [::rate ::currency]))
 (s/def ::prepared-params (s/keys :req [::rate ::currency]))
-(s/def ::item (s/keys :req [:db/id ::value ::currency]))
+(s/def ::item (s/keys :req [:db/id ::rate ::currency]))
 
 (comment
   (gen/generate (s/gen ::currency))
@@ -28,4 +28,4 @@
   )
 
 (def schema
-  [value-spec currency-spec])
+  [rate-spec currency-spec])

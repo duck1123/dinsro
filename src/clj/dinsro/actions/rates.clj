@@ -51,22 +51,22 @@
 
 (defn-spec prepare-record (s/nilable ::s.rates/params)
   [params :create-rates-request/params]
-  (let [currency-id (:currency-id params)
-        rate (double (:rate params))
-        params (-> params
-                   (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map))
-                   (assoc ::s.rates/currency {:db/id currency-id})
-                   (assoc ::s.rates/rate rate)
-                   )]
-    (if (s/valid? ::s.rates/params params)
-      params
-      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
-          nil))))
+  (when-let [rate (timbre/spy :info (:rate params))]
+    (let [currency-id (:currency-id params)
+          rate (double rate)
+          params (-> params
+                     (set/rename-keys param-rename-map)
+                     (select-keys (vals param-rename-map))
+                     (assoc ::s.rates/currency {:db/id currency-id})
+                     (assoc ::s.rates/rate rate))]
+      (if (s/valid? ::s.rates/params params)
+        params
+        (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
+            nil)))))
 
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]
-  (or (let [{params :params} request]
+  (or (let [{params :params} (timbre/spy :info request)]
         (when-let [params (prepare-record params)]
           (when-let [id (m.rates/create-record params)]
             (http/ok {:item (m.rates/read-record id)}))))
