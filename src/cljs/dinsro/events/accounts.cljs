@@ -19,7 +19,7 @@
 
 (defn sub-item
   [items [_ target-item]]
-  (first (filter #(= (:id %) (:id target-item)) items)))
+  (first (filter #(= (:id %) (:db/id target-item)) items)))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 
