@@ -4,8 +4,8 @@
             [dinsro.spec.currencies :as s.currencies]))
 
 (s/def ::value (s/and double? pos?))
-(def value-spec
-  {:db/ident       ::value
+(def rate-spec
+  {:db/ident       ::rate
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
@@ -15,8 +15,8 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::params (s/keys :req [::value ::currency]))
-(s/def ::prepared-params (s/keys :req [::value ::currency]))
+(s/def ::params (s/keys :req [::rate ::currency]))
+(s/def ::prepared-params (s/keys :req [::rate ::currency]))
 (s/def ::item (s/keys :req [:db/id ::value ::currency]))
 
 (comment

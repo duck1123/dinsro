@@ -21,12 +21,12 @@
 (defn-spec read-record (s/nilable ::s.rates/item)
   [id :db/id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::s.rates/value)
+    (when (get record ::s.rates/rate)
       record)))
 
 (defn-spec index-ids (s/coll-of :db/id)
   []
-  (map first (d/q '[:find ?e :where [?e ::s.rates/value _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::s.rates/rate _]] @db/*conn*)))
 
 (defn-spec index-records (s/coll-of ::s.rates/item :kind vector?)
   []

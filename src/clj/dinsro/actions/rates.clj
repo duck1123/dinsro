@@ -13,15 +13,15 @@
 ;; Create
 
 (def param-rename-map
-  {:rate       ::s.rates/value
+  {:rate       ::s.rates/rate
    ;; :currency-id ::s.rates/currency-id
    })
 
 (s/def ::currency-id :db-pos/id)
-(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/value ::currency-id]))
+(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 
-(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/value ::currency-id]))
+(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/rate ::currency-id]))
 (s/def ::create-handler-request (s/keys :req-un [:create-rates-request/params]))
 
 (comment
@@ -57,7 +57,7 @@
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
                    (assoc ::s.rates/currency {:db/id currency-id})
-                   (assoc ::s.rates/value rate)
+                   (assoc ::s.rates/rate rate)
                    )]
     (if (s/valid? ::s.rates/params params)
       params

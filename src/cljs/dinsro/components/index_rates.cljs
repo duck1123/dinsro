@@ -17,7 +17,7 @@
   [item ::s.rates/item]
   (let [strings rate-line-strings
         id (:db/id item)
-        value (::s.rates/value item)
+        value (::s.rates/rate item)
         currency-id (get-in item [::s.rates/currency :db/id])]
     [:div.column
      {:style {:border "1px black solid"}}

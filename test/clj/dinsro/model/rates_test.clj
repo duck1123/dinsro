@@ -31,7 +31,7 @@
     (let [params (gen/generate (s/gen ::s.rates/params))
           id (m.rates/create-record params)
           record (m.rates/read-record id)]
-      (is (= (::s.rates/value params) (::s.rates/value record)) "Values match"))))
+      (is (= (::s.rates/rate params) (::s.rates/rate record)) "Values match"))))
 
 (deftest read-record-test
   (testing "not found"
