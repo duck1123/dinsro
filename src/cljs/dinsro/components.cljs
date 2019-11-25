@@ -1,5 +1,6 @@
 (ns dinsro.components
   (:require [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.users :as e.users]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -53,4 +54,16 @@
                       :on-change #(rf/dispatch [change-handler (target-value %)])}]
             (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
               ^{:key name}
+              [:option {:value id} name]))]]))
+
+(defn user-selector
+  [label field change-handler]
+  (let [items @(rf/subscribe [::e.users/items])]
+    [:div.field>div.control
+     [:label.label label]
+     [:div.select
+      (into [:select {:value @(rf/subscribe [field])
+                      :on-change #(rf/dispatch [change-handler (target-value %)])}]
+            (for [{:keys [db/id dinsro.spec.users/name]} items]
+              ^{:key id}
               [:option {:value id} name]))]]))
