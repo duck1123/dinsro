@@ -1,16 +1,23 @@
 (ns dinsro.components.forms.account
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.events.accounts :as e.accounts]
+            [dinsro.spec.accounts :as s.accounts]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+(s/def ::name string?)
 (c/reg-field ::name          "Offshore")
-(c/reg-field ::initial-value 1)
-(c/reg-field ::form-shown?   true)
+(c/reg-field ::initial-value 1.0)
 (c/reg-field ::currency-id   nil)
 (c/reg-field ::user-id       nil)
+
+(s/def ::form-shown? boolean?)
+(c/reg-field ::form-shown?   true)
+
 (kf/reg-event-db ::change-currency-id   (fn [db [value]] (assoc db ::currency-id   (int value))))
 (kf/reg-event-db ::change-user-id       (fn [db [value]] (assoc db ::user-id       (int value))))
 (kf/reg-event-db ::change-name          (fn [db [value]] (assoc db ::name          value)))
@@ -25,10 +32,10 @@
  :<- [::currency-id]
  :<- [::user-id]
  (fn-traced [[name initial-value currency-id user-id] _]
-   {:name          name
-    :currency-id   currency-id
-    :user-id       user-id
-    :initial-value initial-value}))
+   {:s.accounts/name          name
+    ::s.accounts/currency-id  currency-id
+    :s.accounts/user-id       user-id
+    :s.accounts/initial-value initial-value}))
 
 (kf/reg-event-fx
  ::submit-clicked
@@ -45,5 +52,5 @@
      [c/text-input        "Name"          ::name          ::change-name]
      [c/number-input      "Initial Value" ::initial-value ::change-initial-value]
      [c/currency-selector "Currency"      ::currency-id   ::change-currency-id]
-     [c/user-selector "User"          ::user-id       ::change-user-id]
+     [c/user-selector     "User"          ::user-id       ::change-user-id]
      [c/primary-button    "Submit"        ::submit-clicked]]]])

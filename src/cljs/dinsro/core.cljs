@@ -4,6 +4,7 @@
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
             [dinsro.components.forms.registration-form :as c.rf]
+            [dinsro.events.authentication :as e.authentication]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.routing :as routing]
@@ -16,7 +17,7 @@
 (kf/reg-event-db
  :status-loaded
  (fn [db [{:keys [identity]}]]
-   (assoc db :authenticate identity)))
+   (assoc db ::e.authentication/auth-id identity)))
 
 (kf/reg-event-fx
  :status-errored

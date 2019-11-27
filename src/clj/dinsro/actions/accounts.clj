@@ -9,8 +9,16 @@
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(s/def :create-handler-valid/params (s/keys :req-un [::s.accounts/name]))
-(s/def :create-handler/params (s/keys :opt-un [::s.accounts/name]))
+(s/def :create-handler-valid/params
+  (s/keys :req-un [::s.accounts/name
+                   ::s.accounts/initial-value
+                   ::s.accounts/user-id
+                   ::s.accounts/currency-id]))
+(s/def :create-handler/params
+  (s/keys :opt-un [::s.accounts/name
+                   ::s.accounts/initial-value
+                   ::s.accounts/user-id
+                   ::s.accounts/currency-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
 (s/def ::create-handler-response (s/keys))
