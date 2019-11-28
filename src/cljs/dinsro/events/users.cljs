@@ -13,7 +13,7 @@
 (rf/reg-sub ::items   (fn [db _] (get db ::items   [])))
 
 (s/def ::item (s/keys ))
-(s/def ::items (s/* ::item))
+(s/def ::items (s/coll-of ::item))
 
 (rf/reg-sub
  ::item

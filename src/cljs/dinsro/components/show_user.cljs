@@ -20,4 +20,4 @@
 (defn-spec show-user vector?
   [user ::s.users/item]
   (let [accounts [{:db/id 7}]]
-    [show-user user accounts]))
+    [show-user- user accounts]))
