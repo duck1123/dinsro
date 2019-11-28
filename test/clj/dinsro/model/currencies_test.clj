@@ -19,7 +19,7 @@
 (def uri "datahike:file:///tmp/file-example2")
 
 (use-fixtures
-  :once
+  :each
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (d/delete-database uri)
@@ -33,12 +33,14 @@
 (deftest create-record-test
   (testing "success"))
 
-(deftest read-record
+(deftest read-record-success
   (testing "success"
     (let [item (m.currencies/mock-record)
           id (:db/id item)
           response (m.currencies/read-record id)]
-      (is (= item response))))
+      (is (= item response)))))
+
+(deftest read-record-not-found
   (testing "not found"
     (let [id (gen/generate (s/gen ::ds/id))
           response (m.currencies/read-record id)]

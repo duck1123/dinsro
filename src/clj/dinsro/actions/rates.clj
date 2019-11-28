@@ -53,7 +53,7 @@
 
 (defn-spec prepare-record (s/nilable ::s.rates/params)
   [params :create-rates-request/params]
-  (when-let [rate (timbre/spy :info (:rate params))]
+  (when-let [rate (:rate params)]
     (let [currency-id (:currency-id params)
           rate (double rate)
           params (-> params
@@ -68,7 +68,7 @@
 
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]
-  (or (let [{params :params} (timbre/spy :info request)]
+  (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.rates/create-record params)]
             (http/ok {:item (m.rates/read-record id)}))))
