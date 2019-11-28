@@ -3,7 +3,9 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.spec.accounts :as s.accounts]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -11,7 +13,7 @@
 (rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
 
 (s/def ::item (s/keys ))
-(s/def ::items (s/coll-of ::item))
+(s/def ::items (s/coll-of ::s.accounts/item))
 
 (comment
   (gen/generate (s/gen ::items))
@@ -22,6 +24,10 @@
   (first (filter #(= (:id %) (:db/id target-item)) items)))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
+
+(defn-spec items-by-user (s/coll-of ::s.accounts/item)
+  [id :ds/id]
+  [])
 
 (defn do-submit-succeeded
   [_ data]
