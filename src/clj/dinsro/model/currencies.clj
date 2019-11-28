@@ -9,7 +9,7 @@
             [taoensso.timbre :as timbre])
   (:import datahike.db.TxReport))
 
-(defn-spec index-ids (s/* ::db/id)
+(defn-spec index-ids (s/coll-of ::ds/id)
   []
   (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
 
@@ -18,7 +18,7 @@
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
 
-(defn-spec create-record ::s.currencies/id
+(defn-spec create-record ::ds/id
   [params ::s.currencies/params]
   (let [params (assoc params :db/id "currency-id")]
     (let [response (d/transact db/*conn* {:tx-data [params]})]
@@ -47,6 +47,7 @@
     (read-record id)))
 
 (comment
+  (index-ids)
   (delete-all)
   (index-records)
   (mock-record)

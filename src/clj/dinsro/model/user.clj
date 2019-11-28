@@ -47,7 +47,7 @@
   [params ::s.users/params]
   (if (nil? (find-id-by-email (::s.users/email params)))
     (let [tempid (d/tempid "user-id")
-          record (prepare-record (assoc params ::ds/id tempid))
+          record (assoc (prepare-record params) :db/id tempid)
           response (d/transact db/*conn* {:tx-data [record]})]
       (get-in response [:tempids tempid]))
     (throw (RuntimeException. "User already exists"))))
@@ -77,8 +77,11 @@
 
 (comment
   (index-ids)
+  (index-records)
 
-  (mock-user)
+  (gen/generate (s/gen ::s.users/params))
+
+  (mock-record)
   (::s.users/email (first (list-users)))
 
   (find-by-email (::s.users/email (first (index-records))))

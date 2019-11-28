@@ -27,3 +27,9 @@
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one
     :db/unique      :db.unique/identity}])
+
+(comment
+  (gen/generate (s/gen ::params))
+  (gen/generate (s/gen ::item))
+
+  )

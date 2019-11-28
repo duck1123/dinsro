@@ -44,10 +44,12 @@
           response (m.currencies/read-record id)]
       (is (nil? response)))))
 
-(deftest index-records
+(deftest index-records-success
   (testing "success"
     (m.currencies/delete-all)
-    (is (= [] (m.currencies/index-records))))
+    (is (= [] (m.currencies/index-records)))))
+
+(deftest index-records-with-records
   (testing "with records"
     (is (not= nil (m.users/mock-record)))
     (let [params (gen/generate (s/gen ::s.currencies/params))
