@@ -1,6 +1,8 @@
 (ns dinsro.spec.accounts
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+            [dinsro.db.core :as db]
+            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]))
 
 (s/def ::name             string?)
@@ -15,22 +17,26 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id      :db-pos/id)
-(s/def ::currency         (s/keys :req [:db/id]))
+(s/def ::currency-id      ::ds/id)
+(s/def ::currency         (s/keys :req [
+                                        ;; ::ds/id
+                                        ]))
 (def currency-spec
   {:db/ident       ::currency
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::user-id          :db-pos/id)
-(s/def ::user             (s/keys :req [:db/id]))
+(s/def ::user-id          ::ds/id)
+(s/def ::user             (s/keys :req [
+                                        ;; ::ds/id
+                                        ]))
 (def user-spec
   {:db/ident       ::user
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
 (s/def ::params           (s/keys :req [::name ::initial-value ::currency ::user]))
-(s/def ::item             (s/keys :req [:db/id ::name ::initial-value ::currency ::user]))
+(s/def ::item             (s/keys :req [::name ::initial-value ::currency ::user]))
 (def item-spec
   {:db/ident ::item
    :db.entity/attrs [::name ::initial-value ::currency ::user]})

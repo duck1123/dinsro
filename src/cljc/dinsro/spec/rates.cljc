@@ -9,14 +9,14 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency (s/keys :req [:db/id]))
+(s/def ::currency (s/keys :req []))
 (def currency-spec
   {:db/ident       ::currency
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
 (s/def ::params (s/keys :req [::rate ::currency]))
-(s/def ::item (s/keys :req [:db/id ::rate ::currency]))
+(s/def ::item (s/keys :req [::rate ::currency]))
 (def item-spec
   {:db/ident ::item
    :db.entity/attrs [::rate ::currency]})

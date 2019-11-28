@@ -9,6 +9,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.model.user :as m.users]
+            [dinsro.specs :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
@@ -39,13 +40,9 @@
           response (m.currencies/read-record id)]
       (is (= item response))))
   (testing "not found"
-    (let [id (gen/generate (s/gen :db-pos/id))
+    (let [id (gen/generate (s/gen ::ds/id))
           response (m.currencies/read-record id)]
       (is (nil? response)))))
-
-(comment
-  (gen/generate (s/gen :db/id))
-  )
 
 (deftest index-records
   (testing "success"
@@ -65,3 +62,7 @@
       (let [response (m.currencies/delete-record id)]
         (is (nil? response))
         (is (nil? (m.currencies/read-record id)))))))
+
+(comment
+  (gen/generate (s/gen ::ds/id))
+  )

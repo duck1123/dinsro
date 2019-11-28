@@ -30,18 +30,17 @@
 
 (defn-spec prepare-record (s/nilable ::s.accounts/params)
   [params :create-handler/params]
-  (when-let [currency-id (timbre/spy :info (some-> (timbre/spy :info params) :currency-id str timbre/spy Integer/parseInt))]
-    (when-let [user-id (timbre/spy :info (some-> params :user-id str Integer/parseInt))]
-      (let [params (timbre/spy :info (-> params
-                        (set/rename-keys param-rename-map)
-                        (select-keys (vals param-rename-map))
-                        (assoc-in [::s.accounts/currency :db/id] currency-id)
-                        (assoc-in [::s.accounts/user :db/id] user-id)))]
+  (when-let [currency-id (some-> params :currency-id str Integer/parseInt)]
+    (when-let [user-id (some-> params :user-id str Integer/parseInt)]
+      (let [params (-> params
+                       (set/rename-keys param-rename-map)
+                       (select-keys (vals param-rename-map))
+                       (assoc-in [::s.accounts/currency :db/id] currency-id)
+                       (assoc-in [::s.accounts/user :db/id] user-id))]
         (if (s/assert ::s.accounts/params params)
           params
           (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
-              nil)
-          )))))
+              nil))))))
 
 (defn-spec create-handler ::create-handler-response
   [{:keys [params session]} ::create-handler-request]
@@ -86,8 +85,6 @@
   (gen/generate (gen/fmap str (s/gen pos-int?)))
   (gen/generate (s/gen :delete-handler-request-params/accountId))
   (gen/generate (s/gen ::delete-handler-request))
-
-
 
   (delete-handler {:path-params {:accountId "s"}})
 

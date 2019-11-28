@@ -3,8 +3,10 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [expound.alpha :as expound]
+            [dinsro.db.core :as db]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.rates :as s.rates]
+            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
@@ -17,7 +19,7 @@
    ;; :currency-id ::s.rates/currency-id
    })
 
-(s/def ::currency-id :db-pos/id)
+(s/def ::currency-id ::ds/id)
 (s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 
@@ -92,7 +94,7 @@
 
 ;; Read
 
-(s/def :read-rates-request/path-params (s/keys :req-un [:db/id]))
+(s/def :read-rates-request/path-params (s/keys :req-un []))
 (s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
 
 (comment
@@ -127,7 +129,7 @@
 
 ;; Delete
 
-(s/def :delete-rates-request-params/id :db-pos/id)
+(s/def :delete-rates-request-params/id ::ds/id)
 (s/def :delete-rates-request/path-params (s/keys :req-un [:delete-rates-request-params/id]))
 (s/def ::delete-handler-request (s/keys :req-un [:delete-rates-request/path-params]))
 

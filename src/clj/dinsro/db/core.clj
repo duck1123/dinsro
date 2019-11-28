@@ -31,20 +31,14 @@
   (let [uri (env :datahike-url)]
     (d/delete-database uri)))
 
-
 (comment
   (delete-database)
   (create-database)
 
   )
 
+;; (s/def ::id     pos-int?)
 
-(s/def :db/id int?)
-(comment
-  (gen/generate (s/gen :db/id))
-  )
-
-(s/def :db-pos/id pos-int?)
-(comment
-  (gen/generate (s/gen :db-pos/id))
-  )
+;; (comment
+;;   (gen/generate (s/gen ::id))
+;;   )

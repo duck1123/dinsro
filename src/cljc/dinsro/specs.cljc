@@ -31,7 +31,7 @@
     non-empty-string-alphanumeric)))
 
 (s/def ::message string?)
-(s/def ::id number? #_(s/with-gen valid-uuid-str? uuid-str-gen))
+(s/def ::id pos-int? #_(s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def ::username string?)
 (s/def ::user-id number?)
 (s/def ::name string?)

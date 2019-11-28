@@ -13,9 +13,10 @@
 (s/def ::item (s/keys :req [::name ::email ::password-hash]))
 
 (def schema
-  [{:db/ident       ::id
-    :db/valueType   :db.type/long
-    :db/cardinality :db.cardinality/one}
+  [
+   ;; {:db/ident       ::id
+   ;;  :db/valueType   :db.type/long
+   ;;  :db/cardinality :db.cardinality/one}
    {:db/ident       ::name
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}

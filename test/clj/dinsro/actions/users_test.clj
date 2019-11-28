@@ -57,7 +57,7 @@
       (are [key] (= (get params key) (get-in response [:body key]))
         :id :email)))
   (testing "when not found"
-    (let [id       (gen/generate (s/gen :db/id))
+    (let [id       (gen/generate (s/gen ::ds/id))
           request  {:path-params {:userId id}}
           response (a.users/read-handler request)]
       (is (= (:status response) status/not-found) "Should return a not-found response"))))

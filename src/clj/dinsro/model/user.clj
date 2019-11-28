@@ -5,6 +5,7 @@
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.users :as s.users]
+            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
@@ -26,14 +27,14 @@
         (dissoc ::s.users/password))))
 
 (defn-spec read-record (s/nilable ::s.users/item)
-  [user-id :db/id]
+  [user-id ::ds/id]
   (d/pull @db/*conn* attribute-list user-id))
 
 (defn-spec read-records (s/coll-of (s/nilable ::s.users/item))
-  [ids (s/coll-of :db/id)]
+  [ids (s/coll-of ::ds/id)]
   (d/pull-many @db/*conn* attribute-list ids))
 
-(defn-spec find-id-by-email (s/nilable :db/id)
+(defn-spec find-id-by-email (s/nilable ::ds/id)
   [email ::s.users/email]
   (ffirst (d/q find-by-email-query @db/*conn* email)))
 
@@ -42,16 +43,16 @@
   (when-let [id (find-id-by-email email)]
     (read-record id)))
 
-(defn-spec create-record :db/id
+(defn-spec create-record ::ds/id
   [params ::s.users/params]
   (if (nil? (find-id-by-email (::s.users/email params)))
     (let [tempid (d/tempid "user-id")
-          record (prepare-record (assoc params :db/id tempid))
+          record (prepare-record (assoc params ::ds/id tempid))
           response (d/transact db/*conn* {:tx-data [record]})]
       (get-in response [:tempids tempid]))
     (throw (RuntimeException. "User already exists"))))
 
-(defn-spec index-ids (s/coll-of :db/id)
+(defn-spec index-ids (s/coll-of ::ds/id)
   []
   (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
 
@@ -60,7 +61,7 @@
   (read-records (index-ids)))
 
 (defn-spec delete-record any?
-  [user-id :db/id]
+  [user-id ::ds/id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity user-id]]}))
 
 (defn-spec delete-all nil?

@@ -8,6 +8,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.account :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.specs :as ds]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
@@ -43,7 +44,7 @@
 
 (deftest read-record
   (testing "not found"
-    (let [id (gen/generate (s/gen :db/id))]
+    (let [id (gen/generate (s/gen ::ds/id))]
       (is (= nil (m.accounts/read-record id)))))
   (testing "found"
     (let [record (m.accounts/mock-record)
