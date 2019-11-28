@@ -24,12 +24,11 @@
   [items [_ target-item]]
   (first (filter #(= (:id %) (:db/id target-item)) items)))
 
-(rf/reg-sub ::item :<- [::items] sub-item)
-
 (defn-spec items-by-user (s/coll-of ::s.accounts/item)
   [id ::ds/id]
-  [])
+  (gen/generate (s/gen ::items)))
 
+(rf/reg-sub ::item :<- [::items] sub-item)
 (rf/reg-sub ::items-by-user items-by-user)
 
 (defn do-submit-succeeded

@@ -42,6 +42,18 @@
  (fn-traced [_ _]
   {:dispatch [::e.accounts/do-submit @(rf/subscribe [::account-data])]}))
 
+(defn create-user-account
+  []
+  [:div
+   [:p "Create User Account"]
+   [:form.form
+    [c/text-input        "Name"          ::name          ::change-name]
+    [c/number-input      "Initial Value" ::initial-value ::change-initial-value]
+    [c/currency-selector "Currency"      ::currency-id   ::change-currency-id]
+    #_[c/user-selector     "User"          ::user-id       ::change-user-id]
+    [c/primary-button    "Submit"        ::submit-clicked]]
+   ])
+
 (defn new-account-form
   []
   [:<>
