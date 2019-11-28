@@ -12,18 +12,18 @@
   [params ::s.accounts/params]
   params)
 
-(defn-spec create-record ::s.accounts/id
+(defn-spec create-record :db/id
   [params ::s.accounts/params]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "account-id")]})]
     (get-in response [:tempids "account-id"])))
 
 (defn-spec read-record (s/nilable ::s.accounts/item)
-  [id ::s.accounts/id]
+  [id :db/id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.accounts/name)
       record)))
 
-(defn-spec index-ids (s/* ::s.accounts/id)
+(defn-spec index-ids (s/* :db/id)
   []
   (map first (d/q '[:find ?e :where [?e ::s.accounts/name _]] @db/*conn*)))
 

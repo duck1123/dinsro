@@ -43,7 +43,7 @@
 
 (deftest read-record
   (testing "not found"
-    (let [id (gen/generate (s/gen ::s.accounts/id))]
+    (let [id (gen/generate (s/gen :db/id))]
       (is (= nil (m.accounts/read-record id)))))
   (testing "found"
     (let [record (m.accounts/mock-record)
