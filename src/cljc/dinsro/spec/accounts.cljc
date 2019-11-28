@@ -10,7 +10,7 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::initial-value    double?)
+(s/def ::initial-value (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 (def initial-value-spec
   {:db/ident       ::initial-value
    :db/valueType   :db.type/double
@@ -48,6 +48,8 @@
    #_item-spec])
 
 (comment
+  (gen/generate (s/gen ::initial-value))
+
   (gen/generate (s/gen ::item))
 
   )

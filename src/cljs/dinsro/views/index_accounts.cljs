@@ -4,6 +4,7 @@
             [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.events.accounts :as e.accounts]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -17,11 +18,11 @@
  {:params #(when (= (get-in % [:data :name]) :index-accounts-page) true)
   :start [::init-page]})
 
-(defn page
+(defn-spec page vector?
   []
   (let [accounts @(rf/subscribe [::e.accounts/items])]
     [:section.section>div.container>div.content
      [:h1 "Index Accounts"]
-     [new-account-form]
+     #_[new-account-form]
      [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
      [index-accounts accounts]]))
