@@ -129,22 +129,19 @@
 
 ;; Delete
 
-(s/def :delete-rates-request-params/id ::ds/id)
+(s/def :delete-rates-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 (s/def :delete-rates-request/path-params (s/keys :req-un [:delete-rates-request-params/id]))
 (s/def ::delete-handler-request (s/keys :req-un [:delete-rates-request/path-params]))
 
-(comment
-  (gen/generate (s/gen ::delete-handler-request))
-  )
-
 (s/def ::delete-handler-response (s/keys))
-
-(comment
-  (gen/generate (s/gen ::delete-handler-response))
-  )
 
 (defn-spec delete-handler ::delete-handler-response
   [request ::delete-handler-request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (m.rates/delete-record id)
     (http/ok {:id id})))
+
+(comment
+  (gen/generate (s/gen ::delete-handler-request))
+  (gen/generate (s/gen ::delete-handler-response))
+  )

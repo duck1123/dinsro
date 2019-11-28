@@ -72,6 +72,13 @@
         (is (= status/ok (:status response)))
         (is (nil? (m.currencies/read-record id)))))))
 
+(deftest read-handler-success
+  (let [currency (m.currencies/mock-record)
+        request {:path-params {:id (str (:db/id currency))}}
+        response (a.currencies/read-handler request)]
+    (is (= status/ok (:status response)))
+    (is (= currency (get-in response [:body :item])))))
+
 (comment
   (gen-spec ::a.currencies/create-handler-request)
 

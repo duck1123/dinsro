@@ -4,6 +4,7 @@
             [clojure.spec.gen.alpha :as gen]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
@@ -91,4 +92,46 @@
 
   (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request))
   (prepare-record (:params (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request))))
+  )
+
+;; Read
+
+(s/def :read-currency-request-path-params/id (s/with-gen
+                                               string?
+                                               #(gen/fmap str (s/gen pos-int?))))
+(s/def :read-currency-request/path-params (s/keys :req-un [:read-currency-request-path-params/id]))
+(s/def ::read-handler-request (s/keys :req-un [:read-currency-request/path-params]))
+
+(s/def :read-currency-response-body/item ::s.currencies/item)
+(s/def :read-currency-response-success/body
+  (s/keys :req-un [:read-currency-response-body/item]))
+(s/def ::read-handler-response-success
+  (s/keys :req-un [:read-currency-response-success/body]))
+
+(s/def :read-currency-response-not-found-body/status keyword?)
+(s/def :read-currency-response-not-found/body
+  (s/keys :req-un [:read-currency-response-not-found-body/status]))
+(s/def ::read-handler-response-not-found
+  (s/keys :req-un [:read-currency-response-not-found/body]))
+
+(s/def ::read-handler-response
+  (s/or :success   ::read-handler-response-success
+        :not-found ::read-handler-response-not-found))
+
+(defn-spec read-handler ::read-handler-response
+  [request ::read-handler-request]
+  (let [id (some-> request :path-params :id Integer/parseInt)]
+    (let [item (m.currencies/read-record id)]
+      (http/ok {:item item}))))
+
+(comment
+
+  (Integer/parseInt (str 1))
+
+  (gen/generate (s/gen ::read-handler-request))
+  (gen/generate (s/gen ::read-handler-response-success))
+  (gen/generate (s/gen ::read-handler-response-not-found))
+  (gen/generate (s/gen ::read-handler-response))
+
+  (read-handler {:path-params {:id "45"}})
   )

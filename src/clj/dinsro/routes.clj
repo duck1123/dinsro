@@ -64,7 +64,8 @@
     ["/currencies"
      [""                {:get    a.currencies/index-handler
                          :post   a.currencies/create-handler}]
-     ["/:id"            {:delete a.currencies/delete-handler}]]
+     ["/:id"            {:delete a.currencies/delete-handler
+                         :get    a.currencies/read-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
     ["/rates"
      [""                {:get    a.rates/index-handler

@@ -61,20 +61,20 @@
     (http/ok account)
     (http/not-found {})))
 
-(s/def :delete-handler-request-params/accountId (s/with-gen
-                                                  string?
-                                                  #(gen/fmap str (s/gen pos-int?))))
-(s/def :delete-handler-request/path-params (s/keys :req-un [:delete-handler-request-params/accountId]))
+(s/def :delete-handler-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
+(s/def :delete-handler-request/path-params (s/keys :req-un [:delete-handler-request-params/id]))
 (s/def ::delete-handler-request (s/keys :req-un [:delete-handler-request/path-params]))
 
-(defn-spec delete-handler any?
-  [{{:keys [accountId]} :path-params} ::delete-handler-request]
-  (try
-    (let [id (Integer/parseInt accountId)]
-      (m.accounts/delete-record id))
-    (http/ok {:status "ok"})
-    (catch NumberFormatException e
-      (http/bad-request {:input :invalid}))))
+(s/def ::delete-handler-response-invalid (s/keys))
+(s/def ::delete-handler-response-success (s/keys))
+(s/def ::delete-handler-response (s/keys))
+
+(defn-spec delete-handler ::delete-handler-response
+  [{{:keys [id]} :path-params} ::delete-handler-request]
+  (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e))]
+    (let [response (m.accounts/delete-record id)]
+      (http/ok {:status "ok"}))
+    (http/bad-request {:input :invalid})))
 
 (comment
 
@@ -85,6 +85,7 @@
   (gen/generate (gen/fmap str (s/gen pos-int?)))
   (gen/generate (s/gen :delete-handler-request-params/accountId))
   (gen/generate (s/gen ::delete-handler-request))
+  (gen/generate (s/gen ::delete-handler-response))
 
   (delete-handler {:path-params {:accountId "s"}})
 
