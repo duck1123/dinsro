@@ -1,7 +1,6 @@
 (ns dinsro.spec.accounts
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [dinsro.db.core :as db]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]))
 
