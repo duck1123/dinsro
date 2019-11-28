@@ -27,16 +27,16 @@
    (assoc db ::items users)))
 
 (kf/reg-event-db
- :filter-records
+ ::filter-records
  (fn [db [_ id]]
    (->> @(rf/subscribe [::items])
-        (keep #(when (not= (:id %) id) %))
+        (keep #(when (not= (:db/id %) id) %))
         (assoc db ::items))))
 
 (kf/reg-event-fx
  ::do-delete-record-success
  (fn [cofx [{:keys [id]}]]
-   {:dispatch [:filter-records id]}))
+   {:dispatch [::filter-records id]}))
 
 (kf/reg-event-fx
  ::do-fetch-records-failed
