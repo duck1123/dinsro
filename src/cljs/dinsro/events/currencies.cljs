@@ -81,3 +81,24 @@
     :on-failure      [::do-delete-record-failed]}})
 
 (kf/reg-event-fx ::do-delete-record do-delete-record)
+
+(defn do-fetch-record-success
+  []
+  {})
+
+(defn do-fetch-record-failed
+  []
+  {})
+
+(defn do-fetch-record
+  [_ [id]]
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-show-currency {:id id}])
+    :method          :get
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-fetch-record-success]
+    :on-failure      [::do-fetch-record-failed]}})
+
+(kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
+(kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
+(kf/reg-event-fx ::do-fetch-record         do-fetch-record)
