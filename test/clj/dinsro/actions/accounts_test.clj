@@ -41,12 +41,14 @@
           {{:keys [items]} :body} response]
       (is (= [user] items)))))
 
-(deftest create-handler
+(deftest create-handler-valid
   (testing "success"
     (let [request (gen/generate (s/gen ::a.accounts/create-handler-request-valid))
           response (a.accounts/create-handler request)]
       (is (= status/ok (:status response)))
-      #_(is (= nil response))))
+      #_(is (= nil response)))))
+
+(deftest create-handler-invalid
   (testing "invalid params"
     (let [request {:params {}}
           response (a.accounts/create-handler request)]

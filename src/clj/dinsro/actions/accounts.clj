@@ -2,6 +2,7 @@
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+            [expound.alpha :as expound]
             [dinsro.model.account :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
@@ -24,22 +25,30 @@
 (s/def ::create-handler-response (s/keys))
 
 (def param-rename-map
-  {:name ::s.accounts/name})
+  {:name          ::s.accounts/name
+   :initial-value ::s.accounts/initial-value})
 
 (defn-spec prepare-record (s/nilable ::s.accounts/params)
   [params :create-handler/params]
-  (let [params (-> params
-                   (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map)))]
-    (when (s/valid? ::s.accounts/params params)
-      params)))
+  (when-let [currency-id (timbre/spy :info (some-> (timbre/spy :info params) :currency-id str timbre/spy Integer/parseInt))]
+    (when-let [user-id (timbre/spy :info (some-> params :user-id str Integer/parseInt))]
+      (let [params (timbre/spy :info (-> params
+                        (set/rename-keys param-rename-map)
+                        (select-keys (vals param-rename-map))
+                        (assoc-in [::s.accounts/currency :db/id] currency-id)
+                        (assoc-in [::s.accounts/user :db/id] user-id)))]
+        (if (s/assert ::s.accounts/params params)
+          params
+          (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
+              nil)
+          )))))
 
 (defn-spec create-handler ::create-handler-response
   [{:keys [params session]} ::create-handler-request]
   (or (let [user-id 1]
         (when-let [params (prepare-record params)]
-          (let [item (m.accounts/create-record params #_(assoc params :user-id user-id))]
-            (http/ok {:item item}))))
+          (let [id (m.accounts/create-record params #_(assoc params :user-id user-id))]
+            (http/ok {:item (m.accounts/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 (defn index-handler
@@ -69,11 +78,16 @@
       (http/bad-request {:input :invalid}))))
 
 (comment
-  (prepare-record {:name "foo"})
+
+  (prepare-record {::s.accounts/name "foo"})
+  (gen/generate (s/gen ::create-handler-request-valid))
+  (prepare-record (gen/generate (s/gen ::create-handler-request-valid)))
 
   (gen/generate (gen/fmap str (s/gen pos-int?)))
   (gen/generate (s/gen :delete-handler-request-params/accountId))
   (gen/generate (s/gen ::delete-handler-request))
+
+
 
   (delete-handler {:path-params {:accountId "s"}})
 
