@@ -11,14 +11,13 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::items (fn [db _] (get db ::items [])))
-(s/def ::items (s/coll-of ::s.rates/item))
-
+(s/def ::items                   (s/coll-of ::s.rates/item))
+(rf/reg-sub ::items              (fn [db _] (get db ::items [])))
 (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
 
 (defn-spec items-by-currency ::items
   [items ::items [_ {:keys [db/id]}] ::items-by-currency-event]
-  (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
+  (filter #(= (get-in (timbre/spy :info %) [::s.rates/currency :db/id]) id) items))
 
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 

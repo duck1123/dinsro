@@ -27,10 +27,12 @@
      [:p "Currency: " [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])} currency-id]]
      [:a.button {:on-click #(rf/dispatch [::e.rates/do-delete-record item])} (:delete strings)]]))
 
-(defn index-rates
-  [items]
-  (let [strings {:no-rates "No Rates"}]
-    (if-not (seq items)
-      [:p (:no-rates strings)]
-      (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
-           (into [:div])))))
+(defn-spec index-rates vector?
+  [items (s/coll-of ::s.rates/item)]
+  [:<>
+   [:pre (str items)]
+   (let [strings {:no-rates "No Rates"}]
+     (if-not (seq items)
+       [:p (:no-rates strings)]
+       (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
+            (into [:div]))))])

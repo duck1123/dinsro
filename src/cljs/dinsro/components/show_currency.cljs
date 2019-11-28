@@ -8,7 +8,7 @@
   [currency]
   (let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
     [:div
-     [:p (str currency)]
+     [:pre (str currency)]
      [:p "Name:" (::s.currencies/name currency)]
      [:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])} "Load"]
      [index-rates rates]]))

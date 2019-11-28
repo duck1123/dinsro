@@ -42,17 +42,26 @@
  (fn-traced [_ _]
   {:dispatch [::e.accounts/do-submit @(rf/subscribe [::account-data])]}))
 
+(def strings
+  {:name     "Name"
+   :initial-value "Initial Value"
+   :currency "Currency"
+   :submit "Submit"
+   :user "User"
+   }
+  )
+
 (defn create-user-account
   []
   [:div
    [:p "Create User Account"]
+   [:pre (str @(rf/subscribe [::account-data]))]
    [:form.form
-    [c/text-input        "Name"          ::name          ::change-name]
-    [c/number-input      "Initial Value" ::initial-value ::change-initial-value]
-    [c/currency-selector "Currency"      ::currency-id   ::change-currency-id]
+    [c/text-input        (:name strings)          ::name          ::change-name]
+    [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
+    [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
     #_[c/user-selector     "User"          ::user-id       ::change-user-id]
-    [c/primary-button    "Submit"        ::submit-clicked]]
-   ])
+    [c/primary-button    (:submit strings)        ::submit-clicked]]])
 
 (defn new-account-form
   []
@@ -61,8 +70,8 @@
    [:div.section {:class (when-not @(rf/subscribe [::form-shown?]) "is-hidden")}
     [:pre (str @(rf/subscribe [::account-data]))]
     [:form.form
-     [c/text-input        "Name"          ::name          ::change-name]
-     [c/number-input      "Initial Value" ::initial-value ::change-initial-value]
-     [c/currency-selector "Currency"      ::currency-id   ::change-currency-id]
-     [c/user-selector     "User"          ::user-id       ::change-user-id]
-     [c/primary-button    "Submit"        ::submit-clicked]]]])
+     [c/text-input        (:name strings)          ::name          ::change-name]
+     [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
+     [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
+     [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
+     [c/primary-button    (:submit strings)        ::submit-clicked]]]])

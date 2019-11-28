@@ -23,6 +23,7 @@
   [currencies]
   [:div
    [:p "Index Currencies"]
+   [:pre (str currencies)]
    (if-not (seq currencies)
      [:div "No Currencies"]
      (into
