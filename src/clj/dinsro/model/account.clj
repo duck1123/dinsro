@@ -46,3 +46,10 @@
   (let [params (gen/generate (s/gen ::s.accounts/params))
         id (create-record params)]
     (read-record id)))
+
+(comment
+  (index-ids)
+  (index-records)
+  (delete-all)
+  (mock-record)
+  )
