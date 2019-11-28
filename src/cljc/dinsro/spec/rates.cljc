@@ -18,6 +18,12 @@
 (s/def ::params (s/keys :req [::rate ::currency]))
 (s/def ::prepared-params (s/keys :req [::rate ::currency]))
 (s/def ::item (s/keys :req [:db/id ::rate ::currency]))
+(def item-spec
+  {:db/ident ::item
+   :db.entity/attrs [::rate ::currency]})
+
+(def schema
+  [rate-spec currency-spec itme-spec])
 
 (comment
   (gen/generate (s/gen ::currency))
@@ -26,6 +32,3 @@
   (gen/generate (s/gen ::prepared-params))
   (gen/generate (s/gen ::item))
   )
-
-(def schema
-  [rate-spec currency-spec])
