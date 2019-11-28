@@ -12,8 +12,8 @@
 (s/def ::name string?)
 (c/reg-field ::name          "Offshore")
 (c/reg-field ::initial-value 1.0)
-(c/reg-field ::currency-id   nil)
-(c/reg-field ::user-id       nil)
+(c/reg-field ::currency-id   "")
+(c/reg-field ::user-id       "")
 
 (s/def ::form-shown? boolean?)
 (c/reg-field ::form-shown?   true)

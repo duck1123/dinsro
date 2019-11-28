@@ -1,5 +1,6 @@
 (ns dinsro.components.navbar
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+  (:require [clojure.spec.alpha :as s]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.events.authentication :as e.authentication]
             [kee-frame.core :as kf]
@@ -9,47 +10,49 @@
 
 ;; Subscriptions
 
-(rf/reg-sub :auth-id         (fn [db _] (get db ::e.authentication/auth-id)))
-(rf/reg-sub :navbar-expanded (fn [db _] (get db :navbar-expanded false)))
+(rf/reg-sub ::auth-id   (fn [db _] (get db ::e.authentication/auth-id)))
+
+(s/def ::expanded? boolean?)
+(rf/reg-sub ::expanded? (fn [db _] (get db ::expanded? false)))
 
 ;; Events
 
-(kf/reg-event-db
- :toggle-navbar
- (fn-traced [db _]
-   (update db :navbar-expanded not)))
+(defn toggle-navbar
+  [db _]
+  (update db ::expanded? not))
 
-(kf/reg-event-fx
- :nav-link-activated
- (fn-traced
-   [{:keys [db]} _]
-   {:dispatch [:toggle-navbar]}))
+(defn nav-link-activated
+  [{:keys [db]} _]
+  {:dispatch [::toggle-navbar]})
+
+(kf/reg-event-db ::toggle-navbar toggle-navbar)
+(kf/reg-event-fx ::nav-link-activated nav-link-activated)
 
 ;; Components
 
 (defn nav-link [title page]
   [:a.navbar-item
    {:href   (kf/path-for [page])
-    :on-click #(rf/dispatch [:nav-link-activated])
+    :on-click #(rf/dispatch [::nav-link-activated])
     :class (when (= page @(rf/subscribe [:nav/page])) "is-active")}
    title])
 
 (defn nav-burger
   []
-  (let [expanded? @(rf/subscribe [:navbar-expanded])]
+  (let [expanded? @(rf/subscribe [::expanded?])]
     [:div.navbar-burger.burger
      {:role :button
       :aria-label :menu
       :aria-expanded false
-      :on-click #(rf/dispatch [:toggle-navbar])
+      :on-click #(rf/dispatch [::toggle-navbar])
       :class (when expanded? :is-active)}
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]]))
 
 (defn navbar []
-  (let [auth-id @(rf/subscribe [:auth-id])
-        expanded? @(rf/subscribe [:navbar-expanded])]
+  (let [auth-id @(rf/subscribe [::auth-id])
+        expanded? @(rf/subscribe [::expanded?])]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
       [:a.navbar-item

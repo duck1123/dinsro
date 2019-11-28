@@ -70,13 +70,14 @@
        (assoc ::delete-record-failed true)
        (assoc ::delete-record-failure-id id))))
 
-(kf/reg-event-fx
- ::do-delete-record
- (fn [_ [currency]]
-   {:http-xhrio
-    {:uri             (kf/path-for [:api-show-currency {:id (:db/id currency)}])
-     :method          :delete
-     :format          (ajax/json-request-format)
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-delete-record-success]
-     :on-failure      [::do-delete-record-failed]}}))
+(defn do-delete-record
+  [_ [currency]]
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-show-currency {:id (:db/id currency)}])
+    :method          :delete
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-delete-record-success]
+    :on-failure      [::do-delete-record-failed]}})
+
+(kf/reg-event-fx ::do-delete-record do-delete-record)
