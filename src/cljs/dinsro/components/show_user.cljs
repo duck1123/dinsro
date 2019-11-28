@@ -5,7 +5,7 @@
             [dinsro.spec.users :as s.users]
             [orchestra.core :refer [defn-spec]]))
 
-(defn-spec show-user- vector?
+(defn-spec show-user vector?
   [user ::s.users/item
    accounts (s/coll-of ::s.accounts/item)]
   (let [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email]} user]
@@ -17,7 +17,7 @@
      [:pre (str accounts)]
      [index-accounts accounts]]))
 
-(defn-spec show-user vector?
-  [user ::s.users/item]
-  (let [accounts [{:db/id 7}]]
-    [show-user- user accounts]))
+;; (defn-spec show-user vector?
+;;   [user ::s.users/item]
+;;   (let [accounts [{:db/id 7}]]
+;;     [show-user- user accounts]))

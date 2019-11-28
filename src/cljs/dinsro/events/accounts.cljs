@@ -4,6 +4,7 @@
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
@@ -26,8 +27,10 @@
 (rf/reg-sub ::item :<- [::items] sub-item)
 
 (defn-spec items-by-user (s/coll-of ::s.accounts/item)
-  [id :ds/id]
+  [id ::ds/id]
   [])
+
+(rf/reg-sub ::items-by-user items-by-user)
 
 (defn do-submit-succeeded
   [_ data]

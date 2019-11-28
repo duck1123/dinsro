@@ -5,6 +5,7 @@
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.users :as e.users]
             [dinsro.specs :as ds]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
 (s/def :show-user-view/id          pos-int?)
@@ -18,4 +19,6 @@
         accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
     [:section.section>div.container>div.content
      [:h1 "Show User"]
-     [show-user user]]))
+     (if (nil? user)
+       [:p "User not loaded"]
+       [show-user user accounts])]))
