@@ -30,34 +30,35 @@
       (f))))
 
 (deftest create-record-response-test
-  (let [registration-data (gen/generate (s/gen ::s.users/params))]
-    (let [response (a.users/create-handler {:params registration-data})]
-      (is (= (:status response) status/ok)))))
+  (let [registration-data (gen/generate (s/gen ::s.users/params))
+        response (a.users/create-handler {:params registration-data})]
+    (is (= (:status response) status/ok))))
 
-(deftest index-handler-test
-  (let [path "/users"]
-   (testing "successful"
-     (let [request (mock/request :get path)]
-       (let [response (a.users/index-handler request)]
-         (is (= (:status response) status/ok)))))
-   (testing "with record"
-     (let [user     (m.users/mock-record)
-           request  (mock/request :get path)
-           response (a.users/index-handler request)]
-       (is (= (:status response) status/ok))
-       (is (= 1 (count (:body response))))))))
+(deftest index-handler-empty
+  (let [path "/users"
+        request (mock/request :get path)
+        response (a.users/index-handler request)]
+    (is (= (:status response) status/ok))))
 
-(deftest read-handler
-  (testing "when found"
-    (let [params                (gen/generate (s/gen ::s.users/params))
-          id                    (m.users/create-record params)
-          request               {:path-params {:userId id}}
-          response              (a.users/read-handler request)]
-      (is (= status/ok (:status response)))
-      (are [key] (= (get params key) (get-in response [:body key]))
-        :id :email)))
-  (testing "when not found"
-    (let [id       (gen/generate (s/gen ::ds/id))
-          request  {:path-params {:userId id}}
-          response (a.users/read-handler request)]
-      (is (= (:status response) status/not-found) "Should return a not-found response"))))
+(deftest index-handler-with-records
+  (let [path "/users"
+        user (m.users/mock-record)
+        request (mock/request :get path)
+        response (a.users/index-handler request)]
+    (is (= (:status response) status/ok))
+    (is (= 1 (count (:body response))))))
+
+(deftest read-handler-success
+  (let [params (gen/generate (s/gen ::s.users/params))
+        id (m.users/create-record params)
+        request {:path-params {:id (str id)}}
+        response (a.users/read-handler request)]
+    (is (= status/ok (:status response)) "Should return an ok status")
+    (are [key] (= (get params key) (get-in response [:body key]))
+      :id :email)))
+
+(deftest read-handler-not-found
+  (let [id (gen/generate (s/gen ::ds/id))
+        request {:path-params {:id (str id)}}
+        response (a.users/read-handler request)]
+    (is (= (:status response) status/not-found) "Should return a not-found response")))
