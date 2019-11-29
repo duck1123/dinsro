@@ -33,9 +33,9 @@
  :<- [::user-id]
  (fn-traced [[name initial-value currency-id user-id] _]
    {::s.accounts/name          name
-    ::s.accounts/currency-id  currency-id
+    ::s.accounts/currency-id   currency-id
     ::s.accounts/user-id       user-id
-    ::s.accounts/initial-value initial-value}))
+    ::s.accounts/initial-value (.parseFloat js/Number initial-value)}))
 
 (kf/reg-event-fx
  ::submit-clicked
