@@ -17,9 +17,9 @@
      [:p "Id: " id]
      [:p "name: " name]
      [:p "email: " email]
-     [:pre (str accounts)]
-     [create-user-account]
-     [:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
+     #_[:pre (str accounts)]
+     #_[create-user-account]
+     #_[:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
      [index-accounts accounts]]))
 
 ;; (defn-spec show-user vector?

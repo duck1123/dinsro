@@ -25,8 +25,9 @@
   (first (filter #(= (:id %) (:db/id target-item)) items)))
 
 (defn-spec items-by-user (s/coll-of ::s.accounts/item)
-  [id ::ds/id]
-  (gen/generate (s/gen ::items)))
+  [db any?
+   [_ id] any?]
+  (::items db))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 (rf/reg-sub ::items-by-user items-by-user)

@@ -12,9 +12,9 @@
  ::init-page
  (fn-traced [{:keys [db]} _]
    {:db (-> db
-            (assoc :failed false)
+            #_(assoc :failed false)
             (assoc ::e.users/items [])
-            (assoc ::loading false))
+            #_(assoc ::loading false))
     :dispatch [::e.users/do-fetch-index]}))
 
 (kf/reg-controller
