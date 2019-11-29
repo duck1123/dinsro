@@ -129,9 +129,16 @@
 
 ;; Index
 
+(s/def ::do-fetch-index-state keyword?)
+(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+
 (defn do-fetch-index-success
-  [db [{:keys [items]}]]
-  (assoc db ::items items))
+  [cofx event]
+  (let [{:keys [db]} cofx
+        [{:keys [items]}] event]
+    {:db (-> db
+             (assoc ::items items)
+             (assoc ::do-fetch-index-state :loaded))}))
 
 (s/def ::do-fetch-index-cofx (s/keys))
 (s/def ::do-fetch-index-event (s/keys))
@@ -153,6 +160,6 @@
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}})
 
-(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)

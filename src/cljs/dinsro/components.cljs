@@ -5,6 +5,12 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+(def strings {})
+
+(defn l
+  [keyword]
+  (get strings keyword (str "Missing string: " keyword)))
+
 (def target-value #(-> % .-target .-value))
 
 (defn reg-field
@@ -45,33 +51,51 @@
      {:on-click #(rf/dispatch [click-handler])}
      label]]])
 
+(defn currency-selector-
+  [label value on-change currencies]
+  [:div.field>div.control
+   [:label.label label]
+   [:div.select
+    (into [:select {:value value :on-change on-change}]
+          (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
+            ^{:key name}
+            [:option {:value id} name]))]])
+
 (defn currency-selector
   [label field change-handler]
-  (let [currencies @(rf/subscribe [::e.currencies/items])]
-    (if (nil? currencies)
-      [:p "Currencies not loaded"]
-      [:div.field>div.control
-       [:label.label label]
-       [:div.select
-        (into [:select {:value @(rf/subscribe [field])
-                        :on-change #(rf/dispatch [change-handler (target-value %)])}]
-              (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
-                ^{:key name}
-                [:option {:value id} name]))]])))
+  (let [currencies @(rf/subscribe [::e.currencies/items])
+        state @(rf/subscribe [::e.currencies/do-fetch-index-state])
+        value @(rf/subscribe [field])]
+    [:<>
+     [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
+      (str "Fetch Currencies: " state)]
+     (condp = state
+       :invalid [:p "Invalid"]
+       :loaded (let [on-change #(rf/dispatch [change-handler (target-value %)])]
+                 [currency-selector- label value on-change currencies])
+       [:p "Unknown state"])]))
+
+(defn user-selector-
+  [label field change-handler items]
+  [:div.field>div.control
+   [:label.label label]
+   [:div.select
+    (into [:select {:value @(rf/subscribe [field])
+                    :on-change #(rf/dispatch [change-handler (target-value %)])}]
+          (for [{:keys [db/id dinsro.spec.users/name]} items]
+            ^{:key id}
+            [:option {:value id} name]))]])
 
 (defn user-selector
   [label field change-handler]
-  (let [items @(rf/subscribe [::e.users/items])]
-    (if (nil? items)
-      [:p "Users not loaded"]
-      [:div.field>div.control
-            [:label.label label]
-            [:div.select
-             (into [:select {:value @(rf/subscribe [field])
-                             :on-change #(rf/dispatch [change-handler (target-value %)])}]
-                   (for [{:keys [db/id dinsro.spec.users/name]} items]
-                     ^{:key id}
-                     [:option {:value id} name]))]])))
+  (let [items @(rf/subscribe [::e.users/items])
+        state @(rf/subscribe [::e.users/do-fetch-index-state])]
+    [:<>
+     [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])} (str "Fetch Users: " state)]
+     (condp = state
+       :invalid [:p "Invalid"]
+       :loaded  [user-selector- label field change-handler items]
+       [:p "Unknown"])]))
 
 (defn filter-page
   [page]

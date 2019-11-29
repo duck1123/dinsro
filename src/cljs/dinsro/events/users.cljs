@@ -23,11 +23,6 @@
    (first (filter #(= (:db/id %) id) items))))
 
 (kf/reg-event-db
- ::do-fetch-records-success
- (fn [db [{users :users}]]
-   (assoc db ::items users)))
-
-(kf/reg-event-db
  ::filter-records
  (fn [db [_ id]]
    (->> @(rf/subscribe [::items])
@@ -103,21 +98,32 @@
 
 ;; Index
 
-(kf/reg-event-fx
- ::do-fetch-records-failed
- (fn [{:keys [db]} [response]]
-   (let [s (:status response)]
-     (if (= s 403)
-       {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}
-       {:db (assoc db :failed true)}))))
+(s/def ::do-fetch-index-state keyword?)
+(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
-(kf/reg-event-fx
- ::do-fetch-records
- (fn [_ _]
-   {:http-xhrio
-    {:uri             (kf/path-for [:api-index-users])
-     :method          :get
-     :timeout         8000
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-fetch-records-success]
-     :on-failure      [::do-fetch-records-failed]}}))
+(defn do-fetch-index-success
+  [db [{users :users}]]
+  (-> db
+      (assoc ::items users)
+      (assoc ::do-fetch-index-state :loaded)))
+
+(defn do-fetch-index-failed
+  [{:keys [db]} [response]]
+  (let [s (:status response)]
+    (if (= s 403)
+      {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}
+      {:db (assoc db :failed true)})))
+
+(defn do-fetch-index
+  [_ _]
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-index-users])
+    :method          :get
+    :timeout         8000
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-fetch-index-success]
+    :on-failure      [::do-fetch-index-failed]}})
+
+(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+(kf/reg-event-fx ::do-fetch-index do-fetch-index)
