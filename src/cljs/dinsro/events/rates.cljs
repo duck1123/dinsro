@@ -17,7 +17,7 @@
 
 (defn-spec items-by-currency ::items
   [items ::items [_ {:keys [db/id]}] ::items-by-currency-event]
-  (filter #(= (get-in (timbre/spy :info %) [::s.rates/currency :db/id]) id) items))
+  (filter #(= (get-in (timbre/spy :info %) [::s.rates/currency :db/id]) id) (timbre/spy :info items)))
 
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 

@@ -33,9 +33,10 @@
   [{{:keys [id]} :path-params} ::view-map]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
-        rates [#_{:db/id 1}] #_@(rf/subscribe [::e.rates/items-by-currency currency])]
+        rates @(rf/subscribe [::e.rates/items-by-currency currency])]
     [:section.section>div.container>div.content
-     [:button.button "Load Currency"]
+     [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record id])}
+      "Load Currency"]
      (if (nil? currency)
        [:p "Currency not loaded"]
-       [show-currency (timbre/spy :info currency) (timbre/spy :info rates)])]))
+       [show-currency currency rates])]))

@@ -1,18 +1,31 @@
 (ns dinsro.events.currencies
   (:require [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.spec.currencies :as s.currencies]
+            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::items                  (fn [db _] (get db ::items                  [])))
+(def items-sub-default [])
 
-(defn sub-item-map
-  [db event]
-  (timbre/spy :info db)
-  (timbre/spy :info event)
+(s/def ::items (s/coll-of ::s.currencies/item))
+(s/def ::do-fetch-index-loading boolean?)
+(s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+
+(defn-spec items-sub ::s.currencies/item
+  [db any? _ any?]
+  (get db ::items items-sub-default))
+
+(defn-spec sub-item-map ::item-map
+  [db any? event any?]
+  ;; (timbre/spy :info db)
+  ;; (timbre/spy :info event)
   (get db ::item-map))
 
+(rf/reg-sub ::items                  items-sub)
 (rf/reg-sub ::item-map               sub-item-map)
 (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
@@ -53,7 +66,6 @@
 
 (defn do-fetch-record-success
   [{:keys [db]} [{:keys [item]}]]
-  (timbre/spy :info item)
   {:db (-> db
            (assoc ::item item)
            (assoc-in [::item-map (:db/id item)] item))})
