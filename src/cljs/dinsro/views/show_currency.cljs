@@ -36,4 +36,6 @@
         rates [#_{:db/id 1}] #_@(rf/subscribe [::e.rates/items-by-currency currency])]
     [:section.section>div.container>div.content
      [:button.button "Load Currency"]
-     [show-currency currency rates]]))
+     (if (nil? currency)
+       [:p "Currency not loaded"]
+       [show-currency (timbre/spy :info currency) (timbre/spy :info rates)])]))
