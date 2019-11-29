@@ -34,16 +34,18 @@
     :date        date
     :time        time}))
 
-(kf/reg-event-fx
- ::submit-clicked
- (fn-traced
-   [_ _]
-   {:dispatch [::e.rates/do-submit @(rf/subscribe [::form-data])]}))
+(defn submit-clicked
+  [_ _]
+  {:dispatch [::e.rates/do-submit @(rf/subscribe [::form-data])]})
 
-(kf/reg-event-db
- ::toggle-form
- (fn-traced [db _]
-   (update db ::form-shown? not)))
+(kf/reg-event-fx ::submit-clicked submit-clicked)
+
+(defn toggle-form
+  [db _]
+  (update db ::form-shown? not)
+  )
+
+(kf/reg-event-db ::toggle-form toggle-form)
 
 (defn create-rate-form
   []

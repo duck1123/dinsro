@@ -55,7 +55,7 @@
     :params          data
     :format          (ajax/json-request-format)
     :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-succeeded]
+    :on-success      [::do-submit-success]
     :on-failure      [::do-submit-failed]}})
 
 (kf/reg-event-fx ::do-submit-success do-submit-success)
