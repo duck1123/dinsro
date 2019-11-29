@@ -96,9 +96,8 @@
 
 ;; Read
 
-(s/def :read-currency-request-path-params/id (s/with-gen
-                                               string?
-                                               #(gen/fmap str (s/gen pos-int?))))
+(s/def :read-currency-request-path-params/id
+  (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 (s/def :read-currency-request/path-params (s/keys :req-un [:read-currency-request-path-params/id]))
 (s/def ::read-handler-request (s/keys :req-un [:read-currency-request/path-params]))
 
@@ -121,8 +120,9 @@
 (defn-spec read-handler ::read-handler-response
   [request ::read-handler-request]
   (let [id (some-> request :path-params :id Integer/parseInt)]
-    (let [item (m.currencies/read-record id)]
-      (http/ok {:item item}))))
+    (if-let [item (m.currencies/read-record id)]
+      (http/ok {:item item})
+      (http/not-found {:status :not-found}))))
 
 (comment
 

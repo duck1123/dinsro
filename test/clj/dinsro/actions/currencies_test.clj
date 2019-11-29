@@ -8,6 +8,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
@@ -74,12 +75,21 @@
 
 (deftest read-handler-success
   (let [currency (m.currencies/mock-record)
-        request {:path-params {:id (str (:db/id currency))}}
+        id (str (:db/id currency))
+        request {:path-params {:id id}}
         response (a.currencies/read-handler request)]
     (is (= status/ok (:status response)))
     (is (= currency (get-in response [:body :item])))))
 
+(deftest read-handler-not-found
+  (let [id (gen/generate (s/gen :read-currency-request-path-params/id))
+        request {:path-params {:id id}}
+        response (a.currencies/read-handler request)]
+    (is (= status/not-found (:status response)) "Returns a not-found status")
+    (is (= :not-found (get-in response [:body :status])) "Has a not found status field")))
+
 (comment
+  (gen/generate (s/gen :read-currency-request-path-params/id))
   (gen-spec ::a.currencies/create-handler-request)
 
   (gen-spec :create-handler-valid/request)
