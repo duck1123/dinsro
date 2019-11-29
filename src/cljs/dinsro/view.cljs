@@ -13,7 +13,3 @@
                  (reduce concat []))
             (concat [nil [:div "Not Found"]]))
         (into [kf/switch-route (fn [route] (get-in route [:data :name]))]))])
-
-(defn filter-page
-  [page]
-  #(when (= (get-in % [:data :name]) page) true))

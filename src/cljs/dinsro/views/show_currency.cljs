@@ -1,10 +1,10 @@
 (ns dinsro.views.show-currency
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+            [dinsro.components :as c]
             [dinsro.components.show-currency :refer [show-currency]]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
-            [dinsro.view :as v]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
@@ -19,7 +19,7 @@
 
 (kf/reg-controller
  ::page-controller
- {:params (v/filter-page :show-currency-page)
+ {:params (c/filter-page :show-currency-page)
   :start  [::init-page]})
 
 (s/def :show-currency-view/id          pos-int?)

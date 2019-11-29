@@ -72,3 +72,7 @@
                    (for [{:keys [db/id dinsro.spec.users/name]} items]
                      ^{:key id}
                      [:option {:value id} name]))]])))
+
+(defn filter-page
+  [page]
+  #(when (= (get-in % [:data :name]) page) true))
