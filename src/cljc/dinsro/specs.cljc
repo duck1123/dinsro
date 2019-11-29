@@ -76,3 +76,5 @@
 (s/def ::value number?)
 (s/def ::time string?)
 (s/def ::rate (s/keys :req-un [::id ::value ::time]))
+
+(s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))

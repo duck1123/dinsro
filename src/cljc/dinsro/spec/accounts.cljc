@@ -10,7 +10,7 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::initial-value (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
+(s/def ::initial-value ::ds/valid-double)
 (def initial-value-spec
   {:db/ident       ::initial-value
    :db/valueType   :db.type/double

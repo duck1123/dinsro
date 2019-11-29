@@ -58,7 +58,7 @@
     ["/accounts"
      [""                {:post   a.accounts/create-handler
                          :get    a.accounts/index-handler}]
-     ["/:accountId"     {:get    a.accounts/read-handler
+     ["/:id"            {:get    a.accounts/read-handler
                          :delete a.accounts/delete-handler}]]
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
     ["/currencies"
@@ -77,5 +77,5 @@
     ["/users" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.users/index-handler
                          :post   a.users/create-handler}]
-     ["/:userId"        {:get    a.users/read-handler
+     ["/:id"            {:get    a.users/read-handler
                          :delete a.users/delete-handler}]]]])
