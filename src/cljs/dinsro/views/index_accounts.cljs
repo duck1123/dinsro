@@ -20,9 +20,14 @@
 
 (defn-spec page vector?
   []
-  (let [accounts @(rf/subscribe [::e.accounts/items])]
+  (let [accounts @(rf/subscribe [::e.accounts/items])
+        state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:section.section>div.container>div.content
      [:h1 "Index Accounts"]
      [new-account-form]
-     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
-     [index-accounts accounts]]))
+     [:a.button {:on-click #(rf/dispatch [::init-page])}
+      (str "Fetch Accounts: " state)]
+     (condp = state
+       :invalid [:p "Invalid"]
+       :loaded  [index-accounts accounts]
+       [:p "Unknown state: " state])]))

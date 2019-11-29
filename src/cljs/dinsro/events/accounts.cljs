@@ -31,17 +31,34 @@
 (rf/reg-sub ::item :<- [::items] sub-item)
 (rf/reg-sub ::items-by-user items-by-user)
 
-(defn do-submit-succeeded
+;; Create
+
+(defn do-submit-success
   [_ data]
   (timbre/info "Submit success" data)
   {:dispatch [::do-fetch-index]})
 
-(kf/reg-event-fx ::do-submit-succeeded do-submit-succeeded)
+(defn do-submit-failed
+  [_ [response]]
+  (timbre/info "Submit failed" (get-in response [:parse-error :status-text])))
 
-(kf/reg-event-fx
- ::do-submit-failed
- (fn-traced [_ [response]]
-  (timbre/info "Submit failed" (get-in response [:parse-error :status-text]))))
+(defn do-submit
+  [{:keys [db]} [data]]
+  {:db (assoc db ::do-submit-loading true)
+   :http-xhrio
+   {:method          :post
+    :uri             (kf/path-for [:api-index-accounts])
+    :params          data
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-submit-success]
+    :on-failure      [::do-submit-failed]}})
+
+(kf/reg-event-fx ::do-submit-success   do-submit-success)
+(kf/reg-event-fx ::do-submit-failed    do-submit-failed)
+(kf/reg-event-fx ::do-submit           do-submit)
+
+;; Delete
 
 (kf/reg-event-fx
  ::do-delete-account-success
@@ -54,40 +71,6 @@
  (fn-traced [_ _]
    (timbre/info "delete account failed")))
 
-(kf/reg-event-db
- ::do-fetch-index-success
- (fn-traced [db [{:keys [items]}]]
-   (timbre/info "fetch records success" items)
-   (assoc db ::items items)))
-
-(kf/reg-event-fx
- ::do-fetch-index-failed
- (fn-traced [_ _]
-   (timbre/info "fetch records failed")))
-
-(kf/reg-event-fx
- ::do-submit
- (fn-traced [{:keys [db]} [data]]
-   {:db (assoc db ::do-submit-loading true)
-    :http-xhrio
-    {:method          :post
-     :uri             (kf/path-for [:api-index-accounts])
-     :params          data
-     :format          (ajax/json-request-format)
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-submit-succeeded]
-     :on-failure      [::do-submit-failed]}}))
-
-(kf/reg-event-fx
- ::do-fetch-index
- (fn-traced [_ _]
-   {:http-xhrio
-    {:uri             (kf/path-for [:api-index-accounts])
-     :method          :get
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-fetch-index-success]
-     :on-failure      [::do-fetch-index-failed]}}))
-
 (kf/reg-event-fx
  ::do-delete-account
  (fn-traced [_ [id]]
@@ -98,3 +81,32 @@
      :response-format (ajax/json-response-format {:keywords? true})
      :on-success      [::do-delete-account-success]
      :on-failure      [::do-delete-account-failed]}}))
+
+;; Index
+
+(s/def ::do-fetch-index-state keyword?)
+(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+
+(defn do-fetch-index-success
+  [db [{:keys [items]}]]
+  (timbre/info "fetch records success" items)
+  (-> db
+      (assoc ::items items)
+      (assoc ::do-fetch-index-state :loaded)))
+
+(defn do-fetch-index-failed
+  [_ _]
+  (timbre/info "fetch records failed"))
+
+(defn do-fetch-index
+  [_ _]
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-index-accounts])
+    :method          :get
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-fetch-index-success]
+    :on-failure      [::do-fetch-index-failed]}})
+
+(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+(kf/reg-event-fx ::do-fetch-index do-fetch-index)
