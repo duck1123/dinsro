@@ -13,7 +13,7 @@
 (rf/reg-sub ::items             (fn [db _] (get db ::items             [])))
 (rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
 
-(s/def ::item (s/keys ))
+(s/def ::item (s/nilable ::s.accounts/item))
 (s/def ::items (s/coll-of ::s.accounts/item))
 
 (comment
@@ -25,9 +25,9 @@
   (first (filter #(= (:id %) (:db/id target-item)) items)))
 
 (defn-spec items-by-user (s/coll-of ::s.accounts/item)
-  [db any?
-   [_ id] any?]
-  (::items db))
+  [db any? event any?]
+  (let [[_ id] event]
+    (filter #(= id (get-in % [::s.accounts/user :db/id])) (::items db))))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 (rf/reg-sub ::items-by-user items-by-user)

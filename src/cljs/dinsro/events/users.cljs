@@ -3,6 +3,7 @@
             [cemerick.url :as url]
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -11,17 +12,14 @@
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::loading (fn [db _] (get db ::loading false)))
+(s/def ::items (s/coll-of ::s.users/item))
 (rf/reg-sub ::items   (fn [db _] (get db ::items   [])))
 
-(s/def ::item (s/keys ))
-(s/def ::items (s/coll-of ::item))
-
+(s/def ::item (s/nilable ::s.users/item))
 (rf/reg-sub
  ::item
- :<- [::items]
- (fn [items [_ id]]
-   (first (filter #(= (:db/id %) id) items))))
+ (fn [db [_ id]]
+   (get-in db [::item-map id])))
 
 (kf/reg-event-db
  ::filter-records
@@ -44,13 +42,13 @@
              (assoc ::item item)
              (assoc-in [::item-map (:db/id item)] item))}))
 
-(s/def ::do-fetch-record-failed-cofx (s/keys))
-(s/def ::do-fetch-record-failed-event (s/keys))
-(s/def ::do-fetch-record-failed-response (s/keys))
-
 (defn do-fetch-record-unauthorized
   [_ _]
   {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
+
+(s/def ::do-fetch-record-failed-cofx (s/keys))
+(s/def ::do-fetch-record-failed-event (s/keys))
+(s/def ::do-fetch-record-failed-response (s/keys))
 
 (defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
   [cofx ::do-fetch-record-failed-cofx

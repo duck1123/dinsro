@@ -4,6 +4,7 @@
             [dinsro.components :as c]
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.events.accounts :as e.accounts]
+            [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
@@ -57,7 +58,10 @@
           (let [user-id (:db/id user)
                 accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
             [:<>
-             [:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
+             [:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])}
+              "Load Accounts: " @(rf/subscribe [::e.accounts/do-fetch-index-state])]
+             [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
+              "Load Currencies: " @(rf/subscribe [::e.currencies/do-fetch-index-state])]
              [show-user user (timbre/spy :info accounts)]])
           [:p "User not found"])
         [:p "unknown state"])]))

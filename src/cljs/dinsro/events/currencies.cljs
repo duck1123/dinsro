@@ -29,8 +29,6 @@
 (rf/reg-sub ::item-map               sub-item-map)
 (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
-
-
 (rf/reg-sub
  ::item
  :<- [::item-map]
@@ -138,6 +136,7 @@
         [{:keys [items]}] event]
     {:db (-> db
              (assoc ::items items)
+             (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
              (assoc ::do-fetch-index-state :loaded))}))
 
 (s/def ::do-fetch-index-cofx (s/keys))
