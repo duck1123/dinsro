@@ -12,13 +12,23 @@
 (s/def :show-user-view/path-params (s/keys :req-un [:show-user-view/id]))
 (s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
 
+(def strings
+  {:header "Show User"
+
+   }
+  )
+
+(defn l
+  [keyword]
+  (get strings keyword ("MISSING STRING: " keyword)))
+
 (defn-spec page vector?
   [{{:keys [id]} :path-params} ::view-map]
   (let [user @(rf/subscribe [::e.users/item (int id)])
         user-id (:db/id user)
         accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
     [:section.section>div.container>div.content
-     [:h1 "Show User"]
+     [:h1 (l :header)]
      [:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
      (if (nil? user)
        [:p "User not loaded"]
