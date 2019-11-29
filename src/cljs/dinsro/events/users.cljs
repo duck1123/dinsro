@@ -34,7 +34,6 @@
 (s/def ::do-fetch-record-state keyword?)
 (rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
 
-
 (defn do-fetch-record-success
   [cofx event]
   (let [{:keys [db]} cofx
@@ -48,12 +47,19 @@
 (s/def ::do-fetch-record-failed-event (s/keys))
 (s/def ::do-fetch-record-failed-response (s/keys))
 
+(defn do-fetch-record-unauthorized
+  [_ _]
+  {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
+
 (defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
   [cofx ::do-fetch-record-failed-cofx
    event ::do-fetch-record-failed-event]
   (timbre/spy :info event)
-  (let [{:keys [db]} (timbre/spy :info cofx)]
-    {:db (assoc db ::do-fetch-record-state :failed)}))
+  (let [{:keys [db]} (timbre/spy :info cofx)
+        [{:keys [status] :as request}] event]
+    (if (= 403 (timbre/spy status))
+      {:dispatch [::do-fetch-record-unauthorized request]}
+      {:db (assoc db ::do-fetch-record-state :failed)})))
 
 (defn do-fetch-record
   [cofx event]
@@ -67,9 +73,10 @@
       :on-success      [::do-fetch-record-success]
       :on-failure      [::do-fetch-record-failed]}}))
 
-(kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
-(kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
-(kf/reg-event-fx ::do-fetch-record         do-fetch-record)
+(kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
+(kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
+(kf/reg-event-fx ::do-fetch-record-unauthorized  do-fetch-record-unauthorized)
+(kf/reg-event-fx ::do-fetch-record               do-fetch-record)
 
 ;; Delete
 
@@ -107,11 +114,15 @@
       (assoc ::items users)
       (assoc ::do-fetch-index-state :loaded)))
 
+(defn do-fetch-index-unauthorized
+  [_ _]
+  {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
+
 (defn do-fetch-index-failed
   [{:keys [db]} [response]]
   (let [s (:status response)]
     (if (= s 403)
-      {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}
+      {:dispatch [::do-fetch-index-unauthorized response]}
       {:db (assoc db :failed true)})))
 
 (defn do-fetch-index
@@ -125,5 +136,6 @@
     :on-failure      [::do-fetch-index-failed]}})
 
 (kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)

@@ -9,8 +9,8 @@
             [re-frame.core :as rf]))
 
 (defn-spec show-user vector?
-  [user ::s.users/item
-   accounts (s/coll-of ::s.accounts/item)]
+  [user any? #_::s.users/item
+   accounts any? #_(s/coll-of ::s.accounts/item)]
   (let [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email]} user]
     [:div
      [:pre (str user)]

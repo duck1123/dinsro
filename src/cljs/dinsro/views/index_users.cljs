@@ -15,7 +15,7 @@
             (assoc :failed false)
             (assoc ::e.users/items [])
             (assoc ::loading false))
-    :dispatch [::e.users/do-fetch-records]}))
+    :dispatch [::e.users/do-fetch-index]}))
 
 (kf/reg-controller
  ::page-controller

@@ -43,18 +43,21 @@
 
 (defn-spec page vector?
   [match ::view-map]
-  (let [{{:keys [id]} :path-params} (timbre/spy :info match)]
-      (let [user @(rf/subscribe [::e.users/item (int id)])
-            user-id (:db/id user)
-            accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
-            state @(rf/subscribe [::e.users/do-fetch-record-state])]
-     [:section.section>div.container>div.content
-      [:h1 (l :header)]
-      [:p "State: " state]
-      [:button.button {:on-click #(rf/dispatch [::e.users/do-fetch-record id])} "Load User"]
-      [:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
-      (condp = state
-        :invalid [:p "invalid"]
-        :failed [:p "Failed"]
-        :loaded [show-user user accounts]
-        [:p "unknown state"])])))
+  (let [{{:keys [id]} :path-params} (timbre/spy :info match)
+        state @(rf/subscribe [::e.users/do-fetch-record-state])]
+    [:section.section>div.container>div.content
+     [:h1 (l :header)]
+     [:button.button {:on-click #(rf/dispatch [::e.users/do-fetch-record id])}
+      (str "Load User: " state)]
+     (condp = state
+       :invalid [:p "invalid"]
+       :failed [:p "Failed"]
+       :loaded
+        (if-let [user @(rf/subscribe [::e.users/item (int id)])]
+          (let [user-id (:db/id user)
+                accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+            [:<>
+             [:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
+             [show-user user (timbre/spy :info accounts)]])
+          [:p "User not found"])
+        [:p "unknown state"])]))
