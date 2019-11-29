@@ -29,6 +29,8 @@
 (rf/reg-sub ::item-map               sub-item-map)
 (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
+
+
 (rf/reg-sub
  ::item
  :<- [::item-map]
@@ -64,19 +66,31 @@
 
 ;; Read
 
+(s/def ::do-fetch-record-state keyword?)
+(rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
+
 (defn do-fetch-record-success
   [{:keys [db]} [{:keys [item]}]]
   {:db (-> db
+           (assoc ::do-fetch-record-state :loaded)
            (assoc ::item item)
            (assoc-in [::item-map (:db/id item)] item))})
 
-(defn do-fetch-record-failed
-  []
-  {})
+(s/def ::do-fetch-record-failed-cofx (s/keys))
+(s/def ::do-fetch-record-failed-event (s/keys))
+(s/def ::do-fetch-record-failed-response (s/keys))
+
+(defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
+  [{:keys [db] :as cofx} ::do-fetch-record-failed-cofx
+   event ::do-fetch-record-failed-event]
+  (timbre/spy :info cofx)
+  (timbre/spy :info event)
+  {:db (assoc db ::do-fetch-record-state :failed)})
 
 (defn do-fetch-record
-  [_ [id]]
-  {:http-xhrio
+  [{:keys [db]} [id]]
+  {:db (assoc db ::do-fetch-record-state :loading)
+   :http-xhrio
    {:uri             (kf/path-for [:api-show-currency {:id id}])
     :method          :get
     :response-format (ajax/json-response-format {:keywords? true})
@@ -119,9 +133,15 @@
   [db [{:keys [items]}]]
   (assoc db ::items items))
 
+(s/def ::do-fetch-index-cofx (s/keys))
+(s/def ::do-fetch-index-event (s/keys))
+
 (defn do-fetch-index-failed
-  [_ _]
-  (timbre/info "fetch records failed"))
+  [cofx event]
+  (timbre/info "fetch records failed")
+  (timbre/spy :info cofx)
+  (timbre/spy :info event)
+  {})
 
 (defn do-fetch-index
   [{:keys [db]} _]

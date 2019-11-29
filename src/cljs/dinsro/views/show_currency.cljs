@@ -36,6 +36,7 @@
         currency @(rf/subscribe [::e.currencies/item currency-id])
         rates @(rf/subscribe [::e.rates/items-by-currency currency])]
     [:section.section>div.container>div.content
+     [:p @(rf/subscribe [::e.currencies/do-fetch-record-state])]
      [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record id])}
       (l :load-currency)]
      (if (nil? currency)
