@@ -8,6 +8,7 @@
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reagent.core :as r]
+            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
 (rf/reg-sub ::loading (fn [db _] (get db ::loading false)))
@@ -54,10 +55,9 @@
 (defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
   [cofx ::do-fetch-record-failed-cofx
    event ::do-fetch-record-failed-event]
-  (timbre/spy :info event)
-  (let [{:keys [db]} (timbre/spy :info cofx)
+  (let [{:keys [db]} cofx
         [{:keys [status] :as request}] event]
-    (if (= 403 (timbre/spy status))
+    (if (= status/forbidden status)
       {:dispatch [::do-fetch-record-unauthorized request]}
       {:db (assoc db ::do-fetch-record-state :failed)})))
 
@@ -120,10 +120,9 @@
 
 (defn do-fetch-index-failed
   [{:keys [db]} [response]]
-  (let [s (:status response)]
-    (if (= s 403)
-      {:dispatch [::do-fetch-index-unauthorized response]}
-      {:db (assoc db :failed true)})))
+  (if (= status/forbidden (:status response))
+    {:dispatch [::do-fetch-index-unauthorized response]}
+    {:db (assoc db ::do-fetch-index-state :failed)}))
 
 (defn do-fetch-index
   [_ _]

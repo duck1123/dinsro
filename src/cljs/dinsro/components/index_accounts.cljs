@@ -1,5 +1,6 @@
 (ns dinsro.components.index-accounts
   (:require [dinsro.events.accounts :as e.accounts]
+            [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.views.show-account :as v.show-account]
             [kee-frame.core :as kf]
@@ -21,7 +22,8 @@
               :margin-bottom "15px"}}
      [:p id]
      [:p [:a {:href (kf/path-for [:show-account-page {:id id}])} name]]
-     [:p "User: " [:a {:href (kf/path-for [:show-user-page {:id user-id}])} user-id]]
+     [:p "User: " [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
+                   (str @(rf/subscribe [::e.users/item user-id]))]]
      [:p "Currency: " [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])} currency-id]]
      [:p "Initial Value: " initial-value]
      [:pre (str account)]
