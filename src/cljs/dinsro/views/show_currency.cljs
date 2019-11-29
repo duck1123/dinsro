@@ -10,16 +10,23 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn init-page
-  [_ _]
-  (let [id 45]
+(s/def ::init-page-cofx (s/keys))
+(s/def ::init-page-event (s/keys))
+(s/def ::init-page-response (s/keys))
+
+(defn-spec init-page ::init-page-response
+  [cofx ::init-page-cofx
+   event ::init-page-event]
+  (timbre/spy :info cofx)
+  (timbre/spy :info event)
+  (let [[{:keys [id]}] event]
     {:dispatch [::e.currencies/do-fetch-record id]}))
 
 (kf/reg-event-fx ::init-page init-page)
 
 (kf/reg-controller
  ::page-controller
- {:params (c/filter-page :show-currency-page)
+ {:params (c/filter-param-page :show-currency-page)
   :start  [::init-page]})
 
 (s/def :show-currency-view/id          pos-int?)
@@ -28,17 +35,20 @@
 
 (def l
   {:load-currency "Load Currency"
-   :not-loaded "Currency notation loaded"})
+   :not-loaded "Currency not loaded"})
 
 (defn-spec page vector?
   [{{:keys [id]} :path-params} ::view-map]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
-        rates @(rf/subscribe [::e.rates/items-by-currency currency])]
+        rates @(rf/subscribe [::e.rates/items-by-currency currency])
+        state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [:p @(rf/subscribe [::e.currencies/do-fetch-record-state])]
+     [:p state]
      [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record id])}
       (l :load-currency)]
-     (if (nil? currency)
-       [:p (l :not-loaded)]
-       [show-currency currency rates])]))
+     (condp = state
+       :loaded [show-currency currency rates]
+       :loading [:p "Loading"]
+       :failed [:p "Failed"]
+       [:p "Unknown State"])]))

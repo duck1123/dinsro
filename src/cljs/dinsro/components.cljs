@@ -76,3 +76,9 @@
 (defn filter-page
   [page]
   #(when (= (get-in % [:data :name]) page) true))
+
+(defn filter-param-page
+  [page]
+  (fn [match]
+    (when (= (get-in (timbre/spy :info match) [:data :name]) page)
+      (:path-params match))))
