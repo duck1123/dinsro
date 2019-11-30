@@ -24,10 +24,18 @@
         currency @(rf/subscribe [::e.currencies/item currency-id])]
     [:div.box
      [:p [:a {:href (kf/path-for [:show-account-page {:id id}])} name]]
-     [:p "User: " [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
-                   (::s.users/name user)]]
-     [:p "Currency: " [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
-                       (::s.currencies/name currency)]]
+     [:p
+      "User: "
+      (if user
+        [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
+         (::s.users/name user)]
+        [:span "Not Loaded"])]
+     [:p
+      "Currency: "
+      (if currency
+        [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
+         (::s.currencies/name currency)]
+        [:span "Not Loaded"])]
      [:p "Initial Value: " initial-value]
      [:a.button.is-danger
       {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])}

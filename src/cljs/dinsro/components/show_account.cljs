@@ -11,14 +11,24 @@
 (defn-spec show-account vector?
   [account ::s.accounts/item]
   (let [user-id (get-in account [::s.accounts/user :db/id])
-        user @(rf/subscribe [::e.users/item user-id])
-        currency-id (get-in account [::s.accounts/currency :db/id])
-        currency @(rf/subscribe [::e.currencies/item currency-id])]
-    [:div
-     [:p "Account: " (str account)]
+        currency-id (get-in account [::s.accounts/currency :db/id])]
+    [:div.box
+     #_[:p "Account: " [:pre (str account)]]
      [:p "Name: " (::s.accounts/name account)]
-     [:p "User: " [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
-                   (::s.users/name user)]]
-     [:p "Currency: " [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
-                       (::s.currencies/name currency)]]
+     [:p
+      [:span "User: "]
+      (if-let [user @(rf/subscribe [::e.users/item user-id])]
+        [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
+         (::s.users/name user)]
+        [:span
+         [:a {:on-click #(rf/dispatch [::e.users/do-fetch-record user-id])}
+          "Not Loaded"]])]
+     [:p
+      [:span "Currency: "]
+      (if-let [currency @(rf/subscribe [::e.currencies/item currency-id])]
+        [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
+         (::s.currencies/name currency)]
+        [:span
+         [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
+          "Not Loaded"]])]
      [:button.button.is-danger "Delete"]]))
