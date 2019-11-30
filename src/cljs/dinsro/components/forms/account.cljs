@@ -47,23 +47,22 @@
    :initial-value "Initial Value"
    :currency "Currency"
    :submit "Submit"
-   :user "User"
-   }
-  )
+   :user "User"})
 
 (def l strings)
 
 (defn create-user-account
   []
-  [:div
-   [:p "Create User Account"]
-   [:pre (str @(rf/subscribe [::account-data]))]
-   [:form.form
-    [c/text-input        (l :name)          ::name          ::change-name]
-    [c/number-input      (l :initial-value) ::initial-value ::change-initial-value]
-    [c/currency-selector (l :currency)      ::currency-id   ::change-currency-id]
-    #_[c/user-selector     "User"          ::user-id       ::change-user-id]
-    [c/primary-button    (l :submit)        ::submit-clicked]]])
+  (let [account-data @(rf/subscribe [::account-data])]
+    [:div
+     [:p "Create User Account"]
+     [:pre (str account-data)]
+     [:form.form
+      [c/text-input        (l :name)          ::name          ::change-name]
+      [c/number-input      (l :initial-value) ::initial-value ::change-initial-value]
+      [c/currency-selector (l :currency)      ::currency-id   ::change-currency-id]
+      #_[c/user-selector     "User"          ::user-id       ::change-user-id]
+      [c/primary-button    (l :submit)        [::submit-clicked account-data]]]]))
 
 (defn new-account-form
   []
@@ -77,4 +76,4 @@
        [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
        [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
        [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
-       [c/primary-button    (:submit strings)        ::submit-clicked]]]]))
+       [c/primary-button    (:submit strings)        [::submit-clicked account-data]]]]]))

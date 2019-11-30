@@ -5,6 +5,7 @@
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.specs :as ds]
+            [expound.alpha :as expound]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
@@ -54,8 +55,10 @@
   (let [params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map)))]
-    (when (s/valid? ::s.currencies/params params)
-      params)))
+    (if (s/valid? ::s.currencies/params params)
+      params
+      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.currencies/params params))
+          nil))))
 
 (defn-spec create-handler ::create-handler-response
   [request ::create-handler-request]

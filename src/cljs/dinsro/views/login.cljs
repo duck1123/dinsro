@@ -49,7 +49,7 @@
   [:form.is-centered
    [c/email-input "Email" ::email :change-email]
    [c/password-input "Password" ::password :change-password]
-   [c/primary-button "Login" :login-click]])
+   [c/primary-button "Login" [:login-click]]])
 
 (defn page [match]
   (let [{:keys [query-string]} match

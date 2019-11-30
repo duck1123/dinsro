@@ -48,7 +48,7 @@
   [:div.field
    [:div.control
     [:a.button.is-primary
-     {:on-click #(rf/dispatch [click-handler])}
+     {:on-click #(rf/dispatch click-handler)}
      label]]])
 
 (defn currency-selector

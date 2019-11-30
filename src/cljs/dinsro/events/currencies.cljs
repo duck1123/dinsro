@@ -43,8 +43,9 @@
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [[_ response]]
-  (timbre/info "Submit failed" response))
+  [_ response]
+  (timbre/info "Submit failed" response)
+  {})
 
 (defn do-submit
   [{:keys [db]} [data]]

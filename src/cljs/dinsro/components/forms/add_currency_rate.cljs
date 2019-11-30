@@ -4,12 +4,15 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.rates :as e.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
+
+(def l {:submit "Submit"})
 
 (rf/reg-sub ::shown? (fn [db _] (get db ::shown?)))
 
@@ -37,9 +40,18 @@
 
 (rf/reg-sub
  ::form-data
+ :<- [::currency-id]
  :<- [::rate]
- (fn [[rate]]
-   {:rate        rate}))
+ (fn [[currency-id rate]]
+   {:currency-id (int currency-id)
+    :rate        rate}))
+
+(defn submit-clicked
+  [cofx event]
+  (let [[data] event]
+    {:dispatch [::e.rates/do-submit data]}))
+
+(kf/reg-event-fx ::submit-clicked submit-clicked)
 
 (defn change-rate
   [db [value]]
@@ -49,13 +61,15 @@
 
 (defn add-currency-rate-form
   []
-  (let [shown? @(rf/subscribe [::shown?])]
+  (let [shown? @(rf/subscribe [::shown?])
+        form-data @(rf/subscribe [::form-data])]
     [:div {:style {:border "1px red solid"}}
      [:h3 "Add Currency rate"]
      [:button.button {:on-click #(rf/dispatch [::toggle])} (str "Toggle: " shown?)]
      (when shown?
        [:div
         [:p "Form"]
-        [:pre (str @(rf/subscribe [::form-data]))]
-        [c/number-input        "Rate"     ::rate        ::change-rate]
-        [c/currency-selector "Currency" ::currency-id ::change-currency-id]])]))
+        [:pre (str form-data)]
+        [c/number-input      "Rate"      ::rate        ::change-rate]
+        [c/currency-selector "Currency"  ::currency-id ::change-currency-id]
+        [c/primary-button    (l :submit) [::submit-clicked form-data]]])]))
