@@ -102,5 +102,5 @@
 (defn filter-param-page
   [page]
   (fn [match]
-    (when (= (get-in (timbre/spy :info match) [:data :name]) page)
+    (when (= (get-in match [:data :name]) page)
       (:path-params match))))
