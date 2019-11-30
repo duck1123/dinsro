@@ -69,8 +69,8 @@
   (let [account-data @(rf/subscribe [::account-data])]
     [:<>
      [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
-     [:div.section {:class (when-not @(rf/subscribe [::form-shown?]) "is-hidden")}
-      [:pre (str account-data)]
+     [:div.box {:class (when-not @(rf/subscribe [::form-shown?]) "is-hidden")}
+      #_[:pre (str account-data)]
       [:form.form
        [c/text-input        (:name strings)          ::name          ::change-name]
        [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]

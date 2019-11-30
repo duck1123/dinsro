@@ -22,18 +22,16 @@
         user-id (:db/id user)
         user @(rf/subscribe [::e.users/item user-id])
         currency @(rf/subscribe [::e.currencies/item currency-id])]
-    [:div.column
-     {:style {:border        "1px black solid"
-              :margin-bottom "15px"}}
-     [:p id]
+    [:div.box
      [:p [:a {:href (kf/path-for [:show-account-page {:id id}])} name]]
      [:p "User: " [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
                    (::s.users/name user)]]
      [:p "Currency: " [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
                        (::s.currencies/name currency)]]
      [:p "Initial Value: " initial-value]
-     [:pre (str account)]
-     [:a.button {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])} "Delete"]]))
+     [:a.button.is-danger
+      {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])}
+      "Delete"]]))
 
 (defn index-accounts
   [accounts]

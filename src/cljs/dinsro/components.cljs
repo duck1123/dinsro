@@ -55,7 +55,7 @@
   [label field change-handler]
   (let [state @(rf/subscribe [::e.currencies/do-fetch-index-state])]
     [:<>
-     [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
+     #_[:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
       (str "Fetch Currencies: " state)]
      (condp = state
        :invalid
@@ -89,7 +89,7 @@
   (let [items @(rf/subscribe [::e.users/items])
         state @(rf/subscribe [::e.users/do-fetch-index-state])]
     [:<>
-     [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])} (str "Fetch Users: " state)]
+     #_[:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])} (str "Fetch Users: " state)]
      (condp = state
        :invalid [:p "Invalid"]
        :loaded  [user-selector- label field change-handler items]

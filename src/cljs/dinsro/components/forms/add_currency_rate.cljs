@@ -63,7 +63,7 @@
   []
   (let [shown? @(rf/subscribe [::shown?])
         form-data @(rf/subscribe [::form-data])]
-    [:div {:style {:border "1px red solid"}}
+    [:div.box #_{:style {:border "1px red solid"}}
      [:h3 "Add Currency rate"]
      [:button.button {:on-click #(rf/dispatch [::toggle])} (str "Toggle: " shown?)]
      (when shown?
