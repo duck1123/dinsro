@@ -63,13 +63,12 @@
   []
   (let [shown? @(rf/subscribe [::shown?])
         form-data @(rf/subscribe [::form-data])]
-    [:div.box #_{:style {:border "1px red solid"}}
+    [:div.box
      [:h3 "Add Currency rate"]
      [:button.button {:on-click #(rf/dispatch [::toggle])} (str "Toggle: " shown?)]
      (when shown?
        [:div
-        [:p "Form"]
-        [:pre (str form-data)]
+        #_[:pre (str form-data)]
         [c/number-input      "Rate"      ::rate        ::change-rate]
         [c/currency-selector "Currency"  ::currency-id ::change-currency-id]
         [c/primary-button    (l :submit) [::submit-clicked form-data]]])]))

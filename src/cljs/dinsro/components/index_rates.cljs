@@ -31,7 +31,9 @@
        [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
         (::s.currencies/name currency)]]]
      [:div.column
-      [:a.button {:on-click #(rf/dispatch [::e.rates/do-delete-record item])} (:delete strings)]]]))
+      [:a.button.is-danger
+       {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
+       (:delete strings)]]]))
 
 (defn-spec index-rates vector?
   [items (s/coll-of ::s.rates/item)]

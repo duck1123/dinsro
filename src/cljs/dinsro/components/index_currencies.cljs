@@ -5,25 +5,21 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn delete-currency-button
-  [currency]
-  [:a.button {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])} "Delete"])
-
 (defn index-currency-line
   [currency]
   (let [{:keys [db/id dinsro.spec.currencies/name]} currency]
-    [:div.column
-     {:style {:border        "1px black solid"
-              :margin-bottom "15px"}}
-     [:p "Id: " id]
+    [:div.box
+     #_[:p "Id: " id]
      [:p "Name: " [:a {:href (kf/path-for [:show-currency-page {:id id}])} name]]
-     [delete-currency-button currency]]))
+     [:a.button.is-danger
+      {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
+      "Delete"]]))
 
 (defn index-currencies
   [currencies]
-  [:div
+  [:<>
    [:p "Index Currencies"]
-   [:pre (str currencies)]
+   #_[:pre (str currencies)]
    (if-not (seq currencies)
      [:div "No Currencies"]
      (into

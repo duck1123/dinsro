@@ -17,19 +17,18 @@
  (fn-traced [name]
    {:name name}))
 
-(kf/reg-event-fx
- ::submit-clicked
- (fn-traced
-   [_ _]
-   {:dispatch [::e.currencies/do-submit @(rf/subscribe [::form-data])]}))
+(defn submit-clicked
+  [_ _]
+  (let [form-data @(rf/subscribe [::form-data])]
+    {:dispatch [::e.currencies/do-submit form-data]}))
 
-
+(kf/reg-event-fx ::submit-clicked submit-clicked)
 
 (defn create-currency
   []
   [:div
-   [:p "Create Currency"]
-   [:pre (str @(rf/subscribe [::form-data]))]
+   #_[:p "Create Currency"]
+   #_[:pre (str @(rf/subscribe [::form-data]))]
    [:form
     [c/text-input        "Name"     ::name        ::change-name]
-    [c/primary-button "Submit" ::submit-clicked]]])
+    [c/primary-button "Submit" [::submit-clicked]]]])
