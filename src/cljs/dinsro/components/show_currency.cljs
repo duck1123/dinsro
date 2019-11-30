@@ -10,10 +10,11 @@
             [re-frame.core :as rf]))
 
 (defn-spec show-currency vector?
-  [currency ::s.currencies/item rates (s/coll-of ::s.rates/item)]
+  [currency ::s.currencies/item
+   rates (s/coll-of ::s.rates/item)]
   [:div
-   [:pre (str currency)]
-   [:p "Name:" (::s.currencies/name currency)]
-   [:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])} "Load"]
+   #_[:pre (str currency)]
+   [:p "Name: " (::s.currencies/name currency)]
+   #_[:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])} "Load"]
    [add-currency-rate-form]
    [index-rates rates]])

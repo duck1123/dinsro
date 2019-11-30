@@ -1,15 +1,18 @@
 (ns dinsro.components.forms.create-currency
-  (:require             [day8.re-frame.tracing :refer-macros [fn-traced]]
+  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
-                        [dinsro.events.currencies :as e.currencies]
-                     [kee-frame.core :as kf]
-                        [re-frame.core :as rf]
-                        [taoensso.timbre :as timbre]
-                        )
-  )
+            [dinsro.events.currencies :as e.currencies]
+            [kee-frame.core :as kf]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as timbre]))
 
-(c/reg-field ::name          "")
-(kf/reg-event-db ::change-name   (fn-traced [db [value]] (assoc db ::name value)))
+(c/reg-field ::name "")
+
+(defn change-name
+  [db [value]]
+  (assoc db ::name value))
+
+(kf/reg-event-db ::change-name change-name)
 
 (rf/reg-sub
  ::form-data

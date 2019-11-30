@@ -15,6 +15,10 @@
 (def l {:submit "Submit"})
 
 (rf/reg-sub ::shown? (fn [db _] (get db ::shown?)))
+(c/reg-field ::date        nil #_(.toISOString (js/Date.)))
+(c/reg-field ::time        nil #_(.toISOString (js/Date.)))
+(kf/reg-event-db ::change-time        (fn-traced [db [value]] (assoc db ::time value)))
+(kf/reg-event-db ::change-date        (fn-traced [db [value]] (assoc db ::date value)))
 
 (defn toggle
   [cofx event]
@@ -42,9 +46,13 @@
  ::form-data
  :<- [::currency-id]
  :<- [::rate]
- (fn [[currency-id rate]]
+ :<- [::date]
+ :<- [::time]
+ (fn [[currency-id rate date time]]
    {:currency-id (int currency-id)
-    :rate        rate}))
+    :rate        rate
+    :date        date
+    :time        time}))
 
 (defn submit-clicked
   [cofx event]
@@ -65,10 +73,12 @@
         form-data @(rf/subscribe [::form-data])]
     [:div.box
      [:h3 "Add Currency rate"]
+     [:pre (str form-data)]
      [:button.button {:on-click #(rf/dispatch [::toggle])} (str "Toggle: " shown?)]
      (when shown?
        [:div
-        #_[:pre (str form-data)]
-        [c/number-input      "Rate"      ::rate        ::change-rate]
-        [c/currency-selector "Currency"  ::currency-id ::change-currency-id]
-        [c/primary-button    (l :submit) [::submit-clicked form-data]]])]))
+        [c/number-input "Rate" ::rate ::change-rate]
+        [c/input-field "Date" ::date ::change-date :date]
+        [c/input-field "Time" ::time ::change-time :time]
+        #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
+        [c/primary-button (l :submit) [::submit-clicked form-data]]])]))
