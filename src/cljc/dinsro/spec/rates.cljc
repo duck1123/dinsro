@@ -15,14 +15,20 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::params (s/keys :req [::rate ::currency]))
-(s/def ::item (s/keys :req [::rate ::currency]))
+(s/def ::date string?)
+(def date-spec
+  {:db/ident ::date
+   :db/valueType :db.type/instant
+   :db/cardinality :db.cardinality/one})
+
+(s/def ::params (s/keys :req [::rate ::currency ::date]))
+(s/def ::item (s/keys :req [::rate ::currency ::date]))
 (def item-spec
   {:db/ident ::item
-   :db.entity/attrs [::rate ::currency]})
+   :db.entity/attrs [::rate ::currency ::date]})
 
 (def schema
-  [rate-spec currency-spec #_item-spec])
+  [rate-spec currency-spec date-spec #_item-spec])
 
 (comment
   (gen/generate (s/gen ::currency))

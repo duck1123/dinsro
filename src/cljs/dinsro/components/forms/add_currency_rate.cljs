@@ -51,8 +51,7 @@
  (fn [[currency-id rate date time]]
    {:currency-id (int currency-id)
     :rate        rate
-    :date        date
-    :time        time}))
+    :date        (js/Date. (str date "T" time))}))
 
 (defn submit-clicked
   [cofx event]

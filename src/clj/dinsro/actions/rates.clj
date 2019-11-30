@@ -17,7 +17,7 @@
 (def param-rename-map
   {:rate       ::s.rates/rate
    ;; :currency-id ::s.rates/currency-id
-   })
+   ::date      ::s.rates/date})
 
 (s/def ::currency-id ::ds/id)
 (s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id]))
