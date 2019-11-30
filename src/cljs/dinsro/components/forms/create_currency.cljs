@@ -29,7 +29,7 @@
 
 (defn create-currency
   []
-  [:div
+  [:div.box
    #_[:p "Create Currency"]
    #_[:pre (str @(rf/subscribe [::form-data]))]
    [:form

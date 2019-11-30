@@ -40,7 +40,18 @@
 (rf/reg-sub ::currency-id sub-currency-id)
 ;; (c/reg-field ::currency-id "")
 
-(kf/reg-event-db ::change-currency-id (fn [db [value]] (assoc db ::currency-id value)))
+(defn change-currency-id
+  [db [value]]
+  (assoc db ::currency-id value))
+
+(defn change-rate
+  [db [value]]
+  (assoc db ::rate (let [v (js/parseFloat value)] (if (js/isNaN v) 0 v))))
+
+(defn submit-clicked
+  [cofx event]
+  (let [[data] event]
+    {:dispatch [::e.rates/do-submit data]}))
 
 (rf/reg-sub
  ::form-data
@@ -53,31 +64,24 @@
     :rate        rate
     :date        (js/Date. (str date "T" time))}))
 
-(defn submit-clicked
-  [cofx event]
-  (let [[data] event]
-    {:dispatch [::e.rates/do-submit data]}))
-
+(kf/reg-event-db ::change-currency-id change-currency-id)
+(kf/reg-event-db ::change-rate change-rate)
 (kf/reg-event-fx ::submit-clicked submit-clicked)
 
-(defn change-rate
-  [db [value]]
-  (assoc db ::rate (let [v (js/parseFloat value)] (if (js/isNaN v) 0 v))))
-
-(kf/reg-event-db ::change-rate change-rate)
-
 (defn add-currency-rate-form
-  []
+  [currency-id]
   (let [shown? @(rf/subscribe [::shown?])
         form-data @(rf/subscribe [::form-data])]
     [:div.box
-     [:h3 "Add Currency rate"]
-     [:pre (str form-data)]
-     [:button.button {:on-click #(rf/dispatch [::toggle])} (str "Toggle: " shown?)]
+     [:h3 "Add Currency rate"
+      [:a {:on-click #(rf/dispatch [::toggle])}
+       [:span.icon [:i.mdi.mdi-bell]] #_(str "Toggle: " shown?)]]
      (when shown?
        [:div
+        [:p "Currency Id: " currency-id]
         [c/number-input "Rate" ::rate ::change-rate]
         [c/input-field "Date" ::date ::change-date :date]
         [c/input-field "Time" ::time ::change-time :time]
         #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
+        #_[:pre (str form-data)]
         [c/primary-button (l :submit) [::submit-clicked form-data]]])]))

@@ -18,12 +18,11 @@
 (defn index-currencies
   [currencies]
   [:<>
-   [:p "Index Currencies"]
+   #_[:p "Index Currencies"]
    #_[:pre (str currencies)]
    (if-not (seq currencies)
      [:div "No Currencies"]
-     (into
-      [:div.section]
-      (for [{:keys [db/id] :as currency} currencies]
-        ^{:key id}
-        [index-currency-line currency])))])
+     (into [:div]
+           (for [{:keys [db/id] :as currency} currencies]
+             ^{:key id}
+             [index-currency-line currency])))])
