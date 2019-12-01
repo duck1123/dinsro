@@ -33,7 +33,7 @@
 
 (defn do-fetch-index-success
   [db [{:keys [items]}]]
-  (let [items (map (fn [item] (update item ::s.rates/date instant/parse)) items)]
+  (let [items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
     (assoc db ::items items)))
 
 (kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
