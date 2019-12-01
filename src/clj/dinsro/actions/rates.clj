@@ -7,6 +7,7 @@
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
+            [java-time :as t]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
@@ -17,7 +18,7 @@
 (def param-rename-map
   {:rate       ::s.rates/rate
    ;; :currency-id ::s.rates/currency-id
-   ::date      ::s.rates/date})
+   :date      ::s.rates/date})
 
 (s/def ::currency-id ::ds/id)
 (s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id]))
@@ -56,11 +57,13 @@
   (when-let [rate (:rate params)]
     (let [currency-id (:currency-id params)
           rate (double rate)
+          date (t/java-date (:date params))
           params (-> params
                      (set/rename-keys param-rename-map)
                      (select-keys (vals param-rename-map))
                      (assoc ::s.rates/currency {:db/id currency-id})
-                     (assoc ::s.rates/rate rate))]
+                     (assoc ::s.rates/rate rate)
+                     (assoc ::s.rates/date date))]
       (if (s/valid? ::s.rates/params params)
         params
         (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))

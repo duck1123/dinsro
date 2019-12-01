@@ -3,7 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.currencies :as s.currencies]))
 
-(s/def ::rate (s/and double? pos?))
+(s/def ::rate (s/and number? pos?))
 (def rate-spec
   {:db/ident       ::rate
    :db/valueType   :db.type/double
@@ -15,7 +15,7 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::date string?)
+(s/def ::date inst?)
 (def date-spec
   {:db/ident ::date
    :db/valueType :db.type/instant

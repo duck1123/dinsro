@@ -34,7 +34,7 @@
 (defn sub-currency-id
   [db _]
   (or (get db ::currency-id)
-      #_(some-> @(rf/subscribe [::e.currencies/items]) first :db/id)
+      (some-> @(rf/subscribe [::e.currencies/items]) first :db/id)
       ""))
 
 (rf/reg-sub ::currency-id sub-currency-id)
@@ -71,11 +71,16 @@
 (defn add-currency-rate-form
   [currency-id]
   (let [shown? @(rf/subscribe [::shown?])
-        form-data @(rf/subscribe [::form-data])]
+        form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
     [:div.box
-     [:h3 "Add Currency rate"
-      [:a {:on-click #(rf/dispatch [::toggle])}
-       [:span.icon [:i.mdi.mdi-bell]] #_(str "Toggle: " shown?)]]
+     [:h3
+      #_[:span "Rates"]
+      [:span (str shown?)]
+      [:a {:style {:margin-left "5px"}
+           :on-click #(rf/dispatch [::toggle])}
+       (if shown?
+         [:span.icon>i.fas.fa-chevron-down]
+         [:span.icon>i.fas.fa-chevron-right])]]
      (when shown?
        [:div
         [:p "Currency Id: " currency-id]
@@ -83,5 +88,5 @@
         [c/input-field "Date" ::date ::change-date :date]
         [c/input-field "Time" ::time ::change-time :time]
         #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
-        #_[:pre (str form-data)]
+        [:pre (str form-data)]
         [c/primary-button (l :submit) [::submit-clicked form-data]]])]))

@@ -1,5 +1,6 @@
 (ns dinsro.events.rates
   (:require [ajax.core :as ajax]
+            [cljc.java-time.instant :as instant]
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.currencies :as s.currencies]
@@ -30,10 +31,12 @@
 
 ;; Index
 
-(kf/reg-event-db
- ::do-fetch-index-success
- (fn-traced [db [{:keys [items]}]]
-   (assoc db ::items items)))
+(defn do-fetch-index-success
+  [db [{:keys [items]}]]
+  (let [items (map (fn [item] (update item ::s.rates/date instant/parse)) items)]
+    (assoc db ::items items)))
+
+(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
 
 (kf/reg-event-fx
  ::do-fetch-index-failed

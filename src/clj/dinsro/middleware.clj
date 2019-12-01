@@ -5,13 +5,11 @@
             [buddy.auth.backends.token :refer [jwe-backend]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.core.nonce :refer [random-bytes]]
-
             [buddy.sign.jwt :refer [encrypt]]
-
             [dinsro.env :refer [defaults]]
             [cheshire.generate :as cheshire]
             [cognitect.transit :as transit]
-            [clj-time.core :refer [plus now minutes]]
+            [cljc.java-time.instant :as instant]
             [clojure.tools.logging :as log]
             [dinsro.config :refer [env]]
             [dinsro.env :refer [defaults]]
@@ -23,9 +21,7 @@
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [ring-ttl-session.core :refer [ttl-memory-store]]
-            [taoensso.timbre :as timbre])
-  (:import [javax.servlet ServletContext]
-           [org.joda.time ReadableInstant]))
+            [taoensso.timbre :as timbre]))
 
 (defn wrap-internal-error [handler]
   (fn [req]
@@ -71,7 +67,7 @@
 
 (defn token [username]
   (let [claims {:user (keyword username)
-                :exp (plus (now) (minutes 60))}]
+                :exp (instant/plus-seconds (instant/now) (* 60 60))}]
     (encrypt claims secret {:alg :a256kw :enc :a128gcm})))
 
 (def rules

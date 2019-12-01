@@ -15,7 +15,10 @@
   (let [currency-id (:db/id currency)]
     [:div
      #_[:pre (str currency)]
-     [:p "Name: " (::s.currencies/name currency)]
-     #_[:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])} "Load"]
-     [add-currency-rate-form currency-id]
-     [index-rates rates]]))
+     #_[:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])} "Load Rates"]
+     [:div.box
+      [:p "Name: " (::s.currencies/name currency)]
+      [:button.button.is-danger "Delete"]]
+     [:div.box
+      [add-currency-rate-form currency-id]
+      [index-rates rates]]]))
