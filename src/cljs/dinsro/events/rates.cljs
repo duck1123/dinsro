@@ -37,25 +37,28 @@
 (defn do-fetch-index-success
   [db [{:keys [items]}]]
   (let [items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
-    (assoc db ::items items)))
+    (-> db
+        (assoc ::items items)
+        (assoc ::do-fetch-index-state :loaded))))
+
+(defn do-fetch-index-failed
+  [{:keys [db]} _]
+  (timbre/info "fetch records failed")
+  {:db (assoc db ::do-fetch-index-state :failed)})
+
+(defn do-fetch-index
+  [{:keys [db]} _]
+  {:db (assoc db ::do-fetch-index-state :loading)
+   :http-xhrio
+   {:method          :get
+    :uri             (kf/path-for [:api-index-rates])
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-fetch-index-success]
+    :on-failure      [::do-fetch-index-failed]}})
 
 (kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
-
-(kf/reg-event-fx
- ::do-fetch-index-failed
- (fn-traced [_ _]
-   (timbre/info "fetch records failed")))
-
-(kf/reg-event-fx
- ::do-fetch-index
- (fn-traced [{:keys [db]} _]
-   {:db (assoc db ::do-fetch-index-loading true)
-    :http-xhrio
-    {:method          :get
-     :uri             (kf/path-for [:api-index-rates])
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-fetch-index-success]
-     :on-failure      [::do-fetch-index-failed]}}))
+(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+(kf/reg-event-fx ::do-fetch-index do-fetch-index)
 
 ;; Submit
 
