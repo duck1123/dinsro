@@ -72,17 +72,17 @@
   [currency-id]
   (let [shown? @(rf/subscribe [::shown?])
         form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
-    [:div
+    [:<>
      [:div
-      [:span (str shown?)]
+      #_[:span (str shown?)]
       [:a {:style {:margin-left "5px"}
            :on-click #(rf/dispatch [::toggle])}
        (if shown?
          [:span.icon>i.fas.fa-chevron-down]
          [:span.icon>i.fas.fa-chevron-right])]]
      (when shown?
-       [:div
-        [:p "Currency Id: " currency-id]
+       [:<>
+        #_[:p "Currency Id: " currency-id]
         [c/number-input "Rate" ::rate ::change-rate]
         [c/input-field "Date" ::date ::change-date :date]
         [c/input-field "Time" ::time ::change-time :time]

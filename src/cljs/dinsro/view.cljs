@@ -5,7 +5,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn root-component []
-  [:div
+  [:<>
    [navbar]
    (->> (-> (->> r/mappings
                  (map identity)

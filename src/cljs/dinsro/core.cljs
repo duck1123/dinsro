@@ -26,14 +26,14 @@
 
 (kf/reg-event-fx
  :init-status
- (fn
-  [_ _]
+ (fn [_ _]
    (timbre/info "init")
-   {:http-xhrio {:uri "/api/v1/status"
-                 :method :get
-                 :response-format (http/json-response-format {:keywords? true})
-                 :on-success [:status-loaded]
-                 :on-failure [:status-errored]}}))
+   {:http-xhrio
+    {:uri "/api/v1/status"
+     :method :get
+     :response-format (http/json-response-format {:keywords? true})
+     :on-success [:status-loaded]
+     :on-failure [:status-errored]}}))
 
 (kf/reg-controller
  :status-controller
@@ -44,22 +44,16 @@
 
 (s/def ::db-spec
   (s/keys
-   :req [
-         #_::ds/new-password
+   ;; :req []
+   ;; :req-un [ ]
+   ;; :opt [::e.rates/items
+   ;;       ::e.users/item
+   ;;       ::c.rf/name]
+   ;; :opt-un [::failed
+   ;;          :dinsro.events.users/item
+   ;;          :kee-frame/route]
 
-         ]
-
-   :req-un [ ]
-   :opt [
-         ::e.rates/items
-         ::e.users/item
-         ::c.rf/name
-         ]
-   :opt-un [::failed
-            :dinsro.events.users/item
-            :kee-frame/route]))
-
-;; ::c.registration-form/name
+   ))
 
 ;; -------------------------
 ;; Initialize app
@@ -71,7 +65,6 @@
    (kf/start!
     {:debug?         (boolean debug?)
      :routes         routing/routes
-     ;; :hash-routing?  false
      :app-db-spec    ::db-spec
      :initial-db     {}
      :root-component [view/root-component]})))
