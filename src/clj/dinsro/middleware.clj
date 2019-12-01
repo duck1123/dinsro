@@ -28,6 +28,7 @@
     (try
       (handler req)
       (catch Throwable t
+        (log/error (.getCause t))
         (log/error t (.getMessage t))
         (error-page {:status 500
                      :title "Something very bad has happened!"
@@ -52,7 +53,6 @@
   {:status  403
    :headers {"Content-Type" "text/plain"}
    :body    (str "Access to " (:uri request) " is not authorized")})
-
 
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
