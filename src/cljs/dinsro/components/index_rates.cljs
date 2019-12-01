@@ -13,7 +13,10 @@
 (def rate-line-strings
   {:delete "Delete"
    :id "Id: "
+   :no-rates "No Rates"
    :value "Value: "})
+
+(def l rate-line-strings)
 
 (defn-spec rate-line vector?
   [item ::s.rates/item]
@@ -22,19 +25,15 @@
         value (::s.rates/rate item)
         currency-id (get-in item [::s.rates/currency :db/id])
         currency @(rf/subscribe [::e.currencies/item currency-id])]
-    [:div.box #_{:style {:border "1px black solid"}}
-     #_[:pre (str item)]
-     #_[:p (:id strings) id]
-     [:div.column
-      [:p (:value strings) value]
-      [:p "Date: " (str (::s.rates/date item))]
-      [:p "Currency: "
-       (if currency
-         [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
-          (::s.currencies/name currency)]
-         [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
-          "Not Loaded"])]]
-     [:div.column
+    [:tr
+     [:td value]
+     [:td (str (::s.rates/date item))]
+     [:td (if currency
+            [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
+             (::s.currencies/name currency)]
+            [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
+             "Not Loaded"])]
+     [:td
       [:a.button.is-danger
        {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
        (:delete strings)]]]))
@@ -43,8 +42,13 @@
   [items (s/coll-of ::s.rates/item)]
   [:<>
    #_[:pre (str items)]
-   (let [strings {:no-rates "No Rates"}]
-     (if-not (seq items)
-       [:p (:no-rates strings)]
-       (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
-            (into [:div]))))])
+   (if-not (seq items)
+     [:p (l :no-rates)]
+     [:table.table
+      [:thead>tr
+       [:th "Value"]
+       [:th "Date"]
+       [:th "Currency"]
+       [:th "Actions"]]
+      (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
+           (into [:tbody]))])])

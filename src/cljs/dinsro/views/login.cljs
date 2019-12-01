@@ -57,9 +57,7 @@
     [:section.section>div.container>div.content
      [:h1 "Login"]
      [:p "Authenticated: " @(rf/subscribe [::e.authentication/auth-id])]
-     [:p "Loading: " (str @(rf/subscribe [::e.authentication/loading]))]
-     [:p "Login-failed: " (str @(rf/subscribe [::e.authentication/login-failed]))]
-     [:p (str @(rf/subscribe [::login-data]))]
+     #_[:pre (str @(rf/subscribe [::login-data]))]
      [:div.container
       [:p "Return To: " return-to]
       [login-form]]]))
