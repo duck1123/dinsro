@@ -27,9 +27,13 @@
      #_[:p (:id strings) id]
      [:div.column
       [:p (:value strings) value]
+      [:p "Date: " (str (::s.rates/date item))]
       [:p "Currency: "
-       [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
-        (::s.currencies/name currency)]]]
+       (if currency
+         [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
+          (::s.currencies/name currency)]
+         [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
+          "Not Loaded"])]]
      [:div.column
       [:a.button.is-danger
        {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
