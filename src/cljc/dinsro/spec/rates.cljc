@@ -39,8 +39,6 @@
 
   (Date.)
 
-
-
   (predicates/instant? #inst "2019-01-01T06:00:00Z")
 
   #inst "2019-01-01T06:00:00Z"
