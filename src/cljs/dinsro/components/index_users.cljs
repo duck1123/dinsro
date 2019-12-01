@@ -16,13 +16,11 @@
 
 (defn-spec user-line any?
   [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email] :as user} ::s.users/item]
-  [:div.column
-   {:style {:border "1px black solid"
-            :margin-bottom "15px"}}
+  [:div.box
    [:p "Id: " id]
    [:p "Name: " [:a {:href (kf/path-for [:show-user-page {:id id}])} name]]
    [:p "Email " email]
-   [:a.button {:on-click #(rf/dispatch [::e.users/do-delete-record user])} "Delete"]])
+   [:a.button.is-danger {:on-click #(rf/dispatch [::e.users/do-delete-record user])} "Delete"]])
 
 (defn index-users
   [users]

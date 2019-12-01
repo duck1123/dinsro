@@ -45,6 +45,8 @@
         rates @(rf/subscribe [::e.rates/items-by-currency currency])
         state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
+     [:button.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index id])}
+      (str "Load Rates: " @(rf/subscribe [::e.rates/do-fetch-index-state]))]
      [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record id])}
       (str "Load Currency: " state)]
      (condp = state

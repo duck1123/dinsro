@@ -31,6 +31,9 @@
 
 ;; Index
 
+(s/def ::do-fetch-index-state keyword?)
+(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+
 (defn do-fetch-index-success
   [db [{:keys [items]}]]
   (let [items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]

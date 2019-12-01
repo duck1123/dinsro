@@ -13,7 +13,7 @@
   (let [user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:div.box
-     #_[:p "Account: " [:pre (str account)]]
+     [:pre (str account)]
      [:p "Name: " (::s.accounts/name account)]
      [:p
       [:span "User: "]
