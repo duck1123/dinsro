@@ -21,4 +21,5 @@
       [:button.button.is-danger "Delete"]]
      [:div.box
       [add-currency-rate-form currency-id]
+      [:hr]
       [index-rates rates]]]))

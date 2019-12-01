@@ -72,9 +72,8 @@
   [currency-id]
   (let [shown? @(rf/subscribe [::shown?])
         form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
-    [:div.box
-     [:h3
-      #_[:span "Rates"]
+    [:div
+     [:div
       [:span (str shown?)]
       [:a {:style {:margin-left "5px"}
            :on-click #(rf/dispatch [::toggle])}

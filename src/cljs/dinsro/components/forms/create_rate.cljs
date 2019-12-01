@@ -59,4 +59,4 @@
      [c/input-field "Date" ::date ::change-date :date]
      [c/input-field "Time" ::time ::change-time :time]
      [c/currency-selector "Currency" ::currency-id ::change-currency-id]
-     [c/primary-button    "Submit"   ::submit-clicked]]]])
+     [c/primary-button    "Submit"   [::submit-clicked]]]]])

@@ -43,7 +43,7 @@
 
 (defn index-accounts
   [accounts]
-  [:div
+  [:div.box
    (if-not (seq accounts)
      [:div "No Accounts"]
      (into [:div.section]

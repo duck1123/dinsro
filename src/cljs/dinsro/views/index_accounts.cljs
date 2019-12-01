@@ -24,9 +24,9 @@
         state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:section.section>div.container>div.content
      [:h1 "Index Accounts"]
-     [new-account-form]
      [:a.button {:on-click #(rf/dispatch [::init-page])}
       (str "Fetch Accounts: " state)]
+     [new-account-form]
      (condp = state
        :invalid [:p "Invalid"]
        :loaded  [index-accounts accounts]
