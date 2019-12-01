@@ -31,7 +31,7 @@
  {:params (c/filter-param-page :show-user-page)
   :start  [::init-page]})
 
-(s/def :show-user-view/id          pos-int?)
+(s/def :show-user-view/id          string?)
 (s/def :show-user-view/path-params (s/keys :req-un [:show-user-view/id]))
 (s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
 

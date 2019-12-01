@@ -68,8 +68,9 @@
           [:div.select
            (into [:select {:value @(rf/subscribe [field])
                            :on-change #(rf/dispatch [change-handler (target-value %)])}]
-                 (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
-                   ^{:key id} [:option {:value id} name]))]])
+                 (concat [[:option {:value ""} ""]]
+                         (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
+                           ^{:key id} [:option {:value id} name])))]])
 
        [:p "Unknown state"])]))
 

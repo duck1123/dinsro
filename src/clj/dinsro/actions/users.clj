@@ -22,7 +22,7 @@
 
 (defn delete-handler
   [request]
-  (let [user-id (Integer/parseInt (:userId (:path-params request)))]
+  (let [user-id (Integer/parseInt (:id (:path-params request)))]
     (m.user/delete-record user-id)
     (http/ok {:id user-id})))
 
