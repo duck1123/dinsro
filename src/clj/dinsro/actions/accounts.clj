@@ -30,8 +30,8 @@
 
 (defn-spec prepare-record (s/nilable ::s.accounts/params)
   [params :create-handler/params]
-  (when-let [currency-id (some-> params :currency-id str Integer/parseInt)]
-    (when-let [user-id (some-> params :user-id str Integer/parseInt)]
+  (when-let [currency-id (try (some-> params :currency-id str Integer/parseInt) (catch NumberFormatException e nil))]
+    (when-let [user-id (try (some-> params :user-id str Integer/parseInt) (catch NumberFormatException e nil))]
       (let [params (-> params
                        (set/rename-keys param-rename-map)
                        (select-keys (vals param-rename-map))

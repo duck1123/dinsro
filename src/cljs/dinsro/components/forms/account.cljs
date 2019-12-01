@@ -26,7 +26,7 @@
 (kf/reg-event-db ::toggle-form (fn-traced [db _] (update db ::form-shown? not)))
 
 (rf/reg-sub
- ::account-data
+ ::form-data
  :<- [::name]
  :<- [::initial-value]
  :<- [::currency-id]
@@ -66,14 +66,16 @@
 
 (defn new-account-form
   []
-  (let [account-data @(rf/subscribe [::account-data])]
+  (let [form-data @(rf/subscribe [::form-data])
+        shown? @(rf/subscribe [::form-shown?])]
     [:<>
      [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
-     [:div.box {:class (when-not @(rf/subscribe [::form-shown?]) "is-hidden")}
-      #_[:pre (str account-data)]
-      [:form.form
-       [c/text-input        (:name strings)          ::name          ::change-name]
-       [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
-       [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
-       [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
-       [c/primary-button    (:submit strings)        [::submit-clicked account-data]]]]]))
+     [:div.box
+      [:pre (str form-data)]
+      (when shown?
+        [:form.form
+         [c/text-input        (:name strings)          ::name          ::change-name]
+         [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
+         [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
+         [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
+         [c/primary-button    (:submit strings)        [::submit-clicked form-data]]])]]))

@@ -81,9 +81,10 @@
    [:div.select
     (into [:select {:value @(rf/subscribe [field])
                     :on-change #(rf/dispatch [change-handler (target-value %)])}]
-          (for [{:keys [db/id dinsro.spec.users/name]} items]
-            ^{:key id}
-            [:option {:value id} name]))]])
+          (concat [[:option {:value ""} ""]]
+                  (for [{:keys [db/id dinsro.spec.users/name]} items]
+                       ^{:key id}
+                       [:option {:value id} name])))]])
 
 (defn user-selector
   [label field change-handler]
