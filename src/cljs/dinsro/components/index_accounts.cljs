@@ -46,7 +46,7 @@
   [:div.box
    (if-not (seq accounts)
      [:div "No Accounts"]
-     (into [:div.section]
+     (into [:div]
            (for [account accounts]
              ^{:key (:db/id account)}
              (row-line account))))])

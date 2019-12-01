@@ -41,7 +41,7 @@
 
 (defn-spec index-rates vector?
   [items (s/coll-of ::s.rates/item)]
-  [:section
+  [:<>
    #_[:pre (str items)]
    (let [strings {:no-rates "No Rates"}]
      (if-not (seq items)

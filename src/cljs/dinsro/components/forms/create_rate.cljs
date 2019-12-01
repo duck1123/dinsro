@@ -49,14 +49,15 @@
 
 (defn create-rate-form
   []
-  [:<>
-   [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
-   [:div.section {:class (when-not @(rf/subscribe [::form-shown?]) "is-hidden")
-                  :style {:border "1px black solid"}}
-    [:pre (str @(rf/subscribe [::form-data]))]
-    [:form
-     [c/number-input        "Rate"     ::rate        ::change-rate]
-     [c/input-field "Date" ::date ::change-date :date]
-     [c/input-field "Time" ::time ::change-time :time]
-     [c/currency-selector "Currency" ::currency-id ::change-currency-id]
-     [c/primary-button    "Submit"   [::submit-clicked]]]]])
+  (let [shown? @(rf/subscribe [::form-shown?])
+        form-data @(rf/subscribe [::form-data])]
+    [:<>
+     [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
+     (when shown?
+      [:div.box
+       [c/number-input      "Rate"     ::rate        ::change-rate]
+       [c/input-field       "Date"     ::date        ::change-date :date]
+       [c/input-field       "Time"     ::time        ::change-time :time]
+       [c/currency-selector "Currency" ::currency-id ::change-currency-id]
+       [:pre (str form-data)]
+       [c/primary-button    "Submit"   [::submit-clicked]]])]))

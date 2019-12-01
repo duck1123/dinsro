@@ -57,22 +57,19 @@
   (let [shown? @(rf/subscribe [::shown?])
         form-data (assoc @(rf/subscribe [::form-data]) ::s.accounts/user-id user-id)]
     [:div
-     [:p "Add user account"]
-     [:p "User id: " user-id]
-     [:p "Shown: " (str shown?)]
-     [:pre (str form-data)]
+     ;; [:p "Add user account"]
+     ;; [:p "User id: " user-id]
+     ;; [:p "Shown: " (str shown?)]
+     ;; [:pre (str form-data)]
      [:a {:style {:margin-left "5px"}
           :on-click #(rf/dispatch [::toggle])}
       (if shown?
         [:span.icon>i.fas.fa-chevron-down]
         [:span.icon>i.fas.fa-chevron-right])]
      (when shown?
-       [:div
+       [:<>
         [:p "Form"]
         [c/text-input        (l :name)          ::name          ::change-name]
         [c/number-input      (l :initial-value) ::initial-value ::change-initial-value]
         [c/currency-selector (l :currency)      ::currency-id   ::change-currency-id]
-        [c/primary-button    (l :submit)        [::e.accounts/do-submit form-data]]]
-       )
-     ])
-  )
+        [c/primary-button    (l :submit)        [::e.accounts/do-submit form-data]]])]))

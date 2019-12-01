@@ -36,9 +36,11 @@
     (when-let [user-id (try
                          (some-> params :user-id str Integer/parseInt)
                          (catch NumberFormatException e nil))]
-      (let [params (-> params
+      (let [initial-value (double (:initial-value params))
+            params (-> params
                        (set/rename-keys param-rename-map)
                        (select-keys (vals param-rename-map))
+                       (assoc-in [::s.accounts/initial-value] initial-value)
                        (assoc-in [::s.accounts/currency :db/id] currency-id)
                        (assoc-in [::s.accounts/user :db/id] user-id))]
         (if (s/assert ::s.accounts/params params)
