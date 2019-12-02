@@ -30,43 +30,42 @@
       (d/transact db/*conn* s.currencies/schema)
       (f))))
 
-(deftest create-record-test
-  (testing "success"))
+(deftest create-record-success
+  (testing "success"
+    (let [params (gen/generate (s/gen ::s.currencies/params))
+          response (m.currencies/create-record params)]
+      (is (not (nil? response))))))
 
 (deftest read-record-success
-  (testing "success"
-    (let [item (m.currencies/mock-record)
-          id (:db/id item)
-          response (m.currencies/read-record id)]
-      (is (= item response)))))
+  (let [item (m.currencies/mock-record)
+        id (:db/id item)
+        response (m.currencies/read-record id)]
+    (is (= item response))))
 
 (deftest read-record-not-found
-  (testing "not found"
-    (let [id (gen/generate (s/gen ::ds/id))
-          response (m.currencies/read-record id)]
-      (is (nil? response)))))
+  (let [id (gen/generate (s/gen ::ds/id))
+        response (m.currencies/read-record id)]
+    (is (nil? response))))
 
 (deftest index-records-success
-  (testing "success"
-    (m.currencies/delete-all)
-    (is (= [] (m.currencies/index-records)))))
+  (m.currencies/delete-all)
+  (is (= [] (m.currencies/index-records))))
 
 (deftest index-records-with-records
-  (testing "with records"
-    (is (not= nil (m.users/mock-record)))
-    (let [params (gen/generate (s/gen ::s.currencies/params))
-          id (m.currencies/create-record params)]
-      (is (not= [params] (m.currencies/index-records))))))
+  (is (not= nil (m.users/mock-record)))
+  (let [params (gen/generate (s/gen ::s.currencies/params))
+        id (m.currencies/create-record params)]
+    (is (not= [params] (m.currencies/index-records)))))
 
 (deftest delete-record
-  (testing "success"
-    (let [currency (m.currencies/mock-record)
-          id (:db/id currency)]
-      (is (not (nil? (m.currencies/read-record id))))
-      (let [response (m.currencies/delete-record id)]
-        (is (nil? response))
-        (is (nil? (m.currencies/read-record id)))))))
+  (let [currency (m.currencies/mock-record)
+        id (:db/id currency)]
+    (is (not (nil? (m.currencies/read-record id))))
+    (let [response (m.currencies/delete-record id)]
+      (is (nil? response))
+      (is (nil? (m.currencies/read-record id))))))
 
 (comment
   (gen/generate (s/gen ::ds/id))
+  (gen/generate (s/gen ::s.currencies/params))
   )

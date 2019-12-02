@@ -7,10 +7,10 @@
 (s/def ::item-opt (s/keys :opt [::name]))
 (s/def ::item (s/keys :req [::name]))
 
+(def name-spec
+  {:db/ident       ::name
+   :db/valueType   :db.type/string
+   :db/cardinality :db.cardinality/one})
+
 (def schema
-  [{:db/ident       ::id
-    :db/valueType   :db.type/long
-    :db/cardinality :db.cardinality/one}
-   {:db/ident       ::name
-    :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one}])
+  [name-spec])
