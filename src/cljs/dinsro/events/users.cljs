@@ -9,11 +9,12 @@
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reagent.core :as r]
+            [reframe-utils.core :as rfu]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
 (s/def ::items (s/coll-of ::s.users/item))
-(rf/reg-sub ::items   (fn [db _] (get db ::items   [])))
+(rfu/reg-basic-sub ::items)
 
 (s/def ::item (s/nilable ::s.users/item))
 (rf/reg-sub
