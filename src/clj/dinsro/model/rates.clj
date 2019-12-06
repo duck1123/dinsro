@@ -10,7 +10,8 @@
 
 (defn-spec prepare-record ::s.rates/params
   [params ::s.rates/params]
-  params)
+  (let [rate (::s.rates/rate params)]
+    (update params ::s.rates/rate double)))
 
 (defn-spec create-record ::ds/id
   [params ::s.rates/params]

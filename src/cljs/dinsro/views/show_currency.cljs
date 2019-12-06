@@ -8,6 +8,7 @@
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
+            [taoensso.tempura :as tempura :refer [tr]]
             [taoensso.timbre :as timbre]))
 
 (s/def ::init-page-cofx (s/keys))
@@ -35,22 +36,27 @@
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
 
 (def l
-  {:load-currency "Load Currency"
-   :not-loaded "Currency not loaded"})
+  {:en
+   {:missing "Missing"
+    :load-currency "Load Currency"
+    :load-rates "Load Rates: %1"
+    :not-loaded "Currency not loaded"}})
 
 (defn-spec page vector?
   [{{:keys [id]} :path-params} ::view-map]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
-        rates @(rf/subscribe [::e.rates/items-by-currency currency])
-        state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
+        rates @(rf/subscribe [::e.rates/items-by-currency currency])]
     [:section.section>div.container>div.content
-     [:button.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index id])}
-      (str "Load Rates: " @(rf/subscribe [::e.rates/do-fetch-index-state]))]
-     [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record id])}
-      (str "Load Currency: " state)]
-     (condp = state
-       :loaded [show-currency currency rates]
-       :loading [:p "Loading"]
-       :failed [:p "Failed"]
-       [:p "Unknown State"])]))
+     (let [state @(rf/subscribe [::e.rates/do-fetch-index-state])]
+       [:button.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index id])}
+        (tr [:load-rates] [(str state)])])
+     (let [state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
+       [:<>
+        [:button.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record id])}
+         (tr [:load-currency] [(str state)])]
+        (condp = state
+          :loaded [show-currency currency rates]
+          :loading [:p "Loading"]
+          :failed [:p "Failed"]
+          [:p "Unknown State"])])]))
