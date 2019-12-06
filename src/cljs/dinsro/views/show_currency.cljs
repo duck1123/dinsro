@@ -30,7 +30,7 @@
   :start  [::init-page]})
 
 ;; Fixme: string
-(s/def :show-currency-view/id          pos-int?)
+(s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
 
