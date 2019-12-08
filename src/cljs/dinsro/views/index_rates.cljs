@@ -42,7 +42,7 @@
   []
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
-     [load-buttons]
+     #_[load-buttons]
      [:div.box
       [:h1
        (tr [:rates "Rates"])

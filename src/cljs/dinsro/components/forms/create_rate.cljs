@@ -37,7 +37,7 @@
   [[currency-id rate date]]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
-   :date        (js/Date. date #_(str date "T" time))})
+   :date        (js/Date. date)})
 
 (rf/reg-sub
  ::form-data
@@ -64,13 +64,10 @@
 
 (defn init-form
   [{:keys [db]} _]
-  (let [default-date (js/Date.)
-        date-string (str (.getFullYear default-date) "-" (.getMonth default-date) "-0" (.getDate default-date))
-        time-string (str (.getHours default-date) ":" (.getMinutes default-date))]
+  (let [default-date (js/Date.)]
     {:db (merge db {::rate (str default-rate)
                     ::currency-id ""
-                    ::date date-string
-                    ::time time-string})}))
+                    ::date (.toISOString default-date)})}))
 
 (kf/reg-event-fx ::init-form init-form)
 
@@ -89,8 +86,7 @@
         [c/number-input      "Rate"     ::rate        ::set-rate]]
        [:div.field>div.control
         [:label.label "Date"]
-        [c.datepicker/datepicker
-         {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
+        [c.datepicker/datepicker {:on-select #(rf/dispatch [::set-date %])}]]
        [:div.field>div.control
         [c/currency-selector "Currency" ::currency-id ::set-currency-id]]
        [:div.field>div.control

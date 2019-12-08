@@ -58,6 +58,7 @@
         :failed [:p "Failed"]
         [:p "Unknown State"])]
      [:div.box
+      [:h2 "Rates"]
       [add-currency-rate-form currency-id]
       [:hr]
       [index-rates rates]]]))

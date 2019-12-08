@@ -23,6 +23,7 @@
 (rfu/reg-basic-sub ::valid)
 
 (rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (def default-rate 1)
 
@@ -76,9 +77,10 @@
 (defn init-form
   [{:keys [db]} _]
   (let [default-date (js/Date.)
-        default-opts {::rate (str default-rate)
-                      ::date (timbre/spy :info (c/get-date-string default-date))
-                      ::time (c/get-time-string default-date)}]
+        default-opts {
+                      ;; ::shown? false
+                      ::rate (str default-rate)
+                      ::date (.toISOString default-date)}]
     {:db (merge db default-opts)}))
 
 (kf/reg-event-fx ::init-form init-form)
@@ -88,28 +90,16 @@
  {:params (constantly true)
   :start [::init-form]})
 
-(defn datetime-picker
-  []
-  [:div.field>div.control
-   [:input.input
-    {:type :date
-     :value @(rf/subscribe [::date])
-     :on-change #(rf/dispatch [::set-date (c/target-value %)])}]
-   [:input.input
-    {:type :time
-     :value @(rf/subscribe [::time])
-     :on-change #(rf/dispatch [::set-time (c/target-value %)])}]])
-
 (defn-spec add-currency-rate-form vector?
   [currency-id any?]
   (let [shown? @(rf/subscribe [::shown?])]
     [:<>
-     [:div [toggle-button]]
-     [:a.button {:on-click #(rf/dispatch [::init-form])} "Init"]
+     (when-not shown? [:div.is-pulled-right [toggle-button]])
+     #_[:a.button {:on-click #(rf/dispatch [::init-form])} "Init"]
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
          [:<>
-          [:a.delete.is-pulled-right "x"]
+          [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
           [:div.field>div.control
            [c/number-input (tr [:rate]) ::rate ::set-rate]]
           [:div.field>div.control

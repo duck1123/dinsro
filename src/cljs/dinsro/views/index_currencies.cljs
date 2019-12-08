@@ -24,11 +24,11 @@
   []
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
-     [:h1 (tr [:index-currencies "Index Currencies"])]
-     [:div.box
+     #_[:div.box
       [c.buttons/fetch-currencies]
       [c.buttons/toggle-debug]]
      [:div.box
+      [:h1 (tr [:index-currencies "Index Currencies"])]
       [create-currency]
       [:hr]
       [index-currencies currencies]]]))
