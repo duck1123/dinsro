@@ -11,19 +11,11 @@
             [reagent.core :as r]
             [re-frame.core :as rf]))
 
-(def rate-line-strings
-  {:delete "Delete"
-   :id "Id: "
-   :no-rates "No Rates"
-   :value "Value: "})
-
-(def l rate-line-strings)
-
 (defn delete-button
   [item]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
-   (tr [:delete "Delete"])])
+   (tr [:delete])])
 
 (defn-spec rate-line vector?
   [item ::s.rates/item]
@@ -39,7 +31,7 @@
             [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
              (::s.currencies/name currency)]
             [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
-             (tr [:not-loaded "Not Loaded"])])]
+             (tr [:not-loaded])])]
      [:td [delete-button item]]]))
 
 (defn-spec index-rates vector?
@@ -47,12 +39,12 @@
   [:<>
    [:pre (str items)]
    (if-not (seq items)
-     [:p (tr [:no-rates "No Rates"])]
+     [:p (tr [:no-rates])]
      [:table.table
       [:thead>tr
-       [:th (tr [:value "Value"])]
-       [:th (tr [:date "Date"])]
-       [:th (tr [:currency "Currency"])]
-       [:th (tr [:actions "Actions"])]]
+       [:th (tr [:value])]
+       [:th (tr [:date])]
+       [:th (tr [:currency])]
+       [:th (tr [:actions])]]
       (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
            (into [:tbody]))])])

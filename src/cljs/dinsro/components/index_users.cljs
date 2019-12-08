@@ -13,21 +13,35 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::error-message (fn [db _] (get db ::error-message "")))
+(def default-error-message "")
+(rf/reg-sub ::error-message (fn [db _] (get db ::error-message default-error-message)))
+
+(defn user-link
+  [user]
+  (let [name (::s.users/name user)
+        id (::s.users/id user)]
+    [:a {:href (kf/path-for [:show-user-page {:id id}])} name]))
+
+(defn delete-button
+  [user]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.users/do-delete-record user])}
+   (tr [:delete])])
 
 (defn-spec user-line any?
-  [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email] :as user} ::s.users/item]
-  [:div.box
-   [:p "Id: " id]
-   [:p "Name: " [:a {:href (kf/path-for [:show-user-page {:id id}])} name]]
-   [:p "Email " email]
-   [:a.button.is-danger {:on-click #(rf/dispatch [::e.users/do-delete-record user])} "Delete"]])
+  [user ::s.users/item]
+  (let [id (:db/id user)
+        email (::s.users/email user)]
+    [:div.box
+     [:p (tr [:id-label] [id])]
+     [:p (tr [:name-label] [[user-link user]])]
+     [:p (tr [:email-label] [email])]
+     [delete-button user]]))
 
 (defn index-users
   [users]
   (if-not (seq users)
-    [:div [:p "No Users"]]
-    (into
-     [:div.section]
-     (for [{:keys [db/id] :as user} users]
-       ^{:key id} [user-line user]))))
+    [:div [:p (tr [:no-users])]]
+    (into [:div.section]
+          (for [{:keys [db/id] :as user} users]
+            ^{:key id} [user-line user]))))
