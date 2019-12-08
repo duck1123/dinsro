@@ -11,24 +11,34 @@
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rf-utils]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(rf-utils/reg-basic-sub ::shown?)
+(s/def ::valid boolean?)
+(rfu/reg-basic-sub ::valid)
+
+(s/def ::debug-shown? boolean?)
+(rfu/reg-basic-sub ::debug-shown?)
+
+(rfu/reg-basic-sub ::shown?)
 
 (def default-rate 1)
 
 (s/def ::date string?)
-(rf-utils/reg-basic-sub ::date)
-(rf-utils/reg-set-event ::date)
+(rfu/reg-basic-sub ::date)
+(rfu/reg-set-event ::date)
 
 (s/def ::time string?)
-(rf-utils/reg-basic-sub ::time)
-(rf-utils/reg-set-event ::time)
+(rfu/reg-basic-sub ::time)
+(rfu/reg-set-event ::time)
 
 (s/def ::rate string?)
-(rf-utils/reg-basic-sub ::rate)
-(rf-utils/reg-set-event ::rate)
+(rfu/reg-basic-sub ::rate)
+(rfu/reg-set-event ::rate)
+
+(s/def ::currency-id string?)
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
 
 (defn toggle
   [cofx event]
@@ -36,21 +46,6 @@
     {:db (update db ::shown? not)}))
 
 (kf/reg-event-fx ::toggle toggle)
-
-;; FIXME: id for string or int
-;; (s/or :unselected string? :selected pos-int?)
-(s/def ::currency-id string?)
-
-(defn sub-currency-id
-  [db _]
-  (or (get db ::currency-id)
-      ;; FIXME: Don't do this. do in init
-      (some-> @(rf/subscribe [::e.currencies/items]) first :db/id)
-      ""))
-
-(rf/reg-sub ::currency-id sub-currency-id)
-(rf-utils/reg-set-event ::currency-id)
-(rf-utils/reg-set-event ::rate)
 
 (defn submit-clicked
   [cofx event]
@@ -63,7 +58,7 @@
 (defn create-form-data
   [[currency-id rate date time]]
   {:currency-id (int currency-id)
-   :rate        rate
+   :rate        (js/Number.parseFloat rate)
    :date        (js/Date. (str date "T" time))})
 
 (rf/reg-sub
@@ -86,19 +81,26 @@
 
 (defn debug-box
   [form-data]
-  [:pre (str form-data)])
+  (when @(rf/subscribe [::debug-shown?])
+    [:pre (str form-data)]))
+
+(defn toggle-debug-button
+  []
+  (tr [:debug-shown "Debug Shown: %1"]
+      [(str (boolean @(rf/subscribe [::debug-shown?])))]))
 
 (defn add-currency-rate-form
   [currency-id]
   (let [shown? @(rf/subscribe [::shown?])]
     [:<>
-     [toggle-button]
+     [:div [toggle-debug-button]]
+     [:div [toggle-button]]
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
          [:<>
-          [c/number-input "Rate" ::rate ::change-rate]
-          [c/input-field "Date" ::date ::change-date :date]
-          [c/input-field "Time" ::time ::change-time :time]
+          [c/number-input "Rate" ::rate ::set-rate]
+          [c/input-field "Date" ::date ::set-date :date]
+          [c/input-field "Time" ::time ::set-time :time]
           [:p "Currency Id: " currency-id]
           #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
           [debug-box form-data]
