@@ -19,13 +19,12 @@
 
 (defn input-field
   [label field change-handler type]
-  [:div.field
-   [:div.control
-    [:label.label label]
-    [:input.input
-     {:type type
-      :value @(rf/subscribe [field])
-      :on-change #(rf/dispatch [change-handler (target-value %)])}]]])
+  [:<>
+   [:label.label label]
+   [:input.input
+    {:type type
+     :value @(rf/subscribe [field])
+     :on-change #(rf/dispatch [change-handler (target-value %)])}]])
 
 (defn text-input
   [label field change-handler]
@@ -45,11 +44,7 @@
 
 (defn primary-button
   [label click-handler]
-  [:div.field
-   [:div.control
-    [:a.button.is-primary
-     {:on-click #(rf/dispatch click-handler)}
-     label]]])
+  [:a.button.is-primary {:on-click #(rf/dispatch click-handler)} label])
 
 (defn currency-selector
   [label field change-handler]
@@ -106,3 +101,11 @@
   (fn [match]
     (when (= (get-in match [:data :name]) page)
       (:path-params match))))
+
+(defn get-date-string
+  [date]
+  (str (.getFullYear date) "-" (inc (.getMonth date)) "-0" (.getDate date)))
+
+(defn get-time-string
+  [date]
+  (str (.getHours date) ":" (.getMinutes date)))

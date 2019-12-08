@@ -4,6 +4,7 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.forms.create-rate :as c.f.create-rate]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
@@ -46,11 +47,6 @@
 
 (kf/reg-event-fx ::toggle toggle)
 
-(defn submit-clicked
-  [cofx event]
-  (let [[data] event]
-    {:dispatch [::e.rates/do-submit data]}))
-
 (s/def ::add-currency-rate-form
   (s/keys :req-un [::s.rates/date ::s.rates/rate ::s.rates/currency-id]))
 
@@ -66,9 +62,7 @@
  :<- [::rate]
  :<- [::date]
  :<- [::time]
- create-form-data)
-
-(kf/reg-event-fx ::submit-clicked submit-clicked)
+ c.f.create-rate/create-form-data)
 
 (defn toggle-button
   []
@@ -81,11 +75,10 @@
 (defn init-form
   [{:keys [db]} _]
   (let [default-date (js/Date.)
-        date-string (str (.getFullYear default-date) "-" (inc (.getMonth default-date)) "-0" (.getDate default-date))
-        time-string (str (.getHours default-date) ":" (.getMinutes default-date))]
-    {:db (merge db {::rate (str default-rate)
-                    ::date date-string
-                    ::time time-string})}))
+        default-opts {::rate (str default-rate)
+                      ::date (timbre/spy :info (c/get-date-string default-date))
+                      ::time (c/get-time-string default-date)}]
+    {:db (merge db default-opts)}))
 
 (kf/reg-event-fx ::init-form init-form)
 
@@ -103,10 +96,22 @@
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
          [:<>
-          [c/number-input (tr [:rate]) ::rate ::set-rate]
-          [c/input-field (tr [:date]) ::date ::set-date :date]
-          [c/input-field (tr [:time]) ::time ::set-time :time]
+          [:div.field>div.control
+           [c/number-input (tr [:rate]) ::rate ::set-rate]]
+          [:div.field>div.control
+           [:input.input
+            {:type :date
+             :value @(rf/subscribe [::date])
+             :on-change #(rf/dispatch [::set-date (c/target-value %)])}]
+           [:input.input
+            {:type :time
+             :value @(rf/subscribe [::time])
+             :on-change #(rf/dispatch [::set-time (c/target-value %)])}]
+
+           #_[c/input-field (tr [:date]) ::date ::set-date :date]
+           #_[c/input-field (tr [:time]) ::time ::set-time :time]]
           #_[:p "Currency Id: " currency-id]
           #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
           [c.debug/debug-box form-data]
-          [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]))]))
+          [:div.field>div.control
+           [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]]))]))
