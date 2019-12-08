@@ -1,4 +1,5 @@
-(ns dinsro.views.home)
+(ns dinsro.views.home
+  (:require [dinsro.translations :refer [tr]]))
 
 (defn page
   []

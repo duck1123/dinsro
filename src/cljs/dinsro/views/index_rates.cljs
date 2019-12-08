@@ -28,6 +28,6 @@
     [:section.section>div.container>div.content
      [:h1 "Rates"]
      #_[rate-chart items]
-     [:a.button {:on-click #(rf/dispatch [::init-page])} "Load"]
-     [create-rate-form]
-     [index-rates items]]))
+     #_[button/fetch-rates]
+     #_[create-rate-form]
+     #_[index-rates items]]))

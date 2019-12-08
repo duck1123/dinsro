@@ -2,8 +2,10 @@
   (:require [ajax.core :as ajax]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.buttons :as button]
             [dinsro.components.index-users :refer [index-users]]
             [dinsro.events.users :as e.users]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
@@ -22,10 +24,8 @@
 
 (defn page
   []
-  (let [users @(rf/subscribe [::e.users/items])
-        state @(rf/subscribe [::e.users/do-fetch-index-state])]
+  (let [users @(rf/subscribe [::e.users/items])]
     [:section.section>div.container>div.content
-     [:h1 "Users Page"]
-     [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])}
-      (str "Load Users: " state)]
+     [:h1 (tr [:users-page "Users Page"])]
+     [button/fetch-users]
      [index-users users]]))

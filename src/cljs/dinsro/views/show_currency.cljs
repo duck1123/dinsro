@@ -5,10 +5,10 @@
             [dinsro.components.show-currency :refer [show-currency]]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [taoensso.tempura :as tempura :refer [tr]]
             [taoensso.timbre :as timbre]))
 
 (s/def ::init-page-cofx (s/keys))

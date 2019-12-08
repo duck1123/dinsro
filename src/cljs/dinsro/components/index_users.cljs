@@ -5,6 +5,7 @@
             [dinsro.events.users :as e.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
+            [dinsro.translations :refer [tr]]
             [dinsro.views.show-user :as v.show-user]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]

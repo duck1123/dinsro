@@ -5,15 +5,19 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.events.authentication :as e.authentication]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub      ::email       (fn [db _] (get db ::email "bob@example.com")))
+(def default-email "bob@example.com")
+(def default-password "hunter2")
+
+(rf/reg-sub      ::email       (fn [db _] (get db ::email default-email)))
 (kf/reg-event-db :change-email (fn [db [email]] (assoc db ::email email)))
 
-(rf/reg-sub      ::password       (fn [db _] (get db ::password "hunter2")))
+(rf/reg-sub      ::password       (fn [db _] (get db ::password default-password)))
 (kf/reg-event-db :change-password (fn [db [password]] (assoc db ::password password)))
 
 (rf/reg-sub
