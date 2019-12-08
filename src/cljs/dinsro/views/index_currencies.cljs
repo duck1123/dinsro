@@ -1,6 +1,6 @@
 (ns dinsro.views.index-currencies
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components.buttons :as button]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-currency :refer [create-currency]]
             [dinsro.components.index-currencies :refer [index-currencies]]
             [dinsro.events.currencies :as e.currencies]
@@ -26,7 +26,8 @@
     [:section.section>div.container>div.content
      [:h1 (tr [:index-currencies "Index Currencies"])]
      [:div.box
-      [button/fetch-currencies]]
+      [c.buttons/fetch-currencies]
+      [c.buttons/toggle-debug]]
      [:div.box
       [create-currency]
       [:hr]

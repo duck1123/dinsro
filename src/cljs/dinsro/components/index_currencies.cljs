@@ -1,17 +1,12 @@
 (ns dinsro.components.index-currencies
-  (:require [dinsro.events.currencies :as e.currencies]
+  (:require [dinsro.components.buttons :as c.buttons]
+            [dinsro.events.currencies :as e.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.translations :refer [tr]]
             [dinsro.views.show-currency :as show-currency]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
-
-(defn delete-currency-button
-  [currency]
-  [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
-   (tr [:delete])])
 
 (defn currency-link
   [currency-id]
@@ -24,8 +19,8 @@
   [currency]
   (let [{:keys [db/id]} currency]
     [:tr
-     [:td (currency-link id)]
-     [:td [delete-currency-button]]]))
+     [:td [currency-link id]]
+     [:td [c.buttons/delete-currency]]]))
 
 (defn index-currencies
   [currencies]

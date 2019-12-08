@@ -1,11 +1,18 @@
 (ns dinsro.components.buttons
-  (:require [dinsro.events.accounts :as e.accounts]
+  (:require [dinsro.components.debug :as c.debug]
+            [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
+
+(defn delete-currency
+  [currency]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
+   (tr [:delete])])
 
 (defn delete-user
   [user]
@@ -42,3 +49,5 @@
   (let [state @(rf/subscribe [::e.users/do-fetch-index-state])]
     [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])}
      (tr [:fetch-users] [state])]))
+
+(def toggle-debug c.debug/toggle-debug-button)

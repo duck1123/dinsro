@@ -3,6 +3,8 @@
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
             [dinsro.spec.currencies :as s.currencies]
@@ -16,9 +18,6 @@
 
 (s/def ::valid boolean?)
 (rfu/reg-basic-sub ::valid)
-
-(s/def ::debug-shown? boolean?)
-(rfu/reg-basic-sub ::debug-shown?)
 
 (rfu/reg-basic-sub ::shown?)
 
@@ -79,21 +78,11 @@
        [:span.icon>i.fas.fa-chevron-down]
        [:span.icon>i.fas.fa-chevron-right])]))
 
-(defn debug-box
-  [form-data]
-  (when @(rf/subscribe [::debug-shown?])
-    [:pre (str form-data)]))
-
-(defn toggle-debug-button
-  []
-  (tr [:debug-shown "Debug Shown: %1"]
-      [(str (boolean @(rf/subscribe [::debug-shown?])))]))
-
 (defn add-currency-rate-form
   [currency-id]
   (let [shown? @(rf/subscribe [::shown?])]
     [:<>
-     [:div [toggle-debug-button]]
+     [:div [c.buttons/toggle-debug]]
      [:div [toggle-button]]
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
@@ -103,9 +92,8 @@
           [c/input-field "Time" ::time ::set-time :time]
           [:p "Currency Id: " currency-id]
           #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
-          [debug-box form-data]
+          [c.debug/debug-box form-data]
           [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]))]))
-
 
 (defn init-form
   [{:keys [db]} _]
