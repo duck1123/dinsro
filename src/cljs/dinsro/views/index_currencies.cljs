@@ -9,10 +9,11 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(kf/reg-event-fx
- ::init-page
- (fn-traced [_ _]
-   {:dispatch [::e.currencies/do-fetch-index]}))
+(defn init-page
+  [_ _]
+  {:dispatch [::e.currencies/do-fetch-index]})
+
+(kf/reg-event-fx ::init-page init-page)
 
 (kf/reg-controller
  ::page-controller
@@ -24,6 +25,9 @@
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
      [:h1 (tr [:index-currencies "Index Currencies"])]
-     [button/fetch-currencies]
-     [create-currency]
-     [index-currencies currencies]]))
+     [:div.box
+      [button/fetch-currencies]]
+     [:div.box
+      [create-currency]
+      [:hr]
+      [index-currencies currencies]]]))
