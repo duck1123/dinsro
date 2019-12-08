@@ -20,7 +20,7 @@
 (defn user-link
   [user]
   (let [name (::s.users/name user)
-        id (::s.users/id user)]
+        id (:db/id user)]
     [:a {:href (kf/path-for [:show-user-page {:id id}])} name]))
 
 (defn-spec user-line any?
