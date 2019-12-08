@@ -12,6 +12,32 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
+(defn delete-button
+  [id]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])}
+   (tr [:delete])])
+
+(defn account-link
+  [account]
+  (let [id (:db/id account)
+        name (::s.accounts/name account)]
+    [:a {:href (kf/path-for [:show-account-page {:id id}])} name]))
+
+(defn currency-link
+  [currency-id]
+  (if-let [currency @(rf/subscribe [::e.currencies/item currency-id])]
+    (let [name (::s.currencies/name currency)]
+      [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])} name])
+    [:span (tr [:not-loaded])]))
+
+(defn user-link
+  [user-id]
+  (if-let [user @(rf/subscribe [::e.users/item user-id])]
+    (let [name (::s.users/name user)]
+      [:a {:href (kf/path-for [:show-user-page {:id user-id}])} name])
+    [:span (tr [:not-loaded])]))
+
 (defn row-line
   [account]
   (let [{:keys [db/id
@@ -20,33 +46,19 @@
                 dinsro.spec.accounts/user]} account
         initial-value (::s.accounts/initial-value account)
         currency-id (:db/id currency)
-        user-id (:db/id user)
-        user @(rf/subscribe [::e.users/item user-id])
-        currency @(rf/subscribe [::e.currencies/item currency-id])]
+        user-id (:db/id user)]
     [:div.box
-     [:p [:a {:href (kf/path-for [:show-account-page {:id id}])} name]]
-     [:p
-      (tr [:user]) ": "
-      (if user
-        [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
-         (::s.users/name user)]
-        [:span (tr [:not-loaded])])]
-     [:p
-      (tr [:currency]) ": "
-      (if currency
-        [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
-         (::s.currencies/name currency)]
-        [:span (tr [:not-loaded])])]
-     [:p "Initial Value: " initial-value]
-     [:a.button.is-danger
-      {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])}
-      (tr [:delete])]]))
+     [:p [account-link account]]
+     [:p (tr [:user-label] [[user-link user-id]])]
+     [:p (tr [:currency-label] [[currency-link]])]
+     [:p (tr [:initial-value-label] [initial-value])]
+     [delete-button id]]))
 
 (defn index-accounts
   [accounts]
   [:div.box
    (if-not (seq accounts)
-     [:div "No Accounts"]
+     [:div (tr [:no-accounts])]
      (into [:div]
            (for [account accounts]
              ^{:key (:db/id account)}
