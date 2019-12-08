@@ -1,26 +1,34 @@
 (ns dinsro.components.forms.create-rate
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(c/reg-field ::rate        0)
-(c/reg-field ::currency-id 2)
-(c/reg-field ::date        (.toISOString (js/Date.)))
-(c/reg-field ::time        (.toISOString (js/Date.)))
-(c/reg-field ::form-shown? false)
-#_(rf/reg-sub      ::form-shown?          (fn-traced [db _] (get db ::form-shown? false)))
+(def default-rate 1)
 
-(kf/reg-event-db ::change-currency-id (fn-traced [db [value]] (assoc db ::currency-id (int value))))
-(kf/reg-event-db ::change-date        (fn-traced [db [value]] (assoc db ::date value)))
-(kf/reg-event-db ::change-time        (fn-traced [db [value]] (assoc db ::time value)))
-(kf/reg-event-db
- ::change-rate
- (fn-traced [db [value]]
-   (assoc db ::rate (let [v (js/parseFloat value)] (if (js/isNaN v) 0 v)))))
+(s/def ::rate string?)
+(rfu/reg-basic-sub ::rate)
+(rfu/reg-set-event ::rate)
+
+(s/def ::currency-id string?)
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
+
+(s/def ::date string?)
+(rfu/reg-basic-sub ::date)
+(rfu/reg-set-event ::date)
+
+(s/def ::time string?)
+(rfu/reg-basic-sub ::time)
+(rfu/reg-set-event ::time)
+
+(rfu/reg-basic-sub ::shown?)
 
 (rf/reg-sub
  ::form-data
@@ -42,22 +50,40 @@
 
 (defn toggle-form
   [db _]
-  (update db ::form-shown? not)
-  )
+  (update db ::shown? not))
 
 (kf/reg-event-db ::toggle-form toggle-form)
 
+(defn toggle-button
+  []
+  [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"])
+
 (defn create-rate-form
   []
-  (let [shown? @(rf/subscribe [::form-shown?])
+  (let [shown? @(rf/subscribe [::shown?])
         form-data @(rf/subscribe [::form-data])]
     [:<>
-     [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
+     [toggle-button]
      (when shown?
       [:div.box
-       [c/number-input      "Rate"     ::rate        ::change-rate]
-       [c/input-field       "Date"     ::date        ::change-date :date]
-       [c/input-field       "Time"     ::time        ::change-time :time]
-       [c/currency-selector "Currency" ::currency-id ::change-currency-id]
+       [c/number-input      "Rate"     ::rate        ::set-rate]
+       [c/input-field       "Date"     ::date        ::set-date :date]
+       [c/input-field       "Time"     ::time        ::set-time :time]
+       [c/currency-selector "Currency" ::currency-id ::set-currency-id]
        [:pre (str form-data)]
        [c/primary-button    "Submit"   [::submit-clicked]]])]))
+
+(defn init-form
+  [{:keys [db]} _]
+  (timbre/info "Init form")
+  (let [default-date (js/Date.)]
+    {:db (merge db {::rate (str default-rate)
+                    ::date "2019-12-01"
+                    ::time "00:00"})}))
+
+(kf/reg-event-fx ::init-form init-form)
+
+(kf/reg-controller
+ ::form-controller
+ {:params (constantly true)
+  :start [::init-form]})
