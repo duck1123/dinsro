@@ -47,19 +47,27 @@
         initial-value (::s.accounts/initial-value account)
         currency-id (:db/id currency)
         user-id (:db/id user)]
-    [:div.box
-     [:p [account-link account]]
-     [:p (tr [:user-label] [[user-link user-id]])]
-     [:p (tr [:currency-label] [[currency-link]])]
-     [:p (tr [:initial-value-label] [initial-value])]
-     [delete-button id]]))
+    [:tr
+     [:td [account-link account]]
+     [:td [user-link user-id]]
+     [:td [currency-link]]
+     [:td initial-value]
+     [:td [delete-button id]]]))
 
 (defn index-accounts
   [accounts]
-  [:div.box
+  [:<>
    (if-not (seq accounts)
      [:div (tr [:no-accounts])]
-     (into [:div]
-           (for [account accounts]
-             ^{:key (:db/id account)}
-             (row-line account))))])
+     [:table.table
+      [:thead
+       [:tr
+        [:th "Name"]
+        [:th (tr [:user-label])]
+        [:th (tr [:currency-label]) ]
+        [:th (tr [:initial-value-label]) ]
+        [:th "Buttons"]]]
+      (into [:tbody]
+            (for [account accounts]
+              ^{:key (:db/id account)}
+              (row-line account)))])])
