@@ -1,10 +1,12 @@
 (ns dinsro.components.forms.add-currency-rate
-  (:require [clojure.spec.alpha :as s]
+  (:require [cljc.java-time.instant :as instant]
+            [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :as c.f.create-rate]
+            [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
@@ -61,7 +63,6 @@
  :<- [::currency-id]
  :<- [::rate]
  :<- [::date]
- :<- [::time]
  c.f.create-rate/create-form-data)
 
 (defn toggle-button
@@ -100,7 +101,7 @@
      :on-change #(rf/dispatch [::set-time (c/target-value %)])}]])
 
 (defn-spec add-currency-rate-form vector?
-  [currency-id :db/id]
+  [currency-id any?]
   (let [shown? @(rf/subscribe [::shown?])]
     [:<>
      [:div [toggle-button]]
@@ -110,7 +111,9 @@
          [:<>
           [:div.field>div.control
            [c/number-input (tr [:rate]) ::rate ::set-rate]]
-          [datetime-picker]
+          [:div.field>div.control
+           [c.datepicker/datepicker
+            {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
           [c.debug/debug-box form-data]
           [:div.field>div.control
            [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]]))]))

@@ -32,17 +32,16 @@
 (rfu/reg-basic-sub ::shown?)
 
 (defn create-form-data
-  [[currency-id rate date time]]
+  [[currency-id rate date]]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
-   :date        (js/Date. (str date "T" time))})
+   :date        (js/Date. date #_(str date "T" time))})
 
 (rf/reg-sub
  ::form-data
  :<- [::currency-id]
  :<- [::rate]
  :<- [::date]
- :<- [::time]
  create-form-data)
 
 (defn submit-clicked
