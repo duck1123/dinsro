@@ -27,5 +27,6 @@
   (let [users @(rf/subscribe [::e.users/items])]
     [:section.section>div.container>div.content
      [:h1 (tr [:users-page "Users Page"])]
-     [button/fetch-users]
+     [:div.box
+      [button/fetch-users]]
      [index-users users]]))

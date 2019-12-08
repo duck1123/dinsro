@@ -27,16 +27,23 @@
   [user ::s.users/item]
   (let [id (:db/id user)
         email (::s.users/email user)]
-    [:div.box
-     [:p (tr [:id-label]) id]
-     [:p (tr [:name-label]) [user-link user]]
-     [:p (tr [:email-label]) email]
-     [c.buttons/delete-user user]]))
+    [:tr
+     [:td id]
+     [:td [user-link user]]
+     [:td email]
+     [:td [c.buttons/delete-user user]]]))
 
 (defn index-users
   [users]
   (if-not (seq users)
     [:div [:p (tr [:no-users])]]
-    (into [:div.section]
-          (for [{:keys [db/id] :as user} users]
-            ^{:key id} [user-line user]))))
+    [:table.table
+     [:thead
+      [:tr
+       [:th (tr [:id-label])]
+       [:th (tr [:name-label])]
+       [:th (tr [:email-label])]
+       [:th "Buttons"]]]
+     (into [:tbody]
+           (for [{:keys [db/id] :as user} users]
+             ^{:key id} [user-line user]))]))
