@@ -25,17 +25,21 @@
  {:params #(when (= (get-in % [:data :name]) :index-rates-page) true)
   :start [::init-page]})
 
+(defn load-buttons
+  []
+  [:div.box
+   [c.buttons/fetch-rates]
+   [c.buttons/fetch-currencies]
+   [c.buttons/toggle-debug]])
+
 (defn page
   []
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
-     [:h1 (tr [:rates "Rates"])]
-     #_[rate-chart items]
+     [load-buttons]
      [:div.box
-      [c.buttons/fetch-rates]
-      [c.buttons/fetch-currencies]
-      [c.buttons/toggle-debug]]
-     [:div.box
+      [:h1 (tr [:rates "Rates"])]
       [create-rate-form]
       [:hr]
+      #_[rate-chart items]
       [index-rates items]]]))
