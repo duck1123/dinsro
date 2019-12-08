@@ -29,4 +29,6 @@
      [:h1 (tr [:users-page "Users Page"])]
      [:div.box
       [button/fetch-users]]
-     [index-users users]]))
+     [:div.box
+      [:hr]
+      [index-users users]]]))
