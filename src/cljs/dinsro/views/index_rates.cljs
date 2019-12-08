@@ -31,6 +31,9 @@
     [:section.section>div.container>div.content
      [:h1 (tr [:rates "Rates"])]
      #_[rate-chart items]
-     [button/fetch-rates]
-     [create-rate-form]
-     [index-rates items]]))
+     [:div.box
+      [button/fetch-rates]]
+     [:div.box
+      [create-rate-form]
+      [:hr]
+      [index-rates items]]]))
