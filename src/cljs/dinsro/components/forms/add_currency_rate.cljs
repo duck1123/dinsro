@@ -103,3 +103,18 @@
           #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
           [debug-box form-data]
           [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]))]))
+
+
+(defn init-form
+  [{:keys [db]} _]
+  (timbre/info "Init form")
+  {:db (merge db {::rate "1"
+                  ::date "2019-12-01"
+                  ::time "00:00"})})
+
+(kf/reg-event-fx ::init-form init-form)
+
+(kf/reg-controller
+ ::form-controller
+ {:params (constantly true)
+  :start [::init-form]})
