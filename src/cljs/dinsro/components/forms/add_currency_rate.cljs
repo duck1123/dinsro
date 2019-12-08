@@ -109,6 +109,7 @@
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
          [:<>
+          [:a.delete.is-pulled-right "x"]
           [:div.field>div.control
            [c/number-input (tr [:rate]) ::rate ::set-rate]]
           [:div.field>div.control

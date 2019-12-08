@@ -30,6 +30,7 @@
 (rfu/reg-set-event ::time)
 
 (rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (defn create-form-data
   [[currency-id rate date]]
@@ -79,16 +80,13 @@
 
 (defn create-rate-form
   []
-  (let [shown? @(rf/subscribe [::shown?])
-        form-data @(rf/subscribe [::form-data])]
-    [:<>
-     [toggle-button]
-     [:a.button {:on-click #(rf/dispatch [::init-form])} "Init"]
-     (when shown?
+  (let [form-data @(rf/subscribe [::form-data])]
+    (when @(rf/subscribe [::shown?])
       [:<>
+       [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
        [c/number-input      "Rate"     ::rate        ::set-rate]
        [c/input-field       "Date"     ::date        ::set-date :date]
        [c/input-field       "Time"     ::time        ::set-time :time]
        [c/currency-selector "Currency" ::currency-id ::set-currency-id]
        [c.debug/debug-box form-data]
-       [c/primary-button    "Submit"   [::submit-clicked]]])]))
+       [c/primary-button    "Submit"   [::submit-clicked]]])))

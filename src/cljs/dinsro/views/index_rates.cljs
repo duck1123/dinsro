@@ -1,7 +1,7 @@
 (ns dinsro.views.index-rates
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-rate :refer [create-rate-form]]
+            [dinsro.components.forms.create-rate :as c.f.create-rate :refer [create-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.rate-chart :refer [rate-chart]]
             [dinsro.events.rates :as e.rates]
@@ -32,13 +32,21 @@
    [c.buttons/fetch-currencies]
    [c.buttons/toggle-debug]])
 
+(defn show-form-button
+  []
+  (when-not @(rf/subscribe [::c.f.create-rate/shown?])
+    [:a.is-pulled-right {:on-click #(rf/dispatch [::c.f.create-rate/set-shown? true])}
+     "Show Form"]))
+
 (defn page
   []
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
      [load-buttons]
      [:div.box
-      [:h1 (tr [:rates "Rates"])]
+      [:h1
+       (tr [:rates "Rates"])
+       [show-form-button]]
       [create-rate-form]
       [:hr]
       #_[rate-chart items]
