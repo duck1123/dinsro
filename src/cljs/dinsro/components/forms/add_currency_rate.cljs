@@ -78,28 +78,14 @@
        [:span.icon>i.fas.fa-chevron-down]
        [:span.icon>i.fas.fa-chevron-right])]))
 
-(defn-spec add-currency-rate-form vector?
-  [currency-id :db/id]
-  (let [shown? @(rf/subscribe [::shown?])]
-    [:<>
-     [:div [toggle-button]]
-     (when shown?
-       (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
-         [:<>
-          [c/number-input "Rate" ::rate ::set-rate]
-          [c/input-field "Date" ::date ::set-date :date]
-          [c/input-field "Time" ::time ::set-time :time]
-          [:p "Currency Id: " currency-id]
-          #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
-          [c.debug/debug-box form-data]
-          [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]))]))
-
 (defn init-form
   [{:keys [db]} _]
-  (timbre/info "Init form")
-  {:db (merge db {::rate (str default-rate)
-                  ::date "2019-12-01"
-                  ::time "00:00"})})
+  (let [default-date (js/Date.)
+        date-string (str (.getFullYear default-date) "-" (inc (.getMonth default-date)) "-0" (.getDate default-date))
+        time-string (str (.getHours default-date) ":" (.getMinutes default-date))]
+    {:db (merge db {::rate (str default-rate)
+                    ::date date-string
+                    ::time time-string})}))
 
 (kf/reg-event-fx ::init-form init-form)
 
@@ -107,3 +93,20 @@
  ::form-controller
  {:params (constantly true)
   :start [::init-form]})
+
+(defn-spec add-currency-rate-form vector?
+  [currency-id :db/id]
+  (let [shown? @(rf/subscribe [::shown?])]
+    [:<>
+     [:div [toggle-button]]
+     [:a.button {:on-click #(rf/dispatch [::init-form])} "Init"]
+     (when shown?
+       (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
+         [:<>
+          [c/number-input (tr [:rate]) ::rate ::set-rate]
+          [c/input-field (tr [:date]) ::date ::set-date :date]
+          [c/input-field (tr [:time]) ::time ::set-time :time]
+          #_[:p "Currency Id: " currency-id]
+          #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
+          [c.debug/debug-box form-data]
+          [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]))]))
