@@ -5,6 +5,7 @@
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [reagent.core :as r]
@@ -41,9 +42,9 @@
 (defn-spec index-rates vector?
   [items (s/coll-of ::s.rates/item)]
   [:<>
-   #_[:pre (str items)]
+   [:pre (str items)]
    (if-not (seq items)
-     [:p (l :no-rates)]
+     [:p (tr [:no-rates "No Rates"])]
      [:table.table
       [:thead>tr
        [:th "Value"]

@@ -35,11 +35,13 @@
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
-  [{:keys [db]} [{:keys [items]}]]
-  (let [items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
-    {:db (-> db
-             (assoc ::items items)
-             (assoc ::do-fetch-index-state :loaded))}))
+  [cofx event]
+  (let [{:keys [db]} cofx
+        [{:keys [items]}] event]
+    (let [items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
+            {:db (-> db
+                     (assoc ::items items)
+                     (assoc ::do-fetch-index-state :loaded))})))
 
 (defn do-fetch-index-failed
   [{:keys [db]} _]
@@ -56,7 +58,7 @@
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}})
 
-(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)
 
@@ -90,20 +92,18 @@
 ;; Delete
 
 (s/def ::do-delete-record-success-cofx (s/keys))
+(s/def ::do-delete-record-failed-cofx (s/keys))
+(s/def ::do-delete-record-cofx (s/keys))
+(s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
 
 (defn-spec do-delete-record-success (s/keys)
   [cofx ::do-delete-record-success-cofx _ any?]
   {:dispatch [::do-fetch-index]})
 
-(s/def ::do-delete-record-failed-cofx (s/keys))
-
 (defn-spec do-delete-record-failed (s/keys)
   [cofx ::do-delete-record-failed-cofx _ any?]
   (timbre/error "Delete record failed")
   {:dispatch [::do-fetch-index]})
-
-(s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
 
 (defn-spec do-delete-record (s/keys)
   [cofx ::do-delete-record-cofx [item] ::do-delete-record-event]
