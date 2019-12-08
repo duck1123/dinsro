@@ -1,4 +1,4 @@
-(ns dinsro.components.forms.account
+(ns dinsro.components.forms.create-account
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
@@ -70,12 +70,11 @@
         shown? @(rf/subscribe [::form-shown?])]
     [:<>
      [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
-     [:div.box
-      #_[:pre (str form-data)]
-      (when shown?
-        [:<>
-         [c/text-input        (:name strings)          ::name          ::change-name]
-         [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
-         [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
-         [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
-         [c/primary-button    (:submit strings)        [::e.accounts/do-submit form-data]]])]]))
+     #_[:pre (str form-data)]
+     (when shown?
+       [:<>
+        [c/text-input        (:name strings)          ::name          ::change-name]
+        [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
+        [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
+        [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
+        [c/primary-button    (:submit strings)        [::e.accounts/do-submit form-data]]])]))

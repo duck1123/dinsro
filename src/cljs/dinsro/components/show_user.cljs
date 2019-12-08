@@ -1,6 +1,6 @@
 (ns dinsro.components.show-user
   (:require [clojure.spec.alpha :as s]
-            [dinsro.components.forms.account :refer [create-user-account]]
+            [dinsro.components.forms.create-account :refer [create-user-account]]
             [dinsro.components.forms.add-user-account :refer [add-user-account]]
             [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.events.accounts :as e.accounts]
