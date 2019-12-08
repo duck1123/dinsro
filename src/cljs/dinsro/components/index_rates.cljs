@@ -36,7 +36,7 @@
 (defn-spec index-rates vector?
   [items (s/coll-of ::s.rates/item)]
   [:<>
-   [:pre (str items)]
+   #_[:pre (str items)]
    (if-not (seq items)
      [:p (tr [:no-rates])]
      [:table.table

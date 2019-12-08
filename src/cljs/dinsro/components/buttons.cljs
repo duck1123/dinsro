@@ -25,6 +25,12 @@
     [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
      (tr [:fetch-currencies] [state])]))
 
+(defn fetch-currency
+  [currency-id]
+  (let [state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
+     (tr [:fetch-currency] [currency-id state])]))
+
 (defn fetch-rates
   []
   (let [state @(rf/subscribe [::e.rates/do-fetch-index-state])]
