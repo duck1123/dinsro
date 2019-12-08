@@ -3,6 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
             [kee-frame.core :as kf]
@@ -30,17 +31,19 @@
 
 (rfu/reg-basic-sub ::shown?)
 
+(defn create-form-data
+  [[currency-id rate date time]]
+  {:currency-id (int currency-id)
+   :rate        (js/Number.parseFloat rate)
+   :date        (js/Date. (str date "T" time))})
+
 (rf/reg-sub
  ::form-data
  :<- [::currency-id]
  :<- [::rate]
  :<- [::date]
  :<- [::time]
- (fn-traced [[currency-id rate date time]]
-   {:currency-id currency-id
-    :rate        rate
-    :date        date
-    :time        time}))
+ create-form-data)
 
 (defn submit-clicked
   [_ _]
@@ -65,12 +68,12 @@
     [:<>
      [toggle-button]
      (when shown?
-      [:div.box
+      [:<>
        [c/number-input      "Rate"     ::rate        ::set-rate]
        [c/input-field       "Date"     ::date        ::set-date :date]
        [c/input-field       "Time"     ::time        ::set-time :time]
        [c/currency-selector "Currency" ::currency-id ::set-currency-id]
-       [:pre (str form-data)]
+       [c.debug/debug-box form-data]
        [c/primary-button    "Submit"   [::submit-clicked]]])]))
 
 (defn init-form
@@ -78,7 +81,12 @@
   (timbre/info "Init form")
   (let [default-date (js/Date.)]
     {:db (merge db {::rate (str default-rate)
-                    ::date "2019-12-01"
+                    ::currency-id ""
+                    ::date (str (.getFullYear default-date)
+                                "-"
+                                (.getMonth default-date)
+                                "-"
+                                (.getDate default-date))
                     ::time "00:00"})}))
 
 (kf/reg-event-fx ::init-form init-form)

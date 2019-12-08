@@ -1,6 +1,6 @@
 (ns dinsro.views.index-rates
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components.buttons :as button]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :refer [create-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.rate-chart :refer [rate-chart]]
@@ -32,7 +32,9 @@
      [:h1 (tr [:rates "Rates"])]
      #_[rate-chart items]
      [:div.box
-      [button/fetch-rates]]
+      [c.buttons/fetch-rates]
+      [c.buttons/fetch-currencies]
+      [c.buttons/toggle-debug]]
      [:div.box
       [create-rate-form]
       [:hr]

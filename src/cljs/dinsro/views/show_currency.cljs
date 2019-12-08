@@ -36,7 +36,8 @@
   [:div.box
    [c.buttons/fetch-rates]
    [c.buttons/fetch-currencies]
-   [c.buttons/fetch-currency id]])
+   [c.buttons/fetch-currency id]
+   [c.buttons/toggle-debug]])
 
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))

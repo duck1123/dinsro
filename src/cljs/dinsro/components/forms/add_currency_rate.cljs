@@ -78,11 +78,10 @@
        [:span.icon>i.fas.fa-chevron-down]
        [:span.icon>i.fas.fa-chevron-right])]))
 
-(defn add-currency-rate-form
-  [currency-id]
+(defn-spec add-currency-rate-form vector?
+  [currency-id :db/id]
   (let [shown? @(rf/subscribe [::shown?])]
     [:<>
-     [:div [c.buttons/toggle-debug]]
      [:div [toggle-button]]
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
@@ -98,7 +97,7 @@
 (defn init-form
   [{:keys [db]} _]
   (timbre/info "Init form")
-  {:db (merge db {::rate "1"
+  {:db (merge db {::rate (str default-rate)
                   ::date "2019-12-01"
                   ::time "00:00"})})
 
