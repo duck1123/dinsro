@@ -23,9 +23,9 @@
 (defn index-currency-line
   [currency]
   (let [{:keys [db/id]} currency]
-    [:div.box
-     [:p (tr [:name-label]) (currency-link id)]
-     [delete-currency-button]]))
+    [:tr
+     [:td (currency-link id)]
+     [:td [delete-currency-button]]]))
 
 (defn index-currencies
   [currencies]
@@ -33,7 +33,11 @@
    #_[:pre (str currencies)]
    (if-not (seq currencies)
      [:div (tr [:no-currencies]) ]
-     (into [:div]
-           (for [{:keys [db/id] :as currency} currencies]
-             ^{:key id}
-             [index-currency-line currency])))])
+     [:table
+      [:thead>tr
+       [:th (tr [:name-label])]
+       [:th "Buttons"]]
+      (into
+       [:tbody]
+       (for [{:keys [db/id] :as currency} currencies]
+         ^{:key id} [index-currency-line currency]))])])
