@@ -19,8 +19,7 @@
 
 (defn-spec rate-line vector?
   [item ::s.rates/item]
-  (let [strings rate-line-strings
-        id (:db/id item)
+  (let [id (:db/id item)
         value (::s.rates/rate item)
         currency-id (get-in item [::s.rates/currency :db/id])
         currency @(rf/subscribe [::e.currencies/item currency-id])]
