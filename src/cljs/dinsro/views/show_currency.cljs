@@ -31,7 +31,13 @@
  {:params (c/filter-param-page :show-currency-page)
   :start  [::init-page]})
 
-;; Fixme: string
+(defn load-buttons
+  [id]
+  [:div.box
+   [c.buttons/fetch-rates]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-currency id]])
+
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
@@ -40,20 +46,17 @@
   [{{:keys [id]} :path-params} ::view-map]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
-        rates @(rf/subscribe [::e.rates/items-by-currency currency])]
+        rates @(rf/subscribe [::e.rates/items-by-currency currency])
+        state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
+     [load-buttons id]
      [:div.box
-      [c.buttons/fetch-rates]
-      [c.buttons/fetch-currencies]
-      [c.buttons/fetch-currency id]]
-     (let [state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
-       [:div
-        (condp = state
-          :loaded [show-currency currency rates]
-          :loading [:p "Loading"]
-          :failed [:p "Failed"]
-          [:p "Unknown State"])
-        [:div
-         [:hr]
-         [add-currency-rate-form currency-id]
-         [index-rates rates]]])]))
+      (condp = state
+        :loaded [show-currency currency]
+        :loading [:p "Loading"]
+        :failed [:p "Failed"]
+        [:p "Unknown State"])]
+     [:div.box
+      [add-currency-rate-form currency-id]
+      [:hr]
+      [index-rates rates]]]))

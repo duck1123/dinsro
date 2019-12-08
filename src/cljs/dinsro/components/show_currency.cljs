@@ -14,8 +14,7 @@
   [:button.button.is-danger "Delete"])
 
 (defn-spec show-currency vector?
-  [currency ::s.currencies/item
-   rates (s/coll-of ::s.rates/item)]
+  [currency ::s.currencies/item]
   (let [currency-id (:db/id currency)]
     [:<>
      #_[:pre (str currency)]
