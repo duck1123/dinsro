@@ -19,6 +19,12 @@
 
 (def l rate-line-strings)
 
+(defn delete-button
+  [item]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
+   (tr [:delete "Delete"])])
+
 (defn-spec rate-line vector?
   [item ::s.rates/item]
   (let [strings rate-line-strings
@@ -33,11 +39,8 @@
             [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
              (::s.currencies/name currency)]
             [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
-             "Not Loaded"])]
-     [:td
-      [:a.button.is-danger
-       {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
-       (:delete strings)]]]))
+             (tr [:not-loaded "Not Loaded"])])]
+     [:td [delete-button item]]]))
 
 (defn-spec index-rates vector?
   [items (s/coll-of ::s.rates/item)]
@@ -47,9 +50,9 @@
      [:p (tr [:no-rates "No Rates"])]
      [:table.table
       [:thead>tr
-       [:th "Value"]
-       [:th "Date"]
-       [:th "Currency"]
-       [:th "Actions"]]
+       [:th (tr [:value "Value"])]
+       [:th (tr [:date "Date"])]
+       [:th (tr [:currency "Currency"])]
+       [:th (tr [:actions "Actions"])]]
       (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
            (into [:tbody]))])])

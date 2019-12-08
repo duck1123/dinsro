@@ -5,6 +5,7 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
+            [dinsro.translations :refer [tr]]
             [dinsro.views.show-account :as v.show-account]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -25,21 +26,21 @@
     [:div.box
      [:p [:a {:href (kf/path-for [:show-account-page {:id id}])} name]]
      [:p
-      "User: "
+      (tr [:user]) ": "
       (if user
         [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
          (::s.users/name user)]
-        [:span "Not Loaded"])]
+        [:span (tr [:not-loaded])])]
      [:p
-      "Currency: "
+      (tr [:currency]) ": "
       (if currency
         [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
          (::s.currencies/name currency)]
-        [:span "Not Loaded"])]
+        [:span (tr [:not-loaded])])]
      [:p "Initial Value: " initial-value]
      [:a.button.is-danger
       {:on-click #(rf/dispatch [::e.accounts/do-delete-account id])}
-      "Delete"]]))
+      (tr [:delete])]]))
 
 (defn index-accounts
   [accounts]
