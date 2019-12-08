@@ -87,6 +87,18 @@
  {:params (constantly true)
   :start [::init-form]})
 
+(defn datetime-picker
+  []
+  [:div.field>div.control
+   [:input.input
+    {:type :date
+     :value @(rf/subscribe [::date])
+     :on-change #(rf/dispatch [::set-date (c/target-value %)])}]
+   [:input.input
+    {:type :time
+     :value @(rf/subscribe [::time])
+     :on-change #(rf/dispatch [::set-time (c/target-value %)])}]])
+
 (defn-spec add-currency-rate-form vector?
   [currency-id :db/id]
   (let [shown? @(rf/subscribe [::shown?])]
@@ -98,20 +110,7 @@
          [:<>
           [:div.field>div.control
            [c/number-input (tr [:rate]) ::rate ::set-rate]]
-          [:div.field>div.control
-           [:input.input
-            {:type :date
-             :value @(rf/subscribe [::date])
-             :on-change #(rf/dispatch [::set-date (c/target-value %)])}]
-           [:input.input
-            {:type :time
-             :value @(rf/subscribe [::time])
-             :on-change #(rf/dispatch [::set-time (c/target-value %)])}]
-
-           #_[c/input-field (tr [:date]) ::date ::set-date :date]
-           #_[c/input-field (tr [:time]) ::time ::set-time :time]]
-          #_[:p "Currency Id: " currency-id]
-          #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
+          [datetime-picker]
           [c.debug/debug-box form-data]
           [:div.field>div.control
            [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]]))]))
