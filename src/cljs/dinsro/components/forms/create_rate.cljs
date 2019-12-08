@@ -61,12 +61,30 @@
   []
   [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"])
 
+(defn init-form
+  [{:keys [db]} _]
+  (let [default-date (js/Date.)
+        date-string (str (.getFullYear default-date) "-" (.getMonth default-date) "-0" (.getDate default-date))
+        time-string (str (.getHours default-date) ":" (.getMinutes default-date))]
+    {:db (merge db {::rate (str default-rate)
+                    ::currency-id ""
+                    ::date date-string
+                    ::time time-string})}))
+
+(kf/reg-event-fx ::init-form init-form)
+
+(kf/reg-controller
+ ::form-controller
+ {:params (constantly true)
+  :start [::init-form]})
+
 (defn create-rate-form
   []
   (let [shown? @(rf/subscribe [::shown?])
         form-data @(rf/subscribe [::form-data])]
     [:<>
      [toggle-button]
+     [:a.button {:on-click #(rf/dispatch [::init-form])} "Init"]
      (when shown?
       [:<>
        [c/number-input      "Rate"     ::rate        ::set-rate]
@@ -75,23 +93,3 @@
        [c/currency-selector "Currency" ::currency-id ::set-currency-id]
        [c.debug/debug-box form-data]
        [c/primary-button    "Submit"   [::submit-clicked]]])]))
-
-(defn init-form
-  [{:keys [db]} _]
-  (timbre/info "Init form")
-  (let [default-date (js/Date.)]
-    {:db (merge db {::rate (str default-rate)
-                    ::currency-id ""
-                    ::date (str (.getFullYear default-date)
-                                "-"
-                                (.getMonth default-date)
-                                "-"
-                                (.getDate default-date))
-                    ::time "00:00"})}))
-
-(kf/reg-event-fx ::init-form init-form)
-
-(kf/reg-controller
- ::form-controller
- {:params (constantly true)
-  :start [::init-form]})
