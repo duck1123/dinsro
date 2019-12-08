@@ -3,6 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
@@ -84,9 +85,15 @@
     (when @(rf/subscribe [::shown?])
       [:<>
        [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
-       [c/number-input      "Rate"     ::rate        ::set-rate]
-       [c/input-field       "Date"     ::date        ::set-date :date]
-       [c/input-field       "Time"     ::time        ::set-time :time]
-       [c/currency-selector "Currency" ::currency-id ::set-currency-id]
-       [c.debug/debug-box form-data]
-       [c/primary-button    "Submit"   [::submit-clicked]]])))
+       [:div.field>div.control
+        [c/number-input      "Rate"     ::rate        ::set-rate]]
+       [:div.field>div.control
+        [:label.label "Date"]
+        [c.datepicker/datepicker
+         {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
+       [:div.field>div.control
+        [c/currency-selector "Currency" ::currency-id ::set-currency-id]]
+       [:div.field>div.control
+        [c.debug/debug-box form-data]]
+       [:div.field>div.control
+        [c/primary-button    "Submit"   [::submit-clicked]]]])))
