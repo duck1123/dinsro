@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.events.users :as e.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
@@ -22,21 +23,15 @@
         id (::s.users/id user)]
     [:a {:href (kf/path-for [:show-user-page {:id id}])} name]))
 
-(defn delete-button
-  [user]
-  [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.users/do-delete-record user])}
-   (tr [:delete])])
-
 (defn-spec user-line any?
   [user ::s.users/item]
   (let [id (:db/id user)
         email (::s.users/email user)]
     [:div.box
-     [:p (tr [:id-label] [id])]
-     [:p (tr [:name-label] [[user-link user]])]
-     [:p (tr [:email-label] [email])]
-     [delete-button user]]))
+     [:p (tr [:id-label]) id]
+     [:p (tr [:name-label]) [user-link user]]
+     [:p (tr [:email-label]) email]
+     [c.buttons/delete-user user]]))
 
 (defn index-users
   [users]

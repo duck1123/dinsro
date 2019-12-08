@@ -7,24 +7,32 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+(defn delete-user
+  [user]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.users/do-delete-record user])}
+   (tr [:delete])])
+
 (defn fetch-accounts
   []
   (let [state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::init-page])}
-     (tr [:fetch-accounts "Fetch Accounts: %1"] [state])]))
+    [:a.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])}
+     (tr [:fetch-accounts] [state])]))
 
 (defn fetch-currencies
   []
-  [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
-   (str "Fetch Currencies: " @(rf/subscribe [::e.currencies/do-fetch-index-state]))])
+  (let [state @(rf/subscribe [::e.currencies/do-fetch-index-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
+     (tr [:fetch-currencies] [state])]))
 
 (defn fetch-rates
   []
   (let [state @(rf/subscribe [::e.rates/do-fetch-index-state])]
     [:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])}
-     (tr [:fetch-accounts "Fetch Rates: %1"] [state])]))
+     (tr [:fetch-rates] [state])]))
 
 (defn fetch-users
   []
-  [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])}
-   (str "Fetch Users: " @(rf/subscribe [::e.users/do-fetch-index-state]))])
+  (let [state @(rf/subscribe [::e.users/do-fetch-index-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])}
+     (tr [:fetch-users] [state])]))
