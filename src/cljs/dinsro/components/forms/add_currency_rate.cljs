@@ -7,18 +7,28 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rf-utils]
             [taoensso.timbre :as timbre]))
 
-(def l {:submit "Submit"})
+(rf-utils/reg-basic-sub ::shown?)
 
-(rf/reg-sub ::shown? (fn [db _] (get db ::shown?)))
-(c/reg-field ::date        nil #_(.toISOString (js/Date.)))
-(c/reg-field ::time        nil #_(.toISOString (js/Date.)))
-(kf/reg-event-db ::change-time        (fn-traced [db [value]] (assoc db ::time value)))
-(kf/reg-event-db ::change-date        (fn-traced [db [value]] (assoc db ::date value)))
+(def default-rate 1)
+
+(s/def ::date string?)
+(rf-utils/reg-basic-sub ::date)
+(rf-utils/reg-set-event ::date)
+
+(s/def ::time string?)
+(rf-utils/reg-basic-sub ::time)
+(rf-utils/reg-set-event ::time)
+
+(s/def ::rate string?)
+(rf-utils/reg-basic-sub ::rate)
+(rf-utils/reg-set-event ::rate)
 
 (defn toggle
   [cofx event]
@@ -27,31 +37,34 @@
 
 (kf/reg-event-fx ::toggle toggle)
 
-(c/reg-field ::rate        1)
-
-(s/def ::currency-id string? #_(s/or :unselected string? :selected pos-int?))
+;; FIXME: id for string or int
+;; (s/or :unselected string? :selected pos-int?)
+(s/def ::currency-id string?)
 
 (defn sub-currency-id
   [db _]
   (or (get db ::currency-id)
+      ;; FIXME: Don't do this. do in init
       (some-> @(rf/subscribe [::e.currencies/items]) first :db/id)
       ""))
 
 (rf/reg-sub ::currency-id sub-currency-id)
-;; (c/reg-field ::currency-id "")
-
-(defn change-currency-id
-  [db [value]]
-  (assoc db ::currency-id value))
-
-(defn change-rate
-  [db [value]]
-  (assoc db ::rate (let [v (js/parseFloat value)] (if (js/isNaN v) 0 v))))
+(rf-utils/reg-set-event ::currency-id)
+(rf-utils/reg-set-event ::rate)
 
 (defn submit-clicked
   [cofx event]
   (let [[data] event]
     {:dispatch [::e.rates/do-submit data]}))
+
+(s/def ::add-currency-rate-form
+  (s/keys :req-un [::s.rates/date ::s.rates/rate ::s.rates/currency-id]))
+
+(defn create-form-data
+  [[currency-id rate date time]]
+  {:currency-id (int currency-id)
+   :rate        rate
+   :date        (js/Date. (str date "T" time))})
 
 (rf/reg-sub
  ::form-data
@@ -59,33 +72,34 @@
  :<- [::rate]
  :<- [::date]
  :<- [::time]
- (fn [[currency-id rate date time]]
-   {:currency-id (int currency-id)
-    :rate        rate
-    :date        (js/Date. (str date "T" time))}))
+ create-form-data)
 
-(kf/reg-event-db ::change-currency-id change-currency-id)
-(kf/reg-event-db ::change-rate change-rate)
 (kf/reg-event-fx ::submit-clicked submit-clicked)
+
+(defn toggle-button
+  []
+  (let [shown? @(rf/subscribe [::shown?])]
+    [:a {:on-click #(rf/dispatch [::toggle])}
+     (if shown?
+       [:span.icon>i.fas.fa-chevron-down]
+       [:span.icon>i.fas.fa-chevron-right])]))
+
+(defn debug-box
+  [form-data]
+  [:pre (str form-data)])
 
 (defn add-currency-rate-form
   [currency-id]
-  (let [shown? @(rf/subscribe [::shown?])
-        form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
+  (let [shown? @(rf/subscribe [::shown?])]
     [:<>
-     [:div
-      #_[:span (str shown?)]
-      [:a {:style {:margin-left "5px"}
-           :on-click #(rf/dispatch [::toggle])}
-       (if shown?
-         [:span.icon>i.fas.fa-chevron-down]
-         [:span.icon>i.fas.fa-chevron-right])]]
+     [toggle-button]
      (when shown?
-       [:<>
-        #_[:p "Currency Id: " currency-id]
-        [c/number-input "Rate" ::rate ::change-rate]
-        [c/input-field "Date" ::date ::change-date :date]
-        [c/input-field "Time" ::time ::change-time :time]
-        #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
-        [:pre (str form-data)]
-        [c/primary-button (l :submit) [::submit-clicked form-data]]])]))
+       (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
+         [:<>
+          [c/number-input "Rate" ::rate ::change-rate]
+          [c/input-field "Date" ::date ::change-date :date]
+          [c/input-field "Time" ::time ::change-time :time]
+          [:p "Currency Id: " currency-id]
+          #_[c/currency-selector "Currency"  ::currency-id ::change-currency-id]
+          [debug-box form-data]
+          [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]))]))
