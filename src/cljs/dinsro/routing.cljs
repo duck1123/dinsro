@@ -4,6 +4,7 @@
             [dinsro.views.index-accounts :as index-accounts]
             [dinsro.views.index-currencies :as index-currencies]
             [dinsro.views.index-rates :as index-rates]
+            [dinsro.views.index-transactions :as index-transactions]
             [dinsro.views.index-users :as index-users]
             [dinsro.views.login :as login]
             [dinsro.views.register :as register]
@@ -20,13 +21,15 @@
    :index-accounts-page   index-accounts/page
    :index-currencies-page index-currencies/page
    :index-rates-page      index-rates/page
+   :index-transactions-page      index-transactions/page
    :index-users-page      index-users/page
    :login-page            login/page
    :register-page         register/page
    :settings-page         settings/page
    :show-account-page     show-account/page
    :show-currency-page    show-currency/page
-   :show-user-page        show-user/page})
+   :show-user-page        show-user/page
+   })
 
 (def routes
   [["/"               :home-page]
@@ -59,6 +62,7 @@
    ["/login"          :login-page]
    ["/rates"          :index-rates-page]
    ["/register"       :register-page]
+   ["/transactions"   :index-transactions-page]
    ["/settings"       :settings-page]
    ["/users"
     [""               :index-users-page]

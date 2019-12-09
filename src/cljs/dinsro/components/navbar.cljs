@@ -67,7 +67,8 @@
           (nav-link (tr [:accounts]) :index-accounts-page)
           (nav-link (tr [:users]) :index-users-page)
           (nav-link (tr [:currencies]) :index-currencies-page)
-          (nav-link (tr [:rates]) :index-rates-page)])]
+          (nav-link (tr [:rates]) :index-rates-page)
+          (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
        (nav-link (tr [:about]) :about-page)
        (if auth-id

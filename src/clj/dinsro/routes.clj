@@ -48,6 +48,7 @@
    "/rates/:id"
    "/register"
    "/settings"
+   "/transactions"
    "/users"
    "/users/:id"])
 
