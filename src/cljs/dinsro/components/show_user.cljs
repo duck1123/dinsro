@@ -14,23 +14,10 @@
   [user any? #_::s.users/item
    accounts any? #_(s/coll-of ::s.accounts/item)]
   (let [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email]} user]
-    [:div
+    [:<>
      #_[:pre (str user)]
-     [:div.box
-      #_[:p "Id: " id]
+     [:<>
       [:p "name: " name]
       [:p "email: " email]
       [:a.button.is-danger {:on-click #(rf/dispatch [::e.users/do-delete-record id])}
-       "Delete"]]
-     #_[:pre (str accounts)]
-     #_[create-user-account]
-     #_[:button.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])} "Load Accounts"]
-     [:div.box
-      [add-user-account id]
-      [:hr]
-      [index-accounts accounts]]]))
-
-;; (defn-spec show-user vector?
-;;   [user ::s.users/item]
-;;   (let [accounts [{:db/id 7}]]
-;;     [show-user- user accounts]))
+       "Delete"]]]))

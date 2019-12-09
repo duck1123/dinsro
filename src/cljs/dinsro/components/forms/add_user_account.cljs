@@ -7,9 +7,7 @@
             [dinsro.spec.users :as s.users]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
-            [re-frame.core :as rf]
-            )
-  )
+            [re-frame.core :as rf]))
 
 (s/def ::shown? boolean?)
 (c/reg-field ::shown?   true)
@@ -56,11 +54,7 @@
   [user-id]
   (let [shown? @(rf/subscribe [::shown?])
         form-data (assoc @(rf/subscribe [::form-data]) ::s.accounts/user-id user-id)]
-    [:div
-     ;; [:p "Add user account"]
-     ;; [:p "User id: " user-id]
-     ;; [:p "Shown: " (str shown?)]
-     ;; [:pre (str form-data)]
+    [:<>
      [:a {:style {:margin-left "5px"}
           :on-click #(rf/dispatch [::toggle])}
       (if shown?
@@ -68,7 +62,6 @@
         [:span.icon>i.fas.fa-chevron-right])]
      (when shown?
        [:<>
-        [:p "Form"]
         [c/text-input        (l :name)          ::name          ::change-name]
         [c/number-input      (l :initial-value) ::initial-value ::change-initial-value]
         [c/currency-selector (l :currency)      ::currency-id   ::change-currency-id]
