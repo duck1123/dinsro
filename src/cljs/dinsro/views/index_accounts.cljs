@@ -23,7 +23,7 @@
   :start [::init-page]})
 
 (defn-spec page vector?
-  []
+  [match any?]
   (let [accounts @(rf/subscribe [::e.accounts/items])
         state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:section.section>div.container>div.content
