@@ -48,14 +48,16 @@
       (is (= status/ok (:status response)))
       (is (= [record] items)))))
 
-(deftest create-handler
+(deftest create-handler-valid
   (testing "success"
     (let [request (gen-spec ::a.currencies/create-handler-request-valid)
           response (a.currencies/create-handler request)
           id (get-in response [:body :item :db/id])
           created-record (m.currencies/read-record id)]
       (is (= status/ok (:status response)))
-      (is (= (:name request) (::s.currencies/name response)))))
+      (is (= (:name request) (::s.currencies/name response))))))
+
+(deftest create-handler-invalid
   (testing "invalid params"
     (let [params {}
           request {:params params}

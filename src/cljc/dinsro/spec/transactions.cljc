@@ -7,7 +7,7 @@
 
 (s/def ::account (s/keys))
 (def account-spec
-  {::db/ident ::account
+  {:db/ident ::account
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one})
 
@@ -25,6 +25,10 @@
 (def value-spec
   {})
 
+(s/def ::account-id pos-int?)
+(s/def ::currency-id pos-int?)
+
+(s/def ::params (s/keys :req [::account-id ::currency-id ::date ::value]))
 (s/def ::item (s/keys :req [::account ::currency ::date ::value]))
 (def schema
   [value-spec currency-spec date-spec account-spec])

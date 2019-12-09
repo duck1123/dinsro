@@ -6,6 +6,7 @@
             [dinsro.actions.home :as a.home]
             [dinsro.actions.rates :as a.rates]
             [dinsro.actions.status :as a.status]
+            [dinsro.actions.transactions :as a.transactions]
             [dinsro.actions.users :as a.users]
             [dinsro.middleware :as middleware]
             [hiccup.page :refer [include-js include-css html5]]))
@@ -75,6 +76,8 @@
                          :delete a.rates/delete-handler}]]
     ["/register"        {:post   a.authentication/register-handler}]
     ["/status"          {:get    a.status/status-handler}]
+    ["/transactions"
+     [""                {:get a.transactions/index-handler}]]
     ["/users" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.users/index-handler
                          :post   a.users/create-handler}]

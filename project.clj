@@ -46,7 +46,11 @@
                  [org.clojure/tools.logging "0.5.0"]
                  [org.webjars.npm/bulma "0.8.0"]
                  [org.webjars.npm/bulma-calendar "6.0.7"
-                  :exclusions [org.webjars.npm/bulma ]]
+                  :exclusions [org.webjars.npm/bulma
+                               org.webjars.npm/date-and-time
+                               org.webjars.npm/date-fns]]
+                 [org.webjars.npm/date-and-time "0.6.3"]
+                 [org.webjars.npm/date-fns "2.8.1"]
                  [org.webjars.npm/bulma-extensions "6.2.7" :exclusions [org.webjars.npm/bulma]]
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.38"]
