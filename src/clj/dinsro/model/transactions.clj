@@ -3,16 +3,14 @@
             [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
-            #_[dinsro.spec.rates :as s.rates]
+            [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (defn-spec prepare-record ::s.transactions/params
   [params ::s.transactions/params]
-  params
-  #_(let [rate (::s.rates/rate params)]
-    (update params ::s.rates/rate double)))
+  params)
 
 (defn-spec create-record ::ds/id
   [params ::s.transactions/params]

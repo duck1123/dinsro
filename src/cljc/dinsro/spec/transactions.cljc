@@ -7,8 +7,9 @@
 
 (s/def ::account (s/keys))
 (def account-spec
-  {}
-  )
+  {::db/ident ::account
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one})
 
 (s/def ::currency (s/keys))
 (def currency-spec
