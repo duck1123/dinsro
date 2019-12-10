@@ -12,8 +12,9 @@
 (defn load-buttons
   []
   [:div.box
-   #_[c.buttons/fetch-rates]
-   #_[c.buttons/fetch-currencies]
+   [c.buttons/fetch-transactions]
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-currencies]
    [c.buttons/toggle-debug]])
 
 (def example-transaction

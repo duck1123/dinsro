@@ -3,6 +3,7 @@
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
+            [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
@@ -43,6 +44,12 @@
   (let [state @(rf/subscribe [::e.rates/do-fetch-index-state])]
     [:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])}
      (tr [:fetch-rates] [state])]))
+
+(defn fetch-transactions
+  []
+  (let [state @(rf/subscribe [::e.transactions/do-fetch-index-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.transactions/do-fetch-index])}
+     (tr [:fetch-transactions] [state])]))
 
 (defn fetch-users
   []

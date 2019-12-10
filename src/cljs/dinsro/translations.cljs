@@ -20,6 +20,7 @@
     :fetch-currencies "Fetch Currencies: %1"
     :fetch-currency "Fetch Currency: %1 -> %2"
     :fetch-rates "Fetch Rates: %1"
+    :fetch-transactions "Fetch Transactions: %1"
     :fetch-users "Fetch Users: %1"
     :id-label "Id: %1"
     :index-accounts "Index Accounts"
