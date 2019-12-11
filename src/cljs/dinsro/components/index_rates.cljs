@@ -24,14 +24,14 @@
         currency-id (get-in item [::s.rates/currency :db/id])
         currency @(rf/subscribe [::e.currencies/item currency-id])]
     [:tr
-     [:td value]
      [:td (str (::s.rates/date item))]
+     [:td value]
      [:td (if currency
             [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
              (::s.currencies/name currency)]
             [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
              (tr [:not-loaded])])]
-     [:td [delete-button item]]]))
+     #_[:td [delete-button item]]]))
 
 (defn-spec index-rates vector?
   [items (s/coll-of ::s.rates/item)]
@@ -41,9 +41,9 @@
      [:p (tr [:no-rates])]
      [:table.table
       [:thead>tr
-       [:th (tr [:value])]
        [:th (tr [:date])]
+       [:th (tr [:value])]
        [:th (tr [:currency])]
-       [:th (tr [:actions])]]
+       #_[:th (tr [:actions])]]
       (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
            (into [:tbody]))])])

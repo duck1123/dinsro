@@ -93,7 +93,9 @@
 (defn-spec index-handler ::index-handler-response
   [request ::index-handler-request]
   (let [items (m.rates/index-records)]
-    (http/ok {:model :rates :items items})))
+    (http/ok {:model :rates :items (sort
+                                    (fn [a b] (.compareTo (::s.rates/date a) (::s.rates/date b)))
+                                    items)})))
 
 ;; Read
 

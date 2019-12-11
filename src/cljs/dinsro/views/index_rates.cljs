@@ -49,5 +49,5 @@
        [show-form-button]]
       [create-rate-form]
       [:hr]
-      #_[rate-chart items]
+      [rate-chart items]
       [index-rates items]]]))
