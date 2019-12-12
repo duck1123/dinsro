@@ -28,7 +28,8 @@
                 :plotOptions
                 {:series {:label {:connectorAllowed false}}}
                 :series [{:name "USD"
-                          :data (map
-                                 (fn [item] [(.getTime (::s.rates/date item)) (::s.rates/rate item)])
-                                 items)}]}]
+                          :data (map (fn [item]
+                                       [(.getTime (::s.rates/date item))
+                                        (::s.rates/rate item)])
+                                     items)}]}]
     [chart-outer config]))
