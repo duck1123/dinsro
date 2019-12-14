@@ -7,6 +7,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
@@ -30,11 +31,12 @@
 (rfu/reg-basic-sub ::time)
 (rfu/reg-set-event ::time)
 
+(s/def ::shown? boolean?)
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
 (defn create-form-data
-  [[currency-id rate date]]
+  [[currency-id rate date] _]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
    :date        (js/Date. date)})
@@ -50,17 +52,16 @@
   [_ _]
   {:dispatch [::e.rates/do-submit @(rf/subscribe [::form-data])]})
 
-(kf/reg-event-fx ::submit-clicked submit-clicked)
-
 (defn toggle-form
-  [db _]
-  (update db ::shown? not))
+  [{:keys [db]} _]
+  {:db (update db ::shown? not)})
 
-(kf/reg-event-db ::toggle-form toggle-form)
+(kf/reg-event-fx ::submit-clicked submit-clicked)
+(kf/reg-event-fx ::toggle-form toggle-form)
 
 (defn toggle-button
   []
-  [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"])
+  [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])])
 
 (defn init-form
   [{:keys [db]} _]

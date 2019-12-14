@@ -38,10 +38,10 @@
 
 (defn create-form-data
   [[name initial-value currency-id user-id] _]
-  {::s.accounts/name          name
-   ::s.accounts/currency-id   (int currency-id)
-   ::s.accounts/user-id       (int user-id)
-   ::s.accounts/initial-value (.parseFloat js/Number initial-value)})
+  {:name          name
+   :currency-id   (int currency-id)
+   :user-id       (int user-id)
+   :initial-value (.parseFloat js/Number initial-value)})
 
 (rf/reg-sub
  ::form-data
