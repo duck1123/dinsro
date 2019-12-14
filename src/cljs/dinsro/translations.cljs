@@ -1,5 +1,6 @@
 (ns dinsro.translations
-  (:require [taoensso.tempura :as tempura]))
+  (:require [taoensso.tempura :as tempura]
+            [taoensso.timbre :as timbre]))
 
 (def dictionary
   {
@@ -46,4 +47,8 @@
 
 (def opts {:dict dictionary})
 
-(def tr (partial tempura/tr opts [:missing]))
+(defn tr
+  ([k]
+   (tr k []))
+  ([k v]
+   (tempura/tr opts [:missing] (timbre/spy :info k) (timbre/spy :info v))))
