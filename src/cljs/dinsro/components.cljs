@@ -109,3 +109,12 @@
 (defn get-time-string
   [date]
   (str (.getHours date) ":" (.getMinutes date)))
+
+(defn debug-box
+  [data]
+  [:pre (str data)])
+
+(defn close-button
+  [key]
+  [:a.delete.is-pulled-right
+   {:on-click #(rf/dispatch [key false])}])

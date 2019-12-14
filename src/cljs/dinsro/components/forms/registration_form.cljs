@@ -54,40 +54,12 @@
  :<- [::password]
  create-form-data)
 
-(defn register-succeeded
-  [_ _]
-  {})
-
-(defn register-failed
-  [_ _]
-  {})
-
-(defn submit-clicked
-  [_ [form-data]]
-  {:http-xhrio
-   {:uri             "/api/v1/register"
-    :method          :post
-    :timeout         8000
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :params          form-data
-    :on-success      [:register-succeeded]
-    :on-failure      [:register-failed]}})
-
-(kf/reg-event-fx :register-succeeded register-succeeded)
-(kf/reg-event-fx :register-failed register-failed)
-(kf/reg-event-fx ::submit-clicked submit-clicked)
-
-(defn debug-box
-  [data]
-  [:pre (str data)])
-
 (defn-spec registration-form (s/keys)
   []
   (let [form-data @(rf/subscribe [::form-data])]
     [:div.box
      [:form
-      [debug-box form-data]
+      [c/debug-box form-data]
       [c/text-input     "Name"             ::name             ::set-name]
       [c/email-input    "Email"            ::email            ::set-email]
       [c/password-input "Password"         ::password         ::set-password]

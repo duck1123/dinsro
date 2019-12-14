@@ -48,15 +48,10 @@
  :<- [::date]
  create-form-data)
 
-(defn submit-clicked
-  [_ _]
-  {:dispatch [::e.rates/do-submit @(rf/subscribe [::form-data])]})
-
 (defn toggle-form
   [{:keys [db]} _]
   {:db (update db ::shown? not)})
 
-(kf/reg-event-fx ::submit-clicked submit-clicked)
 (kf/reg-event-fx ::toggle-form toggle-form)
 
 (defn toggle-button
@@ -84,13 +79,13 @@
       [:<>
        [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
        [:div.field>div.control
-        [c/number-input      "Rate"     ::rate        ::set-rate]]
+        [c/number-input (tr [:rate]) ::rate ::set-rate]]
        [:div.field>div.control
-        [:label.label "Date"]
+        [:label.label (tr [:date])]
         [c.datepicker/datepicker {:on-select #(rf/dispatch [::set-date %])}]]
        [:div.field>div.control
-        [c/currency-selector "Currency" ::currency-id ::set-currency-id]]
+        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
        [:div.field>div.control
         [c.debug/debug-box form-data]]
        [:div.field>div.control
-        [c/primary-button    "Submit"   [::submit-clicked]]]])))
+        [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]])))

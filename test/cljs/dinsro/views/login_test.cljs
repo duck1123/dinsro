@@ -3,9 +3,9 @@
             [dinsro.views.login :as v.login]
             [taoensso.timbre :as timbre]))
 
-(deftest login-form
-  (is (= nil (v.login/login-form))))
+;; (deftest login-form
+;;   (is (= nil (v.login/login-form))))
 
 (comment
-  (v.login/login-form)
+  ;; (v.login/login-form)
   )
