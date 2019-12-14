@@ -8,23 +8,33 @@
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(def default-name "Offshore")
+(def default-initial-value 1.0)
+
 (s/def ::name string?)
-(c/reg-field ::name          "Offshore")
-(c/reg-field ::initial-value 1.0)
-(c/reg-field ::currency-id   "")
-(c/reg-field ::user-id       "")
+(rfu/reg-basic-sub ::name)
+(rfu/reg-set-event ::name)
 
-(s/def ::form-shown? boolean?)
-(c/reg-field ::form-shown?   true)
+(s/def ::currency-id string?)
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
 
-(kf/reg-event-db ::change-currency-id   (fn [db [value]] (assoc db ::currency-id   (int value))))
-(kf/reg-event-db ::change-user-id       (fn [db [value]] (assoc db ::user-id       (int value))))
-(kf/reg-event-db ::change-name          (fn [db [value]] (assoc db ::name          value)))
-(kf/reg-event-db ::change-initial-value (fn [db [value]] (assoc db ::initial-value value)))
+(s/def ::user-id string?)
+(rfu/reg-basic-sub ::user-id)
+(rfu/reg-set-event ::user-id)
 
-(kf/reg-event-db ::toggle-form (fn-traced [db _] (update db ::form-shown? not)))
+(s/def ::shown? boolean?)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
+
+(s/def ::initial-value string?)
+(rfu/reg-basic-sub ::initial-value)
+(rfu/reg-set-event ::initial-value)
+
+(kf/reg-event-db ::toggle-form (fn-traced [db _] (update db ::shown? not)))
 
 (defn create-form-data
   [[name initial-value currency-id user-id] _]
@@ -51,14 +61,14 @@
 (defn new-account-form
   []
   (let [form-data @(rf/subscribe [::form-data])
-        shown? @(rf/subscribe [::form-shown?])]
+        shown? @(rf/subscribe [::shown?])]
     [:<>
      [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])]
-     #_[:pre (str form-data)]
+     [:pre (str form-data)]
      (when shown?
        [:<>
-        [c/text-input (tr [:name]) ::name ::change-name]
-        [c/number-input (tr [:initial-value]) ::initial-value ::change-initial-value]
-        [c/currency-selector (tr [:currency]) ::currency-id ::change-currency-id]
-        [c/user-selector (tr [:user]) ::user-id ::change-user-id]
+        [c/text-input (tr [:name]) ::name ::set-name]
+        [c/number-input (tr [:initial-value]) ::initial-value ::set-initial-value]
+        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]
+        [c/user-selector (tr [:user]) ::user-id ::set-user-id]
         [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]])]))
