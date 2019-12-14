@@ -7,6 +7,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
@@ -49,7 +50,8 @@
 
 (defn toggle-button
   []
-  [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"])
+  [:a.button {:on-click #(rf/dispatch [::toggle-form])}
+   (tr [:toggle])])
 
 (defn close-button
   []
@@ -59,12 +61,12 @@
 (defn create-transaction-form
   []
   (let [form-data @(rf/subscribe [::form-data])]
-    [:div
-     [close-button]
-     [:p "Create transaction form"]
-     [:div.field>div.control
-      [c/number-input      "Value"     ::value        ::set-value]]
-     [:div.field>div.control
-      [c/currency-selector "Currency" ::currency-id ::set-currency-id]]
-     [:div.field>div.control
-      [c/primary-button    "Submit"   [::submit-clicked]]]]))
+    (when @(rf/subscribe [::shown?])
+      [:div
+       [close-button]
+       [:div.field>div.control
+        [c/number-input (tr [:value]) ::value ::set-value]]
+       [:div.field>div.control
+        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
+       [:div.field>div.control
+        [c/primary-button (tr [:submit]) [::submit-clicked]]]])))

@@ -44,8 +44,8 @@
     [:<>
      [c.debug/debug-box form-data]
      [:form
-      [c/text-input     "Name"   ::name ::set-name]
-      [c/primary-button "Submit" [::submit-clicked]]]]))
+      [c/text-input     (tr [:name])   ::name ::set-name]
+      [c/primary-button (tr [:submit]) [::submit-clicked]]]]))
 
 (defn init-form
   [{:keys [db]} _]
