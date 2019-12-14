@@ -3,6 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.translations :refer [tr]]
@@ -64,7 +65,8 @@
         shown? @(rf/subscribe [::shown?])]
     [:<>
      [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])]
-     [:pre (str form-data)]
+     [c.debug/debug-box form-data]
+     #_[:pre (str form-data)]
      (when shown?
        [:<>
         [c/text-input (tr [:name]) ::name ::set-name]

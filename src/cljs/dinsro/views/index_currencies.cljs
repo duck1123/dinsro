@@ -5,6 +5,7 @@
             [dinsro.components.forms.create-currency :refer [create-currency]]
             [dinsro.components.index-currencies :refer [index-currencies]]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.debug :as e.debug]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -22,17 +23,18 @@
  {:params (c/filter-page :index-currencies-page)
   :start  [::init-page]})
 
-(defn load-box
+(defn loading-buttons
   []
-  [:div.box
-   [c.buttons/fetch-currencies]
-   [c.buttons/toggle-debug]])
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:div.box
+     [c.buttons/fetch-currencies]
+     [c.buttons/toggle-debug]]))
 
 (defn page
   []
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
-     [load-box]
+     [loading-buttons]
      [:div.box
       [:h1 (tr [:index-currencies "Index Currencies"])]
       [create-currency]

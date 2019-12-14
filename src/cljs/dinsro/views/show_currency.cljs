@@ -7,6 +7,7 @@
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.show-currency :refer [show-currency]]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -32,13 +33,14 @@
  {:params (c/filter-param-page :show-currency-page)
   :start  [::init-page]})
 
-(defn load-buttons
+(defn loading-buttons
   [id]
-  [:div.box
-   [c.buttons/fetch-rates]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-currency id]
-   [c.buttons/toggle-debug]])
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:div.box
+             [c.buttons/fetch-rates]
+             [c.buttons/fetch-currencies]
+             [c.buttons/fetch-currency id]
+             [c.buttons/toggle-debug]]))
 
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
@@ -51,7 +53,7 @@
         rates @(rf/subscribe [::e.rates/items-by-currency currency])
         state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [load-buttons id]
+     [loading-buttons id]
      [:div.box
       (condp = state
         :loaded [show-currency currency]

@@ -26,5 +26,5 @@
 
 (defn debug-box
   [data]
-  (when @(rf/subscribe [::e.debug/shown?])
+  (when (timbre/spy :info @(rf/subscribe [::e.debug/shown?]))
     [:pre (str data)]))

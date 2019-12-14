@@ -3,6 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.add-currency-rate :refer [add-currency-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.events.rates :as e.rates]
@@ -21,6 +22,6 @@
   (let [currency-id (:db/id currency)
         name (::s.currencies/name currency)]
     [:<>
-     [c/debug-box currency]
+     [c.debug/debug-box currency]
      [:p (tr [:name-label]) name]
      [c.buttons/delete-currency currency]]))
