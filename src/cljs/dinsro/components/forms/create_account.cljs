@@ -51,19 +51,6 @@
 
 (def l strings)
 
-(defn create-user-account
-  []
-  (let [form-data @(rf/subscribe [::form-data])]
-    [:div
-     [:p "Create User Account"]
-     [:pre (str form-data)]
-     [:form.form
-      [c/text-input        (l :name)          ::name          ::change-name]
-      [c/number-input      (l :initial-value) ::initial-value ::change-initial-value]
-      [c/currency-selector (l :currency)      ::currency-id   ::change-currency-id]
-      #_[c/user-selector     "User"          ::user-id       ::change-user-id]
-      [c/primary-button    (l :submit)        [::e.accounts/do-submit form-data]]]]))
-
 (defn new-account-form
   []
   (let [form-data @(rf/subscribe [::form-data])
