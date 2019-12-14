@@ -43,6 +43,7 @@
     :submit "Submit"
     :time "Time"
     :toggle "Toggle"
+    :transactions "Transactions"
     :user "User"
     :users "Users"
     :user-label "User: %1"
