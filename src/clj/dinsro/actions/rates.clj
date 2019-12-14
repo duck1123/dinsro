@@ -21,7 +21,7 @@
    :date      ::s.rates/date})
 
 (s/def ::currency-id ::ds/id)
-(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id]))
+(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id ::s.rates/date]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 
 (s/def :create-rates-request/params (s/keys :opt-un [::s.rates/rate ::currency-id]))
