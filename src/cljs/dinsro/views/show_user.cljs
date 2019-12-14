@@ -31,10 +31,6 @@
  {:params (c/filter-param-page :show-user-page)
   :start  [::init-page]})
 
-(s/def :show-user-view/id          string?)
-(s/def :show-user-view/path-params (s/keys :req-un [:show-user-view/id]))
-(s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
-
 (defn load-box
   [id]
   [:div.box
@@ -53,11 +49,17 @@
         [:h1 "Show User"]
         [show-user user]]
        [:div.box
-        [:h2 "Accounts"]
+        [:h2
+         "Accounts"
+         [:button.button "+"]]
         [add-user-account user-id]
         [:hr]
         [index-accounts accounts]]])
     [:p "User not found"]))
+
+(s/def :show-user-view/id          string?)
+(s/def :show-user-view/path-params (s/keys :req-un [:show-user-view/id]))
+(s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
 
 (defn-spec page vector?
   [match ::view-map]
