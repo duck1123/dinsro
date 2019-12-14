@@ -13,17 +13,21 @@
 
 (s/def ::currency (s/keys))
 (def currency-spec
-  {}
-  )
+  {:db/ident ::currency
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one})
 
 (s/def ::date inst?)
 (def date-spec
-  {}
-  )
+  {:db/ident ::date
+   :db/valueType :db.type/instant
+   :db/cardinality :db.cardinality/one})
 
 (s/def ::value double?)
 (def value-spec
-  {})
+  {:db/ident       ::value
+   :db/valueType   :db.type/double
+   :db/cardinality :db.cardinality/one})
 
 (s/def ::account-id pos-int?)
 (s/def ::currency-id pos-int?)
@@ -32,3 +36,7 @@
 (s/def ::item (s/keys :req [::account ::currency ::date ::value]))
 (def schema
   [value-spec currency-spec date-spec account-spec])
+
+(comment
+  (gen/generate (s/gen ::params))
+  )

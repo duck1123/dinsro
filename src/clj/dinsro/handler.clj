@@ -46,6 +46,10 @@
     (doseq [schema schemata]
       (d/transact db/*conn* schema))))
 
+(comment
+  (init-schemata)
+  )
+
 ;; (defn app-handler
 ;;   [request]
 ;;   (mount/)

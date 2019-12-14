@@ -8,9 +8,12 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec prepare-record ::s.transactions/params
+(defn-spec prepare-record any? #_::s.transactions/params
   [params ::s.transactions/params]
-  params)
+  (-> params
+      (dissoc ::s.transactions/account-id)
+      (dissoc ::s.transactions/currency-id)
+      ))
 
 (defn-spec create-record ::ds/id
   [params ::s.transactions/params]
