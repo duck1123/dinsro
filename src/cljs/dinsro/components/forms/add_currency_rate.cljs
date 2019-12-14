@@ -22,6 +22,7 @@
 (s/def ::valid boolean?)
 (rfu/reg-basic-sub ::valid)
 
+(s/def ::shown? boolean?)
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 

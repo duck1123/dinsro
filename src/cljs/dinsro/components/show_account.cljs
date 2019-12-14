@@ -1,5 +1,6 @@
 (ns dinsro.components.show-account
-  (:require [dinsro.events.currencies :as e.currencies]
+  (:require [dinsro.components.debug :as c.debug]
+            [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.currencies :as s.currencies]
@@ -36,8 +37,8 @@
   (let [id (:db/id account)
         user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]
-    [:div.box
-     #_[:pre (str account)]
+    [:<>
+     [c.debug/debug-box account]
      [:p "Name: " (::s.accounts/name account)]
      [:p
       (tr [:user-label])
