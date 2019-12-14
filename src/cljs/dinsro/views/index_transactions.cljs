@@ -10,9 +10,15 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+(def example-transaction
+  {:db/id 1
+   ::s.transactions/value 130000
+   ::s.transactions/currency {:db/id 53}
+   ::s.transactions/account {:db/id 12}})
+
 (defn init-page
   [{:keys [db]} _]
-  {:db (assoc db ::e.transactions/items [])
+  {:db (assoc db ::e.transactions/items [example-transaction])
    :dispatch [::e.transactions/do-fetch-index]})
 
 (defn load-buttons
@@ -22,12 +28,6 @@
    [c.buttons/fetch-accounts]
    [c.buttons/fetch-currencies]
    [c.buttons/toggle-debug]])
-
-(def example-transaction
-  {:db/id 1
-   ::s.transactions/value 130000
-   ::s.transactions/currency {:db/id 53}
-   ::s.transactions/account {:db/id 12}})
 
 (defn show-form-button
   []
@@ -39,7 +39,7 @@
   []
   [:section.section>div.container>div.content
    [load-buttons]
-   (let [transactions [example-transaction]]
+   (let [transactions @(rf/subscribe [::e.transactions/items])]
      [:div.box
       [:h1
        (tr [:index-transactions-title "Index Transactions"])

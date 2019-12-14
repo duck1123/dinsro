@@ -37,11 +37,11 @@
 (defn do-fetch-index-success
   [cofx event]
   (let [{:keys [db]} cofx
-        [{:keys [items]}] event]
-    (let [items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
-            {:db (-> db
-                     (assoc ::items items)
-                     (assoc ::do-fetch-index-state :loaded))})))
+        [{:keys [items]}] event
+        items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
+    {:db (-> db
+             (assoc ::items items)
+             (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed
   [{:keys [db]} _]

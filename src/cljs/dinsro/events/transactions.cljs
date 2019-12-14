@@ -6,19 +6,24 @@
             [dinsro.spec.transactions :as s.transactions]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (s/def ::items                   (s/coll-of ::s.transactions/item))
-(rf/reg-sub ::items                  (fn [db _] (get db ::items                  [])))
-(rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
+(rfu/reg-basic-sub ::items)
+;; (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
-  [db [{:keys [items]}]]
-  (timbre/info "fetch records success" items)
-  (assoc db ::items items))
+  [{:keys [db]} [{:keys [items]}]]
+  (let [items (map
+               (fn [item] (update item ::s.transactions/date #(js/Date. %)))
+               items)]
+    {:db (-> db
+                   (assoc ::items items)
+                   (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed
   [_ _]
@@ -34,6 +39,6 @@
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}})
 
-(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)
