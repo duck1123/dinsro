@@ -9,6 +9,12 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+(defn delete-account
+  [account]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.accounts/do-delete-record account])}
+   (tr [:delete])])
+
 (defn delete-currency
   [currency]
   [:a.button.is-danger

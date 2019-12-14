@@ -1,5 +1,7 @@
 (ns dinsro.components.index-currencies
-  (:require [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components :as c]
+            [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.links :as c.links]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.translations :refer [tr]]
@@ -8,26 +10,19 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn currency-link
-  [currency-id]
-  (if-let [currency @(rf/subscribe [::e.currencies/item currency-id])]
-    (let [name (::s.currencies/name currency)]
-      [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])} name])
-    (tr [:no-currency] ["Load currency button"])))
-
 (defn index-currency-line
   [currency]
   (let [{:keys [db/id]} currency]
     [:tr
-     [:td [currency-link id]]
+     [:td [c.links/currency-link id]]
      [:td [c.buttons/delete-currency]]]))
 
 (defn index-currencies
   [currencies]
   [:<>
-   #_[:pre (str currencies)]
+   [c/debug-box currencies]
    (if-not (seq currencies)
-     [:div (tr [:no-currencies]) ]
+     [:div (tr [:no-currencies])]
      [:table
       [:thead>tr
        [:th (tr [:name-label])]
