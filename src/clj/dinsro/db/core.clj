@@ -35,6 +35,10 @@
   (delete-database)
   (create-database)
 
+  (require '[datahike.migrate])
+  (datahike.migrate/export-db @*conn* "/tmp/dinsro-dump")
+
+  @*conn*
   )
 
 ;; (s/def ::id     pos-int?)

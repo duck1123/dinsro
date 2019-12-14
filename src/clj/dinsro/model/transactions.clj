@@ -12,8 +12,7 @@
   [params ::s.transactions/params]
   (-> params
       (dissoc ::s.transactions/account-id)
-      (dissoc ::s.transactions/currency-id)
-      ))
+      (dissoc ::s.transactions/currency-id)))
 
 (defn-spec create-record ::ds/id
   [params ::s.transactions/params]
@@ -60,4 +59,6 @@
   (read-record 59)
 
   (d/entity @db/*conn* 59)
+
+
   )

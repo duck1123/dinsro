@@ -26,6 +26,7 @@
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* s.currencies/schema)
       (d/transact db/*conn* s.rates/schema)
+      (d/transact db/*conn* s.transactions/schema)
       (f))))
 
 (deftest create-record-test

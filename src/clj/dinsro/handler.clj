@@ -8,6 +8,7 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
+            [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [reitit.coercion.spec]
@@ -42,6 +43,7 @@
   (let [schemata [s.accounts/schema
                   s.currencies/schema
                   s.rates/schema
+                  s.transactions/schema
                   s.users/schema]]
     (doseq [schema schemata]
       (d/transact db/*conn* schema))))
