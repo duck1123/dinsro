@@ -44,8 +44,15 @@
              (assoc-in [::item-map (:db/id item)] item))}))
 
 (defn do-fetch-record-unauthorized
-  [_ _]
-  {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
+  [cofx event]
+  (let [{:keys [db]} cofx
+        match (:kee-frame/route db)]
+    {:db (assoc db :return-to match)
+     :navigate-to [:login-page]}))
+
+;; (defn do-fetch-record-unauthorized
+;;   [_ _]
+;;   {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
 
 (s/def ::do-fetch-record-failed-cofx (s/keys))
 (s/def ::do-fetch-record-failed-event (s/keys))
@@ -114,8 +121,9 @@
       (assoc ::do-fetch-index-state :loaded)))
 
 (defn do-fetch-index-unauthorized
-  [_ _]
-  {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
+  [cofx event]
+  (let [route (timbre/spy :info (get-in cofx [:db :kee-frame/route :data]))]
+    {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}))
 
 (defn do-fetch-index-failed
   [{:keys [db]} [response]]

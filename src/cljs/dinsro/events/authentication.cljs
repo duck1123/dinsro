@@ -22,33 +22,40 @@
 ;; Authenticate
 
 (defn do-authenticate-success
-  [db [{:keys [identity]}]]
-  (-> db
-      (assoc ::auth-id identity)
-      (assoc ::loading false)
-      (assoc ::login-failed false)))
+  [cofx event]
+  (let [{:keys [db]} cofx
+        [{:keys [identity]}] (timbre/spy :info event)
+        return-to (:return-to db)]
+    {:db (-> db
+             (assoc :kee-frame/route return-to)
+             (dissoc :return-to)
+             (assoc ::auth-id identity)
+             (assoc ::loading false)
+             (assoc ::login-failed false))}))
 
 (defn do-authenticate-failure
-  [db _]
-  (-> db
-      (assoc ::login-failed true)
-      (assoc ::loading false)))
+  [{:keys [db]} _]
+  {:db  (-> db
+            (assoc ::login-failed true)
+            (assoc ::loading false))})
 
 (defn do-authenticate
-  [{:keys [db]} [data]]
-  {:db (assoc db ::loading true)
-   :http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-authenticate])
-    :params          data
-    :timeout         8000
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-authenticate-success]
-    :on-failure      [::do-authenticate-failure]}})
+  [cofx event]
+  (let [{:keys [db]} (timbre/spy :info cofx)
+        [data return-to] (timbre/spy :info event)]
+    {:db (assoc db ::loading true)
+     :http-xhrio
+     {:method          :post
+      :uri             (kf/path-for [:api-authenticate])
+      :params          data
+      :timeout         8000
+      :format          (ajax/json-request-format)
+      :response-format (ajax/json-response-format {:keywords? true})
+      :on-success      [::do-authenticate-success]
+      :on-failure      [::do-authenticate-failure]}}))
 
-(kf/reg-event-db ::do-authenticate-success do-authenticate-success)
-(kf/reg-event-db ::do-authenticate-failure do-authenticate-failure)
+(kf/reg-event-fx ::do-authenticate-success do-authenticate-success)
+(kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
 (kf/reg-event-fx ::do-authenticate do-authenticate)
 
 ;; Logout

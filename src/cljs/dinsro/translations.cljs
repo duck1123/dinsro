@@ -51,8 +51,10 @@
 
 (def opts {:dict dictionary})
 
-(defn tr
-  ([k]
-   (tr k []))
-  ([k v]
-   (tempura/tr opts [:missing] (timbre/spy :info k) (timbre/spy :info v))))
+(def tr (partial tempura/tr opts [:missing]))
+
+;; (defn tr
+;;   ([k]
+;;    (tr k []))
+;;   ([k v]
+;;    (tempura/tr opts [:missing] (timbre/spy :info k) (timbre/spy :info v))))
