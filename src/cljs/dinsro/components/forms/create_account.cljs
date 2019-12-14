@@ -26,22 +26,27 @@
 
 (kf/reg-event-db ::toggle-form (fn-traced [db _] (update db ::form-shown? not)))
 
+(defn create-form-data
+  [[name initial-value currency-id user-id] _]
+  {::s.accounts/name          name
+   ::s.accounts/currency-id   (int currency-id)
+   ::s.accounts/user-id       (int user-id)
+   ::s.accounts/initial-value (.parseFloat js/Number initial-value)})
+
 (rf/reg-sub
  ::form-data
  :<- [::name]
  :<- [::initial-value]
  :<- [::currency-id]
  :<- [::user-id]
- (fn-traced [[name initial-value currency-id user-id] _]
-   {::s.accounts/name          name
-    ::s.accounts/currency-id   currency-id
-    ::s.accounts/user-id       user-id
-    ::s.accounts/initial-value (.parseFloat js/Number initial-value)}))
+ create-form-data)
 
-(kf/reg-event-fx
- ::submit-clicked
- (fn-traced [_ _]
-  {:dispatch [::e.accounts/do-submit @(rf/subscribe [::account-data])]}))
+(defn submit-clicked
+  [_ _]
+  (let [form-data @(rf/subscribe [::account-data])]
+    {:dispatch [::e.accounts/do-submit form-data]}))
+
+(kf/reg-event-fx ::submit-clicked submit-clicked)
 
 (defn new-account-form
   []
