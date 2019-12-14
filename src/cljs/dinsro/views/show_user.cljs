@@ -1,6 +1,7 @@
 (ns dinsro.views.show-user
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.add-user-account :refer [add-user-account]]
@@ -22,7 +23,8 @@
 (defn-spec init-page ::init-page-response
   [cofx ::init-page-cofx event ::init-page-event]
   (let [[{:keys [id]}] event]
-    {:dispatch [::e.users/do-fetch-record id]}))
+    {:document/title "Show User"
+     :dispatch [::e.users/do-fetch-record id]}))
 
 (kf/reg-event-fx ::init-page init-page)
 

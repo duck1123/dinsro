@@ -22,7 +22,8 @@
   [cofx ::init-page-cofx
    event ::init-page-event]
   (let [[{:keys [id]}] event]
-    {:dispatch [::e.currencies/do-fetch-record id]}))
+    {:dispatch [::e.currencies/do-fetch-record id]
+     :document/title "Show Currency"}))
 
 (kf/reg-event-fx ::init-page init-page)
 

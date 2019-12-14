@@ -1,5 +1,6 @@
 (ns dinsro.view
-  (:require [dinsro.components.navbar :refer [navbar]]
+  (:require [com.smxemail.re-frame-document-fx]
+            [dinsro.components.navbar :refer [navbar]]
             [dinsro.routing :as r]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
