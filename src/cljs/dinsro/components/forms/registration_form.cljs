@@ -3,100 +3,93 @@
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(c/reg-field ::name             "")
-(c/reg-field ::email            "")
-(c/reg-field ::password         "hunter2")
-(c/reg-field ::confirm-password "hunter2")
+(def default-name "Bob")
+(def default-email "bob@example.com")
+(def default-password "hunter2")
 
-(s/def ::name             string?)
+(s/def ::name string?)
+(rfu/reg-basic-sub ::name)
+(rfu/reg-set-event ::name)
+
 (s/def ::email            string?)
+(rfu/reg-basic-sub ::email)
+(rfu/reg-set-event ::email)
+
+
 (s/def ::password         string?)
+(rfu/reg-basic-sub ::password)
+(rfu/reg-set-event ::password)
+
 (s/def ::confirm-password string?)
+(rfu/reg-basic-sub ::confirm-password)
+(rfu/reg-set-event ::confirm-password)
 
-(kf/reg-event-db
- ::change-email
- (fn-traced [db [value]]
-   (assoc db ::email value)))
+(defn set-defaults
+  [{:keys [db]} _]
+  {:db (-> db
+           (assoc ::name default-name)
+           (assoc ::email default-email)
+           (assoc ::password default-password)
+           (assoc ::confirm-password default-password))})
 
-(kf/reg-event-db
- ::change-name
- (fn-traced [db [value]]
-   (assoc db ::name value)))
+(kf/reg-event-fx ::set-defaults set-defaults)
 
-(kf/reg-event-db
- ::change-password
- (fn-traced [db [value]]
-   (assoc db ::password value)))
+(defn create-form-data
+  [[name email password] _]
+  {:name name
+   :email email
+   :password password})
 
-(kf/reg-event-db
- ::change-confirm-password
- (fn-traced [db [value]]
-   (assoc db ::confirm-password value)))
+(rf/reg-sub
+ ::form-data
+ :<- [::name]
+ :<- [::email]
+ :<- [::password]
+ create-form-data)
 
-(kf/reg-event-fx
- :register-succeeded
- (fn-traced
+(defn register-succeeded
   [_ _]
-  nil))
+  {})
 
-(kf/reg-event-fx
- :register-failed
- (fn-traced
+(defn register-failed
   [_ _]
-  nil))
+  {})
 
-(defn-spec submit-clicked nil? #_(s/keys)
-  [{:keys [db]} (s/keys) _ any?]
-  (let [email @(rf/subscribe [::email])
-        name @(rf/subscribe [::name])
-        confirm-password @(rf/subscribe [::confirm-password])
-        password @(rf/subscribe [::password])
-        params {:dinsro.model.user/name name
-                :dinsro.model.user/email email
-                :dinsro.model.user/password password
-                :dinsro.model.user/confirm-password confirm-password}]
-    {:db db
-     :http-xhrio
-     {:uri             "/api/v1/register"
-      :method          :post
-      :timeout         8000
-      :format          (ajax/json-request-format)
-      :response-format (ajax/json-response-format {:keywords? true})
-      :params          params
-      :on-success      [:register-succeeded]
-      :on-failure      [:register-failed]}}))
+(defn submit-clicked
+  [_ [form-data]]
+  {:http-xhrio
+   {:uri             "/api/v1/register"
+    :method          :post
+    :timeout         8000
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :params          form-data
+    :on-success      [:register-succeeded]
+    :on-failure      [:register-failed]}})
 
+(kf/reg-event-fx :register-succeeded register-succeeded)
+(kf/reg-event-fx :register-failed register-failed)
 (kf/reg-event-fx ::submit-clicked submit-clicked)
 
-(kf/reg-event-db
- ::load-register-page
- (fn-traced
-  [db _]
-  (-> db
-      (assoc ::name "Bob")
-      (assoc ::email "bob@example.com")
-      (assoc ::password "hunter2")
-      (assoc ::confirm-password "hunter2"))))
-
-(kf/reg-controller
- ::registration-form
- {:params (constantly true)
-  :start [::load-register-page]})
+(defn debug-box
+  [data]
+  [:pre (str data)])
 
 (defn-spec registration-form (s/keys)
   []
-  [:form {:style {:border "1px solid red"}}
-   [c/text-input     "Name"             ::name             ::change-name]
-   [c/email-input    "Email"            ::email            ::change-email]
-   [c/password-input "Password"         ::password         ::change-password]
-   [c/password-input "Confirm Password" ::confirm-password ::change-confirm-password]
-   [:div.field
-    [:div.control
-     [:a.button.is-primary
-      {:on-click #(rf/dispatch [::submit-clicked])}
-      "Submit"]]]])
+  (let [form-data @(rf/subscribe [::form-data])]
+    [:div.box
+     [:form
+      [debug-box form-data]
+      [c/text-input     "Name"             ::name             ::set-name]
+      [c/email-input    "Email"            ::email            ::set-email]
+      [c/password-input "Password"         ::password         ::set-password]
+      [c/password-input "Confirm Password" ::confirm-password ::set-confirm-password]
+      [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]]))

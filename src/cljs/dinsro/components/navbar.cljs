@@ -6,15 +6,15 @@
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 ;; Subscriptions
 
-(rf/reg-sub ::auth-id   (fn [db _] (get db ::e.authentication/auth-id)))
-
 (s/def ::expanded? boolean?)
-(rf/reg-sub ::expanded? (fn [db _] (get db ::expanded? false)))
+(rfu/reg-basic-sub ::expanded?)
+#_(rf/reg-sub ::expanded? (fn [db _] (get db ::expanded? false)))
 
 ;; Events
 
@@ -52,7 +52,7 @@
      [:span {:aria-hidden true}]]))
 
 (defn navbar []
-  (let [auth-id @(rf/subscribe [::auth-id])
+  (let [auth-id @(rf/subscribe [::e.authentication/auth-id])
         expanded? @(rf/subscribe [::expanded?])]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
