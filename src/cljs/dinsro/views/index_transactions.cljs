@@ -20,7 +20,15 @@
 (defn init-page
   [{:keys [db]} _]
   {:db (assoc db ::e.transactions/items [example-transaction])
+   :document/title "Index Transactions"
    :dispatch [::e.transactions/do-fetch-index]})
+
+(kf/reg-event-fx ::init-page init-page)
+
+(kf/reg-controller
+ ::page-controller
+ {:params (c/filter-page :index-transactions-page)
+  :start [::init-page]})
 
 (defn load-buttons
   []

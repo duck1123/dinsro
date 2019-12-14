@@ -33,7 +33,7 @@
  {:params (c/filter-param-page :show-user-page)
   :start  [::init-page]})
 
-(defn load-box
+(defn load-buttons
   [id]
   [:div.box
    [c.buttons/fetch-users]
@@ -68,7 +68,7 @@
   (let [{{:keys [id]} :path-params} match
         state @(rf/subscribe [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [load-box id]
+     [load-buttons id]
      (condp = state
        :invalid [:p "invalid"]
        :failed [:p "Failed"]

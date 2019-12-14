@@ -13,7 +13,8 @@
 
 (defn init-page
   [{:keys [db]} _]
-  {:dispatch [::e.users/do-fetch-index]})
+  {:dispatch [::e.users/do-fetch-index]
+   :document/title "Index Users"})
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -22,11 +23,16 @@
  {:params (c/filter-page :index-users-page)
   :start [::init-page]})
 
+(defn load-buttons
+  []
+  [:div.box
+   [button/fetch-users]])
+
 (defn page
   []
   (let [users @(rf/subscribe [::e.users/items])]
     [:section.section>div.container>div.content
-     #_[:div.box [button/fetch-users]]
+     [load-buttons]
      [:div.box
       [:h1 (tr [:users-page "Users Page"])]
       [:hr]
