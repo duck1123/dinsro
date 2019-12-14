@@ -43,15 +43,6 @@
  (fn-traced [_ _]
   {:dispatch [::e.accounts/do-submit @(rf/subscribe [::account-data])]}))
 
-(def strings
-  {:name     "Name"
-   :initial-value "Initial Value"
-   :currency "Currency"
-   :submit "Submit"
-   :user "User"})
-
-(def l strings)
-
 (defn new-account-form
   []
   (let [form-data @(rf/subscribe [::form-data])
