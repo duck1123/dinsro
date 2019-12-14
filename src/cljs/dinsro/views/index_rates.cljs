@@ -5,6 +5,7 @@
             [dinsro.components.forms.create-rate :as c.f.create-rate :refer [create-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.rate-chart :refer [rate-chart]]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -26,16 +27,11 @@
 
 (defn load-buttons
   []
-  [:div.box
-   [c.buttons/fetch-rates]
-   [c.buttons/fetch-currencies]
-   [c.buttons/toggle-debug]])
-
-(defn show-form-button
-  []
-  (when-not @(rf/subscribe [::c.f.create-rate/shown?])
-    [:a.is-pulled-right {:on-click #(rf/dispatch [::c.f.create-rate/set-shown? true])}
-     "Show Form"]))
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:div.box
+     [c.buttons/fetch-rates]
+     [c.buttons/fetch-currencies]
+     [c.buttons/toggle-debug]]))
 
 (defn page
   []
@@ -45,7 +41,7 @@
      [:div.box
       [:h1
        (tr [:rates "Rates"])
-       [show-form-button]]
+       [c/show-form-button ::c.f.create-rate/shown? ::c.f.create-rate/set-shown?]]
       [create-rate-form]
       [:hr]
       [rate-chart items]

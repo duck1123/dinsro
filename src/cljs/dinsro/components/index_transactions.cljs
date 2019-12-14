@@ -1,9 +1,6 @@
 (ns dinsro.components.index-transactions
   (:require [clojure.spec.alpha :as s]
-            ;; [dinsro.events.currencies :as e.currencies]
-            ;; [dinsro.events.rates :as e.rates]
-            ;; [dinsro.spec.currencies :as s.currencies]
-            ;; [dinsro.spec.rates :as s.rates]
+            [dinsro.components.debug :as c.debug]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
@@ -18,7 +15,7 @@
   (if-not (seq items)
     [:p "no items"]
     [:<>
-     [:pre (str items)]
+     [c.debug/debug-box items]
      [:table
       [:thead
        [:tr

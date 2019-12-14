@@ -2,7 +2,7 @@
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-currency :refer [create-currency]]
+            [dinsro.components.forms.create-currency :as c.f.create-currency :refer [create-currency]]
             [dinsro.components.index-currencies :refer [index-currencies]]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
@@ -36,7 +36,9 @@
     [:section.section>div.container>div.content
      [loading-buttons]
      [:div.box
-      [:h1 (tr [:index-currencies "Index Currencies"])]
-      [create-currency]
+      [:h1
+       (tr [:index-currencies "Index Currencies"])
+       [c/show-form-button ::c.f.create-currency/shown? ::c.f.create-currency/set-shown?]]
+      [c.f.create-currency/create-currency]
       [:hr]
       [index-currencies currencies]]]))

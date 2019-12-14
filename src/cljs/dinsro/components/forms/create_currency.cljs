@@ -17,6 +17,10 @@
 (rfu/reg-basic-sub ::name)
 (rfu/reg-set-event ::name)
 
+(s/def ::shown? boolean?)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
+
 (defn create-form-data
   [name]
   {:name name})
@@ -26,34 +30,24 @@
  :<- [::name]
  create-form-data)
 
-(defn submit-clicked
-  [_ _]
-  (let [form-data @(rf/subscribe [::form-data])]
-    {:dispatch [::e.currencies/do-submit form-data]}))
-
-(kf/reg-event-fx ::submit-clicked submit-clicked)
-
-(defn debug-box
-  [form-data]
-  (when @(rf/subscribe [::debug-shown?])
-    [:pre (str form-data)]))
-
 (defn create-currency
   []
   (let [form-data @(rf/subscribe [::form-data])]
-    [:<>
-     [c.debug/debug-box form-data]
-     [:form
-      [c/text-input     (tr [:name])   ::name ::set-name]
-      [c/primary-button (tr [:submit]) [::submit-clicked]]]]))
+    (when @(rf/subscribe [::shown?])
+      [:<>
+       [c/close-button ::set-shown?]
+       [c.debug/debug-box form-data]
+       [:form
+        [c/text-input     (tr [:name])   ::name ::set-name]
+        [c/primary-button (tr [:submit]) [::e.currencies/do-submit form-data]]]])))
 
-(defn init-form
+(defn set-defaults
   [{:keys [db]} _]
   {:db (merge db {::name default-name})})
 
-(kf/reg-event-fx ::init-form init-form)
+(kf/reg-event-fx ::set-defaults set-defaults)
 
 (kf/reg-controller
  ::form-controller
  {:params (constantly true)
-  :start [::init-form]})
+  :start [::set-defaults]})

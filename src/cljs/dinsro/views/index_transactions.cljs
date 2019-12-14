@@ -2,6 +2,7 @@
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.components.index-transactions :refer [index-transactions]]
             [dinsro.events.transactions :as e.transactions]
@@ -32,11 +33,12 @@
 
 (defn load-buttons
   []
-  [:div.box
-   [c.buttons/fetch-transactions]
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]
-   [c.buttons/toggle-debug]])
+  (when @(rf/subscribe [::c.debug/shown?])
+    [:div.box
+     [c.buttons/fetch-transactions]
+     [c.buttons/fetch-accounts]
+     [c.buttons/fetch-currencies]
+     [c.buttons/toggle-debug]]))
 
 (defn page
   []

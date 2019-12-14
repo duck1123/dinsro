@@ -61,16 +61,13 @@
 
 (defn new-account-form
   []
-  (let [form-data @(rf/subscribe [::form-data])
-        shown? @(rf/subscribe [::shown?])]
-    [:<>
-     [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])]
-     [c.debug/debug-box form-data]
-     #_[:pre (str form-data)]
-     (when shown?
-       [:<>
-        [c/text-input (tr [:name]) ::name ::set-name]
-        [c/number-input (tr [:initial-value]) ::initial-value ::set-initial-value]
-        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]
-        [c/user-selector (tr [:user]) ::user-id ::set-user-id]
-        [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]])]))
+  (let [form-data @(rf/subscribe [::form-data])]
+    (when @(rf/subscribe [::shown?])
+      [:<>
+       [c/close-button ::set-shown?]
+       [c.debug/debug-box form-data]
+       [c/text-input (tr [:name]) ::name ::set-name]
+       [c/number-input (tr [:initial-value]) ::initial-value ::set-initial-value]
+       [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]
+       [c/user-selector (tr [:user]) ::user-id ::set-user-id]
+       [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]])))
