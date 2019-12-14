@@ -12,10 +12,7 @@
 
 (defn init-page
   [{:keys [db]} _]
-  {:db (-> db
-           (assoc :failed false)
-           (assoc ::e.rates/items [])
-           (assoc ::loading false))
+  {:db (assoc db ::e.rates/items [])
    :dispatch [::e.rates/do-fetch-index]})
 
 (kf/reg-event-fx ::init-page init-page)
@@ -42,7 +39,7 @@
   []
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
-     #_[load-buttons]
+     [load-buttons]
      [:div.box
       [:h1
        (tr [:rates "Rates"])
