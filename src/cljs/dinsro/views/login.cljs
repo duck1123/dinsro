@@ -12,36 +12,17 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(def default-email "bob@example.com")
-(def default-password "hunter2")
+(defn init-page
+  [{:keys [db]} _]
+  {:dispatch [::c.f.login/set-defaults]
+   :document/title "Login"})
 
-;; (rf/reg-sub      ::email       (fn [db _] (get db ::email default-email)))
-;; (kf/reg-event-db :change-email (fn [db [email]] (assoc db ::email email)))
+(kf/reg-event-fx ::init-page init-page)
 
-;; (rf/reg-sub      ::password       (fn [db _] (get db ::password default-password)))
-;; (kf/reg-event-db :change-password (fn [db [password]] (assoc db ::password password)))
-
-;; (rf/reg-sub
-;;  ::login-data
-;;  :<- [::email]
-;;  :<- [::password]
-;;  (fn [[email password] b]
-;;    {:email email :password password}))
-
-;; (rf/reg-sub
-;;  :login-disabled?
-;;  (fn [db _] (rf/subscribe [:state]))
-;;  (fn [state _] (not= state :ready)))
-
-;; (rf/reg-sub
-;;  :no-email
-;;  (fn [db _] (rf/subscribe [::email]))
-;;  (fn [email _] (string/blank? email)))
-
-;; (kf/reg-event-db
-;;  :login-no-email
-;;  (fn-traced [db [_ _]]
-;;    (assoc db :no-email true)))
+(kf/reg-controller
+ ::page
+ {:params (c/filter-page :login-page)
+  :start [::init-page]})
 
 (defn page [match]
   (let [{:keys [query-string]} match

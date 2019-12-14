@@ -1,5 +1,6 @@
 (ns dinsro.views.index-transactions
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.components.index-transactions :refer [index-transactions]]
@@ -29,12 +30,6 @@
    [c.buttons/fetch-currencies]
    [c.buttons/toggle-debug]])
 
-(defn show-form-button
-  []
-  (when-not @(rf/subscribe [::c.f.create-transaction/shown?])
-    [:a.is-pulled-right {:on-click #(rf/dispatch [::c.f.create-transaction/set-shown? true])}
-     (tr [:show-form "Show Form"])]))
-
 (defn page
   []
   [:section.section>div.container>div.content
@@ -43,7 +38,7 @@
      [:div.box
       [:h1
        (tr [:index-transactions-title "Index Transactions"])
-       [show-form-button]]
+       [c/show-form-button ::c.f.create-transaction/shown? ::c.f.create-transaction/set-shown?]]
       [c.f.create-transaction/create-transaction-form]
       [:hr]
       [index-transactions transactions]])])

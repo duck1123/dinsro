@@ -1,6 +1,7 @@
 (ns dinsro.components
   (:require [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
+            [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
@@ -118,3 +119,9 @@
   [key]
   [:a.delete.is-pulled-right
    {:on-click #(rf/dispatch [key false])}])
+
+(defn show-form-button
+  [state change]
+  (when-not @(rf/subscribe [state])
+    [:a.is-pulled-right {:on-click #(rf/dispatch [change true])}
+     (tr [:show-form "Show"])]))

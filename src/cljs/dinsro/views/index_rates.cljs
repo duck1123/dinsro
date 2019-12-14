@@ -1,5 +1,6 @@
 (ns dinsro.views.index-rates
   (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :as c.f.create-rate :refer [create-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
@@ -13,13 +14,14 @@
 (defn init-page
   [{:keys [db]} _]
   {:db (assoc db ::e.rates/items [])
+   :document/title "Index Rates"
    :dispatch [::e.rates/do-fetch-index]})
 
 (kf/reg-event-fx ::init-page init-page)
 
 (kf/reg-controller
  ::page-controller
- {:params #(when (= (get-in % [:data :name]) :index-rates-page) true)
+ {:params (c/filter-page :index-rates-page)
   :start [::init-page]})
 
 (defn load-buttons
