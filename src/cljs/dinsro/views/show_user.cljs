@@ -41,30 +41,32 @@
    [c.buttons/fetch-users]
    [c.buttons/fetch-accounts]
    [c.buttons/fetch-currencies]
-   (let [state @(rf/subscribe [::e.users/do-fetch-record-state])]
-     [:button.button {:on-click #(rf/dispatch [::e.users/do-fetch-record id])}
-      (str "Load User: " state)])])
+   [c.buttons/fetch-user id]])
+
+(defn-spec page-loaded vector?
+  [id pos-int?]
+  (if-let [user @(rf/subscribe [::e.users/item (int id)])]
+    (let [user-id (:db/id user)
+          accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+      [:<>
+       [:div.box
+        [:h1 "Show User"]
+        [show-user user]]
+       [:div.box
+        [:h2 "Accounts"]
+        [add-user-account user-id]
+        [:hr]
+        [index-accounts accounts]]])
+    [:p "User not found"]))
 
 (defn-spec page vector?
   [match ::view-map]
   (let [{{:keys [id]} :path-params} match
         state @(rf/subscribe [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     #_[load-box id]
+     [load-box id]
      (condp = state
        :invalid [:p "invalid"]
        :failed [:p "Failed"]
-       :loaded (if-let [user @(rf/subscribe [::e.users/item (int id)])]
-                 (let [user-id (:db/id user)
-                       accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
-                   [:<>
-                    [:div.box
-                     [:h1 "Show User"]
-                     [show-user user accounts]]
-                    [:div.box
-                     [:h2 "Accounts"]
-                     [add-user-account user-id]
-                     [:hr]
-                     [index-accounts accounts]]])
-                 [:p "User not found"])
+       :loaded (page-loaded (int id))
        [:p "unknown state"])]))

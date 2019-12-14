@@ -51,6 +51,12 @@
     [:a.button {:on-click #(rf/dispatch [::e.transactions/do-fetch-index])}
      (tr [:fetch-transactions] [state])]))
 
+(defn fetch-user
+  [id]
+  (let [state @(rf/subscribe [::e.users/do-fetch-record-state])]
+    [:button.button {:on-click #(rf/dispatch [::e.users/do-fetch-record id])}
+     (str "Load User: " state " -> " id)]))
+
 (defn fetch-users
   []
   (let [state @(rf/subscribe [::e.users/do-fetch-index-state])]
