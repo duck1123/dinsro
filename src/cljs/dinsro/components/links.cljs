@@ -8,6 +8,7 @@
             [dinsro.translations :refer [tr]]
             [dinsro.views.show-account :as v.show-account]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
@@ -26,8 +27,8 @@
       [:a {:href (kf/path-for [:show-currency-page {:id id}])} name])
     [:span (tr [:not-loaded])]))
 
-(defn user-link
-  [id]
+(defn-spec user-link vector?
+  [id pos-int?]
   (if-let [user @(rf/subscribe [::e.users/item id])]
     (let [name (::s.users/name user)]
       [:a {:href (kf/path-for [:show-user-page {:id id}])} name])

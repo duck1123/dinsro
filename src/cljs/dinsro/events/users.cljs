@@ -119,9 +119,10 @@
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
-  [db [{users :users}]]
+  [db [{items :users}]]
   (-> db
-      (assoc ::items users)
+      (assoc ::items items)
+      (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
       (assoc ::do-fetch-index-state :loaded)))
 
 (defn do-fetch-index-unauthorized
