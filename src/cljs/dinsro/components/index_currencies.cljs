@@ -1,5 +1,6 @@
 (ns dinsro.components.index-currencies
-  (:require [dinsro.components :as c]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.links :as c.links]
             [dinsro.events.currencies :as e.currencies]
@@ -7,18 +8,19 @@
             [dinsro.translations :refer [tr]]
             [dinsro.views.show-currency :as show-currency]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn index-currency-line
-  [currency]
+(defn-spec index-currency-line vector?
+  [currency ::s.currencies/item]
   (let [{:keys [db/id]} currency]
     [:tr
      [:td [c.links/currency-link id]]
-     [:td [c.buttons/delete-currency]]]))
+     [:td [c.buttons/delete-currency currency]]]))
 
-(defn index-currencies
-  [currencies]
+(defn-spec index-currencies vector?
+  [currencies (s/coll-of ::s.currencies/item)]
   [:<>
    [c/debug-box currencies]
    (if-not (seq currencies)

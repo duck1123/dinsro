@@ -5,18 +5,21 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
+            [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.currencies :as s.currencies]
             [dinsro.translations :refer [tr]]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn delete-account
-  [account]
+(defn-spec delete-account vector?
+  [account ::s.accounts/item]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.accounts/do-delete-record account])}
    (tr [:delete])])
 
-(defn delete-currency
-  [currency]
+(defn-spec delete-currency vector?
+  [currency ::s.currencies/item]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
    (tr [:delete])])

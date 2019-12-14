@@ -67,8 +67,12 @@
       {:dispatch [::do-fetch-record-unauthorized request]}
       {:db (assoc db ::do-fetch-record-state :failed)})))
 
-(defn do-fetch-record
-  [cofx event]
+(s/def ::do-fetch-record-cofx (s/keys))
+(s/def ::do-fetch-record-event (s/keys))
+(s/def ::do-fetch-record-response (s/keys))
+
+(defn-spec do-fetch-record ::do-fetch-record-response
+  [cofx ::do-fetch-record-cofx event ::do-fetch-record-event]
   (let [{:keys [db]} cofx
         [id] event]
     {:db (assoc db ::do-fetch-record-state :loading)
