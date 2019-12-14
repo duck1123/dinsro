@@ -5,6 +5,7 @@
             [dinsro.components :as c]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
@@ -56,12 +57,12 @@
   (let [form-data @(rf/subscribe [::form-data])
         shown? @(rf/subscribe [::form-shown?])]
     [:<>
-     [:a.button {:on-click #(rf/dispatch [::toggle-form])} "Toggle"]
+     [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])]
      #_[:pre (str form-data)]
      (when shown?
        [:<>
-        [c/text-input        (:name strings)          ::name          ::change-name]
-        [c/number-input      (:initial-value strings) ::initial-value ::change-initial-value]
-        [c/currency-selector (:currency strings)      ::currency-id   ::change-currency-id]
-        [c/user-selector     (:user strings)          ::user-id       ::change-user-id]
-        [c/primary-button    (:submit strings)        [::e.accounts/do-submit form-data]]])]))
+        [c/text-input (tr [:name]) ::name ::change-name]
+        [c/number-input (tr [:initial-value]) ::initial-value ::change-initial-value]
+        [c/currency-selector (tr [:currency]) ::currency-id ::change-currency-id]
+        [c/user-selector (tr [:user]) ::user-id ::change-user-id]
+        [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]])]))
