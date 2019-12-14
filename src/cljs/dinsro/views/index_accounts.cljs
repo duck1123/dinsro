@@ -5,6 +5,7 @@
             [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -22,16 +23,21 @@
  {:params #(when (= (get-in % [:data :name]) :index-accounts-page) true)
   :start [::init-page]})
 
+(defn loading-buttons
+  []
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:div.box
+     [button/fetch-accounts]
+     [button/fetch-currencies]
+     [button/fetch-users]]))
+
 (defn-spec page vector?
   [match any?]
   (let [accounts @(rf/subscribe [::e.accounts/items])
         state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:section.section>div.container>div.content
      [:h1 (tr [:index-accounts])]
-     [:div.box
-      [button/fetch-accounts]
-      [button/fetch-currencies]
-      [button/fetch-users]]
+     [loading-buttons]
      [:div.box
       [new-account-form]
       [:hr]

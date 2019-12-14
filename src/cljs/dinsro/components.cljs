@@ -1,5 +1,6 @@
 (ns dinsro.components
   (:require [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
@@ -113,7 +114,8 @@
 
 (defn debug-box
   [data]
-  [:pre (str data)])
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:pre (str data)]))
 
 (defn close-button
   [key]
