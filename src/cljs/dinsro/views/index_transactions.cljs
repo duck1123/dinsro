@@ -5,6 +5,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.components.index-transactions :refer [index-transactions]]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
@@ -20,7 +21,8 @@
 
 (defn init-page
   [{:keys [db]} _]
-  {:db (assoc db ::e.transactions/items [example-transaction])
+  {
+   ;; :db (assoc db ::e.transactions/items [example-transaction])
    :document/title "Index Transactions"
    :dispatch [::e.transactions/do-fetch-index]})
 
@@ -33,7 +35,7 @@
 
 (defn load-buttons
   []
-  (when @(rf/subscribe [::c.debug/shown?])
+  (when @(rf/subscribe [::e.debug/shown?])
     [:div.box
      [c.buttons/fetch-transactions]
      [c.buttons/fetch-accounts]

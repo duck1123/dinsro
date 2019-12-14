@@ -1,14 +1,13 @@
 (ns dinsro.views.index-users
-  (:require [ajax.core :as ajax]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as button]
+  (:require [dinsro.components :as c]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.components.index-users :refer [index-users]]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [reagent.core :as r]
+            ;; [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -25,8 +24,9 @@
 
 (defn load-buttons
   []
-  [:div.box
-   [button/fetch-users]])
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:div.box
+     [c.buttons/fetch-users]]))
 
 (defn page
   []
