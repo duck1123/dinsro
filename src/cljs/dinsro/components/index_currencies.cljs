@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.spec.currencies :as s.currencies]
@@ -22,7 +23,7 @@
 (defn-spec index-currencies vector?
   [currencies (s/coll-of ::s.currencies/item)]
   [:<>
-   [c/debug-box currencies]
+   [c.debug/debug-box currencies]
    (if-not (seq currencies)
      [:div (tr [:no-currencies])]
      [:table

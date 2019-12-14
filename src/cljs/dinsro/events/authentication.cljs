@@ -25,10 +25,13 @@
   [cofx event]
   (let [{:keys [db]} cofx
         [{:keys [identity]}] (timbre/spy :info event)
-        return-to (:return-to db)]
+        return-to (:return-to db)
+        db (if (timbre/spy :info return-to)
+             (-> db
+                 (assoc :kee-frame/route return-to)
+                 (dissoc :return-to))
+             db)]
     {:db (-> db
-             (assoc :kee-frame/route return-to)
-             (dissoc :return-to)
              (assoc ::auth-id identity)
              (assoc ::loading false)
              (assoc ::login-failed false))}))

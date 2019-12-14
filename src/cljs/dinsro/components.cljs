@@ -1,6 +1,5 @@
 (ns dinsro.components
   (:require [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
@@ -111,11 +110,6 @@
 (defn get-time-string
   [date]
   (str (.getHours date) ":" (.getMinutes date)))
-
-(defn debug-box
-  [data]
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:pre (str data)]))
 
 (defn close-button
   [key]
