@@ -10,6 +10,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
+            [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.translations :refer [tr]]
@@ -52,7 +53,7 @@
 
 (defn create-form-data
   [[value currency-id date]]
-  {:value value
+  {:value (.parseFloat js/Number value)
    :currency-id (int currency-id)
    :date        (js/Date. date)})
 
@@ -79,4 +80,4 @@
          [c.datepicker/datepicker
           {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
         [:div.field>div.control
-         [c/primary-button (tr [:submit]) [::submit-clicked]]]]))])
+         [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]]))])
