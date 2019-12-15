@@ -8,7 +8,10 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(defn hide
+  [data]
+  (when @(rf/subscribe [::e.debug/shown?]) data))
+
 (defn debug-box
   [data]
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:pre (str data)]))
+  (hide [:pre (str data)]))
