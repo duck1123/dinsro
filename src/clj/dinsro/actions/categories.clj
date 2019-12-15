@@ -12,8 +12,7 @@
             [taoensso.timbre :as timbre]))
 
 (def param-rename-map
-  {:name          ::s.categories/name
-   :initial-value ::s.categories/initial-value})
+  {:name          ::s.categories/name})
 
 (defn try-parse
   [v]
@@ -27,14 +26,10 @@
 
 (defn-spec prepare-record (s/nilable ::s.categories/params)
   [params :create-category/params]
-  (let [currency-id (get-as-int params :currency-id)
-        user-id (get-as-int params :user-id)
-        initial-value (some-> params :initial-value double)
+  (let [user-id (get-as-int params :user-id)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
-                   (assoc-in [::s.categories/initial-value] initial-value)
-                   (assoc-in [::s.categories/currency :db/id] currency-id)
                    (assoc-in [::s.categories/user :db/id] user-id))]
     (if (s/valid? ::s.categories/params params)
       params
@@ -56,8 +51,8 @@
 
 (defn read-handler
   [{{:keys [categorieId]} :path-params}]
-  (if-let [categorie (m.categories/read-record {:id categorieId})]
-    (http/ok categorie)
+  (if-let [category (m.categories/read-record {:id categorieId})]
+    (http/ok category)
     (http/not-found {})))
 
 (defn-spec delete-handler ::s.a.categories/delete-handler-response
@@ -70,6 +65,5 @@
 (comment
   (create-handler {})
   (prepare-record {::s.categories/name "foo"})
-  (prepare-record (gen/generate (s/gen ::s.a.categories/create-handler-request-valid)))
   (delete-handler {:path-params {:id "s"}})
   )

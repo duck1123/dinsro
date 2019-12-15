@@ -1,13 +1,11 @@
 (ns dinsro.model.account
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre])
-  (:import datahike.db.TxReport))
+            [taoensso.timbre :as timbre]))
 
 (defn-spec prepare-account ::s.accounts/params
   [params ::s.accounts/params]
@@ -41,15 +39,8 @@
   (doseq [id (index-ids)]
     (delete-record id)))
 
-(defn-spec mock-record ::s.accounts/item
-  []
-  (let [params (gen/generate (s/gen ::s.accounts/params))
-        id (create-record params)]
-    (read-record id)))
-
 (comment
   (index-ids)
   (index-records)
   (delete-all)
-  (mock-record)
   )

@@ -1,13 +1,11 @@
 (ns dinsro.model.categories
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.categories :as s.categories]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre])
-  (:import datahike.db.TxReport))
+            [taoensso.timbre :as timbre]))
 
 (defn-spec prepare-account ::s.categories/params
   [params ::s.categories/params]
@@ -15,8 +13,8 @@
 
 (defn-spec create-record ::ds/id
   [params ::s.categories/params]
-  (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "account-id")]})]
-    (get-in response [:tempids "account-id"])))
+  (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "record-id")]})]
+    (get-in response [:tempids "record-id"])))
 
 (defn-spec read-record (s/nilable ::s.categories/item)
   [id ::ds/id]
@@ -41,15 +39,8 @@
   (doseq [id (index-ids)]
     (delete-record id)))
 
-(defn-spec mock-record ::s.categories/item
-  []
-  (let [params (gen/generate (s/gen ::s.categories/params))
-        id (create-record params)]
-    (read-record id)))
-
 (comment
   (index-ids)
   (index-records)
   (delete-all)
-  (mock-record)
   )
