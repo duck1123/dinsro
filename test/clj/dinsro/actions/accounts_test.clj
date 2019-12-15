@@ -49,11 +49,10 @@
       #_(is (= nil response)))))
 
 (deftest create-handler-invalid
-  (testing "invalid params"
-    (let [request {:params {}}
-          response (a.accounts/create-handler request)]
-      (is (= status/bad-request (:status response)))
-      #_(is (= nil response)))))
+  (let [request {:params {}}
+        response (a.accounts/create-handler request)]
+    (is (= status/bad-request (:status response)))
+    #_(is (= nil response))))
 
 (deftest delete-handler
   (testing "success"

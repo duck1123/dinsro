@@ -5,51 +5,40 @@
             [expound.alpha :as expound]
             [dinsro.model.account :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(s/def :create-handler-valid/params
-  (s/keys :req-un [::s.accounts/name
-                   ::s.accounts/initial-value
-                   ::s.accounts/user-id
-                   ::s.accounts/currency-id]))
-(s/def :create-handler/params
-  (s/keys :opt-un [::s.accounts/name
-                   ::s.accounts/initial-value
-                   ::s.accounts/user-id
-                   ::s.accounts/currency-id]))
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
-(s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
-(s/def ::create-handler-response (s/keys))
-
 (def param-rename-map
   {:name          ::s.accounts/name
    :initial-value ::s.accounts/initial-value})
 
-(defn-spec prepare-record (s/nilable ::s.accounts/params)
-  [params :create-handler/params]
-  (when-let [currency-id (try
-                           (some-> params :currency-id str Integer/parseInt)
-                           (catch NumberFormatException e nil))]
-    (when-let [user-id (try
-                         (some-> params :user-id str Integer/parseInt)
-                         (catch NumberFormatException e nil))]
-      (let [initial-value (double (:initial-value params))
-            params (-> params
-                       (set/rename-keys param-rename-map)
-                       (select-keys (vals param-rename-map))
-                       (assoc-in [::s.accounts/initial-value] initial-value)
-                       (assoc-in [::s.accounts/currency :db/id] currency-id)
-                       (assoc-in [::s.accounts/user :db/id] user-id))]
-        (if (s/assert ::s.accounts/params params)
-          params
-          (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
-              nil))))))
+(defn get-as-int
+  [params key]
+  (try
+    (some-> params key str Integer/parseInt)
+    (catch NumberFormatException e nil)))
 
-(defn-spec create-handler ::create-handler-response
-  [{:keys [params session]} ::create-handler-request]
+(defn-spec prepare-record (s/nilable ::s.accounts/params)
+  [params :create-account/params]
+  (let [currency-id (get-as-int params :currency-id)
+        user-id (get-as-int params :user-id)
+        initial-value (some-> params :initial-value double)
+        params (-> params
+                   (set/rename-keys param-rename-map)
+                   (select-keys (vals param-rename-map))
+                   (assoc-in [::s.accounts/initial-value] initial-value)
+                   (assoc-in [::s.accounts/currency :db/id] currency-id)
+                   (assoc-in [::s.accounts/user :db/id] user-id))]
+    (if (s/valid? ::s.accounts/params params)
+      params
+      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
+          nil))))
+
+(defn-spec create-handler ::s.a.accounts/create-handler-response
+  [{:keys [params session]} ::s.a.accounts/create-handler-request]
   (or (let [user-id 1]
         (when-let [params (prepare-record params)]
           (let [id (m.accounts/create-record params #_(assoc params :user-id user-id))]
@@ -67,32 +56,16 @@
     (http/ok account)
     (http/not-found {})))
 
-(s/def :delete-handler-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
-(s/def :delete-handler-request/path-params (s/keys :req-un [:delete-handler-request-params/id]))
-(s/def ::delete-handler-request (s/keys :req-un [:delete-handler-request/path-params]))
-
-(s/def ::delete-handler-response-invalid (s/keys))
-(s/def ::delete-handler-response-success (s/keys))
-(s/def ::delete-handler-response (s/keys))
-
-(defn-spec delete-handler ::delete-handler-response
-  [{{:keys [id]} :path-params} ::delete-handler-request]
+(defn-spec delete-handler ::s.a.accounts/delete-handler-response
+  [{{:keys [id]} :path-params} ::s.a.accounts/delete-handler-request]
   (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e))]
     (let [response (m.accounts/delete-record id)]
       (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))
 
 (comment
-
+  (create-handler {})
   (prepare-record {::s.accounts/name "foo"})
-  (gen/generate (s/gen ::create-handler-request-valid))
-  (prepare-record (gen/generate (s/gen ::create-handler-request-valid)))
-
-  (gen/generate (gen/fmap str (s/gen pos-int?)))
-  (gen/generate (s/gen :delete-handler-request-params/accountId))
-  (gen/generate (s/gen ::delete-handler-request))
-  (gen/generate (s/gen ::delete-handler-response))
-
+  (prepare-record (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid)))
   (delete-handler {:path-params {:accountId "s"}})
-
   )
