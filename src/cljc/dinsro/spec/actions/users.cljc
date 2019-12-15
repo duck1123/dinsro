@@ -1,4 +1,4 @@
-(ns dinsro.actions.users
+(ns dinsro.spec.actions.users
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.users :as s.users]

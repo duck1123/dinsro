@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.model.user :as m.user]
+            [dinsro.spec.actions.users :as s.a.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
@@ -28,8 +29,8 @@
 
 ;; Read
 
-(defn-spec read-handler ::read-handler-response
-  [request ::read-handler-request]
+(defn-spec read-handler ::s.a.users/read-handler-response
+  [request ::s.a.users/read-handler-request]
   (let [{{id :id} :path-params} request]
     (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e nil))]
       (if-let [user (m.user/read-record id)]
