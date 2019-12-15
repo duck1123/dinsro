@@ -16,6 +16,8 @@
    "/about"
    "/accounts"
    "/accounts/:id"
+   "/categories"
+   "/categories/:id"
    "/currencies"
    "/currencies/:id"
    "/login"
