@@ -6,14 +6,20 @@
             [dinsro.components.index-categories :refer [index-categories]]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.categories :as e.categories]
+            [dinsro.spec.categories :as s.categories]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+(def example-category
+  {:db/id 1
+   ::s.categories/name "Foo"
+   ::s.categories/user {:db/id 12}})
+
 (defn init-page
   [{:keys [db]} _]
-  {:db (assoc db ::e.categories/items [])
+  {:db (assoc db ::e.categories/items [example-category])
    :document/title "Index Categories"
    :dispatch [::e.categories/do-fetch-index]})
 

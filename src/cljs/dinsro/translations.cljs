@@ -19,6 +19,7 @@
     :delete "Delete"
     :email-label "Email: %1"
     :fetch-accounts "Fetch Accounts: %1"
+    :fetch-categories "Fetch Categories: %1"
     :fetch-currencies "Fetch Currencies: %1"
     :fetch-currency "Fetch Currency: %1 -> %2"
     :fetch-rates "Fetch Rates: %1"

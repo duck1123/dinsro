@@ -6,11 +6,13 @@
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.add-user-account :as c.f.add-user-account]
             [dinsro.components.index-accounts :refer [index-accounts]]
+            [dinsro.components.index-categories :refer [index-categories]]
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
+            [dinsro.spec.categories :as s.categories]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -40,6 +42,7 @@
     [:div.box
      [c.buttons/fetch-users]
      [c.buttons/fetch-accounts]
+     [c.buttons/fetch-categories]
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-user id]]))
 
@@ -53,16 +56,30 @@
    [:hr]
    [index-accounts accounts]])
 
+(defn-spec categories-section vector?
+  [user-id pos-int? categories (s/coll-of ::s.categories/item)]
+  [:div.box
+   [:h2 "Categories"]
+   [index-categories categories]])
+
+(defn transactions-section
+  []
+  [:div.box
+   [:h2 "Transactions"]])
+
 (defn-spec page-loaded vector?
   [id pos-int?]
   (if-let [user @(rf/subscribe [::e.users/item (int id)])]
     (let [user-id (:db/id user)
-          accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+          accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
+          categories []]
       [:<>
        [:div.box
         [:h1 "Show User"]
         [show-user user]]
-       [accounts-section user-id accounts]])
+       [categories-section user-id categories]
+       [accounts-section user-id accounts]
+       [transactions-section]])
     [:p "User not found"]))
 
 (s/def :show-user-view/id          string?)
