@@ -1,5 +1,6 @@
 (ns dinsro.views.show-account
-  (:require [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components :as c]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.add-account-transactions :as c.f.add-account-transactions]
             [dinsro.components.index-transactions :refer [index-transactions]]
@@ -15,6 +16,7 @@
   (when @(rf/subscribe [::e.debug/shown?])
     [:div.box
      [c.buttons/fetch-accounts]
+     [c.buttons/fetch-currencies]
      [c.buttons/fetch-transactions]]))
 
 (defn page
@@ -26,7 +28,11 @@
       [:h1 "Show Account"]
       [show-account account]]
      [:div.box
-      [:h2 "Transactions"]
+      [:h2
+       "Transactions"
+       [c/show-form-button
+        ::c.f.add-account-transactions/shown?
+        ::c.f.add-account-transactions/set-shown?]]
       [c.f.add-account-transactions/form]
       [:hr]
       (let [items @(rf/subscribe [::e.transactions/items])]

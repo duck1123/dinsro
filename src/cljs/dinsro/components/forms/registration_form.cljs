@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -59,7 +60,7 @@
   (let [form-data @(rf/subscribe [::form-data])]
     [:div.box
      [:form
-      [c/debug-box form-data]
+      [c.debug/debug-box form-data]
       [c/text-input     "Name"             ::name             ::set-name]
       [c/email-input    "Email"            ::email            ::set-email]
       [c/password-input "Password"         ::password         ::set-password]

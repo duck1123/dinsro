@@ -62,7 +62,7 @@
          [:div.field>div.control
           [:label.label label]
           [:div.select
-           (into [:select {:value @(rf/subscribe [field])
+           (into [:select {:value (or @(rf/subscribe [field]) "")
                            :on-change #(rf/dispatch [change-handler (target-value %)])}]
                  (concat [[:option {:value ""} ""]]
                          (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]

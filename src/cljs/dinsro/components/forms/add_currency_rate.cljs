@@ -96,11 +96,11 @@
   (let [shown? @(rf/subscribe [::shown?])]
     [:<>
      (when-not shown? [:div.is-pulled-right [toggle-button]])
-     #_[:a.button {:on-click #(rf/dispatch [::init-form])} "Init"]
      (when shown?
        (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
          [:<>
-          [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
+          [c/close-button ::set-shown?]
+          #_[:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
           [:div.field>div.control
            [c/number-input (tr [:rate]) ::rate ::set-rate]]
           [:div.field>div.control

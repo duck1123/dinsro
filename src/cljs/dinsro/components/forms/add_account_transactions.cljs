@@ -23,6 +23,18 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
+(s/def ::currency-id string?)
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
+
+(s/def ::date string?)
+(rfu/reg-basic-sub ::date)
+(rfu/reg-set-event ::date)
+
+(s/def ::value string?)
+(rfu/reg-basic-sub ::value)
+(rfu/reg-set-event ::value)
+
 (defn toggle
   [cofx event]
   (let [{:keys [db]} cofx]
@@ -38,11 +50,33 @@
        [:span.icon>i.fas.fa-chevron-down]
        [:span.icon>i.fas.fa-chevron-right])]))
 
+(defn create-form-data
+  [[value currency-id date]]
+  {:value value
+   :currency-id (int currency-id)
+   :date        (js/Date. date)})
+
+(rf/reg-sub
+ ::form-data
+ :<- [::value]
+ :<- [::currency-id]
+ :<- [::date]
+ create-form-data)
+
 (defn form
   []
   [:<>
-   #_(when-not @(rf/subscribe [::shown?])
-     [:div.is-pulled-right [toggle-button]])
-   (when @(rf/subscribe [::shown?])
-         [:div
-          [:p "Form"]])])
+   (let [form-data @(rf/subscribe [::form-data])]
+     (when @(rf/subscribe [::shown?])
+       [:div
+        [c/close-button ::set-shown?]
+        [c.debug/debug-box form-data]
+        [:div.field>div.control
+         [c/number-input (tr [:value]) ::value ::set-value]]
+        [:div.field>div.control
+         [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
+        [:div.field>div.control
+         [c/primary-button (tr [:submit]) [::submit-clicked]]]
+
+
+              ]))])
