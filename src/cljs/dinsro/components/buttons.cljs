@@ -71,5 +71,3 @@
   (let [state @(rf/subscribe [::e.users/do-fetch-index-state])]
     [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])}
      (tr [:fetch-users] [state])]))
-
-(def toggle-debug c.debug/toggle-debug-button)

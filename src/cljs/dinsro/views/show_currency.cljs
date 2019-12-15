@@ -37,10 +37,9 @@
   [id]
   (when @(rf/subscribe [::e.debug/shown?])
     [:div.box
-             [c.buttons/fetch-rates]
-             [c.buttons/fetch-currencies]
-             [c.buttons/fetch-currency id]
-             [c.buttons/toggle-debug]]))
+     [c.buttons/fetch-rates]
+     [c.buttons/fetch-currencies]
+     [c.buttons/fetch-currency id]]))
 
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))

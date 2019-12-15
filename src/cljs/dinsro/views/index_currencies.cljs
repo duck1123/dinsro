@@ -27,8 +27,7 @@
   []
   (when @(rf/subscribe [::e.debug/shown?])
     [:div.box
-     [c.buttons/fetch-currencies]
-     [c.buttons/toggle-debug]]))
+     [c.buttons/fetch-currencies]]))
 
 (defn page
   []

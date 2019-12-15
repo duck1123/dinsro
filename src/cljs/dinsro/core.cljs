@@ -43,17 +43,7 @@
 (s/def ::failed boolean?)
 
 (s/def ::db-spec
-  (s/keys
-   ;; :req []
-   ;; :req-un [ ]
-   ;; :opt [::e.rates/items
-   ;;       ::e.users/item
-   ;;       ::c.rf/name]
-   ;; :opt-un [::failed
-   ;;          :dinsro.events.users/item
-   ;;          :kee-frame/route]
-
-   ))
+  (s/keys))
 
 ;; -------------------------
 ;; Initialize app
@@ -63,7 +53,7 @@
    (rf/clear-subscription-cache!)
    (s/check-asserts true)
    (kf/start!
-    {:debug?         (boolean debug?)
+    {:debug?        false  #_(boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::db-spec
      :initial-db     {}

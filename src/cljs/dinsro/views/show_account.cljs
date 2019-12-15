@@ -1,5 +1,6 @@
 (ns dinsro.views.show-account
-  (:require [dinsro.components.forms.add-account-transactions :as c.f.add-account-transactions]
+  (:require [dinsro.components.debug :as c.debug]
+            [dinsro.components.forms.add-account-transactions :as c.f.add-account-transactions]
             [dinsro.components.index-transactions :refer [index-transactions]]
             [dinsro.components.show-account :refer [show-account]]
             [dinsro.events.accounts :as e.accounts]
@@ -19,4 +20,5 @@
       [c.f.add-account-transactions/form]
       [:hr]
       (let [items @(rf/subscribe [::e.transactions/items])]
-        [index-transactions items])]]))
+        [c.debug/debug-box items]
+        #_[index-transactions items])]]))
