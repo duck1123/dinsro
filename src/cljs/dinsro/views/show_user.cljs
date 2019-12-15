@@ -9,6 +9,7 @@
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
@@ -35,11 +36,12 @@
 
 (defn load-buttons
   [id]
-  [:div.box
-   [c.buttons/fetch-users]
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-user id]])
+  (when @(rf/subscribe [::e.debug/shown?])
+    [:div.box
+     [c.buttons/fetch-users]
+     [c.buttons/fetch-accounts]
+     [c.buttons/fetch-currencies]
+     [c.buttons/fetch-user id]]))
 
 (defn accounts-section
   [user-id accounts]
