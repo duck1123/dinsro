@@ -92,20 +92,16 @@
   :start [::init-form]})
 
 (defn-spec add-currency-rate-form vector?
-  [currency-id any?]
-  (let [shown? @(rf/subscribe [::shown?])]
-    [:<>
-     (when-not shown? [:div.is-pulled-right [toggle-button]])
-     (when shown?
-       (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
-         [:<>
-          [c/close-button ::set-shown?]
-          #_[:a.delete.is-pulled-right {:on-click #(rf/dispatch [::set-shown? false])}]
-          [:div.field>div.control
-           [c/number-input (tr [:rate]) ::rate ::set-rate]]
-          [:div.field>div.control
-           [c.datepicker/datepicker
-            {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
-          [c.debug/debug-box form-data]
-          [:div.field>div.control
-           [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]]))]))
+  [currency-id pos-int?]
+  (when @(rf/subscribe [::shown?])
+    (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
+      [:<>
+       [c/close-button ::set-shown?]
+       [:div.field>div.control
+        [c/number-input (tr [:rate]) ::rate ::set-rate]]
+       [:div.field>div.control
+        [c.datepicker/datepicker
+         {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
+       [c.debug/debug-box form-data]
+       [:div.field>div.control
+        [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]])))

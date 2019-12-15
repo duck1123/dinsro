@@ -76,7 +76,7 @@
         [:div.field>div.control
          [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
         [:div.field>div.control
-         [c/primary-button (tr [:submit]) [::submit-clicked]]]
-
-
-              ]))])
+         [c.datepicker/datepicker
+          {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
+        [:div.field>div.control
+         [c/primary-button (tr [:submit]) [::submit-clicked]]]]))])

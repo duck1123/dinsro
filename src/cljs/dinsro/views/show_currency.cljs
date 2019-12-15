@@ -41,6 +41,7 @@
   (when @(rf/subscribe [::e.debug/shown?])
     [:div.box
      [c.buttons/fetch-rates]
+     [c.buttons/fetch-accounts]
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-currency id]]))
 
