@@ -6,7 +6,6 @@
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
-            [dinsro.views.show-account :as v.show-account]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
