@@ -12,6 +12,7 @@
 (def example-transaction
   {:db/id 1
    ::s.transactions/value 130000
+   ::s.transactions/date (js/Date.)
    ::s.transactions/currency {:db/id 53}
    ::s.transactions/account {:db/id 12}})
 

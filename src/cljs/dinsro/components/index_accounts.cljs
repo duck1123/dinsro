@@ -1,6 +1,6 @@
 (ns dinsro.components.index-accounts
-  (:require [dinsro.components.buttons :as button]
-            [dinsro.components.links :as links]
+  (:require [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.links :as c.links]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.translations :refer [tr]]
             [dinsro.views.show-account :as v.show-account]
@@ -17,11 +17,11 @@
         currency-id (get-in account [::s.accounts/currency :db/id])
         user-id (get-in account [::s.accounts/user :db/id])]
     [:tr
-     [:td [links/account-link id]]
-     [:td [links/user-link user-id]]
-     [:td [links/currency-link currency-id]]
+     [:td [c.links/account-link id]]
+     [:td [c.links/user-link user-id]]
+     [:td [c.links/currency-link currency-id]]
      [:td initial-value]
-     [:td [button/delete-account account]]]))
+     [:td [c.buttons/delete-account account]]]))
 
 (defn index-accounts
   [accounts]

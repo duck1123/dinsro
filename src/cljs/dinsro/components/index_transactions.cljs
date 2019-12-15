@@ -1,6 +1,7 @@
 (ns dinsro.components.index-transactions
   (:require [clojure.spec.alpha :as s]
             [dinsro.components.debug :as c.debug]
+            [dinsro.components.links :as c.links]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
@@ -9,6 +10,15 @@
             [reagent.core :as r]
             [re-frame.core :as rf]))
 
+(defn-spec row-line vector?
+  [transaction ::s.transactions/item]
+  [:tr
+   [:td (:db/id transaction)]
+   [:td (::s.transactions/value transaction)]
+   [:td [c.links/currency-link (:db/id (::s.transactions/currency transaction))]]
+   [:td [c.links/account-link (:db/id (::s.transactions/account transaction))]]
+   [:td [:a.button "Click"]]])
+
 (defn index-transactions
   [items]
   [:div "Index transactions"]
@@ -16,21 +26,15 @@
     [:p "no items"]
     [:<>
      [c.debug/debug-box items]
-     [:table
-      [:thead
-       [:tr
-        [:th "Id"]
-        [:th "Value"]
-        [:th "Currency"]
-        [:th "Account"]
-        [:th ""]]]
+     [:table.table
+      [:thead>tr
+       [:th "Id"]
+       [:th "Value"]
+       [:th "Currency"]
+       [:th "Account"]
+       [:th "Buttons"]]
       (into
        [:tbody]
        (for [transaction items]
          ^{:key (:db/id transaction)}
-         [:tr
-          [:td (:db/id transaction)]
-          [:td (::s.transactions/value transaction)]
-          [:td (:db/id (::s.transactions/currency transaction))]
-          [:td (:db/id (::s.transactions/account transaction))]
-          [:td [:a.button "Click"]]]))]]))
+         [row-line transaction]))]]))
