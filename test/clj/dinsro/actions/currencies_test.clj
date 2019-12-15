@@ -34,13 +34,15 @@
   [spec]
   (gen/generate (s/gen spec)))
 
-(deftest index-handler-test
+(deftest index-handler-test-success
   (testing "success - no records"
     (let [request {}
           response (a.currencies/index-handler request)
           items (get-in response [:body :items])]
       (is (= status/ok (:status response)))
-      (is (= [] items))))
+      (is (= [] items)))))
+
+(deftest index-handler-test-no-records
   (testing "success - with records"
     (let [record (m.currencies/mock-record)
           request {}
