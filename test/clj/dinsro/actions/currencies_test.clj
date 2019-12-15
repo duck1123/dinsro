@@ -7,6 +7,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.currencies :as m.currencies]
+            [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.specs :as ds]
             [mount.core :as mount]
@@ -49,13 +50,12 @@
       (is (= [record] items)))))
 
 (deftest create-handler-valid
-  (testing "success"
-    (let [request (gen-spec ::a.currencies/create-handler-request-valid)
-          response (a.currencies/create-handler request)
-          id (get-in response [:body :item :db/id])
-          created-record (m.currencies/read-record id)]
-      (is (= status/ok (:status response)))
-      (is (= (:name request) (::s.currencies/name response))))))
+  (let [request (gen-spec ::s.a.currencies/create-handler-request-valid)
+        response (a.currencies/create-handler request)
+        id (get-in response [:body :item :db/id])
+        created-record (m.currencies/read-record id)]
+    (is (= status/ok (:status response)))
+    (is (= (:name request) (::s.currencies/name response)))))
 
 (deftest create-handler-invalid
   (testing "invalid params"

@@ -10,8 +10,8 @@
 
 (s/def :create-currency-request/params (s/keys :opt-un [::s.currencies/name]))
 (s/def :create-currency-request-valid/params (s/keys :req-un [::s.currencies/name]))
-(s/def :create-currency-request-valid/request (s/keys :req-un [:create-currency-valid/params]))
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-currency-valid/params]))
+(s/def :create-currency-request-valid/request (s/keys :req-un [:create-currency-request-valid/params]))
+(s/def ::create-handler-request-valid (s/keys :req-un [:create-currency-request-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-currency-request/params]))
 
 (comment

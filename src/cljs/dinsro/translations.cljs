@@ -11,6 +11,7 @@
     :about "About"
     :actions "Actions"
     :accounts "Accounts"
+    :categories "Categories"
     :currencies "Currencies"
     :currency "Currency"
     :currency-label "Currency: %1"
