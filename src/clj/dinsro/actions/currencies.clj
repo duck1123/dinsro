@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.model.currencies :as m.currencies]
+            [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.specs :as ds]
             [expound.alpha :as expound]
@@ -15,7 +16,7 @@
   {:name ::s.currencies/name})
 
 (defn-spec prepare-record (s/nilable ::s.currencies/params)
-  [params :create-handler/params]
+  [params :create-currency-request/params]
   (let [params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map)))]
@@ -24,8 +25,8 @@
       (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.currencies/params params))
           nil))))
 
-(defn-spec create-handler ::create-handler-response
-  [request ::create-handler-request]
+(defn-spec create-handler ::s.a.currencies/create-handler-response
+  [request ::s.a.currencies/create-handler-request]
   (or (let [{:keys [params]} request]
         (when-let [params (prepare-record params)]
           (let [id (m.currencies/create-record params)]
@@ -34,8 +35,8 @@
 
 ;; Delete
 
-(defn-spec delete-handler ::delete-handler-response
-  [request ::delete-handler-request]
+(defn-spec delete-handler ::s.a.currencies/delete-handler-response
+  [request ::s.a.currencies/delete-handler-request]
   (let [{{:keys [id]} :path-params} request]
     (or (try
           (let [id (Integer/parseInt id)]
@@ -51,24 +52,11 @@
   (let [items (m.currencies/index-records)]
     (http/ok {:items items})))
 
-(comment
-  (clojure.spec.gen.alpha/generate (s/gen ::m.currencies/params))
-
-  (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request))
-  (prepare-record (:params (clojure.spec.gen.alpha/generate (s/gen ::create-handler-request))))
-  )
-
 ;; Read
 
-(defn-spec read-handler ::read-handler-response
-  [request ::read-handler-request]
+(defn-spec read-handler ::s.a.currencies/read-handler-response
+  [request ::s.a.currencies/read-handler-request]
   (let [id (some-> request :path-params :id Integer/parseInt)]
     (if-let [item (m.currencies/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))))
-
-(comment
-
-  (Integer/parseInt (str 1))
-  (read-handler {:path-params {:id "45"}})
-  )

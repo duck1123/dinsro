@@ -5,6 +5,7 @@
             [expound.alpha :as expound]
             [dinsro.db.core :as db]
             [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [java-time :as t]
@@ -37,8 +38,8 @@
         (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
             nil)))))
 
-(defn-spec create-handler ::create-handler-response
-  [request ::create-handler-request]
+(defn-spec create-handler ::s.a.transactions/create-handler-response
+  [request ::s.a.transactions/create-handler-request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.transactions/create-record params)]
@@ -47,15 +48,15 @@
 
 ;; Index
 
-(defn-spec index-handler ::index-handler-response
-  [request ::index-handler-request]
+(defn-spec index-handler ::s.a.transactions/index-handler-response
+  [request ::s.a.transactions/index-handler-request]
   (let [items (m.transactions/index-records)]
     (http/ok {:model :transactions :items items})))
 
 ;; Read
 
-(defn-spec read-handler ::read-handler-response
-  [request ::read-handler-request]
+(defn-spec read-handler ::s.a.transactions/read-handler-response
+  [request ::s.a.transactions/read-handler-request]
   (or (let [params (:path-params request)]
         (let [id (:id params)]
           (let [item (m.transactions/read-record id)]
@@ -64,8 +65,8 @@
 
 ;; Delete
 
-(defn-spec delete-handler ::delete-handler-response
-  [request ::delete-handler-request]
+(defn-spec delete-handler ::s.a.transactions/delete-handler-response
+  [request ::s.a.transactions/delete-handler-request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (m.transactions/delete-record id)
     (http/ok {:id id})))

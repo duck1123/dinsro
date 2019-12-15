@@ -6,9 +6,9 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(s/def :create-request/params (s/keys :opt [::s.users/name]))
+(s/def :create-user-request/params (s/keys :opt [::s.users/name]))
 (s/def ::create-request (s/keys :req-un [:create-request/params]))
-(s/def :create-handler/status (constantly 200))
+(s/def :create-user-request/status (constantly 200))
 (s/def ::create-response (s/keys :req-un [:create-handler/status]))
 
 (s/def :read-user-request/id string?)

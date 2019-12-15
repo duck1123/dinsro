@@ -5,6 +5,7 @@
             [expound.alpha :as expound]
             [dinsro.db.core :as db]
             [dinsro.model.rates :as m.rates]
+            [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
             [java-time :as t]
@@ -37,8 +38,8 @@
         (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
             nil)))))
 
-(defn-spec create-handler ::create-handler-response
-  [request ::create-handler-request]
+(defn-spec create-handler ::s.a.rates/create-handler-response
+  [request ::s.a.rates/create-handler-request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.rates/create-record params)]
@@ -47,8 +48,8 @@
 
 ;; Index
 
-(defn-spec index-handler ::index-handler-response
-  [request ::index-handler-request]
+(defn-spec index-handler ::s.a.rates/index-handler-response
+  [request ::s.a.rates/index-handler-request]
   (let [items (m.rates/index-records)
         limit 50
         items (sort (fn [a b] (.compareTo (::s.rates/date b) (::s.rates/date a))) items)
@@ -59,8 +60,8 @@
 
 ;; Read
 
-(defn-spec read-handler ::read-handler-response
-  [request ::read-handler-request]
+(defn-spec read-handler ::s.a.rates/read-handler-response
+  [request ::s.a.rates/read-handler-request]
   (or (let [params (:path-params request)]
         (let [id (:id params)]
           (let [item (m.rates/read-record id)]
@@ -69,13 +70,8 @@
 
 ;; Delete
 
-(defn-spec delete-handler ::delete-handler-response
-  [request ::delete-handler-request]
+(defn-spec delete-handler ::s.a.rates/delete-handler-response
+  [request ::s.a.rates/delete-handler-request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (m.rates/delete-record id)
     (http/ok {:id id})))
-
-(comment
-  (gen/generate (s/gen ::delete-handler-request))
-  (gen/generate (s/gen ::delete-handler-response))
-  )

@@ -20,13 +20,13 @@
                    ::s.accounts/initial-value
                    ::s.accounts/user-id
                    ::s.accounts/currency-id]))
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
-(s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
+(s/def ::create-handler-request-valid (s/keys :req-un [:create-account-valid/params]))
+(s/def ::create-handler-request (s/keys :req-un [:create-account/params]))
 (s/def ::create-handler-response (s/keys))
 
 (s/def :delete-account-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
-(s/def :delete-account-request/path-params (s/keys :req-un [:delete-handler-request-params/id]))
-(s/def ::delete-handler-request (s/keys :req-un [:delete-handler-request/path-params]))
+(s/def :delete-account-request/path-params (s/keys :req-un [:delete-account-request-params/id]))
+(s/def ::delete-handler-request (s/keys :req-un [:delete-account-request/path-params]))
 
 (s/def ::delete-handler-response-invalid (s/keys))
 (s/def ::delete-handler-response-success (s/keys))

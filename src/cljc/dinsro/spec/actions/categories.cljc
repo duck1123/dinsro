@@ -21,8 +21,8 @@
                    ;; ::s.accounts/currency-id
                    ]))
 
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-handler-valid/params]))
-(s/def ::create-handler-request (s/keys :req-un [:create-handler/params]))
+(s/def ::create-handler-request-valid (s/keys :req-un [:create-category-valid/params]))
+(s/def ::create-handler-request (s/keys :req-un [:create-category/params]))
 (s/def ::create-handler-response (s/keys))
 
 (s/def :delete-category-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
