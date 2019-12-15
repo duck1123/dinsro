@@ -58,7 +58,7 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::db-spec
-     :initial-db     {::e.debug/shown? (boolean debug?)
+     :initial-db     {::e.debug/shown? false #_(boolean debug?)
                       ::e.transactions/items [e.transactions/example-transaction]}
      :root-component [view/root-component]})))
 

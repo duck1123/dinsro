@@ -53,6 +53,12 @@
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]]))
 
+(defn debug-button
+  []
+  [:a.navbar-item
+   {:on-click #(rf/dispatch [::e.debug/toggle-shown?])}
+   (str "" #_@(rf/subscribe [::e.debug/shown?]))])
+
 (defn navbar []
   (let [auth-id @(rf/subscribe [::e.authentication/auth-id])
         expanded? @(rf/subscribe [::expanded?])]
@@ -69,10 +75,8 @@
           (nav-link (tr [:accounts]) :index-accounts-page)
           (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
-       (nav-link (tr [:about]) :about-page)
-       [:a.navbar-item
-        {:on-click #(rf/dispatch [::e.debug/toggle-shown?])}
-        (str @(rf/subscribe [::e.debug/shown?]))]
+       #_(nav-link (tr [:about]) :about-page)
+       [debug-button]
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
           [:a.navbar-link auth-id]

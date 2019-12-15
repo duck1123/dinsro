@@ -4,6 +4,7 @@
             [clojure.string :as string]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.login :as c.f.login]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.translations :refer [tr]]
@@ -29,7 +30,7 @@
         return-to (get (url/query->map query-string) "return-to")]
     [:section.section>div.container>div.content
      [:h1 "Login"]
-     [:p "Authenticated: " @(rf/subscribe [::e.authentication/auth-id])]
+     (c.debug/hide [:p "Authenticated: " @(rf/subscribe [::e.authentication/auth-id])])
      [:div.container
-      [:p "Return To: " return-to]
+      (c.debug/hide [:p "Return To: " return-to])
       [c.f.login/login-form return-to]]]))
