@@ -8,34 +8,8 @@
             [dinsro.actions.status :as a.status]
             [dinsro.actions.transactions :as a.transactions]
             [dinsro.actions.users :as a.users]
-            [dinsro.middleware :as middleware]
-            [hiccup.page :refer [include-js include-css html5]]))
-
-(def mount-target
-  [:div#app
-   [:h2 "Welcome to hello-devcard2"]
-   [:p "please wait while Figwheel is waking up ..."]
-   [:p "(Check the js console for hints if nothing exciting happens.)"]])
-
-(defn head []
-  [:head
-   [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport"
-           :content "width=device-width, initial-scale=1"}]
-   #_(include-css (if true #_(env :dev) "/css/site.css" "/css/site.min.css"))])
-
-(defn cards-page []
-  (html5
-   (head)
-   [:body
-    mount-target
-    (include-js "/js/app_devcards.js")]))
-
-(defn cards-handler
-  [_]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body (cards-page)})
+            [dinsro.devcards :as devcards]
+            [dinsro.middleware :as middleware]))
 
 (def view-mappings
   ["/"
@@ -55,7 +29,7 @@
 
 (def routes
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
-   ["/cards" {:get {:handler cards-handler}}]
+   ["/cards" {:get {:handler devcards/cards-handler}}]
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts"
      [""                {:post   a.accounts/create-handler
