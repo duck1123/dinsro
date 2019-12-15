@@ -69,19 +69,12 @@
   (doseq [id (index-ids)]
     (delete-record id)))
 
-(defn-spec mock-record ::s.users/item
-  []
-  (let [params (gen/generate (s/gen ::s.users/params))
-        id (create-record params)]
-    (read-record id)))
-
 (comment
   (index-ids)
   (index-records)
 
   (gen/generate (s/gen ::s.users/params))
 
-  (mock-record)
   (::s.users/email (first (list-users)))
 
   (find-by-email (::s.users/email (first (index-records))))

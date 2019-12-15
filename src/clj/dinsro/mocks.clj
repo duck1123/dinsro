@@ -21,6 +21,30 @@
         id (m.categories/create-record params)]
     (m.categories/read-record id)))
 
+(defn-spec mock-currency ::s.currencies/item
+  []
+  (let [params (gen/generate (s/gen ::s.currencies/params))
+        id (m.currencies/create-record params)]
+    (m.currencies/read-record id)))
+
+(defn-spec mock-rates ::s.rates/item
+  []
+  (m.rates/read-record
+   (m.rates/create-record
+    (gen/generate (s/gen ::s.rates/params)))))
+
+(defn-spec mock-transaction ::s.transactions/item
+  []
+  (m.transactions/read-record
+   (m.transactions/create-record
+    (gen/generate (s/gen ::s.transactions/params)))))
+
+(defn-spec mock-user ::s.users/item
+  []
+  (let [params (gen/generate (s/gen ::s.users/params))
+        id (m.users/create-record params)]
+    (m.users/read-record id)))
+
 (comment
   (mock-account)
   )

@@ -40,15 +40,8 @@
   (doseq [id (index-ids)]
     (delete-record id)))
 
-(defn-spec mock-record ::s.currencies/item
-  []
-  (let [params (gen/generate (s/gen ::s.currencies/params))
-        id (create-record params)]
-    (read-record id)))
-
 (comment
   (index-ids)
   (delete-all)
   (index-records)
-  (mock-record)
   )

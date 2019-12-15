@@ -42,7 +42,7 @@
 
 (deftest index-handler-with-records
   (let [path "/users"
-        user (m.users/mock-record)
+        user (mocks/mock-user)
         request (mock/request :get path)
         response (a.users/index-handler request)]
     (is (= (:status response) status/ok))

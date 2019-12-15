@@ -47,13 +47,13 @@
     (let [id (gen/generate (s/gen ::ds/id))]
       (is (= nil (m.accounts/read-record id)))))
   (testing "found"
-    (let [record (m.accounts/mock-record)
+    (let [record (mocks/mock-account)
           id (:db/id record)]
       (is (= record (m.accounts/read-record id))))))
 
 (deftest delete-record
   (testing "success"
-    (let [account (m.accounts/mock-record)
+    (let [account (mocks/mock-account)
           id (:db/id account)]
       (is (not (nil? (m.accounts/read-record id))))
       (let [response (m.accounts/delete-record id)]
@@ -62,7 +62,6 @@
 
 (comment
   @(d/transact! (datahike.core/create-conn) s.accounts/schema)
-  (m.accounts/mock-record)
   (m.accounts/index-records)
   (m.accounts/read-record 40)
   (m.accounts/delete-record 40)

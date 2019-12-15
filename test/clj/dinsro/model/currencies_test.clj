@@ -7,6 +7,7 @@
             [datahike.schema :as dhs]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
+            [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.model.user :as m.users]
             [dinsro.specs :as ds]
@@ -37,7 +38,7 @@
       (is (not (nil? response))))))
 
 (deftest read-record-success
-  (let [item (m.currencies/mock-record)
+  (let [item (mocks/mock-currency)
         id (:db/id item)
         response (m.currencies/read-record id)]
     (is (= item response))))
@@ -52,13 +53,13 @@
   (is (= [] (m.currencies/index-records))))
 
 (deftest index-records-with-records
-  (is (not= nil (m.users/mock-record)))
+  (is (not= nil (mocks/mock-user)))
   (let [params (gen/generate (s/gen ::s.currencies/params))
         id (m.currencies/create-record params)]
     (is (not= [params] (m.currencies/index-records)))))
 
 (deftest delete-record
-  (let [currency (m.currencies/mock-record)
+  (let [currency (mocks/mock-currency)
         id (:db/id currency)]
     (is (not (nil? (m.currencies/read-record id))))
     (let [response (m.currencies/delete-record id)]

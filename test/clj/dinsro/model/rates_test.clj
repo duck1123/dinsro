@@ -38,9 +38,9 @@
     (let [response (m.rates/read-record (gen/generate (s/gen pos-int?)))]
       (is (nil? response) "Should return nil")))
   (testing "when found"
-    (let [record (m.rates/mock-record)
-          response (m.rates/read-record (:db/id record))]
-      (is (= record response) "Return the matching record"))))
+    (let [item (mocks/mock-rate)
+          response (m.rates/read-record (:db/id item))]
+      (is (= record response) "Return the matching item"))))
 
 ;; (deftest update-record-test
 
@@ -50,6 +50,6 @@
   (testing "no records"
     (is (= [] (m.rates/index-records))))
   (testing "with record"
-    (let [record (m.rates/mock-record)
+    (let [item (mocks/mock-rate)
           response (m.rates/index-records)]
-      (is (= [record] response)))))
+      (is (= [item] response)))))

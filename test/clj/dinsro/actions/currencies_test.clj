@@ -44,7 +44,7 @@
 
 (deftest index-handler-test-no-records
   (testing "success - with records"
-    (let [record (m.currencies/mock-record)
+    (let [record (mocks/mock-currency)
           request {}
           response (a.currencies/index-handler request)
           items (get-in response [:body :items])]
@@ -69,7 +69,7 @@
 
 (deftest delete-handler
   (testing "success"
-    (let [currency (m.currencies/mock-record)
+    (let [currency (mocks/mock-currency)
           id (:db/id currency)
           request {:path-params {:id (str id)}}]
       (is (not (nil? (m.currencies/read-record id))))
@@ -78,7 +78,7 @@
         (is (nil? (m.currencies/read-record id)))))))
 
 (deftest read-handler-success
-  (let [currency (m.currencies/mock-record)
+  (let [currency (mocks/mock-currency)
         id (str (:db/id currency))
         request {:path-params {:id id}}
         response (a.currencies/read-handler request)]

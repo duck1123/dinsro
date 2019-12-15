@@ -35,7 +35,7 @@
     (let [request {:params {}}]
       (is [] (a.accounts/index-handler request))))
   (testing "with-records"
-    (let [user (m.accounts/mock-record)
+    (let [user (mocks/mock-account)
           request {}
           response (a.accounts/index-handler request)
           {{:keys [items]} :body} response]
@@ -56,7 +56,7 @@
 
 (deftest delete-handler
   (testing "success"
-    (let [account (m.accounts/mock-record)
+    (let [account (mocks/mock-account)
           id (:db/id account)
           request {:path-params {:id (str id)}}
           response (a.accounts/delete-handler request)]

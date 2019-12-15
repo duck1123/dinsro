@@ -45,10 +45,6 @@
   (doseq [id (index-ids)]
     (delete-record id)))
 
-(defn-spec mock-record ::s.rates/item
-  []
-  (read-record (create-record (gen/generate (s/gen ::s.rates/params)))))
-
 (comment
   (gen/generate (s/gen ::s.rates/params))
   (delete-all)

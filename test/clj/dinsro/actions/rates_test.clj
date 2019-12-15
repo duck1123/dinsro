@@ -61,7 +61,7 @@
 
 (deftest read-handler
   (testing "success"
-    (let [rate (m.rates/mock-record)
+    (let [rate (mocks/mock-rate)
           id (:db/id rate)
           request {:path-params {:id id}}
           response (a.rates/read-handler request)]
