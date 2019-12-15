@@ -79,3 +79,9 @@
 
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 ;; (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
+
+(s/def ::id-string string?)
+
+(comment
+
+  )

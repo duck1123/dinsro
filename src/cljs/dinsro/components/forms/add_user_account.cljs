@@ -1,5 +1,6 @@
 (ns dinsro.components.forms.add-user-account
   (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
@@ -41,6 +42,25 @@
 (rfu/reg-basic-sub ::user-id)
 (rfu/reg-set-event ::user-id)
 
+(s/def ::create-handler-request (s/keys :req-un [::s.accounts/name]))
+(s/def ::form-bindings (s/cat
+                        :name ::name
+                        :initial-value ::initial-value
+                        :currency-id ::currency-id
+                        :user-id ::user-id))
+
+(defn-spec create-form-data (s/keys)
+  [[name initial-value currency-id user-id] ::form-bindings _ any?]
+  {:name          name
+   :currency-id   (int currency-id)
+   :user-id       (int user-id)
+   :initial-value (.parseFloat js/Number initial-value)})
+
+(comment
+  (gen/generate (s/gen ::form-bindings))
+  (create-form-data ["Bob" "1" "1" "1"])
+  (create-form-data (gen/generate (s/gen ::form-bindings)))
+  )
 
 (rf/reg-sub
  ::form-data
@@ -48,15 +68,11 @@
  :<- [::initial-value]
  :<- [::currency-id]
  :<- [::user-id]
- (fn [[name initial-value currency-id user-id] _]
-   {::s.accounts/name          name
-    ::s.accounts/currency-id   currency-id
-    ::s.accounts/user-id       user-id
-    ::s.accounts/initial-value (.parseFloat js/Number initial-value)}))
+ create-form-data)
 
 (defn add-user-account
   [user-id]
-  (let [form-data (assoc @(rf/subscribe [::form-data]) ::s.accounts/user-id user-id)]
+  (let [form-data (assoc @(rf/subscribe [::form-data]) :user-id user-id)]
     (when @(rf/subscribe [::shown?])
       [:<>
        [c/close-button ::set-shown?]

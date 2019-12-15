@@ -72,15 +72,16 @@
 
 (defn user-selector-
   [label field change-handler items]
-  [:div.field>div.control
-   [:label.label label]
-   [:div.select
-    (into [:select {:value @(rf/subscribe [field])
-                    :on-change #(rf/dispatch [change-handler (target-value %)])}]
-          (concat [[:option {:value ""} ""]]
-                  (for [{:keys [db/id dinsro.spec.users/name]} items]
-                       ^{:key id}
-                       [:option {:value id} name])))]])
+  (let [value (or @(rf/subscribe [field]) "")]
+    [:div.field>div.control
+     [:label.label label]
+     [:div.select
+      (into [:select {:value value
+                      :on-change #(rf/dispatch [change-handler (target-value %)])}]
+            (concat [[:option {:value ""} ""]]
+                    (for [{:keys [db/id dinsro.spec.users/name]} items]
+                      ^{:key id}
+                      [:option {:value id} name])))]]))
 
 (defn user-selector
   [label field change-handler]
