@@ -2,6 +2,7 @@
   (:require [dinsro.views.about :as about]
             [dinsro.views.home :as home]
             [dinsro.views.index-accounts :as index-accounts]
+            [dinsro.views.index-categories :as v.index-categories]
             [dinsro.views.index-currencies :as index-currencies]
             [dinsro.views.index-rates :as index-rates]
             [dinsro.views.index-transactions :as index-transactions]
@@ -19,6 +20,7 @@
   {:about-page            about/page
    :home-page             home/page
    :index-accounts-page   index-accounts/page
+   :index-categories-page v.index-categories/page
    :index-currencies-page index-currencies/page
    :index-rates-page      index-rates/page
    :index-transactions-page      index-transactions/page
@@ -31,31 +33,38 @@
    :show-user-page        show-user/page
    })
 
+(def api-routes
+  [["/authenticate" :api-authenticate]
+   ["/accounts"
+    [""             :api-index-accounts]
+    ["/:id"         :api-show-account]]
+   ["/categories"
+    [""             :api-index-cattegories]
+    ]
+   ["/currencies"
+    [""             :api-index-currencies]
+    ["/:id"         :api-show-currency]]
+   ["/logout"       :api-logout]
+   ["/rates"
+    [""             :api-index-rates]
+    ["/:id"         :api-show-rate]]
+   ["/transactions"
+    [""             :api-index-transactions]
+    ["/:id"         :api-show-transaction]]
+   ["/users"
+    [""             :api-index-users]
+    ["/:id"         :api-show-user]]])
+
 (def routes
   [["/"               :home-page]
    ["/about"          :about-page]
    ["/accounts"
     [""               :index-accounts-page]
     ["/:id"           :show-account-page]]
-   ["/api"
-    ["/v1"
-     ["/authenticate" :api-authenticate]
-     ["/accounts"
-      [""             :api-index-accounts]
-      ["/:id"         :api-show-account]]
-     ["/currencies"
-      [""             :api-index-currencies]
-      ["/:id"         :api-show-currency]]
-     ["/logout"       :api-logout]
-     ["/rates"
-      [""             :api-index-rates]
-      ["/:id"         :api-show-rate]]
-     ["/transactions"
-      [""             :api-index-transactions]
-      ["/:id"         :api-show-transaction]]
-     ["/users"
-      [""             :api-index-users]
-      ["/:id"         :api-show-user]]]]
+   (into ["/api/v1"] api-routes)
+   ["/categories"
+    ["" :index-categories-page]
+    ]
    ["/currencies"
     [""               :index-currencies-page]
     ["/:id"           :show-currency-page]]

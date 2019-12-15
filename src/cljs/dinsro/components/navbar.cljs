@@ -66,9 +66,6 @@
        (when auth-id
          [:<>
           (nav-link (tr [:accounts]) :index-accounts-page)
-          (nav-link (tr [:users]) :index-users-page)
-          (nav-link (tr [:currencies]) :index-currencies-page)
-          (nav-link (tr [:rates]) :index-rates-page)
           (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
        (nav-link (tr [:about]) :about-page)
@@ -80,6 +77,10 @@
           [:a.navbar-link auth-id]
           [:div.navbar-dropdown
            (nav-link (tr [:settings]) :settings-page)
+           (nav-link (tr [:currencies]) :index-currencies-page)
+           (nav-link (tr [:rates]) :index-rates-page)
+           (nav-link (tr [:categories]) :index-categories-page)
+           (nav-link (tr [:users]) :index-users-page)
            [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} (tr [:logout])]]]
          [:<>
           (nav-link (tr [:login]) :login-page)
