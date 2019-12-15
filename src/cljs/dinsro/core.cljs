@@ -5,7 +5,9 @@
             [dinsro.ajax :as ajax]
             [dinsro.components.forms.registration-form :as c.rf]
             [dinsro.events.authentication :as e.authentication]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
+            [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
             [dinsro.routing :as routing]
             [dinsro.specs :as ds]
@@ -53,10 +55,11 @@
    (rf/clear-subscription-cache!)
    (s/check-asserts true)
    (kf/start!
-    {:debug?        false  #_(boolean debug?)
+    {:debug?         (boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::db-spec
-     :initial-db     {}
+     :initial-db     {::e.debug/shown? (boolean debug?)
+                      ::e.transactions/items [e.transactions/example-transaction]}
      :root-component [view/root-component]})))
 
 (defn init! [debug?]

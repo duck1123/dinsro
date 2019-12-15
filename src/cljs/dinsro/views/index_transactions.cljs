@@ -13,12 +13,6 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(def example-transaction
-  {:db/id 1
-   ::s.transactions/value 130000
-   ::s.transactions/currency {:db/id 53}
-   ::s.transactions/account {:db/id 12}})
-
 (defn init-page
   [{:keys [db]} _]
   {
@@ -39,8 +33,7 @@
     [:div.box
      [c.buttons/fetch-transactions]
      [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/toggle-debug]]))
+     [c.buttons/fetch-currencies]]))
 
 (defn page
   []

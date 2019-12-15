@@ -9,9 +9,14 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(def example-transaction
+  {:db/id 1
+   ::s.transactions/value 130000
+   ::s.transactions/currency {:db/id 53}
+   ::s.transactions/account {:db/id 12}})
+
 (s/def ::items                   (s/coll-of ::s.transactions/item))
 (rfu/reg-basic-sub ::items)
-;; (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
@@ -22,8 +27,8 @@
                (fn [item] (update item ::s.transactions/date #(js/Date. %)))
                items)]
     {:db (-> db
-                   (assoc ::items items)
-                   (assoc ::do-fetch-index-state :loaded))}))
+             (assoc ::items items)
+             (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed
   [_ _]
