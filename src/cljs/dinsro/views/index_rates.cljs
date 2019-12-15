@@ -5,6 +5,7 @@
             [dinsro.components.forms.create-rate :as c.f.create-rate :refer [create-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.rate-chart :refer [rate-chart]]
+            [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
             [dinsro.translations :refer [tr]]
@@ -16,7 +17,8 @@
   [{:keys [db]} _]
   {:db (assoc db ::e.rates/items [])
    :document/title "Index Rates"
-   :dispatch [::e.rates/do-fetch-index]})
+   :dispatch-n [[::e.currencies/do-fetch-index]
+                [::e.rates/do-fetch-index]]})
 
 (kf/reg-event-fx ::init-page init-page)
 

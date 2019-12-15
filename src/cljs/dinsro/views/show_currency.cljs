@@ -12,6 +12,7 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
+            [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -26,7 +27,10 @@
   [cofx ::init-page-cofx
    event ::init-page-event]
   (let [[{:keys [id]}] event]
-    {:dispatch [::e.currencies/do-fetch-record id]
+    {:dispatch-n [[::e.currencies/do-fetch-record id]
+                  [::e.rates/do-fetch-index]
+                  [::e.users/do-fetch-index]
+                  [::e.accounts/do-fetch-index]]
      :document/title "Show Currency"}))
 
 (kf/reg-event-fx ::init-page init-page)

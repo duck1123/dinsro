@@ -19,7 +19,10 @@
  ::init-page
  (fn-traced [{:keys [db]} _]
    {:document/title "Index Accounts"
-    :dispatch [::e.accounts/do-fetch-index]}))
+    :dispatch-n [[::e.accounts/do-fetch-index]
+                 [::e.users/do-fetch-index]
+                 [::e.currencies/do-fetch-index]
+                 ]}))
 
 (kf/reg-controller
  ::page-controller

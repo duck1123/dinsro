@@ -39,8 +39,8 @@
     [""             :api-index-accounts]
     ["/:id"         :api-show-account]]
    ["/categories"
-    [""             :api-index-cattegories]
-    ]
+    [""             :api-index-categories]
+    ["/:id"         :api-show-category]]
    ["/currencies"
     [""             :api-index-currencies]
     ["/:id"         :api-show-currency]]
@@ -63,8 +63,8 @@
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
    ["/categories"
-    ["" :index-categories-page]
-    ]
+    [""               :index-categories-page]
+    ["/:id"           :show-category-page]]
    ["/currencies"
     [""               :index-currencies-page]
     ["/:id"           :show-currency-page]]
