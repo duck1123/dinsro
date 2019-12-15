@@ -48,9 +48,9 @@
 
 (defn-spec read-handler ::read-handler-response
   [request ::read-handler-request]
-  (let [{{id :id} :path-params} (timbre/spy :info request)]
+  (let [{{id :id} :path-params} request]
     (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e nil))]
-      (if-let [user (m.user/read-record (timbre/spy :info id))]
+      (if-let [user (m.user/read-record id)]
         (http/ok {:item user})
         (http/not-found {:status :not-found}))
       (http/bad-request {:status :bad-request}))))
