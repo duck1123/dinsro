@@ -8,6 +8,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.handler :as handler]
+            [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]

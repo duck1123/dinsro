@@ -5,6 +5,7 @@
             [datahike.api :as d]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
+            [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
