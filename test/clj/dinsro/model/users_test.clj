@@ -1,4 +1,4 @@
-(ns dinsro.model.user-test
+(ns dinsro.model.users-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
@@ -6,7 +6,7 @@
             [datahike.core :as dc]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
-            [dinsro.model.user :as m.users]
+            [dinsro.model.users :as m.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [mount.core :as mount]

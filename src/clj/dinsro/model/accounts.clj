@@ -1,4 +1,4 @@
-(ns dinsro.model.account
+(ns dinsro.model.accounts
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
             [dinsro.db.core :as db]

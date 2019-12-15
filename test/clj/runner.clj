@@ -3,7 +3,7 @@
             dinsro.actions.authentication-test
             dinsro.actions.currencies-test
             dinsro.actions.users-test
-            dinsro.model.account-test
+            dinsro.model.accounts-test
             dinsro.model.currencies-test
-            dinsro.model.user-test
+            dinsro.model.users-test
             [orchestra.spec.test :as stest]))

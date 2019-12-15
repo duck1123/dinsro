@@ -3,7 +3,7 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [expound.alpha :as expound]
-            [dinsro.model.account :as m.accounts]
+            [dinsro.model.accounts :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.specs :as ds]

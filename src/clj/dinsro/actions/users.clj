@@ -1,7 +1,7 @@
 (ns dinsro.actions.users
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [dinsro.model.user :as m.user]
+            [dinsro.model.users :as m.user]
             [dinsro.spec.actions.users :as s.a.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]

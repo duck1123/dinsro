@@ -1,10 +1,18 @@
 (ns dinsro.mocks
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [dinsro.model.account :as m.accounts]
+            [dinsro.model.accounts :as m.accounts]
             [dinsro.model.categories :as m.categories]
+            [dinsro.model.currencies :as m.currencies]
+            [dinsro.model.rates :as m.rates]
+            [dinsro.model.transactions :as m.transactions]
+            [dinsro.model.users :as m.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.categories :as s.categories]
+            [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.rates :as s.rates]
+            [dinsro.spec.transactions :as s.transactions]
+            [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
@@ -27,7 +35,7 @@
         id (m.currencies/create-record params)]
     (m.currencies/read-record id)))
 
-(defn-spec mock-rates ::s.rates/item
+(defn-spec mock-rate ::s.rates/item
   []
   (m.rates/read-record
    (m.rates/create-record

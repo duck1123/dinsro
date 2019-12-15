@@ -1,4 +1,4 @@
-(ns dinsro.model.account-test
+(ns dinsro.model.accounts-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
@@ -7,7 +7,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
-            [dinsro.model.account :as m.accounts]
+            [dinsro.model.accounts :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [mount.core :as mount]

@@ -8,7 +8,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.handler :as handler]
-            [dinsro.model.user :as m.users]
+            [dinsro.model.users :as m.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [mount.core :as mount]

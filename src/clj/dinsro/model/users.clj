@@ -1,4 +1,4 @@
-(ns dinsro.model.user
+(ns dinsro.model.users
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]

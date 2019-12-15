@@ -3,11 +3,9 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [expound.alpha :as expound]
-            ;; [dinsro.model.account :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
-            ;; [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
 (s/def :create-account-valid/params

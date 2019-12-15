@@ -9,7 +9,7 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
-            [dinsro.model.user :as m.users]
+            [dinsro.model.users :as m.users]
             [dinsro.specs :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
