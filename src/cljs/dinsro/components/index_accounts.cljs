@@ -1,6 +1,7 @@
 (ns dinsro.components.index-accounts
   (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.links :as c.links]
+            [dinsro.events.debug :as e.debug]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.translations :refer [tr]]
             [dinsro.views.show-account :as v.show-account]
@@ -21,7 +22,7 @@
      [:td [c.links/user-link user-id]]
      [:td [c.links/currency-link currency-id]]
      [:td initial-value]
-     [:td [c.buttons/delete-account account]]]))
+     (when @(rf/subscribe [::e.debug/shown?]) [:td [c.buttons/delete-account account]])]))
 
 (defn index-accounts
   [accounts]
@@ -35,7 +36,7 @@
         [:th (tr [:user-label])]
         [:th (tr [:currency-label])]
         [:th (tr [:initial-value-label])]
-        [:th (tr [:buttons])]]]
+        (when @(rf/subscribe [::e.debug/shown?]) [:th (tr [:buttons])])]]
       (into [:tbody]
             (for [account accounts]
               ^{:key (:db/id account)}

@@ -6,6 +6,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.add-currency-rate :refer [add-currency-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]
+            [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
@@ -24,4 +25,5 @@
     [:<>
      [c.debug/debug-box currency]
      [:p (tr [:name-label]) name]
-     [c.buttons/delete-currency currency]]))
+     (when @(rf/subscribe [::e.debug/shown?])
+       [c.buttons/delete-currency currency])]))
