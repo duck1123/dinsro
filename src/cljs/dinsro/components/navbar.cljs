@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
             [dinsro.translations :refer [tr]]
@@ -69,18 +70,18 @@
           (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
        (nav-link (tr [:about]) :about-page)
-       [:a.navbar-link
+       [:a.navbar-item
         {:on-click #(rf/dispatch [::e.debug/toggle-shown?])}
-        (str "Debug: " @(rf/subscribe [::e.debug/shown?]))]
+        (str @(rf/subscribe [::e.debug/shown?]))]
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
           [:a.navbar-link auth-id]
           [:div.navbar-dropdown
            (nav-link (tr [:settings]) :settings-page)
-           (nav-link (tr [:currencies]) :index-currencies-page)
+           (c.debug/hide (nav-link (tr [:currencies]) :index-currencies-page))
            (nav-link (tr [:rates]) :index-rates-page)
            (nav-link (tr [:categories]) :index-categories-page)
-           (nav-link (tr [:users]) :index-users-page)
+           (c.debug/hide (nav-link (tr [:users]) :index-users-page))
            [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} (tr [:logout])]]]
          [:<>
           (nav-link (tr [:login]) :login-page)

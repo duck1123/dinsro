@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.users :as e.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
@@ -17,13 +18,13 @@
 (def default-error-message "")
 (rf/reg-sub ::error-message (fn [db _] (get db ::error-message default-error-message)))
 
-(defn user-link
-  [user]
+(defn-spec user-link vector?
+  [user ::s.users/item]
   (let [name (::s.users/name user)
         id (:db/id user)]
     [:a {:href (kf/path-for [:show-user-page {:id id}])} name]))
 
-(defn-spec user-line any?
+(defn-spec user-line vector?
   [user ::s.users/item]
   (let [id (:db/id user)
         email (::s.users/email user)]
@@ -31,7 +32,7 @@
      [:td id]
      [:td [user-link user]]
      [:td email]
-     [:td [c.buttons/delete-user user]]]))
+     (c.debug/hide [:td [c.buttons/delete-user user]])]))
 
 (defn index-users
   [users]
@@ -43,7 +44,7 @@
        [:th (tr [:id-label])]
        [:th (tr [:name-label])]
        [:th (tr [:email-label])]
-       [:th "Buttons"]]]
+       (c.debug/hide [:th "Buttons"])]]
      (into [:tbody]
            (for [{:keys [db/id] :as user} users]
              ^{:key id} [user-line user]))]))
