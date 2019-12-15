@@ -1,6 +1,7 @@
 (ns dinsro.components.buttons
   (:require [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
+            [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.transactions :as e.transactions]
@@ -42,6 +43,12 @@
   (let [state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:a.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])}
      (tr [:fetch-accounts] [state])]))
+
+(defn fetch-categories
+  []
+  (let [state @(rf/subscribe [::e.categories/do-fetch-index-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.categories/do-fetch-index])}
+     (tr [:fetch-categories] [state])]))
 
 (defn fetch-currencies
   []

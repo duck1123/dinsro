@@ -35,5 +35,5 @@
        [:th (tr [:name])]
        [:th (tr [:user])]
        #_(c.debug/hide [:th (tr [:actions])])]
-      (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
+      (->> (for [item items] ^{:key (:db/id item)} [category-line item])
            (into [:tbody]))])])
