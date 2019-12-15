@@ -4,7 +4,7 @@
 
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.add-user-account :refer [add-user-account]]
+            [dinsro.components.forms.add-user-account :as c.f.add-user-account]
             [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.events.accounts :as e.accounts]
@@ -41,6 +41,16 @@
    [c.buttons/fetch-currencies]
    [c.buttons/fetch-user id]])
 
+(defn accounts-section
+  [user-id accounts]
+  [:div.box
+   [:h2
+    "Accounts"
+    [c/show-form-button ::c.f.add-user-account/shown? ::c.f.add-user-account/set-shown?]]
+   [c.f.add-user-account/add-user-account user-id]
+   [:hr]
+   [index-accounts accounts]])
+
 (defn-spec page-loaded vector?
   [id pos-int?]
   (if-let [user @(rf/subscribe [::e.users/item (int id)])]
@@ -50,13 +60,7 @@
        [:div.box
         [:h1 "Show User"]
         [show-user user]]
-       [:div.box
-        [:h2
-         "Accounts"
-         [:button.button "+"]]
-        [add-user-account user-id]
-        [:hr]
-        [index-accounts accounts]]])
+       [accounts-section user-id accounts]])
     [:p "User not found"]))
 
 (s/def :show-user-view/id          string?)

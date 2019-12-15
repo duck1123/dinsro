@@ -1,16 +1,20 @@
 (ns dinsro.components.forms.add-user-account
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.users :as s.users]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]))
 
 (s/def ::shown? boolean?)
-(c/reg-field ::shown?   true)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (defn toggle
   [cofx event]
@@ -19,15 +23,24 @@
 
 (kf/reg-event-fx ::toggle toggle)
 
+(def default-name "Offshore")
+
 (s/def ::name string?)
-(c/reg-field ::name          "Offshore")
-(c/reg-field ::initial-value 1.0)
-(c/reg-field ::currency-id   "")
-(c/reg-field ::user-id       "")
-(kf/reg-event-db ::change-currency-id   (fn [db [value]] (assoc db ::currency-id   (int value))))
-(kf/reg-event-db ::change-user-id       (fn [db [value]] (assoc db ::user-id       (int value))))
-(kf/reg-event-db ::change-name          (fn [db [value]] (assoc db ::name          value)))
-(kf/reg-event-db ::change-initial-value (fn [db [value]] (assoc db ::initial-value value)))
+(rfu/reg-basic-sub ::name)
+(rfu/reg-set-event ::name)
+
+(s/def ::initial-value number?)
+(rfu/reg-basic-sub ::initial-value)
+(rfu/reg-set-event ::initial-value)
+
+(s/def ::currency-id string?)
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
+
+(s/def ::user-id string?)
+(rfu/reg-basic-sub ::user-id)
+(rfu/reg-set-event ::user-id)
+
 
 (rf/reg-sub
  ::form-data
@@ -41,28 +54,14 @@
     ::s.accounts/user-id       user-id
     ::s.accounts/initial-value (.parseFloat js/Number initial-value)}))
 
-(def strings
-  {:name     "Name"
-   :initial-value "Initial Value"
-   :currency "Currency"
-   :submit "Submit"
-   :user "User"})
-
-(def l strings)
-
 (defn add-user-account
   [user-id]
-  (let [shown? @(rf/subscribe [::shown?])
-        form-data (assoc @(rf/subscribe [::form-data]) ::s.accounts/user-id user-id)]
-    [:<>
-     [:a {:style {:margin-left "5px"}
-          :on-click #(rf/dispatch [::toggle])}
-      (if shown?
-        [:span.icon>i.fas.fa-chevron-down]
-        [:span.icon>i.fas.fa-chevron-right])]
-     (when shown?
-       [:<>
-        [c/text-input        (l :name)          ::name          ::change-name]
-        [c/number-input      (l :initial-value) ::initial-value ::change-initial-value]
-        [c/currency-selector (l :currency)      ::currency-id   ::change-currency-id]
-        [c/primary-button    (l :submit)        [::e.accounts/do-submit form-data]]])]))
+  (let [form-data (assoc @(rf/subscribe [::form-data]) ::s.accounts/user-id user-id)]
+    (when @(rf/subscribe [::shown?])
+      [:<>
+       [c/close-button ::set-shown?]
+       [c.debug/debug-box form-data]
+       [c/text-input (tr [:name]) ::name ::set-name]
+       [c/number-input (tr [:initial-value]) ::initial-value ::set-initial-value]
+       [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]
+       [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]])))
