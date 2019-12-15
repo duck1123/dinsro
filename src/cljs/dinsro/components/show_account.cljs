@@ -39,11 +39,11 @@
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:<>
      [c.debug/debug-box account]
-     [:p "Name: " (::s.accounts/name account)]
+     [:h3 (::s.accounts/name account)]
      [:p
       (tr [:user-label])
       [user-link user-id]]
      [:p
       [:span "Currency: "]
       [currency-link currency-id]]
-     [delete-account-button id]]))
+     (c.debug/hide [delete-account-button id])]))

@@ -7,6 +7,7 @@
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
@@ -24,8 +25,14 @@
    {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
    (tr [:delete])])
 
-(defn delete-user
-  [user]
+(defn delete-rate
+  [item]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
+   (tr [:delete])])
+
+(defn-spec delete-user vector?
+  [user ::s.users/item]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.users/do-delete-record user])}
    (tr [:delete])])

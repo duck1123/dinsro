@@ -18,7 +18,7 @@
   (let [{:keys [db/id]} currency]
     [:tr
      [:td [c.links/currency-link id]]
-     [:td [c.buttons/delete-currency currency]]]))
+     (c.debug/hide [:td [c.buttons/delete-currency currency]])]))
 
 (defn-spec index-currencies vector?
   [currencies (s/coll-of ::s.currencies/item)]
@@ -29,7 +29,7 @@
      [:table
       [:thead>tr
        [:th (tr [:name-label])]
-       [:th "Buttons"]]
+       (c.debug/hide [:th "Buttons"])]
       (into
        [:tbody]
        (for [{:keys [db/id] :as currency} currencies]

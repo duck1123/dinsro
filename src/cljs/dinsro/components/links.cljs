@@ -12,15 +12,15 @@
             [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(defn account-link
-  [id]
+(defn-spec account-link vector?
+  [id pos-int?]
   (if-let [item @(rf/subscribe [::e.accounts/item id])]
     (let [name (::s.accounts/name item)]
       [:a {:href (kf/path-for [:show-account-page {:id id}])} name])
     [:span (tr [:not-loaded])]))
 
-(defn currency-link
-  [id]
+(defn-spec currency-link vector?
+  [id pos-int?]
   (if-let [currency @(rf/subscribe [::e.currencies/item id])]
     (let [name (::s.currencies/name currency)]
       [:a {:href (kf/path-for [:show-currency-page {:id id}])} name])
