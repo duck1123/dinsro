@@ -29,8 +29,14 @@
   (let [[_ id] event]
     (filter #(= id (get-in % [::s.accounts/user :db/id])) (::items db))))
 
+(defn-spec items-by-currency (s/coll-of ::s.accounts/item)
+  [db any? event any?]
+  (let [[_ item] event]
+    (filter #(= (:db/id item) (get-in % [::s.accounts/currency :db/id])) (::items db))))
+
 (rf/reg-sub ::item :<- [::items] sub-item)
 (rf/reg-sub ::items-by-user items-by-user)
+(rf/reg-sub ::items-by-currency items-by-currency)
 
 ;; Create
 

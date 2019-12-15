@@ -24,7 +24,7 @@
         currency-id (get-in item [::s.rates/currency :db/id])
         currency @(rf/subscribe [::e.currencies/item currency-id])]
     [:tr
-     [:td (str (::s.rates/date item))]
+     [:td (.toISOString (::s.rates/date item))]
      [:td value]
      [:td (if currency
             [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
