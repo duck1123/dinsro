@@ -80,7 +80,7 @@
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 ;; (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 
-(s/def ::id-string string?)
+(s/def ::id-string (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 
 (comment
 

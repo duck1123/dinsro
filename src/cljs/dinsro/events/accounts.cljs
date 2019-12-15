@@ -4,21 +4,15 @@
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.events.accounts :as s.e.accounts]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(rf/reg-sub ::items             (fn [db _] (get db ::items             [])))
-(rf/reg-sub ::do-submit-loading (fn [db _] (get db ::do-submit-loading false)))
-
-(s/def ::item (s/nilable ::s.accounts/item))
-(s/def ::items (s/coll-of ::s.accounts/item))
-
-(comment
-  (gen/generate (s/gen ::items))
-  )
+(rfu/reg-basic-sub ::items)
 
 (defn sub-item
   [items [_ target-item]]
@@ -51,8 +45,7 @@
 
 (defn do-submit
   [{:keys [db]} [data]]
-  {:db (assoc db ::do-submit-loading true)
-   :http-xhrio
+  {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-accounts])
     :params          data
@@ -67,32 +60,33 @@
 
 ;; Delete
 
-(kf/reg-event-fx
- ::do-delete-account-success
- (fn-traced [_ _]
-   (timbre/info "delete account success")
-   {:dispatch [::do-fetch-index]}))
+(defn do-delete-record-success
+  [_ _]
+  (timbre/info "delete account success")
+  {:dispatch [::do-fetch-index]})
 
-(kf/reg-event-fx
- ::do-delete-account-failed
- (fn-traced [_ _]
-   (timbre/info "delete account failed")))
+(defn do-delete-record-failed
+  [_ _]
+  (timbre/info "delete account failed")
+  {})
 
-(kf/reg-event-fx
- ::do-delete-account
- (fn-traced [_ [id]]
-   {:http-xhrio
-    {:uri             (kf/path-for [:api-show-account {:id id}])
-     :method          :delete
-     :format          (ajax/json-request-format)
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-delete-account-success]
-     :on-failure      [::do-delete-account-failed]}}))
+(defn do-delete-record
+  [_ [id]]
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-show-account {:id id}])
+    :method          :delete
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-delete-record-success]
+    :on-failure      [::do-delete-record-failed]}})
+
+(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
+(kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
+(kf/reg-event-fx ::do-delete-record do-delete-record)
 
 ;; Index
 
-(s/def ::do-fetch-index-state keyword?)
-(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+(rfu/reg-basic-sub ::do-fetch-index-state)
 
 (defn do-fetch-index-success
   [db [{:keys [items]}]]
@@ -101,12 +95,15 @@
       (assoc ::items items)
       (assoc ::do-fetch-index-state :loaded)))
 
-(defn do-fetch-index-failed
-  [_ _]
-  (timbre/info "fetch records failed"))
+(defn-spec do-fetch-index-failed ::s.e.accounts/do-fetch-index-failed-response
+  [_ ::s.e.accounts/do-fetch-index-failed-cofx
+   _ ::s.e.accounts/do-fetch-index-failed-event]
+  (timbre/info "fetch records failed")
+  {})
 
-(defn do-fetch-index
-  [_ _]
+(defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
+  [_ ::s.e.accounts/do-fetch-index-cofx
+   _ ::s.e.accounts/do-fetch-index-event]
   {:http-xhrio
    {:uri             (kf/path-for [:api-index-accounts])
     :method          :get

@@ -15,3 +15,7 @@
 
   (is (not (s/valid? ::ds/id-string "a"))
       "non-numeric string is invalid"))
+
+(comment
+  (gen/generate (s/gen ::ds/id-string))
+  )
