@@ -7,6 +7,7 @@
             [dinsro.events.debug :as e.debug]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [reagent.core :as r]
@@ -16,7 +17,7 @@
 
 (s/def ::expanded? boolean?)
 (rfu/reg-basic-sub ::expanded?)
-#_(rf/reg-sub ::expanded? (fn [db _] (get db ::expanded? false)))
+(rfu/reg-set-event ::expanded?)
 
 ;; Events
 
@@ -33,7 +34,8 @@
 
 ;; Components
 
-(defn nav-link [title page]
+(defn-spec nav-link vector?
+  [title string? page keyword?]
   [:a.navbar-item
    {:href   (kf/path-for [page])
     :on-click #(rf/dispatch [::nav-link-activated])
@@ -57,7 +59,7 @@
   []
   [:a.navbar-item
    {:on-click #(rf/dispatch [::e.debug/toggle-shown?])}
-   (str "" #_@(rf/subscribe [::e.debug/shown?]))])
+   ""])
 
 (defn navbar []
   (let [auth-id @(rf/subscribe [::e.authentication/auth-id])
@@ -75,7 +77,6 @@
           (nav-link (tr [:accounts]) :index-accounts-page)
           (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
-       #_(nav-link (tr [:about]) :about-page)
        [debug-button]
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
