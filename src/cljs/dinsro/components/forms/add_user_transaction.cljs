@@ -7,6 +7,7 @@
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -30,16 +31,30 @@
 (rfu/reg-basic-sub ::value)
 (rfu/reg-set-event ::value)
 
-(defn create-form-data
-  [[value] _]
-  {:value value})
+(s/def ::form-data-input
+  (s/cat :value ::value))
+
+(s/def ::form-data-output :create-transactions-request-valid/params)
+
+(defn-spec create-form-data ::form-data-output
+  [[value currency-id] ::form-data-input
+   _ any?]
+  {:value value
+   :currency-id (int currency-id)})
+
+(comment
+  (gen/generate (s/gen ::form-data-input))
+  (gen/generate (s/gen ::form-data-output))
+  (create-form-data ["1" "1"] [])
+  )
 
 (rf/reg-sub
  ::form-data
  :<- [::value]
+ :<- [::currency-id]
  create-form-data)
 
-(defn form
+(defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])
