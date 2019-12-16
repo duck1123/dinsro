@@ -1,10 +1,10 @@
-(ns dinsro.components.forms.add-user-category
+(ns dinsro.components.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
+            [dinsro.components.forms.create-category :as c.f.create-category]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.categories :as e.categories]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.users :as s.users]
@@ -18,13 +18,17 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
-(s/def ::name string?)
-(rfu/reg-basic-sub ::name)
-(rfu/reg-set-event ::name)
+(s/def ::currency-id string?)
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
 
-(s/def ::user-id string?)
-(rfu/reg-basic-sub ::user-id)
-(rfu/reg-set-event ::user-id)
+(s/def ::date string?)
+(rfu/reg-basic-sub ::date)
+(rfu/reg-set-event ::date)
+
+(s/def ::value string?)
+(rfu/reg-basic-sub ::value)
+(rfu/reg-set-event ::value)
 
 (defn create-form-data
   [[name user-id] _]
@@ -44,6 +48,10 @@
       [:div
        [c/close-button ::set-shown?]
        [c.debug/debug-box form-data]
-       [c/text-input (tr [:name]) ::name ::set-name]
-       [c/user-selector (tr [:user]) ::user-id ::set-user-id]
-       [c/primary-button (tr [:submit]) [::e.categories/do-submit form-data]]])))
+       [:p "Form"]
+       [:div.field>div.control
+        [c/number-input (tr [:value]) ::value ::set-value]]
+       [:div.field>div.control
+        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
+       [:div.field>div.control
+        [c/primary-button (tr [:submit]) [::submit-clicked]]]])))

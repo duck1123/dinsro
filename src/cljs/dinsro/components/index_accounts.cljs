@@ -30,6 +30,7 @@
 (defn-spec index-accounts vector?
   [accounts (s/coll-of ::s.accounts/item)]
   [:<>
+   [c.debug/debug-box accounts]
    (if-not (seq accounts)
      [:div (tr [:no-accounts])]
      [:table.table

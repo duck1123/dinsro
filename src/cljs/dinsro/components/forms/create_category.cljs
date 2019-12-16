@@ -37,13 +37,6 @@
  :<- [::user-id]
  create-form-data)
 
-(defn submit-clicked
-  [_ _]
-  (let [form-data @(rf/subscribe [::category-data])]
-    {:dispatch [::e.categories/do-submit form-data]}))
-
-(kf/reg-event-fx ::submit-clicked submit-clicked)
-
 (defn new-category-form
   []
   (let [form-data @(rf/subscribe [::form-data])]
