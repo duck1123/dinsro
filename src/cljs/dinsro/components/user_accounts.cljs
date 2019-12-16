@@ -6,6 +6,7 @@
             [dinsro.components.forms.add-user-account :as c.f.add-user-account]
             [dinsro.components.index-accounts :as c.index-accounts]
             [dinsro.events.accounts :as e.accounts]
+            [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
