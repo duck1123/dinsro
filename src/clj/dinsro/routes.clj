@@ -1,7 +1,7 @@
 (ns dinsro.routes
-  (:require #_[config.core :refer [env]]
-            [dinsro.actions.accounts :as a.accounts]
+  (:require [dinsro.actions.accounts :as a.accounts]
             [dinsro.actions.authentication :as a.authentication]
+            [dinsro.actions.categories :as a.categories]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
             [dinsro.actions.rates :as a.rates]
@@ -39,6 +39,8 @@
      ["/:id"            {:get    a.accounts/read-handler
                          :delete a.accounts/delete-handler}]]
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
+    ["/categories"
+     ["" {:get a.categories/index-handler}]]
     ["/currencies"
      [""                {:get    a.currencies/index-handler
                          :post   a.currencies/create-handler}]
