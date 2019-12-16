@@ -7,6 +7,7 @@
             [dinsro.components.index-accounts :as c.index-accounts]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.specs :as ds]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
@@ -16,7 +17,7 @@
   [user-id pos-int? accounts ::s.accounts/item]
   [:div.box
    [:h2
-    "Accounts"
+    (tr [:accounts])
     [c/show-form-button ::c.f.add-user-account/shown? ::c.f.add-user-account/set-shown?]]
    [c.f.add-user-account/add-user-account user-id]
    [:hr]
