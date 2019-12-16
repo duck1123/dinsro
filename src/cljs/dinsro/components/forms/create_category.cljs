@@ -8,6 +8,7 @@
             [dinsro.spec.categories :as s.categories]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -37,7 +38,7 @@
  :<- [::user-id]
  create-form-data)
 
-(defn new-category-form
+(defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])

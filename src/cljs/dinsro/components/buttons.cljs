@@ -7,6 +7,7 @@
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.categories :as s.categories]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
@@ -18,6 +19,12 @@
   [account ::s.accounts/item]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.accounts/do-delete-record account])}
+   (tr [:delete])])
+
+(defn-spec delete-category vector?
+  [category ::s.categories/item]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.categories/do-delete-record category])}
    (tr [:delete])])
 
 (defn-spec delete-currency vector?

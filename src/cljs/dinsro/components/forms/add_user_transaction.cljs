@@ -31,14 +31,12 @@
 (rfu/reg-set-event ::value)
 
 (defn create-form-data
-  [[name user-id] _]
-  {:name          name
-   :user-id       (int user-id)})
+  [[value] _]
+  {:value value})
 
 (rf/reg-sub
  ::form-data
- :<- [::name]
- :<- [::user-id]
+ :<- [::value]
  create-form-data)
 
 (defn form

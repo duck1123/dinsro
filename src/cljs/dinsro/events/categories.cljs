@@ -12,7 +12,14 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(def example-category
+  {:db/id 1
+   ::s.categories/name "Foo"
+   ::s.categories/user {:db/id 12}})
+
+(s/def ::items (s/coll-of ::s.categories/item))
 (rfu/reg-basic-sub ::items)
+(rfu/reg-set-event ::items)
 
 (defn sub-item
   [items [_ target-item]]
@@ -98,7 +105,8 @@
 (defn-spec do-fetch-index ::s.e.categories/do-fetch-index-response
   [_ ::s.e.categories/do-fetch-index-cofx
    _ ::s.e.categories/do-fetch-index-event]
-  {:http-xhrio
+  {:dispatch [::set-items [example-category]]}
+  #_{:http-xhrio
    {:uri             (kf/path-for [:api-index-categories])
     :method          :get
     :response-format (ajax/json-response-format {:keywords? true})

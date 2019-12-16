@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
+            [dinsro.components.forms.create-category :as c.f.create-category]
             [dinsro.components.links :as c.links]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.categories :as e.categories]
