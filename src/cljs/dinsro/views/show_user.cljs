@@ -11,6 +11,9 @@
             [dinsro.components.index-categories :as c.index-categories :refer [index-categories]]
             [dinsro.components.index-transactions :as c.index-transactions :refer [index-transactions]]
             [dinsro.components.show-user :refer [show-user]]
+            [dinrso.components.user-accounts :as c.user-accounts]
+            [dinrso.components.user-categories :as c.user-categories]
+            [dinrso.components.user-transactions :as c.user-transactions]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
@@ -50,36 +53,6 @@
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-user id]]))
 
-(defn accounts-section
-  [user-id accounts]
-  [:div.box
-   [:h2
-    "Accounts"
-    [c/show-form-button ::c.f.add-user-account/shown? ::c.f.add-user-account/set-shown?]]
-   [c.f.add-user-account/add-user-account user-id]
-   [:hr]
-   [c.index-accounts/index-accounts accounts]])
-
-(defn-spec categories-section vector?
-  [user-id pos-int? categories (s/coll-of ::s.categories/item)]
-  [:div.box
-   [:h2
-    "Categories"
-    [c/show-form-button ::c.f.add-user-category/shown? ::c.f.add-user-category/set-shown?]]
-   [c.f.add-user-category/form]
-   [:hr]
-   [c.index-categories/index-categories categories]])
-
-(defn-spec transactions-section vector?
-  [user-id pos-int? transactions (s/coll-of ::s.transactions/item)]
-  [:div.box
-   [:h2
-    "Transactions"
-    [c/show-form-button ::c.f.add-user-transaction/shown? ::c.f.add-user-transaction/set-shown?]]
-   [c.f.add-user-transaction/form]
-   [:hr]
-   [c.index-transactions/index-transactions transactions]])
-
 (defn-spec page-loaded vector?
   [id pos-int?]
   (if-let [user @(rf/subscribe [::e.users/item (int id)])]
@@ -91,9 +64,9 @@
        [:div.box
         [:h1 "Show User"]
         [show-user user]]
-       [categories-section user-id categories]
-       [accounts-section user-id accounts]
-       [transactions-section user-id transactions]])
+       [c.user-categories/section user-id categories]
+       [c.user-accounts/section user-id accounts]
+       [c.user-transactions/section user-id transactions]])
     [:p "User not found"]))
 
 (s/def :show-user-view/id          string?)

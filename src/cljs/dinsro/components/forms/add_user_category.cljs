@@ -37,13 +37,12 @@
  :<- [::user-id]
  create-form-data)
 
-(defn form
-  []
-  (let [form-data @(rf/subscribe [::form-data])]
+(defn-spec form vector?
+  [user-id pos-int?]
+  (let [form-data (assoc @(rf/subscribe [::form-data]) :user-id user-id)]
     (when @(rf/subscribe [::shown?])
       [:div
        [c/close-button ::set-shown?]
        [c.debug/debug-box form-data]
        [c/text-input (tr [:name]) ::name ::set-name]
-       [c/user-selector (tr [:user]) ::user-id ::set-user-id]
        [c/primary-button (tr [:submit]) [::e.categories/do-submit form-data]]])))
