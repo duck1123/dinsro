@@ -18,6 +18,7 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
+
 (defn-spec transactions-section vector?
   [user-id pos-int? transactions (s/coll-of ::s.transactions/item)]
   [:div.box

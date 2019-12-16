@@ -15,7 +15,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn-spec section vector?
-  [user-id pos-int? accounts ::s.accounts/item]
+  [user-id pos-int? accounts (s/coll-of ::s.accounts/item)]
   [:div.box
    [:h2
     (tr [:accounts])

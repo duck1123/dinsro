@@ -19,6 +19,9 @@
 (s/def ::items                   (s/coll-of ::s.transactions/item))
 (rfu/reg-basic-sub ::items)
 
+(rfu/reg-basic-sub ::items-by-user ::items)
+
+
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
