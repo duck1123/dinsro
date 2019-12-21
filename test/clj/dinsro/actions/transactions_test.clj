@@ -12,7 +12,7 @@
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.model.users :as m.users]
-            [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [mount.core :as mount]
@@ -31,6 +31,7 @@
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* s.users/schema)
+      (d/transact db/*conn* s.transactions/schema)
       (f))))
 
 (deftest create-record-response-test
@@ -55,7 +56,7 @@
 (deftest create-handler-invalid
   (let [params {}
         request {:params params}
-        response (a.transaction/create-handler request)]
+        response (a.transactions/create-handler request)]
     (is (= status/bad-request (:status response))
         "should signal a bad request")))
 
@@ -63,23 +64,23 @@
   (let [currency (mocks/mock-currency)
         id (:db/id currency)
         request {:path-params {:id (str id)}}]
-    (is (not (nil? (m.transaction/read-record id))))
-    (let [response (a.transaction/delete-handler request)]
+    (is (not (nil? (m.transactions/read-record id))))
+    (let [response (a.transactions/delete-handler request)]
       (is (= status/ok (:status response)))
-      (is (nil? (m.transaction/read-record id))))))
+      (is (nil? (m.transactions/read-record id))))))
 
 (deftest read-handler-success
   (let [currency (mocks/mock-currency)
         id (str (:db/id currency))
         request {:path-params {:id id}}
-        response (a.transaction/read-handler request)]
+        response (a.transactions/read-handler request)]
     (is (= status/ok (:status response)))
     (is (= currency (get-in response [:body :item])))))
 
 (deftest read-handler-not-found
   (let [id (gen/generate (s/gen :read-currency-request-path-params/id))
         request {:path-params {:id id}}
-        response (a.transaction/read-handler request)]
+        response (a.transactions/read-handler request)]
     (is (= status/not-found (:status response))
         "Returns a not-found status")
 
@@ -88,7 +89,7 @@
 
 (comment
   (gen/generate (s/gen :read-currency-request-path-params/id))
-  (gen-spec ::a.transaction/create-handler-request)
+  (gen-spec ::a.transactions/create-handler-request)
 
   (gen-spec :create-handler-valid/request)
 

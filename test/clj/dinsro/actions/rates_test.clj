@@ -10,6 +10,7 @@
             [dinsro.handler :as handler]
             [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
+            [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
@@ -44,7 +45,7 @@
 
 (deftest create-handler-valid
   (testing "success"
-    (let [request (gen/generate (s/gen ::a.rates/create-handler-request-valid))
+    (let [request (gen/generate (s/gen ::s.a.rates/create-handler-request-valid))
           response (a.rates/create-handler request)]
       (is (= status/ok (:status response)))
       (let [id (get-in response [:body :item :db/id])]
