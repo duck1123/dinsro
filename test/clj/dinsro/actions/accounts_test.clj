@@ -11,6 +11,7 @@
             [dinsro.model.accounts :as m.accounts]
             [dinsro.model.users :as m.users]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [orchestra.core :refer [defn-spec]]
@@ -44,7 +45,7 @@
 
 (deftest create-handler-valid
   (testing "success"
-    (let [request (gen/generate (s/gen ::a.accounts/create-handler-request-valid))
+    (let [request (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid))
           response (a.accounts/create-handler request)]
       (is (= status/ok (:status response)))
       #_(is (= nil response)))))
@@ -65,10 +66,10 @@
       (is (nil? (m.accounts/read-record id)) "account is deleted"))))
 
 (comment
-  (gen/generate (s/gen ::a.accounts/create-handler-request-valid))
+  (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid))
 
   (expound.alpha/expound
-   ::a.accounts/delete-handler-request
+   ::s.a.accounts/delete-handler-request
    {:path-params {:accountId "7"}})
 
 

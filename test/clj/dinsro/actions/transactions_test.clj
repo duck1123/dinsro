@@ -12,6 +12,7 @@
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.model.users :as m.users]
+            [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
@@ -31,6 +32,7 @@
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* s.users/schema)
+      (d/transact db/*conn* s.currencies/schema)
       (d/transact db/*conn* s.transactions/schema)
       (f))))
 
