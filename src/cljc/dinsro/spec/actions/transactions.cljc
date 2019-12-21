@@ -9,6 +9,9 @@
             [taoensso.timbre :as timbre]))
 
 (s/def ::currency-id ::ds/id)
+
+;; Create
+
 (s/def :create-transactions-request-valid/params
   (s/keys :req-un [::s.transactions/value ::currency-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-transactions-request-valid/params]))
@@ -17,6 +20,7 @@
 (s/def ::create-handler-request (s/keys :req-un [:create-transactions-request/params]))
 
 (comment
+  (gen/generate (s/gen :create-transactions-request-valid/params))
   (gen/generate (s/gen ::create-handler-request-valid))
   (gen/generate (s/gen ::create-handler-request))
   )
@@ -40,6 +44,8 @@
   (gen/generate (s/gen ::create-handler-response-invalid))
   (gen/generate (s/gen ::create-handler-response))
   )
+
+;; Index
 
 (s/def :index-transactions-response/items (s/coll-of ::s.transactions/item))
 (s/def :index-transactions-response/body (s/keys :req-un [:index-transactions-response/items]))
