@@ -1,1 +1,95 @@
-(ns dinsro.actions.transactions-test)
+(ns dinsro.actions.transactions-test
+  (:require [clojure.data.json :as json]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.test :refer :all]
+            [datahike.api :as d]
+            [datahike.core :as dc]
+            [dinsro.actions.transactions :as a.transactions]
+            [dinsro.actions.users :as a.users]
+            [dinsro.config :as config]
+            [dinsro.db.core :as db]
+            [dinsro.mocks :as mocks]
+            [dinsro.model.transactions :as m.transactions]
+            [dinsro.model.users :as m.users]
+            [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec.users :as s.users]
+            [dinsro.specs :as ds]
+            [mount.core :as mount]
+            [ring.mock.request :as mock]
+            [ring.util.http-status :as status]
+            [taoensso.timbre :as timbre]))
+
+(def uri "datahike:file:///tmp/file-example2")
+
+(use-fixtures
+  :each
+  (fn [f]
+    (mount/start #'config/env #'db/*conn*)
+    (d/delete-database uri)
+    (when-not (d/database-exists? (datahike.config/uri->config uri))
+      (d/create-database uri))
+    (with-redefs [db/*conn* (d/connect uri)]
+      (d/transact db/*conn* s.users/schema)
+      (f))))
+
+(deftest create-record-response-test
+  (let [params (gen/generate (s/gen ::s.transactions/params))
+        response (a.transactions/create-handler {:params params})]
+    (is (= (:status response) status/ok))))
+
+(deftest index-handler-empty
+  (let [path "/transactions"
+        request (mock/request :get path)
+        response (a.transactions/index-handler request)]
+    (is (= (:status response) status/ok))))
+
+(deftest index-handler-with-records
+  (let [path "/transactions"
+        user (mocks/mock-transaction)
+        request (mock/request :get path)
+        response (a.transactions/index-handler request)]
+    (is (= (:status response) status/ok))
+    (is (= 1 (count (:body response))))))
+
+(deftest create-handler-invalid
+  (let [params {}
+        request {:params params}
+        response (a.transaction/create-handler request)]
+    (is (= status/bad-request (:status response))
+        "should signal a bad request")))
+
+(deftest delete-handler-success
+  (let [currency (mocks/mock-currency)
+        id (:db/id currency)
+        request {:path-params {:id (str id)}}]
+    (is (not (nil? (m.transaction/read-record id))))
+    (let [response (a.transaction/delete-handler request)]
+      (is (= status/ok (:status response)))
+      (is (nil? (m.transaction/read-record id))))))
+
+(deftest read-handler-success
+  (let [currency (mocks/mock-currency)
+        id (str (:db/id currency))
+        request {:path-params {:id id}}
+        response (a.transaction/read-handler request)]
+    (is (= status/ok (:status response)))
+    (is (= currency (get-in response [:body :item])))))
+
+(deftest read-handler-not-found
+  (let [id (gen/generate (s/gen :read-currency-request-path-params/id))
+        request {:path-params {:id id}}
+        response (a.transaction/read-handler request)]
+    (is (= status/not-found (:status response))
+        "Returns a not-found status")
+
+    (is (= :not-found (get-in response [:body :status]))
+        "Has a not found status field")))
+
+(comment
+  (gen/generate (s/gen :read-currency-request-path-params/id))
+  (gen-spec ::a.transaction/create-handler-request)
+
+  (gen-spec :create-handler-valid/request)
+
+  )
