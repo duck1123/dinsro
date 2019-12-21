@@ -40,7 +40,10 @@
                          :delete a.accounts/delete-handler}]]
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
     ["/categories"
-     ["" {:get a.categories/index-handler}]]
+     [""                {:get    a.categories/index-handler
+                         :post   a.categories/create-handler}]
+     ["/:id"            {:get    a.categories/read-handler
+                         :delete a.categories/delete-handler}]]
     ["/currencies"
      [""                {:get    a.currencies/index-handler
                          :post   a.currencies/create-handler}]

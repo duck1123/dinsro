@@ -105,8 +105,8 @@
 (defn-spec do-fetch-index ::s.e.categories/do-fetch-index-response
   [_ ::s.e.categories/do-fetch-index-cofx
    _ ::s.e.categories/do-fetch-index-event]
-  {:dispatch [::set-items [example-category]]}
-  #_{:http-xhrio
+  #_{:dispatch [::set-items [example-category]]}
+  {:http-xhrio
    {:uri             (kf/path-for [:api-index-categories])
     :method          :get
     :response-format (ajax/json-response-format {:keywords? true})

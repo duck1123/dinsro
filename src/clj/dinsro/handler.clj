@@ -6,6 +6,7 @@
             [dinsro.middleware :as middleware]
             [dinsro.routes :as routes]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.categories :as s.categories]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.spec.transactions :as s.transactions]
@@ -41,6 +42,7 @@
 (defn init-schemata
   []
   (let [schemata [s.accounts/schema
+                  s.categories/schema
                   s.currencies/schema
                   s.rates/schema
                   s.transactions/schema
