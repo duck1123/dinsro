@@ -25,6 +25,14 @@
       (d/transact db/*conn* s.users/schema)
       (f))))
 
+(deftest prepare-record
+  (let [params {}
+        response (m.users/prepare-record params)]
+    (is (= {}  response))
+
+    )
+  )
+
 (deftest create-record-valid
   (testing "successful"
     (let [id-key "user-id"

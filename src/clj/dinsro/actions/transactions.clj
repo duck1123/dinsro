@@ -46,6 +46,11 @@
             (http/ok {:item (m.transactions/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
+(comment
+  (gen/generate (s/gen ::s.a.transactions/create-handler-response))
+  )
+
+
 ;; Index
 
 (defn-spec index-handler ::s.a.transactions/index-handler-response
