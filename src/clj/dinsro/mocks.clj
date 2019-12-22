@@ -43,9 +43,13 @@
 
 (defn-spec mock-transaction ::s.transactions/item
   []
-  (m.transactions/read-record
-   (m.transactions/create-record
-    (gen/generate (s/gen ::s.transactions/params)))))
+  (let [params (ds/gen-key ::s.transactions/params)
+        params (assoc-in params [::s.transactions/currency :db/id]
+                         (ds/gen-key (into #{} (m.transactions/index-ids))))
+        params (assoc-in params [::s.transactions/account :db/id]
+                         (ds/gen-key (into #{} (m.accounts/index-ids))))
+        id (m.transactions/create-record params)]
+    (m.transactions/read-record id)))
 
 (defn-spec mock-user ::s.users/item
   []
