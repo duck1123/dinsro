@@ -12,6 +12,7 @@
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.model.users :as m.users]
+            [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
@@ -36,8 +37,20 @@
       (d/transact db/*conn* s.transactions/schema)
       (f))))
 
+(deftest prepare-record
+  (let [currency-id 1
+        account-id 1
+        value 1
+        date
+        params {:currency-id (str currency-id)
+                :account-id (str account-id)
+                :value value
+                }])
+  )
+
 (deftest create-record-response-test
   (let [params (gen/generate (s/gen ::s.transactions/params))
+        request (gen/generate (s/gen ::s.a.transactions/create-handler-request))
         response (a.transactions/create-handler {:params params})]
     (is (= (:status response) status/ok))))
 

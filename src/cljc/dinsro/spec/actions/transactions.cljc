@@ -9,14 +9,16 @@
             [taoensso.timbre :as timbre]))
 
 (s/def ::currency-id ::ds/id)
+(s/def ::account-id ::ds/id)
 
 ;; Create
 
 (s/def :create-transactions-request-valid/params
-  (s/keys :req-un [::s.transactions/value ::currency-id]))
+  (s/keys :req-un [::s.transactions/value ::currency-id ::account-id]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-transactions-request-valid/params]))
 
-(s/def :create-transactions-request/params (s/keys :opt-un [::s.transactions/transaction ::currency-id]))
+(s/def :create-transactions-request/params
+  (s/keys :opt-un [::s.transactions/transaction ::currency-id ::account-id]))
 (s/def ::create-handler-request (s/keys :req-un [:create-transactions-request/params]))
 
 (comment

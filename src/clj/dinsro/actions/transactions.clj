@@ -23,24 +23,27 @@
 
 (defn-spec prepare-record (s/nilable ::s.transactions/params)
   [params :create-transactions-request/params]
-  (when-let [transaction (:transaction params)]
-    (let [currency-id (:currency-id params)
-          transaction (double transaction)
-          date (t/java-date (:date params))
-          params (-> params
-                     (set/rename-keys param-rename-map)
-                     (select-keys (vals param-rename-map))
-                     (assoc ::s.transactions/currency {:db/id currency-id})
-                     (assoc ::s.transactions/transaction transaction)
-                     (assoc ::s.transactions/date date))]
-      (if (s/valid? ::s.transactions/params params)
-        params
-        (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
-            nil)))))
+  (let [currency-id (:currency-id params)
+        account-id (:account-id params)
+        value (:transaction params)
+        value (when value (double value))
+        date (:date params)
+        date (when date (t/java-date date))
+        params (-> params
+                   (set/rename-keys param-rename-map)
+                   (select-keys (vals param-rename-map))
+                   (assoc ::s.transactions/currency {:db/id currency-id})
+                   (assoc ::s.transactions/value value)
+                   (assoc ::s.transactions/account {:db/id account-id})
+                   (assoc ::s.transactions/date date))]
+    (if (s/valid? ::s.transactions/params (timbre/spy :info params))
+      params
+      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
+          nil))))
 
 (defn-spec create-handler ::s.a.transactions/create-handler-response
   [request ::s.a.transactions/create-handler-request]
-  (or (let [{params :params} request]
+  (or (let [{params :params} (timbre/spy :info request)]
         (when-let [params (prepare-record params)]
           (when-let [id (m.transactions/create-record params)]
             (http/ok {:item (m.transactions/read-record id)}))))
