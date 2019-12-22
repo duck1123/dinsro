@@ -10,7 +10,7 @@
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [clj-http "3.10.0"]
                  ;; [clj-time "0.15.2"]
-                 [cljc.java-time "0.1.7"]
+                 ;; [cljc.java-time "0.1.7"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
@@ -61,7 +61,8 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
-                 [selmer "1.12.17"]]
+                 [selmer "1.12.17"]
+                 [tick "0.4.21-alpha"]]
 
   :min-lein-version "2.0.0"
 

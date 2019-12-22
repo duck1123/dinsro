@@ -20,7 +20,8 @@
             [mount.core :as mount]
             [ring.mock.request :as mock]
             [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 (def uri "datahike:file:///tmp/file-example2")
 
@@ -41,12 +42,13 @@
   (let [currency-id 1
         account-id 1
         value 1
-        date
+        date (tick/instant)
         params {:currency-id (str currency-id)
                 :account-id (str account-id)
-                :value value
-                }])
-  )
+                :value value}
+        response (a.transactions/prepare-record params)
+        expected {::s.transactions/currency {:db/id currency-id}}]
+    (is (= expected response))))
 
 (deftest create-record-response-test
   (let [params (gen/generate (s/gen ::s.transactions/params))

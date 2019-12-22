@@ -21,14 +21,12 @@
    ;; :currency-id ::s.transactions/currency-id
    :date      ::s.transactions/date})
 
-(defn-spec prepare-record (s/nilable ::s.transactions/params)
+(defn-spec prepare-record (s/nilable :create-transactions-request/params)
   [params :create-transactions-request/params]
-  (let [currency-id (:currency-id params)
-        account-id (:account-id params)
-        value (:transaction params)
-        value (when value (double value))
-        date (:date params)
-        date (when date (t/java-date date))
+  (let [currency-id (some-> params :currency-id int)
+        account-id (some-> params :account-id int)
+        value (some-> params :value double)
+        date (some-> params :date t/java-date)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
