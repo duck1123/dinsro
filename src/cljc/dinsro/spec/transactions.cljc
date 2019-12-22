@@ -16,14 +16,14 @@
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency (s/keys))
+(s/def ::currency (s/keys :req [:ds/id]))
 (def currency ::currency)
 (def currency-spec
   {:db/ident ::currency
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::date ts/instant?)
+(s/def ::date ::ds/date)
 (def date ::date)
 (def date-spec
   {:db/ident ::date

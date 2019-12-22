@@ -38,29 +38,24 @@
 
 (s/def ::id pos-int? #_(s/with-gen valid-uuid-str? uuid-str-gen))
 (s/def :db/id ::id)
+(def id ::id)
 
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
-;; (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
-
-
-(def date-string-gen
-  )
+(def valid-double ::valid-double)
 
 (s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
 (def date-string ::date-string)
 
-(comment
-
-  )
-
-(s/def :date (s/with-gen ts/instant? #(gen/fmap tick/instant (s/gen ::date-string))))
+(s/def ::date (s/with-gen ts/instant? #(gen/fmap tick/instant (s/gen ::date-string))))
+(def date ::date)
 
 (s/def ::id-string (s/with-gen (s/and string? #(re-matches #"\d+" %))
                      #(gen/fmap str (s/gen pos-int?))))
+(def id-string ::id-string)
 
 (s/def ::not-found-status #{:not-found})
 (def not-found-status ::not-found-status)
 
 (comment
-
+  (gen-key ::date)
   )
