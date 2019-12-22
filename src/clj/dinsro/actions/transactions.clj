@@ -26,13 +26,13 @@
    :date        ::s.transactions/date})
 
 (defn-spec prepare-record (s/nilable s.a.transactions/create-params-valid)
-  [params s.a.transactions/create-request-params]
+  [params s.a.transactions/create-params]
   (let [currency-id (utils/get-as-int (timbre/spy :info params) :currency-id)
         account-id (utils/get-as-int params :account-id)
         params {::s.transactions/currency {:db/id currency-id}
                 ::s.transactions/value (some-> params :value double)
                 ::s.transactions/account {:db/id account-id}
-                ::s.transactions/date (some-> params :date tick/instant)}]
+                ::s.transactions/date (some-> params :date tick/inst)}]
     (if (s/valid? ::s.transactions/params (timbre/spy :info params))
       params
       (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))

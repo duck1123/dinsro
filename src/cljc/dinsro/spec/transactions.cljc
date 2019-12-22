@@ -9,14 +9,14 @@
             [time-specs.core :as ts]
             ))
 
-(s/def ::account (s/keys :req [:ds/id]))
+(s/def ::account (s/keys :req [:db/id]))
 (def account ::account)
 (def account-spec
   {:db/ident ::account
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency (s/keys :req [:ds/id]))
+(s/def ::currency (s/keys :req [:db/id]))
 (def currency ::currency)
 (def currency-spec
   {:db/ident ::currency
