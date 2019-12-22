@@ -28,15 +28,12 @@
 (deftest prepare-record
   (let [params {}
         response (m.users/prepare-record params)]
-    (is (= {}  response))
-
-    )
-  )
+    (is (= {}  response))))
 
 (deftest create-record-valid
   (testing "successful"
     (let [id-key "user-id"
-          params (gen/generate (s/gen ::s.users/params))
+          params (ds/gen-key ::s.users/params)
           {:keys [dinsro.spec.users/email]} params
           id (m.users/create-record params)
           user (m.users/read-record id)]
@@ -44,7 +41,7 @@
 
 (deftest create-record-invalid
   (testing "duplicate creates"
-    (let [params (gen/generate (s/gen ::s.users/params))
+    (let [params (ds/gen-key ::s.users/params)
           {:keys [dinsro.spec.users/email]} params
           id (m.users/create-record params)
           user (m.users/read-record id)]
@@ -52,7 +49,7 @@
 
 (deftest read-record
   (testing "success"
-    (let [params (gen/generate (s/gen ::s.users/params))
+    (let [params (ds/gen-key ::s.users/params)
           {:keys [dinsro.spec.users/email]} params
           id (m.users/create-record params)
           response (m.users/read-record id)]
