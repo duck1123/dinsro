@@ -7,12 +7,13 @@
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 (def example-transaction
   {:db/id 1
    ::s.transactions/value 130000
-   ::s.transactions/date (js/Date.)
+   ::s.transactions/date (tick/instant)
    ::s.transactions/currency {:db/id 53}
    ::s.transactions/account {:db/id 12}})
 
@@ -21,14 +22,13 @@
 
 (rfu/reg-basic-sub ::items-by-user ::items)
 
-
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
   (let [items (map
-               (fn [item] (update item ::s.transactions/date #(js/Date. %)))
+               (fn [item] (update item ::s.transactions/date tick/instant))
                items)]
     {:db (-> db
              (assoc ::items items)
