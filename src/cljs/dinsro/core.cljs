@@ -55,7 +55,7 @@
    (rf/clear-subscription-cache!)
    (s/check-asserts true)
    (kf/start!
-    {:debug?         (boolean debug?)
+    {:debug?         false #_(boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::db-spec
      :initial-db     {::e.debug/shown? false #_(boolean debug?)

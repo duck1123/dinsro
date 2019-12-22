@@ -26,7 +26,7 @@
   [params :create-account/params]
   (let [currency-id (get-as-int params :currency-id)
         user-id (get-as-int params :user-id)
-        initial-value (some-> params :initial-value double)
+        initial-value (some-> params :initial-value str Double/parseDouble)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))

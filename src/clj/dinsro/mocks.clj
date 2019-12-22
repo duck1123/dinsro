@@ -45,9 +45,9 @@
   []
   (let [params (ds/gen-key ::s.transactions/params)
         params (assoc-in params [::s.transactions/currency :db/id]
-                         (ds/gen-key (into #{} (m.transactions/index-ids))))
+                         (ds/gen-key (into #{1} (m.transactions/index-ids))))
         params (assoc-in params [::s.transactions/account :db/id]
-                         (ds/gen-key (into #{} (m.accounts/index-ids))))
+                         (ds/gen-key (into #{1} (m.accounts/index-ids))))
         id (m.transactions/create-record params)]
     (m.transactions/read-record id)))
 
