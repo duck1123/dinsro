@@ -56,7 +56,7 @@
 
 (deftest create-record-response-test
   (let [params (gen/generate (s/gen ::s.transactions/params))
-        request (gen/generate (s/gen s.a.transactions/create-handler-request))
+        request (gen/generate (s/gen s.a.transactions/create-request))
         response (a.transactions/create-handler {:params params})]
     (is (= (:status response) status/ok))))
 
