@@ -18,14 +18,14 @@
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
 
-(defn-spec create-record ::ds/id
+(defn-spec create-record :db/id
   [params ::s.currencies/params]
   (let [params (assoc params :db/id "currency-id")]
     (let [response (d/transact db/*conn* {:tx-data [params]})]
       (get-in response [:tempids "currency-id"]))))
 
 (defn-spec read-record (s/nilable ::s.currencies/item)
-  [id ::ds/id]
+  [id :db/id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.currencies/name)
       record)))

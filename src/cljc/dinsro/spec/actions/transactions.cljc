@@ -36,7 +36,7 @@
                    ::date
                    ;; ::s.transactions/transaction
                    ::currency-id ::account-id]))
-(def create-request-params :create-transactions-request/params)
+(def create-params :create-transactions-request/params)
 
 (s/def ::create-handler-request (s/keys :req-un [:create-transactions-request/params]))
 (def create-request ::create-handler-request)
@@ -46,8 +46,10 @@
   (gen/generate (s/gen ::create-handler-request-valid))
   (gen/generate (s/gen ::create-handler-request))
 
+  (ds/gen-key create-params)
   (ds/gen-key create-params-valid)
   (ds/gen-key create-request)
+  (ds/gen-key create-request-valid)
   )
 
 (s/def :create-transactions-response-valid/body (s/keys :req-un [::s.transactions/item]))

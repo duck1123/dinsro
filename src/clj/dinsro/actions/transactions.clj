@@ -39,8 +39,8 @@
           nil))))
 
 (comment
-  (ds/gen-key s.a.transactions/create-request-params)
-  (ds/gen-key s.a.transactions/valid-create-params)
+  (ds/gen-key s.a.transactions/create-params)
+  (ds/gen-key s.a.transactions/create-params-valid)
   )
 
 
