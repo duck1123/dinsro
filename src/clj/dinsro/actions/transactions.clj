@@ -23,8 +23,8 @@
 
 (defn-spec prepare-record (s/nilable :create-transactions-request/params)
   [params :create-transactions-request/params]
-  (let [currency-id (some-> params :currency-id int)
-        account-id (some-> params :account-id int)
+  (let [currency-id (some-> (timbre/spy :info params) :currency-id timbre/spy int)
+        account-id (some-> params :account-id timbre/spy int)
         value (some-> params :value double)
         date (some-> params :date t/java-date)
         params (-> params
@@ -63,16 +63,20 @@
 
 (defn-spec read-handler ::s.a.transactions/read-handler-response
   [request ::s.a.transactions/read-handler-request]
-  (or (let [params (:path-params request)]
-        (let [id (:id params)]
-          (let [item (m.transactions/read-record id)]
-            (http/ok {:item item}))))
-      (http/not-found {:status :not-found})))
+  (if-let [id (some-> request :path-params :id utils/try-parse)]
+    (if-let [item (m.transactions/read-record id)]
+      (http/ok {:item item})
+      (http/not-found {:status :not-found}))
+    (http/bad-request {:status :bad-request})))
 
 ;; Delete
 
 (defn-spec delete-handler ::s.a.transactions/delete-handler-response
   [request ::s.a.transactions/delete-handler-request]
-  (let [id (Integer/parseInt (get-in request [:path-params :id]))]
-    (m.transactions/delete-record id)
-    (http/ok {:id id})))
+  (if-let [id (some-> request :path-params :id utils/try-parse)]
+    (do
+      (m.transactions/delete-record id)
+      (http/ok {:id id}))
+    (http/bad-request
+     {:status :bad-request
+      :message (tr [:missing-id "Id parameter was not supplied"])})))

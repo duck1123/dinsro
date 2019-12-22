@@ -8,6 +8,8 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
+;; Create
+
 (s/def :create-account-valid/params
   (s/keys :req-un [::s.accounts/name
                    ::s.accounts/initial-value
@@ -21,6 +23,8 @@
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-account-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-account/params]))
 (s/def ::create-handler-response (s/keys))
+
+;; Delete
 
 (s/def :delete-account-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 (s/def :delete-account-request/path-params (s/keys :req-un [:delete-account-request-params/id]))

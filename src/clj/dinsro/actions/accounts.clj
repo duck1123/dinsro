@@ -7,6 +7,7 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.specs :as ds]
+            [dinsro.utils :as utils]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
@@ -50,17 +51,19 @@
   (let [accounts (m.accounts/index-records)]
     (http/ok {:items accounts})))
 
-(defn read-handler
-  [{{:keys [accountId]} :path-params}]
-  (if-let [account (m.accounts/read-record {:id accountId})]
-    (http/ok account)
-    (http/not-found {})))
+(defn-spec read-handler ::s.a.accounts/read-handler-response
+  [request ::s.a.accounts/read-handler-request]
+  (if-let [id (some-> request :path-params :id utils/try-parse)]
+    (if-let [account (m.accounts/read-record {:id id})]
+      (http/ok account)
+      (http/not-found {}))
+    (http/bad-request {:status :bad-request})))
 
 (defn-spec delete-handler ::s.a.accounts/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.accounts/delete-handler-request]
   (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e))]
     (let [response (m.accounts/delete-record id)]
-      (http/ok {:status "ok"}))
+      (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
 
 (comment

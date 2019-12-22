@@ -7,6 +7,7 @@
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.actions.categories :as s.a.categories]
             [dinsro.specs :as ds]
+            [dinsro.utils :as utils]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
@@ -14,19 +15,9 @@
 (def param-rename-map
   {:name          ::s.categories/name})
 
-(defn try-parse
-  [v]
-  (try (Integer/parseInt v) (catch NumberFormatException e nil)))
-
-(defn get-as-int
-  [params key]
-  (try
-    (some-> params key str Integer/parseInt)
-    (catch NumberFormatException e nil)))
-
 (defn-spec prepare-record (s/nilable ::s.categories/params)
   [params :create-category/params]
-  (let [user-id (get-as-int params :user-id)
+  (let [user-id (utils/get-as-int params :user-id)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
