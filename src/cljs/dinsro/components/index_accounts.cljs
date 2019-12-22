@@ -21,9 +21,10 @@
         currency-id (get-in account [::s.accounts/currency :db/id])
         user-id (get-in account [::s.accounts/user :db/id])]
     [:tr
-     [:td [c.links/account-link id]]
-     [:td [c.links/user-link user-id]]
-     [:td [c.links/currency-link currency-id]]
+     (c.debug/hide [:td id])
+     [:td (c.links/account-link id)]
+     [:td (c.links/user-link user-id)]
+     [:td (c.links/currency-link currency-id)]
      [:td initial-value]
      (c.debug/hide [:td [c.buttons/delete-account account]])]))
 
@@ -36,6 +37,7 @@
      [:table.table
       [:thead
        [:tr
+        (c.debug/hide [:th "Id"])
         [:th (tr [:name])]
         [:th (tr [:user-label])]
         [:th (tr [:currency-label])]

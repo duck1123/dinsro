@@ -15,8 +15,8 @@
 (rfu/reg-basic-sub ::items)
 
 (defn sub-item
-  [items [_ target-item]]
-  (first (filter #(= (:id %) (:db/id target-item)) items)))
+  [items [_ id]]
+  (first (filter #(= (:db/id %) id) items)))
 
 (defn-spec items-by-user (s/coll-of ::s.accounts/item)
   [db any? event any?]
@@ -36,12 +36,13 @@
 
 (defn do-submit-success
   [_ data]
-  (timbre/info "Submit success" data)
+  ;; (timbre/info "Submit success" data)
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
   [_ [response]]
-  (timbre/info "Submit failed" (get-in response [:parse-error :status-text])))
+  #_(timbre/info "Submit failed" (get-in response [:parse-error :status-text]))
+  {})
 
 (defn-spec do-submit ::s.e.accounts/do-submit-response
   [{:keys [db]} ::s.e.accounts/do-submit-response-cofx
@@ -54,6 +55,10 @@
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-submit-success]
     :on-failure      [::do-submit-failed]}})
+
+(comment
+  (ds/gen-key ::s.e.accounts/do-submit-response)
+  )
 
 (kf/reg-event-fx ::do-submit-success   do-submit-success)
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)

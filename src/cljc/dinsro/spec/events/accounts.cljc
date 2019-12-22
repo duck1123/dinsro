@@ -38,7 +38,7 @@
 (s/def ::do-submit-response-event vector?)
 (def do-submit-response-event ::do-submit-response-event)
 
-(s/def ::do-submit-response (s/keys))
+(s/def ::do-submit-response (s/keys :req-un [:do-submit-account-response/http-xhrio]))
 (def do-submit-response ::do-submit-response)
 
 (comment
