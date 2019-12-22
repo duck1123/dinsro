@@ -35,8 +35,9 @@
                    (assoc-in [::s.accounts/user :db/id] user-id))]
     (if (s/valid? ::s.accounts/params params)
       params
-      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
-          nil))))
+      (do
+        #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
+        nil))))
 
 (defn-spec create-handler ::s.a.accounts/create-handler-response
   [{:keys [params session]} ::s.a.accounts/create-handler-request]

@@ -6,7 +6,8 @@
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 (defn-spec prepare-record any? #_::s.transactions/params
   [params ::s.transactions/params]
@@ -17,7 +18,9 @@
 (defn-spec create-record ::ds/id
   [params ::s.transactions/params]
   (let [tempid (d/tempid "transaction-id")
-        prepared-params (assoc (prepare-record params) :db/id tempid)
+        prepared-params (-> (prepare-record params)
+                            (assoc  :db/id tempid)
+                            (update ::s.transactions/date tick/inst))
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
@@ -25,7 +28,7 @@
   [id ::ds/id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.transactions/value)
-      record)))
+      (update record ::s.transactions/date tick/instant))))
 
 (defn-spec index-ids (s/coll-of ::ds/id)
   []

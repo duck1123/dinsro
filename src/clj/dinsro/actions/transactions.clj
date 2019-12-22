@@ -32,10 +32,11 @@
         params {::s.transactions/currency {:db/id currency-id}
                 ::s.transactions/value (some-> params :value double)
                 ::s.transactions/account {:db/id account-id}
-                ::s.transactions/date (some-> params :date tick/inst)}]
+                ::s.transactions/date (some-> params :date tick/instant)}]
     (if (s/valid? ::s.transactions/params (timbre/spy :info params))
       params
-      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
+      (do
+        #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
           nil))))
 
 (comment

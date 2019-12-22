@@ -55,9 +55,10 @@
     (is (= expected response))))
 
 (deftest create-record-response-test
-  (let [params (gen/generate (s/gen ::s.transactions/params))
-        request (gen/generate (s/gen s.a.transactions/create-request))
-        response (a.transactions/create-handler {:params params})]
+  (let [
+        ;; params (gen/generate (s/gen ::s.transactions/params))
+        request (gen/generate (s/gen s.a.transactions/create-request-valid))
+        response (a.transactions/create-handler request #_{:params params})]
     (is (= (:status response) status/ok))))
 
 (deftest index-handler-empty
@@ -72,7 +73,7 @@
         request (mock/request :get path)
         response (a.transactions/index-handler request)]
     (is (= (:status response) status/ok))
-    (is (= 1 (count (:body response))))))
+    (is (= 1 (count (timbre/spy :info (:items (:body response))))))))
 
 (deftest create-handler-invalid
   (let [params {}
