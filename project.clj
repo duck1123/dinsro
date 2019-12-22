@@ -62,7 +62,8 @@
                  [ring/ring-core "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
                  [selmer "1.12.17"]
-                 [tick "0.4.21-alpha"]]
+                 [tick "0.4.21-alpha"]
+                 [time-specs "0.1.0-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
 

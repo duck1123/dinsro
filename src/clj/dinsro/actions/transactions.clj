@@ -24,7 +24,7 @@
    ;; :currency-id ::s.transactions/currency-id
    :date      ::s.transactions/date})
 
-(defn-spec prepare-record (s/nilable s.a.transactions/valid-create-params)
+(defn-spec prepare-record (s/nilable s.a.transactions/create-params-valid)
   [params s.a.transactions/create-request-params]
   (let [currency-id (utils/get-as-int (timbre/spy :info params) :currency-id)
         account-id (utils/get-as-int params :account-id)

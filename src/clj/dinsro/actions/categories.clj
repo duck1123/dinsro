@@ -48,7 +48,7 @@
 
 (defn-spec delete-handler ::s.a.categories/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.categories/delete-handler-request]
-  (if-let [id (try-parse id)]
+  (if-let [id (utils/try-parse id)]
     (let [response (m.categories/delete-record id)]
       (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))
