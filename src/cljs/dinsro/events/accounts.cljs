@@ -43,8 +43,9 @@
   [_ [response]]
   (timbre/info "Submit failed" (get-in response [:parse-error :status-text])))
 
-(defn do-submit
-  [{:keys [db]} [data]]
+(defn-spec do-submit ::s.e.accounts/do-submit-response
+  [{:keys [db]} ::s.e.accounts/do-submit-response-cofx
+   [data] ::s.e.accounts/do-submit-response-event]
   {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-accounts])
