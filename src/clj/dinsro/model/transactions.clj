@@ -9,16 +9,10 @@
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
-(defn-spec prepare-record any? #_::s.transactions/params
-  [params ::s.transactions/params]
-  (-> params
-      (dissoc ::s.transactions/account-id)
-      (dissoc ::s.transactions/currency-id)))
-
 (defn-spec create-record ::ds/id
   [params ::s.transactions/params]
   (let [tempid (d/tempid "transaction-id")
-        prepared-params (-> (prepare-record params)
+        prepared-params (-> params
                             (assoc  :db/id tempid)
                             (update ::s.transactions/date tick/inst))
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
@@ -34,7 +28,7 @@
   []
   (map first (d/q '[:find ?e :where [?e ::s.transactions/value _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.transactions/item :kind vector?)
+(defn-spec index-records (s/coll-of ::s.transactions/item)
   []
   (->> (index-ids)
        (d/pull-many @db/*conn* '[*])

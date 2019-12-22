@@ -24,21 +24,19 @@
 ;; - request
 
 (s/def :create-transactions-request-valid/params
-  (s/keys :req-un [::value ::currency-id ::account-id ::date]))
+  (s/keys :req-un [::account-id ::currency-id ::date ::value]))
 (def create-params-valid :create-transactions-request-valid/params)
 
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-transactions-request-valid/params]))
+(s/def ::create-handler-request-valid
+  (s/keys :req-un [:create-transactions-request-valid/params]))
 (def create-request-valid ::create-handler-request-valid)
 
 (s/def :create-transactions-request/params
-  (s/keys :opt-un [
-                   ::value
-                   ::date
-                   ;; ::s.transactions/transaction
-                   ::currency-id ::account-id]))
+  (s/keys :opt-un [::account-id ::currency-id ::date ::value]))
 (def create-params :create-transactions-request/params)
 
-(s/def ::create-handler-request (s/keys :req-un [:create-transactions-request/params]))
+(s/def ::create-handler-request
+  (s/keys :req-un [:create-transactions-request/params]))
 (def create-request ::create-handler-request)
 
 (comment
