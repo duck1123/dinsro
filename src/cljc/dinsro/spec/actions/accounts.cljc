@@ -24,6 +24,44 @@
 (s/def ::create-handler-request (s/keys :req-un [:create-account/params]))
 (s/def ::create-handler-response (s/keys))
 
+;; Read
+
+;; - request
+
+(s/def :read-account-request-path-params/id ::ds/id-string)
+(s/def :read-account-request/path-params (s/keys :req-un [:read-account-request-path-params/id]))
+(s/def ::read-handler-request (s/keys :req-un [:read-account-request/path-params]))
+
+;; - response
+
+(s/def :read-account-response-body/item ::s.accounts/item)
+(s/def :read-account-response-success/body
+  (s/keys :req-un [:read-account-response-body/item]))
+(s/def ::read-handler-response-success
+  (s/keys :req-un [:read-account-response-success/body]))
+
+(s/def :read-account-response-not-found-body/status keyword?)
+(s/def :read-account-response-not-found/body
+  (s/keys :req-un [:read-account-response-not-found-body/status]))
+(s/def ::read-handler-response-not-found
+  (s/keys :req-un [:read-account-response-not-found/body]))
+
+(s/def ::read-handler-response
+  (s/or :success   ::read-handler-response-success
+        :not-found ::read-handler-response-not-found))
+(comment
+
+  (Integer/parseInt (str 1))
+
+  (gen/generate (s/gen ::read-handler-request))
+  (gen/generate (s/gen ::read-handler-response-success))
+  (gen/generate (s/gen ::read-handler-response-not-found))
+  (gen/generate (s/gen ::read-handler-response))
+
+  (read-handler {:path-params {:id "45"}})
+  )
+
+
 ;; Delete
 
 (s/def :delete-account-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))

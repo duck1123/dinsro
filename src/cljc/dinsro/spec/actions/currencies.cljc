@@ -8,6 +8,8 @@
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
+;; Create
+
 (s/def :create-currency-request/params (s/keys :opt-un [::s.currencies/name]))
 (s/def :create-currency-request-valid/params (s/keys :req-un [::s.currencies/name]))
 (s/def :create-currency-request-valid/request (s/keys :req-un [:create-currency-request-valid/params]))
@@ -44,8 +46,14 @@
   (gen/generate (s/gen ::create-handler-response))
   )
 
+
+;; Delete
+
 (s/def ::delete-handler-response (s/keys))
 (s/def ::delete-handler-request (s/keys))
+
+
+;; Read
 
 (s/def :read-currency-request-path-params/id
   (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))

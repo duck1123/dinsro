@@ -60,7 +60,7 @@
   )
 
 (s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
-(s/def :read-rates-response-not-found-body/status #{:not-found})
+(s/def :read-rates-response-not-found-body/status ::ds/not-found-status)
 (s/def :read-rates-response-not-found/body (s/keys :req-un [:read-rates-response-not-found-body/status]))
 (s/def ::read-handler-response-valid (s/keys :req-un [:read-rates-response/body]))
 (s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response-not-found/body]))

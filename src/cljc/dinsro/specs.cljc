@@ -82,6 +82,8 @@
 
 (s/def ::id-string (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 
+(s/def ::not-found-status #{:not-found})
+
 (comment
 
   )
