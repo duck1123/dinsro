@@ -46,7 +46,7 @@
 (s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
 (def date-string ::date-string)
 
-(s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) #(fn [] email-gen-fn)))
+(s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen-fn)))
 (def email-gen ::email)
 
 (s/def ::date (s/with-gen ts/instant? #(gen/fmap tick/instant (s/gen ::date-string))))

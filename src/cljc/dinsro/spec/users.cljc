@@ -19,7 +19,7 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::email (s/with-gen #(and % (re-matches #".+@.+\..+" %)) (fn [] ds/email-gen)))
+(s/def ::email ::ds/email)
 (def email-spec
   {:db/ident       ::email
    :db/valueType   :db.type/string
@@ -27,7 +27,9 @@
    :db/unique      :db.unique/identity})
 
 (s/def ::params (s/keys :req [::name ::email ::password]))
+(def params ::params)
 (s/def ::item (s/keys :req [::name ::email ::password-hash]))
+(def item ::item)
 
 (def schema
   [name-spec password-hash-spec email-spec])
