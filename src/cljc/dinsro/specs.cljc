@@ -43,6 +43,8 @@
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 (def valid-double ::valid-double)
 
+(s/def ::double-string (s/with-gen string? #(gen/fmap str (s/gen ::valid-double))))
+
 (s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
 (def date-string ::date-string)
 

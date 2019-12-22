@@ -8,23 +8,23 @@
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
-(s/def ::currency-id ::ds/id)
+(s/def ::currency-id ::ds/id-string)
 (def currency-id ::currency-id)
 
-(s/def ::account-id ::ds/id)
+(s/def ::account-id ::ds/id-string)
 (def account-id ::account-id)
 
 (s/def ::date ds/date-string)
 (def date ::date)
 
-(s/def ::value string?)
+(s/def ::value ::ds/double-string)
 
 ;; Create
 
 ;; - request
 
 (s/def :create-transactions-request-valid/params
-  (s/keys :req-un [::s.transactions/value ::currency-id ::account-id ::date]))
+  (s/keys :req-un [::value ::currency-id ::account-id ::date]))
 (def create-params-valid :create-transactions-request-valid/params)
 
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-transactions-request-valid/params]))

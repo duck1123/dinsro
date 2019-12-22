@@ -37,7 +37,8 @@
 (defn-spec index-records (s/coll-of ::s.transactions/item :kind vector?)
   []
   (->> (index-ids)
-       (d/pull-many @db/*conn* '[*])))
+       (d/pull-many @db/*conn* '[*])
+       (map #(update % ::s.transactions/date tick/instant))))
 
 (defn-spec delete-record nil?
   [id ::ds/id]

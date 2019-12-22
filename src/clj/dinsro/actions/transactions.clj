@@ -30,7 +30,7 @@
   (let [currency-id (utils/get-as-int (timbre/spy :info params) :currency-id)
         account-id (utils/get-as-int params :account-id)
         params {::s.transactions/currency {:db/id currency-id}
-                ::s.transactions/value (some-> params :value double)
+                ::s.transactions/value (some-> params :value Double/parseDouble)
                 ::s.transactions/account {:db/id account-id}
                 ::s.transactions/date (some-> params :date tick/instant)}]
     (if (s/valid? ::s.transactions/params (timbre/spy :info params))

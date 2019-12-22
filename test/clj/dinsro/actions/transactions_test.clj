@@ -46,7 +46,7 @@
         params {:currency-id (str currency-id)
                 :account-id (str account-id)
                 :date date
-                :value value}
+                :value (str value)}
         response (a.transactions/prepare-record params)
         expected {::s.transactions/currency {:db/id currency-id}
                   ::s.transactions/date date
@@ -57,7 +57,7 @@
 (deftest create-record-response-test
   (let [
         ;; params (gen/generate (s/gen ::s.transactions/params))
-        request (gen/generate (s/gen s.a.transactions/create-request-valid))
+        request (ds/gen-key s.a.transactions/create-request-valid)
         response (a.transactions/create-handler request #_{:params params})]
     (is (= (:status response) status/ok))))
 
@@ -83,8 +83,8 @@
         "should signal a bad request")))
 
 (deftest delete-handler-success
-  (let [currency (mocks/mock-currency)
-        id (:db/id currency)
+  (let [item (mocks/mock-transaction)
+        id (:db/id item)
         request {:path-params {:id (str id)}}]
     (is (not (nil? (m.transactions/read-record id))))
     (let [response (a.transactions/delete-handler request)]
@@ -92,12 +92,12 @@
       (is (nil? (m.transactions/read-record id))))))
 
 (deftest read-handler-success
-  (let [currency (mocks/mock-currency)
-        id (str (:db/id currency))
+  (let [item (mocks/mock-transaction)
+        id (str (:db/id item))
         request {:path-params {:id id}}
         response (a.transactions/read-handler request)]
     (is (= status/ok (:status response)))
-    (is (= currency (get-in response [:body :item])))))
+    (is (= item (get-in response [:body :item])))))
 
 (deftest read-handler-not-found
   (let [id (gen/generate (s/gen :read-currency-request-path-params/id))
