@@ -15,36 +15,32 @@
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+            [tick.alpha.api :as tick]
+            [time-specs.core :as ts]))
 
 ;; Create
 
 (def param-rename-map
   {:value       ::s.transactions/value
    ;; :currency-id ::s.transactions/currency-id
-   :date      ::s.transactions/date})
+   :date        ::s.transactions/date})
 
 (defn-spec prepare-record (s/nilable s.a.transactions/create-params-valid)
   [params s.a.transactions/create-request-params]
   (let [currency-id (utils/get-as-int (timbre/spy :info params) :currency-id)
         account-id (utils/get-as-int params :account-id)
-        value (some-> params :value double)
-        date (some-> params :date tick/instant)
-        params (-> params
-                   (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map))
-                   (assoc ::s.transactions/currency {:db/id currency-id})
-                   (assoc ::s.transactions/value value)
-                   (assoc ::s.transactions/account {:db/id account-id})
-                   (assoc ::s.transactions/date date))]
+        params {::s.transactions/currency {:db/id currency-id}
+                ::s.transactions/value (some-> params :value double)
+                ::s.transactions/account {:db/id account-id}
+                ::s.transactions/date (some-> params :date tick/instant)}]
     (if (s/valid? ::s.transactions/params (timbre/spy :info params))
       params
       (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
           nil))))
 
 (comment
-  (gen/generate (s/gen s.a.transactions/create-request-params))
-  (gen/generate (s/gen s.a.transactions/valid-create-params))
+  (ds/gen-key s.a.transactions/create-request-params)
+  (ds/gen-key s.a.transactions/valid-create-params)
   )
 
 
@@ -57,7 +53,7 @@
       (http/bad-request {:status :invalid})))
 
 (comment
-  (gen/generate (s/gen ::s.a.transactions/create-handler-response))
+  (ds/gen-key ::s.a.transactions/create-handler-response)
   )
 
 

@@ -1,13 +1,19 @@
 (ns dinsro.specs
   (:require [clojure.spec.alpha :as s]
             [clojure.test.check.generators]
-            [clojure.spec.gen.alpha :as gen]))
+            [clojure.spec.gen.alpha :as gen]
+            [tick.alpha.api :as tick]
+            [time-specs.core :as ts]))
 
 (defn valid-jwt? [jwt]
   (re-matches #"^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$" jwt))
 
 (defn uuid-str-gen []
   (gen/fmap str (s/gen uuid?)))
+
+(defn gen-key
+  [key]
+  (gen/generate (s/gen key)))
 
 #_(defn valid-uuid-str?
   "Ensures a match of the original uuid str with the result of coercing that str to
@@ -30,67 +36,30 @@
     non-empty-string-alphanumeric
     non-empty-string-alphanumeric)))
 
-(s/def ::message string?)
 (s/def ::id pos-int? #_(s/with-gen valid-uuid-str? uuid-str-gen))
-(s/def ::username string?)
-(s/def ::user-id number?)
-(s/def ::name string?)
-(s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen)))
-(s/def ::password string? #_(s/and string? #(< 7 (count %))))
-(s/def ::password-hash string?)
-(s/def ::permissions string?)
-(s/def ::token (s/with-gen valid-jwt? #(s/gen #{"J9.eyJ.5n"})))
-(s/def ::refresh-token string? #_(s/with-gen valid-uuid-str? uuid-str-gen))
-(s/def ::exp int?)
-;; = Auth ======================================================================
-(s/def ::auth-response (s/keys :req-un [::id ::username ::permissions ::token ::refresh-token]))
-(s/def ::token-contents (s/keys :req-un [::id ::username ::email ::permissions ::exp]))
-(s/def ::authentication-data (s/keys :req-un [::email ::password]))
-;; = User ======================================================================
-(s/def ::register-request (s/keys :req [::name ::email ::password]))
-(s/def ::register-response (s/keys :req-un [::username]))
-;; = Patch User ================================================================
-(s/def ::patch-pass-request (s/keys :req-un [::password]))
-(s/def ::patch-pass-response (s/keys :req-un [::id ::username ::email]))
-(s/def ::change-username-request (s/keys :req-un [::username]))
-(s/def ::user (s/keys :req-un [::name ::email ::password-hash]))
-;; = Request Password Reset ====================================================
-(s/def ::useruser-email ::email)
-(s/def ::from-email ::email)
-(s/def ::subject string?)
-(s/def ::email-body-html string?)
-(s/def ::email-body-plain string?)
-(s/def ::response-base-link string?)
-(s/def ::request-reset-request (s/keys :req-un [::useruser-email ::from-email ::subject ::email-body-html ::email-body-plain ::response-base-link]))
-(s/def ::request-reset-response (s/keys :req-un [::message]))
-;; = Password Reset ============================================================
-(s/def ::resetKey string? #_(s/with-gen valid-uuid-str? uuid-str-gen))
-(s/def ::new-password ::password)
-(s/def ::reset-request (s/keys :req-un [::resetKey ::new-password]))
-(s/def ::reset-response (s/keys :req-un [::message]))
-;; = Refresh Token =============================================================
-(s/def ::refresh-token-response (s/keys :req-un [::token ::refresh-token]))
-(s/def ::user-response (s/keys :req-un [::name ::email]))
-
-
-(s/def ::value number?)
-(s/def ::time string?)
-(s/def ::rate (s/keys :req-un [::id ::value ::time]))
+(s/def :db/id ::id)
 
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 ;; (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 
-(s/def ::date-string string?)
+
+(def date-string-gen
+  )
+
+(s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
 (def date-string ::date-string)
 
-(s/def ::id-string (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
+(comment
+
+  )
+
+(s/def :date (s/with-gen ts/instant? #(gen/fmap tick/instant (s/gen ::date-string))))
+
+(s/def ::id-string (s/with-gen (s/and string? #(re-matches #"\d+" %))
+                     #(gen/fmap str (s/gen pos-int?))))
 
 (s/def ::not-found-status #{:not-found})
 (def not-found-status ::not-found-status)
-
-(defn gen-key
-  [key]
-  (gen/generate (s/gen key)))
 
 (comment
 

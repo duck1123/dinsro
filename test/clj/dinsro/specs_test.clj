@@ -16,6 +16,13 @@
   (is (not (s/valid? ::ds/id-string "a"))
       "non-numeric string is invalid"))
 
+(deftest date-string-test
+  (is (s/valid? ::ds/date-string "2019-12-22T14:02:00.000Z")
+      "Valid date"
+      )
+  )
+
 (comment
-  (gen/generate (s/gen ::ds/id-string))
+  (ds/gen-key ::ds/date-string)
+  (ds/gen-key ::ds/id-string)
   )
