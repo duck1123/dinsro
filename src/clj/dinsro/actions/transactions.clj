@@ -23,8 +23,8 @@
    ;; :currency-id ::s.transactions/currency-id
    :date      ::s.transactions/date})
 
-(defn-spec prepare-record (s/nilable :create-transactions-request/params)
-  [params :create-transactions-request/params]
+(defn-spec prepare-record (s/nilable s.a.transactions/valid-create-params)
+  [params s.a.transactions/create-request-params]
   (let [currency-id (some-> (timbre/spy :info params) :currency-id timbre/spy int)
         account-id (some-> params :account-id timbre/spy int)
         value (some-> params :value double)
@@ -41,7 +41,13 @@
       (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
           nil))))
 
-(defn-spec create-handler ::s.a.transactions/create-handler-response
+(comment
+  (gen/generate (s/gen s.a.transactions/create-request-params))
+  (gen/generate (s/gen s.a.transactions/valid-create-params))
+  )
+
+
+(defn-spec create-handler s.a.transactions/create-response
   [request ::s.a.transactions/create-handler-request]
   (or (let [{params :params} (timbre/spy :info request)]
         (when-let [params (prepare-record params)]

@@ -80,9 +80,17 @@
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 ;; (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 
+(s/def ::date-string string?)
+(def date-string ::date-string)
+
 (s/def ::id-string (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 
 (s/def ::not-found-status #{:not-found})
+(def not-found-status ::not-found-status)
+
+(defn gen-key
+  [key]
+  (gen/generate (s/gen key)))
 
 (comment
 
