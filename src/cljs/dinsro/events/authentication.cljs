@@ -24,9 +24,9 @@
 (defn do-authenticate-success
   [cofx event]
   (let [{:keys [db]} cofx
-        [{:keys [identity]}] (timbre/spy :info event)
+        [{:keys [identity]}] event
         return-to (:return-to db)
-        db (if (timbre/spy :info return-to)
+        db (if return-to
              (-> db
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
@@ -44,8 +44,8 @@
 
 (defn do-authenticate
   [cofx event]
-  (let [{:keys [db]} (timbre/spy :info cofx)
-        [data return-to] (timbre/spy :info event)]
+  (let [{:keys [db]} cofx
+        [data return-to] event]
     {:db (assoc db ::loading true)
      :http-xhrio
      {:method          :post

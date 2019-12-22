@@ -101,7 +101,7 @@
         [c/number-input (tr [:rate]) ::rate ::set-rate]]
        [:div.field>div.control
         [c.datepicker/datepicker
-         {:on-select #(rf/dispatch [::set-date (timbre/spy :info %)])}]]
+         {:on-select #(rf/dispatch [::set-date %])}]]
        [c.debug/debug-box form-data]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]])))

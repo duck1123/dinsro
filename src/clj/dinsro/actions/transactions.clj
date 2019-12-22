@@ -20,20 +20,15 @@
 
 ;; Create
 
-(def param-rename-map
-  {:value       ::s.transactions/value
-   ;; :currency-id ::s.transactions/currency-id
-   :date        ::s.transactions/date})
-
 (defn-spec prepare-record (s/nilable s.transactions/params)
   [params s.a.transactions/create-params]
-  (let [currency-id (utils/get-as-int (timbre/spy :info params) :currency-id)
+  (let [currency-id (utils/get-as-int params :currency-id)
         account-id (utils/get-as-int params :account-id)
         params {::s.transactions/currency {:db/id currency-id}
                 ::s.transactions/value (some-> params :value Double/parseDouble)
                 ::s.transactions/account {:db/id account-id}
                 ::s.transactions/date (some-> params :date tick/instant)}]
-    (if (s/valid? ::s.transactions/params (timbre/spy :info params))
+    (if (s/valid? ::s.transactions/params params)
       params
       (do
         #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
@@ -47,7 +42,7 @@
 
 (defn-spec create-handler s.a.transactions/create-response
   [request ::s.a.transactions/create-handler-request]
-  (or (let [{params :params} (timbre/spy :info request)]
+  (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.transactions/create-record params)]
             (http/ok {:item (m.transactions/read-record id)}))))

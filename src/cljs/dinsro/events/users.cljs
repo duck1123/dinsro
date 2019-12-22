@@ -127,7 +127,7 @@
 
 (defn do-fetch-index-unauthorized
   [cofx event]
-  (let [route (timbre/spy :info (get-in cofx [:db :kee-frame/route :data]))]
+  (let [route (get-in cofx [:db :kee-frame/route :data])]
     {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}))
 
 (defn do-fetch-index-failed

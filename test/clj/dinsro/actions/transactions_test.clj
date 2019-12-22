@@ -45,7 +45,7 @@
         date (tick/instant)
         params {:currency-id (str currency-id)
                 :account-id (str account-id)
-                :date date
+                :date (str date)
                 :value (str value)}
         response (a.transactions/prepare-record params)
         expected {::s.transactions/currency {:db/id currency-id}
@@ -73,7 +73,7 @@
         request (mock/request :get path)
         response (a.transactions/index-handler request)]
     (is (= (:status response) status/ok))
-    (is (= 1 (count (timbre/spy :info (:items (:body response))))))))
+    (is (= 1 (count (:items (:body response)))))))
 
 (deftest create-handler-invalid
   (let [params {}

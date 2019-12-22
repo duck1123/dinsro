@@ -21,8 +21,6 @@
 
 (defn-spec sub-item-map ::item-map
   [db any? event any?]
-  ;; (timbre/spy :info db)
-  ;; (timbre/spy :info event)
   (get db ::item-map))
 
 (rf/reg-sub ::items                  items-sub)
@@ -82,8 +80,6 @@
 (defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
   [{:keys [db] :as cofx} ::do-fetch-record-failed-cofx
    event ::do-fetch-record-failed-event]
-  (timbre/spy :info cofx)
-  (timbre/spy :info event)
   {:db (assoc db ::do-fetch-record-state :failed)})
 
 (defn do-fetch-record
@@ -145,9 +141,6 @@
 
 (defn do-fetch-index-failed
   [cofx event]
-  (timbre/info "fetch records failed")
-  (timbre/spy :info cofx)
-  (timbre/spy :info event)
   {})
 
 (defn do-fetch-index
