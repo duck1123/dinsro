@@ -14,7 +14,8 @@
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 ;; Create
 
@@ -25,10 +26,10 @@
 
 (defn-spec prepare-record (s/nilable s.a.transactions/valid-create-params)
   [params s.a.transactions/create-request-params]
-  (let [currency-id (some-> (timbre/spy :info params) :currency-id timbre/spy int)
-        account-id (some-> params :account-id timbre/spy int)
+  (let [currency-id (utils/get-as-int (timbre/spy :info params) :currency-id)
+        account-id (utils/get-as-int params :account-id)
         value (some-> params :value double)
-        date (some-> params :date t/java-date)
+        date (some-> params :date tick/instant)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))

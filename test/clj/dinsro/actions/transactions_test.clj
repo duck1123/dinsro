@@ -45,9 +45,13 @@
         date (tick/instant)
         params {:currency-id (str currency-id)
                 :account-id (str account-id)
+                :date date
                 :value value}
         response (a.transactions/prepare-record params)
-        expected {::s.transactions/currency {:db/id currency-id}}]
+        expected {::s.transactions/currency {:db/id currency-id}
+                  ::s.transactions/date date
+                  ::s.transactions/value (double value)
+                  ::s.transactions/account {:db/id account-id}}]
     (is (= expected response))))
 
 (deftest create-record-response-test
