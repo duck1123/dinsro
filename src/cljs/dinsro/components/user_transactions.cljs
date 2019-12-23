@@ -6,7 +6,6 @@
             [dinsro.components.forms.add-user-transaction :as c.f.add-user-transaction]
             [dinsro.components.index-transactions :as c.index-transactions]
             [dinsro.components.show-user :refer [show-user]]
-            [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]

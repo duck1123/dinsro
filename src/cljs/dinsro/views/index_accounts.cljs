@@ -15,14 +15,14 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(kf/reg-event-fx
- ::init-page
- (fn-traced [{:keys [db]} _]
-   {:document/title "Index Accounts"
-    :dispatch-n [[::e.accounts/do-fetch-index]
-                 [::e.users/do-fetch-index]
-                 [::e.currencies/do-fetch-index]
-                 ]}))
+(defn init-page
+  [{:keys [db]} _]
+  {:document/title "Index Accounts"
+   :dispatch-n [[::e.accounts/do-fetch-index]
+                [::e.users/do-fetch-index]
+                [::e.currencies/do-fetch-index]]})
+
+(kf/reg-event-fx ::init-page init-page)
 
 (kf/reg-controller
  ::page-controller

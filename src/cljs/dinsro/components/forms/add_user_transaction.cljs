@@ -4,7 +4,6 @@
             [dinsro.components :as c]
             [dinsro.components.forms.create-category :as c.f.create-category]
             [dinsro.components.debug :as c.debug]
-            [dinsro.events.accounts :as e.accounts]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.transactions :as s.a.transactions]

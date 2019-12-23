@@ -3,7 +3,6 @@
             [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
-            [dinsro.events.accounts :as e.accounts]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]

@@ -2,10 +2,9 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
             [dinsro.events.categories :as e.categories]
             [dinsro.spec.categories :as s.categories]
+            [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -13,21 +12,18 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(s/def ::name string?)
-(rfu/reg-basic-sub ::name)
-(rfu/reg-set-event ::name)
+(rfu/reg-basic-sub ::s.e.f.create-category/name)
+(rfu/reg-set-event ::s.e.f.create-category/name)
 
-(s/def ::user-id string?)
-(rfu/reg-basic-sub ::user-id)
-(rfu/reg-set-event ::user-id)
+(rfu/reg-basic-sub ::s.e.f.create-category/user-id)
+(rfu/reg-set-event ::s.e.f.create-category/user-id)
 
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
+(rfu/reg-basic-sub ::s.e.f.create-category/shown?)
+(rfu/reg-set-event ::s.e.f.create-category/shown?)
 
 (kf/reg-event-db ::toggle-form (fn-traced [db _] (update db ::shown? not)))
 
-(defn create-form-data
+(defn form-data-sub
   [[name user-id] _]
   {:name          name
    :user-id       (int user-id)})
@@ -36,4 +32,4 @@
  ::form-data
  :<- [::name]
  :<- [::user-id]
- create-form-data)
+ form-data-sub)

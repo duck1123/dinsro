@@ -1,7 +1,6 @@
 (ns dinsro.events.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [dinsro.events.accounts :as e.accounts]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.transactions :as s.a.transactions]
