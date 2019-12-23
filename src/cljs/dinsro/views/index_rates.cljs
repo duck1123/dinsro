@@ -7,6 +7,7 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
+            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -41,7 +42,7 @@
      [:div.box
       [:h1
        (tr [:rates "Rates"])
-       [c/show-form-button ::c.f.create-rate/shown? ::c.f.create-rate/set-shown?]]
+       [c/show-form-button ::s.e.f.create-rate/shown? ::s.e.f.create-rate/set-shown?]]
       [c.f.create-rate/form]
       [:hr]
       [rate-chart items]
