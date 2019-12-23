@@ -4,4 +4,7 @@
 (def default-name "Foo")
 
 (s/def ::name string?)
+(def name ::name)
+
 (s/def ::shown? boolean?)
+(def shown? ::shown?)

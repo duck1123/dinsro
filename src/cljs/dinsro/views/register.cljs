@@ -1,12 +1,12 @@
 (ns dinsro.views.register
   (:require [dinsro.components :as c]
-            [dinsro.components.forms.registration-form :as c.f.registration-form]
+            [dinsro.components.forms.registration :as c.f.registration]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]
-  {:dispatch [::c.f.registration-form/set-defaults]
+  {:dispatch [::c.f.registration/set-defaults]
    :document/title "Registration"})
 
 (kf/reg-event-fx ::init-page init-page)
@@ -20,4 +20,4 @@
   []
   [:section.section>div.container>div.content
    [:h1 "Registration Page"]
-   [c.f.registration-form/registration-form]])
+   [c.f.registration/form]])

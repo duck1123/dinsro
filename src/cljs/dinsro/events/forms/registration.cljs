@@ -1,4 +1,4 @@
-(ns dinsro.events.forms.registration-form
+(ns dinsro.events.forms.registration
   (:require [dinsro.spec.events.forms.registration :as s.e.f.registration]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]

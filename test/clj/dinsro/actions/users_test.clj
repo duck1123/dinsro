@@ -28,8 +28,8 @@
       (f))))
 
 (deftest create-record-response-test
-  (let [registration-data (ds/gen-key ::s.users/params)
-        response (a.users/create-handler {:params registration-data})]
+  (let [params (ds/gen-key ::s.users/params)
+        response (a.users/create-handler {:params params})]
     (is (= (:status response) status/ok))))
 
 (deftest index-handler-empty
