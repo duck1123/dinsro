@@ -16,7 +16,9 @@
 (defn-spec create-record ::ds/id
   [params ::s.rates/params]
   (let [tempid (d/tempid "rate-id")
-        prepared-params (assoc (prepare-record params) :db/id tempid)
+        prepared-params (-> (prepare-record params)
+                            (assoc :db/id tempid)
+                            (update ::s.rates/date tick/inst))
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
@@ -24,7 +26,7 @@
   [id ::ds/id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.rates/rate)
-      record)))
+      (update record ::s.rates/date tick/instant))))
 
 (defn-spec index-ids (s/coll-of ::ds/id)
   []
@@ -35,8 +37,7 @@
   (->> (index-ids)
        (take 20)
        (d/pull-many @db/*conn* '[*])
-       (map #(update % ::s.rates/date tick/instant))
-       ))
+       (map #(update % ::s.rates/date tick/instant))))
 
 (defn-spec delete-record nil?
   [id ::ds/id]
