@@ -11,6 +11,7 @@
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
+            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -62,11 +63,15 @@
      [c.debug/debug-box items]
      [index-transactions items])])
 
-(s/def :show-account-view/id          string?)
+(s/def :show-account-view/id          ::ds/id-string)
 (s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
 (s/def ::view-map (s/keys :req-un [:show-account-view/path-params]))
 
 (comment
+  (ds/gen-key :show-account-view/id)
+  (ds/gen-key :show-account-view/path-params)
+  (ds/gen-key ::ds/id-string)
+  (ds/gen-key ::ds/id)
   (ds/gen-key ::view-map)
   )
 

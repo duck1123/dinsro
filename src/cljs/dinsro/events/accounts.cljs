@@ -14,8 +14,17 @@
 
 (rfu/reg-basic-sub ::items)
 
-(defn sub-item
-  [items [_ id]]
+(s/def ::sub-item-event (s/cat
+                         :event-name keyword?
+                         :id ::ds/id))
+
+(comment
+  (ds/gen-key ::sub-item-event)
+  )
+
+(defn-spec sub-item any?
+  [items (s/coll-of ::s.accounts/item)
+   [_ id] ::sub-item-event]
   (first (filter #(= (:db/id %) id) items)))
 
 (defn-spec items-by-user (s/coll-of ::s.accounts/item)
@@ -29,6 +38,8 @@
     (filter #(= (:db/id item) (get-in % [::s.accounts/currency :db/id])) (::items db))))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
+(def item ::item)
+
 (rf/reg-sub ::items-by-user items-by-user)
 (rf/reg-sub ::items-by-currency items-by-currency)
 
