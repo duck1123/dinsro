@@ -1,24 +1,20 @@
-(ns dinsro.events.create-transaction
-  (:require [clojure.spec.alpha :as s]
+(ns dinsro.events.forms.create-transaction
+  (:require [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(s/def ::currency-id string?)
-(rfu/reg-basic-sub ::currency-id)
-(rfu/reg-set-event ::currency-id)
+(rfu/reg-basic-sub ::s.e.f.create-transaction/currency-id)
+(rfu/reg-set-event ::s.e.f.create-transaction/currency-id)
 
-(s/def ::date string?)
-(rfu/reg-basic-sub ::date)
-(rfu/reg-set-event ::date)
+(rfu/reg-basic-sub ::s.e.f.create-transaction/date)
+(rfu/reg-set-event ::s.e.f.create-transaction/date)
 
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
+(rfu/reg-basic-sub ::s.e.f.create-transaction/shown?)
+(rfu/reg-set-event ::s.e.f.create-transaction/shown?)
 
-(s/def ::value string?)
-(rfu/reg-basic-sub ::value)
-(rfu/reg-set-event ::value)
+(rfu/reg-basic-sub ::s.e.f.create-transaction/value)
+(rfu/reg-set-event ::s.e.f.create-transaction/value)
 
 (defn form-data-sub
   [[value currency-id date]]
@@ -28,7 +24,7 @@
 
 (rf/reg-sub
  ::form-data
- :<- [::value]
- :<- [::currency-id]
- :<- [::date]
+ :<- [::s.e.f.create-transaction/value]
+ :<- [::s.e.f.create-transaction/currency-id]
+ :<- [::s.e.f.create-transaction/date]
  form-data-sub)
