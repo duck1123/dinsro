@@ -11,51 +11,7 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(def default-name "Bob")
-(def default-email "bob@example.com")
-(def default-password "hunter2")
-
-(s/def ::name string?)
-(rfu/reg-basic-sub ::name)
-(rfu/reg-set-event ::name)
-
-(s/def ::email            string?)
-(rfu/reg-basic-sub ::email)
-(rfu/reg-set-event ::email)
-
-
-(s/def ::password         string?)
-(rfu/reg-basic-sub ::password)
-(rfu/reg-set-event ::password)
-
-(s/def ::confirm-password string?)
-(rfu/reg-basic-sub ::confirm-password)
-(rfu/reg-set-event ::confirm-password)
-
-(defn set-defaults
-  [{:keys [db]} _]
-  {:db (-> db
-           (assoc ::name default-name)
-           (assoc ::email default-email)
-           (assoc ::password default-password)
-           (assoc ::confirm-password default-password))})
-
-(kf/reg-event-fx ::set-defaults set-defaults)
-
-(defn create-form-data
-  [[name email password] _]
-  {:name name
-   :email email
-   :password password})
-
-(rf/reg-sub
- ::form-data
- :<- [::name]
- :<- [::email]
- :<- [::password]
- create-form-data)
-
-(defn-spec registration-form (s/keys)
+(defn-spec registration-form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     [:div.box

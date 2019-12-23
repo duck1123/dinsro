@@ -18,7 +18,7 @@
  {:params (constantly true)
   :start [::init-form]})
 
-(defn create-rate-form
+(defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])

@@ -1,4 +1,13 @@
-(ns dinsro.events.forms.add-account-transactions)
+(ns dinsro.events.forms.add-account-transactions
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
+            [dinsro.components.debug :as c.debug]
+            [dinsro.translations :refer [tr]]
+            [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
+            [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
+            [taoensso.timbre :as timbre]))
 
 (rfu/reg-basic-sub ::s.e.f.add-account-transactions/shown?)
 (rfu/reg-set-event ::s.e.f.add-account-transactions/shown?)
@@ -12,22 +21,7 @@
 (rfu/reg-basic-sub ::s.e.f.add-account-transactions/value)
 (rfu/reg-set-event ::s.e.f.add-account-transactions/value)
 
-(defn toggle
-  [cofx event]
-  (let [{:keys [db]} cofx]
-    {:db (update db ::s.e.f.add-account-transactions/shown? not)}))
-
-(kf/reg-event-fx ::s.e.f.add-account-transactions/toggle toggle)
-
-(defn toggle-button
-  []
-  (let [shown? @(rf/subscribe [::s.e.f.add-account-transactions/shown?])]
-    [:a {:on-click #(rf/dispatch [::s.e.f.add-account-transactions/toggle])}
-     (if shown?
-       [:span.icon>i.fas.fa-chevron-down]
-       [:span.icon>i.fas.fa-chevron-right])]))
-
-(defn create-form-data
+(defn form-data-sub
   [[value currency-id date]]
   {:value (.parseFloat js/Number value)
    :currency-id (int currency-id)
@@ -38,4 +32,4 @@
  :<- [::s.e.f.add-account-transactions/value]
  :<- [::s.e.f.add-account-transactions/currency-id]
  :<- [::s.e.f.add-account-transactions/date]
- create-form-data)
+ form-data-sub)

@@ -1,4 +1,4 @@
-(ns dinsro.components.forms.add-user-transaction
+(ns dinsro.spec.events.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
@@ -15,17 +15,10 @@
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(defn-spec form vector?
-  []
-  (let [form-data @(rf/subscribe [::form-data])]
-    (when @(rf/subscribe [::shown?])
-      [:div
-       [c/close-button ::set-shown?]
-       [c.debug/debug-box form-data]
-       [:p "Form"]
-       [:div.field>div.control
-        [c/number-input (tr [:value]) ::value ::set-value]]
-       [:div.field>div.control
-        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
-       [:div.field>div.control
-        [c/primary-button (tr [:submit]) [::submit-clicked]]]])))
+(s/def ::shown? boolean?)
+(s/def ::currency-id string?)
+(s/def ::date string?)
+(s/def ::value string?)
+(s/def ::form-data-input
+  (s/cat :value ::value))
+(s/def ::form-data-output :create-transactions-request-valid/params)

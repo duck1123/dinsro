@@ -15,7 +15,7 @@
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(defn-spec add-user-account vector?
+(defn-spec form vector?
   [id ::ds/id]
   (let [form-data (assoc @(rf/subscribe [::e.f.add-user-account/form-data]) :user-id id)]
     (when @(rf/subscribe [::e.f.add-user-account/shown?])

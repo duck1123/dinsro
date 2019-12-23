@@ -20,7 +20,7 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(defn-spec add-currency-rate-form vector?
+(defn-spec form vector?
   [currency-id ::ds/id]
   (when @(rf/subscribe [::shown?])
     (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]

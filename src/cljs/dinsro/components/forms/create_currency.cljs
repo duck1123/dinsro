@@ -11,26 +11,12 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(def default-name "Foo")
+(kf/reg-controller
+ ::form-controller
+ {:params (constantly true)
+  :start [::set-defaults]})
 
-(s/def ::name string?)
-(rfu/reg-basic-sub ::name)
-(rfu/reg-set-event ::name)
-
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
-(defn create-form-data
-  [name]
-  {:name name})
-
-(rf/reg-sub
- ::form-data
- :<- [::name]
- create-form-data)
-
-(defn create-currency
+(defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])
@@ -40,14 +26,3 @@
        [:form
         [c/text-input     (tr [:name])   ::name ::set-name]
         [c/primary-button (tr [:submit]) [::e.currencies/do-submit form-data]]]])))
-
-(defn set-defaults
-  [{:keys [db]} _]
-  {:db (merge db {::name default-name})})
-
-(kf/reg-event-fx ::set-defaults set-defaults)
-
-(kf/reg-controller
- ::form-controller
- {:params (constantly true)
-  :start [::set-defaults]})

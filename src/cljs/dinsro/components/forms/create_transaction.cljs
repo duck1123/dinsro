@@ -13,20 +13,17 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(defn toggle-button
-  []
-  [:a.button {:on-click #(rf/dispatch [::toggle-form])}
-   (tr [:toggle])])
-
-(defn create-transaction-form
+(defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])
       [:div
        [c/close-button ::set-shown?]
        [:div.field>div.control
-        [c/number-input (tr [:value]) ::value ::set-value]]
+        [c/number-input (tr [:value])
+         ::value ::set-value]]
        [:div.field>div.control
-        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
+        [c/currency-selector (tr [:currency])
+         ::currency-id ::set-currency-id]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::submit-clicked]]]])))

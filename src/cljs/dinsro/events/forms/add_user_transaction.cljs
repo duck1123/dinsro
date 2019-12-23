@@ -1,4 +1,4 @@
-(ns dinsro.components.forms.add-user-transaction
+(ns dinsro.events.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
@@ -15,17 +15,32 @@
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(defn-spec form vector?
-  []
-  (let [form-data @(rf/subscribe [::form-data])]
-    (when @(rf/subscribe [::shown?])
-      [:div
-       [c/close-button ::set-shown?]
-       [c.debug/debug-box form-data]
-       [:p "Form"]
-       [:div.field>div.control
-        [c/number-input (tr [:value]) ::value ::set-value]]
-       [:div.field>div.control
-        [c/currency-selector (tr [:currency]) ::currency-id ::set-currency-id]]
-       [:div.field>div.control
-        [c/primary-button (tr [:submit]) [::submit-clicked]]]])))
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
+
+(rfu/reg-basic-sub ::currency-id)
+(rfu/reg-set-event ::currency-id)
+
+(rfu/reg-basic-sub ::date)
+(rfu/reg-set-event ::date)
+
+(rfu/reg-basic-sub ::value)
+(rfu/reg-set-event ::value)
+
+(defn-spec create-form-data ::form-data-output
+  [[value currency-id] ::form-data-input
+   _ any?]
+  {:value value
+   :currency-id (int currency-id)})
+
+(comment
+  (gen/generate (s/gen ::form-data-input))
+  (gen/generate (s/gen ::form-data-output))
+  (create-form-data ["1" "1"] [])
+  )
+
+(rf/reg-sub
+ ::form-data
+ :<- [::value]
+ :<- [::currency-id]
+ create-form-data)

@@ -14,8 +14,8 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(defn login-form
-  [return-to]
+(defn-spec form vector?
+  [return-to string?]
   (let [form-data @(rf/subscribe [::form-data])]
     [:form.is-centered
      [c.debug/debug-box form-data]
