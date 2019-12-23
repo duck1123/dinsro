@@ -4,6 +4,7 @@
             [dinsro.components.forms.add-user-category :as c.f.add-user-category]
             [dinsro.components.index-categories :as c.index-categories]
             [dinsro.spec.categories :as s.categories]
+            [dinsro.spec.events.forms.add-user-category :as s.e.f.add-user-category]
             [taoensso.timbre :as timbre]))
 
 (defn section
@@ -11,7 +12,7 @@
   [:div.box
    [:h2
     "Categories"
-    [c/show-form-button ::c.f.add-user-category/shown? ::c.f.add-user-category/set-shown?]]
+    [c/show-form-button ::s.e.f.add-user-category/shown? ::s.e.f.add-user-category/set-shown?]]
    [c.f.add-user-category/form user-id]
    [:hr]
    [c.index-categories/index-categories categories]])

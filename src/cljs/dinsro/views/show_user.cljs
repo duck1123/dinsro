@@ -5,7 +5,7 @@
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.components.user-accounts :as c.user-accounts]
             [dinsro.components.user-categories :as c.user-categories]
-            #_[dinsro.components.user-transactions :as c.user-transactions]
+            [dinsro.components.user-transactions :as c.user-transactions]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
@@ -63,7 +63,7 @@
         [show-user user]]
        [c.user-categories/section user-id categories]
        [c.user-accounts/section user-id accounts]
-       #_[c.user-transactions/section user-id transactions]])
+       [c.user-transactions/section user-id transactions]])
     [:p "User not found"]))
 
 (s/fdef page-loaded

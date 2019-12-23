@@ -5,6 +5,7 @@
             [dinsro.components.index-currencies :as c.index-currencies]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
+            [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [kee-frame.core :as kf]
@@ -37,7 +38,7 @@
      [:div.box
       [:h1
        (tr [:index-currencies "Index Currencies"])
-       [c/show-form-button ::c.f.create-currency/shown? ::c.f.create-currency/set-shown?]]
+       [c/show-form-button ::s.e.f.create-currency/shown? ::s.e.f.create-currency/set-shown?]]
       [c.f.create-currency/form]
       [:hr]
       [c.index-currencies/index-currencies currencies]]]))
