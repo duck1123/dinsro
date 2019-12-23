@@ -33,13 +33,13 @@
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
    ["/cards" {:get {:handler devcards/cards-handler}}]
    ["/api/v1" {:middleware [middleware/wrap-formats]}
-    ["/accounts"
+    ["/accounts" {:middleware [middleware/wrap-restricted]}
      [""                {:post   a.accounts/create-handler
                          :get    a.accounts/index-handler}]
      ["/:id"            {:get    a.accounts/read-handler
                          :delete a.accounts/delete-handler}]]
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
-    ["/categories"
+    ["/categories" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.categories/index-handler
                          :post   a.categories/create-handler}]
      ["/:id"            {:get    a.categories/read-handler
@@ -57,8 +57,11 @@
                          :delete a.rates/delete-handler}]]
     ["/register"        {:post   a.authentication/register-handler}]
     ["/status"          {:get    a.status/status-handler}]
-    ["/transactions"
-     [""                {:get a.transactions/index-handler}]]
+    ["/transactions" {:middleware [middleware/wrap-restricted]}
+     [""                {:get    a.transactions/index-handler
+                         :post   a.transactions/create-handler}]
+     ["/:id"            {:get    a.transactions/read-handler
+                         :delete a.transactions/delete-handler}]]
     ["/users" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.users/index-handler
                          :post   a.users/create-handler}]

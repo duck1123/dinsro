@@ -1,5 +1,6 @@
 (ns dinsro.components
-  (:require [dinsro.events.currencies :as e.currencies]
+  (:require [dinsro.events.accounts :as e.accounts]
+            [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
@@ -45,6 +46,25 @@
 (defn primary-button
   [label click-handler]
   [:a.button.is-primary {:on-click #(rf/dispatch click-handler)} label])
+
+(defn account-selector
+  [label field change-handler]
+  (condp = @(rf/subscribe [::e.accounts/do-fetch-index-state])
+    :invalid
+    [:p "Invalid"]
+
+    :loaded
+    (let [items @(rf/subscribe [::e.accounts/items])]
+      [:div.field>div.control
+       [:label.label label]
+       [:div.select
+        (into [:select {:value (or @(rf/subscribe [field]) "")
+                        :on-change #(rf/dispatch [change-handler (target-value %)])}]
+              (concat [[:option {:value ""} ""]]
+                      (for [{:keys [db/id dinsro.spec.accounts/name]} items]
+                        ^{:key id} [:option {:value id} name])))]])
+
+    [:p "Unknown state"]))
 
 (defn currency-selector
   [label field change-handler]

@@ -4,6 +4,9 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(rfu/reg-basic-sub ::s.e.f.create-transaction/account-id)
+(rfu/reg-set-event ::s.e.f.create-transaction/account-id)
+
 (rfu/reg-basic-sub ::s.e.f.create-transaction/currency-id)
 (rfu/reg-set-event ::s.e.f.create-transaction/currency-id)
 
