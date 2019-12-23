@@ -2,6 +2,7 @@
   (:require [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
+            [dinsro.events.forms.create-rate :as e.f.create-rate]
             [dinsro.events.rates :as e.rates]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -11,7 +12,7 @@
 (kf/reg-controller
  ::form-controller
  {:params (constantly true)
-  :start [::init-form]})
+  :start [::e.f.create-rate/init-form]})
 
 (defn form
   []

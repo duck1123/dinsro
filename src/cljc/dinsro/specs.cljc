@@ -52,5 +52,9 @@
                      #(gen/fmap str (s/gen pos-int?))))
 (def id-string ::id-string)
 
+(s/def ::id-string-opt (s/with-gen (s/and string? #(re-matches #"\d*" %))
+                     #(gen/fmap str (s/gen pos-int?))))
+(def id-string-opt ::id-string-opt)
+
 (s/def ::not-found-status #{:not-found})
 (def not-found-status ::not-found-status)
