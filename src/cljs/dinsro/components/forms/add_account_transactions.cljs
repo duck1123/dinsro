@@ -12,6 +12,7 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.events.forms.add-account-transactions :as s.e.f.add-account-transactions]
             [dinsro.spec.rates :as s.rates]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -20,51 +21,7 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
-(s/def ::currency-id string?)
-(rfu/reg-basic-sub ::currency-id)
-(rfu/reg-set-event ::currency-id)
-
-(s/def ::date string?)
-(rfu/reg-basic-sub ::date)
-(rfu/reg-set-event ::date)
-
-(s/def ::value string?)
-(rfu/reg-basic-sub ::value)
-(rfu/reg-set-event ::value)
-
-(defn toggle
-  [cofx event]
-  (let [{:keys [db]} cofx]
-    {:db (update db ::shown? not)}))
-
-(kf/reg-event-fx ::toggle toggle)
-
-(defn toggle-button
-  []
-  (let [shown? @(rf/subscribe [::shown?])]
-    [:a {:on-click #(rf/dispatch [::toggle])}
-     (if shown?
-       [:span.icon>i.fas.fa-chevron-down]
-       [:span.icon>i.fas.fa-chevron-right])]))
-
-(defn create-form-data
-  [[value currency-id date]]
-  {:value (.parseFloat js/Number value)
-   :currency-id (int currency-id)
-   :date        (js/Date. date)})
-
-(rf/reg-sub
- ::form-data
- :<- [::value]
- :<- [::currency-id]
- :<- [::date]
- create-form-data)
-
-(defn form
+(defn-spec form vector?
   []
   [:<>
    (let [form-data @(rf/subscribe [::form-data])]
