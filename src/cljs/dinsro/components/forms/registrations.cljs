@@ -1,4 +1,4 @@
-(ns dinsro.components.forms.registration-form
+(ns dinsro.components.forms.registration
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.translations :refer [tr]]
@@ -6,7 +6,7 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec registration-form vector?
+(defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::form-data])]
     [:div.box
