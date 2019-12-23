@@ -13,60 +13,6 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(def default-rate 1)
-
-(s/def ::rate string?)
-(rfu/reg-basic-sub ::rate)
-(rfu/reg-set-event ::rate)
-
-(s/def ::currency-id string?)
-(rfu/reg-basic-sub ::currency-id)
-(rfu/reg-set-event ::currency-id)
-
-(s/def ::date string?)
-(rfu/reg-basic-sub ::date)
-(rfu/reg-set-event ::date)
-
-(s/def ::time string?)
-(rfu/reg-basic-sub ::time)
-(rfu/reg-set-event ::time)
-
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
-(defn create-form-data
-  [[currency-id rate date] _]
-  {:currency-id (int currency-id)
-   :rate        (js/Number.parseFloat rate)
-   :date        (js/Date. date)})
-
-(rf/reg-sub
- ::form-data
- :<- [::currency-id]
- :<- [::rate]
- :<- [::date]
- create-form-data)
-
-(defn toggle-form
-  [{:keys [db]} _]
-  {:db (update db ::shown? not)})
-
-(kf/reg-event-fx ::toggle-form toggle-form)
-
-(defn toggle-button
-  []
-  [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])])
-
-(defn init-form
-  [{:keys [db]} _]
-  (let [default-date (js/Date.)]
-    {:db (merge db {::rate (str default-rate)
-                    ::currency-id ""
-                    ::date (.toISOString default-date)})}))
-
-(kf/reg-event-fx ::init-form init-form)
-
 (kf/reg-controller
  ::form-controller
  {:params (constantly true)

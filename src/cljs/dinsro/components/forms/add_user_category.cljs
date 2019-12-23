@@ -14,29 +14,6 @@
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
-(s/def ::name string?)
-(rfu/reg-basic-sub ::name)
-(rfu/reg-set-event ::name)
-
-(s/def ::user-id string?)
-(rfu/reg-basic-sub ::user-id)
-(rfu/reg-set-event ::user-id)
-
-(defn create-form-data
-  [[name user-id] _]
-  {:name          name
-   :user-id       (int user-id)})
-
-(rf/reg-sub
- ::form-data
- :<- [::name]
- :<- [::user-id]
- create-form-data)
-
 (defn-spec form vector?
   [user-id pos-int?]
   (let [form-data (assoc @(rf/subscribe [::form-data]) :user-id user-id)]
