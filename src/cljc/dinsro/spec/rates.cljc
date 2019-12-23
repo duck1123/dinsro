@@ -2,7 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.specs :as ds]))
 
-(s/def ::rate pos-int?)
+(s/def ::rate ds/valid-double)
 (def rate-spec
   {:db/ident       ::rate
    :db/valueType   :db.type/double

@@ -45,11 +45,11 @@
 
 (defn-spec read-handler ::s.a.rates/read-handler-response
   [request ::s.a.rates/read-handler-request]
-  (or (let [params (:path-params request)
-            id (:id params)
-            item (m.rates/read-record id)]
-        (http/ok {:item item}))
-      (http/not-found {:status :not-found})))
+  (if-let [id (get-in request :path-params :id)]
+    (if-let [item (m.rates/read-record id)]
+      (http/ok {:item item})
+      (http/not-found {:status :not-found}))
+    (http/bad-request {:status :bad-request})))
 
 ;; Delete
 
