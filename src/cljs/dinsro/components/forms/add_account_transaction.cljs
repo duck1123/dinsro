@@ -24,6 +24,6 @@
           ::s.e.f.add-account-transaction/currency-id ::s.e.f.add-account-transaction/set-currency-id]]
         [:div.field>div.control
          [c.datepicker/datepicker
-          {:on-select #(rf/dispatch [::set-date %])}]]
+          {:on-select #(rf/dispatch [::s.e.f.add-account-transaction/set-date %])}]]
         [:div.field>div.control
          [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]]))])

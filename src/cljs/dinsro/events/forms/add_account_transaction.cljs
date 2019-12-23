@@ -18,9 +18,9 @@
 
 (defn form-data-sub
   [[value currency-id date]]
-  {:value (.parseFloat js/Number value)
-   :currency-id (int currency-id)
-   :date        (js/Date. date)})
+  {:value value
+   :currency-id currency-id
+   :date        date})
 
 (rf/reg-sub
  ::form-data
