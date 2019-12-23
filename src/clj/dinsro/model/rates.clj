@@ -5,7 +5,8 @@
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 (defn-spec prepare-record ::s.rates/params
   [params ::s.rates/params]
@@ -29,10 +30,13 @@
   []
   (map first (d/q '[:find ?e :where [?e ::s.rates/rate _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.rates/item :kind vector?)
+(defn-spec index-records (s/coll-of ::s.rates/item)
   []
   (->> (index-ids)
-       (d/pull-many @db/*conn* '[*])))
+       (take 20)
+       (d/pull-many @db/*conn* '[*])
+       (map #(update % ::s.rates/date tick/instant))
+       ))
 
 (defn-spec delete-record nil?
   [id ::ds/id]
