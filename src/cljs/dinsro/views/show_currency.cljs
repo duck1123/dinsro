@@ -66,9 +66,7 @@
   [accounts]
   [:div.box
    [:h2 "Accounts"]
-   [c.index-accounts/index-accounts accounts]
-   ]
-  )
+   [c.index-accounts/index-accounts accounts]])
 
 (defn-spec page vector?
   [{{:keys [id]} :path-params} ::view-map]

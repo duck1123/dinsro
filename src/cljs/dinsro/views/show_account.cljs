@@ -40,8 +40,6 @@
  {:params (c/filter-param-page :show-account-page)
   :start  [::init-page]})
 
-
-
 (defn-spec load-buttons vector?
   []
   (when @(rf/subscribe [::e.debug/shown?])
@@ -64,11 +62,19 @@
      [c.debug/debug-box items]
      [index-transactions items])])
 
+(s/def :show-account-view/id          string?)
+(s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
+(s/def ::view-map (s/keys :req-un [:show-account-view/path-params]))
+
+(comment
+  (ds/gen-key ::view-map)
+  )
+
 (defn-spec page vector?
-  [match any?]
+  [match ::view-map]
   (let [{{:keys [id]} :path-params} match
         id (int id)
-        account @(rf/subscribe [::e.accounts/item {:id id}])]
+        account @(rf/subscribe [::e.accounts/item id])]
     [:section.section>div.container>div.content
      [load-buttons]
      [:div.box
