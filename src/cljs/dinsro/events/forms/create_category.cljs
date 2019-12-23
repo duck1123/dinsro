@@ -20,6 +20,6 @@
 
 (rf/reg-sub
  ::form-data
- :<- [::name]
- :<- [::user-id]
+ :<- [::s.e.f.create-category/name]
+ :<- [::s.e.f.create-category/user-id]
  form-data-sub)
