@@ -42,4 +42,4 @@
                     ::s.e.f.create-rate/currency-id ""
                     ::s.e.f.create-rate/date (.toISOString default-date)})}))
 
-(kf/reg-event-fx ::s.e.f.create-rate/init-form init-form)
+(kf/reg-event-fx ::init-form init-form)

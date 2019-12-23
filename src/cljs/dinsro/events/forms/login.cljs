@@ -29,4 +29,4 @@
            (assoc ::s.e.f.login/email s.e.f.registration/default-email)
            (assoc ::s.e.f.login/password s.e.f.registration/default-password))})
 
-(kf/reg-event-fx ::s.e.f.login/set-defaults set-defaults)
+(kf/reg-event-fx ::set-defaults set-defaults)

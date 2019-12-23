@@ -25,4 +25,4 @@
   [{:keys [db]} _]
   {:db (merge db {::s.e.f.create-currency/name s.e.f.create-currency/default-name})})
 
-(kf/reg-event-fx ::s.e.f.create-currency/set-defaults set-defaults)
+(kf/reg-event-fx ::set-defaults set-defaults)

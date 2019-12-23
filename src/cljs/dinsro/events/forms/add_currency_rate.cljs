@@ -41,8 +41,3 @@
     {:db (merge db default-opts)}))
 
 (kf/reg-event-fx ::init-form init-form)
-
-(kf/reg-controller
- ::form-controller
- {:params (constantly true)
-  :start [::init-form]})
