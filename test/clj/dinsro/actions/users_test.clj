@@ -29,7 +29,7 @@
       (f))))
 
 (deftest create-record-response-test
-  (let [registration-data (gen/generate (s/gen ::s.users/params))
+  (let [registration-data (ds/gen-key ::s.users/params)
         response (a.users/create-handler {:params registration-data})]
     (is (= (:status response) status/ok))))
 
@@ -48,7 +48,7 @@
     (is (= 1 (count (:body response))))))
 
 (deftest read-handler-success
-  (let [params (gen/generate (s/gen ::s.users/params))
+  (let [params (ds/gen-key ::s.users/params)
         id (m.users/create-record params)
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]
@@ -58,7 +58,7 @@
       :id :email)))
 
 (deftest read-handler-not-found
-  (let [id (gen/generate (s/gen ::ds/id))
+  (let [id (ds/gen-key ::ds/id)
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]
     (is (= (:status response) status/not-found)

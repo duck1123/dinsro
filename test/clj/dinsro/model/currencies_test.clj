@@ -28,7 +28,7 @@
       (f))))
 
 (deftest create-record-success
-  (let [params (gen/generate (s/gen ::s.currencies/params))
+  (let [params (ds/gen-key ::s.currencies/params)
         response (m.currencies/create-record params)]
     (is (not (nil? response)))))
 
@@ -39,7 +39,7 @@
     (is (= item response))))
 
 (deftest read-record-not-found
-  (let [id (gen/generate (s/gen ::ds/id))
+  (let [id (ds/gen-key ::ds/id)
         response (m.currencies/read-record id)]
     (is (nil? response))))
 
@@ -49,7 +49,7 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (gen/generate (s/gen ::s.currencies/params))
+  (let [params (ds/gen-key ::s.currencies/params)
         id (m.currencies/create-record params)]
     (is (not= [params] (m.currencies/index-records)))))
 

@@ -32,7 +32,7 @@
       (f))))
 
 (deftest create-record-test
-  (let [params (gen/generate (s/gen ::s.transactions/params))
+  (let [params (ds/gen-key ::s.transactions/params)
         id (m.transactions/create-record params)
         record (m.transactions/read-record id)]
 
@@ -47,7 +47,7 @@
     (is (= item response))))
 
 (deftest read-record-not-found
-  (let [id (gen/generate (s/gen ::ds/id))
+  (let [id (ds/gen-key ::ds/id)
         response (m.transactions/read-record id)]
     (is (nil? response))))
 
@@ -57,7 +57,7 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (gen/generate (s/gen ::s.transactions/params))
+  (let [params (ds/gen-key ::s.transactions/params)
         id (m.transactions/create-record params)]
     (is (not= [params] (m.transactions/index-records)))))
 

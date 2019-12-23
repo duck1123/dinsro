@@ -8,6 +8,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.users :as m.users]
+            [dinsro.specs :as ds]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [ring.mock.request :as mock]
@@ -30,7 +31,7 @@
       (f))))
 
 (deftest check-auth
-  (let [user-params (gen/generate (s/gen ::s.users/params))
+  (let [user-params (ds/gen-key ::s.users/params)
         email (::s.users/email user-params)
         password (::s.users/password user-params)
         user (m.users/create-record user-params)
@@ -40,7 +41,7 @@
 (deftest authenticate-handler-success
   (let [{:keys [dinsro.spec.users/email
                 dinsro.spec.users/password]
-         :as user-params} (gen/generate (s/gen ::s.users/params))]
+         :as user-params} (ds/gen-key ::s.users/params)]
     (m.users/delete-all)
     (m.users/create-record user-params)
     (let [body {:email email :password password}

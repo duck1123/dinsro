@@ -24,6 +24,4 @@
    :db.entity/attrs [::name ::user]})
 
 (def schema
-  [name-spec
-   user-spec
-   #_item-spec])
+  [name-spec user-spec])

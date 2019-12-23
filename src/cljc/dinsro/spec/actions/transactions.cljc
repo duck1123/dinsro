@@ -43,7 +43,6 @@
                                                         :create-transactions-response-valid/status]))
 (def create-response-valid ::create-handler-response-valid)
 
-
 (s/def :create-transactions-response-invalid-body/status #{:invalid})
 (s/def :create-transactions-response-invalid/body (s/keys :req-un [:create-transactions-response-invalid-body/status]))
 (s/def :create-transactions-response-invalid/status #{status/bad-request})

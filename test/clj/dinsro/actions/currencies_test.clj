@@ -1,13 +1,12 @@
 (ns dinsro.actions.currencies-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is use-fixtures]]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
+            [dinsro.specs :as ds]
             [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [mount.core :as mount]
@@ -30,10 +29,6 @@
       (d/transact db/*conn* s.currencies/schema)
       (f))))
 
-(defn gen-spec
-  [spec]
-  (gen/generate (s/gen spec)))
-
 (deftest index-handler-test-success
   (let [request {}
         response (a.currencies/index-handler request)
@@ -50,7 +45,7 @@
     (is (= [record] items))))
 
 (deftest create-handler-valid
-  (let [request (gen-spec ::s.a.currencies/create-handler-request-valid)
+  (let [request (ds/gen-key ::s.a.currencies/create-handler-request-valid)
         response (a.currencies/create-handler request)
         id (get-in response [:body :item :db/id])
         created-record (m.currencies/read-record id)]
@@ -82,7 +77,7 @@
     (is (= currency (get-in response [:body :item])))))
 
 (deftest read-handler-not-found
-  (let [id (gen/generate (s/gen :read-currency-request-path-params/id))
+  (let [id (ds/gen-key :read-currency-request-path-params/id)
         request {:path-params {:id id}}
         response (a.currencies/read-handler request)]
     (is (= status/not-found (:status response)) "Returns a not-found status")

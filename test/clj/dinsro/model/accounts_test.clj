@@ -31,7 +31,7 @@
     #_(f)))
 
 (deftest create-record
-  (let [params (gen/generate (s/gen ::s.accounts/params))
+  (let [params (ds/gen-key ::s.accounts/params)
         id (m.accounts/create-record params)
         created-record (m.accounts/read-record id)]
     (is (= (get params ::s.accounts/name) (get created-record ::s.accounts/name)))))

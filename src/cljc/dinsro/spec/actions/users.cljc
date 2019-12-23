@@ -3,10 +3,15 @@
             [dinsro.spec.users :as s.users]
             [taoensso.timbre :as timbre]))
 
+;; Create
+
 (s/def :create-user-request/params (s/keys :opt [::s.users/name]))
 (s/def ::create-request (s/keys :req-un [:create-request/params]))
 (s/def :create-user-request/status (constantly 200))
+
 (s/def ::create-response (s/keys :req-un [:create-handler/status]))
+
+;; Read
 
 (s/def :read-user-request/id string?)
 (s/def :read-user-request/path-params (s/keys :req-un [:read-user-request/id]))

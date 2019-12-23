@@ -39,7 +39,4 @@
    :db.entity/attrs [::name ::initial-value ::currency ::user]})
 
 (def schema
-  [name-spec
-   initial-value-spec
-   currency-spec
-   user-spec])
+  [name-spec initial-value-spec currency-spec user-spec])

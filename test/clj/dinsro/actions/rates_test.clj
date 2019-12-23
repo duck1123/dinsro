@@ -1,7 +1,5 @@
 (ns dinsro.actions.rates-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is use-fixtures]]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.actions.rates :as a.rates]
@@ -9,6 +7,7 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
+            [dinsro.specs :as ds]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
@@ -40,7 +39,7 @@
     #_(is (= true response))))
 
 (deftest create-handler-valid
-  (let [request (gen/generate (s/gen ::s.a.rates/create-handler-request-valid))
+  (let [request (ds/gen-key ::s.a.rates/create-handler-request-valid)
         response (a.rates/create-handler request)]
     (is (= status/ok (:status response)))
     (let [id (get-in response [:body :item :db/id])]

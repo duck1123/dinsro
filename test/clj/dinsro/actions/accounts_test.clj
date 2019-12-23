@@ -11,6 +11,7 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.spec.users :as s.users]
+            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
@@ -41,7 +42,7 @@
     (is (= [user] items))))
 
 (deftest create-handler-valid
-  (let [request (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid))
+  (let [request (ds/gen-key ::s.a.accounts/create-handler-request-valid)
         response (a.accounts/create-handler request)]
     (is (= status/ok (:status response)))
     #_(is (= nil response))))

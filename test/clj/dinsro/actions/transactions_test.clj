@@ -51,9 +51,7 @@
     (is (= expected response))))
 
 (deftest create-record-response-test
-  (let [
-        ;; params (gen/generate (s/gen ::s.transactions/params))
-        request (ds/gen-key s.a.transactions/create-request-valid)
+  (let [request (ds/gen-key s.a.transactions/create-request-valid)
         response (a.transactions/create-handler request #_{:params params})]
     (is (= (:status response) status/ok))))
 
@@ -96,7 +94,7 @@
     (is (= item (get-in response [:body :item])))))
 
 (deftest read-handler-not-found
-  (let [id (gen/generate (s/gen :read-currency-request-path-params/id))
+  (let [id (ds/gen-key :read-currency-request-path-params/id)
         request {:path-params {:id id}}
         response (a.transactions/read-handler request)]
     (is (= status/not-found (:status response))
