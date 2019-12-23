@@ -7,6 +7,7 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
+            [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -43,7 +44,7 @@
      [:div.box
       [:h1
        (tr [:index-accounts])
-       [c/show-form-button ::c.f.create-account/shown? ::c.f.create-account/set-shown?]]
+       [c/show-form-button ::s.e.f.create-account/shown? ::s.e.f.create-account/set-shown?]]
       [c.f.create-account/form]
       [:hr]
       (condp = state
