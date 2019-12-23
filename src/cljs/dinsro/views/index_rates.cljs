@@ -2,7 +2,7 @@
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :as c.f.create-rate]
-            [dinsro.components.index-rates :refer [index-rates]]
+            [dinsro.components.index-rates :as c.index-rates]
             [dinsro.components.rate-chart :refer [rate-chart]]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
@@ -45,4 +45,4 @@
       [c.f.create-rate/form]
       [:hr]
       [rate-chart items]
-      [index-rates items]]]))
+      [c.index-rates/index-rates items]]]))

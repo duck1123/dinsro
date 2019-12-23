@@ -1,39 +1,25 @@
 (ns dinsro.actions.rates
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
+  (:require [clojure.spec.alpha :as s]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.rates :as s.rates]
-            [java-time :as t]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 ;; Create
 
-(def param-rename-map
-  {:rate       ::s.rates/rate
-   ;; :currency-id ::s.rates/currency-id
-   :date      ::s.rates/date})
-
 (defn-spec prepare-record (s/nilable ::s.rates/params)
   [params :create-rates-request/params]
-  (when-let [rate (:rate params)]
-    (let [currency-id (:currency-id params)
-          rate (double rate)
-          date (t/java-date (:date params))
-          params (-> params
-                     (set/rename-keys param-rename-map)
-                     (select-keys (vals param-rename-map))
-                     (assoc ::s.rates/currency {:db/id currency-id})
-                     (assoc ::s.rates/rate rate)
-                     (assoc ::s.rates/date date))]
-      (if (s/valid? ::s.rates/params params)
-        params
-        (do
-          (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params)))
-          nil)))))
+  (let [params {::s.rates/currency {:db/id (:currency-id params)}
+                ::s.rates/rate (some-> params :rate double)
+                ::s.rates/date (tick/instant (:date params))}]
+    (if (s/valid? ::s.rates/params params)
+      params
+      (do
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params)))
+        nil))))
 
 (defn-spec create-handler ::s.a.rates/create-handler-response
   [request ::s.a.rates/create-handler-request]
@@ -59,10 +45,10 @@
 
 (defn-spec read-handler ::s.a.rates/read-handler-response
   [request ::s.a.rates/read-handler-request]
-  (or (let [params (:path-params request)]
-        (let [id (:id params)]
-          (let [item (m.rates/read-record id)]
-            (http/ok {:item item}))))
+  (or (let [params (:path-params request)
+            id (:id params)
+            item (m.rates/read-record id)]
+        (http/ok {:item item}))
       (http/not-found {:status :not-found})))
 
 ;; Delete

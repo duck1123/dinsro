@@ -23,11 +23,13 @@
 (rfu/reg-set-event ::s.e.f.add-user-account/user-id)
 
 (defn-spec form-data-sub (s/keys)
-  [[name initial-value currency-id user-id] ::s.e.f.add-user-account/form-bindings _ any?]
-  {:name          name
-   :currency-id   (int currency-id)
-   :user-id       (int user-id)
-   :initial-value (.parseFloat js/Number initial-value)})
+  [form-bindings ::s.e.f.add-user-account/form-bindings
+   _ any?]
+  (let [[name initial-value currency-id user-id] form-bindings]
+    {:name          name
+     :currency-id   (int currency-id)
+     :user-id       (int user-id)
+     :initial-value (.parseFloat js/Number initial-value)}))
 
 (rf/reg-sub
  ::form-data
