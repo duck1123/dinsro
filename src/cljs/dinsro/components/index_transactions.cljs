@@ -1,5 +1,6 @@
 (ns dinsro.components.index-transactions
-  (:require [dinsro.components.debug :as c.debug]
+  (:require [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
@@ -12,7 +13,7 @@
    [:td (::s.transactions/value transaction)]
    [:td [c.links/currency-link (:db/id (::s.transactions/currency transaction))]]
    [:td [c.links/account-link (:db/id (::s.transactions/account transaction))]]
-   [:td [:a.button "Click"]]])
+   (c.debug/hide [:td [c.buttons/delete-transaction transaction]])])
 
 (defn index-transactions
   [items]
@@ -27,7 +28,7 @@
        [:th "Value"]
        [:th "Currency"]
        [:th "Account"]
-       [:th "Buttons"]]
+       (c.debug/hide [:th (tr [:actions])])]
       (into
        [:tbody]
        (for [transaction items]

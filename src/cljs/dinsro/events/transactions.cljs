@@ -48,3 +48,54 @@
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)
+
+;; Submit
+
+(defn do-submit-success
+  [_ _]
+  {:dispatch [::do-fetch-index]})
+
+(defn do-submit-failed
+  [_ _]
+  {:dispatch [::do-fetch-index]})
+
+(defn do-submit
+  [{:keys [db]} [data]]
+  {:db (assoc db ::do-submit-loading true)
+   :http-xhrio
+   {:method          :post
+    :uri             (kf/path-for [:api-index-transactions])
+    :params          data
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-submit-success]
+    :on-failure      [::do-submit-failed]}})
+
+(kf/reg-event-fx ::do-submit-failed  do-submit-failed)
+(kf/reg-event-fx ::do-submit-success do-submit-success)
+(kf/reg-event-fx ::do-submit         do-submit)
+
+;; Delete
+
+(defn do-delete-record-success
+  [_ _]
+  {:dispatch [::do-fetch-index]})
+
+(defn do-delete-record-failed
+  [_ _]
+  {:dispatch [::do-fetch-index]})
+
+(defn do-delete-record
+  [_ [item]]
+  (let [id (:db/id item)]
+    {:http-xhrio
+     {:uri             (kf/path-for [:api-show-transaction {:id id}])
+      :method          :delete
+      :format          (ajax/json-request-format)
+      :response-format (ajax/json-response-format {:keywords? true})
+      :on-success      [::do-delete-record-success]
+      :on-failure      [::do-delete-record-failed]}}))
+
+(kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
+(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
+(kf/reg-event-fx ::do-delete-record         do-delete-record)

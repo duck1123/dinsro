@@ -5,7 +5,6 @@
             [dinsro.ajax :as ajax]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
-            [dinsro.events.transactions :as e.transactions]
             [dinsro.routing :as routing]
             [dinsro.view :as view]
             [kee-frame.core :as kf]
@@ -54,8 +53,7 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::db-spec
-     :initial-db     {::e.debug/shown? false #_(boolean debug?)
-                      ::e.transactions/items [e.transactions/example-transaction]}
+     :initial-db     {::e.debug/shown? false #_(boolean debug?)}
      :root-component [view/root-component]})))
 
 (defn init! [debug?]
