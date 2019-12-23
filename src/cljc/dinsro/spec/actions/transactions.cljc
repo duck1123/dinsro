@@ -6,10 +6,10 @@
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
-(s/def ::currency-id ::ds/id-string)
+(s/def ::currency-id :db/id)
 (def currency-id ::currency-id)
 
-(s/def ::account-id ::ds/id-string)
+(s/def ::account-id :db/id)
 (def account-id ::account-id)
 
 (s/def ::date ds/date-string)
