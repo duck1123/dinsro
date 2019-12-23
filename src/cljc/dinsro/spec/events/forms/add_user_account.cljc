@@ -10,7 +10,7 @@
 (s/def ::name string?)
 (def name ::name)
 
-(s/def ::initial-value number?)
+(s/def ::initial-value string?)
 (def initial-value ::initial-value)
 
 (s/def ::currency-id ::ds/id-string)
