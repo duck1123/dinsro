@@ -1,6 +1,6 @@
 (ns dinsro.spec.rates
   (:require [clojure.spec.alpha :as s]
-            [time-specs.core :as ts]))
+            [dinsro.specs :as ds]))
 
 (s/def ::rate pos-int?)
 (def rate-spec
@@ -8,13 +8,13 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency (s/keys :req [:ds/id]))
+(s/def ::currency (s/keys :req [::ds/id]))
 (def currency-spec
   {:db/ident       ::currency
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::date ts/instant?)
+(s/def ::date ds/date)
 (s/def ::date-inst inst?)
 
 (def date-spec
