@@ -1,33 +1,27 @@
 (ns dinsro.events.forms.create-currency
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.forms.create-currency :as e.f.create-currency]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
-(def default-name "Foo")
+(rfu/reg-basic-sub ::e.f.create-currency/name)
+(rfu/reg-set-event ::e.f.create-currency/name)
 
-(s/def ::name string?)
-(rfu/reg-basic-sub ::name)
-(rfu/reg-set-event ::name)
+(rfu/reg-basic-sub ::e.f.create-currency/shown?)
+(rfu/reg-set-event ::e.f.create-currency/shown?)
 
-(s/def ::shown? boolean?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
-(defn create-form-data
+(defn form-data-sub
   [name]
   {:name name})
 
 (rf/reg-sub
  ::form-data
  :<- [::name]
- create-form-data)
+ form-data-sub)
 
 (defn set-defaults
   [{:keys [db]} _]
