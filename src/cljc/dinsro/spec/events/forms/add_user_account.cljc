@@ -13,10 +13,10 @@
 (s/def ::initial-value number?)
 (def initial-value ::initial-value)
 
-(s/def ::currency-id ds/id-string)
+(s/def ::currency-id ::ds/id-string)
 (def currency-id ::currency-id)
 
-(s/def ::user-id ds/id-string)
+(s/def ::user-id ::ds/id-string)
 (def user-id ::user-id)
 
 (s/def ::create-handler-request

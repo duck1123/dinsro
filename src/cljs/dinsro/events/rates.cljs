@@ -5,7 +5,8 @@
             [dinsro.spec.rates :as s.rates]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
 (s/def ::items                   (s/coll-of ::s.rates/item))
 (rf/reg-sub ::items              (fn [db _] (get db ::items [])))
@@ -37,7 +38,7 @@
   [cofx event]
   (let [{:keys [db]} cofx
         [{:keys [items]}] event
-        items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
+        items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
     {:db (-> db
              (assoc ::items items)
              (assoc ::do-fetch-index-state :loaded))}))

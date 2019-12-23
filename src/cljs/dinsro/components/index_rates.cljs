@@ -16,7 +16,7 @@
         value (::s.rates/rate item)
         currency-id (get-in item [::s.rates/currency :db/id])]
     [:tr
-     [:td (.toISOString (::s.rates/date item))]
+     [:td (str (::s.rates/date item))]
      [:td value]
      [:td [c.links/currency-link currency-id]]
      (c.debug/hide [:td [c.buttons/delete-rate item]])]))

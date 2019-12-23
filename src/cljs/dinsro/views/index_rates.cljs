@@ -3,7 +3,7 @@
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :as c.f.create-rate]
             [dinsro.components.index-rates :as c.index-rates]
-            [dinsro.components.rate-chart :refer [rate-chart]]
+            [dinsro.components.rate-chart :as c.rate-chart]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
@@ -45,5 +45,5 @@
        [c/show-form-button ::s.e.f.create-rate/shown? ::s.e.f.create-rate/set-shown?]]
       [c.f.create-rate/form]
       [:hr]
-      [rate-chart items]
+      [c.rate-chart/rate-chart items]
       [c.index-rates/index-rates items]]]))
