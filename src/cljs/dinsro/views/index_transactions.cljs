@@ -5,6 +5,7 @@
             [dinsro.components.index-transactions :refer [index-transactions]]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
+            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -38,7 +39,7 @@
      [:div.box
       [:h1
        (tr [:index-transactions-title "Index Transactions"])
-       [c/show-form-button ::c.f.create-transaction/shown? ::c.f.create-transaction/set-shown?]]
+       [c/show-form-button ::s.e.f.create-transaction/shown? ::s.e.f.create-transaction/set-shown?]]
       [c.f.create-transaction/form]
       [:hr]
       [index-transactions transactions]])])
