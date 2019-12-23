@@ -17,12 +17,12 @@
   {:name name})
 
 (rf/reg-sub
- ::form-data
- :<- [::name]
+ ::s.e.f.create-currency/form-data
+ :<- [::s.e.f.create-currency/name]
  form-data-sub)
 
 (defn set-defaults
   [{:keys [db]} _]
-  {:db (merge db {::name default-name})})
+  {:db (merge db {::s.e.f.create-currency/name s.e.f.create-currency/default-name})})
 
-(kf/reg-event-fx ::set-defaults set-defaults)
+(kf/reg-event-fx ::s.e.f.create-currency/set-defaults set-defaults)

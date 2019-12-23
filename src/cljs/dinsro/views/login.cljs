@@ -4,7 +4,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.login :as c.f.login]
             [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.forms.login :as e.f.login]
+            [dinsro.spec.events.forms.login :as s.e.f.login]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -12,7 +12,7 @@
 
 (defn init-page
   [_ _]
-  {:dispatch [::e.f.login/set-defaults]
+  {:dispatch [::s.e.f.login/set-defaults]
    :document/title "Login"})
 
 (kf/reg-event-fx ::init-page init-page)
