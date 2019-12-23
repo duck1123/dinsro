@@ -1,6 +1,5 @@
 (ns dinsro.events.forms.create-account
   (:require [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-            [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
