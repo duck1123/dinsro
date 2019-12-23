@@ -1,24 +1,25 @@
 (ns dinsro.spec.events.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
-            [dinsro.components.forms.create-category :as c.f.create-category]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.actions.transactions :as s.a.transactions]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+            [dinsro.specs :as ds]))
 
 (s/def ::shown? boolean?)
+(def shown? ::shown?)
+
 (s/def ::currency-id string?)
+(def currency-id ::currency-id)
+
 (s/def ::date string?)
+(def date ::date)
+
 (s/def ::value string?)
+(def value ::value)
+
 (s/def ::form-data-input
   (s/cat :value ::value))
 (s/def ::form-data-output :create-transactions-request-valid/params)
+
+(comment
+  (ds/gen-key ::form-data-input)
+  (ds/gen-key ::form-data-output)
+  )

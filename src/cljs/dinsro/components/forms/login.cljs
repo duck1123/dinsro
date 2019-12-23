@@ -9,6 +9,7 @@
             [dinsro.events.authentication :as e.authentication]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reagent.core :as r]
             [reframe-utils.core :as rfu]

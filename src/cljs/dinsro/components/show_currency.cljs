@@ -4,8 +4,6 @@
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.add-currency-rate :refer [add-currency-rate-form]]
-            [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.rates :as e.rates]
             [dinsro.spec.currencies :as s.currencies]
@@ -13,10 +11,6 @@
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
-
-(defn delete-button
-  []
-  [:button.button.is-danger "Delete"])
 
 (defn-spec show-currency vector?
   [currency ::s.currencies/item]

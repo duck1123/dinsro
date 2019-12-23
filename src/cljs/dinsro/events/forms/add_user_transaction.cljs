@@ -1,9 +1,6 @@
 (ns dinsro.events.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
-            [dinsro.components.forms.create-category :as c.f.create-category]
-            [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
@@ -27,20 +24,14 @@
 (rfu/reg-basic-sub ::value)
 (rfu/reg-set-event ::value)
 
-(defn-spec create-form-data ::form-data-output
+(defn-spec form-data-sub ::form-data-output
   [[value currency-id] ::form-data-input
    _ any?]
   {:value value
    :currency-id (int currency-id)})
 
-(comment
-  (gen/generate (s/gen ::form-data-input))
-  (gen/generate (s/gen ::form-data-output))
-  (create-form-data ["1" "1"] [])
-  )
-
 (rf/reg-sub
- ::form-data
+ ::form-data-sub
  :<- [::value]
  :<- [::currency-id]
  create-form-data)

@@ -9,6 +9,7 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
