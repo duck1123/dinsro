@@ -20,14 +20,17 @@
 (rfu/reg-set-event ::s.e.f.create-transaction/value)
 
 (defn form-data-sub
-  [[value currency-id date]]
-  {:value value
+  [[account-id currency-id date value]]
+  {:account-id  (int account-id)
+   :value       (.parseFloat js/Number value)
    :currency-id (int currency-id)
-   :date        (js/Date. date)})
+   :date        date})
 
 (rf/reg-sub
  ::form-data
- :<- [::s.e.f.create-transaction/value]
+ :<- [::s.e.f.create-transaction/account-id]
  :<- [::s.e.f.create-transaction/currency-id]
  :<- [::s.e.f.create-transaction/date]
+ :<- [::s.e.f.create-transaction/value]
  form-data-sub)
+(def form-data ::form-data)
