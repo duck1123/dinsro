@@ -11,6 +11,7 @@
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
+            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.specs :as ds]
             [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.translations :refer [tr]]
