@@ -74,9 +74,9 @@
   {})
 
 (defn do-delete-record
-  [_ [id]]
+  [_ [item]]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-show-account {:id id}])
+   {:uri             (kf/path-for [:api-show-account {:id (:db/id item)}])
     :method          :delete
     :format          (ajax/json-request-format)
     :response-format (ajax/json-response-format {:keywords? true})
