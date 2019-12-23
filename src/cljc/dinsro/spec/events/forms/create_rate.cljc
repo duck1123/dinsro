@@ -6,7 +6,7 @@
 (s/def ::rate string?)
 (def rate ::rate)
 
-(s/def ::currency-id ds/id-string)
+(s/def ::currency-id ds/id-string-opt)
 (def currency-id ::currency-id)
 
 (s/def ::date string?)
