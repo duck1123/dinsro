@@ -2,7 +2,6 @@
   (:require [ajax.core :as ajax]
             [cemerick.url :as url]
             [clojure.string :as string]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.login :as c.f.login]

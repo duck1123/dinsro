@@ -3,7 +3,6 @@
             [cemerick.url :as url]
             [clojure.string :as string]
             [clojure.spec.alpha :as s]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]

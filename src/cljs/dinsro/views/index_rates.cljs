@@ -1,6 +1,5 @@
 (ns dinsro.views.index-rates
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :as c.f.create-rate :refer [create-rate-form]]
             [dinsro.components.index-rates :refer [index-rates]]

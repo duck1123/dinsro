@@ -2,7 +2,6 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.accounts :as s.e.accounts]
             [dinsro.specs :as ds]

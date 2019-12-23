@@ -2,7 +2,6 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.events.categories :as s.e.categories]
             [dinsro.specs :as ds]

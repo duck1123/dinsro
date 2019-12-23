@@ -1,6 +1,5 @@
 (ns dinsro.views.index-categories
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-category :as c.f.create-category]
             [dinsro.components.index-categories :refer [index-categories]]

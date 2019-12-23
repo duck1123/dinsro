@@ -1,7 +1,6 @@
 (ns dinsro.components.forms.registration-form
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.translations :refer [tr]]

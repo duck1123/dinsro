@@ -1,6 +1,5 @@
 (ns dinsro.views.index-currencies
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-currency :as c.f.create-currency :refer [create-currency]]
             [dinsro.components.index-currencies :refer [index-currencies]]

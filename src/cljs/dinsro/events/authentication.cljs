@@ -1,9 +1,7 @@
 (ns dinsro.events.authentication
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-
             [clojure.string :as string]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]

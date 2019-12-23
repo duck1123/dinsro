@@ -1,7 +1,6 @@
 (ns dinsro.components.forms.create-category
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.categories :as e.categories]

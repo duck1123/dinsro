@@ -2,7 +2,6 @@
   (:require [cljc.java-time.instant :as instant]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-rate :as c.f.create-rate]

@@ -2,7 +2,6 @@
   (:require [ajax.core :as ajax]
             [cljc.java-time.instant :as instant]
             [clojure.spec.alpha :as s]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
