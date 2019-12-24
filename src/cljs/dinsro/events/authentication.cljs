@@ -26,7 +26,8 @@
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {:db (-> db
+    {:navigate-to [:home-page]
+     :db (-> db
              (assoc ::auth-id identity)
              (assoc ::loading false)
              (assoc ::login-failed false))}))
@@ -56,13 +57,15 @@
 ;; Logout
 
 (defn do-logout-success
-  [db _]
-  (assoc db ::auth-id nil))
+  [{:keys [db]} _]
+  {:db (assoc db ::auth-id nil)
+   :navigate-to [:login-page]})
 
 ;; You failed to logout. logout anyway
 (defn do-logout-failure
-  [db _]
-  (assoc db ::auth-id nil))
+  [{:keys [db]} _]
+  {:db (assoc db ::auth-id nil)
+   :navigate-to [:login-page]})
 
 (defn do-logout
   [_ _]
@@ -74,8 +77,8 @@
     :format          (ajax/json-request-format)
     :response-format (ajax/json-response-format {:keywords? true})}})
 
-(kf/reg-event-db ::do-logout-success do-logout-success)
-(kf/reg-event-db ::do-logout-failure do-logout-failure)
+(kf/reg-event-fx ::do-logout-success do-logout-success)
+(kf/reg-event-fx ::do-logout-failure do-logout-failure)
 (kf/reg-event-fx ::do-logout do-logout)
 
 ;; Register
