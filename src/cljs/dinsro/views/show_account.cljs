@@ -11,7 +11,9 @@
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
+            [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
+            [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.translations :refer [tr]]
@@ -61,7 +63,7 @@
      ::s.e.f.add-account-transaction/set-shown?]]
    [c.f.add-account-transaction/form account-id]
    [:hr]
-   (let [items @(rf/subscribe [::e.transactions/items])]
+   (let [items (sort-by ::s.transactions/date @(rf/subscribe [::e.transactions/items]))]
      [c.debug/debug-box items]
      [index-transactions items])])
 

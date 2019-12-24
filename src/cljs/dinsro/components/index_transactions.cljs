@@ -9,7 +9,8 @@
 (defn-spec row-line vector?
   [transaction ::s.transactions/item]
   [:tr
-   [:td (:db/id transaction)]
+   (c.debug/hide [:td (:db/id transaction)])
+   [:td (str (::s.transactions/date transaction))]
    [:td (::s.transactions/value transaction)]
    [:td [c.links/currency-link (:db/id (::s.transactions/currency transaction))]]
    [:td [c.links/account-link (:db/id (::s.transactions/account transaction))]]
@@ -24,13 +25,17 @@
      [c.debug/debug-box items]
      [:table.table
       [:thead>tr
-       [:th "Id"]
+       (c.debug/hide [:th "Id"])
+       [:th "Date"]
        [:th "Value"]
        [:th "Currency"]
        [:th "Account"]
        (c.debug/hide [:th (tr [:actions])])]
       (into
        [:tbody]
-       (for [transaction items]
-         ^{:key (:db/id transaction)}
-         [row-line transaction]))]]))
+       (let [items (map-indexed
+                    (fn [i ])
+                    items)]
+         (for [transaction items]
+                 ^{:key (:db/id transaction)}
+                 [row-line transaction])))]]))

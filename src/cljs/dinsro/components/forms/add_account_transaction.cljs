@@ -4,6 +4,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
             [dinsro.events.transactions :as e.transactions]
+            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))

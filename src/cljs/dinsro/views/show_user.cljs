@@ -48,6 +48,7 @@
      [c.buttons/fetch-accounts]
      [c.buttons/fetch-categories]
      [c.buttons/fetch-currencies]
+     [c.buttons/fetch-transactions]
      [c.buttons/fetch-user id]]))
 
 (defn page-loaded
@@ -56,7 +57,7 @@
     (let [user-id (:db/id user)
           accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
           categories @(rf/subscribe [::e.categories/items-by-user user-id])
-          transactions @(rf/subscribe [::e.transactions/items-by-user user-id])]
+          transactions (or @(rf/subscribe [::e.transactions/items-by-user user-id]) [])]
       [:<>
        [:div.box
         [:h1 "Show User"]
