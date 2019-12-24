@@ -1,18 +1,22 @@
 (ns dinsro.events.forms.add-account-transaction
-  (:require [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.events.forms.create-transaction :as e.f.create-transaction]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(s/def ::shown? boolean?)
+(def shown? ::shown?)
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
   [params event]
-  (let [[value currency-id date] params]
-    (e.f.create-transaction/form-data-sub [53 value currency-id date] event)))
+  (let [[value currency-id date] params
+        [_ account-id] event]
+    (e.f.create-transaction/form-data-sub [account-id currency-id date value] event)))
 
 (rf/reg-sub
  ::form-data

@@ -17,7 +17,7 @@
      (c.debug/hide [:td [c.buttons/delete-category item]])]))
 
 (defn-spec index-categories vector?
-  [items (s/coll-of any? #_::s.categories/item)]
+  [items (s/coll-of ::s.categories/item)]
   [:<>
    [c.debug/debug-box items]
    (if-not (seq items)

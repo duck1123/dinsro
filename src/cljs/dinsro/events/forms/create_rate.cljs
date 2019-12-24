@@ -1,5 +1,7 @@
 (ns dinsro.events.forms.create-rate
-  (:require [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]

@@ -4,7 +4,6 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
             [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
@@ -14,7 +13,7 @@
   [id]
   (let [form-data @(rf/subscribe [::e.f.add-account-transaction/form-data])
         form-data (assoc form-data :account-id id)]
-    (when @(rf/subscribe [::s.e.f.add-account-transaction/shown?])
+    (when @(rf/subscribe [::e.f.add-account-transaction/shown?])
       [:div
        [c/close-button ::e.f.add-account-transaction/set-shown?]
        [c.debug/debug-box form-data]
@@ -23,9 +22,9 @@
          ::s.e.f.create-transaction/value ::s.e.f.create-transaction/set-value]]
        [:div.field>div.control
         [c/currency-selector (tr [:currency])
-         ::s.e.f.add-account-transaction/currency-id ::s.e.f.add-account-transaction/set-currency-id]]
+         ::s.e.f.create-transaction/currency-id ::s.e.f.create-transaction/set-currency-id]]
        [:div.field>div.control
         [c.datepicker/datepicker
-         {:on-select #(rf/dispatch [::s.e.f.add-account-transaction/set-date %])}]]
+         {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])))

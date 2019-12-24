@@ -61,11 +61,11 @@
   (let [currency-id (:db/id currency)]
     [:<>
      [show-currency currency]
-     #_(when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
-         [c.currency-rates/section currency-id rates])
-     #_(when-let [accounts (->> @(rf/subscribe [::e.accounts/items-by-currency currency])
-                                (sort-by ::s.accounts/date))]
-         [c.currency-accounts/section accounts])
+     (when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
+       [c.currency-rates/section currency-id rates])
+     (when-let [accounts (->> @(rf/subscribe [::e.accounts/items-by-currency currency])
+                              (sort-by ::s.accounts/date))]
+       [c.currency-accounts/section accounts])
      (when-let [rate-sources @(rf/subscribe [::e.rate-sources/items
                                              ;; -by-currency currency
                                              ])]
