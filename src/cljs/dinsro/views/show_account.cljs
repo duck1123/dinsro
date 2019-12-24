@@ -1,17 +1,15 @@
 (ns dinsro.views.show-account
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
+            [dinsro.components.account-transactions :as c.account-transactions]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.add-account-transaction :as c.f.add-account-transaction]
-            [dinsro.components.index-transactions :as c.index-transactions]
             [dinsro.components.show-account :refer [show-account]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
-            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
@@ -55,24 +53,6 @@
   [items]
   (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
 
-(defn transactions-section
-  [account-id]
-  [:div.box
-   [:h2
-    (tr [:transactions])
-    [c/show-form-button
-     ::s.e.f.add-account-transaction/shown?
-     ::s.e.f.add-account-transaction/set-shown?]]
-   [c.f.add-account-transaction/form account-id]
-   [:hr]
-   (let [items @(rf/subscribe [::e.transactions/items])
-         items (sort-by ::s.transactions/date items)]
-     (when items [c.index-transactions/index-transactions items]))])
-
-(s/fdef transactions-sections
-  :args (s/cat :account-id :db/id)
-  :ret vector?)
-
 (s/def :show-account-view/id          ::ds/id-string)
 (s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
 (s/def ::view-map (s/keys :req-un [:show-account-view/path-params]))
@@ -88,7 +68,10 @@
       [:h1 (tr [:show-account])]
       (when account
         [show-account account])]
-     (when account [transactions-section id])]))
+     (when account
+       (let [items @(rf/subscribe [::e.transactions/items])
+             transactions (sort-by ::s.transactions/date items)]
+         [c.account-transactions/section id transactions]))]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)
