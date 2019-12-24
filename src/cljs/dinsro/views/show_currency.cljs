@@ -3,14 +3,17 @@
             [dinsro.components :as c]
             [dinsro.components.currency-accounts :as c.currency-accounts]
             [dinsro.components.currency-rates :as c.currency-rates]
+            [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.show-currency :refer [show-currency]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
+            [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.currencies :as s.currencies]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -53,24 +56,38 @@
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
 
+(defn page-loaded
+  [currency]
+  (let [currency-id (:db/id currency)]
+    [:<>
+     [show-currency currency]
+     #_(when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
+         [c.currency-rates/section currency-id rates])
+     #_(when-let [accounts (->> @(rf/subscribe [::e.accounts/items-by-currency currency])
+                                (sort-by ::s.accounts/date))]
+         [c.currency-accounts/section accounts])
+     (when-let [rate-sources @(rf/subscribe [::e.rate-sources/items
+                                             ;; -by-currency currency
+                                             ])]
+       [c.currency-rate-sources/section currency-id rate-sources])]))
+
+(s/fdef page-loaded
+  :args (s/cat :currency ::s.categories/item)
+  :ret vector?)
+
 (defn page
   [{{:keys [id]} :path-params}]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
-        rates @(rf/subscribe [::e.rates/items-by-currency currency])
-        state @(rf/subscribe [::e.currencies/do-fetch-record-state])
-        accounts (sort-by ::s.accounts/date @(rf/subscribe [::e.accounts/items-by-currency currency]))]
+        state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
      [loading-buttons id]
      [:div.box
       (condp = state
-        :loaded [show-currency currency]
+        :loaded [page-loaded currency]
         :loading [:p "Loading"]
         :failed [:p "Failed"]
-        [:p "Unknown State"])]
-
-     [c.currency-rates/section currency-id rates]
-     [c.currency-accounts/section accounts]]))
+        [:p "Unknown State"])]]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)
