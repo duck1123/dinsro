@@ -68,6 +68,7 @@
         :loading [:p "Loading"]
         :failed [:p "Failed"]
         [:p "Unknown State"])]
+
      [c.currency-rates/section currency-id rates]
      [c.currency-accounts/section accounts]]))
 

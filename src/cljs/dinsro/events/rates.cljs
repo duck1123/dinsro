@@ -8,8 +8,8 @@
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
-(s/def ::items                   (s/coll-of ::s.rates/item))
-(rf/reg-sub ::items              (fn [db _] (get db ::items [])))
+(s/def ::items (s/coll-of ::s.rates/item))
+(rf/reg-sub ::items (fn [db _] (get db ::items [])))
 
 (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
 

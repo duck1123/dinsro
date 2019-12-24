@@ -27,6 +27,15 @@
      :value @(rf/subscribe [field])
      :on-change #(rf/dispatch [change-handler (target-value %)])}]])
 
+(defn checkbox-input
+  [label field change-handler]
+  (let [checked (rf/subscribe [field])]
+    [:label.checkbox
+     [:input {:type :checkbox
+              :on-change #(rf/dispatch [change-handler (not @checked)])
+              :checked @checked}]
+     label]))
+
 (defn text-input
   [label field change-handler]
   (input-field label field change-handler :text))

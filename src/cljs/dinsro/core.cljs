@@ -53,7 +53,9 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::db-spec
-     :initial-db     {::e.debug/shown? false #_(boolean debug?)}
+     :initial-db     {::e.debug/shown? false #_(boolean debug?)
+                      :dinsro.spec.events.forms.settings/allow-registration true
+                      }
      :root-component [view/root-component]})))
 
 (defn init! [debug?]
