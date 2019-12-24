@@ -4,6 +4,7 @@
             [dinsro.actions.categories :as a.categories]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
+            [dinsro.actions.rate-sources :as a.rate-sources]
             [dinsro.actions.rates :as a.rates]
             [dinsro.actions.settings :as a.settings]
             [dinsro.actions.status :as a.status]
@@ -61,6 +62,11 @@
      ["/:id"            {:delete a.currencies/delete-handler
                          :get    a.currencies/read-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
+    ["/rate-sources"
+     [""                {:get    a.rate-sources/index-handler
+                         :post   a.rate-sources/create-handler}]
+     ["/:id"            {:get    a.rate-sources/read-handler
+                         :delete a.rate-sources/delete-handler}]]
     ["/rates"
      [""                {:get    a.rates/index-handler
                          :post   a.rates/create-handler}]

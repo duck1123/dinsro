@@ -53,7 +53,7 @@
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    {:method          :get
-    :uri             (kf/path-for [:api-index-rate-source])
+    :uri             (kf/path-for [:api-index-rate-sources])
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}})
