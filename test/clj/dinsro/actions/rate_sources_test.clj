@@ -33,6 +33,19 @@
       (d/transact db/*conn* s.rate-sources/schema)
       (f))))
 
+(deftest prepare-record
+  (let [currency-id 1
+        name "Default Rate Source"
+        url "http://example.com/"
+        params {:name name
+                :url url
+                :currency-id currency-id}
+        expected {::s.rate-sources/name name
+                  ::s.rate-sources/url url
+                  ::s.rate-sources/currency {:db/id currency-id}}
+        response (a.rate-sources/prepare-record params)]
+    (is (= expected response))))
+
 (deftest index-handler
   (testing "success"
     (let [request {}
@@ -44,27 +57,24 @@
       #_(is (= true response)))))
 
 (deftest create-handler-valid
-  (testing "success"
-    (let [request (ds/gen-key ::s.a.rate-sources/create-handler-request-valid)
-          response (a.rate-sources/create-handler request)]
-      (is (= status/ok (:status response)))
-      (let [id (get-in response [:body :item :db/id])]
-        (is (not (nil? ident?)))
-        (let [created-record (m.rate-sources/read-record id)]
-         (is (= (:name request) (::s.rate-sources/name response))))))))
+  (let [request (ds/gen-key ::s.a.rate-sources/create-handler-request-valid)
+        response (a.rate-sources/create-handler request)]
+    (is (= status/ok (:status response)))
+    (let [id (get-in response [:body :item :db/id])]
+      (is (not (nil? ident?)))
+      (let [created-record (m.rate-sources/read-record id)]
+        (is (= (:name request) (::s.rate-sources/name response)))))))
 
 (deftest create-handler-invalid
-  (testing "invalid params"
-      (let [params {}
-            request {:params params}
-            response (a.rate-sources/create-handler request)]
-        (is (= status/bad-request (:status response))
-            "should signal a bad request"))))
+  (let [params {}
+        request {:params params}
+        response (a.rate-sources/create-handler request)]
+    (is (= status/bad-request (:status response))
+        "should signal a bad request")))
 
 (deftest read-handler
-  (testing "success"
-    (let [rate (mocks/mock-rate-source)
-          id (:db/id rate)
-          request {:path-params {:id id}}
-          response (a.rate-sources/read-handler request)]
-      (is (= status/ok (:status response))))))
+  (let [rate (mocks/mock-rate-source)
+        id (:db/id rate)
+        request {:path-params {:id id}}
+        response (a.rate-sources/read-handler request)]
+    (is (= status/ok (:status response)))))

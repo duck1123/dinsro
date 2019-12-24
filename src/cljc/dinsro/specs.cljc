@@ -36,6 +36,10 @@
 (s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
 (def valid-double ::valid-double)
 
+(s/def ::json-doubleable (s/or :int int?
+                               :double ::valid-double))
+(def json-doubleable ::json-doubleable)
+
 (s/def ::double-string (s/with-gen string? #(gen/fmap str (s/gen ::valid-double))))
 (def double-string ::double-string)
 

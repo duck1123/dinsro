@@ -21,10 +21,7 @@
   [params :create-rate-sources-request/params]
   (let [params {::s.rate-sources/currency {:db/id (:currency-id params)}
                 ::s.rate-sources/name (some-> params :name)
-                ::s.rate-sources/url (some-> params :url)
-                ;; ::s.rate-sources/date (tick/instant (:date params))
-
-                }]
+                ::s.rate-sources/url (some-> params :url)}]
     (if (s/valid? ::s.rate-sources/params params)
       params
       (do
@@ -56,7 +53,7 @@
 
 (defn-spec read-handler ::s.a.rate-sources/read-handler-response
   [request ::s.a.rate-sources/read-handler-request]
-  (if-let [id (timbre/spy :info (get-in request :path-params :id))]
+  (if-let [id (get-in request [:path-params :id])]
     (if-let [item (m.rate-sources/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))

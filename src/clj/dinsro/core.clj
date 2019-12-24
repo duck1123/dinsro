@@ -53,8 +53,8 @@
 
 (defn start-app [args]
   (timbre/info "starting app")
-  (let [options (timbre/spy :info (parse-opts args cli-options))]
-    (doseq [component (timbre/spy :info (-> options mount/start-with-args :started))]
+  (let [options (parse-opts args cli-options)]
+    (doseq [component (-> options mount/start-with-args :started)]
       (timbre/info component "started")))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 

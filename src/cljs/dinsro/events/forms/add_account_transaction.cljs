@@ -18,7 +18,7 @@
 
 (defn form-data-sub
   [params]
-  (let [[value currency-id date] (timbre/spy :info params)]
+  (let [[value currency-id date] params]
     {:value       (.parseFloat js/Number value)
      :currency-id (int currency-id)
      :date        date}))

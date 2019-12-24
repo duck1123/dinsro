@@ -38,10 +38,10 @@
         account-id 1
         value 1
         date (tick/instant)
-        params {:currency-id (str currency-id)
-                :account-id (str account-id)
+        params {:currency-id currency-id
+                :account-id account-id
                 :date (str date)
-                :value (str value)}
+                :value value}
         response (a.transactions/prepare-record params)
         expected {::s.transactions/currency {:db/id currency-id}
                   ::s.transactions/date date

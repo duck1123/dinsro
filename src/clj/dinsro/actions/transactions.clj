@@ -29,7 +29,7 @@
 (defn-spec create-handler s.a.transactions/create-response
   [request ::s.a.transactions/create-handler-request]
   (or (let [{params :params} request]
-        (when-let [params (timbre/spy :info (prepare-record (timbre/spy :info params)))]
+        (when-let [params (prepare-record params)]
           (when-let [id (m.transactions/create-record params)]
             (http/ok {:item (m.transactions/read-record id)}))))
       (http/bad-request {:status :invalid})))

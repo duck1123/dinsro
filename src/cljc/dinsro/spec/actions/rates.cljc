@@ -12,14 +12,22 @@
 
 (s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id ::s.rates/date]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
+(def create-handler-request-valid ::create-handler-request-valid)
 
 (s/def :create-rates-request/params (s/keys :opt-un [::s.rates/rate ::currency-id]))
 (s/def ::create-handler-request (s/keys :req-un [:create-rates-request/params]))
+(def create-handler-request ::create-handler-request)
+
+(comment
+  (ds/gen-key create-handler-request-valid)
+  (ds/gen-key create-handler-request)
+  )
 
 (s/def :create-rates-response-valid/body (s/keys :req-un [::s.rates/item]))
 (s/def :create-rates-response-valid/status #{status/ok})
 (s/def ::create-handler-response-valid (s/keys :req-un [:create-rates-response-valid/body
                                                         :create-rates-response-valid/status]))
+
 
 (s/def :create-rates-response-invalid-body/status #{:invalid})
 (s/def :create-rates-response-invalid/body (s/keys :req-un [:create-rates-response-invalid-body/status]))
@@ -29,6 +37,11 @@
 
 (s/def ::create-handler-response (s/or :invalid ::create-handler-response-invalid
                                        :valid   ::create-handler-response-valid))
+(def create-handler-response ::create-handler-response)
+
+(comment
+  (ds/gen-key create-handler-response)
+  )
 
 ;; Index
 

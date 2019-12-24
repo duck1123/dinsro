@@ -15,7 +15,7 @@
 (s/def ::date ds/date-string)
 (def date ::date)
 
-(s/def ::value ::ds/valid-double)
+(s/def ::value ::ds/json-doubleable)
 (def value ::value)
 
 ;; Create
@@ -38,6 +38,13 @@
 (s/def ::create-handler-request
   (s/keys :req-un [:create-transactions-request/params]))
 (def create-request ::create-handler-request)
+
+(comment
+  (ds/gen-key create-request-valid)
+  (ds/gen-key create-request)
+  )
+
+;; - response
 
 (s/def :create-transactions-response-valid/body (s/keys :req-un [::s.transactions/item]))
 (s/def :create-transactions-response-valid/status #{status/ok})

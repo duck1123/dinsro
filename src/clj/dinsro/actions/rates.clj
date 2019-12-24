@@ -14,7 +14,7 @@
   [params :create-rates-request/params]
   (let [params {::s.rates/currency {:db/id (:currency-id params)}
                 ::s.rates/rate (some-> params :rate double)
-                ::s.rates/date (tick/instant (:date params))}]
+                ::s.rates/date (some-> params :date tick/instant)}]
     (if (s/valid? ::s.rates/params params)
       params
       (do
@@ -46,7 +46,7 @@
 
 (defn-spec read-handler ::s.a.rates/read-handler-response
   [request ::s.a.rates/read-handler-request]
-  (if-let [id (get-in request :path-params :id)]
+  (if-let [id (get-in request [:path-params :id])]
     (if-let [item (m.rates/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
