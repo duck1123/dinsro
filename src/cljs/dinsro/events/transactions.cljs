@@ -16,9 +16,12 @@
    ::s.transactions/account {:db/id 12}})
 
 (s/def ::items                   (s/coll-of ::s.transactions/item))
+(def items ::items)
 (rfu/reg-basic-sub ::items)
 
 (rfu/reg-basic-sub ::items-by-user ::items)
+(rfu/reg-basic-sub ::items-by-currency ::items)
+(rfu/reg-basic-sub ::items-by-account ::items)
 
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
@@ -60,9 +63,8 @@
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit
-  [{:keys [db]} [data]]
-  {:db (assoc db ::do-submit-loading true)
-   :http-xhrio
+  [_ [data]]
+  {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-transactions])
     :params          data

@@ -37,11 +37,11 @@
 ;; Create
 
 (defn do-submit-success
-  [_ data]
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ response]
+  [_ _]
   {})
 
 (defn do-submit
@@ -97,7 +97,7 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [cofx [{:keys [id]}]]
+  [_ [{:keys [id]}]]
   {:dispatch [::do-fetch-index id]})
 
 (defn do-delete-record-failed
