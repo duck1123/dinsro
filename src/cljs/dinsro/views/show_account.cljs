@@ -4,18 +4,16 @@
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.add-account-transaction :as c.f.add-account-transaction]
-            [dinsro.components.index-transactions :refer [index-transactions]]
+            [dinsro.components.index-transactions :as c.index-transactions]
             [dinsro.components.show-account :refer [show-account]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
-            [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
-            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -53,8 +51,12 @@
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-transactions]]))
 
+(defn debug-items
+  [items]
+  (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
+
 (defn transactions-section
-  [_]
+  [account-id]
   [:div.box
    [:h2
     (tr [:transactions])
@@ -63,9 +65,13 @@
      ::s.e.f.add-account-transaction/set-shown?]]
    [c.f.add-account-transaction/form account-id]
    [:hr]
-   (let [items (sort-by ::s.transactions/date @(rf/subscribe [::e.transactions/items]))]
-     [c.debug/debug-box items]
-     [index-transactions items])])
+   (let [items @(rf/subscribe [::e.transactions/items])
+         items (sort-by ::s.transactions/date items)]
+     (when items [c.index-transactions/index-transactions items]))])
+
+(s/fdef transactions-sections
+  :args (s/cat :account-id :db/id)
+  :ret vector?)
 
 (s/def :show-account-view/id          ::ds/id-string)
 (s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
@@ -82,7 +88,7 @@
       [:h1 (tr [:show-account])]
       (when account
         [show-account account])]
-     [transactions-section id]]))
+     (when account [transactions-section id])]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)
