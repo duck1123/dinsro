@@ -7,6 +7,9 @@
             [taoensso.timbre :as timbre]))
 
 (s/def ::currency-id ::ds/id)
+
+;; Create
+
 (s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id ::s.rates/date]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 
@@ -27,10 +30,24 @@
 (s/def ::create-handler-response (s/or :invalid ::create-handler-response-invalid
                                        :valid   ::create-handler-response-valid))
 
+;; Index
+
+(s/def ::index-handler-request (s/keys))
+(def index-handler-request ::index-handler-request)
+
 (s/def :index-rates-response/items (s/coll-of ::s.rates/item))
 (s/def :index-rates-response/body (s/keys :req-un [:index-rates-response/items]))
-(s/def ::index-handler-request (s/keys))
 (s/def ::index-handler-response (s/keys :req-un [:index-rates-response/body]))
+(def index-handler-response ::index-handler-response)
+
+(comment
+
+  (ds/gen-key index-handler-request)
+  (ds/gen-key index-handler-response)
+  )
+
+
+;; Read
 
 (s/def :read-rates-request/path-params (s/keys :req-un []))
 (s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
@@ -42,6 +59,8 @@
 (s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response-not-found/body]))
 (s/def ::read-handler-response (s/or :not-found ::read-handler-response-not-found
                                      :valid     ::read-handler-response-valid))
+
+;; Delete
 
 (s/def :delete-rates-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 (s/def :delete-rates-request/path-params (s/keys :req-un [:delete-rates-request-params/id]))

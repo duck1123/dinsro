@@ -9,5 +9,5 @@
    [:h2 "Rates"]
    [c.f.add-currency-rate/form currency-id]
    [:hr]
-   [c.rate-chart/rate-chart rates]
+   [c.rate-chart/rate-chart (reverse rates)]
    [index-rates rates]])

@@ -35,8 +35,10 @@
 (defn-spec index-records (s/coll-of ::s.rates/item)
   []
   (->> (index-ids)
-       (take 20)
        (d/pull-many @db/*conn* '[*])
+       (sort-by ::s.rates/date)
+       (reverse)
+       (take 20)
        (map #(update % ::s.rates/date tick/instant))))
 
 (defn-spec delete-record nil?

@@ -33,13 +33,14 @@
 
 (defn-spec index-handler ::s.a.rates/index-handler-response
   [request ::s.a.rates/index-handler-request]
-  (let [items (m.rates/index-records)
+  (let [
+        ;; TODO: parse from request
         limit 50
-        items (sort (fn [a b] (.compareTo (::s.rates/date b) (::s.rates/date a))) items)
-        items (take 50 items)]
-    (http/ok {:model :rates
-              :limit limit
-              :items items})))
+        items (m.rates/index-records)]
+    (let [response {:model :rates
+                    :limit limit
+                    :items items}]
+      (http/ok response))))
 
 ;; Read
 

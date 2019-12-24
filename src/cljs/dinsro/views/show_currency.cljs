@@ -68,8 +68,8 @@
         :loading [:p "Loading"]
         :failed [:p "Failed"]
         [:p "Unknown State"])]
-     [c.currency-accounts/section accounts]
-     [c.currency-rates/section currency-id rates]]))
+     [c.currency-rates/section currency-id rates]
+     [c.currency-accounts/section accounts]]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)
