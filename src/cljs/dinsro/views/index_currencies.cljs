@@ -31,7 +31,7 @@
      [c.buttons/fetch-currencies]]))
 
 (defn-spec page vector?
-  []
+  [_ any?]
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
      [loading-buttons]
@@ -41,4 +41,5 @@
        [c/show-form-button ::s.e.f.create-currency/shown? ::s.e.f.create-currency/set-shown?]]
       [c.f.create-currency/form]
       [:hr]
-      [c.index-currencies/index-currencies currencies]]]))
+      (when currencies
+        [c.index-currencies/index-currencies currencies])]]))

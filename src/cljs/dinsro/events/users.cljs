@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [cemerick.url :as url]
             [clojure.spec.alpha :as s]
+            [dinsro.spec.events.users :as s.e.users]
             [dinsro.spec.users :as s.users]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -47,29 +48,17 @@
     {:db (assoc db :return-to match)
      :navigate-to [:login-page]}))
 
-;; (defn do-fetch-record-unauthorized
-;;   [_ _]
-;;   {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]})
-
-(s/def ::do-fetch-record-failed-cofx (s/keys))
-(s/def ::do-fetch-record-failed-event (s/keys))
-(s/def ::do-fetch-record-failed-response (s/keys))
-
-(defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
-  [cofx ::do-fetch-record-failed-cofx
-   event ::do-fetch-record-failed-event]
+(defn-spec do-fetch-record-failed ::s.e.users/do-fetch-record-failed-response
+  [cofx ::s.e.users/do-fetch-record-failed-cofx
+   event ::s.e.users/do-fetch-record-failed-event]
   (let [{:keys [db]} cofx
         [{:keys [status] :as request}] event]
     (if (= status/forbidden status)
       {:dispatch [::do-fetch-record-unauthorized request]}
       {:db (assoc db ::do-fetch-record-state :failed)})))
 
-(s/def ::do-fetch-record-cofx (s/keys))
-(s/def ::do-fetch-record-event (s/keys))
-(s/def ::do-fetch-record-response (s/keys))
-
-(defn-spec do-fetch-record ::do-fetch-record-response
-  [cofx ::do-fetch-record-cofx event ::do-fetch-record-event]
+(defn-spec do-fetch-record ::s.e.users/do-fetch-record-response
+  [cofx ::s.e.users/do-fetch-record-cofx event ::s.e.users/do-fetch-record-event]
   (let [{:keys [db]} cofx
         [id] event]
     {:db (assoc db ::do-fetch-record-state :loading)
@@ -87,28 +76,29 @@
 
 ;; Delete
 
-(kf/reg-event-fx
- ::do-delete-record-success
- (fn [cofx [{:keys [id]}]]
-   {:dispatch [::filter-records id]}))
+(defn do-delete-record-success
+  [cofx [{:keys [id]}]]
+  {:dispatch [::filter-records id]})
 
-(kf/reg-event-db
- ::do-delete-record-failed
- (fn [db [{:keys [id]}]]
-   (-> db
-       (assoc :failed true)
-       (assoc :delete-record-failure-id id))))
+(defn do-delete-record-failed
+  [db [{:keys [id]}]]
+  (-> db
+      (assoc :failed true)
+      (assoc :delete-record-failure-id id)))
 
-(kf/reg-event-fx
- ::do-delete-record
- (fn [_ [user]]
-   {:http-xhrio
-    {:uri             (kf/path-for [:api-show-user {:id (:db/id user)}])
-     :method          :delete
-     :format          (ajax/json-request-format)
-     :response-format (ajax/json-response-format {:keywords? true})
-     :on-success      [::do-delete-record-success]
-     :on-failure      [::do-delete-record-failed]}}))
+(defn do-delete-record
+  [_ [user]]
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-show-user {:id (:db/id user)}])
+    :method          :delete
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-delete-record-success]
+    :on-failure      [::do-delete-record-failed]}})
+
+(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
+(kf/reg-event-db ::do-delete-record-failed do-delete-record-failed)
+(kf/reg-event-fx ::do-delete-record do-delete-record)
 
 ;; Index
 

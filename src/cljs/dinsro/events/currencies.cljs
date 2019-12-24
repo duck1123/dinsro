@@ -6,28 +6,27 @@
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (def items-sub-default [])
 
 (s/def ::items (s/coll-of ::s.currencies/item))
-(s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(rfu/reg-basic-sub ::items)
+(rfu/reg-set-event ::items)
+(def items ::items)
 
-(defn-spec items-sub ::s.currencies/item
-  [db any? _ any?]
-  (get db ::items items-sub-default))
+(s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(def item-map ::item-map)
 
 (defn-spec sub-item-map ::item-map
   [db any? event any?]
   (get db ::item-map))
-
-(rf/reg-sub ::items                  items-sub)
 (rf/reg-sub ::item-map               sub-item-map)
 
-(defn item-sub
-  [item-map [_ id]]
-  (get item-map id)
-  #_(first (filter #(= (:db/id %) id) items)))
+(defn-spec item-sub ::s.currencies/item
+  [item-map ::item-map [_ id] any?]
+  (get item-map id))
 
 (rf/reg-sub
  ::item

@@ -10,6 +10,7 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+(s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
 
 (s/def ::sub-item-event (s/cat
@@ -17,19 +18,21 @@
                          :id ::ds/id))
 
 (defn-spec sub-item any?
-  [items (s/coll-of ::s.accounts/item)
+  [items ::items
    [_ id] ::sub-item-event]
   (first (filter #(= (:db/id %) id) items)))
 
-(defn-spec items-by-user (s/coll-of ::s.accounts/item)
+(defn-spec items-by-user ::items
   [db any? event any?]
   (let [[_ id] event]
     (filter #(= id (get-in % [::s.accounts/user :db/id])) (::items db))))
 
-(defn-spec items-by-currency (s/coll-of ::s.accounts/item)
+(defn-spec items-by-currency ::items
   [db any? event any?]
   (let [[_ item] event]
-    (filter #(= (:db/id item) (get-in % [::s.accounts/currency :db/id])) (::items db))))
+    (filter #(= (:db/id item)
+                (get-in % [::s.accounts/currency :db/id]))
+            (::items db))))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 (def item ::item)
@@ -64,6 +67,8 @@
 (kf/reg-event-fx ::do-submit           do-submit)
 
 ;; Delete
+
+(rfu/reg-basic-sub ::do-delete-record-state)
 
 (defn do-delete-record-success
   [_ _]

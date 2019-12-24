@@ -3,6 +3,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
+            [dinsro.spec.events.forms.settings :as s.e.f.settings]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -86,5 +87,7 @@
            (c.debug/hide (nav-link (tr [:users]) :index-users-page))
            [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} (tr [:logout])]]]
          [:<>
+          ;; FIXME: Do not show this section when settings are not loaded
           (nav-link (tr [:login]) :login-page)
-          (nav-link (tr [:register]) :register-page)])]]]))
+          (when @(rf/subscribe [::s.e.f.settings/allow-registration])
+              (nav-link (tr [:register]) :register-page))])]]]))
