@@ -2,6 +2,7 @@
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
+            [dinsro.events.forms.login :as e.f.login]
             [dinsro.spec.events.forms.login :as s.e.f.login]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
@@ -9,7 +10,7 @@
 
 (defn form
   [return-to]
-  (let [form-data @(rf/subscribe [::s.e.f.login/form-data])]
+  (let [form-data @(rf/subscribe [::e.f.login/form-data])]
     [:form.is-centered
      [c.debug/debug-box form-data]
      [:div.field>div.control
