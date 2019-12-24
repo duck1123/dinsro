@@ -7,10 +7,6 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec prepare-account ::s.rate-sources/params
-  [params ::s.rate-sources/params]
-  params)
-
 (defn-spec create-record ::ds/id
   [params ::s.rate-sources/params]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "rate-source-id")]})]
@@ -26,7 +22,7 @@
   []
   (map first (d/q '[:find ?e :where [?e ::s.rate-sources/name _]] @db/*conn*)))
 
-(defn-spec index-records (s/* ::s.rate-sources/item)
+(defn-spec index-records (s/coll-of ::s.rate-sources/item)
   []
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
