@@ -1,9 +1,7 @@
 (ns dinsro.core
-  (:require [ajax.core :as http]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
-            [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
             [dinsro.routing :as routing]
             [dinsro.view :as view]

@@ -3,6 +3,8 @@
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.components.index-transactions :refer [index-transactions]]
+            [dinsro.events.accounts :as e.accounts]
+            [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
@@ -14,7 +16,9 @@
 (defn init-page
   [_ _]
   {:document/title "Index Transactions"
-   :dispatch [::e.transactions/do-fetch-index]})
+   :dispatch-n [[::e.transactions/do-fetch-index]
+                [::e.accounts/do-fetch-index]
+                [::e.currencies/do-fetch-index]]})
 
 (kf/reg-event-fx ::init-page init-page)
 

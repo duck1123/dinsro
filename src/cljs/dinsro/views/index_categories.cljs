@@ -16,8 +16,8 @@
   [{:keys [db]} _]
   {:db (assoc db ::e.categories/items [])
    :document/title "Index Categories"
-   :dispatch [[::e.categories/do-fetch-index]
-              [::e.users/do-fetch-index]]})
+   :dispatch-n [[::e.categories/do-fetch-index]
+                [::e.users/do-fetch-index]]})
 
 (kf/reg-event-fx ::init-page init-page)
 

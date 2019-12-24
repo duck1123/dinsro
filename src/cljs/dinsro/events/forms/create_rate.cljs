@@ -1,6 +1,7 @@
 (ns dinsro.events.forms.create-rate
   (:require [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -35,8 +36,8 @@
  :<- [::s.e.f.create-rate/date]
  form-data-sub)
 
-(defn init-form
-  [{:keys [db]} _]
+(defn-spec init-form (s/keys)
+  [{:keys [db]} (s/keys) _ any?]
   (let [default-date (js/Date.)]
     {:db (merge db {::s.e.f.create-rate/rate (str default-rate)
                     ::s.e.f.create-rate/currency-id ""
