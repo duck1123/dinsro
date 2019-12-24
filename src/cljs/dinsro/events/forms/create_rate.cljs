@@ -35,6 +35,7 @@
  :<- [::s.e.f.create-rate/rate]
  :<- [::s.e.f.create-rate/date]
  form-data-sub)
+(def form-data ::form-data)
 
 (defn-spec init-form (s/keys)
   [{:keys [db]} (s/keys) _ any?]

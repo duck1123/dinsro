@@ -17,9 +17,10 @@
   {:name name})
 
 (rf/reg-sub
- ::s.e.f.create-currency/form-data
+ ::form-data
  :<- [::s.e.f.create-currency/name]
  form-data-sub)
+(def form-data ::form-data)
 
 (defn set-defaults
   [{:keys [db]} _]

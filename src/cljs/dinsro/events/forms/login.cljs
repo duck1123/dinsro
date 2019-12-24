@@ -18,10 +18,11 @@
    :password password})
 
 (rf/reg-sub
- ::s.e.f.login/form-data
+ ::form-data
  :<- [::s.e.f.login/email]
  :<- [::s.e.f.login/password]
  form-data-sub)
+(def form-data ::form-data)
 
 (defn set-defaults
   [{:keys [db]} _]

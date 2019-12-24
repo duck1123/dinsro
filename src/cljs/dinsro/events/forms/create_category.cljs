@@ -23,3 +23,4 @@
  :<- [::s.e.f.create-category/name]
  :<- [::s.e.f.create-category/user-id]
  form-data-sub)
+(def form-data ::form-data)

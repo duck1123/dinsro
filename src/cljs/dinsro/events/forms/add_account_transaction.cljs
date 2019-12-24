@@ -29,3 +29,4 @@
  :<- [::s.e.f.add-account-transaction/currency-id]
  :<- [::s.e.f.add-account-transaction/date]
  form-data-sub)
+(def form-data ::form-data)

@@ -39,3 +39,4 @@
  :<- [::s.e.f.registration/email]
  :<- [::s.e.f.registration/password]
  form-data-sub)
+(def form-data ::form-data)

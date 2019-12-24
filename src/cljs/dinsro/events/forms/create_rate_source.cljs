@@ -43,7 +43,7 @@
  :<- [::s.e.f.create-rate-source/url]
  :<- [::s.e.f.create-rate-source/currency-id]
  form-data-sub)
-
+(def form-data ::form-data)
 
 (defn init-form
   [{:keys [db]} _]

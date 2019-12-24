@@ -33,3 +33,4 @@
  :<- [::s.e.f.create-account/currency-id]
  :<- [::s.e.f.create-account/user-id]
  form-data-sub)
+(def form-data ::form-data)

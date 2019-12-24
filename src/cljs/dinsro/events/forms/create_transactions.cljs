@@ -4,6 +4,13 @@
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
+;; toggleable
+
+(rfu/reg-basic-sub ::s.e.f.create-transaction/shown?)
+(rfu/reg-set-event ::s.e.f.create-transaction/shown?)
+
+;; properties
+
 (rfu/reg-basic-sub ::s.e.f.create-transaction/account-id)
 (rfu/reg-set-event ::s.e.f.create-transaction/account-id)
 
@@ -13,14 +20,12 @@
 (rfu/reg-basic-sub ::s.e.f.create-transaction/date)
 (rfu/reg-set-event ::s.e.f.create-transaction/date)
 
-(rfu/reg-basic-sub ::s.e.f.create-transaction/shown?)
-(rfu/reg-set-event ::s.e.f.create-transaction/shown?)
-
 (rfu/reg-basic-sub ::s.e.f.create-transaction/value)
 (rfu/reg-set-event ::s.e.f.create-transaction/value)
 
 (defn form-data-sub
-  [[account-id currency-id date value]]
+  [[account-id currency-id date value]
+   _]
   {:account-id  (int account-id)
    :value       (.parseFloat js/Number value)
    :currency-id (int currency-id)
