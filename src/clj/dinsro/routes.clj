@@ -5,6 +5,7 @@
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.actions.home :as a.home]
             [dinsro.actions.rates :as a.rates]
+            [dinsro.actions.settings :as a.settings]
             [dinsro.actions.status :as a.status]
             [dinsro.actions.transactions :as a.transactions]
             [dinsro.actions.users :as a.users]
@@ -66,6 +67,7 @@
      ["/:id"            {:get    a.rates/read-handler
                          :delete a.rates/delete-handler}]]
     ["/register"        {:post   a.authentication/register-handler}]
+    ["/settings"        {:get    a.settings/settings-handler}]
     ["/status"          {:get    a.status/status-handler}]
     ["/transactions" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.transactions/index-handler
