@@ -11,36 +11,11 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(kf/reg-event-db
- :status-loaded
- (fn [db [{:keys [identity]}]]
-   (assoc db ::e.authentication/auth-id identity)))
+(def initial-db
+  {::e.debug/shown?                                      false
+   :dinsro.spec.events.forms.settings/allow-registration true})
 
-(kf/reg-event-fx
- :status-errored
- (fn [_ _]
-   (timbre/warn "status errored")))
-
-(kf/reg-event-fx
- :init-status
- (fn [_ _]
-   (timbre/info "init")
-   {:http-xhrio
-    {:uri "/api/v1/status"
-     :method :get
-     :response-format (http/json-response-format {:keywords? true})
-     :on-success [:status-loaded]
-     :on-failure [:status-errored]}}))
-
-(kf/reg-controller
- :status-controller
- {:params (constantly true)
-  :start [:init-status]})
-
-(s/def ::failed boolean?)
-
-(s/def ::db-spec
-  (s/keys))
+(s/def ::app-db (s/keys))
 
 ;; -------------------------
 ;; Initialize app
@@ -48,14 +23,14 @@
   ([] (mount-components true))
   ([debug?]
    (rf/clear-subscription-cache!)
-   (s/check-asserts true)
+
+   (s/check-asserts (boolean debug?))
+
    (kf/start!
     {:debug?         (boolean debug?)
      :routes         routing/routes
-     :app-db-spec    ::db-spec
-     :initial-db     {::e.debug/shown? false #_(boolean debug?)
-                      :dinsro.spec.events.forms.settings/allow-registration true
-                      }
+     :app-db-spec    ::app-db
+     :initial-db     initial-db
      :root-component [view/root-component]})))
 
 (defn init! [debug?]
