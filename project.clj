@@ -97,7 +97,10 @@
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]
              :cljsbuild
-             {:builds {:min {:source-paths ["src/cljc" "src/cljs" "env/prod/cljs"]
+             {:builds {:min {:source-paths ["src/cljc"
+                                            "src/cljs"
+                                            "env/prod/cljs"
+                                            "env/prod/cljc"]
                              :compiler
                              {:output-dir    "target/cljsbuild/public/js"
                               :output-to     "target/cljsbuild/public/js/app.js"
@@ -110,7 +113,7 @@
                               :externs       ["react/externs/react.js"]}}}}
              :aot :all
              :uberjar-name "dinsro.jar"
-             :source-paths ["env/prod/clj"]
+             :source-paths ["env/prod/clj" "env/prod/cljc"]
              :resource-paths ["env/prod/resources"]}
 
    :dev           [:project/dev :profiles/dev]

@@ -52,19 +52,18 @@
   (shutdown-agents))
 
 (defn start-app [args]
-  (doseq [component (-> args
-                        (parse-opts cli-options)
-                        mount/start-with-args
-                        :started)]
-    (timbre/info component "started"))
+  (timbre/info "starting app")
+  (let [options (timbre/spy :info (parse-opts args cli-options))]
+    (doseq [component (timbre/spy :info (-> options mount/start-with-args :started))]
+      (timbre/info component "started")))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
   (mount/start #'dinsro.config/env)
   (cond
-    (nil? (:datahike-url env))
-    (do
-      (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
-      (System/exit 1))
+    ;; (nil? (:datahike-url env))
+    ;; (do
+    ;;   (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
+    ;;   (System/exit 1))
     :else
     (start-app args)))
