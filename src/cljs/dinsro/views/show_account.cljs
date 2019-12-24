@@ -69,7 +69,7 @@
       (when account
         [show-account account])]
      (when account
-       (let [items @(rf/subscribe [::e.transactions/items])
+       (let [items @(rf/subscribe [::e.transactions/items-by-account id])
              transactions (sort-by ::s.transactions/date items)]
          [c.account-transactions/section id transactions]))]))
 

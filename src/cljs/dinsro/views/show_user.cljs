@@ -53,18 +53,19 @@
 
 (defn page-loaded
   [id]
-  (if-let [user @(rf/subscribe [::e.users/item (int id)])]
-    (let [user-id (:db/id user)
-          accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
-          categories @(rf/subscribe [::e.categories/items-by-user user-id])
-          transactions (or @(rf/subscribe [::e.transactions/items-by-user user-id]) [])]
+  (if-let [user @(rf/subscribe [::e.users/item id])]
+    (let [user-id (:db/id user)]
       [:<>
        [:div.box
         [:h1 "Show User"]
         [show-user user]]
-       [c.user-categories/section user-id categories]
-       [c.user-accounts/section user-id accounts]
-       [c.user-transactions/section user-id transactions]])
+       [:<>
+        (when-let [categories @(rf/subscribe [::e.categories/items-by-user user-id])]
+          [c.user-categories/section user-id categories])
+        (when-let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+          [c.user-accounts/section user-id accounts])
+        (when-let [transactions @(rf/subscribe [::e.transactions/items-by-user user-id])]
+          [c.user-transactions/section user-id transactions])]])
     [:p "User not found"]))
 
 (s/fdef page-loaded

@@ -19,9 +19,27 @@
 (def items ::items)
 (rfu/reg-basic-sub ::items)
 
+(s/def ::items-by-account-event (s/cat :keyword keyword? :id ::s.transactions/account-id))
+(def items-by-account-event ::items-by-account-event)
+
+(s/def ::items-by-currency-event (s/cat :keyword keyword? :id ::s.transactions/currency-id))
+(def items-by-currency-event ::items-by-currency-event)
+
+(defn-spec items-by-account ::items
+  [items ::items event ::items-by-account-event]
+  (let [[_ id] event]
+    (filter #(= (get-in % [::s.transactions/account :db/id]) id) items)))
+
+(defn-spec items-by-currency ::items
+  [items ::items event ::items-by-currency-event]
+  (let [[_ id] event]
+    (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
+
+(rf/reg-sub ::items-by-account items-by-account)
+(rf/reg-sub ::items-by-currency items-by-currency)
+
+;; FIXME: This will have to read across all linked accounts
 (rfu/reg-basic-sub ::items-by-user ::items)
-(rfu/reg-basic-sub ::items-by-currency ::items)
-(rfu/reg-basic-sub ::items-by-account ::items)
 
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
