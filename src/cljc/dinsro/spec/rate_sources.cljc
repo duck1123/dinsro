@@ -34,7 +34,10 @@
    :db/cardinality :db.cardinality/one})
 
 (s/def ::params (s/keys :req [::name ::url ::currency]))
+(def params ::params)
+
 (s/def ::item (s/keys :req [::name ::url ::currency]))
+(def item ::item)
 
 (def schema
   [name-spec url-spec currency-spec])

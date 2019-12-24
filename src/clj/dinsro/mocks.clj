@@ -4,12 +4,14 @@
             [dinsro.model.accounts :as m.accounts]
             [dinsro.model.categories :as m.categories]
             [dinsro.model.currencies :as m.currencies]
+            [dinsro.model.rate-sources :as m.rate-sources]
             [dinsro.model.rates :as m.rates]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.model.users :as m.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.spec.rates :as s.rates]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
@@ -40,6 +42,12 @@
   (m.rates/read-record
    (m.rates/create-record
     (ds/gen-key ::s.rates/params))))
+
+(defn-spec mock-rate-source ::s.rate-sources/item
+  []
+  (let [params (ds/gen-key ::s.rate-sources/params)
+        id (m.rate-sources/create-record params)]
+    (m.rate-sources/read-record id)))
 
 (defn-spec mock-transaction ::s.transactions/item
   []
