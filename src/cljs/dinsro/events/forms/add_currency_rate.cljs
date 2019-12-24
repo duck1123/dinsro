@@ -8,9 +8,6 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
-(rfu/reg-basic-sub ::s.e.f.create-rate/date)
-(rfu/reg-set-event ::s.e.f.create-rate/date)
-
 (rfu/reg-basic-sub ::s.e.f.create-rate/time)
 (rfu/reg-set-event ::s.e.f.create-rate/time)
 

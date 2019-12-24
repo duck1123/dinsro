@@ -16,11 +16,11 @@
 
 (defn form
   [currency-id]
-  (when @(rf/subscribe [::s.e.f.add-currency-rate/shown?])
-    (let [form-data (assoc @(rf/subscribe [::s.e.f.add-currency-rate/form-data])
+  (when @(rf/subscribe [::e.f.add-currency-rate/shown?])
+    (let [form-data (assoc @(rf/subscribe [::e.f.add-currency-rate/form-data])
                            :currency-id currency-id)]
       [:<>
-       [c/close-button ::s.e.f.add-currency-rate/set-shown?]
+       [c/close-button ::e.f.add-currency-rate/set-shown?]
        [:div.field>div.control
         [c/number-input (tr [:rate])
          ::s.e.f.add-currency-rate/rate ::s.e.f.add-currency-rate/set-rate]]
