@@ -5,6 +5,7 @@
             [dinsro.components.index-currencies :as c.index-currencies]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
+            [dinsro.events.forms.create-currency :as e.f.create-currency]
             [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]

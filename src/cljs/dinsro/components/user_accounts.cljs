@@ -3,6 +3,7 @@
             [dinsro.components :as c]
             [dinsro.components.forms.add-user-account :as c.f.add-user-account]
             [dinsro.components.index-accounts :as c.index-accounts]
+            [dinsro.events.forms.add-user-account :as e.f.add-user-account]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
             [dinsro.specs :as ds]

@@ -6,6 +6,7 @@
             [dinsro.components.rate-chart :as c.rate-chart]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
+            [dinsro.events.forms.create-rate :as e.f.create-rate]
             [dinsro.events.rates :as e.rates]
             [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [dinsro.translations :refer [tr]]

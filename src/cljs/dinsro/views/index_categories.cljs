@@ -5,6 +5,7 @@
             [dinsro.components.index-categories :refer [index-categories]]
             [dinsro.events.debug :as e.debug]
             [dinsro.events.categories :as e.categories]
+            [dinsro.events.forms.create-category :as e.f.create-category]
             [dinsro.events.users :as e.users]
             [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
             [dinsro.translations :refer [tr]]
