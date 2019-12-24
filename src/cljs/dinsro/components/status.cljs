@@ -1,8 +1,7 @@
 (ns dinsro.components.status
-  (:require [ajax.core :as http]
+  (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
-            [dinsro.ajax :as ajax]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
             [dinsro.routing :as routing]
@@ -28,7 +27,7 @@
   {:http-xhrio
    {:uri "/api/v1/status"
     :method :get
-    :response-format (http/json-response-format {:keywords? true})
+    :response-format (ajax/json-response-format {:keywords? true})
     :on-success [:status-loaded]
     :on-failure [:status-errored]}})
 
