@@ -1,4 +1,4 @@
-(ns dinsro.events.forms.create-rate
+(ns dinsro.events.forms.create-rate-source
   (:require [clojure.spec.alpha :as s]
             [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
@@ -22,8 +22,8 @@
 ;; (rfu/reg-basic-sub ::s.e.f.create-rate/time)
 ;; (rfu/reg-set-event ::s.e.f.create-rate/time)
 
-;; (rfu/reg-basic-sub ::s.e.f.create-rate/shown?)
-;; (rfu/reg-set-event ::s.e.f.create-rate/shown?)
+(rfu/reg-basic-sub ::s.e.f.create-rate-source/shown?)
+(rfu/reg-set-event ::s.e.f.create-rate-source/shown?)
 
 (defn form-data-sub
   [[
@@ -43,6 +43,7 @@
  :<- [::s.e.f.create-rate-source/name]
  form-data-sub)
 
+
 (defn init-form
   [{:keys [db]} _]
   (let [default-date (js/Date.)]
@@ -53,5 +54,5 @@
                     ;; ::s.e.f.create-rate/date (.toISOString default-date)
                     })}))
 
-(kf/reg-event-fx ::toggle-form toggle-form)
+;; (kf/reg-event-fx ::toggle-form toggle-form)
 (kf/reg-event-fx ::init-form init-form)

@@ -2,6 +2,7 @@
   (:require [dinsro.events.accounts :as e.accounts]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
@@ -68,6 +69,12 @@
   (let [state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
      (tr [:fetch-currency] [currency-id state])]))
+
+(defn fetch-rate-sources
+  []
+  (let [state @(rf/subscribe [::e.rate-sources/do-fetch-index-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.rate-sources/do-fetch-index])}
+     (tr [:fetch-rate-sources] [state])]))
 
 (defn fetch-rates
   []

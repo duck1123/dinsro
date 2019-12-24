@@ -74,7 +74,9 @@
     [""               :index-currencies-page]
     ["/:id"           :show-currency-page]]
    ["/login"          :login-page]
-   ["/rate-sources"   :rate-sources-page]
+   ["/rate-sources"
+    [""               :index-rate-sources-page]
+    ["/:id"           :show-rate-sourcs-page]]
    ["/rates"          :index-rates-page]
    ["/register"       :register-page]
    ["/transactions"   :index-transactions-page]
