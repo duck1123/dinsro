@@ -19,8 +19,8 @@
 (rfu/reg-basic-sub ::s.e.f.create-rate-source/currency-id)
 (rfu/reg-set-event ::s.e.f.create-rate-source/currency-id)
 
-(rfu/reg-basic-sub ::s.e.f.create-rate-source/shown?)
-(rfu/reg-set-event ::s.e.f.create-rate-source/shown?)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
   [[

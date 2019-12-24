@@ -18,9 +18,9 @@
 (defn form
   []
   (let [form-data @(rf/subscribe [::e.f.create-rate/form-data])]
-    (when @(rf/subscribe [::s.e.f.create-rate/shown?])
+    (when @(rf/subscribe [::e.f.create-rate/shown?])
       [:<>
-       [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::s.e.f.create-rate/set-shown? false])}]
+       [c/close-button ::e.f.create-rate/set-shown?]
        [:div.field>div.control
         [c/number-input (tr [:rate])
          ::s.e.f.create-rate/rate ::s.e.f.create-rate/set-rate]]

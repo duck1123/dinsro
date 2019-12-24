@@ -21,9 +21,9 @@
 (defn-spec form vector?
   []
   (let [form-data @(rf/subscribe [::e.f.create-rate-source/form-data])]
-    (when @(rf/subscribe [::s.e.f.create-rate-source/shown?])
+    (when @(rf/subscribe [::e.f.create-rate-source/shown?])
       [:<>
-       [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::s.e.f.create-rate-source/set-shown? false])}]
+       [c/close-button ::e.f.create-rate-source/set-shown?]
        [c/text-input (tr [:name])
         ::s.e.f.create-rate-source/name ::s.e.f.create-rate-source/set-name]
        [c/text-input (tr [:url])

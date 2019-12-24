@@ -4,7 +4,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
             [dinsro.events.rates :as e.rates]
-            [dinsro.spec.events.forms.add-currency-rate :as s.e.f.add-currency-rate]
+            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
@@ -23,10 +23,10 @@
        [c/close-button ::e.f.add-currency-rate/set-shown?]
        [:div.field>div.control
         [c/number-input (tr [:rate])
-         ::s.e.f.add-currency-rate/rate ::s.e.f.add-currency-rate/set-rate]]
+         ::s.e.f.create-rate/rate ::s.e.f.create-rate/set-rate]]
        [:div.field>div.control
         [c.datepicker/datepicker
-         {:on-select #(rf/dispatch [::s.e.f.add-currency-rate/set-date %])}]]
+         {:on-select #(rf/dispatch [::s.e.f.create-rate/set-date %])}]]
        [c.debug/debug-box form-data]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]])))

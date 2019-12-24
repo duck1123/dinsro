@@ -10,8 +10,8 @@
 (rfu/reg-basic-sub ::s.e.f.create-category/user-id)
 (rfu/reg-set-event ::s.e.f.create-category/user-id)
 
-(rfu/reg-basic-sub ::s.e.f.create-category/shown?)
-(rfu/reg-set-event ::s.e.f.create-category/shown?)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
   [[name user-id] _]

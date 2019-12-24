@@ -1,26 +1,15 @@
 (ns dinsro.events.forms.add-user-account
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
+            [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(rfu/reg-basic-sub ::s.e.f.add-user-account/shown?)
-(rfu/reg-set-event ::s.e.f.add-user-account/shown?)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (def default-name "Offshore")
-
-(rfu/reg-basic-sub ::s.e.f.add-user-account/name)
-(rfu/reg-set-event ::s.e.f.add-user-account/name)
-
-(rfu/reg-basic-sub ::s.e.f.add-user-account/initial-value)
-(rfu/reg-set-event ::s.e.f.add-user-account/initial-value)
-
-(rfu/reg-basic-sub ::s.e.f.add-user-account/currency-id)
-(rfu/reg-set-event ::s.e.f.add-user-account/currency-id)
-
-(rfu/reg-basic-sub ::s.e.f.add-user-account/user-id)
-(rfu/reg-set-event ::s.e.f.add-user-account/user-id)
 
 (defn-spec form-data-sub (s/keys)
   [form-bindings ::s.e.f.add-user-account/form-bindings
@@ -33,9 +22,9 @@
 
 (rf/reg-sub
  ::form-data
- :<- [::s.e.f.add-user-account/name]
- :<- [::s.e.f.add-user-account/initial-value]
- :<- [::s.e.f.add-user-account/currency-id]
- :<- [::s.e.f.add-user-account/user-id]
+ :<- [::s.e.f.create-account/name]
+ :<- [::s.e.f.create-account/initial-value]
+ :<- [::s.e.f.create-account/currency-id]
+ :<- [::s.e.f.create-account/user-id]
  form-data-sub)
 (def form-data ::form-data)

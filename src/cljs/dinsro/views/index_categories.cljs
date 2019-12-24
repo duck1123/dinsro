@@ -41,7 +41,7 @@
      [:div.box
       [:h1
        (tr [:categories "Categories"])
-       [c/show-form-button ::s.e.f.create-category/shown? ::s.e.f.create-category/set-shown?]]
+       [c/show-form-button ::e.f.create-category/shown? ::e.f.create-category/set-shown?]]
       [c.f.create-category/form]
       [:hr]
       (when items

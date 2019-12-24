@@ -9,8 +9,8 @@
 (rfu/reg-basic-sub ::s.e.f.create-currency/name)
 (rfu/reg-set-event ::s.e.f.create-currency/name)
 
-(rfu/reg-basic-sub ::s.e.f.create-currency/shown?)
-(rfu/reg-set-event ::s.e.f.create-currency/shown?)
+(rfu/reg-basic-sub ::shown?)
+(rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
   [name _]

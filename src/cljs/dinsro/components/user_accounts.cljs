@@ -14,7 +14,7 @@
   [:div.box
    [:h2
     (tr [:accounts])
-    [c/show-form-button ::s.e.f.add-user-account/shown? ::s.e.f.add-user-account/set-shown?]]
+    [c/show-form-button ::e.f.add-user-account/shown? ::e.f.add-user-account/set-shown?]]
    [c.f.add-user-account/form user-id]
    [:hr]
    [c.index-accounts/index-accounts accounts]])

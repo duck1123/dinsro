@@ -12,9 +12,9 @@
 (defn form
   []
   (let [form-data @(rf/subscribe [::e.f.create-transaction/form-data])]
-    (when @(rf/subscribe [::s.e.f.create-transaction/shown?])
+    (when @(rf/subscribe [::e.f.create-transaction/shown?])
       [:div
-       [c/close-button ::s.e.f.create-transaction/set-shown?]
+       [c/close-button ::e.f.create-transaction/set-shown?]
        [c.debug/debug-box form-data]
        [:div.field>div.control
         [c/number-input (tr [:value])

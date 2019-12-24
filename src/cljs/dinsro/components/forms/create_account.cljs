@@ -10,9 +10,9 @@
 (defn form
   []
   (let [form-data @(rf/subscribe [::e.f.create-account/form-data])]
-    (when @(rf/subscribe [::s.e.f.create-account/shown?])
+    (when @(rf/subscribe [::e.f.create-account/shown?])
       [:<>
-       [c/close-button ::s.e.f.create-account/set-shown?]
+       [c/close-button ::e.f.create-account/set-shown?]
        [c.debug/debug-box form-data]
        [c/text-input (tr [:name])
         ::s.e.f.create-account/name ::s.e.f.create-account/set-name]

@@ -44,7 +44,7 @@
      [:div.box
       [:h1
        (tr [:index-accounts])
-       [c/show-form-button ::s.e.f.create-account/shown? ::s.e.f.create-account/set-shown?]]
+       [c/show-form-button ::e.f.create-account/shown? ::e.f.create-account/set-shown?]]
       [c.f.create-account/form]
       [:hr]
       (condp = state

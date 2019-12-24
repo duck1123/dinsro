@@ -10,9 +10,9 @@
 (defn form
   [user-id]
   (let [form-data (assoc @(rf/subscribe [::e.f.add-user-category/form-data]) :user-id user-id)]
-    (when @(rf/subscribe [::s.e.f.add-user-category/shown?])
+    (when @(rf/subscribe [::e.f.add-user-category/shown?])
       [:div
-       [c/close-button ::s.e.f.add-user-category/set-shown?]
+       [c/close-button ::e.f.add-user-category/set-shown?]
        [c.debug/debug-box form-data]
        [c/text-input (tr [:name])
         ::s.e.f.add-user-category/name ::s.e.f.add-user-category/set-name]

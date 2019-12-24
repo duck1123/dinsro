@@ -45,7 +45,7 @@
      [:div.box
       [:h1
        (tr [:rate-sources "Rate Sources"])
-       [c/show-form-button ::s.e.f.create-rate-source/shown? ::s.e.f.create-rate-source/set-shown?]]
+       [c/show-form-button ::e.f.create-rate-source/shown? ::e.f.create-rate-source/set-shown?]]
       [c.f.create-rate-source/form]
       [:hr]
       [c.index-rate-sources/section items]]]))

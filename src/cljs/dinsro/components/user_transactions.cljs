@@ -10,7 +10,7 @@
   [:div.box
    [:h2
     "Transactions"
-    [c/show-form-button ::s.e.f.add-user-transaction/shown? ::s.e.f.add-user-transaction/set-shown?]]
+    [c/show-form-button ::e.f.add-user-transaction/shown? ::e.f.add-user-transaction/set-shown?]]
    [c.f.add-user-transaction/form]
    [:hr]
    [c.index-transactions/index-transactions transactions]])

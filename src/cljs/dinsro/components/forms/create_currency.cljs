@@ -16,9 +16,9 @@
 (defn form
   []
   (let [form-data @(rf/subscribe [::s.e.f.create-currency/form-data])]
-    (when @(rf/subscribe [::s.e.f.create-currency/shown?])
+    (when @(rf/subscribe [::e.f.create-currency/shown?])
       [:<>
-       [c/close-button ::s.e.f.create-currency/set-shown?]
+       [c/close-button ::e.f.create-currency/set-shown?]
        [c.debug/debug-box form-data]
        [:form
         [c/text-input     (tr [:name])   ::s.e.f.create-currency/name ::s.e.f.create-currency/set-name]

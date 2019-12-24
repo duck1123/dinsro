@@ -10,9 +10,9 @@
 (defn form
   []
   (let [form-data @(rf/subscribe [::e.f.add-user-transaction/form-data])]
-    (when @(rf/subscribe [::s.e.f.add-user-transaction/shown?])
+    (when @(rf/subscribe [::e.f.add-user-transaction/shown?])
       [:div
-       [c/close-button ::s.e.f.add-user-transaction/set-shown?]
+       [c/close-button ::e.f.add-user-transaction/set-shown?]
        [c.debug/debug-box form-data]
        [:p "Form"]
        [:div.field>div.control

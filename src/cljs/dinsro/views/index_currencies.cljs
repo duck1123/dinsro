@@ -38,7 +38,7 @@
      [:div.box
       [:h1
        (tr [:index-currencies "Index Currencies"])
-       [c/show-form-button ::s.e.f.create-currency/shown? ::s.e.f.create-currency/set-shown?]]
+       [c/show-form-button ::e.f.create-currency/shown? ::e.f.create-currency/set-shown?]]
       [c.f.create-currency/form]
       [:hr]
       (when currencies
