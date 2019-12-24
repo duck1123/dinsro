@@ -21,6 +21,8 @@
    "/currencies"
    "/currencies/:id"
    "/login"
+   "/rate-sources"
+   "/rate-sources/:id"
    "/rates"
    "/rates/:id"
    "/register"
@@ -28,6 +30,14 @@
    "/transactions"
    "/users"
    "/users/:id"])
+
+(def handler-mappings
+  {:api-index-accounts #'a.accounts/index-handler
+   :api-create-account #'a.accounts/create-handler
+   :api-read-account   #'a.accounts/read-handler
+   :api-delete-account #'a.accounts/delete-handler
+   }
+  )
 
 (def routes
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
