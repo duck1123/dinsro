@@ -35,8 +35,8 @@
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
 
-(rf/reg-sub ::items-by-account items-by-account)
-(rf/reg-sub ::items-by-currency items-by-currency)
+(rf/reg-sub ::items-by-account :<- [::items] items-by-account)
+(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; FIXME: This will have to read across all linked accounts
 (rfu/reg-basic-sub ::items-by-user ::items)
