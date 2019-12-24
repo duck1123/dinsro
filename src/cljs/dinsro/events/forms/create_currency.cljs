@@ -13,7 +13,7 @@
 (rfu/reg-set-event ::s.e.f.create-currency/shown?)
 
 (defn form-data-sub
-  [name]
+  [name _]
   {:name name})
 
 (rf/reg-sub
