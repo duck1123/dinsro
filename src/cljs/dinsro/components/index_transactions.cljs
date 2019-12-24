@@ -16,8 +16,8 @@
    [:td [c.links/account-link (:db/id (::s.transactions/account transaction))]]
    (c.debug/hide [:td [c.buttons/delete-transaction transaction]])])
 
-(defn index-transactions
-  [items]
+(defn-spec index-transactions vector?
+  [items (s/coll-of ::s.transactions/item)]
   [:div "Index transactions"]
   (if-not (seq items)
     [:p "no items"]
