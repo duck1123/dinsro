@@ -15,13 +15,13 @@
 (defn-spec index-line vector?
   [item ::s.rate-sources/item]
   (let [id (:db/id item)
-        value (::s.rate-sources/name item)
-        ;; currency-id (get-in item [::s.rates/currency :db/id])
-        ]
+        name (::s.rate-sources/name item)
+        url (::s.rate-sources/url item)
+        currency-id (get-in item [::s.rate-sources/currency :db/id])]
     [:tr
-     ;; [:td (str (::s.rates/date item))]
-     [:td value]
-     ;; [:td [c.links/currency-link currency-id]]
+     [:td name]
+     [:td url]
+     [:td [c.links/currency-link currency-id]]
      (c.debug/hide [:td [c.buttons/delete-rate item]])]))
 
 (defn-spec section vector?
@@ -32,9 +32,9 @@
      [:p (tr [:no-rate-sources])]
      [:table.table
       [:thead>tr
-       ;; [:th (tr [:date])]
-       [:th (tr [:value])]
-       ;; [:th (tr [:currency])]
+       [:th (tr [:name])]
+       [:th (tr [:url])]
+       [:th (tr [:currency])]
        (c.debug/hide [:th (tr [:actions])])]
       (->> (for [item items] ^{:key (:db/id item)} [index-line item])
            (into [:tbody]))])])

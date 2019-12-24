@@ -26,6 +26,10 @@
        [:a.delete.is-pulled-right {:on-click #(rf/dispatch [::s.e.f.create-rate-source/set-shown? false])}]
        [c/text-input (tr [:name])
         ::s.e.f.create-rate-source/name ::s.e.f.create-rate-source/set-name]
+       [c/text-input (tr [:url])
+        ::s.e.f.create-rate-source/url ::s.e.f.create-rate-source/set-url]
+       [c/currency-selector (tr [:currency])
+        ::s.e.f.create-rate-source/currency-id ::s.e.f.create-rate-source/set-currency-id]
        [:div.field>div.control
         [c.debug/debug-box form-data]]
        [:div.field>div.control
