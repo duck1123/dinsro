@@ -3,7 +3,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.forms.add-user-category :as e.f.add-user-category]
-            [dinsro.spec.events.forms.add-user-category :as s.e.f.add-user-category]
+            [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]))
 
@@ -15,5 +15,5 @@
        [c/close-button ::e.f.add-user-category/set-shown?]
        [c.debug/debug-box form-data]
        [c/text-input (tr [:name])
-        ::s.e.f.add-user-category/name ::s.e.f.add-user-category/set-name]
+        ::s.e.f.create-category/name ::s.e.f.create-category/set-name]
        [c/primary-button (tr [:submit]) [::e.categories/do-submit form-data]]])))
