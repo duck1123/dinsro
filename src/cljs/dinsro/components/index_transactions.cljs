@@ -33,7 +33,8 @@
        (c.debug/hide [:th (tr [:actions])])]
       (into
        [:tbody]
-       (let [items (map-indexed
+       (let [items items
+             #_(map-indexed
                     (fn [i ])
                     items)]
          (for [transaction items]

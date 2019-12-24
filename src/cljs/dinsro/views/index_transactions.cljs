@@ -35,7 +35,7 @@
   []
   [:section.section>div.container>div.content
    [load-buttons]
-   (let [transactions @(rf/subscribe [::e.transactions/items])]
+   (let [transactions (or @(rf/subscribe [::e.transactions/items]) [])]
      [:div.box
       [:h1
        (tr [:index-transactions-title "Index Transactions"])
