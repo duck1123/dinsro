@@ -82,8 +82,9 @@
           [:div.navbar-dropdown
            (nav-link (tr [:settings]) :settings-page)
            (c.debug/hide (nav-link (tr [:currencies]) :index-currencies-page))
-           (nav-link (tr [:rates]) :index-rates-page)
-           (nav-link (tr [:categories]) :index-categories-page)
+           (nav-link (tr [:admin]) :admin-page)
+           (c.debug/hide (nav-link (tr [:rates]) :index-rates-page))
+           (c.debug/hide (nav-link (tr [:categories]) :index-categories-page))
            (c.debug/hide (nav-link (tr [:users]) :index-users-page))
            [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} (tr [:logout])]]]
          [:<>

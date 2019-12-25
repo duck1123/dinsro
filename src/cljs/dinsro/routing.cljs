@@ -1,5 +1,6 @@
 (ns dinsro.routing
   (:require [dinsro.views.about :as about]
+            [dinsro.views.admin :as v.admin]
             [dinsro.views.home :as home]
             [dinsro.views.index-accounts :as index-accounts]
             [dinsro.views.index-categories :as v.index-categories]
@@ -23,6 +24,7 @@
 
 (def mappings
   {:about-page              about/page
+   :admin-page              v.admin/page
    :cards-page              unknown-page
    :home-page               home/page
    :index-accounts-page     index-accounts/page
@@ -72,6 +74,9 @@
     [""               :index-accounts-page]
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
+   ["/admin"
+    ["" :admin-page]
+    ]
    ["/cards" :cards-page]
    ["/categories"
     [""               :index-categories-page]
