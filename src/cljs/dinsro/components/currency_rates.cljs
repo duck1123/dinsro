@@ -14,5 +14,5 @@
     ]
    [c.f.add-currency-rate/form currency-id]
    [:hr]
-   #_[c.rate-chart/rate-chart (reverse rates)]
+   [c.rate-chart/rate-chart (reverse rates)]
    [index-rates rates]])

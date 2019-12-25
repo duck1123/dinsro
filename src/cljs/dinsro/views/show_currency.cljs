@@ -60,7 +60,7 @@
   [currency]
   (let [currency-id (:db/id currency)]
     [:<>
-     [show-currency currency]
+     [:div.box [show-currency currency]]
      (when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
        [c.currency-rates/section currency-id rates])
      (when-let [accounts (->> @(rf/subscribe [::e.accounts/items-by-currency currency])
@@ -82,12 +82,11 @@
         state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
      [loading-buttons id]
-     [:div.box
-      (condp = state
-        :loaded [page-loaded currency]
-        :loading [:p "Loading"]
-        :failed [:p "Failed"]
-        [:p "Unknown State"])]]))
+     (condp = state
+       :loaded [page-loaded currency]
+       :loading [:p "Loading"]
+       :failed [:p "Failed"]
+       [:p "Unknown State"])]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)
