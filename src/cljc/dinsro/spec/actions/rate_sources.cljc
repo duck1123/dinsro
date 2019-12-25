@@ -1,4 +1,5 @@
 (ns dinsro.spec.actions.rate-sources
+  (:refer-clojure :exclude [name])
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
@@ -9,9 +10,13 @@
             [taoensso.timbre :as timbre]))
 
 (s/def ::name string?)
-(s/def ::url string?)
-(s/def ::currency-id ::ds/id)
+(def name ::name)
 
+(s/def ::url string?)
+(def url ::url)
+
+(s/def ::currency-id ::ds/id)
+(def currency-id ::currency-id)
 
 ;; Create
 
@@ -30,13 +35,7 @@
                                                         :create-rate-sources-response-valid/status]))
 (def create-handler-response-valid ::create-handler-response-valid)
 
-(s/def :create-rate-sources-response-invalid-body/status #{:invalid})
-(s/def :create-rate-sources-response-invalid/body (s/keys :req-un [:create-rate-sources-response-invalid-body/status]))
-(s/def :create-rate-sources-response-invalid/status #{status/bad-request})
-(s/def ::create-handler-response-invalid (s/keys :req-un [:create-rate-sources-response-invalid/body
-                                                          :create-rate-sources-response-invalid/status]))
-
-(s/def ::create-handler-response (s/or :invalid ::create-handler-response-invalid
+(s/def ::create-handler-response (s/or :invalid ::ds/common-response-invalid
                                        :valid   ::create-handler-response-valid))
 (def create-handler-response ::create-handler-response)
 
@@ -44,6 +43,25 @@
   (ds/gen-key create-handler-request-valid)
   (ds/gen-key create-handler-response-valid)
  )
+
+;; Read
+
+(s/def ::read-handler-request (s/keys :req-un [:common-request-show/path-params]))
+(def read-handler-request ::read-handler-request)
+
+(s/def :read-rate-sources-response/body (s/keys :req-un [::s.rate-sources/item]))
+(s/def ::read-handler-response-valid (s/keys :req-un [:read-rate-sources-response/body]))
+(s/def ::read-handler-response (s/or :not-found ::ds/common-response-not-found
+                                     :valid     ::read-handler-response-valid))
+(def read-handler-response ::read-handler-response)
+
+;; Delete
+
+(s/def ::delete-handler-request (s/keys :req-un [:common-request-show/path-params]))
+(def delete-handler-request ::delete-handler-request)
+
+(s/def ::delete-handler-response (s/keys))
+(def delete-handler-response ::delete-handler-response)
 
 ;; Index
 
@@ -60,25 +78,3 @@
   (ds/gen-key index-handler-request)
   (ds/gen-key index-handler-response)
   )
-
-
-;; Read
-
-(s/def :read-rate-sources-request/path-params (s/keys :req-un []))
-(s/def ::read-handler-request (s/keys :req-un [:read-rate-sources-request/path-params]))
-
-(s/def :read-rate-sources-response/body (s/keys :req-un [::s.rate-sources/item]))
-(s/def :read-rate-sources-response-not-found-body/status ::ds/not-found-status)
-(s/def :read-rate-sources-response-not-found/body (s/keys :req-un [:read-rate-sources-response-not-found-body/status]))
-(s/def ::read-handler-response-valid (s/keys :req-un [:read-rate-sources-response/body]))
-(s/def ::read-handler-response-not-found (s/keys :req-un [:read-rate-sources-response-not-found/body]))
-(s/def ::read-handler-response (s/or :not-found ::read-handler-response-not-found
-                                     :valid     ::read-handler-response-valid))
-
-;; Delete
-
-(s/def :delete-rate-sources-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
-(s/def :delete-rate-sources-request/path-params (s/keys :req-un [:delete-rate-sources-request-params/id]))
-(s/def ::delete-handler-request (s/keys :req-un [:delete-rate-sources-request/path-params]))
-
-(s/def ::delete-handler-response (s/keys))

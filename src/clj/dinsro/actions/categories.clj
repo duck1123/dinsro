@@ -38,11 +38,11 @@
   (let [categories (m.categories/index-records)]
     (http/ok {:items categories})))
 
-(defn read-handler
-  [{{:keys [categorieId]} :path-params}]
-  (if-let [category (m.categories/read-record {:id categorieId})]
+(defn-spec read-handler ::s.a.categories/read-handler-response
+  [{{:keys [id]} :path-params} ::s.a.categories/read-handler-request]
+  (if-let [category (m.categories/read-record (utils/try-parse id))]
     (http/ok category)
-    (http/not-found {})))
+    (http/not-found {:status :not-found})))
 
 (defn-spec delete-handler ::s.a.categories/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.categories/delete-handler-request]

@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.test.check.generators]
             [clojure.spec.gen.alpha :as gen]
+            [ring.util.http-status :as status]
             [tick.alpha.api :as tick]
             [time-specs.core :as ts]))
 
@@ -62,3 +63,23 @@
 
 (s/def ::not-found-status #{:not-found})
 (def not-found-status ::not-found-status)
+
+(s/def ::invalid-status #{:invalid})
+(def invalid-status ::invalid-status)
+
+(s/def :common-request-show-path-params/id ::id-string)
+(s/def :common-request-show/path-params (s/keys :req-un [:common-request-show-path-params/id]))
+(s/def ::common-read-request (s/keys :req-un [:common-request-show/path-params]))
+(def common-read-request ::common-read-request)
+
+(s/def :common-response-invalid-body/status ::invalid-status)
+(s/def :common-response-invalid/body (s/keys :req-un [:common-response-invalid-body/status]))
+(s/def :common-response-invalid/status #{status/bad-request})
+(s/def ::common-response-invalid (s/keys :req-un [:common-response-invalid/body
+                                                  :common-response-invalid/status]))
+(def common-response-invalid ::common-response-invalid)
+
+(s/def :common-response-not-found-body/status ::not-found-status)
+(s/def :common-response-not-found/body (s/keys :req-un [:common-response-not-found-body/status]))
+(s/def ::common-response-not-found (s/keys :req-un [:common-response-not-found/body]))
+(def common-response-not-found ::common-response-not-found)

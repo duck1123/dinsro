@@ -7,6 +7,7 @@
             [taoensso.timbre :as timbre]))
 
 (s/def ::currency-id ::ds/id)
+(def currency-id ::currency-id)
 
 ;; Create
 
@@ -27,21 +28,39 @@
 (s/def :create-rates-response-valid/status #{status/ok})
 (s/def ::create-handler-response-valid (s/keys :req-un [:create-rates-response-valid/body
                                                         :create-rates-response-valid/status]))
+(def create-handler-response-valid ::create-handler-response-valid)
 
-
-(s/def :create-rates-response-invalid-body/status #{:invalid})
-(s/def :create-rates-response-invalid/body (s/keys :req-un [:create-rates-response-invalid-body/status]))
-(s/def :create-rates-response-invalid/status #{status/bad-request})
-(s/def ::create-handler-response-invalid (s/keys :req-un [:create-rates-response-invalid/body
-                                                          :create-rates-response-invalid/status]))
-
-(s/def ::create-handler-response (s/or :invalid ::create-handler-response-invalid
+(s/def ::create-handler-response (s/or :invalid ::ds/common-response-invalid
                                        :valid   ::create-handler-response-valid))
 (def create-handler-response ::create-handler-response)
 
 (comment
   (ds/gen-key create-handler-response)
   )
+
+;; Read
+
+(s/def :read-rates-request/path-params (s/keys :req-un []))
+(s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
+(def read-handler-request ::read-handler-request)
+
+(s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
+(s/def ::read-handler-response-valid (s/keys :req-un [:read-rates-response/body]))
+(def read-handler-response-valid ::read-handler-response-valid)
+
+(s/def ::read-handler-response (s/or :not-found ::ds/common-response-not-found
+                                     :valid     ::read-handler-response-valid))
+(def read-handler-response ::read-handler-response)
+
+;; Delete
+
+(s/def :delete-rates-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
+(s/def :delete-rates-request/path-params (s/keys :req-un [:delete-rates-request-params/id]))
+(s/def ::delete-handler-request (s/keys :req-un [:delete-rates-request/path-params]))
+(def delete-handler-request ::delete-handler-request)
+
+(s/def ::delete-handler-response (s/keys))
+(def delete-handler-response ::delete-handler-response)
 
 ;; Index
 
@@ -52,31 +71,3 @@
 (s/def :index-rates-response/body (s/keys :req-un [:index-rates-response/items]))
 (s/def ::index-handler-response (s/keys :req-un [:index-rates-response/body]))
 (def index-handler-response ::index-handler-response)
-
-(comment
-
-  (ds/gen-key index-handler-request)
-  (ds/gen-key index-handler-response)
-  )
-
-
-;; Read
-
-(s/def :read-rates-request/path-params (s/keys :req-un []))
-(s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
-
-(s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
-(s/def :read-rates-response-not-found-body/status ::ds/not-found-status)
-(s/def :read-rates-response-not-found/body (s/keys :req-un [:read-rates-response-not-found-body/status]))
-(s/def ::read-handler-response-valid (s/keys :req-un [:read-rates-response/body]))
-(s/def ::read-handler-response-not-found (s/keys :req-un [:read-rates-response-not-found/body]))
-(s/def ::read-handler-response (s/or :not-found ::read-handler-response-not-found
-                                     :valid     ::read-handler-response-valid))
-
-;; Delete
-
-(s/def :delete-rates-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
-(s/def :delete-rates-request/path-params (s/keys :req-un [:delete-rates-request-params/id]))
-(s/def ::delete-handler-request (s/keys :req-un [:delete-rates-request/path-params]))
-
-(s/def ::delete-handler-response (s/keys))
