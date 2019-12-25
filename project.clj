@@ -160,9 +160,14 @@
                                               :preloads        [day8.re-frame-10x.preload]
                                               :pretty-print    true}}
 
-                    :devcards {:source-paths ["src/cljs"
+                    :devcards {:source-paths [
+                                              "src/cljs"
                                               "src/cljc"
-                                              "env/dev/cljs"]
+                                              "env/dev/cljs"
+                                              "test/cljs"
+                                              "test/cljc"
+
+                                              ]
                                :figwheel     {:devcards true}
                                :compiler     {:main "dinsro.devcards"
                                               :asset-path "js/devcards_out"
@@ -185,7 +190,7 @@
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
     :cljsbuild
-    {:builds {:test {:source-paths ["src/cljc" "src/cljs" "test/cljs"]
+    {:builds {:test {:source-paths ["src/cljc" "src/cljs" "test/cljs" "test/cljc"]
                      :compiler
                      {:output-to     "target/test.js"
                       :main          "starter.doo"
