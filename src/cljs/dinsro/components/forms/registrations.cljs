@@ -1,6 +1,7 @@
 (ns dinsro.components.forms.registration
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
+            [dinsro.events.authentication :as e.authentication]
             [dinsro.events.forms.registration :as e.f.registration]
             [dinsro.spec.events.forms.registration :as s.e.f.registration]
             [dinsro.translations :refer [tr]]
@@ -21,4 +22,4 @@
        ::s.e.f.registration/password         ::s.e.f.registration/set-password]
       [c/password-input "Confirm Password"
        ::s.e.f.registration/confirm-password ::s.e.f.registration/set-confirm-password]
-      [c/primary-button (tr [:submit]) [::submit-clicked form-data]]]]))
+      [c/primary-button (tr [:submit]) [::e.authentication/submit-clicked form-data]]]]))
