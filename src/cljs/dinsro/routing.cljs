@@ -17,8 +17,13 @@
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
+(defn unknown-page
+  []
+  [:<>])
+
 (def mappings
   {:about-page              about/page
+   :cards-page              unknown-page
    :home-page               home/page
    :index-accounts-page     index-accounts/page
    :index-categories-page   v.index-categories/page
@@ -67,6 +72,7 @@
     [""               :index-accounts-page]
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
+   ["/cards" :cards-page]
    ["/categories"
     [""               :index-categories-page]
     ["/:id"           :show-category-page]]
