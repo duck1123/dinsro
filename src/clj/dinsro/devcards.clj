@@ -3,9 +3,9 @@
 
 (def mount-target
   [:div#app
-   [:h2 "Welcome to hello-devcard2"]
-   [:p "please wait while Figwheel is waking up ..."]
-   [:p "(Check the js console for hints if nothing exciting happens.)"]])
+   #_[:h2 "Welcome to hello-devcard1"]
+   #_[:p "please wait while Figwheel is waking up ..."]
+   #_[:p "(Check the js console for hints if nothing exciting happens.)"]])
 
 (defn head []
   [:head

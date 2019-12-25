@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
+            [devcards.core :refer-macros [defcard-rg]]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
             [dinsro.routing :as routing]
@@ -37,3 +38,8 @@
  :status-controller
  {:params (constantly true)
   :start [:init-status]})
+
+(defcard-rg status
+  "**Documentation**"
+  (fn [name] [:p name])
+  {:name "foo"})
