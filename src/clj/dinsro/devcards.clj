@@ -19,7 +19,13 @@
    (head)
    [:body
     mount-target
-    (include-js "/js/app_devcards.js")]))
+    (include-css "/assets/bulma/css/bulma.min.css"
+                 "/assets/bulma-calendar/dist/css/bulma-calendar.min.css"
+                 "/assets/material-icons/css/material-icons.min.css")
+    (include-js
+     "https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+     "/assets/bulma-calendar/dist/js/bulma-calendar.js"
+     "/js/app_devcards.js")]))
 
 (defn cards-handler
   [_]

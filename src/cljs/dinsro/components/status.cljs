@@ -1,15 +1,9 @@
 (ns dinsro.components.status
   (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [devcards.core :refer-macros [defcard-rg]]
             [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.debug :as e.debug]
-            [dinsro.routing :as routing]
-            [dinsro.specs :as ds]
-            [dinsro.view :as view]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (kf/reg-event-db

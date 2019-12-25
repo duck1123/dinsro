@@ -160,7 +160,9 @@
                                               :preloads        [day8.re-frame-10x.preload]
                                               :pretty-print    true}}
 
-                    :devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                    :devcards {:source-paths ["src/cljs"
+                                              "src/cljc"
+                                              "env/dev/cljs"]
                                :figwheel     {:devcards true}
                                :compiler     {:main "dinsro.devcards"
                                               :asset-path "js/devcards_out"

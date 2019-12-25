@@ -1,7 +1,8 @@
 (ns dinsro.devcards
   (:require [devcards.core
              :refer [start-devcard-ui!]
-             :refer-macros [defcard-rg]]))
+             :refer-macros [defcard-rg]]
+            [dinsro.app]))
 
 (defn about-page [name]
   (fn []
@@ -13,4 +14,6 @@
   (fn [name] [about-page name])
   {:name "foo"})
 
-(start-devcard-ui!)
+(defn start
+  []
+  (start-devcard-ui!))
