@@ -12,6 +12,7 @@
             [tick.alpha.api :as tick]))
 
 (s/def ::items                   (s/coll-of ::s.rate-sources/item))
+(def items ::items)
 (rf/reg-sub ::items              (fn [db _] (get db ::items [])))
 
 ;; (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
@@ -27,7 +28,7 @@
  :<- [::items]
  (fn [items [_ id]]
    (first (filter #(= (:id %) id) items))))
-
+(def item ::item)
 ;; Index
 
 (s/def ::do-fetch-index-state keyword?)
@@ -36,9 +37,7 @@
 (defn do-fetch-index-success
   [cofx event]
   (let [{:keys [db]} cofx
-        [{:keys [items]}] event
-        ;; items (map (fn [item] (update item ::s.rates/date tick/instant)) items)
-        ]
+        [{:keys [items]}] event]
     {:db (-> db
              (assoc ::items items)
              (assoc ::do-fetch-index-state :loaded))}))
@@ -50,7 +49,8 @@
 
 (defn do-fetch-index
   [{:keys [db]} _]
-  {:db (assoc db ::do-fetch-index-state :loading)
+  {:db (assoc db ::items (ds/gen-key ::items))}
+  #_{:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    {:method          :get
     :uri             (kf/path-for [:api-index-rate-sources])

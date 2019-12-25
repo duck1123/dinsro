@@ -7,7 +7,6 @@
             [dinsro.components.show-account :refer [show-account]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
             [dinsro.spec.transactions :as s.transactions]
@@ -43,11 +42,10 @@
 
 (defn load-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-transactions]]))
+  [:div.box
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-transactions]])
 
 (defn debug-items
   [items]
@@ -63,7 +61,7 @@
         id (int id)
         account @(rf/subscribe [::e.accounts/item id])]
     [:section.section>div.container>div.content
-     [load-buttons]
+     (c.debug/hide [load-buttons])
      [:div.box
       [:h1 (tr [:show-account])]
       (when account

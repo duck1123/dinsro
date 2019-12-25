@@ -1,10 +1,10 @@
 (ns dinsro.views.index-currencies
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-currency :as c.f.create-currency]
             [dinsro.components.index-currencies :as c.index-currencies]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.forms.create-currency :as e.f.create-currency]
             [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [dinsro.translations :refer [tr]]
@@ -27,15 +27,14 @@
 
 (defn-spec loading-buttons vector?
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-currencies]]))
+  [:div.box
+   [c.buttons/fetch-currencies]])
 
 (defn-spec page vector?
   [_ any?]
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
-     [loading-buttons]
+     (c.debug/hide [loading-buttons])
      [:div.box
       [:h1
        (tr [:index-currencies "Index Currencies"])

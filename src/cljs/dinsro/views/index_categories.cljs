@@ -1,9 +1,9 @@
 (ns dinsro.views.index-categories
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-category :as c.f.create-category]
             [dinsro.components.index-categories :refer [index-categories]]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.forms.create-category :as e.f.create-category]
             [dinsro.events.users :as e.users]
@@ -29,16 +29,15 @@
 
 (defn load-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-categories]
-     [c.buttons/fetch-currencies]]))
+  [:div.box
+   [c.buttons/fetch-categories]
+   [c.buttons/fetch-currencies]])
 
 (defn page
   []
   (let [items @(rf/subscribe [::e.categories/items])]
     [:section.section>div.container>div.content
-     [load-buttons]
+     (c.debug/hide [load-buttons])
      [:div.box
       [:h1
        (tr [:categories "Categories"])

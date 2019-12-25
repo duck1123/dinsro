@@ -5,10 +5,10 @@
             [dinsro.components.currency-rates :as c.currency-rates]
             [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.show-currency :refer [show-currency]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
@@ -45,12 +45,13 @@
 
 (defn loading-buttons
   [id]
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-rates]
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-currency id]]))
+  (c.debug/hide
+   [:div.box
+    [c.buttons/fetch-rates]
+    [c.buttons/fetch-accounts]
+    [c.buttons/fetch-currencies]
+    [c.buttons/fetch-rate-sources]
+    [c.buttons/fetch-currency id]]))
 
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))

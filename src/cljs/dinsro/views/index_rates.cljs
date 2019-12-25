@@ -1,11 +1,11 @@
 (ns dinsro.views.index-rates
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-rate :as c.f.create-rate]
             [dinsro.components.index-rates :as c.index-rates]
             [dinsro.components.rate-chart :as c.rate-chart]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.forms.create-rate :as e.f.create-rate]
             [dinsro.events.rates :as e.rates]
             [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
@@ -30,16 +30,15 @@
 
 (defn load-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-rates]
-     [c.buttons/fetch-currencies]]))
+  [:div.box
+   [c.buttons/fetch-rates]
+   [c.buttons/fetch-currencies]])
 
 (defn page
   []
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
-     [load-buttons]
+     (c.debug/hide [load-buttons])
      [:div.box
       [:h1
        (tr [:rates "Rates"])

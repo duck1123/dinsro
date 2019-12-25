@@ -1,12 +1,12 @@
 (ns dinsro.views.index-accounts
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-account :as c.f.create-account]
             [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-account :as e.f.create-account]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
             [dinsro.translations :refer [tr]]
@@ -30,18 +30,17 @@
 
 (defn loading-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-users]]))
+  [:div.box
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-users]])
 
 (defn page
   [_]
   (let [accounts @(rf/subscribe [::e.accounts/items])
         state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:section.section>div.container>div.content
-     [loading-buttons]
+     (c.debug/hide [loading-buttons])
      [:div.box
       [:h1
        (tr [:index-accounts])

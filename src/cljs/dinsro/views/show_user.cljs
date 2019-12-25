@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.components.user-accounts :as c.user-accounts]
             [dinsro.components.user-categories :as c.user-categories]
@@ -10,7 +11,6 @@
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.transactions :as e.transactions]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -42,14 +42,13 @@
 
 (defn load-buttons
   [id]
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-users]
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-categories]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-transactions]
-     [c.buttons/fetch-user id]]))
+  [:div.box
+   [c.buttons/fetch-users]
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-categories]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-transactions]
+   [c.buttons/fetch-user id]])
 
 (defn page-loaded
   [id]
@@ -81,7 +80,7 @@
   (let [{{:keys [id]} :path-params} match
         state @(rf/subscribe [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [load-buttons id]
+     (c.debug/hide [load-buttons id])
      (condp = state
        :invalid [:p "invalid"]
        :failed [:p "Failed"]

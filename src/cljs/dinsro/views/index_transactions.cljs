@@ -5,9 +5,8 @@
             [dinsro.components.index-transactions :refer [index-transactions]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
+            [dinsro.events.forms.create-transaction :as e.f.create-transaction]
             [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -29,16 +28,15 @@
 
 (defn load-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-transactions]
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]]))
+  [:div.box
+   [c.buttons/fetch-transactions]
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-currencies]])
 
 (defn page
   []
   [:section.section>div.container>div.content
-   [load-buttons]
+   (c.debug/hide [load-buttons])
    (let [transactions (or @(rf/subscribe [::e.transactions/items]) [])]
      [:div.box
       [:h1
