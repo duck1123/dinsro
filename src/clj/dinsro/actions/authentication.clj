@@ -3,24 +3,11 @@
             [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [dinsro.model.users :as m.users]
+            [dinsro.spec.actions.authentication :as s.a.authentication]
             [dinsro.spec.users :as s.users]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
-
-(s/def :register-handler-optional/params
-  (s/keys :opt-un [::s.users/name ::s.users/email ::s.users/password]))
-(s/def :register-handler/params
-  (s/keys :req-un [::s.users/name ::s.users/email ::s.users/password]))
-
-(s/def ::register-request (s/keys :req-un [:register-handler-optional/params]))
-(s/def ::register-request-valid (s/keys :req-un [:register-handler/params]))
-
-(s/def :register-handler/body any?)
-(s/def :register-handler/request (s/keys :req-un [:register-handler/body]))
-(s/def ::register-handler-response (s/keys :req-un [:register-handler/body]))
-
-(s/def ::authenticate-handler-request (s/keys))
 
 (def param-rename-map
   {:name     ::s.users/name
@@ -29,22 +16,30 @@
 
 (defn-spec check-auth (s/nilable boolean?)
   [email ::s.users/email password ::s.users/password]
-  (when-let [user (m.users/find-by-email email)]
-    (let [{:keys [dinsro.spec.users/password-hash]} user]
-      (hashers/check password password-hash))))
+  )
 
 (defn-spec authenticate-handler any?
-  [request ::authenticate-handler-request]
+  [request ::s.a.authentication/authenticate-handler-request]
   (let [{{:keys [email password]} :params} request]
-    (if (check-auth email password)
-      (-> {:identity email}
-          (http/ok)
-          (assoc-in [:session :identity] email))
-      (http/unauthorized {:status :unauthorized}))))
+    (if (and (seq email) (seq password))
+      (if-let [user (m.users/find-by-email email)]
+        (if-let [password-hash (::s.users/password-hash user)]
+          (if (hashers/check password password-hash)
+            (let [id (:db/id user)]
+              (-> {::identity id}
+                  (http/ok)
+                  (assoc-in [:session :identity] id)))
+            ;; Password does not match
+            (http/unauthorized {:status :unauthorized}))
+          ;; No password, invalid user
+          (http/unauthorized {:status :unauthorized}))
+        ;; User not found
+        (http/unauthorized {:status :unauthorized}))
+      (http/bad-request {:status :invalid}))))
 
-(defn-spec register-handler ::register-handler-response
+(defn-spec register-handler ::s.a.authentication/register-handler-response
   "Register a user"
-  [request ::register-request]
+  [request ::s.a.authentication/register-request]
   (let [{:keys [params]} request
         params (-> params
                    (set/rename-keys param-rename-map)

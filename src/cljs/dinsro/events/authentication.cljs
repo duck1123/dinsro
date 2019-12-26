@@ -6,13 +6,8 @@
             [taoensso.timbre :as timbre]))
 
 (c/reg-field ::auth-id nil)
-(s/def ::auth-id (s/nilable string?))
-
-(c/reg-field ::loading false)
-(s/def ::loading boolean?)
-
-(c/reg-field ::login-failed false)
-(s/def ::login-failed boolean?)
+(s/def ::auth-id (s/nilable :db/id))
+(def auth-id ::auth-id)
 
 ;; Authenticate
 
@@ -26,17 +21,14 @@
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {:navigate-to [:home-page]
-     :db (-> db
-             (assoc ::auth-id identity)
-             (assoc ::loading false)
-             (assoc ::login-failed false))}))
+    {
+     ;; TODO: return to calling page
+     :navigate-to [:home-page]
+     :db (assoc db ::auth-id identity)}))
 
 (defn do-authenticate-failure
-  [{:keys [db]} _]
-  {:db  (-> db
-            (assoc ::login-failed true)
-            (assoc ::loading false))})
+  [_ _]
+  {})
 
 (defn do-authenticate
   [_ [data _]]
