@@ -22,14 +22,12 @@
       [:<>
        [c/close-button ::e.f.create-rate/set-shown?]
        [:div.field>div.control
-        [c/number-input (tr [:rate])
-         ::s.e.f.create-rate/rate ::s.e.f.create-rate/set-rate]]
+        [c/number-input (tr [:rate]) ::s.e.f.create-rate/rate]]
        [:div.field>div.control
         [:label.label (tr [:date])]
         [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-rate/set-date %])}]]
        [:div.field>div.control
-        [c/currency-selector (tr [:currency])
-         ::s.e.f.create-rate/currency-id ::s.e.f.create-rate/set-currency-id]]
+        [c/currency-selector (tr [:currency]) ::s.e.f.create-rate/currency-id]]
        [:div.field>div.control
         [c.debug/debug-box form-data]]
        [:div.field>div.control

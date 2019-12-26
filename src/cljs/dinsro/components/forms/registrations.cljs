@@ -14,12 +14,8 @@
     [:div.box
      [:form
       [c.debug/debug-box form-data]
-      [c/text-input     "Name"
-       ::s.e.f.registration/name             ::s.e.f.registration/set-name]
-      [c/email-input    "Email"
-       ::s.e.f.registration/email            ::s.e.f.registration/set-email]
-      [c/password-input "Password"
-       ::s.e.f.registration/password         ::s.e.f.registration/set-password]
-      [c/password-input "Confirm Password"
-       ::s.e.f.registration/confirm-password ::s.e.f.registration/set-confirm-password]
+      [c/text-input "Name" ::s.e.f.registration/name]
+      [c/email-input "Email" ::s.e.f.registration/email]
+      [c/password-input "Password" ::s.e.f.registration/password]
+      [c/password-input "Confirm Password" ::s.e.f.registration/confirm-password]
       [c/primary-button (tr [:submit]) [::e.authentication/submit-clicked form-data]]]]))

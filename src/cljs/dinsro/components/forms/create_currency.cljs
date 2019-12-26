@@ -21,5 +21,5 @@
        [c/close-button ::e.f.create-currency/set-shown?]
        [c.debug/debug-box form-data]
        [:form
-        [c/text-input     (tr [:name])   ::s.e.f.create-currency/name ::s.e.f.create-currency/set-name]
+        [c/text-input (tr [:name]) ::s.e.f.create-currency/name]
         [c/primary-button (tr [:submit]) [::e.currencies/do-submit form-data]]]])))

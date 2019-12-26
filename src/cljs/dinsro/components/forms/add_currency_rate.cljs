@@ -17,16 +17,13 @@
 (defn form
   [currency-id]
   (when @(rf/subscribe [::e.f.add-currency-rate/shown?])
-    (let [form-data (assoc @(rf/subscribe [::e.f.add-currency-rate/form-data])
-                           :currency-id currency-id)]
+    (let [form-data @(rf/subscribe [::e.f.add-currency-rate/form-data currency-id])]
       [:<>
        [c/close-button ::e.f.add-currency-rate/set-shown?]
        [:div.field>div.control
-        [c/number-input (tr [:rate])
-         ::s.e.f.create-rate/rate ::s.e.f.create-rate/set-rate]]
+        [c/number-input (tr [:rate]) ::s.e.f.create-rate/rate]]
        [:div.field>div.control
-        [c.datepicker/datepicker
-         {:on-select #(rf/dispatch [::s.e.f.create-rate/set-date %])}]]
+        [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-rate/set-date %])}]]
        [c.debug/debug-box form-data]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]])))

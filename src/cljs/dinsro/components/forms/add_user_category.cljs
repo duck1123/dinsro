@@ -14,6 +14,5 @@
       [:div
        [c/close-button ::e.f.add-user-category/set-shown?]
        [c.debug/debug-box form-data]
-       [c/text-input (tr [:name])
-        ::s.e.f.create-category/name ::s.e.f.create-category/set-name]
+       [c/text-input (tr [:name]) ::s.e.f.create-category/name]
        [c/primary-button (tr [:submit]) [::e.categories/do-submit form-data]]])))

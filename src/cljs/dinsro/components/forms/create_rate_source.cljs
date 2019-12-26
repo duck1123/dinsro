@@ -24,13 +24,9 @@
     (when @(rf/subscribe [::e.f.create-rate-source/shown?])
       [:<>
        [c/close-button ::e.f.create-rate-source/set-shown?]
-       [c/text-input (tr [:name])
-        ::s.e.f.create-rate-source/name ::s.e.f.create-rate-source/set-name]
-       [c/text-input (tr [:url])
-        ::s.e.f.create-rate-source/url ::s.e.f.create-rate-source/set-url]
-       [c/currency-selector (tr [:currency])
-        ::s.e.f.create-rate-source/currency-id ::s.e.f.create-rate-source/set-currency-id]
-       [:div.field>div.control
-        [c.debug/debug-box form-data]]
+       [c.debug/debug-box form-data]
+       [c/text-input (tr [:name]) ::s.e.f.create-rate-source/name]
+       [c/text-input (tr [:url]) ::s.e.f.create-rate-source/url]
+       [c/currency-selector (tr [:currency]) ::s.e.f.create-rate-source/currency-id]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.rate-sources/do-submit form-data]]]])))

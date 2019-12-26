@@ -14,8 +14,8 @@
     [:form.is-centered
      [c.debug/debug-box form-data]
      [:div.field>div.control
-      [c/email-input (tr [:email]) ::s.e.f.login/email ::s.e.f.login/set-email]]
+      [c/email-input (tr [:email]) ::s.e.f.login/email]]
      [:div.field>div.control
-      [c/password-input (tr [:password]) ::s.e.f.login/password ::s.e.f.login/set-password]]
+      [c/password-input (tr [:password]) ::s.e.f.login/password]]
      [:div.field>div.control
       [c/primary-button (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]]))

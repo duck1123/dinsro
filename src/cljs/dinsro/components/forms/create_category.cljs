@@ -15,8 +15,6 @@
       [:<>
        [c/close-button ::e.f.create-category/set-shown?]
        [c.debug/debug-box form-data]
-       [c/text-input (tr [:name])
-        ::s.e.f.create-category/name ::s.e.f.create-category/set-name]
-       [c/user-selector (tr [:user])
-        ::s.e.f.create-category/user-id ::s.e.f.create-category/set-user-id]
+       [c/text-input (tr [:name]) ::s.e.f.create-category/name]
+       [c/user-selector (tr [:user]) ::s.e.f.create-category/user-id]
        [c/primary-button (tr [:submit]) [::e.categories/do-submit form-data]]])))
