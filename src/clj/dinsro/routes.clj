@@ -45,18 +45,15 @@
   {:api-index-accounts #'a.accounts/index-handler
    :api-create-account #'a.accounts/create-handler
    :api-read-account   #'a.accounts/read-handler
-   :api-delete-account #'a.accounts/delete-handler
-   }
-  )
+   :api-delete-account #'a.accounts/delete-handler})
 
 (def admin-routes
-  [
-   ["/accounts" {:middleware [middleware/wrap-restricted]}
+  [["/accounts"
     [""                {:post   a.admin-accounts/create-handler
                         :get    a.admin-accounts/index-handler}]
     ["/:id"            {:get    a.admin-accounts/read-handler
                         :delete a.admin-accounts/delete-handler}]]
-   ["/categories" {:middleware [middleware/wrap-restricted]}
+   ["/categories"
     [""                {:get    a.admin-categories/index-handler
                         :post   a.admin-categories/create-handler}]
     ["/:id"            {:get    a.admin-categories/read-handler
@@ -76,61 +73,65 @@
                         :post   a.admin-rates/create-handler}]
     ["/:id"            {:get    a.admin-rates/read-handler
                         :delete a.admin-rates/delete-handler}]]
-   ["/transactions" {:middleware [middleware/wrap-restricted]}
+   ["/transactions"
     [""                {:get    a.admin-transactions/index-handler
                         :post   a.admin-transactions/create-handler}]
     ["/:id"            {:get    a.admin-transactions/read-handler
                         :delete a.admin-transactions/delete-handler}]]
-   ["/users" {:middleware [middleware/wrap-restricted]}
+   ["/users"
     [""                {:get    a.admin-users/index-handler
                         :post   a.admin-users/create-handler}]
     ["/:id"            {:get    a.admin-users/read-handler
-                        :delete a.admin-users/delete-handler}]]
-   ]
-  )
+                        :delete a.admin-users/delete-handler}]]])
+
+(def model-routes
+  [["/accounts"
+    [""                {:post   a.accounts/create-handler
+                        :get    a.accounts/index-handler}]
+    ["/:id"            {:get    a.accounts/read-handler
+                        :delete a.accounts/delete-handler}]]
+   ["/categories"
+    [""                {:get    a.categories/index-handler
+                        :post   a.categories/create-handler}]
+    ["/:id"            {:get    a.categories/read-handler
+                        :delete a.categories/delete-handler}]]
+   ["/currencies"
+    [""                {:get    a.currencies/index-handler
+                        :post   a.currencies/create-handler}]
+    ["/:id"            {:delete a.currencies/delete-handler
+                        :get    a.currencies/read-handler}]]
+   ["/rate-sources"
+    [""                {:get    a.rate-sources/index-handler
+                        :post   a.rate-sources/create-handler}]
+    ["/:id"            {:get    a.rate-sources/read-handler
+                        :delete a.rate-sources/delete-handler}]]
+   ["/rates"
+    [""                {:get    a.rates/index-handler
+                        :post   a.rates/create-handler}]
+    ["/:id"            {:get    a.rates/read-handler
+                        :delete a.rates/delete-handler}]]
+   ["/transactions"
+    [""                {:get    a.transactions/index-handler
+                        :post   a.transactions/create-handler}]
+    ["/:id"            {:get    a.transactions/read-handler
+                        :delete a.transactions/delete-handler}]]
+   ["/users"
+    [""                {:get    a.users/index-handler
+                        :post   a.users/create-handler}]
+    ["/:id"            {:get    a.users/read-handler
+                        :delete a.users/delete-handler}]]])
+
+(def cards-route
+  ["/cards" {:get {:handler devcards/cards-handler}}])
 
 (def routes
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
-   #_["/cards" {:get {:handler devcards/cards-handler}}]
+   #_cards-route
    ["/api/v1" {:middleware [middleware/wrap-formats]}
-    ["/accounts" {:middleware [middleware/wrap-restricted]}
-     [""                {:post   a.accounts/create-handler
-                         :get    a.accounts/index-handler}]
-     ["/:id"            {:get    a.accounts/read-handler
-                         :delete a.accounts/delete-handler}]]
-    (into ["/admin"] admin-routes)
+    (into [""       {:middleware [middleware/wrap-restricted]}] model-routes)
+    (into ["/admin" {:middleware [middleware/wrap-restricted]}] admin-routes)
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
-    ["/categories" {:middleware [middleware/wrap-restricted]}
-     [""                {:get    a.categories/index-handler
-                         :post   a.categories/create-handler}]
-     ["/:id"            {:get    a.categories/read-handler
-                         :delete a.categories/delete-handler}]]
-    ["/currencies"
-     [""                {:get    a.currencies/index-handler
-                         :post   a.currencies/create-handler}]
-     ["/:id"            {:delete a.currencies/delete-handler
-                         :get    a.currencies/read-handler}]]
     ["/logout"          {:post   a.authentication/logout-handler}]
-    ["/rate-sources"
-     [""                {:get    a.rate-sources/index-handler
-                         :post   a.rate-sources/create-handler}]
-     ["/:id"            {:get    a.rate-sources/read-handler
-                         :delete a.rate-sources/delete-handler}]]
-    ["/rates"
-     [""                {:get    a.rates/index-handler
-                         :post   a.rates/create-handler}]
-     ["/:id"            {:get    a.rates/read-handler
-                         :delete a.rates/delete-handler}]]
     ["/register"        {:post   a.authentication/register-handler}]
     ["/settings"        {:get    a.settings/settings-handler}]
-    ["/status"          {:get    a.status/status-handler}]
-    ["/transactions" {:middleware [middleware/wrap-restricted]}
-     [""                {:get    a.transactions/index-handler
-                         :post   a.transactions/create-handler}]
-     ["/:id"            {:get    a.transactions/read-handler
-                         :delete a.transactions/delete-handler}]]
-    ["/users" {:middleware [middleware/wrap-restricted]}
-     [""                {:get    a.users/index-handler
-                         :post   a.users/create-handler}]
-     ["/:id"            {:get    a.users/read-handler
-                         :delete a.users/delete-handler}]]]])
+    ["/status"          {:get    a.status/status-handler}]]])

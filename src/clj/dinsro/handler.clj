@@ -26,8 +26,7 @@
   (ring/ring-handler
    (ring/router routes/routes)
    (ring/routes
-    (ring/create-resource-handler
-     {:path "/"})
+    (ring/create-resource-handler {:path "/"})
     (wrap-content-type
      (wrap-webjars (constantly nil)))
     (ring/create-default-handler
