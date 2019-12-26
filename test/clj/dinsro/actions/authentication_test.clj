@@ -1,7 +1,5 @@
 (ns dinsro.actions.authentication-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is use-fixtures]]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :refer [uri->config]]
             [dinsro.actions.authentication :as a.authentication]
@@ -9,6 +7,7 @@
             [dinsro.db.core :as db]
             [dinsro.model.users :as m.users]
             [dinsro.specs :as ds]
+            [dinsro.spec.actions.authentication :as s.a.authentication]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [ring.mock.request :as mock]
@@ -30,19 +29,10 @@
       (d/transact db/*conn* s.users/schema)
       (f))))
 
-(deftest check-auth
-  (let [user-params (ds/gen-key ::s.users/params)
-        email (::s.users/email user-params)
-        password (::s.users/password user-params)
-        user (m.users/create-record user-params)
-        response (a.authentication/check-auth email password)]
-    (is (= true response))))
-
-(deftest authenticate-handler-success
+(deftest authenticate-handler-successful
   (let [{:keys [dinsro.spec.users/email
                 dinsro.spec.users/password]
          :as user-params} (ds/gen-key ::s.users/params)]
-    (m.users/delete-all)
     (m.users/create-record user-params)
     (let [body {:email email :password password}
           path (str url-root "/authenticate")
@@ -53,8 +43,7 @@
 (deftest authenticate-handler-failure
   (let [{:keys [dinsro.spec.users/email
                 dinsro.spec.users/password]
-         :as user-params} (gen/generate (s/gen ::s.users/params))]
-    (m.users/delete-all)
+         :as user-params} (ds/gen-key ::s.users/params)]
     (m.users/create-record user-params)
     (let [body {:email email :password (str password "x")}
           path (str url-root "/authenticate")
@@ -63,16 +52,13 @@
       (is (= (:status response) status/unauthorized)))))
 
 (deftest register-handler-test-success
-  (let [path (str url-root "/register")]
-    (m.users/delete-all)
-    (let [request (gen/generate (s/gen ::a.authentication/register-request-valid))
-          response (a.authentication/register-handler request)]
-      (is (= (:status response) status/ok)))))
+  (let [path (str url-root "/register")
+        request (ds/gen-key ::s.a.authentication/register-request-valid)
+        response (a.authentication/register-handler request)]
+    (is (= (:status response) status/ok))))
 
-(deftest register-handler-test-invalid
-  (let [path (str url-root "/register")]
-    (m.users/delete-all)
-    (let [params {}
-          request (-> (mock/request :post path) (assoc :params params))
-          response (a.authentication/register-handler request)]
-      (is (= (:status response) status/bad-request)))))
+(deftest register-handler-test-invalid-params
+  (let [path (str url-root "/register")
+        request (-> (mock/request :post path) (assoc :params params))
+        response (a.authentication/register-handler request)]
+    (is (= (:status response) status/bad-request))))

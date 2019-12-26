@@ -78,8 +78,7 @@
     (is (= currency (get-in response [:body :item])))))
 
 (deftest read-handler-not-found
-  (let [id (ds/gen-key :read-currency-request-path-params/id)
-        request {:path-params {:id id}}
+  (let [request (ds/gen-key ::ds/common-read-request)
         response (a.currencies/read-handler request)]
     (is (= status/not-found (:status response)) "Returns a not-found status")
     (is (= :not-found (get-in response [:body :status])) "Has a not found status field")))
