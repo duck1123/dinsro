@@ -1,5 +1,12 @@
 (ns dinsro.routes
   (:require [dinsro.actions.accounts :as a.accounts]
+            [dinsro.actions.admin-accounts :as a.admin-accounts]
+            [dinsro.actions.admin-categories :as a.admin-categories]
+            [dinsro.actions.admin-currencies :as a.admin-currencies]
+            [dinsro.actions.admin-rate-sources :as a.admin-rate-sources]
+            [dinsro.actions.admin-rates :as a.admin-rates]
+            [dinsro.actions.admin-transactions :as a.admin-transactions]
+            [dinsro.actions.admin-users :as a.admin-users]
             [dinsro.actions.authentication :as a.authentication]
             [dinsro.actions.categories :as a.categories]
             [dinsro.actions.currencies :as a.currencies]
@@ -42,6 +49,46 @@
    }
   )
 
+(def admin-routes
+  [
+   ["/accounts" {:middleware [middleware/wrap-restricted]}
+    [""                {:post   a.admin-accounts/create-handler
+                        :get    a.admin-accounts/index-handler}]
+    ["/:id"            {:get    a.admin-accounts/read-handler
+                        :delete a.admin-accounts/delete-handler}]]
+   ["/categories" {:middleware [middleware/wrap-restricted]}
+    [""                {:get    a.admin-categories/index-handler
+                        :post   a.admin-categories/create-handler}]
+    ["/:id"            {:get    a.admin-categories/read-handler
+                        :delete a.admin-categories/delete-handler}]]
+   ["/currencies"
+    [""                {:get    a.admin-currencies/index-handler
+                        :post   a.admin-currencies/create-handler}]
+    ["/:id"            {:delete a.admin-currencies/delete-handler
+                        :get    a.admin-currencies/read-handler}]]
+   ["/rate-sources"
+    [""                {:get    a.admin-rate-sources/index-handler
+                        :post   a.admin-rate-sources/create-handler}]
+    ["/:id"            {:get    a.admin-rate-sources/read-handler
+                        :delete a.admin-rate-sources/delete-handler}]]
+   ["/rates"
+    [""                {:get    a.admin-rates/index-handler
+                        :post   a.admin-rates/create-handler}]
+    ["/:id"            {:get    a.admin-rates/read-handler
+                        :delete a.admin-rates/delete-handler}]]
+   ["/transactions" {:middleware [middleware/wrap-restricted]}
+    [""                {:get    a.admin-transactions/index-handler
+                        :post   a.admin-transactions/create-handler}]
+    ["/:id"            {:get    a.admin-transactions/read-handler
+                        :delete a.admin-transactions/delete-handler}]]
+   ["/users" {:middleware [middleware/wrap-restricted]}
+    [""                {:get    a.admin-users/index-handler
+                        :post   a.admin-users/create-handler}]
+    ["/:id"            {:get    a.admin-users/read-handler
+                        :delete a.admin-users/delete-handler}]]
+   ]
+  )
+
 (def routes
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
    ["/cards" {:get {:handler devcards/cards-handler}}]
@@ -51,6 +98,7 @@
                          :get    a.accounts/index-handler}]
      ["/:id"            {:get    a.accounts/read-handler
                          :delete a.accounts/delete-handler}]]
+    (into ["/admin"] admin-routes)
     ["/authenticate"    {:post   a.authentication/authenticate-handler}]
     ["/categories" {:middleware [middleware/wrap-restricted]}
      [""                {:get    a.categories/index-handler
