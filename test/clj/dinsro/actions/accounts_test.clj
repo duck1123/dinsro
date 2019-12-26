@@ -29,9 +29,12 @@
       (d/transact db/*conn* s.accounts/schema)
       (f))))
 
-(deftest index-handler-test-success
-  (let [request {:params {}}]
-    (is [] (a.accounts/index-handler request))))
+(deftest index-handler-test-empty
+  (let [request {:params {}}
+        response (a.accounts/index-handler request)
+        items (get-in response [:body :items])]
+    (is (= status/ok (:status response)))
+    (is (= [] items))))
 
 (deftest index-handler-test-with-records
   (let [user (mocks/mock-account)

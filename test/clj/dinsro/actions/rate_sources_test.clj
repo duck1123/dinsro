@@ -1,13 +1,10 @@
 (ns dinsro.actions.rate-sources-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+  (:require [clojure.test :refer :all]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.actions.rate-sources :as a.rate-sources]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
-            [dinsro.handler :as handler]
             [dinsro.mocks :as mocks]
             [dinsro.model.rate-sources :as m.rate-sources]
             [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
@@ -15,7 +12,6 @@
             [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.specs :as ds]
             [mount.core :as mount]
-            [ring.mock.request :as mock]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
@@ -47,14 +43,13 @@
     (is (= expected response))))
 
 (deftest index-handler
-  (testing "success"
-    (let [request {}
-          response (a.rate-sources/index-handler request)]
-      (is (= (:status response) status/ok))
-      (let [body (:body response)
-            items (:items body)]
-        (is (= [] items)))
-      #_(is (= true response)))))
+  (let [request {}
+        response (a.rate-sources/index-handler request)]
+    (is (= (:status response) status/ok))
+    (let [body (:body response)
+          items (:items body)]
+      (is (= [] items)))
+    #_(is (= true response))))
 
 (deftest create-handler-valid
   (let [request (ds/gen-key ::s.a.rate-sources/create-handler-request-valid)

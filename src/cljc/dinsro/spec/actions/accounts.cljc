@@ -53,3 +53,19 @@
 (s/def ::delete-handler-response-invalid (s/keys))
 (s/def ::delete-handler-response-success (s/keys))
 (s/def ::delete-handler-response (s/keys))
+
+;; Index
+
+(s/def ::index-handler-request (s/keys))
+(def index-handler-request ::index-handler-request)
+
+(s/def :index-accounts-response/items (s/coll-of ::s.accounts/item))
+(s/def :index-accounts-response/body (s/keys :req-un [:index-accounts-response/items]))
+(s/def ::index-handler-response (s/keys :req-un [:index-accounts-response/body]))
+(def index-handler-response ::index-handler-response)
+
+(comment
+
+  (ds/gen-key index-handler-request)
+  (ds/gen-key index-handler-response)
+  )

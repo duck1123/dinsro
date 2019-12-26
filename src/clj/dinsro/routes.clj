@@ -91,7 +91,7 @@
 
 (def routes
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
-   ["/cards" {:get {:handler devcards/cards-handler}}]
+   #_["/cards" {:get {:handler devcards/cards-handler}}]
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     ["/accounts" {:middleware [middleware/wrap-restricted]}
      [""                {:post   a.accounts/create-handler

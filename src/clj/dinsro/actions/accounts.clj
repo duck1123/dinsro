@@ -43,8 +43,8 @@
           (http/ok {:item (m.accounts/read-record id)})))
       (http/bad-request {:status :invalid})))
 
-(defn index-handler
-  [_]
+(defn-spec index-handler ::s.a.accounts/index-handler-response
+  [_ ::s.a.accounts/index-handler-request]
   (let [accounts (m.accounts/index-records)]
     (http/ok {:items accounts})))
 
@@ -58,7 +58,7 @@
 
 (defn-spec delete-handler ::s.a.accounts/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.accounts/delete-handler-request]
-  (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e))]
+  (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _))]
     (do
       (m.accounts/delete-record id)
       (http/ok {:status :ok}))
