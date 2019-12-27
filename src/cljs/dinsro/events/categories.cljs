@@ -19,7 +19,7 @@
 (rfu/reg-set-event ::items)
 (def items ::items)
 
-(s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(s/def ::item-map (s/map-of ::ds/id ::s.categories/item))
 (def item-map ::item-map)
 
 (defn sub-item
@@ -101,7 +101,7 @@
   {})
 
 (defn-spec do-delete-record any?
-  [_ any? [item] ::do-delete-record-event]
+  [_ any? [item] ::s.e.categories/do-delete-record-event]
   {:http-xhrio
    {:uri             (kf/path-for [:api-show-currency {:id (:db/id item)}])
     :method          :delete

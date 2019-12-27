@@ -20,15 +20,13 @@
 (defn-spec items-by-user ::items
   [items ::items event any?]
   (let [[_ id] event]
-    (filter #(= id (get-in % [::s.accounts/user :db/id]))
-            (::items db))))
+    (filter #(= id (get-in % [::s.accounts/user :db/id])) items)))
 
 (defn-spec items-by-currency ::items
   [items ::items event any?]
-  (let [[_ item] event]
-    (filter #(= (:db/id item)
-                (get-in % [::s.accounts/currency :db/id]))
-            items)))
+  (let [[_ item] event
+        id (:db/id item)]
+    (filter #(= id (get-in % [::s.accounts/currency :db/id])) items)))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 (def item ::item)

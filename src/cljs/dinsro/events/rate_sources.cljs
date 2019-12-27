@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [cljc.java-time.instant :as instant]
             [clojure.spec.alpha :as s]
+            [dinsro.spec.events.rate-sources :as s.e.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
@@ -91,17 +92,17 @@
 ;; Delete
 
 (defn-spec do-delete-record-success (s/keys)
-  [cofx ::do-delete-record-success-cofx _ any?]
+  [cofx ::s.e.rate-sources/do-delete-record-success-cofx _ any?]
   {:dispatch [::do-fetch-index]})
 
 (defn-spec do-delete-record-failed (s/keys)
-  [cofx ::do-delete-record-failed-cofx _ any?]
+  [cofx ::s.e.rate-sources/do-delete-record-failed-cofx _ any?]
   (timbre/error "Delete record failed")
   {:dispatch [::do-fetch-index]})
 
 (defn-spec do-delete-record (s/keys)
-  [cofx ::do-delete-record-cofx
-   [item] ::do-delete-record-event]
+  [cofx ::s.e.rate-sources/do-delete-record-cofx
+   [item] ::s.e.rate-sources/do-delete-record-event]
   (let [id (:db/id item)]
     {:http-xhrio
      {:uri             (kf/path-for [:api-show-rate-source {:id id}])

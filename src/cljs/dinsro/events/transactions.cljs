@@ -1,6 +1,7 @@
 (ns dinsro.events.transactions
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
+            [dinsro.spec.events.transactions :as s.e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]

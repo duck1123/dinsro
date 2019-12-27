@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.events.rates :as s.e.rates]
             [dinsro.spec.rates :as s.rates]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -105,7 +106,7 @@
   {:dispatch [::do-fetch-index]})
 
 (s/fdef do-delete-record-failed
-  :args (s/cat :cofx ::do-delete-record-failed-cofx
+  :args (s/cat :cofx ::s.e.rates/do-delete-record-failed-cofx
                :event any?)
   :ret (s/keys))
 
@@ -121,8 +122,8 @@
       :on-failure      [::do-delete-record-failed]}}))
 
 (s/fdef do-delete-record
-  :args (s/cat :cofx ::do-delete-record-cofx
-               :event ::do-delete-record-event)
+  :args (s/cat :cofx ::s.e.rates/do-delete-record-cofx
+               :event ::s.e.rates/do-delete-record-event)
   :ret (s/keys))
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
