@@ -8,6 +8,7 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.spec.rates :as s.rates]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
@@ -43,6 +44,7 @@
                   s.categories/schema
                   s.currencies/schema
                   s.rates/schema
+                  s.rate-sources/schema
                   s.transactions/schema
                   s.users/schema]]
     (doseq [schema schemata]

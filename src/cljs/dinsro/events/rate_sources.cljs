@@ -107,3 +107,24 @@
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record         do-delete-record)
+
+
+(defn do-run-source-failed
+  [_ _]
+  {}
+  )
+
+(defn do-run-source-success
+  [_ _]
+  {}
+  )
+
+(defn do-run-source
+  [_ [id]]
+  (timbre/infof "running: %s" id)
+  {}
+  )
+
+(kf/reg-event-fx ::do-run-source-failed  do-run-source-failed)
+(kf/reg-event-fx ::do-run-source-success do-run-source-success)
+(kf/reg-event-fx ::do-run-source         do-run-source)

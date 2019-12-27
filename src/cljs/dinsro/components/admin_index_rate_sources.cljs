@@ -19,10 +19,17 @@
         url (::s.rate-sources/url item)
         currency-id (get-in item [::s.rate-sources/currency :db/id])]
     [:tr
+     [:td id]
      [:td name]
      [:td url]
      [:td [c.links/currency-link currency-id]]
-     (c.debug/hide [:td [c.buttons/delete-rate item]])]))
+     [:td
+      [:button.button
+       {:on-click #(rf/dispatch [::e.rate-sources/do-run-source id])}
+       "Run"]
+      [c.buttons/delete-rate item]
+
+      ]]))
 
 (defn-spec section vector?
   [items (s/coll-of ::s.rate-sources/item)]
@@ -32,9 +39,10 @@
      [:p (tr [:no-rate-sources])]
      [:table.table
       [:thead>tr
+       [:th (tr [:id])]
        [:th (tr [:name])]
        [:th (tr [:url])]
        [:th (tr [:currency])]
-       (c.debug/hide [:th (tr [:actions])])]
+       [:th (tr [:actions])]]
       (->> (for [item items] ^{:key (:db/id item)} [index-line item])
            (into [:tbody]))])])
