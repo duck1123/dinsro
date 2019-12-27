@@ -1,5 +1,6 @@
 (ns dinsro.components.show-account
-  (:require [dinsro.components.debug :as c.debug]
+  (:require [devcards.core :refer-macros [defcard-rg]]
+            [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
@@ -46,3 +47,8 @@
       [:span "Currency: "]
       [currency-link currency-id]]
      (c.debug/hide [delete-account-button id])]))
+
+(defcard-rg show-account
+  (let [account {::s.accounts/name "Foo"
+                 ::s.accounts/user {:db/id 1}}]
+    [show-account account]))

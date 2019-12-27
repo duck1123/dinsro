@@ -12,7 +12,7 @@
 (s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
 
-(defn-spec sub-item any?
+(defn-spec sub-item (s/nilable ::s.accounts/item)
   [items ::items
    [_ id] ::s.e.accounts/sub-item-event]
   (first (filter #(= (:db/id %) id) items)))
