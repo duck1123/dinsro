@@ -17,6 +17,10 @@
 (s/def ::items (s/coll-of ::s.categories/item))
 (rfu/reg-basic-sub ::items)
 (rfu/reg-set-event ::items)
+(def items ::items)
+
+(s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(def item-map ::item-map)
 
 (defn sub-item
   [items [_ target-item]]
@@ -55,6 +59,37 @@
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)
 (kf/reg-event-fx ::do-submit           do-submit)
 
+;; Read
+
+(s/def ::do-fetch-record-state keyword?)
+(rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
+
+(defn do-fetch-record-success
+  [{:keys [db]} [{:keys [item]}]]
+  {:db (-> db
+           (assoc ::do-fetch-record-state :loaded)
+           (assoc ::item item)
+           (assoc-in [::item-map (:db/id item)] item))})
+
+(defn-spec do-fetch-record-failed ::s.e.categories/do-fetch-record-failed-response
+  [{:keys [db] :as cofx} ::s.e.categories/do-fetch-record-failed-cofx
+   event ::s.e.categories/do-fetch-record-failed-event]
+  {:db (assoc db ::do-fetch-record-state :failed)})
+
+(defn do-fetch-record
+  [{:keys [db]} [id]]
+  {:db (assoc db ::do-fetch-record-state :loading)
+   :http-xhrio
+   {:uri             (kf/path-for [:api-show-categories {:id id}])
+    :method          :get
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-fetch-record-success]
+    :on-failure      [::do-fetch-record-failed]}})
+
+(kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
+(kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
+(kf/reg-event-fx ::do-fetch-record         do-fetch-record)
+
 ;; Delete
 
 (defn do-delete-record-success
@@ -64,8 +99,6 @@
 (defn do-delete-record-failed
   [_ _]
   {})
-
-(s/def ::do-delete-record-event (s/cat :id :db/id))
 
 (defn-spec do-delete-record any?
   [_ any? [item] ::do-delete-record-event]
@@ -89,6 +122,7 @@
   [db [{:keys [items]}]]
   (-> db
       (assoc ::items items)
+      (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
       (assoc ::do-fetch-index-state :loaded)))
 
 (defn-spec do-fetch-index-failed ::s.e.categories/do-fetch-index-failed-response
@@ -99,7 +133,6 @@
 (defn-spec do-fetch-index ::s.e.categories/do-fetch-index-response
   [_ ::s.e.categories/do-fetch-index-cofx
    _ ::s.e.categories/do-fetch-index-event]
-  #_{:dispatch [::set-items [example-category]]}
   {:http-xhrio
    {:uri             (kf/path-for [:api-index-categories])
     :method          :get

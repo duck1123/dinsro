@@ -91,19 +91,14 @@
 
 ;; Delete
 
-(s/def ::do-delete-record-success-cofx (s/keys))
-(s/def ::do-delete-record-failed-cofx (s/keys))
-(s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
-
 (defn do-delete-record-success
   [_ _]
   {:dispatch [::do-fetch-index]})
 
 (s/fdef do-delete-record-success
-  :args (s/cat :cofx ::do-delete-record-success-cofx
-               :event any?)
-  :ret (s/keys))
+  :args (s/cat :cofx ::s.e.rates/do-delete-record-success-cofx
+               :event ::s.e.rates/do-delete-record-success-event)
+  :ret ::s.e.rates/do-delete-record-success-response)
 
 (defn do-delete-record-failed
   [_ _]

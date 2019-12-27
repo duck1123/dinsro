@@ -90,11 +90,6 @@
 
 ;; Delete
 
-(s/def ::do-delete-record-success-cofx (s/keys))
-(s/def ::do-delete-record-failed-cofx (s/keys))
-(s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat :item ::s.rate-sources/item))
-
 (defn-spec do-delete-record-success (s/keys)
   [cofx ::do-delete-record-success-cofx _ any?]
   {:dispatch [::do-fetch-index]})
@@ -105,7 +100,8 @@
   {:dispatch [::do-fetch-index]})
 
 (defn-spec do-delete-record (s/keys)
-  [cofx ::do-delete-record-cofx [item] ::do-delete-record-event]
+  [cofx ::do-delete-record-cofx
+   [item] ::do-delete-record-event]
   (let [id (:db/id item)]
     {:http-xhrio
      {:uri             (kf/path-for [:api-show-rate-source {:id id}])

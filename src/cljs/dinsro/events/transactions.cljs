@@ -1,6 +1,7 @@
 (ns dinsro.events.transactions
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
+            [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -15,23 +16,19 @@
    ::s.transactions/currency {:db/id 53}
    ::s.transactions/account {:db/id 12}})
 
-(s/def ::items                   (s/coll-of ::s.transactions/item))
+(s/def ::items (s/coll-of ::s.transactions/item))
 (def items ::items)
 (rfu/reg-basic-sub ::items)
 
-(s/def ::items-by-account-event (s/cat :keyword keyword? :id ::s.transactions/account-id))
-(def items-by-account-event ::items-by-account-event)
-
-(s/def ::items-by-currency-event (s/cat :keyword keyword? :id ::s.transactions/currency-id))
-(def items-by-currency-event ::items-by-currency-event)
-
 (defn-spec items-by-account ::items
-  [items ::items event ::items-by-account-event]
+  [items ::e.transactions/items
+   event ::e.transactions/items-by-account-event]
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/account :db/id]) id) items)))
 
 (defn-spec items-by-currency ::items
-  [items ::items event ::items-by-currency-event]
+  [items ::e.transactions/items
+   event ::e.transactions/items-by-currency-event]
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
 
@@ -103,6 +100,7 @@
 
 (defn do-delete-record-failed
   [_ _]
+  (timbre/error "Delete record failed")
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record
@@ -115,6 +113,11 @@
       :response-format (ajax/json-response-format {:keywords? true})
       :on-success      [::do-delete-record-success]
       :on-failure      [::do-delete-record-failed]}}))
+
+(s/fdef do-delete-record
+  :args (s/cat :cofx ::e.transactions/do-delete-record-cofx
+               :event  ::e.transactions/do-delete-record-event)
+  :ret (s/keys))
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
