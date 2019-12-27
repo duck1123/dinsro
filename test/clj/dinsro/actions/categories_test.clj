@@ -71,11 +71,11 @@
 
 (deftest read-handler-success
   (let [category (mocks/mock-category)
-        id (str (:db/id (timbre/spy :info category)))
-        request {:path-params {:id id}}
-        response (a.categories/read-handler (timbre/spy :info request))]
+        id (:db/id category)
+        request {:path-params {:id (str id)}}
+        response (a.categories/read-handler request)]
     (is (= status/ok (:status response)))
-    (is (= category (get-in response [:body :item])))))
+    (is (= category (get-in response [:body])))))
 
 (deftest read-handler-not-found
   (let [request (ds/gen-key ::ds/common-read-request)

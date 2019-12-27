@@ -70,6 +70,6 @@
 (deftest read-handler
   (let [rate (mocks/mock-rate-source)
         id (:db/id rate)
-        request {:path-params {:id id}}
+        request {:path-params {:id (str id)}}
         response (a.rate-sources/read-handler request)]
     (is (= status/ok (:status response)))))

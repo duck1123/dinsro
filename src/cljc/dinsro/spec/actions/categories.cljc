@@ -20,7 +20,8 @@
 (s/def ::read-handler-request ::ds/common-read-request)
 (def read-handler-request ::read-handler-request)
 
-(s/def :read-category-response-success/body (s/keys :req-un [::s.categories/item]))
+(s/def :read-category-response-success/body ::s.categories/item #_(s/keys :req-un []))
+(s/def :read-category-response-success/status #{200})
 (s/def ::read-handler-response-success (s/keys :req-un [:read-category-response-success/body]))
 (def read-handler-response-success ::read-handler-response-success)
 

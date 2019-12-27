@@ -8,6 +8,7 @@
             [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.specs :as ds]
+            [dinsro.utils :as utils]
             [java-time :as t]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
@@ -53,7 +54,7 @@
 
 (defn-spec read-handler ::s.a.rate-sources/read-handler-response
   [request ::s.a.rate-sources/read-handler-request]
-  (if-let [id (get-in request [:path-params :id])]
+  (if-let [id (some-> (get-in request [:path-params :id]) utils/try-parse)]
     (if-let [item (m.rate-sources/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
