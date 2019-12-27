@@ -1,7 +1,6 @@
 (ns dinsro.events.transactions
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-            [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -21,14 +20,14 @@
 (rfu/reg-basic-sub ::items)
 
 (defn-spec items-by-account ::items
-  [items ::e.transactions/items
-   event ::e.transactions/items-by-account-event]
+  [items ::items
+   event ::s.e.transactions/items-by-account-event]
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/account :db/id]) id) items)))
 
 (defn-spec items-by-currency ::items
-  [items ::e.transactions/items
-   event ::e.transactions/items-by-currency-event]
+  [items ::items
+   event ::s.e.transactions/items-by-currency-event]
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
 
@@ -100,7 +99,6 @@
 
 (defn do-delete-record-failed
   [_ _]
-  (timbre/error "Delete record failed")
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record
