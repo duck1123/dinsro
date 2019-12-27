@@ -3,7 +3,9 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
+            [dinsro.events.users :as e.users]
             [dinsro.spec.events.forms.settings :as s.e.f.settings]
+            [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -78,7 +80,7 @@
        [debug-button]
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
-          [:a.navbar-link auth-id]
+          [:a.navbar-link (::s.users/name @(rf/subscribe [::e.users/item auth-id]))]
           [:div.navbar-dropdown
            (nav-link (tr [:settings]) :settings-page)
            (c.debug/hide (nav-link (tr [:currencies]) :index-currencies-page))
