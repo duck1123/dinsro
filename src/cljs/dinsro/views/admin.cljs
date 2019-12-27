@@ -1,26 +1,20 @@
 (ns dinsro.views.admin
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-account :as c.f.create-account]
-            [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.components.index-users :as c.index-users]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-account :as e.f.create-account]
             [dinsro.events.users :as e.users]
-            [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
+  [_ _]
   {:document/title "Admin Page"
    :dispatch-n [[::e.accounts/do-fetch-index]
                 [::e.users/do-fetch-index]

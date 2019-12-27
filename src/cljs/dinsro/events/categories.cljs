@@ -111,11 +111,11 @@
 (rfu/reg-basic-sub ::do-fetch-index-state)
 
 (defn do-fetch-index-success
-  [db [{:keys [items]}]]
-  (-> db
-      (assoc ::items items)
-      (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
-      (assoc ::do-fetch-index-state :loaded)))
+  [{:keys [db]} [{:keys [items]}]]
+  {:db (-> db
+        (assoc ::items items)
+        (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
+        (assoc ::do-fetch-index-state :loaded))})
 
 (defn-spec do-fetch-index-failed ::s.e.categories/do-fetch-index-failed-response
   [_ ::s.e.categories/do-fetch-index-failed-cofx
@@ -130,6 +130,6 @@
                     [::do-fetch-index-success]
                     [::do-fetch-index-failed])})
 
-(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)

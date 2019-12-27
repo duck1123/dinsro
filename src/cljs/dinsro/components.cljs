@@ -161,7 +161,9 @@
    {:on-click #(rf/dispatch [key false])}])
 
 (defn show-form-button
-  [state change]
-  (when-not @(rf/subscribe [state])
-    [:a.is-pulled-right {:on-click #(rf/dispatch [change true])}
-     (tr [:show-form "Show"])]))
+  ([state]
+   (show-form-button state (#'rfu/kw-prefix state "set-")))
+  ([state change]
+   (when-not @(rf/subscribe [state])
+     [:a.is-pulled-right {:on-click #(rf/dispatch [change true])}
+      (tr [:show-form "Show"])])))

@@ -18,15 +18,19 @@
  {:params (constantly true)
   :start [::e.f.create-rate-source/init-form]})
 
-(defn-spec form vector?
+(defn form-shown
   []
   (let [form-data @(rf/subscribe [::e.f.create-rate-source/form-data])]
-    (when @(rf/subscribe [::e.f.create-rate-source/shown?])
-      [:<>
-       [c/close-button ::e.f.create-rate-source/set-shown?]
-       [c.debug/debug-box form-data]
-       [c/text-input (tr [:name]) ::s.e.f.create-rate-source/name]
-       [c/text-input (tr [:url]) ::s.e.f.create-rate-source/url]
-       [c/currency-selector (tr [:currency]) ::s.e.f.create-rate-source/currency-id]
-       [:div.field>div.control
-        [c/primary-button (tr [:submit]) [::e.rate-sources/do-submit form-data]]]])))
+    [:<>
+     [c/close-button ::e.f.create-rate-source/set-shown?]
+     [c.debug/debug-box form-data]
+     [c/text-input (tr [:name]) ::s.e.f.create-rate-source/name]
+     [c/text-input (tr [:url]) ::s.e.f.create-rate-source/url]
+     [c/currency-selector (tr [:currency]) ::s.e.f.create-rate-source/currency-id]
+     [:div.field>div.control
+      [c/primary-button (tr [:submit]) [::e.rate-sources/do-submit form-data]]]]))
+
+(defn-spec form vector?
+  []
+  (when @(rf/subscribe [::e.f.create-rate-source/shown?])
+    [form-shown]))

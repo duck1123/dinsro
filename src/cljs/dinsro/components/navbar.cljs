@@ -85,6 +85,7 @@
            (nav-link (tr [:settings]) :settings-page)
            (c.debug/hide (nav-link (tr [:currencies]) :index-currencies-page))
            (nav-link (tr [:admin]) :admin-page)
+           (c.debug/hide (nav-link (tr [:rate-sources]) :index-rate-sources-page))
            (c.debug/hide (nav-link (tr [:rates]) :index-rates-page))
            (c.debug/hide (nav-link (tr [:categories]) :index-categories-page))
            (c.debug/hide (nav-link (tr [:users]) :index-users-page))

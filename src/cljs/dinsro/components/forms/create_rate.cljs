@@ -15,20 +15,24 @@
  {:params (constantly true)
   :start [::e.f.create-rate/init-form]})
 
-(defn form
+(defn form-shown
   []
   (let [form-data @(rf/subscribe [::e.f.create-rate/form-data])]
-    (when @(rf/subscribe [::e.f.create-rate/shown?])
-      [:<>
-       [c/close-button ::e.f.create-rate/set-shown?]
-       [:div.field>div.control
-        [c/number-input (tr [:rate]) ::s.e.f.create-rate/rate]]
-       [:div.field>div.control
-        [:label.label (tr [:date])]
-        [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-rate/set-date %])}]]
-       [:div.field>div.control
-        [c/currency-selector (tr [:currency]) ::s.e.f.create-rate/currency-id]]
-       [:div.field>div.control
-        [c.debug/debug-box form-data]]
-       [:div.field>div.control
-        [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]])))
+    [:<>
+     [c/close-button ::e.f.create-rate/set-shown?]
+     [:div.field>div.control
+      [c/number-input (tr [:rate]) ::s.e.f.create-rate/rate]]
+     [:div.field>div.control
+      [:label.label (tr [:date])]
+      [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-rate/set-date %])}]]
+     [:div.field>div.control
+      [c/currency-selector (tr [:currency]) ::s.e.f.create-rate/currency-id]]
+     [:div.field>div.control
+      [c.debug/debug-box form-data]]
+     [:div.field>div.control
+      [c/primary-button (tr [:submit]) [::e.rates/do-submit form-data]]]]))
+
+(defn form
+  []
+  (when @(rf/subscribe [::e.f.create-rate/shown?])
+    [form-shown]))

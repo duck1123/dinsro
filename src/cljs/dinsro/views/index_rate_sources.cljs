@@ -36,15 +36,19 @@
    [c.buttons/fetch-rate-sources]
    [c.buttons/fetch-currencies]])
 
+(defn section
+  [items]
+  [:div.box
+   [:h1
+    (tr [:rate-sources "Rate Sources"])
+    [c/show-form-button ::e.f.create-rate-source/shown?]]
+   [c.f.create-rate-source/form]
+   [:hr]
+   [c.index-rate-sources/section items]])
+
 (defn-spec page vector?
   [_ any?]
   (let [items @(rf/subscribe [::e.rate-sources/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])
-     [:div.box
-      [:h1
-       (tr [:rate-sources "Rate Sources"])
-       [c/show-form-button ::e.f.create-rate-source/shown? ::e.f.create-rate-source/set-shown?]]
-      [c.f.create-rate-source/form]
-      [:hr]
-      [c.index-rate-sources/section items]]]))
+     [section items]]))
