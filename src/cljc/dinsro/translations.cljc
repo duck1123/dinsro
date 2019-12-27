@@ -39,6 +39,7 @@
     :name-label "Name: %1"
     :no-accounts "No Accounts"
     :no-currencies "No Currencies"
+    :no-rate-sources "No Rate Sources"
     :no-rates "No Rates"
     :no-users "No Users"
     :not-loaded "Not Loaded"

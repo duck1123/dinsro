@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [cljc.java-time.instant :as instant]
             [clojure.spec.alpha :as s]
+            [dinsro.events :as e]
             [dinsro.spec.events.rate-sources :as s.e.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.specs :as ds]
@@ -50,14 +51,12 @@
 
 (defn do-fetch-index
   [{:keys [db]} _]
-  {:db (assoc db ::items (ds/gen-key ::items))}
-  #_{:db (assoc db ::do-fetch-index-state :loading)
+  ;; {:db (assoc db ::items (ds/gen-key ::items))}
+  {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   {:method          :get
-    :uri             (kf/path-for [:api-index-rate-sources])
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+   (e/fetch-request [:api-index-rate-sources]
+                    [::do-fetch-index-success]
+                    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
@@ -77,13 +76,10 @@
   [{:keys [db]} any?
    [data] any?]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-index-rate-sources])
-    :params          data
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-success]
-    :on-failure      [::do-submit-failed]}})
+   (e/post-request [:api-index-rate-sources]
+                   [::do-submit-success]
+                   [::do-submit-failed]
+                   data)})
 
 (kf/reg-event-fx ::do-submit-failed  do-submit-failed)
 (kf/reg-event-fx ::do-submit-success do-submit-success)
@@ -103,14 +99,10 @@
 (defn-spec do-delete-record (s/keys)
   [cofx ::s.e.rate-sources/do-delete-record-cofx
    [item] ::s.e.rate-sources/do-delete-record-event]
-  (let [id (:db/id item)]
-    {:http-xhrio
-     {:uri             (kf/path-for [:api-show-rate-source {:id id}])
-      :method          :delete
-      :format          (ajax/json-request-format)
-      :response-format (ajax/json-response-format {:keywords? true})
-      :on-success      [::do-delete-record-success]
-      :on-failure      [::do-delete-record-failed]}}))
+  {:http-xhrio
+   (e/delete-request [:api-show-rate-source {:id (:d/id item)}]
+                     [::do-delete-record-success]
+                     [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)

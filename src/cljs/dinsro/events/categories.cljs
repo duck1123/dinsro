@@ -1,6 +1,6 @@
 (ns dinsro.events.categories
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.events :as e]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.events.categories :as s.e.categories]
             [kee-frame.core :as kf]
@@ -47,13 +47,10 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-index-categories])
-    :params          data
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-success]
-    :on-failure      [::do-submit-failed]}})
+   (e/post-request [:api-index-categories]
+                   [::do-submit-success]
+                   [::do-submit-failed]
+                   data)})
 
 (kf/reg-event-fx ::do-submit-success   do-submit-success)
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)
@@ -80,11 +77,9 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   {:uri             (kf/path-for [:api-show-categories {:id id}])
-    :method          :get
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-record-success]
-    :on-failure      [::do-fetch-record-failed]}})
+   (e/fetch-request [:api-show-categories {:id id}]
+                    [::do-fetch-record-success]
+                    [::do-fetch-record-failed])})
 
 (kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
@@ -103,12 +98,9 @@
 (defn-spec do-delete-record any?
   [_ any? [item] ::s.e.categories/do-delete-record-event]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-show-currency {:id (:db/id item)}])
-    :method          :delete
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-delete-record-success]
-    :on-failure      [::do-delete-record-failed]}})
+   (e/delete-request [:api-show-currency {:id (:db/id item)}]
+                     [::do-delete-record-success]
+                     [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
@@ -134,11 +126,9 @@
   [_ ::s.e.categories/do-fetch-index-cofx
    _ ::s.e.categories/do-fetch-index-event]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-index-categories])
-    :method          :get
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+   (e/fetch-request [:api-index-categories]
+                    [::do-fetch-index-success]
+                    [::do-fetch-index-failed])})
 
 (kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
