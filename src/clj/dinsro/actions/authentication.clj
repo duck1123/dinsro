@@ -26,7 +26,7 @@
         (if-let [password-hash (::s.users/password-hash user)]
           (if (hashers/check password password-hash)
             (let [id (:db/id user)]
-              (-> {::identity id}
+              (-> {::s.a.authentication/identity id}
                   (http/ok)
                   (assoc-in [:session :identity] id)))
             ;; Password does not match

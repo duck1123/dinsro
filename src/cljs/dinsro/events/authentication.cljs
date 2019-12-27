@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [dinsro.components :as c]
+            [dinsro.spec.actions.authentication :as s.a.authentication]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
 
@@ -14,7 +15,8 @@
 (defn do-authenticate-success
   [cofx event]
   (let [{:keys [db]} cofx
-        [{:keys [identity]}] event
+        [item] event
+        identity (::s.a.authentication/identity item)
         return-to (:return-to db)
         db (if return-to
              (-> db
