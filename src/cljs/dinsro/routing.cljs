@@ -56,7 +56,10 @@
    ["/logout"       :api-logout]
    ["/rate-sources"
     [""             :api-index-rate-sources]
-    ["/:id"         :api-show-rate-source]]
+    ["/:id"
+     ["" :api-show-rate-source]
+     ["/run" :api-run-rate-source]
+     ]]
    ["/rates"
     [""             :api-index-rates]
     ["/:id"         :api-show-rate]]
@@ -75,8 +78,7 @@
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
    ["/admin"
-    ["" :admin-page]
-    ]
+    ["" :admin-page]]
    ["/cards" :cards-page]
    ["/categories"
     [""               :index-categories-page]
@@ -87,7 +89,7 @@
    ["/login"          :login-page]
    ["/rate-sources"
     [""               :index-rate-sources-page]
-    ["/:id"           :show-rate-sourcs-page]]
+    ["/:id"           :show-rate-sources-page]]
    ["/rates"          :index-rates-page]
    ["/register"       :register-page]
    ["/transactions"   :index-transactions-page]
@@ -95,6 +97,11 @@
    ["/users"
     [""               :index-users-page]
     ["/:id"           :show-user-page]]])
+
+(comment
+  routes
+
+         )
 
 (rf/reg-sub
  :nav/route

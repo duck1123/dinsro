@@ -100,7 +100,7 @@
   [cofx ::s.e.rate-sources/do-delete-record-cofx
    [item] ::s.e.rate-sources/do-delete-record-event]
   {:http-xhrio
-   (e/delete-request [:api-show-rate-source {:id (:d/id item)}]
+   (e/delete-request [:api-show-rate-source {:id (:db/id item)}]
                      [::do-delete-record-success]
                      [::do-delete-record-failed])})
 
@@ -122,7 +122,20 @@
 (defn do-run-source
   [_ [id]]
   (timbre/infof "running: %s" id)
-  {}
+  {:http-xhrio
+   {:uri             (kf/path-for [:api-run-rate-source {:id id}])
+    :method          :post
+    :data {}
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-run-source-success]
+    :on-failure      [::do-run-source-failed]}
+   }
+  )
+
+(comment
+  (kf/path-for [:api-run-rate-source {:id 1}])
+
   )
 
 (kf/reg-event-fx ::do-run-source-failed  do-run-source-failed)

@@ -67,3 +67,18 @@
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (m.rate-sources/delete-record id)
     (http/ok {:id id})))
+
+
+(defn run-handler
+  [request]
+  (let [id (some-> (get-in request [:path-params :id]) utils/try-parse)]
+    (if-let [item (m.rate-sources/read-record id)]
+      (do
+        (let [url (::s.rate-sources/url item)]
+
+          (http/ok {:status :ok
+                    :url url
+                    })))
+      (http/not-found {:status :not-found})))
+
+  )
