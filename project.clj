@@ -169,9 +169,9 @@
                                               ]
                                :figwheel     {:devcards true}
                                :compiler     {:main "dinsro.devcards"
-                                              :asset-path "js/devcards_out"
-                                              :output-to "target/devcards-cljs/public/js/devcards.js"
-                                              :output-dir "target/devcard-cljs/public/js/devcards_out"
+                                              :asset-path "/js/devcards_out"
+                                              :output-to "target/cljsbuild/public/js/devcards.js"
+                                              :output-dir "target/cljsbuild/public/js/devcards_out"
                                               :source-map-timestamp true
                                               :optimizations :none
                                               ;; :pretty-print true
