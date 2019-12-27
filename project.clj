@@ -166,16 +166,16 @@
                                               "env/dev/cljs"
                                               "test/cljs"
                                               "test/cljc"
-
                                               ]
                                :figwheel     {:devcards true}
                                :compiler     {:main "dinsro.devcards"
                                               :asset-path "js/devcards_out"
-                                              :output-to "target/devcards-cljs/public/js/app_devcards.js"
+                                              :output-to "target/devcards-cljs/public/js/devcards.js"
                                               :output-dir "target/devcard-cljs/public/js/devcards_out"
                                               :source-map-timestamp true
                                               :optimizations :none
-                                              :pretty-print true}}
+                                              ;; :pretty-print true
+                                              }}
 
                     }}
 
