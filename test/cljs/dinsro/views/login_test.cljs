@@ -1,4 +1,4 @@
-(ns dinsro.view.login-test
+(ns dinsro.views.login-test
   (:require [cljs.test :refer-macros [is are testing use-fixtures]]
             [devcards.core :refer-macros [defcard-rg deftest]]
             [dinsro.views.login :as v.login]
@@ -10,9 +10,5 @@
   {:name "foo"})
 
 
-(deftest login-form
-  (is (= nil (v.login/page ""))))
-
-(comment
-  ;; (v.login/login-form)
-  )
+(deftest page
+  (is (vector? (v.login/page ""))))
