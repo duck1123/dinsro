@@ -22,7 +22,7 @@
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
                    (assoc-in [::s.categories/user :db/id] user-id))]
-    (if (s/valid? ::s.categories/params (timbre/spy :info params))
+    (if (s/valid? ::s.categories/params params)
       params
       (do
         #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.categories/params params))
@@ -45,7 +45,7 @@
 
 (defn-spec read-handler ::s.a.categories/read-handler-response
   [{{:keys [id]} :path-params} ::s.a.categories/read-handler-request]
-  (if-let [category (m.categories/read-record (timbre/spy :info (utils/try-parse (timbre/spy :info id))))]
+  (if-let [category (m.categories/read-record (utils/try-parse id))]
     (http/ok category)
     (http/not-found {:status :not-found})))
 
