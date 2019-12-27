@@ -9,6 +9,14 @@
 (s/def ::items (s/coll-of ::s.accounts/item))
 (def items ::items)
 
+(s/def ::sub-item-event (s/cat
+                         :event-name keyword?
+                         :id ::ds/id))
+
+(comment
+  (ds/gen-key ::sub-item-event)
+  )
+
 ;; Index
 
 (s/def ::do-fetch-index-state keyword?)

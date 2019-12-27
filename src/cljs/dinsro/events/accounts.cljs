@@ -1,9 +1,8 @@
 (ns dinsro.events.accounts
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.events :as e]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.accounts :as s.e.accounts]
-            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
@@ -13,32 +12,29 @@
 (s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
 
-(s/def ::sub-item-event (s/cat
-                         :event-name keyword?
-                         :id ::ds/id))
-
 (defn-spec sub-item any?
   [items ::items
-   [_ id] ::sub-item-event]
+   [_ id] ::s.e.accounts/sub-item-event]
   (first (filter #(= (:db/id %) id) items)))
 
 (defn-spec items-by-user ::items
-  [db any? event any?]
+  [items ::items event any?]
   (let [[_ id] event]
-    (filter #(= id (get-in % [::s.accounts/user :db/id])) (::items db))))
+    (filter #(= id (get-in % [::s.accounts/user :db/id]))
+            (::items db))))
 
 (defn-spec items-by-currency ::items
-  [db any? event any?]
+  [items ::items event any?]
   (let [[_ item] event]
     (filter #(= (:db/id item)
                 (get-in % [::s.accounts/currency :db/id]))
-            (::items db))))
+            items)))
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 (def item ::item)
 
-(rf/reg-sub ::items-by-user items-by-user)
-(rf/reg-sub ::items-by-currency items-by-currency)
+(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
+(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Create
 
@@ -54,13 +50,11 @@
   [{:keys [db]} ::s.e.accounts/do-submit-response-cofx
    [data] ::s.e.accounts/do-submit-response-event]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-index-accounts])
-    :params          data
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-success]
-    :on-failure      [::do-submit-failed]}})
+   (e/post-request
+    [:api-index-accounts]
+    [::do-submit-success]
+    [::do-submit-failed]
+    data)})
 
 (kf/reg-event-fx ::do-submit-success   do-submit-success)
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)
@@ -81,12 +75,10 @@
 (defn do-delete-record
   [_ [item]]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-show-account {:id (:db/id item)}])
-    :method          :delete
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-delete-record-success]
-    :on-failure      [::do-delete-record-failed]}})
+   (e/delete-request
+    [:api-show-account {:id (:db/id item)}]
+    [::do-delete-record-success]
+    [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
@@ -110,12 +102,9 @@
 (defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
   [_ ::s.e.accounts/do-fetch-index-cofx
    _ ::s.e.accounts/do-fetch-index-event]
-  {:http-xhrio
-   {:uri             (kf/path-for [:api-index-accounts])
-    :method          :get
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+  {:http-xhrio (e/fetch-request [:api-index-accounts]
+                                [::do-fetch-index-success]
+                                [::do-fetch-index-failed])})
 
 (kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
