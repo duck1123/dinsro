@@ -21,11 +21,12 @@
 
 (defn input-field
   [label field change-handler type]
-  [:label.label label]
-  [:input.input
-   {:type type
-    :value @(rf/subscribe [field])
-    :on-change #(rf/dispatch [change-handler (target-value %)])}])
+  [:<>
+   [:label.label label]
+   [:input.input
+    {:type type
+     :value @(rf/subscribe [field])
+     :on-change #(rf/dispatch [change-handler (target-value %)])}]])
 
 
 (defn checkbox-input

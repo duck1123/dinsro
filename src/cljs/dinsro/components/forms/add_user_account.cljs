@@ -15,7 +15,11 @@
       [:<>
        [c/close-button ::e.f.add-user-account/set-shown?]
        [c.debug/debug-box form-data]
-       [c/text-input (tr [:name]) ::s.e.f.create-account/name]
-       [c/number-input (tr [:initial-value]) ::s.e.f.create-account/initial-value]
-       [c/currency-selector (tr [:currency]) ::s.e.f.create-account/currency-id]
-       [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]])))
+       [:div.field>div.control
+        [c/text-input (tr [:name]) ::s.e.f.create-account/name]]
+       [:div.field>div.control
+        [c/number-input (tr [:initial-value]) ::s.e.f.create-account/initial-value]]
+       [:div.field>div.control
+        [c/currency-selector (tr [:currency]) ::s.e.f.create-account/currency-id]]
+       [:div.field>div.control
+        [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]]])))
