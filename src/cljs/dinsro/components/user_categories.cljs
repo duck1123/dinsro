@@ -5,7 +5,6 @@
             [dinsro.components.index-categories :as c.index-categories]
             [dinsro.events.forms.add-user-category :as e.f.add-user-category]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.spec.events.forms.add-user-category :as s.e.f.add-user-category]
             [taoensso.timbre :as timbre]))
 
 (defn section

@@ -3,7 +3,7 @@
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-account :as c.f.create-account]
-            [dinsro.components.index-accounts :refer [index-accounts]]
+            [dinsro.components.index-accounts :as c.index-accounts]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-account :as e.f.create-account]
@@ -37,17 +37,18 @@
 
 (defn page
   [_]
-  (let [accounts @(rf/subscribe [::e.accounts/items])
-        state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
-    [:section.section>div.container>div.content
-     (c.debug/hide [loading-buttons])
-     [:div.box
-      [:h1
-       (tr [:index-accounts])
-       [c/show-form-button ::e.f.create-account/shown? ::e.f.create-account/set-shown?]]
-      [c.f.create-account/form]
-      [:hr]
-      (condp = state
-        :invalid [:p "Invalid"]
-        :loaded  [index-accounts accounts]
-        [:p "Unknown state: " state])]]))
+  (if-let [user-id @(rf/subscribe [:dinsro.events.authentication/auth-id])]
+    (let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
+          state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
+      [:section.section>div.container>div.content
+       (c.debug/hide [loading-buttons])
+       [:div.box
+        [:h1
+         (tr [:index-accounts])
+         [c/show-form-button ::e.f.create-account/shown? ::e.f.create-account/set-shown?]]
+        [c.f.create-account/form]
+        [:hr]
+        (condp = state
+          :invalid [:p "Invalid"]
+          :loaded  [c.index-accounts/index-accounts accounts]
+          [:p "Unknown state: " state])]])))

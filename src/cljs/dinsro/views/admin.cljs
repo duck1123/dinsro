@@ -1,5 +1,6 @@
 (ns dinsro.views.admin
   (:require [dinsro.components :as c]
+            [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
             [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
@@ -53,4 +54,5 @@
    (c.debug/hide [load-buttons])
    [:h1 "Admin"]
    [rate-sources-section]
+   [c.admin-index-accounts/section]
    [users-section]])
