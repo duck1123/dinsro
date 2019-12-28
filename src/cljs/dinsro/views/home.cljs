@@ -2,6 +2,7 @@
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
+            [dinsro.components.account-picker :as c.account-picker]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
@@ -35,7 +36,9 @@
     [:section.section>div.container>div.content
      [:h1 (tr [:home-page])]
      (if auth-id
-       [:div.box
-        (str auth-id)]
+       [:<>
+        [:div.box
+         (str auth-id)]
+        [c.account-picker/section]]
        [:div.box
         [:p "Not authenticated"]])]))

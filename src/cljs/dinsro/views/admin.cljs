@@ -8,6 +8,8 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.index-users :as c.index-users]
             [dinsro.events.accounts :as e.accounts]
+            [dinsro.events.categories :as e.categories]
+            [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
@@ -19,8 +21,10 @@
   [_ _]
   {:document/title "Admin Page"
    :dispatch-n [[::e.accounts/do-fetch-index]
-                [::e.users/do-fetch-index]
-                [::e.currencies/do-fetch-index]]})
+                [::e.categories/do-fetch-index]
+                [::e.currencies/do-fetch-index]
+                [::e.rate-sources/do-fetch-index]
+                [::e.users/do-fetch-index]]})
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -32,11 +36,11 @@
 (defn load-buttons
   []
   [:div.box
-   [c.buttons/fetch-users]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-categories]
    [c.buttons/fetch-accounts]
-   [c.buttons/fetch-rate-sources]])
+   [c.buttons/fetch-categories]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-rate-sources]
+   [c.buttons/fetch-users]])
 
 (defn users-section
   []
