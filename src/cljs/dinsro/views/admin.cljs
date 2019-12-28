@@ -53,7 +53,7 @@
   []
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
-   [:h1 "Admin"]
+   [:h1.title "Admin"]
    [c.admin-index-categories/section]
    [c.admin-index-currencies/section]
    [c.admin-index-rate-sources/section]

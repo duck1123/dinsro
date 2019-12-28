@@ -23,12 +23,12 @@
          [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]]
        [:div.columns
         [:div.column
-         [:div.field>div.control
-          [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]]
-        [:div.column
-         [:div.field>div.control
-          [:label.label (tr [:date])]
+         [:div {:style {:display "inline-block"}}
+          [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
+         [:div {:style {:display :inline-block}}
           [c.datepicker/datepicker
-           {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]]]
+           {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]]
+        [:div.column
+         [:label.label (tr [:date])]]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])))

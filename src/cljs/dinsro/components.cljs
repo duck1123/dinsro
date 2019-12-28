@@ -76,14 +76,13 @@
 
      :loaded
      (let [items @(rf/subscribe [::e.accounts/items])]
-       [:div.field>div.control
-        [:label.label label]
-        [:div.select
-         (into [:select {:value (or @(rf/subscribe [field]) "")
-                         :on-change #(rf/dispatch [change-handler (target-value %)])}]
-               (concat [[:option {:value ""} ""]]
-                       (for [{:keys [db/id dinsro.spec.accounts/name]} items]
-                         ^{:key id} [:option {:value id} name])))]])
+       #_[:label.label label]
+       [:div.select
+        (into [:select {:value (or @(rf/subscribe [field]) "")
+                        :on-change #(rf/dispatch [change-handler (target-value %)])}]
+              (concat [[:option {:value ""} ""]]
+                      (for [{:keys [db/id dinsro.spec.accounts/name]} items]
+                        ^{:key id} [:option {:value id} name])))])
 
      [:p "Unknown state"])))
 
