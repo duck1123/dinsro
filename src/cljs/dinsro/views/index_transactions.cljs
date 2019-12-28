@@ -2,7 +2,7 @@
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
-            [dinsro.components.index-transactions :refer [index-transactions]]
+            [dinsro.components.index-transactions :as c.index-transactions]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-transaction :as e.f.create-transaction]
@@ -33,15 +33,19 @@
    [c.buttons/fetch-accounts]
    [c.buttons/fetch-currencies]])
 
+(defn section-inner
+  [transactions]
+  [:div.box
+   [:h1
+    (tr [:index-transactions-title "Index Transactions"])
+    [c/show-form-button ::e.f.create-transaction/shown? ::e.f.create-transaction/set-shown?]]
+   [c.f.create-transaction/form]
+   [:hr]
+   [c.index-transactions/index-transactions transactions]])
+
 (defn page
   []
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
    (let [transactions (or @(rf/subscribe [::e.transactions/items]) [])]
-     [:div.box
-      [:h1
-       (tr [:index-transactions-title "Index Transactions"])
-       [c/show-form-button ::e.f.create-transaction/shown? ::e.f.create-transaction/set-shown?]]
-      [c.f.create-transaction/form]
-      [:hr]
-      [index-transactions transactions]])])
+     [section-inner transactions])])
