@@ -20,6 +20,7 @@
     [:div.card
      {:style {:margin-bottom "5px"}}
      [:div.card-content
+      #_[c.debug/debug-box transaction]
       [:div.level.is-mobile
        [:div.level-left
         [:div.level-item
@@ -35,7 +36,7 @@
        [:div.level-right
         [:div.level-item
          [c.links/account-link account-id]]]]]
-     [:footer.card-footer
+     #_[:footer.card-footer
       [:a.button.card-footer-item
        {:on-click #(rf/dispatch [::e.transactions/do-delete-record transaction])}
        (tr [:delete])]]]))
