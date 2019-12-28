@@ -3,7 +3,7 @@
   (:require [clojure.spec.alpha :as s]))
 
 (def default-name "Default rate source")
-(def default-url "http://example.com/")
+(def default-url "https://api.gdax.com/products/BTC-USD/ticker")
 (def default-currency-id 53)
 
 (s/def ::name string?)

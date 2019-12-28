@@ -22,7 +22,7 @@
      [:td name]
      [:td url]
      [:td [c.links/currency-link currency-id]]
-     (c.debug/hide [:td [c.buttons/delete-rate item]])]))
+     (c.debug/hide [:td [c.buttons/delete-rate-source item]])]))
 
 (defn-spec section vector?
   [items (s/coll-of ::s.rate-sources/item)]

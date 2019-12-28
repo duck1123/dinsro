@@ -6,8 +6,10 @@
             [expound.alpha :as expound]
             [dinsro.db.core :as db]
             [dinsro.model.rate-sources :as m.rate-sources]
+            [dinsro.model.rates :as m.rates]
             [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
+            [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
             [dinsro.utils :as utils]
             [java-time :as t]
@@ -83,10 +85,14 @@
   (let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
     (if-let [item (m.rate-sources/read-record id)]
       (try
-        (let [rate (fetch-rate item)]
-          (http/ok {:status :ok
-                    :rate-source-id id
-                    :rate rate}))
+        (let [rate (fetch-rate item)
+              currency-id (some-> item ::s.rate-sources/currency :db/id)]
+          (let [rate-item {::s.rates/currency {:db/id currency-id}
+                           ::s.rates/rate rate
+                           ::s.rates/date (tick/instant)}]
+            (let [rate-id (m.rates/create-record rate-item)]
+              (http/ok {:status :ok
+                        :item (m.rates/read-record rate-id)}))))
         (catch NumberFormatException e
           (http/internal-server-error {:status :error :message (.getMessage e)})))
       (http/not-found {:status :not-found}))))

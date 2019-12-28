@@ -34,6 +34,12 @@
    {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
    (tr [:delete])])
 
+(defn delete-rate-source
+  [item]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.rate-sources/do-delete-record item])}
+   (tr [:delete])])
+
 (defn delete-transaction
   [item]
   [:a.button.is-danger
