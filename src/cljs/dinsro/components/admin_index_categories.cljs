@@ -1,0 +1,53 @@
+(ns dinsro.components.admin-index-categories
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
+            [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
+            [dinsro.components.forms.create-category :as c.f.create-category]
+            [dinsro.components.links :as c.links]
+            [dinsro.events.categories :as e.categories]
+            [dinsro.events.forms.create-category :as e.f.create-category]
+            [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.categories :as s.categories]
+            [dinsro.specs :as ds]
+            [dinsro.translations :refer [tr]]
+            [kee-frame.core :as kf]
+            [orchestra.core :refer [defn-spec]]
+            [reagent.core :as r]
+            [re-frame.core :as rf]))
+
+(defn-spec category-line vector?
+  [item ::s.categories/item]
+  (let [id (:db/id item)
+        name (::s.categories/name item)
+        user-id (get-in item [::s.categories/user :db/id])]
+    [:tr
+     [:td name]
+     [:td [c.links/user-link user-id]]
+     (c.debug/hide [:td [c.buttons/delete-category item]])]))
+
+(defn-spec index-categories vector?
+  [items (s/coll-of ::s.categories/item)]
+  [:<>
+   [c.debug/debug-box items]
+   (if-not (seq items)
+     [:p (tr [:no-categories])]
+     [:table.table
+      [:thead>tr
+       [:th (tr [:name])]
+       [:th (tr [:user])]
+       (c.debug/hide [:th (tr [:actions])])]
+      (->> (for [item items] ^{:key (:db/id item)} [category-line item])
+           (into [:tbody]))])])
+
+(defn section
+  []
+  (let [items @(rf/subscribe [::e.categories/items])]
+    [:div.box
+     [:h1
+      (tr [:categories "Categories"])
+      [c/show-form-button ::e.f.create-category/shown? ::e.f.create-category/set-shown?]]
+     [c.f.create-category/form]
+     [:hr]
+     (when (seq items)
+       [index-categories items])]))

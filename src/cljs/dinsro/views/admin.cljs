@@ -1,6 +1,7 @@
 (ns dinsro.views.admin
   (:require [dinsro.components :as c]
             [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
+            [dinsro.components.admin-index-categories :as c.admin-index-categories]
             [dinsro.components.admin-index-currencies :as c.admin-index-currencies]
             [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
             [dinsro.components.buttons :as c.buttons]
@@ -32,6 +33,9 @@
   []
   [:div.box
    [c.buttons/fetch-users]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-categories]
+   [c.buttons/fetch-accounts]
    [c.buttons/fetch-rate-sources]])
 
 (defn users-section
@@ -46,7 +50,8 @@
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
    [:h1 "Admin"]
-   (comment [c.admin-index-currencies/section])
+   [c.admin-index-categories/section]
+   [c.admin-index-currencies/section]
    [c.admin-index-rate-sources/section]
    [c.admin-index-accounts/section]
    [users-section]])
