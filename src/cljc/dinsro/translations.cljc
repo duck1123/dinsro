@@ -10,6 +10,7 @@
    {:missing "Missing text"
     :about "About"
     :actions "Actions"
+    :account "Account"
     :accounts "Accounts"
     :admin "Admin"
     :categories "Categories"

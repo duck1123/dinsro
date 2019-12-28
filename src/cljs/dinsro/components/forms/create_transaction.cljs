@@ -16,14 +16,19 @@
       [:div
        [c/close-button ::e.f.create-transaction/set-shown?]
        [c.debug/debug-box form-data]
-       [:div.field>div.control
-        [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
-       [:div.field>div.control
-        [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
-       [:div.field>div.control
-        [:label.label (tr [:date])]
-        [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
-       [:div.field>div.control
-        [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]
+       [:div.columns.is-multiline
+        [:div.column
+         [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
+        [:div.column
+         [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]]
+       [:div.columns
+        [:div.column
+         [:div.field>div.control
+          [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]]
+        [:div.column
+         [:div.field>div.control
+          [:label.label (tr [:date])]
+          [c.datepicker/datepicker
+           {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])))
