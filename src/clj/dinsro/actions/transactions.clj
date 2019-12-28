@@ -45,7 +45,7 @@
 
 (defn-spec read-handler ::s.a.transactions/read-handler-response
   [request ::s.a.transactions/read-handler-request]
-  (if-let [id (some-> request :path-params :id utils/try-parse)]
+  (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (if-let [item (m.transactions/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
@@ -55,7 +55,7 @@
 
 (defn-spec delete-handler ::s.a.transactions/delete-handler-response
   [request ::s.a.transactions/delete-handler-request]
-  (if-let [id (some-> request :path-params :id utils/try-parse)]
+  (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (do
       (m.transactions/delete-record id)
       (http/ok {:id id}))

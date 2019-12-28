@@ -1,5 +1,6 @@
 (ns dinsro.actions.rate-sources
-  (:require [clojure.set :as set]
+  (:require [clojure.data.json :as json]
+            [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [expound.alpha :as expound]
@@ -55,7 +56,7 @@
 
 (defn-spec read-handler ::s.a.rate-sources/read-handler-response
   [request ::s.a.rate-sources/read-handler-request]
-  (if-let [id (some-> (get-in request [:path-params :id]) utils/try-parse)]
+  (if-let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
     (if-let [item (m.rate-sources/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
@@ -69,17 +70,23 @@
     (m.rate-sources/delete-record id)
     (http/ok {:id id})))
 
+(defn-spec fetch-rate ::ds/valid-double
+  [item ::s.rate-sources/item]
+  (let [url (::s.rate-sources/url item)
+        response (client/get url)
+        body (some-> @response :body (json/read-str :key-fn keyword))]
+    (when-let [price (some-> body :price utils/parse-double)]
+      (/ 100000000 price))))
 
 (defn run-handler
   [request]
-  (let [id (some-> (get-in request [:path-params :id]) utils/try-parse)]
+  (let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
     (if-let [item (m.rate-sources/read-record id)]
-      (do
-        (let [url (::s.rate-sources/url item)]
-
+      (try
+        (let [rate (fetch-rate item)]
           (http/ok {:status :ok
-                    :url url
-                    })))
-      (http/not-found {:status :not-found})))
-
-  )
+                    :rate-source-id id
+                    :rate rate}))
+        (catch NumberFormatException e
+          (http/internal-server-error {:status :error :message (.getMessage e)})))
+      (http/not-found {:status :not-found}))))

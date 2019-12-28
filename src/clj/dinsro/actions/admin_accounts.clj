@@ -54,7 +54,7 @@
 
 (defn-spec read-handler ::s.a.accounts/read-handler-response
   [request ::s.a.accounts/read-handler-request]
-  (if-let [id (some-> request :path-params :id utils/try-parse)]
+  (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (if-let [account (m.accounts/read-record {:id id})]
       (http/ok account)
       (http/not-found {}))
