@@ -11,6 +11,7 @@
             [dinsro.utils :as utils]
             [java-time :as t]
             [orchestra.core :refer [defn-spec]]
+            [org.httpkit.client :as client]
             [ring.util.http-response :as http]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]
