@@ -1,12 +1,12 @@
 (ns dinsro.views.admin
   (:require [dinsro.components :as c]
             [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
+            [dinsro.components.admin-index-currencies :as c.admin-index-currencies]
             [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.index-users :as c.index-users]
             [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
@@ -41,18 +41,12 @@
    (let [users @(rf/subscribe [::e.users/items])]
      [c.index-users/index-users users])])
 
-(defn rate-sources-section
-  []
-  [:div.box
-   [:h2 (tr [:rate-sources])]
-   (let [items @(rf/subscribe [::e.rate-sources/items])]
-     [c.admin-index-rate-sources/section items])])
-
 (defn page
   []
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
    [:h1 "Admin"]
-   [rate-sources-section]
+   (comment [c.admin-index-currencies/section])
+   [c.admin-index-rate-sources/section]
    [c.admin-index-accounts/section]
    [users-section]])

@@ -27,22 +27,27 @@
       [:button.button
        {:on-click #(rf/dispatch [::e.rate-sources/do-run-source id])}
        "Run"]
-      [c.buttons/delete-rate item]
+      [c.buttons/delete-rate item]]]))
 
-      ]]))
+(defn rate-sources-table
+  [items]
+  (if-not (seq items)
+    [:p (tr [:no-rate-sources])]
+    [:table.table
+     [:thead>tr
+      [:th (tr [:id])]
+      [:th (tr [:name])]
+      [:th (tr [:url])]
+      [:th (tr [:currency])]
+      [:th (tr [:actions])]]
+     (->> (for [item items] ^{:key (:db/id item)} [index-line item])
+          (into [:tbody]))]))
 
 (defn-spec section vector?
-  [items (s/coll-of ::s.rate-sources/item)]
-  [:<>
-   [c.debug/debug-box items]
-   (if-not (seq items)
-     [:p (tr [:no-rate-sources])]
-     [:table.table
-      [:thead>tr
-       [:th (tr [:id])]
-       [:th (tr [:name])]
-       [:th (tr [:url])]
-       [:th (tr [:currency])]
-       [:th (tr [:actions])]]
-      (->> (for [item items] ^{:key (:db/id item)} [index-line item])
-           (into [:tbody]))])])
+  []
+  [:div.box
+   [:h2 (tr [:rate-sources])]
+   (let [items @(rf/subscribe [::e.rate-sources/items])]
+     [:<>
+      [c.debug/debug-box items]
+      (rate-sources-table items)])])
