@@ -2,6 +2,13 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.specs :as ds]))
 
+(s/def ::description string?)
+(def description ::descriprion)
+(def description-spec
+  {:db/ident       ::value
+   :db/valueType   :db.type/string
+   :db/cardinality :db.cardinality/one})
+
 (s/def ::account (s/keys :req [:db/id]))
 (def account ::account)
 (def account-spec
@@ -33,9 +40,9 @@
 (s/def ::account-id  ::ds/id)
 (s/def ::currency-id ::ds/id)
 
-(s/def ::params (s/keys :req [::account ::currency ::date ::value]))
+(s/def ::params (s/keys :req [::account ::currency ::date ::value ::description]))
 (def params ::params)
-(s/def ::item (s/keys :req [::account ::currency ::date ::value]))
+(s/def ::item (s/keys :req [::account ::currency ::date ::value ::description]))
 (def item ::item)
 (def schema
-  [value-spec currency-spec date-spec account-spec])
+  [value-spec currency-spec date-spec account-spec description-spec])

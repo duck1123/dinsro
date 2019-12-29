@@ -4,6 +4,7 @@
             dinsro.events.accounts-test
             dinsro.spec.accounts-test
             dinsro.spec.currencies-test
+            dinsro.spec.transactions-test
             dinsro.views.about-test
             dinsro.views.home-test
             dinsro.views.login-test
