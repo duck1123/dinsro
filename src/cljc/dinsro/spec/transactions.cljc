@@ -5,7 +5,7 @@
 (s/def ::description string?)
 (def description ::descriprion)
 (def description-spec
-  {:db/ident       ::value
+  {:db/ident       ::description
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 

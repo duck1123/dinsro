@@ -18,9 +18,12 @@
 (s/def ::value ::ds/json-doubleable)
 (def value ::value)
 
+(s/def ::description string?)
+(def description ::description)
+
 ;; Create
 
-(s/def ::params-valid (s/keys :req-un [::account-id ::currency-id ::date ::value]))
+(s/def ::params-valid (s/keys :req-un [::account-id ::currency-id ::date ::description ::value]))
 
 (s/def ::create-params-valid ::params-valid)
 (def create-params-valid ::create-params-valid)

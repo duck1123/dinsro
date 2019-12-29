@@ -19,6 +19,7 @@
         params {::s.transactions/currency {:db/id currency-id}
                 ::s.transactions/value (some-> params :value str Double/parseDouble)
                 ::s.transactions/account {:db/id account-id}
+                ::s.transactions/description (some-> params :description)
                 ::s.transactions/date (some-> params :date str tick/instant)}]
     (if (s/valid? ::s.transactions/params params)
       params

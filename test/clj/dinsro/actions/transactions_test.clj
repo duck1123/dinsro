@@ -36,15 +36,18 @@
 (deftest prepare-record
   (let [currency-id 1
         account-id 1
+        description "foo"
         value 1
         date (tick/instant)
         params {:currency-id currency-id
                 :account-id account-id
+                :description description
                 :date (str date)
                 :value value}
         response (a.transactions/prepare-record params)
         expected {::s.transactions/currency {:db/id currency-id}
                   ::s.transactions/date date
+                  ::s.transactions/description description
                   ::s.transactions/value (double value)
                   ::s.transactions/account {:db/id account-id}}]
     (is (= expected response))))
