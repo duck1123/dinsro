@@ -71,13 +71,17 @@
 
 ;; Submit
 
+(s/def ::do-submit-state keyword?)
+(rf/reg-sub ::do-submit-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+
 (defn do-submit-success
-  [_ _]
-  {:dispatch [::do-fetch-index]})
+  [{:keys [db]} _]
+  {:db (assoc db ::do-submit-state :success)
+   :dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ _]
-  {:dispatch [::do-fetch-index]})
+  [{:keys [db]} _]
+  {:db (assoc db ::do-submit-state :failed)})
 
 (defn do-submit
   [_ [data]]

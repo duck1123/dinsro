@@ -1,6 +1,5 @@
 (ns dinsro.components.forms.add-user-transaction
-  (:require [devcards.core :refer-macros [defcard-rg]]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
@@ -9,22 +8,34 @@
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]))
 
+(defn error-message
+  [message]
+  [:div.message.is-danger
+   [:div.message-header
+    [:p "Error"]]
+   [:div.message-body
+    message]])
+
 (defn form-shown
   [form-data]
-  [:div
-   [c/close-button ::e.f.add-user-transaction/set-shown?]
-   [c.debug/debug-box form-data]
-   [:div.field>div.control
-    [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
-   [:div.field>div.control
-    [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
-   [:div.field>div.control
-    [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]
-   [:div.field>div.control
-    [:label.label (tr [:date])]
-    [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
-   [:div.field>div.control
-    [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])
+  (let [state (rf/subscribe [::e.transactions/do-submit-state])]
+    [:div
+     [c/close-button ::e.f.add-user-transaction/set-shown?]
+     [c.debug/debug-box form-data]
+     (when (= @state :failed)
+       [error-message "There was an error submitting"])
+     [:p (str @state)]
+     [:div.field>div.control
+      [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
+     [:div.field>div.control
+      [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
+     [:div.field>div.control
+      [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]
+     [:div.field>div.control
+      [:label.label (tr [:date])]
+      [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
+     [:div.field>div.control
+      [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]]))
 
 (defn form
   []
