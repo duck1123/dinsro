@@ -3,6 +3,7 @@
             dinsro.core-test
             dinsro.components.forms.add-user-transaction-test
             dinsro.components.forms.create-transaction-test
+            dinsro.components.index-transactions-test
             dinsro.components.show-account-test
             dinsro.events.accounts-test
             dinsro.events.transactions-test

@@ -35,7 +35,7 @@
 (s/def ::params (s/keys :req [::account ::date ::description ::value]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::account ::date ::description ::value]))
+(s/def ::item (s/keys :req [:db/id ::account ::date ::description ::value]))
 (def item ::item)
 
 (def schema
