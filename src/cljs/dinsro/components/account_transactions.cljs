@@ -10,15 +10,16 @@
 
 (defn section
   [account-id items]
-  [:div.box
-   [:h2
-    (tr [:transactions])
-    [c/show-form-button
-     ::e.f.add-account-transaction/shown?
-     ::e.f.add-account-transaction/set-shown?]]
-   [c.f.add-account-transaction/form account-id]
-   [:hr]
-   (when items [c.index-transactions/index-transactions items])])
+  (let [items (or items [])]
+    [:div.box
+     [:h2
+      (tr [:transactions])
+      [c/show-form-button
+       ::e.f.add-account-transaction/shown?
+       ::e.f.add-account-transaction/set-shown?]]
+     [c.f.add-account-transaction/form account-id]
+     [:hr]
+     [c.index-transactions/index-transactions items]]))
 
 (s/fdef section
   :args (s/cat :account-id :db/id

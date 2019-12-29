@@ -21,7 +21,6 @@
 (rf/reg-sub
  ::form-data
  :<- [::s.e.f.create-transaction/value]
- :<- [::s.e.f.create-transaction/currency-id]
  :<- [::s.e.f.create-transaction/date]
  form-data-sub)
 (def form-data ::form-data)
