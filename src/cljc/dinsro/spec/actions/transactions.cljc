@@ -6,9 +6,6 @@
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
-(s/def ::currency-id :db/id)
-(def currency-id ::currency-id)
-
 (s/def ::account-id :db/id)
 (def account-id ::account-id)
 
@@ -23,7 +20,7 @@
 
 ;; Create
 
-(s/def ::params-valid (s/keys :req-un [::account-id ::currency-id ::date ::description ::value]))
+(s/def ::params-valid (s/keys :req-un [::account-id ::date ::description ::value]))
 
 (s/def ::create-params-valid ::params-valid)
 (def create-params-valid ::create-params-valid)
@@ -34,18 +31,12 @@
   (s/keys :req-un [:create-transactions-request-valid/params]))
 (def create-request-valid ::create-handler-request-valid)
 
-(s/def :create-transactions-request/params
-  (s/keys :opt-un [::account-id ::currency-id ::date ::value]))
+(s/def :create-transactions-request/params (s/keys :opt-un [::account-id ::date ::description ::value]))
 (def create-params :create-transactions-request/params)
 
 (s/def ::create-handler-request
   (s/keys :req-un [:create-transactions-request/params]))
 (def create-request ::create-handler-request)
-
-(comment
-  (ds/gen-key create-request-valid)
-  (ds/gen-key create-request)
-  )
 
 (s/def :create-transactions-response-valid/body (s/keys :req-un [::s.transactions/item]))
 (s/def :create-transactions-response-valid/status #{status/ok})

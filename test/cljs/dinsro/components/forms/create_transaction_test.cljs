@@ -1,20 +1,15 @@
 (ns dinsro.components.forms.create-transaction-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [devcards.core :refer-macros [defcard-rg]]
-            [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
-            [dinsro.components.debug :as c.debug]
+  (:require [devcards.core :refer-macros [defcard defcard-rg]]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.events.forms.create-transaction :as e.f.create-transaction]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
+
+(defcard form-data
+  (ds/gen-key ::e.f.create-transaction/form-data))
 
 (defcard-rg form
   "**Create Transaction**"

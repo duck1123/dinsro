@@ -30,8 +30,6 @@
      [:div.field>div.control
       [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
      [:div.field>div.control
-      [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]
-     [:div.field>div.control
       [:label.label (tr [:date])]
       [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
      [:div.field>div.control
