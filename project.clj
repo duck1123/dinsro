@@ -161,23 +161,6 @@
                                               :preloads        [day8.re-frame-10x.preload]
                                               :pretty-print    true}}
 
-                    :devcards {:source-paths [
-                                              "src/cljs"
-                                              "src/cljc"
-                                              "env/dev/cljs"
-                                              "test/cljs"
-                                              "test/cljc"
-                                              ]
-                               :figwheel     {:devcards true}
-                               :compiler     {:main "dinsro.devcards"
-                                              :asset-path "/js/devcards_out"
-                                              :output-to "target/cljsbuild/public/js/devcards.js"
-                                              :output-dir "target/cljsbuild/public/js/devcards_out"
-                                              :source-map-timestamp true
-                                              :optimizations :none
-                                              ;; :pretty-print true
-                                              }}
-
                     }}
 
                  :doo {:build "test"
@@ -188,7 +171,19 @@
                  :injections     [(require 'pjstadig.humane-test-output)
                                   (pjstadig.humane-test-output/activate!)]}
    :project/devcards {:figwheel {:server-port 3450
-                                 :nrepl-port 7003}}
+                                 :nrepl-port 7003}
+                      :cljsbuild
+                      {:builds
+                       {:devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs" "test/cljs" "test/cljc"]
+                                   :figwheel     {:devcards true}
+                                   :compiler     {:main "dinsro.devcards"
+                                                  :asset-path "/js/devcards_out"
+                                                  :output-to "target/cljsbuild/public/js/devcards.js"
+                                                  :output-dir "target/cljsbuild/public/js/devcards_out"
+                                                  :source-map-timestamp true
+                                                  :optimizations :none
+                                                  ;; :pretty-print true
+                                                  }}}}}
 
    :project/test
    {:jvm-opts ["-Dconf=test-config.edn"]

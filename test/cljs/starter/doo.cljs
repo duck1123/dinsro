@@ -5,6 +5,7 @@
             dinsro.components.forms.create-transaction-test
             dinsro.components.index-transactions-test
             dinsro.components.show-account-test
+            dinsro.components.show-currency-test
             dinsro.events.accounts-test
             dinsro.events.transactions-test
             dinsro.spec.accounts-test

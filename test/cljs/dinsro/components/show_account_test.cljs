@@ -13,5 +13,8 @@
   (defcard-rg show-account
     [c.show-account/show-account account])
 
+  (defcard-rg show-account-with-box
+    [:div.box [c.show-account/show-account account]])
+
   (defcard show-account2
     (reagent.core/as-element [c.show-account/show-account account])))
