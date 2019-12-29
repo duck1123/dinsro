@@ -1,5 +1,6 @@
 (ns dinsro.components.forms.add-user-transaction
-  (:require [dinsro.components :as c]
+  (:require [devcards.core :refer-macros [defcard-rg]]
+            [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
@@ -31,3 +32,11 @@
   (let [form-data @(rf/subscribe [::e.f.add-user-transaction/form-data 1])]
     (when @(rf/subscribe [::e.f.add-user-transaction/shown?])
       [form-shown form-data])))
+
+(defcard-rg form-shown
+  "**Add User Transaction**"
+  ;; "Create a transaction when the user is already provided"
+  (fn [name]
+    [c.debug/debug-box name]
+    [form-shown {}])
+  {:name "foo"})
