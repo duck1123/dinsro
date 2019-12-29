@@ -100,9 +100,11 @@
 (defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
   [_ ::s.e.accounts/do-fetch-index-cofx
    _ ::s.e.accounts/do-fetch-index-event]
-  {:http-xhrio (e/fetch-request [:api-index-accounts]
-                                [::do-fetch-index-success]
-                                [::do-fetch-index-failed])})
+  {:http-xhrio
+   (e/fetch-request
+    [:api-index-accounts]
+    [::do-fetch-index-success]
+    [::do-fetch-index-failed])})
 
 (kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)

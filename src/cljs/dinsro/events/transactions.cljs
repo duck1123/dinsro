@@ -56,8 +56,9 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :failed)})
 
-(defn do-fetch-index
-  [_ _]
+(defn-spec do-fetch-index ::s.e.transactions/do-fetch-index-response
+  [_ ::s.e.transactions/do-fetch-index-cofx
+   _ ::s.e.transactions/do-fetch-index-event]
   {:http-xhrio
    (e/fetch-request
     [:api-index-transactions]
