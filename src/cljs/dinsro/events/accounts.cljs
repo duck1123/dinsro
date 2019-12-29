@@ -35,6 +35,8 @@
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Create
+(s/def ::do-submit-state ::ds/state)
+(rfu/reg-basic-sub ::do-submit-state)
 
 (defn do-submit-success
   [_ _]
@@ -59,7 +61,7 @@
 (kf/reg-event-fx ::do-submit           do-submit)
 
 ;; Delete
-
+(s/def ::do-delete-record-state ::ds/state)
 (rfu/reg-basic-sub ::do-delete-record-state)
 
 (defn do-delete-record-success
@@ -84,21 +86,22 @@
 
 ;; Index
 
+(s/def ::do-index-state ::ds/state)
 (rfu/reg-basic-sub ::do-fetch-index-state)
 
 (defn do-fetch-index-success
-  [db [{:keys [items]}]]
-  (-> db
-      (assoc ::items items)
-      (assoc ::do-fetch-index-state :loaded)))
+  [{:keys [db]} [{:keys [items]}]]
+  {:db (-> db
+           (assoc ::items items)
+           (assoc ::do-fetch-index-state :loaded))})
 
 (defn-spec do-fetch-index-failed ::s.e.accounts/do-fetch-index-failed-response
-  [_ ::s.e.accounts/do-fetch-index-failed-cofx
+  [{:keys [db]} ::s.e.accounts/do-fetch-index-failed-cofx
    _ ::s.e.accounts/do-fetch-index-failed-event]
-  {})
+  {:db (assoc db ::do-fetch-index-state :failed)})
 
 (defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
-  [_ ::s.e.accounts/do-fetch-index-cofx
+  [{:keys [db]} ::s.e.accounts/do-fetch-index-cofx
    _ ::s.e.accounts/do-fetch-index-event]
   {:http-xhrio
    (e/fetch-request
@@ -106,6 +109,6 @@
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 
-(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)

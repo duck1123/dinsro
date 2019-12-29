@@ -19,7 +19,7 @@
 
 ;; Index
 
-(s/def ::do-fetch-index-state keyword?)
+(s/def ::do-fetch-index-state ::ds/state)
 
 (s/def ::do-fetch-index-cofx (s/keys))
 (s/def ::do-fetch-index-event vector?)

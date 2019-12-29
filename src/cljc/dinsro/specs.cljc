@@ -83,3 +83,6 @@
 (s/def :common-response-not-found/body (s/keys :req-un [:common-response-not-found-body/status]))
 (s/def ::common-response-not-found (s/keys :req-un [:common-response-not-found/body]))
 (def common-response-not-found ::common-response-not-found)
+
+(s/def ::state #{:failed :loading :loaded :invalid})
+(def state ::state)
