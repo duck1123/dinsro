@@ -1,6 +1,6 @@
 (ns dinsro.events.transactions
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.events :as e]
             [dinsro.spec.events.transactions :as s.e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [kee-frame.core :as kf]
@@ -38,6 +38,8 @@
 ;; FIXME: This will have to read across all linked accounts
 (rfu/reg-basic-sub ::items-by-user ::items)
 
+;; Index
+
 (s/def ::do-fetch-index-state keyword?)
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
@@ -51,17 +53,16 @@
              (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed
-  [_ _]
-  {})
+  [{:keys [db]} _]
+  {:db (assoc db ::do-fetch-index-state :failed)})
 
 (defn do-fetch-index
   [_ _]
   {:http-xhrio
-   {:method          :get
-    :uri             (kf/path-for [:api-index-transactions])
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+   (e/fetch-request
+    [:api-index-transactions]
+    [::do-fetch-index-success]
+    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
@@ -80,13 +81,11 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-index-transactions])
-    :params          data
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-success]
-    :on-failure      [::do-submit-failed]}})
+   (e/post-request
+    [:api-index-transactions]
+    [::do-submit-success]
+    [::do-submit-failed]
+    data)})
 
 (kf/reg-event-fx ::do-submit-failed  do-submit-failed)
 (kf/reg-event-fx ::do-submit-success do-submit-success)
@@ -106,12 +105,10 @@
   [_ [item]]
   (let [id (:db/id item)]
     {:http-xhrio
-     {:uri             (kf/path-for [:api-show-transaction {:id id}])
-      :method          :delete
-      :format          (ajax/json-request-format)
-      :response-format (ajax/json-response-format {:keywords? true})
-      :on-success      [::do-delete-record-success]
-      :on-failure      [::do-delete-record-failed]}}))
+     (e/delete-request
+      [:api-show-transaction {:id id}]
+      [::do-delete-record-success]
+      [::do-delete-record-failed])}))
 
 (s/fdef do-delete-record
   :args (s/cat :cofx ::e.transactions/do-delete-record-cofx
