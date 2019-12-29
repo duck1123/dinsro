@@ -23,9 +23,3 @@
       (tr [:currency-label])
       [c.links/currency-link currency-id]]
      (c.debug/hide [c.buttons/delete-account account])]))
-
-(defcard-rg show-account
-  (let [account {::s.accounts/name "Bar"
-                 ::s.accounts/user {:db/id 1}
-                 ::s.accounts/currency {:db/id 1}}]
-    [show-account account]))

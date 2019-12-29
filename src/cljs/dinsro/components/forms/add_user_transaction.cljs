@@ -32,11 +32,3 @@
   (let [form-data @(rf/subscribe [::e.f.add-user-transaction/form-data 1])]
     (when @(rf/subscribe [::e.f.add-user-transaction/shown?])
       [form-shown form-data])))
-
-(defcard-rg form-shown
-  "**Add User Transaction**"
-  ;; "Create a transaction when the user is already provided"
-  (fn [name]
-    [c.debug/debug-box name]
-    [form-shown {}])
-  {:name "foo"})

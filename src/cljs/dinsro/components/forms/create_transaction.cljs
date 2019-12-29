@@ -45,29 +45,3 @@
   (let [form-data (rf/subscribe [::e.f.create-transaction/form-data])
         shown? (rf/subscribe [::e.f.create-transaction/shown?])]
     (form-inner form-data shown?)))
-
-(defcard-rg form
-  "**Create Transaction**"
-  (fn [data]
-    (with-redefs
-      [rf/dispatch
-       (fn [x]
-         (timbre/infof "dispatch: %s" x))
-
-       rf/subscribe
-       (fn [x]
-         (let [value
-               (case x
-                 [::s.e.f.create-transaction/value] 2
-                 [::e.f.create-transaction/form-data] {}
-                 [::e.f.create-transaction/shown?] false)]
-           (timbre/infof "sub: %s => %s" x value)
-           (atom value)))]
-      (reagent.core/as-element
-       [:<>
-        [:div.box
-         (form)]
-        [:p.box (str @data)]])))
-  {:form-data {::s.e.f.create-transaction/value 2}
-   :shown? true
-   :name "foo"})
