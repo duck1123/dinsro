@@ -39,11 +39,11 @@
 (rfu/reg-basic-sub ::do-submit-state)
 
 (defn do-submit-success
-  [_ _]
+  [{:keys [db]} data]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ _]
+  [{:keys [db]} [response]]
   {})
 
 (defn-spec do-submit ::s.e.accounts/do-submit-response
@@ -86,8 +86,9 @@
 
 ;; Index
 
-(s/def ::do-index-state ::ds/state)
+(s/def ::do-fetch-index-state ::ds/state)
 (rfu/reg-basic-sub ::do-fetch-index-state)
+(def do-fetch-index-state ::do-fetch-index-state)
 
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
@@ -103,7 +104,8 @@
 (defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
   [{:keys [db]} ::s.e.accounts/do-fetch-index-cofx
    _ ::s.e.accounts/do-fetch-index-event]
-  {:http-xhrio
+  {:db (assoc db ::do-fetch-index-state :loading)
+   :http-xhrio
    (e/fetch-request
     [:api-index-accounts]
     [::do-fetch-index-success]

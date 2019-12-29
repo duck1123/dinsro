@@ -3,6 +3,7 @@
             [dinsro.events :as e]
             [dinsro.spec.events.transactions :as s.e.transactions]
             [dinsro.spec.transactions :as s.transactions]
+            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
@@ -71,8 +72,8 @@
 
 ;; Submit
 
-(s/def ::do-submit-state keyword?)
-(rf/reg-sub ::do-submit-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+(s/def ::do-submit-state ::ds/state)
+(rfu/reg-basic-sub ::do-submit-state)
 
 (defn do-submit-success
   [{:keys [db]} _]
