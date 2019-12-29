@@ -16,19 +16,23 @@
       [:div
        [c/close-button ::e.f.create-transaction/set-shown?]
        [c.debug/debug-box form-data]
-       [:div.columns.is-multiline
-        [:div.column
-         [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
-        [:div.column
-         [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]]
-       [:div.columns
-        [:div.column
-         [:div {:style {:display "inline-block"}}
+       [:div
+        [:div.field-group
+         [:div.field.is-inline-block-tablet
+          [:label.label (tr [:value])]
+          [:div.control
+           [:input.input
+            {:type :text
+             :value @(rf/subscribe [::s.e.f.create-transaction/value])
+             :on-change #(rf/dispatch [::s.e.f.create-transaction/set-value (c/target-value %)])}]]]
+         [:div.field.is-inline-block-tablet
+          [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]]
+        [:div.field-group
+         [:div.column
           [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
-         [:div {:style {:display :inline-block}}
+         [:div.column
+          [:label.label (tr [:date])]
           [c.datepicker/datepicker
-           {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]]
-        [:div.column
-         [:label.label (tr [:date])]]]
+           {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])))

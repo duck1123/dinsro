@@ -86,30 +86,32 @@
 
      [:p "Unknown state"])))
 
+(defn currency-selector-loaded
+  [label field change-handler]
+  (let [currencies @(rf/subscribe [::e.currencies/items])]
+    [:<>
+     [:label.label label]
+     [:div.control
+      [:div.select
+       (into [:select {:value (or @(rf/subscribe [field]) "")
+                       :on-change #(rf/dispatch [change-handler (target-value %)])}]
+             (concat [[:option {:value ""} ""]]
+                     (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
+                       ^{:key id} [:option {:value id} name])))]]]))
+
 (defn currency-selector
   ([label field]
    (currency-selector label field (#'rfu/kw-prefix field "set-")))
   ([label field change-handler]
    (let [state @(rf/subscribe [::e.currencies/do-fetch-index-state])]
-     [:<>
-      #_[:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
-         (str "Fetch Currencies: " state)]
-      (condp = state
-        :invalid
-        [:p "Invalid"]
+     (condp = state
+       :invalid
+       [:p "Invalid"]
 
-        :loaded
-        (let [currencies @(rf/subscribe [::e.currencies/items])]
-          [:div.field>div.control
-           [:label.label label]
-           [:div.select
-            (into [:select {:value (or @(rf/subscribe [field]) "")
-                            :on-change #(rf/dispatch [change-handler (target-value %)])}]
-                  (concat [[:option {:value ""} ""]]
-                          (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
-                            ^{:key id} [:option {:value id} name])))]])
+       :loaded
+       [currency-selector-loaded label field change-handler]
 
-        [:p "Unknown state"])])))
+       [:p "Unknown state"]))))
 
 (defn user-selector-
   [label field change-handler items]
