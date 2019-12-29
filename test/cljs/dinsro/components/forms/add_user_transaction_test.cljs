@@ -1,6 +1,6 @@
 (ns dinsro.components.forms.add-user-transaction-test
   (:require [clojure.spec.alpha :as s]
-            [devcards.core :refer-macros [defcard-rg]]
+            [devcards.core :refer-macros [defcard defcard-rg]]
             [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.forms.add-user-transaction :as c.f.add-user-transaction]
@@ -15,11 +15,16 @@
             [dinsro.spec.events.forms.add-user-transaction :as s.e.f.add-user-transaction]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
             [dinsro.spec.users :as s.users]
+            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
-(defcard-rg form-shown
+(defcard sample-form-data
+  (ds/gen-key ::e.f.add-user-transaction/form-data)
+  )
+
+(defcard-rg form
   "**Add User Transaction**"
   ;; "Create a transaction when the user is already provided"
   (fn [name]
