@@ -64,8 +64,10 @@
            (timbre/infof "sub: %s => %s" x value)
            (atom value)))]
       (reagent.core/as-element
-       [:div.box
-        (form)])))
+       [:<>
+        [:div.box
+         (form)]
+        [:p.box (str @data)]])))
   {:form-data {::s.e.f.create-transaction/value 2}
    :shown? true
    :name "foo"})
