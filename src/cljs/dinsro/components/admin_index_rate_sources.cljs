@@ -1,5 +1,6 @@
 (ns dinsro.components.admin-index-rate-sources
   (:require [clojure.spec.alpha :as s]
+            [devcards.core :refer-macros [defcard-rg]]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
@@ -43,11 +44,22 @@
      (->> (for [item items] ^{:key (:db/id item)} [index-line item])
           (into [:tbody]))]))
 
+(defn section-inner
+  [items]
+  [:div.box
+   [:h2.title.is-2 (tr [:rate-sources])]
+   [:<>
+    [c.debug/debug-box @items]
+    (rate-sources-table @items)]])
+
 (defn-spec section vector?
   []
-  [:div.box
-   [:h2 (tr [:rate-sources])]
-   (let [items @(rf/subscribe [::e.rate-sources/items])]
-     [:<>
-      [c.debug/debug-box items]
-      (rate-sources-table items)])])
+  (let [items (rf/subscribe [::e.rate-sources/items])]
+    [section-inner items]))
+
+(defcard-rg form
+  "**Admin Index Rate Sources**"
+  (fn []
+    [:div.box
+     [section]])
+  {})
