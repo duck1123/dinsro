@@ -17,14 +17,6 @@
 (def items ::items)
 (rf/reg-sub ::items              (fn [db _] (get db ::items [])))
 
-;; (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
-
-;; (defn-spec items-by-currency ::items
-;;   [items ::items [_ {:keys [db/id]}] ::items-by-currency-event]
-;;   (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
-
-;; (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
-
 (rf/reg-sub
  ::item
  :<- [::items]
