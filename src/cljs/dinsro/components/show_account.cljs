@@ -1,54 +1,31 @@
 (ns dinsro.components.show-account
   (:require [devcards.core :refer-macros [defcard-rg]]
+            [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.links :as c.links]
             [dinsro.components.debug :as c.debug]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
-
-(defn user-link
-  [user-id]
-  (if-let [user @(rf/subscribe [::e.users/item user-id])]
-    [:a {:href (kf/path-for [:show-user-page {:id user-id}])}
-     (::s.users/name user)]
-    [:span
-     [:a {:on-click #(rf/dispatch [::e.users/do-fetch-record user-id])}
-      "Not Loaded"]]))
-
-(defn currency-link
-  [currency-id]
-  (if-let [currency @(rf/subscribe [::e.currencies/item currency-id])]
-    [:a {:href (kf/path-for [:show-currency-page {:id currency-id}])}
-     (::s.currencies/name currency)]
-    [:span
-     [:a {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
-      "Not Loaded"]]))
-
-(defn delete-account-button
-  [id]
-  [:button.button.is-danger "Delete"])
+            [taoensso.timbre :as timbre]))
 
 (defn show-account
   [account]
   (let [id (:db/id account)
+        name (::s.accounts/name account)
         user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:<>
      [c.debug/debug-box account]
-     [:h3 (::s.accounts/name account)]
+     [:h3 name]
      [:p
       (tr [:user-label])
-      [user-link user-id]]
+      [c.links/user-link user-id]]
      [:p
-      [:span "Currency: "]
-      [currency-link currency-id]]
-     (c.debug/hide [delete-account-button id])]))
+      (tr [:currency-label])
+      [c.links/currency-link currency-id]]
+     (c.debug/hide [c.buttons/delete-account account])]))
 
 (defcard-rg show-account
-  (let [account {::s.accounts/name "Foo"
-                 ::s.accounts/user {:db/id 1}}]
+  (let [account {::s.accounts/name "Bar"
+                 ::s.accounts/user {:db/id 1}
+                 ::s.accounts/currency {:db/id 1}}]
     [show-account account]))
