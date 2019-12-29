@@ -118,6 +118,7 @@
 
    :dev           [:project/dev :profiles/dev]
    :test          [:project/dev :project/test :profiles/test]
+   :devcards      [:project/devcards :test]
 
    :project/dev {:jvm-opts ["-Dconf=dev-config.edn"
                             "-Dclojure.spec.check-asserts=true"
@@ -186,6 +187,9 @@
                  :repl-options   {:init-ns user}
                  :injections     [(require 'pjstadig.humane-test-output)
                                   (pjstadig.humane-test-output/activate!)]}
+   :project/devcards {:figwheel {:server-port 3450
+                                 :nrepl-port 7003}}
+
    :project/test
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
