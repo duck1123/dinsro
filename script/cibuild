@@ -4,8 +4,4 @@
 
 set -ex
 
-cd "$(dirname "$0")/.."
-
-script/gather-dependencies
-
-script/test
+lein uberjar
