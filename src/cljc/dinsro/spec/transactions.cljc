@@ -16,13 +16,6 @@
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency (s/keys :req [:db/id]))
-(def currency ::currency)
-(def currency-spec
-  {:db/ident ::currency
-   :db/valueType :db.type/ref
-   :db/cardinality :db.cardinality/one})
-
 (s/def ::date ::ds/date)
 (def date ::date)
 (def date-spec
@@ -38,11 +31,12 @@
    :db/cardinality :db.cardinality/one})
 
 (s/def ::account-id  ::ds/id)
-(s/def ::currency-id ::ds/id)
 
-(s/def ::params (s/keys :req [::account ::currency ::date ::value ::description]))
+(s/def ::params (s/keys :req [::account ::date ::description ::value]))
 (def params ::params)
-(s/def ::item (s/keys :req [::account ::currency ::date ::value ::description]))
+
+(s/def ::item (s/keys :req [::account ::date ::description ::value]))
 (def item ::item)
+
 (def schema
-  [value-spec currency-spec date-spec account-spec description-spec])
+  [account-spec date-spec description-spec value-spec])
