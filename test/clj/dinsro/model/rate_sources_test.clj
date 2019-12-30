@@ -1,7 +1,5 @@
 (ns dinsro.model.rate-sources-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is use-fixtures]]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.config :as config]
             [dinsro.db.core :as db]

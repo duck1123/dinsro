@@ -1,5 +1,5 @@
 (ns dinsro.actions.categories-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.actions.categories :as a.categories]
             [dinsro.config :as config]
@@ -49,6 +49,8 @@
         response (a.categories/create-handler request)
         id (get-in response [:body :item :db/id])
         created-record (m.categories/read-record id)]
+    (is (not (nil? created-record))
+        "record can be read")
     (is (= status/ok (:status response)))
     (is (= (:name request) (::s.categories/name response)))))
 
@@ -60,14 +62,13 @@
         "should signal a bad request")))
 
 (deftest delete-handler
-  (testing "success"
-    (let [currency (mocks/mock-category)
-          id (:db/id currency)
-          request {:path-params {:id (str id)}}]
-      (is (not (nil? (m.categories/read-record id))))
-      (let [response (a.categories/delete-handler request)]
-        (is (= status/ok (:status response)))
-        (is (nil? (m.categories/read-record id)))))))
+  (let [currency (mocks/mock-category)
+        id (:db/id currency)
+        request {:path-params {:id (str id)}}]
+    (is (not (nil? (m.categories/read-record id))))
+    (let [response (a.categories/delete-handler request)]
+      (is (= status/ok (:status response)))
+      (is (nil? (m.categories/read-record id))))))
 
 (deftest read-handler-success
   (let [category (mocks/mock-category)

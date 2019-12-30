@@ -7,8 +7,7 @@
             [dinsro.model.users :as m.users]
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
-            [mount.core :as mount]
-            [taoensso.timbre :as timbre]))
+            [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

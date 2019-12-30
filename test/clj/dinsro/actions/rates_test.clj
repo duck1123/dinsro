@@ -45,6 +45,8 @@
     (let [id (get-in response [:body :item :db/id])]
       (is (not (nil? ident?)))
       (let [created-record (m.rates/read-record id)]
+        (is (not (nil? created-record))
+            "Created record can be read")
         (is (= (:name request) (::s.rates/name response)))))))
 
 (deftest create-handler-invalid

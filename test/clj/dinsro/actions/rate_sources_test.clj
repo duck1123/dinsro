@@ -58,6 +58,8 @@
     (let [id (get-in response [:body :item :db/id])]
       (is (not (nil? ident?)))
       (let [created-record (m.rate-sources/read-record id)]
+        (is (not (nil? created-record))
+            "record can be read")
         (is (= (:name request) (::s.rate-sources/name response)))))))
 
 (deftest create-handler-invalid

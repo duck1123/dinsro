@@ -49,6 +49,8 @@
         response (a.currencies/create-handler request)
         id (get-in response [:body :item :db/id])
         created-record (m.currencies/read-record id)]
+    (is (not (nil? created-record))
+        "record can be read")
     (is (= status/ok (:status response)))
     (is (= (:name request) (::s.currencies/name response)))))
 

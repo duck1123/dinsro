@@ -57,6 +57,6 @@
 
 (deftest register-handler-test-invalid-params
   (let [params {}
-        request (-> (mock/request :post path) (assoc :params params))
+        request {:params params}
         response (a.authentication/register-handler request)]
     (is (= status/bad-request (:status response)))))

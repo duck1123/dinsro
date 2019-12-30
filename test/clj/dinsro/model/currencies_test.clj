@@ -48,8 +48,8 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::s.currencies/params)
-        id (m.currencies/create-record params)]
+  (let [params (ds/gen-key ::s.currencies/params)]
+    (m.currencies/create-record params)
     (is (not= [params] (m.currencies/index-records)))))
 
 (deftest delete-record
