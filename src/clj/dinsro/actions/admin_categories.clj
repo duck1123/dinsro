@@ -1,12 +1,10 @@
 (ns dinsro.actions.admin-categories
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [expound.alpha :as expound]
             [dinsro.model.categories :as m.categories]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.actions.categories :as s.a.categories]
-            [dinsro.specs :as ds]
             [dinsro.utils :as utils]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
@@ -25,8 +23,8 @@
     (if (s/valid? ::s.categories/params params)
       params
       (do
-        #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.categories/params params))
-          nil))))
+        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.categories/params params)))
+        nil))))
 
 (defn-spec create-handler ::s.a.categories/create-handler-response
   [{:keys [params session]} ::s.a.categories/create-handler-request]

@@ -25,7 +25,7 @@
     (if (s/valid? ::s.rates/params params)
       params
       (do
-        #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
+        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.rates/params params)))
         nil))))
 
 (defn-spec create-handler ::s.a.rates/create-handler-response
