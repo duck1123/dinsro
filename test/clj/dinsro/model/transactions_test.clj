@@ -56,8 +56,8 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::s.transactions/params)
-        id (m.transactions/create-record params)]
+  (let [params (ds/gen-key ::s.transactions/params)]
+    (m.transactions/create-record params)
     (is (not= [params] (m.transactions/index-records)))))
 
 (deftest delete-record

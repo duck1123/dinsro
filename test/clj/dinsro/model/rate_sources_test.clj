@@ -1,7 +1,7 @@
 (ns dinsro.model.rate-sources-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+            [clojure.test :refer :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -10,9 +10,7 @@
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.specs :as ds]
-            [mount.core :as mount]
-            [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

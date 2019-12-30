@@ -24,8 +24,7 @@
       (f))))
 
 (deftest create-record-valid
-  (let [id-key "user-id"
-        params (ds/gen-key ::s.users/params)
+  (let [params (ds/gen-key ::s.users/params)
         {:keys [dinsro.spec.users/email]} params
         id (m.users/create-record params)
         user (m.users/read-record id)]
@@ -33,9 +32,9 @@
 
 (deftest create-record-invalid
   (let [params (ds/gen-key ::s.users/params)
-        {:keys [dinsro.spec.users/email]} params
         id (m.users/create-record params)
         user (m.users/read-record id)]
+    ;; TODO: Throw a better error
     (is (thrown? RuntimeException (m.users/create-record params)))))
 
 (deftest read-record
