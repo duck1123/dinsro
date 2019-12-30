@@ -1,16 +1,16 @@
 (ns dinsro.events.forms.create-currency
-  (:require [dinsro.events.forms.create-currency :as e.f.create-currency]
+  (:require [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
 (def default-name "")
 
-(rfu/reg-basic-sub ::e.f.create-currency/name)
-(rfu/reg-set-event ::e.f.create-currency/name)
+(rfu/reg-basic-sub ::s.e.f.create-currency/name)
+(rfu/reg-set-event ::s.e.f.create-currency/name)
 
-(rfu/reg-basic-sub ::e.f.create-currency/shown?)
-(rfu/reg-set-event ::e.f.create-currency/shown?)
+(rfu/reg-basic-sub ::s.e.f.create-currency/shown?)
+(rfu/reg-set-event ::s.e.f.create-currency/shown?)
 
 (defn form-data-sub
   [name]

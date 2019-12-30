@@ -1,16 +1,10 @@
 (ns dinsro.components.forms.create-account
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
-            [dinsro.spec.accounts :as s.accounts]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn-spec form vector?
   []
