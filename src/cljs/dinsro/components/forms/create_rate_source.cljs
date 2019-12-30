@@ -1,7 +1,5 @@
 (ns dinsro.components.forms.create-rate-source
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
+  (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
             [dinsro.events.rate-sources :as e.rate-sources]
@@ -10,7 +8,6 @@
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (kf/reg-controller

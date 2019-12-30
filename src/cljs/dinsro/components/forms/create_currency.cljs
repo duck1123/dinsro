@@ -6,7 +6,8 @@
             [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as timbre]))
 
 (kf/reg-controller
  ::form-controller

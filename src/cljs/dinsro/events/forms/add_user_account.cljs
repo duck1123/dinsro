@@ -11,6 +11,7 @@
 
 (def default-name "Offshore")
 
+(declare form-data-sub)
 (defn-spec form-data-sub (s/keys)
   [form-bindings ::s.e.f.add-user-account/form-bindings
    _ any?]

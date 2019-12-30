@@ -1,5 +1,7 @@
 {:linters
  {
+  :lint-as {net.danielcompton.defn-spec-alpha/defn schema.core/defn}
+
   :unused-namespace {:exclude [dinsro.translations
                                taoensso.timbre]}
 
