@@ -2,7 +2,6 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.test :refer :all]
             [clojure.test.check.generators]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))
 
@@ -18,11 +17,4 @@
 
 (deftest date-string-test
   (is (s/valid? ::ds/date-string "2019-12-22T14:02:00.000Z")
-      "Valid date"
-      )
-  )
-
-(comment
-  (ds/gen-key ::ds/date-string)
-  (ds/gen-key ::ds/id-string)
-  )
+      "Valid date"))

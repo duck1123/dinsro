@@ -3,18 +3,14 @@
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer :all]
             [datahike.api :as d]
-            [datahike.core :as dc]
-            [datahike.schema :as dhs]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
-            [dinsro.model.users :as m.users]
             [dinsro.specs :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")
@@ -65,8 +61,3 @@
     (let [response (m.currencies/delete-record id)]
       (is (nil? response))
       (is (nil? (m.currencies/read-record id))))))
-
-(comment
-  (gen/generate (s/gen ::ds/id))
-  (gen/generate (s/gen ::s.currencies/params))
-  )

@@ -38,12 +38,6 @@
    :user-id       (int user-id)
    :initial-value (.parseFloat js/Number initial-value)})
 
-(comment
-  (ds/gen-key ::s.e.f.add-user-account/form-bindings)
-  (create-form-data ["Bob" "1" "1" "1"])
-  (create-form-data (ds/gen-key ::s.e.f.add-user-account/form-bindings))
-  )
-
 (rf/reg-sub
  ::form-data
  :<- [::s.e.f.add-user-account/name]

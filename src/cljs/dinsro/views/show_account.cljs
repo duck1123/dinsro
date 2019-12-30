@@ -68,14 +68,6 @@
 (s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
 (s/def ::view-map (s/keys :req-un [:show-account-view/path-params]))
 
-(comment
-  (ds/gen-key :show-account-view/id)
-  (ds/gen-key :show-account-view/path-params)
-  (ds/gen-key ::ds/id-string)
-  (ds/gen-key ::ds/id)
-  (ds/gen-key ::view-map)
-  )
-
 (defn-spec page vector?
   [match ::view-map]
   (let [{{:keys [id]} :path-params} match

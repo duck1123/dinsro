@@ -33,29 +33,3 @@
 
 (def schema
   [rate-spec currency-spec date-spec #_item-spec])
-
-(comment
-  (instant/now)
-
-  (Date.)
-
-  (predicates/instant? #inst "2019-01-01T06:00:00Z")
-
-  #inst "2019-01-01T06:00:00Z"
-  (class #inst "2019-01-01T06:00:00Z")
-  (class (instant/now))
-  (java.util.Date/from (instant/now))
-
-  (java.util.Date. "2019-01-01T06:00:00Z")
-
-  (instant/of #inst "2019-01-01T06:00:00Z")
-  (predicates/instant? (instant/now))
-
-  (gen/generate (s/gen ::date))
-  (gen/generate (s/gen ::date-inst))
-  (gen/generate (s/gen ::currency))
-  (gen/generate (s/gen ::rate))
-
-  (gen/generate (s/gen ::params))
-  (gen/generate (s/gen ::item))
-  )

@@ -6,7 +6,6 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
-            [dinsro.model.rates :as m.rates]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
@@ -14,7 +13,6 @@
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [mount.core :as mount]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")
@@ -70,8 +68,3 @@
     (let [response (m.transactions/delete-record id)]
       (is (nil? response))
       (is (nil? (m.transactions/read-record id))))))
-
-(comment
-  (gen/generate (s/gen :ds/id))
-  (gen/generate (s/gen ::s.transactions/params))
-  )

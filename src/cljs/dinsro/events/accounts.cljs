@@ -17,10 +17,6 @@
                          :event-name keyword?
                          :id ::ds/id))
 
-(comment
-  (ds/gen-key ::sub-item-event)
-  )
-
 (defn-spec sub-item any?
   [items (s/coll-of ::s.accounts/item)
    [_ id] ::sub-item-event]
@@ -65,10 +61,6 @@
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-submit-success]
     :on-failure      [::do-submit-failed]}})
-
-(comment
-  (ds/gen-key ::s.e.accounts/do-submit-response)
-  )
 
 (kf/reg-event-fx ::do-submit-success   do-submit-success)
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)

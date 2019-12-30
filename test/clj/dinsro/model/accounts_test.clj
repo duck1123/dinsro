@@ -11,7 +11,6 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [mount.core :as mount]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example")
@@ -60,10 +59,3 @@
       (let [response (m.accounts/delete-record id)]
         (is (not (nil? response)))
         (is (nil? (m.accounts/read-record id)))))))
-
-(comment
-  @(d/transact! (datahike.core/create-conn) s.accounts/schema)
-  (m.accounts/index-records)
-  (m.accounts/read-record 40)
-  (m.accounts/delete-record 40)
-  )

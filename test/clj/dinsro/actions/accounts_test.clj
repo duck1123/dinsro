@@ -64,13 +64,3 @@
           response (a.accounts/delete-handler request)]
       (is (= status/ok (:status response)) "successful status")
       (is (nil? (m.accounts/read-record id)) "account is deleted"))))
-
-(comment
-  (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid))
-
-  (expound.alpha/expound
-   ::s.a.accounts/delete-handler-request
-   {:path-params {:accountId "7"}})
-
-
-  )

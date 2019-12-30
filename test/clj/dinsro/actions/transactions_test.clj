@@ -108,11 +108,3 @@
 
     (is (= :not-found (get-in response [:body :status]))
         "Has a not found status field")))
-
-(comment
-  (gen/generate (s/gen :read-currency-request-path-params/id))
-  (gen-spec ::a.transactions/create-handler-request)
-
-  (gen-spec :create-handler-valid/request)
-
-  )
