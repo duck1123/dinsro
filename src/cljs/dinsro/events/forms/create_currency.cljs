@@ -1,12 +1,10 @@
 (ns dinsro.events.forms.create-currency
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-currency :as e.f.create-currency]
-            [dinsro.translations :refer [tr]]
+  (:require [dinsro.events.forms.create-currency :as e.f.create-currency]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [reframe-utils.core :as rfu]))
+
+(def default-name "")
 
 (rfu/reg-basic-sub ::e.f.create-currency/name)
 (rfu/reg-set-event ::e.f.create-currency/name)
