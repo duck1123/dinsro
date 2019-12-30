@@ -9,8 +9,8 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
+            [dinsro.spec :as ds]
             [dinsro.spec.transactions :as s.transactions]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))

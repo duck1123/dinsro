@@ -1,8 +1,8 @@
 (ns dinsro.spec.events.forms.add-user-account
   (:refer-clojure :exclude [name])
   (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.specs :as ds]))
+            [dinsro.spec :as ds]
+            [dinsro.spec.accounts :as s.accounts]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

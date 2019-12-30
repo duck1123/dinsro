@@ -1,8 +1,7 @@
 (ns dinsro.spec.actions.currencies
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
-            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
 ;; Create

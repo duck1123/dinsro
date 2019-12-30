@@ -4,7 +4,7 @@
             [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.events.transactions :as s.e.transactions]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [taoensso.timbre :as timbre]))
 
 (defcard ::s.transactions/item

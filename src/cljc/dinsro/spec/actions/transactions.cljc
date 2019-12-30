@@ -1,8 +1,8 @@
 (ns dinsro.spec.actions.transactions
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+            [dinsro.spec :as ds]
             [dinsro.spec.transactions :as s.transactions]
-            [dinsro.specs :as ds]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 

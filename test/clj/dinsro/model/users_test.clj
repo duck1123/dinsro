@@ -5,8 +5,8 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.users :as m.users]
+            [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")

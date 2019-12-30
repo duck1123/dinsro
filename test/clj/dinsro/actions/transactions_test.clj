@@ -7,11 +7,11 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]
             [tick.alpha.api :as tick]))

@@ -1,9 +1,9 @@
 (ns dinsro.events.transactions
   (:require [clojure.spec.alpha :as s]
             [dinsro.events :as e]
+            [dinsro.spec :as ds]
             [dinsro.spec.events.transactions :as s.e.transactions]
             [dinsro.spec.transactions :as s.transactions]
-            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]

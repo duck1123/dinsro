@@ -1,6 +1,6 @@
 (ns dinsro.spec.rates
   (:require [clojure.spec.alpha :as s]
-            [dinsro.specs :as ds]))
+            [dinsro.spec :as ds]))
 
 (s/def ::rate ds/valid-double)
 (def rate ::rate)

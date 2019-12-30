@@ -1,0 +1,1 @@
+(ns dinsro.spec-test)

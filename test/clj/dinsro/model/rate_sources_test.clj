@@ -5,9 +5,9 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.rate-sources :as m.rate-sources]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.specs :as ds]
             [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")

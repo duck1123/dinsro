@@ -1,11 +1,8 @@
 (ns dinsro.spec.actions.rate-sources
   (:refer-clojure :exclude [name])
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.spec :as ds]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 

@@ -40,9 +40,11 @@
 
 (defn-spec read-handler ::s.a.categories/read-handler-response
   [{{:keys [id]} :path-params} ::s.a.categories/read-handler-request]
-  (if-let [category (m.categories/read-record (utils/try-parse-int id))]
-    (http/ok category)
-    (http/not-found {:status :not-found})))
+  (if-let [id (utils/try-parse-int id)]
+    (if-let [category (m.categories/read-record id)]
+      (http/ok category)
+      (http/not-found {:status :not-found}))
+    (http/bad-request {:status :invalid})))
 
 (defn-spec delete-handler ::s.a.categories/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.categories/delete-handler-request]

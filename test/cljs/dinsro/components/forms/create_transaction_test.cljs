@@ -3,7 +3,7 @@
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.events.forms.create-transaction :as e.f.create-transaction]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))

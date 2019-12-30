@@ -1,17 +1,11 @@
 (ns dinsro.actions.admin-rates
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
+  (:require [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
-            [dinsro.db.core :as db]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.rates :as s.rates]
-            [dinsro.specs :as ds]
-            [java-time :as t]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
-            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
@@ -43,11 +37,11 @@
   (let [
         ;; TODO: parse from request
         limit 50
-        items (m.rates/index-records)]
-    (let [response {:model :rates
-                    :limit limit
-                    :items items}]
-      (http/ok response))))
+        items (m.rates/index-records)
+        response {:model :rates
+                  :limit limit
+                  :items items}]
+    (http/ok response)))
 
 ;; Read
 

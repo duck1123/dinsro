@@ -1,7 +1,7 @@
 (ns dinsro.spec.categories
   (:refer-clojure :exclude [name])
   (:require [clojure.spec.alpha :as s]
-            [dinsro.specs :as ds]))
+            [dinsro.spec :as ds]))
 
 (s/def ::name             string?)
 (def name ::name)

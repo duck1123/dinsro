@@ -1,7 +1,6 @@
 (ns dinsro.spec.events.rates
   (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.rates :as s.rates]
-            [dinsro.specs :as ds]))
+            [dinsro.spec.rates :as s.rates]))
 
 (s/def ::do-delete-record-success-cofx (s/keys))
 (s/def ::do-delete-record-failed-cofx (s/keys))

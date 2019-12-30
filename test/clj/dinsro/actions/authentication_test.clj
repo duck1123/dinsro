@@ -6,7 +6,7 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.users :as m.users]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.authentication :as s.a.authentication]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]

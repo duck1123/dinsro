@@ -6,8 +6,8 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.accounts :as m.accounts]
+            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 

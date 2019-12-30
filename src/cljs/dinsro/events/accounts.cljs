@@ -1,6 +1,7 @@
 (ns dinsro.events.accounts
   (:require [clojure.spec.alpha :as s]
             [dinsro.events :as e]
+            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.accounts :as s.e.accounts]
             [kee-frame.core :as kf]

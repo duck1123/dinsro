@@ -1,9 +1,9 @@
 (ns dinsro.spec.currencies-test
-  (:require [cljs.test :refer-macros [is are testing use-fixtures]]
+  (:require [cljs.test :refer-macros [is]]
             [clojure.spec.alpha :as s]
             [devcards.core :as dc :refer-macros [defcard deftest]]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
             [expound.alpha :as expound]))
 
 (defcard item

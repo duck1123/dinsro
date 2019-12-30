@@ -2,8 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
             [dinsro.db.core :as db]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 

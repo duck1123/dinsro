@@ -6,9 +6,9 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.categories :as m.categories]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.categories :as s.a.categories]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]))
 

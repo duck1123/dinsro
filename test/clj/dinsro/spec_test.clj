@@ -1,8 +1,8 @@
-(ns dinsro.specs-test
+(ns dinsro.spec-test
   (:require [clojure.spec.alpha :as s]
             [clojure.test :refer [deftest is]]
             [clojure.test.check.generators]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [taoensso.timbre :as timbre]))
 
 ;; TODO: move to cards

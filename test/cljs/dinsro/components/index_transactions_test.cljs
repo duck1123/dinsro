@@ -1,18 +1,10 @@
 (ns dinsro.components.index-transactions-test
   (:require [clojure.spec.alpha :as s]
             [devcards.core :refer-macros [defcard defcard-rg]]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
             [dinsro.components.index-transactions :as c.index-transactions]
-            [dinsro.events.transactions :as e.transactions]
+            [dinsro.spec :as ds]
             [dinsro.spec.transactions :as s.transactions]
-            [dinsro.specs :as ds]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
-            [reagent.core :as r]
-            [re-frame.core :as rf]))
+            [dinsro.translations :refer [tr]]))
 
 (let [item (ds/gen-key ::s.transactions/item)]
   (defcard item item)

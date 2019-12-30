@@ -6,7 +6,7 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]

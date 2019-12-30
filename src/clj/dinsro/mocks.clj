@@ -6,6 +6,7 @@
             [dinsro.model.rates :as m.rates]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.model.users :as m.users]
+            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.currencies :as s.currencies]
@@ -13,7 +14,6 @@
             [dinsro.spec.rates :as s.rates]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 

@@ -1,19 +1,12 @@
 (ns dinsro.actions.admin-rate-sources
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
+  (:require [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
-            [dinsro.db.core :as db]
             [dinsro.model.rate-sources :as m.rate-sources]
             [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.specs :as ds]
-            [java-time :as t]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+            [taoensso.timbre :as timbre]))
 
 ;; Create
 

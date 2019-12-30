@@ -1,7 +1,7 @@
 (ns dinsro.spec.events.categories
   (:require [clojure.spec.alpha :as s]
+            [dinsro.spec :as ds]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))
 
 (s/def ::item (s/nilable ::s.categories/item))

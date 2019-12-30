@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
             [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]

@@ -1,6 +1,6 @@
 (ns dinsro.spec.actions.categories
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
+            [dinsro.spec :as ds]
             [dinsro.spec.categories :as s.categories]
             [taoensso.timbre :as timbre]))
 

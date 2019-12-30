@@ -1,8 +1,8 @@
 (ns dinsro.events.currencies
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]

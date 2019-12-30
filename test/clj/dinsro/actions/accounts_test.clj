@@ -7,10 +7,10 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.accounts :as m.accounts]
+            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))

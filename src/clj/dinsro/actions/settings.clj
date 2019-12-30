@@ -5,5 +5,5 @@
             [taoensso.timbre :as timbre]))
 
 (defn settings-handler
-  [request]
+  [_request]
   (http/ok (m.settings/get-settings)))

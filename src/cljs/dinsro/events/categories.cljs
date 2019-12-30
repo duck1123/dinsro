@@ -1,6 +1,7 @@
 (ns dinsro.events.categories
   (:require [clojure.spec.alpha :as s]
             [dinsro.events :as e]
+            [dinsro.spec :as ds]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.events.categories :as s.e.categories]
             [kee-frame.core :as kf]

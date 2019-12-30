@@ -7,8 +7,8 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.users :as m.users]
+            [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.mock.request :as mock]
             [ring.util.http-status :as status]))
