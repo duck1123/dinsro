@@ -1,4 +1,4 @@
-(ns dinsro.spec.events.forms.add-account-transactions
+(ns dinsro.spec.events.forms.add-account-transaction
   (:require [clojure.spec.alpha :as s]
             [dinsro.specs :as ds]))
 

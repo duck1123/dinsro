@@ -1,23 +1,11 @@
-(ns dinsro.components.forms.add-account-transactions
-  (:require [cljc.java-time.instant :as instant]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-rate :as c.f.create-rate]
+(ns dinsro.components.forms.add-account-transaction
+  (:require [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rates :as e.rates]
             [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.events.forms.add-account-transactions :as s.e.f.add-account-transactions]
-            [dinsro.spec.rates :as s.rates]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (defn-spec form vector?

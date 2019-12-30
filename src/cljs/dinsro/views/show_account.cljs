@@ -3,7 +3,7 @@
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.add-account-transactions :as c.f.add-account-transactions]
+            [dinsro.components.forms.add-account-transaction :as c.f.add-account-transaction]
             [dinsro.components.index-transactions :refer [index-transactions]]
             [dinsro.components.show-account :refer [show-account]]
             [dinsro.events.accounts :as e.accounts]
@@ -12,6 +12,7 @@
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
             [dinsro.specs :as ds]
+            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
@@ -55,9 +56,9 @@
    [:h2
     (tr [:transactions])
     [c/show-form-button
-     ::c.f.add-account-transactions/shown?
-     ::c.f.add-account-transactions/set-shown?]]
-   [c.f.add-account-transactions/form]
+     ::s.e.f.add-account-transaction/shown?
+     ::s.e.f.add-account-transaction/set-shown?]]
+   [c.f.add-account-transaction/form]
    [:hr]
    (let [items @(rf/subscribe [::e.transactions/items])]
      [c.debug/debug-box items]
