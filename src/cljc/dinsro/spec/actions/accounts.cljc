@@ -11,6 +11,7 @@
                    ::s.accounts/initial-value
                    ::s.accounts/user-id
                    ::s.accounts/currency-id]))
+(def create-params-valid ::create-params-valid)
 
 (s/def :create-account-valid/params ::create-params-valid)
 (s/def :create-account/params

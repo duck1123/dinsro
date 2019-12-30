@@ -5,7 +5,8 @@
             [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]))
+            [orchestra.core :refer [defn-spec]]
+            [re-frame.core :as rf]))
 
 (defn format-date
   [date]
