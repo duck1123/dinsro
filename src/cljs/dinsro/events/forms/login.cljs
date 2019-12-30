@@ -1,6 +1,5 @@
 (ns dinsro.events.forms.login
-  (:require [dinsro.spec.events.forms.registration :as s.e.f.registration]
-            [dinsro.spec.events.forms.login :as s.e.f.login]
+  (:require [dinsro.spec.events.forms.login :as s.e.f.login]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
@@ -27,7 +26,7 @@
 (defn set-defaults
   [{:keys [db]} _]
   {:db (-> db
-           (assoc ::s.e.f.login/email s.e.f.registration/default-email)
-           (assoc ::s.e.f.login/password s.e.f.registration/default-password))})
+           (assoc ::s.e.f.login/email "")
+           (assoc ::s.e.f.login/password ""))})
 
 (kf/reg-event-fx ::set-defaults set-defaults)
