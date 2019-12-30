@@ -1,4 +1,8 @@
-(ns dinsro.events.forms.add-currency-rate)
+(ns dinsro.events.forms.add-currency-rate
+  (:require [dinsro.translations :refer [tr]]
+            [kee-frame.core :as kf]
+            [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::valid)
 
