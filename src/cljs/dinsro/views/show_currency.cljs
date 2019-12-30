@@ -6,7 +6,7 @@
             [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.components.show-currency :refer [show-currency]]
+            [dinsro.components.show-currency :as c.show-currency]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rate-sources :as e.rate-sources]
@@ -59,7 +59,7 @@
   [currency]
   (let [currency-id (:db/id currency)]
     [:<>
-     [:div.box [show-currency currency]]
+     [:div.box [c.show-currency/show-currency currency]]
      (when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
        [c.currency-rates/section currency-id rates])
      (when-let [accounts (some->> @(rf/subscribe [::e.accounts/items-by-currency currency])
