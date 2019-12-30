@@ -1,11 +1,9 @@
 (ns dinsro.events.forms.login
-  (:require [kee-frame.core :as kf]
+  (:require [dinsro.spec.events.forms.registration :as s.e.f.registration]
+            [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
-
-(def default-email "bob@example.com")
-(def default-password "hunter2")
 
 (rfu/reg-basic-sub ::email)
 (rfu/reg-set-event ::email)
@@ -27,7 +25,7 @@
 (defn set-defaults
   [{:keys [db]} _]
   {:db (-> db
-           (assoc ::email default-email)
-           (assoc ::password default-password))})
+           (assoc ::email s.e.f.registration/default-email)
+           (assoc ::password s.e.f.registration/default-password))})
 
 (kf/reg-event-fx ::set-defaults set-defaults)

@@ -20,10 +20,10 @@
 (defn set-defaults
   [{:keys [db]} _]
   {:db (-> db
-           (assoc ::s.e.f.registration/name default-name)
-           (assoc ::s.e.f.registration/email default-email)
-           (assoc ::s.e.f.registration/password default-password)
-           (assoc ::s.e.f.registration/confirm-password default-password))})
+           (assoc ::s.e.f.registration/name s.e.f.registration/default-name)
+           (assoc ::s.e.f.registration/email s.e.f.registration/default-email)
+           (assoc ::s.e.f.registration/password s.e.f.registration/default-password)
+           (assoc ::s.e.f.registration/confirm-password s.e.f.registration/default-password))})
 
 (kf/reg-event-fx ::set-defaults set-defaults)
 
