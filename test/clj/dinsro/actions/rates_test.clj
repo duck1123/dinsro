@@ -7,7 +7,7 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
