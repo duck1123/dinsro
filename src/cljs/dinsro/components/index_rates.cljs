@@ -21,11 +21,8 @@
      [:td [c.links/currency-link currency-id]]
      (c.debug/hide [:td [c.buttons/delete-rate item]])]))
 
-(defn index-rates
-  ;; vector?
-  [items
-   ;; (s/coll-of ::s.rates/item)
-   ]
+(defn section
+  [items]
   [:<>
    [c.debug/debug-box items]
    (if-not (seq items)
@@ -40,3 +37,6 @@
        [:tbody]
        (for [item items]
          ^{:key (:db/id item)} [rate-line item]))])])
+
+(s/fdef section
+  :ret vector?)
