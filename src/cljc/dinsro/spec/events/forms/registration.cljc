@@ -1,4 +1,4 @@
-(ns dinsro.spec.events.forms.registration-form
+(ns dinsro.spec.events.forms.registration
   (:refer-clojure :exclude [name])
   (:require [clojure.spec.alpha :as s]))
 
