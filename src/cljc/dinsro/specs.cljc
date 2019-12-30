@@ -30,11 +30,11 @@
     non-empty-string-alphanumeric
     non-empty-string-alphanumeric)))
 
-(s/def ::id pos-int? #_(s/with-gen valid-uuid-str? uuid-str-gen))
+(s/def ::id pos-int?)
 (s/def :db/id ::id)
 (def id ::id)
 
-(s/def ::valid-double (s/and double? #(== % %) #(not (#{##Inf ##-Inf} %))))
+(s/def ::valid-double (s/and double? #(== % %)))
 (def valid-double ::valid-double)
 
 (s/def ::json-doubleable (s/or :int int?

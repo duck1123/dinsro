@@ -36,5 +36,7 @@
        [:th (tr [:value])]
        [:th (tr [:currency])]
        (c.debug/hide [:th (tr [:actions])])]
-      (->> (for [item items] ^{:key (:db/id item)} [rate-line item])
-           (into [:tbody]))])])
+      (into
+       [:tbody]
+       (for [item items]
+         ^{:key (:db/id item)} [rate-line item]))])])
