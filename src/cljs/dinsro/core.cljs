@@ -9,8 +9,10 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(def initial-db
-  {::e.debug/shown?                                      false
+(defn initial-db
+  [debug?]
+  {::e.debug/shown?                                      debug?
+   ::e.debug/enabled?                                    debug?
    :dinsro.spec.events.forms.settings/allow-registration true})
 
 (s/def ::app-db (s/keys))
@@ -28,7 +30,7 @@
     {:debug?         (boolean debug?)
      :routes         routing/routes
      :app-db-spec    ::app-db
-     :initial-db     initial-db
+     :initial-db     (initial-db (boolean? debug?))
      :root-component [view/root-component]})))
 
 (defn init! [debug?]
