@@ -19,10 +19,11 @@
 (defcard ::s.e.transactions/do-fetch-index-response
   (ds/gen-key ::s.e.transactions/do-fetch-index-response))
 
-(deftest do-fetch-index
-  (let [cofx {}
-        event [{:foo "bar"}]]
-    (is (= 1 (e.transactions/do-fetch-index cofx event)))))
+(comment
+  (deftest do-fetch-index
+    (let [cofx {}
+          event [{:foo "bar"}]]
+      (is (= 1 (e.transactions/do-fetch-index cofx event))))))
 
 (defcard ::s.e.transactions/do-submit-cofx
   (ds/gen-key ::s.e.transactions/do-submit-cofx))
