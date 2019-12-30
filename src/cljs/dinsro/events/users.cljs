@@ -41,7 +41,7 @@
              (assoc-in [::item-map (:db/id item)] item))}))
 
 (defn do-fetch-record-unauthorized
-  [cofx event]
+  [cofx _]
   (let [{:keys [db]} cofx
         match (:kee-frame/route db)]
     {:db (assoc db :return-to match)
