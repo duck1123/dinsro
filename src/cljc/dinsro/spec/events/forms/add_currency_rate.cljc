@@ -1,4 +1,6 @@
-(ns dinsro.spec.events.forms.add-currency-rate)
+(ns dinsro.spec.events.forms.add-currency-rate
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.spec.rates :as s.rates]))
 
 (s/def ::valid boolean?)
 
