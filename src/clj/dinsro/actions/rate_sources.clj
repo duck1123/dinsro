@@ -43,11 +43,11 @@
   (let [
         ;; TODO: parse from request
         limit 50
-        items (m.rate-sources/index-records)]
-    (let [response {:model :rate-sources
-                    :limit limit
-                    :items items}]
-      (http/ok response))))
+        items (m.rate-sources/index-records)
+        response {:model :rate-sources
+                  :limit limit
+                  :items items}]
+    (http/ok response)))
 
 ;; Read
 
