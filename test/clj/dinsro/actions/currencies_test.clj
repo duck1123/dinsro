@@ -11,8 +11,7 @@
             [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [mount.core :as mount]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [ring.util.http-status :as status]))
 
 (def example-request {:name "foo"})
 

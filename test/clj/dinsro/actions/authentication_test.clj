@@ -11,8 +11,7 @@
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [ring.mock.request :as mock]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [ring.util.http-status :as status]))
 
 (def url-root "/api/v1")
 
@@ -52,14 +51,12 @@
       (is (= (:status response) status/unauthorized)))))
 
 (deftest register-handler-test-success
-  (let [path (str url-root "/register")
-        request (ds/gen-key ::s.a.authentication/register-request-valid)
+  (let [request (ds/gen-key ::s.a.authentication/register-request-valid)
         response (a.authentication/register-handler request)]
     (is (= (:status response) status/ok))))
 
 (deftest register-handler-test-invalid-params
-  (let [path (str url-root "/register")
-        params {}
+  (let [params {}
         request (-> (mock/request :post path) (assoc :params params))
         response (a.authentication/register-handler request)]
     (is (= status/bad-request (:status response)))))

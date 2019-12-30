@@ -13,7 +13,6 @@
             [dinsro.spec.users :as s.users]
             [dinsro.specs :as ds]
             [mount.core :as mount]
-            [ring.mock.request :as mock]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
@@ -58,15 +57,13 @@
     (is (= (:status response) status/ok))))
 
 (deftest index-handler-empty
-  (let [path "/transactions"
-        request (mock/request :get path)
+  (let [request {}
         response (a.transactions/index-handler request)]
     (is (= (:status response) status/ok))))
 
 (deftest index-handler-with-records
-  (let [path "/transactions"
-        user (mocks/mock-transaction)
-        request (mock/request :get path)
+  (mocks/mock-transaction)
+  (let [request {}
         response (a.transactions/index-handler request)]
     (is (= (:status response) status/ok))
     (is (= 1 (count (:items (:body response)))))))
