@@ -8,11 +8,9 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-rate :as e.f.create-rate]
             [dinsro.events.rates :as e.rates]
-            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn init-page
   [{:keys [db]} _]

@@ -13,8 +13,7 @@
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 
 (s/def ::init-page-cofx (s/keys))

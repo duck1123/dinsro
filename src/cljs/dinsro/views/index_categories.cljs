@@ -7,11 +7,9 @@
             [dinsro.events.categories :as e.categories]
             [dinsro.events.forms.create-category :as e.f.create-category]
             [dinsro.events.users :as e.users]
-            [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn init-page
   [{:keys [db]} _]

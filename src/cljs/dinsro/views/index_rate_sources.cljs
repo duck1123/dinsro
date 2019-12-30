@@ -7,12 +7,10 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
             [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn init-page
   [{:keys [db]} _]

@@ -1,12 +1,8 @@
 (ns dinsro.events.forms.create-rate-source
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
-            [dinsro.translations :refer [tr]]
+  (:require [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [reframe-utils.core :as rfu]))
 
 (def default-name "Default Source")
 

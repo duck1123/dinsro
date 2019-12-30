@@ -6,12 +6,10 @@
             [dinsro.components.index-currencies :as c.index-currencies]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-currency :as e.f.create-currency]
-            [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn init-page
   [_ _]

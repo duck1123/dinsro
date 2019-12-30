@@ -4,8 +4,6 @@
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(def default-name "")
-
 (rfu/reg-basic-sub ::s.e.f.create-currency/name)
 (rfu/reg-set-event ::s.e.f.create-currency/name)
 

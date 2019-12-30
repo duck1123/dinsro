@@ -2,10 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.events.forms.create-transaction :as e.f.create-transaction]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [reframe-utils.core :as rfu]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

@@ -8,8 +8,7 @@
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [ring.util.http-status :as status]))
 
 (s/def ::items (s/coll-of ::s.users/item))
 (rfu/reg-basic-sub ::items)

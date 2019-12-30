@@ -6,10 +6,8 @@
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
-  {
-   ;; :dispatch [::e.f.settings/set-defaults]
-   :document/title "Settings"})
+  [_ _]
+  {:document/title "Settings"})
 
 (kf/reg-event-fx ::init-page init-page)
 

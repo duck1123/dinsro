@@ -2,10 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [reframe-utils.core :as rfu]))
 
 ;; toggleable
 

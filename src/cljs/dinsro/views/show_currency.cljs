@@ -13,8 +13,6 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))

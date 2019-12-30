@@ -1,15 +1,11 @@
 (ns dinsro.views.home
   (:require [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
             [dinsro.components.account-picker :as c.account-picker]
             [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn init-page
   [{:keys [db]} _]

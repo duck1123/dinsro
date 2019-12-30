@@ -10,8 +10,7 @@
             [dinsro.spec.categories :as s.categories]
             [dinsro.specs :as ds]
             [mount.core :as mount]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [ring.util.http-status :as status]))
 
 (def example-request {:name "foo"})
 
