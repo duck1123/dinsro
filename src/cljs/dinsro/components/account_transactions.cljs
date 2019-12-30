@@ -1,5 +1,5 @@
 (ns dinsro.components.account-transactions
-    (:require [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
             [dinsro.components.forms.add-account-transaction :as c.f.add-account-transaction]
             [dinsro.components.index-transactions :as c.index-transactions]

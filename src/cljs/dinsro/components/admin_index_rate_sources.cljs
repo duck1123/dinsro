@@ -1,16 +1,12 @@
 (ns dinsro.components.admin-index-rate-sources
-  (:require [clojure.spec.alpha :as s]
-            [devcards.core :refer-macros [defcard-rg]]
+  (:require [devcards.core :refer-macros [defcard-rg]]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
-            [reagent.core :as r]
             [re-frame.core :as rf]))
 
 (defn-spec index-line vector?

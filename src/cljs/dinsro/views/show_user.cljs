@@ -13,8 +13,7 @@
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))

@@ -6,6 +6,7 @@
 
 (defn section
   []
+  ;; FIXME: hard-coded user
   (let [user-id 12
         accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
     [c.user-accounts/section user-id accounts]))

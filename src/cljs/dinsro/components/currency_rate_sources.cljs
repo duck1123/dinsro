@@ -1,6 +1,5 @@
 (ns dinsro.components.currency-rate-sources
-  (:require [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.add-currency-rate-source :as c.f.add-currency-rate-source]
+  (:require [dinsro.components.forms.add-currency-rate-source :as c.f.add-currency-rate-source]
             [dinsro.components.index-rate-sources :as c.index-rate-sources]))
 
 (defn section

@@ -7,13 +7,9 @@
             [dinsro.components.links :as c.links]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.forms.create-category :as e.f.create-category]
-            [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
-            [reagent.core :as r]
             [re-frame.core :as rf]))
 
 (defn-spec category-line vector?

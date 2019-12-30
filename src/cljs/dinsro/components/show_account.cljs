@@ -1,6 +1,5 @@
 (ns dinsro.components.show-account
-  (:require [devcards.core :refer-macros [defcard-rg]]
-            [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.links :as c.links]
             [dinsro.components.debug :as c.debug]
             [dinsro.spec.accounts :as s.accounts]

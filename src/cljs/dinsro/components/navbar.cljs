@@ -26,7 +26,7 @@
   (update db ::expanded? not))
 
 (defn nav-link-activated
-  [{:keys [db]} _]
+  [_ _]
   {:dispatch [::toggle-navbar]})
 
 (kf/reg-event-db ::toggle-navbar toggle-navbar)

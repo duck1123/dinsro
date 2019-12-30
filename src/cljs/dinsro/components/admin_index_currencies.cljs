@@ -9,7 +9,8 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-currency :as e.f.create-currency]
             [dinsro.translations :refer [tr]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [re-frame.core :as rf]))
 
 (defn index-currency-line
   [currency]
