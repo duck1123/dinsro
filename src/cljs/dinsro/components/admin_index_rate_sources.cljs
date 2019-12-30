@@ -41,8 +41,9 @@
       [:th (tr [:url])]
       [:th (tr [:currency])]
       [:th (tr [:actions])]]
-     (->> (for [item items] ^{:key (:db/id item)} [index-line item])
-          (into [:tbody]))]))
+     (into
+      [:tbody]
+      (for [item items] ^{:key (:db/id item)} [index-line item]))]))
 
 (defn section-inner
   [items]

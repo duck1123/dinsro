@@ -27,5 +27,6 @@
        [:th (tr [:name])]
        [:th (tr [:user])]
        (c.debug/hide [:th (tr [:actions])])]
-      (->> (for [item items] ^{:key (:db/id item)} [category-line item])
-           (into [:tbody]))])])
+      (into
+       [:tbody]
+       (for [item items] ^{:key (:db/id item)} [category-line item]))])])
