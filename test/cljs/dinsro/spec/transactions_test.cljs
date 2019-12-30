@@ -7,17 +7,15 @@
             [expound.alpha :as expound]
             [tick.alpha.api :as tick]))
 
-(defcard item
-  (ds/gen-key ::s.transactions/item)
-  )
+(defcard generated-item
+  (ds/gen-key ::s.transactions/item))
 
-(let [item {
+(let [item {:db/id 1
             ::s.transactions/account {:db/id 1}
-            ::s.transactions/currency {:db/id 1}
             ::s.transactions/date (tick/instant)
             ::s.transactions/description "Foo"
-            ::s.transactions/value -3
-            }]
+            ::s.transactions/value -3}]
+  (defcard item item)
   (defcard-rg item-test-validation
     [:pre (expound/expound-str ::s.transactions/item item)])
   (deftest item-test
