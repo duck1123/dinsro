@@ -77,7 +77,7 @@
           (nav-link (tr [:accounts]) :index-accounts-page)
           (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
-       [debug-button]
+       (comment [debug-button])
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
           [:a.navbar-link (::s.users/name @(rf/subscribe [::e.users/item auth-id]))]
