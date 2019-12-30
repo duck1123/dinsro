@@ -31,7 +31,6 @@
                  [metosin/ring-http-response "0.9.1"]
                  [metosin/spec-tools "0.10.0"]
                  [mount "0.1.16"]
-                 [net.danielcompton/defn-spec-alpha "0.1.0"]
                  [nrepl "0.6.0"]
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
