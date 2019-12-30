@@ -1,0 +1,9 @@
+{:linters
+ {
+  :unused-namespace {:exclude [dinsro.translations
+                               taoensso.timbre]}
+
+  :unused-referred-var {:exclude {dinsro.translations [tr]}}
+
+  :unresolved-symbol {:exclude [(orchestra.core/defn-spec)]}
+  }}
