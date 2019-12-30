@@ -3,7 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.add-currency-rate :refer [add-currency-rate-form]]
+            [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
             [dinsro.components.index-accounts :as c.index-accounts]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.rate-chart :as c.rate-chart]
@@ -57,7 +57,7 @@
   [currency-id rates]
   [:div.box
    [:h2 "Rates"]
-   [add-currency-rate-form currency-id]
+   [c.f.add-currency-rate/form currency-id]
    [:hr]
    [c.rate-chart/rate-chart rates]
    [index-rates rates]])

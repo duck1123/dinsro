@@ -1,7 +1,7 @@
 (ns dinsro.views.index-rates
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-rate :as c.f.create-rate :refer [create-rate-form]]
+            [dinsro.components.forms.create-rate :as c.f.create-rate]
             [dinsro.components.index-rates :refer [index-rates]]
             [dinsro.components.rate-chart :refer [rate-chart]]
             [dinsro.events.currencies :as e.currencies]
@@ -42,7 +42,7 @@
       [:h1
        (tr [:rates "Rates"])
        [c/show-form-button ::c.f.create-rate/shown? ::c.f.create-rate/set-shown?]]
-      [create-rate-form]
+      [c.f.create-rate/form]
       [:hr]
       [rate-chart items]
       [index-rates items]]]))

@@ -1,7 +1,7 @@
 (ns dinsro.views.index-currencies
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-currency :as c.f.create-currency :refer [create-currency]]
+            [dinsro.components.forms.create-currency :as c.f.create-currency]
             [dinsro.components.index-currencies :refer [index-currencies]]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.debug :as e.debug]
@@ -37,6 +37,6 @@
       [:h1
        (tr [:index-currencies "Index Currencies"])
        [c/show-form-button ::c.f.create-currency/shown? ::c.f.create-currency/set-shown?]]
-      [c.f.create-currency/create-currency]
+      [c.f.create-currency/form]
       [:hr]
       [index-currencies currencies]]]))

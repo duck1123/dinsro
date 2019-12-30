@@ -1,9 +1,7 @@
 (ns dinsro.views.index-accounts
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-account :as c.f.create-account
-             :refer [new-account-form]]
+            [dinsro.components.forms.create-account :as c.f.create-account]
             [dinsro.components.index-accounts :refer [index-accounts]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
@@ -47,7 +45,7 @@
       [:h1
        (tr [:index-accounts])
        [c/show-form-button ::c.f.create-account/shown? ::c.f.create-account/set-shown?]]
-      [c.f.create-account/new-account-form]
+      [c.f.create-account/form]
       [:hr]
       (condp = state
         :invalid [:p "Invalid"]
