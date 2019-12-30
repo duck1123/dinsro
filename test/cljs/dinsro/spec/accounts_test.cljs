@@ -16,4 +16,5 @@
   (defcard item-test-validation
     (expound/expound-str ::s.accounts/item item))
   (deftest item-test
-    (is (s/valid? ::s.accounts/item item))))
+    (is (s/valid? ::s.accounts/item item)
+        "Valid map")))
