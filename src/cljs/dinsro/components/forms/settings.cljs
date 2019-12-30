@@ -2,6 +2,7 @@
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.settings :as e.f.settings]
+            [dinsro.events.settings :as e.settings]
             [dinsro.spec.events.forms.settings :as s.e.f.settings]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
