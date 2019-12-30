@@ -1,12 +1,5 @@
 (ns dinsro.events.create-transaction
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]

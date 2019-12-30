@@ -1,12 +1,6 @@
 (ns dinsro.events.forms.registration-form
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.spec.events.forms.registration :as s.e.f.registration]
-            [dinsro.translations :refer [tr]]
+  (:require [dinsro.spec.events.forms.registration :as s.e.f.registration]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))

@@ -1,14 +1,6 @@
 (ns dinsro.events.forms.login
-  (:require [cemerick.url :as url]
-            [clojure.string :as string]
-            [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.authentication :as e.authentication]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
+  (:require [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [reagent.core :as r]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 

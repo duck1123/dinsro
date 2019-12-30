@@ -1,6 +1,5 @@
 (ns dinsro.events.forms.add-account-transaction
   (:require [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
-            [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))

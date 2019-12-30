@@ -1,6 +1,5 @@
 (ns dinsro.events.forms.add-currency-rate
-  (:require [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
+  (:require [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 

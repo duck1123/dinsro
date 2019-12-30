@@ -1,9 +1,6 @@
 (ns dinsro.events.debug
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 

@@ -1,12 +1,6 @@
 (ns dinsro.events.forms.create-account
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
+  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.events.accounts :as e.accounts]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]

@@ -1,13 +1,7 @@
 (ns dinsro.events.forms.create-category
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.spec.categories :as s.categories]
+  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))

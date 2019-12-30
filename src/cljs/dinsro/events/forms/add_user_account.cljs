@@ -2,7 +2,6 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
             [dinsro.specs :as ds]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]

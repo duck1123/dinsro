@@ -1,10 +1,5 @@
 (ns dinsro.events.forms.create-rate
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
+  (:require [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
