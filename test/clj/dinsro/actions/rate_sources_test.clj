@@ -1,5 +1,5 @@
 (ns dinsro.actions.rate-sources-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.actions.rate-sources :as a.rate-sources]

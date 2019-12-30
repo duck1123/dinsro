@@ -14,7 +14,6 @@
             [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
 (def uri "datahike:file:///tmp/file-example2")

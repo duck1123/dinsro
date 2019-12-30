@@ -32,8 +32,8 @@
 
 (deftest create-record-invalid
   (let [params (ds/gen-key ::s.users/params)
-        id (m.users/create-record params)
-        user (m.users/read-record id)]
+        id (m.users/create-record params)]
+    (m.users/read-record id)
     ;; TODO: Throw a better error
     (is (thrown? RuntimeException (m.users/create-record params)))))
 

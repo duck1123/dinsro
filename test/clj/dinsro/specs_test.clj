@@ -5,6 +5,8 @@
             [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))
 
+;; TODO: move to cards
+
 (deftest id-string-test
   (is (s/valid? ::ds/id-string "1")
       "Valid number")
