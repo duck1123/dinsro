@@ -64,8 +64,8 @@
      [:div.box [show-currency currency]]
      (when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
        [c.currency-rates/section currency-id rates])
-     (when-let [accounts (->> @(rf/subscribe [::e.accounts/items-by-currency currency])
-                              (sort-by ::s.accounts/date))]
+     (when-let [accounts (some->> @(rf/subscribe [::e.accounts/items-by-currency currency])
+                                  (sort-by ::s.accounts/date))]
        [c.currency-accounts/section accounts])
      (when-let [rate-sources @(rf/subscribe [::e.rate-sources/items
                                              ;; -by-currency currency

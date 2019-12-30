@@ -3,7 +3,7 @@
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.backends.token :refer [jwe-backend]]
-            [buddy.auth.middleware :refer [wrap-authentication]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.core.nonce :refer [random-bytes]]
             [dinsro.env :refer [defaults]]
             [clojure.tools.logging :as log]
@@ -76,7 +76,8 @@
   (let [backend (session-backend)]
     (-> handler
         ;; (wrap-access-rules {:rules rules :on-error on-error})
-        (wrap-authentication backend))))
+        (wrap-authentication backend)
+        (wrap-authorization backend))))
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)

@@ -17,8 +17,7 @@
 
 (defn index-records
   []
-  (->> (index-ids)
-       (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
+  (d/pull-many @db/*conn* '[::s.currencies/name :db/id] (index-ids)))
 
 (s/fdef index-records
   :args (s/cat)

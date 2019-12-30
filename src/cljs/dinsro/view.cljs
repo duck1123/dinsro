@@ -8,9 +8,9 @@
 (defn root-component []
   [:<>
    [navbar]
-   (->> (-> (->> r/mappings
-                 (map identity)
-                 (into [])
-                 (reduce concat []))
-            (concat [nil [:div "Not Found"]]))
-        (into [kf/switch-route (fn [route] (get-in route [:data :name]))]))])
+   (into [kf/switch-route #(get-in % [:data :name])]
+         (concat [nil [:div "Not Found"]]
+                 (->> r/mappings
+                      (map identity)
+                      (into [])
+                      (reduce concat []))))])
