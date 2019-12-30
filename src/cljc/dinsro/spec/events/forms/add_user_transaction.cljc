@@ -1,6 +1,5 @@
 (ns dinsro.spec.events.forms.add-user-transaction
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.specs :as ds]))
 
 (s/def ::shown? boolean?)

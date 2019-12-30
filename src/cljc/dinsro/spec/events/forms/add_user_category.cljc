@@ -1,9 +1,6 @@
 (ns dinsro.spec.events.forms.add-user-category
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.users :as s.users]
-            [orchestra.core :refer [defn-spec]]))
+  (:refer-clojure :exclude [name])
+  (:require [clojure.spec.alpha :as s]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

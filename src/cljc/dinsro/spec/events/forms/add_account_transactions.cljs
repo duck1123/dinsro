@@ -1,11 +1,6 @@
 (ns dinsro.spec.events.forms.add-account-transactions
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.specs :as ds]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.specs :as ds]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

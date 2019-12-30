@@ -1,12 +1,7 @@
 (ns dinsro.spec.events.forms.create-rate
+  (:refer-clojure :exclude [time])
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.specs :as ds]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [dinsro.specs :as ds]))
 
 (s/def ::rate string?)
 (def rate ::rate)
