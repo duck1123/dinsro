@@ -44,4 +44,4 @@
       [c.f.create-rate/form]
       [:hr]
       [c.rate-chart/rate-chart items]
-      [c.index-rates/index-rates items]]]))
+      [c.index-rates/section items]]]))
