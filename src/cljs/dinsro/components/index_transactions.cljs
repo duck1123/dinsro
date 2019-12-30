@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
+            [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]))
@@ -26,7 +27,11 @@
         [:div.level-item (format-date date)]]
        [:div.level-right
         [:div.level-item
-         [c.links/account-link account-id]]]]]]))
+         [c.links/account-link account-id]]]]]
+     [:footer.card-footer
+      [:a.button.card-footer-item
+       {:on-click #(rf/dispatch [::e.transactions/do-delete-record transaction])}
+       (tr [:delete])]]]))
 
 (defn-spec index-transactions vector?
   [items (s/coll-of ::s.transactions/item)]

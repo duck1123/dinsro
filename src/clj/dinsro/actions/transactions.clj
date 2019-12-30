@@ -1,5 +1,6 @@
 (ns dinsro.actions.transactions
   (:require [clojure.spec.alpha :as s]
+            [expound.alpha :as expound]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.transactions :as s.transactions]
@@ -14,10 +15,8 @@
 
 (defn-spec prepare-record (s/nilable s.transactions/params)
   [params s.a.transactions/create-params]
-  (let [currency-id (utils/get-as-int params :currency-id)
-        account-id (utils/get-as-int params :account-id)
-        params {::s.transactions/currency {:db/id currency-id}
-                ::s.transactions/value (some-> params :value str Double/parseDouble)
+  (let [account-id (utils/get-as-int params :account-id)
+        params {::s.transactions/value (some-> params :value str Double/parseDouble)
                 ::s.transactions/account {:db/id account-id}
                 ::s.transactions/description (some-> params :description)
                 ::s.transactions/date (some-> params :date str tick/instant)}]

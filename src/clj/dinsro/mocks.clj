@@ -1,7 +1,5 @@
 (ns dinsro.mocks
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.model.accounts :as m.accounts]
+  (:require [dinsro.model.accounts :as m.accounts]
             [dinsro.model.categories :as m.categories]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.model.rate-sources :as m.rate-sources]
@@ -52,9 +50,8 @@
 (defn-spec mock-transaction ::s.transactions/item
   []
   (let [params (ds/gen-key ::s.transactions/params)
-        params (assoc-in params [::s.transactions/currency :db/id]
-                         (ds/gen-key (into #{1} (m.transactions/index-ids))))
         params (assoc-in params [::s.transactions/account :db/id]
+                         ;; TODO: get better linked record picker
                          (ds/gen-key (into #{1} (m.accounts/index-ids))))
         id (m.transactions/create-record params)]
     (m.transactions/read-record id)))
