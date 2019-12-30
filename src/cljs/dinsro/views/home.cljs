@@ -37,4 +37,4 @@
          (str auth-id)]
         [c.account-picker/section]]
        [:div.box
-        [:p "Not authenticated"]])]))
+        [:p "Not authenticated. " [:a {:href (kf/path-for [:login-page])} "login"]]])]))
