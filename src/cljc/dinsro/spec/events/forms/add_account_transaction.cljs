@@ -5,11 +5,11 @@
 (s/def ::shown? boolean?)
 (def shown? ::shown?)
 
-(s/def ::currency-id ds/id-string)
+(s/def ::currency-id ::ds/id-string)
 (def currency-id ::currency-id)
 
-(s/def ::date ds/date-string)
+(s/def ::date ::ds/date-string)
 (def date ::date)
 
-(s/def ::value ds/double-string)
+(s/def ::value ::ds/double-string)
 (def value ::value)
