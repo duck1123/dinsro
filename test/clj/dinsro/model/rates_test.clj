@@ -10,7 +10,6 @@
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [mount.core :as mount]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")

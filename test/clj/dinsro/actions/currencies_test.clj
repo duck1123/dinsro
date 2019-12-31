@@ -1,7 +1,7 @@
 (ns dinsro.actions.currencies-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [datahike.api :as d]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.config :as config]

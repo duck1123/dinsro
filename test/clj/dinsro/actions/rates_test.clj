@@ -1,21 +1,18 @@
 (ns dinsro.actions.rates-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.actions.rates :as a.rates]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
-            [dinsro.handler :as handler]
             [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
-            [ring.mock.request :as mock]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 

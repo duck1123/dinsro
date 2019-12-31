@@ -1,9 +1,8 @@
 (ns dinsro.model.accounts-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [datahike.api :as d]
-            [datahike.core :as dc]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]

@@ -1,9 +1,6 @@
 (ns dinsro.model.users-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+  (:require [clojure.test :refer :all]
             [datahike.api :as d]
-            [datahike.core :as dc]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.users :as m.users]

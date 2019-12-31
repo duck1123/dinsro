@@ -1,20 +1,17 @@
 (ns dinsro.actions.accounts-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [datahike.api :as d]
-            [datahike.core :as dc]
             [dinsro.actions.accounts :as a.accounts]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.accounts :as m.accounts]
-            [dinsro.model.users :as m.users]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
