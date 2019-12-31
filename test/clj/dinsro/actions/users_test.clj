@@ -1,10 +1,8 @@
 (ns dinsro.actions.users-test
-  (:require [clojure.data.json :as json]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer :all]
+            [clojure.test :refer [are deftest is use-fixtures]]
             [datahike.api :as d]
-            [datahike.core :as dc]
             [dinsro.actions.users :as a.users]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -43,7 +41,7 @@
 
 (deftest index-handler-with-records
   (let [path "/users"
-        user (mocks/mock-user)
+        _user (mocks/mock-user)
         request (mock/request :get path)
         response (a.users/index-handler request)]
     (is (= (:status response) status/ok))
@@ -54,7 +52,8 @@
         id (m.users/create-record params)
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]
-    (is (= status/ok (:status response)) "Should return an ok status")
+    (is (= status/ok (:status response))
+        "Should return an ok status")
     (are [key] (= (get params key) (get-in response [:body key]))
       :id :email)))
 
@@ -62,4 +61,5 @@
   (let [id (gen/generate (s/gen ::ds/id))
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]
-    (is (= (:status response) status/not-found) "Should return a not-found response")))
+    (is (= (:status response) status/not-found)
+        "Should return a not-found response")))
