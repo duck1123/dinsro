@@ -7,20 +7,26 @@
             [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec index-ids (s/coll-of ::ds/id)
+(defn index-ids
   []
   (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.currencies/item)
+(s/fdef index-ids
+  :ret (s/coll-of ::ds/id))
+
+(defn-spec index-records
   []
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
 
+(s/fdef index-records
+  :ret (s/coll-of ::s.currencies/item))
+
 (defn-spec create-record :db/id
   [params ::s.currencies/params]
-  (let [params (assoc params :db/id "currency-id")]
-    (let [response (d/transact db/*conn* {:tx-data [params]})]
-      (get-in response [:tempids "currency-id"]))))
+  (let [params (assoc params :db/id "currency-id")
+        response (d/transact db/*conn* {:tx-data [params]})]
+    (get-in response [:tempids "currency-id"])))
 
 (defn-spec read-record (s/nilable ::s.currencies/item)
   [id :db/id]
