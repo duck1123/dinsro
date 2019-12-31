@@ -9,8 +9,6 @@
                  [cheshire "5.9.0"]
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [clj-http "3.10.0"]
-                 ;; [clj-time "0.15.2"]
-                 ;; [cljc.java-time "0.1.7"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
@@ -23,7 +21,6 @@
                  [expound "0.7.2"]
                  [funcool/struct "1.4.0"]
                  [io.replikativ/datahike "0.2.0" :exclusions [args4j]]
-                 #_[org.eclipse.jetty/jetty-server "9.3.7.v20160115"]
                  [kee-frame "0.3.3" :exclusions [mvxcvi/arrangement
                                                  metosin/reitit-core
                                                  org.clojure/core.async]]
@@ -39,7 +36,6 @@
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520" :scope "provided"]
-                 ;; [org.clojure/core.rrb-vector "0.0.14"]
                  [org.clojure/core.rrb-vector "0.1.1"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
