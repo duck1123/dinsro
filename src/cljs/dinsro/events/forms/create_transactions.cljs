@@ -1,6 +1,5 @@
 (ns dinsro.events.create-transaction
   (:require [clojure.spec.alpha :as s]
-            [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -33,9 +32,3 @@
  :<- [::currency-id]
  :<- [::date]
  form-data-sub)
-
-(defn toggle-form
-  [db _]
-  (update db ::shown? not))
-
-(kf/reg-event-db ::toggle-form toggle-form)

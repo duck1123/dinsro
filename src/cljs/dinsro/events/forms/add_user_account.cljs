@@ -1,21 +1,12 @@
 (ns dinsro.events.forms.add-user-account
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
-            [dinsro.specs :as ds]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::s.e.f.add-user-account/shown?)
 (rfu/reg-set-event ::s.e.f.add-user-account/shown?)
-
-(defn toggle
-  [cofx event]
-  (let [{:keys [db]} cofx]
-    {:db (update db ::s.e.f.add-user-account/shown? not)}))
-
-(kf/reg-event-fx ::s.e.f.add-user-account/toggle toggle)
 
 (def default-name "Offshore")
 

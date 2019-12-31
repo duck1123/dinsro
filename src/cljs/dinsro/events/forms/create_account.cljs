@@ -1,6 +1,5 @@
 (ns dinsro.events.forms.create-account
-  (:require [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [dinsro.events.accounts :as e.accounts]
+  (:require [dinsro.events.accounts :as e.accounts]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
@@ -20,8 +19,6 @@
 
 (rfu/reg-basic-sub ::initial-value)
 (rfu/reg-set-event ::initial-value)
-
-(kf/reg-event-db ::toggle-form (fn-traced [db _] (update db ::shown? not)))
 
 (defn form-data-sub
   [[name initial-value currency-id user-id] _]

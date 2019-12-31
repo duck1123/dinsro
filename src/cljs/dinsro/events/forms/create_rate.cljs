@@ -34,16 +34,6 @@
  :<- [::date]
  form-data-sub)
 
-(defn toggle-form
-  [{:keys [db]} _]
-  {:db (update db ::shown? not)})
-
-(kf/reg-event-fx ::toggle-form toggle-form)
-
-(defn toggle-button
-  []
-  [:a.button {:on-click #(rf/dispatch [::toggle-form])} (tr [:toggle])])
-
 (defn init-form
   [{:keys [db]} _]
   (let [default-date (js/Date.)]
