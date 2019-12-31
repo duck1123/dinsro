@@ -33,7 +33,7 @@
     (if (s/valid? ::s.accounts/params params)
       params
       (do
-        #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params))
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params)))
         nil))))
 
 (defn-spec create-handler ::s.a.accounts/create-handler-response

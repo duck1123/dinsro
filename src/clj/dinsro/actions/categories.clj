@@ -22,8 +22,9 @@
                    (assoc-in [::s.categories/user :db/id] user-id))]
     (if (s/valid? ::s.categories/params params)
       params
-      (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.categories/params params))
-          nil))))
+      (do
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.categories/params params)))
+        nil))))
 
 (defn-spec create-handler ::s.a.categories/create-handler-response
   [{:keys [params session]} ::s.a.categories/create-handler-request]

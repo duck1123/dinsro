@@ -23,7 +23,7 @@
     (if (s/valid? ::s.currencies/params params)
       params
       (do
-        #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.currencies/params params))
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.currencies/params params)))
         nil))))
 
 (defn-spec create-handler ::s.a.currencies/create-handler-response

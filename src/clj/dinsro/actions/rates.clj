@@ -35,8 +35,9 @@
                      (assoc ::s.rates/date date))]
       (if (s/valid? ::s.rates/params params)
         params
-        (do (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params))
-            nil)))))
+        (do
+          (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params)))
+          nil)))))
 
 (defn-spec create-handler ::s.a.rates/create-handler-response
   [request ::s.a.rates/create-handler-request]
