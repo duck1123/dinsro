@@ -21,17 +21,25 @@
 (def items ::items)
 (rfu/reg-basic-sub ::items)
 
-(defn-spec items-by-account ::items
-  [items ::items
-   event ::s.e.transactions/items-by-account-event]
+(defn items-by-account
+  [items event]
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/account :db/id]) id) items)))
 
-(defn-spec items-by-currency ::items
-  [items ::items
-   event ::s.e.transactions/items-by-currency-event]
+(s/fdef items-by-account
+  :args (s/cat :items ::items
+               :event ::s.e.transactions/items-by-account-event)
+  :ret ::items)
+
+(defn items-by-currency
+  [items event]
   (let [[_ id] event]
     (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
+
+(s/fdef items-by-currency
+  :args (s/cat :items ::items
+               :event ::s.e.transactions/items-by-currency-event)
+  :ret ::items)
 
 (rf/reg-sub ::items-by-account :<- [::items] items-by-account)
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
@@ -57,14 +65,18 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :failed)})
 
-(defn-spec do-fetch-index ::s.e.transactions/do-fetch-index-response
-  [_ ::s.e.transactions/do-fetch-index-cofx
-   _ ::s.e.transactions/do-fetch-index-event]
+(defn do-fetch-index
+  [_ _]
   {:http-xhrio
    (e/fetch-request
     [:api-index-transactions]
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
+
+(s/fdef do-fetch-index
+  :args (s/cat :cofx ::s.e.transactions/do-fetch-index-cofx
+               :event ::s.e.transactions/do-fetch-index-event)
+  :ret ::s.e.transactions/do-fetch-index-response)
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
