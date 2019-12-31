@@ -34,7 +34,7 @@
 
 (defn do-fetch-index-failed
   [_ _]
-  (timbre/info "fetch records failed"))
+  {})
 
 (defn do-fetch-index
   [{:keys [db]} [data]]

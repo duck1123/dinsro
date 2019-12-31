@@ -33,13 +33,12 @@
 ;; Create
 
 (defn do-submit-success
-  [_ data]
-  (timbre/info "Submit success" data)
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ [response]]
-  (timbre/info "Submit failed" (get-in response [:parse-error :status-text])))
+  [_ _]
+  {})
 
 (defn do-submit
   [{:keys [db]} [data]]
@@ -60,12 +59,10 @@
 
 (defn do-delete-record-success
   [_ _]
-  (timbre/info "delete account success")
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record-failed
   [_ _]
-  (timbre/info "delete account failed")
   {})
 
 (defn do-delete-record
@@ -88,7 +85,6 @@
 
 (defn do-fetch-index-success
   [db [{:keys [items]}]]
-  (timbre/info "fetch records success" items)
   (-> db
       (assoc ::items items)
       (assoc ::do-fetch-index-state :loaded)))
@@ -96,7 +92,6 @@
 (defn-spec do-fetch-index-failed ::s.e.categories/do-fetch-index-failed-response
   [_ ::s.e.categories/do-fetch-index-failed-cofx
    _ ::s.e.categories/do-fetch-index-failed-event]
-  (timbre/info "fetch records failed")
   {})
 
 (defn-spec do-fetch-index ::s.e.categories/do-fetch-index-response

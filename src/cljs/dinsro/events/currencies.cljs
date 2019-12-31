@@ -44,7 +44,6 @@
 
 (defn do-submit-failed
   [_ response]
-  (timbre/info "Submit failed" response)
   {})
 
 (defn do-submit

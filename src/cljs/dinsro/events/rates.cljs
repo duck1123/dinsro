@@ -41,7 +41,6 @@
 
 (defn do-fetch-index-failed
   [{:keys [db]} _]
-  (timbre/info "fetch records failed")
   {:db (assoc db ::do-fetch-index-state :failed)})
 
 (defn do-fetch-index
@@ -98,7 +97,6 @@
 
 (defn-spec do-delete-record-failed (s/keys)
   [cofx ::do-delete-record-failed-cofx _ any?]
-  (timbre/error "Delete record failed")
   {:dispatch [::do-fetch-index]})
 
 (defn-spec do-delete-record (s/keys)
