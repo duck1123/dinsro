@@ -6,4 +6,4 @@
             ;; dinsro.views.register-test
             ))
 
-#_(doo-all-tests #"dinsro\..*(?:-test)$")
+(doo-all-tests #"dinsro\..*(?:-test)$")
