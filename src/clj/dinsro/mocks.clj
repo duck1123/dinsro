@@ -56,8 +56,3 @@
   (let [params (gen/generate (s/gen ::s.users/params))
         id (m.users/create-record params)]
     (m.users/read-record id)))
-
-(comment
-  (mock-account)
-  (mock-transaction)
-  )

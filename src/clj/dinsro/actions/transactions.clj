@@ -1,22 +1,15 @@
 (ns dinsro.actions.transactions
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [expound.alpha :as expound]
-            [dinsro.db.core :as db]
+  (:require [clojure.spec.alpha :as s]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
             [dinsro.utils :as utils]
-            [java-time :as t]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
-            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]
-            [time-specs.core :as ts]))
+            [tick.alpha.api :as tick]))
 
 ;; Create
 
@@ -34,12 +27,6 @@
         #_(timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params))
           nil))))
 
-(comment
-  (ds/gen-key s.a.transactions/create-params)
-  (ds/gen-key s.a.transactions/create-params-valid)
-  )
-
-
 (defn-spec create-handler s.a.transactions/create-response
   [request ::s.a.transactions/create-handler-request]
   (or (let [{params :params} request]
@@ -47,11 +34,6 @@
           (when-let [id (m.transactions/create-record params)]
             (http/ok {:item (m.transactions/read-record id)}))))
       (http/bad-request {:status :invalid})))
-
-(comment
-  (ds/gen-key ::s.a.transactions/create-handler-response)
-  )
-
 
 ;; Index
 

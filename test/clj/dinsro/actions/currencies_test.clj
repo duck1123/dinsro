@@ -10,7 +10,6 @@
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
@@ -92,12 +91,3 @@
         response (a.currencies/read-handler request)]
     (is (= status/not-found (:status response)) "Returns a not-found status")
     (is (= :not-found (get-in response [:body :status])) "Has a not found status field")))
-
-(comment
-  (gen/generate (s/gen :read-currency-request-path-params/id))
-  (gen-spec ::a.currencies/create-handler-request)
-
-  (gen-spec :create-handler-valid/request)
-
-
-  )

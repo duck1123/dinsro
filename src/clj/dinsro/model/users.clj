@@ -1,7 +1,6 @@
 (ns dinsro.model.users
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.users :as s.users]
@@ -68,14 +67,3 @@
   []
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(comment
-  (index-ids)
-  (index-records)
-
-  (gen/generate (s/gen ::s.users/params))
-
-  (::s.users/email (first (list-users)))
-
-  (find-by-email (::s.users/email (first (index-records))))
-  )

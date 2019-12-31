@@ -1,10 +1,7 @@
 (ns dinsro.spec.actions.currencies
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
@@ -15,12 +12,6 @@
 (s/def :create-currency-request-valid/request (s/keys :req-un [:create-currency-request-valid/params]))
 (s/def ::create-handler-request-valid (s/keys :req-un [:create-currency-request-valid/params]))
 (s/def ::create-handler-request (s/keys :req-un [:create-currency-request/params]))
-
-(comment
-  (gen/generate (s/gen ::create-handler-request-valid))
-  (gen/generate (s/gen ::create-handler-request))
-
-  )
 
 (s/def :create-currency-response-invalid-body/status #{:invalid})
 (s/def :create-currency-response-invalid/status #{status/bad-request})
@@ -35,23 +26,10 @@
 (s/def ::create-handler-response (s/or :valid   ::create-handler-response-valid
                                        :invalid ::create-handler-response-invalid))
 
-(comment
-  (gen/generate (s/gen :create-currency-response/item))
-  (gen/generate (s/gen :create-currency-response/items))
-  (gen/generate (s/gen :create-currency-response/body))
-  (gen/generate (s/gen :create-currency-response-invalid/status))
-  (gen/generate (s/gen :create-currency-response-invalid/body))
-  (gen/generate (s/gen ::create-handler-response-invalid))
-  (gen/generate (s/gen ::create-handler-response-valid))
-  (gen/generate (s/gen ::create-handler-response))
-  )
-
-
 ;; Delete
 
 (s/def ::delete-handler-response (s/keys))
 (s/def ::delete-handler-request (s/keys))
-
 
 ;; Read
 
@@ -75,14 +53,3 @@
 (s/def ::read-handler-response
   (s/or :success   ::read-handler-response-success
         :not-found ::read-handler-response-not-found))
-(comment
-
-  (Integer/parseInt (str 1))
-
-  (gen/generate (s/gen ::read-handler-request))
-  (gen/generate (s/gen ::read-handler-response-success))
-  (gen/generate (s/gen ::read-handler-response-not-found))
-  (gen/generate (s/gen ::read-handler-response))
-
-  (read-handler {:path-params {:id "45"}})
-  )

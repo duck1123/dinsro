@@ -1,13 +1,11 @@
 (ns dinsro.model.currencies
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre])
-  (:import datahike.db.TxReport))
+            [taoensso.timbre :as timbre]))
 
 (defn-spec index-ids (s/coll-of ::ds/id)
   []
@@ -39,9 +37,3 @@
   []
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(comment
-  (index-ids)
-  (delete-all)
-  (index-records)
-  )

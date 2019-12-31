@@ -1,13 +1,6 @@
 (ns dinsro.spec.transactions
-  (:require [cljc.java-time.extn.predicates :as predicates]
-            [cljc.java-time.instant :as instant]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            #_[dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
-            [tick.alpha.api :as tick]
-            [time-specs.core :as ts]
-            ))
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.specs :as ds]))
 
 (s/def ::account (s/keys :req [:db/id]))
 (def account ::account)
@@ -46,10 +39,3 @@
 (def item ::item)
 (def schema
   [value-spec currency-spec date-spec account-spec])
-
-(comment
-  (ds/gen-key ::date)
-  (ds/gen-key ::account)
-  (ds/gen-key ::date)
-  (ds/gen-key params)
-  )

@@ -1,9 +1,6 @@
 (ns dinsro.spec.events.accounts
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.actions.accounts :as s.a.accounts]
-            [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))
 
 (s/def ::item (s/nilable ::s.accounts/item))
@@ -23,10 +20,6 @@
 (s/def ::do-fetch-index-failed-event vector?)
 (s/def ::do-fetch-index-failed-response (s/keys))
 
-(comment
-  (ds/gen-key ::item)
- )
-
 ;; Submit
 
 (s/def :do-submit-account-response-http-xhrio/params :create-account-valid/params)
@@ -40,7 +33,3 @@
 
 (s/def ::do-submit-response (s/keys :req-un [:do-submit-account-response/http-xhrio]))
 (def do-submit-response ::do-submit-response)
-
-(comment
-  (ds/gen-key ::do-submit-response-cofx)
-  )

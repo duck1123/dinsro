@@ -14,7 +14,6 @@
             [mount.core :as mount]
             [reitit.coercion.spec]
             [reitit.ring :as ring]
-            [reitit.ring.coercion :as rrc]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.webjars :refer [wrap-webjars]]))
 
@@ -49,15 +48,6 @@
                   s.users/schema]]
     (doseq [schema schemata]
       (d/transact db/*conn* schema))))
-
-(comment
-  (init-schemata)
-  )
-
-;; (defn app-handler
-;;   [request]
-;;   (mount/)
-;;   )
 
 (defn app []
   (init-schemata)

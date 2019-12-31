@@ -1,8 +1,6 @@
 (ns dinsro.spec.categories
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.specs :as ds]))
 
 (s/def ::name             string?)
 (def name-spec
@@ -29,8 +27,3 @@
   [name-spec
    user-spec
    #_item-spec])
-
-(comment
-  (gen/generate (s/gen ::item))
-
-  )

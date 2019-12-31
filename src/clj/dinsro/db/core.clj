@@ -1,7 +1,5 @@
 (ns dinsro.db.core
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [datahike.api :as d]
+  (:require [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.config :refer [env]]
             [mount.core :refer [defstate]]
@@ -30,19 +28,3 @@
   []
   (let [uri (env :datahike-url)]
     (d/delete-database uri)))
-
-(comment
-  (delete-database)
-  (create-database)
-
-  (require '[datahike.migrate])
-  (datahike.migrate/export-db @*conn* "/tmp/dinsro-dump")
-
-  @*conn*
-  )
-
-;; (s/def ::id     pos-int?)
-
-;; (comment
-;;   (gen/generate (s/gen ::id))
-;;   )

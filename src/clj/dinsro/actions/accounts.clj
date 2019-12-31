@@ -1,12 +1,9 @@
 (ns dinsro.actions.accounts
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [expound.alpha :as expound]
             [dinsro.model.accounts :as m.accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
-            [dinsro.specs :as ds]
             [dinsro.utils :as utils]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
@@ -66,10 +63,3 @@
     (let [response (m.accounts/delete-record id)]
       (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
-
-(comment
-  (create-handler {})
-  (prepare-record {::s.accounts/name "foo"})
-  (prepare-record (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid)))
-  (delete-handler {:path-params {:accountId "s"}})
-  )

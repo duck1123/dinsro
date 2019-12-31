@@ -15,13 +15,6 @@
   [key]
   (gen/generate (s/gen key)))
 
-#_(defn valid-uuid-str?
-  "Ensures a match of the original uuid str with the result of coercing that str to
-  and from a uuid"
-  [^String uuid-str]
-  (let [as-uuid (java.util.UUID/fromString uuid-str)]
-    (= uuid-str (str as-uuid))))
-
 (def non-empty-string-alphanumeric
   "Generator for non-empty alphanumeric strings"
   (gen/such-that #(not= "" %) (gen/string-alphanumeric)))
@@ -61,8 +54,3 @@
 
 (s/def ::not-found-status #{:not-found})
 (def not-found-status ::not-found-status)
-
-(comment
-  (gen-key ::email)
-  (gen-key ::date)
-  )

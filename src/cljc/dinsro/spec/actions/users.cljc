@@ -1,9 +1,6 @@
 (ns dinsro.spec.actions.users
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (s/def :create-user-request/params (s/keys :opt [::s.users/name]))
@@ -23,9 +20,3 @@
 (s/def ::read-handler-response-not-found (s/keys :req-un [:read-user-response-not-found/body]))
 (s/def ::read-handler-response (s/or :not-found ::read-handler-response-not-found
                                      :valid     ::read-handler-response-valid))
-
-(comment
-  ;; (gen/generate (s/gen :read-rates-request/path-params))
-  (gen/generate (s/gen ::read-handler-request))
-  (gen/generate (s/gen ::read-handler-request-valid))
-  )

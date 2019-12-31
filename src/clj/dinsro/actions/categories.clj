@@ -1,12 +1,10 @@
 (ns dinsro.actions.categories
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [expound.alpha :as expound]
             [dinsro.model.categories :as m.categories]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.actions.categories :as s.a.categories]
-            [dinsro.specs :as ds]
             [dinsro.utils :as utils]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
@@ -52,9 +50,3 @@
     (let [response (m.categories/delete-record id)]
       (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))
-
-(comment
-  (create-handler {})
-  (prepare-record {::s.categories/name "foo"})
-  (delete-handler {:path-params {:id "s"}})
-  )

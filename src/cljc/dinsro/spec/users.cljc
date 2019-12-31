@@ -1,8 +1,6 @@
 (ns dinsro.spec.users
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (s/def ::password string?)
@@ -33,9 +31,3 @@
 
 (def schema
   [name-spec password-hash-spec email-spec])
-
-(comment
-  (gen/generate (s/gen ::params))
-  (gen/generate (s/gen ::item))
-
-  )

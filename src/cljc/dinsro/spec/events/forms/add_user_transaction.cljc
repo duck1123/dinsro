@@ -1,6 +1,5 @@
 (ns dinsro.spec.events.forms.add-user-transaction
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.specs :as ds]))
+  (:require [clojure.spec.alpha :as s]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)
@@ -17,8 +16,3 @@
 (s/def ::form-data-input
   (s/cat :value ::value))
 (s/def ::form-data-output :create-transactions-request-valid/params)
-
-(comment
-  (ds/gen-key ::form-data-input)
-  (ds/gen-key ::form-data-output)
-  )

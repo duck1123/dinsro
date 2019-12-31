@@ -1,6 +1,5 @@
 (ns dinsro.model.rates
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.rates :as s.rates]
@@ -44,14 +43,3 @@
   []
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(comment
-  (gen/generate (s/gen ::s.rates/params))
-  (delete-all)
-  (index-records)
-  (mock-record)
-
-  (read-record 59)
-
-  (d/entity @db/*conn* 59)
-  )

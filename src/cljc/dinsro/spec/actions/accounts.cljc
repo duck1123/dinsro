@@ -1,11 +1,8 @@
 (ns dinsro.spec.actions.accounts
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [expound.alpha :as expound]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 ;; Create
@@ -49,18 +46,6 @@
 (s/def ::read-handler-response
   (s/or :success   ::read-handler-response-success
         :not-found ::read-handler-response-not-found))
-(comment
-
-  (Integer/parseInt (str 1))
-
-  (gen/generate (s/gen ::read-handler-request))
-  (gen/generate (s/gen ::read-handler-response-success))
-  (gen/generate (s/gen ::read-handler-response-not-found))
-  (gen/generate (s/gen ::read-handler-response))
-
-  (read-handler {:path-params {:id "45"}})
-  )
-
 
 ;; Delete
 
@@ -71,11 +56,3 @@
 (s/def ::delete-handler-response-invalid (s/keys))
 (s/def ::delete-handler-response-success (s/keys))
 (s/def ::delete-handler-response (s/keys))
-
-(comment
-  (gen/generate (s/gen ::create-handler-request-valid))
-  (gen/generate (gen/fmap str (s/gen pos-int?)))
-  (gen/generate (s/gen :delete-account-request-params/accountId))
-  (gen/generate (s/gen ::delete-handler-request))
-  (gen/generate (s/gen ::delete-handler-response))
-  )

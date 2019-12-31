@@ -1,6 +1,5 @@
 (ns dinsro.model.transactions
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [datahike.api :as d]
             [dinsro.db.core :as db]
             [dinsro.spec.transactions :as s.transactions]
@@ -43,15 +42,3 @@
   []
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(comment
-  (gen/generate (s/gen ::s.transactions/params))
-  (delete-all)
-  (index-records)
-
-  (read-record 59)
-
-  (d/entity @db/*conn* 59)
-
-
-  )
