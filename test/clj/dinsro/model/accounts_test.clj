@@ -1,7 +1,7 @@
 (ns dinsro.model.accounts-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -31,30 +31,27 @@
     #_(f)))
 
 (deftest create-record
-  (testing "success"
-    (let [params (gen/generate (s/gen ::s.accounts/params))
-          id (m.accounts/create-record params)
-          created-record (m.accounts/read-record id)]
-      (is (= (get params ::s.accounts/name) (get created-record ::s.accounts/name))))))
+  (let [params (gen/generate (s/gen ::s.accounts/params))
+        id (m.accounts/create-record params)
+        created-record (m.accounts/read-record id)]
+    (is (= (get params ::s.accounts/name) (get created-record ::s.accounts/name)))))
 
 (deftest index-records
-  (testing "success - no record"
-    (is (= [] (m.accounts/index-records)))))
+  (is (= [] (m.accounts/index-records))))
 
-(deftest read-record
-  (testing "not found"
-    (let [id (gen/generate (s/gen ::ds/id))]
-      (is (= nil (m.accounts/read-record id)))))
-  (testing "found"
-    (let [record (mocks/mock-account)
-          id (:db/id record)]
-      (is (= record (m.accounts/read-record id))))))
+(deftest read-record-not-found
+  (let [id (gen/generate (s/gen ::ds/id))]
+    (is (= nil (m.accounts/read-record id)))))
+
+(deftest read-record-found
+  (let [record (mocks/mock-account)
+        id (:db/id record)]
+    (is (= record (m.accounts/read-record id)))))
 
 (deftest delete-record
-  (testing "success"
-    (let [account (mocks/mock-account)
-          id (:db/id account)]
-      (is (not (nil? (m.accounts/read-record id))))
-      (let [response (m.accounts/delete-record id)]
-        (is (not (nil? response)))
-        (is (nil? (m.accounts/read-record id)))))))
+  (let [account (mocks/mock-account)
+        id (:db/id account)]
+    (is (not (nil? (m.accounts/read-record id))))
+    (let [response (m.accounts/delete-record id)]
+      (is (not (nil? response)))
+      (is (nil? (m.accounts/read-record id))))))

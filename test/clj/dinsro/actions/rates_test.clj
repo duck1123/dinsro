@@ -1,7 +1,7 @@
 (ns dinsro.actions.rates-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.actions.rates :as a.rates]
@@ -31,37 +31,33 @@
       (f))))
 
 (deftest index-handler
-  (testing "success"
-    (let [request {}
-          response (a.rates/index-handler request)]
-      (is (= (:status response) status/ok))
-      (let [body (:body response)
-            items (:items body)]
-        (is (= [] items)))
-      #_(is (= true response)))))
+  (let [request {}
+        response (a.rates/index-handler request)]
+    (is (= (:status response) status/ok))
+    (let [body (:body response)
+          items (:items body)]
+      (is (= [] items)))
+    #_(is (= true response))))
 
 (deftest create-handler-valid
-  (testing "success"
-    (let [request (gen/generate (s/gen ::s.a.rates/create-handler-request-valid))
-          response (a.rates/create-handler request)]
-      (is (= status/ok (:status response)))
-      (let [id (get-in response [:body :item :db/id])]
-        (is (not (nil? ident?)))
-        (let [created-record (m.rates/read-record id)]
-         (is (= (:name request) (::s.rates/name response))))))))
+  (let [request (gen/generate (s/gen ::s.a.rates/create-handler-request-valid))
+        response (a.rates/create-handler request)]
+    (is (= status/ok (:status response)))
+    (let [id (get-in response [:body :item :db/id])]
+      (is (not (nil? ident?)))
+      (let [created-record (m.rates/read-record id)]
+        (is (= (:name request) (::s.rates/name response)))))))
 
 (deftest create-handler-invalid
-  (testing "invalid params"
-      (let [params {}
-            request {:params params}
-            response (a.rates/create-handler request)]
-        (is (= status/bad-request (:status response))
-            "should signal a bad request"))))
+  (let [params {}
+        request {:params params}
+        response (a.rates/create-handler request)]
+    (is (= status/bad-request (:status response))
+        "should signal a bad request")))
 
 (deftest read-handler
-  (testing "success"
-    (let [rate (mocks/mock-rate)
-          id (:db/id rate)
-          request {:path-params {:id id}}
-          response (a.rates/read-handler request)]
-      (is (= status/ok (:status response))))))
+  (let [rate (mocks/mock-rate)
+        id (:db/id rate)
+        request {:path-params {:id id}}
+        response (a.rates/read-handler request)]
+    (is (= status/ok (:status response)))))

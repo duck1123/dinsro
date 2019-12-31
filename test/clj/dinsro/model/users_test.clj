@@ -28,26 +28,23 @@
     (is (= {}  response))))
 
 (deftest create-record-valid
-  (testing "successful"
-    (let [id-key "user-id"
-          params (ds/gen-key ::s.users/params)
-          {:keys [dinsro.spec.users/email]} params
-          id (m.users/create-record params)
-          user (m.users/read-record id)]
-      (is (= email (::s.users/email user))))))
+  (let [id-key "user-id"
+        params (ds/gen-key ::s.users/params)
+        {:keys [dinsro.spec.users/email]} params
+        id (m.users/create-record params)
+        user (m.users/read-record id)]
+    (is (= email (::s.users/email user)))))
 
 (deftest create-record-invalid
-  (testing "duplicate creates"
-    (let [params (ds/gen-key ::s.users/params)
-          {:keys [dinsro.spec.users/email]} params
-          id (m.users/create-record params)
-          user (m.users/read-record id)]
-      (is (thrown? RuntimeException (m.users/create-record params))))))
+  (let [params (ds/gen-key ::s.users/params)
+        {:keys [dinsro.spec.users/email]} params
+        id (m.users/create-record params)
+        user (m.users/read-record id)]
+    (is (thrown? RuntimeException (m.users/create-record params)))))
 
 (deftest read-record
-  (testing "success"
-    (let [params (ds/gen-key ::s.users/params)
-          {:keys [dinsro.spec.users/email]} params
-          id (m.users/create-record params)
-          response (m.users/read-record id)]
-      (is (= email (::s.users/email response))))))
+  (let [params (ds/gen-key ::s.users/params)
+        {:keys [dinsro.spec.users/email]} params
+        id (m.users/create-record params)
+        response (m.users/read-record id)]
+    (is (= email (::s.users/email response)))))

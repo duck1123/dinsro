@@ -1,7 +1,7 @@
 (ns dinsro.actions.currencies-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.config :as config]
@@ -35,21 +35,19 @@
   (gen/generate (s/gen spec)))
 
 (deftest index-handler-test-success
-  (testing "success - no records"
-    (let [request {}
-          response (a.currencies/index-handler request)
-          items (get-in response [:body :items])]
-      (is (= status/ok (:status response)))
-      (is (= [] items)))))
+  (let [request {}
+        response (a.currencies/index-handler request)
+        items (get-in response [:body :items])]
+    (is (= status/ok (:status response)))
+    (is (= [] items))))
 
 (deftest index-handler-test-no-records
-  (testing "success - with records"
-    (let [record (mocks/mock-currency)
-          request {}
-          response (a.currencies/index-handler request)
-          items (get-in response [:body :items])]
-      (is (= status/ok (:status response)))
-      (is (= [record] items)))))
+  (let [record (mocks/mock-currency)
+        request {}
+        response (a.currencies/index-handler request)
+        items (get-in response [:body :items])]
+    (is (= status/ok (:status response)))
+    (is (= [record] items))))
 
 (deftest create-handler-valid
   (let [request (gen-spec ::s.a.currencies/create-handler-request-valid)
@@ -60,22 +58,20 @@
     (is (= (:name request) (::s.currencies/name response)))))
 
 (deftest create-handler-invalid
-  (testing "invalid params"
-    (let [params {}
-          request {:params params}
-          response (a.currencies/create-handler request)]
-      (is (= status/bad-request (:status response))
-          "should signal a bad request"))))
+  (let [params {}
+        request {:params params}
+        response (a.currencies/create-handler request)]
+    (is (= status/bad-request (:status response))
+        "should signal a bad request")))
 
 (deftest delete-handler
-  (testing "success"
-    (let [currency (mocks/mock-currency)
-          id (:db/id currency)
-          request {:path-params {:id (str id)}}]
-      (is (not (nil? (m.currencies/read-record id))))
-      (let [response (a.currencies/delete-handler request)]
-        (is (= status/ok (:status response)))
-        (is (nil? (m.currencies/read-record id)))))))
+  (let [currency (mocks/mock-currency)
+        id (:db/id currency)
+        request {:path-params {:id (str id)}}]
+    (is (not (nil? (m.currencies/read-record id))))
+    (let [response (a.currencies/delete-handler request)]
+      (is (= status/ok (:status response)))
+      (is (nil? (m.currencies/read-record id))))))
 
 (deftest read-handler-success
   (let [currency (mocks/mock-currency)

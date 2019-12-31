@@ -1,7 +1,7 @@
 (ns dinsro.actions.authentication-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.actions.authentication :as a.authentication]
@@ -30,45 +30,48 @@
       (f))))
 
 (deftest check-auth
-  (testing "successful"
-    (let [user-params (gen/generate (s/gen ::s.users/params))
-          email (::s.users/email user-params)
-          password (::s.users/password user-params)
-          user (m.users/create-record user-params)
-          response (a.authentication/check-auth email password)]
-      (is (= true response)))))
+  (let [user-params (gen/generate (s/gen ::s.users/params))
+        email (::s.users/email user-params)
+        password (::s.users/password user-params)
+        user (m.users/create-record user-params)
+        response (a.authentication/check-auth email password)]
+    (is (= true response))))
 
-(deftest authenticate-handler
+(deftest authenticate-handler-success
   (let [{:keys [dinsro.spec.users/email
                 dinsro.spec.users/password]
          :as user-params} (gen/generate (s/gen ::s.users/params))]
-    (testing "successful"
-      (m.users/delete-all)
-      (m.users/create-record user-params)
-      (let [body {:email email :password password}
-            path (str url-root "/authenticate")
-            request (-> (mock/request :post path) (assoc :params body))
-            response (a.authentication/authenticate-handler request)]
-        (is (= (:status response) status/ok))))
-    (testing "failure"
-      (m.users/delete-all)
-      (m.users/create-record user-params)
-      (let [body {:email email :password (str password "x")}
-            path (str url-root "/authenticate")
-            request (-> (mock/request :post path) (assoc :params body))
-            response (a.authentication/authenticate-handler request)]
-        (is (= (:status response) status/unauthorized))))))
+    (m.users/delete-all)
+    (m.users/create-record user-params)
+    (let [body {:email email :password password}
+          path (str url-root "/authenticate")
+          request (-> (mock/request :post path) (assoc :params body))
+          response (a.authentication/authenticate-handler request)]
+      (is (= (:status response) status/ok)))))
 
-(deftest register-handler-test
+(deftest authenticate-handler-failure
+  (let [{:keys [dinsro.spec.users/email
+                dinsro.spec.users/password]
+         :as user-params} (gen/generate (s/gen ::s.users/params))]
+    (m.users/delete-all)
+    (m.users/create-record user-params)
+    (let [body {:email email :password (str password "x")}
+          path (str url-root "/authenticate")
+          request (-> (mock/request :post path) (assoc :params body))
+          response (a.authentication/authenticate-handler request)]
+      (is (= (:status response) status/unauthorized)))))
+
+(deftest register-handler-test-success
   (let [path (str url-root "/register")]
-    (testing "successful"
-      (m.users/delete-all)
-      (let [request (gen/generate (s/gen ::a.authentication/register-request-valid))
-            response (a.authentication/register-handler request)]
-        (is (= (:status response) status/ok))))
-    (testing "invalid params"
-      (m.users/delete-all)
-      (let [params {}
-            request (-> (mock/request :post path) (assoc :params params))
-            response (a.authentication/register-handler request)]
-        (is (= (:status response) status/bad-request))))))
+    (m.users/delete-all)
+    (let [request (gen/generate (s/gen ::a.authentication/register-request-valid))
+          response (a.authentication/register-handler request)]
+      (is (= (:status response) status/ok)))))
+
+(deftest register-handler-test-invalid
+  (let [path (str url-root "/register")]
+    (m.users/delete-all)
+    (let [params {}
+          request (-> (mock/request :post path) (assoc :params params))
+          response (a.authentication/register-handler request)]
+      (is (= (:status response) status/bad-request)))))

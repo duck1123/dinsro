@@ -1,5 +1,5 @@
 (ns dinsro.views.home-test
-  (:require [cljs.test :refer-macros [is are deftest testing use-fixtures]]
+  (:require [cljs.test :refer-macros [is deftest]]
             [dinsro.views.home :as home]
             [pjstadig.humane-test-output]))
 

@@ -27,29 +27,24 @@
       (f))))
 
 (deftest create-record-test
-  (testing "success"
-    (let [params (gen/generate (s/gen ::s.rates/params))
-          id (m.rates/create-record params)
-          item (m.rates/read-record id)]
-      (is (= (double (::s.rates/rate params)) (::s.rates/rate item)) "rates match"))))
+  (let [params (gen/generate (s/gen ::s.rates/params))
+        id (m.rates/create-record params)
+        item (m.rates/read-record id)]
+    (is (= (double (::s.rates/rate params)) (::s.rates/rate item)) "rates match")))
 
 (deftest read-record-test-not-found
-  (testing "not found"
-    (let [response (m.rates/read-record (gen/generate (s/gen pos-int?)))]
-      (is (nil? response) "Should return nil"))))
+  (let [response (m.rates/read-record (gen/generate (s/gen pos-int?)))]
+    (is (nil? response) "Should return nil")))
 
 (deftest read-record-test-found
-  (testing "when found"
-    (let [item (mocks/mock-rate)
-          response (m.rates/read-record (:db/id item))]
-      (is (= item response) "Return the matching item"))))
+  (let [item (mocks/mock-rate)
+        response (m.rates/read-record (:db/id item))]
+    (is (= item response) "Return the matching item")))
 
 (deftest index-records-no-recorde
-  (testing "no records"
-    (is (= [] (m.rates/index-records)))))
+  (is (= [] (m.rates/index-records))))
 
 (deftest index-records-with-records
-  (testing "with record"
-    (let [item (mocks/mock-rate)
-          response (m.rates/index-records)]
-      (is (= [item] response)))))
+  (let [item (mocks/mock-rate)
+        response (m.rates/index-records)]
+    (is (= [item] response))))

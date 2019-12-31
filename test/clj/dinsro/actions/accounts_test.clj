@@ -1,7 +1,7 @@
 (ns dinsro.actions.accounts-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.actions.accounts :as a.accounts]
             [dinsro.config :as config]
@@ -29,23 +29,22 @@
       (d/transact db/*conn* s.accounts/schema)
       (f))))
 
-(deftest index-handler-test
-  (testing "success"
-    (let [request {:params {}}]
-      (is [] (a.accounts/index-handler request))))
-  (testing "with-records"
-    (let [user (mocks/mock-account)
-          request {}
-          response (a.accounts/index-handler request)
-          {{:keys [items]} :body} response]
-      (is (= [user] items)))))
+(deftest index-handler-test-success
+  (let [request {:params {}}]
+    (is [] (a.accounts/index-handler request))))
+
+(deftest index-handler-test-with-records
+  (let [user (mocks/mock-account)
+        request {}
+        response (a.accounts/index-handler request)
+        {{:keys [items]} :body} response]
+    (is (= [user] items))))
 
 (deftest create-handler-valid
-  (testing "success"
-    (let [request (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid))
-          response (a.accounts/create-handler request)]
-      (is (= status/ok (:status response)))
-      #_(is (= nil response)))))
+  (let [request (gen/generate (s/gen ::s.a.accounts/create-handler-request-valid))
+        response (a.accounts/create-handler request)]
+    (is (= status/ok (:status response)))
+    #_(is (= nil response))))
 
 (deftest create-handler-invalid
   (let [request {:params {}}
@@ -54,10 +53,9 @@
     #_(is (= nil response))))
 
 (deftest delete-handler
-  (testing "success"
-    (let [account (mocks/mock-account)
-          id (:db/id account)
-          request {:path-params {:id (str id)}}
-          response (a.accounts/delete-handler request)]
-      (is (= status/ok (:status response)) "successful status")
-      (is (nil? (m.accounts/read-record id)) "account is deleted"))))
+  (let [account (mocks/mock-account)
+        id (:db/id account)
+        request {:path-params {:id (str id)}}
+        response (a.accounts/delete-handler request)]
+    (is (= status/ok (:status response)) "successful status")
+    (is (nil? (m.accounts/read-record id)) "account is deleted")))

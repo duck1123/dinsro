@@ -1,7 +1,7 @@
 (ns dinsro.model.currencies-test
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -28,10 +28,9 @@
       (f))))
 
 (deftest create-record-success
-  (testing "success"
-    (let [params (gen/generate (s/gen ::s.currencies/params))
-          response (m.currencies/create-record params)]
-      (is (not (nil? response))))))
+  (let [params (gen/generate (s/gen ::s.currencies/params))
+        response (m.currencies/create-record params)]
+    (is (not (nil? response)))))
 
 (deftest read-record-success
   (let [item (mocks/mock-currency)
