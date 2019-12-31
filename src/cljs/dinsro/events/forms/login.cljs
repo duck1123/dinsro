@@ -11,7 +11,7 @@
 (rfu/reg-basic-sub ::password)
 (rfu/reg-set-event ::password)
 
-(defn create-form-data
+(defn form-data-sub
   [[email password] _]
   {:email email
    :password password})
@@ -20,7 +20,7 @@
  ::form-data
  :<- [::email]
  :<- [::password]
- create-form-data)
+ form-data-sub)
 
 (defn set-defaults
   [{:keys [db]} _]

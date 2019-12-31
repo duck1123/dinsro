@@ -21,7 +21,7 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
-(defn create-form-data
+(defn form-data-sub
   [[currency-id rate date] _]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
@@ -32,7 +32,7 @@
  :<- [::currency-id]
  :<- [::rate]
  :<- [::date]
- create-form-data)
+ form-data-sub)
 
 (defn toggle-form
   [{:keys [db]} _]

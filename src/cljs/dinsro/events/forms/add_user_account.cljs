@@ -31,7 +31,7 @@
 (rfu/reg-basic-sub ::s.e.f.add-user-account/user-id)
 (rfu/reg-set-event ::s.e.f.add-user-account/user-id)
 
-(defn-spec create-form-data (s/keys)
+(defn-spec form-data-sub (s/keys)
   [[name initial-value currency-id user-id] ::s.e.f.add-user-account/form-bindings _ any?]
   {:name          name
    :currency-id   (int currency-id)
@@ -44,4 +44,4 @@
  :<- [::s.e.f.add-user-account/initial-value]
  :<- [::s.e.f.add-user-account/currency-id]
  :<- [::s.e.f.add-user-account/user-id]
- create-form-data)
+ form-data-sub)

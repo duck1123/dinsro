@@ -17,7 +17,7 @@
 (rfu/reg-basic-sub ::s.e.f.add-user-category/user-id)
 (rfu/reg-set-event ::s.e.f.add-user-category/user-id)
 
-(defn create-form-data
+(defn form-data-sub
   [[name user-id] _]
   {:name          name
    :user-id       (int user-id)})
@@ -26,4 +26,4 @@
  ::form-data
  :<- [::s.e.f.add-user-category/name]
  :<- [::s.e.f.add-user-category/user-id]
- create-form-data)
+ form-data-sub)

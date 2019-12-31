@@ -21,7 +21,7 @@
 (rfu/reg-basic-sub ::value)
 (rfu/reg-set-event ::value)
 
-(defn create-form-data
+(defn form-data-sub
   [[value currency-id date]]
   {:value value
    :currency-id (int currency-id)
@@ -32,7 +32,7 @@
  :<- [::value]
  :<- [::currency-id]
  :<- [::date]
- create-form-data)
+ form-data-sub)
 
 (defn toggle-form
   [db _]
