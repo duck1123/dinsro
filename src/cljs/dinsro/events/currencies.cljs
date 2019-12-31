@@ -1,7 +1,6 @@
 (ns dinsro.events.currencies
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.specs :as ds]
             [kee-frame.core :as kf]
@@ -27,12 +26,15 @@
 (rf/reg-sub ::item-map               sub-item-map)
 (rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
+(defn item-sub
+  [item-map [_ id]]
+  (get item-map id)
+  #_(first (filter #(= (:db/id %) id) items)))
+
 (rf/reg-sub
  ::item
  :<- [::item-map]
- (fn-traced [item-map [_ id]]
-   (get item-map id)
-   #_(first (filter #(= (:db/id %) id) items))))
+ item-sub)
 
 ;; Create
 
