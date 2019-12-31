@@ -1,4 +1,5 @@
 .clj-kondo/.cache
+.eastwood
 .env
 .idea
 .lein-*

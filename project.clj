@@ -75,6 +75,7 @@
 
   :plugins [[lein-ancient "0.6.15"]
             [lein-cljsbuild "1.1.5"]
+            [jonase/eastwood "0.3.5"]
             [lein-doo "0.1.11"]
             [lein-kibit "0.1.6"]
             [cider/cider-nrepl "0.23.0-SNAPSHOT"]]
