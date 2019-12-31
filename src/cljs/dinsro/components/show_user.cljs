@@ -2,6 +2,7 @@
   (:require [devcards.core :refer-macros [defcard-rg]]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
+            [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]))
 
 (defn show-user

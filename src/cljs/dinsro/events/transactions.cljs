@@ -129,8 +129,8 @@
       [::do-delete-record-failed])}))
 
 (s/fdef do-delete-record
-  :args (s/cat :cofx ::e.transactions/do-delete-record-cofx
-               :event  ::e.transactions/do-delete-record-event)
+  :args (s/cat :cofx ::s.e.transactions/do-delete-record-cofx
+               :event ::s.e.transactions/do-delete-record-event)
   :ret (s/keys))
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)

@@ -13,6 +13,7 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.categories :as s.categories]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
