@@ -6,8 +6,6 @@
 
 (s/def ::shown? boolean?)
 
-(def default-rate 1)
-
 (s/def ::date string?)
 (s/def ::rate string?)
 (s/def ::time string?)

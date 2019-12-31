@@ -1,5 +1,6 @@
 (ns dinsro.events.forms.add-currency-rate
-  (:require [kee-frame.core :as kf]
+  (:require [dinsro.events.forms.create-rate :as e.f.create-rate]
+            [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
@@ -38,7 +39,7 @@
   (let [default-date (js/Date.)
         default-opts {
                       ;; ::shown? false
-                      ::rate (str default-rate)
+                      ::rate (str e.f.create-rate/default-rate)
                       ::date (.toISOString default-date)}]
     {:db (merge db default-opts)}))
 
