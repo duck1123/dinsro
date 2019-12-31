@@ -7,11 +7,13 @@
 
 ;; Create
 
-(s/def :create-account-valid/params
+(s/def ::create-params-valid
   (s/keys :req-un [::s.accounts/name
                    ::s.accounts/initial-value
                    ::s.accounts/user-id
                    ::s.accounts/currency-id]))
+
+(s/def :create-account-valid/params ::create-params-valid)
 (s/def :create-account/params
   (s/keys :opt-un [::s.accounts/name
                    ::s.accounts/initial-value

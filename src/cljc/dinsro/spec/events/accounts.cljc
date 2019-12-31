@@ -1,6 +1,7 @@
 (ns dinsro.spec.events.accounts
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.actions.accounts :as s.a.accounts]
             [taoensso.timbre :as timbre]))
 
 (s/def ::item (s/nilable ::s.accounts/item))
@@ -22,7 +23,7 @@
 
 ;; Submit
 
-(s/def :do-submit-account-response-http-xhrio/params :create-account-valid/params)
+(s/def :do-submit-account-response-http-xhrio/params ::s.a.accounts/create-params-valid)
 (s/def :do-submit-account-response/http-xhrio (s/keys :req-un [:do-submit-account-response-http-xhrio/params]))
 
 (s/def ::do-submit-response-cofx (s/keys :req-un [:do-submit-account-response/http-xhrio]))
