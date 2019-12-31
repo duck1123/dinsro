@@ -70,8 +70,7 @@
 (defn-spec do-submit (s/keys)
   [{:keys [db]} any?
    [data] any?]
-  {:db (assoc db ::do-submit-loading true)
-   :http-xhrio
+  {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-rates])
     :params          data

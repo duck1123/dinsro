@@ -37,9 +37,8 @@
   {})
 
 (defn do-fetch-index
-  [{:keys [db]} [data]]
-  {:db (assoc db ::do-fetch-index-loading true)
-   :http-xhrio
+  [_ _]
+  {:http-xhrio
    {:method          :get
     :uri             (kf/path-for [:api-index-transactions])
     :response-format (ajax/json-response-format {:keywords? true})

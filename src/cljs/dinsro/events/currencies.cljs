@@ -11,7 +11,6 @@
 (def items-sub-default [])
 
 (s/def ::items (s/coll-of ::s.currencies/item))
-(s/def ::do-fetch-index-loading boolean?)
 (s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
 
 (defn-spec items-sub ::s.currencies/item
@@ -24,7 +23,6 @@
 
 (rf/reg-sub ::items                  items-sub)
 (rf/reg-sub ::item-map               sub-item-map)
-(rf/reg-sub ::do-fetch-index-loading (fn [db _] (get db ::do-fetch-index-loading false)))
 
 (defn item-sub
   [item-map [_ id]]
@@ -47,9 +45,8 @@
   {})
 
 (defn do-submit
-  [{:keys [db]} [data]]
-  {:db (assoc db ::do-submit-loading true)
-   :http-xhrio
+  [_ [data]]
+  {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-currencies])
     :params          data
@@ -141,13 +138,12 @@
 (s/def ::do-fetch-index-event (s/keys))
 
 (defn do-fetch-index-failed
-  [cofx event]
+  [_ _]
   {})
 
 (defn do-fetch-index
-  [{:keys [db]} _]
-  {:db (assoc db ::do-fetch-index-loading true)
-   :http-xhrio
+  [_ _]
+  {:http-xhrio
    {:method          :get
     :uri             (kf/path-for [:api-index-currencies])
     :response-format (ajax/json-response-format {:keywords? true})
