@@ -23,11 +23,6 @@
       (d/transact db/*conn* s.users/schema)
       (f))))
 
-#_(deftest prepare-record
-  (let [params {}
-        response (m.users/prepare-record params)]
-    (is (= {}  response))))
-
 (deftest create-record-valid
   (let [id-key "user-id"
         params (ds/gen-key ::s.users/params)
