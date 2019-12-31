@@ -21,8 +21,9 @@
 
 ;; - request
 
-(s/def :create-transactions-request-valid/params
-  (s/keys :req-un [::account-id ::currency-id ::date ::value]))
+(s/def ::create-params-valid (s/keys :req-un [::account-id ::currency-id ::date ::value]))
+
+(s/def :create-transactions-request-valid/params ::create-params-valid)
 (def create-params-valid :create-transactions-request-valid/params)
 
 (s/def ::create-handler-request-valid
