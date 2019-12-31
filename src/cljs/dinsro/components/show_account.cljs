@@ -7,7 +7,6 @@
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
 (defn user-link
@@ -32,8 +31,8 @@
   [id]
   [:button.button.is-danger "Delete"])
 
-(defn-spec show-account vector?
-  [account ::s.accounts/item]
+(defn show-account
+  [account]
   (let [id (:db/id account)
         user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]

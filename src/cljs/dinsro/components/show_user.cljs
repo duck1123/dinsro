@@ -1,13 +1,11 @@
 (ns dinsro.components.show-user
   (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.translations :refer [tr]]))
 
-(defn-spec show-user vector?
-  [user ::s.users/item]
-  (let [{:keys [db/id dinsro.spec.users/name dinsro.spec.users/email]} user]
+(defn show-user
+  [user]
+  (let [{:keys [dinsro.spec.users/name dinsro.spec.users/email]} user]
     [:<>
      [c.debug/debug-box user]
      [:p (tr [:name-label]) name]
