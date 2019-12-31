@@ -8,15 +8,6 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
-(rfu/reg-basic-sub ::s.e.f.create-rate/time)
-(rfu/reg-set-event ::s.e.f.create-rate/time)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/rate)
-(rfu/reg-set-event ::s.e.f.create-rate/rate)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/currency-id)
-(rfu/reg-set-event ::s.e.f.create-rate/currency-id)
-
 (defn form-data-sub
   [[rate date] [_ currency-id]]
   {:currency-id (int currency-id)

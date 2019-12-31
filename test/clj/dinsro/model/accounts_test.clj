@@ -39,7 +39,7 @@
   (is (= [] (m.accounts/index-records))))
 
 (deftest read-record-not-found
-  (let [id (gen/generate (s/gen ::ds/id))]
+  (let [id (ds/gen-key ::ds/id)]
     (is (= nil (m.accounts/read-record id)))))
 
 (deftest read-record-found
