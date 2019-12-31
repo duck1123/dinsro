@@ -3,12 +3,11 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec form vector?
-  [return-to string?]
+(defn form
+  [return-to]
   (let [form-data @(rf/subscribe [::form-data])]
     [:form.is-centered
      [c.debug/debug-box form-data]

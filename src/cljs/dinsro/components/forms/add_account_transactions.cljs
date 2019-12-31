@@ -4,11 +4,10 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec form vector?
+(defn form
   []
   [:<>
    (let [form-data @(rf/subscribe [::form-data])]

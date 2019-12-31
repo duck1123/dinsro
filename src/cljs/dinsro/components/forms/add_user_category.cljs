@@ -3,11 +3,10 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.categories :as e.categories]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
-(defn-spec form vector?
-  [user-id pos-int?]
+(defn form
+  [user-id]
   (let [form-data (assoc @(rf/subscribe [::form-data]) :user-id user-id)]
     (when @(rf/subscribe [::shown?])
       [:div

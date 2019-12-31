@@ -1,11 +1,10 @@
 (ns dinsro.components.forms.create-transaction
   (:require [dinsro.components :as c]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec form vector?
+(defn form
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])

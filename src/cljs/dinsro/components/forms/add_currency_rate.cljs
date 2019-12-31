@@ -3,14 +3,12 @@
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.rates :as e.rates]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec form vector?
-  [currency-id ::ds/id]
+(defn form
+  [currency-id]
   (when @(rf/subscribe [::shown?])
     (let [form-data (assoc @(rf/subscribe [::form-data]) :currency-id currency-id)]
       [:<>

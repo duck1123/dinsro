@@ -3,10 +3,9 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
-(defn-spec form vector?
+(defn form
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])

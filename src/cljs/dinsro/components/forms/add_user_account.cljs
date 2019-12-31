@@ -5,11 +5,10 @@
             [dinsro.events.forms.add-user-account :as e.f.add-user-account]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
-(defn-spec form vector?
-  [id ::ds/id]
+(defn form
+  [id]
   (let [form-data (assoc @(rf/subscribe [::e.f.add-user-account/form-data]) :user-id id)]
     (when @(rf/subscribe [::e.f.add-user-account/shown?])
       [:<>

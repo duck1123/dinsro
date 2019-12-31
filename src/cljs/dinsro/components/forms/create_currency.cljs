@@ -4,7 +4,6 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
 (kf/reg-controller
@@ -12,7 +11,7 @@
  {:params (constantly true)
   :start [::set-defaults]})
 
-(defn-spec form vector?
+(defn form
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])
