@@ -14,7 +14,7 @@
     [:tr
      [:td name]
      [:td [c.links/user-link user-id]]
-     #_(c.debug/hide [:td [c.buttons/delete-category item]])]))
+     (c.debug/hide [:td [c.buttons/delete-category item]])]))
 
 (defn-spec index-categories vector?
   [items (s/coll-of any? #_::s.categories/item)]
@@ -26,6 +26,6 @@
       [:thead>tr
        [:th (tr [:name])]
        [:th (tr [:user])]
-       #_(c.debug/hide [:th (tr [:actions])])]
+       (c.debug/hide [:th (tr [:actions])])]
       (->> (for [item items] ^{:key (:db/id item)} [category-line item])
            (into [:tbody]))])])

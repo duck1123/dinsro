@@ -65,10 +65,12 @@
   [_ _]
   {})
 
-(defn do-delete-record
-  [_ [id]]
+(s/def ::do-delete-record-event (s/cat :id :db/id))
+
+(defn-spec do-delete-record any?
+  [_ any? [item] ::do-delete-record-event]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-show-currency {:id id}])
+   {:uri             (kf/path-for [:api-show-currency {:id (:db/id item)}])
     :method          :delete
     :format          (ajax/json-request-format)
     :response-format (ajax/json-response-format {:keywords? true})
