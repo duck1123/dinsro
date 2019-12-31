@@ -1,6 +1,7 @@
 (ns dinsro.views.index-transactions
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-transaction :as c.f.create-transaction]
             [dinsro.components.index-transactions :as c.index-transactions]
             [dinsro.events.accounts :as e.accounts]
