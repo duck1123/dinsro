@@ -1,7 +1,5 @@
 (ns dinsro.views.login
-  (:require [ajax.core :as ajax]
-            [cemerick.url :as url]
-            [clojure.string :as string]
+  (:require [cemerick.url :as url]
             [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.login :as c.f.login]
@@ -9,7 +7,6 @@
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -32,4 +29,4 @@
      (c.debug/hide [:p "Authenticated: " @(rf/subscribe [::e.authentication/auth-id])])
      [:div.container
       (c.debug/hide [:p "Return To: " return-to])
-      [c.f.login/login-form return-to]]]))
+      [c.f.login/form return-to]]]))
