@@ -1,10 +1,6 @@
 (ns dinsro.actions.users
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.model.users :as m.user]
+  (:require [dinsro.model.users :as m.user]
             [dinsro.spec.actions.users :as s.a.users]
-            [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))

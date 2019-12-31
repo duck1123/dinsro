@@ -1,13 +1,9 @@
 (ns dinsro.components.forms.registration-form
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (defn-spec registration-form vector?

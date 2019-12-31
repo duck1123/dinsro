@@ -1,6 +1,6 @@
 (ns dinsro.specs-test
   (:require [clojure.spec.alpha :as s]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is]]
             [clojure.test.check.generators]
             [dinsro.specs :as ds]
             [taoensso.timbre :as timbre]))

@@ -1,6 +1,5 @@
 (ns dinsro.components.navbar
   (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
@@ -9,7 +8,6 @@
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
-            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 ;; Subscriptions

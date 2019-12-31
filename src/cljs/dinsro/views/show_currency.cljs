@@ -1,6 +1,5 @@
 (ns dinsro.views.show-currency
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]

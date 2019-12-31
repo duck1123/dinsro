@@ -1,15 +1,12 @@
 (ns dinsro.actions.currencies
   (:require [clojure.set :as set]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
             [expound.alpha :as expound]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
-            [ring.util.http-status :as status]
             [taoensso.timbre :as timbre]))
 
 (def param-rename-map

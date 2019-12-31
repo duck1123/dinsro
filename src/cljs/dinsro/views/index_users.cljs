@@ -7,7 +7,6 @@
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            ;; [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (defn init-page

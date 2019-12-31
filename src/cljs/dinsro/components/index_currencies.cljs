@@ -1,16 +1,11 @@
 (ns dinsro.components.index-currencies
   (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
-            [dinsro.events.currencies :as e.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.translations :refer [tr]]
-            [dinsro.views.show-currency :as show-currency]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
-            [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (defn-spec index-currency-line vector?

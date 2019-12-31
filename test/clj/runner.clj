@@ -5,5 +5,4 @@
             dinsro.actions.users-test
             dinsro.model.accounts-test
             dinsro.model.currencies-test
-            dinsro.model.users-test
-            [orchestra.spec.test :as stest]))
+            dinsro.model.users-test))

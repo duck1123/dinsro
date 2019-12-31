@@ -1,17 +1,10 @@
 (ns dinsro.components.forms.login
-  (:require [ajax.core :as ajax]
-            [cemerick.url :as url]
-            [clojure.string :as string]
-            [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reagent.core :as r]
-            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (defn-spec form vector?

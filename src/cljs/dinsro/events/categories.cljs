@@ -1,10 +1,8 @@
 (ns dinsro.events.categories
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.events.categories :as s.e.categories]
-            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]

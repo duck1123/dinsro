@@ -1,14 +1,11 @@
 (ns dinsro.events.rates
   (:require [ajax.core :as ajax]
-            [cljc.java-time.instant :as instant]
             [clojure.spec.alpha :as s]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
-            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (s/def ::items                   (s/coll-of ::s.rates/item))

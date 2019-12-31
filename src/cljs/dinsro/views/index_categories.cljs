@@ -6,7 +6,6 @@
             [dinsro.events.debug :as e.debug]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.users :as e.users]
-            [dinsro.spec.categories :as s.categories]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]

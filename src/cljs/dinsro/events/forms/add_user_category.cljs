@@ -1,10 +1,5 @@
 (ns dinsro.events.forms.add-user-category
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.events.forms.add-user-category :as s.e.f.add-user-category]
-            [dinsro.spec.users :as s.users]
-            [orchestra.core :refer [defn-spec]]
+  (:require [dinsro.spec.events.forms.add-user-category :as s.e.f.add-user-category]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 

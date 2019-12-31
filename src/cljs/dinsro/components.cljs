@@ -2,7 +2,6 @@
   (:require [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 

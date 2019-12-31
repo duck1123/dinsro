@@ -2,11 +2,8 @@
   (:require [buddy.hashers :as hashers]
             [clojure.set :as set]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.model.users :as m.users]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as specs]
-            [expound.alpha :as expound]
             [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))

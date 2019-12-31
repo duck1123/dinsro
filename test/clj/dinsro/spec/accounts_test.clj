@@ -1,9 +1,8 @@
 (ns dinsro.spec.accounts-test
   (:require [clojure.spec.alpha :as s]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is]]
             [clojure.test.check.generators]
             [dinsro.spec.accounts :as s.accounts]
-            [expound.alpha :as expound]
             [taoensso.timbre :as timbre]))
 
 (def valid-item

@@ -1,7 +1,6 @@
 (ns dinsro.events.accounts
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.accounts :as s.e.accounts]
             [dinsro.specs :as ds]

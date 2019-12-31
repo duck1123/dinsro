@@ -3,16 +3,9 @@
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
-            [reagent.core :as r]
-            [re-frame.core :as rf]))
+            [orchestra.core :refer [defn-spec]]))
 
 (defn-spec rate-line vector?
   [item ::s.rates/item]

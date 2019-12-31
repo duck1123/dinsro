@@ -1,9 +1,5 @@
 (ns dinsro.spec.rates
-  (:require [cljc.java-time.extn.predicates :as predicates]
-            [cljc.java-time.instant :as instant]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.spec.currencies :as s.currencies]))
+  (:require [clojure.spec.alpha :as s]))
 
 (s/def ::rate (s/and number? pos?))
 (def rate-spec

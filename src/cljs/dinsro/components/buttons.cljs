@@ -1,6 +1,5 @@
 (ns dinsro.components.buttons
-  (:require [dinsro.components.debug :as c.debug]
-            [dinsro.events.accounts :as e.accounts]
+  (:require [dinsro.events.accounts :as e.accounts]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]

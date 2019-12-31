@@ -1,22 +1,12 @@
 (ns dinsro.components.forms.add-currency-rate
-  (:require [cljc.java-time.instant :as instant]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-rate :as c.f.create-rate]
+  (:require [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
-            [dinsro.events.currencies :as e.currencies]
             [dinsro.events.rates :as e.rates]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.rates :as s.rates]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (defn-spec form vector?

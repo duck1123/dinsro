@@ -1,17 +1,11 @@
 (ns dinsro.components.index-users
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.events.users :as e.users]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [dinsro.views.show-user :as v.show-user]
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (def default-error-message "")

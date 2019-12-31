@@ -1,14 +1,9 @@
 (ns dinsro.components.index-transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.debug :as c.debug]
+  (:require [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.transactions :as s.transactions]
-            [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
-            [reagent.core :as r]
-            [re-frame.core :as rf]))
+            [orchestra.core :refer [defn-spec]]))
 
 (defn-spec row-line vector?
   [transaction ::s.transactions/item]

@@ -9,7 +9,6 @@
             [kee-frame.core :as kf]
             [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
-            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (defn-spec account-link vector?
