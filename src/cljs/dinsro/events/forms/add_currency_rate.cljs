@@ -1,4 +1,4 @@
-(ns dinsro.events.forms.create-rate
+(ns dinsro.events.forms.add-currency-rate
   (:require [dinsro.events.forms.create-rate :as e.f.create-rate]
             [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [kee-frame.core :as kf]
