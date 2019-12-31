@@ -1,4 +1,5 @@
 (ns dinsro.spec.events.forms.add-user-account
+  (:refer-clojure :exclude [name])
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]))
