@@ -8,7 +8,6 @@
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
-                 [clj-http "3.10.0"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
