@@ -4,8 +4,6 @@
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
-(rfu/reg-basic-sub ::valid)
-
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 

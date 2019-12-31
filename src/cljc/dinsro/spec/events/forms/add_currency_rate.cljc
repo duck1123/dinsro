@@ -2,8 +2,6 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.rates :as s.rates]))
 
-(s/def ::valid boolean?)
-
 (s/def ::shown? boolean?)
 
 (s/def ::date string?)
