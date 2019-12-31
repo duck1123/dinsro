@@ -40,13 +40,13 @@
           (let [id (Integer/parseInt id)]
             (m.currencies/delete-record id)
             (http/ok {:id id}))
-          (catch NumberFormatException e nil))
+          (catch NumberFormatException _ nil))
         (http/bad-request {:status :invalid}))))
 
 ;; Index
 
 (defn index-handler
-  [request]
+  [_]
   (let [items (m.currencies/index-records)]
     (http/ok {:items items})))
 

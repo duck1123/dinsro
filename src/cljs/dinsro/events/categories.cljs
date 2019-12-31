@@ -41,7 +41,7 @@
   {})
 
 (defn do-submit
-  [{:keys [db]} [data]]
+  [_ [data]]
   {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-categories])

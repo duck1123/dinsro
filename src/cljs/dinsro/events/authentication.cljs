@@ -38,19 +38,16 @@
             (assoc ::loading false))})
 
 (defn do-authenticate
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [data return-to] event]
-    {:db (assoc db ::loading true)
-     :http-xhrio
-     {:method          :post
-      :uri             (kf/path-for [:api-authenticate])
-      :params          data
-      :timeout         8000
-      :format          (ajax/json-request-format)
-      :response-format (ajax/json-response-format {:keywords? true})
-      :on-success      [::do-authenticate-success]
-      :on-failure      [::do-authenticate-failure]}}))
+  [_ [data _]]
+  {:http-xhrio
+   {:method          :post
+    :uri             (kf/path-for [:api-authenticate])
+    :params          data
+    :timeout         8000
+    :format          (ajax/json-request-format)
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-authenticate-success]
+    :on-failure      [::do-authenticate-failure]}})
 
 (kf/reg-event-fx ::do-authenticate-success do-authenticate-success)
 (kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)

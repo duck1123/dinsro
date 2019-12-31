@@ -28,14 +28,13 @@
 
 (defn-spec create-handler ::s.a.categories/create-handler-response
   [{:keys [params session]} ::s.a.categories/create-handler-request]
-  (or (let [user-id 1]
-        (when-let [params (prepare-record params)]
-          (let [id (m.categories/create-record params #_(assoc params :user-id user-id))]
-            (http/ok {:item (m.categories/read-record id)}))))
+  (or (when-let [params (prepare-record params)]
+        (let [id (m.categories/create-record params)]
+          (http/ok {:item (m.categories/read-record id)})))
       (http/bad-request {:status :invalid})))
 
 (defn index-handler
-  [request]
+  [_]
   (let [categories (m.categories/index-records)]
     (http/ok {:items categories})))
 
@@ -48,6 +47,6 @@
 (defn-spec delete-handler ::s.a.categories/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.categories/delete-handler-request]
   (if-let [id (utils/try-parse id)]
-    (let [response (m.categories/delete-record id)]
-      (http/ok {:status "ok"}))
+    (do (m.categories/delete-record id)
+        (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))

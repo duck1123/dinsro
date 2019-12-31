@@ -55,5 +55,5 @@
       (http/bad-request {:status :failed}))))
 
 (defn logout-handler
-  [request]
+  [_]
   (assoc-in (http/ok {:identity nil}) [:session :identity] nil))

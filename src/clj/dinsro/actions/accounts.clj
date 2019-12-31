@@ -17,7 +17,7 @@
   [params key]
   (try
     (some-> params key str Integer/parseInt)
-    (catch NumberFormatException e nil)))
+    (catch NumberFormatException _ nil)))
 
 (defn-spec prepare-record (s/nilable ::s.accounts/params)
   [params :create-account/params]
@@ -38,14 +38,13 @@
 
 (defn-spec create-handler ::s.a.accounts/create-handler-response
   [{:keys [params session]} ::s.a.accounts/create-handler-request]
-  (or (let [user-id 1]
-        (when-let [params (prepare-record params)]
-          (let [id (m.accounts/create-record params #_(assoc params :user-id user-id))]
-            (http/ok {:item (m.accounts/read-record id)}))))
+  (or (when-let [params (prepare-record params)]
+        (let [id (m.accounts/create-record params)]
+          (http/ok {:item (m.accounts/read-record id)})))
       (http/bad-request {:status :invalid})))
 
 (defn index-handler
-  [request]
+  [_]
   (let [accounts (m.accounts/index-records)]
     (http/ok {:items accounts})))
 
@@ -60,6 +59,7 @@
 (defn-spec delete-handler ::s.a.accounts/delete-handler-response
   [{{:keys [id]} :path-params} ::s.a.accounts/delete-handler-request]
   (if-let [id (try (Integer/parseInt id) (catch NumberFormatException e))]
-    (let [response (m.accounts/delete-record id)]
+    (do
+      (m.accounts/delete-record id)
       (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
