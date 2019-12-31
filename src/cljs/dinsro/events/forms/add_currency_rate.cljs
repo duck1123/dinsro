@@ -32,7 +32,7 @@
  :<- [::currency-id]
  :<- [::rate]
  :<- [::date]
- c.f.create-rate/form-data-sub)
+ form-data-sub)
 
 (defn init-form
   [{:keys [db]} _]
