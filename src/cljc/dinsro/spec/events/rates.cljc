@@ -6,3 +6,5 @@
 (s/def ::do-delete-record-failed-cofx (s/keys))
 (s/def ::do-delete-record-cofx (s/keys))
 (s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
+
+(s/def ::do-delete-record-success-response (s/keys))
