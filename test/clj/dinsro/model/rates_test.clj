@@ -1,5 +1,5 @@
 (ns dinsro.model.rates-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :refer [uri->config]]
             [dinsro.config :as config]
