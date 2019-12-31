@@ -2,10 +2,9 @@
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
-(defn-spec form vector?
+(defn form
   []
   (let [form-data @(rf/subscribe [::form-data])]
     (when @(rf/subscribe [::shown?])

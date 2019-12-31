@@ -12,14 +12,16 @@
   (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
 
 (s/fdef index-ids
+  :args (s/cat)
   :ret (s/coll-of ::ds/id))
 
-(defn-spec index-records
+(defn index-records
   []
   (->> (index-ids)
        (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
 
 (s/fdef index-records
+  :args (s/cat)
   :ret (s/coll-of ::s.currencies/item))
 
 (defn-spec create-record :db/id

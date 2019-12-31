@@ -4,21 +4,20 @@
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
 (def default-error-message "")
 (rf/reg-sub ::error-message (fn [db _] (get db ::error-message default-error-message)))
 
-(defn-spec user-link vector?
-  [user ::s.users/item]
+(defn user-link
+  [user]
   (let [name (::s.users/name user)
         id (:db/id user)]
     [:a {:href (kf/path-for [:show-user-page {:id id}])} name]))
 
-(defn-spec user-line vector?
-  [user ::s.users/item]
+(defn user-line
+  [user]
   (let [id (:db/id user)
         email (::s.users/email user)]
     [:tr

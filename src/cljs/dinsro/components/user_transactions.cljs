@@ -1,15 +1,11 @@
 (ns dinrso.components.user-transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
+  (:require [dinsro.components :as c]
             [dinsro.components.forms.add-user-transaction :as c.f.add-user-transaction]
             [dinsro.components.index-transactions :as c.index-transactions]
-            [dinsro.spec.transactions :as s.transactions]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-
-(defn-spec transactions-section vector?
-  [user-id pos-int? transactions (s/coll-of ::s.transactions/item)]
+(defn section
+  [_ transactions]
   [:div.box
    [:h2
     "Transactions"

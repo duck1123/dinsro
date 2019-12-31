@@ -1,22 +1,19 @@
 (ns dinsro.components.index-currencies
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
-            [dinsro.spec.currencies :as s.currencies]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec index-currency-line vector?
-  [currency ::s.currencies/item]
+(defn index-currency-line
+  [currency]
   (let [{:keys [db/id]} currency]
     [:tr
      [:td [c.links/currency-link id]]
      (c.debug/hide [:td [c.buttons/delete-currency currency]])]))
 
-(defn-spec index-currencies vector?
-  [currencies (s/coll-of ::s.currencies/item)]
+(defn index-currencies
+  [currencies]
   [:<>
    [c.debug/debug-box currencies]
    (if-not (seq currencies)
