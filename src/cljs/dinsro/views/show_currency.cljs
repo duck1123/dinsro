@@ -23,14 +23,13 @@
 (s/def ::init-page-response (s/keys))
 
 (defn-spec init-page ::init-page-response
-  [cofx ::init-page-cofx
-   event ::init-page-event]
-  (let [[{:keys [id]}] event]
-    {:dispatch-n [[::e.currencies/do-fetch-record id]
-                  [::e.rates/do-fetch-index]
-                  [::e.users/do-fetch-index]
-                  [::e.accounts/do-fetch-index]]
-     :document/title "Show Currency"}))
+  [_ ::init-page-cofx
+   [{:keys [id]}] ::init-page-event]
+  {:dispatch-n [[::e.currencies/do-fetch-record id]
+                [::e.rates/do-fetch-index]
+                [::e.users/do-fetch-index]
+                [::e.accounts/do-fetch-index]]
+   :document/title "Show Currency"})
 
 (kf/reg-event-fx ::init-page init-page)
 

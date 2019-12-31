@@ -10,7 +10,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
+  [_ _]
   {:dispatch [::e.users/do-fetch-index]
    :document/title "Index Users"})
 

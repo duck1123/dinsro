@@ -14,7 +14,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
+  [_ _]
   {:document/title "Index Accounts"
    :dispatch-n [[::e.accounts/do-fetch-index]
                 [::e.users/do-fetch-index]

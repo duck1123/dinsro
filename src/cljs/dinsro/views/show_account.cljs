@@ -25,15 +25,11 @@
 (s/def ::init-page-response (s/keys))
 
 (defn-spec init-page ::init-page-response
-  [cofx ::init-page-cofx event ::init-page-event]
-  (let [[{:keys [id]}] event]
-    {:document/title "Show Account"
-     :dispatch-n [
-                  [::e.currencies/do-fetch-index]
-                  ;; [::e.categories/do-fetch-index]
-                  [::e.accounts/do-fetch-index]
-                  [::e.users/do-fetch-index]
-                  ]}))
+  [_ ::init-page-cofx _ ::init-page-event]
+  {:document/title "Show Account"
+   :dispatch-n [[::e.currencies/do-fetch-index]
+                [::e.accounts/do-fetch-index]
+                [::e.users/do-fetch-index]]})
 
 (kf/reg-event-fx ::init-page init-page)
 

@@ -21,13 +21,12 @@
 (s/def ::init-page-response (s/keys))
 
 (defn-spec init-page ::init-page-response
-  [cofx ::init-page-cofx event ::init-page-event]
-  (let [[{:keys [id]}] event]
-    {:document/title "Show User"
-     :dispatch-n [[::e.currencies/do-fetch-index]
-                  [::e.categories/do-fetch-index]
-                  [::e.accounts/do-fetch-index]
-                  [::e.users/do-fetch-record id]]}))
+  [_ ::init-page-cofx [{:keys [id]}] ::init-page-event]
+  {:document/title "Show User"
+   :dispatch-n [[::e.currencies/do-fetch-index]
+                [::e.categories/do-fetch-index]
+                [::e.accounts/do-fetch-index]
+                [::e.users/do-fetch-record id]]})
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -59,7 +58,7 @@
         [show-user user]]
        [c.user-categories/section user-id categories]
        [c.user-accounts/section user-id accounts]
-       #_[c.user-transactions/section user-id transactions]])
+       [c.user-transactions/section user-id transactions]])
     [:p "User not found"]))
 
 (s/def :show-user-view/id          string?)

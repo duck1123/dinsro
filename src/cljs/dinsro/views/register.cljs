@@ -5,7 +5,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
+  [_ _]
   {:dispatch [::c.f.registration-form/set-defaults]
    :document/title "Registration"})
 

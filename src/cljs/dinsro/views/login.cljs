@@ -10,7 +10,7 @@
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
+  [_ _]
   {:dispatch [::c.f.login/set-defaults]
    :document/title "Login"})
 

@@ -11,10 +11,8 @@
             [taoensso.timbre :as timbre]))
 
 (defn init-page
-  [{:keys [db]} _]
-  {
-   ;; :db (assoc db ::e.transactions/items [example-transaction])
-   :document/title "Index Transactions"
+  [_ _]
+  {:document/title "Index Transactions"
    :dispatch [::e.transactions/do-fetch-index]})
 
 (kf/reg-event-fx ::init-page init-page)
