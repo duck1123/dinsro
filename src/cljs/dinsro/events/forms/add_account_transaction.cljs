@@ -17,10 +17,11 @@
 (rfu/reg-set-event ::s.e.f.add-account-transaction/value)
 
 (defn form-data-sub
-  [[value currency-id date]]
-  {:value value
-   :currency-id currency-id
-   :date        date})
+  [params]
+  (let [[value currency-id date] (timbre/spy :info params)]
+    {:value       (.parseFloat js/Number value)
+     :currency-id (int currency-id)
+     :date        date}))
 
 (rf/reg-sub
  ::form-data

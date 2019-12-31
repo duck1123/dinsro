@@ -59,7 +59,7 @@
     [c/show-form-button
      ::s.e.f.add-account-transaction/shown?
      ::s.e.f.add-account-transaction/set-shown?]]
-   [c.f.add-account-transaction/form]
+   [c.f.add-account-transaction/form account-id]
    [:hr]
    (let [items @(rf/subscribe [::e.transactions/items])]
      [c.debug/debug-box items]

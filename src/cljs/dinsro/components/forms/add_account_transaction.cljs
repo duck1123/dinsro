@@ -9,9 +9,10 @@
             [taoensso.timbre :as timbre]))
 
 (defn form
-  []
+  [id]
   [:<>
-   (let [form-data @(rf/subscribe [::e.f.add-account-transaction/form-data])]
+   (let [form-data (assoc @(rf/subscribe [::e.f.add-account-transaction/form-data])
+                          :account-id id)]
      (when @(rf/subscribe [::s.e.f.add-account-transaction/shown?])
        [:div
         [c/close-button ::s.e.f.add-account-transaction/set-shown?]

@@ -15,7 +15,8 @@
 (s/def ::date ds/date-string)
 (def date ::date)
 
-(s/def ::value ::ds/double-string)
+(s/def ::value ::ds/valid-double)
+(def value ::value)
 
 ;; Create
 
