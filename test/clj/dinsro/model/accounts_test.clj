@@ -3,6 +3,7 @@
             [clojure.spec.gen.alpha :as gen]
             [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
+            [datahike.config :refer [uri->config]]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
@@ -17,7 +18,7 @@
 (defn test-db
   [f]
   (d/delete-database uri)
-  (when-not (d/database-exists? (datahike.config/uri->config uri))
+  (when-not (d/database-exists? (uri->config uri))
     (d/create-database uri))
   (with-redefs [db/*conn* (d/connect uri)]
     (d/transact db/*conn* s.accounts/schema)
