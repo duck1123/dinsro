@@ -15,7 +15,6 @@
             [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -24,12 +23,17 @@
 (s/def ::init-page-event (s/keys))
 (s/def ::init-page-response (s/keys))
 
-(defn-spec init-page ::init-page-response
-  [_ ::init-page-cofx _ ::init-page-event]
+(defn init-page
+  [_  _]
   {:document/title "Show Account"
    :dispatch-n [[::e.currencies/do-fetch-index]
                 [::e.accounts/do-fetch-index]
                 [::e.users/do-fetch-index]]})
+
+(s/fdef init-page
+  :args (s/cat :cofx ::init-page-cofx
+               :event ::init-page-event)
+  :ret ::init-page-response)
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -38,7 +42,7 @@
  {:params (c/filter-param-page :show-account-page)
   :start  [::init-page]})
 
-(defn-spec load-buttons vector?
+(defn load-buttons
   []
   (when @(rf/subscribe [::e.debug/shown?])
     [:div.box
@@ -46,8 +50,8 @@
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-transactions]]))
 
-(defn-spec transactions-section vector?
-  [account-id pos-int?]
+(defn transactions-section
+  [_]
   [:div.box
    [:h2
     (tr [:transactions])
@@ -64,8 +68,8 @@
 (s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
 (s/def ::view-map (s/keys :req-un [:show-account-view/path-params]))
 
-(defn-spec page vector?
-  [match ::view-map]
+(defn page
+  [match]
   (let [{{:keys [id]} :path-params} match
         id (int id)
         account @(rf/subscribe [::e.accounts/item id])]
@@ -76,3 +80,7 @@
       (when account
         [show-account account])]
      [transactions-section id]]))
+
+(s/fdef page
+  :args (s/cat :match ::view-map)
+  :ret vector?)

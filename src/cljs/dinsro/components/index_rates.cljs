@@ -7,8 +7,11 @@
             [dinsro.translations :refer [tr]]
             [orchestra.core :refer [defn-spec]]))
 
-(defn-spec rate-line vector?
-  [item ::s.rates/item]
+(defn rate-line
+  ;; vector?
+  [item
+   ;; ::s.rates/item
+   ]
   (let [id (:db/id item)
         value (::s.rates/rate item)
         currency-id (get-in item [::s.rates/currency :db/id])]
@@ -18,8 +21,11 @@
      [:td [c.links/currency-link currency-id]]
      (c.debug/hide [:td [c.buttons/delete-rate item]])]))
 
-(defn-spec index-rates vector?
-  [items (s/coll-of ::s.rates/item)]
+(defn index-rates
+  ;; vector?
+  [items
+   ;; (s/coll-of ::s.rates/item)
+   ]
   [:<>
    [c.debug/debug-box items]
    (if-not (seq items)

@@ -9,7 +9,6 @@
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -35,8 +34,8 @@
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-users]]))
 
-(defn-spec page vector?
-  [match any?]
+(defn page
+  [_]
   (let [accounts @(rf/subscribe [::e.accounts/items])
         state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
     [:section.section>div.container>div.content

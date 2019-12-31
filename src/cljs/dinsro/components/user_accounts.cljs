@@ -6,12 +6,10 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.specs :as ds]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec section vector?
-  [user-id ::ds/id
-   accounts (s/coll-of ::s.accounts/item)]
+(defn section
+  [user-id accounts]
   [:div.box
    [:h2
     (tr [:accounts])
@@ -19,3 +17,8 @@
    [c.f.add-user-account/form user-id]
    [:hr]
    [c.index-accounts/index-accounts accounts]])
+
+(s/fdef section
+  :args (s/cat :user-id ::ds/id
+               :accounts (s/coll-of ::s.accounts/item))
+  :ret vector?)

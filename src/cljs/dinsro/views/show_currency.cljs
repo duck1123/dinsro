@@ -14,7 +14,6 @@
             [dinsro.events.users :as e.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -22,14 +21,18 @@
 (s/def ::init-page-event (s/keys))
 (s/def ::init-page-response (s/keys))
 
-(defn-spec init-page ::init-page-response
-  [_ ::init-page-cofx
-   [{:keys [id]}] ::init-page-event]
+(defn init-page
+  [_ [{:keys [id]}]]
   {:dispatch-n [[::e.currencies/do-fetch-record id]
                 [::e.rates/do-fetch-index]
                 [::e.users/do-fetch-index]
                 [::e.accounts/do-fetch-index]]
    :document/title "Show Currency"})
+
+(s/fdef init-page
+  :args (s/cat :cofx ::init-page-cofx
+               :event ::init-page-event)
+  :ret ::init-page-response)
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -66,8 +69,8 @@
    [:h2 "Accounts"]
    [c.index-accounts/index-accounts accounts]])
 
-(defn-spec page vector?
-  [{{:keys [id]} :path-params} ::view-map]
+(defn page
+  [{{:keys [id]} :path-params}]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
         rates @(rf/subscribe [::e.rates/items-by-currency currency])
@@ -83,3 +86,7 @@
         [:p "Unknown State"])]
      [accounts-section accounts]
      [rates-section currency-id rates]]))
+
+(s/fdef page
+  :args (s/cat :match ::view-map)
+  :ret vector?)

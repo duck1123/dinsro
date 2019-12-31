@@ -12,7 +12,6 @@
             [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -20,13 +19,18 @@
 (s/def ::init-page-event (s/keys))
 (s/def ::init-page-response (s/keys))
 
-(defn-spec init-page ::init-page-response
-  [_ ::init-page-cofx [{:keys [id]}] ::init-page-event]
+(defn init-page
+  [_ [{:keys [id]}]]
   {:document/title "Show User"
    :dispatch-n [[::e.currencies/do-fetch-index]
                 [::e.categories/do-fetch-index]
                 [::e.accounts/do-fetch-index]
                 [::e.users/do-fetch-record id]]})
+
+(s/fdef init-page
+  :args (s/cat :cofx ::init-page-cofx
+               :event ::init-page-event)
+  :ret ::init-page-response)
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -45,8 +49,8 @@
      [c.buttons/fetch-currencies]
      [c.buttons/fetch-user id]]))
 
-(defn-spec page-loaded vector?
-  [id pos-int?]
+(defn page-loaded
+  [id]
   (if-let [user @(rf/subscribe [::e.users/item (int id)])]
     (let [user-id (:db/id user)
           accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
@@ -61,12 +65,16 @@
        [c.user-transactions/section user-id transactions]])
     [:p "User not found"]))
 
+(s/fdef page-loaded
+  :args (s/cat :id pos-int?)
+  :ret vector?)
+
 (s/def :show-user-view/id          string?)
 (s/def :show-user-view/path-params (s/keys :req-un [:show-user-view/id]))
 (s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
 
-(defn-spec page vector?
-  [match ::view-map]
+(defn page
+  [match]
   (let [{{:keys [id]} :path-params} match
         state @(rf/subscribe [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
@@ -76,3 +84,7 @@
        :failed [:p "Failed"]
        :loaded (page-loaded (int id))
        [:p "unknown state"])]))
+
+(s/fdef page
+  :args (s/cat :match ::view-map)
+  :ret vector?)

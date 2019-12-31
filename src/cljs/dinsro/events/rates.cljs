@@ -4,7 +4,6 @@
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -13,9 +12,13 @@
 
 (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
 
-(defn-spec items-by-currency ::items
-  [items ::items [_ {:keys [db/id]}] ::items-by-currency-event]
+(defn items-by-currency
+  [items [_ {:keys [db/id]}]]
   (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
+
+(s/fdef items-by-currency
+  :args (s/cat :items ::items :event ::items-by-currency-event)
+  :ret ::items)
 
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
@@ -67,9 +70,8 @@
   [_ _]
   {:dispatch [::do-fetch-index]})
 
-(defn-spec do-submit (s/keys)
-  [{:keys [db]} any?
-   [data] any?]
+(defn do-submit
+  [_ [data]]
   {:http-xhrio
    {:method          :post
     :uri             (kf/path-for [:api-index-rates])
@@ -78,6 +80,9 @@
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-submit-success]
     :on-failure      [::do-submit-failed]}})
+
+(s/fdef do-submit
+  :ret (s/keys))
 
 (kf/reg-event-fx ::do-submit-failed  do-submit-failed)
 (kf/reg-event-fx ::do-submit-success do-submit-success)
@@ -90,16 +95,26 @@
 (s/def ::do-delete-record-cofx (s/keys))
 (s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
 
-(defn-spec do-delete-record-success (s/keys)
-  [cofx ::do-delete-record-success-cofx _ any?]
+(defn do-delete-record-success
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
-(defn-spec do-delete-record-failed (s/keys)
-  [cofx ::do-delete-record-failed-cofx _ any?]
+(s/fdef do-delete-record-success
+  :args (s/cat :cofx ::do-delete-record-success-cofx
+               :event any?)
+  :ret (s/keys))
+
+(defn do-delete-record-failed
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
-(defn-spec do-delete-record (s/keys)
-  [cofx ::do-delete-record-cofx [item] ::do-delete-record-event]
+(s/fdef do-delete-record-failed
+  :args (s/cat :cofx ::do-delete-record-failed-cofx
+               :event any?)
+  :ret (s/keys))
+
+(defn do-delete-record
+  [_ [item]]
   (let [id (:db/id item)]
     {:http-xhrio
      {:uri             (kf/path-for [:api-show-rate {:id id}])
@@ -108,6 +123,11 @@
       :response-format (ajax/json-response-format {:keywords? true})
       :on-success      [::do-delete-record-success]
       :on-failure      [::do-delete-record-failed]}}))
+
+(s/fdef do-delete-record
+  :args (s/cat :cofx ::do-delete-record-cofx
+               :event ::do-delete-record-event)
+  :ret (s/keys))
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
