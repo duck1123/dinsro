@@ -176,7 +176,7 @@
                       {:builds
                        {:devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs" "test/cljs" "test/cljc"]
                                    :figwheel     {:devcards true}
-                                   :compiler     {:main "dinsro.devcards"
+                                   :compiler     {:main "starter.doo"
                                                   :asset-path "/js/devcards_out"
                                                   :output-to "target/cljsbuild/public/js/devcards.js"
                                                   :output-dir "target/cljsbuild/public/js/devcards_out"

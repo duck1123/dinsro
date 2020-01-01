@@ -1,4 +1,4 @@
-(ns dinsro.components.admin-index-rate-sources
+(ns dinsro.components.admin-index-rate-sources-test
   (:require [devcards.core :refer-macros [defcard-rg]]
             [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
             [dinsro.translations :refer [tr]]))
