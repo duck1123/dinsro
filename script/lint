@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-clj-kondo --lint "$(lein classpath)" | grep dinsro | grep -v META-INF
+clj-kondo --lint src | grep dinsro | grep -v META-INF
