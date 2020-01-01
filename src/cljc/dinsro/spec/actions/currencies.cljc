@@ -6,8 +6,11 @@
 
 ;; Create
 
-(s/def :create-currency-request/params (s/keys :opt-un [::s.currencies/name]))
-(s/def :create-currency-request-valid/params (s/keys :req-un [::s.currencies/name]))
+(s/def ::create-params (s/keys :opt-un [::s.currencies/name]))
+(s/def ::create-params-valid (s/keys :req-un [::s.currencies/name]))
+
+(s/def :create-currency-request/params ::create-params)
+(s/def :create-currency-request-valid/params ::create-params-valid)
 (s/def :create-currency-request-valid/request (s/keys :req-un [:create-currency-request-valid/params]))
 (s/def ::create-request-valid (s/keys :req-un [:create-currency-request-valid/params]))
 (def create-request-valid ::create-request-valid)

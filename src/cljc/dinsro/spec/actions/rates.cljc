@@ -11,11 +11,13 @@
 
 ;; Create
 
-(s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id ::s.rates/date]))
+(s/def ::create-params (s/keys :opt-un [::s.rates/rate ::currency-id]))
+(s/def ::create-params-valid (s/keys :req-un [::s.rates/rate ::currency-id ::s.rates/date]))
+(s/def :create-rates-request-valid/params ::create-params-valid)
 (s/def ::create-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 (def create-request-valid ::create-request-valid)
 
-(s/def :create-rates-request/params (s/keys :opt-un [::s.rates/rate ::currency-id]))
+(s/def :create-rates-request/params ::create-params)
 (s/def ::create-request (s/keys :req-un [:create-rates-request/params]))
 (def create-request ::create-request)
 

@@ -16,9 +16,12 @@
 (def currency-id ::currency-id)
 
 ;; Create
+(s/def ::create-params (s/keys :opt-un [::name ::url ::currency-id]))
+(s/def ::create-params-valid (s/keys :req-un [::name ::url ::currency-id]))
 
-(s/def :create-rate-sources-request-valid/params (s/keys :req-un [::name ::url ::currency-id]))
-(s/def :create-rate-sources-request/params (s/keys :opt-un [::name ::url ::currency-id]))
+
+(s/def :create-rate-sources-request-valid/params ::create-params-valid)
+(s/def :create-rate-sources-request/params ::create-params)
 
 (s/def ::create-request-valid (s/keys :req-un [:create-rate-sources-request-valid/params]))
 (def create-request-valid ::create-request-valid)
