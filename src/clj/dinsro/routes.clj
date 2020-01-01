@@ -17,7 +17,6 @@
             [dinsro.actions.status :as a.status]
             [dinsro.actions.transactions :as a.transactions]
             [dinsro.actions.users :as a.users]
-            ;; [dinsro.devcards :as devcards]
             [dinsro.middleware :as middleware]))
 
 (def view-mappings
@@ -123,12 +122,8 @@
     ["/:id"            {:get    a.users/read-handler
                         :delete a.users/delete-handler}]]])
 
-(def cards-route
-  ["/cards" {:get {:handler devcards/cards-handler}}])
-
 (def routes
   [(into [""] (map (fn [path] [path {:get a.home/home-handler}]) view-mappings))
-   #_cards-route
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     (into [""       {:middleware [middleware/wrap-restricted]}] model-routes)
     (into ["/admin" {:middleware [middleware/wrap-restricted]}] admin-routes)
