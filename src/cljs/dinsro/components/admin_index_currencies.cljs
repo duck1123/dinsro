@@ -1,5 +1,6 @@
 (ns dinsro.components.admin-index-currencies
   (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-currency :as c.f.create-currency]
@@ -47,7 +48,7 @@
   [:div.box
    [:h1
     (tr [:index-currencies "Index Currencies"])
-    [c/show-form-button ::e.f.create-currency/shown? ::e.f.create-currency/set-shown?]]
+    [c/show-form-button ::e.f.create-currency/shown?]]
    [c.f.create-currency/form]
    [:hr]
    (when currencies
