@@ -6,15 +6,14 @@
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.actions.categories :as s.a.categories]
             [dinsro.utils :as utils]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
 (def param-rename-map
   {:name          ::s.categories/name})
 
-(defn-spec prepare-record (s/nilable ::s.categories/params)
-  [params :create-category/params]
+(defn prepare-record
+  [params]
   (let [user-id (utils/get-as-int params :user-id)
         params (-> params
                    (set/rename-keys param-rename-map)
@@ -26,33 +25,52 @@
         (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.categories/params params)))
         nil))))
 
-(defn-spec create-handler ::s.a.categories/create-handler-response
-  [{:keys [params session]} ::s.a.categories/create-handler-request]
+(s/fdef prepare-record
+  :args (s/cat :params :create-category/params)
+  :ret (s/nilable ::s.categories/params))
+
+(defn create-handler
+  [{:keys [params]}]
   (or
-   ;; User id should come from session
-   (let [user-id 1]
-        (when-let [params (prepare-record params)]
-          (let [id (m.categories/create-record params #_(assoc params :user-id user-id))]
-            (http/ok {:item (m.categories/read-record id)}))))
-      (http/bad-request {:status :invalid})))
+   (when-let [params (prepare-record params)]
+     (let [id (m.categories/create-record params)]
+       (http/ok {:item (m.categories/read-record id)})))
+   (http/bad-request {:status :invalid})))
+
+(s/fdef create-handler
+  :args (s/cat :request ::s.a.categories/create-handler-request)
+  :ret ::s.a.categories/create-handler-response)
 
 (defn index-handler
-  [request]
+  [_]
   (let [categories (m.categories/index-records)]
     (http/ok {:items categories})))
 
-(defn-spec read-handler ::s.a.categories/read-handler-response
-  [{{:keys [id]} :path-params} ::s.a.categories/read-handler-request]
+(s/fdef index-handler
+  :args (s/cat :request (s/keys))
+  :ret (s/keys))
+
+(defn read-handler
+  [{{:keys [id]} :path-params}]
   (if-let [category (m.categories/read-record (utils/try-parse-int id))]
     (http/ok category)
     (http/not-found {:status :not-found})))
 
-(defn-spec delete-handler ::s.a.categories/delete-handler-response
-  [{{:keys [id]} :path-params} ::s.a.categories/delete-handler-request]
+(s/fdef read-handler
+  :args (s/cat :request ::s.a.categories/read-handler-request)
+  :ret ::s.a.categories/read-handler-response)
+
+(defn delete-handler
+  [{{:keys [id]} :path-params}]
   (if-let [id (utils/try-parse-int id)]
-    (let [response (m.categories/delete-record id)]
+    (do
+      (m.categories/delete-record id)
       (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))
+
+(s/fdef delete-handler
+  :args (s/cat :request ::s.a.categories/delete-handler-request)
+  :ret ::s.a.categories/delete-handler-response)
 
 (comment
   (create-handler {})
