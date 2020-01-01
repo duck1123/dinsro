@@ -4,11 +4,10 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.translations :refer [tr]]))
 
-(defn-spec index-line vector?
-  [item ::s.rate-sources/item]
+(defn index-line
+  [item]
   (let [id (:db/id item)
         name (::s.rate-sources/name item)
         url (::s.rate-sources/url item)
@@ -19,8 +18,8 @@
      [:td [c.links/currency-link currency-id]]
      (c.debug/hide [:td [c.buttons/delete-rate-source item]])]))
 
-(defn-spec section vector?
-  [items (s/coll-of ::s.rate-sources/item)]
+(defn section
+  [items]
   [:<>
    [c.debug/debug-box items]
    (if-not (seq items)

@@ -8,7 +8,6 @@
             [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
             [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
@@ -28,7 +27,7 @@
  {:params (c/filter-page :index-rate-sources-page)
   :start [::init-page]})
 
-(defn-spec load-buttons vector?
+(defn load-buttons
   []
   [:div.box
    [c.buttons/fetch-rate-sources]
@@ -44,8 +43,8 @@
    [:hr]
    [c.index-rate-sources/section items]])
 
-(defn-spec page vector?
-  [_ any?]
+(defn page
+  [_]
   (let [items @(rf/subscribe [::e.rate-sources/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])

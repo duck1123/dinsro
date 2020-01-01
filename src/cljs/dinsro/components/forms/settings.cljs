@@ -6,7 +6,6 @@
             [dinsro.spec.events.forms.settings :as s.e.f.settings]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -15,7 +14,7 @@
  {:params (constantly true)
   :start [::e.settings/do-fetch-settings]})
 
-(defn-spec form vector?
+(defn form
   []
   (let [form-data @(rf/subscribe [::e.f.settings/form-data])]
     [:div

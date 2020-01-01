@@ -6,7 +6,6 @@
             [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -27,7 +26,7 @@
      [:div.field>div.control
       [c/primary-button (tr [:submit]) [::e.rate-sources/do-submit form-data]]]]))
 
-(defn-spec form vector?
+(defn form
   []
   (when @(rf/subscribe [::e.f.create-rate-source/shown?])
     [form-shown]))

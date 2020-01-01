@@ -6,11 +6,10 @@
             [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
-(defn-spec index-line vector?
-  [item ::s.rate-sources/item]
+(defn index-line
+  [item]
   (let [id (:db/id item)
         name (::s.rate-sources/name item)
         url (::s.rate-sources/url item)
@@ -49,7 +48,7 @@
     [c.debug/debug-box @items]
     (rate-sources-table @items)]])
 
-(defn-spec section vector?
+(defn section
   []
   (let [items (rf/subscribe [::e.rate-sources/items])]
     [section-inner items]))

@@ -83,10 +83,14 @@
 (s/def ::do-fetch-record-failed-event (s/keys))
 (s/def ::do-fetch-record-failed-response (s/keys))
 
-(defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
-  [{:keys [db] :as cofx} ::do-fetch-record-failed-cofx
-   event ::do-fetch-record-failed-event]
+(defn do-fetch-record-failed
+  [{:keys [db]} _]
   {:db (assoc db ::do-fetch-record-state :failed)})
+
+(s/fdef do-fetch-record-failed
+  :args (s/cat :cofx ::do-fetch-record-failed-cofx
+               :event ::do-fetch-record-failed-event)
+  :ret ::do-fetch-record-failed-response)
 
 (defn do-fetch-record
   [{:keys [db]} [id]]

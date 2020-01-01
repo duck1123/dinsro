@@ -7,7 +7,6 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.forms.create-currency :as e.f.create-currency]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
@@ -23,13 +22,13 @@
  {:params (c/filter-page :index-currencies-page)
   :start  [::init-page]})
 
-(defn-spec loading-buttons vector?
+(defn loading-buttons
   []
   [:div.box
    [c.buttons/fetch-currencies]])
 
-(defn-spec page vector?
-  [_ any?]
+(defn page
+  [_]
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [loading-buttons])

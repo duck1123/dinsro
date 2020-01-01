@@ -4,8 +4,7 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.rates :as s.rates]
-            [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.translations :refer [tr]]))
 
 (defn rate-line
   ;; vector?

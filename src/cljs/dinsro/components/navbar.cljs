@@ -8,7 +8,6 @@
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -34,8 +33,8 @@
 
 ;; Components
 
-(defn-spec nav-link vector?
-  [title string? page keyword?]
+(defn nav-link
+  [title page]
   [:a.navbar-item
    {:href   (kf/path-for [page])
     :on-click #(rf/dispatch [::nav-link-activated])

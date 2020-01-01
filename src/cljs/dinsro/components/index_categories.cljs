@@ -3,11 +3,10 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.translations :refer [tr]]))
 
-(defn-spec category-line vector?
-  [item ::s.categories/item]
+(defn category-line
+  [item]
   (let [id (:db/id item)
         name (::s.categories/name item)
         user-id (get-in item [::s.categories/user :db/id])]
@@ -16,8 +15,8 @@
      [:td [c.links/user-link user-id]]
      (c.debug/hide [:td [c.buttons/delete-category item]])]))
 
-(defn-spec index-categories vector?
-  [items (s/coll-of ::s.categories/item)]
+(defn index-categories
+  [items]
   [:<>
    [c.debug/debug-box items]
    (if-not (seq items)

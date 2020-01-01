@@ -1,19 +1,17 @@
 (ns dinsro.components.index-transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.debug :as c.debug]
+  (:require [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]))
 
 (defn format-date
   [date]
   (str date))
 
-(defn-spec row-line vector?
-  [transaction ::s.transactions/item]
+(defn row-line
+  [transaction]
   (let [date (::s.transactions/date transaction)
         account-id (:db/id (::s.transactions/account transaction))]
     [:div.card
@@ -34,8 +32,8 @@
        {:on-click #(rf/dispatch [::e.transactions/do-delete-record transaction])}
        (tr [:delete])]]]))
 
-(defn-spec index-transactions vector?
-  [items (s/coll-of ::s.transactions/item)]
+(defn index-transactions
+  [items]
   (if-not (seq items)
     [:p "no items"]
     [:<>
