@@ -48,3 +48,6 @@
 
 (s/def ::delete-request (s/keys))
 (def delete-request ::delete-request)
+
+(s/def ::index-request (s/keys))
+(s/def ::index-response (s/keys))
