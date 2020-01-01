@@ -6,7 +6,6 @@
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
             [dinsro.utils :as utils]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
@@ -39,30 +38,39 @@
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
-  :args (s/cat :request ::s.a.transactions/create-handler-request)
+  :args (s/cat :request ::s.a.transactions/create-request)
   :ret ::s.a.transactions/create-response)
 
 ;; Index
 
-(defn-spec index-handler ::s.a.transactions/index-handler-response
-  [request ::s.a.transactions/index-handler-request]
+(defn index-handler
+  [_]
   (let [items (m.transactions/index-records)]
     (http/ok {:model :transactions :items items})))
 
+(s/fdef index-handler
+  :args (s/cat :request ::s.a.transactions/index-request)
+  :ret ::s.a.transactions/index-response)
+
+
 ;; Read
 
-(defn-spec read-handler ::s.a.transactions/read-handler-response
-  [request ::s.a.transactions/read-handler-request]
+(defn read-handler
+  [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (if-let [item (m.transactions/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
 
+(s/fdef read-handler
+  :args (s/cat :request ::s.a.transactions/read-request)
+  :ret ::s.a.transactions/read-response)
+
 ;; Delete
 
-(defn-spec delete-handler ::s.a.transactions/delete-handler-response
-  [request ::s.a.transactions/delete-handler-request]
+(defn delete-handler
+  [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (do
       (m.transactions/delete-record id)
@@ -70,3 +78,7 @@
     (http/bad-request
      {:status :bad-request
       :message (tr [:missing-id "Id parameter was not supplied"])})))
+
+(s/fdef delete-handler
+  :args (s/cat :request ::s.a.transactions/delete-request)
+  :ret ::s.a.transactions/delete-response)
