@@ -4,6 +4,7 @@
    [com.smxemail.re-frame-cookie-fx]
    [day8.re-frame.http-fx]
    [dinsro.ajax :as ajax]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.settings :as c.settings]
    [dinsro.components.status :as c.status]
    [dinsro.events.debug :as e.debug]
@@ -37,9 +38,11 @@
     :routes         routing/routes
     :app-db-spec    ::app-db
     :initial-db     (initial-db *debug*)
-    :root-component [c.status/require-status
-                     [c.settings/require-settings
-                      [view/root-component]]]}))
+    :root-component [(fn []
+                       [error-boundary
+                        [c.status/require-status
+                         [c.settings/require-settings
+                          [view/root-component]]]])]}))
 
 (defn init! [debug?]
   (ajax/load-interceptors!)
