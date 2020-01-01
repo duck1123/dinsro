@@ -52,7 +52,6 @@
   :args (s/cat :request ::s.a.transactions/index-request)
   :ret ::s.a.transactions/index-response)
 
-
 ;; Read
 
 (defn read-handler

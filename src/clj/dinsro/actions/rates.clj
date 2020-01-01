@@ -11,8 +11,8 @@
 
 ;; Create
 
-(defn-spec prepare-record (s/nilable ::s.rates/params)
-  [params :create-rates-request/params]
+(defn prepare-record
+  [params]
   (let [params {::s.rates/currency {:db/id (:currency-id params)}
                 ::s.rates/rate (some-> params :rate double)
                 ::s.rates/date (some-> params :date tick/instant)}]
@@ -22,18 +22,26 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.rates/params params)))
         nil))))
 
-(defn-spec create-handler ::s.a.rates/create-handler-response
-  [request ::s.a.rates/create-handler-request]
+(s/fdef prepare-record
+  :args (s/cat :params ::s.a.rates/create-params)
+  :ret  (s/nilable ::s.rates/params))
+
+(defn create-handler
+  [request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.rates/create-record params)]
             (http/ok {:item (m.rates/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
+(s/fdef create-handler
+  :args (s/cat :request ::s.a.rates/create-request)
+  :ret ::s.a.rates/create-response)
+
 ;; Index
 
-(defn-spec index-handler ::s.a.rates/index-handler-response
-  [request ::s.a.rates/index-handler-request]
+(defn index-handler
+  [_]
   (let [
         ;; TODO: parse from request
         limit 50
@@ -43,20 +51,32 @@
                   :items items}]
     (http/ok response)))
 
+(s/fdef index-handler
+  :args (s/cat :request ::s.a.rates/index-request)
+  :ret ::s.a.rates/index-response)
+
 ;; Read
 
-(defn-spec read-handler ::s.a.rates/read-handler-response
-  [request ::s.a.rates/read-handler-request]
+(defn read-handler
+  [request]
   (if-let [id (get-in request [:path-params :id])]
     (if-let [item (m.rates/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
 
+(s/fdef read-handler
+  :args (s/cat :request ::s.a.rates/read-request)
+  :ret ::s.a.rates/read-response)
+
 ;; Delete
 
-(defn-spec delete-handler ::s.a.rates/delete-handler-response
-  [request ::s.a.rates/delete-handler-request]
+(defn delete-handler
+  [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (m.rates/delete-record id)
     (http/ok {:id id})))
+
+(s/fdef delete-handler
+  :args (s/cat :request ::s.a.rates/delete-request)
+  :ret ::s.a.rates/delete-response)
