@@ -1,7 +1,9 @@
 {:linters
  {
   :lint-as {devcards.core/deftest cljs.test/deftest
-            devcards.core/defcard-rg cljs.core/def}
+            devcards.core/defcard-rg cljs.core/def
+            mount.core/defstate schema.core/def
+            }
 
   :unused-namespace {:exclude [dinsro.translations
                                taoensso.timbre]}
