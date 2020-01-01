@@ -1,5 +1,6 @@
 (ns dinsro.components.forms.add-account-transaction
-  (:require [dinsro.components :as c]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.datepicker :as c.datepicker]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
