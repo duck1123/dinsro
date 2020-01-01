@@ -19,14 +19,23 @@
 (s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
 (def item-map ::item-map)
 
-(defn-spec sub-item-map ::item-map
-  [db any? event any?]
+(defn sub-item-map
+  [db _]
   (get db ::item-map))
+
+(s/fdef sub-item-map
+  :ret ::item-map)
+
 (rf/reg-sub ::item-map               sub-item-map)
 
-(defn-spec item-sub ::s.currencies/item
+(defn item-sub
   [item-map ::item-map [_ id] any?]
   (get item-map id))
+
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event any?)
+  :ret ::s.currencies/item)
 
 (rf/reg-sub
  ::item

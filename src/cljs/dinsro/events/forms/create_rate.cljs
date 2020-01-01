@@ -2,7 +2,6 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
@@ -37,8 +36,8 @@
  form-data-sub)
 (def form-data ::form-data)
 
-(defn-spec init-form (s/keys)
-  [{:keys [db]} (s/keys) _ any?]
+(defn init-form
+  [{:keys [db]} _]
   (let [default-date (js/Date.)]
     {:db (merge db {::s.e.f.create-rate/rate (str default-rate)
                     ::s.e.f.create-rate/currency-id ""

@@ -2,7 +2,6 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
             [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]))
 
@@ -11,15 +10,18 @@
 
 (def default-name "Offshore")
 
-(declare form-data-sub)
-(defn-spec form-data-sub (s/keys)
-  [form-bindings ::s.e.f.add-user-account/form-bindings
-   _ any?]
+(defn form-data-sub
+  [form-bindings _]
   (let [[name initial-value currency-id user-id] form-bindings]
     {:name          name
      :currency-id   (int currency-id)
      :user-id       (int user-id)
      :initial-value (.parseFloat js/Number initial-value)}))
+
+(s/fdef form-data-sub
+  :args (s/cat :form-bindings ::s.e.f.add-user-account/form-bindings
+               :event any?)
+  :ret (s/keys))
 
 (rf/reg-sub
  ::form-data

@@ -13,21 +13,35 @@
 (s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
 
-(defn-spec sub-item (s/nilable ::s.accounts/item)
-  [items ::items
-   [_ id] ::s.e.accounts/sub-item-event]
+(defn sub-item
+  [items [_ id]]
   (first (filter #(= (:db/id %) id) items)))
 
-(defn-spec items-by-user ::items
-  [items ::items event any?]
-  (let [[_ id] event]
-    (filter #(= id (get-in % [::s.accounts/user :db/id])) items)))
+(s/fdef sub-item
+  :args (s/cat :item ::items
+               :event ::s.e.accounts/sub-item-event)
+  :ret (s/nilable ::s.accounts/item))
 
-(defn-spec items-by-currency ::items
-  [items ::items event any?]
+(defn items-by-user
+  [items [_ id]]
+  (filter #(= id (get-in % [::s.accounts/user :db/id])) items))
+
+(s/fdef items-by-user
+  :args (s/cat :items ::items
+               :event (s/cat :kw keyword?
+                             :id :db/id))
+  :ret ::items)
+
+(defn items-by-currency
+  [items event]
   (let [[_ item] event
         id (:db/id item)]
     (filter #(= id (get-in % [::s.accounts/currency :db/id])) items)))
+
+(s/fdef items-by-currency
+  :args (s/cat :items ::items
+               :event any?)
+  :ret ::items)
 
 (rf/reg-sub ::item :<- [::items] sub-item)
 (def item ::item)
@@ -47,15 +61,19 @@
   [{:keys [db]} [response]]
   {})
 
-(defn-spec do-submit ::s.e.accounts/do-submit-response
-  [{:keys [db]} ::s.e.accounts/do-submit-response-cofx
-   [data] ::s.e.accounts/do-submit-response-event]
+(defn do-submit
+  [{:keys [db]} [data]]
   {:http-xhrio
    (e/post-request
     [:api-index-accounts]
     [::do-submit-success]
     [::do-submit-failed]
     data)})
+
+(s/fdef do-submit
+  :args (s/cat :cofx ::s.e.accounts/do-submit-response-cofx
+               :event ::s.e.accounts/do-submit-response-event)
+  :ret ::s.e.accounts/do-submit-response)
 
 (kf/reg-event-fx ::do-submit-success   do-submit-success)
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)
@@ -97,10 +115,14 @@
            (assoc ::items items)
            (assoc ::do-fetch-index-state :loaded))})
 
-(defn-spec do-fetch-index-failed ::s.e.accounts/do-fetch-index-failed-response
-  [{:keys [db]} ::s.e.accounts/do-fetch-index-failed-cofx
-   _ ::s.e.accounts/do-fetch-index-failed-event]
+(defn do-fetch-index-failed
+  [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :failed)})
+
+(s/fdef do-fetch-index-failed
+  :args (s/cat :cofx ::s.e.accounts/do-fetch-index-failed-cofx
+               :event ::s.e.accounts/do-fetch-index-failed-event)
+  :ret ::s.e.accounts/do-fetch-index-failed-response)
 
 (defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
   [{:keys [db]} ::s.e.accounts/do-fetch-index-cofx
