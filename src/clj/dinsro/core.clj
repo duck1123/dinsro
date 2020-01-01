@@ -2,7 +2,6 @@
   (:require [dinsro.handler :as handler]
             [dinsro.nrepl :as nrepl]
             [luminus.http-server :as http]
-            [luminus-migrations.core :as migrations]
             [dinsro.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
@@ -22,6 +21,11 @@
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
 
+(defn nrepl-handler []
+  (require 'cider.nrepl)
+  (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
+
+(declare http-server)
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
@@ -32,10 +36,13 @@
   :stop
   (http/stop http-server))
 
+(declare repl-server)
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)
+    (timbre/info "starting in core")
     (nrepl/start {:bind (env :nrepl-bind)
+                  :handler (nrepl-handler)
                   :port (env :nrepl-port)}))
   :stop
   (when repl-server
@@ -47,27 +54,18 @@
   (shutdown-agents))
 
 (defn start-app [args]
-  (doseq [component (-> args
-                        (parse-opts cli-options)
-                        mount/start-with-args
-                        :started)]
-    (timbre/info component "started"))
+  (timbre/info "starting app")
+  (let [options (parse-opts args cli-options)]
+    (doseq [component (-> options mount/start-with-args :started)]
+      (timbre/info component "started")))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
   (mount/start #'dinsro.config/env)
   (cond
-    (nil? (:database-url env))
-    (do
-      (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
-      (System/exit 1))
-    (some #{"init"} args)
-    (do
-      (migrations/init (select-keys env [:database-url :init-script]))
-      (System/exit 0))
-    (migrations/migration? args)
-    (do
-      (migrations/migrate args (select-keys env [:database-url]))
-      (System/exit 0))
+    ;; (nil? (:datahike-url env))
+    ;; (do
+    ;;   (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
+    ;;   (System/exit 1))
     :else
     (start-app args)))

@@ -1,37 +1,31 @@
 (ns dinsro.db.core
-  (:require [camel-snake-kebab.extras :refer [transform-keys]]
-            [camel-snake-kebab.core :refer [->kebab-case-keyword]]
-            [clj-time.jdbc :as jdbc]
-            [conman.core :as conman]
+  (:require [datahike.api :as d]
+            [datahike.config :as d.config]
             [dinsro.config :refer [env]]
             [mount.core :refer [defstate]]
-            [java-time.pre-java8 :as jt]))
+            [taoensso.timbre :as timbre]))
 
-(defstate ^:dynamic *db*
-          :start (conman/connect! {:jdbc-url (env :database-url)})
-          :stop (conman/disconnect! *db*))
+(declare ^:dynamic *conn*)
+(defstate ^:dynamic *conn*
+  "The connection to the datahike database"
+  :start (if-let [uri (env :datahike-url)]
+           (do
+             (when-not (d/database-exists? (d.config/uri->config uri))
+               (timbre/info "Creating database: " uri)
+               (d/create-database uri))
+             (d/connect uri))
+           (throw (ex-info "Could not find uri" {})))
 
-(defn result-one-snake->kebab
-  [this result options]
-  (transform-keys
-   ->kebab-case-keyword
-   (hugsql.adapter/result-one this result options)))
+  :stop (do
+          (timbre/info "stopping real connection")
+          (d/release *conn*)))
 
-(defn result-many-snake->kebab
-  [this result options]
-  (map #(transform-keys ->kebab-case-keyword %)
-       (hugsql.adapter/result-many this result options)))
+(defn create-database
+  []
+  (let [uri (env :datahike-url)]
+    (d/create-database uri)))
 
-(defmethod hugsql.core/hugsql-result-fn :1 [sym]
-  'dinsro.db.core/result-one-snake->kebab)
-
-(defmethod hugsql.core/hugsql-result-fn :one [sym]
-  'dinsro.db.core/result-one-snake->kebab)
-
-(defmethod hugsql.core/hugsql-result-fn :* [sym]
-  'dinsro.db.core/result-many-snake->kebab)
-
-(defmethod hugsql.core/hugsql-result-fn :many [sym]
-  'dinsro.db.core/result-many-snake->kebab)
-
-(conman/bind-connection *db* "sql/queries.sql")
+(defn delete-database
+  []
+  (let [uri (env :datahike-url)]
+    (d/delete-database uri)))

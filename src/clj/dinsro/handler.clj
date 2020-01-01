@@ -1,33 +1,35 @@
 (ns dinsro.handler
-  (:require [dinsro.layout :refer [error-page]]
+  (:require [dinsro.env :refer [defaults]]
+            [datahike.api :as d]
+            [dinsro.db.core :as db]
+            [dinsro.layout :refer [error-page] :as layout]
             [dinsro.middleware :as middleware]
-            [dinsro.routes.authentication :refer [authentication-routes]]
-            [dinsro.routes.home :refer [home-routes]]
-            [dinsro.routes.user :refer [user-routes]]
-            [dinsro.env :refer [defaults]]
+            [dinsro.routes :as routes]
+            [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.categories :as s.categories]
+            [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.rate-sources :as s.rate-sources]
+            [dinsro.spec.rates :as s.rates]
+            [dinsro.spec.transactions :as s.transactions]
+            [dinsro.spec.users :as s.users]
             [mount.core :as mount]
             [reitit.coercion.spec]
             [reitit.ring :as ring]
-            [reitit.ring.coercion :as rrc]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.webjars :refer [wrap-webjars]]))
 
+(declare init-app)
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
   :stop  ((or (:stop defaults) (fn []))))
 
+(declare app-routes)
 (mount/defstate app-routes
   :start
   (ring/ring-handler
-   (ring/router
-    [(home-routes)
-     ["/api/v1" {:middleware [#_middleware/wrap-csrf
-                              middleware/wrap-formats]}
-      (user-routes)
-      (authentication-routes)]])
+   (ring/router routes/routes)
    (ring/routes
-    (ring/create-resource-handler
-     {:path "/"})
+    (ring/create-resource-handler {:path "/"})
     (wrap-content-type
      (wrap-webjars (constantly nil)))
     (ring/create-default-handler
@@ -38,5 +40,18 @@
       :not-acceptable
       (constantly (error-page {:status 406, :title "406 - Not acceptable"}))}))))
 
+(defn init-schemata
+  []
+  (let [schemata [s.accounts/schema
+                  s.categories/schema
+                  s.currencies/schema
+                  s.rates/schema
+                  s.rate-sources/schema
+                  s.transactions/schema
+                  s.users/schema]]
+    (doseq [schema schemata]
+      (d/transact db/*conn* schema))))
+
 (defn app []
+  (init-schemata)
   (middleware/wrap-base #'app-routes))

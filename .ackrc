@@ -1,3 +1,4 @@
+--ignore-dir=.clj-kondo
 --ignore-dir=.idea
 --ignore-dir=coverage
 --ignore-dir=public/js

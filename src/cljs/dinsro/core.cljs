@@ -1,22 +1,21 @@
 (ns dinsro.core
-  (:require [ajax.core :as http]
+  (:require [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
-            [dinsro.components.login-page :as login-page]
+            [dinsro.events.debug :as e.debug]
             [dinsro.routing :as routing]
-            [dinsro.state :as state]
             [dinsro.view :as view]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as timbre]))
 
-(rf/reg-event-fx
-  ::load-about-page
-  (constantly nil))
+(defn initial-db
+  [debug?]
+  {::e.debug/shown?                                      debug?
+   ::e.debug/enabled?                                    debug?
+   :dinsro.spec.events.forms.settings/allow-registration true})
 
-(kf/reg-controller
-  ::about-controller
-  {:params (constantly true)
-   :start  [::load-about-page]})
+(s/def ::app-db (s/keys))
 
 ;; -------------------------
 ;; Initialize app
@@ -24,13 +23,14 @@
   ([] (mount-components true))
   ([debug?]
    (rf/clear-subscription-cache!)
+
+   (s/check-asserts (boolean debug?))
+
    (kf/start!
     {:debug?         (boolean debug?)
      :routes         routing/routes
-     :hash-routing?  true
-     :initial-db     {::state/authenticated false
-                      ::login-page/email    "foo@example.com"
-                      ::login-page/password "hunter2"}
+     :app-db-spec    ::app-db
+     :initial-db     (initial-db (boolean? debug?))
      :root-component [view/root-component]})))
 
 (defn init! [debug?]

@@ -1,14 +1,13 @@
 (ns dinsro.layout
-  (:require [selmer.parser :as parser]
-            [selmer.filters :as filters]
-            [markdown.core :refer [md-to-html-string]]
+  (:require [clojure.java.io :as io]
+            [selmer.parser :as parser]
+            [ring.util.response]
             [ring.util.http-response :refer [content-type ok]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
 
-(parser/set-resource-path!  (clojure.java.io/resource "html"))
+(parser/set-resource-path!  (io/resource "html"))
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
-(filters/add-filter! :markdown (fn [content] [:safe (md-to-html-string content)]))
 
 (defn render
   "renders the HTML template located relative to resources/templates"

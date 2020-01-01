@@ -1,5 +1,6 @@
 (ns ^:figwheel-no-load dinsro.app
   (:require [dinsro.core :as core]
+            [clojure.spec.test.alpha :as stest]
             [cljs.spec.alpha :as s]
             [expound.alpha :as expound]
             [devtools.core :as devtools]))
@@ -16,3 +17,5 @@
 (devtools/install!)
 
 (core/init! true)
+
+(stest/instrument)

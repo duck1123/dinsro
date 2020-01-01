@@ -1,41 +1,57 @@
 (ns dinsro.actions.authentication
-  (:require [clojure.spec.alpha :as s]
-            [crypto.password.bcrypt :as bcrypt]
-            [dinsro.actions.user.create-user :refer [create-user-response]]
-            [dinsro.db.core :as db]
-            [dinsro.model.user :as model.user]
-            [dinsro.specs :as specs]
-            [ring.util.http-response :refer :all]
+  (:require [buddy.hashers :as hashers]
+            [clojure.set :as set]
+            [clojure.spec.alpha :as s]
+            [dinsro.model.users :as m.users]
+            [dinsro.spec.actions.authentication :as s.a.authentication]
+            [dinsro.spec.users :as s.users]
+            [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-(defn check-auth
-  [email password]
-  {:pre [(s/valid? ::specs/email email)]}
-  (if-let [user (db/find-user-by-email {:email email})]
-    (let [{:keys [password-hash]} user]
-      (bcrypt/check password password-hash))))
+(def param-rename-map
+  {:name     ::s.users/name
+   :email    ::s.users/email
+   :password ::s.users/password})
 
-(s/fdef check-auth
-  :args (s/cat :email ::specs/email))
-
-(defn authenticate
+(defn authenticate-handler
   [request]
   (let [{{:keys [email password]} :params} request]
-    (if (check-auth email password)
-      (ok)
-      (unauthorized))))
+    (if (and (seq email) (seq password))
+      (if-let [user (m.users/find-by-email email)]
+        (if-let [password-hash (::s.users/password-hash user)]
+          (if (hashers/check password password-hash)
+            (let [id (:db/id user)]
+              (-> {::s.a.authentication/identity id}
+                  (http/ok)
+                  (assoc-in [:session :identity] id)))
+            ;; Password does not match
+            (http/unauthorized {:status :unauthorized}))
+          ;; No password, invalid user
+          (http/unauthorized {:status :unauthorized}))
+        ;; User not found
+        (http/unauthorized {:status :unauthorized}))
+      (http/bad-request {:status :invalid}))))
 
-(s/fdef authenticate
-  :args (s/cat :authentication-data ::specs/authentication-data))
+(s/fdef authenticate-handler
+  :args (s/cat :request ::s.a.authentication/authenticate-request)
+  :ret ::s.a.authentication/authenticate-response)
 
-(defn register
+(defn register-handler
   "Register a user"
-  [{:keys [params] :as request}]
-  (if (s/valid? ::specs/register-request params)
-    (do
-      (model.user/create-user! params)
-      (ok))
-    (bad-request)))
+  [request]
+  (let [{:keys [params]} request
+        params (-> params
+                   (set/rename-keys param-rename-map)
+                   (select-keys (vals param-rename-map)))]
+    (if (s/valid? ::s.users/params params)
+      (let [id (m.users/create-record params)]
+        (http/ok {:id id}))
+      (http/bad-request {:status :failed}))))
 
-(s/fdef register
-  :args (s/cat :params ::specs/register-request))
+(s/fdef register-handler
+  :args (s/cat :request ::s.a.authentication/register-request)
+  :ret ::s.a.authentication/register-response)
+
+(defn logout-handler
+  [_]
+  (assoc-in (http/ok {:identity nil}) [:session :identity] nil))

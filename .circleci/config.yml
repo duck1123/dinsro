@@ -1,91 +1,21 @@
 version: 2
 jobs:
   build:
-    working_directory: /app
+    working_directory: ~/dinsro
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: circleci/clojure:lein-2.9.1
     steps:
       - checkout
-      - setup_remote_docker
       - restore_cache:
           keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/app.tar | true
-      - run:
-          name: Build application Docker image
-          command: |
-            docker build --cache-from=app -t app .
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/app.tar app
+            - dinsro-{{ checksum "project.clj" }}
+      - run: lein deps
       - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/app.tar
-      # - run:
-      #     name: Run tests
-      #     command: |
-      #       script/cibuild
-  test:
-    working_directory: /app
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/app.tar | true
-      - run:
-          name: Tests
-          command: |
-            set +o pipefail
-            echo "Test"
-            docker run app script/cibuild
-  deploy:
-    working_directory: /app
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/app.tar | true
-      - deploy:
-          name: Push application Docker image
-          command: |
-            docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASS
-            docker tag app "duck1123/dinsro:buildpack-${CIRCLE_SHA1}"
-            docker push "duck1123/dinsro:buildpack-${CIRCLE_SHA1}"
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - deploy:
-          requires:
-            - test
+            - ~/.m2
+          key: dinsro-{{ checksum "project.clj" }}
+      - run: script/test-javascript
+      - run: script/build-production
+      - store_artifacts:
+          path: target/uberjar/dinsro.jar
+          destination: uberjar

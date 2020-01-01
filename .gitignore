@@ -1,3 +1,5 @@
+.clj-kondo/.cache
+.eastwood
 .env
 .idea
 .lein-*
@@ -6,6 +8,8 @@
 *.log
 *.jar
 .nrepl-port
+.rebel_readline_history
+data
 dev-config.edn
 node_modules/
 profiles.clj

@@ -1,13 +1,8 @@
 (ns dinsro.core-test
-  (:require [cljs.test :refer-macros [is are deftest testing use-fixtures]]
-            [pjstadig.humane-test-output]
-            [reagent.core :as reagent :refer [atom]]
-            [dinsro.core :as core]))
+  (:require [cljs.test :refer-macros [is]]
+            [devcards.core :as dc :refer-macros [deftest]]
+            [dinsro.core]))
 
+(declare test-home)
 (deftest test-home
   (is (= true true)))
-
-(deftest paths
-  ;; TODO: not good tests
-  (is (= (core/home-path) "/"))
-  (is (= (core/about-path) "/about")))

@@ -1,6 +1,5 @@
 (ns dinsro.env
   (:require [selmer.parser :as parser]
-            [clojure.tools.logging :as log]
             [dinsro.dev-middleware :refer [wrap-dev]]
             [taoensso.timbre :as timbre]))
 
