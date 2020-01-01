@@ -1,5 +1,5 @@
 (ns starter.doo
-  (:require [doo.runner :refer-macros [doo-tests doo-all-tests]]
+  (:require [doo.runner :refer-macros [doo-all-tests]]
             dinsro.core-test
             dinsro.components.forms.add-user-transaction-test
             dinsro.components.forms.create-transaction-test
@@ -12,7 +12,6 @@
             dinsro.spec.currencies-test
             dinsro.spec.transactions-test
             dinsro.views.about-test
-            dinsro.views.home-test
             dinsro.views.login-test
             ;; dinsro.views.register-test
             ))
