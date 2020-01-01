@@ -23,7 +23,7 @@
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.admin-rates/create-params)
-  :ret  (s/nilable ::s.admin-rates/params))
+  :ret  (s/nilable ::s.rates/params))
 
 ;; Create
 

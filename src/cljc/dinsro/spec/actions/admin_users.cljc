@@ -1,6 +1,7 @@
-(ns dinsro.spec.actions.admin-rates
+(ns dinsro.spec.actions.admin-users
   (:require [clojure.spec.alpha :as s]))
 
+(s/def ::create-params (s/keys))
 (s/def ::create-request (s/keys))
 (s/def ::create-response (s/keys))
 

@@ -2,7 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
             [dinsro.model.transactions :as m.transactions]
-            [dinsro.spec.actions.transactions :as s.a.transactions]
+            [dinsro.spec.actions.admin-transactions :as s.a.admin-transactions]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
             [dinsro.utils :as utils]
@@ -27,7 +27,7 @@
         nil))))
 
 (s/fdef prepare-record
-  :args (s/cat :params ::s.a.transactions/create-params)
+  :args (s/cat :params ::s.a.admin-transactions/create-params)
   :ret  (s/nilable ::s.transactions/params))
 
 ;; Create

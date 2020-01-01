@@ -15,3 +15,4 @@
 (s/def ::register-response (s/keys :req-un [:register/body]))
 
 (s/def ::authenticate-request (s/keys))
+(s/def ::authenticate-response (s/keys))

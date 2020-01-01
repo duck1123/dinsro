@@ -1,5 +1,7 @@
 (ns dinsro.actions.admin-users
-  (:require [dinsro.model.users :as m.user]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.model.users :as m.user]
+            [dinsro.spec.actions.admin-users :as s.a.admin-users]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 

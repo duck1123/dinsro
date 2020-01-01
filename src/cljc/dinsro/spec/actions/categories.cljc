@@ -37,3 +37,6 @@
 (s/def ::delete-response-success (s/keys))
 (s/def ::delete-response (s/keys))
 (def delete-response ::delete-response)
+
+(s/def ::index-request (s/keys))
+(s/def ::index-response (s/keys))

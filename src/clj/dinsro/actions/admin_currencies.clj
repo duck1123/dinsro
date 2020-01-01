@@ -26,7 +26,7 @@
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.admin-currencies/create-params)
-  :ret  (s/nilable ::s.admin-currencies/params))
+  :ret  (s/nilable ::s.currencies/params))
 
 ;; Create
 

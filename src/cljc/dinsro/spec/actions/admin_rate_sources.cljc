@@ -1,4 +1,4 @@
-(ns dinsro.spec.actions.admin-rates
+(ns dinsro.spec.actions.admin-rate-sources
   (:require [clojure.spec.alpha :as s]))
 
 (s/def ::create-request (s/keys))
