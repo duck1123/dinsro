@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
             [dinsro.model.accounts :as m.accounts]
+            [dinsro.spec.actions.admin-accounts :as s.a.admin-accounts]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.utils :as utils]
             [ring.util.http-response :as http]
@@ -39,7 +40,7 @@
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.admin-accounts/create-params)
-  :ret  (s/nilable ::s.admin-accounts/params))
+  :ret  (s/nilable ::s.accounts/params))
 
 ;; Create
 

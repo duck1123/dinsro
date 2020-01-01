@@ -1,4 +1,4 @@
-(ns dinsro.spec.actions.accounts
+(ns dinsro.spec.actions.admin-accounts
   (:require [clojure.spec.alpha :as s]
             [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
@@ -20,11 +20,11 @@
                    ::s.accounts/currency-id]))
 (def create-params ::create-params)
 
-(s/def :create-account-valid/params ::create-params-valid)
-(s/def ::create-request-valid (s/keys :req-un [:create-account-valid/params]))
+(s/def :create-admin-account-valid/params ::create-params-valid)
+(s/def ::create-request-valid (s/keys :req-un [:create-admin-account-valid/params]))
 
-(s/def :create-account/params ::create-params)
-(s/def ::create-request (s/keys :req-un [:create-account/params]))
+(s/def :create-admin-account/params ::create-params)
+(s/def ::create-request (s/keys :req-un [:create-admin-account/params]))
 
 (s/def ::create-response (s/keys))
 
@@ -33,17 +33,17 @@
 (s/def ::read-request (s/keys :req-un [:common-request-show/path-params]))
 (def read-request ::read-request)
 
-(s/def :read-account-response-body/item ::s.accounts/item)
-(s/def :read-account-response-success/body
-  (s/keys :req-un [:read-account-response-body/item]))
-(s/def ::read-response-success
-  (s/keys :req-un [:read-account-response-success/body]))
+(s/def :read-admin-account-response-body/item ::s.accounts/item)
+(s/def ::read-request-body (s/keys :req-un [:read-admin-account-response-body/item]))
 
-(s/def :read-account-response-not-found-body/status #{:not-found})
-(s/def :read-account-response-not-found/body
-  (s/keys :req-un [:read-account-response-not-found-body/status]))
-(s/def ::read-response-not-found
-  (s/keys :req-un [:read-account-response-not-found/body]))
+(s/def :read-admin-account-response-success/body ::read-request-body)
+(s/def ::read-response-success (s/keys :req-un [:read-admin-account-response-success/body]))
+
+(s/def :read-admin-account-response-not-found-body/status ::ds/not-found-status)
+(s/def ::read-response-not-found-body (s/keys :req-un [:read-admin-account-response-not-found-body/status]))
+
+(s/def :read-account-response-not-found/body ::read-response-not-found-body)
+(s/def ::read-response-not-found (s/keys :req-un [:read-account-response-not-found/body]))
 
 (s/def ::read-response
   (s/or :success   ::read-response-success

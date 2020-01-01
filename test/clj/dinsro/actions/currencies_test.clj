@@ -45,7 +45,7 @@
     (is (= [record] items))))
 
 (deftest create-handler-valid
-  (let [request (ds/gen-key ::s.a.currencies/create-handler-request-valid)
+  (let [request (ds/gen-key ::s.a.currencies/create-request-valid)
         response (a.currencies/create-handler request)
         id (get-in response [:body :item :db/id])
         created-record (m.currencies/read-record id)]

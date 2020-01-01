@@ -39,7 +39,7 @@
     #_(is (= true response))))
 
 (deftest create-handler-valid
-  (let [request (ds/gen-key ::s.a.rates/create-handler-request-valid)
+  (let [request (ds/gen-key ::s.a.rates/create-request-valid)
         response (a.rates/create-handler request)]
     (is (= status/ok (:status response)))
     (let [id (get-in response [:body :item :db/id])]

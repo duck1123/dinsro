@@ -39,5 +39,5 @@
       (http/bad-request {:status :bad-request}))))
 
 (s/fdef read-handler
-  :args (s/cat :request ::s.a.users/read-handler-request)
-  :ret ::s.a.users/read-handler-response)
+  :args (s/cat :request ::s.a.users/read-request)
+  :ret ::s.a.users/read-response)

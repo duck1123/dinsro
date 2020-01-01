@@ -44,7 +44,7 @@
     (is (= [user] items))))
 
 (deftest create-handler-valid
-  (let [request (ds/gen-key ::s.a.accounts/create-handler-request-valid)
+  (let [request (ds/gen-key ::s.a.accounts/create-request-valid)
         response (a.accounts/create-handler request)]
     (is (= status/ok (:status response)))
     #_(is (= nil response))))

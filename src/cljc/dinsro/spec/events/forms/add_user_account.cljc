@@ -19,9 +19,9 @@
 (s/def ::user-id ::ds/id-string)
 (def user-id ::user-id)
 
-(s/def ::create-handler-request
+(s/def ::create-request
   (s/keys :req-un [::s.accounts/name]))
-(def create-handler-request ::create-handler-request)
+(def create-request ::create-request)
 
 (s/def ::form-bindings (s/cat
                         :name ::name

@@ -11,29 +11,29 @@
 
 ;; Create
 
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-category-valid/params]))
-(s/def ::create-handler-request (s/keys :req-un [:create-category/params]))
-(s/def ::create-handler-response (s/keys))
+(s/def ::create-request-valid (s/keys :req-un [:create-category-valid/params]))
+(s/def ::create-request (s/keys :req-un [:create-category/params]))
+(s/def ::create-response (s/keys))
 
 ;; Read
 
-(s/def ::read-handler-request ::ds/common-read-request)
-(def read-handler-request ::read-handler-request)
+(s/def ::read-request ::ds/common-read-request)
+(def read-request ::read-request)
 
 (s/def :read-category-response-success/body ::s.categories/item #_(s/keys :req-un []))
 (s/def :read-category-response-success/status #{200})
-(s/def ::read-handler-response-success (s/keys :req-un [:read-category-response-success/body]))
-(def read-handler-response-success ::read-handler-response-success)
+(s/def ::read-response-success (s/keys :req-un [:read-category-response-success/body]))
+(def read-response-success ::read-response-success)
 
-(s/def ::read-handler-response (s/or :success   ::read-handler-response-success
+(s/def ::read-response (s/or :success   ::read-response-success
                                      :not-found ::ds/common-response-not-found))
-(def read-handler-response ::read-handler-response)
+(def read-response ::read-response)
 
 ;; Delete
 
-(s/def ::delete-handler-request (s/keys :req-un [:common-request-show/path-params]))
+(s/def ::delete-request (s/keys :req-un [:common-request-show/path-params]))
 
-(s/def ::delete-handler-response-invalid (s/keys))
-(s/def ::delete-handler-response-success (s/keys))
-(s/def ::delete-handler-response (s/keys))
-(def delete-handler-response ::delete-handler-response)
+(s/def ::delete-response-invalid (s/keys))
+(s/def ::delete-response-success (s/keys))
+(s/def ::delete-response (s/keys))
+(def delete-response ::delete-response)

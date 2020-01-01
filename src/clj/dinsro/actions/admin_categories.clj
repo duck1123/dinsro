@@ -38,8 +38,8 @@
    (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
-  :args (s/cat :request ::s.a.categories/create-handler-request)
-  :ret ::s.a.categories/create-handler-response)
+  :args (s/cat :request ::s.a.categories/create-request)
+  :ret ::s.a.categories/create-response)
 
 (defn index-handler
   [_]
@@ -57,8 +57,8 @@
     (http/not-found {:status :not-found})))
 
 (s/fdef read-handler
-  :args (s/cat :request ::s.a.categories/read-handler-request)
-  :ret ::s.a.categories/read-handler-response)
+  :args (s/cat :request ::s.a.categories/read-request)
+  :ret ::s.a.categories/read-response)
 
 (defn delete-handler
   [{{:keys [id]} :path-params}]
@@ -69,11 +69,5 @@
     (http/bad-request {:input :invalid})))
 
 (s/fdef delete-handler
-  :args (s/cat :request ::s.a.categories/delete-handler-request)
-  :ret ::s.a.categories/delete-handler-response)
-
-(comment
-  (create-handler {})
-  (prepare-record {::s.categories/name "foo"})
-  (delete-handler {:path-params {:id "s"}})
-  )
+  :args (s/cat :request ::s.a.categories/delete-request)
+  :ret ::s.a.categories/delete-response)

@@ -12,62 +12,62 @@
 ;; Create
 
 (s/def :create-rates-request-valid/params (s/keys :req-un [::s.rates/rate ::currency-id ::s.rates/date]))
-(s/def ::create-handler-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
-(def create-handler-request-valid ::create-handler-request-valid)
+(s/def ::create-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
+(def create-request-valid ::create-request-valid)
 
 (s/def :create-rates-request/params (s/keys :opt-un [::s.rates/rate ::currency-id]))
-(s/def ::create-handler-request (s/keys :req-un [:create-rates-request/params]))
-(def create-handler-request ::create-handler-request)
+(s/def ::create-request (s/keys :req-un [:create-rates-request/params]))
+(def create-request ::create-request)
 
 (comment
-  (ds/gen-key create-handler-request-valid)
-  (ds/gen-key create-handler-request)
+  (ds/gen-key create-request-valid)
+  (ds/gen-key create-request)
   )
 
 (s/def :create-rates-response-valid/body (s/keys :req-un [::s.rates/item]))
 (s/def :create-rates-response-valid/status #{status/ok})
-(s/def ::create-handler-response-valid (s/keys :req-un [:create-rates-response-valid/body
+(s/def ::create-response-valid (s/keys :req-un [:create-rates-response-valid/body
                                                         :create-rates-response-valid/status]))
-(def create-handler-response-valid ::create-handler-response-valid)
+(def create-response-valid ::create-response-valid)
 
-(s/def ::create-handler-response (s/or :invalid ::ds/common-response-invalid
-                                       :valid   ::create-handler-response-valid))
-(def create-handler-response ::create-handler-response)
+(s/def ::create-response (s/or :invalid ::ds/common-response-invalid
+                                       :valid   ::create-response-valid))
+(def create-response ::create-response)
 
 (comment
-  (ds/gen-key create-handler-response)
+  (ds/gen-key create-response)
   )
 
 ;; Read
 
 (s/def :read-rates-request/path-params (s/keys :req-un []))
-(s/def ::read-handler-request (s/keys :req-un [:read-rates-request/path-params]))
-(def read-handler-request ::read-handler-request)
+(s/def ::read-request (s/keys :req-un [:read-rates-request/path-params]))
+(def read-request ::read-request)
 
 (s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
-(s/def ::read-handler-response-valid (s/keys :req-un [:read-rates-response/body]))
-(def read-handler-response-valid ::read-handler-response-valid)
+(s/def ::read-response-valid (s/keys :req-un [:read-rates-response/body]))
+(def read-response-valid ::read-response-valid)
 
-(s/def ::read-handler-response (s/or :not-found ::ds/common-response-not-found
-                                     :valid     ::read-handler-response-valid))
-(def read-handler-response ::read-handler-response)
+(s/def ::read-response (s/or :not-found ::ds/common-response-not-found
+                                     :valid     ::read-response-valid))
+(def read-response ::read-response)
 
 ;; Delete
 
 (s/def :delete-rates-request-params/id (s/with-gen string? #(gen/fmap str (s/gen pos-int?))))
 (s/def :delete-rates-request/path-params (s/keys :req-un [:delete-rates-request-params/id]))
-(s/def ::delete-handler-request (s/keys :req-un [:delete-rates-request/path-params]))
-(def delete-handler-request ::delete-handler-request)
+(s/def ::delete-request (s/keys :req-un [:delete-rates-request/path-params]))
+(def delete-request ::delete-request)
 
-(s/def ::delete-handler-response (s/keys))
-(def delete-handler-response ::delete-handler-response)
+(s/def ::delete-response (s/keys))
+(def delete-response ::delete-response)
 
 ;; Index
 
-(s/def ::index-handler-request (s/keys))
-(def index-handler-request ::index-handler-request)
+(s/def ::index-request (s/keys))
+(def index-request ::index-request)
 
 (s/def :index-rates-response/items (s/coll-of ::s.rates/item))
 (s/def :index-rates-response/body (s/keys :req-un [:index-rates-response/items]))
-(s/def ::index-handler-response (s/keys :req-un [:index-rates-response/body]))
-(def index-handler-response ::index-handler-response)
+(s/def ::index-response (s/keys :req-un [:index-rates-response/body]))
+(def index-response ::index-response)

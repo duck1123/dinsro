@@ -50,7 +50,7 @@
 
 (s/fdef register-handler
   :args (s/cat :request ::s.a.authentication/register-request)
-  :ret ::s.a.authentication/register-handler-response)
+  :ret ::s.a.authentication/register-response)
 
 (defn logout-handler
   [_]
