@@ -8,8 +8,7 @@
 
 (defn show-account
   [account]
-  (let [id (:db/id account)
-        name (::s.accounts/name account)
+  (let [name (::s.accounts/name account)
         user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:<>

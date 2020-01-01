@@ -7,12 +7,8 @@
             [dinsro.translations :refer [tr]]))
 
 (defn rate-line
-  ;; vector?
-  [item
-   ;; ::s.rates/item
-   ]
-  (let [id (:db/id item)
-        value (::s.rates/rate item)
+  [item]
+  (let [value (::s.rates/rate item)
         currency-id (get-in item [::s.rates/currency :db/id])]
     [:tr
      [:td (str (::s.rates/date item))]
@@ -38,4 +34,5 @@
          ^{:key (:db/id item)} [rate-line item]))])])
 
 (s/fdef section
+  :args (s/cat :items ::s.rates/item)
   :ret vector?)
