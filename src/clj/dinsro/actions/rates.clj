@@ -4,7 +4,6 @@
             [dinsro.model.rates :as m.rates]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.rates :as s.rates]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))

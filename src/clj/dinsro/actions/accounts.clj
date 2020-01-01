@@ -6,7 +6,6 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [dinsro.utils :as utils]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
@@ -20,8 +19,10 @@
     (some-> params key str Integer/parseInt)
     (catch NumberFormatException _ nil)))
 
-(defn-spec prepare-record (s/nilable ::s.accounts/params)
-  [params :create-account/params]
+;; Prepare
+
+(defn prepare-record
+  [params]
   (let [currency-id (get-as-int params :currency-id)
         user-id (get-as-int params :user-id)
         initial-value (some-> params :initial-value str Double/parseDouble)
@@ -37,30 +38,58 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params)))
         nil))))
 
-(defn-spec create-handler ::s.a.accounts/create-handler-response
-  [{:keys [params session]} ::s.a.accounts/create-handler-request]
+(s/fdef prepare-record
+  :args (s/cat :params ::s.a.accounts/create-params)
+  :ret  (s/nilable ::s.accounts/params))
+
+;; Create
+
+(defn create-handler
+  [{:keys [params]}]
   (or (when-let [params (prepare-record params)]
         (let [id (m.accounts/create-record params)]
           (http/ok {:item (m.accounts/read-record id)})))
       (http/bad-request {:status :invalid})))
 
-(defn-spec index-handler ::s.a.accounts/index-handler-response
-  [_ ::s.a.accounts/index-handler-request]
-  (let [accounts (m.accounts/index-records)]
-    (http/ok {:items accounts})))
+(s/fdef create-handler
+  :args (s/cat :request ::s.a.accounts/create-request)
+  :ret ::s.a.accounts/create-response)
 
-(defn-spec read-handler ::s.a.accounts/read-handler-response
-  [request ::s.a.accounts/read-handler-request]
+;; Read
+
+(defn read-handler
+  [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (if-let [account (m.accounts/read-record {:id id})]
       (http/ok account)
       (http/not-found {}))
     (http/bad-request {:status :bad-request})))
 
-(defn-spec delete-handler ::s.a.accounts/delete-handler-response
-  [{{:keys [id]} :path-params} ::s.a.accounts/delete-handler-request]
+(s/fdef read-handler
+  :args (s/cat :request ::s.a.accounts/read-request)
+  :ret ::s.a.accounts/read-response)
+
+;; Delete
+
+(defn delete-handler
+  [{{:keys [id]} :path-params}]
   (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _))]
     (do
       (m.accounts/delete-record id)
       (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
+
+(s/fdef delete-handler
+  :args (s/cat :request ::s.a.accounts/delete-request)
+  :ret ::s.a.accounts/delete-response)
+
+;; Index
+
+(defn index-handler
+  [_]
+  (let [accounts (m.accounts/index-records)]
+    (http/ok {:items accounts})))
+
+(s/fdef index-handler
+  :args (s/cat :request ::s.a.accounts/index-request)
+  :ret ::s.a.accounts/index-response)

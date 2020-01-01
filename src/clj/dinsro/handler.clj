@@ -18,10 +18,12 @@
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.webjars :refer [wrap-webjars]]))
 
+(declare init-app)
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
   :stop  ((or (:stop defaults) (fn []))))
 
+(declare app-routes)
 (mount/defstate app-routes
   :start
   (ring/ring-handler
