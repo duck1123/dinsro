@@ -1,4 +1,5 @@
 (ns dinsro.spec.events.forms.create-currency
+  (:refer-clojure :exclude [name])
   (:require [clojure.spec.alpha :as s]))
 
 (def default-name "Foo")

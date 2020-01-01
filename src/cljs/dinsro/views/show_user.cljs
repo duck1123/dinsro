@@ -2,18 +2,18 @@
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.show-user :refer [show-user]]
             [dinsro.components.user-accounts :as c.user-accounts]
             [dinsro.components.user-categories :as c.user-categories]
+            [dinsro.components.user-transactions :as c.user-transactions]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.transactions :as e.transactions]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))
@@ -41,28 +41,29 @@
 
 (defn load-buttons
   [id]
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-users]
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-categories]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-user id]]))
+  [:div.box
+   [c.buttons/fetch-users]
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-categories]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-transactions]
+   [c.buttons/fetch-user id]])
 
 (defn page-loaded
   [id]
-  (if-let [user @(rf/subscribe [::e.users/item (int id)])]
-    (let [user-id (:db/id user)
-          accounts @(rf/subscribe [::e.accounts/items-by-user user-id])
-          categories @(rf/subscribe [::e.categories/items-by-user user-id])
-          transactions @(rf/subscribe [::e.transactions/items-by-user user-id])]
+  (if-let [user @(rf/subscribe [::e.users/item id])]
+    (let [user-id (:db/id user)]
       [:<>
        [:div.box
         [:h1 "Show User"]
         [show-user user]]
-       [c.user-categories/section user-id categories]
-       [c.user-accounts/section user-id accounts]
-       [c.user-transactions/section user-id transactions]])
+       [:<>
+        (when-let [categories @(rf/subscribe [::e.categories/items-by-user user-id])]
+          [c.user-categories/section user-id categories])
+        (when-let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+          [c.user-accounts/section user-id accounts])
+        (when-let [transactions @(rf/subscribe [::e.transactions/items-by-user user-id])]
+          [c.user-transactions/section user-id transactions])]])
     [:p "User not found"]))
 
 (s/fdef page-loaded
@@ -78,7 +79,7 @@
   (let [{{:keys [id]} :path-params} match
         state @(rf/subscribe [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [load-buttons id]
+     (c.debug/hide [load-buttons id])
      (condp = state
        :invalid [:p "invalid"]
        :failed [:p "Failed"]

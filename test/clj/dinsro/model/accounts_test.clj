@@ -1,15 +1,13 @@
 (ns dinsro.model.accounts-test
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [clojure.test :refer [deftest is use-fixtures]]
+  (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
             [datahike.config :refer [uri->config]]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.accounts :as m.accounts]
+            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 
@@ -41,7 +39,7 @@
   (is (= [] (m.accounts/index-records))))
 
 (deftest read-record-not-found
-  (let [id (gen/generate (s/gen ::ds/id))]
+  (let [id (ds/gen-key ::ds/id)]
     (is (= nil (m.accounts/read-record id)))))
 
 (deftest read-record-found

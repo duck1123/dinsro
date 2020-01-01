@@ -2,13 +2,15 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.events.rates :as s.e.rates]
             [dinsro.spec.rates :as s.rates]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
-(s/def ::items                   (s/coll-of ::s.rates/item))
-(rf/reg-sub ::items              (fn [db _] (get db ::items [])))
+(s/def ::items (s/coll-of ::s.rates/item))
+(rf/reg-sub ::items (fn [db _] (get db ::items [])))
 
 (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
 
@@ -37,7 +39,7 @@
   [cofx event]
   (let [{:keys [db]} cofx
         [{:keys [items]}] event
-        items (map (fn [item] (update item ::s.rates/date #(js/Date. %))) items)]
+        items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
     {:db (-> db
              (assoc ::items items)
              (assoc ::do-fetch-index-state :loaded))}))
@@ -90,26 +92,21 @@
 
 ;; Delete
 
-(s/def ::do-delete-record-success-cofx (s/keys))
-(s/def ::do-delete-record-failed-cofx (s/keys))
-(s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
-
 (defn do-delete-record-success
   [_ _]
   {:dispatch [::do-fetch-index]})
 
 (s/fdef do-delete-record-success
-  :args (s/cat :cofx ::do-delete-record-success-cofx
-               :event any?)
-  :ret (s/keys))
+  :args (s/cat :cofx ::s.e.rates/do-delete-record-success-cofx
+               :event ::s.e.rates/do-delete-record-success-event)
+  :ret ::s.e.rates/do-delete-record-success-response)
 
 (defn do-delete-record-failed
   [_ _]
   {:dispatch [::do-fetch-index]})
 
 (s/fdef do-delete-record-failed
-  :args (s/cat :cofx ::do-delete-record-failed-cofx
+  :args (s/cat :cofx ::s.e.rates/do-delete-record-failed-cofx
                :event any?)
   :ret (s/keys))
 
@@ -125,8 +122,8 @@
       :on-failure      [::do-delete-record-failed]}}))
 
 (s/fdef do-delete-record
-  :args (s/cat :cofx ::do-delete-record-cofx
-               :event ::do-delete-record-event)
+  :args (s/cat :cofx ::s.e.rates/do-delete-record-cofx
+               :event ::s.e.rates/do-delete-record-event)
   :ret (s/keys))
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)

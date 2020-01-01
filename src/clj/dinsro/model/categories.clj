@@ -2,39 +2,59 @@
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
             [dinsro.db.core :as db]
+            [dinsro.spec :as ds]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec prepare-account ::s.categories/params
-  [params ::s.categories/params]
-  params)
-
-(defn-spec create-record ::ds/id
-  [params ::s.categories/params]
+(defn create-record
+  [params]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "record-id")]})]
     (get-in response [:tempids "record-id"])))
 
-(defn-spec read-record (s/nilable ::s.categories/item)
-  [id ::ds/id]
+(s/fdef create-record
+  :args (s/cat :params ::s.categories/params)
+  :ret ::ds/id)
+
+(defn read-record
+  [id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.categories/name)
       record)))
 
-(defn-spec index-ids (s/coll-of ::ds/id)
+(s/fdef read-record
+  :args (s/cat :id ::ds/id)
+  :ret  (s/nilable ::s.categories/item))
+
+(defn index-ids
   []
   (map first (d/q '[:find ?e :where [?e ::s.categories/name _]] @db/*conn*)))
 
-(defn-spec index-records (s/* ::s.categories/item)
+(s/fdef index-ids
+  :args (s/cat)
+  :ret (s/coll-of ::ds/id))
+
+(defn index-records
   []
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
-(defn-spec delete-record any?
-  [id ::ds/id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+(s/fdef index-records
+  :args (s/cat)
+  :ret (s/coll-of ::s.categories/item))
 
-(defn-spec delete-all nil?
+(defn delete-record
+  [id]
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+  nil)
+
+(s/fdef delete-record
+  :args (s/cat :id ::ds/id)
+  :ret nil?)
+
+(defn delete-all
   []
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(s/fdef delete-all
+  :args (s/cat)
+  :ret nil?)

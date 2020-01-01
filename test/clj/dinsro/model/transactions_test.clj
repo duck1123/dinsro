@@ -6,11 +6,11 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [taoensso.timbre :as timbre]))
 
@@ -56,8 +56,8 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::s.transactions/params)
-        id (m.transactions/create-record params)]
+  (let [params (ds/gen-key ::s.transactions/params)]
+    (m.transactions/create-record params)
     (is (not= [params] (m.transactions/index-records)))))
 
 (deftest delete-record

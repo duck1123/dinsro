@@ -7,7 +7,7 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.rates :as s.a.rates]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.rates :as s.rates]
@@ -39,12 +39,14 @@
     #_(is (= true response))))
 
 (deftest create-handler-valid
-  (let [request (ds/gen-key ::s.a.rates/create-handler-request-valid)
+  (let [request (ds/gen-key ::s.a.rates/create-request-valid)
         response (a.rates/create-handler request)]
     (is (= status/ok (:status response)))
     (let [id (get-in response [:body :item :db/id])]
       (is (not (nil? ident?)))
       (let [created-record (m.rates/read-record id)]
+        (is (not (nil? created-record))
+            "Created record can be read")
         (is (= (:name request) (::s.rates/name response)))))))
 
 (deftest create-handler-invalid

@@ -1,18 +1,19 @@
 (ns dinsro.views.show-currency
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
+            [dinsro.components.currency-accounts :as c.currency-accounts]
+            [dinsro.components.currency-rates :as c.currency-rates]
+            [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
-            [dinsro.components.index-accounts :as c.index-accounts]
-            [dinsro.components.index-rates :refer [index-rates]]
-            [dinsro.components.rate-chart :as c.rate-chart]
-            [dinsro.components.show-currency :refer [show-currency]]
+            [dinsro.components.debug :as c.debug]
+            [dinsro.components.show-currency :as c.show-currency]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
+            [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
-            [dinsro.translations :refer [tr]]
+            [dinsro.spec.accounts :as s.accounts]
+            [dinsro.spec.categories :as s.categories]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
@@ -43,49 +44,49 @@
 
 (defn loading-buttons
   [id]
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-rates]
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-currency id]]))
+  (c.debug/hide
+   [:div.box
+    [c.buttons/fetch-rates]
+    [c.buttons/fetch-accounts]
+    [c.buttons/fetch-currencies]
+    [c.buttons/fetch-rate-sources]
+    [c.buttons/fetch-currency id]]))
 
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
 
-(defn rates-section
-  [currency-id rates]
-  [:div.box
-   [:h2 "Rates"]
-   [c.f.add-currency-rate/form currency-id]
-   [:hr]
-   [c.rate-chart/rate-chart rates]
-   [index-rates rates]])
+(defn page-loaded
+  [currency]
+  (let [currency-id (:db/id currency)]
+    [:<>
+     [:div.box [c.show-currency/show-currency currency]]
+     (when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
+       [c.currency-rates/section currency-id rates])
+     (when-let [accounts (some->> @(rf/subscribe [::e.accounts/items-by-currency currency])
+                                  (sort-by ::s.accounts/date))]
+       [c.currency-accounts/section accounts])
+     (when-let [rate-sources @(rf/subscribe [::e.rate-sources/items
+                                             ;; -by-currency currency
+                                             ])]
+       [c.currency-rate-sources/section currency-id rate-sources])]))
 
-(defn accounts-section
-  [accounts]
-  [:div.box
-   [:h2 "Accounts"]
-   [c.index-accounts/index-accounts accounts]])
+(s/fdef page-loaded
+  :args (s/cat :currency ::s.categories/item)
+  :ret vector?)
 
 (defn page
   [{{:keys [id]} :path-params}]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
-        rates @(rf/subscribe [::e.rates/items-by-currency currency])
-        state @(rf/subscribe [::e.currencies/do-fetch-record-state])
-        accounts @(rf/subscribe [::e.accounts/items-by-currency currency])]
+        state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
      [loading-buttons id]
-     [:div.box
-      (condp = state
-        :loaded [show-currency currency]
-        :loading [:p "Loading"]
-        :failed [:p "Failed"]
-        [:p "Unknown State"])]
-     [accounts-section accounts]
-     [rates-section currency-id rates]]))
+     (condp = state
+       :loaded [page-loaded currency]
+       :loading [:p "Loading"]
+       :failed [:p "Failed"]
+       [:p "Unknown State"])]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)

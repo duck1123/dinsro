@@ -8,30 +8,18 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
-(rfu/reg-basic-sub ::s.e.f.create-rate/date)
-(rfu/reg-set-event ::s.e.f.create-rate/date)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/time)
-(rfu/reg-set-event ::s.e.f.create-rate/time)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/rate)
-(rfu/reg-set-event ::s.e.f.create-rate/rate)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/currency-id)
-(rfu/reg-set-event ::s.e.f.create-rate/currency-id)
-
 (defn form-data-sub
-  [[currency-id rate date time]]
+  [[rate date] [_ currency-id]]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
-   :date        (js/Date. (str date "T" time))})
+   :date        date #_(js/Date. (str date "T" time))})
 
 (rf/reg-sub
  ::form-data
- :<- [::s.e.f.create-rate/currency-id]
  :<- [::s.e.f.create-rate/rate]
  :<- [::s.e.f.create-rate/date]
  form-data-sub)
+(def form-data ::form-data)
 
 (defn init-form
   [{:keys [db]} _]
@@ -41,8 +29,3 @@
     {:db (merge db default-opts)}))
 
 (kf/reg-event-fx ::init-form init-form)
-
-(kf/reg-controller
- ::form-controller
- {:params (constantly true)
-  :start [::init-form]})

@@ -8,9 +8,6 @@
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
                  [cider/cider-nrepl "0.23.0-SNAPSHOT"]
-                 [clj-http "3.10.0"]
-                 ;; [clj-time "0.15.2"]
-                 ;; [cljc.java-time "0.1.7"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
@@ -23,7 +20,6 @@
                  [expound "0.7.2"]
                  [funcool/struct "1.4.0"]
                  [io.replikativ/datahike "0.2.0" :exclusions [args4j]]
-                 #_[org.eclipse.jetty/jetty-server "9.3.7.v20160115"]
                  [kee-frame "0.3.3" :exclusions [mvxcvi/arrangement
                                                  metosin/reitit-core
                                                  org.clojure/core.async]]
@@ -39,7 +35,6 @@
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520" :scope "provided"]
-                 ;; [org.clojure/core.rrb-vector "0.0.14"]
                  [org.clojure/core.rrb-vector "0.1.1"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
@@ -102,7 +97,10 @@
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]
              :cljsbuild
-             {:builds {:min {:source-paths ["src/cljc" "src/cljs" "env/prod/cljs"]
+             {:builds {:min {:source-paths ["src/cljc"
+                                            "src/cljs"
+                                            "env/prod/cljs"
+                                            "env/prod/cljc"]
                              :compiler
                              {:output-dir    "target/cljsbuild/public/js"
                               :output-to     "target/cljsbuild/public/js/app.js"
@@ -115,11 +113,12 @@
                               :externs       ["react/externs/react.js"]}}}}
              :aot :all
              :uberjar-name "dinsro.jar"
-             :source-paths ["env/prod/clj"]
+             :source-paths ["env/prod/clj" "env/prod/cljc"]
              :resource-paths ["env/prod/resources"]}
 
    :dev           [:project/dev :profiles/dev]
    :test          [:project/dev :project/test :profiles/test]
+   :devcards      [:project/devcards :test]
 
    :project/dev {:jvm-opts ["-Dconf=dev-config.edn"
                             "-Dclojure.spec.check-asserts=true"
@@ -162,16 +161,6 @@
                                               :preloads        [day8.re-frame-10x.preload]
                                               :pretty-print    true}}
 
-                    ;; :devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                    ;;            :figwheel     {:devcards true}
-                    ;;            :compiler     {:main "dinsro.devcards"
-                    ;;                           :asset-path "js/devcards_out"
-                    ;;                           :output-to "target/cljsbuild/public/js/app_devcards.js"
-                    ;;                           :output-dir "target/cljsbuild/public/js/devcards_out"
-                    ;;                           :source-map-timestamp true
-                    ;;                           :optimizations :none
-                    ;;                           :pretty-print true}}
-
                     }}
 
                  :doo {:build "test"
@@ -181,11 +170,26 @@
                  :repl-options   {:init-ns user}
                  :injections     [(require 'pjstadig.humane-test-output)
                                   (pjstadig.humane-test-output/activate!)]}
+   :project/devcards {:figwheel {:server-port 3450
+                                 :nrepl-port 7003}
+                      :cljsbuild
+                      {:builds
+                       {:devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs" "test/cljs" "test/cljc"]
+                                   :figwheel     {:devcards true}
+                                   :compiler     {:main "starter.doo"
+                                                  :asset-path "/js/devcards_out"
+                                                  :output-to "target/cljsbuild/public/js/devcards.js"
+                                                  :output-dir "target/cljsbuild/public/js/devcards_out"
+                                                  :source-map-timestamp true
+                                                  :optimizations :none
+                                                  ;; :pretty-print true
+                                                  }}}}}
+
    :project/test
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
     :cljsbuild
-    {:builds {:test {:source-paths ["src/cljc" "src/cljs" "test/cljs"]
+    {:builds {:test {:source-paths ["src/cljc" "src/cljs" "test/cljs" "test/cljc"]
                      :compiler
                      {:output-to     "target/test.js"
                       :main          "starter.doo"

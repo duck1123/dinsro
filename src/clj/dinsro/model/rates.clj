@@ -2,44 +2,77 @@
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
             [dinsro.db.core :as db]
+            [dinsro.spec :as ds]
             [dinsro.spec.rates :as s.rates]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [tick.alpha.api :as tick]))
 
-(defn-spec prepare-record ::s.rates/params
-  [params ::s.rates/params]
-  (let [rate (::s.rates/rate params)]
-    (update params ::s.rates/rate double)))
+(defn prepare-record
+  [params]
+  (update params ::s.rates/rate double))
 
-(defn-spec create-record ::ds/id
-  [params ::s.rates/params]
+(s/fdef prepare-record
+  :args (s/cat :params ::s.rates/params)
+  :ret ::s.rates/params)
+
+(defn create-record
+  [params]
   (let [tempid (d/tempid "rate-id")
-        prepared-params (assoc (prepare-record params) :db/id tempid)
+        prepared-params (-> (prepare-record params)
+                            (assoc :db/id tempid)
+                            (update ::s.rates/date tick/inst))
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
-(defn-spec read-record (s/nilable ::s.rates/item)
-  [id ::ds/id]
+(s/fdef create-record
+  :args (s/cat :params ::s.rates/params)
+  :ret ::ds/id)
+
+(defn read-record
+  [id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.rates/rate)
-      record)))
+      (update record ::s.rates/date tick/instant))))
 
-(defn-spec index-ids (s/coll-of ::ds/id)
+(s/fdef read-record
+  :args (s/cat :id ::ds/id)
+  :ret  (s/nilable ::s.rates/item))
+
+(defn index-ids
   []
   (map first (d/q '[:find ?e :where [?e ::s.rates/rate _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.rates/item :kind vector?)
+(s/fdef index-ids
+  :args (s/cat)
+  :ret (s/coll-of ::ds/id))
+
+(defn index-records
   []
   (->> (index-ids)
-       (d/pull-many @db/*conn* '[*])))
+       (d/pull-many @db/*conn* '[*])
+       (sort-by ::s.rates/date)
+       (reverse)
+       (take 20)
+       (map #(update % ::s.rates/date tick/instant))))
 
-(defn-spec delete-record nil?
-  [id ::ds/id]
+(s/fdef index-records
+  :args (s/cat)
+  :ret (s/coll-of ::s.rates/item))
+
+(defn delete-record
+  [id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 
-(defn-spec delete-all nil?
+(s/fdef delete-record
+  :args (s/cat :id ::ds/id)
+  :ret nil?)
+
+(defn delete-all
   []
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(s/fdef delete-all
+  :args (s/cat)
+  :ret nil?)

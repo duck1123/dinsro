@@ -6,7 +6,7 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.users :as s.users]
             [mount.core :as mount]
@@ -48,8 +48,8 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::s.currencies/params)
-        id (m.currencies/create-record params)]
+  (let [params (ds/gen-key ::s.currencies/params)]
+    (m.currencies/create-record params)
     (is (not= [params] (m.currencies/index-records)))))
 
 (deftest delete-record

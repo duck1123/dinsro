@@ -3,18 +3,16 @@
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.backends.token :refer [jwe-backend]]
-            [buddy.auth.middleware :refer [wrap-authentication]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.core.nonce :refer [random-bytes]]
-            [buddy.sign.jwt :refer [encrypt]]
             [dinsro.env :refer [defaults]]
-            [cljc.java-time.instant :as instant]
             [clojure.tools.logging :as log]
             [dinsro.layout :refer [error-page]]
             [dinsro.middleware.formats :as formats]
             [muuntaja.middleware :refer [wrap-format wrap-params]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
-            [ring-ttl-session.core :refer [ttl-memory-store]]
+            [ring.middleware.session.cookie :refer [cookie-store]]
             [taoensso.timbre :as timbre]))
 
 (defn wrap-internal-error [handler]
@@ -43,36 +41,43 @@
       ;; since they're not compatible with this middleware
       ((if (:websocket? request) handler wrapped) request))))
 
-(defn on-error [request response]
+(defn on-error [request _response]
   {:status  403
    :headers {"Content-Type" "text/plain"}
    :body    (str "Access to " (:uri request) " is not authorized")})
 
 (defn wrap-restricted [handler]
-  (restrict handler {:handler authenticated?
+  (restrict handler {:handler (fn [request] (authenticated? request))
                      :on-error on-error}))
 
-(def secret (random-bytes 32))
+(defn wrap-restricted2
+  [handler]
+  (restrict handler {:handler (fn [request] (authenticated? request))
+                     :on-error on-error}))
+
+;; TODO: store the secret
+(def secret
+  (random-bytes 16))
 
 (def token-backend
   (jwe-backend {:secret secret
                 :options {:alg :a256kw
                           :enc :a128gcm}}))
 
-(defn token [username]
-  (let [claims {:user (keyword username)
-                :exp (instant/plus-seconds (instant/now) (* 60 60))}]
-    (encrypt claims secret {:alg :a256kw :enc :a128gcm})))
+(defn users-authenticated?
+  [request]
+  (authenticated? request)
+  false)
 
 (def rules
-  [{:uri "/api/v1/users" :handler authenticated?}])
+  [{:uri "/api/v1/users" :handler users-authenticated?}])
 
 (defn wrap-auth [handler]
   (let [backend (session-backend)]
     (-> handler
         ;; (wrap-access-rules {:rules rules :on-error on-error})
         (wrap-authentication backend)
-        #_(wrap-authorization backend))))
+        (wrap-authorization backend))))
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
@@ -80,5 +85,6 @@
       (wrap-defaults
        (-> site-defaults
            (assoc-in [:security :anti-forgery] false)
-           (assoc-in [:session :store] (ttl-memory-store (* 60 30)))))
+           #_(assoc-in [:session :store] (ttl-memory-store (* 60 30)))
+           (assoc-in [:session :store] (cookie-store {:key secret}))))
       wrap-internal-error))

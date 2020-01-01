@@ -1,23 +1,22 @@
 (ns dinsro.components.index-categories
   (:require [clojure.spec.alpha :as s]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.categories :as s.categories]
-            [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]))
+            [dinsro.translations :refer [tr]]))
 
-(defn-spec category-line vector?
-  [item ::s.categories/item]
-  (let [id (:db/id item)
-        name (::s.categories/name item)
+(defn category-line
+  [item]
+  (let [name (::s.categories/name item)
         user-id (get-in item [::s.categories/user :db/id])]
     [:tr
      [:td name]
      [:td [c.links/user-link user-id]]
-     #_(c.debug/hide [:td [c.buttons/delete-category item]])]))
+     (c.debug/hide [:td [c.buttons/delete-category item]])]))
 
-(defn-spec index-categories vector?
-  [items (s/coll-of any? #_::s.categories/item)]
+(defn index-categories
+  [items]
   [:<>
    [c.debug/debug-box items]
    (if-not (seq items)
@@ -26,6 +25,11 @@
       [:thead>tr
        [:th (tr [:name])]
        [:th (tr [:user])]
-       #_(c.debug/hide [:th (tr [:actions])])]
-      (->> (for [item items] ^{:key (:db/id item)} [category-line item])
-           (into [:tbody]))])])
+       (c.debug/hide [:th (tr [:actions])])]
+      (into
+       [:tbody]
+       (for [item items] ^{:key (:db/id item)} [category-line item]))])])
+
+(s/fdef index-categories
+  :args (s/cat :item ::s.categories/item)
+  :ret vector?)

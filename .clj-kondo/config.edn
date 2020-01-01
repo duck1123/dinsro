@@ -1,9 +1,14 @@
 {:linters
  {
+  :lint-as {devcards.core/deftest cljs.test/deftest
+            devcards.core/defcard-rg cljs.core/def
+            mount.core/defstate schema.core/def
+            }
+
   :unused-namespace {:exclude [dinsro.translations
                                taoensso.timbre]}
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
 
-  :unresolved-symbol {:exclude [(orchestra.core/defn-spec)]}
+  ;; :unresolved-symbol {:exclude [(orchestra.core/defn-spec)]}
   }}

@@ -8,6 +8,7 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.currencies :as s.currencies]
+            [dinsro.spec.rate-sources :as s.rate-sources]
             [dinsro.spec.rates :as s.rates]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
@@ -17,17 +18,18 @@
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.webjars :refer [wrap-webjars]]))
 
+(declare init-app)
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
   :stop  ((or (:stop defaults) (fn []))))
 
+(declare app-routes)
 (mount/defstate app-routes
   :start
   (ring/ring-handler
    (ring/router routes/routes)
    (ring/routes
-    (ring/create-resource-handler
-     {:path "/"})
+    (ring/create-resource-handler {:path "/"})
     (wrap-content-type
      (wrap-webjars (constantly nil)))
     (ring/create-default-handler
@@ -44,6 +46,7 @@
                   s.categories/schema
                   s.currencies/schema
                   s.rates/schema
+                  s.rate-sources/schema
                   s.transactions/schema
                   s.users/schema]]
     (doseq [schema schemata]

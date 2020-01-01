@@ -25,6 +25,7 @@
   (require 'cider.nrepl)
   (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
 
+(declare http-server)
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
@@ -35,6 +36,7 @@
   :stop
   (http/stop http-server))
 
+(declare repl-server)
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)
@@ -52,19 +54,18 @@
   (shutdown-agents))
 
 (defn start-app [args]
-  (doseq [component (-> args
-                        (parse-opts cli-options)
-                        mount/start-with-args
-                        :started)]
-    (timbre/info component "started"))
+  (timbre/info "starting app")
+  (let [options (parse-opts args cli-options)]
+    (doseq [component (-> options mount/start-with-args :started)]
+      (timbre/info component "started")))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
   (mount/start #'dinsro.config/env)
   (cond
-    (nil? (:datahike-url env))
-    (do
-      (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
-      (System/exit 1))
+    ;; (nil? (:datahike-url env))
+    ;; (do
+    ;;   (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
+    ;;   (System/exit 1))
     :else
     (start-app args)))

@@ -7,15 +7,13 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.transactions :as s.a.transactions]
             [dinsro.spec.currencies :as s.currencies]
             [dinsro.spec.transactions :as s.transactions]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
-            [ring.mock.request :as mock]
             [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
 (def uri "datahike:file:///tmp/file-example2")
@@ -34,39 +32,42 @@
       (f))))
 
 (deftest prepare-record
-  (let [currency-id 1
-        account-id 1
+  (let [account-id 1
+        description "foo"
         value 1
         date (tick/instant)
-        params {:currency-id (str currency-id)
-                :account-id (str account-id)
+        params {:account-id account-id
+                :description description
                 :date (str date)
-                :value (str value)}
+                :value value}
         response (a.transactions/prepare-record params)
-        expected {::s.transactions/currency {:db/id currency-id}
-                  ::s.transactions/date date
+        expected {::s.transactions/date date
+                  ::s.transactions/description description
                   ::s.transactions/value (double value)
                   ::s.transactions/account {:db/id account-id}}]
-    (is (= expected response))))
+    (is (= expected response)
+        "Returns all params in the expected format")))
 
 (deftest create-record-response-test
   (let [request (ds/gen-key s.a.transactions/create-request-valid)
-        response (a.transactions/create-handler request #_{:params params})]
-    (is (= (:status response) status/ok))))
+        response (a.transactions/create-handler request)]
+    (is (= (:status response) status/ok)
+        "returns ok status")))
 
 (deftest index-handler-empty
-  (let [path "/transactions"
-        request (mock/request :get path)
+  (let [request {}
         response (a.transactions/index-handler request)]
-    (is (= (:status response) status/ok))))
+    (is (= (:status response) status/ok)
+        "returns ok status")))
 
 (deftest index-handler-with-records
-  (let [path "/transactions"
-        user (mocks/mock-transaction)
-        request (mock/request :get path)
+  (mocks/mock-transaction)
+  (let [request {}
         response (a.transactions/index-handler request)]
-    (is (= (:status response) status/ok))
-    (is (= 1 (count (:items (:body response)))))))
+    (is (= (:status response) status/ok)
+        "returns ok status")
+    (is (= 1 (count (:items (:body response))))
+        "returns only a single record")))
 
 (deftest create-handler-invalid
   (let [params {}
@@ -81,20 +82,23 @@
         request {:path-params {:id (str id)}}]
     (is (not (nil? (m.transactions/read-record id))))
     (let [response (a.transactions/delete-handler request)]
-      (is (= status/ok (:status response)))
-      (is (nil? (m.transactions/read-record id))))))
+      (is (= status/ok (:status response))
+          "returns ok status")
+      (is (nil? (m.transactions/read-record id))
+          "record can no longer be found"))))
 
 (deftest read-handler-success
   (let [item (mocks/mock-transaction)
         id (str (:db/id item))
         request {:path-params {:id id}}
         response (a.transactions/read-handler request)]
-    (is (= status/ok (:status response)))
-    (is (= item (get-in response [:body :item])))))
+    (is (= status/ok (:status response))
+        "returns ok status")
+    (is (= item (get-in response [:body :item]))
+        "returns item")))
 
 (deftest read-handler-not-found
-  (let [id (ds/gen-key :read-currency-request-path-params/id)
-        request {:path-params {:id id}}
+  (let [request (ds/gen-key ::ds/common-read-request)
         response (a.transactions/read-handler request)]
     (is (= status/not-found (:status response))
         "Returns a not-found status")

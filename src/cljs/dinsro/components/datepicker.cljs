@@ -1,6 +1,5 @@
 (ns dinsro.components.datepicker
-  (:require [reagent.core :as r]
-            [taoensso.timbre :as timbre]))
+  (:require [reagent.core :as r]))
 
 (defn mount-component
   [comp]
@@ -13,7 +12,7 @@
               (on-select value))))))
 
 (defn update-component
-  [comp]
+  [_]
   #_(mount-component comp))
 
 (defn datepicker-inner
@@ -21,7 +20,7 @@
   (r/create-class
    {:component-did-mount mount-component
     :component-did-update update-component
-    :reagent-render (fn [comp] [:input.input])}))
+    :reagent-render (fn [_] [:input.input])}))
 
 (defn datepicker-outer
   [config]

@@ -2,32 +2,28 @@
   (:require [dinsro.events.accounts :as e.accounts]
             [dinsro.events.categories :as e.categories]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.rate-sources :as e.rate-sources]
             [dinsro.events.rates :as e.rates]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec delete-account vector?
-  [account ::s.accounts/item]
+(defn delete-account
+  [account]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.accounts/do-delete-record account])}
    (tr [:delete])])
 
-(defn-spec delete-category vector?
-  [category ::s.categories/item]
+(defn delete-category
+  [category]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.categories/do-delete-record category])}
    (tr [:delete])])
 
-(defn-spec delete-currency vector?
-  [currency ::s.currencies/item]
+(defn delete-currency
+  [currency]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
    (tr [:delete])])
@@ -38,8 +34,20 @@
    {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
    (tr [:delete])])
 
-(defn-spec delete-user vector?
-  [user ::s.users/item]
+(defn delete-rate-source
+  [item]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.rate-sources/do-delete-record item])}
+   (tr [:delete])])
+
+(defn delete-transaction
+  [item]
+  [:a.button.is-danger
+   {:on-click #(rf/dispatch [::e.transactions/do-delete-record item])}
+   (tr [:delete])])
+
+(defn delete-user
+  [user]
   [:a.button.is-danger
    {:on-click #(rf/dispatch [::e.users/do-delete-record user])}
    (tr [:delete])])
@@ -67,6 +75,12 @@
   (let [state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
      (tr [:fetch-currency] [currency-id state])]))
+
+(defn fetch-rate-sources
+  []
+  (let [state @(rf/subscribe [::e.rate-sources/do-fetch-index-state])]
+    [:a.button {:on-click #(rf/dispatch [::e.rate-sources/do-fetch-index])}
+     (tr [:fetch-rate-sources] [state])]))
 
 (defn fetch-rates
   []

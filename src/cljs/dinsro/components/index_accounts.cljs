@@ -1,17 +1,14 @@
 (ns dinsro.components.index-accounts
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec row-line vector?
-  [account ::s.accounts/item]
+(defn row-line
+  [account]
   (let [id (:db/id account)
-        name (::s.accounts/name account)
         initial-value (::s.accounts/initial-value account)
         currency-id (get-in account [::s.accounts/currency :db/id])
         user-id (get-in account [::s.accounts/user :db/id])]
@@ -23,8 +20,8 @@
      [:td initial-value]
      (c.debug/hide [:td [c.buttons/delete-account account]])]))
 
-(defn-spec index-accounts vector?
-  [accounts (s/coll-of ::s.accounts/item)]
+(defn index-accounts
+  [accounts]
   [:<>
    [c.debug/debug-box accounts]
    (if-not (seq accounts)

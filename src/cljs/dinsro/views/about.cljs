@@ -1,5 +1,4 @@
-(ns dinsro.views.about
-  (:require [dinsro.translations :refer [tr]]))
+(ns dinsro.views.about)
 
 (defn page []
   [:section.section>div.container>div.content

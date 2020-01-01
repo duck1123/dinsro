@@ -1,13 +1,12 @@
 (ns dinsro.views.index-accounts
-  (:require [dinsro.components :as c]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.forms.create-account :as c.f.create-account]
-            [dinsro.components.index-accounts :refer [index-accounts]]
+            [dinsro.components.debug :as c.debug]
+            [dinsro.components.user-accounts :as c.user-accounts]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.users :as e.users]
-            [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
@@ -19,6 +18,9 @@
                 [::e.users/do-fetch-index]
                 [::e.currencies/do-fetch-index]]})
 
+(s/fdef init-page
+  :ret (s/keys))
+
 (kf/reg-event-fx ::init-page init-page)
 
 (kf/reg-controller
@@ -28,25 +30,31 @@
 
 (defn loading-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-users]]))
+  [:div.box
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-users]])
+
+(s/fdef loading-buttons
+  :ret vector?)
 
 (defn page
   [_]
-  (let [accounts @(rf/subscribe [::e.accounts/items])
-        state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
+  (if-let [user-id @(rf/subscribe [:dinsro.events.authentication/auth-id])]
     [:section.section>div.container>div.content
-     [loading-buttons]
-     [:div.box
-      [:h1
-       (tr [:index-accounts])
-       [c/show-form-button ::c.f.create-account/shown? ::c.f.create-account/set-shown?]]
-      [c.f.create-account/form]
-      [:hr]
-      (condp = state
-        :invalid [:p "Invalid"]
-        :loaded  [index-accounts accounts]
-        [:p "Unknown state: " state])]]))
+     (c.debug/hide [loading-buttons])
+
+     (let [state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
+       (condp = state
+         :invalid
+         [:p "Invalid"]
+
+         :loaded
+         (let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+           [c.user-accounts/section user-id accounts])
+
+         [:p "Unknown state: " state]))]
+    [:p "Not Authenticated"]))
+
+(s/fdef page
+  :ret vector?)

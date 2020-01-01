@@ -7,12 +7,11 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [dinsro.spec.actions.currencies :as s.a.currencies]
             [dinsro.spec.currencies :as s.currencies]
             [mount.core :as mount]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [ring.util.http-status :as status]))
 
 (def example-request {:name "foo"})
 
@@ -46,10 +45,12 @@
     (is (= [record] items))))
 
 (deftest create-handler-valid
-  (let [request (ds/gen-key ::s.a.currencies/create-handler-request-valid)
+  (let [request (ds/gen-key ::s.a.currencies/create-request-valid)
         response (a.currencies/create-handler request)
         id (get-in response [:body :item :db/id])
         created-record (m.currencies/read-record id)]
+    (is (not (nil? created-record))
+        "record can be read")
     (is (= status/ok (:status response)))
     (is (= (:name request) (::s.currencies/name response)))))
 
@@ -78,8 +79,7 @@
     (is (= currency (get-in response [:body :item])))))
 
 (deftest read-handler-not-found
-  (let [id (ds/gen-key :read-currency-request-path-params/id)
-        request {:path-params {:id id}}
+  (let [request (ds/gen-key ::ds/common-read-request)
         response (a.currencies/read-handler request)]
     (is (= status/not-found (:status response)) "Returns a not-found status")
     (is (= :not-found (get-in response [:body :status])) "Has a not found status field")))

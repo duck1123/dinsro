@@ -7,12 +7,11 @@
             [dinsro.db.core :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.users :as m.users]
+            [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
             [mount.core :as mount]
             [ring.mock.request :as mock]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+            [ring.util.http-status :as status]))
 
 (def uri "datahike:file:///tmp/file-example2")
 
@@ -39,9 +38,8 @@
     (is (= (:status response) status/ok))))
 
 (deftest index-handler-with-records
-  (let [path "/users"
-        _user (mocks/mock-user)
-        request (mock/request :get path)
+  (mocks/mock-user)
+  (let [request {}
         response (a.users/index-handler request)]
     (is (= (:status response) status/ok))
     (is (= 1 (count (:body response))))))

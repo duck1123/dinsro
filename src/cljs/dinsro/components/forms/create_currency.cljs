@@ -2,23 +2,25 @@
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.currencies :as e.currencies]
+            [dinsro.events.forms.create-currency :as e.f.create-currency]
+            [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as timbre]))
 
 (kf/reg-controller
  ::form-controller
  {:params (constantly true)
-  :start [::set-defaults]})
+  :start [::e.f.create-currency/set-defaults]})
 
-(defn-spec form vector?
+(defn form
   []
-  (let [form-data @(rf/subscribe [::form-data])]
-    (when @(rf/subscribe [::shown?])
+  (let [form-data @(rf/subscribe [::e.f.create-currency/form-data])]
+    (when @(rf/subscribe [::e.f.create-currency/shown?])
       [:<>
-       [c/close-button ::set-shown?]
+       [c/close-button ::e.f.create-currency/set-shown?]
        [c.debug/debug-box form-data]
        [:form
-        [c/text-input     (tr [:name])   ::name ::set-name]
+        [c/text-input (tr [:name]) ::s.e.f.create-currency/name]
         [c/primary-button (tr [:submit]) [::e.currencies/do-submit form-data]]]])))

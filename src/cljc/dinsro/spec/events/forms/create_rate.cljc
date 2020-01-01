@@ -1,12 +1,12 @@
 (ns dinsro.spec.events.forms.create-rate
   (:refer-clojure :exclude [time])
   (:require [clojure.spec.alpha :as s]
-            [dinsro.specs :as ds]))
+            [dinsro.spec :as ds]))
 
 (s/def ::rate string?)
 (def rate ::rate)
 
-(s/def ::currency-id ds/id-string)
+(s/def ::currency-id ds/id-string-opt)
 (def currency-id ::currency-id)
 
 (s/def ::date string?)

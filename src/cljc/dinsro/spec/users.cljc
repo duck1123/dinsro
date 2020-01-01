@@ -1,6 +1,6 @@
 (ns dinsro.spec.users
   (:require [clojure.spec.alpha :as s]
-            [dinsro.specs :as ds]
+            [dinsro.spec :as ds]
             [taoensso.timbre :as timbre]))
 
 (s/def ::password string?)

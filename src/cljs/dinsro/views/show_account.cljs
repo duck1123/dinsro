@@ -1,22 +1,19 @@
 (ns dinsro.views.show-account
   (:require [clojure.spec.alpha :as s]
             [dinsro.components :as c]
+            [dinsro.components.account-transactions :as c.account-transactions]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.add-account-transaction :as c.f.add-account-transaction]
-            [dinsro.components.index-transactions :refer [index-transactions]]
             [dinsro.components.show-account :refer [show-account]]
             [dinsro.events.accounts :as e.accounts]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
-            [dinsro.specs :as ds]
-            [dinsro.spec.events.forms.add-account-transaction :as s.e.f.add-account-transaction]
+            [dinsro.spec :as ds]
+            [dinsro.spec.transactions :as s.transactions]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 
 (s/def ::init-page-cofx (s/keys))
@@ -44,25 +41,14 @@
 
 (defn load-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-transactions]]))
-
-(defn transactions-section
-  [_]
   [:div.box
-   [:h2
-    (tr [:transactions])
-    [c/show-form-button
-     ::s.e.f.add-account-transaction/shown?
-     ::s.e.f.add-account-transaction/set-shown?]]
-   [c.f.add-account-transaction/form]
-   [:hr]
-   (let [items @(rf/subscribe [::e.transactions/items])]
-     [c.debug/debug-box items]
-     [index-transactions items])])
+   [c.buttons/fetch-accounts]
+   [c.buttons/fetch-currencies]
+   [c.buttons/fetch-transactions]])
+
+(defn debug-items
+  [items]
+  (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
 
 (s/def :show-account-view/id          ::ds/id-string)
 (s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
@@ -74,12 +60,15 @@
         id (int id)
         account @(rf/subscribe [::e.accounts/item id])]
     [:section.section>div.container>div.content
-     [load-buttons]
+     (c.debug/hide [load-buttons])
      [:div.box
       [:h1 (tr [:show-account])]
       (when account
         [show-account account])]
-     [transactions-section id]]))
+     (when account
+       (let [items @(rf/subscribe [::e.transactions/items-by-account id])
+             transactions (sort-by ::s.transactions/date items)]
+         [c.account-transactions/section id transactions]))]))
 
 (s/fdef page
   :args (s/cat :match ::view-map)

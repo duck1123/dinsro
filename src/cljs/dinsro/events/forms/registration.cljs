@@ -2,8 +2,7 @@
   (:require [dinsro.spec.events.forms.registration :as s.e.f.registration]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+            [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::s.e.f.registration/name)
 (rfu/reg-set-event ::s.e.f.registration/name)
@@ -39,3 +38,4 @@
  :<- [::s.e.f.registration/email]
  :<- [::s.e.f.registration/password]
  form-data-sub)
+(def form-data ::form-data)

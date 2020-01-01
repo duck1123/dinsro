@@ -1,5 +1,6 @@
 (ns dinsro.spec.events.accounts
   (:require [clojure.spec.alpha :as s]
+            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.actions.accounts :as s.a.accounts]
             [taoensso.timbre :as timbre]))
@@ -9,9 +10,17 @@
 (s/def ::items (s/coll-of ::s.accounts/item))
 (def items ::items)
 
+(s/def ::sub-item-event (s/cat
+                         :event-name keyword?
+                         :id ::ds/id))
+
+(comment
+  (ds/gen-key ::sub-item-event)
+  )
+
 ;; Index
 
-(s/def ::do-fetch-index-state keyword?)
+(s/def ::do-fetch-index-state ::ds/state)
 
 (s/def ::do-fetch-index-cofx (s/keys))
 (s/def ::do-fetch-index-event vector?)

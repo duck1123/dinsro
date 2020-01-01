@@ -2,16 +2,20 @@
   (:require [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
+            [dinsro.events.forms.login :as e.f.login]
+            [dinsro.spec.events.forms.login :as s.e.f.login]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec form vector?
-  [return-to string?]
-  (let [form-data @(rf/subscribe [::form-data])]
+(defn form
+  [return-to]
+  (let [form-data @(rf/subscribe [::e.f.login/form-data])]
     [:form.is-centered
      [c.debug/debug-box form-data]
-     [c/email-input (tr [:email]) ::email ::set-email]
-     [c/password-input (tr [:password]) ::password ::set-password]
-     [c/primary-button (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]))
+     [:div.field>div.control
+      [c/email-input (tr [:email]) ::s.e.f.login/email]]
+     [:div.field>div.control
+      [c/password-input (tr [:password]) ::s.e.f.login/password]]
+     [:div.field>div.control
+      [c/primary-button (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]]))

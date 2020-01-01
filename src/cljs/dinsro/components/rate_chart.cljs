@@ -2,7 +2,7 @@
   (:require [cljsjs.highcharts]
             [dinsro.spec.rates :as s.rates]
             [reagent.core :as r]
-            [taoensso.timbre :as timbre]))
+            [tick.alpha.api :as tick]))
 
 (defn mount-chart [comp]
   (.chart js/Highcharts (r/dom-node comp) (clj->js (r/props comp))))
@@ -14,7 +14,7 @@
   (r/create-class
    {:component-did-mount   mount-chart
     :component-did-update  update-chart
-    :reagent-render        (fn [comp] [:div])}))
+    :reagent-render        (fn [_] [:div])}))
 
 (defn chart-outer [config]
   [chart-inner config])
@@ -29,7 +29,7 @@
                 {:series {:label {:connectorAllowed false}}}
                 :series [{:name "USD"
                           :data (map (fn [item]
-                                       [(.getTime (::s.rates/date item))
+                                       [(.getTime (tick/inst (::s.rates/date item)))
                                         (::s.rates/rate item)])
                                      items)}]}]
     [chart-outer config]))

@@ -1,9 +1,11 @@
 (ns dinsro.routing
   (:require [dinsro.views.about :as about]
+            [dinsro.views.admin :as v.admin]
             [dinsro.views.home :as home]
             [dinsro.views.index-accounts :as index-accounts]
             [dinsro.views.index-categories :as v.index-categories]
             [dinsro.views.index-currencies :as index-currencies]
+            [dinsro.views.index-rate-sources :as v.index-rate-sources]
             [dinsro.views.index-rates :as index-rates]
             [dinsro.views.index-transactions :as index-transactions]
             [dinsro.views.index-users :as index-users]
@@ -16,21 +18,28 @@
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
+(defn unknown-page
+  []
+  [:<>])
+
 (def mappings
-  {:about-page            about/page
-   :home-page             home/page
-   :index-accounts-page   index-accounts/page
-   :index-categories-page v.index-categories/page
-   :index-currencies-page index-currencies/page
-   :index-rates-page      index-rates/page
-   :index-transactions-page      index-transactions/page
-   :index-users-page      index-users/page
-   :login-page            login/page
-   :register-page         register/page
-   :settings-page         settings/page
-   :show-account-page     show-account/page
-   :show-currency-page    show-currency/page
-   :show-user-page        show-user/page
+  {:about-page              about/page
+   :admin-page              v.admin/page
+   :cards-page              unknown-page
+   :home-page               home/page
+   :index-accounts-page     index-accounts/page
+   :index-categories-page   v.index-categories/page
+   :index-currencies-page   index-currencies/page
+   :index-rate-sources-page v.index-rate-sources/page
+   :index-rates-page        index-rates/page
+   :index-transactions-page index-transactions/page
+   :index-users-page        index-users/page
+   :login-page              login/page
+   :register-page           register/page
+   :settings-page           settings/page
+   :show-account-page       show-account/page
+   :show-currency-page      show-currency/page
+   :show-user-page          show-user/page
    })
 
 (def api-routes
@@ -45,6 +54,12 @@
     [""             :api-index-currencies]
     ["/:id"         :api-show-currency]]
    ["/logout"       :api-logout]
+   ["/rate-sources"
+    [""             :api-index-rate-sources]
+    ["/:id"
+     ["" :api-show-rate-source]
+     ["/run" :api-run-rate-source]
+     ]]
    ["/rates"
     [""             :api-index-rates]
     ["/:id"         :api-show-rate]]
@@ -62,6 +77,9 @@
     [""               :index-accounts-page]
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
+   ["/admin"
+    ["" :admin-page]]
+   ["/cards" :cards-page]
    ["/categories"
     [""               :index-categories-page]
     ["/:id"           :show-category-page]]
@@ -69,6 +87,9 @@
     [""               :index-currencies-page]
     ["/:id"           :show-currency-page]]
    ["/login"          :login-page]
+   ["/rate-sources"
+    [""               :index-rate-sources-page]
+    ["/:id"           :show-rate-sources-page]]
    ["/rates"          :index-rates-page]
    ["/register"       :register-page]
    ["/transactions"   :index-transactions-page]
@@ -76,6 +97,11 @@
    ["/users"
     [""               :index-users-page]
     ["/:id"           :show-user-page]]])
+
+(comment
+  routes
+
+         )
 
 (rf/reg-sub
  :nav/route

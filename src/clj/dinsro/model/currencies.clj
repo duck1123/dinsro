@@ -2,38 +2,60 @@
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
             [dinsro.db.core :as db]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec index-ids (s/coll-of ::ds/id)
+(defn index-ids
   []
   (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.currencies/item)
+(s/fdef index-ids
+  :args (s/cat)
+  :ret (s/coll-of ::ds/id))
+
+(defn index-records
   []
-  (->> (index-ids)
-       (d/pull-many @db/*conn* '[::s.currencies/name :db/id])))
+  (d/pull-many @db/*conn* '[::s.currencies/name :db/id] (index-ids)))
 
-(defn-spec create-record :db/id
-  [params ::s.currencies/params]
-  (let [params (assoc params :db/id "currency-id")]
-    (let [response (d/transact db/*conn* {:tx-data [params]})]
-      (get-in response [:tempids "currency-id"]))))
+(s/fdef index-records
+  :args (s/cat)
+  :ret (s/coll-of ::s.currencies/item))
 
-(defn-spec read-record (s/nilable ::s.currencies/item)
-  [id :db/id]
+(defn create-record
+  [params]
+  (let [params (assoc params :db/id "currency-id")
+        response (d/transact db/*conn* {:tx-data [params]})]
+    (get-in response [:tempids "currency-id"])))
+
+(s/fdef create-record
+  :args (s/cat :params ::s.currencies/params)
+  :ret ::ds/id)
+
+(defn read-record
+  [id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.currencies/name)
       record)))
 
-(defn-spec delete-record nil?
-  [id ::ds/id]
+(s/fdef read-record
+  :args (s/cat :id ::ds/id)
+  :ret  (s/nilable ::s.currencies/item))
+
+(defn delete-record
+  [id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 
-(defn-spec delete-all nil?
+(s/fdef delete-record
+  :args (s/cat :id ::ds/id)
+  :ret nil?)
+
+(defn delete-all
   []
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(s/fdef delete-all
+  :args (s/cat)
+  :ret nil?)

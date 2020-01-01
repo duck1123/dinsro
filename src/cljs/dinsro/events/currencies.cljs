@@ -1,33 +1,40 @@
 (ns dinsro.events.currencies
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
+            [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
-            [dinsro.specs :as ds]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
+            [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
 
 (def items-sub-default [])
 
 (s/def ::items (s/coll-of ::s.currencies/item))
+(rfu/reg-basic-sub ::items)
+(rfu/reg-set-event ::items)
+(def items ::items)
+
 (s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(def item-map ::item-map)
 
-(defn-spec items-sub ::s.currencies/item
-  [db any? _ any?]
-  (get db ::items items-sub-default))
-
-(defn-spec sub-item-map ::item-map
-  [db any? event any?]
+(defn sub-item-map
+  [db _]
   (get db ::item-map))
 
-(rf/reg-sub ::items                  items-sub)
+(s/fdef sub-item-map
+  :ret ::item-map)
+
 (rf/reg-sub ::item-map               sub-item-map)
 
 (defn item-sub
   [item-map [_ id]]
-  (get item-map id)
-  #_(first (filter #(= (:db/id %) id) items)))
+  (get item-map id))
+
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event any?)
+  :ret ::s.currencies/item)
 
 (rf/reg-sub
  ::item
@@ -37,11 +44,11 @@
 ;; Create
 
 (defn do-submit-success
-  [_ data]
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ response]
+  [_ _]
   {})
 
 (defn do-submit
@@ -75,10 +82,14 @@
 (s/def ::do-fetch-record-failed-event (s/keys))
 (s/def ::do-fetch-record-failed-response (s/keys))
 
-(defn-spec do-fetch-record-failed ::do-fetch-record-failed-response
-  [{:keys [db] :as cofx} ::do-fetch-record-failed-cofx
-   event ::do-fetch-record-failed-event]
+(defn do-fetch-record-failed
+  [{:keys [db]} _]
   {:db (assoc db ::do-fetch-record-state :failed)})
+
+(s/fdef do-fetch-record-failed
+  :args (s/cat :cofx ::do-fetch-record-failed-cofx
+               :event ::do-fetch-record-failed-event)
+  :ret ::do-fetch-record-failed-response)
 
 (defn do-fetch-record
   [{:keys [db]} [id]]
@@ -97,7 +108,7 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [cofx [{:keys [id]}]]
+  [_ [{:keys [id]}]]
   {:dispatch [::do-fetch-index id]})
 
 (defn do-delete-record-failed

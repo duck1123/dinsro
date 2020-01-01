@@ -5,10 +5,9 @@
             [dinsro.config :as config]
             [dinsro.db.core :as db]
             [dinsro.model.users :as m.users]
+            [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]
-            [dinsro.specs :as ds]
-            [mount.core :as mount]
-            [taoensso.timbre :as timbre]))
+            [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")
 
@@ -24,8 +23,7 @@
       (f))))
 
 (deftest create-record-valid
-  (let [id-key "user-id"
-        params (ds/gen-key ::s.users/params)
+  (let [params (ds/gen-key ::s.users/params)
         {:keys [dinsro.spec.users/email]} params
         id (m.users/create-record params)
         user (m.users/read-record id)]
@@ -33,9 +31,9 @@
 
 (deftest create-record-invalid
   (let [params (ds/gen-key ::s.users/params)
-        {:keys [dinsro.spec.users/email]} params
-        id (m.users/create-record params)
-        user (m.users/read-record id)]
+        id (m.users/create-record params)]
+    (m.users/read-record id)
+    ;; TODO: Throw a better error
     (is (thrown? RuntimeException (m.users/create-record params)))))
 
 (deftest read-record

@@ -5,6 +5,7 @@
             [mount.core :refer [defstate]]
             [taoensso.timbre :as timbre]))
 
+(declare ^:dynamic *conn*)
 (defstate ^:dynamic *conn*
   "The connection to the datahike database"
   :start (if-let [uri (env :datahike-url)]

@@ -1,0 +1,7 @@
+FROM clojure
+
+LABEL maintainer="Duck Nebuchadnezzar <duck@kronkltd.net>"
+MAINTAINER Duck Nebuchadnezzar <duck@kronkltd.net>
+
+WORKDIR /usr/src/app
+

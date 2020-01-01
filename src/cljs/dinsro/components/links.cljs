@@ -7,26 +7,25 @@
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(defn-spec account-link vector?
-  [id pos-int?]
+(defn account-link
+  [id]
   (if-let [item @(rf/subscribe [::e.accounts/item id])]
     (let [name (::s.accounts/name item)]
       [:a {:href (kf/path-for [:show-account-page {:id id}])} name])
     [:span (tr [:not-loaded])]))
 
-(defn-spec currency-link vector?
-  [id pos-int?]
+(defn currency-link
+  [id]
   (if-let [currency @(rf/subscribe [::e.currencies/item id])]
     (let [name (::s.currencies/name currency)]
       [:a {:href (kf/path-for [:show-currency-page {:id id}])} name])
     [:span (tr [:not-loaded])]))
 
-(defn-spec user-link vector?
-  [id pos-int?]
+(defn user-link
+  [id]
   (if-let [user @(rf/subscribe [::e.users/item id])]
     (let [name (::s.users/name user)]
       [:a {:href (kf/path-for [:show-user-page {:id id}])} name])

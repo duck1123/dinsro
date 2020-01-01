@@ -3,9 +3,11 @@
             [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.debug :as e.debug]
+            [dinsro.events.users :as e.users]
+            [dinsro.spec.events.forms.settings :as s.e.f.settings]
+            [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -23,7 +25,7 @@
   (update db ::expanded? not))
 
 (defn nav-link-activated
-  [{:keys [db]} _]
+  [_ _]
   {:dispatch [::toggle-navbar]})
 
 (kf/reg-event-db ::toggle-navbar toggle-navbar)
@@ -31,8 +33,8 @@
 
 ;; Components
 
-(defn-spec nav-link vector?
-  [title string? page keyword?]
+(defn nav-link
+  [title page]
   [:a.navbar-item
    {:href   (kf/path-for [page])
     :on-click #(rf/dispatch [::nav-link-activated])
@@ -74,17 +76,21 @@
           (nav-link (tr [:accounts]) :index-accounts-page)
           (nav-link (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
-       [debug-button]
+       (when @(rf/subscribe [::e.debug/enabled?]) [debug-button])
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
-          [:a.navbar-link auth-id]
+          [:a.navbar-link (::s.users/name @(rf/subscribe [::e.users/item auth-id]))]
           [:div.navbar-dropdown
            (nav-link (tr [:settings]) :settings-page)
            (c.debug/hide (nav-link (tr [:currencies]) :index-currencies-page))
-           (nav-link (tr [:rates]) :index-rates-page)
-           (nav-link (tr [:categories]) :index-categories-page)
+           (nav-link (tr [:admin]) :admin-page)
+           (c.debug/hide (nav-link (tr [:rate-sources]) :index-rate-sources-page))
+           (c.debug/hide (nav-link (tr [:rates]) :index-rates-page))
+           (c.debug/hide (nav-link (tr [:categories]) :index-categories-page))
            (c.debug/hide (nav-link (tr [:users]) :index-users-page))
            [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} (tr [:logout])]]]
          [:<>
+          ;; FIXME: Do not show this section when settings are not loaded
           (nav-link (tr [:login]) :login-page)
-          (nav-link (tr [:register]) :register-page)])]]]))
+          (when @(rf/subscribe [::s.e.f.settings/allow-registration])
+              (nav-link (tr [:register]) :register-page))])]]]))

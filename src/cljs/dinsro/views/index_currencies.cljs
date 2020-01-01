@@ -1,15 +1,14 @@
 (ns dinsro.views.index-currencies
   (:require [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
+            [dinsro.components.debug :as c.debug]
             [dinsro.components.forms.create-currency :as c.f.create-currency]
             [dinsro.components.index-currencies :as c.index-currencies]
             [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.debug :as e.debug]
+            [dinsro.events.forms.create-currency :as e.f.create-currency]
             [dinsro.translations :refer [tr]]
-            [orchestra.core :refer [defn-spec]]
             [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+            [re-frame.core :as rf]))
 
 (defn init-page
   [_ _]
@@ -23,21 +22,21 @@
  {:params (c/filter-page :index-currencies-page)
   :start  [::init-page]})
 
-(defn-spec loading-buttons vector?
+(defn loading-buttons
   []
-  (when @(rf/subscribe [::e.debug/shown?])
-    [:div.box
-     [c.buttons/fetch-currencies]]))
+  [:div.box
+   [c.buttons/fetch-currencies]])
 
-(defn-spec page vector?
-  []
+(defn page
+  [_]
   (let [currencies @(rf/subscribe [::e.currencies/items])]
     [:section.section>div.container>div.content
-     [loading-buttons]
+     (c.debug/hide [loading-buttons])
      [:div.box
       [:h1
        (tr [:index-currencies "Index Currencies"])
-       [c/show-form-button ::c.f.create-currency/shown? ::c.f.create-currency/set-shown?]]
+       [c/show-form-button ::e.f.create-currency/shown? ::e.f.create-currency/set-shown?]]
       [c.f.create-currency/form]
       [:hr]
-      [c.index-currencies/index-currencies currencies]]]))
+      (when currencies
+        [c.index-currencies/index-currencies currencies])]]))
