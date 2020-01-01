@@ -5,7 +5,6 @@
             [dinsro.db.core :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
 (def attribute-list
@@ -53,13 +52,17 @@
   :args (s/cat :email ::s.users/email)
   :ret  (s/nilable ::ds/id))
 
-(defn-spec find-by-email (s/nilable ::s.users/item)
-  [email ::s.users/email]
+(defn find-by-email
+  [email]
   (when-let [id (find-id-by-email email)]
     (read-record id)))
 
-(defn-spec create-record ::ds/id
-  [params ::s.users/params]
+(s/fdef find-by-email
+  :args (s/cat :email ::s.users/email)
+  :ret (s/nilable ::s.users/item))
+
+(defn create-record
+  [params]
   (if (nil? (find-id-by-email (::s.users/email params)))
     (let [tempid (d/tempid "user-id")
           record (assoc (prepare-record params) :db/id tempid)
@@ -67,9 +70,17 @@
       (get-in response [:tempids tempid]))
     (throw (RuntimeException. "User already exists"))))
 
-(defn-spec index-ids (s/coll-of ::ds/id)
+(s/fdef create-record
+  :args (s/cat :params ::s.users/params)
+  :ret ::ds/id)
+
+(defn index-ids
   []
   (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
+
+(s/fdef create-record
+  :args (s/cat)
+  :ret (s/coll-of ::ds/id))
 
 (defn index-records
   []
