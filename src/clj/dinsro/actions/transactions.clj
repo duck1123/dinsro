@@ -13,8 +13,8 @@
 
 ;; Create
 
-(defn-spec prepare-record (s/nilable s.transactions/params)
-  [params s.a.transactions/create-params]
+(defn prepare-record
+  [params]
   (let [account-id (utils/get-as-int params :account-id)
         params {::s.transactions/value (some-> params :value str Double/parseDouble)
                 ::s.transactions/account {:db/id account-id}
@@ -26,13 +26,21 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.transactions/params params)))
         nil))))
 
-(defn-spec create-handler s.a.transactions/create-response
-  [request ::s.a.transactions/create-handler-request]
+(s/fdef prepare-record
+  :args (s/cat :params ::s.a.transactions/create-params)
+  :ret  (s/nilable ::s.transactions/params))
+
+(defn create-handler
+  [request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.transactions/create-record params)]
             (http/ok {:item (m.transactions/read-record id)}))))
       (http/bad-request {:status :invalid})))
+
+(s/fdef create-handler
+  :args (s/cat :request ::s.a.transactions/create-handler-request)
+  :ret ::s.a.transactions/create-response)
 
 ;; Index
 
