@@ -1,5 +1,6 @@
 (ns dinsro.views.index-accounts
-  (:require [dinsro.components :as c]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.user-accounts :as c.user-accounts]
@@ -17,6 +18,9 @@
                 [::e.users/do-fetch-index]
                 [::e.currencies/do-fetch-index]]})
 
+(s/fdef init-page
+  :ret (s/keys))
+
 (kf/reg-event-fx ::init-page init-page)
 
 (kf/reg-controller
@@ -30,6 +34,9 @@
    [c.buttons/fetch-accounts]
    [c.buttons/fetch-currencies]
    [c.buttons/fetch-users]])
+
+(s/fdef loading-buttons
+  :ret vector?)
 
 (defn page
   [_]
@@ -48,3 +55,6 @@
 
          [:p "Unknown state: " state]))]
     [:p "Not Authenticated"]))
+
+(s/fdef page
+  :ret vector?)
