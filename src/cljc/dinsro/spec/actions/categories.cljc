@@ -4,16 +4,25 @@
             [dinsro.spec.categories :as s.categories]
             [taoensso.timbre :as timbre]))
 
-(s/def :create-category-valid/params
-  (s/keys :req-un [::s.categories/name ::s.categories/user-id]))
-(s/def :create-category/params
-  (s/keys :opt-un [::s.categories/name ::s.categories/user-id]))
+(s/def ::create-params-valid (s/keys :req-un [::s.categories/name ::s.categories/user-id]))
+(def create-params-valid ::create-params-valid)
+
+(s/def ::create-params (s/keys :opt-un [::s.categories/name ::s.categories/user-id]))
+(def create-params ::create-params)
+
+(s/def :create-category/params ::create-params)
 
 ;; Create
 
+(s/def :create-category-valid/params ::create-params-valid)
 (s/def ::create-request-valid (s/keys :req-un [:create-category-valid/params]))
+(def create-request-valid ::create-request-valid)
+
 (s/def ::create-request (s/keys :req-un [:create-category/params]))
+(def create-request ::create-request)
+
 (s/def ::create-response (s/keys))
+(def create-response ::create-response)
 
 ;; Read
 

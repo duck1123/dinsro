@@ -11,6 +11,7 @@
             dinsro.events.accounts-test
             dinsro.events.transactions-test
             dinsro.spec.accounts-test
+            dinsro.spec.actions.categories-test
             dinsro.spec.currencies-test
             dinsro.spec.transactions-test
             dinsro.views.about-test

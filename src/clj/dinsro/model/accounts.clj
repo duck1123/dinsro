@@ -43,7 +43,7 @@
 
 (defn delete-record
   [id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity (timbre/spy :info id)]]}))
 
 (s/fdef delete-record
   :args (s/cat :id ::ds/id)
