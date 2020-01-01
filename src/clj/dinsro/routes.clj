@@ -17,7 +17,7 @@
             [dinsro.actions.status :as a.status]
             [dinsro.actions.transactions :as a.transactions]
             [dinsro.actions.users :as a.users]
-            [dinsro.devcards :as devcards]
+            ;; [dinsro.devcards :as devcards]
             [dinsro.middleware :as middleware]))
 
 (def view-mappings
