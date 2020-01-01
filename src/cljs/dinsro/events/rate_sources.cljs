@@ -2,22 +2,26 @@
   (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
             [dinsro.events :as e]
-            [dinsro.spec.events.rate-sources :as s.e.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
-(s/def ::items                   (s/coll-of ::s.rate-sources/item))
+(s/def ::items (s/coll-of ::s.rate-sources/item))
 (def items ::items)
-(rf/reg-sub ::items              (fn [db _] (get db ::items [])))
+(rf/reg-sub ::items (fn [db _] (get db ::items [])))
+
+(defn item-sub
+  [items [_ id]]
+  (first (filter #(= (:id %) id) items)))
 
 (rf/reg-sub
  ::item
  :<- [::items]
- (fn [items [_ id]]
-   (first (filter #(= (:id %) id) items))))
+ item-sub)
+
 (def item ::item)
+
 ;; Index
 
 (s/def ::do-fetch-index-state keyword?)
@@ -95,13 +99,11 @@
 
 (defn do-run-source-failed
   [_ _]
-  {}
-  )
+  {})
 
 (defn do-run-source-success
   [_ _]
-  {}
-  )
+  {})
 
 (defn do-run-source
   [_ [id]]
@@ -113,14 +115,10 @@
     :format          (ajax/json-request-format)
     :response-format (ajax/json-response-format {:keywords? true})
     :on-success      [::do-run-source-success]
-    :on-failure      [::do-run-source-failed]}
-   }
-  )
+    :on-failure      [::do-run-source-failed]}})
 
 (comment
-  (kf/path-for [:api-run-rate-source {:id 1}])
-
-  )
+  (kf/path-for [:api-run-rate-source {:id 1}]))
 
 (kf/reg-event-fx ::do-run-source-failed  do-run-source-failed)
 (kf/reg-event-fx ::do-run-source-success do-run-source-success)

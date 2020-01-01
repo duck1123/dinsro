@@ -76,7 +76,7 @@
 
      :loaded
      (let [items @(rf/subscribe [::e.accounts/items])]
-       #_[:label.label label]
+       (comment [:label.label label])
        [:div.select
         (into [:select {:value (or @(rf/subscribe [field]) "")
                         :on-change #(rf/dispatch [change-handler (target-value %)])}]

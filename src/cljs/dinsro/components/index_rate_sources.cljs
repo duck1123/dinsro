@@ -1,6 +1,5 @@
 (ns dinsro.components.index-rate-sources
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.rate-sources :as s.rate-sources]
@@ -8,8 +7,7 @@
 
 (defn index-line
   [item]
-  (let [id (:db/id item)
-        name (::s.rate-sources/name item)
+  (let [name (::s.rate-sources/name item)
         url (::s.rate-sources/url item)
         currency-id (get-in item [::s.rate-sources/currency :db/id])]
     [:tr

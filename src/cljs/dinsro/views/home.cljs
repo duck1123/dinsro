@@ -1,7 +1,6 @@
 (ns dinsro.views.home
   (:require [dinsro.components :as c]
             [dinsro.components.account-picker :as c.account-picker]
-            [dinsro.components.debug :as c.debug]
             [dinsro.events.authentication :as e.authentication]
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.users :as e.users]
@@ -11,16 +10,10 @@
             [re-frame.core :as rf]))
 
 (defn init-page
-  [{:keys [db]} _]
-  {
-   ;; :db (assoc db ::e.categories/items [])
-   :document/title "Home"
-   :dispatch-n [
-                [::e.currencies/do-fetch-index]
-                ;; [::e.categories/do-fetch-index]
-                [::e.users/do-fetch-index]
-
-                ]})
+  [_ _]
+  {:document/title "Home"
+   :dispatch-n [[::e.currencies/do-fetch-index]
+                [::e.users/do-fetch-index]]})
 
 (kf/reg-event-fx ::init-page init-page)
 

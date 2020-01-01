@@ -9,7 +9,6 @@
 (defn row-line
   [account]
   (let [id (:db/id account)
-        name (::s.accounts/name account)
         initial-value (::s.accounts/initial-value account)
         currency-id (get-in account [::s.accounts/currency :db/id])
         user-id (get-in account [::s.accounts/user :db/id])]

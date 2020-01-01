@@ -18,24 +18,40 @@
     :in $ ?email
     :where [?id ::s.users/email ?email]])
 
-(defn-spec prepare-record (s/nilable ::s.users/item)
-  [params ::s.users/params]
+(defn prepare-record
+  [params]
   (when-let [password (::s.users/password params)]
     (-> {::s.users/password-hash (hashers/derive password)}
         (merge params)
         (dissoc ::s.users/password))))
 
-(defn-spec read-record (s/nilable ::s.users/item)
-  [user-id ::ds/id]
+(s/fdef prepare-record
+  :args (s/cat :params ::s.users/params)
+  :ret (s/nilable ::s.users/item))
+
+(defn read-record
+  [user-id]
   (d/pull @db/*conn* attribute-list user-id))
 
-(defn-spec read-records (s/coll-of (s/nilable ::s.users/item))
-  [ids (s/coll-of ::ds/id)]
+(s/fdef read-record
+  :args (s/cat :user-id :db/id)
+  :ret (s/nilable ::s.users/item))
+
+(defn read-records
+  [ids]
   (d/pull-many @db/*conn* attribute-list ids))
 
-(defn-spec find-id-by-email (s/nilable ::ds/id)
-  [email ::s.users/email]
+(s/fdef read-records
+  :args (s/cat :ids (s/coll-of ::ds/id))
+  :ret (s/coll-of (s/nilable ::s.users/item)))
+
+(defn find-id-by-email
+  [email]
   (ffirst (d/q find-by-email-query @db/*conn* email)))
+
+(s/fdef find-id-by-email
+  :args (s/cat :email ::s.users/email)
+  :ret  (s/nilable ::ds/id))
 
 (defn-spec find-by-email (s/nilable ::s.users/item)
   [email ::s.users/email]
@@ -55,15 +71,28 @@
   []
   (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.users/item)
+(defn index-records
   []
   (read-records (index-ids)))
 
-(defn-spec delete-record any?
-  [user-id ::ds/id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity user-id]]}))
+(s/fdef index-records
+  :args (s/cat)
+  :ret (s/coll-of ::s.users/item))
 
-(defn-spec delete-all nil?
+(defn delete-record
+  [user-id]
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity user-id]]})
+  nil)
+
+(s/fdef delete-record
+  :args (s/cat :user-id ::ds/id)
+  :ret nil?)
+
+(defn delete-all
   []
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(s/fdef delete-all
+  :args (s/cat)
+  :ret nil?)
