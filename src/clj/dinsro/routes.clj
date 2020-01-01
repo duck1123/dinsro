@@ -127,8 +127,9 @@
    ["/api/v1" {:middleware [middleware/wrap-formats]}
     (into [""       {:middleware [middleware/wrap-restricted]}] model-routes)
     (into ["/admin" {:middleware [middleware/wrap-restricted]}] admin-routes)
-    ["/authenticate"    {:post   a.authentication/authenticate-handler}]
-    ["/logout"          {:post   a.authentication/logout-handler}]
-    ["/register"        {:post   a.authentication/register-handler}]
-    ["/settings"        {:get    a.settings/settings-handler}]
-    ["/status"          {:get    a.status/status-handler}]]])
+    ["/authenticate" {:post a.authentication/authenticate-handler}]
+    ["/logout"       {:post a.authentication/logout-handler}]
+    ["/register"     {:post a.authentication/register-handler}]
+    ["/settings" {:middleware [middleware/wrap-formats]}
+                     {:get  a.settings/settings-handler}]
+    ["/status"       {:get  a.status/status-handler}]]])
