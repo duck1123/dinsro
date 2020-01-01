@@ -2,7 +2,6 @@
   (:require [ajax.core :as ajax]
             [cemerick.url :as url]
             [clojure.spec.alpha :as s]
-            [dinsro.spec.events.users :as s.e.users]
             [dinsro.spec.users :as s.users]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
@@ -13,17 +12,20 @@
 (rfu/reg-basic-sub ::items)
 
 (s/def ::item (s/nilable ::s.users/item))
-(rf/reg-sub
- ::item
- (fn [db [_ id]]
-   (get-in db [::item-map id])))
 
-(kf/reg-event-db
- ::filter-records
- (fn [db [_ id]]
-   (->> @(rf/subscribe [::items])
-        (keep #(when (not= (:db/id %) id) %))
-        (assoc db ::items))))
+(defn item-sub
+  [db [_kw id]]
+  (get-in db [::item-map id]))
+
+(rf/reg-sub ::item item-sub)
+
+(defn filter-records
+  [db [_kw id]]
+  (->> @(rf/subscribe [::items])
+       (keep #(when (not= (:db/id %) id) %))
+       (assoc db ::items)))
+
+(kf/reg-event-db ::filter-records filter-records)
 
 ;; Read
 
@@ -40,7 +42,7 @@
              (assoc-in [::item-map (:db/id item)] item))}))
 
 (defn do-fetch-record-unauthorized
-  [cofx _]
+  [cofx _event]
   (let [{:keys [db]} cofx
         match (:kee-frame/route db)]
     {:db (assoc db :return-to match)
@@ -74,14 +76,14 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [cofx [{:keys [id]}]]
+  [_cofx [{:keys [id]}]]
   {:dispatch [::filter-records id]})
 
 (defn do-delete-record-failed
-  [db [{:keys [id]}]]
-  (-> db
-      (assoc :failed true)
-      (assoc :delete-record-failure-id id)))
+  [{:keys [db]} [{:keys [id]}]]
+  {:db (-> db
+           (assoc :failed true)
+           (assoc :delete-record-failure-id id))})
 
 (defn do-delete-record
   [_ [user]]
@@ -94,7 +96,7 @@
     :on-failure      [::do-delete-record-failed]}})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
-(kf/reg-event-db ::do-delete-record-failed do-delete-record-failed)
+(kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record do-delete-record)
 
 ;; Index
@@ -103,15 +105,15 @@
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
-  [db [{items :users}]]
-  (-> db
-      (assoc ::items items)
-      (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
-      (assoc ::do-fetch-index-state :loaded)))
+  [{:keys [db]} [{items :users}]]
+  {:db (-> db
+           (assoc ::items items)
+           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
+           (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-unauthorized
-  [cofx event]
-  (let [route (get-in cofx [:db :kee-frame/route :data])]
+  [cofx _event]
+  (let [_route (get-in cofx [:db :kee-frame/route :data])]
     {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}))
 
 (defn do-fetch-index-failed
@@ -130,7 +132,7 @@
     :on-success      [::do-fetch-index-success]
     :on-failure      [::do-fetch-index-failed]}})
 
-(kf/reg-event-db ::do-fetch-index-success do-fetch-index-success)
+(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
 (kf/reg-event-fx ::do-fetch-index do-fetch-index)

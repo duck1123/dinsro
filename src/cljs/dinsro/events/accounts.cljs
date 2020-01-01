@@ -53,15 +53,15 @@
 (rfu/reg-basic-sub ::do-submit-state)
 
 (defn do-submit-success
-  [{:keys [db]} data]
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [{:keys [db]} [response]]
+  [_ _]
   {})
 
 (defn do-submit
-  [{:keys [db]} [data]]
+  [_ [data]]
   {:http-xhrio
    (e/post-request
     [:api-index-accounts]

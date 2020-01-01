@@ -4,36 +4,59 @@
             [dinsro.db.core :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [orchestra.core :refer [defn-spec]]
             [taoensso.timbre :as timbre]))
 
-(defn-spec create-record ::ds/id
-  [params ::s.rate-sources/params]
+(defn create-record
+  [params]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "rate-source-id")]})]
     (get-in response [:tempids "rate-source-id"])))
 
-(defn-spec read-record (s/nilable ::s.rate-sources/item)
-  [id ::ds/id]
+(s/fdef create-record
+  :args (s/cat :params ::s.rate-sources/params)
+  :ret :db/id)
+
+(defn read-record
+  [id]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::s.rate-sources/name)
       record)))
 
-(defn-spec index-ids (s/coll-of ::ds/id)
+(s/fdef read-record
+  :args (s/cat :id :db/id)
+  :ret (s/nilable ::s.rate-sources/item))
+
+(defn index-ids
   []
   (map first (d/q '[:find ?e :where [?e ::s.rate-sources/name _]] @db/*conn*)))
 
-(defn-spec index-records (s/coll-of ::s.rate-sources/item)
+(s/fdef index-ids
+  :args (s/cat)
+  :ret (s/coll-of ::ds/id))
+
+(defn index-records
   []
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
-(defn-spec delete-record any?
-  [id ::ds/id]
+(s/fdef index-records
+  :args (s/cat)
+  :ret (s/coll-of ::s.rate-sources/item))
+
+(defn delete-record
+  [id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
 
-(defn-spec delete-all nil?
+(s/fdef delete-record
+  :args (s/cat :id :db/id)
+  :ret any?)
+
+(defn delete-all
   []
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(s/fdef delete-all
+  :args (s/cat)
+  :ret nil?)
 
 (comment
   (index-ids)

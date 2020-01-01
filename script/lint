@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-clj-kondo --lint src:test
+clj-kondo --lint src
+# clj-kondo --lint src:test

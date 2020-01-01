@@ -1,5 +1,5 @@
 (ns dinsro.views.login-test
-  (:require [cljs.test :refer-macros [is are testing use-fixtures]]
+  (:require [cljs.test :refer-macros [is]]
             [devcards.core :refer-macros [defcard-rg deftest]]
             [dinsro.views.login :as v.login]
             [taoensso.timbre :as timbre]))
