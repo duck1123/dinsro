@@ -78,7 +78,7 @@
   []
   (map first (d/q '[:find ?e :where [?e ::s.users/email _]] @db/*conn*)))
 
-(s/fdef create-record
+(s/fdef index-ids
   :args (s/cat)
   :ret (s/coll-of ::ds/id))
 
@@ -91,12 +91,12 @@
   :ret (s/coll-of ::s.users/item))
 
 (defn delete-record
-  [user-id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity user-id]]})
+  [id]
+  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 
 (s/fdef delete-record
-  :args (s/cat :user-id ::ds/id)
+  :args (s/cat :id ::ds/id)
   :ret nil?)
 
 (defn delete-all
