@@ -28,7 +28,7 @@
 (rf/reg-sub ::item-map               sub-item-map)
 
 (defn item-sub
-  [item-map ::item-map [_ id] any?]
+  [item-map [_ id]]
   (get item-map id))
 
 (s/fdef item-sub

@@ -1,5 +1,6 @@
 (ns dinsro.components.index-categories
   (:require [clojure.spec.alpha :as s]
+            [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.spec.categories :as s.categories]
@@ -7,8 +8,7 @@
 
 (defn category-line
   [item]
-  (let [id (:db/id item)
-        name (::s.categories/name item)
+  (let [name (::s.categories/name item)
         user-id (get-in item [::s.categories/user :db/id])]
     [:tr
      [:td name]
@@ -29,3 +29,7 @@
       (into
        [:tbody]
        (for [item items] ^{:key (:db/id item)} [category-line item]))])])
+
+(s/fdef index-categories
+  :args (s/cat :item ::s.categories/item)
+  :ret vector?)
