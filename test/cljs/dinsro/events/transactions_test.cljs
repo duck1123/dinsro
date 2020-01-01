@@ -20,6 +20,7 @@
   (ds/gen-key ::s.e.transactions/do-fetch-index-response))
 
 (comment
+  (declare do-fetch-index)
   (deftest do-fetch-index
     (let [cofx {}
           event [{:foo "bar"}]]

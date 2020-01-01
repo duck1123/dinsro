@@ -6,9 +6,6 @@
 (s/def ::items-by-account-event (s/cat :keyword keyword? :id ::s.transactions/account-id))
 (def items-by-account-event ::items-by-account-event)
 
-(s/def ::items-by-currency-event (s/cat :keyword keyword? :id ::s.transactions/currency-id))
-(def items-by-currency-event ::items-by-currency-event)
-
 (s/def :fetch-transactions-cofx/db (s/keys))
 (s/def ::do-fetch-index-cofx (s/keys :req-un [:fetch-transactions-cofx/db]))
 (def do-fetch-index-cofx ::do-fetch-index-cofx)

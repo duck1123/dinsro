@@ -1,7 +1,7 @@
 (ns dinsro.actions.rate-sources-test
   (:require [clojure.test :refer [deftest is use-fixtures]]
             [datahike.api :as d]
-            [datahike.config :as d.config]
+            [datahike.config :as dc]
             [dinsro.actions.rate-sources :as a.rate-sources]
             [dinsro.config :as config]
             [dinsro.db.core :as db]
@@ -22,7 +22,7 @@
   (fn [f]
     (mount/start #'config/env #'db/*conn*)
     (d/delete-database uri)
-    (when-not (d/database-exists? (d.config/uri->config uri))
+    (when-not (d/database-exists? (dc/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
       (d/transact db/*conn* s.currencies/schema)

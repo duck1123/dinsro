@@ -3,6 +3,7 @@
             [devcards.core :refer-macros [defcard-rg]]
             [taoensso.timbre :as timbre]))
 
+(declare status)
 (defcard-rg status
   "**Documentation**"
   (fn [name] [:p name])

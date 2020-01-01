@@ -60,5 +60,8 @@
         id (:db/id account)
         request {:path-params {:id (str id)}}
         response (a.accounts/delete-handler request)]
-    (is (= status/ok (:status response)) "successful status")
-    (is (nil? (m.accounts/read-record id)) "account is deleted")))
+    (is (= status/ok (:status response))
+        "successful status")
+
+    (is (nil? (m.accounts/read-record id))
+        "account is deleted")))

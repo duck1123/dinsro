@@ -13,19 +13,13 @@
   {:name          ::s.accounts/name
    :initial-value ::s.accounts/initial-value})
 
-(defn get-as-int
-  [params key]
-  (try
-    (some-> params key str Integer/parseInt)
-    (catch NumberFormatException _ nil)))
-
 ;; Prepare
 
 (defn prepare-record
   [params]
-  (let [currency-id (get-as-int params :currency-id)
-        user-id (get-as-int params :user-id)
-        initial-value (some-> params :initial-value str Double/parseDouble)
+  (let [currency-id (some-> params :currency-id)
+        user-id (some-> params :user-id)
+        initial-value (some-> params :initial-value str utils/try-parse-double)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
@@ -73,7 +67,7 @@
 
 (defn delete-handler
   [{{:keys [id]} :path-params}]
-  (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _))]
+  (if-let [id (utils/try-parse-int id)]
     (do
       (m.accounts/delete-record id)
       (http/ok {:status :ok}))

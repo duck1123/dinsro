@@ -12,9 +12,9 @@
 
 (defn form-data-sub
   [params event]
-  (let [[value currency-id date] params
+  (let [[value date] params
         [_ account-id] event]
-    (e.f.create-transaction/form-data-sub [account-id currency-id date value] event)))
+    (e.f.create-transaction/form-data-sub [account-id date value] event)))
 
 (rf/reg-sub
  ::form-data

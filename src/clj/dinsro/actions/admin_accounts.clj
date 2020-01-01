@@ -13,19 +13,13 @@
   {:name          ::s.accounts/name
    :initial-value ::s.accounts/initial-value})
 
-(defn get-as-int
-  [params key]
-  (try
-    (some-> params key str Integer/parseInt)
-    (catch NumberFormatException _ nil)))
-
 ;; Prepare
 
 (defn prepare-record
   [params]
-  (let [currency-id (get-as-int params :currency-id)
-        user-id (get-as-int params :user-id)
-        initial-value (some-> params :initial-value str Double/parseDouble)
+  (let [currency-id (some-> params :currency-id utils/try-parse-int)
+        user-id (some-> params :user-id utils/try-parse-int)
+        initial-value (some-> params :initial-value utils/try-parse-double)
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))

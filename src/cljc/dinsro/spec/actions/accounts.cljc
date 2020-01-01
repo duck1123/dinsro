@@ -1,6 +1,5 @@
 (ns dinsro.spec.actions.accounts
   (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
             [dinsro.spec.accounts :as s.accounts]
             [taoensso.timbre :as timbre]))
 
@@ -67,9 +66,3 @@
 (s/def :index-accounts-response/body (s/keys :req-un [:index-accounts-response/items]))
 (s/def ::index-response (s/keys :req-un [:index-accounts-response/body]))
 (def index-response ::index-response)
-
-(comment
-
-  (ds/gen-key index-request)
-  (ds/gen-key index-response)
-  )

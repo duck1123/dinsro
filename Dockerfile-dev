@@ -6,6 +6,7 @@ MAINTAINER Duck Nebuchadnezzar <duck@kronkltd.net>
 
 WORKDIR /usr/src/app
 
+RUN npm install -g clj-kondo
 RUN npm install -g karma
 RUN npm install -g karma-chrome-launcher
 RUN npm install -g karma-cljs-test
@@ -21,5 +22,6 @@ ADD . /usr/src/app
 
 RUN mkdir -p /home/duck/projects/dinsro/data/dev
 RUN mkdir -p /home/duck/projects/dinsro/data/test
+RUN script/lint
 RUN script/test
 RUN script/test-javascript

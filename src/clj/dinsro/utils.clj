@@ -26,7 +26,7 @@
       nil)))
 
 (defn get-as-int
-  [params key]
+  [params k]
   (try
-    (some-> params key str parse-int)
+    (some-> params k str parse-int)
     (catch NumberFormatException _ nil)))

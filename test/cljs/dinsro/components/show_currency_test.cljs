@@ -7,5 +7,7 @@
 
 (let [item (ds/gen-key ::s.currencies/item)]
   (defcard item item)
+
+  (declare show-currency)
   (defcard-rg show-currency
     [c.show-currency/show-currency item]))

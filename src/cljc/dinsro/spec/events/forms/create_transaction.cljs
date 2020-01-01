@@ -5,9 +5,6 @@
 (s/def ::account-id string?)
 (def account-id ::account-id)
 
-(s/def ::currency-id string?)
-(def currency-id ::currency-id)
-
 (s/def ::date string?)
 (def date ::date)
 

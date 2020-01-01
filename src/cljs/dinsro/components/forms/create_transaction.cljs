@@ -22,9 +22,7 @@
        [:input.input
         {:type :text
          :value @(rf/subscribe [::s.e.f.create-transaction/value])
-         :on-change #(rf/dispatch [::s.e.f.create-transaction/set-value (c/target-value %)])}]]]
-     #_[:div.field.is-inline-block-tablet
-      [c/currency-selector (tr [:currency]) ::s.e.f.create-transaction/currency-id]]]
+         :on-change #(rf/dispatch [::s.e.f.create-transaction/set-value (c/target-value %)])}]]]]
     [:div.field-group
      [:div.column
       [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]

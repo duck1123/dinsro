@@ -7,6 +7,7 @@
             [expound.alpha :as expound]
             [tick.alpha.api :as tick]))
 
+(declare generated-item)
 (defcard generated-item
   (ds/gen-key ::s.transactions/item))
 
@@ -16,7 +17,11 @@
             ::s.transactions/description "Foo"
             ::s.transactions/value -3}]
   (defcard item item)
+
+  (declare item-test-validation)
   (defcard-rg item-test-validation
     [:pre (expound/expound-str ::s.transactions/item item)])
+
+  (declare item-test)
   (deftest item-test
     (is (s/valid? ::s.transactions/item item))))

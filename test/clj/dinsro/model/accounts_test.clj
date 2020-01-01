@@ -52,5 +52,5 @@
         id (:db/id account)]
     (is (not (nil? (m.accounts/read-record id))))
     (let [response (m.accounts/delete-record id)]
-      (is (not (nil? response)))
+      (is (nil? response))
       (is (nil? (m.accounts/read-record id))))))
