@@ -1,6 +1,5 @@
 (ns dinsro.components.admin-index-rate-sources
-  (:require [devcards.core :refer-macros [defcard-rg]]
-            [dinsro.components.buttons :as c.buttons]
+  (:require [dinsro.components.buttons :as c.buttons]
             [dinsro.components.debug :as c.debug]
             [dinsro.components.links :as c.links]
             [dinsro.events.rate-sources :as e.rate-sources]
@@ -52,10 +51,3 @@
   []
   (let [items (rf/subscribe [::e.rate-sources/items])]
     [section-inner items]))
-
-(defcard-rg form
-  "**Admin Index Rate Sources**"
-  (fn []
-    [:div.box
-     [section]])
-  {})

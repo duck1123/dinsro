@@ -12,7 +12,7 @@
               (on-select value))))))
 
 (defn update-component
-  [comp]
+  [_]
   #_(mount-component comp))
 
 (defn datepicker-inner

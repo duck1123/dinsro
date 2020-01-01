@@ -10,11 +10,14 @@
                ::s.accounts/currency {:db/id 1}}]
   (defcard account account)
 
+  (declare show-account)
   (defcard-rg show-account
     [c.show-account/show-account account])
 
+  (declare show-account-with-box)
   (defcard-rg show-account-with-box
     [:div.box [c.show-account/show-account account]])
 
+  (declare show-account2)
   (defcard show-account2
     (reagent.core/as-element [c.show-account/show-account account])))

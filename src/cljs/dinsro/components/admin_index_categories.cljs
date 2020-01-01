@@ -12,8 +12,7 @@
 
 (defn category-line
   [item]
-  (let [id (:db/id item)
-        name (::s.categories/name item)
+  (let [name (::s.categories/name item)
         user-id (get-in item [::s.categories/user :db/id])]
     [:tr
      [:td name]
