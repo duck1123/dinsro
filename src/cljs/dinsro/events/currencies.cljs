@@ -4,7 +4,6 @@
             [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))

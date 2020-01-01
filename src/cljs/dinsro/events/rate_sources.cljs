@@ -5,7 +5,6 @@
             [dinsro.spec.events.rate-sources :as s.e.rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
 
@@ -60,9 +59,8 @@
   [_ _]
   {:dispatch [::do-fetch-index]})
 
-(defn-spec do-submit (s/keys)
-  [{:keys [db]} any?
-   [data] any?]
+(defn do-submit
+  [_ [data]]
   {:http-xhrio
    (e/post-request [:api-index-rate-sources]
                    [::do-submit-success]
@@ -75,18 +73,16 @@
 
 ;; Delete
 
-(defn-spec do-delete-record-success (s/keys)
-  [cofx ::s.e.rate-sources/do-delete-record-success-cofx _ any?]
+(defn do-delete-record-success
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
-(defn-spec do-delete-record-failed (s/keys)
-  [cofx ::s.e.rate-sources/do-delete-record-failed-cofx _ any?]
-  (timbre/error "Delete record failed")
+(defn do-delete-record-failed
+  [_ _]
   {:dispatch [::do-fetch-index]})
 
-(defn-spec do-delete-record (s/keys)
-  [cofx ::s.e.rate-sources/do-delete-record-cofx
-   [item] ::s.e.rate-sources/do-delete-record-event]
+(defn do-delete-record
+  [_ [item]]
   {:http-xhrio
    (e/delete-request [:api-show-rate-source {:id (:db/id item)}]
                      [::do-delete-record-success]

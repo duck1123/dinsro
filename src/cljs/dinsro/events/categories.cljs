@@ -5,7 +5,6 @@
             [dinsro.spec.categories :as s.categories]
             [dinsro.spec.events.categories :as s.e.categories]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -27,8 +26,8 @@
   [items [_ target-item]]
   (first (filter #(= (:id %) (:db/id target-item)) items)))
 
-(defn-spec items-by-user (s/coll-of ::s.categories/item)
-  [db any? event any?]
+(defn items-by-user
+  [db event]
   (let [[_ id] event]
     (filter #(= id (get-in % [::s.categories/user :db/id])) (::items db))))
 
@@ -69,10 +68,14 @@
            (assoc ::item item)
            (assoc-in [::item-map (:db/id item)] item))})
 
-(defn-spec do-fetch-record-failed ::s.e.categories/do-fetch-record-failed-response
-  [{:keys [db] :as cofx} ::s.e.categories/do-fetch-record-failed-cofx
-   event ::s.e.categories/do-fetch-record-failed-event]
+(defn do-fetch-record-failed
+  [{:keys [db]} _]
   {:db (assoc db ::do-fetch-record-state :failed)})
+
+(s/fdef do-fetch-record-failed
+  :args (s/cat :cofx ::s.e.categories/do-fetch-record-failed-cofx
+               :event ::s.e.categories/do-fetch-record-failed-event)
+  :ret ::s.e.categories/do-fetch-record-failed-response)
 
 (defn do-fetch-record
   [{:keys [db]} [id]]
@@ -96,8 +99,8 @@
   [_ _]
   {})
 
-(defn-spec do-delete-record any?
-  [_ any? [item] ::s.e.categories/do-delete-record-event]
+(defn do-delete-record
+  [_ [item]]
   {:http-xhrio
    (e/delete-request [:api-show-currency {:id (:db/id item)}]
                      [::do-delete-record-success]
@@ -118,18 +121,26 @@
         (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
         (assoc ::do-fetch-index-state :loaded))})
 
-(defn-spec do-fetch-index-failed ::s.e.categories/do-fetch-index-failed-response
-  [_ ::s.e.categories/do-fetch-index-failed-cofx
-   _ ::s.e.categories/do-fetch-index-failed-event]
+(defn do-fetch-index-failed
+  [_ _]
   {})
 
-(defn-spec do-fetch-index ::s.e.categories/do-fetch-index-response
-  [_ ::s.e.categories/do-fetch-index-cofx
-   _ ::s.e.categories/do-fetch-index-event]
+(s/fdef do-fetch-index-failed
+  :args (s/cat :cofx ::s.e.categories/do-fetch-index-failed-cofx
+               :event ::s.e.categories/do-fetch-index-failed-event)
+  :ret ::s.e.categories/do-fetch-index-failed-response)
+
+(defn do-fetch-index
+  [_ _]
   {:http-xhrio
    (e/fetch-request [:api-index-categories]
                     [::do-fetch-index-success]
                     [::do-fetch-index-failed])})
+
+(s/fdef do-fetch-index
+  :args (s/cat :cofx ::s.e.categories/do-fetch-index-cofx
+               :event ::s.e.categories/do-fetch-index-event)
+  :ret ::s.e.categories/do-fetch-index-response)
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)

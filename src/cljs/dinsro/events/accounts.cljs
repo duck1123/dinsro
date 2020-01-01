@@ -5,7 +5,6 @@
             [dinsro.spec.accounts :as s.accounts]
             [dinsro.spec.events.accounts :as s.e.accounts]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [taoensso.timbre :as timbre]))
@@ -124,15 +123,19 @@
                :event ::s.e.accounts/do-fetch-index-failed-event)
   :ret ::s.e.accounts/do-fetch-index-failed-response)
 
-(defn-spec do-fetch-index ::s.e.accounts/do-fetch-index-response
-  [{:keys [db]} ::s.e.accounts/do-fetch-index-cofx
-   _ ::s.e.accounts/do-fetch-index-event]
+(defn do-fetch-index
+  [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    (e/fetch-request
     [:api-index-accounts]
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
+
+(s/fdef do-fetch-index
+  :args (s/cat :cofx ::s.e.accounts/do-fetch-index-cofx
+               :event ::s.e.accounts/do-fetch-index-event)
+  :ret ::s.e.accounts/do-fetch-index-response)
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)

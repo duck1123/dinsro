@@ -5,7 +5,6 @@
             [dinsro.spec.events.users :as s.e.users]
             [dinsro.spec.users :as s.users]
             [kee-frame.core :as kf]
-            [orchestra.core :refer [defn-spec]]
             [re-frame.core :as rf]
             [reframe-utils.core :as rfu]
             [ring.util.http-status :as status]))
@@ -47,17 +46,16 @@
     {:db (assoc db :return-to match)
      :navigate-to [:login-page]}))
 
-(defn-spec do-fetch-record-failed ::s.e.users/do-fetch-record-failed-response
-  [cofx ::s.e.users/do-fetch-record-failed-cofx
-   event ::s.e.users/do-fetch-record-failed-event]
+(defn do-fetch-record-failed
+  [cofx event]
   (let [{:keys [db]} cofx
         [{:keys [status] :as request}] event]
     (if (= status/forbidden status)
       {:dispatch [::do-fetch-record-unauthorized request]}
       {:db (assoc db ::do-fetch-record-state :failed)})))
 
-(defn-spec do-fetch-record ::s.e.users/do-fetch-record-response
-  [cofx ::s.e.users/do-fetch-record-cofx event ::s.e.users/do-fetch-record-event]
+(defn do-fetch-record
+  [cofx event]
   (let [{:keys [db]} cofx
         [id] event]
     {:db (assoc db ::do-fetch-record-state :loading)
