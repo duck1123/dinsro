@@ -5,7 +5,6 @@
             [dinsro.model.users :as m.users]
             [dinsro.spec.actions.authentication :as s.a.authentication]
             [dinsro.spec.users :as s.users]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
@@ -14,12 +13,8 @@
    :email    ::s.users/email
    :password ::s.users/password})
 
-(defn-spec check-auth (s/nilable boolean?)
-  [email ::s.users/email password ::s.users/password]
-  )
-
-(defn-spec authenticate-handler any?
-  [request ::s.a.authentication/authenticate-handler-request]
+(defn authenticate-handler
+  [request]
   (let [{{:keys [email password]} :params} request]
     (if (and (seq email) (seq password))
       (if-let [user (m.users/find-by-email email)]
@@ -37,9 +32,13 @@
         (http/unauthorized {:status :unauthorized}))
       (http/bad-request {:status :invalid}))))
 
-(defn-spec register-handler ::s.a.authentication/register-handler-response
+(s/fdef authenticate-handler
+  :args (s/cat :request ::s.a.authentication/authenticate-request)
+  :ret ::s.a.authentication/authenticate-response)
+
+(defn register-handler
   "Register a user"
-  [request ::s.a.authentication/register-request]
+  [request]
   (let [{:keys [params]} request
         params (-> params
                    (set/rename-keys param-rename-map)
@@ -48,6 +47,10 @@
       (let [id (m.users/create-record params)]
         (http/ok {:id id}))
       (http/bad-request {:status :failed}))))
+
+(s/fdef register-handler
+  :args (s/cat :request ::s.a.authentication/register-request)
+  :ret ::s.a.authentication/register-handler-response)
 
 (defn logout-handler
   [_]

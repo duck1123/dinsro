@@ -41,17 +41,6 @@
   :args (s/cat :request ::s.a.transactions/create-request)
   :ret ::s.a.transactions/create-response)
 
-;; Index
-
-(defn index-handler
-  [_]
-  (let [items (m.transactions/index-records)]
-    (http/ok {:model :transactions :items items})))
-
-(s/fdef index-handler
-  :args (s/cat :request ::s.a.transactions/index-request)
-  :ret ::s.a.transactions/index-response)
-
 ;; Read
 
 (defn read-handler
@@ -81,3 +70,14 @@
 (s/fdef delete-handler
   :args (s/cat :request ::s.a.transactions/delete-request)
   :ret ::s.a.transactions/delete-response)
+
+;; Index
+
+(defn index-handler
+  [_]
+  (let [items (m.transactions/index-records)]
+    (http/ok {:model :transactions :items items})))
+
+(s/fdef index-handler
+  :args (s/cat :request ::s.a.transactions/index-request)
+  :ret ::s.a.transactions/index-response)

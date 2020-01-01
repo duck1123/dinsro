@@ -2,16 +2,15 @@
   (:require [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
             [dinsro.model.rate-sources :as m.rate-sources]
-            [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
+            [dinsro.spec.actions.admin-rate-sources :as s.a.admin-rate-sources]
             [dinsro.spec.rate-sources :as s.rate-sources]
-            [orchestra.core :refer [defn-spec]]
             [ring.util.http-response :as http]
             [taoensso.timbre :as timbre]))
 
-;; Create
+;; Prepare
 
-(defn-spec prepare-record (s/nilable ::s.rate-sources/params)
-  [params :create-rate-sources-request/params]
+(defn prepare-record
+  [params]
   (let [params {::s.rate-sources/currency {:db/id (:currency-id params)}
                 ::s.rate-sources/name (some-> params :name)
                 ::s.rate-sources/url (some-> params :url)}]
@@ -21,41 +20,63 @@
         (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.rate-sources/params params)))
         nil))))
 
-(defn-spec create-handler ::s.a.rate-sources/create-handler-response
-  [request ::s.a.rate-sources/create-handler-request]
+(s/fdef prepare-record
+  :args (s/cat :params ::s.a.admin-rate-sources/create-params)
+  :ret  (s/nilable ::s.rate-sources/params))
+
+;; Create
+
+(defn create-handler
+  [request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (m.rate-sources/create-record params)]
             (http/ok {:item (m.rate-sources/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
-;; Index
-
-(defn-spec index-handler ::s.a.rate-sources/index-handler-response
-  [request ::s.a.rate-sources/index-handler-request]
-  (let [
-        ;; TODO: parse from request
-        limit 50
-        items (m.rate-sources/index-records)]
-    (let [response {:model :rate-sources
-                    :limit limit
-                    :items items}]
-      (http/ok response))))
+(s/fdef create-handler
+  :args (s/cat :request ::s.a.admin-rate-sources/create-request)
+  :ret ::s.a.admin-rate-sources/create-response)
 
 ;; Read
 
-(defn-spec read-handler ::s.a.rate-sources/read-handler-response
-  [request ::s.a.rate-sources/read-handler-request]
+(defn read-handler
+  [request]
   (if-let [id (get-in request [:path-params :id])]
     (if-let [item (m.rate-sources/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
 
+(s/fdef read-handler
+  :args (s/cat :request ::s.a.admin-rate-sources/read-request)
+  :ret ::s.a.admin-rate-sources/read-response)
+
 ;; Delete
 
-(defn-spec delete-handler ::s.a.rate-sources/delete-handler-response
-  [request ::s.a.rate-sources/delete-handler-request]
+(defn delete-handler
+  [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (m.rate-sources/delete-record id)
     (http/ok {:id id})))
+
+(s/fdef delete-handler
+  :args (s/cat :request ::s.a.admin-rate-sources/delete-request)
+  :ret ::s.a.admin-rate-sources/delete-response)
+
+;; Index
+
+(defn index-handler
+  [_request]
+  (let [
+        ;; TODO: parse from request
+        limit 50
+        items (m.rate-sources/index-records)
+        response {:model :rate-sources
+                  :limit limit
+                  :items items}]
+    (http/ok response)))
+
+(s/fdef index-handler
+  :args (s/cat :request ::s.a.admin-rate-sources/index-request)
+  :ret ::s.a.admin-rate-sources/index-response)
