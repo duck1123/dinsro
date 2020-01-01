@@ -29,4 +29,4 @@
   [params key]
   (try
     (some-> params key str parse-int)
-    (catch NumberFormatException e nil)))
+    (catch NumberFormatException _ nil)))

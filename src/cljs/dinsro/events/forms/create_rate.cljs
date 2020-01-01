@@ -43,4 +43,9 @@
                     ::s.e.f.create-rate/currency-id ""
                     ::s.e.f.create-rate/date (.toISOString default-date)})}))
 
+(s/fdef init-form
+  :args (s/cat :cofx any?
+               :event any?)
+  :ret (s/keys))
+
 (kf/reg-event-fx ::init-form init-form)

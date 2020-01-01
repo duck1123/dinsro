@@ -23,3 +23,7 @@
         [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])))
+
+(s/fdef form
+  :args (s/cat :id ::ds/id)
+  :ret vector?)

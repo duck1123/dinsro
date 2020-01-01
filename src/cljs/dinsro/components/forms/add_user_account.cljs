@@ -23,3 +23,7 @@
         [c/currency-selector (tr [:currency]) ::s.e.f.create-account/currency-id]]
        [:div.field>div.control
         [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]]])))
+
+(s/fdef form
+  :args (s/cat :id ::ds/id)
+  :ret vector?)

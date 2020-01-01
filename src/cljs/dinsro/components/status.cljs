@@ -1,7 +1,6 @@
 (ns dinsro.components.status
   (:require [ajax.core :as ajax]
             [day8.re-frame.http-fx]
-            [devcards.core :refer-macros [defcard-rg]]
             [dinsro.events.authentication :as e.authentication]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
@@ -32,8 +31,3 @@
  :status-controller
  {:params (constantly true)
   :start [:init-status]})
-
-(defcard-rg status
-  "**Documentation**"
-  (fn [name] [:p name])
-  {:name "foo"})
