@@ -1,5 +1,6 @@
 (ns dinsro.components.forms.add-currency-rate-test
   (:require
+   [cljs.pprint :as p]
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
    [dinsro.cards :as cards]
@@ -12,8 +13,10 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]))
 
-(cards/header 'dinsro.components.forms.add-currency-rate-test
- "Add Currency Rate Form Components" [])
+(cards/header
+ 'dinsro.components.forms.add-currency-rate-test
+ "Add Currency Rate Form Components"
+ [#{:rates} #{:rates :components}])
 
 (defn test-store
   []
@@ -29,6 +32,11 @@
 
   (let [store (test-store)]
     (st/dispatch store [::e.f.add-currency-rate/set-shown? true])
+
+    (defcard-rg form-data-card
+      (fn []
+        [error-boundary
+         [:pre (with-out-str (p/pprint @(st/subscribe store [::e.f.add-currency-rate/form-data])))]]))
 
     (defcard-rg form
       (fn []

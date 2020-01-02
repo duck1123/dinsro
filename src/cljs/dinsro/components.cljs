@@ -2,7 +2,9 @@
   (:require
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.users :as e.users]
+   [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [re-frame.core :as rf]
@@ -139,6 +141,31 @@
      (condp = state
        :invalid [:p "Invalid"]
        :loaded  [user-selector- store label field change-handler items]
+       [:p "Unknown"]))))
+
+(defn rate-source-selector-
+  [store label field change-handler items]
+  (let [value (or @(st/subscribe store [field]) "")]
+    [:div.field
+     [:label.label label]
+     [:div.control
+      [:div.select
+       (into
+        [:select {:value value
+                  :on-change #(st/dispatch store [change-handler (target-value %)])}]
+        (for [source items]
+          ^{:key (:db/id source)}
+          [:option (str (::s.rate-sources/name source))]))]]]))
+
+(defn rate-source-selector
+  ([store label field]
+   (rate-source-selector store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (let [items @(st/subscribe store [::e.rate-sources/items])
+         state @(st/subscribe store [::e.rate-sources/do-fetch-index-state])]
+     (condp = state
+       :invalid [:p "Invalid"]
+       :loaded [rate-source-selector- store label field change-handler items]
        [:p "Unknown"]))))
 
 (defn filter-page

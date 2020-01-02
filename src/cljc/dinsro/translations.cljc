@@ -48,6 +48,7 @@
     :not-loaded "Not Loaded"
     :password "Password"
     :rate "Rate"
+    :rate-source "Rate Source"
     :rate-sources "Rate Sources"
     :rate-sources-label "Rate Sources: %1"
     :rates "Rates"
