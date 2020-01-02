@@ -14,7 +14,9 @@ jobs:
           paths:
             - ~/.m2
           key: dinsro-{{ checksum "project.clj" }}
-      - run: script/test-javascript
+      - run: script/lint
+      - run: script/test
+      # - run: script/test-javascript
       - run: script/build-production
       - store_artifacts:
           path: target/uberjar/dinsro.jar
