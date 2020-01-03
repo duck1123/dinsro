@@ -8,10 +8,10 @@
 
 (let [item (ds/gen-key ::s.transactions/item)]
   (defcard item item)
-  (defcard-rg
+  (defcard-rg c.index-transactions/row-line
     [c.index-transactions/row-line item]))
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item))]
   (defcard items items)
-  (defcard-rg
+  (defcard-rg c.index-transactions/index-transactions
     [c.index-transactions/index-transactions items]))
