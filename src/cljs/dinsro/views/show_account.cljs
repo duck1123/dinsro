@@ -9,28 +9,24 @@
             [dinsro.events.currencies :as e.currencies]
             [dinsro.events.transactions :as e.transactions]
             [dinsro.events.users :as e.users]
-            [dinsro.spec :as ds]
             [dinsro.spec.transactions :as s.transactions]
+            [dinsro.spec.views.show-account :as s.v.show-account]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]))
 
 
-(s/def ::init-page-cofx (s/keys))
-(s/def ::init-page-event (s/keys))
-(s/def ::init-page-response (s/keys))
-
 (defn init-page
   [_  _]
-  {:document/title "Show Account"
+  {:document/title (tr [:show-account])
    :dispatch-n [[::e.currencies/do-fetch-index]
                 [::e.accounts/do-fetch-index]
                 [::e.users/do-fetch-index]]})
 
 (s/fdef init-page
-  :args (s/cat :cofx ::init-page-cofx
-               :event ::init-page-event)
-  :ret ::init-page-response)
+  :args (s/cat :cofx ::s.v.show-account/init-page-cofx
+               :event ::s.v.show-account/init-page-event)
+  :ret ::s.v.show-account/init-page-response)
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -50,10 +46,6 @@
   [items]
   (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
 
-(s/def :show-account-view/id          ::ds/id-string)
-(s/def :show-account-view/path-params (s/keys :req-un [:show-account-view/id]))
-(s/def ::view-map (s/keys :req-un [:show-account-view/path-params]))
-
 (defn page
   [match]
   (let [{{:keys [id]} :path-params} match
@@ -71,5 +63,5 @@
          [c.account-transactions/section id transactions]))]))
 
 (s/fdef page
-  :args (s/cat :match ::view-map)
+  :args (s/cat :match ::s.v.show-account/view-map)
   :ret vector?)

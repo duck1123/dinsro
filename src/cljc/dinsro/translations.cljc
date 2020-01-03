@@ -51,6 +51,7 @@
     :rates "Rates"
     :register "Register"
     :settings "Settings"
+    :show-account "Show Account"
     :submit "Submit"
     :time "Time"
     :toggle "Toggle"
