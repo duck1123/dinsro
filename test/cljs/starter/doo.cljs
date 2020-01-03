@@ -1,6 +1,7 @@
 (ns starter.doo
   (:require [doo.runner :refer-macros [doo-all-tests]]
             dinsro.core-test
+            dinsro.components-test
             dinsro.components.admin-index-accounts-test
             dinsro.components.admin-index-rate-sources-test
             dinsro.components.forms.add-user-transaction-test
