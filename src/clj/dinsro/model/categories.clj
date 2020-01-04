@@ -1,7 +1,7 @@
 (ns dinsro.model.categories
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.categories :as s.categories]
             [taoensso.timbre :as timbre]))

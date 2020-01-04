@@ -6,7 +6,7 @@
             [mount.core :as mount]
             [dinsro.figwheel :refer [start-fw stop-fw cljs]]
             [dinsro.core :refer [start-app]]
-            [dinsro.db.core]
+            [dinsro.db]
             [orchestra.spec.test :as stest]
             [taoensso.timbre :as timbre]
             #_[conman.core :as conman]

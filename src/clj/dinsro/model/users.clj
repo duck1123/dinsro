@@ -2,7 +2,7 @@
   (:require [buddy.hashers :as hashers]
             [clojure.spec.alpha :as s]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]
             [taoensso.timbre :as timbre]))

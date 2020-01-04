@@ -4,7 +4,7 @@
             [datahike.config :refer [uri->config]]
             [dinsro.actions.authentication :as a.authentication]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.model.users :as m.users]
             [dinsro.spec :as ds]
             [dinsro.spec.actions.authentication :as s.a.authentication]

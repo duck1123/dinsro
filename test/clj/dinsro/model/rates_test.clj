@@ -3,7 +3,7 @@
             [datahike.api :as d]
             [datahike.config :as dc]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.rates :as m.rates]
             [dinsro.spec :as ds]

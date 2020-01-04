@@ -3,7 +3,7 @@
             [datahike.api :as d]
             [datahike.config :refer [uri->config]]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.accounts :as m.accounts]
             [dinsro.spec :as ds]

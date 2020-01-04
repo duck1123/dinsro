@@ -3,7 +3,7 @@
             [datahike.api :as d]
             [datahike.config :refer [uri->config]]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.model.users :as m.users]
             [dinsro.spec :as ds]
             [dinsro.spec.users :as s.users]

@@ -4,7 +4,7 @@
             [datahike.config :refer [uri->config]]
             [dinsro.actions.currencies :as a.currencies]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.currencies :as m.currencies]
             [dinsro.spec :as ds]

@@ -1,7 +1,7 @@
 (ns dinsro.model.transactions
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.transactions :as s.transactions]
             [taoensso.timbre :as timbre]
