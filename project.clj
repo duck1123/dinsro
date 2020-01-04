@@ -26,6 +26,7 @@
                  [luminus-jetty "0.1.7"]
                  [luminus-transit "0.1.2"]
                  [luminus/ring-ttl-session "0.3.3"]
+                 [manifold "0.1.8"]
                  [metosin/muuntaja "0.6.6"]
                  [metosin/reitit "0.3.10"]
                  [metosin/ring-http-response "0.9.1"]
