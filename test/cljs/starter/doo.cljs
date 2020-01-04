@@ -20,6 +20,7 @@
             dinsro.spec.transactions-test
             dinsro.views.about-test
             dinsro.views.admin-test
-            dinsro.views.login-test))
+            dinsro.views.login-test
+            dinsro.views.setting-test))
 
 (doo-all-tests #"dinsro\..*(?:-test)$")

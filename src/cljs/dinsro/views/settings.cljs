@@ -1,5 +1,6 @@
 (ns dinsro.views.settings
-  (:require [dinsro.components :as c]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.forms.settings :as c.f.settings]
             [dinsro.translations :refer [tr]]
             [kee-frame.core :as kf]
@@ -22,3 +23,7 @@
    [:div.box
     [:h1 "Settings Page"]
     [c.f.settings/form]]])
+
+(s/fdef page
+  :args (s/cat)
+  :ret vector?)
