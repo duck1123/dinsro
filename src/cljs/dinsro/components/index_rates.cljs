@@ -34,5 +34,5 @@
          ^{:key (:db/id item)} [rate-line item]))])])
 
 (s/fdef section
-  :args (s/cat :items ::s.rates/item)
+  :args (s/cat :items (s/coll-of ::s.rates/item))
   :ret vector?)
