@@ -6,6 +6,7 @@
             dinsro.components.admin-index-rate-sources-test
             dinsro.components.forms.add-user-transaction-test
             dinsro.components.forms.create-transaction-test
+            dinsro.components.forms.settings-test
             dinsro.components.index-transactions-test
             dinsro.components.show-account-test
             dinsro.components.show-currency-test
