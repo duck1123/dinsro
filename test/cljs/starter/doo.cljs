@@ -15,6 +15,7 @@
             dinsro.spec.accounts-test
             dinsro.spec.actions.accounts-test
             dinsro.spec.actions.categories-test
+            dinsro.spec.actions.rate-sources-test
             dinsro.spec.currencies-test
             dinsro.spec.transactions-test
             dinsro.views.about-test
