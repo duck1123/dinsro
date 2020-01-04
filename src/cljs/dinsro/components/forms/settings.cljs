@@ -1,5 +1,6 @@
 (ns dinsro.components.forms.settings
-  (:require [dinsro.components :as c]
+  (:require [clojure.spec.alpha :as s]
+            [dinsro.components :as c]
             [dinsro.components.debug :as c.debug]
             [dinsro.events.forms.settings :as e.f.settings]
             [dinsro.events.settings :as e.settings]
@@ -25,3 +26,7 @@
       "Allow Registration"
       ::s.e.f.settings/allow-registration
       ::s.e.f.settings/set-allow-registration)]))
+
+(s/fdef form
+  :args (s/cat)
+  :ret vector?)
