@@ -14,7 +14,7 @@
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
-;; Create
+;; Prepare
 
 (defn prepare-record
   [params]
@@ -30,6 +30,8 @@
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.rate-sources/create-params)
   :ret  (s/nilable ::s.rate-sources/params))
+
+;; Create
 
 (defn create-handler
   [request]
