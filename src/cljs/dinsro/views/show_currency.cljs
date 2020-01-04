@@ -13,7 +13,7 @@
             [dinsro.events.rates :as e.rates]
             [dinsro.events.users :as e.users]
             [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.categories :as s.categories]
+            [dinsro.spec.currencies :as s.currencies]
             [kee-frame.core :as kf]
             [re-frame.core :as rf]
             [taoensso.timbre :as timbre]))
@@ -72,7 +72,7 @@
        [c.currency-rate-sources/section currency-id rate-sources])]))
 
 (s/fdef page-loaded
-  :args (s/cat :currency ::s.categories/item)
+  :args (s/cat :currency ::s.currencies/item)
   :ret vector?)
 
 (defn page
