@@ -40,7 +40,7 @@
      [:div.box
       [:h1
        (tr [:rates "Rates"])
-       [c/show-form-button ::e.f.create-rate/shown? ::e.f.create-rate/set-shown?]]
+       [c/show-form-button ::e.f.create-rate/shown?]]
       [c.f.create-rate/form]
       [:hr]
       [c.rate-chart/rate-chart items]

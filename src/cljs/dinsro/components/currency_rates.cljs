@@ -10,8 +10,7 @@
   [:div.box
    [:h2
     "Rates"
-    [c/show-form-button ::e.f.add-currency-rate/shown? ::e.f.add-currency-rate/set-shown?]
-    ]
+    [c/show-form-button ::e.f.add-currency-rate/shown?]]
    [c.f.add-currency-rate/form currency-id]
    [:hr]
    [c.rate-chart/rate-chart (reverse rates)]

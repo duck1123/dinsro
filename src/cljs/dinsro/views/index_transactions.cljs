@@ -38,7 +38,7 @@
   [:div.box
    [:h1
     (tr [:index-transactions-title "Index Transactions"])
-    [c/show-form-button ::e.f.create-transaction/shown? ::e.f.create-transaction/set-shown?]]
+    [c/show-form-button ::e.f.create-transaction/shown?]]
    [c.f.create-transaction/form]
    [:hr]
    [c.index-transactions/index-transactions transactions]])
