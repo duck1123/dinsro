@@ -3,6 +3,7 @@
             dinsro.core-test
             dinsro.components-test
             dinsro.components.admin-index-accounts-test
+            dinsro.components.admin-index-categories-test
             dinsro.components.admin-index-rate-sources-test
             dinsro.components.forms.add-user-transaction-test
             dinsro.components.forms.create-transaction-test
