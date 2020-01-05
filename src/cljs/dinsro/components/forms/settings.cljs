@@ -11,10 +11,11 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
-(kf/reg-controller
- :settings-controller
- {:params (constantly true)
-  :start [::e.settings/do-fetch-settings]})
+(comment
+  (kf/reg-controller
+   :settings-controller
+   {:params (constantly true)
+    :start [::e.settings/do-fetch-settings]}))
 
 (defn form
   []

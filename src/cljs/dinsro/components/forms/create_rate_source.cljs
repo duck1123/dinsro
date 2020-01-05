@@ -10,10 +10,11 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
-(kf/reg-controller
- ::form-controller
- {:params (constantly true)
-  :start [::e.f.create-rate-source/init-form]})
+(comment
+  (kf/reg-controller
+   ::form-controller
+   {:params (constantly true)
+    :start [::e.f.create-rate-source/init-form]}))
 
 (defn form-shown
   []
