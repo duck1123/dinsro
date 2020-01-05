@@ -22,6 +22,7 @@
             dinsro.spec.transactions-test
             dinsro.views.about-test
             dinsro.views.admin-test
+            dinsro.views.index-transactions-test
             dinsro.views.login-test
             dinsro.views.setting-test))
 
