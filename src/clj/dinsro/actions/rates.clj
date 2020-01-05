@@ -26,11 +26,12 @@
   :ret  (s/nilable ::s.rates/params))
 
 (defn create-handler
-  [request]
-  (or (let [{params :params} request]
-        (when-let [params (prepare-record params)]
-          (when-let [id (m.rates/create-record params)]
-            (http/ok {:item (m.rates/read-record id)}))))
+  [{:keys [params]}]
+  (or (when-let [item (some-> params
+                              prepare-record
+                              m.rates/create-record
+                              m.rates/read-record)]
+        (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
