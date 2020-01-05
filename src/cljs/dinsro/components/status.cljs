@@ -31,3 +31,7 @@
  :status-controller
  {:params (constantly true)
   :start [:init-status]})
+
+(defn require-status
+  [body]
+  body)

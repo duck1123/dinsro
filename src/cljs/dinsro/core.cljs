@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [day8.re-frame.http-fx]
             [dinsro.ajax :as ajax]
+            [dinsro.components.status :as c.status]
             [dinsro.events.debug :as e.debug]
             [dinsro.routing :as routing]
             [dinsro.view :as view]
@@ -31,7 +32,7 @@
     :routes         routing/routes
     :app-db-spec    ::app-db
     :initial-db     (initial-db *debug*)
-    :root-component [view/root-component]}))
+    :root-component [c.status/require-status [view/root-component]]}))
 
 (defn init! [debug?]
   (ajax/load-interceptors!)
