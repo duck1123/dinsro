@@ -23,7 +23,7 @@
                  [kee-frame "0.3.4" :exclusions [mvxcvi/arrangement
                                                  metosin/reitit-core
                                                  org.clojure/core.async]]
-                 [luminus-jetty "0.1.7"]
+                 [luminus-http-kit "0.1.6"]
                  [luminus-transit "0.1.2"]
                  [luminus/ring-ttl-session "0.3.3"]
                  [manifold "0.1.8"]
