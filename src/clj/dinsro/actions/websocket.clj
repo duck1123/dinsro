@@ -43,8 +43,10 @@
     (ms/put! message-source [key data])))
 
 (declare consumer)
-(mount/defstate consumer
-  :start (ms/consume handle-stream-message message-source))
+(mount/defstate ^{:on-reload :noop} consumer
+  :start (do
+           (timbre/info "Starting consumer")
+           (ms/consume handle-stream-message message-source)))
 
 (defn ws-handler
   [request]
