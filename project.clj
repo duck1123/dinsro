@@ -16,6 +16,8 @@
                  [day8.re-frame/http-fx "0.1.6"]
                  [devcards "0.2.6" :exclusions [args4j]]
                  [expound "0.8.4"]
+                 [fentontravers/transit-websocket-client "0.4.11"
+                  :exclusions [cljsjs/highlight]]
                  [io.replikativ/datahike "0.2.0" :exclusions [args4j]]
                  [kee-frame "0.3.4" :exclusions [mvxcvi/arrangement
                                                  metosin/reitit-core
