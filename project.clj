@@ -14,16 +14,16 @@
                  [com.smxemail/re-frame-document-fx "0.0.1-SNAPSHOT"]
                  [com.taoensso/tempura "1.2.1"]
                  [com.taoensso/timbre "4.10.0"]
-                 [cprop "0.1.14"]
+                 [cprop "0.1.15"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [devcards "0.2.6" :exclusions [args4j]]
-                 [expound "0.7.2"]
+                 [expound "0.8.4"]
                  [funcool/struct "1.4.0"]
                  [io.replikativ/datahike "0.2.0" :exclusions [args4j]]
-                 [kee-frame "0.3.3" :exclusions [mvxcvi/arrangement
+                 [kee-frame "0.3.4" :exclusions [mvxcvi/arrangement
                                                  metosin/reitit-core
                                                  org.clojure/core.async]]
-                 [luminus-jetty "0.1.7"]
+                 [luminus-http-kit "0.1.6"]
                  [luminus-transit "0.1.2"]
                  [luminus/ring-ttl-session "0.3.3"]
                  [manifold "0.1.8"]
@@ -35,7 +35,7 @@
                  [nrepl "0.6.0"]
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.520" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.597" :scope "provided"]
                  [org.clojure/core.rrb-vector "0.1.1"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
@@ -57,7 +57,7 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
-                 [selmer "1.12.17"]
+                 [selmer "1.12.18"]
                  [tick "0.4.21-alpha"]
                  [time-specs "0.1.0-SNAPSHOT"]]
 
