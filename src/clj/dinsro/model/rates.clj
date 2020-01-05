@@ -52,7 +52,7 @@
        (d/pull-many @db/*conn* '[*])
        (sort-by ::s.rates/date)
        (reverse)
-       (take 20)
+       (take 75)
        (map #(update % ::s.rates/date tick/instant))))
 
 (s/fdef index-records
