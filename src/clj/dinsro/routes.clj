@@ -133,6 +133,5 @@
     ["/authenticate" {:post a.authentication/authenticate-handler}]
     ["/logout"       {:post a.authentication/logout-handler}]
     ["/register"     {:post a.authentication/register-handler}]
-    ["/settings" {:middleware [middleware/wrap-formats]}
-                     {:get  a.settings/settings-handler}]
+    ["/settings"     {:get  a.settings/settings-handler}]
     ["/status"       {:get  a.status/status-handler}]]])
