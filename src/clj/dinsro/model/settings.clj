@@ -2,4 +2,4 @@
 
 (defn get-settings
   []
-  {:allow-registration true})
+  {:allow-registration false})
