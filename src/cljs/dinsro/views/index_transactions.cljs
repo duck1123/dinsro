@@ -51,7 +51,7 @@
    [c.index-transactions/index-transactions transactions]])
 
 (s/fdef section-inner
-  :args (s/cat :transactions ::s.transactions/items)
+  :args (s/cat :transactions (s/coll-of ::s.transactions/item))
   :ret vector?)
 
 (defn page

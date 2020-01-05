@@ -7,7 +7,7 @@
             [dinsro.views.index-transactions :as v.index-transactions]
             [taoensso.timbre :as timbre]))
 
-(let [items (ds/gen-key (s/coll-of ::s.transactions/items :count 5))]
+(let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))]
 
   (defcard-rg v.index-transactions/section-inner
     [v.index-transactions/section-inner items])
