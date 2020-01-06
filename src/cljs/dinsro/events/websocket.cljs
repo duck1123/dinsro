@@ -19,13 +19,14 @@
 
 (def websocket-channel (create-connection websocket-endpoint ::receive-message))
 
-(kf/reg-event-fx
- ::receive-message
- (fn [_ _]
-   {}))
+(defn receive-message
+  [_ _]
+  {})
 
-(kf/reg-event-fx
- ::send-message
- (fn [_ [data]]
-   (offer! websocket-channel data)
-   {}))
+(defn send-message
+  [_ [data]]
+  (offer! websocket-channel data)
+  {})
+
+(kf/reg-event-fx ::receive-message receive-message)
+(kf/reg-event-fx ::send-message send-message)
