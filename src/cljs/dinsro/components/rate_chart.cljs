@@ -21,15 +21,17 @@
 
 (defn rate-chart
   [items]
-  (let [config {:chart {:type  :line}
+  (let [data (map (fn [item]
+                    [(.getTime (tick/inst (::s.rates/date item)))
+                     (::s.rates/rate item)])
+                  items)
+        config {:chart {:type  :line}
                 :title {:text  "Sats Exchange Rate"}
-                :xAxis {:title {:text "Date"}}
+                :xAxis {:title {:text "Date"}
+                        :type "datetime"}
                 :yAxis {:title {:text "Sats"}}
                 :plotOptions
                 {:series {:label {:connectorAllowed false}}}
                 :series [{:name "USD"
-                          :data (map (fn [item]
-                                       [(.getTime (tick/inst (::s.rates/date item)))
-                                        (::s.rates/rate item)])
-                                     items)}]}]
+                          :data data}]}]
     [chart-outer config]))
