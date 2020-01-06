@@ -1,7 +1,8 @@
 (ns dinsro.actions.status
-  (:require [clojure.spec.alpha :as s]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]))
 
 (defn status-handler
   [request]

@@ -1,10 +1,11 @@
 (ns dinsro.views.settings
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.forms.settings :as c.f.settings]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.forms.settings :as c.f.settings]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]

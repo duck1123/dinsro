@@ -1,14 +1,15 @@
 (ns dinsro.actions.admin-transactions
-  (:require [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
-            [dinsro.model.transactions :as m.transactions]
-            [dinsro.spec.actions.admin-transactions :as s.a.admin-transactions]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.translations :refer [tr]]
-            [dinsro.utils :as utils]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [expound.alpha :as expound]
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.spec.actions.admin-transactions :as s.a.admin-transactions]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.translations :refer [tr]]
+   [dinsro.utils :as utils]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 ;; Prepare
 

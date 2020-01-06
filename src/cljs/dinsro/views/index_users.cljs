@@ -1,12 +1,13 @@
 (ns dinsro.views.index-users
-  (:require [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.index-users :refer [index-users]]
-            [dinsro.events.users :as e.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.index-users :refer [index-users]]
+   [dinsro.events.users :as e.users]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (defn init-page
   [_ _]

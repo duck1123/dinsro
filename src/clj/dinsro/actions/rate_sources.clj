@@ -1,22 +1,23 @@
 (ns dinsro.actions.rate-sources
-  (:require [clojure.data.json :as json]
-            [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
-            [dinsro.model.rate-sources :as m.rate-sources]
-            [dinsro.model.currencies :as m.currencies]
-            [dinsro.model.rates :as m.rates]
-            [dinsro.spec :as ds]
-            [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.spec.rates :as s.rates]
-            [dinsro.utils :as utils]
-            [manifold.time :as t]
-            [mount.core :as mount]
-            [org.httpkit.client :as client]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.data.json :as json]
+   [clojure.spec.alpha :as s]
+   [expound.alpha :as expound]
+   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rates :as m.rates]
+   [dinsro.spec :as ds]
+   [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.spec.rates :as s.rates]
+   [dinsro.utils :as utils]
+   [manifold.time :as t]
+   [mount.core :as mount]
+   [org.httpkit.client :as client]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 (declare ^:dynamic *scheduler*)
 

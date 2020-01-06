@@ -1,14 +1,15 @@
 (ns dinsro.views.index-currencies
-  (:require [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-currency :as c.f.create-currency]
-            [dinsro.components.index-currencies :as c.index-currencies]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-currency :as e.f.create-currency]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.create-currency :as c.f.create-currency]
+   [dinsro.components.index-currencies :as c.index-currencies]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.forms.create-currency :as e.f.create-currency]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (defn init-page
   [_ _]

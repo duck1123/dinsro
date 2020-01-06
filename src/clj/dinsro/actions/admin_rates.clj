@@ -1,12 +1,13 @@
 (ns dinsro.actions.admin-rates
-  (:require [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
-            [dinsro.model.rates :as m.rates]
-            [dinsro.spec.actions.admin-rates :as s.a.admin-rates]
-            [dinsro.spec.rates :as s.rates]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [expound.alpha :as expound]
+   [dinsro.model.rates :as m.rates]
+   [dinsro.spec.actions.admin-rates :as s.a.admin-rates]
+   [dinsro.spec.rates :as s.rates]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 ;; Prepare
 

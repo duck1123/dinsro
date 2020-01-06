@@ -1,19 +1,19 @@
 (ns dinsro.views.index-transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-transaction :as c.f.create-transaction]
-            [dinsro.components.index-transactions :as c.index-transactions]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-transaction :as e.f.create-transaction]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec :as ds]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.create-transaction :as c.f.create-transaction]
+   [dinsro.components.index-transactions :as c.index-transactions]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (defn init-page
   [_ _]

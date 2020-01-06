@@ -1,12 +1,13 @@
 (ns dinsro.actions.authentication
-  (:require [buddy.hashers :as hashers]
-            [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [dinsro.model.users :as m.users]
-            [dinsro.spec.actions.authentication :as s.a.authentication]
-            [dinsro.spec.users :as s.users]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [buddy.hashers :as hashers]
+   [clojure.set :as set]
+   [clojure.spec.alpha :as s]
+   [dinsro.model.users :as m.users]
+   [dinsro.spec.actions.authentication :as s.a.authentication]
+   [dinsro.spec.users :as s.users]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]))
 
 (def param-rename-map
   {:name     ::s.users/name

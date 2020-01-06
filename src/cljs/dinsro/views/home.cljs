@@ -1,14 +1,15 @@
 (ns dinsro.views.home
-  (:require [dinsro.components :as c]
-            [dinsro.components.account-picker :as c.account-picker]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.account-picker :as c.account-picker]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.authentication :as e.authentication]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec.users :as s.users]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (defn init-page
   [_ _]

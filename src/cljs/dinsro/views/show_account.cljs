@@ -1,19 +1,20 @@
 (ns dinsro.views.show-account
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.account-transactions :as c.account-transactions]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.show-account :refer [show-account]]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.spec.views.show-account :as s.v.show-account]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.account-transactions :as c.account-transactions]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.show-account :refer [show-account]]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.spec.views.show-account :as s.v.show-account]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 
 (defn init-page

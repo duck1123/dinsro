@@ -1,16 +1,17 @@
 (ns dinsro.views.index-rates
-  (:require [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-rate :as c.f.create-rate]
-            [dinsro.components.index-rates :as c.index-rates]
-            [dinsro.components.rate-chart :as c.rate-chart]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-rate :as e.f.create-rate]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.create-rate :as c.f.create-rate]
+   [dinsro.components.index-rates :as c.index-rates]
+   [dinsro.components.rate-chart :as c.rate-chart]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.forms.create-rate :as e.f.create-rate]
+   [dinsro.events.rates :as e.rates]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (defn init-page
   [{:keys [db]} _]

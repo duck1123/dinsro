@@ -1,22 +1,23 @@
 (ns dinsro.views.show-currency
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.currency-accounts :as c.currency-accounts]
-            [dinsro.components.currency-rates :as c.currency-rates]
-            [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.show-currency :as c.show-currency]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.currencies :as s.currencies]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.currency-accounts :as c.currency-accounts]
+   [dinsro.components.currency-rates :as c.currency-rates]
+   [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.show-currency :as c.show-currency]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.events.rates :as e.rates]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.currencies :as s.currencies]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))
