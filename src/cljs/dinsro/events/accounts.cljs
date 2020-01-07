@@ -53,6 +53,7 @@
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Create
+
 (s/def ::do-submit-state ::ds/state)
 (rfu/reg-basic-sub ::do-submit-state)
 
@@ -83,6 +84,7 @@
 (kf/reg-event-fx ::do-submit           do-submit)
 
 ;; Delete
+
 (s/def ::do-delete-record-state ::ds/state)
 (rfu/reg-basic-sub ::do-delete-record-state)
 
@@ -116,6 +118,7 @@
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
            (assoc ::items items)
+           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-failed

@@ -46,6 +46,7 @@
   (let [items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
     {:db (-> db
              (assoc ::items items)
+             (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
              (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed
