@@ -66,5 +66,5 @@
      [:hr]
      (condp = state
        :invalid [:p "Invalid"]
-       :loaded  [index-accounts accounts]
+       :loaded  (when accounts [index-accounts accounts])
        [:p "Unknown state: " state])]))
