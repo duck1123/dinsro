@@ -21,6 +21,7 @@
 (def items ::items)
 
 (s/def ::item-map (s/map-of ::ds/id ::s.categories/item))
+(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
 (defn sub-item

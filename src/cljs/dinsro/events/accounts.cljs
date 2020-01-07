@@ -13,6 +13,10 @@
 (s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
 
+(s/def ::item-map (s/map-of ::ds/id ::s.accounts/item))
+(rfu/reg-basic-sub ::item-map)
+(def item-map ::item-map)
+
 (defn sub-item
   [items [_ id]]
   (first (filter #(= (:db/id %) id) items)))

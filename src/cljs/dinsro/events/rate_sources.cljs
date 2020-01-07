@@ -6,11 +6,16 @@
    [dinsro.spec.rate-sources :as s.rate-sources]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
 (s/def ::items (s/coll-of ::s.rate-sources/item))
 (def items ::items)
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))
+
+(s/def ::item-map (s/map-of :db/id ::s.rate-sources/item))
+(rfu/reg-basic-sub ::item-map)
+(def item-map ::item-map)
 
 (defn item-sub
   [items [_ id]]

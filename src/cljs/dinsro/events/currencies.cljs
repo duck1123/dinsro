@@ -17,16 +17,8 @@
 (def items ::items)
 
 (s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
-
-(defn sub-item-map
-  [db _]
-  (get db ::item-map))
-
-(s/fdef sub-item-map
-  :ret ::item-map)
-
-(rf/reg-sub ::item-map               sub-item-map)
 
 (defn item-sub
   [item-map [_ id]]

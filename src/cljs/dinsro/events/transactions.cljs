@@ -22,6 +22,10 @@
 (def items ::items)
 (rfu/reg-basic-sub ::items)
 
+(s/def ::item-map (s/map-of ::ds/id ::s.transactions/item))
+(rfu/reg-basic-sub ::item-map)
+(def item-map ::item-map)
+
 (defn items-by-account
   [items event]
   (let [[_ id] event]

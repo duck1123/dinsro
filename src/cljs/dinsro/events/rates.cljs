@@ -7,11 +7,16 @@
    [dinsro.spec.rates :as s.rates]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
 (s/def ::items (s/coll-of ::s.rates/item))
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))
+
+(s/def ::item-map (s/map-of :db/id ::s.rates/item))
+(rfu/reg-basic-sub ::item-map)
+(def item-map ::item-map)
 
 (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
 
