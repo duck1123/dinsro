@@ -5,6 +5,7 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.rates :as s.rates]
+   [dinsro.utils :as utils]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
@@ -59,8 +60,8 @@
 ;; Read
 
 (defn read-handler
-  [request]
-  (if-let [id (get-in request [:path-params :id])]
+  [{{:keys [id]} :path-params}]
+  (if-let [id (utils/try-parse-int id)]
     (if-let [item (m.rates/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
