@@ -10,10 +10,7 @@
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
-;; Items
-
-(s/def ::items (s/coll-of ::s.accounts/item))
-(rfu/reg-basic-sub ::items)
+(s/def ::item ::s.accounts/item)
 
 ;; Item Map
 
@@ -21,19 +18,35 @@
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
+;; Items
+
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
 ;; Item
 
-(defn sub-item
-  [items [_ id]]
-  (first (filter #(= (:db/id %) id) items)))
+(defn item-sub
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
 
-(s/fdef sub-item
-  :args (s/cat :item ::items
-               :event ::s.e.accounts/sub-item-event)
-  :ret (s/nilable ::s.accounts/item))
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
 
-(rf/reg-sub ::item :<- [::items] sub-item)
-(def item ::item)
+(rf/reg-sub ::item :<- [::item-map] item-sub)
 
 ;; Items by User
 

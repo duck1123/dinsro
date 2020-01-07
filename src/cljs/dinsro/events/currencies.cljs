@@ -11,34 +11,43 @@
 
 (def items-sub-default [])
 
-;; Items
-
-(s/def ::items (s/coll-of ::s.currencies/item))
-(rfu/reg-basic-sub ::items)
-(rfu/reg-set-event ::items)
-(def items ::items)
+(s/def ::item ::s.currencies/item)
 
 ;; Item Map
 
-(s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(s/def ::item-map (s/map-of ::ds/id ::item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Items
+
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
 
 ;; Item
 
 (defn item-sub
+  "Subscription handler: Lookup an item from the item map by id"
   [item-map [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
   :args (s/cat :item-map ::item-map
-               :event any?)
-  :ret ::s.currencies/item)
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
 
-(rf/reg-sub
- ::item
- :<- [::item-map]
- item-sub)
+(rf/reg-sub ::item :<- [::item-map] item-sub)
 
 ;; Create
 

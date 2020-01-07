@@ -10,26 +10,43 @@
    [reframe-utils.core :as rfu]
    [ring.util.http-status :as status]))
 
-;; Items
-
-(s/def ::items (s/coll-of ::s.users/item))
-(rfu/reg-basic-sub ::items)
+(s/def ::item ::s.users/item)
 
 ;; Item Map
 
-(s/def ::item-map (s/map-of ::ds/id ::s.users/item))
+(s/def ::item-map (s/map-of ::ds/id ::item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
+;; Items
+
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
 ;; Item
 
-(s/def ::item (s/nilable ::s.users/item))
-
 (defn item-sub
-  [db [_kw id]]
-  (get-in db [::item-map id]))
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
 
-(rf/reg-sub ::item item-sub)
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
+
+(rf/reg-sub ::item :<- [::item-map] item-sub)
 
 ;; Read
 
