@@ -34,40 +34,33 @@
 (rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
 
 (defn do-fetch-record-success
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [{:keys [item]}] event]
-    {:db (-> db
-             (assoc ::do-fetch-record-state :loaded)
-             (assoc ::item item)
-             (assoc-in [::item-map (:db/id item)] item))}))
+  [{:keys [db]} [{:keys [item]}]]
+  {:db (-> db
+           (assoc ::do-fetch-record-state :loaded)
+           (assoc ::item item)
+           (assoc-in [::item-map (:db/id item)] item))})
 
 (defn do-fetch-record-unauthorized
-  [cofx _event]
-  (let [{:keys [db]} cofx
-        match (:kee-frame/route db)]
+  [{:keys [db]} _]
+  (let [match (:kee-frame/route db)]
     {:db (assoc db :return-to match)
      :navigate-to [:login-page]}))
 
 (defn do-fetch-record-failed
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [{:keys [status] :as request}] event]
-    (if (= status/forbidden status)
-      {:dispatch [::do-fetch-record-unauthorized request]}
-      {:db (assoc db ::do-fetch-record-state :failed)})))
+  [{:keys [db]} [{:keys [status] :as request}]]
+  (if (= status/forbidden status)
+    {:dispatch [::do-fetch-record-unauthorized request]}
+    {:db (assoc db ::do-fetch-record-state :failed)}))
 
 (defn do-fetch-record
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [id] event]
-    {:db (assoc db ::do-fetch-record-state :loading)
-     :http-xhrio
-     {:uri             (kf/path-for [:api-show-user {:id id}])
-      :method          :get
-      :response-format (ajax/json-response-format {:keywords? true})
-      :on-success      [::do-fetch-record-success]
-      :on-failure      [::do-fetch-record-failed]}}))
+  [{:keys [db]} [id]]
+  {:db (assoc db ::do-fetch-record-state :loading)
+   :http-xhrio
+   {:uri             (kf/path-for [:api-show-user {:id id}])
+    :method          :get
+    :response-format (ajax/json-response-format {:keywords? true})
+    :on-success      [::do-fetch-record-success]
+    :on-failure      [::do-fetch-record-failed]}})
 
 (kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
@@ -77,7 +70,7 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [_cofx [{:keys [id]}]]
+  [_ [{:keys [id]}]]
   {:dispatch [::filter-records id]})
 
 (defn do-delete-record-failed
@@ -113,7 +106,7 @@
            (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-unauthorized
-  [cofx _event]
+  [cofx _]
   (let [_route (get-in cofx [:db :kee-frame/route :data])]
     {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}))
 

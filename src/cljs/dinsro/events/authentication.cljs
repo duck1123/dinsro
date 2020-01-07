@@ -14,20 +14,17 @@
 ;; Authenticate
 
 (defn do-authenticate-success
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [item] event
-        identity (::s.a.authentication/identity item)
+  [{:keys [db]} [item]]
+  (let [identity (::s.a.authentication/identity item)
         return-to (:return-to db)
         db (if return-to
              (-> db
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {
+    {:db (assoc db ::auth-id identity)
      ;; TODO: return to calling page
-     :navigate-to [:home-page]
-     :db (assoc db ::auth-id identity)}))
+     :navigate-to [:home-page]}))
 
 (defn do-authenticate-failure
   [_ _]

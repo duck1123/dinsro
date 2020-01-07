@@ -33,9 +33,8 @@
   :ret ::items)
 
 (defn items-by-currency
-  [items event]
-  (let [[_ item] event
-        id (:db/id item)]
+  [items [_ item]]
+  (let [id (:db/id item)]
     (filter #(= id (get-in % [::s.accounts/currency :db/id])) items)))
 
 (s/fdef items-by-currency
