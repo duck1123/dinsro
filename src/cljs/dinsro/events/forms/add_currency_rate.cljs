@@ -1,9 +1,10 @@
 (ns dinsro.events.forms.add-currency-rate
-  (:require [dinsro.events.forms.create-rate :as e.f.create-rate]
-            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [dinsro.events.forms.create-rate :as e.f.create-rate]
+   [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)

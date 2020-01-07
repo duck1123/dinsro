@@ -1,9 +1,10 @@
 (ns dinsro.events.forms.add-user-account
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
-            [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
+   [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)

@@ -1,8 +1,9 @@
 (ns dinsro.events.settings
-  (:require [ajax.core :as ajax]
-            [dinsro.spec.events.forms.settings :as s.e.f.settings]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (defn do-fetch-settings-success
   [{:keys [db]} [settings]]

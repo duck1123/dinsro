@@ -1,8 +1,9 @@
 (ns dinsro.events.forms.create-rate-source
-  (:require [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (def default-name "Default Source")
 

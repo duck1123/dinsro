@@ -1,8 +1,9 @@
 (ns dinsro.events.forms.create-category
-  (:require [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (rfu/reg-basic-sub ::s.e.f.create-category/name)
 (rfu/reg-set-event ::s.e.f.create-category/name)

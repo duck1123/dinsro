@@ -1,12 +1,13 @@
 (ns dinsro.events.users
-  (:require [ajax.core :as ajax]
-            [cemerick.url :as url]
-            [clojure.spec.alpha :as s]
-            [dinsro.spec.users :as s.users]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [ring.util.http-status :as status]))
+  (:require
+   [ajax.core :as ajax]
+   [cemerick.url :as url]
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.users :as s.users]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [ring.util.http-status :as status]))
 
 (s/def ::items (s/coll-of ::s.users/item))
 (rfu/reg-basic-sub ::items)

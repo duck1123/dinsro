@@ -1,13 +1,14 @@
 (ns dinsro.events.categories
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.events :as e]
-            [dinsro.spec :as ds]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.spec.events.categories :as s.e.categories]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
+   [dinsro.spec :as ds]
+   [dinsro.spec.categories :as s.categories]
+   [dinsro.spec.events.categories :as s.e.categories]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (def example-category
   {:db/id 1

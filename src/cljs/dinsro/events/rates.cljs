@@ -1,13 +1,14 @@
 (ns dinsro.events.rates
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.events.rates :as s.e.rates]
-            [dinsro.spec.rates :as s.rates]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.events.rates :as s.e.rates]
+   [dinsro.spec.rates :as s.rates]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 (s/def ::items (s/coll-of ::s.rates/item))
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))

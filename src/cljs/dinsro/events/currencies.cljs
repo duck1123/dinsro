@@ -1,12 +1,13 @@
 (ns dinsro.events.currencies
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.currencies :as s.currencies]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.currencies :as s.currencies]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (def items-sub-default [])
 

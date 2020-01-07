@@ -1,14 +1,15 @@
 (ns dinsro.events.transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.events :as e]
-            [dinsro.spec :as ds]
-            [dinsro.spec.events.transactions :as s.e.transactions]
-            [dinsro.spec.transactions :as s.transactions]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
+   [dinsro.spec :as ds]
+   [dinsro.spec.events.transactions :as s.e.transactions]
+   [dinsro.spec.transactions :as s.transactions]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 (def example-transaction
   {:db/id 1

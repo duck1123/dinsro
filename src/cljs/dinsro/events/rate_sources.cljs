@@ -1,11 +1,12 @@
 (ns dinsro.events.rate-sources
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.events :as e]
-            [dinsro.spec.rate-sources :as s.rate-sources]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
+   [dinsro.spec.rate-sources :as s.rate-sources]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::items (s/coll-of ::s.rate-sources/item))
 (def items ::items)

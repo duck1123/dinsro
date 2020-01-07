@@ -1,10 +1,11 @@
 (ns dinsro.events.authentication
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.spec.actions.authentication :as s.a.authentication]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.spec.actions.authentication :as s.a.authentication]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (c/reg-field ::auth-id nil)
 (s/def ::auth-id (s/nilable :db/id))

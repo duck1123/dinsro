@@ -1,8 +1,9 @@
 (ns dinsro.events.forms.create-currency
-  (:require [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::s.e.f.create-currency/name)
 (rfu/reg-set-event ::s.e.f.create-currency/name)

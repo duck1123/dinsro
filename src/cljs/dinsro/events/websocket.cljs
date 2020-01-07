@@ -1,10 +1,12 @@
 (ns dinsro.events.websocket
-  (:require [cljs.core.async :refer [<! offer!]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]
-            [transit-websocket-client.core :as websocket])
-  (:require-macros [cljs.core.async.macros :refer [go-loop]]))
+  (:require
+   [cljs.core.async :refer [<! offer!]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]
+   [transit-websocket-client.core :as websocket])
+  (:require-macros
+   [cljs.core.async.macros :refer [go-loop]]))
 
 (def websocket-endpoint "ws://localhost:3000/ws")
 

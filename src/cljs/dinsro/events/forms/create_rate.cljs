@@ -1,9 +1,10 @@
 (ns dinsro.events.forms.create-rate
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (def default-rate 1)
 
