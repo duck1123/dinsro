@@ -53,6 +53,10 @@
     [c.buttons/fetch-rate-sources]
     [c.buttons/fetch-currency id]]))
 
+(s/fdef loading-buttons
+  :args (s/cat :id :db/id)
+  :ret vector?)
+
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
@@ -82,7 +86,7 @@
         currency @(rf/subscribe [::e.currencies/item currency-id])
         state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [loading-buttons id]
+     [loading-buttons currency-id]
      (condp = state
        :loaded [page-loaded currency]
        :loading [:p "Loading"]
