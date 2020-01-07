@@ -124,6 +124,7 @@
                  :dependencies [[binaryage/devtools "0.9.11"]
                                 [cider/piggieback "0.4.2"]
                                 [day8.re-frame/re-frame-10x "0.4.5"]
+                                [day8.re-frame/test "0.1.5"]
                                 [day8.re-frame/tracing "0.5.3"]
                                 [doo "0.1.11"]
                                 [figwheel-sidecar "0.5.19" :exclusions [args4j]]
