@@ -5,6 +5,7 @@
             dinsro.components.admin-index-accounts-test
             dinsro.components.admin-index-categories-test
             dinsro.components.admin-index-rate-sources-test
+            dinsro.components.currency-rates-test
             dinsro.components.forms.add-user-transaction-test
             dinsro.components.forms.create-transaction-test
             dinsro.components.forms.settings-test
