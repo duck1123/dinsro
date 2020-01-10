@@ -10,5 +10,5 @@
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
 
-  ;; :unresolved-symbol {:exclude [(orchestra.core/defn-spec)]}
+  :unresolved-symbol {:exclude [(org.httpkit.server/with-channel [channel])]}
   }}
