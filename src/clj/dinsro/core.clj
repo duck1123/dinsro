@@ -5,7 +5,6 @@
    [luminus.http-server :as http]
    [dinsro.config :refer [env]]
    [clojure.tools.cli :refer [parse-opts]]
-   [clojure.tools.logging :as log]
    [mount.core :as mount]
    [taoensso.timbre :as timbre])
   (:gen-class))
@@ -14,9 +13,9 @@
 (Thread/setDefaultUncaughtExceptionHandler
  (reify Thread$UncaughtExceptionHandler
    (uncaughtException [_ thread ex]
-     (log/error {:what :uncaught-exception
-                 :exception ex
-                 :where (str "Uncaught exception on" (.getName thread))}))))
+     (timbre/error {:what :uncaught-exception
+                    :exception ex
+                    :where (str "Uncaught exception on" (.getName thread))} ex))))
 
 (def cli-options
   [["-p" "--port PORT" "Port number"
