@@ -4,9 +4,8 @@
             [dinsro.views.settings :as v.settings]
             [taoensso.timbre :as timbre]))
 
-(declare page)
 (deftest page
   (is (vector? (v.settings/page))))
 
-(defcard-rg page
+(defcard-rg page-card
   [v.settings/page])

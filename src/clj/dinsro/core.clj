@@ -25,7 +25,6 @@
   (require 'cider.nrepl)
   (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
 
-(declare http-server)
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
@@ -36,7 +35,6 @@
   :stop
   (http/stop http-server))
 
-(declare repl-server)
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)

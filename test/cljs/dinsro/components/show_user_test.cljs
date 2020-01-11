@@ -3,6 +3,7 @@
             [dinsro.components.show-user :as c.show-user]
             [dinsro.spec.users :as s.users]
             [dinsro.translations :refer [tr]]
+            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
 (let [user {::s.users/name "Bart"
@@ -17,4 +18,4 @@
     [:div.box [c.show-user/show-user user]])
 
   (defcard show-user2
-    (reagent.core/as-element [c.show-user/show-user user])))
+    (r/as-element [c.show-user/show-user user])))
