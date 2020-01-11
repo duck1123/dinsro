@@ -6,4 +6,4 @@ lein eastwood
 lein kibit
 
 # clj-kondo --lint src
-clj-kondo --lint src:test
+npx clj-kondo --lint src:test

@@ -12,9 +12,8 @@
   (defcard-rg v.index-transactions/section-inner
     [v.index-transactions/section-inner items])
 
-  (declare page)
   (deftest page
-    (is (vector? (v.index-transactions/page)))))
+    (is (vector? (v.index-transactions/page))))
 
-(defcard-rg page
-  [v.index-transactions/page])
+  (defcard-rg page-card
+    [v.index-transactions/page]))

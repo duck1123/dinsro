@@ -11,9 +11,8 @@
 
   (defcard items items)
 
-  (declare page)
   (deftest page
-    (is (vector? (v.index-accounts/page nil)))))
+    (is (vector? (v.index-accounts/page nil))))
 
-(defcard-rg page
-  [v.index-accounts/page])
+  (defcard-rg page-card
+    [v.index-accounts/page]))

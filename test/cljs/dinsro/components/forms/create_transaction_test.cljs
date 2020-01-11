@@ -6,14 +6,15 @@
             [dinsro.spec :as ds]
             [dinsro.translations :refer [tr]]
             [re-frame.core :as rf]
+            [reagent.core :as r]
             [taoensso.timbre :as timbre]))
 
-(defcard
+(defcard a
   (ds/gen-key ::e.f.create-transaction/form-data))
 
-(defcard
+(defcard b
   "foo"
-  (reagent.core/as-element [:h1.title "foo bar"]))
+  (r/as-element [:h1.title "foo bar"]))
 
 (defn mock-dispatch
   [x]
@@ -29,7 +30,7 @@
     (timbre/infof "sub: %s => %s" x value)
     (atom value)))
 
-(defcard
+(defcard create-transaction-card
   "**Create Transaction**"
   (fn [data]
     (with-redefs [rf/dispatch mock-dispatch
