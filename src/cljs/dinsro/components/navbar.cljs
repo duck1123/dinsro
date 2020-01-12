@@ -1,16 +1,17 @@
 (ns dinsro.components.navbar
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.debug :as e.debug]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.events.forms.settings :as s.e.f.settings]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.authentication :as e.authentication]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [dinsro.spec.users :as s.users]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 ;; Subscriptions
 

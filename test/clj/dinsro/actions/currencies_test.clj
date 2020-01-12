@@ -1,17 +1,18 @@
 (ns dinsro.actions.currencies-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :refer [uri->config]]
-            [dinsro.actions.currencies :as a.currencies]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.mocks :as mocks]
-            [dinsro.model.currencies :as m.currencies]
-            [dinsro.spec :as ds]
-            [dinsro.spec.actions.currencies :as s.a.currencies]
-            [dinsro.spec.currencies :as s.currencies]
-            [mount.core :as mount]
-            [ring.util.http-status :as status]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :refer [uri->config]]
+   [dinsro.actions.currencies :as a.currencies]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.spec :as ds]
+   [dinsro.spec.actions.currencies :as s.a.currencies]
+   [dinsro.spec.currencies :as s.currencies]
+   [mount.core :as mount]
+   [ring.util.http-status :as status]))
 
 (def example-request {:name "foo"})
 

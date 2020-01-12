@@ -1,10 +1,11 @@
 (ns dinsro.components.index-transactions-test
-  (:require [clojure.spec.alpha :as s]
-            [devcards.core :refer-macros [defcard defcard-rg]]
-            [dinsro.components.index-transactions :as c.index-transactions]
-            [dinsro.spec :as ds]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.translations :refer [tr]]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.components.index-transactions :as c.index-transactions]
+   [dinsro.spec :as ds]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.translations :refer [tr]]))
 
 (let [item (ds/gen-key ::s.transactions/item)]
   (defcard item item)

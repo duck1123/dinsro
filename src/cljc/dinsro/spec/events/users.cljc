@@ -1,5 +1,6 @@
 (ns dinsro.spec.events.users
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (s/def ::do-fetch-record-failed-cofx (s/keys))
 (s/def ::do-fetch-record-failed-event (s/keys))

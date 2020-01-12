@@ -1,12 +1,13 @@
 (ns dinsro.components.forms.add-user-transaction
-  (:require [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.datepicker :as c.datepicker]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]))
 
 (defn error-message
   [message]

@@ -1,5 +1,6 @@
 (ns dinsro.utils
-  (:require [reagent.core :as r]))
+  (:require
+   [reagent.core :as r]))
 
 (defn found-in [re div]
   (let [res (.-innerHTML div)]

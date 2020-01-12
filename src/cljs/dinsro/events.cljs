@@ -1,7 +1,8 @@
 (ns dinsro.events
-  (:require [ajax.core :as ajax]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (defn fetch-request
   [path on-success on-failure]

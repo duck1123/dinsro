@@ -1,12 +1,13 @@
 (ns dinsro.components.forms.registration
-  (:require [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.forms.registration :as e.f.registration]
-            [dinsro.spec.events.forms.registration :as s.e.f.registration]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.authentication :as e.authentication]
+   [dinsro.events.forms.registration :as e.f.registration]
+   [dinsro.spec.events.forms.registration :as s.e.f.registration]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn form
   []

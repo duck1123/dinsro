@@ -1,13 +1,14 @@
 (ns dinsro.components.forms.create-rate-source
-  (:require [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
-            [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (kf/reg-controller
  ::form-controller

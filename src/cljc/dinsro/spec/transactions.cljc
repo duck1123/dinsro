@@ -1,6 +1,7 @@
 (ns dinsro.spec.transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]))
 
 (s/def ::description string?)
 (def description ::descriprion)

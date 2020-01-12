@@ -1,6 +1,6 @@
 (ns dinsro.env
-  (:require [clojure.tools.logging :as log]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [taoensso.timbre :as timbre]))
 
 (def defaults
   {:init

@@ -1,13 +1,14 @@
 (ns dinsro.components.forms.create-transaction-test
-  (:require [devcards.core :refer-macros [defcard]]
-            [dinsro.components.forms.create-transaction :as c.f.create-transaction]
-            [dinsro.events.forms.create-transaction :as e.f.create-transaction]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.spec :as ds]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [reagent.core :as r]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [devcards.core :refer-macros [defcard]]
+   [dinsro.components.forms.create-transaction :as c.f.create-transaction]
+   [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.spec :as ds]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [reagent.core :as r]
+   [taoensso.timbre :as timbre]))
 
 (defcard a
   (ds/gen-key ::e.f.create-transaction/form-data))

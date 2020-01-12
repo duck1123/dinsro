@@ -1,11 +1,12 @@
 (ns dinsro.components.forms.add-user-category
-  (:require [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.events.forms.add-user-category :as e.f.add-user-category]
-            [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.forms.add-user-category :as e.f.add-user-category]
+   [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]))
 
 (defn form
   [user-id]

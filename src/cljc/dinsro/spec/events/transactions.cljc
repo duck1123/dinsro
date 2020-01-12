@@ -1,7 +1,8 @@
 (ns dinsro.spec.events.transactions
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.actions.transactions :as s.a.transactions]
-            [dinsro.spec.transactions :as s.transactions]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.actions.transactions :as s.a.transactions]
+   [dinsro.spec.transactions :as s.transactions]))
 
 (s/def ::items-by-account-event (s/cat :keyword keyword? :id ::s.transactions/account-id))
 (def items-by-account-event ::items-by-account-event)

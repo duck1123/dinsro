@@ -1,7 +1,8 @@
 (ns dinsro.components.show-user
-  (:require [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.translations :refer [tr]]))
+  (:require
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.translations :refer [tr]]))
 
 (defn show-user
   [user]

@@ -1,11 +1,12 @@
 (ns dinsro.events.transactions-test
-  (:require [cljs.test :refer-macros [is]]
-            [devcards.core :refer-macros [defcard deftest]]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.spec.events.transactions :as s.e.transactions]
-            [dinsro.spec :as ds]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [cljs.test :refer-macros [is]]
+   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.spec.events.transactions :as s.e.transactions]
+   [dinsro.spec :as ds]
+   [taoensso.timbre :as timbre]))
 
 (defcard ::s.transactions/item
   (ds/gen-key ::s.transactions/item))

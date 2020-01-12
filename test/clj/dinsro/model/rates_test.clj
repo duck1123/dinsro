@@ -1,16 +1,17 @@
 (ns dinsro.model.rates-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :as dc]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.mocks :as mocks]
-            [dinsro.model.rates :as m.rates]
-            [dinsro.spec :as ds]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.rates :as s.rates]
-            [mount.core :as mount]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :as dc]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.mocks :as mocks]
+   [dinsro.model.rates :as m.rates]
+   [dinsro.spec :as ds]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.rates :as s.rates]
+   [mount.core :as mount]
+   [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

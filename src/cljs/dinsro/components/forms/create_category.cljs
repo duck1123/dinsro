@@ -1,12 +1,13 @@
 (ns dinsro.components.forms.create-category
-  (:require [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.events.forms.create-category :as e.f.create-category]
-            [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.forms.create-category :as e.f.create-category]
+   [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn form
   []

@@ -1,8 +1,9 @@
 (ns dinsro.components.account-picker
-  (:require [dinsro.components.user-accounts :as c.user-accounts]
-            [dinsro.events.accounts :as e.accounts]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components.user-accounts :as c.user-accounts]
+   [dinsro.events.accounts :as e.accounts]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn section
   []

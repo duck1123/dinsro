@@ -1,11 +1,12 @@
 (ns dinsro.spec.transactions-test
-  (:require [cljs.test :refer-macros [is]]
-            [clojure.spec.alpha :as s]
-            [devcards.core :as dc :refer-macros [defcard defcard-rg deftest]]
-            [dinsro.spec :as ds]
-            [dinsro.spec.transactions :as s.transactions]
-            [expound.alpha :as expound]
-            [tick.alpha.api :as tick]))
+  (:require
+   [cljs.test :refer-macros [is]]
+   [clojure.spec.alpha :as s]
+   [devcards.core :as dc :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.spec :as ds]
+   [dinsro.spec.transactions :as s.transactions]
+   [expound.alpha :as expound]
+   [tick.alpha.api :as tick]))
 
 (defcard generated-item
   (ds/gen-key ::s.transactions/item))

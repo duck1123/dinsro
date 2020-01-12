@@ -1,12 +1,13 @@
 (ns dinsro.core
-  (:require [dinsro.handler :as handler]
-            [dinsro.nrepl :as nrepl]
-            [luminus.http-server :as http]
-            [dinsro.config :refer [env]]
-            [clojure.tools.cli :refer [parse-opts]]
-            [clojure.tools.logging :as log]
-            [mount.core :as mount]
-            [taoensso.timbre :as timbre])
+  (:require
+   [dinsro.handler :as handler]
+   [dinsro.nrepl :as nrepl]
+   [luminus.http-server :as http]
+   [dinsro.config :refer [env]]
+   [clojure.tools.cli :refer [parse-opts]]
+   [clojure.tools.logging :as log]
+   [mount.core :as mount]
+   [taoensso.timbre :as timbre])
   (:gen-class))
 
 ;; log uncaught exceptions in threads

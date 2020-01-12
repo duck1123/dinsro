@@ -1,13 +1,14 @@
 (ns dinsro.model.users-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :refer [uri->config]]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.model.users :as m.users]
-            [dinsro.spec :as ds]
-            [dinsro.spec.users :as s.users]
-            [mount.core :as mount]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :refer [uri->config]]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.model.users :as m.users]
+   [dinsro.spec :as ds]
+   [dinsro.spec.users :as s.users]
+   [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

@@ -1,8 +1,9 @@
 (ns dinsro.components.rate-chart
-  (:require [cljsjs.highcharts]
-            [dinsro.spec.rates :as s.rates]
-            [reagent.core :as r]
-            [tick.alpha.api :as tick]))
+  (:require
+   [cljsjs.highcharts]
+   [dinsro.spec.rates :as s.rates]
+   [reagent.core :as r]
+   [tick.alpha.api :as tick]))
 
 (defn mount-chart [comp]
   (.chart js/Highcharts (r/dom-node comp) (clj->js (r/props comp))))

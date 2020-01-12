@@ -1,10 +1,11 @@
 (ns dinsro.components.admin-index-categories-test
-  (:require [clojure.spec.alpha :as s]
-            [devcards.core :refer-macros [defcard defcard-rg]]
-            [dinsro.components.admin-index-categories :as c.admin-index-categories]
-            [dinsro.spec :as ds]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.translations :refer [tr]]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.components.admin-index-categories :as c.admin-index-categories]
+   [dinsro.spec :as ds]
+   [dinsro.spec.categories :as s.categories]
+   [dinsro.translations :refer [tr]]))
 
 (let [items (ds/gen-key (s/coll-of ::s.categories/item :count 3))]
   (defcard items items)

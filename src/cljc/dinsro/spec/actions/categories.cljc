@@ -1,8 +1,9 @@
 (ns dinsro.spec.actions.categories
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.categories :as s.categories]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.categories :as s.categories]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::create-params-valid (s/keys :req-un [::s.categories/name ::s.categories/user-id]))
 (def create-params-valid ::create-params-valid)

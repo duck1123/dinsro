@@ -1,13 +1,14 @@
 (ns dinsro.components.forms.create-currency
-  (:require [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-currency :as e.f.create-currency]
-            [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.forms.create-currency :as e.f.create-currency]
+   [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (kf/reg-controller
  ::form-controller

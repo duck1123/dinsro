@@ -1,5 +1,6 @@
 (ns dinsro.components.currency-accounts
-  (:require [dinsro.components.index-accounts :as c.index-accounts]))
+  (:require
+   [dinsro.components.index-accounts :as c.index-accounts]))
 
 (defn section
   [accounts]

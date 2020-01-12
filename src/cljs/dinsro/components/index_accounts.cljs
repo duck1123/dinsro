@@ -1,10 +1,11 @@
 (ns dinsro.components.index-accounts
-  (:require [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.translations :refer [tr]]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.links :as c.links]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (defn row-line
   [account]

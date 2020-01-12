@@ -1,10 +1,11 @@
 (ns dinsro.components.index-rates
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
-            [dinsro.spec.rates :as s.rates]
-            [dinsro.translations :refer [tr]]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.links :as c.links]
+   [dinsro.spec.rates :as s.rates]
+   [dinsro.translations :refer [tr]]))
 
 (defn rate-line
   [item]

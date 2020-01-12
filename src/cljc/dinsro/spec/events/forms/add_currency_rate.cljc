@@ -1,7 +1,8 @@
 (ns dinsro.spec.events.forms.add-currency-rate
   (:refer-clojure :exclude [time])
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.rates :as s.rates]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.rates :as s.rates]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

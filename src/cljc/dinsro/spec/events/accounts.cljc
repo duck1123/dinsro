@@ -1,9 +1,10 @@
 (ns dinsro.spec.events.accounts
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.actions.accounts :as s.a.accounts]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.actions.accounts :as s.a.accounts]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::item (s/nilable ::s.accounts/item))
 (def item ::item)

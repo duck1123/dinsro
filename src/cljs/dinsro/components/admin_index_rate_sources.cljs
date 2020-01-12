@@ -1,11 +1,12 @@
 (ns dinsro.components.admin-index-rate-sources
-  (:require [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
-            [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.links :as c.links]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]))
 
 (defn index-line
   [item]

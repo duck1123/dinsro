@@ -1,11 +1,12 @@
 (ns dinsro.events.accounts-test
-  (:require [cljs.test :refer-macros [is]]
-            [clojure.spec.alpha :as s]
-            [devcards.core :refer-macros [defcard-rg deftest]]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.spec.accounts :as s.accounts]
-            [expound.alpha :as expound]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [cljs.test :refer-macros [is]]
+   [clojure.spec.alpha :as s]
+   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.spec.accounts :as s.accounts]
+   [expound.alpha :as expound]
+   [taoensso.timbre :as timbre]))
 
 (defcard-rg form
   ;; "**Documentation**"

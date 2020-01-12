@@ -1,11 +1,12 @@
 (ns dinsro.components.user-categories
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.forms.add-user-category :as c.f.add-user-category]
-            [dinsro.components.index-categories :as c.index-categories]
-            [dinsro.events.forms.add-user-category :as e.f.add-user-category]
-            [dinsro.spec.categories :as s.categories]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.forms.add-user-category :as c.f.add-user-category]
+   [dinsro.components.index-categories :as c.index-categories]
+   [dinsro.events.forms.add-user-category :as e.f.add-user-category]
+   [dinsro.spec.categories :as s.categories]
+   [taoensso.timbre :as timbre]))
 
 (defn section
   [user-id categories]

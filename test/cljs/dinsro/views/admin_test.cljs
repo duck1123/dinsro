@@ -1,6 +1,7 @@
 (ns dinsro.views.admin-test
-  (:require [devcards.core :refer-macros [defcard defcard-rg]]
-            [dinsro.views.admin :as v.admin]))
+  (:require
+   [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.views.admin :as v.admin]))
 
 (defcard title
   "**Admin**")

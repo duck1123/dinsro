@@ -1,6 +1,7 @@
 (ns dinsro.spec.events.forms.add-user-category
   (:refer-clojure :exclude [name])
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

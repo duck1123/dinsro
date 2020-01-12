@@ -1,10 +1,11 @@
 (ns dinsro.spec
-  (:require [clojure.spec.alpha :as s]
-            [clojure.test.check.generators]
-            [clojure.spec.gen.alpha :as gen]
-            [ring.util.http-status :as status]
-            [tick.alpha.api :as tick]
-            [time-specs.core :as ts]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.test.check.generators]
+   [clojure.spec.gen.alpha :as gen]
+   [ring.util.http-status :as status]
+   [tick.alpha.api :as tick]
+   [time-specs.core :as ts]))
 
 (defn valid-jwt? [jwt]
   (re-matches #"^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$" jwt))
