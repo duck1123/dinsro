@@ -25,14 +25,6 @@
 
 (rf/reg-sub ::item item-sub)
 
-(defn filter-records
-  [db [_kw id]]
-  (->> @(rf/subscribe [::items])
-       (keep #(when (not= (:db/id %) id) %))
-       (assoc db ::items)))
-
-(kf/reg-event-db ::filter-records filter-records)
-
 ;; Read
 
 (s/def ::do-fetch-record-state keyword?)
@@ -75,8 +67,8 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [_ [{:keys [id]}]]
-  {:dispatch [::filter-records id]})
+  [_ _]
+  {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record-failed
   [{:keys [db]} [{:keys [id]}]]
