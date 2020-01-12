@@ -3,6 +3,5 @@
             [devcards.core :as dc :refer-macros [deftest]]
             [dinsro.core]))
 
-(declare test-home)
 (deftest test-home
   (is (= true true)))

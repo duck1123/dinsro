@@ -8,14 +8,10 @@
             [taoensso.timbre :as timbre]
             ))
 
-(declare t)
-
-(defcard
+(defcard title
   #_"**components**"
   (r/as-element [:h1.title "Components"]))
 
-
-(declare checkbox-input)
 (defcard-rg checkbox-input
   (with-redefs [rf/subscribe (fn [x] (timbre/spy :info x))]
     (r/as-element

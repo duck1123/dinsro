@@ -7,19 +7,16 @@
             [expound.alpha :as expound]
             [taoensso.timbre :as timbre]))
 
-(declare form)
 (defcard-rg form
   ;; "**Documentation**"
   (fn [name] [:p (str @name)])
   {:name "foo"})
 
-(declare sub-item-no-match)
 (deftest sub-item-no-match
   (let [items []
         id 1]
     (is (= nil (e.accounts/sub-item items [::e.accounts/item id])))))
 
-(declare sub-item-match)
 (deftest sub-item-match
   (let [id 1
         item {:db/id id}
