@@ -99,7 +99,6 @@
 (defn do-fetch-index-success
   [{:keys [db]} [{items :users}]]
   {:db (-> db
-           (assoc ::items items)
            (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 

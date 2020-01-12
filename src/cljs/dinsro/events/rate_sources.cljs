@@ -41,7 +41,6 @@
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
-           (assoc ::items items)
            (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
@@ -52,7 +51,6 @@
 
 (defn do-fetch-index
   [{:keys [db]} _]
-  ;; {:db (assoc db ::items (ds/gen-key ::items))}
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    (e/fetch-request [:api-index-rate-sources]
