@@ -8,13 +8,19 @@
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
+;; Items
+
 (s/def ::items (s/coll-of ::s.rate-sources/item))
 (def items ::items)
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))
 
+;; Item Map
+
 (s/def ::item-map (s/map-of :db/id ::s.rate-sources/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Item
 
 (defn item-sub
   [items [_ id]]

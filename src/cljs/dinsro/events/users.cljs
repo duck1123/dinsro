@@ -10,14 +10,20 @@
    [reframe-utils.core :as rfu]
    [ring.util.http-status :as status]))
 
+;; Items
+
 (s/def ::items (s/coll-of ::s.users/item))
 (rfu/reg-basic-sub ::items)
 
-(s/def ::item (s/nilable ::s.users/item))
+;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.users/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Item
+
+(s/def ::item (s/nilable ::s.users/item))
 
 (defn item-sub
   [db [_kw id]]

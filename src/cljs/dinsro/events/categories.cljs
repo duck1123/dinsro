@@ -15,25 +15,33 @@
    ::s.categories/name "Foo"
    ::s.categories/user {:db/id 12}})
 
+;; Items
+
 (s/def ::items (s/coll-of ::s.categories/item))
 (rfu/reg-basic-sub ::items)
 (rfu/reg-set-event ::items)
 (def items ::items)
 
+;; Item Map
+
 (s/def ::item-map (s/map-of ::ds/id ::s.categories/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
+;; Item
+
 (defn sub-item
   [items [_ target-item]]
   (first (filter #(= (:id %) (:db/id target-item)) items)))
+(rf/reg-sub ::item :<- [::items] sub-item)
+
+;; Items by User
 
 (defn items-by-user
   [db event]
   (let [[_ id] event]
     (filter #(= id (get-in % [::s.categories/user :db/id])) (::items db))))
 
-(rf/reg-sub ::item :<- [::items] sub-item)
 (rf/reg-sub ::items-by-user items-by-user)
 
 ;; Create

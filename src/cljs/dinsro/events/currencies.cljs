@@ -11,14 +11,20 @@
 
 (def items-sub-default [])
 
+;; Items
+
 (s/def ::items (s/coll-of ::s.currencies/item))
 (rfu/reg-basic-sub ::items)
 (rfu/reg-set-event ::items)
 (def items ::items)
 
+;; Item Map
+
 (s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Item
 
 (defn item-sub
   [item-map [_ id]]

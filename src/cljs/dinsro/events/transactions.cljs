@@ -18,13 +18,19 @@
    ::s.transactions/currency {:db/id 53}
    ::s.transactions/account {:db/id 12}})
 
+;; Items
+
 (s/def ::items (s/coll-of ::s.transactions/item))
 (def items ::items)
 (rfu/reg-basic-sub ::items)
 
+;; Item Map
+
 (s/def ::item-map (s/map-of ::ds/id ::s.transactions/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Items by Account
 
 (defn items-by-account
   [items event]
@@ -36,6 +42,10 @@
                :event ::s.e.transactions/items-by-account-event)
   :ret ::items)
 
+(rf/reg-sub ::items-by-account :<- [::items] items-by-account)
+
+;; Items by Currency
+
 (defn items-by-currency
   [items event]
   (let [[_ id] event]
@@ -46,8 +56,9 @@
                :event ::s.e.transactions/items-by-currency-event)
   :ret ::items)
 
-(rf/reg-sub ::items-by-account :<- [::items] items-by-account)
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
+
+;; Items by User
 
 ;; FIXME: This will have to read across all linked accounts
 (rfu/reg-basic-sub ::items-by-user ::items)

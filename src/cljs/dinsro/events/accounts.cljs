@@ -10,12 +10,18 @@
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
+;; Items
+
 (s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
+
+;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.accounts/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Item
 
 (defn sub-item
   [items [_ id]]
@@ -25,6 +31,11 @@
   :args (s/cat :item ::items
                :event ::s.e.accounts/sub-item-event)
   :ret (s/nilable ::s.accounts/item))
+
+(rf/reg-sub ::item :<- [::items] sub-item)
+(def item ::item)
+
+;; Items by User
 
 (defn items-by-user
   [items [_ id]]
@@ -36,6 +47,10 @@
                              :id :db/id))
   :ret ::items)
 
+(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
+
+;; Items by Currency
+
 (defn items-by-currency
   [items [_ item]]
   (let [id (:db/id item)]
@@ -46,10 +61,6 @@
                :event any?)
   :ret ::items)
 
-(rf/reg-sub ::item :<- [::items] sub-item)
-(def item ::item)
-
-(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Create
