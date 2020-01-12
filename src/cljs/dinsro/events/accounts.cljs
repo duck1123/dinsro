@@ -1,16 +1,21 @@
 (ns dinsro.events.accounts
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.events :as e]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.events.accounts :as s.e.accounts]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.events.accounts :as s.e.accounts]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::items (s/coll-of ::s.accounts/item))
 (rfu/reg-basic-sub ::items)
+
+(s/def ::item-map (s/map-of ::ds/id ::s.accounts/item))
+(rfu/reg-basic-sub ::item-map)
+(def item-map ::item-map)
 
 (defn sub-item
   [items [_ id]]
@@ -32,9 +37,8 @@
   :ret ::items)
 
 (defn items-by-currency
-  [items event]
-  (let [[_ item] event
-        id (:db/id item)]
+  [items [_ item]]
+  (let [id (:db/id item)]
     (filter #(= id (get-in % [::s.accounts/currency :db/id])) items)))
 
 (s/fdef items-by-currency
@@ -49,6 +53,7 @@
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Create
+
 (s/def ::do-submit-state ::ds/state)
 (rfu/reg-basic-sub ::do-submit-state)
 
@@ -79,6 +84,7 @@
 (kf/reg-event-fx ::do-submit           do-submit)
 
 ;; Delete
+
 (s/def ::do-delete-record-state ::ds/state)
 (rfu/reg-basic-sub ::do-delete-record-state)
 
@@ -112,6 +118,7 @@
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
            (assoc ::items items)
+           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-failed

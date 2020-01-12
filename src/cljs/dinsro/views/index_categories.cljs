@@ -1,15 +1,16 @@
 (ns dinsro.views.index-categories
-  (:require [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-category :as c.f.create-category]
-            [dinsro.components.index-categories :refer [index-categories]]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.events.forms.create-category :as e.f.create-category]
-            [dinsro.events.users :as e.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.create-category :as c.f.create-category]
+   [dinsro.components.index-categories :refer [index-categories]]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.forms.create-category :as e.f.create-category]
+   [dinsro.events.users :as e.users]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (defn init-page
   [{:keys [db]} _]
@@ -39,7 +40,7 @@
      [:div.box
       [:h1
        (tr [:categories "Categories"])
-       [c/show-form-button ::e.f.create-category/shown? ::e.f.create-category/set-shown?]]
+       [c/show-form-button ::e.f.create-category/shown?]]
       [c.f.create-category/form]
       [:hr]
       (when items

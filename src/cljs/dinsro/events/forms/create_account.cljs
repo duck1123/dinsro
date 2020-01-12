@@ -1,7 +1,8 @@
 (ns dinsro.events.forms.create-account
-  (:require [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::s.e.f.create-account/name)
 (rfu/reg-set-event ::s.e.f.create-account/name)

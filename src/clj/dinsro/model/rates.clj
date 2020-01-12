@@ -1,9 +1,11 @@
 (ns dinsro.model.rates
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.rates :as s.rates]
+            [dinsro.streams :as streams]
+            [manifold.stream :as ms]
             [taoensso.timbre :as timbre]
             [tick.alpha.api :as tick]))
 
@@ -21,8 +23,10 @@
         prepared-params (-> (prepare-record params)
                             (assoc :db/id tempid)
                             (update ::s.rates/date tick/inst))
-        response (d/transact db/*conn* {:tx-data [prepared-params]})]
-    (get-in response [:tempids tempid])))
+        response (d/transact db/*conn* {:tx-data [prepared-params]})
+        id (get-in response [:tempids tempid])]
+    (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]])
+    id))
 
 (s/fdef create-record
   :args (s/cat :params ::s.rates/params)
@@ -52,7 +56,7 @@
        (d/pull-many @db/*conn* '[*])
        (sort-by ::s.rates/date)
        (reverse)
-       (take 20)
+       (take 75)
        (map #(update % ::s.rates/date tick/instant))))
 
 (s/fdef index-records

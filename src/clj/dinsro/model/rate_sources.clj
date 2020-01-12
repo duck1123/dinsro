@@ -1,7 +1,7 @@
 (ns dinsro.model.rate-sources
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.rate-sources :as s.rate-sources]
             [taoensso.timbre :as timbre]))

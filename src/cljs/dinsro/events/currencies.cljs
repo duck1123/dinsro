@@ -1,12 +1,13 @@
 (ns dinsro.events.currencies
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.currencies :as s.currencies]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.currencies :as s.currencies]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (def items-sub-default [])
 
@@ -16,16 +17,8 @@
 (def items ::items)
 
 (s/def ::item-map (s/map-of ::ds/id ::s.currencies/item))
+(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
-
-(defn sub-item-map
-  [db _]
-  (get db ::item-map))
-
-(s/fdef sub-item-map
-  :ret ::item-map)
-
-(rf/reg-sub ::item-map               sub-item-map)
 
 (defn item-sub
   [item-map [_ id]]
@@ -137,13 +130,11 @@
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [{:keys [items]}] event]
-    {:db (-> db
-             (assoc ::items items)
-             (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
-             (assoc ::do-fetch-index-state :loaded))}))
+  [{:keys [db]} [{:keys [items]}]]
+  {:db (-> db
+           (assoc ::items items)
+           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
+           (assoc ::do-fetch-index-state :loaded))})
 
 (s/def ::do-fetch-index-cofx (s/keys))
 (s/def ::do-fetch-index-event (s/keys))

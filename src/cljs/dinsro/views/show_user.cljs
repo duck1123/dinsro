@@ -1,19 +1,20 @@
 (ns dinsro.views.show-user
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.show-user :refer [show-user]]
-            [dinsro.components.user-accounts :as c.user-accounts]
-            [dinsro.components.user-categories :as c.user-categories]
-            [dinsro.components.user-transactions :as c.user-transactions]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.events.users :as e.users]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.show-user :refer [show-user]]
+   [dinsro.components.user-accounts :as c.user-accounts]
+   [dinsro.components.user-categories :as c.user-categories]
+   [dinsro.components.user-transactions :as c.user-transactions]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.events.users :as e.users]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))

@@ -1,4 +1,4 @@
-(ns dinsro.db.core
+(ns dinsro.db
   (:require [datahike.api :as d]
             [datahike.config :as d.config]
             [dinsro.config :refer [env]]

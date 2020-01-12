@@ -1,9 +1,10 @@
 (ns dinsro.events.forms.add-account-transaction
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.events.forms.create-transaction :as e.f.create-transaction]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

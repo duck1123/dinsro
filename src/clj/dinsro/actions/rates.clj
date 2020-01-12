@@ -1,12 +1,14 @@
 (ns dinsro.actions.rates
-  (:require [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
-            [dinsro.model.rates :as m.rates]
-            [dinsro.spec.actions.rates :as s.a.rates]
-            [dinsro.spec.rates :as s.rates]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [expound.alpha :as expound]
+   [dinsro.model.rates :as m.rates]
+   [dinsro.spec.actions.rates :as s.a.rates]
+   [dinsro.spec.rates :as s.rates]
+   [dinsro.utils :as utils]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 ;; Create
 
@@ -26,11 +28,12 @@
   :ret  (s/nilable ::s.rates/params))
 
 (defn create-handler
-  [request]
-  (or (let [{params :params} request]
-        (when-let [params (prepare-record params)]
-          (when-let [id (m.rates/create-record params)]
-            (http/ok {:item (m.rates/read-record id)}))))
+  [{:keys [params]}]
+  (or (when-let [item (some-> params
+                              prepare-record
+                              m.rates/create-record
+                              m.rates/read-record)]
+        (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -57,8 +60,8 @@
 ;; Read
 
 (defn read-handler
-  [request]
-  (if-let [id (get-in request [:path-params :id])]
+  [{{:keys [id]} :path-params}]
+  (if-let [id (utils/try-parse-int id)]
     (if-let [item (m.rates/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))

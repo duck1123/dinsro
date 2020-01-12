@@ -1,7 +1,8 @@
 (ns dinsro.events.forms.add-user-category
-  (:require [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)

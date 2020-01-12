@@ -116,15 +116,17 @@
 (defn user-selector-
   [label field change-handler items]
   (let [value (or @(rf/subscribe [field]) "")]
-    [:div.field>div.control
+    [:div.field
      [:label.label label]
-     [:div.select
-      (into [:select {:value value
-                      :on-change #(rf/dispatch [change-handler (target-value %)])}]
-            (concat [[:option {:value ""} ""]]
-                    (for [{:keys [db/id dinsro.spec.users/name]} items]
-                      ^{:key id}
-                      [:option {:value id} name])))]]))
+     [:div.control
+      [:div.select
+       (into
+        [:select {:value value
+                  :on-change #(rf/dispatch [change-handler (target-value %)])}]
+        (concat [[:option {:value ""} ""]]
+                (for [{:keys [db/id dinsro.spec.users/name]} items]
+                  ^{:key id}
+                  [:option {:value id} name])))]]]))
 
 (defn user-selector
   ([label field]
@@ -132,12 +134,10 @@
   ([label field change-handler]
    (let [items @(rf/subscribe [::e.users/items])
          state @(rf/subscribe [::e.users/do-fetch-index-state])]
-     [:<>
-      #_[:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])} (str "Fetch Users: " state)]
-      (condp = state
-        :invalid [:p "Invalid"]
-        :loaded  [user-selector- label field change-handler items]
-        [:p "Unknown"])])))
+     (condp = state
+       :invalid [:p "Invalid"]
+       :loaded  [user-selector- label field change-handler items]
+       [:p "Unknown"]))))
 
 (defn filter-page
   [page]

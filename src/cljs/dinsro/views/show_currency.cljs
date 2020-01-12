@@ -1,22 +1,23 @@
 (ns dinsro.views.show-currency
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.currency-accounts :as c.currency-accounts]
-            [dinsro.components.currency-rates :as c.currency-rates]
-            [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.show-currency :as c.show-currency]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.categories :as s.categories]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.currency-accounts :as c.currency-accounts]
+   [dinsro.components.currency-rates :as c.currency-rates]
+   [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.show-currency :as c.show-currency]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.events.rates :as e.rates]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.currencies :as s.currencies]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))
@@ -52,6 +53,10 @@
     [c.buttons/fetch-rate-sources]
     [c.buttons/fetch-currency id]]))
 
+(s/fdef loading-buttons
+  :args (s/cat :id :db/id)
+  :ret vector?)
+
 (s/def :show-currency-view/id          string?)
 (s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
 (s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
@@ -72,7 +77,7 @@
        [c.currency-rate-sources/section currency-id rate-sources])]))
 
 (s/fdef page-loaded
-  :args (s/cat :currency ::s.categories/item)
+  :args (s/cat :currency ::s.currencies/item)
   :ret vector?)
 
 (defn page
@@ -81,7 +86,7 @@
         currency @(rf/subscribe [::e.currencies/item currency-id])
         state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [loading-buttons id]
+     [loading-buttons currency-id]
      (condp = state
        :loaded [page-loaded currency]
        :loading [:p "Loading"]

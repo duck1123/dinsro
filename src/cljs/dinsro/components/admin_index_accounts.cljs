@@ -61,10 +61,10 @@
     [:div.box
      [:h1
       (tr [:index-accounts])
-      [c/show-form-button ::e.f.create-account/shown? ::e.f.create-account/set-shown?]]
+      [c/show-form-button ::e.f.create-account/shown?]]
      [c.f.admin-create-account/form]
      [:hr]
      (condp = state
        :invalid [:p "Invalid"]
-       :loaded  [index-accounts accounts]
+       :loaded  (when accounts [index-accounts accounts])
        [:p "Unknown state: " state])]))

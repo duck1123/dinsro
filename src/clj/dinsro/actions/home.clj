@@ -1,5 +1,6 @@
 (ns dinsro.actions.home
-  (:require [dinsro.layout :as layout]))
+  (:require
+   [dinsro.layout :as layout]))
 
 (defn home-handler
   [_]

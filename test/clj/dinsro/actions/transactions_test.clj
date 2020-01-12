@@ -4,7 +4,7 @@
             [datahike.config :refer [uri->config]]
             [dinsro.actions.transactions :as a.transactions]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.transactions :as m.transactions]
             [dinsro.spec :as ds]

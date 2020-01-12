@@ -1,10 +1,11 @@
 (ns dinsro.events.authentication
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.spec.actions.authentication :as s.a.authentication]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.spec.actions.authentication :as s.a.authentication]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (c/reg-field ::auth-id nil)
 (s/def ::auth-id (s/nilable :db/id))
@@ -13,20 +14,17 @@
 ;; Authenticate
 
 (defn do-authenticate-success
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [item] event
-        identity (::s.a.authentication/identity item)
+  [{:keys [db]} [item]]
+  (let [identity (::s.a.authentication/identity item)
         return-to (:return-to db)
         db (if return-to
              (-> db
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {
+    {:db (assoc db ::auth-id identity)
      ;; TODO: return to calling page
-     :navigate-to [:home-page]
-     :db (assoc db ::auth-id identity)}))
+     :navigate-to [:home-page]}))
 
 (defn do-authenticate-failure
   [_ _]

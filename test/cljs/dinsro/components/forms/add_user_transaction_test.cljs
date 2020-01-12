@@ -5,14 +5,9 @@
             [dinsro.spec :as ds]
             [dinsro.translations :refer [tr]]))
 
-(defcard
+(defcard form-data
   (ds/gen-key ::e.f.add-user-transaction/form-data))
 
-(defcard-rg c.f.add-user-transaction/form
-  ;; "**Add User Transaction**"
+(defcard-rg form
   ;; "Create a transaction when the user is already provided"
-  [c.f.add-user-transaction/form-shown]
-
-  #_(fn [name]
-    )
-  #_{:name "foo"})
+  [c.f.add-user-transaction/form-shown])

@@ -2,6 +2,8 @@
   (:require [devcards.core :refer-macros [defcard defcard-rg]]
             [dinsro.views.admin :as v.admin]))
 
+(defcard "**Admin**")
+
 (declare load-buttons)
 (defcard-rg load-buttons
   [v.admin/load-buttons])

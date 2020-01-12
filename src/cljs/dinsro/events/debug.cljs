@@ -1,8 +1,9 @@
 (ns dinsro.events.debug
-  (:require [clojure.spec.alpha :as s]
-            [kee-frame.core :as kf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [kee-frame.core :as kf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::shown? boolean?)
 (rfu/reg-basic-sub ::shown?)

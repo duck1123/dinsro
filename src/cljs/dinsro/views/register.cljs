@@ -1,9 +1,10 @@
 (ns dinsro.views.register
-  (:require [dinsro.components :as c]
-            [dinsro.components.forms.registration :as c.f.registration]
-            [dinsro.events.forms.registration :as e.f.registration]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.forms.registration :as c.f.registration]
+   [dinsro.events.forms.registration :as e.f.registration]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]

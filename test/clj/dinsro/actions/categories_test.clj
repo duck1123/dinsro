@@ -4,7 +4,7 @@
             [datahike.config :as dc]
             [dinsro.actions.categories :as a.categories]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.categories :as m.categories]
             [dinsro.spec :as ds]

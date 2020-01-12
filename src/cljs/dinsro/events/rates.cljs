@@ -1,16 +1,22 @@
 (ns dinsro.events.rates
-  (:require [ajax.core :as ajax]
-            [clojure.spec.alpha :as s]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.events.rates :as s.e.rates]
-            [dinsro.spec.rates :as s.rates]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [ajax.core :as ajax]
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.events.rates :as s.e.rates]
+   [dinsro.spec.rates :as s.rates]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 (s/def ::items (s/coll-of ::s.rates/item))
 (rf/reg-sub ::items (fn [db _] (get db ::items [])))
+
+(s/def ::item-map (s/map-of :db/id ::s.rates/item))
+(rfu/reg-basic-sub ::item-map)
+(def item-map ::item-map)
 
 (s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
 
@@ -36,12 +42,11 @@
 (rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
-  [cofx event]
-  (let [{:keys [db]} cofx
-        [{:keys [items]}] event
-        items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
+  [{:keys [db]} [{:keys [items]}]]
+  (let [items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
     {:db (-> db
              (assoc ::items items)
+             (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
              (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed

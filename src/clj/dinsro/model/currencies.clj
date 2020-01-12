@@ -1,7 +1,7 @@
 (ns dinsro.model.currencies
   (:require [clojure.spec.alpha :as s]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.spec :as ds]
             [dinsro.spec.currencies :as s.currencies]
             [taoensso.timbre :as timbre]))

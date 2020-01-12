@@ -1,13 +1,14 @@
 (ns dinsro.actions.categories
-  (:require [clojure.set :as set]
-            [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
-            [dinsro.model.categories :as m.categories]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.spec.actions.categories :as s.a.categories]
-            [dinsro.utils :as utils]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.set :as set]
+   [clojure.spec.alpha :as s]
+   [expound.alpha :as expound]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.spec.categories :as s.categories]
+   [dinsro.spec.actions.categories :as s.a.categories]
+   [dinsro.utils :as utils]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]))
 
 (def param-rename-map
   {:name          ::s.categories/name})

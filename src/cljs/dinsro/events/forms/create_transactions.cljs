@@ -1,9 +1,10 @@
 (ns dinsro.events.forms.create-transaction
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec.actions.transactions :as s.a.transactions]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.actions.transactions :as s.a.transactions]
+   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 ;; toggleable
 

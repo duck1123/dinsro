@@ -1,14 +1,15 @@
 (ns dinsro.views.login
-  (:require [cemerick.url :as url]
-            [dinsro.components :as c]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.login :as c.f.login]
-            [dinsro.events.authentication :as e.authentication]
-            [dinsro.events.forms.login :as e.f.login]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [cemerick.url :as url]
+   [dinsro.components :as c]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.login :as c.f.login]
+   [dinsro.events.authentication :as e.authentication]
+   [dinsro.events.forms.login :as e.f.login]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]

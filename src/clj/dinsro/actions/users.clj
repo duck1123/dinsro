@@ -1,9 +1,10 @@
 (ns dinsro.actions.users
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.model.users :as m.user]
-            [dinsro.spec.actions.users :as s.a.users]
-            [ring.util.http-response :as http]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.model.users :as m.user]
+   [dinsro.spec.actions.users :as s.a.users]
+   [ring.util.http-response :as http]
+   [taoensso.timbre :as timbre]))
 
 (defn create-handler
   [{:keys [params]}]

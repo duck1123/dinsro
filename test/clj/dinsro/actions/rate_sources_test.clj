@@ -4,7 +4,7 @@
             [datahike.config :as dc]
             [dinsro.actions.rate-sources :as a.rate-sources]
             [dinsro.config :as config]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.mocks :as mocks]
             [dinsro.model.rate-sources :as m.rate-sources]
             [dinsro.spec :as ds]

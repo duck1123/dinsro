@@ -1,7 +1,7 @@
 (ns dinsro.handler
   (:require [dinsro.env :refer [defaults]]
             [datahike.api :as d]
-            [dinsro.db.core :as db]
+            [dinsro.db :as db]
             [dinsro.layout :refer [error-page] :as layout]
             [dinsro.middleware :as middleware]
             [dinsro.routes :as routes]
