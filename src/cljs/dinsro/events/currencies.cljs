@@ -1,7 +1,7 @@
 (ns dinsro.events.currencies
   (:require
-   [ajax.core :as ajax]
    [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
    [dinsro.spec :as ds]
    [dinsro.spec.currencies :as s.currencies]
    [kee-frame.core :as kf]
@@ -47,13 +47,10 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-index-currencies])
-    :params          data
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-success]
-    :on-failure      [::do-submit-failed]}})
+   (e/post-request [:api-index-currencies]
+                   [::do-submit-success]
+                   [::do-submit-failed]
+                   data)})
 
 (kf/reg-event-fx ::do-submit-success do-submit-success)
 (kf/reg-event-fx ::do-submit-failed do-submit-failed)
@@ -88,11 +85,9 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   {:uri             (kf/path-for [:api-show-currency {:id id}])
-    :method          :get
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-record-success]
-    :on-failure      [::do-fetch-record-failed]}})
+   (e/fetch-request [:api-show-currency {:id id}]
+                    [::do-fetch-record-success]
+                    [::do-fetch-record-failed])})
 
 (kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
@@ -113,12 +108,9 @@
 (defn do-delete-record
   [_ [currency]]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-show-currency {:id (:db/id currency)}])
-    :method          :delete
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-delete-record-success]
-    :on-failure      [::do-delete-record-failed]}})
+   (e/delete-request [:api-show-currency {:id (:db/id currency)}]
+                     [::do-delete-record-success]
+                     [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-db ::do-delete-record-failed do-delete-record-failed)
@@ -146,11 +138,9 @@
 (defn do-fetch-index
   [_ _]
   {:http-xhrio
-   {:method          :get
-    :uri             (kf/path-for [:api-index-currencies])
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+   (e/fetch-request [:api-index-currencies]
+                    [::do-fetch-index-success]
+                    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)

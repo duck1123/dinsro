@@ -1,6 +1,5 @@
 (ns dinsro.events.rate-sources
   (:require
-   [ajax.core :as ajax]
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.spec.rate-sources :as s.rate-sources]
@@ -114,13 +113,10 @@
   [_ [id]]
   (timbre/infof "running: %s" id)
   {:http-xhrio
-   {:uri             (kf/path-for [:api-run-rate-source {:id id}])
-    :method          :post
-    :data {}
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-run-source-success]
-    :on-failure      [::do-run-source-failed]}})
+   (e/post-request [:api-run-rate-source {:id id}]
+                   [::do-run-source-success]
+                   [::do-run-source-failed]
+                   {})})
 
 (comment
   (kf/path-for [:api-run-rate-source {:id 1}]))

@@ -1,8 +1,8 @@
 (ns dinsro.events.users
   (:require
-   [ajax.core :as ajax]
    [cemerick.url :as url]
    [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
    [dinsro.spec :as ds]
    [dinsro.spec.users :as s.users]
    [kee-frame.core :as kf]
@@ -53,11 +53,9 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   {:uri             (kf/path-for [:api-show-user {:id id}])
-    :method          :get
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-record-success]
-    :on-failure      [::do-fetch-record-failed]}})
+   (e/fetch-request [:api-show-user {:id id}]
+                    [::do-fetch-record-success]
+                    [::do-fetch-record-failed])})
 
 (kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
@@ -79,12 +77,9 @@
 (defn do-delete-record
   [_ [user]]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-show-user {:id (:db/id user)}])
-    :method          :delete
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-delete-record-success]
-    :on-failure      [::do-delete-record-failed]}})
+   (e/delete-request [:api-show-user {:id (:db/id user)}]
+                     [::do-delete-record-success]
+                     [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
@@ -116,12 +111,9 @@
 (defn do-fetch-index
   [_ _]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-index-users])
-    :method          :get
-    :timeout         8000
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+   (e/fetch-request [:api-index-users]
+                    [::do-fetch-index-success]
+                    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)

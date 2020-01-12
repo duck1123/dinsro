@@ -1,6 +1,6 @@
 (ns dinsro.components.status
-  (:require [ajax.core :as ajax]
-            [day8.re-frame.http-fx]
+  (:require [day8.re-frame.http-fx]
+            [dinsro.events :as e]
             [dinsro.events.authentication :as e.authentication]
             [kee-frame.core :as kf]
             [taoensso.timbre :as timbre]))
@@ -17,13 +17,10 @@
 
 (defn init-status
   [_ _]
-  (timbre/info "init")
   {:http-xhrio
-   {:uri "/api/v1/status"
-    :method :get
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success [:status-loaded]
-    :on-failure [:status-errored]}})
+   (e/fetch-request [:api-show-account]
+                    [:status-loaded]
+                    [:status-errored])})
 
 (kf/reg-event-fx :init-status init-status)
 

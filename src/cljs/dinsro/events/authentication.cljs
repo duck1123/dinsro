@@ -1,7 +1,7 @@
 (ns dinsro.events.authentication
   (:require
-   [ajax.core :as ajax]
    [clojure.spec.alpha :as s]
+   [dinsro.events :as e]
    [dinsro.components :as c]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [kee-frame.core :as kf]
@@ -33,14 +33,10 @@
 (defn do-authenticate
   [_ [data _]]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-authenticate])
-    :params          data
-    :timeout         8000
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-authenticate-success]
-    :on-failure      [::do-authenticate-failure]}})
+   (e/post-request [:api-authenticate]
+                   [::do-authenticate-success]
+                   [::do-authenticate-failure]
+                   data)})
 
 (kf/reg-event-fx ::do-authenticate-success do-authenticate-success)
 (kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
@@ -62,12 +58,10 @@
 (defn do-logout
   [_ _]
   {:http-xhrio
-   {:uri             (kf/path-for [:api-logout])
-    :method          :post
-    :on-success      [::do-logout-success]
-    :on-failure      [::do-logout-failure]
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})}})
+   (e/post-request [:api-logout]
+                   [::do-logout-success]
+                   [::do-logout-failure]
+                   nil)})
 
 (kf/reg-event-fx ::do-logout-success do-logout-success)
 (kf/reg-event-fx ::do-logout-failure do-logout-failure)
@@ -84,16 +78,12 @@
   {})
 
 (defn submit-clicked
-  [_ [form-data]]
+  [_ [data]]
   {:http-xhrio
-   {:uri             "/api/v1/register"
-    :method          :post
-    :timeout         8000
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :params          form-data
-    :on-success      [:register-succeeded]
-    :on-failure      [:register-failed]}})
+   (e/post-request [:api-register]
+                   [:register-succeeded]
+                   [:register-failed]
+                   data)})
 
 (kf/reg-event-fx :register-succeeded register-succeeded)
 (kf/reg-event-fx :register-failed register-failed)
