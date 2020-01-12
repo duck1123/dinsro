@@ -1,8 +1,8 @@
 (ns dinsro.events.rates
   (:require
-   [ajax.core :as ajax]
    [clojure.spec.alpha :as s]
    [dinsro.spec.currencies :as s.currencies]
+   [dinsro.events :as e]
    [dinsro.spec.events.rates :as s.e.rates]
    [dinsro.spec.rates :as s.rates]
    [kee-frame.core :as kf]
@@ -57,11 +57,9 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   {:method          :get
-    :uri             (kf/path-for [:api-index-rates])
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-fetch-index-success]
-    :on-failure      [::do-fetch-index-failed]}})
+   (e/fetch-request [:api-index-rates]
+                    [::do-fetch-index-success]
+                    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
@@ -80,13 +78,10 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   {:method          :post
-    :uri             (kf/path-for [:api-index-rates])
-    :params          data
-    :format          (ajax/json-request-format)
-    :response-format (ajax/json-response-format {:keywords? true})
-    :on-success      [::do-submit-success]
-    :on-failure      [::do-submit-failed]}})
+   (e/post-request [:api-index-rates]
+                   [::do-submit-success]
+                   [::do-submit-failed]
+                   data)})
 
 (s/fdef do-submit
   :ret (s/keys))
@@ -119,12 +114,9 @@
   [_ [item]]
   (let [id (:db/id item)]
     {:http-xhrio
-     {:uri             (kf/path-for [:api-show-rate {:id id}])
-      :method          :delete
-      :format          (ajax/json-request-format)
-      :response-format (ajax/json-response-format {:keywords? true})
-      :on-success      [::do-delete-record-success]
-      :on-failure      [::do-delete-record-failed]}}))
+     (e/delete-request [:api-show-rate {:id id}]
+                       [::do-delete-record-success]
+                       [::do-delete-record-failed])}))
 
 (s/fdef do-delete-record
   :args (s/cat :cofx ::s.e.rates/do-delete-record-cofx

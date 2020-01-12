@@ -63,6 +63,9 @@
    ["/rates"
     [""             :api-index-rates]
     ["/:id"         :api-show-rate]]
+   ["/register"     :api-register]
+   ["/settings"     :api-settings]
+   ["/status"       :api-status]
    ["/transactions"
     [""             :api-index-transactions]
     ["/:id"         :api-show-transaction]]
