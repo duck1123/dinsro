@@ -49,7 +49,6 @@
     ;; Echo messages back out
     (ms/put! streams/message-source [key data])))
 
-(declare consumer)
 (mount/defstate ^{:on-reload :noop} consumer
   :start (do
            (timbre/info "Starting consumer")

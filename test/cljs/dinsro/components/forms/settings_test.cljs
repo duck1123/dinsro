@@ -3,6 +3,5 @@
             [dinsro.components.forms.settings :as c.f.settings]
             [taoensso.timbre :as timbre]))
 
-(declare form)
 (defcard-rg form
   [c.f.settings/form])
