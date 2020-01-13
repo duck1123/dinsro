@@ -1,7 +1,6 @@
 (ns dinsro.events.rates
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.spec.currencies :as s.currencies]
    [dinsro.events :as e]
    [dinsro.spec.events.rates :as s.e.rates]
    [dinsro.spec.rates :as s.rates]
@@ -11,30 +10,57 @@
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
-(s/def ::items (s/coll-of ::s.rates/item))
-(rf/reg-sub ::items (fn [db _] (get db ::items [])))
+(s/def ::item ::s.rates/item)
 
-(s/def ::item-map (s/map-of :db/id ::s.rates/item))
+;; Item Map
+
+(s/def ::item-map (s/map-of :db/id ::item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
-(s/def ::items-by-currency-event (s/cat :keyword keyword? :currency ::s.currencies/item))
+;; Items
 
-(defn items-by-currency
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (reverse
+   (sort-by ::s.rates/date (vals item-map))))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
+;; Items by Currency
+
+(defn items-by-currency-sub
+  "Subscription handler: Index items by currency"
   [items [_ {:keys [db/id]}]]
   (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
 
-(s/fdef items-by-currency
-  :args (s/cat :items ::items :event ::items-by-currency-event)
+(s/fdef items-by-currency-sub
+  :args (s/cat :items ::items :event (s/cat :keyword keyword? :currency ::item))
   :ret ::items)
 
-(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
+(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency-sub)
 
-(rf/reg-sub
- ::item
- :<- [::items]
- (fn [items [_ id]]
-   (first (filter #(= (:id %) id) items))))
+;; Item
+
+(defn item-sub
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
+
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
+
+(rf/reg-sub ::item :<- [::item-map] item-sub)
 
 ;; Index
 
@@ -45,7 +71,6 @@
   [{:keys [db]} [{:keys [items]}]]
   (let [items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
     {:db (-> db
-             (assoc ::items items)
              (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
              (assoc ::do-fetch-index-state :loaded))}))
 

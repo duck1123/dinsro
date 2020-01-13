@@ -2,8 +2,6 @@
 
 set -ex
 
-lein eastwood
-lein kibit
-
-# clj-kondo --lint src
-npx clj-kondo --lint src:test
+script/lint-kondo
+script/lint-eastwood
+script/lint-kibit

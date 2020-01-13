@@ -15,26 +15,52 @@
    ::s.categories/name "Foo"
    ::s.categories/user {:db/id 12}})
 
-(s/def ::items (s/coll-of ::s.categories/item))
-(rfu/reg-basic-sub ::items)
-(rfu/reg-set-event ::items)
-(def items ::items)
+(s/def ::item ::s.categories/item)
+
+;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.categories/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
-(defn sub-item
-  [items [_ target-item]]
-  (first (filter #(= (:id %) (:db/id target-item)) items)))
+;; Items
+
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
+;; Item
+
+(defn item-sub
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
+
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
+
+(rf/reg-sub ::item :<- [::item-map] item-sub)
+
+;; Items by User
 
 (defn items-by-user
-  [db event]
+  [items event]
   (let [[_ id] event]
-    (filter #(= id (get-in % [::s.categories/user :db/id])) (::items db))))
+    (filter #(= id (get-in % [::s.categories/user :db/id])) items)))
 
-(rf/reg-sub ::item :<- [::items] sub-item)
-(rf/reg-sub ::items-by-user items-by-user)
+(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
 
 ;; Create
 
@@ -119,9 +145,8 @@
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
-        (assoc ::items items)
-        (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
-        (assoc ::do-fetch-index-state :loaded))})
+           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
+           (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-failed
   [_ _]

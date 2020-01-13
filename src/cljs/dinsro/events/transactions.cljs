@@ -18,13 +18,45 @@
    ::s.transactions/currency {:db/id 53}
    ::s.transactions/account {:db/id 12}})
 
-(s/def ::items (s/coll-of ::s.transactions/item))
-(def items ::items)
-(rfu/reg-basic-sub ::items)
+(s/def ::item ::s.transactions/item)
+
+;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.transactions/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
+
+;; Items
+
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
+;; Item
+
+(defn item-sub
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
+
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
+
+(rf/reg-sub ::item :<- [::item-map] item-sub)
+
+;; Items by Account
 
 (defn items-by-account
   [items event]
@@ -36,9 +68,13 @@
                :event ::s.e.transactions/items-by-account-event)
   :ret ::items)
 
+(rf/reg-sub ::items-by-account :<- [::items] items-by-account)
+
+;; Items by Currency
+
 (defn items-by-currency
-  [items event]
-  (let [[_ id] event]
+  [db [_ id]]
+  (let [items (::items db)]
     (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
 
 (s/fdef items-by-currency
@@ -46,11 +82,15 @@
                :event ::s.e.transactions/items-by-currency-event)
   :ret ::items)
 
-(rf/reg-sub ::items-by-account :<- [::items] items-by-account)
-(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
+(rf/reg-sub ::items-by-currency items-by-currency)
+
+;; Items by User
 
 ;; FIXME: This will have to read across all linked accounts
-(rfu/reg-basic-sub ::items-by-user ::items)
+(rf/reg-sub
+ ::items-by-user
+ (fn [db [_ _user-id]]
+   (map val (::item-map db))))
 
 ;; Index
 
@@ -63,7 +103,6 @@
                (fn [item] (update item ::s.transactions/date tick/instant))
                items)]
     {:db (-> db
-             (assoc ::items items)
              (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
              (assoc ::do-fetch-index-state :loaded))}))
 

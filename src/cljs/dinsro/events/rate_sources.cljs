@@ -8,24 +8,43 @@
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
-(s/def ::items (s/coll-of ::s.rate-sources/item))
-(def items ::items)
-(rf/reg-sub ::items (fn [db _] (get db ::items [])))
+(s/def ::item ::s.rate-sources/item)
 
-(s/def ::item-map (s/map-of :db/id ::s.rate-sources/item))
+;; Item Map
+
+(s/def ::item-map (s/map-of :db/id ::item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
+;; Items
+
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
+;; Item
+
 (defn item-sub
-  [items [_ id]]
-  (first (filter #(= (:id %) id) items)))
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
 
-(rf/reg-sub
- ::item
- :<- [::items]
- item-sub)
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
 
-(def item ::item)
+(rf/reg-sub ::item :<- [::item-map] item-sub)
 
 ;; Index
 
@@ -35,7 +54,6 @@
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
-           (assoc ::items items)
            (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
@@ -46,7 +64,6 @@
 
 (defn do-fetch-index
   [{:keys [db]} _]
-  ;; {:db (assoc db ::items (ds/gen-key ::items))}
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    (e/fetch-request [:api-index-rate-sources]

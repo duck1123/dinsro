@@ -10,21 +10,45 @@
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
-(s/def ::items (s/coll-of ::s.accounts/item))
-(rfu/reg-basic-sub ::items)
+(s/def ::item ::s.accounts/item)
+
+;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.accounts/item))
 (rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
-(defn sub-item
-  [items [_ id]]
-  (first (filter #(= (:db/id %) id) items)))
+;; Items
 
-(s/fdef sub-item
-  :args (s/cat :item ::items
-               :event ::s.e.accounts/sub-item-event)
-  :ret (s/nilable ::s.accounts/item))
+(s/def ::items (s/coll-of ::item))
+
+(defn items-sub
+  "Subscription handler: Index all items"
+  [item-map _]
+  (sort-by :db/id (vals item-map)))
+
+(s/fdef items-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword?))
+  :ret ::items)
+
+(rf/reg-sub ::items :<- [::item-map] items-sub)
+
+;; Item
+
+(defn item-sub
+  "Subscription handler: Lookup an item from the item map by id"
+  [item-map [_ id]]
+  (get item-map id))
+
+(s/fdef item-sub
+  :args (s/cat :item-map ::item-map
+               :event (s/cat :kw keyword? :id :db/id))
+  :ret ::item)
+
+(rf/reg-sub ::item :<- [::item-map] item-sub)
+
+;; Items by User
 
 (defn items-by-user
   [items [_ id]]
@@ -36,6 +60,10 @@
                              :id :db/id))
   :ret ::items)
 
+(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
+
+;; Items by Currency
+
 (defn items-by-currency
   [items [_ item]]
   (let [id (:db/id item)]
@@ -46,10 +74,6 @@
                :event any?)
   :ret ::items)
 
-(rf/reg-sub ::item :<- [::items] sub-item)
-(def item ::item)
-
-(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
 (rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Create
@@ -117,7 +141,6 @@
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
-           (assoc ::items items)
            (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
