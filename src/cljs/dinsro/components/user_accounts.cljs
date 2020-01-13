@@ -1,15 +1,16 @@
 (ns dinsro.components.user-accounts
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.add-user-account :as c.f.add-user-account]
-            [dinsro.components.links :as c.links]
-            [dinsro.events.forms.add-user-account :as e.f.add-user-account]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.translations :refer [tr]]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.add-user-account :as c.f.add-user-account]
+   [dinsro.components.links :as c.links]
+   [dinsro.events.forms.add-user-account :as e.f.add-user-account]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (defn row-line
   [account]

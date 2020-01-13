@@ -1,15 +1,16 @@
 (ns dinsro.components.forms.add-account-transaction
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec :as ds]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.datepicker :as c.datepicker]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.spec :as ds]
+   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn form
   [id]

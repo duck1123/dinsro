@@ -1,11 +1,12 @@
 (ns dinsro.model.users
-  (:require [buddy.hashers :as hashers]
-            [clojure.spec.alpha :as s]
-            [datahike.api :as d]
-            [dinsro.db :as db]
-            [dinsro.spec :as ds]
-            [dinsro.spec.users :as s.users]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [buddy.hashers :as hashers]
+   [clojure.spec.alpha :as s]
+   [datahike.api :as d]
+   [dinsro.db :as db]
+   [dinsro.spec :as ds]
+   [dinsro.spec.users :as s.users]
+   [taoensso.timbre :as timbre]))
 
 (def attribute-list
   '[:db/id ::s.users/name ::s.users/email ::s.users/password-hash])

@@ -1,17 +1,18 @@
 (ns dinsro.actions.authentication-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :refer [uri->config]]
-            [dinsro.actions.authentication :as a.authentication]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.model.users :as m.users]
-            [dinsro.spec :as ds]
-            [dinsro.spec.actions.authentication :as s.a.authentication]
-            [dinsro.spec.users :as s.users]
-            [mount.core :as mount]
-            [ring.mock.request :as mock]
-            [ring.util.http-status :as status]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :refer [uri->config]]
+   [dinsro.actions.authentication :as a.authentication]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.model.users :as m.users]
+   [dinsro.spec :as ds]
+   [dinsro.spec.actions.authentication :as s.a.authentication]
+   [dinsro.spec.users :as s.users]
+   [mount.core :as mount]
+   [ring.mock.request :as mock]
+   [ring.util.http-status :as status]))
 
 (def url-root "/api/v1")
 

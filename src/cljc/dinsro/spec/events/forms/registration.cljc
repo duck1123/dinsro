@@ -1,6 +1,7 @@
 (ns dinsro.spec.events.forms.registration
   (:refer-clojure :exclude [name])
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (def default-name "Bob")
 (def default-email "bob@example.com")

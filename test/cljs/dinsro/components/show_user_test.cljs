@@ -1,10 +1,11 @@
 (ns dinsro.components.show-user-test
-  (:require [devcards.core :refer-macros [defcard defcard-rg]]
-            [dinsro.components.show-user :as c.show-user]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [reagent.core :as r]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.components.show-user :as c.show-user]
+   [dinsro.spec.users :as s.users]
+   [dinsro.translations :refer [tr]]
+   [reagent.core :as r]
+   [taoensso.timbre :as timbre]))
 
 (let [user {::s.users/name "Bart"
                ::s.users/user {:db/id 1}

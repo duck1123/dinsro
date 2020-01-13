@@ -1,10 +1,11 @@
 (ns dinsro.components.index-transactions
-  (:require [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.links :as c.links]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]))
 
 (defn format-date
   [date]

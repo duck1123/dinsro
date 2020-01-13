@@ -1,11 +1,12 @@
 (ns dinsro.model.transactions
-  (:require [clojure.spec.alpha :as s]
-            [datahike.api :as d]
-            [dinsro.db :as db]
-            [dinsro.spec :as ds]
-            [dinsro.spec.transactions :as s.transactions]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [datahike.api :as d]
+   [dinsro.db :as db]
+   [dinsro.spec :as ds]
+   [dinsro.spec.transactions :as s.transactions]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 (defn create-record
   [params]

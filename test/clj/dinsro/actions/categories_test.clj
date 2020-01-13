@@ -1,17 +1,18 @@
 (ns dinsro.actions.categories-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :as dc]
-            [dinsro.actions.categories :as a.categories]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.mocks :as mocks]
-            [dinsro.model.categories :as m.categories]
-            [dinsro.spec :as ds]
-            [dinsro.spec.actions.categories :as s.a.categories]
-            [dinsro.spec.categories :as s.categories]
-            [mount.core :as mount]
-            [ring.util.http-status :as status]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :as dc]
+   [dinsro.actions.categories :as a.categories]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.mocks :as mocks]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.spec :as ds]
+   [dinsro.spec.actions.categories :as s.a.categories]
+   [dinsro.spec.categories :as s.categories]
+   [mount.core :as mount]
+   [ring.util.http-status :as status]))
 
 (def example-request {:name "foo"})
 

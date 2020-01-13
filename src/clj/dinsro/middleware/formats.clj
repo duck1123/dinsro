@@ -1,6 +1,7 @@
 (ns dinsro.middleware.formats
-  (:require [luminus-transit.time :as time]
-            [muuntaja.core :as m]))
+  (:require
+   [luminus-transit.time :as time]
+   [muuntaja.core :as m]))
 
 (def instance
   (m/create

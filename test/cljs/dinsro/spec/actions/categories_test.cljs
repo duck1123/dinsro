@@ -1,7 +1,8 @@
 (ns dinsro.spec.actions.categories-test
-  (:require [devcards.core :as dc :refer-macros [defcard]]
-            [dinsro.spec :as ds]
-            [dinsro.spec.actions.categories :as s.a.categories]))
+  (:require
+   [devcards.core :as dc :refer-macros [defcard]]
+   [dinsro.spec :as ds]
+   [dinsro.spec.actions.categories :as s.a.categories]))
 
 (defcard create-params-valid
   (ds/gen-key ::s.a.categories/create-params-valid))

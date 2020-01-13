@@ -1,6 +1,7 @@
 (ns dinsro.translations
-  (:require [taoensso.tempura :as tempura]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [taoensso.tempura :as tempura]
+   [taoensso.timbre :as timbre]))
 
 (def dictionary
   {

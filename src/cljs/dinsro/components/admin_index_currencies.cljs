@@ -1,17 +1,18 @@
 (ns dinsro.components.admin-index-currencies
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-currency :as c.f.create-currency]
-            [dinsro.components.index-currencies :as c.index-currencies]
-            [dinsro.components.links :as c.links]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.forms.create-currency :as e.f.create-currency]
-            [dinsro.translations :refer [tr]]
-            [taoensso.timbre :as timbre]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.create-currency :as c.f.create-currency]
+   [dinsro.components.index-currencies :as c.index-currencies]
+   [dinsro.components.links :as c.links]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.forms.create-currency :as e.f.create-currency]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]
+   [re-frame.core :as rf]))
 
 (defn index-currency-line
   [currency]

@@ -1,16 +1,17 @@
 (ns dinsro.components.admin-index-accounts
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.admin-create-account :as c.f.admin-create-account]
-            [dinsro.components.links :as c.links]
-            [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.forms.create-account :as e.f.create-account]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.admin-create-account :as c.f.admin-create-account]
+   [dinsro.components.links :as c.links]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.forms.create-account :as e.f.create-account]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn row-line
   [account]

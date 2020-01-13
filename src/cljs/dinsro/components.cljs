@@ -1,11 +1,12 @@
 (ns dinsro.components
-  (:require [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.users :as e.users]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [reframe-utils.core :as rfu]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.users :as e.users]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (def strings {})
 

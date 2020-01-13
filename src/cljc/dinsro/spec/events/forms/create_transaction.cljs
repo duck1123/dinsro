@@ -1,6 +1,7 @@
 (ns dinsro.spec.events.forms.create-transaction
-  (:require [clojure.spec.alpha :as s]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::account-id string?)
 (def account-id ::account-id)

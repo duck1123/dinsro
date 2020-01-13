@@ -1,11 +1,12 @@
 (ns dinsro.components.index-users
-  (:require [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.spec.users :as s.users]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (def default-error-message "")
 (rf/reg-sub ::error-message (fn [db _] (get db ::error-message default-error-message)))

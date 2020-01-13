@@ -1,5 +1,6 @@
 (ns dinsro.spec.events.forms.create-category
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (s/def ::name string?)
 (s/def ::user-id string?)

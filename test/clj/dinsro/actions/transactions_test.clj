@@ -1,20 +1,21 @@
 (ns dinsro.actions.transactions-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :refer [uri->config]]
-            [dinsro.actions.transactions :as a.transactions]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.mocks :as mocks]
-            [dinsro.model.transactions :as m.transactions]
-            [dinsro.spec :as ds]
-            [dinsro.spec.actions.transactions :as s.a.transactions]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.spec.users :as s.users]
-            [mount.core :as mount]
-            [ring.util.http-status :as status]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :refer [uri->config]]
+   [dinsro.actions.transactions :as a.transactions]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.mocks :as mocks]
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.spec :as ds]
+   [dinsro.spec.actions.transactions :as s.a.transactions]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.spec.users :as s.users]
+   [mount.core :as mount]
+   [ring.util.http-status :as status]
+   [tick.alpha.api :as tick]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

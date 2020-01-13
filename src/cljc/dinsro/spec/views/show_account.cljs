@@ -1,6 +1,7 @@
 (ns dinsro.spec.views.show-account
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))

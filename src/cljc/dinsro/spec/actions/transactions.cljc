@@ -1,10 +1,11 @@
 (ns dinsro.spec.actions.transactions
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
-            [dinsro.spec :as ds]
-            [dinsro.spec.transactions :as s.transactions]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.spec.gen.alpha :as gen]
+   [dinsro.spec :as ds]
+   [dinsro.spec.transactions :as s.transactions]
+   [ring.util.http-status :as status]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::account-id :db/id)
 (def account-id ::account-id)

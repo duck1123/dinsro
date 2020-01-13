@@ -1,8 +1,9 @@
 (ns dinsro.spec.actions.currencies
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.currencies :as s.currencies]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.currencies :as s.currencies]
+   [taoensso.timbre :as timbre]))
 
 ;; Create
 

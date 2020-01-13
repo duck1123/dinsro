@@ -1,10 +1,11 @@
 (ns dinsro.components.show-account
-  (:require [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.links :as c.links]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.translations :refer [tr]]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.links :as c.links]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (defn show-account
   [account]

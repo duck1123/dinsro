@@ -1,15 +1,16 @@
 (ns dinsro.model.accounts-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :refer [uri->config]]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.mocks :as mocks]
-            [dinsro.model.accounts :as m.accounts]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [mount.core :as mount]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :refer [uri->config]]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.mocks :as mocks]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [mount.core :as mount]
+   [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example")
 

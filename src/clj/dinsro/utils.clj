@@ -1,5 +1,6 @@
 (ns dinsro.utils
-  (:require [taoensso.timbre :as timbre]))
+  (:require
+   [taoensso.timbre :as timbre]))
 
 (defn parse-int
   [v]

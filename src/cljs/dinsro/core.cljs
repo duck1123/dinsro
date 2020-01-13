@@ -1,14 +1,15 @@
 (ns dinsro.core
-  (:require [clojure.spec.alpha :as s]
-            [day8.re-frame.http-fx]
-            [dinsro.ajax :as ajax]
-            [dinsro.components.status :as c.status]
-            [dinsro.events.debug :as e.debug]
-            [dinsro.routing :as routing]
-            [dinsro.view :as view]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [day8.re-frame.http-fx]
+   [dinsro.ajax :as ajax]
+   [dinsro.components.status :as c.status]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.routing :as routing]
+   [dinsro.view :as view]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (def ^:dynamic *debug* false)
 

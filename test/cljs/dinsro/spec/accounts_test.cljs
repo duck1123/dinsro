@@ -1,10 +1,11 @@
 (ns dinsro.spec.accounts-test
-  (:require [cljs.test :refer-macros [is]]
-            [clojure.spec.alpha :as s]
-            [devcards.core :as dc :refer-macros [defcard deftest]]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [expound.alpha :as expound]))
+  (:require
+   [cljs.test :refer-macros [is]]
+   [clojure.spec.alpha :as s]
+   [devcards.core :as dc :refer-macros [defcard deftest]]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [expound.alpha :as expound]))
 
 (defcard item
   (ds/gen-key ::s.accounts/item))

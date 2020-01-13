@@ -1,5 +1,6 @@
 (ns dinsro.spec.actions.admin-rates
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (s/def ::create-request (s/keys))
 (s/def ::create-response (s/keys))

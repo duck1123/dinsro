@@ -1,11 +1,12 @@
 (ns dinsro.views.index-transactions-test
-  (:require [clojure.spec.alpha :as s]
-            [cljs.test :refer-macros [is]]
-            [devcards.core :refer-macros [defcard-rg deftest]]
-            [dinsro.spec :as ds]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.views.index-transactions :as v.index-transactions]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [cljs.test :refer-macros [is]]
+   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.spec :as ds]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.views.index-transactions :as v.index-transactions]
+   [taoensso.timbre :as timbre]))
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))]
 

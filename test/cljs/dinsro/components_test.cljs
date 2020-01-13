@@ -1,12 +1,11 @@
 (ns dinsro.components-test
-  (:require [cljs.test :refer-macros [is]]
-            [dinsro.components :as c]
-            [devcards.core :as dc :refer-macros [defcard defcard-rg deftest]]
-            #_[dinsro.core]
-            [re-frame.core :as rf]
-            [reagent.core :as r]
-            [taoensso.timbre :as timbre]
-            ))
+  (:require
+   [cljs.test :refer-macros [is]]
+   [dinsro.components :as c]
+   [devcards.core :as dc :refer-macros [defcard defcard-rg deftest]]
+   [re-frame.core :as rf]
+   [reagent.core :as r]
+   [taoensso.timbre :as timbre]))
 
 (defcard title
   #_"**components**"

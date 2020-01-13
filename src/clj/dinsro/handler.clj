@@ -1,22 +1,23 @@
 (ns dinsro.handler
-  (:require [dinsro.env :refer [defaults]]
-            [datahike.api :as d]
-            [dinsro.db :as db]
-            [dinsro.layout :refer [error-page] :as layout]
-            [dinsro.middleware :as middleware]
-            [dinsro.routes :as routes]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.rate-sources :as s.rate-sources]
-            [dinsro.spec.rates :as s.rates]
-            [dinsro.spec.transactions :as s.transactions]
-            [dinsro.spec.users :as s.users]
-            [mount.core :as mount]
-            [reitit.coercion.spec]
-            [reitit.ring :as ring]
-            [ring.middleware.content-type :refer [wrap-content-type]]
-            [ring.middleware.webjars :refer [wrap-webjars]]))
+  (:require
+   [dinsro.env :refer [defaults]]
+   [datahike.api :as d]
+   [dinsro.db :as db]
+   [dinsro.layout :refer [error-page] :as layout]
+   [dinsro.middleware :as middleware]
+   [dinsro.routes :as routes]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.categories :as s.categories]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.spec.rates :as s.rates]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.spec.users :as s.users]
+   [mount.core :as mount]
+   [reitit.coercion.spec]
+   [reitit.ring :as ring]
+   [ring.middleware.content-type :refer [wrap-content-type]]
+   [ring.middleware.webjars :refer [wrap-webjars]]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))

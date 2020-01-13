@@ -1,13 +1,14 @@
 (ns dinsro.components.forms.create-transaction
-  (:require [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.forms.create-transaction :as e.f.create-transaction]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.datepicker :as c.datepicker]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn form-shown
   [form-data]

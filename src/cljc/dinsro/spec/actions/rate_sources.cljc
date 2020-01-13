@@ -1,10 +1,11 @@
 (ns dinsro.spec.actions.rate-sources
   (:refer-clojure :exclude [name])
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.rate-sources :as s.rate-sources]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.rate-sources :as s.rate-sources]
+   [ring.util.http-status :as status]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::name string?)
 (def name ::name)

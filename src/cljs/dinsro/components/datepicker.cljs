@@ -1,5 +1,6 @@
 (ns dinsro.components.datepicker
-  (:require [reagent.core :as r]))
+  (:require
+   [reagent.core :as r]))
 
 (defn mount-component
   [comp]

@@ -1,14 +1,15 @@
 (ns dinsro.components.forms.create-rate
-  (:require [dinsro.components :as c]
-            [dinsro.components.datepicker :as c.datepicker]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.events.forms.create-rate :as e.f.create-rate]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.datepicker :as c.datepicker]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.events.forms.create-rate :as e.f.create-rate]
+   [dinsro.events.rates :as e.rates]
+   [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (kf/reg-controller
  ::form-controller

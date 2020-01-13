@@ -1,10 +1,11 @@
 (ns dinsro.components.index-categories
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.translations :refer [tr]]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.links :as c.links]
+   [dinsro.spec.categories :as s.categories]
+   [dinsro.translations :refer [tr]]))
 
 (defn category-line
   [item]

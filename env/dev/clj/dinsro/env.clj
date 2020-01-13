@@ -1,7 +1,8 @@
 (ns dinsro.env
-  (:require [selmer.parser :as parser]
-            [dinsro.dev-middleware :refer [wrap-dev]]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.dev-middleware :refer [wrap-dev]]
+   [selmer.parser :as parser]
+   [taoensso.timbre :as timbre]))
 
 (def defaults
   {:init

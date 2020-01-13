@@ -1,19 +1,20 @@
 (ns dinsro.actions.accounts-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
-            [datahike.api :as d]
-            [datahike.config :refer [uri->config]]
-            [dinsro.actions.accounts :as a.accounts]
-            [dinsro.config :as config]
-            [dinsro.db :as db]
-            [dinsro.mocks :as mocks]
-            [dinsro.model.accounts :as m.accounts]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.actions.accounts :as s.a.accounts]
-            [dinsro.spec.users :as s.users]
-            [mount.core :as mount]
-            [ring.util.http-status :as status]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.test :refer [deftest is use-fixtures]]
+   [datahike.api :as d]
+   [datahike.config :refer [uri->config]]
+   [dinsro.actions.accounts :as a.accounts]
+   [dinsro.config :as config]
+   [dinsro.db :as db]
+   [dinsro.mocks :as mocks]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.actions.accounts :as s.a.accounts]
+   [dinsro.spec.users :as s.users]
+   [mount.core :as mount]
+   [ring.util.http-status :as status]
+   [taoensso.timbre :as timbre]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

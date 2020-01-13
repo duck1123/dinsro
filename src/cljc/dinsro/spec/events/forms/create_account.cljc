@@ -1,6 +1,7 @@
 (ns dinsro.spec.events.forms.create-account
   (:refer-clojure :exclude [name])
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (def default-name "Offshore")
 (def default-initial-value 1.0)

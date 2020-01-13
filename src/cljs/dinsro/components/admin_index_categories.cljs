@@ -1,14 +1,15 @@
 (ns dinsro.components.admin-index-categories
-  (:require [dinsro.components :as c]
-            [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.forms.create-category :as c.f.create-category]
-            [dinsro.components.links :as c.links]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.events.forms.create-category :as e.f.create-category]
-            [dinsro.spec.categories :as s.categories]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]))
+  (:require
+   [dinsro.components :as c]
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.forms.create-category :as c.f.create-category]
+   [dinsro.components.links :as c.links]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.forms.create-category :as e.f.create-category]
+   [dinsro.spec.categories :as s.categories]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]))
 
 (defn category-line
   [item]

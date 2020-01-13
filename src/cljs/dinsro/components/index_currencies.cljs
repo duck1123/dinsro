@@ -1,9 +1,10 @@
 (ns dinsro.components.index-currencies
-  (:require [dinsro.components.buttons :as c.buttons]
-            [dinsro.components.debug :as c.debug]
-            [dinsro.components.links :as c.links]
-            [dinsro.translations :refer [tr]]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.debug :as c.debug]
+   [dinsro.components.links :as c.links]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (defn index-currency-line
   [currency]

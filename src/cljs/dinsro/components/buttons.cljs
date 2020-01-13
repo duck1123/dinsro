@@ -1,14 +1,15 @@
 (ns dinsro.components.buttons
-  (:require [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.categories :as e.categories]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.rate-sources :as e.rate-sources]
-            [dinsro.events.rates :as e.rates]
-            [dinsro.events.transactions :as e.transactions]
-            [dinsro.events.users :as e.users]
-            [dinsro.translations :refer [tr]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.events.rates :as e.rates]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.events.users :as e.users]
+   [dinsro.translations :refer [tr]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn delete-account
   [account]

@@ -1,13 +1,14 @@
 (ns dinsro.model.rates
-  (:require [clojure.spec.alpha :as s]
-            [datahike.api :as d]
-            [dinsro.db :as db]
-            [dinsro.spec :as ds]
-            [dinsro.spec.rates :as s.rates]
-            [dinsro.streams :as streams]
-            [manifold.stream :as ms]
-            [taoensso.timbre :as timbre]
-            [tick.alpha.api :as tick]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [datahike.api :as d]
+   [dinsro.db :as db]
+   [dinsro.spec :as ds]
+   [dinsro.spec.rates :as s.rates]
+   [dinsro.streams :as streams]
+   [manifold.stream :as ms]
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
 
 (defn prepare-record
   [params]

@@ -1,9 +1,10 @@
 (ns dinsro.db
-  (:require [datahike.api :as d]
-            [datahike.config :as d.config]
-            [dinsro.config :refer [env]]
-            [mount.core :refer [defstate]]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [datahike.api :as d]
+   [datahike.config :as d.config]
+   [dinsro.config :refer [env]]
+   [mount.core :refer [defstate]]
+   [taoensso.timbre :as timbre]))
 
 (defstate ^:dynamic *conn*
   "The connection to the datahike database"

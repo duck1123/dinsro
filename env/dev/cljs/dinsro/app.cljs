@@ -1,10 +1,11 @@
 (ns ^:figwheel-no-load dinsro.app
-  (:require [dinsro.core :as core]
-            [clojure.spec.test.alpha :as stest]
-            [cljs.repl :as repl]
-            [cljs.spec.alpha :as s]
-            [expound.alpha :as expound]
-            [devtools.core :as devtools]))
+  (:require
+   [dinsro.core :as core]
+   [clojure.spec.test.alpha :as stest]
+   [cljs.repl :as repl]
+   [cljs.spec.alpha :as s]
+   [expound.alpha :as expound]
+   [devtools.core :as devtools]))
 
 (extend-protocol IPrintWithWriter
   js/Symbol

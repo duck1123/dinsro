@@ -1,7 +1,8 @@
 (ns dinsro.actions.status-test
-  (:require [clojure.test :refer [deftest is]]
-            [dinsro.actions.status :as a.status]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.test :refer [deftest is]]
+   [dinsro.actions.status :as a.status]
+   [taoensso.timbre :as timbre]))
 
 (deftest status-handler-no-identity
   (let [request {}

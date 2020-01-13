@@ -1,8 +1,9 @@
 (ns dinsro.spec.events.categories
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.categories :as s.categories]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.categories :as s.categories]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::item (s/nilable ::s.categories/item))
 (s/def ::items (s/coll-of ::s.categories/item))

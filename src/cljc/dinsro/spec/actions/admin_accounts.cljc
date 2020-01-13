@@ -1,8 +1,9 @@
 (ns dinsro.spec.actions.admin-accounts
-  (:require [clojure.spec.alpha :as s]
-            [dinsro.spec :as ds]
-            [dinsro.spec.accounts :as s.accounts]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec :as ds]
+   [dinsro.spec.accounts :as s.accounts]
+   [taoensso.timbre :as timbre]))
 
 ;; Create
 

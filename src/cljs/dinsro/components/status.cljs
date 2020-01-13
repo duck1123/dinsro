@@ -1,9 +1,10 @@
 (ns dinsro.components.status
-  (:require [day8.re-frame.http-fx]
-            [dinsro.events :as e]
-            [dinsro.events.authentication :as e.authentication]
-            [kee-frame.core :as kf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [day8.re-frame.http-fx]
+   [dinsro.events :as e]
+   [dinsro.events.authentication :as e.authentication]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (kf/reg-event-db
  :status-loaded

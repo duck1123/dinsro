@@ -1,5 +1,6 @@
 (ns dinsro.devcards
-  #_(:require [hiccup.page :refer [include-js include-css html5]]))
+  #_(:require
+   [hiccup.page :refer [include-js include-css html5]]))
 
 ;; (def mount-target
 ;;   [:div#app

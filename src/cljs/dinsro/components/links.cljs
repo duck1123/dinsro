@@ -1,14 +1,15 @@
 (ns dinsro.components.links
-  (:require [dinsro.events.accounts :as e.accounts]
-            [dinsro.events.currencies :as e.currencies]
-            [dinsro.events.users :as e.users]
-            [dinsro.spec.accounts :as s.accounts]
-            [dinsro.spec.currencies :as s.currencies]
-            [dinsro.spec.users :as s.users]
-            [dinsro.translations :refer [tr]]
-            [kee-frame.core :as kf]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as timbre]))
+  (:require
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.users :as s.users]
+   [dinsro.translations :refer [tr]]
+   [kee-frame.core :as kf]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as timbre]))
 
 (defn account-link
   [id]

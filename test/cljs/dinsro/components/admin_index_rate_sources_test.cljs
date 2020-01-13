@@ -1,7 +1,8 @@
 (ns dinsro.components.admin-index-rate-sources-test
-  (:require [devcards.core :refer-macros [defcard-rg]]
-            [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
-            [dinsro.translations :refer [tr]]))
+  (:require
+   [devcards.core :refer-macros [defcard-rg]]
+   [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
+   [dinsro.translations :refer [tr]]))
 
 (defcard-rg c.admin-index-rate-sources/form
   "**Admin Index Rate Sources**"
