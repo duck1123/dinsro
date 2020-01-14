@@ -31,7 +31,9 @@
 
 (defn read-record
   [user-id]
-  (d/pull @db/*conn* attribute-list user-id))
+  (let [record (d/pull @db/*conn* attribute-list user-id)]
+    (when (get record ::s.users/name)
+      record)))
 
 (s/fdef read-record
   :args (s/cat :user-id :db/id)
