@@ -10,6 +10,7 @@
    [dinsro.events.users :as e.users]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
+   [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -58,4 +59,5 @@
     [:p "Not Authenticated"]))
 
 (s/fdef page
+  :args (s/cat :match #(satisfies? rc/Match %))
   :ret vector?)
