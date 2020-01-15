@@ -9,3 +9,12 @@
 
 (defcard create-request-valid
   (ds/gen-key ::s.a.rates/create-request-valid))
+
+(defcard create-response-valid
+  (ds/gen-key ::s.a.rates/create-response-valid))
+
+(defcard index-by-currency-request
+  (ds/gen-key ::s.a.rates/index-by-currency-request))
+
+(defcard index-by-currencies-response
+  (ds/gen-key ::s.a.rates/index-by-currency-response))

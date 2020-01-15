@@ -11,6 +11,12 @@
 (defcard item
   (ds/gen-key ::s.rates/item))
 
+(defcard rate-feed-item
+  (ds/gen-key ::s.rates/rate-feed-item))
+
+(defcard rate-feed
+  (ds/gen-key ::s.rates/rate-feed))
+
 (let [item {::s.rates/name "foo"
             ::s.rates/rate 1.0
             ::s.rates/date (tick/instant)

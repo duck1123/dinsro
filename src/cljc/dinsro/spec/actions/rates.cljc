@@ -52,7 +52,7 @@
 (def read-response-valid ::read-response-valid)
 
 (s/def ::read-response (s/or :not-found ::ds/common-response-not-found
-                                     :valid     ::read-response-valid))
+                             :valid     ::read-response-valid))
 (def read-response ::read-response)
 
 ;; Delete
@@ -74,3 +74,18 @@
 (s/def :index-rates-response/body (s/keys :req-un [:index-rates-response/items]))
 (s/def ::index-response (s/keys :req-un [:index-rates-response/body]))
 (def index-response ::index-response)
+
+;; Index by Currency
+
+(s/def ::index-by-currency-request (s/keys :req-un [:common-request-show/path-params]))
+(def index-by-currency-request ::index-by-currency-request)
+
+(s/def :index-rates-by-currency-response-body/items ::s.rates/rate-feed)
+(s/def :index-rates-by-currency-response-body/currency-id ds/id)
+(s/def :index-rates-by-currency-response/body
+  (s/keys :req-un [:index-rates-by-currency-response-body/currency-id
+                   :index-rates-by-currency-response-body/items]))
+(s/def :index-rates-by-currency-response-valid/status #{status/ok})
+(s/def ::index-by-currency-response (s/keys :req-un [:index-rates-by-currency-response/body
+                                                     :index-rates-by-currency-response-valid/status]))
+(def index-by-currency-response ::index-by-currency-response)
