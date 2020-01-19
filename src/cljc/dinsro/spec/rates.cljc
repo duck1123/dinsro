@@ -19,6 +19,8 @@
 
 (s/def ::date ds/date)
 (def date ::date)
+(s/def ::date-ms pos-int?)
+(def date-ms ::date-ms)
 (s/def ::date-inst inst?)
 (def date-inst ::date-inst)
 
@@ -35,3 +37,10 @@
 
 (def schema
   [rate-spec currency-spec date-spec])
+
+(s/def ::rate-feed-item (s/cat :date ::date-ms
+                               :rate ::rate))
+(def rate-feed-item ::rate-feed-item)
+
+(s/def ::rate-feed (s/coll-of ::rate-feed-item))
+(def rate-feed ::rate-feed)

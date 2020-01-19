@@ -82,3 +82,15 @@
 (s/fdef delete-handler
   :args (s/cat :request ::s.a.rates/delete-request)
   :ret ::s.a.rates/delete-response)
+
+;; Index by Currency
+
+(defn index-by-currency-handler
+  [request]
+  (let [id (Integer/parseInt (get-in request [:path-params :id]))]
+   (http/ok {:currency-id id
+             :items (m.rates/index-records-by-currency id)})))
+
+(s/fdef index-by-currency-handler
+  :args (s/cat :request ::s.a.rates/index-by-currency-request)
+  :ret ::s.a.rates/index-by-currency-response)

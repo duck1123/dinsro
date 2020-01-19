@@ -10,6 +10,8 @@
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
+(def record-limit 75)
+
 (defn prepare-record
   [params]
   (update params ::s.rates/rate double))
@@ -57,12 +59,30 @@
        (d/pull-many @db/*conn* '[*])
        (sort-by ::s.rates/date)
        (reverse)
-       (take 75)
+       (take record-limit)
        (map #(update % ::s.rates/date tick/instant))))
 
 (s/fdef index-records
   :args (s/cat)
   :ret (s/coll-of ::s.rates/item))
+
+(defn index-records-by-currency
+  [currency-id]
+  (->> (d/q {:query '[:find ?date ?rate
+                  :in $ ?currency
+                  :where
+                  [?e ::s.rates/currency ?currency]
+                  [?e ::s.rates/rate ?rate]
+                  [?e ::s.rates/date ?date]]
+             :args [@db/*conn* currency-id]})
+       (sort-by ::s.rates/date)
+       (reverse)
+       (take record-limit)
+       (map (fn [[date rate]] [(.getTime date) rate]))))
+
+(s/fdef index-records-by-currency
+  :args (s/cat :currency-id ::ds/id)
+  :ret ::s.rates/rate-feed)
 
 (defn delete-record
   [id]

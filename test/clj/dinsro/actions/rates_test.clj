@@ -63,3 +63,8 @@
         request {:path-params {:id (str id)}}
         response (a.rates/read-handler request)]
     (is (= status/ok (:status response)))))
+
+(deftest index-by-currency-handler
+  (let [request (ds/gen-key ::s.a.rates/index-by-currency-request)
+        response (a.rates/index-by-currency-handler request)]
+    (is (= status/ok (:status response)))))

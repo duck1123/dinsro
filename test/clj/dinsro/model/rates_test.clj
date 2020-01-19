@@ -11,7 +11,8 @@
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.spec.rates :as s.rates]
    [mount.core :as mount]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as timbre]
+   [tick.core :as tick]))
 
 (def uri "datahike:file:///tmp/file-example2")
 
@@ -52,3 +53,15 @@
   (let [item (mocks/mock-rate)
         response (m.rates/index-records)]
     (is (= [item] response))))
+
+(deftest index-records-by-currency-with-records
+  (let [currency (mocks/mock-currency)
+        currency-id (:db/id currency)
+        params (ds/gen-key ::s.rates/params)
+        params (assoc params ::s.rates/currency {:db/id currency-id})
+        rate-id (m.rates/create-record params)
+        rate (m.rates/read-record rate-id)
+        response (m.rates/index-records-by-currency currency-id)
+        date (.getTime (tick/inst (::s.rates/date rate)))]
+    (is (= date (nth (first response) 0)))
+    (is (= (::s.rates/rate rate) (nth (first response) 1)))))
