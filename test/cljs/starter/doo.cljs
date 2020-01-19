@@ -27,6 +27,7 @@
    dinsro.views.index-accounts-test
    dinsro.views.index-transactions-test
    dinsro.views.login-test
-   dinsro.views.setting-test))
+   dinsro.views.setting-test
+   dinsro.views.show-currency-test))
 
 (doo-all-tests #"dinsro\..*(?:-test)$")

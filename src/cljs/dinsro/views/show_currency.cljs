@@ -15,13 +15,10 @@
    [dinsro.events.users :as e.users]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.views.show-currency :as s.v.show-currency]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
-
-(s/def ::init-page-cofx (s/keys))
-(s/def ::init-page-event (s/keys))
-(s/def ::init-page-response (s/keys))
 
 (defn init-page
   [_ [{:keys [id]}]]
@@ -32,9 +29,9 @@
    :document/title "Show Currency"})
 
 (s/fdef init-page
-  :args (s/cat :cofx ::init-page-cofx
-               :event ::init-page-event)
-  :ret ::init-page-response)
+  :args (s/cat :cofx ::s.v.show-currency/init-page-cofx
+               :event ::s.v.show-currency/init-page-event)
+  :ret ::s.v.show-currency/init-page-response)
 
 (kf/reg-event-fx ::init-page init-page)
 
@@ -56,10 +53,6 @@
 (s/fdef loading-buttons
   :args (s/cat :id :db/id)
   :ret vector?)
-
-(s/def :show-currency-view/id          string?)
-(s/def :show-currency-view/path-params (s/keys :req-un [:show-currency-view/id]))
-(s/def ::view-map                      (s/keys :req-un [:show-currency-view/path-params]))
 
 (defn page-loaded
   [currency]
@@ -94,5 +87,5 @@
        [:p "Unknown State"])]))
 
 (s/fdef page
-  :args (s/cat :match ::view-map)
+  :args (s/cat :match ::s.v.show-currency/view-map)
   :ret vector?)
