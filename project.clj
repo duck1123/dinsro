@@ -4,36 +4,50 @@
   :url "https://github.com/duck1123/dinsro"
 
   :dependencies [[buddy "2.0.0"]
-                 [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [ch.qos.logback/logback-classic "1.2.3"]
-                 [cider/cider-nrepl "0.23.0-SNAPSHOT"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [com.cemerick/url "0.1.1"]
                  [com.smxemail/re-frame-document-fx "0.0.1-SNAPSHOT"]
                  [com.taoensso/tempura "1.2.1"]
                  [com.taoensso/timbre "4.10.0"]
                  [cprop "0.1.15"]
-                 [day8.re-frame/http-fx "0.1.6"]
-                 [devcards "0.2.6" :exclusions [args4j]]
+                 [day8.re-frame/http-fx "0.1.6"
+                  :exclusions [com.cognitect/transit-cljs]]
+                 [devcards "0.2.6"
+                  :exclusions [args4j]]
                  [expound "0.8.4"]
                  [fentontravers/transit-websocket-client "0.4.11"
-                  :exclusions [cljsjs/highlight]]
+                  :exclusions [args4j
+                               cljsjs/highlight]]
                  [io.replikativ/datahike "0.2.0" :exclusions [args4j]]
-                 [kee-frame "0.3.4" :exclusions [mvxcvi/arrangement
-                                                 metosin/reitit-core
-                                                 org.clojure/core.async]]
+                 [kee-frame "0.3.4"
+                  :exclusions [args4j
+                               cljs-ajax
+                               com.google.errorprone/error_prone_annotations
+                               instaparse
+                               metosin/reitit-core
+                               mvxcvi/arrangement
+                               org.clojure/core.async]]
                  [luminus-http-kit "0.1.6"]
-                 [luminus-transit "0.1.2"]
+                 [luminus-transit "0.1.2"
+                  :exclusions [com.cognitect/transit-cljs]]
                  [luminus/ring-ttl-session "0.3.3"]
                  [manifold "0.1.8"]
-                 [metosin/muuntaja "0.6.6"]
-                 [metosin/reitit "0.3.10"]
-                 [metosin/ring-http-response "0.9.1"]
+                 [metosin/reitit "0.4.2"
+                  :exclusions [borkdude/edamame
+                               com.fasterxml.jackson.core/jackson-annotations
+                               com.fasterxml.jackson.core/jackson-databind
+                               mvxcvi/puget]]
+                 [metosin/ring-http-response "0.9.1"
+                  :exclusions [joda-time
+                              clj-time]]
                  [mount "0.1.16"]
                  [nrepl "0.6.0"]
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.597" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.597" :scope "provided"
+                  :exclusions [com.google.code.findbugs/jsr305
+                               com.google.errorprone/error_prone_annotations]]
                  [org.clojure/core.rrb-vector "0.1.1"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
@@ -45,15 +59,24 @@
                                org.webjars.npm/date-fns]]
                  [org.webjars.npm/date-and-time "0.6.3"]
                  [org.webjars.npm/date-fns "2.8.1"]
-                 [org.webjars.npm/bulma-extensions "6.2.7" :exclusions [org.webjars.npm/bulma]]
+                 [org.webjars.npm/bulma-extensions "6.2.7"
+                  :exclusions [org.webjars.npm/bulma]]
                  [org.webjars.npm/material-icons "0.3.1"]
-                 [org.webjars/webjars-locator "0.38"]
+                 [org.webjars/webjars-locator "0.38"
+                  :exclusions [org.slf4j/slf4j-api]]
                  [re-frame "0.10.9"]
-                 [reframe-utils "0.2.2"]
-                 [reagent "0.8.1"]
-                 [ring-webjars "0.2.0"]
+                 [reframe-utils "0.2.2"
+                  :exclusions [args4j
+                               com.cognitect/transit-cljs]]
+                 [reagent "0.9.1"
+                  :exclusions [cljsjs/react
+                               cljsjs/react-dom]]
+                 [ring-webjars "0.2.0"
+                  :exclusions [clj-time
+                               joda-time]]
                  [ring/ring-core "1.8.0"]
-                 [ring/ring-defaults "0.3.2"]
+                 [ring/ring-defaults "0.3.2"
+                  :exclusions [clj-time]]
                  [selmer "1.12.18"]
                  [tick "0.4.21-alpha"]
                  [time-specs "0.1.0-SNAPSHOT"]]
@@ -127,9 +150,10 @@
                                 [day8.re-frame/test "0.1.5"]
                                 [day8.re-frame/tracing "0.5.3"]
                                 [doo "0.1.11"]
-                                [figwheel-sidecar "0.5.19" :exclusions [args4j]]
+                                [figwheel-sidecar "0.5.19" :exclusions [args4j
+                                                                        clj-time]]
                                 [pjstadig/humane-test-output "0.10.0"]
-                                [prone "2019-07-08"]
+                                [prone "2020-01-17"]
                                 [ring/ring-devel "1.8.0"]
                                 [ring/ring-mock "0.4.0"]]
 
