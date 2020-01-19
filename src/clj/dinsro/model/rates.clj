@@ -10,6 +10,8 @@
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
+(def record-limit 75)
+
 (defn prepare-record
   [params]
   (update params ::s.rates/rate double))
@@ -57,7 +59,7 @@
        (d/pull-many @db/*conn* '[*])
        (sort-by ::s.rates/date)
        (reverse)
-       (take 75)
+       (take record-limit)
        (map #(update % ::s.rates/date tick/instant))))
 
 (s/fdef index-records
