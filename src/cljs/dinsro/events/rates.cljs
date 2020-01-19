@@ -7,6 +7,7 @@
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [reframe-utils.core :as rfu]
+   [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
@@ -61,6 +62,44 @@
   :ret ::item)
 
 (rf/reg-sub ::item :<- [::item-map] item-sub)
+
+;; Read
+
+(s/def ::do-fetch-record-state keyword?)
+(rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
+
+(defn do-fetch-record-success
+  [{:keys [db]} [{:keys [item]}]]
+  (let [item (update item ::s.rates/date tick/instant)]
+    {:db (-> db
+             (assoc ::do-fetch-record-state :loaded)
+             (assoc ::item item)
+             (assoc-in [::item-map (:db/id item)] item))}))
+
+(defn do-fetch-record-unauthorized
+  [{:keys [db]} _event]
+  (let [match (:kee-frame/route db)]
+    {:db (assoc db :return-to match)
+     :navigate-to [:login-page]}))
+
+(defn do-fetch-record-failed
+  [{:keys [db]} [{:keys [status] :as request}]]
+  (if (= status/forbidden status)
+    {:dispatch [::do-fetch-record-unauthorized request]}
+    {:db (assoc db ::do-fetch-record-state :failed)}))
+
+(defn do-fetch-record
+  [{:keys [db]} [id]]
+  {:db (assoc db ::do-fetch-record-state :loading)
+   :http-xhrio
+   (e/fetch-request [:api-show-rate {:id id}]
+                    [::do-fetch-record-success]
+                    [::do-fetch-record-failed])})
+
+(kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
+(kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
+(kf/reg-event-fx ::do-fetch-record-unauthorized  do-fetch-record-unauthorized)
+(kf/reg-event-fx ::do-fetch-record               do-fetch-record)
 
 ;; Index
 
