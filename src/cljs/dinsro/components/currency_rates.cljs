@@ -10,16 +10,16 @@
    [taoensso.timbre :as timbre]))
 
 (defn section
-  [currency-id rates]
+  [currency-id rate-feed]
   [:div.box
    [:h2
     "Rates"
     [c/show-form-button ::e.f.add-currency-rate/shown?]]
    [c.f.add-currency-rate/form currency-id]
    [:hr]
-   [c.rate-chart/rate-chart (reverse rates)]])
+   [c.rate-chart/rate-chart rate-feed]])
 
 (s/fdef section
   :args (s/cat :currency-id ::ds/id
-               :rates (s/coll-of ::s.rates/item))
+               :rate-feed ::s.rates/rate-feed)
   :ret vector?)

@@ -23,7 +23,7 @@
 (defn init-page
   [_ [{:keys [id]}]]
   {:dispatch-n [[::e.currencies/do-fetch-record id]
-                [::e.rates/do-fetch-index]
+                [::e.rates/do-fetch-rate-feed-by-currency (int id)]
                 [::e.users/do-fetch-index]
                 [::e.accounts/do-fetch-index]]
    :document/title "Show Currency"})
@@ -42,13 +42,14 @@
 
 (defn loading-buttons
   [id]
-  (c.debug/hide
-   [:div.box
-    [c.buttons/fetch-rates]
-    [c.buttons/fetch-accounts]
-    [c.buttons/fetch-currencies]
-    [c.buttons/fetch-rate-sources]
-    [c.buttons/fetch-currency id]]))
+  [:<>
+   (c.debug/hide
+    [:div.box
+     [c.buttons/fetch-rates]
+     [c.buttons/fetch-accounts]
+     [c.buttons/fetch-currencies]
+     [c.buttons/fetch-rate-sources]
+     [c.buttons/fetch-currency id]])])
 
 (s/fdef loading-buttons
   :args (s/cat :id :db/id)
@@ -56,10 +57,10 @@
 
 (defn page-loaded
   [currency]
-  (let [currency-id (:db/id currency)]
+  (let [currency-id (:db/id (timbre/spy :info currency))]
     [:<>
      [:div.box [c.show-currency/show-currency currency]]
-     (when-let [rates @(rf/subscribe [::e.rates/items-by-currency currency])]
+     (when-let [rates @(rf/subscribe [::e.rates/rate-feed (:db/id currency)])]
        [c.currency-rates/section currency-id rates])
      (when-let [accounts (some->> @(rf/subscribe [::e.accounts/items-by-currency currency])
                                   (sort-by ::s.accounts/date))]

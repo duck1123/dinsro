@@ -1,9 +1,7 @@
 (ns dinsro.components.rate-chart
   (:require
    [cljsjs.highcharts]
-   [dinsro.spec.rates :as s.rates]
-   [reagent.core :as r]
-   [tick.alpha.api :as tick]))
+   [reagent.core :as r]))
 
 (defn mount-chart [comp]
   (.chart js/Highcharts (r/dom-node comp) (clj->js (r/props comp))))
@@ -21,12 +19,8 @@
   [chart-inner config])
 
 (defn rate-chart
-  [items]
-  (let [data (map (fn [item]
-                    [(.getTime (tick/inst (::s.rates/date item)))
-                     (::s.rates/rate item)])
-                  items)
-        config {:chart {:type  :line}
+  [data]
+  (let [config {:chart {:type  :line}
                 :title {:text  "Sats Exchange Rate"}
                 :xAxis {:title {:text "Date"}
                         :type "datetime"}

@@ -89,7 +89,7 @@
   [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
    (http/ok {:currency-id id
-             :items (m.rates/index-records-by-currency id)})))
+             :items (sort-by first (m.rates/index-records-by-currency id))})))
 
 (s/fdef index-by-currency-handler
   :args (s/cat :request ::s.a.rates/index-by-currency-request)

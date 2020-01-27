@@ -38,16 +38,16 @@
 
 ;; Items by Currency
 
-(defn items-by-currency-sub
+(defn items-by-currency
   "Subscription handler: Index items by currency"
   [items [_ {:keys [db/id]}]]
   (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
 
-(s/fdef items-by-currency-sub
+(s/fdef items-by-currency
   :args (s/cat :items ::items :event (s/cat :keyword keyword? :currency ::item))
   :ret ::items)
 
-(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency-sub)
+(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Item
 
@@ -190,3 +190,29 @@
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record         do-delete-record)
+
+
+(defn do-fetch-rate-feed-by-currency-success
+  [{:keys [db]} [id {:keys [items]}]]
+  {:db (assoc-in db [::rate-feed id] items)})
+
+(defn do-fetch-rate-feed-by-currency-failure
+  [_ _]
+  {:dispatch [::do-fetch-index]})
+
+(defn do-fetch-rate-feed-by-currency
+  [_ [id]]
+  {:http-xhrio
+   (e/fetch-request [:api-rate-feed {:id id}]
+                    [::do-fetch-rate-feed-by-currency-success id]
+                    [::do-fetch-rate-feed-by-currency-failure id])})
+
+(kf/reg-event-fx ::do-fetch-rate-feed-by-currency-success do-fetch-rate-feed-by-currency-success)
+(kf/reg-event-fx ::do-fetch-rate-feed-by-currency-failure do-fetch-rate-feed-by-currency-failure)
+(kf/reg-event-fx ::do-fetch-rate-feed-by-currency do-fetch-rate-feed-by-currency)
+
+(defn rate-feed-sub
+  [db [_ id]]
+  (get-in db [::rate-feed id]))
+
+(rf/reg-sub ::rate-feed rate-feed-sub)
