@@ -26,7 +26,7 @@
     [v.show-currency/page-loaded item])
 
   (deftest page
-    (is (vector? (v.show-currency/page nil))))
+    (is (vector? (v.show-currency/page {:path-params {:id "1"}}))))
 
   (defcard-rg page-card
     [v.show-currency/page]))

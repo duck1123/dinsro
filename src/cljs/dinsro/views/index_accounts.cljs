@@ -59,5 +59,5 @@
     [:p "Not Authenticated"]))
 
 (s/fdef page
-  :args (s/cat :match #(satisfies? rc/Match %))
+  :args (s/cat :match #(instance? rc/Match %))
   :ret vector?)
