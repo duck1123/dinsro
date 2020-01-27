@@ -33,7 +33,7 @@
 (s/def ::params (s/keys :req [::name ::url ::currency]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::name ::url ::currency]))
+(s/def ::item (s/keys :req [:db/id ::name ::url ::currency]))
 (def item ::item)
 
 (def schema

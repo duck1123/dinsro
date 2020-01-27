@@ -42,7 +42,7 @@
 (s/def ::params (s/keys :req [::name ::initial-value ::currency ::user]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::name ::initial-value ::currency ::user]))
+(s/def ::item (s/keys :req [:db/id ::name ::initial-value ::currency ::user]))
 (def item ::item)
 
 (def item-spec

@@ -27,7 +27,7 @@
 
 (s/def ::params (s/keys :req [::name ::email ::password]))
 (def params ::params)
-(s/def ::item (s/keys :req [::name ::email ::password-hash]))
+(s/def ::item (s/keys :req [:db/id ::name ::email ::password-hash]))
 (def item ::item)
 
 (def schema

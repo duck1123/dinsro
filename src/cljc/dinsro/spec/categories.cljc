@@ -24,7 +24,7 @@
 (s/def ::params (s/keys :req [::name ::user]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::name ::user]))
+(s/def ::item (s/keys :req [:db/id ::name ::user]))
 (def item ::item)
 
 (def schema

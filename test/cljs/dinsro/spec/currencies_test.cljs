@@ -10,7 +10,8 @@
 (defcard item
   (ds/gen-key ::s.currencies/item))
 
-(let [item {::s.currencies/name "foo"}]
+(let [item {:db/id 1
+            ::s.currencies/name "foo"}]
   (defcard item-test-validation
     (expound/expound-str ::s.currencies/item item))
 

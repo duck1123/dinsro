@@ -6,7 +6,7 @@
 (s/def ::name string?)
 (s/def ::params (s/keys :req [::name]))
 (s/def ::item-opt (s/keys :opt [::name]))
-(s/def ::item (s/keys :req [::name]))
+(s/def ::item (s/keys :req [:db/id ::name]))
 
 (def name-spec
   {:db/ident       ::name
