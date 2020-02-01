@@ -8,10 +8,11 @@
   (:require-macros
    [cljs.core.async.macros :refer [go-loop]]))
 
-(def websocket-endpoint "ws://localhost:3000/ws")
+(def websocket-endpoint (str "ws://" (.-host (.-location js/window))  "/ws"))
 
 (defn create-connection
   [url fire-event]
+  (timbre/infof "Connecting to endpoint: %s" url)
   (let [channel (websocket/async-websocket url)]
     (go-loop []
       (let [data (<! channel)]
