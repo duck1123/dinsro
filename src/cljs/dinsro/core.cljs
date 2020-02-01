@@ -5,6 +5,7 @@
    [dinsro.ajax :as ajax]
    [dinsro.components.status :as c.status]
    [dinsro.events.debug :as e.debug]
+   [dinsro.events.websocket]
    [dinsro.routing :as routing]
    [dinsro.view :as view]
    [kee-frame.core :as kf]

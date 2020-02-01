@@ -88,13 +88,33 @@
     {:dispatch [::do-fetch-record-unauthorized request]}
     {:db (assoc db ::do-fetch-record-state :failed)}))
 
+(s/def ::do-fetch-record-failed-event
+  (s/cat :id       :db/id
+         :success  (s/? (s/tuple #{:foo}))
+         :failure  (s/? (s/tuple #{:failure}))))
+(def do-fetch-record-failed-event ::do-fetch-record-failed-event)
+
+(s/fdef do-fetch-record-failed
+  :ret (s/keys))
+
 (defn do-fetch-record
-  [{:keys [db]} [id]]
+  [{:keys [db]} [id success failure]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
    (e/fetch-request [:api-show-rate {:id id}]
-                    [::do-fetch-record-success]
-                    [::do-fetch-record-failed])})
+                    (or success [::do-fetch-record-success])
+                    (or failure [::do-fetch-record-failed]))})
+
+(s/def ::do-fetch-record-event
+  (s/cat :id       :db/id
+         :success  (s/? (s/tuple #{:foo}))
+         :failure  (s/? (s/tuple #{:failure}))))
+(def do-fetch-record-event ::do-fetch-record-event)
+
+(s/fdef do-fetch-record
+  :args (s/cat :cofx (s/keys)
+               :event ::do-fetch-record-event)
+  :ret (s/keys))
 
 (kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
@@ -216,3 +236,26 @@
   (get-in db [::rate-feed id]))
 
 (rf/reg-sub ::rate-feed rate-feed-sub)
+
+(defn add-record
+  "Handler for rates created"
+  [{:keys [db]} [id response]]
+  (if response
+    (if-let [rate (:item response)]
+      (do (timbre/infof "Adding new rate: %s" rate)
+          (let [currency-id (get-in rate [::s.rates/currency :db/id])
+                time (.getTime (tick/inst (::s.rates/date rate)))
+                rate-value (::s.rates/rate rate)
+                rate-item [time rate-value]]
+            {:db (update-in db [::rate-feed currency-id] concat [rate-item])}))
+      (do
+        (timbre/error "Did not receive a valid rate")
+        {}))
+    {:dispatch [::do-fetch-record id [::add-record id]]}))
+
+(s/fdef add-record
+  :args (s/cat :cofx ::s.e.rates/add-record-cofx
+               :event ::s.e.rates/add-record-event)
+  :ret (s/keys))
+
+(kf/reg-event-fx ::add-record add-record)

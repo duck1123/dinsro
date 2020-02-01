@@ -23,8 +23,8 @@
 (def websocket-channel (create-connection websocket-endpoint ::receive-message))
 
 (defn receive-message
-  [_ _]
-  {})
+  [_ [data]]
+  {:dispatch data})
 
 (defn send-message
   [_ [data]]
