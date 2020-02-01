@@ -75,7 +75,7 @@
                   [?e ::s.rates/rate ?rate]
                   [?e ::s.rates/date ?date]]
              :args [@db/*conn* currency-id]})
-       (sort-by ::s.rates/date)
+       (sort-by first)
        (reverse)
        (take record-limit)
        (map (fn [[date rate]] [(.getTime date) rate]))))
