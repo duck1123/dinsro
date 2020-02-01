@@ -53,7 +53,9 @@
     ["/:id"         :api-show-category]]
    ["/currencies"
     [""             :api-index-currencies]
-    ["/:id"         :api-show-currency]]
+    ["/:id"
+     [""            :api-show-currency]
+     ["/rates"      :api-rate-feed]]]
    ["/logout"       :api-logout]
    ["/rate-sources"
     [""             :api-index-rate-sources]
@@ -82,8 +84,8 @@
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
    ["/admin"
-    ["" :admin-page]]
-   ["/cards" :cards-page]
+    [""               :admin-page]]
+   ["/cards"          :cards-page]
    ["/categories"
     [""               :index-categories-page]
     ["/:id"           :show-category-page]]

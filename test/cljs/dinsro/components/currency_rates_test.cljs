@@ -7,5 +7,9 @@
   "**Currency Rates Section**"
   (fn []
     [:div.box
-     [c.currency-rates/section]])
+     [c.currency-rates/section 7  [
+                                   [ 1 1 ]
+                                   [ 2 2 ]
+                                   [ 3 4 ]
+                                   ]]])
   {})

@@ -10,6 +10,8 @@
 
 (let [item (ds/gen-key ::s.currencies/item)]
 
+  (defcard item-card item)
+
   (defcard init-page-cofx
     (ds/gen-key ::s.v.show-currency/init-page-cofx))
 
@@ -25,8 +27,11 @@
   (defcard-rg v.show-currency/page-loaded
     [v.show-currency/page-loaded item])
 
-  (deftest page
-    (is (vector? (v.show-currency/page {:path-params {:id "1"}}))))
+  (let [match {:path-params {:id "1"}}]
+    (deftest page
+      (is (vector? (v.show-currency/page match))))
 
-  (defcard-rg page-card
-    [v.show-currency/page]))
+    (defcard-rg page-card
+      [v.show-currency/page match]))
+
+  )
