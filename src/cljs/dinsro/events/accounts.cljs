@@ -36,6 +36,8 @@
 
 ;; Item
 
+(s/def ::item-sub-event (s/tuple keyword? :db/id))
+
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
   [item-map [_ id]]
@@ -43,8 +45,8 @@
 
 (s/fdef item-sub
   :args (s/cat :item-map ::item-map
-               :event (s/cat :kw keyword? :id :db/id))
-  :ret ::item)
+               :event ::item-sub-event)
+  :ret (s/nilable ::item))
 
 (rf/reg-sub ::item :<- [::item-map] item-sub)
 
