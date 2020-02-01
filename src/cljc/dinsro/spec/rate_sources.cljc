@@ -3,7 +3,7 @@
   (:require
    [clojure.spec.alpha :as s]))
 
-(s/def ::name             string?)
+(s/def ::name string?)
 (def name ::name)
 
 (def name-spec
@@ -19,10 +19,10 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id      :db/id)
+(s/def ::currency-id :db/id)
 (def currency-id ::currency-id)
 
-(s/def ::currency         (s/keys :req [:db/id]))
+(s/def ::currency (s/keys :req [:db/id]))
 (def currency ::currency)
 
 (def currency-spec
@@ -33,7 +33,7 @@
 (s/def ::params (s/keys :req [::name ::url ::currency]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::name ::url ::currency]))
+(s/def ::item (s/keys :req [:db/id ::name ::url ::currency]))
 (def item ::item)
 
 (def schema

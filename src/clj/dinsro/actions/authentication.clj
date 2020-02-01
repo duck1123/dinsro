@@ -1,18 +1,13 @@
 (ns dinsro.actions.authentication
   (:require
    [buddy.hashers :as hashers]
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [dinsro.actions.users :as a.users]
    [dinsro.model.users :as m.users]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [dinsro.spec.users :as s.users]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
-
-(def param-rename-map
-  {:name     ::s.users/name
-   :email    ::s.users/email
-   :password ::s.users/password})
 
 (defn authenticate-handler
   [request]
@@ -41,9 +36,11 @@
   "Register a user"
   [request]
   (let [{:keys [params]} request
-        params (-> params
-                   (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map)))]
+        params (if-let [password (:password params)]
+                 (assoc params ::s.users/password password)
+                 params)
+        params (dissoc params :password)
+        params (a.users/prepare-record params)]
     (if (s/valid? ::s.users/params params)
       (let [id (m.users/create-record params)]
         (http/ok {:id id}))

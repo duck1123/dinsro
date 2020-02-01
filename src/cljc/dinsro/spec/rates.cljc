@@ -32,7 +32,7 @@
 (s/def ::params (s/keys :req [::rate ::currency ::date]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::rate ::currency ::date]))
+(s/def ::item (s/keys :req [:db/id ::rate ::currency ::date]))
 (def item ::item)
 
 (def schema

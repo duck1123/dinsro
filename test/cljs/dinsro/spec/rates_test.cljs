@@ -17,7 +17,8 @@
 (defcard rate-feed
   (ds/gen-key ::s.rates/rate-feed))
 
-(let [item {::s.rates/name "foo"
+(let [item {:db/id 1
+            ::s.rates/name "foo"
             ::s.rates/rate 1.0
             ::s.rates/date (tick/instant)
             ::s.rates/currency {:db/id 1}}]
