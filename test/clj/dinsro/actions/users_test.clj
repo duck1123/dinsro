@@ -28,7 +28,7 @@
       (f))))
 
 (deftest create-record-response-test
-  (let [params (ds/gen-key ::s.users/params)
+  (let [params (ds/gen-key ::s.users/input-params-valid)
         response (a.users/create-handler {:params params})]
     (is (= (:status response) status/ok))))
 

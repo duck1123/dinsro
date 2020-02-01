@@ -5,13 +5,22 @@
    [dinsro.spec.users :as s.users]
    [taoensso.timbre :as timbre]))
 
+(s/def ::create-params-valid (s/keys :req-un [::s.users/name]))
+(def create-params-valid ::create-params-valid)
+
+(s/def ::create-params (s/keys :opt-un [::s.users/name]))
+(def create-params ::create-params)
+
 ;; Create
 
-(s/def :create-user-request/params (s/keys :opt [::s.users/name]))
-(s/def ::create-request (s/keys :req-un [:create-request/params]))
+(s/def :create-user-request/params ::create-params)
+(s/def ::create-request (s/keys :req-un [:create-user-request/params]))
+(def create-request ::create-request)
+
 (s/def :create-user-request/status (constantly 200))
 
 (s/def ::create-response (s/keys :req-un [:create/status]))
+(def create-response ::create-response)
 
 ;; Read
 

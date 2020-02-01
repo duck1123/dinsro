@@ -1,6 +1,5 @@
 (ns dinsro.model.users
   (:require
-   [buddy.hashers :as hashers]
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
@@ -17,17 +16,6 @@
   '[:find ?id
     :in $ ?email
     :where [?id ::s.users/email ?email]])
-
-(defn prepare-record
-  [params]
-  (when-let [password (::s.users/password params)]
-    (-> {::s.users/password-hash (hashers/derive password)}
-        (merge params)
-        (dissoc ::s.users/password))))
-
-(s/fdef prepare-record
-  :args (s/cat :params ::s.users/params)
-  :ret (s/nilable ::s.users/item))
 
 (defn read-record
   [user-id]
@@ -68,7 +56,7 @@
   [params]
   (if (nil? (find-id-by-email (::s.users/email params)))
     (let [tempid (d/tempid "user-id")
-          record (assoc (prepare-record params) :db/id tempid)
+          record (assoc params :db/id tempid)
           response (d/transact db/*conn* {:tx-data [record]})]
       (get-in response [:tempids tempid]))
     (throw (RuntimeException. "User already exists"))))

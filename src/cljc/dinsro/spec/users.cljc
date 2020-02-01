@@ -25,7 +25,11 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
-(s/def ::params (s/keys :req [::name ::email ::password]))
+(s/def ::input-params-valid (s/keys :req [::name ::email ::password]))
+
+(s/def ::input-params (s/keys :opt [::name ::email ::password]))
+
+(s/def ::params (s/keys :req [::name ::email ::password-hash]))
 (def params ::params)
 (s/def ::item (s/keys :req [:db/id ::name ::email ::password-hash]))
 (def item ::item)

@@ -4,6 +4,7 @@
    [datahike.api :as d]
    [datahike.config :refer [uri->config]]
    [dinsro.actions.authentication :as a.authentication]
+   [dinsro.actions.users :as a.users]
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.model.users :as m.users]
@@ -12,7 +13,8 @@
    [dinsro.spec.users :as s.users]
    [mount.core :as mount]
    [ring.mock.request :as mock]
-   [ring.util.http-status :as status]))
+   [ring.util.http-status :as status]
+   [taoensso.timbre :as timbre]))
 
 (def url-root "/api/v1")
 
@@ -32,8 +34,8 @@
 (deftest authenticate-handler-successful
   (let [{:keys [dinsro.spec.users/email
                 dinsro.spec.users/password]
-         :as user-params} (ds/gen-key ::s.users/params)]
-    (m.users/create-record user-params)
+         :as user-params} (ds/gen-key ::s.users/input-params-valid)]
+    (m.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password password}
           path (str url-root "/authenticate")
           request (-> (mock/request :post path) (assoc :params body))
@@ -43,8 +45,8 @@
 (deftest authenticate-handler-failure
   (let [{:keys [dinsro.spec.users/email
                 dinsro.spec.users/password]
-         :as user-params} (ds/gen-key ::s.users/params)]
-    (m.users/create-record user-params)
+         :as user-params} (ds/gen-key ::s.users/input-params-valid)]
+    (m.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password (str password "x")}
           path (str url-root "/authenticate")
           request (-> (mock/request :post path) (assoc :params body))
