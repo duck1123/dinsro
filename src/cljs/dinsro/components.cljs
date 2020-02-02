@@ -96,7 +96,7 @@
       [:div.select
        (into [:select {:value (or @(rf/subscribe [field]) "")
                        :on-change #(rf/dispatch [change-handler (target-value %)])}]
-             (concat [[:option {:value ""} ""]]
+             (concat [[:option {:value ""} "sats"]]
                      (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
                        ^{:key id} [:option {:value id} name])))]]]))
 
