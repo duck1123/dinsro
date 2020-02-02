@@ -64,6 +64,10 @@
        (sort-by :db/id)
        (take record-limit)))
 
+(s/fdef index-records-by-user
+  :args (s/cat :user-id :db/id)
+  :ret (s/coll-of ::s.accounts/item))
+
 (defn delete-record
   [id]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})

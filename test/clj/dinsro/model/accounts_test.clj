@@ -9,6 +9,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.users :as s.users]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 
@@ -20,6 +21,7 @@
   (when-not (d/database-exists? (uri->config uri))
     (d/create-database uri))
   (with-redefs [db/*conn* (d/connect uri)]
+    (d/transact db/*conn* s.users/schema)
     (d/transact db/*conn* s.accounts/schema)
     (f)))
 

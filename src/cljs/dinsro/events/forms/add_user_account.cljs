@@ -14,10 +14,12 @@
 (defn form-data-sub
   [form-bindings _]
   (let [[name initial-value currency-id user-id] form-bindings]
-    {:name          name
-     :currency-id   (int currency-id)
-     :user-id       (int user-id)
-     :initial-value (.parseFloat js/Number initial-value)}))
+    (merge
+     (when (not= currency-id "")
+       {:currency-id   (int currency-id)})
+     {:name          name
+      :user-id       (int user-id)
+      :initial-value (.parseFloat js/Number initial-value)})))
 
 (s/fdef form-data-sub
   :args (s/cat :form-bindings ::s.e.f.add-user-account/form-bindings

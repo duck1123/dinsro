@@ -39,10 +39,12 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::params (s/keys :req [::name ::initial-value ::currency ::user]))
+(s/def ::params (s/keys :req [::name ::initial-value ::user]
+                        :opt [::currency]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [:db/id ::name ::initial-value ::currency ::user]))
+(s/def ::item (s/keys :req [:db/id ::name ::initial-value ::user]
+                      :opt [::currency]))
 (def item ::item)
 
 (def item-spec

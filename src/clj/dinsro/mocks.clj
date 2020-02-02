@@ -17,11 +17,20 @@
    [dinsro.spec.users :as s.users]
    [taoensso.timbre :as timbre]))
 
-(defn mock-account
+(defn mock-user
   []
-  (let [params (ds/gen-key ::s.accounts/params)
-        id (m.accounts/create-record params)]
-    (m.accounts/read-record id)))
+  (let [params (ds/gen-key ::s.users/params)
+        id (m.users/create-record params)]
+    (m.users/read-record id)))
+
+(defn mock-account
+  ([]
+   (let [user (mock-user)]
+     (mock-account (:db/id user))))
+  ([user-id]
+   (let [params (assoc (ds/gen-key ::s.accounts/params) ::s.accounts/user {:db/id user-id})
+         id (m.accounts/create-record params)]
+     (m.accounts/read-record id))))
 
 (defn mock-category
   []
@@ -55,9 +64,3 @@
                          (ds/gen-key (into #{1} (m.accounts/index-ids))))
         id (m.transactions/create-record params)]
     (m.transactions/read-record id)))
-
-(defn mock-user
-  []
-  (let [params (ds/gen-key ::s.users/params)
-        id (m.users/create-record params)]
-    (m.users/read-record id)))

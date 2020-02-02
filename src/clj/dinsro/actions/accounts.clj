@@ -25,8 +25,11 @@
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
                    (assoc-in [::s.accounts/initial-value] initial-value)
-                   (assoc-in [::s.accounts/currency :db/id] currency-id)
-                   (assoc-in [::s.accounts/user :db/id] user-id))]
+                   (assoc-in [::s.accounts/user :db/id] user-id))
+        params (merge
+                (when currency-id
+                  {::s.accounts/currency {:db/id currency-id}})
+                params)]
     (if (s/valid? ::s.accounts/params params)
       params
       (do
