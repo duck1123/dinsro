@@ -31,18 +31,20 @@
       (f))))
 
 (deftest index-handler-test-empty
-  (let [request {:params {}}
+  (let [request {:session {:identity 1}
+                 :params {}}
         response (a.accounts/index-handler request)
         items (get-in response [:body :items])]
     (is (= status/ok (:status response)))
     (is (= [] items))))
 
 (deftest index-handler-test-with-records
-  (let [user (mocks/mock-account)
-        request {}
+  (let [record (mocks/mock-account)
+        user-id (get-in record [::s.accounts/user :db/id])
+        request {:session {:identity user-id}}
         response (a.accounts/index-handler request)
         {{:keys [items]} :body} response]
-    (is (= [user] items))))
+    (is (= [record] items))))
 
 (deftest create-handler-valid
   (let [request (ds/gen-key ::s.a.accounts/create-request-valid)

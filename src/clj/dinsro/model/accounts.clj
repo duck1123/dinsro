@@ -7,6 +7,8 @@
    [dinsro.spec.accounts :as s.accounts]
    [taoensso.timbre :as timbre]))
 
+(def record-limit 1000)
+
 (defn create-record
   [params]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "account-id")]})]
@@ -41,6 +43,26 @@
 (s/fdef index-records
   :args (s/cat)
   :ret (s/coll-of ::s.accounts/item))
+
+(defn index-records-by-user
+  [user-id]
+  (->> (d/q {:query '[:find ?id ?name ?user-id ?currency-id ?initial-value
+                      :keys db/id name
+                      :in $ ?user-id
+                      :where
+                      [?id ::s.accounts/name ?name]
+                      [?id ::s.accounts/user ?user-id]
+                      [?id ::s.accounts/currency ?currency-id]
+                      [?id ::s.accounts/initial-value ?initial-value]]
+             :args [@db/*conn* user-id]})
+       (map (fn [[id name user-id currency-id initial-value]]
+              {:db/id id
+               ::s.accounts/name name
+               ::s.accounts/user {:db/id user-id}
+               ::s.accounts/currency {:db/id currency-id}
+               ::s.accounts/initial-value initial-value}))
+       (sort-by :db/id)
+       (take record-limit)))
 
 (defn delete-record
   [id]
