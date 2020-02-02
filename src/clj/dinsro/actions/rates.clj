@@ -94,3 +94,14 @@
 (s/fdef index-by-currency-handler
   :args (s/cat :request ::s.a.rates/index-by-currency-request)
   :ret ::s.a.rates/index-by-currency-response)
+
+(defn index-by-category-handler
+  [_]
+  (let [
+        ;; TODO: parse from request
+        limit 50
+        items (m.rates/index-records)
+        response {:model :rates
+                  :limit limit
+                  :items items}]
+    (http/ok response)))

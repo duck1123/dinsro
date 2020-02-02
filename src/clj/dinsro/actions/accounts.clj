@@ -95,3 +95,13 @@
 (s/fdef index-handler
   :args (s/cat :request ::s.a.accounts/index-request)
   :ret ::s.a.accounts/index-response)
+
+(defn index-by-category-handler
+  [_]
+  (let [accounts (m.accounts/index-records)]
+    (http/ok {:items accounts})))
+
+(defn index-by-currency-handler
+  [_]
+  (let [accounts (m.accounts/index-records)]
+    (http/ok {:items accounts})))

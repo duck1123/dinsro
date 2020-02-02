@@ -97,14 +97,18 @@
    ["/categories"
     [""                {:get    a.categories/index-handler
                         :post   a.categories/create-handler}]
-    ["/:id"            {:get    a.categories/read-handler
-                        :delete a.categories/delete-handler}]]
+    ["/:id"
+     [""               {:get    a.categories/read-handler
+                        :delete a.categories/delete-handler}]
+     ["/accounts"      {:get    a.accounts/index-by-category-handler}]
+     ["/rates"         {:get    a.rates/index-by-category-handler}]]]
    ["/currencies"
     [""                {:get    a.currencies/index-handler
                         :post   a.currencies/create-handler}]
     ["/:id"
      [""               {:delete a.currencies/delete-handler
                         :get    a.currencies/read-handler}]
+     ["/accounts"      {:get    a.accounts/index-by-currency-handler}]
      ["/rates"         {:get    a.rates/index-by-currency-handler}]]]
    ["/rate-sources"
     [""                {:get    a.rate-sources/index-handler
