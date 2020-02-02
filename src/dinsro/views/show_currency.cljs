@@ -54,8 +54,8 @@
   (let [currency-id (:db/id currency)]
     [:<>
      [:div.box [c.show-currency/show-currency store currency]]
-     (when-let [rates @(st/subscribe store [::e.rates/rate-feed (:db/id currency)])]
-       [c.currency-rates/section store currency-id rates])
+     (when-let [rates @(st/subscribe store [::e.rates/rate-feed currency-id])]
+       [c.currency-rates/section store rates])
      (when-let [accounts (some->> @(st/subscribe store [::e.accounts/items-by-currency currency])
                                   (sort-by ::s.accounts/date))]
        [c.currency-accounts/section store accounts])
