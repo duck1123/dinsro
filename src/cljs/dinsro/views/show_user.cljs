@@ -58,10 +58,10 @@
        [:div.box
         [show-user user]]
        [:<>
-        (when-let [categories @(rf/subscribe [::e.categories/items-by-user user-id])]
-          [c.user-categories/section user-id categories])
         (when-let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
           [c.user-accounts/section user-id accounts])
+        (when-let [categories @(rf/subscribe [::e.categories/items-by-user user-id])]
+          [c.user-categories/section user-id categories])
         (when-let [transactions @(rf/subscribe [::e.transactions/items-by-user user-id])]
           [c.user-transactions/section user-id transactions])]])
     [:p "User not found"]))
