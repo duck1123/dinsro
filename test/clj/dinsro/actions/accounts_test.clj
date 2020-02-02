@@ -56,6 +56,15 @@
     (is (= status/bad-request (:status response)))
     #_(is (= nil response))))
 
+(deftest read-handler
+  (let [account (mocks/mock-account)
+        id (:db/id account)
+        request {:path-params {:id (str id)}}
+        response (a.accounts/read-handler request)]
+    (is (= status/ok (:status response)))
+    (let [body (:body response)]
+      (= account body))))
+
 (deftest delete-handler
   (let [account (mocks/mock-account)
         id (:db/id account)
