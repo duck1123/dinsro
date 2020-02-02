@@ -103,14 +103,14 @@
     ["/:id"
      [""               {:delete a.currencies/delete-handler
                         :get    a.currencies/read-handler}]
-     ["/rates"         {:get a.rates/index-by-currency-handler}]]]
+     ["/rates"         {:get    a.rates/index-by-currency-handler}]]]
    ["/rate-sources"
     [""                {:get    a.rate-sources/index-handler
                         :post   a.rate-sources/create-handler}]
     ["/:id"
      [""               {:get    a.rate-sources/read-handler
                         :delete a.rate-sources/delete-handler}]
-     ["/run"           {:post a.rate-sources/run-handler}]]]
+     ["/run"           {:post   a.rate-sources/run-handler}]]]
    ["/rates"
     [""                {:get    a.rates/index-handler
                         :post   a.rates/create-handler}]

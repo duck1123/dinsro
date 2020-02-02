@@ -81,9 +81,13 @@
 ;; Index
 
 (defn index-handler
-  [_]
-  (let [accounts (m.accounts/index-records)]
-    (http/ok {:items accounts})))
+  [request]
+  (if-let [user-id (:identity (:session request))]
+    (let [accounts (m.accounts/index-records-by-user user-id)]
+      (http/ok {:items accounts}))
+
+    ;; FIXME: user is not authenticated. Shouldn't pass filter
+    (http/bad-request {:input :invalid})))
 
 (s/fdef index-handler
   :args (s/cat :request ::s.a.accounts/index-request)
