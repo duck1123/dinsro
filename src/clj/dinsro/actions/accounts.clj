@@ -55,8 +55,8 @@
 (defn read-handler
   [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
-    (if-let [account (m.accounts/read-record {:id id})]
-      (http/ok account)
+    (if-let [account (m.accounts/read-record id)]
+      (http/ok {:item account})
       (http/not-found {}))
     (http/bad-request {:status :bad-request})))
 
