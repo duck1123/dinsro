@@ -18,6 +18,7 @@
    dinsro.components.show-currency-test
    dinsro.components.status-test
    dinsro.events.accounts-test
+   dinsro.events.rates-test
    dinsro.events.transactions-test
    dinsro.spec.accounts-test
    dinsro.spec.actions.accounts-test

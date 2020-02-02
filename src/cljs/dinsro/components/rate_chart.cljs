@@ -1,6 +1,8 @@
 (ns dinsro.components.rate-chart
   (:require
    [cljsjs.highcharts]
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.rates :as s.rates]
    [reagent.core :as r]))
 
 (defn mount-chart [comp]
@@ -19,7 +21,7 @@
   [chart-inner config])
 
 (defn rate-chart
-  [data]
+  [rate-feed]
   (let [config {:chart {:type  :line}
                 :title {:text  "Sats Exchange Rate"}
                 :xAxis {:title {:text "Date"}
@@ -28,5 +30,9 @@
                 :plotOptions
                 {:series {:label {:connectorAllowed false}}}
                 :series [{:name "USD"
-                          :data data}]}]
+                          :data rate-feed}]}]
     [chart-outer config]))
+
+(s/fdef rate-chart
+  :args (s/cat :rate-feed ::s.rates/rate-feed)
+  :ret vector?)
