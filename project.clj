@@ -64,7 +64,7 @@
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.38"
                   :exclusions [org.slf4j/slf4j-api]]
-                 [re-frame "0.10.9"]
+                 [re-frame "0.11.0"]
                  [reframe-utils "0.2.2"
                   :exclusions [args4j
                                com.cognitect/transit-cljs]]
@@ -146,7 +146,7 @@
                             "-Dlogback.configurationFile=resources/logback.xml"]
                  :dependencies [[binaryage/devtools "0.9.11"]
                                 [cider/piggieback "0.4.2"]
-                                [day8.re-frame/re-frame-10x "0.4.5"]
+                                [day8.re-frame/re-frame-10x "0.4.7"]
                                 [day8.re-frame/test "0.1.5"]
                                 [day8.re-frame/tracing "0.5.3"]
                                 [doo "0.1.11"]
