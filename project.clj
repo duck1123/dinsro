@@ -45,13 +45,14 @@
                  [nrepl "0.6.0"]
                  [orchestra "2019.02.06-1"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.597" :scope "provided"
-                  :exclusions [com.google.code.findbugs/jsr305
-                               com.google.errorprone/error_prone_annotations]]
+                 [org.clojure/clojurescript "1.10.597" :scope "provided"]
                  [org.clojure/core.rrb-vector "0.1.1"]
                  [org.clojure/test.check "0.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
+                 [org.lightningj/lightningj "0.9.0-Beta-rc1"]
+                 [org.glassfish/javax.json "1.1.4"]
+
                  [org.webjars.npm/bulma "0.8.0"]
                  [org.webjars.npm/bulma-calendar "6.0.7"
                   :exclusions [org.webjars.npm/bulma
