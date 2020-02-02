@@ -13,7 +13,7 @@
   [[rate date] [_ currency-id]]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
-   :date        date #_(js/Date. (str date "T" time))})
+   :date        date})
 
 (rf/reg-sub
  ::form-data
