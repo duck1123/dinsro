@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
+   [dinsro.events.accounts :as e.accounts]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.events.accounts :as s.e.accounts]
@@ -16,15 +17,16 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
-  (sort-by :db/id (vals item-map)))
+  [db _]
+  (map #(get-in db [::e.accounts/item-map %])
+       (::item-ids db)))
 
 (s/fdef items-sub
   :args (s/cat :item-map ::item-map
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items :<- [::item-map] items-sub)
+(rf/reg-sub ::items items-sub)
 
 ;; Index
 
@@ -35,7 +37,8 @@
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
   {:db (-> db
-           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
+           (update ::e.accounts/item-map merge (into {} (map #(vector (:db/id %) %) items)))
+           (assoc ::item-ids (map :db/id items))
            (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-failed
