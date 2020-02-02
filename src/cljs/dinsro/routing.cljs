@@ -48,6 +48,10 @@
    ["/accounts"
     [""             :api-index-accounts]
     ["/:id"         :api-show-account]]
+   ["/admin"
+    ["/accounts"    :api-admin-index-accounts]
+    ]
+
    ["/categories"
     [""             :api-index-categories]
     ["/:id"         :api-show-category]]
