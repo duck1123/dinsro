@@ -56,7 +56,6 @@
     (let [user-id (:db/id user)]
       [:<>
        [:div.box
-        [:h1 "Show User"]
         [show-user user]]
        [:<>
         (when-let [categories @(rf/subscribe [::e.categories/items-by-user user-id])]
