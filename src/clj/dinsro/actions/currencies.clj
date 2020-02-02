@@ -80,3 +80,12 @@
 (s/fdef index-handler
   :args (s/cat :request ::s.a.currencies/index-request)
   :ret ::s.a.currencies/index-response)
+
+(defn index-by-account-handler
+  [_]
+  (let [items (m.currencies/index-records)]
+    (http/ok {:items items})))
+
+(s/fdef index-by-account-handler
+  :args (s/cat :request ::s.a.currencies/index-request)
+  :ret ::s.a.currencies/index-response)

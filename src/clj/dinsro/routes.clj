@@ -90,8 +90,10 @@
   [["/accounts"
     [""                {:post   a.accounts/create-handler
                         :get    a.accounts/index-handler}]
-    ["/:id"            {:get    a.accounts/read-handler
-                        :delete a.accounts/delete-handler}]]
+    ["/:id"
+     [""               {:get    a.accounts/read-handler
+                        :delete a.accounts/delete-handler}]
+     ["/currencies"    {:get    a.currencies/index-by-account-handler}]]]
    ["/categories"
     [""                {:get    a.categories/index-handler
                         :post   a.categories/create-handler}]
