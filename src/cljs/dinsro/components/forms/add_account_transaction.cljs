@@ -20,6 +20,8 @@
        [c/close-button ::e.f.add-account-transaction/set-shown?]
        [c.debug/debug-box form-data]
        [:div.field>div.control
+        [c/text-input (tr [:description]) ::s.e.f.create-transaction/description]]
+       [:div.field>div.control
         [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
        [:div.field>div.control
         [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]

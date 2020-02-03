@@ -13,13 +13,14 @@
 
 (defn form-data-sub
   [params event]
-  (let [[value date] params
+  (let [[value date description] params
         [_ account-id] event]
-    (e.f.create-transaction/form-data-sub [account-id date value] event)))
+    (e.f.create-transaction/form-data-sub [account-id date description value] event)))
 
 (rf/reg-sub
  ::form-data
  :<- [::s.e.f.create-transaction/value]
  :<- [::s.e.f.create-transaction/date]
+ :<- [::s.e.f.create-transaction/description]
  form-data-sub)
 (def form-data ::form-data)

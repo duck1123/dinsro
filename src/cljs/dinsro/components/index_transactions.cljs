@@ -21,7 +21,7 @@
       [:div.level.is-mobile
        [:div.level-left
         [:div.level-item
-         [:p "Placeholder for Transaction description"]]]]
+         [:p (::s.transactions/description transaction)]]]]
       [:div.level.is-mobile
        [:div.level-left
         [:div.level-item (format-date date)]]

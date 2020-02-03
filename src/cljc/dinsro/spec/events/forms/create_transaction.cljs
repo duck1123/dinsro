@@ -14,3 +14,6 @@
 
 (s/def ::value string?)
 (def value ::value)
+
+(s/def ::description string?)
+(def description ::description)

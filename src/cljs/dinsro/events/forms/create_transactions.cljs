@@ -26,10 +26,11 @@
 (rfu/reg-set-event ::s.e.f.create-transaction/value)
 
 (defn form-data-sub
-  [[account-id date value]
+  [[account-id date description value]
    _]
   {:account-id  (int account-id)
    :value       (.parseFloat js/Number value)
+   :description description
    :date        date})
 
 (s/def ::form-data ::s.a.transactions/create-params-valid)
