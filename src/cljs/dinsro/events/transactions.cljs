@@ -134,7 +134,7 @@
 
 (defn do-submit-success
   [{:keys [db]} _]
-  {:db (assoc db ::do-submit-state :success)
+  {:db (assoc db ::do-submit-state :loaded)
    :dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
