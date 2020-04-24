@@ -52,6 +52,12 @@
     (is (= status/ok (:status response)))
     #_(is (= nil response))))
 
+(deftest create-handler-no-currency
+  (let [request (ds/gen-key ::s.a.accounts/create-request-valid-no-currency)
+        response (a.accounts/create-handler request)]
+    (is (= status/ok (:status response)))
+    #_(is (= nil response))))
+
 (deftest create-handler-invalid
   (let [request {:params {}}
         response (a.accounts/create-handler request)]

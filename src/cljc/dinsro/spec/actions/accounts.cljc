@@ -6,6 +6,12 @@
 
 ;; Create
 
+(s/def ::create-params-valid-no-currency
+  (s/keys :req-un [::s.accounts/name
+                   ::s.accounts/initial-value
+                   ::s.accounts/user-id]))
+(def create-params-valid-no-currency ::create-params-valid-no-currency)
+
 (s/def ::create-params-valid
   (s/keys :req-un [::s.accounts/name
                    ::s.accounts/initial-value
@@ -19,6 +25,11 @@
                    ::s.accounts/user-id
                    ::s.accounts/currency-id]))
 (def create-params ::create-params)
+
+
+(s/def :create-account-valid-no-currency/params ::create-params-valid-no-currency)
+(s/def ::create-request-valid-no-currency (s/keys :req-un [:create-account-valid-no-currency/params]))
+
 
 (s/def :create-account-valid/params ::create-params-valid)
 (s/def ::create-request-valid (s/keys :req-un [:create-account-valid/params]))
