@@ -27,7 +27,7 @@
                    (assoc-in [::s.accounts/initial-value] initial-value)
                    (assoc-in [::s.accounts/user :db/id] user-id))
         params (merge
-                (when currency-id
+                (when (and currency-id (not= currency-id 0))
                   {::s.accounts/currency {:db/id currency-id}})
                 params)]
     (if (s/valid? ::s.accounts/params params)
