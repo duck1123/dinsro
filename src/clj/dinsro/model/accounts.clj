@@ -46,22 +46,16 @@
 
 (defn index-records-by-user
   [user-id]
-  (->> (d/q {:query '[:find ?id ?name ?user-id ?currency-id ?initial-value
+  (->> (d/q {:query '[:find
+                      ?id
+                      ?user-id
                       :keys db/id name
                       :in $ ?user-id
                       :where
-                      [?id ::s.accounts/name ?name]
-                      [?id ::s.accounts/user ?user-id]
-                      [?id ::s.accounts/currency ?currency-id]
-                      [?id ::s.accounts/initial-value ?initial-value]]
+                      [?id ::s.accounts/user ?user-id]]
              :args [@db/*conn* user-id]})
-       (map (fn [[id name user-id currency-id initial-value]]
-              {:db/id id
-               ::s.accounts/name name
-               ::s.accounts/user {:db/id user-id}
-               ::s.accounts/currency {:db/id currency-id}
-               ::s.accounts/initial-value initial-value}))
-       (sort-by :db/id)
+       (map first)
+       (map read-record)
        (take record-limit)))
 
 (s/fdef index-records-by-user
