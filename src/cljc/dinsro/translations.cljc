@@ -51,6 +51,7 @@
     :rate-sources-label "Rate Sources: %1"
     :rates "Rates"
     :register "Register"
+    :sats "sats"
     :settings "Settings"
     :show-account "Show Account"
     :submit "Submit"

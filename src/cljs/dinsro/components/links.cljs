@@ -23,7 +23,7 @@
   (if-let [currency @(rf/subscribe [::e.currencies/item id])]
     (let [name (::s.currencies/name currency)]
       [:a {:href (kf/path-for [:show-currency-page {:id id}])} name])
-    [:span (tr [:not-loaded])]))
+    [:span (tr [:sats])]))
 
 (defn user-link
   [id]
