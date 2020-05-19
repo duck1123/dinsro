@@ -9,6 +9,7 @@
 *.jar
 .nrepl-port
 .rebel_readline_history
+.secret
 data
 dev-config.edn
 node_modules/
