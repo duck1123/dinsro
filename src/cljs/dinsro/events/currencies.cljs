@@ -60,10 +60,11 @@
   {})
 
 (defn do-submit
-  [_ [data]]
+  [{:keys [db]} [data]]
   {:http-xhrio
-   (e/post-request
+   (e/post-request-auth
     [:api-index-currencies]
+    (:token db)
     [::do-submit-success]
     [::do-submit-failed]
     data)})
@@ -101,8 +102,9 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-show-currency {:id id}]
+    (:token db)
     [::do-fetch-record-success]
     [::do-fetch-record-failed])})
 
@@ -123,10 +125,11 @@
       (assoc ::delete-record-failure-id id)))
 
 (defn do-delete-record
-  [_ [currency]]
+  [{:keys [db]} [currency]]
   {:http-xhrio
-   (e/delete-request
+   (e/delete-request-auth
     [:api-show-currency {:id (:db/id currency)}]
+    (:token db)
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
@@ -153,10 +156,11 @@
   {})
 
 (defn do-fetch-index
-  [_ _]
+  [{:keys [db]} _]
   {:http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-index-currencies]
+    (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 

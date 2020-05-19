@@ -66,8 +66,9 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-index-rate-sources]
+    (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 
@@ -86,10 +87,11 @@
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit
-  [_ [data]]
+  [{:keys [db]} [data]]
   {:http-xhrio
-   (e/post-request
+   (e/post-request-auth
     [:api-index-rate-sources]
+    (:token db)
     [::do-submit-success]
     [::do-submit-failed]
     data)})
@@ -109,10 +111,11 @@
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record
-  [_ [item]]
+  [{:keys [db]} [item]]
   {:http-xhrio
-   (e/delete-request
+   (e/delete-request-auth
     [:api-show-rate-source {:id (:db/id item)}]
+    (:token db)
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
@@ -130,11 +133,12 @@
   {})
 
 (defn do-run-source
-  [_ [id]]
+  [{:keys [db]} [id]]
   (timbre/infof "running: %s" id)
   {:http-xhrio
-   (e/post-request
+   (e/post-request-auth
     [:api-run-rate-source {:id id}]
+    (:token db)
     [::do-run-source-success]
     [::do-run-source-failed]
     {})})

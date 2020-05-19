@@ -92,10 +92,11 @@
   {})
 
 (defn do-submit
-  [_ [data]]
+  [{:keys [db]} [data]]
   {:http-xhrio
-   (e/post-request
+   (e/post-request-auth
     [:api-index-accounts]
+    (:token db)
     [::do-submit-success]
     [::do-submit-failed]
     data)})
@@ -123,10 +124,11 @@
   {})
 
 (defn do-delete-record
-  [_ [item]]
+  [{:keys [db]} [item]]
   {:http-xhrio
-   (e/delete-request
+   (e/delete-request-auth
     [:api-show-account {:id (:db/id item)}]
+    (:token db)
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
@@ -159,8 +161,9 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-index-accounts]
+    (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 

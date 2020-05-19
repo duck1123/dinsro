@@ -6,8 +6,8 @@
 
 (defn status-handler
   [request]
-  (let [{{:keys [identity]} :session} request]
-    (http/ok {:identity identity})))
+  (let [{{:keys [user]} :identity} request]
+    (http/ok {:identity user})))
 
 (s/fdef status-handler
   :args (s/cat :request (s/keys))

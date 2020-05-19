@@ -76,8 +76,9 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-show-user {:id id}]
+    (:token db)
     [::do-fetch-record-success]
     [::do-fetch-record-failed])})
 
@@ -99,10 +100,11 @@
            (assoc :delete-record-failure-id id))})
 
 (defn do-delete-record
-  [_ [user]]
+  [{:keys [db]} [user]]
   {:http-xhrio
-   (e/delete-request
+   (e/delete-request-auth
     [:api-show-user {:id (:db/id user)}]
+    (:token db)
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
@@ -133,10 +135,11 @@
     {:db (assoc db ::do-fetch-index-state :failed)}))
 
 (defn do-fetch-index
-  [_ _]
+  [{:keys [db]} _]
   {:http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-index-users]
+    (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 

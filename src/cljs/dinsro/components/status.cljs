@@ -4,6 +4,7 @@
    [dinsro.events :as e]
    [dinsro.events.authentication :as e.authentication]
    [kee-frame.core :as kf]
+   [re-frame.core :as r]
    [taoensso.timbre :as timbre]))
 
 (kf/reg-event-db
@@ -17,13 +18,21 @@
    (timbre/warn "status errored")))
 
 (defn init-status
-  [_ _]
-  {:http-xhrio
-   (e/fetch-request [:api-show-account]
-                    [:status-loaded]
-                    [:status-errored])})
+  [{:keys [db]
+    cookies :cookie/get} _]
+  (let [token (or (:token db) (:token cookies))]
+    {:db (assoc db :token token)
+     :http-xhrio
+     (e/fetch-request-auth
+      [:api-status]
+      token
+      [:status-loaded]
+      [:status-errored])}))
 
-(kf/reg-event-fx :init-status init-status)
+(kf/reg-event-fx
+ :init-status
+ [(r/inject-cofx :cookie/get [:token])]
+ init-status)
 
 (kf/reg-controller
  :status-controller

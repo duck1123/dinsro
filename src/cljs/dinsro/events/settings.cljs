@@ -15,10 +15,11 @@
   {})
 
 (defn do-fetch-settings
-  [_ _]
+  [{:keys [db]} _]
   {:http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-settings]
+    (:token db)
     [::do-fetch-settings-success]
     [::do-fetch-settings-failure])})
 

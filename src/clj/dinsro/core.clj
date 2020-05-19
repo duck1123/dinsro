@@ -1,10 +1,11 @@
 (ns dinsro.core
   (:require
+   [clojure.tools.cli :refer [parse-opts]]
+   [dinsro.config :refer [env]]
    [dinsro.handler :as handler]
+   [dinsro.middleware]
    [dinsro.nrepl :as nrepl]
    [luminus.http-server :as http]
-   [dinsro.config :refer [env]]
-   [clojure.tools.cli :refer [parse-opts]]
    [mount.core :as mount]
    [taoensso.timbre :as timbre])
   (:gen-class))
@@ -60,6 +61,8 @@
 
 (defn -main [& args]
   (mount/start #'dinsro.config/env)
+  (mount/start #'dinsro.config/secret)
+  (mount/start #'dinsro.middleware/token-backend)
   (cond
     ;; (nil? (:datahike-url env))
     ;; (do

@@ -5,6 +5,7 @@
    [dinsro.components :as c]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [kee-frame.core :as kf]
+   [re-frame.core :as r]
    [taoensso.timbre :as timbre]))
 
 (c/reg-field ::auth-id nil)
@@ -16,13 +17,16 @@
 (defn do-authenticate-success
   [{:keys [db]} [item]]
   (let [identity (::s.a.authentication/identity item)
+        token (:token item)
         return-to (:return-to db)
         db (if return-to
              (-> db
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {:db (assoc db ::auth-id identity)
+    {:cookie/set {:name "token"
+                  :value token}
+     :db (assoc (assoc db ::auth-id identity) :token token)
      ;; TODO: return to calling page
      :navigate-to [:home-page]}))
 
@@ -39,7 +43,10 @@
     [::do-authenticate-failure]
     data)})
 
-(kf/reg-event-fx ::do-authenticate-success do-authenticate-success)
+(kf/reg-event-fx
+ ::do-authenticate-success
+ [(r/inject-cofx :cookie/get [:token])]
+ do-authenticate-success)
 (kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
 (kf/reg-event-fx ::do-authenticate do-authenticate)
 
@@ -58,7 +65,8 @@
 
 (defn do-logout
   [_ _]
-  {:http-xhrio
+  {:cookie/remove {:name "token"}
+   :http-xhrio
    (e/post-request
     [:api-logout]
     [::do-logout-success]

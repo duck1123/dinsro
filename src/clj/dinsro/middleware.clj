@@ -2,14 +2,15 @@
   (:require
    [buddy.auth :refer [authenticated?]]
    [buddy.auth.accessrules :refer [restrict]]
-   [buddy.auth.backends.session :refer [session-backend]]
-   [buddy.auth.backends.token :refer [jwe-backend]]
+   [buddy.auth.backends :as backends]
    [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
-   [buddy.core.nonce :refer [random-bytes]]
+   [buddy.core.bytes :as b]
    [dinsro.env :refer [defaults]]
    [clojure.tools.logging :as log]
+   [dinsro.config :refer [secret]]
    [dinsro.layout :refer [error-page]]
    [dinsro.middleware.formats :as formats]
+   [mount.core :refer [defstate]]
    [muuntaja.middleware :refer [wrap-format wrap-params]]
    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
@@ -56,14 +57,9 @@
   (restrict handler {:handler (fn [request] (authenticated? request))
                      :on-error on-error}))
 
-;; TODO: store the secret
-(def secret
-  (random-bytes 16))
-
-(def token-backend
-  (jwe-backend {:secret secret
-                :options {:alg :a256kw
-                          :enc :a128gcm}}))
+(defstate ^{:on-reload :noop} token-backend
+  :start
+  (backends/jws {:secret secret}))
 
 (defn users-authenticated?
   [request]
@@ -74,7 +70,7 @@
   [{:uri "/api/v1/users" :handler users-authenticated?}])
 
 (defn wrap-auth [handler]
-  (let [backend (session-backend)]
+  (let [backend token-backend]
     (-> handler
         ;; (wrap-access-rules {:rules rules :on-error on-error})
         (wrap-authentication backend)
@@ -86,6 +82,5 @@
       (wrap-defaults
        (-> site-defaults
            (assoc-in [:security :anti-forgery] false)
-           #_(assoc-in [:session :store] (ttl-memory-store (* 60 30)))
-           (assoc-in [:session :store] (cookie-store {:key secret}))))
+           (assoc-in [:session :store] (cookie-store {:key (b/slice secret 0 16)}))))
       wrap-internal-error))

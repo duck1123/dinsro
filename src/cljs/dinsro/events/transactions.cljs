@@ -111,10 +111,11 @@
   {:db (assoc db ::do-fetch-index-state :failed)})
 
 (defn do-fetch-index
-  [_ _]
+  [{:keys [db]} _]
   {:http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-index-transactions]
+    (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 
@@ -142,10 +143,11 @@
   {:db (assoc db ::do-submit-state :failed)})
 
 (defn do-submit
-  [_ [data]]
+  [{:keys [db]} [data]]
   {:http-xhrio
-   (e/post-request
+   (e/post-request-auth
     [:api-index-transactions]
+    (:token db)
     [::do-submit-success]
     [::do-submit-failed]
     data)})
@@ -165,11 +167,12 @@
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record
-  [_ [item]]
+  [{:keys [db]} [item]]
   (let [id (:db/id item)]
     {:http-xhrio
-     (e/delete-request
+     (e/delete-request-auth
       [:api-show-transaction {:id id}]
+      (:token db)
       [::do-delete-record-success]
       [::do-delete-record-failed])}))
 

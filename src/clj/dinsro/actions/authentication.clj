@@ -1,8 +1,11 @@
 (ns dinsro.actions.authentication
   (:require
    [buddy.hashers :as hashers]
+   [buddy.sign.jwt :as jwt]
+   [clj-time.core :as time]
    [clojure.spec.alpha :as s]
    [dinsro.actions.users :as a.users]
+   [dinsro.config :refer [secret]]
    [dinsro.model.users :as m.users]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [dinsro.spec.users :as s.users]
@@ -16,8 +19,11 @@
       (if-let [user (m.users/find-by-email email)]
         (if-let [password-hash (::s.users/password-hash user)]
           (if (hashers/check password password-hash)
-            (let [id (:db/id user)]
-              (-> {::s.a.authentication/identity id}
+            (let [id (:db/id user)
+                  claims {:user id
+                          :exp (time/plus (time/now) (time/minutes 3600))}]
+              (-> {::s.a.authentication/identity id
+                   :token (jwt/sign claims secret)}
                   (http/ok)
                   (assoc-in [:session :identity] id)))
             ;; Password does not match
