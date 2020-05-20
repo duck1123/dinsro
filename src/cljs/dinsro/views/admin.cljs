@@ -5,6 +5,7 @@
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.admin-index-currencies :as c.admin-index-currencies]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
+   [dinsro.components.admin-index-transactions :as c.admin-index-transactions]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
    [dinsro.components.index-users :as c.index-users]
@@ -58,6 +59,7 @@
    [:div.box
     [:h1.title "Admin"]]
    [c.admin-index-accounts/section]
+   [c.admin-index-transactions/section]
    [c.admin-index-categories/section]
    [c.admin-index-currencies/section]
    [c.admin-index-rate-sources/section]
