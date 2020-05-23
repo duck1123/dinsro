@@ -12,9 +12,9 @@
    [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.spec.rates :as s.rates]
    [dinsro.utils :as utils]
+   [http.async.client :as http-client]
    [manifold.time :as t]
    [mount.core :as mount]
-   [org.httpkit.client :as client]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
@@ -98,15 +98,19 @@
 ;; TODO: handle request failures and backoff
 (defn fetch-rate
   [item]
-  (let [url (::s.rate-sources/url item)
-        response (client/get url)
-        body (some-> @response :body (json/read-str :key-fn keyword))]
-    (when-let [price (some-> body :price utils/parse-double)]
-      (/ 100000000 price))))
+  (with-open [client (http-client/create-client)]
+    (let [url (::s.rate-sources/url item)
+          response (http-client/GET client url)
+          body (some-> response
+                       http-client/await
+                       http-client/string
+                       (json/read-str :key-fn keyword))]
+      (when-let [price (some-> body :price utils/parse-double)]
+        (/ 100000000 price)))))
 
 (s/fdef fetch-rate
   :args (s/cat :item ::s.rate-sources/item)
-  :ret ::ds/valid-double)
+  :ret (s/nilable ::ds/valid-double))
 
 (defn fetch-source
   [item]
