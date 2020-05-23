@@ -48,6 +48,7 @@
                  [metosin/ring-http-response "0.9.1"
                   :exclusions [joda-time
                               clj-time]]
+                 [mvxcvi/whidbey "2.2.0"]
                  [mount "0.1.16"]
                  [mvxcvi/puget "1.2.1"]
                  [nrepl "0.7.0"]
@@ -101,6 +102,7 @@
   :plugins [[lein-ancient "0.6.15"]
             [lein-cljsbuild "1.1.5"]
             [jonase/eastwood "0.3.5"]
+            [mvxcvi/whidbey "2.2.0"]
             [lein-doo "0.1.11"]
             [lein-kibit "0.1.6"]
             [cider/cider-nrepl "0.25.0-SNAPSHOT"]]
@@ -121,6 +123,7 @@
              :ring-handler dinsro.handler/app-routes
              }
 
+  :middleware [whidbey.plugin/repl-pprint]
 
   :profiles
   {:uberjar {:omit-source true
