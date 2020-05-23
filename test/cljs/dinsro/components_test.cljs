@@ -25,5 +25,4 @@
 (deftest account-selector
   (let [label "foo"
         field :foo]
-    (is (vector? (c/account-selector label field))))
-  )
+    (is (vector? (c/account-selector label field)))))
