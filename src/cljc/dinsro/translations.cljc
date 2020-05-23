@@ -20,6 +20,7 @@
     :currency-label "Currency: %1"
     :date "Date"
     :delete "Delete"
+    :description "Description"
     :email "Email"
     :email-label "Email: %1"
     :fetch-accounts "Fetch Accounts: %1"
