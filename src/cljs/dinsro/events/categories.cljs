@@ -75,10 +75,11 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   (e/post-request [:api-index-categories]
-                   [::do-submit-success]
-                   [::do-submit-failed]
-                   data)})
+   (e/post-request
+    [:api-index-categories]
+    [::do-submit-success]
+    [::do-submit-failed]
+    data)})
 
 (kf/reg-event-fx ::do-submit-success   do-submit-success)
 (kf/reg-event-fx ::do-submit-failed    do-submit-failed)
@@ -109,9 +110,10 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   (e/fetch-request [:api-show-categories {:id id}]
-                    [::do-fetch-record-success]
-                    [::do-fetch-record-failed])})
+   (e/fetch-request
+    [:api-show-categories {:id id}]
+    [::do-fetch-record-success]
+    [::do-fetch-record-failed])})
 
 (kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
@@ -130,9 +132,10 @@
 (defn do-delete-record
   [_ [item]]
   {:http-xhrio
-   (e/delete-request [:api-show-currency {:id (:db/id item)}]
-                     [::do-delete-record-success]
-                     [::do-delete-record-failed])})
+   (e/delete-request
+    [:api-show-currency {:id (:db/id item)}]
+    [::do-delete-record-success]
+    [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
@@ -160,9 +163,10 @@
 (defn do-fetch-index
   [_ _]
   {:http-xhrio
-   (e/fetch-request [:api-index-categories]
-                    [::do-fetch-index-success]
-                    [::do-fetch-index-failed])})
+   (e/fetch-request
+    [:api-index-categories]
+    [::do-fetch-index-success]
+    [::do-fetch-index-failed])})
 
 (s/fdef do-fetch-index
   :args (s/cat :cofx ::s.e.categories/do-fetch-index-cofx

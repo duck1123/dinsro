@@ -101,9 +101,10 @@
   [{:keys [db]} [id success failure]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   (e/fetch-request [:api-show-rate {:id id}]
-                    (or success [::do-fetch-record-success])
-                    (or failure [::do-fetch-record-failed]))})
+   (e/fetch-request
+    [:api-show-rate {:id id}]
+    (or success [::do-fetch-record-success])
+    (or failure [::do-fetch-record-failed]))})
 
 (s/def ::do-fetch-record-event
   (s/cat :id       :db/id
@@ -141,9 +142,10 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   (e/fetch-request [:api-index-rates]
-                    [::do-fetch-index-success]
-                    [::do-fetch-index-failed])})
+   (e/fetch-request
+    [:api-index-rates]
+    [::do-fetch-index-success]
+    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
@@ -162,10 +164,11 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   (e/post-request [:api-index-rates]
-                   [::do-submit-success]
-                   [::do-submit-failed]
-                   data)})
+   (e/post-request
+    [:api-index-rates]
+    [::do-submit-success]
+    [::do-submit-failed]
+    data)})
 
 (s/fdef do-submit
   :ret (s/keys))
@@ -198,9 +201,10 @@
   [_ [item]]
   (let [id (:db/id item)]
     {:http-xhrio
-     (e/delete-request [:api-show-rate {:id id}]
-                       [::do-delete-record-success]
-                       [::do-delete-record-failed])}))
+     (e/delete-request
+      [:api-show-rate {:id id}]
+      [::do-delete-record-success]
+      [::do-delete-record-failed])}))
 
 (s/fdef do-delete-record
   :args (s/cat :cofx ::s.e.rates/do-delete-record-cofx
@@ -223,9 +227,10 @@
 (defn do-fetch-rate-feed-by-currency
   [_ [id]]
   {:http-xhrio
-   (e/fetch-request [:api-rate-feed {:id id}]
-                    [::do-fetch-rate-feed-by-currency-success id]
-                    [::do-fetch-rate-feed-by-currency-failure id])})
+   (e/fetch-request
+    [:api-rate-feed {:id id}]
+    [::do-fetch-rate-feed-by-currency-success id]
+    [::do-fetch-rate-feed-by-currency-failure id])})
 
 (kf/reg-event-fx ::do-fetch-rate-feed-by-currency-success do-fetch-rate-feed-by-currency-success)
 (kf/reg-event-fx ::do-fetch-rate-feed-by-currency-failure do-fetch-rate-feed-by-currency-failure)

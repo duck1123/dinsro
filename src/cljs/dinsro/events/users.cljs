@@ -76,9 +76,10 @@
   [{:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
-   (e/fetch-request [:api-show-user {:id id}]
-                    [::do-fetch-record-success]
-                    [::do-fetch-record-failed])})
+   (e/fetch-request
+    [:api-show-user {:id id}]
+    [::do-fetch-record-success]
+    [::do-fetch-record-failed])})
 
 (kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
 (kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
@@ -100,9 +101,10 @@
 (defn do-delete-record
   [_ [user]]
   {:http-xhrio
-   (e/delete-request [:api-show-user {:id (:db/id user)}]
-                     [::do-delete-record-success]
-                     [::do-delete-record-failed])})
+   (e/delete-request
+    [:api-show-user {:id (:db/id user)}]
+    [::do-delete-record-success]
+    [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
 (kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
@@ -133,9 +135,10 @@
 (defn do-fetch-index
   [_ _]
   {:http-xhrio
-   (e/fetch-request [:api-index-users]
-                    [::do-fetch-index-success]
-                    [::do-fetch-index-failed])})
+   (e/fetch-request
+    [:api-index-users]
+    [::do-fetch-index-success]
+    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)

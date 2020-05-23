@@ -33,10 +33,11 @@
 (defn do-authenticate
   [_ [data _]]
   {:http-xhrio
-   (e/post-request [:api-authenticate]
-                   [::do-authenticate-success]
-                   [::do-authenticate-failure]
-                   data)})
+   (e/post-request
+    [:api-authenticate]
+    [::do-authenticate-success]
+    [::do-authenticate-failure]
+    data)})
 
 (kf/reg-event-fx ::do-authenticate-success do-authenticate-success)
 (kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
@@ -58,10 +59,11 @@
 (defn do-logout
   [_ _]
   {:http-xhrio
-   (e/post-request [:api-logout]
-                   [::do-logout-success]
-                   [::do-logout-failure]
-                   nil)})
+   (e/post-request
+    [:api-logout]
+    [::do-logout-success]
+    [::do-logout-failure]
+    nil)})
 
 (kf/reg-event-fx ::do-logout-success do-logout-success)
 (kf/reg-event-fx ::do-logout-failure do-logout-failure)
@@ -80,10 +82,11 @@
 (defn submit-clicked
   [_ [data]]
   {:http-xhrio
-   (e/post-request [:api-register]
-                   [:register-succeeded]
-                   [:register-failed]
-                   data)})
+   (e/post-request
+    [:api-register]
+    [:register-succeeded]
+    [:register-failed]
+    data)})
 
 (kf/reg-event-fx :register-succeeded register-succeeded)
 (kf/reg-event-fx :register-failed register-failed)

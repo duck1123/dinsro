@@ -66,9 +66,10 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   (e/fetch-request [:api-index-rate-sources]
-                    [::do-fetch-index-success]
-                    [::do-fetch-index-failed])})
+   (e/fetch-request
+    [:api-index-rate-sources]
+    [::do-fetch-index-success]
+    [::do-fetch-index-failed])})
 
 (kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
 (kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
@@ -87,10 +88,11 @@
 (defn do-submit
   [_ [data]]
   {:http-xhrio
-   (e/post-request [:api-index-rate-sources]
-                   [::do-submit-success]
-                   [::do-submit-failed]
-                   data)})
+   (e/post-request
+    [:api-index-rate-sources]
+    [::do-submit-success]
+    [::do-submit-failed]
+    data)})
 
 (kf/reg-event-fx ::do-submit-failed  do-submit-failed)
 (kf/reg-event-fx ::do-submit-success do-submit-success)
@@ -109,9 +111,10 @@
 (defn do-delete-record
   [_ [item]]
   {:http-xhrio
-   (e/delete-request [:api-show-rate-source {:id (:db/id item)}]
-                     [::do-delete-record-success]
-                     [::do-delete-record-failed])})
+   (e/delete-request
+    [:api-show-rate-source {:id (:db/id item)}]
+    [::do-delete-record-success]
+    [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
@@ -130,10 +133,11 @@
   [_ [id]]
   (timbre/infof "running: %s" id)
   {:http-xhrio
-   (e/post-request [:api-run-rate-source {:id id}]
-                   [::do-run-source-success]
-                   [::do-run-source-failed]
-                   {})})
+   (e/post-request
+    [:api-run-rate-source {:id id}]
+    [::do-run-source-success]
+    [::do-run-source-failed]
+    {})})
 
 (comment
   (kf/path-for [:api-run-rate-source {:id 1}]))

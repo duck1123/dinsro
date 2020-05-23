@@ -17,9 +17,10 @@
 (defn do-fetch-settings
   [_ _]
   {:http-xhrio
-   (e/fetch-request [:api-settings]
-                    [::do-fetch-settings-success]
-                    [::do-fetch-settings-failure])})
+   (e/fetch-request
+    [:api-settings]
+    [::do-fetch-settings-success]
+    [::do-fetch-settings-failure])})
 
 (kf/reg-event-fx ::do-fetch-settings-success do-fetch-settings-success)
 (kf/reg-event-fx ::do-fetch-settings-failure do-fetch-settings-failure)
