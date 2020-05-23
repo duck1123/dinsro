@@ -1,7 +1,9 @@
 (ns dinsro.db
   (:require
+   [clojure.java.io :as io]
    [datahike.api :as d]
    [datahike.config :as d.config]
+   [datahike.db :as db]
    [dinsro.components.config :as config]
    [mount.core :refer [defstate]]
    [taoensso.timbre :as timbre]))
@@ -29,3 +31,13 @@
   []
   (let [uri (config/config :datahike-url)]
     (d/delete-database uri)))
+
+(defn export-db
+  "Export the database in a flat-file of datoms at path."
+  [db path]
+  (with-open [f (io/output-stream path)
+              w (io/writer f)]
+    (binding [*out* w]
+      (doseq [d (datahike.db/-datoms db :eavt [])]
+        (when (not= (:a d) :db/txInstant)
+          (prn d))))))
