@@ -23,7 +23,7 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
+    (mount/start #'config/env #'config/secret #'db/*conn*)
     (d/delete-database uri)
     (when-not (d/database-exists? (uri->config uri))
       (d/create-database uri))

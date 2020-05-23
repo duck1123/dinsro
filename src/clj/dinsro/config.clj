@@ -5,7 +5,8 @@
    [cprop.source :as source]
    [mount.core :refer [args defstate]]
    [ring.util.codec :refer [base64-encode base64-decode]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as timbre])
+  (:import java.io.FileNotFoundException))
 
 (defstate env
   :start
@@ -25,7 +26,9 @@
 
 (defn read-secret
   []
-  (base64-decode (slurp ".secret")))
+  (try (base64-decode (slurp ".secret"))
+       (catch FileNotFoundException ex
+         (timbre/warn "No secret found"))))
 
 (defstate secret
   :start
