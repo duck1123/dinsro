@@ -18,7 +18,7 @@
     [:tr
      [:td name]
      [:td [c.links/user-link user-id]]
-     (c.debug/hide [:td [c.buttons/delete-category item]])]))
+     [:td [c.buttons/delete-category item]]]))
 
 (defn index-categories
   [items]
@@ -30,7 +30,7 @@
       [:thead>tr
        [:th (tr [:name])]
        [:th (tr [:user])]
-       (c.debug/hide [:th (tr [:actions])])]
+       [:th (tr [:actions])]]
       (into
        [:tbody]
        (for [item items] ^{:key (:db/id item)} [category-line item]))])])
