@@ -9,7 +9,6 @@
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
    [dinsro.components.index-users :as c.index-users]
-   [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.rate-sources :as e.rate-sources]

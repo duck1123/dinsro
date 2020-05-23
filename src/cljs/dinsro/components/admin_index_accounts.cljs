@@ -6,7 +6,6 @@
    [dinsro.components.debug :as c.debug]
    [dinsro.components.forms.admin-create-account :as c.f.admin-create-account]
    [dinsro.components.links :as c.links]
-   [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.spec.accounts :as s.accounts]

@@ -4,7 +4,7 @@
    [re-frame.core :as rf]))
 
 (defn index-transactions
-  [items]
+  [_items]
   [:div])
 
 (defn section

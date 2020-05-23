@@ -27,7 +27,7 @@
 (defn read-secret
   []
   (try (base64-decode (slurp ".secret"))
-       (catch FileNotFoundException ex
+       (catch FileNotFoundException _ex
          (timbre/warn "No secret found"))))
 
 (defstate secret
