@@ -1,34 +1,22 @@
 (ns dinsro.actions.rates-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
-   [datahike.api :as d]
-   [datahike.config :refer [uri->config]]
    [dinsro.actions.rates :as a.rates]
-   [dinsro.config :as config]
-   [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.rates :as m.rates]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.spec.rates :as s.rates]
-   [mount.core :as mount]
+   [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
-
-(def uri "datahike:file:///tmp/file-example2")
 
 (use-fixtures
   :each
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* s.currencies/schema)
-      (d/transact db/*conn* s.rates/schema)
-      (f))))
+    (start-db f [s.currencies/schema s.rates/schema])
+    ))
 
 (deftest index-handler
   (let [request {}

@@ -1,11 +1,7 @@
 (ns dinsro.actions.transactions-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
-   [datahike.api :as d]
-   [datahike.config :refer [uri->config]]
    [dinsro.actions.transactions :as a.transactions]
-   [dinsro.config :as config]
-   [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.spec :as ds]
@@ -13,24 +9,16 @@
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.spec.users :as s.users]
-   [mount.core :as mount]
+   [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]
    [tick.alpha.api :as tick]))
-
-(def uri "datahike:file:///tmp/file-example2")
 
 (use-fixtures
   :each
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* s.users/schema)
-      (d/transact db/*conn* s.currencies/schema)
-      (d/transact db/*conn* s.transactions/schema)
-      (f))))
+    (start-db f [s.users/schema
+                 s.currencies/schema
+                 s.transactions/schema])))
 
 (deftest prepare-record
   (let [account-id 1

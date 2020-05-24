@@ -1,34 +1,22 @@
 (ns dinsro.actions.categories-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
-   [datahike.api :as d]
-   [datahike.config :as dc]
    [dinsro.actions.categories :as a.categories]
-   [dinsro.config :as config]
-   [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.categories :as m.categories]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.categories :as s.a.categories]
    [dinsro.spec.categories :as s.categories]
-   [mount.core :as mount]
+   [dinsro.spec.users :as s.users]
+   [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]))
 
 (def example-request {:name "foo"})
 
-(def uri "datahike:file:///tmp/file-example2")
-
 (use-fixtures
   :each
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (dc/uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      ;; (d/transact db/*conn* m.users/schema)
-      (d/transact db/*conn* s.categories/schema)
-      (f))))
+    (start-db f [s.users/schema s.categories/schema])))
 
 (deftest index-handler-test-success
   (let [request {}
