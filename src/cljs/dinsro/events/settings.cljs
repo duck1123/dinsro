@@ -3,12 +3,17 @@
    [dinsro.events :as e]
    [dinsro.spec.events.forms.settings :as s.e.f.settings]
    [kee-frame.core :as kf]
+   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
+
+(rfu/reg-basic-sub ::settings-state)
 
 (defn do-fetch-settings-success
   [{:keys [db]} [settings]]
   (let [{:keys [allow-registration]} settings]
-    {:db (assoc db ::s.e.f.settings/allow-registration allow-registration)}))
+    {:db (-> db
+             (assoc ::s.e.f.settings/allow-registration allow-registration)
+             (assoc ::settings-state :loaded))}))
 
 (defn do-fetch-settings-failure
   [_ _]

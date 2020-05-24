@@ -9,6 +9,9 @@
 (rfu/reg-basic-sub ::s.e.f.settings/allow-registration)
 (rfu/reg-set-event ::s.e.f.settings/allow-registration)
 
+(rfu/reg-basic-sub ::s.e.f.settings/first-run)
+(rfu/reg-set-event ::s.e.f.settings/first-run)
+
 (defn form-data-sub
   [allow-registration _]
   {:allow-registration allow-registration})

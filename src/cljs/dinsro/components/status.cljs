@@ -4,18 +4,27 @@
    [dinsro.events :as e]
    [dinsro.events.authentication :as e.authentication]
    [kee-frame.core :as kf]
-   [re-frame.core :as r]
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
-(kf/reg-event-db
- :status-loaded
- (fn [db [{:keys [identity]}]]
-   (assoc db ::e.authentication/auth-id identity)))
+(defn status-loaded
+  [{:keys [db]} [{:keys [identity]}]]
+  (timbre/info "status loaded")
+  {:db (-> db
+           (assoc ::e.authentication/auth-id identity)
+           (assoc ::status-state :loaded))})
 
-(kf/reg-event-fx
- :status-errored
- (fn [_ _]
-   (timbre/warn "status errored")))
+(defn status-errored
+  [{:keys [db]} _]
+  (timbre/warn "status errored")
+  {:db (assoc db ::status-state :errored)})
+
+(rfu/reg-basic-sub ::status-state)
+
+
+(kf/reg-event-fx :status-loaded status-loaded)
+(kf/reg-event-fx :status-errored status-errored)
 
 (defn init-status
   [{:keys [db]
@@ -31,7 +40,7 @@
 
 (kf/reg-event-fx
  :init-status
- [(r/inject-cofx :cookie/get [:token])]
+ [(rf/inject-cofx :cookie/get [:token])]
  init-status)
 
 (kf/reg-controller
@@ -41,4 +50,7 @@
 
 (defn require-status
   [body]
-  body)
+  (let [status-state @(rf/subscribe [::status-state])]
+    (if (= status-state :loaded)
+      [:div body]
+      [:div "Loaded"])))
