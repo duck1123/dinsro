@@ -3,7 +3,9 @@
    [dinsro.components :as c]
    [dinsro.components.forms.registration :as c.f.registration]
    [dinsro.events.forms.registration :as e.f.registration]
+   [dinsro.spec.events.forms.settings :as s.e.f.settings]
    [kee-frame.core :as kf]
+   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -20,6 +22,11 @@
 
 (defn page
   []
-  [:section.section>div.container>div.content
-   [:h1 "Registration Page"]
-   [c.f.registration/form]])
+  (let [allow-registration @(rf/subscribe [s.e.f.settings/allow-registration])]
+    [:section.section>div.container>div.content
+     (if allow-registration
+       [:<>
+        [:h1 "Registration Page"]
+        [c.f.registration/form]]
+       [:div
+        [:p "Registrations are not enabled"]])]))
