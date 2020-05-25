@@ -2,6 +2,7 @@
   (:require
    [dinsro.views.about :as v.about]
    [dinsro.views.admin :as v.admin]
+   [dinsro.views.admin.users :as v.a.users]
    [dinsro.views.home :as v.home]
    [dinsro.views.index-accounts :as v.index-accounts]
    [dinsro.views.index-categories :as v.index-categories]
@@ -26,6 +27,7 @@
 (def mappings
   {:about-page              v.about/page
    :admin-page              v.admin/page
+   :admin-users-page        v.a.users/page
    :cards-page              unknown-page
    :home-page               v.home/page
    :index-accounts-page     v.index-accounts/page
@@ -50,6 +52,7 @@
     ["/:id"         :api-show-account]]
    ["/admin"
     ["/accounts"    :api-admin-index-accounts]
+    ["/users"       :api-admin-index-users]
     ]
 
    ["/categories"
@@ -88,7 +91,8 @@
     ["/:id"           :show-account-page]]
    (into ["/api/v1"] api-routes)
    ["/admin"
-    [""               :admin-page]]
+    [""               :admin-page]
+    ["/users"         :admin-users-page]]
    ["/cards"          :cards-page]
    ["/categories"
     [""               :index-categories-page]
