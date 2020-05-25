@@ -13,10 +13,16 @@
   [return-to]
   (let [form-data @(rf/subscribe [::e.f.login/form-data])]
     [:form.is-centered
+     {:on-submit (fn [e]
+                   (rf/dispatch [::e.authentication/do-authenticate form-data return-to])
+                   (.preventDefault e))}
      [c.debug/debug-box form-data]
      [:div.field>div.control
       [c/email-input (tr [:email]) ::s.e.f.login/email]]
      [:div.field>div.control
       [c/password-input (tr [:password]) ::s.e.f.login/password]]
      [:div.field>div.control
-      [c/primary-button (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]]))
+      [:button
+       {:type "submit"}
+       "Submit me!"]
+      #_[c/primary-button (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]]))
