@@ -31,13 +31,15 @@
   [users]
   (if-not (seq users)
     [:div [:p (tr [:no-users])]]
-    [:table.table
-     [:thead
-      [:tr
-       [:th (tr [:id-label])]
-       [:th (tr [:name-label])]
-       [:th (tr [:email-label])]
-       (c.debug/hide [:th "Buttons"])]]
-     (into [:tbody]
-           (for [{:keys [db/id] :as user} users]
-             ^{:key id} [user-line user]))]))
+    [:div
+     [:p [:a {:href (kf/path-for [:admin-index-users-page])} "Users"]]
+     [:table.table
+            [:thead
+             [:tr
+              [:th (tr [:id-label])]
+              [:th (tr [:name-label])]
+              [:th (tr [:email-label])]
+              (c.debug/hide [:th "Buttons"])]]
+            (into [:tbody]
+                  (for [{:keys [db/id] :as user} users]
+                    ^{:key id} [user-line user]))]]))

@@ -27,7 +27,7 @@
 (def mappings
   {:about-page              v.about/page
    :admin-page              v.admin/page
-   :admin-users-page        v.a.users/page
+   :admin-index-users-page  v.a.users/page
    :cards-page              unknown-page
    :home-page               v.home/page
    :index-accounts-page     v.index-accounts/page
@@ -92,7 +92,7 @@
    (into ["/api/v1"] api-routes)
    ["/admin"
     [""               :admin-page]
-    ["/users"         :admin-users-page]]
+    ["/users"         :admin-index-users-page]]
    ["/cards"          :cards-page]
    ["/categories"
     [""               :index-categories-page]
