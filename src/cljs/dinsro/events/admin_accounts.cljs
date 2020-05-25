@@ -54,8 +54,9 @@
   [{:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
-   (e/fetch-request
+   (e/fetch-request-auth
     [:api-admin-index-accounts]
+    (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 
