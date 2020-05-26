@@ -18,14 +18,8 @@
   {:dispatch [::e.f.login/set-defaults]
    :document/title "Login"})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page
- {:params (c/filter-page :login-page)
-  :start [::init-page]})
-
-(defn page [store match]
+(defn page
+  [store match]
   (let [{:keys [query-string]} match
         return-to (get (url/query->map query-string) "return-to")]
     [:section.section>div.container>div.content
@@ -39,3 +33,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page
+   {:params (c/filter-page :login-page)
+    :start [::init-page]})
+
+  store)

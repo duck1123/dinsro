@@ -34,13 +34,6 @@
                :event ::init-page-event)
   :ret ::init-page-response)
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page-controller
- {:params (c/filter-param-page :show-user-page)
-  :start  [::init-page]})
-
 (defn load-buttons
   [store id]
   [:div.box
@@ -93,3 +86,15 @@
                ;; #(instance? rc/Match %)
                )
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page-controller
+   {:params (c/filter-param-page :show-user-page)
+    :start  [::init-page]})
+
+  store)

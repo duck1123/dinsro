@@ -17,13 +17,6 @@
   {:dispatch [::e.users/do-fetch-index]
    :document/title "Index Users"})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page-controller
- {:params (c/filter-page :index-users-page)
-  :start [::init-page]})
-
 (defn load-buttons
   [store]
   [:div.box
@@ -43,3 +36,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page-controller
+   {:params (c/filter-page :index-users-page)
+    :start [::init-page]})
+
+  store)

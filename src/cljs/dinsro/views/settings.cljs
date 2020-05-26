@@ -13,13 +13,6 @@
   [_ _]
   {:document/title "Settings"})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page
- {:params (c/filter-page :settings-page)
-  :start [::init-page]})
-
 (defn page
   [store _match]
   [:section.section>div.container>div.content
@@ -31,3 +24,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page
+   {:params (c/filter-page :settings-page)
+    :start [::init-page]})
+
+  store)

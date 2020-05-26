@@ -15,13 +15,6 @@
   {:dispatch [::e.users/do-fetch-index]
    :document/title "Index Users"})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page-controller
- {:params (c/filter-page :admin-index-users-page)
-  :start [::init-page]})
-
 (defn load-buttons
   [store]
   [:div.box
@@ -36,3 +29,15 @@
       [:h1 (tr [:users-page "Admin Users Page"])]
       [:hr]
       [index-users store users]]]))
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page-controller
+   {:params (c/filter-page :admin-index-users-page)
+    :start [::init-page]})
+
+  store)

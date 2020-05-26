@@ -15,13 +15,6 @@
   {:dispatch [::e.f.registration/set-defaults]
    :document/title "Registration"})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page
- {:params (c/filter-page :register-page)
-  :start [::init-page]})
-
 (defn page
   [store _match]
   (let [allow-registration @(st/subscribe store [s.e.f.settings/allow-registration])]
@@ -37,3 +30,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page
+   {:params (c/filter-page :register-page)
+    :start [::init-page]})
+
+  store)

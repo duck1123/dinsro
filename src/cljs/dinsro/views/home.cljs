@@ -21,13 +21,6 @@
                 [::e.currencies/do-fetch-index]
                 [::e.users/do-fetch-index]]})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page-controller
- {:params (c/filter-page :home-page)
-  :start [::init-page]})
-
 (defn page
   [store _match]
   (let [auth-id @(st/subscribe store [::e.authentication/auth-id])]
@@ -47,3 +40,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page-controller
+   {:params (c/filter-page :home-page)
+    :start [::init-page]})
+
+  store)
