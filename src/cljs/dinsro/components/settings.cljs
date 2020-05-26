@@ -5,10 +5,7 @@
    [dinsro.store :as st]
    [kee-frame.core :as kf]
    [reagent.core :as r]
-   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
-
-(rfu/reg-basic-sub ::settings-state)
 
 (defn require-settings
   [store body]
@@ -24,8 +21,14 @@
            [:div body]
            [:div "Loaded"])))}) body])
 
-(comment
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::settings-state))
+
   (kf/reg-controller
-   :status-controller
+   :settings-controller
    {:params (constantly true)
-    :start [::e.settings/do-fetch-settings]}))
+    :start [::e.settings/do-fetch-settings]})
+
+  store)

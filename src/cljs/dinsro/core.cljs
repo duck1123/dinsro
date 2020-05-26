@@ -63,6 +63,7 @@
     e.currencies/init-handlers!
     e.rates/init-handlers!
     e.debug/init-handlers!
+    c.settings/init-handlers!
     e.settings/init-handlers!
     e.authentication/init-handlers!
     e.transactions/init-handlers!
