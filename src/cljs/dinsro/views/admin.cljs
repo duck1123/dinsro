@@ -44,7 +44,7 @@
   [:div.box
    [:h2 (tr [:users])]
    (let [users @(st/subscribe store [::e.users/items])]
-     [c.index-users/index-users users])])
+     [c.index-users/index-users store users])])
 
 (defn page
   [store _match]
