@@ -1,21 +1,21 @@
 (ns dinsro.routing
   (:require
-   [dinsro.views.about :as about]
+   [dinsro.views.about :as v.about]
    [dinsro.views.admin :as v.admin]
-   [dinsro.views.home :as home]
-   [dinsro.views.index-accounts :as index-accounts]
+   [dinsro.views.home :as v.home]
+   [dinsro.views.index-accounts :as v.index-accounts]
    [dinsro.views.index-categories :as v.index-categories]
-   [dinsro.views.index-currencies :as index-currencies]
+   [dinsro.views.index-currencies :as v.index-currencies]
    [dinsro.views.index-rate-sources :as v.index-rate-sources]
-   [dinsro.views.index-rates :as index-rates]
-   [dinsro.views.index-transactions :as index-transactions]
-   [dinsro.views.index-users :as index-users]
-   [dinsro.views.login :as login]
-   [dinsro.views.register :as register]
-   [dinsro.views.settings :as settings]
-   [dinsro.views.show-account :as show-account]
-   [dinsro.views.show-currency :as show-currency]
-   [dinsro.views.show-user :as show-user]
+   [dinsro.views.index-rates :as v.index-rates]
+   [dinsro.views.index-transactions :as v.index-transactions]
+   [dinsro.views.index-users :as v.index-users]
+   [dinsro.views.login :as v.login]
+   [dinsro.views.register :as v.register]
+   [dinsro.views.settings :as v.settings]
+   [dinsro.views.show-account :as v.show-account]
+   [dinsro.views.show-currency :as v.show-currency]
+   [dinsro.views.show-user :as v.show-user]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]))
 
@@ -24,23 +24,23 @@
   [:<>])
 
 (def mappings
-  {:about-page              about/page
+  {:about-page              v.about/page
    :admin-page              v.admin/page
    :cards-page              unknown-page
-   :home-page               home/page
-   :index-accounts-page     index-accounts/page
+   :home-page               v.home/page
+   :index-accounts-page     v.index-accounts/page
    :index-categories-page   v.index-categories/page
-   :index-currencies-page   index-currencies/page
+   :index-currencies-page   v.index-currencies/page
    :index-rate-sources-page v.index-rate-sources/page
-   :index-rates-page        index-rates/page
-   :index-transactions-page index-transactions/page
-   :index-users-page        index-users/page
-   :login-page              login/page
-   :register-page           register/page
-   :settings-page           settings/page
-   :show-account-page       show-account/page
-   :show-currency-page      show-currency/page
-   :show-user-page          show-user/page
+   :index-rates-page        v.index-rates/page
+   :index-transactions-page v.index-transactions/page
+   :index-users-page        v.index-users/page
+   :login-page              v.login/page
+   :register-page           v.register/page
+   :settings-page           v.settings/page
+   :show-account-page       v.show-account/page
+   :show-currency-page      v.show-currency/page
+   :show-user-page          v.show-user/page
    })
 
 (def api-routes
