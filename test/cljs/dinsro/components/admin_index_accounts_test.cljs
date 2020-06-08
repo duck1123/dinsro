@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
@@ -20,6 +21,6 @@
 (defcard-rg c.admin-index-accounts/section
   "**Admin Index Rate Sources**"
   (fn []
-    [:div.box
+    [error-boundary
      [c.admin-index-accounts/section]])
   {})

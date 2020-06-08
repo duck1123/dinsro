@@ -1,6 +1,7 @@
 (ns dinsro.components.show-account-test
   (:require
    [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-account :as c.show-account]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.translations :refer [tr]]
@@ -13,10 +14,5 @@
   (defcard account account)
 
   (defcard-rg show-account
-    [c.show-account/show-account account])
-
-  (defcard-rg show-account-with-box
-    [:div.box [c.show-account/show-account account]])
-
-  (defcard show-account2
-    (r/as-element [c.show-account/show-account account])))
+    [error-boundary
+     [c.show-account/show-account account]]))

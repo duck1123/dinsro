@@ -1,6 +1,7 @@
 (ns dinsro.components.forms.create-transaction-test
   (:require
    [devcards.core :refer-macros [defcard]]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
@@ -12,10 +13,6 @@
 
 (defcard a
   (ds/gen-key ::e.f.create-transaction/form-data))
-
-(defcard b
-  "foo"
-  (r/as-element [:h1.title "foo bar"]))
 
 (defn mock-dispatch
   [x]
@@ -37,7 +34,7 @@
     (with-redefs [rf/dispatch mock-dispatch
                   rf/subscribe mock-subscribe]
       (reagent.core/as-element
-       [:<>
+       [error-boundary
         [:div.box
          [c.f.create-transaction/form]]
         [:p.box (str @data)]])))

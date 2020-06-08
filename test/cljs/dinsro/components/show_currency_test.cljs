@@ -1,6 +1,7 @@
 (ns dinsro.components.show-currency-test
   (:require
    [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.spec :as ds]
    [dinsro.spec.currencies :as s.currencies]
@@ -10,4 +11,5 @@
   (defcard item item)
 
   (defcard-rg show-currency
-    [c.show-currency/show-currency item]))
+    [error-boundary
+     [c.show-currency/show-currency item]]))

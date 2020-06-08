@@ -2,11 +2,12 @@
   (:require
    [devcards.core :refer-macros [defcard-rg]]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.translations :refer [tr]]))
 
 (defcard-rg c.admin-index-rate-sources/form
   "**Admin Index Rate Sources**"
   (fn []
-    [:div.box
+    [error-boundary
      [c.admin-index-rate-sources/section]])
   {})
