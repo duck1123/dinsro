@@ -5,7 +5,6 @@
    [dinsro.components.show-account :as c.show-account]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.translations :refer [tr]]
-   [reagent.core :as r]
    [taoensso.timbre :as timbre]))
 
 (let [account {::s.accounts/name "Bart"

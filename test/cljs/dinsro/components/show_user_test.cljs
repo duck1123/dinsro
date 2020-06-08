@@ -5,7 +5,6 @@
    [dinsro.components.show-user :as c.show-user]
    [dinsro.spec.users :as s.users]
    [dinsro.translations :refer [tr]]
-   [reagent.core :as r]
    [taoensso.timbre :as timbre]))
 
 (let [user {::s.users/name "Bart"

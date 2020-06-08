@@ -5,7 +5,7 @@
    [taoensso.timbre :as timbre]))
 
 (defn error-boundary
-  [& children]
+  [& _children]
   (let [err-state (r/atom nil)]
     (r/create-class
      {:display-name "ErrBoundary"
