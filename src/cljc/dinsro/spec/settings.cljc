@@ -1,7 +1,6 @@
 (ns dinsro.spec.settings
   (:require
-   [clojure.spec.alpha :as s]
-   [dinsro.spec :as ds]))
+   [clojure.spec.alpha :as s]))
 
 (s/def ::allow-registration boolean?)
 (s/def ::first-run boolean?)
