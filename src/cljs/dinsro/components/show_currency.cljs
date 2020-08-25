@@ -11,7 +11,7 @@
   (let [name (::s.currencies/name currency)]
     [:<>
      [c.debug/debug-box currency]
-     [:p (tr [:name-label]) name]
+     [:h1 name]
      (c.debug/hide [c.buttons/delete-currency currency])]))
 
 (s/fdef show-currency
