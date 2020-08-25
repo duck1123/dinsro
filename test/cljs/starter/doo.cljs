@@ -3,12 +3,13 @@
    [cljs.repl :as repl]
    [cljs.spec.alpha :as s]
    [devtools.core :as devtools]
-   dinsro.core-test
-   dinsro.components-test
-   dinsro.events-test
-   dinsro.spec-test
-   dinsro.spec.actions-test
-   dinsro.views-test
+   [dinsro.core-test]
+   [dinsro.components-test]
+   [dinsro.events-test]
+   [dinsro.events.forms-test]
+   [dinsro.spec-test]
+   [dinsro.spec.actions-test]
+   [dinsro.views-test]
    [doo.runner :refer-macros [doo-all-tests]]
    [expound.alpha :as expound]
    [mount.core :as mount]

@@ -11,9 +11,11 @@
 (rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
-  [[date value] event]
+  [[date value description] event]
   (let [[_ account-id] event]
-    (e.f.create-transaction/form-data-sub [account-id date value] event)))
+    (e.f.create-transaction/form-data-sub
+     [account-id date description value]
+     event)))
 
 (s/fdef form-data-sub
   :ret ::s.a.transactions/create-params-valid)
@@ -23,5 +25,6 @@
  ::form-data
  :<- [::s.e.f.create-transaction/date]
  :<- [::s.e.f.create-transaction/value]
+ :<- [::s.e.f.create-transaction/description]
  form-data-sub)
 (def form-data ::form-data)
