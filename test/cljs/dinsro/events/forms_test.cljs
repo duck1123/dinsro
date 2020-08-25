@@ -3,7 +3,7 @@
    [devcards.core :as dc :refer-macros [defcard-rg]]
    ;; [dinsro.events.forms.add-user-account-test]
    ;; [dinsro.events.forms.create-account-test]
-   ;; [dinsro.events.forms.registration-test]
+   [dinsro.events.forms.registration-test]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title

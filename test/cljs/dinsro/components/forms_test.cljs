@@ -5,7 +5,7 @@
    [dinsro.components.forms.add-user-transaction-test]
    ;; [dinsro.components.forms.create-account-test]
    [dinsro.components.forms.create-transaction-test]
-   ;; [dinsro.components.forms.registration-test]
+   [dinsro.components.forms.registration-test]
    [dinsro.components.forms.settings-test]
    [devcards.core :as dc :refer-macros [defcard-rg]]
    [taoensso.timbre :as timbre]))

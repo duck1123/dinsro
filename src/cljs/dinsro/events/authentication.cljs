@@ -4,6 +4,7 @@
    [dinsro.events :as e]
    [dinsro.components :as c]
    [dinsro.spec.actions.authentication :as s.a.authentication]
+   [dinsro.spec.events.forms.registration :as s.e.f.registration]
    [kee-frame.core :as kf]
    [re-frame.core :as r]
    [taoensso.timbre :as timbre]))
@@ -80,16 +81,18 @@
 ;; Register
 
 (defn register-succeeded
-  [_ _]
-  {})
+  [{:keys [db]} _]
+  {:db (assoc db ::s.e.f.registration/error-message "")})
 
 (defn register-failed
-  [_ _]
-  {})
+  [{:keys [db]} [{{:keys [message]} :response}]]
+  (let [error-message (or message "Registration Failed")]
+    {:db (assoc db ::s.e.f.registration/error-message error-message)}))
 
-(defn submit-clicked
-  [_ [data]]
-  {:http-xhrio
+(defn submit-registration
+  [{:keys [db]} [data]]
+  {:db (assoc db ::s.e.f.registration/error-message "")
+   :http-xhrio
    (e/post-request
     [:api-register]
     [:register-succeeded]
@@ -98,4 +101,4 @@
 
 (kf/reg-event-fx :register-succeeded register-succeeded)
 (kf/reg-event-fx :register-failed register-failed)
-(kf/reg-event-fx ::submit-clicked submit-clicked)
+(kf/reg-event-fx ::submit-registration submit-registration)

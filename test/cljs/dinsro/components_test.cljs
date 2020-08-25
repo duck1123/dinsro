@@ -42,9 +42,7 @@
     [:li
      [:a {:href "devcards.html#!/dinsro.components.admin_index_rate_sources_test"}
       "Admin Index Rate Sources Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.buttons_test"}
-      "Button Components"]]
+
     [:li
      [:a {:href "devcards.html#!/dinsro.components.buttons_test"}
       "Button Components"]]
