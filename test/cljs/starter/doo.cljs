@@ -33,7 +33,7 @@
    dinsro.views.index-accounts-test
    dinsro.views.index-transactions-test
    dinsro.views.login-test
-   dinsro.views.setting-test
+   dinsro.views.settings-test
    dinsro.views.show-currency-test
    [doo.runner :refer-macros [doo-all-tests]]
    [expound.alpha :as expound]

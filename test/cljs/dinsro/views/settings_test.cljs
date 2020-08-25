@@ -1,4 +1,4 @@
-(ns dinsro.views.setting-test
+(ns dinsro.views.settings-test
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
