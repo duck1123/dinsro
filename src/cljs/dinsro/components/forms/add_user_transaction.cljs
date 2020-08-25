@@ -29,6 +29,7 @@
      [:div.field>div.control
       [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
      [:div.field>div.control
+      [:label.label>div.control (tr [:account])]
       [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
      [:div.field>div.control
       [:label.label (tr [:date])]
