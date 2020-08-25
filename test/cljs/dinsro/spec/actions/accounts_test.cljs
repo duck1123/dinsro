@@ -1,8 +1,16 @@
 (ns dinsro.spec.actions.accounts-test
   (:require
-   [devcards.core :refer-macros [defcard]]
+   [devcards.core :refer-macros [defcard defcard-rg]]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.accounts :as s.a.accounts]))
+
+(defcard-rg title
+  [:div
+   [:h1.title "Account Actions Specs"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.events.forms.create_account_test"}
+      "Create Account Form Events"]]]])
 
 (defcard "**Create**")
 

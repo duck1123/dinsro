@@ -5,6 +5,16 @@
    [dinsro.views.settings :as v.settings]
    [taoensso.timbre :as timbre]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Settings View"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.views_test"}
+      "Views"]]]
+
+   [:ul.box]])
+
 (deftest page
   (is (vector? (v.settings/page))))
 

@@ -7,6 +7,19 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Form Components"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components_test"}
+      "Components"]]]
+
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.events.show_account_test"}
+      "Show Account events"]]]])
+
 (let [account {::s.accounts/name "Bart"
                ::s.accounts/user {:db/id 1}
                ::s.accounts/currency {:db/id 1}}]

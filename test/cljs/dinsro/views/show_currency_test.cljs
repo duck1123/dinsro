@@ -8,6 +8,27 @@
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Show Currency View"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.views_test"}
+      "Views"]]]
+
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.spec.currencies_test"}
+      "Currency Spec"]]
+
+    [:li
+     [:a {:href "devcards.html#!/dinsro.spec.views.show_currency_test"}
+      "Show Currency View Spec"]]
+
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components.show_currency_test"}
+      "Show Currency Components"]]]])
+
 (let [item (ds/gen-key ::s.currencies/item)]
 
   (defcard item-card item)

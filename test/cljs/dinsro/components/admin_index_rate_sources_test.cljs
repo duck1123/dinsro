@@ -5,6 +5,14 @@
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.translations :refer [tr]]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Admin Index Rate Source Components"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components_test"}
+      "Components"]]]])
+
 (defcard-rg c.admin-index-rate-sources/form
   "**Admin Index Rate Sources**"
   (fn []

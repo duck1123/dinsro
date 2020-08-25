@@ -8,6 +8,14 @@
    [dinsro.spec.categories :as s.categories]
    [dinsro.translations :refer [tr]]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Admin Index Categories Components"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components_test"}
+      "Components"]]]])
+
 (let [items (ds/gen-key (s/coll-of ::s.categories/item :count 3))]
   (defcard items items)
 

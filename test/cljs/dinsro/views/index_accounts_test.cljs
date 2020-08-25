@@ -9,6 +9,16 @@
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Index Accounts View"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.views_test"}
+      "Views"]]]
+
+   [:ul.box]])
+
 (let [items (ds/gen-key (s/coll-of ::s.accounts/item :count 5))
       template nil
       data nil

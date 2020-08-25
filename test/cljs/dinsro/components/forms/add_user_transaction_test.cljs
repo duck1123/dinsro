@@ -7,6 +7,21 @@
    [dinsro.spec :as ds]
    [dinsro.translations :refer [tr]]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Add User Transaction Form Components"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components.forms_test"}
+      "Form Components"]]
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components_test"}
+      "Components"]]]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.events.forms.add_user_transaction_test"}
+      "Add User Transaction Forms Events"]]]])
+
 (defcard form-data
   (ds/gen-key ::e.f.add-user-transaction/form-data))
 

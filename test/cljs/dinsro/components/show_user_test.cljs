@@ -7,6 +7,19 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Show User Components"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components_test"}
+      "Components"]]]
+
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.spec.users_test"}
+      "Users Spec"]]]])
+
 (let [user {::s.users/name "Bart"
                ::s.users/user {:db/id 1}
                ::s.users/currency {:db/id 1}}]

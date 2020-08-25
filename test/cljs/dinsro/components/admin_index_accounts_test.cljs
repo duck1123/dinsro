@@ -8,6 +8,27 @@
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.translations :refer [tr]]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Admin Index Accounts Components"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components_test"}
+      "Components"]]]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.events.admin_index_accounts_test"}
+      "Admin Index Accounts Events"]]
+    [:li
+     [:a {:href "devcards.html#!/dinsro.events.forms.create_account_test"}
+      "Create Account Form Events"]]
+    [:li
+     [:a {:href "devcards.html#!/dinsro.events.forms.admin_create_account_test"}
+      "Admin Create Account Form Events"]]
+    [:li
+     [:a {:href "devcards.html#!/dinsro.components.forms.admin_create_account_test"}
+      "Admin Create Account Form Components"]]]])
+
 (let [account (ds/gen-key ::s.accounts/item)]
   (defcard account account)
   (defcard-rg c.admin-index-accounts/row-line

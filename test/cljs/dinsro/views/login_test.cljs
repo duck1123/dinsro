@@ -5,6 +5,16 @@
    [dinsro.views.login :as v.login]
    [taoensso.timbre :as timbre]))
 
+(defcard-rg title
+  [:div
+   [:h1.title "Login View"]
+   [:ul.box
+    [:li
+     [:a {:href "devcards.html#!/dinsro.views_test"}
+      "Views"]]]
+
+   [:ul.box]])
+
 (defcard-rg form
   ;; "**Documentation**"
   (fn [name] [:p name])
