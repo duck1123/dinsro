@@ -48,9 +48,14 @@
         params (dissoc params :password)
         params (a.users/prepare-record params)]
     (if (s/valid? ::s.users/params params)
-      (let [id (m.users/create-record params)]
-        (http/ok {:id id}))
-      (http/bad-request {:status :failed}))))
+      (try
+        (let [id (m.users/create-record params)]
+          (http/ok {:id id}))
+        (catch RuntimeException _
+          (http/bad-request {:status :failed
+                             :message "User already exists"})))
+      (http/bad-request {:status :failed
+                         :message "Invalid"}))))
 
 (s/fdef register-handler
   :args (s/cat :request ::s.a.authentication/register-request)
