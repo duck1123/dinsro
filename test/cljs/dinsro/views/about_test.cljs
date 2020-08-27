@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.about :as about]
    [pjstadig.humane-test-output]))
 
@@ -16,6 +17,6 @@
    [:ul.box]])
 
 (deftest about-page-test
-  (let [store nil
+  (let [store (mock-store)
         match nil]
     (is (vector? (about/page store match)))))

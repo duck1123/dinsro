@@ -5,6 +5,7 @@
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-accounts :as v.index-accounts]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -25,7 +26,7 @@
       result nil
       path "/"
       path-params {}
-      store nil
+      store (mock-store)
       match (rc/->Match template data result path-params path)]
 
   (defcard items items)

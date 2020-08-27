@@ -5,6 +5,7 @@
    [dinsro.spec :as ds]
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.spec.views.show-currency :as s.v.show-currency]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))
 
@@ -48,7 +49,7 @@
   (defcard-rg v.show-currency/page-loaded
     [v.show-currency/page-loaded item])
 
-  (let [store nil
+  (let [store (mock-store)
         match {:path-params {:id "1"}}]
     (deftest page
       (is (vector? (v.show-currency/page store match))))

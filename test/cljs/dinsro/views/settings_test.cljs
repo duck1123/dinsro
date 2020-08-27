@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.settings :as v.settings]
    [taoensso.timbre :as timbre]))
 
@@ -16,7 +17,7 @@
    [:ul.box]])
 
 (deftest page
-  (let [store nil
+  (let [store (mock-store)
         match nil]
     (is (vector? (v.settings/page store match)))))
 

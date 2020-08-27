@@ -5,6 +5,7 @@
    [devcards.core :refer-macros [defcard-rg deftest]]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-transactions :as v.index-transactions]
    [taoensso.timbre :as timbre]))
 
@@ -24,11 +25,11 @@
     [v.index-transactions/section-inner items])
 
   (deftest page
-    (let [store nil
+    (let [store (mock-store)
           match nil]
       (is (vector? (v.index-transactions/page store match)))))
 
   (defcard-rg page-card
-    (let [store nil
+    (let [store (mock-store)
           match nil]
       [v.index-transactions/page store match])))

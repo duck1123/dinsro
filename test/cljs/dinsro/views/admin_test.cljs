@@ -1,6 +1,7 @@
 (ns dinsro.views.admin-test
   (:require
    [devcards.core :refer-macros [defcard-rg]]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.admin :as v.admin]))
 
 (defcard-rg title
@@ -20,6 +21,6 @@
   [v.admin/users-section])
 
 (defcard-rg page
-  (let [store nil
+  (let [store (mock-store)
         match nil]
     [v.admin/page store match]))
