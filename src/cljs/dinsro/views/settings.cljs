@@ -19,7 +19,7 @@
   :start [::init-page]})
 
 (defn page
-  []
+  [_store _match]
   [:section.section>div.container>div.content
    [:div.box
     [:h1 "Settings Page"]

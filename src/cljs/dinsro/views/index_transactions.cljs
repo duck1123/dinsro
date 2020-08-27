@@ -55,7 +55,7 @@
   :ret vector?)
 
 (defn page
-  []
+  [_store _match]
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
    (let [transactions (or @(rf/subscribe [::e.transactions/items]) [])]

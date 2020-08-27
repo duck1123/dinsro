@@ -27,7 +27,7 @@
    [c.buttons/fetch-users]])
 
 (defn page
-  []
+  [_store _match]
   (let [users @(rf/subscribe [::e.users/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])

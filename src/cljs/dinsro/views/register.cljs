@@ -21,7 +21,7 @@
   :start [::init-page]})
 
 (defn page
-  []
+  [_store _match]
   (let [allow-registration @(rf/subscribe [s.e.f.settings/allow-registration])]
     [:section.section>div.container>div.content
      (if allow-registration

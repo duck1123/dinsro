@@ -52,7 +52,7 @@
      [c.index-users/index-users users])])
 
 (defn page
-  []
+  [_store _match]
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
    [:div.box

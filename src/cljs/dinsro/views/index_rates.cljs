@@ -34,7 +34,7 @@
    [c.buttons/fetch-currencies]])
 
 (defn page
-  []
+  [_store _match]
   (let [items @(rf/subscribe [::e.rates/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])

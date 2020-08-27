@@ -75,7 +75,7 @@
 (s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
 
 (defn page
-  [match]
+  [_store match]
   (let [{{:keys [id]} :path-params} match
         state @(rf/subscribe [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content

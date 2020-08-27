@@ -33,7 +33,7 @@
    [c.buttons/fetch-currencies]])
 
 (defn page
-  []
+  [_store _match]
   (let [items @(rf/subscribe [::e.categories/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])

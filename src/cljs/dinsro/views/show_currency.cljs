@@ -75,7 +75,7 @@
   :ret vector?)
 
 (defn page
-  [{{:keys [id]} :path-params}]
+  [_store {{:keys [id]} :path-params}]
   (let [currency-id (int id)
         currency @(rf/subscribe [::e.currencies/item currency-id])
         state @(rf/subscribe [::e.currencies/do-fetch-record-state])]

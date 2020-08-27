@@ -45,7 +45,7 @@
    [c.index-rate-sources/section items]])
 
 (defn page
-  [_]
+  [_store _match]
   (let [items @(rf/subscribe [::e.rate-sources/items])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])

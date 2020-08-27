@@ -26,7 +26,7 @@
   :start [::init-page]})
 
 (defn page
-  []
+  [_store _match]
   (let [auth-id @(rf/subscribe [::e.authentication/auth-id])]
     [:section.section>div.container>div.content
      (if auth-id

@@ -23,7 +23,7 @@
  {:params (c/filter-page :login-page)
   :start [::init-page]})
 
-(defn page [match]
+(defn page [_store match]
   (let [{:keys [query-string]} match
         return-to (get (url/query->map query-string) "return-to")]
     [:section.section>div.container>div.content

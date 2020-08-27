@@ -41,7 +41,7 @@
   :ret vector?)
 
 (defn page
-  [_]
+  [_store _match]
   (if-let [user-id @(rf/subscribe [:dinsro.events.authentication/auth-id])]
     [:section.section>div.container>div.content
      (c.debug/hide [loading-buttons])

@@ -12,6 +12,7 @@
    [dinsro.events.users :as e.users]
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.spec.views.show-account :as s.v.show-account]
+   [dinsro.store :refer [Store]]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]))
@@ -48,7 +49,7 @@
   (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
 
 (defn page
-  [match]
+  [_store match]
   (let [{{:keys [id]} :path-params} match
         id (int id)
         account @(rf/subscribe [::e.accounts/item id])]
@@ -64,5 +65,6 @@
          [c.account-transactions/section id transactions]))]))
 
 (s/fdef page
-  :args (s/cat :match ::s.v.show-account/view-map)
+  :args (s/cat :store #(instance? Store %)
+               :match ::s.v.show-account/view-map)
   :ret vector?)
