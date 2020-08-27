@@ -2,18 +2,15 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.components :as c]
-   dinsro.components.admin-index-accounts-test
-   dinsro.components.admin-index-categories-test
-   dinsro.components.admin-index-rate-sources-test
-   dinsro.components.currency-rates-test
-   dinsro.components.forms.add-user-transaction-test
-   dinsro.components.forms.create-transaction-test
-   dinsro.components.forms.settings-test
-   dinsro.components.index-transactions-test
-   dinsro.components.rate-chart-test
-   dinsro.components.show-account-test
-   dinsro.components.show-currency-test
-   dinsro.components.status-test
+   [dinsro.components.admin-index-accounts-test]
+   [dinsro.components.admin-index-categories-test]
+   [dinsro.components.admin-index-rate-sources-test]
+   [dinsro.components.currency-rates-test]
+   [dinsro.components.index-transactions-test]
+   [dinsro.components.rate-chart-test]
+   [dinsro.components.show-account-test]
+   [dinsro.components.show-currency-test]
+   [dinsro.components.status-test]
    [devcards.core :as dc :refer-macros [defcard-rg deftest]]
    [re-frame.core :as rf]
    [reagent.core :as r]

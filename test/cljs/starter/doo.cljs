@@ -5,6 +5,7 @@
    [devtools.core :as devtools]
    [dinsro.core-test]
    [dinsro.components-test]
+   [dinsro.components.forms-test]
    [dinsro.events-test]
    [dinsro.events.forms-test]
    [dinsro.spec-test]
