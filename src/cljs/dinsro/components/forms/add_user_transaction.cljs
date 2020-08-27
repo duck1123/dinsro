@@ -9,14 +9,6 @@
    [dinsro.translations :refer [tr]]
    [re-frame.core :as rf]))
 
-(defn error-message
-  [message]
-  [:div.message.is-danger
-   [:div.message-header
-    [:p "Error"]]
-   [:div.message-body
-    message]])
-
 (defn form-shown
   [form-data]
   (let [state (rf/subscribe [::e.transactions/do-submit-state])]
@@ -24,7 +16,7 @@
      [c/close-button ::e.f.add-user-transaction/set-shown?]
      [c.debug/debug-box form-data]
      (when (= @state :failed)
-       [error-message "There was an error submitting"])
+       [c/error-message-box "There was an error submitting"])
      [:p (str @state)]
      [:div.field>div.control
       [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
