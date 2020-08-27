@@ -24,7 +24,11 @@
     [v.index-transactions/section-inner items])
 
   (deftest page
-    (is (vector? (v.index-transactions/page))))
+    (let [store nil
+          match nil]
+      (is (vector? (v.index-transactions/page store match)))))
 
   (defcard-rg page-card
-    [v.index-transactions/page]))
+    (let [store nil
+          match nil]
+      [v.index-transactions/page store match])))

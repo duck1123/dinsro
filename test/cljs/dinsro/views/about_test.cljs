@@ -16,4 +16,6 @@
    [:ul.box]])
 
 (deftest about-page-test
-  (is (vector? (about/page))))
+  (let [store nil
+        match nil]
+    (is (vector? (about/page store match)))))

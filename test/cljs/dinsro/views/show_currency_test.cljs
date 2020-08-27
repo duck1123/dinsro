@@ -48,11 +48,10 @@
   (defcard-rg v.show-currency/page-loaded
     [v.show-currency/page-loaded item])
 
-  (let [match {:path-params {:id "1"}}]
+  (let [store nil
+        match {:path-params {:id "1"}}]
     (deftest page
-      (is (vector? (v.show-currency/page match))))
+      (is (vector? (v.show-currency/page store match))))
 
     (defcard-rg page-card
-      [v.show-currency/page match]))
-
-  )
+      [v.show-currency/page store match])))

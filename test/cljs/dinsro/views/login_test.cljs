@@ -21,4 +21,6 @@
   {:name "foo"})
 
 (deftest page
-  (is (vector? (v.login/page ""))))
+  (let [store nil
+        match nil]
+    (is (vector? (v.login/page store match)))))

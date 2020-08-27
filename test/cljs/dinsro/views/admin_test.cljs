@@ -20,4 +20,6 @@
   [v.admin/users-section])
 
 (defcard-rg page
-  [v.admin/page])
+  (let [store nil
+        match nil]
+    [v.admin/page store match]))

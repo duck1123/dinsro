@@ -16,7 +16,11 @@
    [:ul.box]])
 
 (deftest page
-  (is (vector? (v.settings/page))))
+  (let [store nil
+        match nil]
+    (is (vector? (v.settings/page store match)))))
 
 (defcard-rg page-card
-  [v.settings/page])
+  (let [store nil
+        match nil]
+    [v.settings/page store match]))

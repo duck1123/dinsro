@@ -25,12 +25,13 @@
       result nil
       path "/"
       path-params {}
+      store nil
       match (rc/->Match template data result path-params path)]
 
   (defcard items items)
 
   (deftest page
-    (is (vector? (v.index-accounts/page match))))
+    (is (vector? (v.index-accounts/page store match))))
 
   (defcard-rg page-card
-    [v.index-accounts/page match]))
+    [v.index-accounts/page store match]))
