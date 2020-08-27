@@ -7,17 +7,13 @@
    [dinsro.events.users :as e.users]
    [dinsro.spec.events.forms.settings :as s.e.f.settings]
    [dinsro.spec.users :as s.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
 ;; Subscriptions
 
 (s/def ::expanded? boolean?)
-(rfu/reg-basic-sub ::expanded?)
-(rfu/reg-set-event ::expanded?)
 
 ;; Events
 
@@ -29,69 +25,78 @@
   [_ _]
   {:dispatch [::toggle-navbar]})
 
-(kf/reg-event-fx ::toggle-navbar toggle-navbar)
-(kf/reg-event-fx ::nav-link-activated nav-link-activated)
-
 ;; Components
 
 (defn nav-link
-  [title page]
+  [store title page]
   [:a.navbar-item
-   {:href   (kf/path-for [page])
-    :on-click #(rf/dispatch [::nav-link-activated])
-    :class (when (= page @(rf/subscribe [:nav/page])) :is-active)}
+   {:href   (st/path-for store [page])
+    :on-click #(st/dispatch store [::nav-link-activated])
+    :class (when (= page @(st/subscribe store [:nav/page])) :is-active)}
    title])
 
 (defn nav-burger
-  []
-  (let [expanded? @(rf/subscribe [::expanded?])]
+  [store]
+  (let [expanded? @(st/subscribe store [::expanded?])]
     [:div.navbar-burger.burger
      {:role :button
       :aria-label :menu
       :aria-expanded false
-      :on-click #(rf/dispatch [::toggle-navbar])
+      :on-click #(st/dispatch store [::toggle-navbar])
       :class (when expanded? :is-active)}
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]]))
 
 (defn debug-button
-  []
+  [store]
   [:a.navbar-item
-   {:on-click #(rf/dispatch [::e.debug/toggle-shown?])}
+   {:on-click #(st/dispatch store [::e.debug/toggle-shown?])}
    ""])
 
-(defn navbar []
-  (let [auth-id @(rf/subscribe [::e.authentication/auth-id])
-        expanded? @(rf/subscribe [::expanded?])]
+(defn navbar
+  [store]
+  (let [auth-id @(st/subscribe store [::e.authentication/auth-id])
+        expanded? @(st/subscribe store [::expanded?])]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
       [:a.navbar-item
        {:href "/" :style {:font-weight :bold}}
        "Dinsro"]
-      [nav-burger]]
+      [nav-burger store]]
      [:div.navbar-menu {:class (when expanded? :is-active)}
       [:div.navbar-start
        (when auth-id
          [:<>
-          (nav-link (tr [:accounts]) :index-accounts-page)
-          (nav-link (tr [:transactions]) :index-transactions-page)])]
+          (nav-link store (tr [:accounts]) :index-accounts-page)
+          (nav-link store (tr [:transactions]) :index-transactions-page)])]
       [:div.navbar-end
-       (when @(rf/subscribe [::e.debug/enabled?]) [debug-button])
+       (when @(st/subscribe store [::e.debug/enabled?]) [debug-button])
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
-          [:a.navbar-link (::s.users/name @(rf/subscribe [::e.users/item auth-id]))]
+          [:a.navbar-link (::s.users/name @(st/subscribe store [::e.users/item auth-id]))]
           [:div.navbar-dropdown
-           (nav-link (tr [:settings]) :settings-page)
-           (c.debug/hide (nav-link (tr [:currencies]) :index-currencies-page))
-           (nav-link (tr [:admin]) :admin-page)
-           (c.debug/hide (nav-link (tr [:rate-sources]) :index-rate-sources-page))
-           (c.debug/hide (nav-link (tr [:rates]) :index-rates-page))
-           (c.debug/hide (nav-link (tr [:categories]) :index-categories-page))
-           (c.debug/hide (nav-link (tr [:users]) :index-users-page))
-           [:a.navbar-item {:on-click #(rf/dispatch [::e.authentication/do-logout])} (tr [:logout])]]]
+           (nav-link store (tr [:settings]) :settings-page)
+           (c.debug/hide store (nav-link store (tr [:currencies]) :index-currencies-page))
+           (nav-link store (tr [:admin]) :admin-page)
+           (c.debug/hide store (nav-link store (tr [:rate-sources]) :index-rate-sources-page))
+           (c.debug/hide store (nav-link store (tr [:rates]) :index-rates-page))
+           (c.debug/hide store (nav-link store (tr [:categories]) :index-categories-page))
+           (c.debug/hide store (nav-link store (tr [:users]) :index-users-page))
+           [:a.navbar-item
+            {:on-click #(st/dispatch store [::e.authentication/do-logout])}
+            (tr [:logout])]]]
          [:<>
           ;; FIXME: Do not show this section when settings are not loaded
-          (nav-link (tr [:login]) :login-page)
-          (when @(rf/subscribe [::s.e.f.settings/allow-registration])
-              (nav-link (tr [:register]) :register-page))])]]]))
+          (nav-link store (tr [:login]) :login-page)
+          (when @(st/subscribe store [::s.e.f.settings/allow-registration])
+            (nav-link store (tr [:register]) :register-page))])]]]))
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::expanded?)
+    (st/reg-set-event ::expanded?)
+    (st/reg-event-fx ::toggle-navbar toggle-navbar)
+    (st/reg-event-fx ::nav-link-activated nav-link-activated))
+  store)

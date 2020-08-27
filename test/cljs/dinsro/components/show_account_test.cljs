@@ -5,6 +5,7 @@
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-account :as c.show-account]
    [dinsro.spec.accounts :as s.accounts]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -12,10 +13,11 @@
 
 (let [account {::s.accounts/name "Bart"
                ::s.accounts/user {:db/id 1}
-               ::s.accounts/currency {:db/id 1}}]
+               ::s.accounts/currency {:db/id 1}}
+      store (mock-store)]
   (defcard account account)
 
   (defcard-rg show-account
     (fn []
       [error-boundary
-       (c.show-account/show-account account)])))
+       (c.show-account/show-account store account)])))

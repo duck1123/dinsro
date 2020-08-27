@@ -2,24 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
-
-(rfu/reg-basic-sub ::s.e.f.registration/name)
-(rfu/reg-set-event ::s.e.f.registration/name)
-
-(rfu/reg-basic-sub ::s.e.f.registration/email)
-(rfu/reg-set-event ::s.e.f.registration/email)
-
-(rfu/reg-basic-sub ::s.e.f.registration/password)
-(rfu/reg-set-event ::s.e.f.registration/password)
-
-(rfu/reg-basic-sub ::s.e.f.registration/confirm-password)
-(rfu/reg-set-event ::s.e.f.registration/confirm-password)
-
-(rfu/reg-basic-sub ::s.e.f.registration/error-message)
-(rfu/reg-set-event ::s.e.f.registration/error-message)
+   [dinsro.store :as st]))
 
 (defn set-defaults
   [{:keys [db]} _]
@@ -29,8 +12,6 @@
            (assoc ::s.e.f.registration/password s.e.f.registration/default-password)
            (assoc ::s.e.f.registration/confirm-password s.e.f.registration/default-password)
            (assoc ::s.e.f.registration/error-message s.e.f.registration/default-error-message))})
-
-(kf/reg-event-fx ::set-defaults set-defaults)
 
 (s/def ::form-data
   (s/keys :req-un [::s.e.f.registration/name
@@ -54,7 +35,6 @@
 (s/fdef form-data-sub
   :args (s/cat ))
 
-(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
 
 (s/def ::form-data
@@ -62,3 +42,20 @@
                    ::s.e.f.registration/email
                    ::s.e.f.registration/password
                    ::s.e.f.registration/confirm-password]))
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::s.e.f.registration/name)
+    (st/reg-set-event ::s.e.f.registration/name)
+    (st/reg-basic-sub ::s.e.f.registration/email)
+    (st/reg-set-event ::s.e.f.registration/email)
+    (st/reg-basic-sub ::s.e.f.registration/password)
+    (st/reg-set-event ::s.e.f.registration/password)
+    (st/reg-basic-sub ::s.e.f.registration/confirm-password)
+    (st/reg-set-event ::s.e.f.registration/confirm-password)
+    (st/reg-basic-sub ::s.e.f.registration/error-message)
+    (st/reg-set-event ::s.e.f.registration/error-message)
+    (st/reg-event-fx ::set-defaults set-defaults)
+    (st/reg-sub ::form-data form-data-sub))
+  store)

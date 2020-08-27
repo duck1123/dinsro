@@ -4,11 +4,7 @@
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec.actions.transactions :as s.a.transactions]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
-
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
+   [dinsro.store :as st]))
 
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/date
                                     ::s.e.f.create-transaction/description
@@ -33,4 +29,10 @@
                :event ::form-data-event)
   :ret ::form-data)
 
-(rf/reg-sub ::form-data form-data-sub)
+(defn init-handlers!
+  [store]
+  (doto store
+      (st/reg-basic-sub ::shown?)
+      (st/reg-set-event ::shown?)
+      (st/reg-sub ::form-data form-data-sub))
+  store)

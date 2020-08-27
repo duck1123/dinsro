@@ -5,9 +5,7 @@
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.events.accounts :as s.e.accounts]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
 (s/def ::item ::s.accounts/item)
@@ -15,7 +13,6 @@
 ;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.accounts/item))
-(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
 ;; Items
@@ -32,8 +29,6 @@
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items items-sub)
-
 ;; Item
 
 (s/def ::item-sub-event (s/tuple keyword? :db/id))
@@ -48,8 +43,6 @@
                :event ::item-sub-event)
   :ret (s/nilable ::item))
 
-(rf/reg-sub ::item item-sub)
-
 ;; Items by User
 
 (defn items-by-user
@@ -61,8 +54,6 @@
                :event (s/cat :kw keyword?
                              :id :db/id))
   :ret ::items)
-
-(rf/reg-sub ::items-by-user items-by-user)
 
 ;; Items by Currency
 
@@ -76,12 +67,9 @@
                :event any?)
   :ret ::items)
 
-(rf/reg-sub ::items-by-currency items-by-currency)
-
 ;; Create
 
 (s/def ::do-submit-state ::ds/state)
-(rfu/reg-basic-sub ::do-submit-state)
 
 (defn do-submit-success
   [_ _]
@@ -106,14 +94,9 @@
                :event ::s.e.accounts/do-submit-response-event)
   :ret ::s.e.accounts/do-submit-response)
 
-(kf/reg-event-fx ::do-submit-success   do-submit-success)
-(kf/reg-event-fx ::do-submit-failed    do-submit-failed)
-(kf/reg-event-fx ::do-submit           do-submit)
-
 ;; Delete
 
 (s/def ::do-delete-record-state ::ds/state)
-(rfu/reg-basic-sub ::do-delete-record-state)
 
 (defn do-delete-record-success
   [_ _]
@@ -132,14 +115,9 @@
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
-(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
-(kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
-(kf/reg-event-fx ::do-delete-record do-delete-record)
-
 ;; Index
 
 (s/def ::do-fetch-index-state ::ds/state)
-(rfu/reg-basic-sub ::do-fetch-index-state)
 (def do-fetch-index-state ::do-fetch-index-state)
 
 (defn do-fetch-index-success
@@ -172,6 +150,24 @@
                :event ::s.e.accounts/do-fetch-index-event)
   :ret ::s.e.accounts/do-fetch-index-response)
 
-(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-(kf/reg-event-fx ::do-fetch-index do-fetch-index)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::item-map)
+    (st/reg-sub ::item item-sub)
+    (st/reg-sub ::items items-sub)
+    (st/reg-sub ::items-by-currency items-by-currency)
+    (st/reg-sub ::items-by-user items-by-user)
+    (st/reg-basic-sub ::do-submit-state)
+    (st/reg-event-fx ::do-submit-success do-submit-success)
+    (st/reg-event-fx ::do-submit-failed do-submit-failed)
+    (st/reg-event-fx ::do-submit do-submit)
+    (st/reg-basic-sub ::do-delete-record-state)
+    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
+    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
+    (st/reg-event-fx ::do-delete-record do-delete-record)
+    (st/reg-basic-sub ::do-fetch-index-state)
+    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
+    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+  store)

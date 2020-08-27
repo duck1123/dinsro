@@ -8,17 +8,17 @@
    [taoensso.timbre :as timbre]))
 
 (defn show-account
-  [account]
+  [store account]
   (let [name (::s.accounts/name account)
         user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:<>
-     [c.debug/debug-box account]
+     [c.debug/debug-box store account]
      [:h3 name]
      [:p
       (tr [:user-label])
-      [c.links/user-link user-id]]
+      [c.links/user-link store user-id]]
      [:p
       (tr [:currency-label])
-      [c.links/currency-link currency-id]]
-     (c.debug/hide [c.buttons/delete-account account])]))
+      [c.links/currency-link store currency-id]]
+     (c.debug/hide store [c.buttons/delete-account store account])]))

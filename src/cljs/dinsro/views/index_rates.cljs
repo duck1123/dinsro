@@ -30,24 +30,24 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-rates]
-   [c.buttons/fetch-currencies]])
+   [c.buttons/fetch-rates store]
+   [c.buttons/fetch-currencies store]])
 
 (defn page
   [store _match]
   (let [items @(st/subscribe store [::e.rates/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
+     (c.debug/hide store [load-buttons store])
      [:div.box
       [:h1
        (tr [:rates "Rates"])
-       [c/show-form-button ::e.f.create-rate/shown?]]
-      [c.f.create-rate/form]
+       [c/show-form-button store ::e.f.create-rate/shown?]]
+      [c.f.create-rate/form store]
       [:hr]
-      [c.rate-chart/rate-chart items]
-      [c.index-rates/section items]]]))
+      [c.rate-chart/rate-chart store items]
+      [c.index-rates/section store items]]]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

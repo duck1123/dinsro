@@ -8,25 +8,25 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
 (defn form
-  [id]
-  (let [form-data @(rf/subscribe [::e.f.add-account-transaction/form-data id])]
-    (when @(rf/subscribe [::e.f.add-account-transaction/shown?])
+  [store id]
+  (let [form-data @(st/subscribe store [::e.f.add-account-transaction/form-data id])]
+    (when @(st/subscribe store [::e.f.add-account-transaction/shown?])
       [:div
-       [c/close-button ::e.f.add-account-transaction/set-shown?]
-       [c.debug/debug-box form-data]
+       [c/close-button store ::e.f.add-account-transaction/set-shown?]
+       [c.debug/debug-box store form-data]
        [:div.field>div.control
-        [c/text-input (tr [:description]) ::s.e.f.create-transaction/description]]
+        [c/text-input store (tr [:description]) ::s.e.f.create-transaction/description]]
        [:div.field>div.control
-        [c/number-input (tr [:value]) ::s.e.f.create-transaction/value]]
+        [c/number-input store (tr [:value]) ::s.e.f.create-transaction/value]]
        [:div.field>div.control
-        [c.datepicker/datepicker {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]
+        [c.datepicker/datepicker {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]
        [:div.field>div.control
-        [c/primary-button (tr [:submit]) [::e.transactions/do-submit form-data]]]])))
+        [c/primary-button store (tr [:submit]) [::e.transactions/do-submit form-data]]]])))
 
 (s/fdef form
   :args (s/cat :id ::ds/id)

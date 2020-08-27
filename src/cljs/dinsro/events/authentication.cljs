@@ -2,14 +2,12 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
-   [dinsro.components :as c]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
-   [kee-frame.core :as kf]
-   [re-frame.core :as r]
+   [dinsro.store :as st]
+   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
-(c/reg-field ::auth-id nil)
 (s/def ::auth-id (s/nilable :db/id))
 (def auth-id ::auth-id)
 
@@ -44,13 +42,6 @@
     [::do-authenticate-failure]
     data)})
 
-(kf/reg-event-fx
- ::do-authenticate-success
- [(r/inject-cofx :cookie/get [:token])]
- do-authenticate-success)
-(kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
-(kf/reg-event-fx ::do-authenticate do-authenticate)
-
 ;; Logout
 
 (defn do-logout-success
@@ -74,10 +65,6 @@
     [::do-logout-failure]
     nil)})
 
-(kf/reg-event-fx ::do-logout-success do-logout-success)
-(kf/reg-event-fx ::do-logout-failure do-logout-failure)
-(kf/reg-event-fx ::do-logout do-logout)
-
 ;; Register
 
 (defn register-succeeded
@@ -99,6 +86,20 @@
     [:register-failed]
     data)})
 
-(kf/reg-event-fx :register-succeeded register-succeeded)
-(kf/reg-event-fx :register-failed register-failed)
-(kf/reg-event-fx ::submit-registration submit-registration)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::auth-id)
+    (st/reg-set-event ::auth-id)
+    (st/reg-event-fx ::do-authenticate-success
+                     [(rf/inject-cofx :cookie/get [:token])] do-authenticate-success)
+    (st/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
+    (st/reg-event-fx ::do-authenticate do-authenticate)
+    (st/reg-event-fx ::do-logout-success do-logout-success)
+    (st/reg-event-fx ::do-logout-failure do-logout-failure)
+    (st/reg-event-fx ::do-logout do-logout)
+    (st/reg-event-fx :register-succeeded register-succeeded)
+    (st/reg-event-fx :register-failed register-failed)
+    (st/reg-event-fx ::submit-registration submit-registration))
+
+  store)

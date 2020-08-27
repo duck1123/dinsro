@@ -37,15 +37,15 @@
   :start  [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-transactions]])
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-currencies store]
+   [c.buttons/fetch-transactions store]])
 
 (defn debug-items
-  [items]
-  (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
+  [store items]
+  (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box store item]])))
 
 (defn page
   [store match]
@@ -53,15 +53,15 @@
         id (int id)
         account @(st/subscribe store [::e.accounts/item id])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
+     (c.debug/hide store [load-buttons store])
      [:div.box
       [:h1 (tr [:show-account])]
       (when account
-        [show-account account])]
+        [show-account store account])]
      (when account
        (let [items @(st/subscribe store [::e.transactions/items-by-account id])
              transactions (sort-by ::s.transactions/date items)]
-         [c.account-transactions/section id transactions]))]))
+         [c.account-transactions/section store id transactions]))]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

@@ -2,16 +2,16 @@
   (:require
    [cljs.pprint :as p]
    [dinsro.events.debug :as e.debug]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
 (defn hide
-  [data]
-  (when @(rf/subscribe [::e.debug/shown?]) data))
+  [store data]
+  (when @(st/subscribe store [::e.debug/shown?]) data))
 
 (defn debug-box
-  [data]
-  (hide
+  [store data]
+  (hide store
    [:pre {:style {:max-height "200px"}}
     (with-out-str (p/pprint data))]))

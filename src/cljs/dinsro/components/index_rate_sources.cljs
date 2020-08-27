@@ -7,20 +7,20 @@
    [dinsro.translations :refer [tr]]))
 
 (defn index-line
-  [item]
+  [store item]
   (let [name (::s.rate-sources/name item)
         url (::s.rate-sources/url item)
         currency-id (get-in item [::s.rate-sources/currency :db/id])]
     [:tr
      [:td name]
      [:td url]
-     [:td [c.links/currency-link currency-id]]
-     (c.debug/hide [:td [c.buttons/delete-rate-source item]])]))
+     [:td [c.links/currency-link store currency-id]]
+     (c.debug/hide store [:td [c.buttons/delete-rate-source store item]])]))
 
 (defn section
-  [items]
+  [store items]
   [:<>
-   [c.debug/debug-box items]
+   [c.debug/debug-box store items]
    (if-not (seq items)
      [:p (tr [:no-rate-sources])]
      [:table.table
@@ -28,8 +28,8 @@
        [:th (tr [:name])]
        [:th (tr [:url])]
        [:th (tr [:currency])]
-       (c.debug/hide [:th (tr [:actions])])]
+       (c.debug/hide store [:th (tr [:actions])])]
       (into
        [:tbody]
        (for [item items]
-         ^{:key (:db/id item)} [index-line item]))])])
+         ^{:key (:db/id item)} [index-line store item]))])])

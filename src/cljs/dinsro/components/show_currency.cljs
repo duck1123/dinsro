@@ -7,12 +7,12 @@
    [dinsro.translations :refer [tr]]))
 
 (defn show-currency
-  [currency]
+  [store currency]
   (let [name (::s.currencies/name currency)]
     [:<>
-     [c.debug/debug-box currency]
+     [c.debug/debug-box store currency]
      [:h1 name]
-     (c.debug/hide [c.buttons/delete-currency currency])]))
+     (c.debug/hide store [c.buttons/delete-currency store currency])]))
 
 (s/fdef show-currency
   :args (s/cat :currency ::s.currencies/item)

@@ -6,15 +6,15 @@
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
 (defn form-shown
-  [form-data]
+  [store form-data]
   [:div
-   [c/close-button ::e.f.create-transaction/set-shown?]
-   [c.debug/debug-box @form-data]
+   [c/close-button store ::e.f.create-transaction/set-shown?]
+   [c.debug/debug-box store @form-data]
    [:div
     [:div.field-group
      [:div.field.is-inline-block-tablet
@@ -22,25 +22,25 @@
       [:div.control
        [:input.input
         {:type :text
-         :value @(rf/subscribe [::s.e.f.create-transaction/value])
-         :on-change #(rf/dispatch [::s.e.f.create-transaction/set-value (c/target-value %)])}]]]]
+         :value @(st/subscribe store [::s.e.f.create-transaction/value])
+         :on-change #(st/dispatch store [::s.e.f.create-transaction/set-value (c/target-value %)])}]]]]
     [:div.field-group
      [:div.column
-      [c/account-selector (tr [:account]) ::s.e.f.create-transaction/account-id]]
+      [c/account-selector store (tr [:account]) ::s.e.f.create-transaction/account-id]]
      [:div.column
       [:label.label (tr [:date])]
       [c.datepicker/datepicker
-       {:on-select #(rf/dispatch [::s.e.f.create-transaction/set-date %])}]]]]
+       {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]]]
    [:div.field>div.control
-    [c/primary-button (tr [:submit]) [::e.transactions/do-submit @form-data]]]])
+    [c/primary-button store (tr [:submit]) [::e.transactions/do-submit @form-data]]]])
 
 (defn form-inner
-  [form-data shown?]
+  [store form-data shown?]
   (when shown?
-    [form-shown form-data]))
+    [form-shown store form-data]))
 
 (defn form
-  []
-  (let [form-data (rf/subscribe [::e.f.create-transaction/form-data])
-        shown? (rf/subscribe [::e.f.create-transaction/shown?])]
-    (form-inner form-data shown?)))
+  [store]
+  (let [form-data (st/subscribe store [::e.f.create-transaction/form-data])
+        shown? (st/subscribe store [::e.f.create-transaction/shown?])]
+    (form-inner store form-data shown?)))

@@ -29,24 +29,24 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-categories]
-   [c.buttons/fetch-currencies]])
+   [c.buttons/fetch-categories store]
+   [c.buttons/fetch-currencies store]])
 
 (defn page
   [store _match]
   (let [items @(st/subscribe store [::e.categories/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
+     (c.debug/hide store [load-buttons store])
      [:div.box
       [:h1
        (tr [:categories "Categories"])
-       [c/show-form-button ::e.f.create-category/shown?]]
-      [c.f.create-category/form]
+       [c/show-form-button store ::e.f.create-category/shown?]]
+      [c.f.create-category/form store]
       [:hr]
       (when items
-        [index-categories items])]]))
+        [index-categories store items])]]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

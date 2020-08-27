@@ -14,16 +14,26 @@
    [dinsro.components.show-account-test]
    [dinsro.components.show-currency-test]
    [dinsro.components.status-test]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.store :as st]
+   [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
 (cards/header "Components" [])
 
-(defcard-rg checkbox-input
-  (fn []
-    [error-boundary
-     [c/checkbox-input "foo" :foo]]))
+(let [field :foo
+      label "Foo"
+      store (mock-store)]
+  (st/reg-basic-sub store field)
 
-(deftest account-selector
-  (let [label "foo"
-        field :foo]
-    (is (vector? (c/account-selector label field)))))
+  (defcard-rg checkbox-input
+    (fn []
+      [error-boundary
+       [c/checkbox-input store label field]])))
+
+(let [store (doto (mock-store)
+              e.accounts/init-handlers!)]
+  (deftest account-selector
+    (let [label "foo"
+          field :foo]
+      (is (vector? (c/account-selector store label field))))))

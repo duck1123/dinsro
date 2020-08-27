@@ -8,18 +8,18 @@
 
 (cards/header "Admin View" [])
 
-(defcard-rg load-buttons
-  (fn []
-    [error-boundary
-     (v.admin/load-buttons)]))
-
-(defcard-rg users-section
-  (fn []
-    [error-boundary
-     (v.admin/users-section)]))
-
 (let [store (mock-store)
       match nil]
+  (defcard-rg load-buttons
+          (fn []
+            [error-boundary
+             (v.admin/load-buttons store)]))
+
+  (defcard-rg users-section
+    (fn []
+      [error-boundary
+       (v.admin/users-section store)]))
+
   (defcard-rg page
     (fn []
       [error-boundary

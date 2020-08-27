@@ -6,6 +6,7 @@
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec :as ds]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -14,7 +15,8 @@
 (defcard a
   (ds/gen-key ::e.f.create-transaction/form-data))
 
-(defcard create-transaction-card
-  (fn []
-    [error-boundary
-     (c.f.create-transaction/form)]))
+(let [store (mock-store)]
+  (defcard create-transaction-card
+    (fn []
+      [error-boundary
+       (c.f.create-transaction/form store)])))

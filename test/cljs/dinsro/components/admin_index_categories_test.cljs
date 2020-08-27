@@ -7,24 +7,26 @@
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.spec :as ds]
    [dinsro.spec.categories :as s.categories]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
 (cards/header "Admin Index Categories Components" [])
 
-(let [items (ds/gen-key (s/coll-of ::s.categories/item :count 3))]
+(let [items (ds/gen-key (s/coll-of ::s.categories/item :count 3))
+      store (mock-store)]
   (defcard items items)
 
   (defcard-rg c.admin-index-categories/category-line
     (fn []
       [error-boundary
-       (c.admin-index-categories/category-line (first items))]))
+       (c.admin-index-categories/category-line store (first items))]))
 
   (defcard-rg c.admin-index-categories/index-categories
     (fn []
       [error-boundary
-       (c.admin-index-categories/index-categories items)]))
+       (c.admin-index-categories/index-categories store items)]))
 
   (defcard-rg c.admin-index-categories/section
     (fn []
       [error-boundary
-       (c.admin-index-categories/section)])))
+       (c.admin-index-categories/section store)])))

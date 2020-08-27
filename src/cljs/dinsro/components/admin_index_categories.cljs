@@ -8,22 +8,22 @@
    [dinsro.events.categories :as e.categories]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.spec.categories :as s.categories]
-   [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]))
+   [dinsro.store :as st]
+   [dinsro.translations :refer [tr]]))
 
 (defn category-line
-  [item]
+  [store item]
   (let [name (::s.categories/name item)
         user-id (get-in item [::s.categories/user :db/id])]
     [:tr
      [:td name]
-     [:td [c.links/user-link user-id]]
-     [:td [c.buttons/delete-category item]]]))
+     [:td [c.links/user-link store user-id]]
+     [:td [c.buttons/delete-category store item]]]))
 
 (defn index-categories
-  [items]
+  [store items]
   [:<>
-   [c.debug/debug-box items]
+   [c.debug/debug-box store items]
    (if-not (seq items)
      [:p (tr [:no-categories])]
      [:table.table
@@ -33,16 +33,16 @@
        [:th (tr [:actions])]]
       (into
        [:tbody]
-       (for [item items] ^{:key (:db/id item)} [category-line item]))])])
+       (for [item items] ^{:key (:db/id item)} [category-line store item]))])])
 
 (defn section
-  []
-  (let [items @(rf/subscribe [::e.categories/items])]
+  [store]
+  (let [items @(st/subscribe store [::e.categories/items])]
     [:div.box
      [:h1
       (tr [:categories "Categories"])
-      [c/show-form-button ::e.f.create-category/shown?]]
-     [c.f.create-category/form]
+      [c/show-form-button store ::e.f.create-category/shown?]]
+     [c.f.create-category/form store]
      [:hr]
      (when (seq items)
-       [index-categories items])]))
+       [index-categories store items])]))

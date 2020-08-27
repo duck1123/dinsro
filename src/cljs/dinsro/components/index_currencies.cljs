@@ -7,23 +7,23 @@
    [taoensso.timbre :as timbre]))
 
 (defn index-currency-line
-  [currency]
+  [store currency]
   (let [{:keys [db/id]} currency]
     [:tr
-     [:td [c.links/currency-link id]]
-     (c.debug/hide [:td [c.buttons/delete-currency currency]])]))
+     [:td [c.links/currency-link store id]]
+     (c.debug/hide store [:td [c.buttons/delete-currency store currency]])]))
 
 (defn index-currencies
-  [currencies]
+  [store currencies]
   [:<>
-   [c.debug/debug-box currencies]
+   [c.debug/debug-box store currencies]
    (if-not (seq currencies)
      [:div (tr [:no-currencies])]
      [:table
       [:thead>tr
        [:th (tr [:name-label])]
-       (c.debug/hide [:th "Buttons"])]
+       (c.debug/hide store [:th "Buttons"])]
       (into
        [:tbody]
        (for [{:keys [db/id] :as currency} currencies]
-         ^{:key id} [index-currency-line currency]))])])
+         ^{:key id} [index-currency-line store currency]))])])

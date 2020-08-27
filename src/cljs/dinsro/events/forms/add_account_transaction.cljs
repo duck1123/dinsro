@@ -3,13 +3,10 @@
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
+   [dinsro.store :as st]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
   [db event]
@@ -33,5 +30,12 @@
                :event ::form-data-event)
   :ret ::form-data)
 
-(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+    (st/reg-sub ::form-data form-data-sub))
+  store)

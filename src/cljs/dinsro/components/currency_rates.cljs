@@ -10,12 +10,12 @@
    [taoensso.timbre :as timbre]))
 
 (defn section
-  [currency-id rate-feed]
+  [store currency-id rate-feed]
   [:div.box
    [:h2
     "Rates"
-    [c/show-form-button ::e.f.add-currency-rate/shown?]]
-   [c.f.add-currency-rate/form currency-id]
+    [c/show-form-button store ::e.f.add-currency-rate/shown?]]
+   [c.f.add-currency-rate/form store currency-id]
    [:hr]
    [c.rate-chart/rate-chart rate-feed]])
 

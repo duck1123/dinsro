@@ -21,11 +21,11 @@
   :start [::init-page]})
 
 (defn page
-  [_store _match]
+  [store _match]
   [:section.section>div.container>div.content
    [:div.box
     [:h1 "Settings Page"]
-    [c.f.settings/form]]])
+    [c.f.settings/form store]]])
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

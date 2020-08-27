@@ -4,9 +4,9 @@
    [dinsro.events :as e]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.websocket :as e.websocket]
+   [dinsro.store :as st]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
 (def websocket-endpoint (str "ws://" (.-host (.-location js/window))  "/ws"))
@@ -24,12 +24,6 @@
   (timbre/warn "status errored")
   {:db (assoc db ::status-state :errored)})
 
-(rfu/reg-basic-sub ::status-state)
-
-
-(kf/reg-event-fx :status-loaded status-loaded)
-(kf/reg-event-fx :status-errored status-errored)
-
 (defn init-status
   [{:keys [db]
     cookies :cookie/get} _]
@@ -42,19 +36,24 @@
       [:status-loaded]
       [:status-errored])}))
 
-(kf/reg-event-fx
- :init-status
- [(rf/inject-cofx :cookie/get [:token])]
- init-status)
-
-(kf/reg-controller
- :status-controller
- {:params (constantly true)
-  :start [:init-status]})
-
 (defn require-status
-  [body]
-  (let [status-state @(rf/subscribe [::status-state])]
+  [store body]
+  (let [status-state @(st/subscribe store [::status-state])]
     (if (= status-state :loaded)
       [:div body]
       [:div "Loaded"])))
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::status-state)
+    (st/reg-event-fx :status-loaded status-loaded)
+    (st/reg-event-fx :status-errored status-errored)
+    (st/reg-event-fx :init-status [(rf/inject-cofx :cookie/get [:token])] init-status))
+
+  (kf/reg-controller
+   :status-controller
+   {:params (constantly true)
+    :start [:init-status]})
+
+  store)

@@ -5,9 +5,7 @@
    [dinsro.events :as e]
    [dinsro.spec :as ds]
    [dinsro.spec.users :as s.users]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [ring.util.http-status :as status]))
 
 (s/def ::item ::s.users/item)
@@ -15,7 +13,6 @@
 ;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::item))
-(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
 ;; Items
@@ -32,8 +29,6 @@
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items items-sub)
-
 ;; Item
 
 (defn item-sub
@@ -46,12 +41,9 @@
                :event (s/cat :kw keyword? :id :db/id))
   :ret ::item)
 
-(rf/reg-sub ::item item-sub)
-
 ;; Read
 
 (s/def ::do-fetch-record-state keyword?)
-(rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
 
 (defn do-fetch-record-success
   [{:keys [db]} [{:keys [item]}]]
@@ -82,11 +74,6 @@
     [::do-fetch-record-success]
     [::do-fetch-record-failed])})
 
-(kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
-(kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
-(kf/reg-event-fx ::do-fetch-record-unauthorized  do-fetch-record-unauthorized)
-(kf/reg-event-fx ::do-fetch-record               do-fetch-record)
-
 ;; Delete
 
 (defn do-delete-record-success
@@ -108,14 +95,9 @@
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
-(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
-(kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
-(kf/reg-event-fx ::do-delete-record do-delete-record)
-
 ;; Index
 
 (s/def ::do-fetch-index-state keyword?)
-(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
   [{:keys [db]} [{items :users}]]
@@ -143,7 +125,23 @@
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 
-(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-(kf/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)
-(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-(kf/reg-event-fx ::do-fetch-index do-fetch-index)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::item-map)
+    (st/reg-sub ::item item-sub)
+    (st/reg-sub ::items items-sub)
+    (st/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
+    (st/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
+    (st/reg-event-fx ::do-fetch-record-failed do-fetch-record-failed)
+    (st/reg-event-fx ::do-fetch-record-unauthorized do-fetch-record-unauthorized)
+    (st/reg-event-fx ::do-fetch-record do-fetch-record)
+    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
+    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
+    (st/reg-event-fx ::do-delete-record do-delete-record)
+    (st/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
+    (st/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)
+    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+  store)

@@ -18,7 +18,6 @@
    [dinsro.spec.views.show-currency :as s.v.show-currency]
    [dinsro.store :as st]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -42,48 +41,48 @@
   :start  [::init-page]})
 
 (defn loading-buttons
-  [id]
+  [store id]
   [:<>
-   (c.debug/hide
+   (c.debug/hide store
     [:div.box
-     [c.buttons/fetch-rates]
-     [c.buttons/fetch-accounts]
-     [c.buttons/fetch-currencies]
-     [c.buttons/fetch-rate-sources]
-     [c.buttons/fetch-currency id]])])
+     [c.buttons/fetch-rates store]
+     [c.buttons/fetch-accounts store]
+     [c.buttons/fetch-currencies store]
+     [c.buttons/fetch-rate-sources store]
+     [c.buttons/fetch-currency store id]])])
 
 (s/fdef loading-buttons
   :args (s/cat :id :db/id)
   :ret vector?)
 
 (defn page-loaded
-  [currency]
-  (let [currency-id (:db/id (timbre/spy :info currency))]
+  [store currency]
+  (let [currency-id (:db/id currency)]
     [:<>
-     [:div.box [c.show-currency/show-currency currency]]
-     (when-let [rates @(rf/subscribe [::e.rates/rate-feed (:db/id currency)])]
-       [c.currency-rates/section currency-id rates])
-     (when-let [accounts (some->> @(rf/subscribe [::e.accounts/items-by-currency currency])
+     [:div.box [c.show-currency/show-currency store currency]]
+     (when-let [rates @(st/subscribe store [::e.rates/rate-feed (:db/id currency)])]
+       [c.currency-rates/section store currency-id rates])
+     (when-let [accounts (some->> @(st/subscribe store [::e.accounts/items-by-currency currency])
                                   (sort-by ::s.accounts/date))]
-       [c.currency-accounts/section accounts])
-     (when-let [rate-sources @(rf/subscribe [::e.rate-sources/items
+       [c.currency-accounts/section store accounts])
+     (when-let [rate-sources @(st/subscribe store [::e.rate-sources/items
                                              ;; -by-currency currency
                                              ])]
-       [c.currency-rate-sources/section currency-id rate-sources])]))
+       [c.currency-rate-sources/section store currency-id rate-sources])]))
 
 (s/fdef page-loaded
   :args (s/cat :currency ::s.currencies/item)
   :ret vector?)
 
 (defn page
-  [_store {{:keys [id]} :path-params}]
+  [store {{:keys [id]} :path-params}]
   (let [currency-id (int id)
-        currency @(rf/subscribe [::e.currencies/item currency-id])
-        state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
+        currency @(st/subscribe store [::e.currencies/item currency-id])
+        state @(st/subscribe store [::e.currencies/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     [loading-buttons currency-id]
+     [loading-buttons store currency-id]
      (condp = state
-       :loaded [page-loaded currency]
+       :loaded [page-loaded store currency]
        :loading [:p "Loading"]
        :failed [:p "Failed"]
        [:p "Unknown State"])]))

@@ -14,8 +14,7 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [kee-frame.core :as kf]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))
@@ -42,29 +41,29 @@
   :start  [::init-page]})
 
 (defn load-buttons
-  [id]
+  [store id]
   [:div.box
-   [c.buttons/fetch-users]
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-categories]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-transactions]
-   [c.buttons/fetch-user id]])
+   [c.buttons/fetch-users store]
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-categories store]
+   [c.buttons/fetch-currencies store]
+   [c.buttons/fetch-transactions store]
+   [c.buttons/fetch-user store id]])
 
 (defn page-loaded
-  [id]
-  (if-let [user @(rf/subscribe [::e.users/item id])]
+  [store id]
+  (if-let [user @(st/subscribe store [::e.users/item id])]
     (let [user-id (:db/id user)]
       [:<>
        [:div.box
-        [show-user user]]
+        [show-user store user]]
        [:<>
-        (when-let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
-          [c.user-accounts/section user-id accounts])
-        (when-let [categories @(rf/subscribe [::e.categories/items-by-user user-id])]
-          [c.user-categories/section user-id categories])
-        (when-let [transactions @(rf/subscribe [::e.transactions/items-by-user user-id])]
-          [c.user-transactions/section user-id transactions])]])
+        (when-let [accounts @(st/subscribe store [::e.accounts/items-by-user user-id])]
+          [c.user-accounts/section store user-id accounts])
+        (when-let [categories @(st/subscribe store [::e.categories/items-by-user user-id])]
+          [c.user-categories/section store user-id categories])
+        (when-let [transactions @(st/subscribe store [::e.transactions/items-by-user user-id])]
+          [c.user-transactions/section store user-id transactions])]])
     [:p "User not found"]))
 
 (s/fdef page-loaded
@@ -76,22 +75,20 @@
 (s/def ::view-map                  (s/keys :req-un [:show-user-view/path-params]))
 
 (defn page
-  [_store match]
+  [store match]
   (let [{{:keys [id]} :path-params} match
-        state @(rf/subscribe [::e.users/do-fetch-record-state])]
+        state @(st/subscribe store [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons id])
+     (c.debug/hide store [load-buttons store id])
      (condp = state
        :invalid [:p "invalid"]
        :failed [:p "Failed"]
-       :loaded (page-loaded (int id))
+       :loaded (page-loaded store (int id))
        [:p "unknown state"])]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)
                :match ::view-map
-
                ;; #(instance? rc/Match %)
-
                )
   :ret vector?)

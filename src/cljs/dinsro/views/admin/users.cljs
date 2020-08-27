@@ -5,9 +5,9 @@
    [dinsro.components.debug :as c.debug]
    [dinsro.components.index-users :refer [index-users]]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [kee-frame.core :as kf]))
 
 (defn init-page
   [_ _]
@@ -22,16 +22,16 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-users]])
+   [c.buttons/fetch-users store]])
 
 (defn page
-  [_store _match]
-  (let [users @(rf/subscribe [::e.users/items])]
+  [store _match]
+  (let [users @(st/subscribe store [::e.users/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
+     (c.debug/hide store [load-buttons store])
      [:div.box
       [:h1 (tr [:users-page "Admin Users Page"])]
       [:hr]
-      [index-users users]]]))
+      [index-users store users]]]))

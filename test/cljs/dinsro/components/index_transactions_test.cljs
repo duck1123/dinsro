@@ -7,22 +7,24 @@
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
 (cards/header "Index Transaction Components" [])
 
-(let [item (ds/gen-key ::s.transactions/item)]
-  (defcard item item)
+(let [store (mock-store)]
+  (let [item (ds/gen-key ::s.transactions/item)]
+    (defcard item item)
 
-  (defcard-rg c.index-transactions/row-line
-    (fn []
-      [error-boundary
-       (c.index-transactions/row-line item)])))
+    (defcard-rg c.index-transactions/row-line
+      (fn []
+        [error-boundary
+         (c.index-transactions/row-line store item)])))
 
-(let [items (ds/gen-key (s/coll-of ::s.transactions/item))]
-  (defcard items items)
+  (let [items (ds/gen-key (s/coll-of ::s.transactions/item))]
+    (defcard items items)
 
-  (defcard-rg c.index-transactions/index-transactions
-    (fn []
-      [error-boundary
-       (c.index-transactions/index-transactions items)])))
+    (defcard-rg c.index-transactions/index-transactions
+      (fn []
+        [error-boundary
+         (c.index-transactions/index-transactions store items)]))))

@@ -31,25 +31,25 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-transactions]
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]])
+   [c.buttons/fetch-transactions store]
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-currencies store]])
 
 (s/fdef load-buttons
   :args (s/cat)
   :ret vector?)
 
 (defn section-inner
-  [transactions]
+  [store transactions]
   [:div.box
    [:h1
     (tr [:index-transactions-title "Index Transactions"])
-    [c/show-form-button ::e.f.create-transaction/shown?]]
-   [c.f.create-transaction/form]
+    [c/show-form-button store ::e.f.create-transaction/shown?]]
+   [c.f.create-transaction/form store]
    [:hr]
-   [c.index-transactions/index-transactions transactions]])
+   [c.index-transactions/index-transactions store transactions]])
 
 (s/fdef section-inner
   :args (s/cat :transactions (s/coll-of ::s.transactions/item))
@@ -58,9 +58,9 @@
 (defn page
   [store _match]
   [:section.section>div.container>div.content
-   (c.debug/hide [load-buttons])
+   (c.debug/hide store [load-buttons store])
    (let [transactions (or @(st/subscribe store [::e.transactions/items]) [])]
-     [section-inner transactions])])
+     [section-inner store transactions])])
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

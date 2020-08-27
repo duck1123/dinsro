@@ -3,6 +3,7 @@
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [re-frame.core :as rf]
    [reframe-utils.core :as rfu]
@@ -21,66 +22,66 @@
   (rf/reg-sub key (fn [db _] (get db key default))))
 
 (defn input-field
-  [label field change-handler type]
+  [store label field change-handler type]
   [:<>
    [:label.label label]
    [:input.input
     {:type type
-     :value @(rf/subscribe [field])
-     :on-change #(rf/dispatch [change-handler (target-value %)])}]])
+     :value @(st/subscribe store [field])
+     :on-change #(st/dispatch store [change-handler (target-value %)])}]])
 
 
 (defn checkbox-input
-  [label field change-handler]
-  (let [checked (rf/subscribe [field])]
+  [store label field change-handler]
+  (let [checked (st/subscribe store [field])]
     [:label.checkbox
      [:input {:type :checkbox
-              :on-change #(rf/dispatch [change-handler (not @checked)])
+              :on-change #(st/dispatch store [change-handler (not @checked)])
               :checked @checked}]
      label]))
 
 (defn text-input
-  ([label field]
-   (text-input label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (input-field label field change-handler :text)))
+  ([store label field]
+   (text-input store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (input-field store label field change-handler :text)))
 
 (defn email-input
-  ([label field]
-   (email-input label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (input-field label field change-handler :email)))
+  ([store label field]
+   (email-input store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (input-field store label field change-handler :email)))
 
 (defn password-input
-  ([label field]
-   (password-input label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (input-field label field change-handler :password)))
+  ([store label field]
+   (password-input store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (input-field store label field change-handler :password)))
 
 (defn number-input
-  ([label field]
-   (number-input label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (input-field label field change-handler :number)))
+  ([store label field]
+   (number-input store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (input-field store label field change-handler :number)))
 
 (defn primary-button
-  [label click-handler]
-  [:a.button.is-primary {:on-click #(rf/dispatch click-handler)} label])
+  [store label click-handler]
+  [:a.button.is-primary {:on-click #(st/dispatch store click-handler)} label])
 
 (defn account-selector
-  ([label field]
-   (account-selector label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (condp = @(rf/subscribe [::e.accounts/do-fetch-index-state])
+  ([store label field]
+   (account-selector store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (condp = @(st/subscribe store [::e.accounts/do-fetch-index-state])
      :invalid
      [:p "Invalid"]
 
      :loaded
-     (let [items @(rf/subscribe [::e.accounts/items])]
+     (let [items @(st/subscribe store [::e.accounts/items])]
        (comment [:label.label label])
        [:div.select
-        (into [:select {:value (or @(rf/subscribe [field]) "")
-                        :on-change #(rf/dispatch [change-handler (target-value %)])}]
+        (into [:select {:value (or @(st/subscribe store [field]) "")
+                        :on-change #(st/dispatch store [change-handler (target-value %)])}]
               (concat [[:option {:value ""} ""]]
                       (for [{:keys [db/id dinsro.spec.accounts/name]} items]
                         ^{:key id} [:option {:value id} name])))])
@@ -88,23 +89,23 @@
      [:p "Unknown state"])))
 
 (defn currency-selector-loaded
-  [label field change-handler]
-  (let [currencies @(rf/subscribe [::e.currencies/items])]
+  [store label field change-handler]
+  (let [currencies @(st/subscribe store [::e.currencies/items])]
     [:<>
      [:label.label label]
      [:div.control
       [:div.select
-       (into [:select {:value (or @(rf/subscribe [field]) "")
-                       :on-change #(rf/dispatch [change-handler (target-value %)])}]
+       (into [:select {:value (or @(st/subscribe store [field]) "")
+                       :on-change #(st/dispatch store [change-handler (target-value %)])}]
              (concat [[:option {:value ""} "sats"]]
                      (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
                        ^{:key id} [:option {:value id} name])))]]]))
 
 (defn currency-selector
-  ([label field]
-   (currency-selector label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (let [state @(rf/subscribe [::e.currencies/do-fetch-index-state])]
+  ([store label field]
+   (currency-selector store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (let [state @(st/subscribe store [::e.currencies/do-fetch-index-state])]
      (condp = state
        :invalid
        [:p "Invalid"]
@@ -115,26 +116,26 @@
        [:p "Unknown state"]))))
 
 (defn user-selector-
-  [label field change-handler items]
-  (let [value (or @(rf/subscribe [field]) "")]
+  [store label field change-handler items]
+  (let [value (or @(st/subscribe store [field]) "")]
     [:div.field
      [:label.label label]
      [:div.control
       [:div.select
        (into
         [:select {:value value
-                  :on-change #(rf/dispatch [change-handler (target-value %)])}]
+                  :on-change #(st/dispatch store [change-handler (target-value %)])}]
         (concat [[:option {:value ""} ""]]
                 (for [{:keys [db/id dinsro.spec.users/name]} items]
                   ^{:key id}
                   [:option {:value id} name])))]]]))
 
 (defn user-selector
-  ([label field]
-   (user-selector label field (#'rfu/kw-prefix field "set-")))
-  ([label field change-handler]
-   (let [items @(rf/subscribe [::e.users/items])
-         state @(rf/subscribe [::e.users/do-fetch-index-state])]
+  ([store label field]
+   (user-selector store label field (#'rfu/kw-prefix field "set-")))
+  ([store label field change-handler]
+   (let [items @(st/subscribe store [::e.users/items])
+         state @(st/subscribe store [::e.users/do-fetch-index-state])]
      (condp = state
        :invalid [:p "Invalid"]
        :loaded  [user-selector- label field change-handler items]
@@ -159,16 +160,16 @@
   (str (.getHours date) ":" (.getMinutes date)))
 
 (defn close-button
-  [key]
+  [store key]
   [:a.delete.is-pulled-right
-   {:on-click #(rf/dispatch [key false])}])
+   {:on-click #(st/dispatch store [key false])}])
 
 (defn show-form-button
-  ([state]
-   (show-form-button state (#'rfu/kw-prefix state "set-")))
-  ([state change]
-   (when-not @(rf/subscribe [state])
-     [:a.is-pulled-right {:on-click #(rf/dispatch [change true])}
+  ([store state]
+   (show-form-button store state (#'rfu/kw-prefix state "set-")))
+  ([store state change]
+   (when-not @(st/subscribe store [state])
+     [:a.is-pulled-right {:on-click #(st/dispatch store [change true])}
       (tr [:show-form "Show"])])))
 
 (defn error-message-box

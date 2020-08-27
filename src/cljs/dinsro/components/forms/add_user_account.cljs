@@ -7,25 +7,26 @@
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-   [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]))
+   [dinsro.store :as st]
+   [dinsro.translations :refer [tr]]))
 
 (defn form
-  [id]
-  (let [form-data (assoc @(rf/subscribe [::e.f.add-user-account/form-data]) :user-id id)]
-    (when @(rf/subscribe [::e.f.add-user-account/shown?])
+  [store id]
+  (let [form-data (assoc @(st/subscribe store [::e.f.add-user-account/form-data]) :user-id id)]
+    (when @(st/subscribe store [::e.f.add-user-account/shown?])
       [:<>
-       [c/close-button ::e.f.add-user-account/set-shown?]
-       [c.debug/debug-box form-data]
+       [c/close-button store ::e.f.add-user-account/set-shown?]
+       [c.debug/debug-box store form-data]
        [:div.field>div.control
-        [c/text-input (tr [:name]) ::s.e.f.create-account/name]]
+        [c/text-input store (tr [:name]) ::s.e.f.create-account/name]]
        [:div.field>div.control
-        [c/number-input (tr [:initial-value]) ::s.e.f.create-account/initial-value]]
+        [c/number-input store (tr [:initial-value]) ::s.e.f.create-account/initial-value]]
        [:div.field>div.control
-        [c/currency-selector (tr [:currency]) ::s.e.f.create-account/currency-id]]
+        [c/currency-selector store (tr [:currency]) ::s.e.f.create-account/currency-id]]
        [:div.field>div.control
-        [c/primary-button (tr [:submit]) [::e.accounts/do-submit form-data]]]])))
+        [c/primary-button store (tr [:submit]) [::e.accounts/do-submit form-data]]]])))
 
 (s/fdef form
-  :args (s/cat :id ::ds/id)
+  :args (s/cat :store #(instance? st/Store %)
+               :id ::ds/id)
   :ret vector?)

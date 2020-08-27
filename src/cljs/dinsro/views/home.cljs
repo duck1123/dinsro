@@ -37,10 +37,10 @@
           (let [name (some-> user ::s.users/name)]
             [:h1.title "Welcome, " name])
           [:div.box.is-danger "User is not loaded"])
-        [c.account-picker/section]]
+        [c.account-picker/section store]]
        [:div.box
         [:h1 (tr [:home-page])]
-        [:p "Not authenticated. " [:a {:href (kf/path-for [:login-page])} "login"]]])]))
+        [:p "Not authenticated. " [:a {:href (st/path-for store [:login-page])} "login"]]])]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

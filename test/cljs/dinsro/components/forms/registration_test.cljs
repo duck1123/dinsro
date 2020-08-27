@@ -4,16 +4,22 @@
    [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.registration :as c.f.registration]
+   [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.spec :as ds]
+   [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
 (cards/header "Registration Form Components" [])
 
-(let [form-data (ds/gen-key ::e.f.registration/form-data)]
+(let [form-data (ds/gen-key ::e.f.registration/form-data)
+      store (doto (mock-store)
+              e.debug/init-handlers!
+              e.f.registration/init-handlers!
+              )]
   (defcard form-data-card form-data)
 
   (defcard-rg form
     (fn []
       [error-boundary
-       (c.f.registration/form)])))
+       [c.f.registration/form store]])))

@@ -5,11 +5,11 @@
    [dinsro.components.links :as c.links]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.spec.rate-sources :as s.rate-sources]
-   [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]))
+   [dinsro.store :as st]
+   [dinsro.translations :refer [tr]]))
 
 (defn index-line
-  [item]
+  [store item]
   (let [id (:db/id item)
         name (::s.rate-sources/name item)
         url (::s.rate-sources/url item)
@@ -18,15 +18,15 @@
      [:td id]
      [:td name]
      [:td url]
-     [:td [c.links/currency-link currency-id]]
+     [:td [c.links/currency-link store currency-id]]
      [:td
       [:button.button
-       {:on-click #(rf/dispatch [::e.rate-sources/do-run-source id])}
+       {:on-click #(st/dispatch store [::e.rate-sources/do-run-source id])}
        "Run"]
-      [c.buttons/delete-rate item]]]))
+      [c.buttons/delete-rate store item]]]))
 
 (defn rate-sources-table
-  [items]
+  [store items]
   (if-not (seq items)
     [:p (tr [:no-rate-sources])]
     [:table.table
@@ -38,17 +38,17 @@
       [:th (tr [:actions])]]
      (into
       [:tbody]
-      (for [item items] ^{:key (:db/id item)} [index-line item]))]))
+      (for [item items] ^{:key (:db/id item)} [index-line store item]))]))
 
 (defn section-inner
-  [items]
+  [store items]
   [:div.box
    [:h2.title.is-2 (tr [:rate-sources])]
    [:<>
-    [c.debug/debug-box @items]
-    (rate-sources-table @items)]])
+    [c.debug/debug-box store @items]
+    (rate-sources-table store @items)]])
 
 (defn section
-  []
-  (let [items (rf/subscribe [::e.rate-sources/items])]
-    [section-inner items]))
+  [store]
+  (let [items (st/subscribe store [::e.rate-sources/items])]
+    [section-inner store items]))

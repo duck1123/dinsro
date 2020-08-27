@@ -5,10 +5,10 @@
    [dinsro.translations :refer [tr]]))
 
 (defn show-user
-  [user]
+  [store user]
   (let [{:keys [dinsro.spec.users/name dinsro.spec.users/email]} user]
     [:<>
-     [c.debug/debug-box user]
+     [c.debug/debug-box store user]
      [:h1 name]
      [:p "(" email ")"]
-     (c.debug/hide [c.buttons/delete-user user])]))
+     (c.debug/hide store [c.buttons/delete-user store user])]))

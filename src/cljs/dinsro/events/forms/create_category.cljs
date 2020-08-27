@@ -1,18 +1,8 @@
 (ns dinsro.events.forms.create-category
   (:require
    [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
-
-(rfu/reg-basic-sub ::s.e.f.create-category/name)
-(rfu/reg-set-event ::s.e.f.create-category/name)
-
-(rfu/reg-basic-sub ::s.e.f.create-category/user-id)
-(rfu/reg-set-event ::s.e.f.create-category/user-id)
-
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-category/name
@@ -21,5 +11,16 @@
   {:name          name
    :user-id       (int user-id)})
 
-(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
+
+(defn init-handlers!
+  [store]
+  (doto store
+      (st/reg-basic-sub ::s.e.f.create-category/name)
+      (st/reg-set-event ::s.e.f.create-category/name)
+      (st/reg-basic-sub ::s.e.f.create-category/user-id)
+      (st/reg-set-event ::s.e.f.create-category/user-id)
+      (st/reg-basic-sub ::shown?)
+      (st/reg-set-event ::shown?)
+      (st/reg-sub ::form-data form-data-sub))
+  store)

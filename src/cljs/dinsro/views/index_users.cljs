@@ -9,7 +9,6 @@
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]
    [reitit.core :as rc]))
 
 (defn init-page
@@ -25,19 +24,19 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-users]])
+   [c.buttons/fetch-users store]])
 
 (defn page
-  [_store _match]
-  (let [users @(rf/subscribe [::e.users/items])]
+  [store _match]
+  (let [users @(st/subscribe store [::e.users/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
+     (c.debug/hide store [load-buttons store])
      [:div.box
       [:h1 (tr [:users-page "Users Page"])]
       [:hr]
-      [index-users users]]]))
+      [index-users store users]]]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

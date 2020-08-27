@@ -31,11 +31,11 @@
   :start [::init-page]})
 
 (defn loading-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-users]])
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-currencies store]
+   [c.buttons/fetch-users store]])
 
 (s/fdef loading-buttons
   :ret vector?)
@@ -44,7 +44,7 @@
   [store _match]
   (if-let [user-id @(st/subscribe store [:dinsro.events.authentication/auth-id])]
     [:section.section>div.container>div.content
-     (c.debug/hide [loading-buttons])
+     (c.debug/hide store [loading-buttons store])
 
      (let [state @(st/subscribe store [::e.accounts/do-fetch-index-state])]
        (condp = state
@@ -53,7 +53,7 @@
 
          :loaded
          (let [accounts @(st/subscribe store [::e.accounts/items-by-user user-id])]
-           [c.user-accounts/section user-id accounts])
+           [c.user-accounts/section store user-id accounts])
 
          [:p "Unknown state: " state]))]
     [:p "Not Authenticated"]))
