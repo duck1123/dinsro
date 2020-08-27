@@ -7,9 +7,9 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
    [dinsro.spec.users :as s.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [kee-frame.core :as kf]))
 
 (defn init-page
   [_ _]
@@ -26,12 +26,12 @@
   :start [::init-page]})
 
 (defn page
-  [_store _match]
-  (let [auth-id @(rf/subscribe [::e.authentication/auth-id])]
+  [store _match]
+  (let [auth-id @(st/subscribe store [::e.authentication/auth-id])]
     [:section.section>div.container>div.content
      (if auth-id
        [:<>
-        (if-let [user @(rf/subscribe [::e.users/item auth-id])]
+        (if-let [user @(st/subscribe store [::e.users/item auth-id])]
           (let [name (some-> user ::s.users/name)]
             [:h1.title "Welcome, " name])
           [:div.box.is-danger "User is not loaded"])
