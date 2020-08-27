@@ -37,20 +37,23 @@
 (deftest create-handler-valid
   (let [request (ds/gen-key ::s.a.accounts/create-request-valid)
         response (a.accounts/create-handler request)]
-    (is (= status/ok (:status response)))
-    #_(is (= nil response))))
+    (is (= status/ok (:status response)))))
+
+(deftest create-handler-no-initial-value
+  (let [request (assoc (ds/gen-key ::s.a.accounts/create-request-valid)
+                       ::s.accounts/initial-value 0)
+        response (a.accounts/create-handler request)]
+    (is (= status/ok (:status response)))))
 
 (deftest create-handler-no-currency
   (let [request (ds/gen-key ::s.a.accounts/create-request-valid-no-currency)
         response (a.accounts/create-handler request)]
-    (is (= status/ok (:status response)))
-    #_(is (= nil response))))
+    (is (= status/ok (:status response)))))
 
 (deftest create-handler-invalid
   (let [request {:params {}}
         response (a.accounts/create-handler request)]
-    (is (= status/bad-request (:status response)))
-    #_(is (= nil response))))
+    (is (= status/bad-request (:status response)))))
 
 (deftest read-handler
   (let [account (mocks/mock-account)

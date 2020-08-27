@@ -36,8 +36,10 @@
 
 (s/def :create-account/params ::create-params)
 (s/def ::create-request (s/keys :req-un [:create-account/params]))
+(def create-request ::create-request)
 
 (s/def ::create-response (s/keys))
+(def create-response ::create-response)
 
 ;; Read
 

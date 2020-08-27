@@ -11,14 +11,15 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::initial-value (s/or ::ds/valid-double int?))
+(s/def ::initial-value (s/or :double double? :zero zero?))
+
 (def initial-value ::initial-value)
 (def initial-value-spec
   {:db/ident       ::initial-value
    :db/valueType   :db.type/number
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id (s/or ::ds/id zero?))
+(s/def ::currency-id (s/or :id ::ds/id :zero zero?))
 (def currency-id ::currency-id)
 (s/def ::currency (s/keys :req [:db/id]))
 (def currency ::currency)
