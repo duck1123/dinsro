@@ -5,6 +5,7 @@
    [dinsro.spec.currencies-test]
    [dinsro.spec.rates-test]
    [dinsro.spec.transactions-test]
+   [dinsro.spec.users-test]
    [taoensso.timbre :as timbre]))
 
 (cards/header "Specs" [])
