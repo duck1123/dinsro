@@ -70,7 +70,7 @@
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.40"
                   :exclusions [org.slf4j/slf4j-api]]
-                 [re-frame "0.12.0"]
+                 [jfigueroama/re-frame "0.11.0-rc3-SNAPSHOT"]
                  [reframe-utils "0.2.2"
                   :exclusions [args4j
                                com.cognitect/transit-cljs]]
