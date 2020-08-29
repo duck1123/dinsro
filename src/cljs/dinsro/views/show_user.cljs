@@ -13,6 +13,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]))
 
@@ -87,5 +88,10 @@
        [:p "unknown state"])]))
 
 (s/fdef page
-  :args (s/cat :match ::view-map)
+  :args (s/cat :store #(instance? st/Store %)
+               :match ::view-map
+
+               ;; #(instance? rc/Match %)
+
+               )
   :ret vector?)

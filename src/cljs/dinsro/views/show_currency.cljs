@@ -16,6 +16,7 @@
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.spec.views.show-currency :as s.v.show-currency]
+   [dinsro.store :as st]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
@@ -89,4 +90,10 @@
 
 (s/fdef page
   :args (s/cat :match ::s.v.show-currency/view-map)
+  :ret vector?)
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match ::s.v.show-currency/view-map ;; #(instance? rc/Match %)
+               )
   :ret vector?)

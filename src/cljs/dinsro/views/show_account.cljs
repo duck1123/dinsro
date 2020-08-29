@@ -12,10 +12,9 @@
    [dinsro.events.users :as e.users]
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.spec.views.show-account :as s.v.show-account]
-   [dinsro.store :refer [Store]]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [kee-frame.core :as kf]))
 
 
 (defn init-page
@@ -49,10 +48,10 @@
   (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
 
 (defn page
-  [_store match]
+  [store match]
   (let [{{:keys [id]} :path-params} match
         id (int id)
-        account @(rf/subscribe [::e.accounts/item id])]
+        account @(st/subscribe store [::e.accounts/item id])]
     [:section.section>div.container>div.content
      (c.debug/hide [load-buttons])
      [:div.box
@@ -60,11 +59,12 @@
       (when account
         [show-account account])]
      (when account
-       (let [items @(rf/subscribe [::e.transactions/items-by-account id])
+       (let [items @(st/subscribe store [::e.transactions/items-by-account id])
              transactions (sort-by ::s.transactions/date items)]
          [c.account-transactions/section id transactions]))]))
 
 (s/fdef page
-  :args (s/cat :store #(instance? Store %)
-               :match ::s.v.show-account/view-map)
+  :args (s/cat :store #(instance? st/Store %)
+               :match ::s.v.show-account/view-map ;; #(instance? rc/Match %)
+               )
   :ret vector?)

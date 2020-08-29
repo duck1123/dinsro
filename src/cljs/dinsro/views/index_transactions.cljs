@@ -11,9 +11,10 @@
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.transactions :as s.transactions]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [reitit.core :as rc]))
 
 (defn init-page
   [_ _]
@@ -55,12 +56,13 @@
   :ret vector?)
 
 (defn page
-  [_store _match]
+  [store _match]
   [:section.section>div.container>div.content
    (c.debug/hide [load-buttons])
-   (let [transactions (or @(rf/subscribe [::e.transactions/items]) [])]
+   (let [transactions (or @(st/subscribe store [::e.transactions/items]) [])]
      [section-inner transactions])])
 
 (s/fdef page
-  :args (s/cat)
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
   :ret vector?)

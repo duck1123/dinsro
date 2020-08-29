@@ -3,8 +3,10 @@
    [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.forms.settings :as c.f.settings]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
+   [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -26,5 +28,6 @@
     [c.f.settings/form]]])
 
 (s/fdef page
-  :args (s/cat)
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
   :ret vector?)

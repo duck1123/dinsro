@@ -8,8 +8,8 @@
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
@@ -41,23 +41,24 @@
   :ret vector?)
 
 (defn page
-  [_store _match]
-  (if-let [user-id @(rf/subscribe [:dinsro.events.authentication/auth-id])]
+  [store _match]
+  (if-let [user-id @(st/subscribe store [:dinsro.events.authentication/auth-id])]
     [:section.section>div.container>div.content
      (c.debug/hide [loading-buttons])
 
-     (let [state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
+     (let [state @(st/subscribe store [::e.accounts/do-fetch-index-state])]
        (condp = state
          :invalid
          [:p "Invalid"]
 
          :loaded
-         (let [accounts @(rf/subscribe [::e.accounts/items-by-user user-id])]
+         (let [accounts @(st/subscribe store [::e.accounts/items-by-user user-id])]
            [c.user-accounts/section user-id accounts])
 
          [:p "Unknown state: " state]))]
     [:p "Not Authenticated"]))
 
 (s/fdef page
-  :args (s/cat :match #(instance? rc/Match %))
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
   :ret vector?)

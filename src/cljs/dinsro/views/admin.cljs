@@ -1,5 +1,6 @@
 (ns dinsro.views.admin
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
@@ -14,9 +15,11 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
+   [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -63,3 +66,8 @@
    [c.admin-index-currencies/section]
    [c.admin-index-rate-sources/section]
    [users-section]])
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

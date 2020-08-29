@@ -1,14 +1,17 @@
 (ns dinsro.views.login
   (:require
    [cemerick.url :as url]
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.debug :as c.debug]
    [dinsro.components.forms.login :as c.f.login]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.forms.login :as e.f.login]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
+   [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -32,3 +35,8 @@
      [:div.container
       (c.debug/hide [:p "Return To: " return-to])
       [c.f.login/form return-to]]]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

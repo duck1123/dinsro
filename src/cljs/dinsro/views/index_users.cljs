@@ -1,13 +1,16 @@
 (ns dinsro.views.index-users
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
    [dinsro.components.index-users :refer [index-users]]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reitit.core :as rc]))
 
 (defn init-page
   [_ _]
@@ -35,3 +38,8 @@
       [:h1 (tr [:users-page "Users Page"])]
       [:hr]
       [index-users users]]]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

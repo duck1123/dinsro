@@ -1,5 +1,6 @@
 (ns dinsro.views.home
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.account-picker :as c.account-picker]
    [dinsro.events.accounts :as e.accounts]
@@ -9,7 +10,8 @@
    [dinsro.spec.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]))
+   [kee-frame.core :as kf]
+   [reitit.core :as rc]))
 
 (defn init-page
   [_ _]
@@ -39,3 +41,8 @@
        [:div.box
         [:h1 (tr [:home-page])]
         [:p "Not authenticated. " [:a {:href (kf/path-for [:login-page])} "login"]]])]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)
