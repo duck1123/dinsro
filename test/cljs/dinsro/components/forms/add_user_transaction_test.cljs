@@ -27,5 +27,6 @@
 
 (defcard-rg form
   ;; "Create a transaction when the user is already provided"
-  [error-boundary
-   [c.f.add-user-transaction/form-shown]])
+  (fn []
+    [error-boundary
+     [c.f.add-user-transaction/form-shown]]))

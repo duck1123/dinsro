@@ -13,8 +13,3 @@
       "Components"]]]
 
    [:ul.box]])
-
-(defcard-rg status
-  "**Documentation**"
-  (fn [name] [:p name])
-  {:name "foo"})

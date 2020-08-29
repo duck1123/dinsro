@@ -26,5 +26,6 @@
   (defcard account account)
 
   (defcard-rg show-account
-    [error-boundary
-     [c.show-account/show-account account]]))
+    (fn []
+      [error-boundary
+       [c.show-account/show-account account]])))

@@ -31,17 +31,22 @@
 
 (let [account (ds/gen-key ::s.accounts/item)]
   (defcard account account)
+
   (defcard-rg c.admin-index-accounts/row-line
-    [c.admin-index-accounts/row-line account]))
+    (fn []
+      [error-boundary
+       [c.admin-index-accounts/row-line account]])))
 
 (let [accounts (ds/gen-key (s/coll-of ::s.accounts/item))]
-  (comment (defcard accounts accounts))
+  (defcard accounts accounts)
+
   (defcard-rg c.admin-index-accounts/index-accounts
-    [c.admin-index-accounts/index-accounts accounts]))
+    (fn []
+      [error-boundary
+       [c.admin-index-accounts/index-accounts accounts]])))
 
 (defcard-rg c.admin-index-accounts/section
   "**Admin Index Rate Sources**"
   (fn []
     [error-boundary
-     [c.admin-index-accounts/section]])
-  {})
+     [c.admin-index-accounts/section]]))

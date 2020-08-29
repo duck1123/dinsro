@@ -15,5 +15,6 @@
    [:ul.box]])
 
 (defcard-rg form
-  [error-boundary
-   [c.f.settings/form]])
+  (fn []
+    [error-boundary
+     [c.f.settings/form]]))

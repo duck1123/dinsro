@@ -5,6 +5,7 @@
    [dinsro.components.admin-index-accounts-test]
    [dinsro.components.admin-index-categories-test]
    [dinsro.components.admin-index-rate-sources-test]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.currency-rates-test]
    [dinsro.components.index-transactions-test]
    [dinsro.components.rate-chart-test]
@@ -12,8 +13,6 @@
    [dinsro.components.show-currency-test]
    [dinsro.components.status-test]
    [devcards.core :as dc :refer-macros [defcard-rg deftest]]
-   [re-frame.core :as rf]
-   [reagent.core :as r]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title
@@ -66,15 +65,9 @@
       "Status Components"]]]])
 
 (defcard-rg checkbox-input
-  (with-redefs [rf/subscribe (fn [x] (timbre/spy :info x))]
-    (r/as-element
-     [:div
-      [:p "Foo"]
-      #_[c/checkbox-input "foo" :foo]])))
-
-#_(defcard-rg account-selector
-  [c/account-selector "foo" :foo]
-  )
+  (fn []
+    [error-boundary
+     [c/checkbox-input "foo" :foo]]))
 
 (deftest account-selector
   (let [label "foo"

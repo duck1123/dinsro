@@ -17,5 +17,4 @@
   "**Admin Index Rate Sources**"
   (fn []
     [error-boundary
-     [c.admin-index-rate-sources/section]])
-  {})
+     [c.admin-index-rate-sources/section]]))

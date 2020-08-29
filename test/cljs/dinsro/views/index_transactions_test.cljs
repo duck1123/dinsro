@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
+   [dinsro.components.boundary :refer [error-boundary]]
    [devcards.core :refer-macros [defcard-rg deftest]]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
@@ -22,14 +23,18 @@
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))]
 
   (defcard-rg v.index-transactions/section-inner
-    [v.index-transactions/section-inner items])
+    (fn []
+      [error-boundary
+       [v.index-transactions/section-inner items]]))
 
-  (deftest page
-    (let [store (mock-store)
-          match nil]
+  (let [store (mock-store)
+        match nil]
+    (deftest page
       (is (vector? (v.index-transactions/page store match)))))
 
-  (defcard-rg page-card
-    (let [store (mock-store)
-          match nil]
-      [v.index-transactions/page store match])))
+  (let [store (mock-store)
+        match nil]
+    (defcard-rg page-card
+      (fn []
+        [error-boundary
+         [v.index-transactions/page store match]]))))

@@ -24,5 +24,6 @@
   (defcard item item)
 
   (defcard-rg show-currency
-    [error-boundary
-     [c.show-currency/show-currency item]]))
+    (fn []
+      [error-boundary
+       [c.show-currency/show-currency item]])))

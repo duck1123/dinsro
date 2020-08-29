@@ -16,11 +16,6 @@
 
    [:ul.box]])
 
-(defcard-rg form
-  ;; "**Documentation**"
-  (fn [name] [:p name])
-  {:name "foo"})
-
 (deftest page
   (let [store (mock-store)
         match nil]

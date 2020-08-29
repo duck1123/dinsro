@@ -26,5 +26,6 @@
   (defcard user user)
 
   (defcard-rg show-user
-    [error-boundary
-     [c.show-user/show-user user]]))
+    (fn []
+      [error-boundary
+       [c.show-user/show-user user]])))

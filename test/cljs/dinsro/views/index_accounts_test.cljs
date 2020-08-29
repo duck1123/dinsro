@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.store.mock :refer [mock-store]]
@@ -35,4 +36,6 @@
     (is (vector? (v.index-accounts/page store match))))
 
   (defcard-rg page-card
-    [v.index-accounts/page store match]))
+    (fn []
+      [error-boundary
+       [v.index-accounts/page store match]])))
