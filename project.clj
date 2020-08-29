@@ -27,6 +27,7 @@
                  [io.grpc/grpc-core "1.23.0"
                   :exclusions [com.google.errorprone/error_prone_annotations io.grpc/grpc-api]]
                  [io.replikativ/datahike "0.2.1"]
+                 [jfigueroama/re-frame "0.11.0-rc3-SNAPSHOT"]
                  [kee-frame "0.4.0"
                   :exclusions [args4j
                                cljs-ajax

@@ -1,26 +1,27 @@
-(ns dinsro.store.reframe
+(ns dinsro.store.mock
   (:require
    [dinsro.store :refer [Store]]
-   [re-frame.core :as rf]
+   [re-frame-lib.core :as rfl]
    [taoensso.timbre :as timbre]))
 
-(deftype ReFrameStore []
+(deftype MockStore [state]
   Store
 
-  (get-state [_] nil)
+  (get-state [_] state)
 
   (subscribe [_ selector]
     (timbre/infof "reframe sub - %s" selector)
-    (or (rf/subscribe selector)
+    (or (rfl/subscribe state selector)
         (throw (ex-info (str "No handler - " selector) {:selector selector}))))
 
   (dispatch [_ selector]
     (timbre/infof "reframe dispatch - %s" selector)
-    (rf/dispatch selector))
+    (rfl/dispatch state selector))
 
   (reg-sub [_ selector handler]
-    (rf/reg-sub selector handler)))
+    (rfl/reg-sub state selector handler)))
 
-(defn reframe-store
+(defn mock-store
   []
-  (->ReFrameStore))
+  (let [state (rfl/new-state)]
+    (->MockStore state)))
