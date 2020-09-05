@@ -36,5 +36,8 @@
 (s/def ::item (s/keys :req [:db/id ::name ::url ::currency]))
 (def item ::item)
 
+(s/def ::items (s/coll-of ::item))
+(def items ::items)
+
 (def schema
   [name-spec url-spec currency-spec])
