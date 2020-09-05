@@ -2,23 +2,16 @@
   (:require
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :as cards]
+   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-transactions :as v.index-transactions]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Index Transactions View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
-
-   [:ul.box]])
+(cards/header "Index Transactions View" [])
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))]
 

@@ -2,23 +2,13 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :as cards]
    [dinsro.spec :as ds]
    [dinsro.spec.currencies :as s.currencies]
    [expound.alpha :as expound]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Currency Spec"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec_test"}
-      "Specs"]]]
-
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec.currencies_test"}
-      "Currency Spec"]]]])
+(cards/header "Currency Spec" [])
 
 (defcard item
   (ds/gen-key ::s.currencies/item))

@@ -1,15 +1,8 @@
 (ns dinsro.components.status-test
   (:require
    [day8.re-frame.http-fx]
+   [dinsro.cards :as cards]
    [devcards.core :refer-macros [defcard-rg]]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Status Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]]
-
-   [:ul.box]])
+(cards/header "Status Components" [])

@@ -2,17 +2,13 @@
   (:require
    [cljs.test :refer [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards]
    [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.transactions :as s.a.transactions]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1 "Add User Transaction Form Events"]
-   [:ul
-    [:a {:href "devcards.html#!/dinsro.components.forms.registration_test"}
-     "Form Component"]]])
+(cards/header "Add User Transaction Form Events" [])
 
 (defcard params
   (ds/gen-key ::s.a.transactions/create-params-valid))

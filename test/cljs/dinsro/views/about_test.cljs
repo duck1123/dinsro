@@ -1,20 +1,13 @@
 (ns dinsro.views.about-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard-rg deftest]]
+   [devcards.core :refer-macros [deftest]]
+   [dinsro.cards :as cards]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.about :as about]
    [pjstadig.humane-test-output]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "About View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
-
-   [:ul.box]])
+(cards/header "About View" [])
 
 (deftest about-page-test
   (let [store (mock-store)

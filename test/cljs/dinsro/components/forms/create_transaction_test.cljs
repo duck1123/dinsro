@@ -1,6 +1,7 @@
 (ns dinsro.components.forms.create-transaction-test
   (:require
-   [devcards.core :refer-macros [defcard defcard-rg]]
+   [devcards.core :refer-macros [defcard]]
+   [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
@@ -8,13 +9,7 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Create Transaction Form Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]]])
+(cards/header "Create Transaction Form Components" [])
 
 (defcard a
   (ds/gen-key ::e.f.create-transaction/form-data))

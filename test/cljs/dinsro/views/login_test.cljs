@@ -1,20 +1,13 @@
 (ns dinsro.views.login-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard-rg deftest]]
+   [devcards.core :refer-macros [deftest]]
+   [dinsro.cards :as cards]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.login :as v.login]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Login View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
-
-   [:ul.box]])
+(cards/header "Login View" [])
 
 (deftest page
   (let [store (mock-store)

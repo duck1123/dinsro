@@ -1,28 +1,8 @@
 (ns dinsro.events.forms-test
   (:require
-   [devcards.core :refer-macros [defcard-rg]]
+   [dinsro.cards :as cards]
    [dinsro.events.forms.add-user-transaction-test]
    [dinsro.events.forms.registration-test]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Form Events"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.forms_test"}
-      "Form Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.events_test"}
-      "Events"]]]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.events.forms.add_user_account_test"}
-      "Add User Account Forms Events"]]
-
-    [:li
-     [:a {:href "devcards.html#!/dinsro.events.forms.registration_test"}
-      "Registration Form Events"]]]])
+(cards/header "Form Events" [])

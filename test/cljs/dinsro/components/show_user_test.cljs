@@ -1,24 +1,14 @@
 (ns dinsro.components.show-user-test
   (:require
    [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-user :as c.show-user]
    [dinsro.spec.users :as s.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Show User Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]]
-
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec.users_test"}
-      "Users Spec"]]]])
+(cards/header "Show User Components" [])
 
 (let [user {::s.users/name "Bart"
                ::s.users/user {:db/id 1}

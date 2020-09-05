@@ -1,24 +1,14 @@
 (ns dinsro.components.show-account-test
   (:require
    [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-account :as c.show-account]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Form Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]]
-
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.events.show_account_test"}
-      "Show Account events"]]]])
+(cards/header "Form Components" [])
 
 (let [account {::s.accounts/name "Bart"
                ::s.accounts/user {:db/id 1}

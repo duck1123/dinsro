@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.spec :as ds]
@@ -12,15 +13,7 @@
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Index Accounts View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
-
-   [:ul.box]])
+(cards/header "Index Accounts View" [])
 
 (let [items (ds/gen-key (s/coll-of ::s.accounts/item :count 5))
       template nil

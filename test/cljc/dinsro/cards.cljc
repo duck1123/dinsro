@@ -72,7 +72,9 @@
     "Transactions Events"]])
 
 (def form-headers
-  [["dinsro.components.forms.registration_test"
+  [["dinsro.components.forms.add_user_account_test"
+    "Add User Account Forms Components"]
+   ["dinsro.components.forms.registration_test"
     "Registration Component"]])
 
 (def spec-headers
@@ -104,10 +106,15 @@
     "Registration View"]])
 
 (def form-event-headers
-  [["dinsro.events.forms.add_user_account_test"
+  [
+   ["dinsro.events.forms.add_user_account_test"
     "Add User Account Forms Events"]
    ["dinsro.events.forms.add_user_transaction_test"
     "Add User Transaction Forms Events"]
+   ["dinsro.events.forms.admin_create_account_test"
+    "Admin Create Account Form Events"]
+   ["dinsro.events.forms.create_account_test"
+    "Create Account Form Events"]
    ["dinsro.events.forms.registration_test"
      "Registration Form Events"]])
 
@@ -144,4 +151,4 @@
 (defmacro header
   [title filters]
   `(devcards.core/defcard-rg title
-     (dinsro.cards/card-body ~title ~filters)))
+     (fn [] (dinsro.cards/card-body ~title ~filters))))

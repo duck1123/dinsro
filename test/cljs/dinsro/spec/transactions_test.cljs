@@ -3,26 +3,13 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
    [expound.alpha :as expound]
    [tick.alpha.api :as tick]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Transaction Spec"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec_test"}
-      "Specs"]]]
-
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.show_transaction_test"}
-      "Show Transaction Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec.transactions_test"}
-      "Transaction Specs"]]]])
+(cards/header "Transaction Spec" [])
 
 (defcard generated-item
   (ds/gen-key ::s.transactions/item))
