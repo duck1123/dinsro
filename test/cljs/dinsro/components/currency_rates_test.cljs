@@ -12,7 +12,6 @@
              [2 2]
              [3 4]]]
   (defcard-rg c.currency-rates/section
-    "**Currency Rates Section**"
     (fn []
       [error-boundary
        (c.currency-rates/section currency-id rates)])))

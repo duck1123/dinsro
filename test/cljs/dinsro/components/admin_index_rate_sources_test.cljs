@@ -9,7 +9,6 @@
 (cards/header "Admin Index Rate Source Components" [])
 
 (defcard-rg c.admin-index-rate-sources/form
-  "**Admin Index Rate Sources**"
   (fn []
     [error-boundary
      (c.admin-index-rate-sources/section)]))

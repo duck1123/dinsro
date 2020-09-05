@@ -28,7 +28,6 @@
        (c.admin-index-accounts/index-accounts accounts)])))
 
 (defcard-rg c.admin-index-accounts/section
-  "**Admin Index Rate Sources**"
   (fn []
     [error-boundary
      (c.admin-index-accounts/section)]))

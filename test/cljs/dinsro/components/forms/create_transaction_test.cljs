@@ -15,7 +15,6 @@
   (ds/gen-key ::e.f.create-transaction/form-data))
 
 (defcard create-transaction-card
-  "**Create Transaction**"
   (fn []
     [error-boundary
      (c.f.create-transaction/form)]))
