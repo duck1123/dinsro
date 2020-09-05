@@ -34,4 +34,4 @@
   (defcard-rg page-card
     (fn []
       [error-boundary
-       [v.index-accounts/page store match]])))
+       (v.index-accounts/page store match)])))

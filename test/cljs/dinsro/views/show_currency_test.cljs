@@ -42,4 +42,4 @@
     (defcard-rg page-card
       (fn []
         [error-boundary
-         [v.show-currency/page store match]]))))
+         (v.show-currency/page store match)]))))

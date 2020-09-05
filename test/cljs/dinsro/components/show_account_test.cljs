@@ -18,4 +18,4 @@
   (defcard-rg show-account
     (fn []
       [error-boundary
-       [c.show-account/show-account account]])))
+       (c.show-account/show-account account)])))

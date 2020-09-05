@@ -18,4 +18,4 @@
   (defcard-rg show-user
     (fn []
       [error-boundary
-       [c.show-user/show-user user]])))
+       (c.show-user/show-user user)])))

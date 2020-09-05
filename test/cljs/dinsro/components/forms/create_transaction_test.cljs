@@ -18,4 +18,4 @@
   "**Create Transaction**"
   (fn []
     [error-boundary
-     [c.f.create-transaction/form]]))
+     (c.f.create-transaction/form)]))

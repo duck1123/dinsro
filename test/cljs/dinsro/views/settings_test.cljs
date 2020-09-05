@@ -20,4 +20,4 @@
   (defcard-rg page-card
     (fn []
       [error-boundary
-       [v.settings/page store match]])))
+       (v.settings/page store match)])))

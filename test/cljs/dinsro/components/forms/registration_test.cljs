@@ -16,4 +16,4 @@
   (defcard-rg form
     (fn []
       [error-boundary
-       [c.f.registration/form]])))
+       (c.f.registration/form)])))

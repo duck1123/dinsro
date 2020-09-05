@@ -15,4 +15,4 @@
     "**Currency Rates Section**"
     (fn []
       [error-boundary
-       [c.currency-rates/section currency-id rates]])))
+       (c.currency-rates/section currency-id rates)])))

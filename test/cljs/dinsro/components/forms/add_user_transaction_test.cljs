@@ -10,11 +10,12 @@
 
 (cards/header "Add User Transaction Form Components" [])
 
-(defcard form-data
-  (ds/gen-key ::e.f.add-user-transaction/form-data))
+(let [form-data (ds/gen-key ::e.f.add-user-transaction/form-data)]
+
+  (defcard form-data form-data))
 
 (defcard-rg form
   ;; "Create a transaction when the user is already provided"
   (fn []
     [error-boundary
-     [c.f.add-user-transaction/form-shown]]))
+     (c.f.add-user-transaction/form-shown form-data)]))

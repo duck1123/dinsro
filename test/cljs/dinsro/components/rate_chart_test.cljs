@@ -19,4 +19,4 @@
   (defcard-rg rate-chart
     (fn []
       [error-boundary
-       [c.rate-chart/rate-chart data]])))
+       (c.rate-chart/rate-chart data)])))

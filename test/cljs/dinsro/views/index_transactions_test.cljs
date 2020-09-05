@@ -31,4 +31,4 @@
     (defcard-rg page-card
       (fn []
         [error-boundary
-         [v.index-transactions/page store match]]))))
+         (v.index-transactions/page store match)]))))
