@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.add-user-transaction-test
   (:require
    [cljs.test :refer [is]]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [devcards.core :refer-macros [defcard deftest]]
    [dinsro.cards :as cards]
    [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.spec :as ds]
