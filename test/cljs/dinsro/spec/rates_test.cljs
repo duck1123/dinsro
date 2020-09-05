@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :as dc :refer-macros [defcard deftest]]
+   [devcards.core :refer-macros [defcard deftest]]
    [dinsro.spec :as ds]
    [dinsro.spec.rates :as s.rates]
    [expound.alpha :as expound]

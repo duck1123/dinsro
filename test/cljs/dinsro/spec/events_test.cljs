@@ -1,12 +1,6 @@
 (ns dinsro.spec.events-test
   (:require
-   ;; [dinsro.spec.events.accounts-test]
-   ;; [dinsro.spec.events.categories-test]
-   ;; [dinsro.spec.events.rates-test]
-   ;; [dinsro.spec.events.rate-sources-test]
-   ;; [dinsro.spec.events.transactions-test]
-   ;; [dinsro.spec.events.users-test]
-   [devcards.core :as dc :refer-macros [defcard-rg]]
+   [devcards.core :refer-macros [defcard-rg]]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title

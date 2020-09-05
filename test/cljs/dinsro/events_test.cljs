@@ -1,9 +1,9 @@
 (ns dinsro.events-test
   (:require
-   dinsro.events.accounts-test
-   dinsro.events.rates-test
-   dinsro.events.transactions-test
-   [devcards.core :as dc :refer-macros [defcard-rg]]
+   [devcards.core :refer-macros [defcard-rg]]
+   [dinsro.events.accounts-test]
+   [dinsro.events.rates-test]
+   [dinsro.events.transactions-test]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title

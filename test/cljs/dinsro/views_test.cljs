@@ -1,14 +1,14 @@
 (ns dinsro.views-test
   (:require
-   dinsro.views.about-test
-   dinsro.views.admin-test
-   dinsro.views.index-accounts-test
-   dinsro.views.index-transactions-test
-   dinsro.views.login-test
-   dinsro.views.registration-test
-   dinsro.views.settings-test
-   dinsro.views.show-currency-test
-   [devcards.core :as dc :refer-macros [defcard-rg]]
+   [devcards.core :refer-macros [defcard-rg]]
+   [dinsro.views.about-test]
+   [dinsro.views.admin-test]
+   [dinsro.views.index-accounts-test]
+   [dinsro.views.index-transactions-test]
+   [dinsro.views.login-test]
+   [dinsro.views.registration-test]
+   [dinsro.views.settings-test]
+   [dinsro.views.show-currency-test]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title

@@ -1,11 +1,10 @@
 (ns dinsro.spec-test
   (:require
-   dinsro.spec.accounts-test
-   dinsro.spec.currencies-test
-   dinsro.spec.rates-test
-   dinsro.spec.transactions-test
-   ;; [dinsro.spec.users-test]
-   [devcards.core :as dc :refer-macros [defcard-rg]]
+   [devcards.core :refer-macros [defcard-rg]]
+   [dinsro.spec.accounts-test]
+   [dinsro.spec.currencies-test]
+   [dinsro.spec.rates-test]
+   [dinsro.spec.transactions-test]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title

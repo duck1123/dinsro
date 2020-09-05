@@ -1,6 +1,7 @@
 (ns dinsro.components-test
   (:require
    [cljs.test :refer-macros [is]]
+   [devcards.core :refer-macros [defcard-rg deftest]]
    [dinsro.components :as c]
    [dinsro.components.admin-index-accounts-test]
    [dinsro.components.admin-index-categories-test]
@@ -12,7 +13,6 @@
    [dinsro.components.show-account-test]
    [dinsro.components.show-currency-test]
    [dinsro.components.status-test]
-   [devcards.core :as dc :refer-macros [defcard-rg deftest]]
    [taoensso.timbre :as timbre]))
 
 (defcard-rg title
