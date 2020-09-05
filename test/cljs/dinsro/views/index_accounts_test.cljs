@@ -4,6 +4,7 @@
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.events.accounts :as e.accounts]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.store.mock :refer [mock-store]]
@@ -27,13 +28,15 @@
       result nil
       path "/"
       path-params {}
-      store (mock-store)
+      store (doto (mock-store)
+              (comment e.accounts/init-handlers!))
       match (rc/->Match template data result path-params path)]
 
   (defcard items items)
 
-  (deftest page
-    (is (vector? (v.index-accounts/page store match))))
+  (comment
+    (deftest page
+      (is (vector? (v.index-accounts/page store match)))))
 
   (defcard-rg page-card
     (fn []
