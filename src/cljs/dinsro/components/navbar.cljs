@@ -22,14 +22,14 @@
 ;; Events
 
 (defn toggle-navbar
-  [db _]
-  (update db ::expanded? not))
+  [{:keys [db]} _]
+  {:db (update db ::expanded? not)})
 
 (defn nav-link-activated
   [_ _]
   {:dispatch [::toggle-navbar]})
 
-(kf/reg-event-db ::toggle-navbar toggle-navbar)
+(kf/reg-event-fx ::toggle-navbar toggle-navbar)
 (kf/reg-event-fx ::nav-link-activated nav-link-activated)
 
 ;; Components

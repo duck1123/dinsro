@@ -119,10 +119,10 @@
   {:dispatch [::do-fetch-index id]})
 
 (defn do-delete-record-failed
-  [db [{:keys [id]}]]
-  (-> db
-      (assoc ::delete-record-failed true)
-      (assoc ::delete-record-failure-id id)))
+  [{:keys [db]} [{:keys [id]}]]
+  {:db (-> db
+           (assoc ::delete-record-failed true)
+           (assoc ::delete-record-failure-id id))})
 
 (defn do-delete-record
   [{:keys [db]} [currency]]
@@ -134,7 +134,7 @@
     [::do-delete-record-failed])})
 
 (kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
-(kf/reg-event-db ::do-delete-record-failed do-delete-record-failed)
+(kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
 (kf/reg-event-fx ::do-delete-record do-delete-record)
 
 ;; Index
