@@ -27,10 +27,11 @@
       [error-boundary
        [v.index-transactions/section-inner items]]))
 
-  (let [store (mock-store)
-        match nil]
-    (deftest page
-      (is (vector? (v.index-transactions/page store match)))))
+  (comment
+    (let [store (mock-store)
+          match nil]
+      (deftest page
+        (is (vector? (v.index-transactions/page store match))))))
 
   (let [store (mock-store)
         match nil]
