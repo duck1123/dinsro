@@ -41,8 +41,8 @@
     :root-component [(fn []
                        [error-boundary
                         [c.status/require-status
-                         [c.settings/require-settings
-                          [view/root-component]]]])]}))
+                         (c.settings/require-settings
+                          [view/root-component])]])]}))
 
 (defn init! [debug?]
   (ajax/load-interceptors!)
