@@ -18,4 +18,7 @@
         (if (nil? @err-state)
           (into [:<>] children)
           (let [[_ info] @err-state]
-            [:div.error [:pre [:code (repl/error->str info)]]])))})))
+            (.error js/console @err-state)
+            [:<>
+             [:div.error [:pre [:code (repl/error->str info)]]]
+             [:p [:pre (.-stack info)]]])))})))
