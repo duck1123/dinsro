@@ -8,7 +8,7 @@
   (:require-macros
    [cljs.core.async.macros :refer [go-loop]]))
 
-(def websocket-endpoint (str "ws://" (.-host (.-location js/window))  "/ws"))
+(def websocket-channel (atom nil))
 
 (defn create-connection
   [url fire-event]
@@ -20,7 +20,10 @@
         (recur)))
     channel))
 
-(def websocket-channel (create-connection websocket-endpoint ::receive-message))
+(defn connect
+  [_ [endpoint]]
+  (reset! websocket-channel (create-connection endpoint ::receive-message))
+  {})
 
 (defn receive-message
   [_ [data]]
@@ -28,8 +31,12 @@
 
 (defn send-message
   [_ [data]]
-  (offer! websocket-channel data)
-  {})
+  (if-let [ch @websocket-channel]
+    (do
+      (offer! ch data)
+      {})
+    (throw "Channel not opened")))
 
 (kf/reg-event-fx ::receive-message receive-message)
 (kf/reg-event-fx ::send-message send-message)
+(kf/reg-event-fx ::connect connect)

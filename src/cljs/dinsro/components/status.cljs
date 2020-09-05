@@ -3,17 +3,21 @@
    [day8.re-frame.http-fx]
    [dinsro.events :as e]
    [dinsro.events.authentication :as e.authentication]
+   [dinsro.events.websocket :as e.websocket]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
+
+(def websocket-endpoint (str "ws://" (.-host (.-location js/window))  "/ws"))
 
 (defn status-loaded
   [{:keys [db]} [{:keys [identity]}]]
   (timbre/info "status loaded")
   {:db (-> db
            (assoc ::e.authentication/auth-id identity)
-           (assoc ::status-state :loaded))})
+           (assoc ::status-state :loaded))
+   :dispatch-n [[::e.websocket/connect websocket-endpoint]]})
 
 (defn status-errored
   [{:keys [db]} _]
