@@ -2,11 +2,14 @@
   (:require
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.translations :refer [tr]]))
+
+(cards/header "Index Transaction Components" [])
 
 (let [item (ds/gen-key ::s.transactions/item)]
   (defcard item item)

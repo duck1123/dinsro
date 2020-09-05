@@ -3,12 +3,15 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :as cards]
    [dinsro.events.rates :as e.rates]
    [dinsro.spec :as ds]
    [dinsro.spec.events.rates :as s.e.rates]
    [dinsro.spec.rates :as s.rates]
    [expound.alpha :as expound]
    [taoensso.timbre :as timbre]))
+
+(cards/header "Rate Events" [])
 
 (let [item-map (ds/gen-key ::e.rates/item-map)]
   (defcard item-map item-map)

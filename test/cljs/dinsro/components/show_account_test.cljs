@@ -8,7 +8,7 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Form Components" [])
+(cards/header "Show Account Components" [])
 
 (let [account {::s.accounts/name "Bart"
                ::s.accounts/user {:db/id 1}
