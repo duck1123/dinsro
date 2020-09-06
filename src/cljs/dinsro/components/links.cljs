@@ -8,26 +8,25 @@
    [dinsro.spec.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
 (defn account-link
   [store id]
   (if-let [item @(st/subscribe store [::e.accounts/item id])]
     (let [name (::s.accounts/name item)]
-      [:a {:href (kf/path-for [:show-account-page {:id id}])} name])
+      [:a {:href (st/path-for store [:show-account-page {:id id}])} name])
     [:span (tr [:not-loaded])]))
 
 (defn currency-link
   [store id]
   (if-let [currency @(st/subscribe store [::e.currencies/item id])]
     (let [name (::s.currencies/name currency)]
-      [:a {:href (kf/path-for [:show-currency-page {:id id}])} name])
+      [:a {:href (st/path-for store [:show-currency-page {:id id}])} name])
     [:span (tr [:sats])]))
 
 (defn user-link
   [store id]
   (if-let [user @(st/subscribe store [::e.users/item id])]
     (let [name (::s.users/name user)]
-      [:a {:href (kf/path-for [:show-user-page {:id id}])} name])
+      [:a {:href (st/path-for store [:show-user-page {:id id}])} name])
     [:span (tr [:not-loaded])]))
