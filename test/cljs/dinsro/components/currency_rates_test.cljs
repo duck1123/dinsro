@@ -5,6 +5,7 @@
    [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.currency-rates :as c.currency-rates]
+   [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.store.mock :refer [mock-store]]))
 
 (cards/header "Currency Rates Components" [])
@@ -13,7 +14,8 @@
       rates [[1 1]
              [2 2]
              [3 4]]
-      store (mock-store)]
+      store (doto (mock-store)
+              e.f.add-currency-rate/init-handlers!)]
 
   (defcard-rg c.currency-rates/section
     (fn []
