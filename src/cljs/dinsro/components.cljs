@@ -111,7 +111,7 @@
        [:p "Invalid"]
 
        :loaded
-       [currency-selector-loaded label field change-handler]
+       [currency-selector-loaded store label field change-handler]
 
        [:p "Unknown state"]))))
 
