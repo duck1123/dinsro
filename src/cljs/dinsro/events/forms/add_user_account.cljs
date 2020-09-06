@@ -7,6 +7,14 @@
 
 (def default-name "Offshore")
 
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-account/currency-id
+                                    ::s.e.f.create-account/initial-value
+                                    ::s.e.f.create-account/name
+                                    ::s.e.f.create-account/user-id]))
+(s/def ::form-data-event (s/cat :kw keyword?))
+(s/def ::form-data (s/keys))
+(def form-data ::form-data)
+
 (defn form-data-sub
   [{:keys [::s.e.f.create-account/currency-id
            ::s.e.f.create-account/initial-value
@@ -21,11 +29,9 @@
     :initial-value (.parseFloat js/Number initial-value)}))
 
 (s/fdef form-data-sub
-  :args (s/cat :cofx (s/keys)
-               :event any?)
-  :ret (s/keys))
-
-(def form-data ::form-data)
+  :args (s/cat :db ::form-data-db
+               :event ::form-data-event)
+  :ret ::form-data)
 
 (defn init-handlers!
   [store]
