@@ -39,7 +39,10 @@
                    ::s.e.f.registration/confirm-password]))
 
 (defn form-data-sub
-  [[name email password] _]
+  [{:keys [::s.e.f.registration/email
+           ::s.e.f.registration/name
+           ::s.e.f.registration/password]}
+   _]
   {:name name
    :email email
    :password password})
@@ -51,12 +54,7 @@
 (s/fdef form-data-sub
   :args (s/cat ))
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.registration/name]
- :<- [::s.e.f.registration/email]
- :<- [::s.e.f.registration/password]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
 
 (s/def ::form-data

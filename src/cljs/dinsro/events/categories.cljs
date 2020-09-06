@@ -29,38 +29,38 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
+  [{:keys [::item-map]} _]
   (sort-by :db/id (vals item-map)))
 
 (s/fdef items-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items :<- [::item-map] items-sub)
+(rf/reg-sub ::items items-sub)
 
 ;; Item
 
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
-  [item-map [_ id]]
+  [{:keys [::item-map]} [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword? :id :db/id))
   :ret ::item)
 
-(rf/reg-sub ::item :<- [::item-map] item-sub)
+(rf/reg-sub ::item item-sub)
 
 ;; Items by User
 
 (defn items-by-user
-  [items event]
+  [{:keys [::item-map]} event]
   (let [[_ id] event]
-    (filter #(= id (get-in % [::s.categories/user :db/id])) items)))
+    (filter #(= id (get-in % [::s.categories/user :db/id])) (vals item-map))))
 
-(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
+(rf/reg-sub ::items-by-user items-by-user)
 
 ;; Create
 

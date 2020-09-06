@@ -18,7 +18,8 @@
    [dinsro.views.show-currency :as v.show-currency]
    [dinsro.views.show-user :as v.show-user]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reframe-utils.core :as rfu]))
 
 (defn unknown-page
   []
@@ -45,18 +46,16 @@
    :show-user-page          v.show-user/page
    })
 
-(rf/reg-sub
- :nav/route
- :<- [:kee-frame/route]
- identity)
+(rfu/reg-basic-sub :nav/route :kee-frame/route)
 
-(kf/reg-event-fx
- :nav/route-name
- (fn [_ [route-name]]
-   {:navigate-to [route-name]}))
+(defn route-name
+  [_ [route-name]]
+  {:navigate-to [route-name]})
 
-(rf/reg-sub
- :nav/page
- :<- [:nav/route]
- (fn [route _]
-   (-> route :data :name)))
+(kf/reg-event-fx :nav/route-name route-name)
+
+(defn page-sub
+  [{:keys [:nav/route]} _]
+  (-> route :data :name))
+
+(rf/reg-sub :nav/page page-sub)

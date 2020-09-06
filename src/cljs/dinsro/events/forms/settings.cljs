@@ -13,10 +13,8 @@
 (rfu/reg-set-event ::s.e.f.settings/first-run)
 
 (defn form-data-sub
-  [allow-registration _]
+  [{:keys [::s.e.f.settings/allow-registration]}
+   _]
   {:allow-registration allow-registration})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.settings/allow-registration]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)

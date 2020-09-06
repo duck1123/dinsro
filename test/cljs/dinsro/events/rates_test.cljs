@@ -13,20 +13,29 @@
 
 (cards/header "Rate Events" [])
 
-(let [item-map (ds/gen-key ::e.rates/item-map)]
-  (defcard item-map item-map)
+(let [rates (ds/gen-key (s/coll-of ::e.rates/item :count 3))
+      item-map (into {} (map
+                         (fn [rate] [(:db/id rate) rate])
+                         rates))
+      item-sub-cofx {::e.rates/item-map item-map}]
+
+  (comment (defcard rates rates))
+  (comment (defcard item-map item-map))
+  (comment (defcard item-sub-cofx item-sub-cofx))
 
   (deftest sub-item-no-match
-    (let [id 1
-          item-map {}]
-      (is (= nil (e.rates/item-sub item-map [::e.rates/item id])))))
+    (let [unused-id (inc (last (sort (map :db/id rates ))))]
+        (is (= nil (e.rates/item-sub item-sub-cofx [::e.rates/item unused-id])))))
 
-  (deftest sub-item-match
-    (let [id 1
-          item {:db/id id}
-          item-map {id item}
-          event [::e.rates/item id]
-          response (e.rates/item-sub item-map event)]
+  (let [item (second (first item-map))
+        id (ffirst item-map)
+        event [::e.rates/item id]
+        response (e.rates/item-sub item-sub-cofx event)]
+
+    (comment (defcard id (pr-str id)))
+    (comment (defcard item item))
+
+    (deftest sub-item-match
       (is (= item response))
       (s/assert ::s.rates/item response)
       (expound/expound-str ::s.rates/item response))))

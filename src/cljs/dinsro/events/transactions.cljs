@@ -32,53 +32,52 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
+  [{:keys [::item-map]} _]
   (sort-by :db/id (vals item-map)))
 
 (s/fdef items-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items :<- [::item-map] items-sub)
+(rf/reg-sub ::items items-sub)
 
 ;; Item
 
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
-  [item-map [_ id]]
+  [{:keys [::item-map]} [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword? :id :db/id))
   :ret ::item)
 
-(rf/reg-sub ::item :<- [::item-map] item-sub)
+(rf/reg-sub ::item item-sub)
 
 ;; Items by Account
 
 (defn items-by-account
-  [items event]
+  [{:keys [::item-map]} event]
   (let [[_ id] event]
-    (filter #(= (get-in % [::s.transactions/account :db/id]) id) items)))
+    (filter #(= (get-in % [::s.transactions/account :db/id]) id) (vals item-map))))
 
 (s/fdef items-by-account
-  :args (s/cat :items ::items
+  :args (s/cat :db (s/keys :req [::item-map])
                :event ::s.e.transactions/items-by-account-event)
   :ret ::items)
 
-(rf/reg-sub ::items-by-account :<- [::items] items-by-account)
+(rf/reg-sub ::items-by-account items-by-account)
 
 ;; Items by Currency
 
 (defn items-by-currency
-  [db [_ id]]
-  (let [items (::items db)]
-    (filter #(= (get-in % [::s.transactions/currency :db/id]) id) items)))
+  [{:keys [::item-map]} [_ id]]
+  (filter #(= (get-in % [::s.transactions/currency :db/id]) id) (vals item-map)))
 
 (s/fdef items-by-currency
-  :args (s/cat :items ::items
+  :args (s/cat :db (s/keys :req [::item-map])
                :event ::s.e.transactions/items-by-currency-event)
   :ret ::items)
 
@@ -87,10 +86,11 @@
 ;; Items by User
 
 ;; FIXME: This will have to read across all linked accounts
-(rf/reg-sub
- ::items-by-user
- (fn [db [_ _user-id]]
-   (map val (::item-map db))))
+(defn items-by-user
+  [{:items [::item-map]} [_ _user-id]]
+  (vals item-map))
+
+(rf/reg-sub ::items-by-user items-by-user)
 
 ;; Index
 

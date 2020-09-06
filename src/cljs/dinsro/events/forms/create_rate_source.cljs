@@ -20,26 +20,16 @@
 (rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
-  [[
-    name
-    url
-    currency-id
-    ] _]
-  {
-   :name name
+  [{:keys [::s.e.f.create-rate-source/currency-id
+           ::s.e.f.create-rate-source/name
+           ::s.e.f.create-rate-source/url]}
+
+   _]
+  {:name name
    :url url
-   :currency-id (int currency-id)
-   ;; :rate        (js/Number.parseFloat rate)
-   ;; :date        (js/Date. date)
+   :currency-id (int currency-id)})
 
-   })
-
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-rate-source/name]
- :<- [::s.e.f.create-rate-source/url]
- :<- [::s.e.f.create-rate-source/currency-id]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
 
 (defn init-form

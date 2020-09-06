@@ -25,35 +25,38 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
+  [{:keys [::item-map]} _]
   (reverse
    (sort-by ::s.rates/date (vals item-map))))
 
+(s/def ::item-sub-cofx (s/keys :req [::item-map]))
+
 (s/fdef items-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :item-map ::items-sub-cofx
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items :<- [::item-map] items-sub)
+(rf/reg-sub ::items items-sub)
 
 ;; Items by Currency
 
 (defn items-by-currency
   "Subscription handler: Index items by currency"
-  [items [_ {:keys [db/id]}]]
-  (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
+  [{:keys [::item-map]} [_ {:keys [db/id]}]]
+  (filter #(= (get-in % [::s.rates/currency :db/id]) id) (vals item-map)))
 
 (s/fdef items-by-currency
-  :args (s/cat :items ::items :event (s/cat :keyword keyword? :currency ::item))
+  :args (s/cat :db (s/keys :req [::item-map])
+               :event (s/cat :keyword keyword? :currency ::item))
   :ret ::items)
 
-(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
+(rf/reg-sub ::items-by-currency items-by-currency)
 
 ;; Item
 
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
-  [item-map [_ id]]
+  [{:keys [::item-map]} [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
@@ -61,7 +64,7 @@
                :event (s/cat :kw keyword? :id :db/id))
   :ret ::item)
 
-(rf/reg-sub ::item :<- [::item-map] item-sub)
+(rf/reg-sub ::item item-sub)
 
 ;; Read
 

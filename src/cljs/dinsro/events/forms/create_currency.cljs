@@ -12,13 +12,10 @@
 (rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
-  [name _]
+  [{:keys [::s.e.f.create-currency/name]} _]
   {:name name})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-currency/name]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
 
 (defn set-defaults

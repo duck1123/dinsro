@@ -15,13 +15,11 @@
 (rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
-  [[name user-id] _]
+  [{:keys [::s.e.f.create-category/name
+           ::s.e.f.create-category/user-id]}
+   _]
   {:name          name
    :user-id       (int user-id)})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-category/name]
- :<- [::s.e.f.create-category/user-id]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)

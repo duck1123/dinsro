@@ -24,15 +24,15 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
+  [{:keys [::item-map]} _]
   (sort-by :db/id (vals item-map)))
 
 (s/fdef items-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items :<- [::item-map] items-sub)
+(rf/reg-sub ::items items-sub)
 
 ;; Item
 
@@ -40,43 +40,43 @@
 
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
-  [item-map [_ id]]
+  [{:keys [::item-map]} [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event ::item-sub-event)
   :ret (s/nilable ::item))
 
-(rf/reg-sub ::item :<- [::item-map] item-sub)
+(rf/reg-sub ::item item-sub)
 
 ;; Items by User
 
 (defn items-by-user
-  [items [_ id]]
-  (filter #(= id (get-in % [::s.accounts/user :db/id])) items))
+  [{:keys [::item-map]} [_ id]]
+  (filter #(= id (get-in % [::s.accounts/user :db/id])) (vals item-map)))
 
 (s/fdef items-by-user
-  :args (s/cat :items ::items
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword?
                              :id :db/id))
   :ret ::items)
 
-(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
+(rf/reg-sub ::items-by-user items-by-user)
 
 ;; Items by Currency
 
 (defn items-by-currency
-  [items [_ item]]
+  [{:keys [::item-map]} [_ item]]
   (let [id (:db/id item)]
-    (filter #(= id (get-in % [::s.accounts/currency :db/id])) items)))
+    (filter #(= id (get-in % [::s.accounts/currency :db/id])) (vals item-map))))
 
 (s/fdef items-by-currency
-  :args (s/cat :items ::items
+  :args (s/cat :db (s/keys :req [::item-map])
                :event any?)
   :ret ::items)
 
-(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
+(rf/reg-sub ::items-by-currency items-by-currency)
 
 ;; Create
 

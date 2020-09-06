@@ -13,15 +13,13 @@
 (rfu/reg-set-event ::s.e.f.login/password)
 
 (defn form-data-sub
-  [[email password] _]
+  [{:keys [::s.e.f.login/email
+           ::s.e.f.login/password]}
+    _]
   {:email email
    :password password})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.login/email]
- :<- [::s.e.f.login/password]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
 
 (defn set-defaults

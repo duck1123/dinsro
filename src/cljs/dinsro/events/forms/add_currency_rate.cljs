@@ -10,16 +10,14 @@
 (rfu/reg-set-event ::shown?)
 
 (defn form-data-sub
-  [[rate date] [_ currency-id]]
+  [{:keys [::s.e.f.create-rate/date
+           ::s.e.f.create-rate/rate]}
+   [_ currency-id]]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
    :date        date})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-rate/rate]
- :<- [::s.e.f.create-rate/date]
- form-data-sub)
+(rf/reg-sub ::form-data form-data-sub)
 (def form-data ::form-data)
 
 (defn init-form

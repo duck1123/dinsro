@@ -10,21 +10,27 @@
 (rfu/reg-basic-sub ::shown?)
 (rfu/reg-set-event ::shown?)
 
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/date
+                                    ::s.e.f.create-transaction/description
+                                    ::s.e.f.create-transaction/value]))
+(s/def ::form-data-event (s/cat :kw keyword?
+                                :account-id :db/id))
+(s/def ::form-data ::s.a.transactions/create-params-valid)
+(def form-data ::form-data)
+
 (defn form-data-sub
-  [[date value description] event]
-  (let [[_ account-id] event]
-    (e.f.create-transaction/form-data-sub
-     [account-id date description value]
-     event)))
+  [db event]
+  (let [[_ account-id] event
+        updated-db (-> db
+                       (select-keys [::s.e.f.create-transaction/date
+                                     ::s.e.f.create-transaction/description
+                                     ::s.e.f.create-transaction/value])
+                       (assoc ::s.e.f.create-transaction/account-id account-id))]
+    (e.f.create-transaction/form-data-sub updated-db event)))
 
 (s/fdef form-data-sub
-  :ret ::s.a.transactions/create-params-valid)
+  :args (s/cat :db ::form-data-db
+               :event ::form-data-event)
+  :ret ::form-data)
 
-(s/def ::form-data ::s.a.transactions/create-params-valid)
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-transaction/date]
- :<- [::s.e.f.create-transaction/value]
- :<- [::s.e.f.create-transaction/description]
- form-data-sub)
-(def form-data ::form-data)
+(rf/reg-sub ::form-data form-data-sub)
