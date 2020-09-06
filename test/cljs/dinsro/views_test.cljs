@@ -10,6 +10,7 @@
    [dinsro.views.registration-test]
    [dinsro.views.settings-test]
    [dinsro.views.show-currency-test]
+   [dinsro.views.show-user-test]
    [taoensso.timbre :as timbre]))
 
 (cards/header "Views" [])
