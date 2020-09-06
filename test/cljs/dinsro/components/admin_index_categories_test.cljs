@@ -19,14 +19,14 @@
   (defcard-rg c.admin-index-categories/category-line
     (fn []
       [error-boundary
-       (c.admin-index-categories/category-line store (first items))]))
+       [c.admin-index-categories/category-line store (first items)]]))
 
   (defcard-rg c.admin-index-categories/index-categories
     (fn []
       [error-boundary
-       (c.admin-index-categories/index-categories store items)]))
+       [c.admin-index-categories/index-categories store items]]))
 
   (defcard-rg c.admin-index-categories/section
     (fn []
       [error-boundary
-       (c.admin-index-categories/section store)])))
+       [c.admin-index-categories/section store]])))

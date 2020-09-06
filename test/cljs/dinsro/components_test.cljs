@@ -13,6 +13,7 @@
    [dinsro.components.rate-chart-test]
    [dinsro.components.show-account-test]
    [dinsro.components.show-currency-test]
+   [dinsro.components.show-user-test]
    [dinsro.components.status-test]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.store :as st]

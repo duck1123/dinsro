@@ -13,4 +13,4 @@
   (defcard-rg c.admin-index-rate-sources/form
     (fn []
       [error-boundary
-       (c.admin-index-rate-sources/section store)])))
+       [c.admin-index-rate-sources/section store]])))
