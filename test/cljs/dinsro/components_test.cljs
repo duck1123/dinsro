@@ -8,6 +8,7 @@
    [dinsro.components.admin-index-categories-test]
    [dinsro.components.admin-index-rate-sources-test]
    [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.components.buttons-test]
    [dinsro.components.currency-rates-test]
    [dinsro.components.index-transactions-test]
    [dinsro.components.rate-chart-test]
