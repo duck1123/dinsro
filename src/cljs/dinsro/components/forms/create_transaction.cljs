@@ -9,36 +9,29 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(defn form-shown
-  [store form-data]
-  [:div
-   [c/close-button store ::e.f.create-transaction/set-shown?]
-   [:div
-    [:div.field-group
-     [:div.field.is-inline-block-tablet
-      [:label.label (tr [:value])]
-      [:div.control
-       [:input.input
-        {:type :text
-         :value @(st/subscribe store [::s.e.f.create-transaction/value])
-         :on-change #(st/dispatch store [::s.e.f.create-transaction/set-value (c/target-value %)])}]]]]
-    [:div.field-group
-     [:div.column
-      [c/account-selector store (tr [:account]) ::s.e.f.create-transaction/account-id]]
-     [:div.column
-      [:label.label (tr [:date])]
-      [c.datepicker/datepicker
-       {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]]]
-   [:div.field>div.control
-    [c/primary-button store (tr [:submit]) [::e.transactions/do-submit @form-data]]]])
-
-(defn form-inner
-  [store form-data shown?]
-  (when shown?
-    [form-shown store form-data]))
-
 (defn form
   [store]
   (let [form-data (st/subscribe store [::e.f.create-transaction/form-data])
         shown? (st/subscribe store [::e.f.create-transaction/shown?])]
-    (form-inner store form-data shown?)))
+    (when shown?
+      [:div
+       [c/close-button store ::e.f.create-transaction/set-shown?]
+       [:div.field-group
+        [:div.field>div.column
+         [:label.label (tr [:value])]
+         [:input.input
+          {:type :text
+           :value @(st/subscribe store [::s.e.f.create-transaction/value])
+           :on-change #(st/dispatch store [::s.e.f.create-transaction/set-value (c/target-value %)])}]]
+        [:div.field>div.column
+         ;; [:label.label (tr [:description])]
+         [c/text-input store (tr [:description]) ::s.e.f.create-transaction/description]]
+        [:div.field>div.column
+         [:label.label (tr [:accounts])]
+         [c/account-selector store (tr [:account]) ::s.e.f.create-transaction/account-id]]
+        [:div.field>div.column
+         [:label.label (tr [:date])]
+         [c.datepicker/datepicker
+          {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]]
+       [:div.field-group>div.field>div.column
+        [c/primary-button store (tr [:submit]) [::e.transactions/do-submit @form-data]]]])))

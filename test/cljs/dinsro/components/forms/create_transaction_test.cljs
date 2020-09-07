@@ -1,6 +1,8 @@
 (ns dinsro.components.forms.create-transaction-test
   (:require
+   [cljs.pprint :as p]
    [cljs.test :refer-macros [is]]
+   [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
    [dinsro.cards :as cards]
    [dinsro.components.boundary :refer [error-boundary]]
@@ -9,29 +11,39 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
 (cards/header
  'dinsro.components.forms.create-transaction-test
- "Create Transaction Form Components" [])
+ "Create Transaction Form Components"
+ [#{:transactions} #{:transactions :components}])
 
-(let [form-data (ds/gen-key ::e.f.create-transaction/form-data)
-      new-data {
-                ::s.e.f.create-transaction/account-id 1
-                ::s.e.f.create-transaction/date (:date form-data)
-                ::s.e.f.create-transaction/description (:description form-data)
-                ::s.e.f.create-transaction/value (:value form-data)
-                ::e.debug/shown? true}
+(def accounts (ds/gen-key (s/coll-of ::s.accounts/item :count 3)))
+(def transactions (ds/gen-key (s/coll-of ::s.transactions/item :count 3)))
 
-      store (doto (mock-store)
-              e.accounts/init-handlers!
-              e.debug/init-handlers!
-              e.f.create-transaction/init-handlers!)]
+(defn test-store
+  []
+  (let [store (doto (mock-store)
+                e.accounts/init-handlers!
+                e.debug/init-handlers!
+                e.f.create-transaction/init-handlers!)]
+    store))
 
-  (defcard new-data new-data)
+(comment (defcard accounts-card accounts))
+(comment (defcard transactions-card transactions))
+
+(let [store (test-store)]
+  (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
+
+  (defcard-rg form-data-card
+    (fn []
+      [error-boundary
+       [:pre (with-out-str (p/pprint @(st/subscribe store [::e.f.create-transaction/form-data])))]]))
 
   (defcard-rg create-transaction-card
     (fn []
