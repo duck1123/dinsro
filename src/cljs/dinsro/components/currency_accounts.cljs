@@ -6,4 +6,4 @@
   [store accounts]
   [:div.box
    [:h2 "Accounts"]
-   [c.index-accounts/index-accounts store accounts]])
+   [c.index-accounts/section store accounts]])

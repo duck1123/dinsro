@@ -19,9 +19,9 @@
      [:td (c.links/user-link store user-id)]
      [:td (c.links/currency-link store currency-id)]
      [:td initial-value]
-     (c.debug/hide store [:td [c.buttons/delete-account account]])]))
+     (c.debug/hide store [:td [c.buttons/delete-account store account]])]))
 
-(defn index-accounts
+(defn section
   [store accounts]
   (if-not (seq accounts)
     [:div (tr [:no-accounts])]

@@ -13,6 +13,7 @@
    [dinsro.components.buttons-test]
    [dinsro.components.currency-rates-test]
    [dinsro.components.datepicker-test]
+   [dinsro.components.index-accounts-test]
    [dinsro.components.index-rates-test]
    [dinsro.components.index-transactions-test]
    [dinsro.components.rate-chart-test]
