@@ -41,12 +41,13 @@
   (let [status-state @(st/subscribe store [::status-state])]
     (if (= status-state :loaded)
       [:div body]
-      [:div "Loaded"])))
+      [:div "Loading Status"])))
 
 (defn init-handlers!
   [store]
   (doto store
     (st/reg-basic-sub ::status-state)
+    (st/reg-set-event ::status-state)
     (st/reg-event-fx :status-loaded status-loaded)
     (st/reg-event-fx :status-errored status-errored)
     (st/reg-event-fx :init-status [(rf/inject-cofx :cookie/get [:token])] init-status))
