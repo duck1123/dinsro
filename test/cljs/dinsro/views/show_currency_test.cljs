@@ -16,40 +16,36 @@
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Show Currency View" [])
+(cards/header "Show Currency View" [#{:views} #{:currencies}])
 
-(let [item (ds/gen-key ::s.currencies/item)
+(let [currency (ds/gen-key ::s.currencies/item)
       store (doto (mock-store)
-              e.debug/init-handlers!
               e.accounts/init-handlers!
               e.currencies/init-handlers!
+              e.debug/init-handlers!
               e.rates/init-handlers!
-              e.rate-sources/init-handlers!)]
+              e.rate-sources/init-handlers!)
+      match {:path-params {:id "1"}}]
 
-  (defcard item-card item)
+  (defcard currency currency)
 
-  (defcard init-page-cofx
-    (ds/gen-key ::s.v.show-currency/init-page-cofx))
-
-  (defcard init-page-event
-    (ds/gen-key ::s.v.show-currency/init-page-event))
-
-  (defcard init-page-response
-    (ds/gen-key ::s.v.show-currency/init-page-response))
-
-  (defcard view-map
-    (ds/gen-key ::s.v.show-currency/view-map))
+  (comment (defcard init-page-cofx (ds/gen-key ::s.v.show-currency/init-page-cofx)))
+  (comment (defcard init-page-event (ds/gen-key ::s.v.show-currency/init-page-event)))
+  (comment (defcard init-page-response (ds/gen-key ::s.v.show-currency/init-page-response)))
+  (comment (defcard view-map (ds/gen-key ::s.v.show-currency/view-map)))
 
   (defcard-rg v.show-currency/page-loaded
     (fn []
       [error-boundary
-       [v.show-currency/page-loaded store item]]))
+       [v.show-currency/page-loaded store currency]]))
 
-  (let [match {:path-params {:id "1"}}]
-    (deftest page
-      (is (vector? (v.show-currency/page store match))))
+  (deftest page-loaded-test
+    (is (vector? (v.show-currency/page-loaded store currency))))
 
-    (defcard-rg page-card
-      (fn []
-        [error-boundary
-         [v.show-currency/page store match]]))))
+  (defcard-rg page-card
+    (fn []
+      [error-boundary
+       [v.show-currency/page store match]]))
+
+  (deftest page-test
+    (is (vector? (v.show-currency/page store match)))))
