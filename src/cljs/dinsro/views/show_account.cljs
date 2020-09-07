@@ -14,8 +14,8 @@
    [dinsro.spec.views.show-account :as s.v.show-account]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [kee-frame.core :as kf]))
-
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_  _]

@@ -6,7 +6,8 @@
    [dinsro.spec :as ds]
    [dinsro.spec.users :as s.users]
    [dinsro.store :as st]
-   [ring.util.http-status :as status]))
+   [ring.util.http-status :as status]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::item ::s.users/item)
 

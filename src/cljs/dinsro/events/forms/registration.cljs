@@ -2,7 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (defn set-defaults
   [{:keys [db]} _]

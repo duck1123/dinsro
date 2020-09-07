@@ -2,7 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (def default-rate 1)
 

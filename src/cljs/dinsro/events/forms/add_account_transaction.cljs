@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)

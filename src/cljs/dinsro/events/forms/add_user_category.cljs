@@ -1,7 +1,8 @@
 (ns dinsro.events.forms.add-user-category
   (:require
    [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-category/name

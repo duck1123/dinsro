@@ -19,7 +19,8 @@
    [dinsro.views.show-user :as v.show-user]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
+   [reframe-utils.core :as rfu]
+   [taoensso.timbre :as timbre]))
 
 (defn unknown-page
   []

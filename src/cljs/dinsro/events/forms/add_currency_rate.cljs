@@ -2,7 +2,8 @@
   (:require
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-rate/date

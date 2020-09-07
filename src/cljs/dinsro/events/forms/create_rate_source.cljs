@@ -1,7 +1,8 @@
 (ns dinsro.events.forms.create-rate-source
   (:require
    [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (def default-name "Default Source")
 

@@ -14,7 +14,8 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
-   [kee-frame.core :as kf]))
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
 (s/def ::init-page-cofx (s/keys))
 (s/def ::init-page-event (s/keys))

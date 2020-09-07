@@ -2,7 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.store :as st]
-   [reitit.core :as rc]))
+   [reitit.core :as rc]
+   [taoensso.timbre :as timbre]))
 
 (defn page [_store _match]
   [:section.section>div.container>div.content

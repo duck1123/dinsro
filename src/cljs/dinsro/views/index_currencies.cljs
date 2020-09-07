@@ -11,7 +11,8 @@
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [reitit.core :as rc]))
+   [reitit.core :as rc]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]

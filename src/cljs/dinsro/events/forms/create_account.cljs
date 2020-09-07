@@ -1,7 +1,8 @@
 (ns dinsro.events.forms.create-account
   (:require
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-account/currency-id

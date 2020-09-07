@@ -1,7 +1,8 @@
 (ns dinsro.events.forms.create-currency
   (:require
    [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
-   [dinsro.store :as st]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-currency/name]} _]
