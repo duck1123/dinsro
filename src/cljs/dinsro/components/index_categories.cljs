@@ -18,18 +18,16 @@
 
 (defn index-categories
   [store items]
-  [:<>
-   [c.debug/debug-box store items]
-   (if-not (seq items)
-     [:p (tr [:no-categories])]
-     [:table.table
-      [:thead>tr
-       [:th (tr [:name])]
-       [:th (tr [:user])]
-       (c.debug/hide store [:th (tr [:actions])])]
-      (into
-       [:tbody]
-       (for [item items] ^{:key (:db/id item)} [category-line store item]))])])
+  (if-not (seq items)
+    [:p (tr [:no-categories])]
+    [:table.table
+     [:thead>tr
+      [:th (tr [:name])]
+      [:th (tr [:user])]
+      (c.debug/hide store [:th (tr [:actions])])]
+     (into
+      [:tbody]
+      (for [item items] ^{:key (:db/id item)} [category-line store item]))]))
 
 (s/fdef index-categories
   :args (s/cat :item ::s.categories/item)

@@ -2,7 +2,6 @@
   (:require
    [dinsro.components :as c]
    [dinsro.components.datepicker :as c.datepicker]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
@@ -14,7 +13,6 @@
   [store form-data]
   [:div
    [c/close-button store ::e.f.create-transaction/set-shown?]
-   [c.debug/debug-box store @form-data]
    [:div
     [:div.field-group
      [:div.field.is-inline-block-tablet

@@ -19,20 +19,18 @@
 
 (defn section
   [store items]
-  [:<>
-   [c.debug/debug-box store items]
-   (if-not (seq items)
-     [:p (tr [:no-rates])]
-     [:table.table
-      [:thead>tr
-       [:th (tr [:date])]
-       [:th (tr [:value])]
-       [:th (tr [:currency])]
-       (c.debug/hide store [:th (tr [:actions])])]
-      (into
-       [:tbody]
-       (for [item items]
-         ^{:key (:db/id item)} [rate-line store item]))])])
+  (if-not (seq items)
+    [:p (tr [:no-rates])]
+    [:table.table
+     [:thead>tr
+      [:th (tr [:date])]
+      [:th (tr [:value])]
+      [:th (tr [:currency])]
+      (c.debug/hide store [:th (tr [:actions])])]
+     (into
+      [:tbody]
+      (for [item items]
+        ^{:key (:db/id item)} [rate-line store item]))]))
 
 (s/fdef section
   :args (s/cat :items (s/coll-of ::s.rates/item))

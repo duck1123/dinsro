@@ -1,7 +1,6 @@
 (ns dinsro.components.admin-index-rate-sources
   (:require
    [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
    [dinsro.components.links :as c.links]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.spec.rate-sources :as s.rate-sources]
@@ -44,9 +43,7 @@
   [store items]
   [:div.box
    [:h2.title.is-2 (tr [:rate-sources])]
-   [:<>
-    [c.debug/debug-box store @items]
-    (rate-sources-table store @items)]])
+   (rate-sources-table store @items)])
 
 (defn section
   [store]

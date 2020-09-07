@@ -13,7 +13,6 @@
         user-id (get-in account [::s.accounts/user :db/id])
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:<>
-     [c.debug/debug-box store account]
      [:h3 name]
      [:p
       (tr [:user-label])

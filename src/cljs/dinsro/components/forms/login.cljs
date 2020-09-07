@@ -1,7 +1,6 @@
 (ns dinsro.components.forms.login
   (:require
    [dinsro.components :as c]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.forms.login :as e.f.login]
    [dinsro.spec.events.forms.login :as s.e.f.login]
@@ -18,15 +17,13 @@
 
 (defn form
   [store return-to]
-  (let [form-data @(st/subscribe store [::e.f.login/form-data])]
-    [:form.is-centered {:on-submit (partial on-submit store return-to)}
-     [c.debug/debug-box store form-data]
-     [:div.field>div.control
-      [c/email-input store (tr [:email]) ::s.e.f.login/email]]
-     [:div.field>div.control
-      [c/password-input store (tr [:password]) ::s.e.f.login/password]]
-     [:div.field>div.control
-      [:button
-       {:type "submit"}
-       "Submit me!"]
-      #_[c/primary-button store (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]]))
+  [:form.is-centered {:on-submit (partial on-submit store return-to)}
+   [:div.field>div.control
+    [c/email-input store (tr [:email]) ::s.e.f.login/email]]
+   [:div.field>div.control
+    [c/password-input store (tr [:password]) ::s.e.f.login/password]]
+   [:div.field>div.control
+    [:button
+     {:type "submit"}
+     "Submit me!"]
+    #_[c/primary-button store (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]])

@@ -1,6 +1,5 @@
 (ns dinsro.components.index-transactions
   (:require
-   [dinsro.components.debug :as c.debug]
    [dinsro.components.links :as c.links]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.transactions :as s.transactions]
@@ -43,9 +42,7 @@
   [store items]
   (if-not (seq items)
     [:p "no items"]
-    [:<>
-     [c.debug/debug-box store items]
-     [:div.column
-      (for [transaction items]
-        ^{:key (:db/id transaction)}
-        [row-line store transaction])]]))
+    [:div.column
+     (for [transaction items]
+       ^{:key (:db/id transaction)}
+       [row-line store transaction])]))

@@ -2,7 +2,6 @@
   (:require
    [dinsro.components :as c]
    [dinsro.components.datepicker :as c.datepicker]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.events.rates :as e.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
@@ -29,8 +28,6 @@
       [c.datepicker/datepicker {:on-select #(st/dispatch store [::s.e.f.create-rate/set-date %])}]]
      [:div.field>div.control
       [c/currency-selector store (tr [:currency]) ::s.e.f.create-rate/currency-id]]
-     [:div.field>div.control
-      [c.debug/debug-box store form-data]]
      [:div.field>div.control
       [c/primary-button store (tr [:submit]) [::e.rates/do-submit form-data]]]]))
 

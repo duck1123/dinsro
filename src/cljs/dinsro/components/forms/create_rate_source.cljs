@@ -1,7 +1,6 @@
 (ns dinsro.components.forms.create-rate-source
   (:require
    [dinsro.components :as c]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
@@ -21,7 +20,6 @@
   (let [form-data @(st/subscribe store [::e.f.create-rate-source/form-data])]
     [:<>
      [c/close-button store ::e.f.create-rate-source/set-shown?]
-     [c.debug/debug-box store form-data]
      [c/text-input store (tr [:name]) ::s.e.f.create-rate-source/name]
      [c/text-input store (tr [:url]) ::s.e.f.create-rate-source/url]
      [c/currency-selector store (tr [:currency]) ::s.e.f.create-rate-source/currency-id]

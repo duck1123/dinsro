@@ -2,7 +2,6 @@
   (:require
    [dinsro.components :as c]
    [dinsro.components.datepicker :as c.datepicker]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
@@ -14,7 +13,6 @@
   (let [state (st/subscribe store [::e.transactions/do-submit-state])]
     [:div
      [c/close-button store ::e.f.add-user-transaction/set-shown?]
-     [c.debug/debug-box store form-data]
      (when (= @state :failed)
        [c/error-message-box "There was an error submitting"])
      [:p (str @state)]

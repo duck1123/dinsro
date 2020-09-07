@@ -27,18 +27,16 @@
 
 (defn index-currencies
   [store currencies]
-  [:<>
-   [c.debug/debug-box store currencies]
-   (if-not (seq currencies)
-     [:div (tr [:no-currencies])]
-     [:table
-      [:thead>tr
-       [:th (tr [:name-label])]
-       (c.debug/hide store [:th "Buttons"])]
-      (into
-       [:tbody]
-       (for [{:keys [db/id] :as currency} currencies]
-         ^{:key id} [index-currency-line store currency]))])])
+  (if-not (seq currencies)
+    [:div (tr [:no-currencies])]
+    [:table
+     [:thead>tr
+      [:th (tr [:name-label])]
+      (c.debug/hide store [:th "Buttons"])]
+     (into
+      [:tbody]
+      (for [{:keys [db/id] :as currency} currencies]
+        ^{:key id} [index-currency-line store currency]))]))
 
 (s/fdef index-currencies
   :args (s/cat :currencies (s/coll-of ::s.currencies/item))

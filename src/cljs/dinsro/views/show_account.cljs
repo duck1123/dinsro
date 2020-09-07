@@ -43,10 +43,6 @@
    [c.buttons/fetch-currencies store]
    [c.buttons/fetch-transactions store]])
 
-(defn debug-items
-  [store items]
-  (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box store item]])))
-
 (defn page
   [store match]
   (let [{{:keys [id]} :path-params} match

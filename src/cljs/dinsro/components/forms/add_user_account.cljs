@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.components :as c]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.spec :as ds]
@@ -16,7 +15,6 @@
     (when @(st/subscribe store [::e.f.add-user-account/shown?])
       [:<>
        [c/close-button store ::e.f.add-user-account/set-shown?]
-       [c.debug/debug-box store form-data]
        [:div.field>div.control
         [c/text-input store (tr [:name]) ::s.e.f.create-account/name]]
        [:div.field>div.control

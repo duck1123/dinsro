@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.datepicker :as c.datepicker]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec :as ds]
@@ -18,7 +17,6 @@
     (when @(st/subscribe store [::e.f.add-account-transaction/shown?])
       [:div
        [c/close-button store ::e.f.add-account-transaction/set-shown?]
-       [c.debug/debug-box store form-data]
        [:div.field>div.control
         [c/text-input store (tr [:description]) ::s.e.f.create-transaction/description]]
        [:div.field>div.control

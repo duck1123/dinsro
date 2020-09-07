@@ -26,22 +26,20 @@
 
 (defn index-accounts
   [store accounts]
-  [:<>
-   [c.debug/debug-box store accounts]
-   (if-not (seq accounts)
-     [:div (tr [:no-accounts])]
-     [:table.table
-      [:thead
-       [:tr
-        (c.debug/hide store [:th "Id"])
-        [:th (tr [:name])]
-        [:th (tr [:currency-label])]
-        [:th (tr [:initial-value-label])]
-        (c.debug/hide store [:th (tr [:buttons])])]]
-      (into [:tbody]
-            (for [account accounts]
-              ^{:key (:db/id account)}
-              (row-line store account)))])])
+  (if-not (seq accounts)
+    [:div (tr [:no-accounts])]
+    [:table.table
+     [:thead
+      [:tr
+       (c.debug/hide store [:th "Id"])
+       [:th (tr [:name])]
+       [:th (tr [:currency-label])]
+       [:th (tr [:initial-value-label])]
+       (c.debug/hide store [:th (tr [:buttons])])]]
+     (into [:tbody]
+           (for [account accounts]
+             ^{:key (:db/id account)}
+             (row-line store account)))]))
 
 (defn section
   [store user-id accounts]

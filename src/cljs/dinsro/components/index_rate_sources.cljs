@@ -19,17 +19,15 @@
 
 (defn section
   [store items]
-  [:<>
-   [c.debug/debug-box store items]
-   (if-not (seq items)
-     [:p (tr [:no-rate-sources])]
-     [:table.table
-      [:thead>tr
-       [:th (tr [:name])]
-       [:th (tr [:url])]
-       [:th (tr [:currency])]
-       (c.debug/hide store [:th (tr [:actions])])]
-      (into
-       [:tbody]
-       (for [item items]
-         ^{:key (:db/id item)} [index-line store item]))])])
+  (if-not (seq items)
+    [:p (tr [:no-rate-sources])]
+    [:table.table
+     [:thead>tr
+      [:th (tr [:name])]
+      [:th (tr [:url])]
+      [:th (tr [:currency])]
+      (c.debug/hide store [:th (tr [:actions])])]
+     (into
+      [:tbody]
+      (for [item items]
+        ^{:key (:db/id item)} [index-line store item]))]))

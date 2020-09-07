@@ -8,7 +8,6 @@
   [store user]
   (let [{:keys [dinsro.spec.users/name dinsro.spec.users/email]} user]
     [:<>
-     [c.debug/debug-box store user]
      [:h1 name]
      [:p "(" email ")"]
      (c.debug/hide store [c.buttons/delete-user store user])]))

@@ -1,7 +1,6 @@
 (ns dinsro.components.forms.create-account
   (:require
    [dinsro.components :as c]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
@@ -15,7 +14,6 @@
     (when @(st/subscribe store [::e.f.create-account/shown?])
       [:<>
        [c/close-button store ::e.f.create-account/set-shown?]
-       [c.debug/debug-box store form-data]
        [c/text-input store (tr [:name]) ::s.e.f.create-account/name]
        [c/number-input store (tr [:initial-value]) ::s.e.f.create-account/initial-value]
        [c/currency-selector store (tr [:currency]) ::s.e.f.create-account/currency-id]

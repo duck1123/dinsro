@@ -2,7 +2,6 @@
   (:require
    [dinsro.components :as c]
    [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
    [dinsro.components.forms.create-category :as c.f.create-category]
    [dinsro.components.links :as c.links]
    [dinsro.events.categories :as e.categories]
@@ -22,18 +21,16 @@
 
 (defn index-categories
   [store items]
-  [:<>
-   [c.debug/debug-box store items]
-   (if-not (seq items)
-     [:p (tr [:no-categories])]
-     [:table.table
-      [:thead>tr
-       [:th (tr [:name])]
-       [:th (tr [:user])]
-       [:th (tr [:actions])]]
-      (into
-       [:tbody]
-       (for [item items] ^{:key (:db/id item)} [category-line store item]))])])
+  (if-not (seq items)
+    [:p (tr [:no-categories])]
+    [:table.table
+     [:thead>tr
+      [:th (tr [:name])]
+      [:th (tr [:user])]
+      [:th (tr [:actions])]]
+     (into
+      [:tbody]
+      (for [item items] ^{:key (:db/id item)} [category-line store item]))]))
 
 (defn section
   [store]
