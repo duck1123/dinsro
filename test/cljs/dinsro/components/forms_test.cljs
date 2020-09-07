@@ -4,6 +4,7 @@
    [dinsro.components.forms.add-user-account-test]
    [dinsro.components.forms.add-user-transaction-test]
    [dinsro.components.forms.create-account-test]
+   [dinsro.components.forms.create-rate-test]
    [dinsro.components.forms.create-transaction-test]
    [dinsro.components.forms.registration-test]
    [dinsro.components.forms.settings-test]
