@@ -3,6 +3,7 @@
    [cljs.test :refer [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.admin-index-users :as c.admin-index-users]
    [dinsro.components.boundary :refer [error-boundary]]
@@ -14,36 +15,50 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Admin Index Users Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]]])
+(cards/header "Admin Index Users Components" [])
 
-(let [items (ds/gen-key (s/coll-of ::s.users/item :count 3))
-      store (doto (mock-store)
+(defn test-store
+  []
+  (let [store (doto (mock-store)
                 e.debug/init-handlers!
                 e.users/init-handlers!)]
-  (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
+    store))
 
+(let [items (ds/gen-key (s/coll-of ::s.users/item :count 3))
+      item (first items)]
   (defcard items items)
+  (defcard item item)
 
-  (defcard-rg c.admin-index-categories/category-line
-    (fn []
-      [error-boundary
-       [c.admin-index-categories/category-line store (first items)]]))
+  (let [store (test-store)]
+    (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-  (defcard-rg c.admin-index-categories/index-categories
-    (fn []
-      [error-boundary
-       [c.admin-index-categories/index-categories store items]]))
+    (defcard-rg c.admin-index-categories/category-line
+      (fn []
+        [error-boundary
+         [:table.table>tbody
+          [c.admin-index-categories/category-line store item]]]))
 
-  (deftest section-test
-    (is (vector? (c.admin-index-users/section store ))))
+    (deftest category-line-test
+      (is (vector? [c.admin-index-categories/category-line store item]))))
 
-  (defcard-rg c.admin-index-users/section
-    (fn []
-      [error-boundary
-       [c.admin-index-users/section store]])))
+  (let [store (test-store)]
+    (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
+
+    (defcard-rg c.admin-index-categories/index-categories
+      (fn []
+        [error-boundary
+         [c.admin-index-categories/index-categories store items]]))
+
+    (deftest index-categories-test
+      (is (vector? (c.admin-index-categories/index-categories store items)))))
+
+  (let [store (test-store)]
+    (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
+
+    (defcard-rg c.admin-index-users/section
+      (fn []
+        [error-boundary
+         [c.admin-index-users/section store]]))
+
+    (deftest section-test
+      (is (vector? (c.admin-index-users/section store))))))
