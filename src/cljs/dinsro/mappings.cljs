@@ -12,7 +12,7 @@
    [dinsro.views.index-transactions :as v.index-transactions]
    [dinsro.views.index-users :as v.index-users]
    [dinsro.views.login :as v.login]
-   [dinsro.views.register :as v.register]
+   [dinsro.views.registration :as v.registration]
    [dinsro.views.settings :as v.settings]
    [dinsro.views.show-account :as v.show-account]
    [dinsro.views.show-currency :as v.show-currency]
@@ -40,7 +40,7 @@
    :index-transactions-page v.index-transactions/page
    :index-users-page        v.index-users/page
    :login-page              v.login/page
-   :register-page           v.register/page
+   :register-page           v.registration/page
    :settings-page           v.settings/page
    :show-account-page       v.show-account/page
    :show-currency-page      v.show-currency/page

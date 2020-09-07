@@ -1,4 +1,4 @@
-(ns dinsro.views.register
+(ns dinsro.views.registration
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.components :as c]
@@ -29,7 +29,7 @@
      (if allow-registration
        [:<>
         [:h1 "Registration Page"]
-        [c.f.registration/form]]
+        [c.f.registration/form store]]
        [:div
         [:p "Registrations are not enabled"]])]))
 
