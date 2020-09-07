@@ -10,6 +10,7 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
+   [dinsro.spec :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]))
 
@@ -27,8 +28,8 @@
                 e.f.create-rate/init-handlers!)]
     store))
 
-(let [currency-id 1]
-  (comment (defcard currency-id currency-id))
+(let [currency-id (ds/gen-key :db/id)]
+  (defcard currency-id-card (pr-str currency-id))
 
   (let [store (test-store)]
     (st/dispatch store [::e.f.add-currency-rate/set-shown? true])

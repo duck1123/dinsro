@@ -34,6 +34,10 @@
   (st/dispatch store [::e.f.create-rate/set-shown? true])
   (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
+  (defcard-rg form-data
+    (fn []
+      [:pre (pr-str @(st/subscribe store [::e.f.create-rate/form-data]))]))
+
   (defcard-rg form
     (fn []
       [error-boundary

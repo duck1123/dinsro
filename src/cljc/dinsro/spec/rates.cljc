@@ -10,6 +10,8 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
+(s/def ::currency-id :db/id)
+
 (s/def ::currency (s/keys :req [:db/id]))
 (def currency ::currency)
 (def currency-spec
