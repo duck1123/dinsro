@@ -23,8 +23,7 @@
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {:cookie/set {:name "token"
-                  :value token}
+    {:cookie/set {:name "token" :value token}
      :db (assoc (assoc db ::auth-id identity) :token token)
      ;; TODO: return to calling page
      :navigate-to [:home-page]}))

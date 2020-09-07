@@ -23,7 +23,8 @@
       [c/account-selector store (tr [:account]) ::s.e.f.create-transaction/account-id]]
      [:div.field>div.control
       [:label.label (tr [:date])]
-      [c.datepicker/datepicker {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]
+      [c.datepicker/datepicker
+       {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]
      [:div.field>div.control
       [c/primary-button store (tr [:submit]) [::e.transactions/do-submit form-data]]]]))
 

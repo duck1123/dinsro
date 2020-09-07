@@ -31,7 +31,6 @@
      :value @(st/subscribe store [field])
      :on-change #(st/dispatch store [change-handler (target-value %)])}]])
 
-
 (defn checkbox-input
   [store label field change-handler]
   (let [checked (st/subscribe store [field])]

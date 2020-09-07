@@ -15,8 +15,7 @@
 (let [form-data (ds/gen-key ::e.f.registration/form-data)
       store (doto (mock-store)
               e.debug/init-handlers!
-              e.f.registration/init-handlers!
-              )]
+              e.f.registration/init-handlers!)]
   (defcard form-data-card form-data)
 
   (defcard-rg form
