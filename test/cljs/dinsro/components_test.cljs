@@ -18,6 +18,7 @@
    [dinsro.components.show-currency-test]
    [dinsro.components.show-user-test]
    [dinsro.components.status-test]
+   [dinsro.components.user-transactions-test]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
