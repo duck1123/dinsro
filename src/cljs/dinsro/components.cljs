@@ -138,7 +138,7 @@
          state @(st/subscribe store [::e.users/do-fetch-index-state])]
      (condp = state
        :invalid [:p "Invalid"]
-       :loaded  [user-selector- label field change-handler items]
+       :loaded  [user-selector- store label field change-handler items]
        [:p "Unknown"]))))
 
 (defn filter-page
