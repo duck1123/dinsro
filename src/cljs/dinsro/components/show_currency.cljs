@@ -10,7 +10,7 @@
   [store currency]
   (let [name (::s.currencies/name currency)]
     [:<>
-     [:h1 name]
+     [:p name]
      (c.debug/hide store [c.buttons/delete-currency store currency])]))
 
 (s/fdef show-currency
