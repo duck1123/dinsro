@@ -20,7 +20,7 @@
     channel))
 
 (defn connect!
-  [store cofx [endpoint]]
+  [store _cofx [endpoint]]
 
   (reset!
    websocket-channel
