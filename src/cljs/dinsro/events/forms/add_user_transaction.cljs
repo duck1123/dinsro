@@ -33,7 +33,7 @@
 (defn init-handlers!
   [store]
   (doto store
-      (st/reg-basic-sub ::shown?)
-      (st/reg-set-event ::shown?)
-      (st/reg-sub ::form-data form-data-sub))
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+    (st/reg-sub ::form-data form-data-sub))
   store)
