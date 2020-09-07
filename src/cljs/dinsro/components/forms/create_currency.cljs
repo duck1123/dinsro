@@ -9,11 +9,10 @@
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
-(comment
-  (kf/reg-controller
-   ::form-controller
-   {:params (constantly true)
-    :start [::e.f.create-currency/set-defaults]}))
+(kf/reg-controller
+ ::form-controller
+ {:params (constantly true)
+  :start [::e.f.create-currency/set-defaults]})
 
 (defn form
   [store]

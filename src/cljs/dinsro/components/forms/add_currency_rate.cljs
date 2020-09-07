@@ -13,11 +13,10 @@
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
-(comment
-  (kf/reg-controller
-   ::form-controller
-   {:params (constantly true)
-    :start [::e.f.add-currency-rate/init-form]}))
+(kf/reg-controller
+ ::form-controller
+ {:params (constantly true)
+  :start [::e.f.add-currency-rate/init-form]})
 
 (defn form
   [store currency-id]
