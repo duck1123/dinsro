@@ -27,6 +27,7 @@
    [:label.label label]
    [:input.input
     {:type type
+     :name (name field)
      :value @(st/subscribe store [field])
      :on-change #(st/dispatch store [change-handler (target-value %)])}]])
 
