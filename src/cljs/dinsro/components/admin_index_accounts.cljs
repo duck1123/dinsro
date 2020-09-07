@@ -64,6 +64,6 @@
      [c.f.admin-create-account/form store]
      [:hr]
      (condp = state
-       :invalid [:p "Invalid"]
+       :invalid [:p "Invalid Fetch state"]
        :loaded  (when accounts [index-accounts store accounts])
        [:p "Unknown state: " state])]))

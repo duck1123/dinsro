@@ -15,7 +15,7 @@
   (if-let [item @(st/subscribe store [::e.accounts/item id])]
     (let [name (::s.accounts/name item)]
       [:a {:href (st/path-for store [:show-account-page {:id id}])} name])
-    [:span (tr [:not-loaded])]))
+    [:span "Accounts " (tr [:not-loaded])]))
 
 (defn currency-link
   [store id]
@@ -29,4 +29,4 @@
   (if-let [user @(st/subscribe store [::e.users/item id])]
     (let [name (::s.users/name user)]
       [:a {:href (st/path-for store [:show-user-page {:id id}])} name])
-    [:span (tr [:not-loaded])]))
+    [:span "User " (tr [:not-loaded])]))

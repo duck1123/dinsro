@@ -75,7 +75,7 @@
   ([store label field change-handler]
    (condp = @(st/subscribe store [::e.accounts/do-fetch-index-state])
      :invalid
-     [:p "Invalid"]
+     [:p "Invalid Account Fetch State"]
 
      :loaded
      (let [items @(st/subscribe store [::e.accounts/items])]
@@ -87,7 +87,7 @@
                       (for [{:keys [db/id dinsro.spec.accounts/name]} items]
                         ^{:key id} [:option {:value id} name])))])
 
-     [:p "Unknown state"])))
+     [:p "Unknown Account Fetch state"])))
 
 (defn currency-selector-loaded
   [store label field change-handler]
@@ -109,12 +109,12 @@
    (let [state @(st/subscribe store [::e.currencies/do-fetch-index-state])]
      (condp = state
        :invalid
-       [:p "Invalid"]
+       [:p "Invalid Currency Fetch State"]
 
        :loaded
        [currency-selector-loaded store label field change-handler]
 
-       [:p "Unknown state"]))))
+       [:p "Unknown Currency fetch state"]))))
 
 (defn user-selector-
   [store label field change-handler items]
@@ -138,9 +138,9 @@
    (let [items @(st/subscribe store [::e.users/items])
          state @(st/subscribe store [::e.users/do-fetch-index-state])]
      (condp = state
-       :invalid [:p "Invalid"]
+       :invalid [:p "Invalid User fetch state"]
        :loaded  [user-selector- store label field change-handler items]
-       [:p "Unknown"]))))
+       [:p "Unknown user fetch state"]))))
 
 (defn rate-source-selector-
   [store label field change-handler items]
