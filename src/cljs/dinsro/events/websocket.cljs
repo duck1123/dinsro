@@ -20,7 +20,8 @@
     channel))
 
 (defn connect!
-  [store endpoint]
+  [store cofx [endpoint]]
+
   (reset!
    websocket-channel
    (create-connection store endpoint ::receive-message)))

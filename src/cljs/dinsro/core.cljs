@@ -32,7 +32,7 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.settings :as e.settings]
    [dinsro.events.users :as e.users]
-   [dinsro.events.websocket]
+   [dinsro.events.websocket :as e.websocket]
    ;; [dinsro.mappings :as mappings]
    [dinsro.routing :as routing]
    [dinsro.store.reframe :refer [reframe-store]]
@@ -83,6 +83,7 @@
     e.f.registration/init-handlers!
     e.f.login/init-handlers!
     e.f.settings/init-handlers!
+    e.websocket/init-handlers!
     ;; v.home/init-handlers!
     ))
 
