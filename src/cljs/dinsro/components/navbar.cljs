@@ -4,6 +4,7 @@
    [dinsro.components.debug :as c.debug]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
+   [dinsro.events.navbar :as e.navbar]
    [dinsro.events.users :as e.users]
    [dinsro.spec.events.forms.settings :as s.e.f.settings]
    [dinsro.spec.users :as s.users]
@@ -17,32 +18,24 @@
 
 ;; Events
 
-(defn toggle-navbar
-  [{:keys [db]} _]
-  {:db (update db ::expanded? not)})
-
-(defn nav-link-activated
-  [_ _]
-  {:dispatch [::toggle-navbar]})
-
 ;; Components
 
 (defn nav-link
   [store title page]
   [:a.navbar-item
    {:href   (st/path-for store [page])
-    :on-click #(st/dispatch store [::nav-link-activated])
+    :on-click #(st/dispatch store [::e.navbar/nav-link-activated])
     :class (when (= page @(st/subscribe store [:nav/page])) :is-active)}
    title])
 
 (defn nav-burger
   [store]
-  (let [expanded? @(st/subscribe store [::expanded?])]
+  (let [expanded? @(st/subscribe store [::e.navbar/expanded?])]
     [:div.navbar-burger.burger
      {:role :button
       :aria-label :menu
       :aria-expanded false
-      :on-click #(st/dispatch store [::toggle-navbar])
+      :on-click #(st/dispatch store [::e.navbar/toggle-navbar])
       :class (when expanded? :is-active)}
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]
@@ -57,7 +50,7 @@
 (defn navbar
   [store]
   (let [auth-id @(st/subscribe store [::e.authentication/auth-id])
-        expanded? @(st/subscribe store [::expanded?])]
+        expanded? @(st/subscribe store [::e.navbar/expanded?])]
     [:nav.navbar.is-info>div.container {:role "navigation" :aria-label "main navigation"}
      [:div.navbar-brand
       [:a.navbar-item
@@ -91,12 +84,3 @@
           (nav-link store (tr [:login]) :login-page)
           (when @(st/subscribe store [::s.e.f.settings/allow-registration])
             (nav-link store (tr [:register]) :register-page))])]]]))
-
-(defn init-handlers!
-  [store]
-  (doto store
-    (st/reg-basic-sub ::expanded?)
-    (st/reg-set-event ::expanded?)
-    (st/reg-event-fx ::toggle-navbar toggle-navbar)
-    (st/reg-event-fx ::nav-link-activated nav-link-activated))
-  store)

@@ -5,10 +5,10 @@
    [day8.re-frame.http-fx]
    [dinsro.ajax :as ajax]
    [dinsro.components.boundary :refer [error-boundary]]
-   [dinsro.components.navbar :as c.navbar]
    [dinsro.components.settings :as c.settings]
    [dinsro.components.status :as c.status]
    [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.currencies :as e.currencies]
@@ -26,14 +26,14 @@
    [dinsro.events.forms.login :as e.f.login]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.events.forms.settings :as e.f.settings]
-   [dinsro.events.admin-accounts :as e.admin-accounts]
+   [dinsro.events.navbar :as e.navbar]
    [dinsro.events.rates :as e.rates]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.settings :as e.settings]
    [dinsro.events.users :as e.users]
    [dinsro.events.websocket :as e.websocket]
-   ;; [dinsro.mappings :as mappings]
+   [dinsro.mappings :as mappings]
    [dinsro.routing :as routing]
    [dinsro.store.reframe :refer [reframe-store]]
    [dinsro.view :as view]
@@ -57,7 +57,6 @@
   []
   (doto (reframe-store)
     c.status/init-handlers!
-    c.navbar/init-handlers!
     e.accounts/init-handlers!
     e.categories/init-handlers!
     e.admin-accounts/init-handlers!
@@ -69,7 +68,7 @@
     e.transactions/init-handlers!
     e.rate-sources/init-handlers!
     e.users/init-handlers!
-    ;; mappings/init-handlers!
+    mappings/init-handlers!
     e.f.add-account-transaction/init-handlers!
     e.f.add-currency-rate/init-handlers!
     e.f.add-user-account/init-handlers!
@@ -83,6 +82,7 @@
     e.f.registration/init-handlers!
     e.f.login/init-handlers!
     e.f.settings/init-handlers!
+    e.navbar/init-handlers!
     e.websocket/init-handlers!
     ;; v.home/init-handlers!
     ))

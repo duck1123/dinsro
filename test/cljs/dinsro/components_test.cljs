@@ -16,6 +16,7 @@
    [dinsro.components.index-accounts-test]
    [dinsro.components.index-rates-test]
    [dinsro.components.index-transactions-test]
+   [dinsro.components.navbar-test]
    [dinsro.components.rate-chart-test]
    [dinsro.components.show-account-test]
    [dinsro.components.show-currency-test]
