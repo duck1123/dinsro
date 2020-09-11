@@ -15,12 +15,12 @@
   (get-state [_] state)
 
   (subscribe [_ selector]
-    (timbre/infof "sub - %s" selector)
+    (timbre/debugf "sub - %s" selector)
     (or (rfl/subscribe state selector)
         (throw (ex-info (str "No handler - " selector) {:selector selector}))))
 
   (dispatch [_store selector]
-    (timbre/infof "dispatch - %s" selector)
+    (timbre/debugf "dispatch - %s" selector)
     (rfl/dispatch state selector))
 
   (path-for [store handler]
@@ -42,7 +42,7 @@
       (st/reg-sub store name handler)))
 
   (reg-basic-sub [store name k sort-fn]
-    (timbre/infof "basic-sub - %s" key)
+    (timbre/debugf "basic-sub - %s" key)
     (let [handler (fn [db _]
                     (->> k rfu/collify (get-in db) (sort-by sort-fn)))]
       (st/reg-sub store name handler)))
@@ -51,14 +51,14 @@
     (st/reg-event-fx store id nil handler))
 
   (reg-event-fx [store id interceptors handler]
-    (timbre/infof "reg-fx - %s" id)
+    (timbre/debugf "reg-fx - %s" id)
     (rfl/reg-event-fx state id (concat kf/kee-frame-interceptors interceptors) handler))
 
   (reg-set-event [store k]
     (st/reg-set-event store (rfu/kw-prefix k "set-") k))
 
   (reg-set-event [store event-kw kw]
-    (timbre/infof "reg-set - %s" event-kw)
+    (timbre/debugf "reg-set - %s" event-kw)
     (let [kw (rfu/collify kw)]
       (rfl/reg-event-db
        state
@@ -66,7 +66,7 @@
        (fn [db [_ v]] (assoc-in db kw v)))))
 
   (reg-sub [store selector handler]
-    (timbre/infof "reg-sub - %s" selector)
+    (timbre/debugf "reg-sub - %s" selector)
     (rfl/reg-sub state selector handler)))
 
 (defn mock-store
