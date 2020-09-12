@@ -13,6 +13,20 @@
 
 (s/def ::items (s/coll-of ::item))
 
+(s/def ::item-sub-db (s/keys))
+(s/def ::item-sub-event (s/cat :kw keyword? :id :db/id))
+(s/def ::item-sub-request (s/cat :db ::item-sub-db
+                                 :event ::item-sub-event))
+(s/def ::item-sub-response (s/nilable ::item))
+
+(defn item-sub
+  [db event]
+  (e.accounts/item-sub db event))
+
+(s/fdef item-sub
+  :args ::item-sub-request
+  :ret ::item-sub-response)
+
 (defn items-sub
   "Subscription handler: Index all items"
   [db _]

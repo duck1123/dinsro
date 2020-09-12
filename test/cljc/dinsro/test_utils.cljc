@@ -3,7 +3,7 @@
 (defmacro assert-spec
   [spec value]
   (let [card-name (symbol (str value "-matches-" (name spec)))
-        test-name (symbol (str card-name "-test"))]
+        test-name (gensym (symbol (str card-name "-test")))]
     `(let [valid?# (clojure.spec.alpha/valid? ~spec ~value)]
        (when-not valid?#
          (devcards.core/defcard-rg ~card-name
