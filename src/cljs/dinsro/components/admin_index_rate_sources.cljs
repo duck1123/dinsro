@@ -43,9 +43,9 @@
   [store items]
   [:div.box
    [:h2.title.is-2 (tr [:rate-sources])]
-   (rate-sources-table store @items)])
+   (rate-sources-table store items)])
 
 (defn section
   [store]
-  (let [items (st/subscribe store [::e.rate-sources/items])]
+  (let [items @(st/subscribe store [::e.rate-sources/items])]
     [section-inner store items]))
