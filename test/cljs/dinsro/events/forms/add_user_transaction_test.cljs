@@ -11,7 +11,9 @@
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Add User Transaction Form Events" [])
+(cards/header
+ 'dinsro.events.forms.add-user-transaction-test
+ "Add User Transaction Form Events" [])
 
 (let [date (ds/gen-key ::s.a.transactions/date)
       description (ds/gen-key ::s.a.transactions/description)

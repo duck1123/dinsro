@@ -16,7 +16,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Add User Category Form Components" [])
+(cards/header
+ 'dinsro.components.forms.add-user-category-test
+ "Add User Category Form Components" [])
 
 (defn test-store
   []

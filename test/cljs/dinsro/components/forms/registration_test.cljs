@@ -10,7 +10,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Registration Form Components" [])
+(cards/header
+ 'dinsro.components.forms.registration-test
+ "Registration Form Components" [])
 
 (let [form-data (ds/gen-key ::e.f.registration/form-data)
       store (doto (mock-store)

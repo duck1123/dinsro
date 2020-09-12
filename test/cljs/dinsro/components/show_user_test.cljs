@@ -13,7 +13,9 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Show User Components" [])
+(cards/header
+ 'dinsro.components.show-user-test
+ "Show User Components" [])
 
 (let [user {::s.users/name "Bart"
             ::s.users/email "bob@example.com"

@@ -18,7 +18,10 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Index Accounts Components" [])
+(cards/header
+ 'dinsro.components.index-accounts-test
+ "Index Accounts Components"
+ [#{:accounts :components} #{:accounts}])
 
 (def users (ds/gen-key (s/coll-of ::s.users/item :count 3)))
 

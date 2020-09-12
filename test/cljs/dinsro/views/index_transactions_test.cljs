@@ -17,7 +17,9 @@
    [dinsro.views.index-transactions :as v.index-transactions]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Index Transactions View" [])
+(cards/header
+ 'dinsro.views.index-transactions-test
+ "Index Transactions View" [])
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))
       index-transaction-store

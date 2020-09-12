@@ -13,4 +13,6 @@
    [dinsro.components.forms.settings-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Form Components" [])
+(cards/header
+ 'dinsro.components.forms-test
+ "Form Components" [])

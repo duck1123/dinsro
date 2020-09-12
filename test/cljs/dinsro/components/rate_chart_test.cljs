@@ -7,7 +7,9 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Rate Chart Components" [])
+(cards/header
+ 'dinsro.components.rate-chart-test
+ "Rate Chart Components" [])
 
 (let [data [[1  1]
             [2  2]

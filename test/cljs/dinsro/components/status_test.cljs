@@ -4,4 +4,6 @@
    [dinsro.cards :as cards]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Status Components" [])
+(cards/header
+ 'dinsro.components.status-test
+ "Status Components" [])

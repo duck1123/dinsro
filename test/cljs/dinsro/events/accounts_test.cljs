@@ -10,7 +10,9 @@
    [expound.alpha :as expound]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Account Events" [])
+(cards/header
+ 'dinsro.events.accounts-test
+ "Account Events" [])
 
 (let [items (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
       item (first items)

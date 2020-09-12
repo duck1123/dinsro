@@ -9,7 +9,9 @@
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.test-utils :refer-macros [assert-spec]]))
 
-(cards/header "Add Account Transaction Form Events" [])
+(cards/header
+ 'dinsro.events.forms.add-account-transaction-test
+ "Add Account Transaction Form Events" [#{:accounts}])
 
 (let [account-id (ds/gen-key ::s.e.f.create-transaction/account-id)
       date (ds/gen-key ::s.e.f.create-transaction/date)

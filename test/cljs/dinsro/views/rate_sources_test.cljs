@@ -3,7 +3,9 @@
    [devcards.core :refer-macros [defcard]]
    [dinsro.cards :as cards]))
 
-(cards/header "Rate Source View" [])
+(cards/header
+ 'dinsro.views.rate-sources-test
+ "Rate Source View" [])
 
 (defcard foo
   "foo"

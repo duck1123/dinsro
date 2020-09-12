@@ -18,7 +18,10 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Admin Index Categories Components" [])
+(cards/header
+ 'dinsro.components.admin-index-categories-test
+ "Admin Index Categories Components"
+ [#{:admin} #{:categories}])
 
 (def users (ds/gen-key (s/coll-of ::s.users/item :count 3)))
 

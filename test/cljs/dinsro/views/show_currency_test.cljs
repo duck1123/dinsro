@@ -16,7 +16,10 @@
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Show Currency View" [#{:views} #{:currencies}])
+(cards/header
+ 'dinsro.views.show-currency-test
+ "Show Currency View"
+ [#{:views :currencies} #{:currencies}])
 
 (let [currency (ds/gen-key ::s.currencies/item)
       store (doto (mock-store)

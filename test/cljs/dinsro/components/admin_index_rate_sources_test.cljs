@@ -15,7 +15,10 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Admin Index Rate Source Components" [])
+(cards/header
+ 'dinsro.components.admin-index-rate-sources-test
+ "Admin Index Rate Source Components"
+ [#{:rates} #{:components}])
 
 (defn test-store
   []

@@ -9,7 +9,9 @@
    [expound.alpha :as expound]
    [tick.alpha.api :as tick]))
 
-(cards/header "Rate Specs" [])
+(cards/header
+ 'dinsro.spec.rates-test
+ "Rate Specs" [])
 
 (defcard item
   (ds/gen-key ::s.rates/item))

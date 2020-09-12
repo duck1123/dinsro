@@ -10,7 +10,9 @@
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Add User Account Form Events" [])
+(cards/header
+ 'dinsro.events.forms.add-user-account-test
+ "Add User Account Form Events" [])
 
 (let [currency-id (ds/gen-key ::s.e.f.create-account/currency-id)
       initial-value (ds/gen-key ::s.e.f.create-account/initial-value)

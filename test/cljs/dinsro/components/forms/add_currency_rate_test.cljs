@@ -12,7 +12,8 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]))
 
-(cards/header "Add Currency Rate Form Components" [])
+(cards/header 'dinsro.components.forms.add-currency-rate-test
+ "Add Currency Rate Form Components" [])
 
 (defn test-store
   []

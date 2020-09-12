@@ -8,4 +8,6 @@
    [dinsro.events.forms.registration-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Form Events" [])
+(cards/header
+ 'dinsro.events.forms-test
+ "Form Events" [])

@@ -11,7 +11,9 @@
    [expound.alpha :as expound]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Rate Events" [])
+(cards/header
+ 'dinsro.events.rates-test
+ "Rate Events" [])
 
 (let [rates (ds/gen-key (s/coll-of ::e.rates/item :count 3))
       item-map (into {} (map

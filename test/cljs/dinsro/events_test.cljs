@@ -6,4 +6,6 @@
    [dinsro.events.transactions-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Events" [])
+(cards/header
+ 'dinsro.events-test
+ "Events" [])

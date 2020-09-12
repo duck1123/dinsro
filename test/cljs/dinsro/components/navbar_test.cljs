@@ -17,7 +17,9 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Navbar Components" [])
+(cards/header
+ 'dinsro.components.navbar-test
+ "Navbar Components" [])
 
 (def user (ds/gen-key ::e.users/item))
 (def user-id (:db/id user))

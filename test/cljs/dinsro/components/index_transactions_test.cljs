@@ -13,7 +13,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Index Transaction Components" [])
+(cards/header
+ 'dinsro.components.index-transactions-test
+ "Index Transaction Components" [])
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item))
       transaction-store (fn []

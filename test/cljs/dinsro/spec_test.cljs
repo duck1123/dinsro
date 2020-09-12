@@ -9,4 +9,6 @@
    [dinsro.spec.views-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Specs" [])
+(cards/header
+ 'dinsro.spec-test
+ "Specs" [])

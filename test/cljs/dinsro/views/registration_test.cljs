@@ -13,7 +13,9 @@
    [dinsro.views.registration :as v.registration]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Registration Page" [])
+(cards/header
+ 'dinsro.views.registration-test
+ "Registration Page" [])
 
 (defn test-store
   []

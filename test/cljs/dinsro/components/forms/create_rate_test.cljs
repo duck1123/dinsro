@@ -16,7 +16,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Create Account Form Components" [])
+(cards/header
+ 'dinsro.components.forms.create-rate-test
+ "Create Account Form Components" [])
 
 (let [currencies (ds/gen-key (s/coll-of ::e.currencies/item :count 3))
       store (doto (mock-store)

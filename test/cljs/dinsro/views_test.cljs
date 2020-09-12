@@ -14,4 +14,7 @@
    [dinsro.views.show-user-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Views" [])
+(cards/header
+ 'dinsro.views-test
+ "Views"
+ [#{:views}])

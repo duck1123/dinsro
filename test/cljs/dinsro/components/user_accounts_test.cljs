@@ -11,7 +11,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "User Accounts Components" [])
+(cards/header
+ 'dinsro.components.user-accounts-test
+ "User Accounts Components" [])
 
 (let [user-id 1
       accounts []

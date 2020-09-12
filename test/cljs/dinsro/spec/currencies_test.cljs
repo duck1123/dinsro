@@ -8,7 +8,9 @@
    [dinsro.spec.currencies :as s.currencies]
    [expound.alpha :as expound]))
 
-(cards/header "Currency Spec" [])
+(cards/header
+ 'dinsro.spec.currencies-test
+ "Currency Spec" [])
 
 (defcard item
   (ds/gen-key ::s.currencies/item))

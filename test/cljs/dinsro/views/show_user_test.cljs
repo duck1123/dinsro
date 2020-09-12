@@ -25,7 +25,9 @@
    [dinsro.views.show-user :as v.show-user]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Show User View" [])
+(cards/header
+ 'dinsro.views.show-user-test
+ "Show User View" [])
 
 (let [users (ds/gen-key (s/coll-of ::s.users/item :count 3))
       user (first users)

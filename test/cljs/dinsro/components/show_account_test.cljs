@@ -15,7 +15,9 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Show Account Components" [])
+(cards/header
+ 'dinsro.components.show-account-test
+ "Show Account Components" [#{:accounts :components} #{:accounts}])
 
 (let [user-id 1
       user {:db/id user-id ::s.users/name "Bob"}

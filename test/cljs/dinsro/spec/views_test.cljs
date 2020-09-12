@@ -4,4 +4,6 @@
    [dinsro.spec.views.show-currency-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "View Specs" [])
+(cards/header
+ 'dinsro.spec.views-test
+ "View Specs" [])

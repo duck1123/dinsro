@@ -17,7 +17,9 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Button Components" [])
+(cards/header
+ 'dinsro.components.buttons-test
+ "Button Components" [])
 
 (let [account (ds/gen-key ::e.accounts/item)
       store (mock-store)]

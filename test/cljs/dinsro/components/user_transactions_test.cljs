@@ -19,7 +19,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "User Transactions Components" [])
+(cards/header
+ 'dinsro.components.user-transactions-test
+ "User Transactions Components" [])
 
 (defn test-store
   []

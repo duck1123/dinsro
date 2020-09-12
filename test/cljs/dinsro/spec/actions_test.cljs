@@ -7,4 +7,6 @@
    [dinsro.spec.actions.rates-test]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Actions Specs" [])
+(cards/header
+ 'dinsro.spec.actions-test
+ "Actions Specs" [])

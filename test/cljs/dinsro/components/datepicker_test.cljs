@@ -6,7 +6,9 @@
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.datepicker :as c.datepicker]))
 
-(cards/header "Datepicker Components" [])
+(cards/header
+ 'dinsro.components.datepicker-test
+ "Datepicker Components" [])
 
 (let [props {}]
   (defcard-rg datepicker

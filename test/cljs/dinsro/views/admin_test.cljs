@@ -18,7 +18,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.admin :as v.admin]))
 
-(cards/header "Admin View" [])
+(cards/header
+ 'dinsro.views.admin-test
+ "Admin View" [])
 
 (defn test-store
   []

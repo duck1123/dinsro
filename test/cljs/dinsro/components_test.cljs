@@ -35,7 +35,10 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Components" [])
+(cards/header
+ 'dinsro.components-test
+ "Components"
+ [#{:components}])
 
 (defn test-store
   []

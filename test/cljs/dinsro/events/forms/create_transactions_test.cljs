@@ -10,7 +10,9 @@
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Create Transaction Form Events" [])
+(cards/header
+ 'dinsro.events.forms.create-transaction-test
+ "Create Transaction Form Events" [])
 
 (let [account-id (ds/gen-key ::s.e.f.create-transaction/account-id)
       date (ds/gen-key ::s.e.f.create-transaction/date)

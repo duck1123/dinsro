@@ -5,7 +5,9 @@
    [dinsro.spec :as ds]
    [dinsro.spec.actions.accounts :as s.a.accounts]))
 
-(cards/header "Account Actions Specs" [])
+(cards/header
+ 'dinsro.spec.actions.accounts-test
+ "Account Actions Specs" [])
 
 (defcard "**Create**")
 

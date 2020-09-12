@@ -3,4 +3,6 @@
    [dinsro.cards :as cards]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Event Specs" [])
+(cards/header
+ 'dinsro.spec.events-test
+ "Event Specs" [])

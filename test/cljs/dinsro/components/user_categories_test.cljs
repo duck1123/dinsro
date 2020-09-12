@@ -17,7 +17,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "User Categories Components" [])
+(cards/header
+ 'dinsro.components.user-categories-test
+ "User Categories Components" [])
 
 (let [user (ds/gen-key ::e.users/item)
       user-id (:db/id user)

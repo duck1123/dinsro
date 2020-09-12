@@ -12,7 +12,10 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Show Currency Components" [])
+(cards/header
+ 'dinsro.components.show-currency-test
+ "Show Currency Components"
+ [#{:currencies :components} #{:currencies}])
 
 (let [item (ds/gen-key ::s.currencies/item)
       store (doto (mock-store)

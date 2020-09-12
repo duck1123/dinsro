@@ -3,4 +3,6 @@
    [dinsro.cards :as cards]
    [taoensso.timbre :as timbre]))
 
-(cards/header "User Specs" [])
+(cards/header
+ 'dinsro.spec.users-test
+ "User Specs" [])

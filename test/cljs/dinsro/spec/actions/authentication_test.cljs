@@ -6,7 +6,9 @@
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Authentication Actions Specs" [])
+(cards/header
+ 'dinsro.spec.actions.authentication-test
+ "Authentication Actions Specs" [])
 
 (defcard register-params
   (ds/gen-key ::s.a.authentication/register-params))

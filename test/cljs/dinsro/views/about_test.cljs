@@ -8,7 +8,9 @@
    [dinsro.views.about :as v.about]
    [pjstadig.humane-test-output]))
 
-(cards/header "About View" [])
+(cards/header
+ 'dinsro.views.about-test
+ "About View" [])
 
 (defn test-store
   []

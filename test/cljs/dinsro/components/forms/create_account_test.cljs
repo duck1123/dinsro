@@ -14,7 +14,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Create Account Form Components" [])
+(cards/header
+ 'dinsro.components.forms.create-account-test
+ "Create Account Form Components" [])
 
 (defn test-store
   []

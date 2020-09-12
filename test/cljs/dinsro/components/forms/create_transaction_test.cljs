@@ -14,7 +14,9 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Create Transaction Form Components" [])
+(cards/header
+ 'dinsro.components.forms.create-transaction-test
+ "Create Transaction Form Components" [])
 
 (let [form-data (ds/gen-key ::e.f.create-transaction/form-data)
       new-data {

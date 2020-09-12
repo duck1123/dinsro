@@ -16,7 +16,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Add User Transaction Form Components" [])
+(cards/header
+ 'dinsro.components.forms.add-user-transaction-test
+ "Add User Transaction Form Components" [])
 
 (let [accounts (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
       store (doto (mock-store)

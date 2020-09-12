@@ -14,7 +14,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Index Rates Components" [])
+(cards/header
+ 'dinsro.components.index-rates-test
+ "Index Rates Components" [])
 
 (defn test-store
   []

@@ -13,7 +13,9 @@
    [dinsro.views.login :as v.login]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Login View" [])
+(cards/header
+ 'dinsro.views.login-test
+ "Login View" [])
 
 (defn login-store
   []

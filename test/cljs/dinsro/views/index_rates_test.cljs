@@ -16,7 +16,9 @@
    [dinsro.views.index-rates :as v.index-rates]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Index Rates Test" [])
+(cards/header
+ 'dinsro.views.index-rates-test
+ "Index Rates Test" [])
 
 (let [currency (ds/gen-key ::e.currencies/item)
       rates (map

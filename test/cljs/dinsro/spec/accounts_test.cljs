@@ -8,7 +8,9 @@
    [dinsro.spec.accounts :as s.accounts]
    [expound.alpha :as expound]))
 
-(cards/header "Account Specs" [])
+(cards/header
+ 'dinsro.spec.accounts-test
+ "Account Specs" [])
 
 (defcard item
   (ds/gen-key ::s.accounts/item))

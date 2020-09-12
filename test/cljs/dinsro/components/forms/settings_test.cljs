@@ -10,7 +10,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Settings Form Components" [])
+(cards/header
+ 'dinsro.components.forms.settings-test
+ "Settings Form Components" [])
 
 (let [store (doto (mock-store)
               e.debug/init-handlers!

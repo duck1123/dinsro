@@ -5,7 +5,9 @@
    [dinsro.spec :as ds]
    [dinsro.spec.actions.categories :as s.a.categories]))
 
-(cards/header "Category Action Specs" [])
+(cards/header
+ 'dinsro.spec.actions.categories-test
+ "Category Action Specs" [])
 
 (defcard create-params-valid
   (ds/gen-key ::s.a.categories/create-params-valid))

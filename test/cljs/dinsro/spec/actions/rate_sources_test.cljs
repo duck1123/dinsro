@@ -5,7 +5,9 @@
    [dinsro.spec :as ds]
    [dinsro.spec.actions.rate-sources :as s.a.rate-sources]))
 
-(cards/header "Rate Source Actions Specs" [])
+(cards/header
+ 'dinsro.spec.actions.rate-sources-test
+ "Rate Source Actions Specs" [])
 
 (defcard create-params-valid
   (ds/gen-key ::s.a.rate-sources/create-params-valid))

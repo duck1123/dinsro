@@ -8,7 +8,10 @@
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.store.mock :refer [mock-store]]))
 
-(cards/header "Currency Rates Components" [])
+(cards/header
+ 'dinsro.components.currency-rates-test
+ "Currency Rates Components"
+ [#{:rates} #{:currencies} #{:rates :components}])
 
 (let [currency-id 7
       rates [[1 1]

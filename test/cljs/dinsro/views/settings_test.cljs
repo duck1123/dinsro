@@ -10,7 +10,9 @@
    [dinsro.views.settings :as v.settings]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Settings View" [])
+(cards/header
+ 'dinsro.views.settings-test
+ "Settings View" [])
 
 (defn test-store
   []

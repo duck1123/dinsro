@@ -22,7 +22,10 @@
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Index Accounts View" [])
+(cards/header
+ 'dinsro.views.index-accounts-test
+ "Index Accounts View"
+ [#{:accounts :views} #{:accounts}])
 
 (defn test-app
   []

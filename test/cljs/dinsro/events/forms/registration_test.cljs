@@ -9,7 +9,9 @@
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Registration Form Events" [])
+(cards/header
+ 'dinsro.events.forms.registration-test
+ "Registration Form Events" [])
 
 (let [form-data (ds/gen-key ::e.f.registration/form-data)]
 

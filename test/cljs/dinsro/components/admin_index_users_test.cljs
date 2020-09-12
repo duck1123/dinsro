@@ -15,7 +15,9 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(cards/header "Admin Index Users Components" [])
+(cards/header
+ 'dinsro.components.admin-index-users-test
+ "Admin Index Users Components" [])
 
 (defn test-store
   []

@@ -7,7 +7,9 @@
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.store.mock :refer [mock-store]]))
 
-(cards/header "Create Account Form Events" [])
+(cards/header
+ 'dinsro.events.forms.create-account-test
+ "Create Account Form Events" [])
 
 (let [store (doto (mock-store)
               e.f.create-account/init-handlers!)]

@@ -22,7 +22,10 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(cards/header "Admin Index Accounts Components" [])
+(cards/header
+ 'dinsro.components.admin-index-accounts-test
+ "Admin Index Accounts Components"
+ [#{:admin :accounts} #{:accounts :components}])
 
 (let [users (ds/gen-key (s/coll-of ::s.users/item :count 3))
       currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))

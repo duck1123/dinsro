@@ -9,7 +9,9 @@
    [expound.alpha :as expound]
    [tick.alpha.api :as tick]))
 
-(cards/header "Transaction Spec" [])
+(cards/header
+ 'dinsro.spec.transactions-test
+ "Transaction Spec" [])
 
 (defcard generated-item
   (ds/gen-key ::s.transactions/item))
