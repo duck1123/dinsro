@@ -33,10 +33,11 @@
   {})
 
 (defn do-authenticate
-  [_ [data _]]
+  [store _ [data _]]
   {:http-xhrio
    (e/post-request
     [:api-authenticate]
+    store
     [::do-authenticate-success]
     [::do-authenticate-failure]
     data)})
@@ -55,11 +56,12 @@
    :navigate-to [:login-page]})
 
 (defn do-logout
-  [_ _]
+  [store _ _]
   {:cookie/remove {:name "token"}
    :http-xhrio
    (e/post-request
     [:api-logout]
+    store
     [::do-logout-success]
     [::do-logout-failure]
     nil)})
@@ -76,11 +78,12 @@
     {:db (assoc db ::s.e.f.registration/error-message error-message)}))
 
 (defn submit-registration
-  [{:keys [db]} [data]]
+  [store {:keys [db]} [data]]
   {:db (assoc db ::s.e.f.registration/error-message "")
    :http-xhrio
    (e/post-request
     [:api-register]
+    store
     [:register-succeeded]
     [:register-failed]
     data)})
@@ -99,6 +102,6 @@
     (st/reg-event-fx ::do-logout do-logout)
     (st/reg-event-fx :register-succeeded register-succeeded)
     (st/reg-event-fx :register-failed register-failed)
-    (st/reg-event-fx ::submit-registration submit-registration))
+    (st/reg-event-fx ::submit-registration (partial submit-registration store)))
 
   store)

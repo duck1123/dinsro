@@ -1,6 +1,7 @@
 (ns dinsro.events.accounts
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.event-utils :as eu :include-macros true]
    [dinsro.events :as e]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
@@ -10,38 +11,9 @@
 
 (s/def ::item ::s.accounts/item)
 
-;; Item Map
-
-(s/def ::item-map (s/map-of ::ds/id ::s.accounts/item))
-(def item-map ::item-map)
-
-;; Items
-
-(s/def ::items (s/coll-of ::item))
-
-(defn items-sub
-  "Subscription handler: Index all items"
-  [{:keys [::item-map]} _]
-  (sort-by :db/id (vals item-map)))
-
-(s/fdef items-sub
-  :args (s/cat :db (s/keys :req [::item-map])
-               :event (s/cat :kw keyword?))
-  :ret ::items)
-
-;; Item
-
-(s/def ::item-sub-event (s/tuple keyword? :db/id))
-
-(defn item-sub
-  "Subscription handler: Lookup an item from the item map by id"
-  [{:keys [::item-map]} [_ id]]
-  (get item-map id))
-
-(s/fdef item-sub
-  :args (s/cat :db (s/keys :req [::item-map])
-               :event ::item-sub-event)
-  :ret (s/nilable ::item))
+(eu/declare-model 'dinsro.events.accounts)
+(eu/declare-fetch-index-method 'dinsro.events.accounts)
+(eu/declare-fetch-record-method 'dinsro.events.accounts)
 
 ;; Items by User
 
@@ -95,82 +67,17 @@
                :event ::s.e.accounts/do-submit-response-event)
   :ret ::s.e.accounts/do-submit-response)
 
-;; Delete
-
-(s/def ::do-delete-record-state ::ds/state)
-
-(defn do-delete-record-success
-  [_store _cofx _event]
-  {:dispatch [::do-fetch-index]})
-
-(defn do-delete-record-failed
-  [_store _cofx _event]
-  {})
-
-(defn do-delete-record
-  [store {:keys [db]} [item]]
-  {:http-xhrio
-   (e/delete-request-auth
-    [:api-show-account {:id (:db/id item)}]
-    store
-    (:token db)
-    [::do-delete-record-success]
-    [::do-delete-record-failed])})
-
-;; Index
-
-(s/def ::do-fetch-index-state ::ds/state)
-(def do-fetch-index-state ::do-fetch-index-state)
-
-(defn do-fetch-index-success
-  [_store {:keys [db]} [{:keys [items]}]]
-  {:db (-> db
-           (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
-           (assoc ::do-fetch-index-state :loaded))})
-
-(defn do-fetch-index-failed
-  [_store {:keys [db]} _event]
-  {:db (assoc db ::do-fetch-index-state :failed)})
-
-(s/fdef do-fetch-index-failed
-  :args (s/cat :cofx ::s.e.accounts/do-fetch-index-failed-cofx
-               :event ::s.e.accounts/do-fetch-index-failed-event)
-  :ret ::s.e.accounts/do-fetch-index-failed-response)
-
-(defn do-fetch-index
-  [store {:keys [db]} _event]
-  {:db (assoc db ::do-fetch-index-state :loading)
-   :http-xhrio
-   (e/fetch-request-auth
-    [:api-index-accounts]
-    store
-    (:token db)
-    [::do-fetch-index-success]
-    [::do-fetch-index-failed])})
-
-(s/fdef do-fetch-index
-  :args (s/cat :cofx ::s.e.accounts/do-fetch-index-cofx
-               :event ::s.e.accounts/do-fetch-index-event)
-  :ret ::s.e.accounts/do-fetch-index-response)
-
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::item-map)
-    (st/reg-sub ::item item-sub)
-    (st/reg-sub ::items items-sub)
+    (eu/register-model-store 'dinsro.events.accounts)
+    (eu/register-fetch-index-method 'dinsro.events.accounts [:api-index-accounts])
+    (eu/register-fetch-record-method 'dinsro.events.accounts [:api-show-account])
+    (eu/register-delete-record-method 'dinsro.events.accounts [:api-show-account])
     (st/reg-sub ::items-by-currency items-by-currency)
     (st/reg-sub ::items-by-user items-by-user)
     (st/reg-basic-sub ::do-submit-state)
     (st/reg-event-fx ::do-submit-success (partial do-submit-success store))
     (st/reg-event-fx ::do-submit-failed (partial do-submit-failed store))
-    (st/reg-event-fx ::do-submit (partial do-submit store))
-    (st/reg-basic-sub ::do-delete-record-state)
-    (st/reg-event-fx ::do-delete-record-success (partial do-delete-record-success store))
-    (st/reg-event-fx ::do-delete-record-failed (partial do-delete-record-failed store))
-    (st/reg-event-fx ::do-delete-record (partial do-delete-record store))
-    (st/reg-basic-sub ::do-fetch-index-state)
-    (st/reg-event-fx ::do-fetch-index-success (partial do-fetch-index-success store))
-    (st/reg-event-fx ::do-fetch-index-failed (partial do-fetch-index-failed store))
-    (st/reg-event-fx ::do-fetch-index (partial do-fetch-index store)))
+    (st/reg-event-fx ::do-submit (partial do-submit store)))
   store)
