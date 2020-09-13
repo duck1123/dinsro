@@ -3,7 +3,7 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
    [devcards.core :refer-macros [defcard deftest]]
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]

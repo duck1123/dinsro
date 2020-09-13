@@ -1,6 +1,6 @@
 (ns dinsro.views-test
   (:require
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.views.about-test]
    [dinsro.views.admin-test]
    [dinsro.views.index-accounts-test]

@@ -3,7 +3,7 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard deftest]]
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.rates :as s.rates]
    [expound.alpha :as expound]

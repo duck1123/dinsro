@@ -1,6 +1,6 @@
 (ns dinsro.events.forms-test
   (:require
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.events.forms.add-account-transaction-test]
    [dinsro.events.forms.add-user-account-test]
    [dinsro.events.forms.add-user-transaction-test]

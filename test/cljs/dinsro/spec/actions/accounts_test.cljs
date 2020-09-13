@@ -1,7 +1,7 @@
 (ns dinsro.spec.actions.accounts-test
   (:require
    [devcards.core :refer-macros [defcard]]
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.accounts :as s.a.accounts]))
 

@@ -1,6 +1,6 @@
 (ns dinsro.components.forms-test
   (:require
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.forms.add-currency-rate-test]
    [dinsro.components.forms.add-user-account-test]
    [dinsro.components.forms.add-user-category-test]

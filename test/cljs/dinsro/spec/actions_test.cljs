@@ -1,6 +1,6 @@
 (ns dinsro.spec.actions-test
   (:require
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec.actions.accounts-test]
    [dinsro.spec.actions.categories-test]
    [dinsro.spec.actions.rate-sources-test]

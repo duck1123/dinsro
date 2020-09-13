@@ -1,6 +1,6 @@
 (ns dinsro.spec.users-test
   (:require
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [taoensso.timbre :as timbre]))
 
 (cards/header

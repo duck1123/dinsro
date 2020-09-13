@@ -3,7 +3,7 @@
    [cljs.test :refer [is]]
    [day8.re-frame.http-fx]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.status :as c.status]
    [dinsro.store :as st]

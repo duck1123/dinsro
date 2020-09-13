@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.debug :as e.debug]

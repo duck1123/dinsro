@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.registration-test
   (:require
    [devcards.core :refer-macros [defcard defcard-rg]]
-   [dinsro.cards :as cards]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.registration :as c.f.registration]
    [dinsro.events.debug :as e.debug]
