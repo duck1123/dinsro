@@ -59,7 +59,7 @@
                  [org.glassfish/javax.json "1.1.4"]
 
                  [org.webjars.npm/bulma "0.9.0"]
-                 [org.webjars.npm/bulma-calendar "6.0.9"
+                 [org.webjars.npm/bulma-calendar "6.0.7"
                   :exclusions [org.webjars.npm/bulma
                                org.webjars.npm/date-and-time
                                org.webjars.npm/date-fns]]
