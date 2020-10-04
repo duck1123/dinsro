@@ -101,8 +101,9 @@
        (or failure [(keyword ns-sym "do-fetch-record-failed")]))}))
 
 (defn do-delete-record-success
-  [ns-sym _ [{:keys [id]}]]
-  {:dispatch [(keyword ns-sym "do-fetch-index") id]})
+  [ns-sym {:keys [db]} [{:keys [id]}]]
+  {:db (update db (keyword ns-sym "item-map") #(dissoc % id))
+   :dispatch [(keyword ns-sym "do-fetch-index") id]})
 
 (defn do-delete-record-failed
   [ns-sym {:keys [db]} [{:keys [id]}]]
@@ -239,7 +240,7 @@
         (partial do-delete-record-failed ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-delete-record")
-        (partial do-delete-record ~ns-sym ~path-selector)))))
+        (partial do-delete-record ~ns-sym ~path-selector ~store)))))
 
 (defmacro register-model-store
   [store ns-sym]
