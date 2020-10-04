@@ -6,6 +6,8 @@
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
 
+(s/def ::ns-sym symbol)
+
 (defn inspect-registry
   []
   #?(:cljs
@@ -34,11 +36,9 @@
 (defn do-fetch-index-success
   [ns-sym {:keys [db]} [{:keys [items]}]]
   {:db (-> db
-           (update (keyword ns-sym "item-map")
-                   merge (into {} (map #(vector (:db/id %) %) items)))
+           (update (keyword ns-sym "item-map") merge
+                   (into {} (map #(vector (:db/id %) %) items)))
            (assoc (keyword ns-sym "do-fetch-index-state") :loaded))})
-
-(s/def ::ns-sym symbol)
 
 (s/def ::do-fetch-index-success-cofx (s/keys))
 (s/def ::do-fetch-index-success-event (s/cat :response (s/keys)))
@@ -244,10 +244,7 @@
 
 (defmacro register-model-store
   [store ns-sym]
-  `(let [item-key# (keyword ~ns-sym "item")
-         items-key# (keyword ~ns-sym "items")
-         item-map-key# (keyword ~ns-sym "items")]
-     (doto ~store
-       (dinsro.store/reg-basic-sub item-map-key#)
-       (dinsro.store/reg-sub item-key# (partial item-sub ~ns-sym))
-       (dinsro.store/reg-sub items-key# (partial items-sub ~ns-sym)))))
+  `(doto ~store
+     (dinsro.store/reg-basic-sub (keyword ~ns-sym "item-map"))
+     (dinsro.store/reg-sub (keyword ~ns-sym "item") (partial item-sub ~ns-sym))
+     (dinsro.store/reg-sub (keyword ~ns-sym "items") (partial items-sub ~ns-sym))))
