@@ -27,7 +27,7 @@
         store (transaction-store)]
     (comment (defcard item item))
 
-    (defcard-rg c.index-transactions/row-line
+    (defcard-rg row-line
       (fn []
         [error-boundary
          [c.index-transactions/row-line store item]]))
