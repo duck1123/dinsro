@@ -5,15 +5,16 @@
 
 (def dictionary
   {
-   :missing {:missing "Missing"}
+   ;; :missing {:missing "Missing: %1"}
 
    :en
-   {:missing "Missing text"
+   {:missing (fn [arg1 arg2] (str "Missing text: " (timbre/spy :info arg1) " - " arg2))
     :about "About"
     :actions "Actions"
     :account "Account"
     :accounts "Accounts"
     :admin "Admin"
+    :buttons "Buttons"
     :categories "Categories"
     :currencies "Currencies"
     :currency "Currency"
@@ -67,4 +68,5 @@
 
 (def opts {:dict dictionary})
 
-(def tr (partial tempura/tr opts [:missing]))
+(defn tr [a & b]
+  (apply tempura/tr opts [:missing :en] a b))
