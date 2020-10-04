@@ -280,10 +280,13 @@
      #_(timbre/infof "Registering form - %s" ~ns-sym)
      (doto ~store
        (dinsro.store/reg-basic-sub (keyword ~ns-sym "shown?"))
-       (dinsro.store/reg-set-event (keyword ~ns-sym "shown?"))
+       (dinsro.store/reg-set-event (keyword ~ns-sym "shown?")))
 
-       #_(doseq [key# ~(symbol ~ns-sym "form-keys")]
-         (timbre/infof "Registering key - %s" key#)))))
+     (doseq [key# ~'form-keys]
+       #_(timbre/infof "Registering key - %s" key#)
+       (doto ~store
+         (dinsro.store/reg-basic-sub key#)
+         (dinsro.store/reg-set-event key#)))))
 
 (defmacro register-subform
   [store ns-sym]
