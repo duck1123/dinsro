@@ -125,7 +125,7 @@
   (s/check-asserts (boolean *debug*))
 
   (kf/start!
-   {:debug?         *debug*
+   {:debug?         false #_*debug*
     :routes         routing/routes
     :app-db-spec    ::app-db
     :initial-db     (initial-db *debug*)

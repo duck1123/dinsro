@@ -43,4 +43,10 @@
 (mount/defstate instrument
   :start (stest/instrument))
 
+(timbre/merge-config!
+ {:min-level [["dinsro.store.mock" :info]
+              ["*" :error]]
+  :deny #{"*"}
+  })
+
 (doo-all-tests #"dinsro\..*(?:-test)$")
