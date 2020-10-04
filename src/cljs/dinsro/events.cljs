@@ -51,7 +51,7 @@
    :on-failure      on-failure})
 
 (defn post-request-auth
-  [path token on-success on-failure data]
+  [path store token on-success on-failure data]
   {:method          :post
    :uri             (st/path-for store path)
    :headers {"Authorization" (str "Token " token)}

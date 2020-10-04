@@ -62,7 +62,7 @@
 (s/def ::do-fetch-record-state keyword?)
 
 (defn do-fetch-record-success
-  [{:keys [db]} [{:keys [item]}]]
+  [_store {:keys [db]} [{:keys [item]}]]
   (let [item (update item ::s.rates/date tick/instant)]
     {:db (-> db
              (assoc ::do-fetch-record-state :loaded)
@@ -70,13 +70,13 @@
              (assoc-in [::item-map (:db/id item)] item))}))
 
 (defn do-fetch-record-unauthorized
-  [{:keys [db]} _event]
+  [_store {:keys [db]} _event]
   (let [match (:kee-frame/route db)]
     {:db (assoc db :return-to match)
      :navigate-to [:login-page]}))
 
 (defn do-fetch-record-failed
-  [{:keys [db]} [{:keys [status] :as request}]]
+  [_store {:keys [db]} [{:keys [status] :as request}]]
   (if (= status/forbidden status)
     {:dispatch [::do-fetch-record-unauthorized request]}
     {:db (assoc db ::do-fetch-record-state :failed)}))
@@ -91,11 +91,12 @@
   :ret (s/keys))
 
 (defn do-fetch-record
-  [{:keys [db]} [id success failure]]
+  [store {:keys [db]} [id success failure]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
    (e/fetch-request-auth
     [:api-show-rate {:id id}]
+    store
     (:token db)
     (or success [::do-fetch-record-success])
     (or failure [::do-fetch-record-failed]))})
@@ -116,22 +117,23 @@
 (s/def ::do-fetch-index-state keyword?)
 
 (defn do-fetch-index-success
-  [{:keys [db]} [{:keys [items]}]]
+  [_store {:keys [db]} [{:keys [items]}]]
   (let [items (map (fn [item] (update item ::s.rates/date tick/instant)) items)]
     {:db (-> db
              (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
              (assoc ::do-fetch-index-state :loaded))}))
 
 (defn do-fetch-index-failed
-  [{:keys [db]} _]
+  [_store {:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :failed)})
 
 (defn do-fetch-index
-  [{:keys [db]} _]
+  [store {:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    (e/fetch-request-auth
     [:api-index-rates]
+    store
     (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
@@ -139,18 +141,19 @@
 ;; Submit
 
 (defn do-submit-success
-  [_ _]
+  [_store _cofx _event]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ _]
+  [_store _cofx _event]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit
-  [{:keys [db]} [data]]
+  [store {:keys [db]} [data]]
   {:http-xhrio
    (e/post-request-auth
     [:api-index-rates]
+    store
     (:token db)
     [::do-submit-success]
     [::do-submit-failed]
@@ -162,7 +165,7 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [_ _]
+  [_store _cofx _event]
   {:dispatch [::do-fetch-index]})
 
 (s/fdef do-delete-record-success
@@ -171,7 +174,7 @@
   :ret ::s.e.rates/do-delete-record-success-response)
 
 (defn do-delete-record-failed
-  [_ _]
+  [_store _cofx _event]
   {:dispatch [::do-fetch-index]})
 
 (s/fdef do-delete-record-failed
@@ -180,11 +183,12 @@
   :ret (s/keys))
 
 (defn do-delete-record
-  [{:keys [db]} [item]]
+  [store {:keys [db]} [item]]
   (let [id (:db/id item)]
     {:http-xhrio
      (e/delete-request-auth
       [:api-show-rate {:id id}]
+      store
       (:token db)
       [::do-delete-record-success]
       [::do-delete-record-failed])}))
@@ -195,18 +199,19 @@
   :ret (s/keys))
 
 (defn do-fetch-rate-feed-by-currency-success
-  [{:keys [db]} [id {:keys [items]}]]
+  [_store {:keys [db]} [id {:keys [items]}]]
   {:db (assoc-in db [::rate-feed id] items)})
 
 (defn do-fetch-rate-feed-by-currency-failure
-  [_ _]
+  [_store _cofx _event]
   {:dispatch [::do-fetch-index]})
 
 (defn do-fetch-rate-feed-by-currency
-  [{:keys [db]} [id]]
+  [store {:keys [db]} [id]]
   {:http-xhrio
    (e/fetch-request-auth
     [:api-rate-feed {:id id}]
+    store
     (:token db)
     [::do-fetch-rate-feed-by-currency-success id]
     [::do-fetch-rate-feed-by-currency-failure id])})
@@ -217,7 +222,7 @@
 
 (defn add-record
   "Handler for rates created"
-  [{:keys [db]} [id response]]
+  [_store {:keys [db]} [id response]]
   (if response
     (if-let [rate (:item response)]
       (do (timbre/infof "Adding new rate: %s" rate)
@@ -246,21 +251,21 @@
     (st/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
     (st/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
     (st/reg-sub ::rate-feed rate-feed-sub)
-    (st/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
-    (st/reg-event-fx ::do-fetch-record-failed do-fetch-record-failed)
-    (st/reg-event-fx ::do-fetch-record-unauthorized do-fetch-record-unauthorized)
-    (st/reg-event-fx ::do-fetch-record do-fetch-record)
-    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-    (st/reg-event-fx ::do-fetch-index do-fetch-index)
-    (st/reg-event-fx ::do-submit-failed do-submit-failed)
-    (st/reg-event-fx ::do-submit-success do-submit-success)
-    (st/reg-event-fx ::do-submit do-submit)
-    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
-    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
-    (st/reg-event-fx ::do-delete-record do-delete-record)
-    (st/reg-event-fx ::do-fetch-rate-feed-by-currency-success do-fetch-rate-feed-by-currency-success)
-    (st/reg-event-fx ::do-fetch-rate-feed-by-currency-failure do-fetch-rate-feed-by-currency-failure)
-    (st/reg-event-fx ::do-fetch-rate-feed-by-currency do-fetch-rate-feed-by-currency)
-    (st/reg-event-fx ::add-record add-record))
+    (st/reg-event-fx ::do-fetch-record-success (partial do-fetch-record-success store))
+    (st/reg-event-fx ::do-fetch-record-failed (partial do-fetch-record-failed store))
+    (st/reg-event-fx ::do-fetch-record-unauthorized (partial do-fetch-record-unauthorized store))
+    (st/reg-event-fx ::do-fetch-record (partial do-fetch-record store))
+    (st/reg-event-fx ::do-fetch-index-success (partial do-fetch-index-success store))
+    (st/reg-event-fx ::do-fetch-index-failed (partial do-fetch-index-failed store))
+    (st/reg-event-fx ::do-fetch-index (partial do-fetch-index store))
+    (st/reg-event-fx ::do-submit-failed (partial do-submit-failed store))
+    (st/reg-event-fx ::do-submit-success (partial do-submit-success store))
+    (st/reg-event-fx ::do-submit (partial do-submit store store))
+    (st/reg-event-fx ::do-delete-record-failed (partial do-delete-record-failed store))
+    (st/reg-event-fx ::do-delete-record-success (partial do-delete-record-success store))
+    (st/reg-event-fx ::do-delete-record (partial do-delete-record store))
+    (st/reg-event-fx ::do-fetch-rate-feed-by-currency-success (partial do-fetch-rate-feed-by-currency-success store))
+    (st/reg-event-fx ::do-fetch-rate-feed-by-currency-failure (partial do-fetch-rate-feed-by-currency-failure store))
+    (st/reg-event-fx ::do-fetch-rate-feed-by-currency (partial do-fetch-rate-feed-by-currency store))
+    (st/reg-event-fx ::add-record (partial add-record store)))
   store)

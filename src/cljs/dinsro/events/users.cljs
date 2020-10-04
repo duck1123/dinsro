@@ -47,30 +47,31 @@
 (s/def ::do-fetch-record-state keyword?)
 
 (defn do-fetch-record-success
-  [{:keys [db]} [{:keys [item]}]]
+  [_store {:keys [db]} [{:keys [item]}]]
   {:db (-> db
            (assoc ::do-fetch-record-state :loaded)
            (assoc ::item item)
            (assoc-in [::item-map (:db/id item)] item))})
 
 (defn do-fetch-record-unauthorized
-  [{:keys [db]} _]
+  [_store {:keys [db]} _]
   (let [match (:kee-frame/route db)]
     {:db (assoc db :return-to match)
      :navigate-to [:login-page]}))
 
 (defn do-fetch-record-failed
-  [{:keys [db]} [{:keys [status] :as request}]]
+  [_store {:keys [db]} [{:keys [status] :as request}]]
   (if (= status/forbidden status)
     {:dispatch [::do-fetch-record-unauthorized request]}
     {:db (assoc db ::do-fetch-record-state :failed)}))
 
 (defn do-fetch-record
-  [{:keys [db]} [id]]
+  [store {:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
    (e/fetch-request-auth
     [:api-show-user {:id id}]
+    store
     (:token db)
     [::do-fetch-record-success]
     [::do-fetch-record-failed])})
@@ -78,20 +79,21 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [_ _]
+  [_store _cofx _event]
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record-failed
-  [{:keys [db]} [{:keys [id]}]]
+  [_store {:keys [db]} [{:keys [id]}]]
   {:db (-> db
            (assoc :failed true)
            (assoc :delete-record-failure-id id))})
 
 (defn do-delete-record
-  [{:keys [db]} [user]]
+  [store {:keys [db]} [user]]
   {:http-xhrio
    (e/delete-request-auth
     [:api-show-user {:id (:db/id user)}]
+    store
     (:token db)
     [::do-delete-record-success]
     [::do-delete-record-failed])})
@@ -101,27 +103,28 @@
 (s/def ::do-fetch-index-state keyword?)
 
 (defn do-fetch-index-success
-  [{:keys [db]} [{items :users}]]
+  [_store {:keys [db]} [{items :users}]]
   {:db (-> db
            (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-unauthorized
-  [cofx _]
+  [_store cofx _event]
   (let [_route (get-in cofx [:db :kee-frame/route :data])]
     {:navigate-to [:login-page {:query-string (url/map->query {:return-to "/users"})}]}))
 
 (defn do-fetch-index-failed
-  [{:keys [db]} [response]]
+  [_store {:keys [db]} [response]]
   (if (= status/forbidden (:status response))
     {:dispatch [::do-fetch-index-unauthorized response]}
     {:db (assoc db ::do-fetch-index-state :failed)}))
 
 (defn do-fetch-index
-  [{:keys [db]} _]
+  [store {:keys [db]} _]
   {:http-xhrio
    (e/fetch-request-auth
     [:api-index-users]
+    store
     (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
@@ -133,16 +136,16 @@
     (st/reg-sub ::item item-sub)
     (st/reg-sub ::items items-sub)
     (st/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
-    (st/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
-    (st/reg-event-fx ::do-fetch-record-failed do-fetch-record-failed)
-    (st/reg-event-fx ::do-fetch-record-unauthorized do-fetch-record-unauthorized)
-    (st/reg-event-fx ::do-fetch-record do-fetch-record)
-    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
-    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
-    (st/reg-event-fx ::do-delete-record do-delete-record)
+    (st/reg-event-fx ::do-fetch-record-success (partial do-fetch-record-success store))
+    (st/reg-event-fx ::do-fetch-record-failed (partial do-fetch-record-failed store))
+    (st/reg-event-fx ::do-fetch-record-unauthorized (partial do-fetch-record-unauthorized store))
+    (st/reg-event-fx ::do-fetch-record (partial do-fetch-record store))
+    (st/reg-event-fx ::do-delete-record-success (partial do-delete-record-success store))
+    (st/reg-event-fx ::do-delete-record-failed (partial do-delete-record-failed store))
+    (st/reg-event-fx ::do-delete-record (partial do-delete-record store))
     (st/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
-    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-    (st/reg-event-fx ::do-fetch-index-unauthorized do-fetch-index-unauthorized)
-    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+    (st/reg-event-fx ::do-fetch-index-success (partial do-fetch-index-success store))
+    (st/reg-event-fx ::do-fetch-index-unauthorized (partial do-fetch-index-unauthorized store))
+    (st/reg-event-fx ::do-fetch-index-failed (partial do-fetch-index-failed store))
+    (st/reg-event-fx ::do-fetch-index (partial do-fetch-index store)))
   store)

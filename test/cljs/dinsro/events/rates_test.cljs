@@ -8,6 +8,7 @@
    [dinsro.spec :as ds]
    [dinsro.spec.events.rates :as s.e.rates]
    [dinsro.spec.rates :as s.rates]
+   [dinsro.store.mock :refer [mock-store]]
    [expound.alpha :as expound]
    [taoensso.timbre :as timbre]))
 
@@ -47,35 +48,38 @@
 (defcard "* **do-fetch-record-failed**")
 
 (let [cofx {}
-      event (ds/gen-key ::e.rates/do-fetch-record-failed-event)]
+      event (ds/gen-key ::e.rates/do-fetch-record-failed-event)
+      store (mock-store)]
   (defcard do-fetch-record-failed-cofx cofx)
   (defcard do-fetch-record-failed-event event)
   (comment
     (deftest do-fetch-record-failed
-      (is (= nil (e.rates/do-fetch-record cofx event))))))
+      (is (= nil (e.rates/do-fetch-record store cofx event))))))
 
 (defcard "* **do-fetch-record**")
 
 (let [cofx {}
-      event (ds/gen-key ::e.rates/do-fetch-record-event)]
+      event (ds/gen-key ::e.rates/do-fetch-record-event)
+      store (mock-store)]
   (defcard cofx cofx)
   (defcard do-fetch-record-event event)
   (comment
     (deftest do-fetch-record
-      (is (= nil (e.rates/do-fetch-record cofx event))))))
+      (is (= nil (e.rates/do-fetch-record store cofx event))))))
 
 
 (defcard "**Add record**")
 
-(let [cofx {}]
+(let [cofx {}
+      store (mock-store)]
   (defcard add-record-cofx cofx)
   (let [event (ds/gen-key ::s.e.rates/add-record-event-without-response)]
     (defcard add-record-event-without-response event)
     (deftest add-record-no-response
       (let [id (first event)]
         (is (= {:dispatch [::e.rates/do-fetch-record id [::e.rates/add-record id]]}
-               (e.rates/add-record cofx event))))))
+               (e.rates/add-record store cofx event))))))
   (let [event (ds/gen-key ::s.e.rates/add-record-event-with-response)]
     (defcard add-record-event-with-response event)
     (deftest add-record-response
-      (is (= {} (e.rates/add-record cofx event))))))
+      (is (= {} (e.rates/add-record store cofx event))))))
