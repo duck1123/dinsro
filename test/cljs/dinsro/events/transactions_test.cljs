@@ -14,14 +14,8 @@
  "Transaction Events"
  [#{:events} #{:transactions} #{:transactions :events}])
 
-;; (defcard ::s.transactions/item
-;;   (ds/gen-key ::s.transactions/item))
-
-(defcard ::s.transactions/item
+(defcard item
   (ds/gen-key ::e.transactions/item))
-
-;; (defcard ::s.e.transactions/do-fetch-index-cofx
-;;   (ds/gen-key ::s.e.transactions/do-fetch-index-cofx))
 
 (defcard ::e.transactions/do-fetch-index-cofx
   (ds/gen-key ::s.e.transactions/do-fetch-index-cofx))
@@ -29,12 +23,6 @@
 (defcard do-fetch-index-response
   "7"
   )
-
-;; (defcard ::s.e.transactions/do-fetch-index-event
-;;   (ds/gen-key ::s.e.transactions/do-fetch-index-event))
-
-;; (defcard ::s.e.transactions/do-fetch-index-response
-;;   (ds/gen-key ::s.e.transactions/do-fetch-index-response))
 
 (defcard do-fetch-index-response-card
   (ds/gen-key ::e.transactions/do-fetch-index-response))
@@ -45,12 +33,3 @@
     (is (= 1 (eu/do-fetch-index
               'dinsro.events.transactions
               cofx event)))))
-
-;; (defcard ::s.e.transactions/do-submit-cofx
-;;   (ds/gen-key ::s.e.transactions/do-submit-cofx))
-
-;; (defcard ::s.e.transactions/do-submit-event
-;;   (ds/gen-key ::s.e.transactions/do-submit-event))
-
-;; (defcard ::s.e.transactions/do-submit-response
-;;   (ds/gen-key ::s.e.transactions/do-submit-response))
