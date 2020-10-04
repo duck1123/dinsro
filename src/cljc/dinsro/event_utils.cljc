@@ -291,7 +291,7 @@
        (dinsro.store/reg-set-event (keyword ~ns-sym "shown?")))
 
      (doseq [[out-key# in-key# default#] ~'form-defs]
-       #_(timbre/infof "Registering key - %s" key#)
+       #_(timbre/infof "Registering key - %s" in-key#)
        (doto ~store
          (dinsro.store/reg-basic-sub in-key#)
          (dinsro.store/reg-set-event in-key#)))))
