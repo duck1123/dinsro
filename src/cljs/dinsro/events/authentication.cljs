@@ -33,7 +33,7 @@
   {})
 
 (defn do-authenticate
-  [store _ [data _]]
+  [store _cofx [data _]]
   {:http-xhrio
    (e/post-request
     [:api-authenticate]
