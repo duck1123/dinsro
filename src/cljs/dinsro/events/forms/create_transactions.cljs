@@ -9,6 +9,13 @@
 
 (def ns-sym 'dinsro.events.forms.create-transaction)
 
+(eu/declare-form
+ ns-sym
+ [::s.e.f.create-transaction/account-id
+  ::s.e.f.create-transaction/date
+  ::s.e.f.create-transaction/description
+  ::s.e.f.create-transaction/value])
+
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/account-id
                                     ::s.e.f.create-transaction/date
                                     ::s.e.f.create-transaction/description

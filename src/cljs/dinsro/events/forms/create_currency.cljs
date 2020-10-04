@@ -8,6 +8,10 @@
 
 (def ns-sym 'dinsro.events.forms.create-currency)
 
+(eu/declare-form
+ ns-sym
+ [::s.e.f.create-currency/name])
+
 (defn form-data-sub
   [{:keys [::s.e.f.create-currency/name]} _]
   {:name name})

@@ -8,6 +8,11 @@
 
 (def ns-sym 'dinsro.events.forms.login)
 
+(eu/declare-form
+ ns-sym
+ [::s.e.f.login/email
+  ::s.e.f.login/password])
+
 (defn form-data-sub
   [{:keys [::s.e.f.login/email
            ::s.e.f.login/password]}

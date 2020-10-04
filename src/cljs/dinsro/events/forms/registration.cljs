@@ -8,6 +8,13 @@
 
 (def ns-sym 'dinsro.events.forms.registration)
 
+(eu/declare-form
+ ns-sym
+ [::s.e.f.registration/name
+  ::s.e.f.registration/email
+  ::s.e.f.registration/password
+  ::s.e.f.registration/confirm-password])
+
 (defn set-defaults
   [{:keys [db]} _]
   {:db (-> db

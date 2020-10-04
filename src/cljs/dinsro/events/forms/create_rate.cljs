@@ -8,6 +8,12 @@
 
 (def ns-sym 'dinsro.events.forms.create-rate)
 
+(eu/declare-form
+ ns-sym
+ [::s.e.f.create-rate/currency-id
+  ::s.e.f.create-rate/date
+  ::s.e.f.create-rate/rate])
+
 (def default-rate 1)
 
 (defn form-data-sub

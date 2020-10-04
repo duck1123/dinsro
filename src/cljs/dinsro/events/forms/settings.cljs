@@ -9,6 +9,10 @@
 
 (def ns-sym 'dinsro.events.forms.settings)
 
+(eu/declare-form
+ ns-sym
+ [::s.e.f.settings/allow-registration])
+
 (defn form-data-sub
   [{:keys [::s.e.f.settings/allow-registration]}
    _]

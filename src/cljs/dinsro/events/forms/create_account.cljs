@@ -16,7 +16,7 @@
   ::s.e.f.create-account/name
   ::s.e.f.create-account/user-id])
 
-(s/def ::form-data (s/keys))
+;; (s/def ::form-data (s/keys))
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-account/currency-id
                                     ::s.e.f.create-account/initial-value
                                     ::s.e.f.create-account/name

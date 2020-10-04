@@ -200,6 +200,11 @@
        boolean?
        boolean?)
 
+     (clojure.spec.alpha/def-impl
+       (keyword ~ns-sym "form-data")
+       (clojure.spec.alpha/keys)
+       (clojure.spec.alpha/keys))
+
      (def ~'form-keys ~form-keys)))
 
 (defmacro declare-subform
@@ -274,8 +279,11 @@
   `(do
      #_(timbre/infof "Registering form - %s" ~ns-sym)
      (doto ~store
-      (dinsro.store/reg-basic-sub (keyword ~ns-sym "shown?"))
-      (dinsro.store/reg-set-event (keyword ~ns-sym "shown?")))))
+       (dinsro.store/reg-basic-sub (keyword ~ns-sym "shown?"))
+       (dinsro.store/reg-set-event (keyword ~ns-sym "shown?"))
+
+       #_(doseq [key# ~(symbol ~ns-sym "form-keys")]
+         (timbre/infof "Registering key - %s" key#)))))
 
 (defmacro register-subform
   [store ns-sym]
