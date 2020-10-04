@@ -41,17 +41,6 @@
   [store]
   (doto store
     (eu/register-form ns-sym)
-
-    (st/reg-basic-sub ::s.e.f.create-rate/rate)
-    (st/reg-set-event ::s.e.f.create-rate/rate)
-    (st/reg-basic-sub ::s.e.f.create-rate/currency-id)
-    (st/reg-set-event ::s.e.f.create-rate/currency-id)
-    (st/reg-basic-sub ::s.e.f.create-rate/rate-source-id)
-    (st/reg-set-event ::s.e.f.create-rate/rate-source-id)
-    (st/reg-basic-sub ::s.e.f.create-rate/date)
-    (st/reg-set-event ::s.e.f.create-rate/date)
-    (st/reg-basic-sub ::s.e.f.create-rate/time)
-    (st/reg-set-event ::s.e.f.create-rate/time)
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::init-form init-form))
   store)

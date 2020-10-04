@@ -55,14 +55,7 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.registration/name)
-    (st/reg-set-event ::s.e.f.registration/name)
-    (st/reg-basic-sub ::s.e.f.registration/email)
-    (st/reg-set-event ::s.e.f.registration/email)
-    (st/reg-basic-sub ::s.e.f.registration/password)
-    (st/reg-set-event ::s.e.f.registration/password)
-    (st/reg-basic-sub ::s.e.f.registration/confirm-password)
-    (st/reg-set-event ::s.e.f.registration/confirm-password)
+    (eu/register-form ns-sym)
     (st/reg-basic-sub ::s.e.f.registration/error-message)
     (st/reg-set-event ::s.e.f.registration/error-message)
     (st/reg-event-fx ::set-defaults set-defaults)

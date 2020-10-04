@@ -24,10 +24,6 @@
   [store]
   (doto store
     (eu/register-form ns-sym)
-
-    (st/reg-basic-sub ::s.e.f.create-currency/name)
-    (st/reg-set-event ::s.e.f.create-currency/name)
-
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::set-defaults set-defaults))
   store)

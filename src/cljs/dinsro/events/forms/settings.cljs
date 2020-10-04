@@ -22,9 +22,5 @@
   [store]
   (doto store
     (eu/register-form ns-sym)
-    (st/reg-basic-sub ::s.e.f.settings/allow-registration)
-    (st/reg-set-event ::s.e.f.settings/allow-registration)
-    (st/reg-basic-sub ::s.e.f.settings/first-run)
-    (st/reg-set-event ::s.e.f.settings/first-run)
     (st/reg-sub ::form-data form-data-sub))
   store)

@@ -41,17 +41,5 @@
   [store]
   (doto store
     (eu/register-form ns-sym)
-
-    (st/reg-basic-sub ::s.e.f.create-account/name)
-    (st/reg-set-event ::s.e.f.create-account/name)
-
-    (st/reg-basic-sub ::s.e.f.create-account/currency-id)
-    (st/reg-set-event ::s.e.f.create-account/currency-id)
-
-    (st/reg-basic-sub ::s.e.f.create-account/user-id)
-    (st/reg-set-event ::s.e.f.create-account/user-id)
-
-    (st/reg-basic-sub ::s.e.f.create-account/initial-value)
-    (st/reg-set-event ::s.e.f.create-account/initial-value)
     (st/reg-sub ::form-data form-data-sub))
   store)

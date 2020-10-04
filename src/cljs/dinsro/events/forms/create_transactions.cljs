@@ -42,15 +42,6 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::shown?)
-    (st/reg-set-event ::shown?)
-    (st/reg-basic-sub ::s.e.f.create-transaction/account-id)
-    (st/reg-set-event ::s.e.f.create-transaction/account-id)
-    (st/reg-basic-sub ::s.e.f.create-transaction/date)
-    (st/reg-set-event ::s.e.f.create-transaction/date)
-    (st/reg-basic-sub ::s.e.f.create-transaction/description)
-    (st/reg-set-event ::s.e.f.create-transaction/description)
-    (st/reg-basic-sub ::s.e.f.create-transaction/value)
-    (st/reg-set-event ::s.e.f.create-transaction/value)
+    (eu/register-form ns-sym)
     (st/reg-sub ::form-data form-data-sub))
   store)

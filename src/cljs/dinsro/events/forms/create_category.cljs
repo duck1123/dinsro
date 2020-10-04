@@ -24,11 +24,5 @@
   [store]
   (doto store
     (eu/register-form ns-sym)
-
-    (st/reg-basic-sub ::s.e.f.create-category/name)
-    (st/reg-set-event ::s.e.f.create-category/name)
-    (st/reg-basic-sub ::s.e.f.create-category/user-id)
-    (st/reg-set-event ::s.e.f.create-category/user-id)
-
     (st/reg-sub ::form-data form-data-sub))
   store)

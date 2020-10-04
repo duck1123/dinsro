@@ -29,10 +29,7 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.login/email)
-    (st/reg-set-event ::s.e.f.login/email)
-    (st/reg-basic-sub ::s.e.f.login/password)
-    (st/reg-set-event ::s.e.f.login/password)
+    (eu/register-form ns-sym)
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::set-defaults set-defaults))
   store)
