@@ -33,11 +33,12 @@
     (let [cofx {}
           event [{:foo "bar"}]
           ns-sym 'dinsro.events.transactions
-          path-selector [:api-show-index]
+          path-selector [:api-index-transactions]
           response (eu/do-fetch-index
                     ns-sym
                     path-selector
                     store
                     cofx
                     event)]
-      (is (= {} response)))))
+      (is (contains? response :http-xhrio))
+      (is (seq (get-in response [:http-xhrio :uri]))))))

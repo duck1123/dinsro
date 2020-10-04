@@ -59,7 +59,7 @@
 #?(:cljs
    (defn do-fetch-index
      [ns-sym path-selector store {:keys [db]} _]
-     #_(timbre/debugf "Fetching index - %s" ns-sym)
+     #_(timbre/debugf "Fetching index - %s - %s" ns-sym path-selector)
      {:db (assoc db (keyword ns-sym "do-fetch-index-state") :loading)
       :http-xhrio
       (e/fetch-request-auth
