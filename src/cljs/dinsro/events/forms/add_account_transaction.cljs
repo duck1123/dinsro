@@ -31,8 +31,6 @@
                :event ::form-data-event)
   :ret ::form-data)
 
-(def form-data ::form-data)
-
 (defn init-handlers!
   [store]
   (doto store

@@ -11,8 +11,6 @@
   {:email email
    :password password})
 
-(def form-data ::form-data)
-
 (defn set-defaults
   [{:keys [db]} _]
   {:db (-> db

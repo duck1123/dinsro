@@ -13,7 +13,6 @@
 (s/def ::form-data-event (s/cat :kw keyword?
                                 :account-id :db/id))
 (s/def ::form-data ::s.a.transactions/create-params-valid)
-(def form-data ::form-data)
 
 (defn form-data-sub
   [db event]

@@ -11,8 +11,6 @@
   {:name          name
    :user-id       (int user-id)})
 
-(def form-data ::form-data)
-
 (defn init-handlers!
   [store]
   (doto store

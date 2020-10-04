@@ -12,7 +12,6 @@
                                     ::s.e.f.create-transaction/value]))
 (s/def ::form-data-event (s/cat :kw keyword?))
 (s/def ::form-data ::s.a.transactions/create-params-valid)
-(def form-data ::form-data)
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-transaction/account-id

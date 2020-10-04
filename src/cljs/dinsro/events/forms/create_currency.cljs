@@ -8,8 +8,6 @@
   [{:keys [::s.e.f.create-currency/name]} _]
   {:name name})
 
-(def form-data ::form-data)
-
 (defn set-defaults
   [{:keys [db]} _]
   {:db (merge db {::s.e.f.create-currency/name s.e.f.create-currency/default-name})})

@@ -13,7 +13,6 @@
                                     ::s.e.f.create-account/user-id]))
 (s/def ::form-data-event (s/cat :kw keyword?))
 (s/def ::form-data (s/keys))
-(def form-data ::form-data)
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-account/currency-id

@@ -36,8 +36,6 @@
 (s/fdef form-data-sub
   :args (s/cat ))
 
-(def form-data ::form-data)
-
 (s/def ::form-data
   (s/keys :req-un [::s.e.f.registration/name
                    ::s.e.f.registration/email

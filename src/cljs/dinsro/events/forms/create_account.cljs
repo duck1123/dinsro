@@ -27,8 +27,6 @@
    :user-id       (int user-id)
    :initial-value (.parseFloat js/Number initial-value)})
 
-(def form-data ::form-data)
-
 (defn init-handlers!
   [store]
   (doto store

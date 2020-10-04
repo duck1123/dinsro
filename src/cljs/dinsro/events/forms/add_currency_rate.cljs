@@ -13,8 +13,6 @@
    :rate        (js/Number.parseFloat rate)
    :date        date})
 
-(def form-data ::form-data)
-
 (defn init-form
   [{:keys [db]} _]
   (let [default-date (js/Date.)

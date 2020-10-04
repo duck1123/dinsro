@@ -15,8 +15,6 @@
    :url url
    :currency-id (int currency-id)})
 
-(def form-data ::form-data)
-
 (defn init-form
   [{:keys [db]} _]
   {:db (merge db {
