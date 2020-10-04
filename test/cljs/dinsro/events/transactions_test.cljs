@@ -31,8 +31,13 @@
 (let [store (mock-store)]
   (deftest do-fetch-index
     (let [cofx {}
-          event [{:foo "bar"}]]
-      (is (= 1 (eu/do-fetch-index
-                [:api-show-index] store
-                'dinsro.events.transactions
-                cofx event))))))
+          event [{:foo "bar"}]
+          ns-sym 'dinsro.events.transactions
+          path-selector [:api-show-index]
+          response (eu/do-fetch-index
+                    ns-sym
+                    path-selector
+                    store
+                    cofx
+                    event)]
+      (is (= {} response)))))
