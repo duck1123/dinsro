@@ -7,6 +7,7 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.transactions :as s.e.transactions]
    [dinsro.spec :as ds]
+   [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
 (cards/header
@@ -27,9 +28,11 @@
 (defcard do-fetch-index-response-card
   (ds/gen-key ::e.transactions/do-fetch-index-response))
 
-(deftest do-fetch-index
-  (let [cofx {}
-        event [{:foo "bar"}]]
-    (is (= 1 (eu/do-fetch-index
-              'dinsro.events.transactions
-              cofx event)))))
+(let [store (mock-store)]
+  (deftest do-fetch-index
+    (let [cofx {}
+          event [{:foo "bar"}]]
+      (is (= 1 (eu/do-fetch-index
+                [:api-show-index] store
+                'dinsro.events.transactions
+                cofx event))))))
