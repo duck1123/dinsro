@@ -25,7 +25,6 @@
                        (assoc ::s.e.f.create-transaction/account-id account-id))]
     (e.f.create-transaction/form-data-sub updated-db event)))
 
-(s/def ::form-data (s/keys))
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/date
                                     ::s.e.f.create-transaction/description
                                     ::s.e.f.create-transaction/value]))

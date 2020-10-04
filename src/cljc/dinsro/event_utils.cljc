@@ -211,10 +211,16 @@
   [ns-sym form-keys]
   `(do
      #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
+
      (clojure.spec.alpha/def-impl
        (keyword ~ns-sym "shown?")
        boolean?
-       boolean?)))
+       boolean?)
+
+     (clojure.spec.alpha/def-impl
+       (keyword ~ns-sym "form-data")
+       (clojure.spec.alpha/keys)
+       (clojure.spec.alpha/keys))))
 
 (defmacro register-fetch-index-method
   [store ns-sym path-selector]
