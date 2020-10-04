@@ -102,8 +102,10 @@
 
 (defn do-delete-record-success
   [ns-sym {:keys [db]} [{:keys [id]}]]
+  (timbre/debugf "delete success - %s - %s" ns-sym id)
   {:db (update db (keyword ns-sym "item-map") #(dissoc % id))
    :dispatch [(keyword ns-sym "do-fetch-index") id]})
+
 
 (defn do-delete-record-failed
   [ns-sym {:keys [db]} [{:keys [id]}]]
