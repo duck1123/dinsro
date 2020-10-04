@@ -96,10 +96,10 @@
     (st/reg-event-fx ::do-authenticate-success
                      [(rf/inject-cofx :cookie/get [:token])] do-authenticate-success)
     (st/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
-    (st/reg-event-fx ::do-authenticate do-authenticate)
+    (st/reg-event-fx ::do-authenticate (partial do-authenticate store))
     (st/reg-event-fx ::do-logout-success do-logout-success)
     (st/reg-event-fx ::do-logout-failure do-logout-failure)
-    (st/reg-event-fx ::do-logout do-logout)
+    (st/reg-event-fx ::do-logout (partial do-logout store))
     (st/reg-event-fx :register-succeeded register-succeeded)
     (st/reg-event-fx :register-failed register-failed)
     (st/reg-event-fx ::submit-registration (partial submit-registration store)))
