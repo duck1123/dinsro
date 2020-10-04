@@ -194,7 +194,7 @@
 (defmacro declare-form
   [ns-sym
    form-data-spec
-   form-keys]
+   form-defs]
   `(do
      #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
      (clojure.spec.alpha/def-impl
@@ -207,7 +207,7 @@
        ~form-data-spec
        ~form-data-spec)
 
-     (def ~'form-keys ~form-keys)))
+     (def ~'form-defs ~form-defs)))
 
 (defmacro declare-subform
   [ns-sym form-keys]
@@ -290,11 +290,11 @@
        (dinsro.store/reg-basic-sub (keyword ~ns-sym "shown?"))
        (dinsro.store/reg-set-event (keyword ~ns-sym "shown?")))
 
-     (doseq [key# ~'form-keys]
+     (doseq [[out-key# in-key# default#] ~'form-defs]
        #_(timbre/infof "Registering key - %s" key#)
        (doto ~store
-         (dinsro.store/reg-basic-sub key#)
-         (dinsro.store/reg-set-event key#)))))
+         (dinsro.store/reg-basic-sub in-key#)
+         (dinsro.store/reg-set-event in-key#)))))
 
 (defmacro register-subform
   [store ns-sym]

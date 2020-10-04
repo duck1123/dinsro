@@ -12,7 +12,7 @@
 (eu/declare-form
  ns-sym
  ::s.a.currencies/create-params-valid
- [::s.e.f.create-currency/name])
+ [[:name ::s.e.f.create-currency/name ""]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-currency/name]} _]

@@ -13,8 +13,8 @@
 (eu/declare-form
  ns-sym
  ::s.a.settings/create-params-valid
- [::s.e.f.settings/allow-registration
-  ::s.e.f.settings/first-run])
+ [[:allow-registration ::s.e.f.settings/allow-registration false]
+  [:first-run          ::s.e.f.settings/first-run          false]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.settings/allow-registration]}

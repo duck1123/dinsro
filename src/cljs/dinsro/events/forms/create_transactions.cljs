@@ -12,10 +12,10 @@
 (eu/declare-form
  ns-sym
  ::s.a.transactions/create-params-valid
- [::s.e.f.create-transaction/account-id
-  ::s.e.f.create-transaction/date
-  ::s.e.f.create-transaction/description
-  ::s.e.f.create-transaction/value])
+ [[:account-id ::s.e.f.create-transaction/account-id 0]
+  [:date ::s.e.f.create-transaction/date ""]
+  [:description ::s.e.f.create-transaction/description ""]
+  [:value ::s.e.f.create-transaction/value 0]])
 
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/account-id
                                     ::s.e.f.create-transaction/date

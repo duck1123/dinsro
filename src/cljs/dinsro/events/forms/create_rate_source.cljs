@@ -9,15 +9,14 @@
 
 (def ns-sym 'dinsro.events.forms.create-rate-source)
 
+(def default-name "Default Source")
+
 (eu/declare-form
  ns-sym
  ::s.a.rate-sources/create-params-valid
- [::s.e.f.create-rate-source/currency-id
-  ::s.e.f.create-rate-source/name
-  ::s.e.f.create-rate-source/url])
-
-
-(def default-name "Default Source")
+ [[:currency-id ::s.e.f.create-rate-source/currency-id 0]
+  [:name ::s.e.f.create-rate-source/name default-name]
+  [:url ::s.e.f.create-rate-source/url ""]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-rate-source/currency-id

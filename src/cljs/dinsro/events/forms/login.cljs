@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.login :as s.a.login]
    [dinsro.spec.events.forms.login :as s.e.f.login]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -10,8 +11,9 @@
 
 (eu/declare-form
  ns-sym
- [::s.e.f.login/email
-  ::s.e.f.login/password])
+ ::s.a.login/create-params-valid
+ [[:email    ::s.e.f.login/email    ""]
+  [:password ::s.e.f.login/password ""]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.login/email

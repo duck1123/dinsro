@@ -12,12 +12,11 @@
 (eu/declare-form
  ns-sym
  ::s.a.accounts/create-params-valid
- [::s.e.f.create-account/currency-id
-  ::s.e.f.create-account/initial-value
-  ::s.e.f.create-account/name
-  ::s.e.f.create-account/user-id])
+ [[:currency-id   ::s.e.f.create-account/currency-id   0]
+  [:initial-value ::s.e.f.create-account/initial-value 0]
+  [:name          ::s.e.f.create-account/name          ""]
+  [:user-id       ::s.e.f.create-account/user-id       0]])
 
-;; (s/def ::form-data (s/keys))
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-account/currency-id
                                     ::s.e.f.create-account/initial-value
                                     ::s.e.f.create-account/name

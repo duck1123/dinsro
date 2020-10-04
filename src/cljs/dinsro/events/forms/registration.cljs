@@ -12,10 +12,10 @@
 (eu/declare-form
  ns-sym
  ::s.a.registration/create-params-valid
- [::s.e.f.registration/name
-  ::s.e.f.registration/email
-  ::s.e.f.registration/password
-  ::s.e.f.registration/confirm-password])
+ [[:name             ::s.e.f.registration/name             s.e.f.registration/default-name]
+  [:email            ::s.e.f.registration/email            s.e.f.registration/default-email]
+  [:password         ::s.e.f.registration/password         s.e.f.registration/default-password]
+  [:confirm-password ::s.e.f.registration/confirm-password s.e.f.registration/default-password]])
 
 (defn set-defaults
   [{:keys [db]} _]

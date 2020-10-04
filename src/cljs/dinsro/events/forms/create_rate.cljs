@@ -12,9 +12,9 @@
 (eu/declare-form
  ns-sym
  ::s.a.rates/create-params-valid
- [::s.e.f.create-rate/currency-id
-  ::s.e.f.create-rate/date
-  ::s.e.f.create-rate/rate])
+ [[:currency-id ::s.e.f.create-rate/currency-id 0]
+  [:date        ::s.e.f.create-rate/date        ""]
+  [:rate        ::s.e.f.create-rate/rate        1]])
 
 (def default-rate 1)
 
