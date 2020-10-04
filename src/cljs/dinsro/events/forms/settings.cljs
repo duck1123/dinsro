@@ -11,7 +11,8 @@
 
 (eu/declare-form
  ns-sym
- [::s.e.f.settings/allow-registration])
+ [::s.e.f.settings/allow-registration
+  ::s.e.f.settings/first-run])
 
 (defn form-data-sub
   [{:keys [::s.e.f.settings/allow-registration]}
