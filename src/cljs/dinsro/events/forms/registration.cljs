@@ -1,9 +1,12 @@
 (ns dinsro.events.forms.registration
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.event-utils :as eu]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
+
+(def ns-sym 'dinsro.events.forms.registration)
 
 (defn set-defaults
   [{:keys [db]} _]

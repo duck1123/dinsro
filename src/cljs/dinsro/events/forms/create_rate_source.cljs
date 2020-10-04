@@ -1,8 +1,19 @@
 (ns dinsro.events.forms.create-rate-source
   (:require
+   [clojure.spec.alpha]
+   [dinsro.event-utils :as eu]
    [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
+
+(def ns-sym 'dinsro.events.forms.create-rate-source)
+
+(eu/declare-form
+ ns-sym
+ [::s.e.f.create-rate-source/currency-id
+  ::s.e.f.create-rate-source/name
+  ::s.e.f.create-rate-source/url])
+
 
 (def default-name "Default Source")
 
@@ -27,14 +38,13 @@
 (defn init-handlers!
   [store]
   (doto store
+    (eu/register-form ns-sym)
     (st/reg-basic-sub ::s.e.f.create-rate-source/name)
     (st/reg-set-event ::s.e.f.create-rate-source/name)
     (st/reg-basic-sub ::s.e.f.create-rate-source/url)
     (st/reg-set-event ::s.e.f.create-rate-source/url)
     (st/reg-basic-sub ::s.e.f.create-rate-source/currency-id)
     (st/reg-set-event ::s.e.f.create-rate-source/currency-id)
-    (st/reg-basic-sub ::shown?)
-    (st/reg-set-event ::shown?)
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::init-form init-form))
   store)

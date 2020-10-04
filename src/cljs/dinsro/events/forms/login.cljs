@@ -1,8 +1,12 @@
 (ns dinsro.events.forms.login
   (:require
+   [clojure.spec.alpha]
+   [dinsro.event-utils :as eu]
    [dinsro.spec.events.forms.login :as s.e.f.login]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
+
+(def ns-sym 'dinsro.events.forms.login)
 
 (defn form-data-sub
   [{:keys [::s.e.f.login/email

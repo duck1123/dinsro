@@ -176,7 +176,7 @@
 (defmacro declare-delete-record-method
   [ns-sym]
   `(do
-     (taoensso.timbre/infof "declaring delete record - %s" ~ns-sym)))
+     #_(taoensso.timbre/infof "declaring delete record - %s" ~ns-sym)))
 
 (defmacro declare-model
   [ns-sym]
@@ -190,6 +190,26 @@
      (clojure.spec.alpha/def-impl items-key#
        (clojure.spec.alpha/coll-of item-key#)
        (clojure.spec.alpha/coll-of item-key#))))
+
+(defmacro declare-form
+  [ns-sym form-keys]
+  `(do
+     #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
+     (clojure.spec.alpha/def-impl
+       (keyword ~ns-sym "shown?")
+       boolean?
+       boolean?)
+
+     (def ~'form-keys ~form-keys)))
+
+(defmacro declare-subform
+  [ns-sym form-keys]
+  `(do
+     #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
+     (clojure.spec.alpha/def-impl
+       (keyword ~ns-sym "shown?")
+       boolean?
+       boolean?)))
 
 (defmacro register-fetch-index-method
   [store ns-sym path-selector]
@@ -248,3 +268,19 @@
      (dinsro.store/reg-basic-sub (keyword ~ns-sym "item-map"))
      (dinsro.store/reg-sub (keyword ~ns-sym "item") (partial item-sub ~ns-sym))
      (dinsro.store/reg-sub (keyword ~ns-sym "items") (partial items-sub ~ns-sym))))
+
+(defmacro register-form
+  [store ns-sym]
+  `(do
+     #_(timbre/infof "Registering form - %s" ~ns-sym)
+     (doto ~store
+      (dinsro.store/reg-basic-sub (keyword ~ns-sym "shown?"))
+      (dinsro.store/reg-set-event (keyword ~ns-sym "shown?")))))
+
+(defmacro register-subform
+  [store ns-sym]
+  `(do
+     #_(timbre/infof "Registering sub form - %s" ~ns-sym)
+     (doto ~store
+       (dinsro.store/reg-basic-sub (keyword ~ns-sym "shown?"))
+       (dinsro.store/reg-set-event (keyword ~ns-sym "shown?")))))
