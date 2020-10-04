@@ -1,5 +1,6 @@
 (ns dinsro.views.admin
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
@@ -14,9 +15,10 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]
+   [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -36,30 +38,35 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-categories]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-rate-sources]
-   [c.buttons/fetch-users]])
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-categories store]
+   [c.buttons/fetch-currencies store]
+   [c.buttons/fetch-rate-sources store]
+   [c.buttons/fetch-users store]])
 
 (defn users-section
-  []
+  [store]
   [:div.box
    [:h2 (tr [:users])]
-   (let [users @(rf/subscribe [::e.users/items])]
+   (let [users @(st/subscribe store [::e.users/items])]
      [c.index-users/index-users users])])
 
 (defn page
-  []
+  [store _match]
   [:section.section>div.container>div.content
-   (c.debug/hide [load-buttons])
+   (c.debug/hide store [load-buttons store])
    [:div.box
     [:h1.title "Admin"]]
-   [c.admin-index-accounts/section]
-   [c.admin-index-transactions/section]
-   [c.admin-index-categories/section]
-   [c.admin-index-currencies/section]
-   [c.admin-index-rate-sources/section]
-   [users-section]])
+   [c.admin-index-accounts/section store]
+   [c.admin-index-transactions/section store]
+   [c.admin-index-categories/section store]
+   [c.admin-index-currencies/section store]
+   [c.admin-index-rate-sources/section store]
+   [users-section store]])
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

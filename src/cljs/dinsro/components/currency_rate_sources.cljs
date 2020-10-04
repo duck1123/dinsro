@@ -4,8 +4,8 @@
    [dinsro.components.index-rate-sources :as c.index-rate-sources]))
 
 (defn section
-  [currency-id rate-sources]
+  [store currency-id rate-sources]
   [:div.box
    [:p "Rate sources" currency-id]
-   [c.f.add-currency-rate-source/form currency-id]
-   [c.index-rate-sources/section rate-sources]])
+   [c.f.add-currency-rate-source/form store currency-id]
+   [c.index-rate-sources/section store rate-sources]])

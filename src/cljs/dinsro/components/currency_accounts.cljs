@@ -3,7 +3,7 @@
    [dinsro.components.index-accounts :as c.index-accounts]))
 
 (defn section
-  [accounts]
+  [store accounts]
   [:div.box
    [:h2 "Accounts"]
-   [c.index-accounts/index-accounts accounts]])
+   [c.index-accounts/section store accounts]])

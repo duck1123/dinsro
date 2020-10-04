@@ -1,5 +1,6 @@
 (ns dinsro.views.home
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.account-picker :as c.account-picker]
    [dinsro.events.accounts :as e.accounts]
@@ -7,9 +8,11 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
    [dinsro.spec.users :as s.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [reitit.core :as rc]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]
@@ -26,16 +29,21 @@
   :start [::init-page]})
 
 (defn page
-  []
-  (let [auth-id @(rf/subscribe [::e.authentication/auth-id])]
+  [store _match]
+  (let [auth-id @(st/subscribe store [::e.authentication/auth-id])]
     [:section.section>div.container>div.content
      (if auth-id
        [:<>
-        (if-let [user @(rf/subscribe [::e.users/item auth-id])]
+        (if-let [user @(st/subscribe store [::e.users/item auth-id])]
           (let [name (some-> user ::s.users/name)]
             [:h1.title "Welcome, " name])
           [:div.box.is-danger "User is not loaded"])
-        [c.account-picker/section]]
+        [c.account-picker/section store]]
        [:div.box
         [:h1 (tr [:home-page])]
-        [:p "Not authenticated. " [:a {:href (kf/path-for [:login-page])} "login"]]])]))
+        [:p "Not authenticated. " [:a {:href (st/path-for store [:login-page])} "login"]]])]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

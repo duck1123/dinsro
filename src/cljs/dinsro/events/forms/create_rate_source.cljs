@@ -1,45 +1,20 @@
 (ns dinsro.events.forms.create-rate-source
   (:require
    [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (def default-name "Default Source")
 
-(rfu/reg-basic-sub ::s.e.f.create-rate-source/name)
-(rfu/reg-set-event ::s.e.f.create-rate-source/name)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate-source/url)
-(rfu/reg-set-event ::s.e.f.create-rate-source/url)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate-source/currency-id)
-(rfu/reg-set-event ::s.e.f.create-rate-source/currency-id)
-
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
 (defn form-data-sub
-  [[
-    name
-    url
-    currency-id
-    ] _]
-  {
-   :name name
+  [{:keys [::s.e.f.create-rate-source/currency-id
+           ::s.e.f.create-rate-source/name
+           ::s.e.f.create-rate-source/url]}
+    _]
+  {:name name
    :url url
-   :currency-id (int currency-id)
-   ;; :rate        (js/Number.parseFloat rate)
-   ;; :date        (js/Date. date)
+   :currency-id (int currency-id)})
 
-   })
-
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-rate-source/name]
- :<- [::s.e.f.create-rate-source/url]
- :<- [::s.e.f.create-rate-source/currency-id]
- form-data-sub)
 (def form-data ::form-data)
 
 (defn init-form
@@ -50,5 +25,18 @@
                   ::s.e.f.create-rate-source/currency-id (str s.e.f.create-rate-source/default-currency-id)
                   })})
 
-;; (kf/reg-event-fx ::toggle-form toggle-form)
-(kf/reg-event-fx ::init-form init-form)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::s.e.f.create-rate-source/name)
+    (st/reg-set-event ::s.e.f.create-rate-source/name)
+    (st/reg-basic-sub ::s.e.f.create-rate-source/url)
+    (st/reg-set-event ::s.e.f.create-rate-source/url)
+    (st/reg-basic-sub ::s.e.f.create-rate-source/currency-id)
+    (st/reg-set-event ::s.e.f.create-rate-source/currency-id)
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+    (st/reg-sub ::form-data form-data-sub)
+    (st/reg-event-fx ::init-form init-form))
+  store)

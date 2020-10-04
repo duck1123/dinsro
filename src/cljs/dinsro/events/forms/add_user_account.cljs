@@ -1,36 +1,42 @@
 (ns dinsro.events.forms.add-user-account
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.spec.events.forms.add-user-account :as s.e.f.add-user-account]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
-
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (def default-name "Offshore")
 
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-account/currency-id
+                                    ::s.e.f.create-account/initial-value
+                                    ::s.e.f.create-account/name
+                                    ::s.e.f.create-account/user-id]))
+(s/def ::form-data-event (s/cat :kw keyword?))
+(s/def ::form-data (s/keys))
+(def form-data ::form-data)
+
 (defn form-data-sub
-  [form-bindings _]
-  (let [[name initial-value currency-id user-id] form-bindings]
-    (merge
-     (when (not= currency-id "")
-       {:currency-id   (int currency-id)})
-     {:name          name
-      :user-id       (int user-id)
-      :initial-value (.parseFloat js/Number initial-value)})))
+  [{:keys [::s.e.f.create-account/currency-id
+           ::s.e.f.create-account/initial-value
+           ::s.e.f.create-account/name
+           ::s.e.f.create-account/user-id]}
+   _]
+  (merge
+   (when (not= currency-id "")
+     {:currency-id   (int currency-id)})
+   {:name          name
+    :user-id       (int user-id)
+    :initial-value (.parseFloat js/Number initial-value)}))
 
 (s/fdef form-data-sub
-  :args (s/cat :form-bindings ::s.e.f.add-user-account/form-bindings
-               :event any?)
-  :ret (s/keys))
+  :args (s/cat :db ::form-data-db
+               :event ::form-data-event)
+  :ret ::form-data)
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-account/name]
- :<- [::s.e.f.create-account/initial-value]
- :<- [::s.e.f.create-account/currency-id]
- :<- [::s.e.f.create-account/user-id]
- form-data-sub)
-(def form-data ::form-data)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+    (st/reg-sub ::form-data form-data-sub))
+  store)

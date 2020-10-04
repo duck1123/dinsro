@@ -1,26 +1,30 @@
 (ns dinsro.events.websocket
   (:require
    [cljs.core.async :refer [<! offer!]]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
+   [dinsro.store :as st]
    [taoensso.timbre :as timbre]
    [transit-websocket-client.core :as websocket])
   (:require-macros
    [cljs.core.async.macros :refer [go-loop]]))
 
-(def websocket-endpoint (str "ws://" (.-host (.-location js/window))  "/ws"))
+(def websocket-channel (atom nil))
 
 (defn create-connection
-  [url fire-event]
+  [store url fire-event]
   (timbre/infof "Connecting to endpoint: %s" url)
   (let [channel (websocket/async-websocket url)]
     (go-loop []
       (let [data (<! channel)]
-        (rf/dispatch [fire-event data])
+        (st/dispatch store [fire-event data])
         (recur)))
     channel))
 
-(def websocket-channel (create-connection websocket-endpoint ::receive-message))
+(defn connect!
+  [store _cofx [endpoint]]
+
+  (reset!
+   websocket-channel
+   (create-connection store endpoint ::receive-message)))
 
 (defn receive-message
   [_ [data]]
@@ -28,8 +32,16 @@
 
 (defn send-message
   [_ [data]]
-  (offer! websocket-channel data)
-  {})
+  (if-let [ch @websocket-channel]
+    (do
+      (offer! ch data)
+      {})
+    (throw "Channel not opened")))
 
-(kf/reg-event-fx ::receive-message receive-message)
-(kf/reg-event-fx ::send-message send-message)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::receive-message receive-message)
+    (st/reg-event-fx ::send-message send-message)
+    (st/reg-event-fx ::connect (partial connect! store)))
+  store)

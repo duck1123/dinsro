@@ -5,8 +5,8 @@
 
 (s/def :register-optional/params
   (s/keys :opt-un [::s.users/name ::s.users/email ::s.users/password]))
-(s/def :register/params
-  (s/keys :req-un [::s.users/name ::s.users/email ::s.users/password]))
+(s/def ::register-params (s/keys :req-un [::s.users/name ::s.users/email ::s.users/password]))
+(s/def :register/params ::register-params)
 
 (s/def ::register-request (s/keys :req-un [:register-optional/params]))
 (def register-request ::register-request)

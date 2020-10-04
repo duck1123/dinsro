@@ -7,11 +7,11 @@
    [taoensso.timbre :as timbre]))
 
 (defn section
-  [_ transactions]
+  [store _user-id transactions]
   [:div.box
    [:h2
     "Transactions"
-    [c/show-form-button ::e.f.add-user-transaction/shown?]]
-   [c.f.add-user-transaction/form]
+    [c/show-form-button store ::e.f.add-user-transaction/shown?]]
+   [c.f.add-user-transaction/form store]
    [:hr]
-   [c.index-transactions/index-transactions transactions]])
+   [c.index-transactions/index-transactions store transactions]])

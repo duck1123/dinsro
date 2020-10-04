@@ -10,52 +10,50 @@
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]
-   [re-frame.core :as rf]))
+   [taoensso.timbre :as timbre]))
 
 (defn index-currency-line
-  [currency]
+  [store currency]
   (let [{:keys [db/id]} currency]
     [:tr
-     [:td [c.links/currency-link id]]
-     (c.debug/hide [:td [c.buttons/delete-currency currency]])]))
+     [:td [c.links/currency-link store id]]
+     (c.debug/hide store [:td [c.buttons/delete-currency store currency]])]))
 
 (s/fdef index-currency-line
   :args (s/cat :currency ::s.currencies/item)
   :ret vector?)
 
 (defn index-currencies
-  [currencies]
-  [:<>
-   [c.debug/debug-box currencies]
-   (if-not (seq currencies)
-     [:div (tr [:no-currencies])]
-     [:table
-      [:thead>tr
-       [:th (tr [:name-label])]
-       (c.debug/hide [:th "Buttons"])]
-      (into
-       [:tbody]
-       (for [{:keys [db/id] :as currency} currencies]
-         ^{:key id} [index-currency-line currency]))])])
+  [store currencies]
+  (if-not (seq currencies)
+    [:div (tr [:no-currencies])]
+    [:table
+     [:thead>tr
+      [:th (tr [:name-label])]
+      (c.debug/hide store [:th "Buttons"])]
+     (into
+      [:tbody]
+      (for [{:keys [db/id] :as currency} currencies]
+        ^{:key id} [index-currency-line store currency]))]))
 
 (s/fdef index-currencies
   :args (s/cat :currencies (s/coll-of ::s.currencies/item))
   :ret vector?)
 
 (defn section-inner
-  [currencies]
+  [store currencies]
   [:div.box
    [:h1
     (tr [:index-currencies "Index Currencies"])
-    [c/show-form-button ::e.f.create-currency/shown?]]
-   [c.f.create-currency/form]
+    [c/show-form-button store ::e.f.create-currency/shown?]]
+   [c.f.create-currency/form store]
    [:hr]
    (when currencies
-     [c.index-currencies/index-currencies currencies])])
+     [c.index-currencies/index-currencies store currencies])])
 
 (defn section
-  []
-  (let [currencies @(rf/subscribe [::e.currencies/items])]
-    [section-inner currencies]))
+  [store]
+  (let [currencies @(st/subscribe store [::e.currencies/items])]
+    [section-inner store currencies]))

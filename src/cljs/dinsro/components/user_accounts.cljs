@@ -13,45 +13,43 @@
    [taoensso.timbre :as timbre]))
 
 (defn row-line
-  [account]
+  [store account]
   (let [id (:db/id account)
         initial-value (::s.accounts/initial-value account)
         currency-id (get-in account [::s.accounts/currency :db/id])]
     [:tr
-     (c.debug/hide [:td id])
-     [:td (c.links/account-link id)]
-     [:td (c.links/currency-link currency-id)]
+     (c.debug/hide store [:td id])
+     [:td (c.links/account-link store id)]
+     [:td (c.links/currency-link store currency-id)]
      [:td initial-value]
-     (c.debug/hide [:td [c.buttons/delete-account account]])]))
+     (c.debug/hide store [:td [c.buttons/delete-account store account]])]))
 
 (defn index-accounts
-  [accounts]
-  [:<>
-   [c.debug/debug-box accounts]
-   (if-not (seq accounts)
-     [:div (tr [:no-accounts])]
-     [:table.table
-      [:thead
-       [:tr
-        (c.debug/hide [:th "Id"])
-        [:th (tr [:name])]
-        [:th (tr [:currency-label])]
-        [:th (tr [:initial-value-label])]
-        (c.debug/hide [:th (tr [:buttons])])]]
-      (into [:tbody]
-            (for [account accounts]
-              ^{:key (:db/id account)}
-              (row-line account)))])])
+  [store accounts]
+  (if-not (seq accounts)
+    [:div (tr [:no-accounts])]
+    [:table.table
+     [:thead
+      [:tr
+       (c.debug/hide store [:th "Id"])
+       [:th (tr [:name])]
+       [:th (tr [:currency-label])]
+       [:th (tr [:initial-value-label])]
+       (c.debug/hide store [:th (tr [:buttons])])]]
+     (into [:tbody]
+           (for [account accounts]
+             ^{:key (:db/id account)}
+             (row-line store account)))]))
 
 (defn section
-  [user-id accounts]
+  [store user-id accounts]
   [:div.box
    [:h2
     (tr [:accounts])
-    [c/show-form-button ::e.f.add-user-account/shown?]]
-   [c.f.add-user-account/form user-id]
+    [c/show-form-button store ::e.f.add-user-account/shown?]]
+   [c.f.add-user-account/form store user-id]
    [:hr]
-   [index-accounts accounts]])
+   [index-accounts store accounts]])
 
 (s/fdef section
   :args (s/cat :user-id ::ds/id

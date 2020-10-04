@@ -1,5 +1,6 @@
 (ns dinsro.views.index-rate-sources
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
@@ -8,9 +9,11 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
    [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [reitit.core :as rc]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [{:keys [db]} _]
@@ -29,24 +32,29 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-rate-sources]
-   [c.buttons/fetch-currencies]])
+   [c.buttons/fetch-rate-sources store]
+   [c.buttons/fetch-currencies store]])
 
 (defn section
-  [items]
+  [store items]
   [:div.box
    [:h1
     (tr [:rate-sources "Rate Sources"])
-    [c/show-form-button ::e.f.create-rate-source/shown?]]
-   [c.f.create-rate-source/form]
+    [c/show-form-button store ::e.f.create-rate-source/shown?]]
+   [c.f.create-rate-source/form store]
    [:hr]
-   [c.index-rate-sources/section items]])
+   [c.index-rate-sources/section store items]])
 
 (defn page
-  [_]
-  (let [items @(rf/subscribe [::e.rate-sources/items])]
+  [store _match]
+  (let [items @(st/subscribe store [::e.rate-sources/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
-     [section items]]))
+     (c.debug/hide store [load-buttons store])
+     [section store items]]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

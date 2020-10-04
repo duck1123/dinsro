@@ -11,9 +11,11 @@
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.transactions :as s.transactions]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [reitit.core :as rc]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]
@@ -30,37 +32,38 @@
   :start [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-transactions]
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]])
+   [c.buttons/fetch-transactions store]
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-currencies store]])
 
 (s/fdef load-buttons
   :args (s/cat)
   :ret vector?)
 
 (defn section-inner
-  [transactions]
+  [store transactions]
   [:div.box
    [:h1
     (tr [:index-transactions-title "Index Transactions"])
-    [c/show-form-button ::e.f.create-transaction/shown?]]
-   [c.f.create-transaction/form]
+    [c/show-form-button store ::e.f.create-transaction/shown?]]
+   [c.f.create-transaction/form store]
    [:hr]
-   [c.index-transactions/index-transactions transactions]])
+   [c.index-transactions/index-transactions store transactions]])
 
 (s/fdef section-inner
   :args (s/cat :transactions (s/coll-of ::s.transactions/item))
   :ret vector?)
 
 (defn page
-  []
+  [store _match]
   [:section.section>div.container>div.content
-   (c.debug/hide [load-buttons])
-   (let [transactions (or @(rf/subscribe [::e.transactions/items]) [])]
-     [section-inner transactions])])
+   (c.debug/hide store [load-buttons store])
+   (let [transactions (or @(st/subscribe store [::e.transactions/items]) [])]
+     [section-inner store transactions])])
 
 (s/fdef page
-  :args (s/cat)
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
   :ret vector?)

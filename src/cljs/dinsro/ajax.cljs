@@ -1,8 +1,9 @@
 (ns dinsro.ajax
   (:require
    [ajax.core :as ajax]
+   [cognitect.transit :as transit]
    [luminus-transit.time :as time]
-   [cognitect.transit :as transit]))
+   [taoensso.timbre :as timbre]))
 
 (defn local-uri? [{:keys [uri]}]
   (not (re-find #"^\w+?://" uri)))

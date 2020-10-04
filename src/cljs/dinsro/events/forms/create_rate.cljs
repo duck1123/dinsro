@@ -2,39 +2,20 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
 (def default-rate 1)
 
-(rfu/reg-basic-sub ::s.e.f.create-rate/rate)
-(rfu/reg-set-event ::s.e.f.create-rate/rate)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/currency-id)
-(rfu/reg-set-event ::s.e.f.create-rate/currency-id)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/date)
-(rfu/reg-set-event ::s.e.f.create-rate/date)
-
-(rfu/reg-basic-sub ::s.e.f.create-rate/time)
-(rfu/reg-set-event ::s.e.f.create-rate/time)
-
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
 (defn form-data-sub
-  [[currency-id rate date] _]
+  [{:keys [::s.e.f.create-rate/currency-id
+           ::s.e.f.create-rate/date
+           ::s.e.f.create-rate/rate]}
+   _]
   {:currency-id (int currency-id)
    :rate        (js/Number.parseFloat rate)
    :date        (js/Date. date)})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-rate/currency-id]
- :<- [::s.e.f.create-rate/rate]
- :<- [::s.e.f.create-rate/date]
- form-data-sub)
 (def form-data ::form-data)
 
 (defn init-form
@@ -49,4 +30,21 @@
                :event any?)
   :ret (s/keys))
 
-(kf/reg-event-fx ::init-form init-form)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::s.e.f.create-rate/rate)
+    (st/reg-set-event ::s.e.f.create-rate/rate)
+    (st/reg-basic-sub ::s.e.f.create-rate/currency-id)
+    (st/reg-set-event ::s.e.f.create-rate/currency-id)
+    (st/reg-basic-sub ::s.e.f.create-rate/rate-source-id)
+    (st/reg-set-event ::s.e.f.create-rate/rate-source-id)
+    (st/reg-basic-sub ::s.e.f.create-rate/date)
+    (st/reg-set-event ::s.e.f.create-rate/date)
+    (st/reg-basic-sub ::s.e.f.create-rate/time)
+    (st/reg-set-event ::s.e.f.create-rate/time)
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+    (st/reg-sub ::form-data form-data-sub)
+    (st/reg-event-fx ::init-form init-form))
+  store)

@@ -6,14 +6,26 @@
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.events.accounts :as s.e.accounts]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
 (s/def ::item ::s.accounts/item)
 
 (s/def ::items (s/coll-of ::item))
+
+(s/def ::item-sub-db (s/keys))
+(s/def ::item-sub-event (s/cat :kw keyword? :id :db/id))
+(s/def ::item-sub-request (s/cat :db ::item-sub-db
+                                 :event ::item-sub-event))
+(s/def ::item-sub-response (s/nilable ::item))
+
+(defn item-sub
+  [db event]
+  (e.accounts/item-sub db event))
+
+(s/fdef item-sub
+  :args ::item-sub-request
+  :ret ::item-sub-response)
 
 (defn items-sub
   "Subscription handler: Index all items"
@@ -26,12 +38,9 @@
                :event (s/cat :kw keyword?))
   :ret ::items)
 
-(rf/reg-sub ::items items-sub)
-
 ;; Index
 
 (s/def ::do-fetch-index-state ::ds/state)
-(rfu/reg-basic-sub ::do-fetch-index-state)
 (def do-fetch-index-state ::do-fetch-index-state)
 
 (defn do-fetch-index-success
@@ -65,6 +74,12 @@
                :event ::s.e.accounts/do-fetch-index-event)
   :ret ::s.e.accounts/do-fetch-index-response)
 
-(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-(kf/reg-event-fx ::do-fetch-index do-fetch-index)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-sub ::items items-sub)
+    (st/reg-basic-sub ::do-fetch-index-state)
+    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
+    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+  store)

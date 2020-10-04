@@ -2,15 +2,19 @@
   (:require
    [com.smxemail.re-frame-document-fx]
    [dinsro.components.navbar :refer [navbar]]
-   [dinsro.routing :as r]
-   [kee-frame.core :as kf]))
+   [dinsro.mappings :refer [mappings]]
+   [kee-frame.core :as kf]
+   [taoensso.timbre :as timbre]))
 
-(defn root-component []
-  [:<>
-   [navbar]
-   (into [kf/switch-route #(get-in % [:data :name])]
-         (concat [nil [:div "Not Found"]]
-                 (->> r/mappings
-                      (map identity)
-                      (into [])
-                      (reduce concat []))))])
+(defn root-component [store]
+  (let [route-defs (->> mappings
+                        (map identity)
+                        (map (fn [[k view-handler]] [k (partial view-handler store)]))
+                        (into [])
+                        (reduce concat []))
+        routes (concat [nil [:div "Not Found"]]
+                       route-defs)]
+    [:<>
+     [navbar store]
+     (into [kf/switch-route #(get-in % [:data :name])]
+           routes)]))

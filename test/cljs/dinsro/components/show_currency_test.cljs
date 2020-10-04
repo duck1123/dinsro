@@ -1,28 +1,32 @@
 (ns dinsro.components.show-currency-test
   (:require
-   [devcards.core :refer-macros [defcard defcard-rg]]
+   [cljs.test :refer-macros [is]]
+   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-currency :as c.show-currency]
+   [dinsro.events.debug :as e.debug]
    [dinsro.spec :as ds]
    [dinsro.spec.currencies :as s.currencies]
+   [dinsro.store :as st]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Show Currency Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components_test"}
-      "Components"]]]
+(cards/header
+ 'dinsro.components.show-currency-test
+ "Show Currency Components"
+ [#{:currencies :components} #{:currencies}])
 
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec.currencies_test"}
-      "Currency Spec"]]]])
-
-(let [item (ds/gen-key ::s.currencies/item)]
+(let [item (ds/gen-key ::s.currencies/item)
+      store (doto (mock-store)
+              e.debug/init-handlers!)]
   (defcard item item)
 
   (defcard-rg show-currency
-    [error-boundary
-     [c.show-currency/show-currency item]]))
+    (fn []
+      (st/dispatch store [::e.debug/set-shown? true])
+      [error-boundary
+       [c.show-currency/show-currency store item]]))
+
+  (deftest show-currency-test
+    (is (vector? (c.show-currency/show-currency store item)))))

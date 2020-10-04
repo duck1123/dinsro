@@ -12,10 +12,10 @@
    [dinsro.events.users :as e.users]
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.spec.views.show-account :as s.v.show-account]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
-
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_  _]
@@ -37,32 +37,30 @@
   :start  [::init-page]})
 
 (defn load-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-accounts]
-   [c.buttons/fetch-currencies]
-   [c.buttons/fetch-transactions]])
-
-(defn debug-items
-  [items]
-  (into [:ul] (for [item items] ^{:key (:db/id item)} [:li [c.debug/debug-box item]])))
+   [c.buttons/fetch-accounts store]
+   [c.buttons/fetch-currencies store]
+   [c.buttons/fetch-transactions store]])
 
 (defn page
-  [match]
+  [store match]
   (let [{{:keys [id]} :path-params} match
         id (int id)
-        account @(rf/subscribe [::e.accounts/item id])]
+        account @(st/subscribe store [::e.accounts/item id])]
     [:section.section>div.container>div.content
-     (c.debug/hide [load-buttons])
+     (c.debug/hide store [load-buttons store])
      [:div.box
       [:h1 (tr [:show-account])]
       (when account
-        [show-account account])]
+        [show-account store account])]
      (when account
-       (let [items @(rf/subscribe [::e.transactions/items-by-account id])
+       (let [items @(st/subscribe store [::e.transactions/items-by-account id])
              transactions (sort-by ::s.transactions/date items)]
-         [c.account-transactions/section id transactions]))]))
+         [c.account-transactions/section store id transactions]))]))
 
 (s/fdef page
-  :args (s/cat :match ::s.v.show-account/view-map)
+  :args (s/cat :store #(instance? st/Store %)
+               :match ::s.v.show-account/view-map ;; #(instance? rc/Match %)
+               )
   :ret vector?)

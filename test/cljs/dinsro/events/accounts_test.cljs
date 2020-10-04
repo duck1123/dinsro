@@ -2,32 +2,43 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards]
+   [devcards.core :refer-macros [defcard deftest]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [expound.alpha :as expound]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg form
-  ;; "**Documentation**"
-  (fn [name] [:p (str @name)])
-  {:name "foo"})
+(cards/header
+ 'dinsro.events.accounts-test
+ "Account Events" [])
 
-(let [item-map (ds/gen-key ::e.accounts/item-map)]
-  (defcard item-map item-map)
+(let [items (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
+      item (first items)
+      item-map (into {} (map (fn [item] [(:db/id item) item]) items))
+      db {::e.accounts/item-map item-map}]
 
-  (deftest sub-item-no-match
-    (let [id 1
-          item-map {}]
-      (is (= nil (e.accounts/item-sub item-map [::e.accounts/item id])))))
+  (comment (defcard db db))
+  (comment (defcard item-map item-map))
+  (comment (defcard items items))
 
-  (deftest sub-item-match
-    (let [id 1
-          item {:db/id id}
-          item-map {id item}
-          event [::e.accounts/item id]
-          response (e.accounts/item-sub item-map event)]
+  (let [id (inc (last (sort (map :db/id items))))
+        response (e.accounts/item-sub db [::e.accounts/item id])]
+
+    (comment (defcard id (pr-str id)))
+
+    (deftest sub-item-no-match
+      (is (= nil response))
+      (s/assert ::s.accounts/item response)
+      (expound/expound-str ::s.accounts/item response)))
+
+  (let [id (:db/id item)
+        response (e.accounts/item-sub db [::e.accounts/item id])]
+
+    (comment (defcard id (pr-str id)))
+
+    (deftest sub-item-match
       (is (= item response))
       (s/assert ::s.accounts/item response)
       (expound/expound-str ::s.accounts/item response))))

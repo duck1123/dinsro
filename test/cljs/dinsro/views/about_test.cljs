@@ -2,18 +2,27 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.views.about :as about]
+   [dinsro.cards :as cards :include-macros true]
+   [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.store.mock :refer [mock-store]]
+   [dinsro.views.about :as v.about]
    [pjstadig.humane-test-output]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "About View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
+(cards/header
+ 'dinsro.views.about-test
+ "About View" [])
 
-   [:ul.box]])
+(defn test-store
+  []
+  (let [store (mock-store)]
+    store))
 
-(deftest about-page-test
-  (is (vector? (about/page))))
+(let [store (test-store)
+      match nil]
+
+  (defcard-rg page-card
+    [error-boundary
+     [v.about/page store match]])
+
+  (deftest page-test
+    (is (vector? (v.about/page store match)))))

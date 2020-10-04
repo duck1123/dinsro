@@ -4,24 +4,36 @@
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.spec.actions.transactions :as s.a.transactions]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/date
+                                    ::s.e.f.create-transaction/description
+                                    ::s.e.f.create-transaction/value]))
+(s/def ::form-data-event (s/cat :kw keyword?
+                                :account-id :db/id))
+(s/def ::form-data ::s.a.transactions/create-params-valid)
+(def form-data ::form-data)
 
 (defn form-data-sub
-  [[date value] event]
-  (let [[_ account-id] event]
-    (e.f.create-transaction/form-data-sub [account-id date value] event)))
+  [db event]
+  (let [[_ account-id] event
+        updated-db (-> db
+                       (select-keys [::s.e.f.create-transaction/date
+                                     ::s.e.f.create-transaction/description
+                                     ::s.e.f.create-transaction/value])
+                       (assoc ::s.e.f.create-transaction/account-id account-id))]
+    (e.f.create-transaction/form-data-sub updated-db event)))
 
 (s/fdef form-data-sub
-  :ret ::s.a.transactions/create-params-valid)
+  :args (s/cat :db ::form-data-db
+               :event ::form-data-event)
+  :ret ::form-data)
 
-(s/def ::form-data ::s.a.transactions/create-params-valid)
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-transaction/date]
- :<- [::s.e.f.create-transaction/value]
- form-data-sub)
-(def form-data ::form-data)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+    (st/reg-sub ::form-data form-data-sub))
+  store)

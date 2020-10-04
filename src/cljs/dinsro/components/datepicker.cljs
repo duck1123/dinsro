@@ -1,19 +1,23 @@
 (ns dinsro.components.datepicker
   (:require
-   [reagent.core :as r]))
+   [reagent.core :as r]
+   [reagent.dom :as rd]
+   [taoensso.timbre :as timbre]))
 
 (defn mount-component
   [comp]
   (let [opts (r/props comp)
-        e (r/dom-node comp)
-        instance (js/bulmaCalendar. e (clj->js opts))]
+        e (rd/dom-node comp)
+        js-opts (clj->js (dissoc opts :on-select))
+        instance (js/bulmaCalendar. e js-opts)]
     (when-let [on-select (:on-select opts)]
       (.on instance "select"
-           #(let [value (.toISOString (js/Date. (.value (.-data %))))]
-              (on-select value))))))
+           (fn [datepicker]
+             (let [value (.toISOString (js/Date. (.value (.-data datepicker))))]
+               (on-select value)))))))
 
 (defn update-component
-  [_]
+  [_comp]
   #_(mount-component comp))
 
 (defn datepicker-inner

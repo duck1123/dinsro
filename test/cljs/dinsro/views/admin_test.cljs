@@ -1,23 +1,57 @@
 (ns dinsro.views.admin-test
   (:require
-   [devcards.core :refer-macros [defcard-rg]]
+   [cljs.test :refer-macros [is]]
+   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
+   [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.admin-accounts :as e.admin-accounts]
+   [dinsro.events.categories :as e.categories]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.events.forms.create-account :as e.f.create-account]
+   [dinsro.events.forms.create-category :as e.f.create-category]
+   [dinsro.events.forms.create-currency :as e.f.create-currency]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.events.transactions :as e.transactions]
+   [dinsro.events.users :as e.users]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.admin :as v.admin]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Admin View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
+(cards/header
+ 'dinsro.views.admin-test
+ "Admin View" [])
 
-   [:ul.box]])
+(defn test-store
+  []
+  (let [store (doto (mock-store)
+                e.accounts/init-handlers!
+                e.admin-accounts/init-handlers!
+                e.categories/init-handlers!
+                e.currencies/init-handlers!
+                e.debug/init-handlers!
+                e.f.create-account/init-handlers!
+                e.f.create-category/init-handlers!
+                e.f.create-currency/init-handlers!
+                e.rate-sources/init-handlers!
+                e.transactions/init-handlers!
+                e.users/init-handlers!)]
+    store))
 
-(defcard-rg load-buttons
-  [v.admin/load-buttons])
+(let [match nil]
 
-(defcard-rg users-section
-  [v.admin/users-section])
+  (let [store (test-store)]
+    (defcard-rg load-buttons
+      (fn []
+        [error-boundary
+         [v.admin/load-buttons store]]))
+    (deftest load-buttons-test
+      (is (vector? (v.admin/load-buttons store)))))
 
-(defcard-rg page
-  [v.admin/page])
+  (let [store (test-store)]
+    (defcard-rg page-card
+      (fn []
+        [error-boundary
+         [v.admin/page store match]]))
+    (deftest page-test
+      (is (vector? (v.admin/page store match))))))

@@ -5,9 +5,7 @@
    [dinsro.spec :as ds]
    [dinsro.spec.categories :as s.categories]
    [dinsro.spec.events.categories :as s.e.categories]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
 (def example-category
@@ -20,7 +18,6 @@
 ;; Item Map
 
 (s/def ::item-map (s/map-of ::ds/id ::s.categories/item))
-(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
 ;; Items
@@ -29,38 +26,32 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
+  [{:keys [::item-map]} _]
   (sort-by :db/id (vals item-map)))
 
 (s/fdef items-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword?))
   :ret ::items)
-
-(rf/reg-sub ::items :<- [::item-map] items-sub)
 
 ;; Item
 
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
-  [item-map [_ id]]
+  [{:keys [::item-map]} [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :db (s/keys :req [::item-map])
                :event (s/cat :kw keyword? :id :db/id))
   :ret ::item)
-
-(rf/reg-sub ::item :<- [::item-map] item-sub)
 
 ;; Items by User
 
 (defn items-by-user
-  [items event]
+  [{:keys [::item-map]} event]
   (let [[_ id] event]
-    (filter #(= id (get-in % [::s.categories/user :db/id])) items)))
-
-(rf/reg-sub ::items-by-user :<- [::items] items-by-user)
+    (filter #(= id (get-in % [::s.categories/user :db/id])) (vals item-map))))
 
 ;; Create
 
@@ -82,14 +73,9 @@
     [::do-submit-failed]
     data)})
 
-(kf/reg-event-fx ::do-submit-success   do-submit-success)
-(kf/reg-event-fx ::do-submit-failed    do-submit-failed)
-(kf/reg-event-fx ::do-submit           do-submit)
-
 ;; Read
 
 (s/def ::do-fetch-record-state keyword?)
-(rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
 
 (defn do-fetch-record-success
   [{:keys [db]} [{:keys [item]}]]
@@ -117,10 +103,6 @@
     [::do-fetch-record-success]
     [::do-fetch-record-failed])})
 
-(kf/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
-(kf/reg-event-fx ::do-fetch-record-failed  do-fetch-record-failed)
-(kf/reg-event-fx ::do-fetch-record         do-fetch-record)
-
 ;; Delete
 
 (defn do-delete-record-success
@@ -140,13 +122,7 @@
     [::do-delete-record-success]
     [::do-delete-record-failed])})
 
-(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
-(kf/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
-(kf/reg-event-fx ::do-delete-record do-delete-record)
-
 ;; Index
-
-(rfu/reg-basic-sub ::do-fetch-index-state)
 
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
@@ -177,6 +153,25 @@
                :event ::s.e.categories/do-fetch-index-event)
   :ret ::s.e.categories/do-fetch-index-response)
 
-(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-(kf/reg-event-fx ::do-fetch-index do-fetch-index)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::item-map)
+    (st/reg-sub ::item item-sub)
+    (st/reg-sub ::items items-sub)
+    (st/reg-sub ::items-by-user items-by-user)
+    (st/reg-event-fx ::do-submit-success do-submit-success)
+    (st/reg-event-fx ::do-submit-failed do-submit-failed)
+    (st/reg-event-fx ::do-submit do-submit)
+    (st/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
+    (st/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
+    (st/reg-event-fx ::do-fetch-record-failed do-fetch-record-failed)
+    (st/reg-event-fx ::do-fetch-record do-fetch-record)
+    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
+    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
+    (st/reg-event-fx ::do-delete-record do-delete-record)
+    (st/reg-basic-sub ::do-fetch-index-state)
+    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
+    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+  store)

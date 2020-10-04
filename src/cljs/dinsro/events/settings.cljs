@@ -2,11 +2,8 @@
   (:require
    [dinsro.events :as e]
    [dinsro.spec.events.forms.settings :as s.e.f.settings]
-   [kee-frame.core :as kf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
-
-(rfu/reg-basic-sub ::settings-state)
 
 (defn do-fetch-settings-success
   [{:keys [db]} [settings]]
@@ -28,6 +25,11 @@
     [::do-fetch-settings-success]
     [::do-fetch-settings-failure])})
 
-(kf/reg-event-fx ::do-fetch-settings-success do-fetch-settings-success)
-(kf/reg-event-fx ::do-fetch-settings-failure do-fetch-settings-failure)
-(kf/reg-event-fx ::do-fetch-settings do-fetch-settings)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::settings-state)
+    (st/reg-event-fx ::do-fetch-settings-success do-fetch-settings-success)
+    (st/reg-event-fx ::do-fetch-settings-failure do-fetch-settings-failure)
+    (st/reg-event-fx ::do-fetch-settings do-fetch-settings))
+  store)

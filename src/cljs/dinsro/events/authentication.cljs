@@ -2,13 +2,12 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
-   [dinsro.components :as c]
    [dinsro.spec.actions.authentication :as s.a.authentication]
-   [kee-frame.core :as kf]
-   [re-frame.core :as r]
+   [dinsro.spec.events.forms.registration :as s.e.f.registration]
+   [dinsro.store :as st]
+   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
-(c/reg-field ::auth-id nil)
 (s/def ::auth-id (s/nilable :db/id))
 (def auth-id ::auth-id)
 
@@ -24,8 +23,7 @@
                  (assoc :kee-frame/route return-to)
                  (dissoc :return-to))
              db)]
-    {:cookie/set {:name "token"
-                  :value token}
+    {:cookie/set {:name "token" :value token}
      :db (assoc (assoc db ::auth-id identity) :token token)
      ;; TODO: return to calling page
      :navigate-to [:home-page]}))
@@ -42,13 +40,6 @@
     [::do-authenticate-success]
     [::do-authenticate-failure]
     data)})
-
-(kf/reg-event-fx
- ::do-authenticate-success
- [(r/inject-cofx :cookie/get [:token])]
- do-authenticate-success)
-(kf/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
-(kf/reg-event-fx ::do-authenticate do-authenticate)
 
 ;; Logout
 
@@ -73,29 +64,41 @@
     [::do-logout-failure]
     nil)})
 
-(kf/reg-event-fx ::do-logout-success do-logout-success)
-(kf/reg-event-fx ::do-logout-failure do-logout-failure)
-(kf/reg-event-fx ::do-logout do-logout)
-
 ;; Register
 
 (defn register-succeeded
-  [_ _]
-  {})
+  [{:keys [db]} _]
+  {:db (assoc db ::s.e.f.registration/error-message "")})
 
 (defn register-failed
-  [_ _]
-  {})
+  [{:keys [db]} [{{:keys [message]} :response}]]
+  (let [error-message (or message "Registration Failed")]
+    {:db (assoc db ::s.e.f.registration/error-message error-message)}))
 
-(defn submit-clicked
-  [_ [data]]
-  {:http-xhrio
+(defn submit-registration
+  [{:keys [db]} [data]]
+  {:db (assoc db ::s.e.f.registration/error-message "")
+   :http-xhrio
    (e/post-request
     [:api-register]
     [:register-succeeded]
     [:register-failed]
     data)})
 
-(kf/reg-event-fx :register-succeeded register-succeeded)
-(kf/reg-event-fx :register-failed register-failed)
-(kf/reg-event-fx ::submit-clicked submit-clicked)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::auth-id)
+    (st/reg-set-event ::auth-id)
+    (st/reg-event-fx ::do-authenticate-success
+                     [(rf/inject-cofx :cookie/get [:token])] do-authenticate-success)
+    (st/reg-event-fx ::do-authenticate-failure do-authenticate-failure)
+    (st/reg-event-fx ::do-authenticate do-authenticate)
+    (st/reg-event-fx ::do-logout-success do-logout-success)
+    (st/reg-event-fx ::do-logout-failure do-logout-failure)
+    (st/reg-event-fx ::do-logout do-logout)
+    (st/reg-event-fx :register-succeeded register-succeeded)
+    (st/reg-event-fx :register-failed register-failed)
+    (st/reg-event-fx ::submit-registration submit-registration))
+
+  store)

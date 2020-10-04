@@ -2,11 +2,16 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :as dc :refer-macros [defcard deftest]]
+   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.rates :as s.rates]
    [expound.alpha :as expound]
    [tick.alpha.api :as tick]))
+
+(cards/header
+ 'dinsro.spec.rates-test
+ "Rate Specs" [])
 
 (defcard item
   (ds/gen-key ::s.rates/item))

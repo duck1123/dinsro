@@ -4,9 +4,7 @@
    [dinsro.events :as e]
    [dinsro.spec.events.rates :as s.e.rates]
    [dinsro.spec.rates :as s.rates]
-   [kee-frame.core :as kf]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]
+   [dinsro.store :as st]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
@@ -16,7 +14,6 @@
 ;; Item Map
 
 (s/def ::item-map (s/map-of :db/id ::item))
-(rfu/reg-basic-sub ::item-map)
 (def item-map ::item-map)
 
 ;; Items
@@ -25,35 +22,34 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [item-map _]
+  [{:keys [::item-map]} _]
   (reverse
    (sort-by ::s.rates/date (vals item-map))))
 
+(s/def ::item-sub-cofx (s/keys :req [::item-map]))
+
 (s/fdef items-sub
-  :args (s/cat :item-map ::item-map
+  :args (s/cat :item-map ::items-sub-cofx
                :event (s/cat :kw keyword?))
   :ret ::items)
-
-(rf/reg-sub ::items :<- [::item-map] items-sub)
 
 ;; Items by Currency
 
 (defn items-by-currency
   "Subscription handler: Index items by currency"
-  [items [_ {:keys [db/id]}]]
-  (filter #(= (get-in % [::s.rates/currency :db/id]) id) items))
+  [{:keys [::item-map]} [_ {:keys [db/id]}]]
+  (filter #(= (get-in % [::s.rates/currency :db/id]) id) (vals item-map)))
 
 (s/fdef items-by-currency
-  :args (s/cat :items ::items :event (s/cat :keyword keyword? :currency ::item))
+  :args (s/cat :db (s/keys :req [::item-map])
+               :event (s/cat :keyword keyword? :currency ::item))
   :ret ::items)
-
-(rf/reg-sub ::items-by-currency :<- [::items] items-by-currency)
 
 ;; Item
 
 (defn item-sub
   "Subscription handler: Lookup an item from the item map by id"
-  [item-map [_ id]]
+  [{:keys [::item-map]} [_ id]]
   (get item-map id))
 
 (s/fdef item-sub
@@ -61,12 +57,9 @@
                :event (s/cat :kw keyword? :id :db/id))
   :ret ::item)
 
-(rf/reg-sub ::item :<- [::item-map] item-sub)
-
 ;; Read
 
 (s/def ::do-fetch-record-state keyword?)
-(rf/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
 
 (defn do-fetch-record-success
   [{:keys [db]} [{:keys [item]}]]
@@ -118,15 +111,9 @@
                :event ::do-fetch-record-event)
   :ret (s/keys))
 
-(kf/reg-event-fx ::do-fetch-record-success       do-fetch-record-success)
-(kf/reg-event-fx ::do-fetch-record-failed        do-fetch-record-failed)
-(kf/reg-event-fx ::do-fetch-record-unauthorized  do-fetch-record-unauthorized)
-(kf/reg-event-fx ::do-fetch-record               do-fetch-record)
-
 ;; Index
 
 (s/def ::do-fetch-index-state keyword?)
-(rf/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
 
 (defn do-fetch-index-success
   [{:keys [db]} [{:keys [items]}]]
@@ -148,10 +135,6 @@
     (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
-
-(kf/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-(kf/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-(kf/reg-event-fx ::do-fetch-index do-fetch-index)
 
 ;; Submit
 
@@ -175,10 +158,6 @@
 
 (s/fdef do-submit
   :ret (s/keys))
-
-(kf/reg-event-fx ::do-submit-failed  do-submit-failed)
-(kf/reg-event-fx ::do-submit-success do-submit-success)
-(kf/reg-event-fx ::do-submit         do-submit)
 
 ;; Delete
 
@@ -215,11 +194,6 @@
                :event ::s.e.rates/do-delete-record-event)
   :ret (s/keys))
 
-(kf/reg-event-fx ::do-delete-record-failed  do-delete-record-failed)
-(kf/reg-event-fx ::do-delete-record-success do-delete-record-success)
-(kf/reg-event-fx ::do-delete-record         do-delete-record)
-
-
 (defn do-fetch-rate-feed-by-currency-success
   [{:keys [db]} [id {:keys [items]}]]
   {:db (assoc-in db [::rate-feed id] items)})
@@ -237,15 +211,9 @@
     [::do-fetch-rate-feed-by-currency-success id]
     [::do-fetch-rate-feed-by-currency-failure id])})
 
-(kf/reg-event-fx ::do-fetch-rate-feed-by-currency-success do-fetch-rate-feed-by-currency-success)
-(kf/reg-event-fx ::do-fetch-rate-feed-by-currency-failure do-fetch-rate-feed-by-currency-failure)
-(kf/reg-event-fx ::do-fetch-rate-feed-by-currency do-fetch-rate-feed-by-currency)
-
 (defn rate-feed-sub
   [db [_ id]]
   (get-in db [::rate-feed id]))
-
-(rf/reg-sub ::rate-feed rate-feed-sub)
 
 (defn add-record
   "Handler for rates created"
@@ -268,4 +236,31 @@
                :event ::s.e.rates/add-record-event)
   :ret (s/keys))
 
-(kf/reg-event-fx ::add-record add-record)
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::item-map)
+    (st/reg-sub ::item item-sub)
+    (st/reg-sub ::items items-sub)
+    (st/reg-sub ::items-by-currency items-by-currency)
+    (st/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
+    (st/reg-sub ::do-fetch-index-state (fn [db _] (get db ::do-fetch-index-state :invalid)))
+    (st/reg-sub ::rate-feed rate-feed-sub)
+    (st/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
+    (st/reg-event-fx ::do-fetch-record-failed do-fetch-record-failed)
+    (st/reg-event-fx ::do-fetch-record-unauthorized do-fetch-record-unauthorized)
+    (st/reg-event-fx ::do-fetch-record do-fetch-record)
+    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
+    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
+    (st/reg-event-fx ::do-fetch-index do-fetch-index)
+    (st/reg-event-fx ::do-submit-failed do-submit-failed)
+    (st/reg-event-fx ::do-submit-success do-submit-success)
+    (st/reg-event-fx ::do-submit do-submit)
+    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
+    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
+    (st/reg-event-fx ::do-delete-record do-delete-record)
+    (st/reg-event-fx ::do-fetch-rate-feed-by-currency-success do-fetch-rate-feed-by-currency-success)
+    (st/reg-event-fx ::do-fetch-rate-feed-by-currency-failure do-fetch-rate-feed-by-currency-failure)
+    (st/reg-event-fx ::do-fetch-rate-feed-by-currency do-fetch-rate-feed-by-currency)
+    (st/reg-event-fx ::add-record add-record))
+  store)

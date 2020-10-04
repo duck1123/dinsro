@@ -1,14 +1,16 @@
 (ns dinsro.views.login
   (:require
    [cemerick.url :as url]
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.debug :as c.debug]
    [dinsro.components.forms.login :as c.f.login]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.forms.login :as e.f.login]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]
+   [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
 
 (defn init-page
@@ -23,12 +25,17 @@
  {:params (c/filter-page :login-page)
   :start [::init-page]})
 
-(defn page [match]
+(defn page [store match]
   (let [{:keys [query-string]} match
         return-to (get (url/query->map query-string) "return-to")]
     [:section.section>div.container>div.content
      [:h1 "Login"]
-     (c.debug/hide [:p "Authenticated: " @(rf/subscribe [::e.authentication/auth-id])])
+     (c.debug/hide store [:p "Authenticated: " @(st/subscribe store [::e.authentication/auth-id])])
      [:div.container
-      (c.debug/hide [:p "Return To: " return-to])
-      [c.f.login/form return-to]]]))
+      (c.debug/hide store [:p "Return To: " return-to])
+      [c.f.login/form store return-to]]]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

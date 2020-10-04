@@ -1,19 +1,26 @@
 (ns dinsro.components.forms.settings-test
   (:require
-   [devcards.core :refer-macros [defcard-rg]]
+   [cljs.test :refer-macros [is]]
+   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.settings :as c.f.settings]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.events.forms.settings :as e.f.settings]
+   [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Settings Form Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.forms_test"}
-      "Form Components"]]]
-   [:ul.box]])
+(cards/header
+ 'dinsro.components.forms.settings-test
+ "Settings Form Components" [])
 
-(defcard-rg form
-  [error-boundary
-   [c.f.settings/form]])
+(let [store (doto (mock-store)
+              e.debug/init-handlers!
+              e.f.settings/init-handlers!)]
+  (defcard-rg form
+    (fn []
+      [error-boundary
+       [c.f.settings/form store]]))
+
+  (deftest form-test
+    (is (vector? (c.f.settings/form store)))))

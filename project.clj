@@ -13,20 +13,20 @@
                  [com.taoensso/tempura "1.2.1"]
                  [com.taoensso/timbre "4.10.0"]
                  [cprop "0.1.17"]
-                 [day8.re-frame/http-fx "0.1.6"
+                 [day8.re-frame/http-fx "0.2.1"
                   :exclusions [com.cognitect/transit-cljs]]
-                 [devcards "0.2.6"
+                 [devcards "0.2.7"
                   :exclusions [args4j]]
-                 [expound "0.8.4"]
+                 [expound "0.8.5"]
                  [fentontravers/transit-websocket-client "0.4.11"
                   :exclusions [args4j
                                cljsjs/highlight]]
                  [http.async.client "1.3.1"]
-                 [http-kit "2.4.0-alpha6"]
-                 [io.grpc/grpc-api "1.23.0"]
-                 [io.grpc/grpc-core "1.23.0"
+                 [io.grpc/grpc-api "1.31.1"]
+                 [io.grpc/grpc-core "1.31.1"
                   :exclusions [com.google.errorprone/error_prone_annotations io.grpc/grpc-api]]
-                 [io.replikativ/datahike "0.2.1"]
+                 [io.replikativ/datahike "0.3.1"]
+                 [jfigueroama/re-frame "0.11.0-rc3-SNAPSHOT"]
                  [kee-frame "0.4.0"
                   :exclusions [args4j
                                cljs-ajax
@@ -35,46 +35,42 @@
                                metosin/reitit-core
                                mvxcvi/arrangement
                                org.clojure/core.async]]
-                 [luminus-http-kit "0.1.6"]
+                 [luminus-http-kit "0.1.7"]
                  [luminus-transit "0.1.2"
                   :exclusions [com.cognitect/transit-cljs]]
                  [luminus/ring-ttl-session "0.3.3"]
                  [manifold "0.1.8"]
-                 [metosin/reitit "0.4.2"
-                  :exclusions [borkdude/edamame
-                               com.fasterxml.jackson.core/jackson-annotations
-                               com.fasterxml.jackson.core/jackson-databind
-                               mvxcvi/puget]]
+                 [metosin/reitit "0.5.5"]
                  [metosin/ring-http-response "0.9.1"
                   :exclusions [joda-time
                               clj-time]]
-                 [mvxcvi/whidbey "2.2.0"]
+                 [mvxcvi/whidbey "2.2.1"]
                  [mount "0.1.16"]
-                 [mvxcvi/puget "1.2.1"]
-                 [nrepl "0.7.0"]
-                 [orchestra "2019.02.06-1"]
+                 [mvxcvi/puget "1.3.1"]
+                 [nrepl "0.8.1"]
+                 [orchestra "2020.07.12-1"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.764" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.773" :scope "provided"]
                  [org.clojure/core.rrb-vector "0.1.1"]
-                 [org.clojure/test.check "1.0.0"]
+                 [org.clojure/test.check "1.1.0"]
                  [org.clojure/tools.cli "1.0.194"]
                  [org.clojure/tools.logging "1.1.0"]
                  [org.lightningj/lightningj "0.9.0-Beta-rc1"  :exclusions [io.grpc/grpc-core]]
                  [org.glassfish/javax.json "1.1.4"]
 
-                 [org.webjars.npm/bulma "0.8.2"]
+                 [org.webjars.npm/bulma "0.9.0"]
                  [org.webjars.npm/bulma-calendar "6.0.7"
                   :exclusions [org.webjars.npm/bulma
                                org.webjars.npm/date-and-time
                                org.webjars.npm/date-fns]]
                  [org.webjars.npm/date-and-time "0.6.3"]
-                 [org.webjars.npm/date-fns "2.9.0"]
+                 [org.webjars.npm/date-fns "2.15.0"]
                  [org.webjars.npm/bulma-extensions "6.2.7"
                   :exclusions [org.webjars.npm/bulma]]
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.40"
                   :exclusions [org.slf4j/slf4j-api]]
-                 [re-frame "0.12.0"]
+                 [jfigueroama/re-frame "0.11.0-rc3-SNAPSHOT"]
                  [reframe-utils "0.2.2"
                   :exclusions [args4j
                                com.cognitect/transit-cljs]]
@@ -87,14 +83,14 @@
                  [ring/ring-core "1.8.1"]
                  [ring/ring-defaults "0.3.2"
                   :exclusions [clj-time]]
-                 [selmer "1.12.24"]
+                 [selmer "1.12.28"]
                  [tick "0.4.21-alpha"]
                  [time-specs "0.1.0-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
-  :test-paths ["test/clj"]
+  :test-paths ["test/clj" "test/cljc"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
   :main ^:skip-aot dinsro.core
@@ -128,7 +124,7 @@
   :profiles
   {:uberjar {:omit-source true
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
-             :dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]
+             :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
              :cljsbuild
              {:builds {:min {:source-paths ["src/cljc"
                                             "src/cljs"
@@ -156,11 +152,11 @@
    :project/dev {:jvm-opts ["-Dconf=dev-config.edn"
                             "-Dclojure.spec.check-asserts=true"
                             "-Dlogback.configurationFile=resources/logback.xml"]
-                 :dependencies [[binaryage/devtools "1.0.0"]
-                                [cider/piggieback "0.5.0"]
-                                [day8.re-frame/re-frame-10x "0.6.5"]
+                 :dependencies [[binaryage/devtools "1.0.2"]
+                                [cider/piggieback "0.5.1"]
+                                [day8.re-frame/re-frame-10x "0.7.0"]
                                 [day8.re-frame/test "0.1.5"]
-                                [day8.re-frame/tracing "0.5.5"]
+                                [day8.re-frame/tracing "0.6.0"]
                                 [doo "0.1.11"]
                                 [figwheel-sidecar "0.5.20" :exclusions [args4j clj-time]]
                                 [pjstadig/humane-test-output "0.10.0"]
@@ -199,7 +195,7 @@
 
                  :doo {:build "test"
                        :alias {:default [:chrome]}}
-                 :source-paths ["env/dev/clj"]
+                 :source-paths ["env/dev/clj" "env/dev/cljc" "env/dev/cljs"]
                  :resource-paths ["env/dev/resources"]
                  :repl-options   {:init-ns user}
                  :injections     [(require 'pjstadig.humane-test-output)
@@ -208,7 +204,12 @@
                                  :nrepl-port 7003}
                       :cljsbuild
                       {:builds
-                       {:devcards {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs" "test/cljs" "test/cljc"]
+                       {:devcards {:source-paths ["src/cljc"
+                                                  "src/cljs"
+                                                  "env/dev/cljc"
+                                                  "env/dev/cljs"
+                                                  "test/cljc"
+                                                  "test/cljs"]
                                    :figwheel     {:devcards true}
                                    :compiler     {:main "starter.doo"
                                                   :asset-path "/js/devcards_out"
@@ -223,7 +224,12 @@
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
     :cljsbuild
-    {:builds {:test {:source-paths ["src/cljc" "src/cljs" "test/cljs" "test/cljc"]
+    {:builds {:test {:source-paths ["src/cljc"
+                                    "src/cljs"
+                                    "env/test/cljc"
+                                    "env/test/cljs"
+                                    "test/cljc"
+                                    "test/cljs"]
                      :compiler
                      {:output-to     "target/test.js"
                       :main          "starter.doo"

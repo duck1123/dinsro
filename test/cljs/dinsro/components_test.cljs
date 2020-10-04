@@ -1,75 +1,129 @@
 (ns dinsro.components-test
   (:require
    [cljs.test :refer-macros [is]]
+   [clojure.spec.alpha :as s]
+   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
    [dinsro.components :as c]
-   [devcards.core :as dc :refer-macros [defcard-rg deftest]]
-   [re-frame.core :as rf]
-   [reagent.core :as r]
+   [dinsro.components.admin-index-accounts-test]
+   [dinsro.components.admin-index-categories-test]
+   [dinsro.components.admin-index-rate-sources-test]
+   [dinsro.components.admin-index-users-test]
+   [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.components.buttons-test]
+   [dinsro.components.currency-rates-test]
+   [dinsro.components.datepicker-test]
+   [dinsro.components.index-accounts-test]
+   [dinsro.components.index-rates-test]
+   [dinsro.components.index-transactions-test]
+   [dinsro.components.navbar-test]
+   [dinsro.components.rate-chart-test]
+   [dinsro.components.show-account-test]
+   [dinsro.components.show-currency-test]
+   ;; [dinsro.components.show-transaction-test]
+   [dinsro.components.show-user-test]
+   [dinsro.components.status-test]
+   [dinsro.components.user-accounts-test]
+   [dinsro.components.user-categories-test]
+   [dinsro.components.user-transactions-test]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.events.users :as e.users]
+   [dinsro.spec :as ds]
+   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.store :as st]
+   [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Components"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.forms_test"}
-      "Form Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.events_test"}
-      "Events"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.admin_index_accounts_test"}
-      "Admin Index Accounts Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.admin_index_categories_test"}
-      "Admin Index Categories Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.admin_index_rate_sources_test"}
-      "Admin Index Rate Sources Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.buttons_test"}
-      "Button Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.buttons_test"}
-      "Button Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.currency_rates_test"}
-      "Currency Rate Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.index_transactions_test"}
-      "Index Transactions Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.rate_chart_test"}
-      "Rate Chart Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.show_account_test"}
-      "Show Account Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.show_currency_test"}
-      "Show Currency Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.show_user_test"}
-      "Show User Components"]]
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.status_test"}
-      "Status Components"]]]])
+(cards/header
+ 'dinsro.components-test
+ "Components"
+ [#{:components}])
 
-(defcard-rg checkbox-input
-  (with-redefs [rf/subscribe (fn [x] (timbre/spy :info x))]
-    (r/as-element
-     [:div
-      [:p "Foo"]
-      #_[c/checkbox-input "foo" :foo]])))
+(defn test-store
+  []
+  (let [store (doto (mock-store)
+                e.accounts/init-handlers!
+                e.currencies/init-handlers!
+                e.rate-sources/init-handlers!
+                e.users/init-handlers!)]
+    store))
 
-#_(defcard-rg account-selector
-  [c/account-selector "foo" :foo]
-  )
+(def rate-sources (ds/gen-key (s/coll-of ::s.rate-sources/item :count 3)))
 
-(deftest account-selector
-  (let [label "foo"
-        field :foo]
-    (is (vector? (c/account-selector label field)))))
+(let [field :foo
+      label "Label"
+      accounts (ds/gen-key ::e.accounts/items)
+      currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))
+      users (ds/gen-key ::e.users/items)
+      handler [::event-name]]
+
+  (comment (defcard currencies currencies))
+
+  (let [store (test-store)]
+    (st/reg-basic-sub store field)
+    (st/reg-set-event store field)
+    (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
+
+    (defcard-rg currency-selector
+      (fn []
+        [error-boundary
+         [c/currency-selector store label field]]))
+
+    (deftest currency-selector-test
+      (is (vector? (c/currency-selector store label field)))))
+
+  (let [store (test-store)]
+    (st/reg-basic-sub store field)
+    (st/reg-set-event store field)
+
+    (defcard-rg checkbox-input
+      (fn []
+        [error-boundary
+         [c/checkbox-input store label field handler]]))
+
+    (deftest checkbox-input-test
+      (is (vector? (c/checkbox-input store label field handler)))))
+
+  (let [store (test-store)]
+    (st/reg-basic-sub store field)
+    (st/reg-set-event store field)
+    (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
+
+    (defcard-rg account-selector
+      (fn []
+        [error-boundary
+         [c/account-selector store label field]]))
+
+    (deftest account-selector-test
+      (is (vector? (c/account-selector store label field)))))
+
+  (let [store (test-store)]
+    (st/reg-basic-sub store field)
+    (st/reg-set-event store field)
+    (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
+
+    (comment (defcard rate-sources-card rate-sources))
+
+    (defcard-rg rate-source-selector
+      (fn []
+        [error-boundary
+         [c/rate-source-selector store label field]]))
+
+    (deftest rate-source-selector-test
+      (is (vector? (c/rate-source-selector store label field)))))
+
+  (let [store (test-store)]
+    (st/reg-basic-sub store field)
+    (st/reg-set-event store field)
+    (st/dispatch store [::e.users/do-fetch-index-success {:users users}])
+
+    (defcard-rg user-selector
+      (fn []
+        [error-boundary
+         [c/user-selector store label field]]))
+
+    (deftest user-selector-test
+      (is (vector? (c/user-selector store label field))))))

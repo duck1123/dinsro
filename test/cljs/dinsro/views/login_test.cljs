@@ -2,23 +2,41 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
+   [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.events.authentication :as e.authentication]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.events.forms.login :as e.f.login]
+   [dinsro.spec.events.forms.login :as s.e.f.login]
+   [dinsro.store :as st]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.login :as v.login]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Login View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
+(cards/header
+ 'dinsro.views.login-test
+ "Login View" [])
 
-   [:ul.box]])
+(defn login-store
+  []
+  (doto (mock-store)
+    e.authentication/init-handlers!
+    e.debug/init-handlers!
+    e.f.login/init-handlers!))
 
-(defcard-rg form
-  ;; "**Documentation**"
-  (fn [name] [:p name])
-  {:name "foo"})
+(let [email "bob@example.com"
+      password "hunter2"
+      store (login-store)
+      match {:query-string "return-to=/"}]
 
-(deftest page
-  (is (vector? (v.login/page ""))))
+  (st/dispatch store [::e.debug/set-shown? true])
+  (st/dispatch store [::s.e.f.login/set-email email])
+  (st/dispatch store [::s.e.f.login/set-password password])
+
+  (defcard-rg page-card
+    (fn []
+      [error-boundary
+       [v.login/page store match]]))
+
+  (deftest page-test
+    (is (vector? (v.login/page store match)))))

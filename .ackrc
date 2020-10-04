@@ -1,5 +1,7 @@
 --ignore-dir=.clj-kondo
 --ignore-dir=.idea
+--ignore-dir=build
+--ignore-dir=checkouts.bak
 --ignore-dir=coverage
 --ignore-dir=public/js
 --ignore-dir=app/tmp

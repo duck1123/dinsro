@@ -9,14 +9,14 @@
    [taoensso.timbre :as timbre]))
 
 (defn section
-  [user-id categories]
+  [store user-id categories]
   [:div.box
    [:h2
     "Categories"
-    [c/show-form-button ::e.f.add-user-category/shown?]]
-   [c.f.add-user-category/form user-id]
+    [c/show-form-button store ::e.f.add-user-category/shown?]]
+   [c.f.add-user-category/form store user-id]
    [:hr]
-   [c.index-categories/index-categories categories]])
+   [c.index-categories/index-categories store categories]])
 
 (s/fdef section
   :args (s/cat :user-id pos-int?

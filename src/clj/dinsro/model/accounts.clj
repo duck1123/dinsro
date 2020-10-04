@@ -54,7 +54,7 @@
                       :where
                       [?id ::s.accounts/user ?user-id]]
              :args [@db/*conn* user-id]})
-       (map first)
+       (map :db/id)
        (map read-record)
        (take record-limit)))
 

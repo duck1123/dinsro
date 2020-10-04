@@ -7,102 +7,102 @@
    [dinsro.events.rates :as e.rates]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
 (defn delete-account
-  [account]
+  [store account]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.accounts/do-delete-record account])}
+   {:on-click #(st/dispatch store [::e.accounts/do-delete-record account])}
    (tr [:delete])])
 
 (defn delete-category
-  [category]
+  [store category]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.categories/do-delete-record category])}
+   {:on-click #(st/dispatch store [::e.categories/do-delete-record category])}
    (tr [:delete])])
 
 (defn delete-currency
-  [currency]
+  [store currency]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.currencies/do-delete-record currency])}
+   {:on-click #(st/dispatch store [::e.currencies/do-delete-record currency])}
    (tr [:delete])])
 
 (defn delete-rate
-  [item]
+  [store item]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.rates/do-delete-record item])}
+   {:on-click #(st/dispatch store [::e.rates/do-delete-record item])}
    (tr [:delete])])
 
 (defn delete-rate-source
-  [item]
+  [store item]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.rate-sources/do-delete-record item])}
+   {:on-click #(st/dispatch store [::e.rate-sources/do-delete-record item])}
    (tr [:delete])])
 
 (defn delete-transaction
-  [item]
+  [store item]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.transactions/do-delete-record item])}
+   {:on-click #(st/dispatch store [::e.transactions/do-delete-record item])}
    (tr [:delete])])
 
 (defn delete-user
-  [user]
+  [store user]
   [:a.button.is-danger
-   {:on-click #(rf/dispatch [::e.users/do-delete-record user])}
+   {:on-click #(st/dispatch store [::e.users/do-delete-record user])}
    (tr [:delete])])
 
 (defn fetch-accounts
-  []
-  (let [state @(rf/subscribe [::e.accounts/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.accounts/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.accounts/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.accounts/do-fetch-index])}
      (tr [:fetch-accounts] [state])]))
 
 (defn fetch-categories
-  []
-  (let [state @(rf/subscribe [::e.categories/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.categories/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.categories/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.categories/do-fetch-index])}
      (tr [:fetch-categories] [state])]))
 
 (defn fetch-currencies
-  []
-  (let [state @(rf/subscribe [::e.currencies/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.currencies/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.currencies/do-fetch-index])}
      (tr [:fetch-currencies] [state])]))
 
 (defn fetch-currency
-  [currency-id]
-  (let [state @(rf/subscribe [::e.currencies/do-fetch-record-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.currencies/do-fetch-record currency-id])}
+  [store currency-id]
+  (let [state @(st/subscribe store [::e.currencies/do-fetch-record-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.currencies/do-fetch-record currency-id])}
      (tr [:fetch-currency] [currency-id state])]))
 
 (defn fetch-rate-sources
-  []
-  (let [state @(rf/subscribe [::e.rate-sources/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.rate-sources/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.rate-sources/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.rate-sources/do-fetch-index])}
      (tr [:fetch-rate-sources] [state])]))
 
 (defn fetch-rates
-  []
-  (let [state @(rf/subscribe [::e.rates/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.rates/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.rates/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.rates/do-fetch-index])}
      (tr [:fetch-rates] [state])]))
 
 (defn fetch-transactions
-  []
-  (let [state @(rf/subscribe [::e.transactions/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.transactions/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.transactions/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.transactions/do-fetch-index])}
      (tr [:fetch-transactions] [state])]))
 
 (defn fetch-user
-  [id]
-  (let [state @(rf/subscribe [::e.users/do-fetch-record-state])]
-    [:button.button {:on-click #(rf/dispatch [::e.users/do-fetch-record id])}
+  [store id]
+  (let [state @(st/subscribe store [::e.users/do-fetch-record-state])]
+    [:button.button {:on-click #(st/dispatch store [::e.users/do-fetch-record id])}
      (str "Load User: " state " -> " id)]))
 
 (defn fetch-users
-  []
-  (let [state @(rf/subscribe [::e.users/do-fetch-index-state])]
-    [:a.button {:on-click #(rf/dispatch [::e.users/do-fetch-index])}
+  [store]
+  (let [state @(st/subscribe store [::e.users/do-fetch-index-state])]
+    [:a.button {:on-click #(st/dispatch store [::e.users/do-fetch-index])}
      (tr [:fetch-users] [state])]))

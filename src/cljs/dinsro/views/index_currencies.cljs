@@ -1,5 +1,6 @@
 (ns dinsro.views.index-currencies
   (:require
+   [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
@@ -7,9 +8,11 @@
    [dinsro.components.index-currencies :as c.index-currencies]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
+   [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
-   [re-frame.core :as rf]))
+   [reitit.core :as rc]
+   [taoensso.timbre :as timbre]))
 
 (defn init-page
   [_ _]
@@ -24,20 +27,25 @@
   :start  [::init-page]})
 
 (defn loading-buttons
-  []
+  [store]
   [:div.box
-   [c.buttons/fetch-currencies]])
+   [c.buttons/fetch-currencies store]])
 
 (defn page
-  [_]
-  (let [currencies @(rf/subscribe [::e.currencies/items])]
+  [store _match]
+  (let [currencies @(st/subscribe store [::e.currencies/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide [loading-buttons])
+     (c.debug/hide store [loading-buttons store])
      [:div.box
       [:h1
        (tr [:index-currencies "Index Currencies"])
-       [c/show-form-button ::e.f.create-currency/shown?]]
-      [c.f.create-currency/form]
+       [c/show-form-button store ::e.f.create-currency/shown?]]
+      [c.f.create-currency/form store]
       [:hr]
       (when currencies
-        [c.index-currencies/index-currencies currencies])]]))
+        [c.index-currencies/index-currencies store currencies])]]))
+
+(s/fdef page
+  :args (s/cat :store #(instance? st/Store %)
+               :match #(instance? rc/Match %))
+  :ret vector?)

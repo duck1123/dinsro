@@ -6,22 +6,24 @@
 
 ;; Create
 
+(s/def ::initial-value (s/or :int int? :double double?))
+
 (s/def ::create-params-valid-no-currency
   (s/keys :req-un [::s.accounts/name
-                   ::s.accounts/initial-value
+                   ::initial-value
                    ::s.accounts/user-id]))
 (def create-params-valid-no-currency ::create-params-valid-no-currency)
 
 (s/def ::create-params-valid
   (s/keys :req-un [::s.accounts/name
-                   ::s.accounts/initial-value
+                   ::initial-value
                    ::s.accounts/user-id
                    ::s.accounts/currency-id]))
 (def create-params-valid ::create-params-valid)
 
 (s/def ::create-params
   (s/keys :opt-un [::s.accounts/name
-                   ::s.accounts/initial-value
+                   ::initial-value
                    ::s.accounts/user-id
                    ::s.accounts/currency-id]))
 (def create-params ::create-params)
@@ -36,8 +38,10 @@
 
 (s/def :create-account/params ::create-params)
 (s/def ::create-request (s/keys :req-un [:create-account/params]))
+(def create-request ::create-request)
 
 (s/def ::create-response (s/keys))
+(def create-response ::create-response)
 
 ;; Read
 

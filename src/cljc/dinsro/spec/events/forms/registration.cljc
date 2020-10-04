@@ -6,6 +6,7 @@
 (def default-name "Bob")
 (def default-email "bob@example.com")
 (def default-password "hunter2")
+(def default-error-message "")
 
 (s/def ::name string?)
 (def name ::name)
@@ -18,3 +19,6 @@
 
 (s/def ::confirm-password string?)
 (def confirm-password ::confirm-password)
+
+(s/def ::error-message string?)
+(def error-message ::error-message)

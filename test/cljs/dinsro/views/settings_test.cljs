@@ -1,22 +1,32 @@
-(ns dinsro.views.setting-test
+(ns dinsro.views.settings-test
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
+   [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.events.forms.settings :as e.f.settings]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.settings :as v.settings]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Settings View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
+(cards/header
+ 'dinsro.views.settings-test
+ "Settings View" [])
 
-   [:ul.box]])
+(defn test-store
+  []
+  (let [store (doto (mock-store)
+                e.debug/init-handlers!
+                e.f.settings/init-handlers!)]
+    store))
 
-(deftest page
-  (is (vector? (v.settings/page))))
+(let [match nil
+      store (test-store)]
+  (defcard-rg page-card
+    (fn []
+      [error-boundary
+       [v.settings/page store match]]))
 
-(defcard-rg page-card
-  [v.settings/page])
+  (deftest page-test
+    (is (vector? (v.settings/page store match)))))

@@ -10,6 +10,9 @@
 (s/def ::currency-id ds/id-string-opt)
 (def currency-id ::currency-id)
 
+(s/def ::rate-source-id ::ds/id-string)
+(def rate-source-id ::rate-source-id)
+
 (s/def ::date string?)
 (def date ::date)
 

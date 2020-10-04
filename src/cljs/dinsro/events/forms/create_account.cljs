@@ -1,36 +1,50 @@
 (ns dinsro.events.forms.create-account
   (:require
+   [clojure.spec.alpha :as s]
+   [dinsro.spec.actions.accounts :as s.a.accounts]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
-   [re-frame.core :as rf]
-   [reframe-utils.core :as rfu]))
+   [dinsro.store :as st]
+   [taoensso.timbre :as timbre]))
 
-(rfu/reg-basic-sub ::s.e.f.create-account/name)
-(rfu/reg-set-event ::s.e.f.create-account/name)
-
-(rfu/reg-basic-sub ::s.e.f.create-account/currency-id)
-(rfu/reg-set-event ::s.e.f.create-account/currency-id)
-
-(rfu/reg-basic-sub ::s.e.f.create-account/user-id)
-(rfu/reg-set-event ::s.e.f.create-account/user-id)
-
-(rfu/reg-basic-sub ::shown?)
-(rfu/reg-set-event ::shown?)
-
-(rfu/reg-basic-sub ::s.e.f.create-account/initial-value)
-(rfu/reg-set-event ::s.e.f.create-account/initial-value)
+(s/def ::form-data (s/keys))
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-account/currency-id
+                                    ::s.e.f.create-account/initial-value
+                                    ::s.e.f.create-account/name
+                                    ::s.e.f.create-account/user-id]))
+(s/def ::form-data-event (s/cat :kw keyword?))
+(s/def ::form-data-request (s/cat :db ::form-data-db
+                                  :event ::form-data-event))
+(s/def ::form-data-response ::s.a.accounts/create-params-valid)
 
 (defn form-data-sub
-  [[name initial-value currency-id user-id] _]
+  [{:keys [::s.e.f.create-account/currency-id
+           ::s.e.f.create-account/initial-value
+           ::s.e.f.create-account/name
+           ::s.e.f.create-account/user-id]}
+    _]
   {:name          name
    :currency-id   (int currency-id)
    :user-id       (int user-id)
    :initial-value (.parseFloat js/Number initial-value)})
 
-(rf/reg-sub
- ::form-data
- :<- [::s.e.f.create-account/name]
- :<- [::s.e.f.create-account/initial-value]
- :<- [::s.e.f.create-account/currency-id]
- :<- [::s.e.f.create-account/user-id]
- form-data-sub)
 (def form-data ::form-data)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-basic-sub ::s.e.f.create-account/name)
+    (st/reg-set-event ::s.e.f.create-account/name)
+
+    (st/reg-basic-sub ::s.e.f.create-account/currency-id)
+    (st/reg-set-event ::s.e.f.create-account/currency-id)
+
+    (st/reg-basic-sub ::s.e.f.create-account/user-id)
+    (st/reg-set-event ::s.e.f.create-account/user-id)
+
+    (st/reg-basic-sub ::shown?)
+    (st/reg-set-event ::shown?)
+
+    (st/reg-basic-sub ::s.e.f.create-account/initial-value)
+    (st/reg-set-event ::s.e.f.create-account/initial-value)
+    (st/reg-sub ::form-data form-data-sub))
+  store)

@@ -41,6 +41,15 @@
 (deftest index-records
   (is (= [] (m.accounts/index-records))))
 
+(deftest index-records-by-user
+  (let [user-id 1]
+    (is (= [] (m.accounts/index-records-by-user user-id)))))
+
+(deftest index-records-by-user-found
+  (let [record (mocks/mock-account)
+        user-id (get-in record [::s.accounts/user :db/id])]
+    (is (= [record] (m.accounts/index-records-by-user user-id)))))
+
 (deftest read-record-not-found
   (let [id (ds/gen-key ::ds/id)]
     (is (= nil (m.accounts/read-record id)))))

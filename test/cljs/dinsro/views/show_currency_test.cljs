@@ -2,57 +2,53 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :as cards :include-macros true]
+   [dinsro.components.boundary :refer [error-boundary]]
+   [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.currencies :as e.currencies]
+   [dinsro.events.debug :as e.debug]
+   [dinsro.events.rates :as e.rates]
+   [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.spec :as ds]
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.spec.views.show-currency :as s.v.show-currency]
+   [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))
 
-(defcard-rg title
-  [:div
-   [:h1.title "Show Currency View"]
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.views_test"}
-      "Views"]]]
+(cards/header
+ 'dinsro.views.show-currency-test
+ "Show Currency View"
+ [#{:views :currencies} #{:currencies}])
 
-   [:ul.box
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec.currencies_test"}
-      "Currency Spec"]]
+(let [currency (ds/gen-key ::s.currencies/item)
+      store (doto (mock-store)
+              e.accounts/init-handlers!
+              e.currencies/init-handlers!
+              e.debug/init-handlers!
+              e.rates/init-handlers!
+              e.rate-sources/init-handlers!)
+      match {:path-params {:id "1"}}]
 
-    [:li
-     [:a {:href "devcards.html#!/dinsro.spec.views.show_currency_test"}
-      "Show Currency View Spec"]]
+  (defcard currency currency)
 
-    [:li
-     [:a {:href "devcards.html#!/dinsro.components.show_currency_test"}
-      "Show Currency Components"]]]])
-
-(let [item (ds/gen-key ::s.currencies/item)]
-
-  (defcard item-card item)
-
-  (defcard init-page-cofx
-    (ds/gen-key ::s.v.show-currency/init-page-cofx))
-
-  (defcard init-page-event
-    (ds/gen-key ::s.v.show-currency/init-page-event))
-
-  (defcard init-page-response
-    (ds/gen-key ::s.v.show-currency/init-page-response))
-
-  (defcard view-map
-    (ds/gen-key ::s.v.show-currency/view-map))
+  (comment (defcard init-page-cofx (ds/gen-key ::s.v.show-currency/init-page-cofx)))
+  (comment (defcard init-page-event (ds/gen-key ::s.v.show-currency/init-page-event)))
+  (comment (defcard init-page-response (ds/gen-key ::s.v.show-currency/init-page-response)))
+  (comment (defcard view-map (ds/gen-key ::s.v.show-currency/view-map)))
 
   (defcard-rg v.show-currency/page-loaded
-    [v.show-currency/page-loaded item])
+    (fn []
+      [error-boundary
+       [v.show-currency/page-loaded store currency]]))
 
-  (let [match {:path-params {:id "1"}}]
-    (deftest page
-      (is (vector? (v.show-currency/page match))))
+  (deftest page-loaded-test
+    (is (vector? (v.show-currency/page-loaded store currency))))
 
-    (defcard-rg page-card
-      [v.show-currency/page match]))
+  (defcard-rg page-card
+    (fn []
+      [error-boundary
+       [v.show-currency/page store match]]))
 
-  )
+  (deftest page-test
+    (is (vector? (v.show-currency/page store match)))))

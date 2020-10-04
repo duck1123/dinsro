@@ -1,18 +1,17 @@
 (ns dinsro.components.index-transactions
   (:require
-   [dinsro.components.debug :as c.debug]
    [dinsro.components.links :as c.links]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.transactions :as s.transactions]
-   [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]))
+   [dinsro.store :as st]
+   [dinsro.translations :refer [tr]]))
 
 (defn format-date
   [date]
   (str date))
 
 (defn row-line
-  [transaction]
+  [store transaction]
   (let [date (::s.transactions/date transaction)
         account-id (:db/id (::s.transactions/account transaction))]
     [:div.card
@@ -33,19 +32,17 @@
         [:div.level-item (format-date date)]]
        [:div.level-right
         [:div.level-item
-         [c.links/account-link account-id]]]]]
+         [c.links/account-link store account-id]]]]]
      [:footer.card-footer
       [:a.button.card-footer-item
-       {:on-click #(rf/dispatch [::e.transactions/do-delete-record transaction])}
+       {:on-click #(st/dispatch store [::e.transactions/do-delete-record transaction])}
        (tr [:delete])]]]))
 
 (defn index-transactions
-  [items]
+  [store items]
   (if-not (seq items)
     [:p "no items"]
-    [:<>
-     [c.debug/debug-box items]
-     [:div.column
-      (for [transaction items]
-        ^{:key (:db/id transaction)}
-        [row-line transaction])]]))
+    [:div.column
+     (for [transaction items]
+       ^{:key (:db/id transaction)}
+       [row-line store transaction])]))
