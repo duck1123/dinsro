@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.settings :as s.a.settings]
    [dinsro.spec.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
@@ -11,6 +12,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.settings/create-params-valid
  [::s.e.f.settings/allow-registration
   ::s.e.f.settings/first-run])
 

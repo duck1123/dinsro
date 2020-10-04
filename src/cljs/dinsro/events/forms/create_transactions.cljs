@@ -11,6 +11,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.transactions/create-params-valid
  [::s.e.f.create-transaction/account-id
   ::s.e.f.create-transaction/date
   ::s.e.f.create-transaction/description

@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.registration :as s.a.registration]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -10,6 +11,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.registration/create-params-valid
  [::s.e.f.registration/name
   ::s.e.f.registration/email
   ::s.e.f.registration/password

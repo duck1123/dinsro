@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.categories :as s.a.categories]
    [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -10,6 +11,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.categories/create-params-valid
  [::s.e.f.create-category/name
   ::s.e.f.create-category/user-id])
 

@@ -11,6 +11,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.accounts/create-params-valid
  [::s.e.f.create-account/currency-id
   ::s.e.f.create-account/initial-value
   ::s.e.f.create-account/name

@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -10,6 +11,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.rates/create-params-valid
  [::s.e.f.create-rate/currency-id
   ::s.e.f.create-rate/date
   ::s.e.f.create-rate/rate])

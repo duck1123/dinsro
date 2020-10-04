@@ -192,7 +192,9 @@
        (clojure.spec.alpha/coll-of item-key#))))
 
 (defmacro declare-form
-  [ns-sym form-keys]
+  [ns-sym
+   form-data-spec
+   form-keys]
   `(do
      #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
      (clojure.spec.alpha/def-impl
@@ -202,8 +204,8 @@
 
      (clojure.spec.alpha/def-impl
        (keyword ~ns-sym "form-data")
-       (clojure.spec.alpha/keys)
-       (clojure.spec.alpha/keys))
+       ~form-data-spec
+       ~form-data-spec)
 
      (def ~'form-keys ~form-keys)))
 

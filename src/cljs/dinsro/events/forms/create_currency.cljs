@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.currencies :as s.a.currencies]
    [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -10,6 +11,7 @@
 
 (eu/declare-form
  ns-sym
+ ::s.a.currencies/create-params-valid
  [::s.e.f.create-currency/name])
 
 (defn form-data-sub
