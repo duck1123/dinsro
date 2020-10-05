@@ -17,6 +17,7 @@
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.events.forms.add-user-category :as e.f.add-user-category]
+   [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
@@ -74,6 +75,7 @@
     e.f.add-currency-rate/init-handlers!
     e.f.add-user-account/init-handlers!
     e.f.add-user-category/init-handlers!
+    e.f.add-user-transaction/init-handlers!
     e.f.create-account/init-handlers!
     e.f.create-category/init-handlers!
     e.f.create-currency/init-handlers!

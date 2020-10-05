@@ -10,12 +10,11 @@
 
 (defn form-shown
   [store form-data]
-  (let [state (st/subscribe store [::e.transactions/do-submit-state])]
+  (let [state @(st/subscribe store [::e.transactions/do-submit-state])]
     [:div
      [c/close-button store ::e.f.add-user-transaction/set-shown?]
-     (when (= @state :failed)
+     (when (= state :failed)
        [c/error-message-box "There was an error submitting"])
-     [:p (str @state)]
      [:div.field>div.control
       [c/number-input store (tr [:value]) ::s.e.f.create-transaction/value]]
      [:div.field>div.control
