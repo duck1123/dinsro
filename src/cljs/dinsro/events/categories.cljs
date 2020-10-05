@@ -56,18 +56,19 @@
 ;; Create
 
 (defn do-submit-success
-  [_ _]
+  [_ _ _]
   {:dispatch [::do-fetch-index]})
 
 (defn do-submit-failed
-  [_ _]
+  [_ _ _]
   {})
 
 (defn do-submit
-  [{:keys [db]} [data]]
+  [store {:keys [db]} [data]]
   {:http-xhrio
    (e/post-request-auth
     [:api-index-categories]
+    store
     (:token db)
     [::do-submit-success]
     [::do-submit-failed]
@@ -78,14 +79,14 @@
 (s/def ::do-fetch-record-state keyword?)
 
 (defn do-fetch-record-success
-  [{:keys [db]} [{:keys [item]}]]
+  [_ {:keys [db]} [{:keys [item]}]]
   {:db (-> db
            (assoc ::do-fetch-record-state :loaded)
            (assoc ::item item)
            (assoc-in [::item-map (:db/id item)] item))})
 
 (defn do-fetch-record-failed
-  [{:keys [db]} _]
+  [_ {:keys [db]} _]
   {:db (assoc db ::do-fetch-record-state :failed)})
 
 (s/fdef do-fetch-record-failed
@@ -94,11 +95,12 @@
   :ret ::s.e.categories/do-fetch-record-failed-response)
 
 (defn do-fetch-record
-  [{:keys [db]} [id]]
+  [store {:keys [db]} [id]]
   {:db (assoc db ::do-fetch-record-state :loading)
    :http-xhrio
    (e/fetch-request-auth
     [:api-show-categories {:id id}]
+    store
     (:token db)
     [::do-fetch-record-success]
     [::do-fetch-record-failed])})
@@ -106,18 +108,19 @@
 ;; Delete
 
 (defn do-delete-record-success
-  [_ _]
+  [_ _ _]
   {:dispatch [::do-fetch-index]})
 
 (defn do-delete-record-failed
-  [_ _]
+  [_ _ _]
   {})
 
 (defn do-delete-record
-  [{:keys [db]} [item]]
+  [store {:keys [db]} [item]]
   {:http-xhrio
    (e/delete-request-auth
     [:api-show-currency {:id (:db/id item)}]
+    store
     (:token db)
     [::do-delete-record-success]
     [::do-delete-record-failed])})
@@ -125,33 +128,34 @@
 ;; Index
 
 (defn do-fetch-index-success
-  [{:keys [db]} [{:keys [items]}]]
+  [_ {:keys [db]} [{:keys [items]}]]
   {:db (-> db
            (update ::item-map merge (into {} (map #(vector (:db/id %) %) items)))
            (assoc ::do-fetch-index-state :loaded))})
 
 (defn do-fetch-index-failed
-  [_ _]
+  [_ _ _]
   {})
 
-(s/fdef do-fetch-index-failed
-  :args (s/cat :cofx ::s.e.categories/do-fetch-index-failed-cofx
-               :event ::s.e.categories/do-fetch-index-failed-event)
-  :ret ::s.e.categories/do-fetch-index-failed-response)
+;; (s/fdef do-fetch-index-failed
+;;   :args (s/cat :cofx ::s.e.categories/do-fetch-index-failed-cofx
+;;                :event ::s.e.categories/do-fetch-index-failed-event)
+;;   :ret ::s.e.categories/do-fetch-index-failed-response)
 
 (defn do-fetch-index
-  [{:keys [db]} _]
+  [store {:keys [db]} _]
   {:http-xhrio
    (e/fetch-request-auth
     [:api-index-categories]
+    store
     (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
 
-(s/fdef do-fetch-index
-  :args (s/cat :cofx ::s.e.categories/do-fetch-index-cofx
-               :event ::s.e.categories/do-fetch-index-event)
-  :ret ::s.e.categories/do-fetch-index-response)
+;; (s/fdef do-fetch-index
+;;   :args (s/cat :cofx ::s.e.categories/do-fetch-index-cofx
+;;                :event ::s.e.categories/do-fetch-index-event)
+;;   :ret ::s.e.categories/do-fetch-index-response)
 
 (defn init-handlers!
   [store]
@@ -160,18 +164,18 @@
     (st/reg-sub ::item item-sub)
     (st/reg-sub ::items items-sub)
     (st/reg-sub ::items-by-user items-by-user)
-    (st/reg-event-fx ::do-submit-success do-submit-success)
-    (st/reg-event-fx ::do-submit-failed do-submit-failed)
-    (st/reg-event-fx ::do-submit do-submit)
+    (st/reg-event-fx ::do-submit-success (partial do-submit-success store))
+    (st/reg-event-fx ::do-submit-failed (partial do-submit-failed store))
+    (st/reg-event-fx ::do-submit (partial do-submit store))
     (st/reg-sub ::do-fetch-record-state (fn [db _] (get db ::do-fetch-record-state :invalid)))
-    (st/reg-event-fx ::do-fetch-record-success do-fetch-record-success)
-    (st/reg-event-fx ::do-fetch-record-failed do-fetch-record-failed)
-    (st/reg-event-fx ::do-fetch-record do-fetch-record)
-    (st/reg-event-fx ::do-delete-record-success do-delete-record-success)
-    (st/reg-event-fx ::do-delete-record-failed do-delete-record-failed)
-    (st/reg-event-fx ::do-delete-record do-delete-record)
+    (st/reg-event-fx ::do-fetch-record-success (partial do-fetch-record-success store))
+    (st/reg-event-fx ::do-fetch-record-failed (partial do-fetch-record-failed store))
+    (st/reg-event-fx ::do-fetch-record (partial do-fetch-record store))
+    (st/reg-event-fx ::do-delete-record-success (partial do-delete-record-success store))
+    (st/reg-event-fx ::do-delete-record-failed (partial do-delete-record-failed store))
+    (st/reg-event-fx ::do-delete-record (partial do-delete-record store))
     (st/reg-basic-sub ::do-fetch-index-state)
-    (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
-    (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+    (st/reg-event-fx ::do-fetch-index-success (partial do-fetch-index-success store))
+    (st/reg-event-fx ::do-fetch-index-failed (partial do-fetch-index-failed store))
+    (st/reg-event-fx ::do-fetch-index (partial do-fetch-index store)))
   store)
