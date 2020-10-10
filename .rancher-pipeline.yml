@@ -5,10 +5,10 @@ stages:
       dockerfilePath: ./Dockerfile-dev
       buildContext: .
       tag: duck1123/dinsro-dev:${CICD_EXECUTION_SEQUENCE}
-- name: Build
-  steps:
-  - runScriptConfig:
-      image: duck1123/dinsro-dev:${CICD_EXECUTION_SEQUENCE}
-      shellScript: |-
-        script/build-production
-        script/docker
+# - name: Build
+#   steps:
+#   - runScriptConfig:
+#       image: duck1123/dinsro-dev:${CICD_EXECUTION_SEQUENCE}
+#       shellScript: |-
+#         script/build-production
+#         script/docker
