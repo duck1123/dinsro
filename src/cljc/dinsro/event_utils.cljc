@@ -214,7 +214,7 @@
 (defmacro declare-subform
   [ns-sym _form-keys]
   `(do
-     #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
+     #_(taoensso.timbre/infof "declaring sub form - %s" ~ns-sym)
 
      (clojure.spec.alpha/def-impl
        (keyword ~ns-sym "shown?")
