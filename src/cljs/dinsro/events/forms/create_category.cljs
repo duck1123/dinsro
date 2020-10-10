@@ -1,8 +1,19 @@
 (ns dinsro.events.forms.create-category
   (:require
+   [clojure.spec.alpha]
+   [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.categories :as s.a.categories]
    [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
+
+(def ns-sym 'dinsro.events.forms.create-category)
+
+(eu/declare-form
+ ns-sym
+ ::s.a.categories/create-params-valid
+ [[:name    ::s.e.f.create-category/name    ""]
+  [:user-id ::s.e.f.create-category/user-id 0]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-category/name
@@ -14,11 +25,6 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.create-category/name)
-    (st/reg-set-event ::s.e.f.create-category/name)
-    (st/reg-basic-sub ::s.e.f.create-category/user-id)
-    (st/reg-set-event ::s.e.f.create-category/user-id)
-    (st/reg-basic-sub ::shown?)
-    (st/reg-set-event ::shown?)
+    (eu/register-form ns-sym)
     (st/reg-sub ::form-data form-data-sub))
   store)

@@ -49,7 +49,7 @@
 (defn index-handler
   [_]
   (let [users (m.users/index-records)]
-    (http/ok {:users users})))
+    (http/ok {:items users})))
 
 (s/fdef index-handler
   :args (s/cat :request (s/keys))

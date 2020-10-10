@@ -21,4 +21,4 @@
             (.error js/console @err-state)
             [:<>
              [:div.error [:pre [:code (repl/error->str info)]]]
-             [:p [:pre (.-stack info)]]])))})))
+             [:pre (.-stack info)]])))})))

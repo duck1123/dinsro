@@ -2,35 +2,43 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :as cards]
+   [dinsro.event_utils :as eu]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec.transactions :as s.transactions]
    [dinsro.spec.events.transactions :as s.e.transactions]
    [dinsro.spec :as ds]
+   [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(defcard ::s.transactions/item
-  (ds/gen-key ::s.transactions/item))
+(cards/header
+ 'dinsro.events.transactions-test
+ "Transaction Events"
+ [#{:events} #{:transactions} #{:transactions :events}])
 
-(defcard ::s.e.transactions/do-fetch-index-cofx
+(defcard item
+  (ds/gen-key ::e.transactions/item))
+
+(defcard ::e.transactions/do-fetch-index-cofx
   (ds/gen-key ::s.e.transactions/do-fetch-index-cofx))
 
-(defcard ::s.e.transactions/do-fetch-index-event
-  (ds/gen-key ::s.e.transactions/do-fetch-index-event))
+(defcard do-fetch-index-response
+  "7"
+  )
 
-(defcard ::s.e.transactions/do-fetch-index-response
-  (ds/gen-key ::s.e.transactions/do-fetch-index-response))
+(defcard do-fetch-index-response-card
+  (ds/gen-key ::e.transactions/do-fetch-index-response))
 
-(comment
+(let [store (mock-store)]
   (deftest do-fetch-index
     (let [cofx {}
-          event [{:foo "bar"}]]
-      (is (= 1 (e.transactions/do-fetch-index cofx event))))))
-
-(defcard ::s.e.transactions/do-submit-cofx
-  (ds/gen-key ::s.e.transactions/do-submit-cofx))
-
-(defcard ::s.e.transactions/do-submit-event
-  (ds/gen-key ::s.e.transactions/do-submit-event))
-
-(defcard ::s.e.transactions/do-submit-response
-  (ds/gen-key ::s.e.transactions/do-submit-response))
+          event [{:foo "bar"}]
+          ns-sym 'dinsro.events.transactions
+          path-selector [:api-index-transactions]
+          response (eu/do-fetch-index
+                    ns-sym
+                    path-selector
+                    store
+                    cofx
+                    event)]
+      (is (contains? response :http-xhrio))
+      (is (seq (get-in response [:http-xhrio :uri]))))))

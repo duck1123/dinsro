@@ -1,9 +1,21 @@
 (ns dinsro.events.forms.registration
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.registration :as s.a.registration]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
+
+(def ns-sym 'dinsro.events.forms.registration)
+
+(eu/declare-form
+ ns-sym
+ ::s.a.registration/create-params-valid
+ [[:name             ::s.e.f.registration/name             s.e.f.registration/default-name]
+  [:email            ::s.e.f.registration/email            s.e.f.registration/default-email]
+  [:password         ::s.e.f.registration/password         s.e.f.registration/default-password]
+  [:confirm-password ::s.e.f.registration/confirm-password s.e.f.registration/default-password]])
 
 (defn set-defaults
   [{:keys [db]} _]
@@ -45,14 +57,7 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.registration/name)
-    (st/reg-set-event ::s.e.f.registration/name)
-    (st/reg-basic-sub ::s.e.f.registration/email)
-    (st/reg-set-event ::s.e.f.registration/email)
-    (st/reg-basic-sub ::s.e.f.registration/password)
-    (st/reg-set-event ::s.e.f.registration/password)
-    (st/reg-basic-sub ::s.e.f.registration/confirm-password)
-    (st/reg-set-event ::s.e.f.registration/confirm-password)
+    (eu/register-form ns-sym)
     (st/reg-basic-sub ::s.e.f.registration/error-message)
     (st/reg-set-event ::s.e.f.registration/error-message)
     (st/reg-event-fx ::set-defaults set-defaults)

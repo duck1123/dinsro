@@ -15,8 +15,10 @@
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 
-(cards/header 'dinsro.components.forms.add-user-account-test
-              "Add User Account Form Components" [])
+(cards/header
+ 'dinsro.components.forms.add-user-account-test
+ "Add User Account Form Components"
+ [#{:accounts :components} #{:accounts}])
 
 (let [currencies (ds/gen-key (s/coll-of ::e.currencies/item :count 3))
       shown? true

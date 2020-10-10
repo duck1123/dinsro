@@ -1,9 +1,20 @@
 (ns dinsro.events.forms.create-rate
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
+
+(def ns-sym 'dinsro.events.forms.create-rate)
+
+(eu/declare-form
+ ns-sym
+ ::s.a.rates/create-params-valid
+ [[:currency-id ::s.e.f.create-rate/currency-id 0]
+  [:date        ::s.e.f.create-rate/date        ""]
+  [:rate        ::s.e.f.create-rate/rate        1]])
 
 (def default-rate 1)
 
@@ -31,18 +42,7 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.create-rate/rate)
-    (st/reg-set-event ::s.e.f.create-rate/rate)
-    (st/reg-basic-sub ::s.e.f.create-rate/currency-id)
-    (st/reg-set-event ::s.e.f.create-rate/currency-id)
-    (st/reg-basic-sub ::s.e.f.create-rate/rate-source-id)
-    (st/reg-set-event ::s.e.f.create-rate/rate-source-id)
-    (st/reg-basic-sub ::s.e.f.create-rate/date)
-    (st/reg-set-event ::s.e.f.create-rate/date)
-    (st/reg-basic-sub ::s.e.f.create-rate/time)
-    (st/reg-set-event ::s.e.f.create-rate/time)
-    (st/reg-basic-sub ::shown?)
-    (st/reg-set-event ::shown?)
+    (eu/register-form ns-sym)
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::init-form init-form))
   store)

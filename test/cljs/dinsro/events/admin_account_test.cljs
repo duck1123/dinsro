@@ -25,7 +25,7 @@
   (comment (defcard items items))
 
   (let [id (inc (last (sort (map :db/id items))))
-        response (e.accounts/item-sub db [::e.accounts/item id])]
+        response (e.admin-accounts/item-sub db [::e.accounts/item id])]
     (comment (defcard id (pr-str id)))
 
     (assert-spec ::e.admin-accounts/item-sub-response response)
