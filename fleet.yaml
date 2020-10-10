@@ -1,0 +1,4 @@
+namespace: dinsro
+
+helm:
+  releaseName: dinsro
