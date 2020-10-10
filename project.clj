@@ -194,7 +194,17 @@
                     }}
 
                  :doo {:build "test"
-                       :alias {:default [:chrome]}}
+                       :karma
+                       {:launchers {:chrome-no-security {:plugin "karma-chrome-launcher"
+                                                         :name "Chrome_no_security"}}
+                        :config {"customLaunchers"
+                                 {"Chrome_no_security" {"base" "ChromeHeadless"
+                                                        "flags" ["--disable-web-security"
+                                                                 "--no-sandbox"]}}}}
+
+                       :alias {:default [:chrome-no-security]}}
+
+
                  :source-paths ["env/dev/clj" "env/dev/cljc" "env/dev/cljs"]
                  :resource-paths ["env/dev/resources"]
                  :repl-options   {:init-ns user}
