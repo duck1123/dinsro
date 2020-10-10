@@ -17,6 +17,7 @@ spec:
       containers:
       - name: dinsro
         image: duck1123/dinsro:latest
+        imagePullPolicy: "Always"
         resources:
           requests:
             cpu: 100m
