@@ -4,6 +4,9 @@ stages:
   - runScriptConfig:
       image: theasp/clojurescript-nodejs:latest
       shellScript: |-
+        script/lint
+        script/test
+        script/test-javascript
         script/build-production
 - name: Build Image
   steps:
