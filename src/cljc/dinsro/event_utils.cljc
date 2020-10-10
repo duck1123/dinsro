@@ -176,7 +176,7 @@
          (s/keys)))))
 
 (defmacro declare-delete-record-method
-  [ns-sym]
+  [_ns-sym]
   `(do
      #_(taoensso.timbre/infof "declaring delete record - %s" ~ns-sym)))
 
@@ -212,7 +212,7 @@
      (def ~'form-defs ~form-defs)))
 
 (defmacro declare-subform
-  [ns-sym form-keys]
+  [ns-sym _form-keys]
   `(do
      #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
 
