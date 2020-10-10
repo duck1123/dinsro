@@ -5,7 +5,7 @@ stages:
       image: theasp/clojurescript-nodejs:latest
       shellScript: |-
         npm install
-        script/lint
+        script/lint-kondo
         script/test
         script/test-javascript
         script/build-production
