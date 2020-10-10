@@ -26,7 +26,7 @@
       expected-result {:account-id account-id
                        :date date
                        :description description
-                       :value value}
+                       :value (.parseFloat js/Number value)}
       result (e.f.create-transaction/form-data-sub db event)]
 
   (comment (defcard db db))

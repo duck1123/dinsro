@@ -17,8 +17,8 @@
 (def shown? ::shown?)
 
 (s/def ::value
-  ::ds/double-string
-  ;; ::ds/valid-double
+  ;; ::ds/double-string
+  ::ds/valid-double
   )
 (def value ::value)
 
