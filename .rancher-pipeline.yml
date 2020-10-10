@@ -5,9 +5,13 @@ stages:
       image: theasp/clojurescript-nodejs:latest
       shellScript: |-
         script/build-production
-- name: Publish Builder
+- name: Build Image
   steps:
   - publishImageConfig:
       dockerfilePath: ./Dockerfile
       buildContext: .
       tag: duck1123/dinsro:${CICD_EXECUTION_SEQUENCE}
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml

@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: dinsro-service
+spec:
+  selector:
+    app: dinsro
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-dinsro
+  labels:
+    app: dinsro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dinsro
+  template:
+    metadata:
+      labels:
+        app: dinsro
+    spec:
+      imagePullSecrets:
+      - name: pipeline-docker-registry
+      containers:
+      - name: dinsro
+        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        ports:
+        - containerPort: 3000
