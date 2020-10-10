@@ -1,14 +1,14 @@
 stages:
+- name: Publish Builder
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile-dev
+      buildContext: .
+      tag: duck1123/dinsro-dev:${CICD_EXECUTION_SEQUENCE}
 - name: Build
   steps:
   - runScriptConfig:
-      image: ubuntu
+      image: duck1123/dinsro-dev:${CICD_EXECUTION_SEQUENCE}
       shellScript: |-
         script/build-production
         script/docker
-- name: Publish
-  steps:
-  - publishImageConfig:
-      dockerfilePath: ./Dockerfile
-      buildContext: .
-      tag: duck1123/dinsro:${CICD_EXECUTION_SEQUENCE}

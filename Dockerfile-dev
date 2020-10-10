@@ -20,8 +20,8 @@ RUN npm install
 
 ADD . /usr/src/app
 
-RUN mkdir -p /home/duck/projects/dinsro/data/dev
-RUN mkdir -p /home/duck/projects/dinsro/data/test
-RUN script/lint
-RUN script/test
-RUN script/test-javascript
+# RUN mkdir -p /home/duck/projects/dinsro/data/dev
+# RUN mkdir -p /home/duck/projects/dinsro/data/test
+# RUN script/lint
+# RUN script/test
+# RUN script/test-javascript
