@@ -21,5 +21,8 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi
+        env:
+        - name: DATAHIKE_URL
+          value: datahike:file:///dinsro/data
         ports:
         - containerPort: 3000
