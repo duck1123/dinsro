@@ -7,7 +7,6 @@
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.test-utils :refer-macros [assert-spec]]))
 
 (cards/header
@@ -19,12 +18,14 @@
       currency-id (ds/gen-key ::s.e.f.create-rate/currency-id)
       date (ds/gen-key ::s.e.f.create-rate/date)
       rate (ds/gen-key ::s.e.f.create-rate/rate)
-      value (ds/gen-key ::s.e.f.create-transaction/value)
       expected-result {
                        :date date
-                       :value value}
+                       :rate (.parseFloat js/Number rate)
+                       :currency-id (.parseInt js/Number currency-id)
+                       }
       db {::s.e.f.create-rate/date date
-          ::s.e.f.create-rate/rate rate}
+          ::s.e.f.create-rate/rate rate
+          }
 
       ;; (ds/gen-key ::e.f.add-currency-rate/form-data-db)
       event [::e.f.add-currency-rate/form-data currency-id]
