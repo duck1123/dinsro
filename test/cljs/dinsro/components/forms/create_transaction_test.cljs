@@ -39,6 +39,7 @@
 
 (let [store (test-store)]
   (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
+  (st/dispatch store [::e.f.create-transaction/set-shown? true])
 
   (defcard-rg form-data-card
     (fn []
