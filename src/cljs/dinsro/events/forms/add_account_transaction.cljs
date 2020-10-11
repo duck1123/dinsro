@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.event-utils :as eu]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+   [dinsro.spec.actions.transactions :as s.a.transactions]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -11,9 +12,10 @@
 
 (eu/declare-subform
  ns-sym
- [::s.e.f.create-transaction/date
-  ::s.e.f.create-transaction/description
-  ::s.e.f.create-transaction/value])
+ ::s.a.transactions/create-params-valid
+ [[:date        ::s.e.f.create-transaction/date        ""]
+  [:description ::s.e.f.create-transaction/description ""]
+  [:value       ::s.e.f.create-transaction/value       0]])
 
 (defn form-data-sub
   [db event]

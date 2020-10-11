@@ -212,7 +212,9 @@
      (def ~'form-defs ~form-defs)))
 
 (defmacro declare-subform
-  [ns-sym _form-keys]
+  [ns-sym
+   form-data-spec
+   form-defs]
   `(do
      #_(taoensso.timbre/infof "declaring sub form - %s" ~ns-sym)
 
@@ -223,8 +225,10 @@
 
      (clojure.spec.alpha/def-impl
        (keyword ~ns-sym "form-data")
-       (clojure.spec.alpha/keys)
-       (clojure.spec.alpha/keys))))
+       ~form-data-spec
+       ~form-data-spec)
+
+     (def ~'form-defs ~form-defs)))
 
 (defmacro register-fetch-index-method
   [store ns-sym path-selector]
