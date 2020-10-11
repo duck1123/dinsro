@@ -9,9 +9,9 @@
 
 (defn card-link
   [[sym [_filters title]]]
-  ^{:key (pr-str sym)}
   (let [href (str "devcards.html#!/"
                   (string/replace (pr-str sym) #"-" "_"))]
+    ^{:key (pr-str sym)}
     [:li
      [:a {:href href}
       title]]))
