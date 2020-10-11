@@ -17,13 +17,14 @@
 
 (defn form
   [store return-to]
-  [:form.is-centered {:on-submit (partial on-submit store return-to)}
-   [:div.field>div.control
-    [c/email-input store (tr [:email]) ::s.e.f.login/email]]
-   [:div.field>div.control
-    [c/password-input store (tr [:password]) ::s.e.f.login/password]]
-   [:div.field>div.control
-    [:button
-     {:type "submit"}
-     "Submit me!"]
-    #_[c/primary-button store (tr [:login]) [::e.authentication/do-authenticate form-data return-to]]]])
+  (let [form-data @(st/subscribe store [::e.f.login/form-data])]
+    [:form.is-centered {:on-submit (partial on-submit store return-to)}
+     [:div.field>div.control
+      [c/email-input store (tr [:email]) ::s.e.f.login/email]]
+     [:div.field>div.control
+      [c/password-input store (tr [:password]) ::s.e.f.login/password]]
+     [:div.field>div.control
+      [c/primary-button
+       store
+       (tr [:login])
+       [::e.authentication/do-authenticate form-data return-to]]]]))

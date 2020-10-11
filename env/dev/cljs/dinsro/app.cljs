@@ -34,5 +34,9 @@
 
 (core/init! true)
 
+(timbre/merge-config!
+ {:min-level [[#{"dinsro.store.mock"} :info]
+              :debug]})
+
 (mount/defstate instrument
   :start (stest/instrument))

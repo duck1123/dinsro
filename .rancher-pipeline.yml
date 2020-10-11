@@ -1,0 +1,31 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: theasp/clojurescript-nodejs:latest
+      shellScript: |-
+        env | sort
+
+        apt update
+        apt install -y chromium
+        export CHROME_BIN="/usr/bin/chromium"
+
+        mkdir -p /dinsro/test
+        cp test-config.edn.example test-config.edn
+
+        npm install -g karma-cli
+        npm install
+        script/lint-kondo
+        script/test
+        script/test-javascript
+        script/build-production
+- name: Build Image
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: duck1123/dinsro:${CICD_EXECUTION_SEQUENCE}
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml

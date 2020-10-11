@@ -19,17 +19,8 @@
   [{:keys [db]} _]
   {:db (assoc db ::e.rate-sources/items [])
    :document/title "Index Rates Sources"
-   :dispatch-n [
-                [::e.currencies/do-fetch-index]
-                [::e.rate-sources/do-fetch-index]
-                ]})
-
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page-controller
- {:params (c/filter-page :index-rate-sources-page)
-  :start [::init-page]})
+   :dispatch-n [[::e.currencies/do-fetch-index]
+                [::e.rate-sources/do-fetch-index]]})
 
 (defn load-buttons
   [store]
@@ -58,3 +49,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page-controller
+   {:params (c/filter-page :index-rate-sources-page)
+    :start [::init-page]})
+
+  store)

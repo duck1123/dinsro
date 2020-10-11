@@ -13,7 +13,7 @@
   [store]
   (let [form-data (st/subscribe store [::e.f.create-transaction/form-data])
         shown? (st/subscribe store [::e.f.create-transaction/shown?])]
-    (when shown?
+    (when @shown?
       [:div
        [c/close-button store ::e.f.create-transaction/set-shown?]
        [:div.field-group

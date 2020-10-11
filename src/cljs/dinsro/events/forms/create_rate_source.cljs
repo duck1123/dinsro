@@ -1,10 +1,22 @@
 (ns dinsro.events.forms.create-rate-source
   (:require
+   [clojure.spec.alpha]
+   [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
    [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
+(def ns-sym 'dinsro.events.forms.create-rate-source)
+
 (def default-name "Default Source")
+
+(eu/declare-form
+ ns-sym
+ ::s.a.rate-sources/create-params-valid
+ [[:currency-id ::s.e.f.create-rate-source/currency-id 0]
+  [:name        ::s.e.f.create-rate-source/name        default-name]
+  [:url         ::s.e.f.create-rate-source/url         ""]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-rate-source/currency-id
@@ -17,24 +29,17 @@
 
 (defn init-form
   [{:keys [db]} _]
-  {:db (merge db {
-                  ::s.e.f.create-rate-source/name (str s.e.f.create-rate-source/default-name)
-                  ::s.e.f.create-rate-source/url s.e.f.create-rate-source/default-url
-                  ::s.e.f.create-rate-source/currency-id (str s.e.f.create-rate-source/default-currency-id)
-                  })})
-
+  {:db
+   (merge
+    db
+    {::s.e.f.create-rate-source/name        (str s.e.f.create-rate-source/default-name)
+     ::s.e.f.create-rate-source/url         s.e.f.create-rate-source/default-url
+     ::s.e.f.create-rate-source/currency-id (str s.e.f.create-rate-source/default-currency-id)})})
 
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.create-rate-source/name)
-    (st/reg-set-event ::s.e.f.create-rate-source/name)
-    (st/reg-basic-sub ::s.e.f.create-rate-source/url)
-    (st/reg-set-event ::s.e.f.create-rate-source/url)
-    (st/reg-basic-sub ::s.e.f.create-rate-source/currency-id)
-    (st/reg-set-event ::s.e.f.create-rate-source/currency-id)
-    (st/reg-basic-sub ::shown?)
-    (st/reg-set-event ::shown?)
+    (eu/register-form ns-sym)
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::init-form init-form))
   store)

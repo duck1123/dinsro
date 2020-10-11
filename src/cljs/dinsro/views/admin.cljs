@@ -30,13 +30,6 @@
                 [::e.rate-sources/do-fetch-index]
                 [::e.users/do-fetch-index]]})
 
-(kf/reg-event-fx ::init-page init-page)
-
-(kf/reg-controller
- ::page-controller
- {:params (c/filter-page :admin-page)
-  :start [::init-page]})
-
 (defn load-buttons
   [store]
   [:div.box
@@ -51,7 +44,7 @@
   [:div.box
    [:h2 (tr [:users])]
    (let [users @(st/subscribe store [::e.users/items])]
-     [c.index-users/index-users users])])
+     [c.index-users/index-users store users])])
 
 (defn page
   [store _match]
@@ -70,3 +63,15 @@
   :args (s/cat :store #(instance? st/Store %)
                :match #(instance? rc/Match %))
   :ret vector?)
+
+(defn init-handlers!
+  [store]
+  (doto store
+    (st/reg-event-fx ::init-page init-page))
+
+  (kf/reg-controller
+   ::page-controller
+   {:params (c/filter-page :admin-page)
+    :start [::init-page]})
+
+  store)

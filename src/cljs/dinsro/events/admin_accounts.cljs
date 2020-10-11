@@ -1,6 +1,7 @@
 (ns dinsro.events.admin-accounts
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.event-utils :as eu :include-macros true]
    [dinsro.events :as e]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.spec :as ds]
@@ -21,7 +22,7 @@
 
 (defn item-sub
   [db event]
-  (e.accounts/item-sub db event))
+  (eu/item-sub 'dinsro.events.accounts db event))
 
 (s/fdef item-sub
   :args ::item-sub-request
@@ -60,11 +61,12 @@
   :ret ::s.e.accounts/do-fetch-index-failed-response)
 
 (defn do-fetch-index
-  [{:keys [db]} _]
+  [store {:keys [db]} _]
   {:db (assoc db ::do-fetch-index-state :loading)
    :http-xhrio
    (e/fetch-request-auth
     [:api-admin-index-accounts]
+    store
     (:token db)
     [::do-fetch-index-success]
     [::do-fetch-index-failed])})
@@ -81,5 +83,5 @@
     (st/reg-basic-sub ::do-fetch-index-state)
     (st/reg-event-fx ::do-fetch-index-success do-fetch-index-success)
     (st/reg-event-fx ::do-fetch-index-failed do-fetch-index-failed)
-    (st/reg-event-fx ::do-fetch-index do-fetch-index))
+    (st/reg-event-fx ::do-fetch-index (partial do-fetch-index store)))
   store)

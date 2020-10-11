@@ -17,6 +17,7 @@
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.events.forms.add-user-category :as e.f.add-user-category]
+   [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
@@ -37,7 +38,21 @@
    [dinsro.routing :as routing]
    [dinsro.store.reframe :refer [reframe-store]]
    [dinsro.view :as view]
+   [dinsro.views.admin :as v.admin]
    ;; [dinsro.views.home :as v.home]
+   [dinsro.views.index-accounts :as v.index-accounts]
+   [dinsro.views.index-categories :as v.index-categories]
+   [dinsro.views.index-currencies :as v.index-currencies]
+   [dinsro.views.index-rate-sources :as v.index-rate-sources]
+   [dinsro.views.index-rates :as v.index-rates]
+   [dinsro.views.index-transactions :as v.index-transactions]
+   [dinsro.views.index-users :as v.index-users]
+   [dinsro.views.login :as v.login]
+   [dinsro.views.registration :as v.registration]
+   [dinsro.views.settings :as v.settings]
+   [dinsro.views.show-account :as v.show-account]
+   [dinsro.views.show-currency :as v.show-currency]
+   [dinsro.views.show-user :as v.show-user]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
@@ -74,6 +89,7 @@
     e.f.add-currency-rate/init-handlers!
     e.f.add-user-account/init-handlers!
     e.f.add-user-category/init-handlers!
+    e.f.add-user-transaction/init-handlers!
     e.f.create-account/init-handlers!
     e.f.create-category/init-handlers!
     e.f.create-currency/init-handlers!
@@ -85,8 +101,21 @@
     e.f.settings/init-handlers!
     e.navbar/init-handlers!
     e.websocket/init-handlers!
+    v.admin/init-handlers!
     ;; v.home/init-handlers!
-    ))
+    v.index-accounts/init-handlers!
+    v.index-categories/init-handlers!
+    v.index-currencies/init-handlers!
+    v.index-rate-sources/init-handlers!
+    v.index-rates/init-handlers!
+    v.index-transactions/init-handlers!
+    v.index-users/init-handlers!
+    v.login/init-handlers!
+    v.registration/init-handlers!
+    v.settings/init-handlers!
+    v.show-account/init-handlers!
+    v.show-currency/init-handlers!
+    v.show-user/init-handlers!))
 
 ;; -------------------------
 ;; Initialize app
@@ -96,7 +125,7 @@
   (s/check-asserts (boolean *debug*))
 
   (kf/start!
-   {:debug?         *debug*
+   {:debug?         false #_*debug*
     :routes         routing/routes
     :app-db-spec    ::app-db
     :initial-db     (initial-db *debug*)

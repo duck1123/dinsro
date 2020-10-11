@@ -3,6 +3,9 @@ version: '2'
 services:
   web:
     build: .
+    image: duck1123/dinsro:latest
+    ports:
+    - 3000:3000
     environment:
       DATABASE_URL: jdbc:h2:./dinsro_docker.db
-      DATAHIKE_URL: datahike:file:///home/duck/projects/dinsro/data/docker
+      DATAHIKE_URL: datahike:file:///dinsro/data

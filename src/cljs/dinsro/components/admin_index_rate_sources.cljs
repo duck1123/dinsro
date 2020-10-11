@@ -1,8 +1,11 @@
 (ns dinsro.components.admin-index-rate-sources
   (:require
+   [dinsro.components :as c]
    [dinsro.components.buttons :as c.buttons]
+   [dinsro.components.forms.create-rate-source :as c.f.create-rate-source]
    [dinsro.components.links :as c.links]
    [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.events.forms.create-rate-source :as e.f.create-rate-sources]
    [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]))
@@ -39,13 +42,12 @@
       [:tbody]
       (for [item items] ^{:key (:db/id item)} [index-line store item]))]))
 
-(defn section-inner
-  [store items]
-  [:div.box
-   [:h2.title.is-2 (tr [:rate-sources])]
-   (rate-sources-table store @items)])
-
 (defn section
   [store]
-  (let [items (st/subscribe store [::e.rate-sources/items])]
-    [section-inner store items]))
+  (let [items @(st/subscribe store [::e.rate-sources/items])]
+    [:div.box
+     [:h2.title.is-2
+      (tr [:rate-sources])
+      [c/show-form-button store ::e.f.create-rate-sources/shown?]]
+     [c.f.create-rate-source/form store]
+     (rate-sources-table store items)]))

@@ -20,7 +20,7 @@
       expected-result {:account-id account-id
                        :date date
                        :description description
-                       :value value}
+                       :value (.parseFloat js/Number value)}
       db {::s.e.f.create-transaction/date date
           ::s.e.f.create-transaction/description description
           ::s.e.f.create-transaction/value value}

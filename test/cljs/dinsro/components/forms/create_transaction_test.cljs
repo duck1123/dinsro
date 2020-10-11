@@ -39,6 +39,7 @@
 
 (let [store (test-store)]
   (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
+  (st/dispatch store [::e.f.create-transaction/set-shown? true])
 
   (defcard-rg form-data-card
     (fn []
@@ -50,5 +51,6 @@
       [error-boundary
        [c.f.create-transaction/form store]]))
 
-  (deftest create-transaction-test
-    (is (vector? (c.f.create-transaction/form store)))))
+  (comment
+    (deftest create-transaction-test
+      (is (vector? (c.f.create-transaction/form store))))))

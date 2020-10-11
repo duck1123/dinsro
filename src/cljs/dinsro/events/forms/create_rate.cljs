@@ -1,20 +1,47 @@
 (ns dinsro.events.forms.create-rate
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as timbre]
+   [tick.alpha.api :as tick]))
+
+(def ns-sym 'dinsro.events.forms.create-rate)
+
+(eu/declare-form
+ ns-sym
+ ::s.a.rates/create-params-valid
+ [[:currency-id ::s.e.f.create-rate/currency-id 0]
+  [:date        ::s.e.f.create-rate/date        ""]
+  [:rate-source-id ::s.e.f.create-rate/rate-source-id        1]
+  [:rate        ::s.e.f.create-rate/rate        1]])
 
 (def default-rate 1)
+
+(s/def ::form-data ::s.a.rates/create-params-input)
+(def form-data ::form-data)
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-rate/currency-id
+                                    ::s.e.f.create-rate/date
+                                    ::s.e.f.create-rate/rate]))
+(s/def ::form-data-event (s/cat :kw keyword?))
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-rate/currency-id
            ::s.e.f.create-rate/date
            ::s.e.f.create-rate/rate]}
    _]
-  {:currency-id (int currency-id)
-   :rate        (js/Number.parseFloat rate)
-   :date        (js/Date. date)})
+  (let [date-inst (or (and date (tick/instant date))
+                      (tick/instant))]
+    {:currency-id (int currency-id)
+     :rate   (js/Number.parseFloat (or rate "0"))
+     :date   date-inst}))
+
+(s/fdef form-data-sub
+  :args (s/cat :db ::form-data-db
+               :event ::form-data-event)
+  :ret ::form-data)
 
 (defn init-form
   [{:keys [db]} _]
@@ -31,18 +58,7 @@
 (defn init-handlers!
   [store]
   (doto store
-    (st/reg-basic-sub ::s.e.f.create-rate/rate)
-    (st/reg-set-event ::s.e.f.create-rate/rate)
-    (st/reg-basic-sub ::s.e.f.create-rate/currency-id)
-    (st/reg-set-event ::s.e.f.create-rate/currency-id)
-    (st/reg-basic-sub ::s.e.f.create-rate/rate-source-id)
-    (st/reg-set-event ::s.e.f.create-rate/rate-source-id)
-    (st/reg-basic-sub ::s.e.f.create-rate/date)
-    (st/reg-set-event ::s.e.f.create-rate/date)
-    (st/reg-basic-sub ::s.e.f.create-rate/time)
-    (st/reg-set-event ::s.e.f.create-rate/time)
-    (st/reg-basic-sub ::shown?)
-    (st/reg-set-event ::shown?)
+    (eu/register-form ns-sym)
     (st/reg-sub ::form-data form-data-sub)
     (st/reg-event-fx ::init-form init-form))
   store)

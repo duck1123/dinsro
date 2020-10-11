@@ -18,7 +18,9 @@
 
 (cards/header
  'dinsro.components.forms.add-user-transaction-test
- "Add User Transaction Form Components" [])
+ "Add User Transaction Form Components"
+ [#{:forms :components :transactions}
+  #{:components :transactions}])
 
 (let [accounts (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
       store (doto (mock-store)
@@ -38,5 +40,6 @@
       [error-boundary
        [c.f.add-user-transaction/form-shown store]]))
 
-  (deftest form-test
-    (is (vector? (c.f.add-user-transaction/form store)))))
+  (comment
+    (deftest form-test
+      (is (vector? (c.f.add-user-transaction/form store))))))

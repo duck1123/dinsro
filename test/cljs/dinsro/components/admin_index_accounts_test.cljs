@@ -59,7 +59,7 @@
   (comment (defcard users users))
 
   (let [store (accounts-store)]
-    (defcard-rg c.admin-index-accounts/row-line
+    (defcard-rg row-line
       (fn []
         [error-boundary
          [:table.table

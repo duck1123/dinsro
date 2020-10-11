@@ -12,7 +12,7 @@
 (def websocket-endpoint (str "ws://" (.-host (.-location js/window))  "/ws"))
 
 (defn status-loaded
-  [{:keys [db]} [{:keys [identity]}]]
+  [_store {:keys [db]} [{:keys [identity]}]]
   (timbre/info "status loaded")
   {:db (-> db
            (assoc ::e.authentication/auth-id identity)
@@ -20,18 +20,19 @@
    :dispatch-n [[::e.websocket/connect websocket-endpoint]]})
 
 (defn status-errored
-  [{:keys [db]} _]
+  [_store {:keys [db]} _]
   (timbre/warn "status errored")
   {:db (assoc db ::status-state :errored)})
 
 (defn init-status
-  [{:keys [db]
+  [store {:keys [db]
     cookies :cookie/get} _]
   (let [token (or (:token db) (:token cookies))]
     {:db (assoc db :token token)
      :http-xhrio
      (e/fetch-request-auth
       [:api-status]
+      store
       token
       [:status-loaded]
       [:status-errored])}))
@@ -48,9 +49,9 @@
   (doto store
     (st/reg-basic-sub ::status-state)
     (st/reg-set-event ::status-state)
-    (st/reg-event-fx :status-loaded status-loaded)
-    (st/reg-event-fx :status-errored status-errored)
-    (st/reg-event-fx :init-status [(rf/inject-cofx :cookie/get [:token])] init-status))
+    (st/reg-event-fx :status-loaded (partial status-loaded store))
+    (st/reg-event-fx :status-errored (partial status-errored store))
+    (st/reg-event-fx :init-status [(rf/inject-cofx :cookie/get [:token])] (partial init-status store)))
 
   (kf/reg-controller
    :status-controller

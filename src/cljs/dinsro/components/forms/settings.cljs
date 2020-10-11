@@ -17,7 +17,6 @@
 (defn form
   [store]
   [:div
-   [:p "form"]
    [:label.checkbox]
    (c/checkbox-input
     store

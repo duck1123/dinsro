@@ -44,5 +44,6 @@
         [error-boundary
          [c.f.add-user-category/form store user-id]]))
 
-    (deftest form-test
-      (is (vector? (c.f.add-user-category/form store user-id))))))
+    (comment
+      (deftest form-test
+        (is (vector? (c.f.add-user-category/form store user-id)))))))
