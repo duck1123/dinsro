@@ -7,7 +7,6 @@
    [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [re-frame.core :as rf]
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
@@ -20,8 +19,8 @@
 (def target-value #(-> % .-target .-value))
 
 (defn reg-field
-  [key default]
-  (rf/reg-sub key (fn [db _] (get db key default))))
+  [store key default]
+  (st/reg-sub store key (fn [db _] (get db key default))))
 
 (defn input-field
   [store label field change-handler type]
