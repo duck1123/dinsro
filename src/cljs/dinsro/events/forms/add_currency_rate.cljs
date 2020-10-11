@@ -1,6 +1,6 @@
 (ns dinsro.events.forms.add-currency-rate
   (:require
-   [clojure.spec.alpha]
+   [clojure.spec.alpha :as s]
    [dinsro.event-utils :as eu]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
@@ -14,6 +14,8 @@
  [::s.e.f.create-rate/date
   ::s.e.f.create-rate/rate])
 
+(s/def ::form-data-db (s/keys :req [::s.e.f.create-rate/date
+                                    ::s.e.f.create-rate/rate]))
 (defn form-data-sub
   [{:keys [::s.e.f.create-rate/date
            ::s.e.f.create-rate/rate]}
