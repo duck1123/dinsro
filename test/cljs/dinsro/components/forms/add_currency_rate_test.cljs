@@ -17,7 +17,7 @@
 (cards/header
  'dinsro.components.forms.add-currency-rate-test
  "Add Currency Rate Form Components"
- [#{:rates} #{:rates :components}])
+ [#{:rates} #{:rates :components} #{:rates :forms}])
 
 (defn test-store
   []

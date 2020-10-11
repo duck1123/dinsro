@@ -18,7 +18,9 @@
 
 (cards/header
  'dinsro.components.forms.add-user-transaction-test
- "Add User Transaction Form Components" [])
+ "Add User Transaction Form Components"
+ [#{:forms :components :transactions}
+  #{:components :transactions}])
 
 (let [accounts (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
       store (doto (mock-store)

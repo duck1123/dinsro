@@ -21,7 +21,7 @@
 (cards/header
  'dinsro.events.forms.create-rate-test
  "Create Rate Form Events"
- [#{:forms :rates}])
+ [#{:forms :rates} #{:rates}])
 
 (defcard form-data (ds/gen-key ::e.f.create-rate/form-data))
 (comment (defcard form-data-db (ds/gen-key ::e.f.create-rate/form-data-db)))

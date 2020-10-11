@@ -13,7 +13,7 @@
 (cards/header
  'dinsro.events.forms.add-currency-rate-test
  "Add Currency Rate Form Events"
- [#{:events :forms}])
+ [#{:events :forms} #{:rates} #{:rates :forms}])
 
 (let [
       currency-id (ds/gen-key ::s.e.f.create-rate/currency-id)
