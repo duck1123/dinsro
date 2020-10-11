@@ -39,14 +39,16 @@
                        :rate (.parseFloat js/Number rate)}
       result (e.f.create-rate/form-data-sub db event)]
 
-  (comment (defcard db db))
-  (comment (defcard event event))
-  (comment (defcard expected-result expected-result))
-  (comment (defcard result result))
-
+  (defcard db db)
   (assert-spec ::e.f.create-rate/form-data-db db)
+
+  (defcard event event)
   (assert-spec ::e.f.create-rate/form-data-event event)
+
+  (defcard expected-result expected-result)
   (assert-spec ::e.f.create-rate/form-data expected-result)
+
+  (defcard result result)
   (assert-spec ::e.f.create-rate/form-data result)
 
   (deftest form-data-sub-test

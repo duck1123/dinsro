@@ -12,10 +12,10 @@
 
 ;; Create
 
-(s/def ::date ::ds/date)
+(s/def ::date ::ds/date-string)
 (s/def ::create-params (s/keys :opt-un [::s.rates/rate ::currency-id ::date]))
 (s/def ::create-params-input (s/keys :req-un [::s.rates/rate ::currency-id ::ds/date]))
-(s/def ::create-params-valid (s/keys :req-un [::s.rates/rate ::currency-id ::ds/date]))
+(s/def ::create-params-valid (s/keys :req-un [::s.rates/rate ::currency-id ::date]))
 (s/def :create-rates-request-valid/params ::create-params-valid)
 (s/def ::create-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 (def create-request-valid ::create-request-valid)

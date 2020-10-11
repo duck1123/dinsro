@@ -2,6 +2,7 @@
   (:require
    [cljs.pprint :as p]
    [cljs.test :refer-macros [is]]
+   [clojure.spec.alpha]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
    [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
@@ -12,7 +13,8 @@
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.spec :as ds]
    [dinsro.store :as st]
-   [dinsro.store.mock :refer [mock-store]]))
+   [dinsro.store.mock :refer [mock-store]]
+   [dinsro.test-utils :refer-macros [assert-spec]]))
 
 (cards/header
  'dinsro.components.forms.add-currency-rate-test
@@ -28,16 +30,21 @@
                 e.f.create-rate/init-handlers!)]
     store))
 
-(let [currency-id (ds/gen-key :db/id)]
+(let [currency-id (ds/gen-key :db/id)
+      ]
   (defcard currency-id-card (pr-str currency-id))
 
-  (let [store (test-store)]
+  (let [store (test-store)
+        expected-result @(st/subscribe store [::e.f.add-currency-rate/form-data])]
     (st/dispatch store [::e.f.add-currency-rate/set-shown? true])
 
-    (defcard-rg form-data-card
-      (fn []
-        [error-boundary
-         [:pre (with-out-str (p/pprint @(st/subscribe store [::e.f.add-currency-rate/form-data])))]]))
+    (let [form-data @(st/subscribe store [::e.f.add-currency-rate/form-data])]
+      (assert-spec ::e.f.add-currency-rate/form-data expected-result)
+
+      (defcard-rg form-data-card
+        (fn []
+          [error-boundary
+           [:pre (with-out-str (p/pprint form-data))]])))
 
     (defcard-rg form
       (fn []
