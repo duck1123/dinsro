@@ -14,6 +14,7 @@
  ::s.a.rates/create-params-valid
  [[:currency-id ::s.e.f.create-rate/currency-id 0]
   [:date        ::s.e.f.create-rate/date        ""]
+  [:rate-source-id ::s.e.f.create-rate/rate-source-id        1]
   [:rate        ::s.e.f.create-rate/rate        1]])
 
 (def default-rate 1)
