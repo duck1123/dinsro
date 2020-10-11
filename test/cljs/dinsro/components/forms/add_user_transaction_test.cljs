@@ -40,5 +40,6 @@
       [error-boundary
        [c.f.add-user-transaction/form-shown store]]))
 
-  (deftest form-test
-    (is (vector? (c.f.add-user-transaction/form store)))))
+  (comment
+    (deftest form-test
+      (is (vector? (c.f.add-user-transaction/form store))))))

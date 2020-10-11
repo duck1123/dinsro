@@ -51,5 +51,6 @@
       [error-boundary
        [c.f.create-transaction/form store]]))
 
-  (deftest create-transaction-test
-    (is (vector? (c.f.create-transaction/form store)))))
+  (comment
+    (deftest create-transaction-test
+      (is (vector? (c.f.create-transaction/form store))))))
