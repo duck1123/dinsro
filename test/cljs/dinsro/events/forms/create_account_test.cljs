@@ -37,6 +37,5 @@
   (assert-spec ::e.f.create-account/form-data-response expected-result)
   (assert-spec ::e.f.create-account/form-data-response result)
 
-  (comment
-    (deftest form-data-sub-test
-      (is (= expected-result result)))))
+  (deftest form-data-sub-test
+    (is (= expected-result result))))

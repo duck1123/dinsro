@@ -44,6 +44,5 @@
       [error-boundary
        [c.f.add-user-account/form store id]]))
 
-  (comment
-    (deftest form-test
-      (is (vector? (c.f.add-user-account/form store id))))))
+  (deftest form-test
+    (is (vector? (c.f.add-user-account/form store id)))))
