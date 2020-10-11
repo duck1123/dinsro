@@ -1,1 +1,1 @@
-(ns dinsro.events.forms.admin-index-rate-sources)
+(ns dinsro.spec.events.forms.admin-index-rate-sources)
