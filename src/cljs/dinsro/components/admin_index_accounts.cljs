@@ -25,7 +25,7 @@
      [:td (c.links/user-link store user-id)]
      [:td (c.links/currency-link store currency-id)]
      [:td initial-value]
-     (c.debug/hide store [:td [c.buttons/delete-account account]])]))
+     (c.debug/hide store [:td [c.buttons/delete-account store account]])]))
 
 (s/fdef row-line
   :args (s/cat :account ::s.accounts/item)
