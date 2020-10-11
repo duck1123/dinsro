@@ -8,7 +8,7 @@
    ;; :missing {:missing "Missing: %1"}
 
    :en
-   {:missing (fn [arg1 arg2] (str "Missing text: " (timbre/spy :info arg1) " - " arg2))
+   {:missing (fn [arg1 arg2] (str "Missing text: " arg1 " - " arg2))
     :about "About"
     :actions "Actions"
     :account "Account"

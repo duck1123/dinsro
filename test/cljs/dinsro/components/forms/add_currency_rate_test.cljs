@@ -14,7 +14,8 @@
    [dinsro.spec :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
-   [dinsro.test-utils :refer-macros [assert-spec]]))
+   [dinsro.test-utils :refer-macros [assert-spec]]
+   [taoensso.timbre :as timbre]))
 
 (cards/header
  'dinsro.components.forms.add-currency-rate-test
@@ -30,8 +31,7 @@
                 e.f.create-rate/init-handlers!)]
     store))
 
-(let [currency-id (ds/gen-key :db/id)
-      ]
+(let [currency-id (ds/gen-key :db/id)]
   (defcard currency-id-card (pr-str currency-id))
 
   (let [store (test-store)

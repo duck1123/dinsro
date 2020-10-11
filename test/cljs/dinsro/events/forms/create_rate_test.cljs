@@ -16,6 +16,7 @@
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    ;; [dinsro.store.mock :refer [mock-store]]
    [dinsro.test-utils :refer-macros [assert-spec]]
+   [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
 (cards/header
@@ -35,7 +36,7 @@
           ::s.e.f.create-rate/rate rate}
       event [::e.f.create-rate/form-data]
       expected-result {:currency-id (.parseInt js/Number currency-id)
-                       :date (tick/instant date)
+                       :date (str (tick/instant date))
                        :rate (.parseFloat js/Number rate)}
       result (e.f.create-rate/form-data-sub db event)]
 
