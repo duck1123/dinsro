@@ -15,8 +15,8 @@
  ns-sym
  ::s.a.rate-sources/create-params-valid
  [[:currency-id ::s.e.f.create-rate-source/currency-id 0]
-  [:name ::s.e.f.create-rate-source/name default-name]
-  [:url ::s.e.f.create-rate-source/url ""]])
+  [:name        ::s.e.f.create-rate-source/name        default-name]
+  [:url         ::s.e.f.create-rate-source/url         ""]])
 
 (defn form-data-sub
   [{:keys [::s.e.f.create-rate-source/currency-id
@@ -29,12 +29,12 @@
 
 (defn init-form
   [{:keys [db]} _]
-  {:db (merge db {
-                  ::s.e.f.create-rate-source/name (str s.e.f.create-rate-source/default-name)
-                  ::s.e.f.create-rate-source/url s.e.f.create-rate-source/default-url
-                  ::s.e.f.create-rate-source/currency-id (str s.e.f.create-rate-source/default-currency-id)
-                  })})
-
+  {:db
+   (merge
+    db
+    {::s.e.f.create-rate-source/name        (str s.e.f.create-rate-source/default-name)
+     ::s.e.f.create-rate-source/url         s.e.f.create-rate-source/default-url
+     ::s.e.f.create-rate-source/currency-id (str s.e.f.create-rate-source/default-currency-id)})})
 
 (defn init-handlers!
   [store]
