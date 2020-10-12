@@ -1,7 +1,7 @@
 (ns dinsro.events.admin-accounts
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu :include-macros true]
+   [dinsro.event-utils.impl :as eui]
    [dinsro.events :as e]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.spec :as ds]
@@ -22,7 +22,7 @@
 
 (defn item-sub
   [db event]
-  (eu/item-sub 'dinsro.events.accounts db event))
+  (eui/item-sub 'dinsro.events.accounts db event))
 
 (s/fdef item-sub
   :args ::item-sub-request

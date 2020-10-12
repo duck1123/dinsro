@@ -3,7 +3,7 @@
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard deftest]]
    [dinsro.cards :as cards]
-   [dinsro.event_utils :as eu]
+   [dinsro.event_utils.impl :as eui]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.transactions :as s.e.transactions]
    [dinsro.spec :as ds]
@@ -22,8 +22,7 @@
   (ds/gen-key ::s.e.transactions/do-fetch-index-cofx))
 
 (defcard do-fetch-index-response
-  "7"
-  )
+  "7")
 
 (defcard do-fetch-index-response-card
   (ds/gen-key ::e.transactions/do-fetch-index-response))
@@ -34,7 +33,7 @@
           event [{:foo "bar"}]
           ns-sym 'dinsro.events.transactions
           path-selector [:api-index-transactions]
-          response (eu/do-fetch-index
+          response (eui/do-fetch-index
                     ns-sym
                     path-selector
                     store
