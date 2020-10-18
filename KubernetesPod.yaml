@@ -1,0 +1,31 @@
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:
+  - name: jnlp
+    env:
+    - name: CONTAINER_ENV_VAR
+      value: jnlp
+    - name: DOCKERHUB_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: dockerhub-creds
+          key: DOCKERHUB_USERNAME
+  - name: builder
+    image: theasp/clojurescript-nodejs:latest
+    command: ['cat']
+    tty: true
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+    - name: dockerhub-creds
+      mountPath: /dockerhub-creds
+      readOnly: true
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+  - name: dockerhub-creds
+    secret:
+      secretName: dockerhub-creds
