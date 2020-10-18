@@ -4,11 +4,12 @@ type: kubernetes
 name: default
 
 steps:
-- name: frontend
-  image: node
+- name: test
+  image: duck1123/dinsro-dev
   commands:
   - npm install
-  - npm test
+  - script/test
+  - script/test-javascript
 - name: build
   image: duck1123/dinsro-dev
   commands:
