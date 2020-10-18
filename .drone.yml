@@ -8,6 +8,8 @@ steps:
   image: duck1123/dinsro-dev
   commands:
   - npm install
+  - mkdir -p /dinsro/test
+  - cp test-config.edn.example test-config.edn
   - script/test
   - script/test-javascript
 - name: build
