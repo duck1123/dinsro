@@ -1,0 +1,36 @@
+---
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+- name: frontend
+  image: node
+  commands:
+  - npm install
+  - npm test
+- name: build
+  image: duck1123/dinsro-dev
+  commands:
+  - script/build-production
+- name: docker
+  image: plugins/docker
+  settings:
+    repo: duck1123/dinsro
+    tags: latest
+    username:
+      from_secret: username
+    password:
+      from_secret: password
+---
+kind: secret
+name: username
+get:
+  path: dockerhub-creds
+  name: DOCKERHUB_USERNAME
+---
+kind: secret
+name: password
+get:
+  path: dockerhub-creds
+  name: DOCKERHUB_PASSWORD
