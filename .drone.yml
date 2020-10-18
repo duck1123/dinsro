@@ -8,6 +8,7 @@ steps:
   image: duck1123/dinsro-dev
   commands:
   - npm install
+  - npm install -g karma-cli
   - mkdir -p /dinsro/test
   - cp test-config.edn.example test-config.edn
   - script/test
