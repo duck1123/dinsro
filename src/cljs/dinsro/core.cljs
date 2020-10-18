@@ -39,7 +39,7 @@
    [dinsro.store.reframe :refer [reframe-store]]
    [dinsro.view :as view]
    [dinsro.views.admin :as v.admin]
-   ;; [dinsro.views.home :as v.home]
+   [dinsro.views.home :as v.home]
    [dinsro.views.index-accounts :as v.index-accounts]
    [dinsro.views.index-categories :as v.index-categories]
    [dinsro.views.index-currencies :as v.index-currencies]
@@ -102,7 +102,7 @@
     e.navbar/init-handlers!
     e.websocket/init-handlers!
     v.admin/init-handlers!
-    ;; v.home/init-handlers!
+    v.home/init-handlers!
     v.index-accounts/init-handlers!
     v.index-categories/init-handlers!
     v.index-currencies/init-handlers!
