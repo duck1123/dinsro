@@ -24,6 +24,7 @@
   [_ [{:keys [id]}]]
   {:dispatch-n [[::e.currencies/do-fetch-record id]
                 [::e.rates/do-fetch-rate-feed-by-currency (int id)]
+                [::e.rate-sources/do-fetch-index]
                 [::e.users/do-fetch-index]
                 [::e.accounts/do-fetch-index]]
    :document/title "Show Currency"})
