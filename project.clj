@@ -241,8 +241,10 @@
                                     "test/cljc"
                                     "test/cljs"]
                      :compiler
-                     {:output-to     "target/test.js"
+                     {:output-to "target/cljsbuild-test/public/js/test.js"
+                      :output-dir "target/cljsbuild-test/public/js/out"
                       :main          "starter.doo"
-                      :optimizations :none}}}}}
+                      :optimizations :none}}}}
+    :source-paths ["env/test/clj" "env/test/cljc" "env/test/cljs"]}
    :profiles/dev {}
    :profiles/test {}})

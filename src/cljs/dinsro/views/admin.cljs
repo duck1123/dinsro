@@ -7,9 +7,9 @@
    [dinsro.components.admin-index-currencies :as c.admin-index-currencies]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
    [dinsro.components.admin-index-transactions :as c.admin-index-transactions]
+   [dinsro.components.admin-index-users :as c.admin-index-users]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
-   [dinsro.components.index-users :as c.index-users]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.rate-sources :as e.rate-sources]
@@ -39,13 +39,6 @@
    [c.buttons/fetch-rate-sources store]
    [c.buttons/fetch-users store]])
 
-(defn users-section
-  [store]
-  [:div.box
-   [:h2 (tr [:users])]
-   (let [users @(st/subscribe store [::e.users/items])]
-     [c.index-users/index-users store users])])
-
 (defn page
   [store _match]
   [:section.section>div.container>div.content
@@ -57,7 +50,7 @@
    [c.admin-index-categories/section store]
    [c.admin-index-currencies/section store]
    [c.admin-index-rate-sources/section store]
-   [users-section store]])
+   [c.admin-index-users/section store]])
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)

@@ -43,6 +43,5 @@
       [error-boundary
        [c.f.create-rate/form store]]))
 
-  (comment
-    (deftest form-test
-      (is (vector? (c.f.create-rate/form store))))))
+  (deftest form-test
+    (is (vector? (c.f.create-rate/form store)))))

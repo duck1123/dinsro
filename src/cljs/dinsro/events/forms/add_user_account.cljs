@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.event-utils :as eu]
+   [dinsro.spec.actions.accounts :as s.a.accounts]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -10,10 +11,11 @@
 
 (eu/declare-subform
  ns-sym
- [::s.e.f.create-account/currency-id
-  ::s.e.f.create-account/initial-value
-  ::s.e.f.create-account/name
-  ::s.e.f.create-account/user-id])
+ ::s.a.accounts/create-params-valid
+ [[:currency-id ::s.e.f.create-account/currency-id 0]
+  [:initial-value ::s.e.f.create-account/initial-value 0]
+  [:name ::s.e.f.create-account/name ""]
+  [:user-id ::s.e.f.create-account/user-id 0]])
 
 (def default-name "Offshore")
 

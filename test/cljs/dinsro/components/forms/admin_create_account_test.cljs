@@ -59,6 +59,5 @@
         [error-boundary
          [c.f.admin-create-account/form store]]))
 
-    (comment
-      (deftest form-inner-test
-        (is (vector? (c.f.admin-create-account/form store)))))))
+    (deftest form-inner-test
+      (is (vector? (c.f.admin-create-account/form store))))))

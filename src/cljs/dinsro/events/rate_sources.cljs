@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.event-utils :as eu :include-macros true]
+   [dinsro.event-utils.impl :as eui]
    [dinsro.events :as e]
    [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.store :as st]

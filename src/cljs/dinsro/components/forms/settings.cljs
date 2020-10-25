@@ -8,11 +8,10 @@
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
-(comment
-  (kf/reg-controller
-   :settings-controller
-   {:params (constantly true)
-    :start [::e.settings/do-fetch-settings]}))
+(kf/reg-controller
+ :settings-controller
+ {:params (constantly true)
+  :start [::e.settings/do-fetch-settings]})
 
 (defn form
   [store]

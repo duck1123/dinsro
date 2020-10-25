@@ -4,6 +4,7 @@
    [dinsro.event-utils :as eu]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.spec :as ds]
+   [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
@@ -12,8 +13,9 @@
 
 (eu/declare-subform
  ns-sym
- [::s.e.f.create-rate/date
-  ::s.e.f.create-rate/rate])
+ ::s.a.rates/create-params-input
+ [[:date ::s.e.f.create-rate/date ""]
+  [:rate ::s.e.f.create-rate/rate "0"]])
 
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-rate/date
                                     ::s.e.f.create-rate/rate]))
@@ -24,8 +26,8 @@
            ::s.e.f.create-rate/rate]}
    [_ currency-id]]
   {:currency-id (int currency-id)
-   :rate        (js/Number.parseFloat rate)
-   :date        date})
+   :rate        (js/Number.parseFloat (str (or rate 1)))
+   :date        (or date (.toISOString (js/Date.)))})
 
 (defn init-form
   [{:keys [db]} _]

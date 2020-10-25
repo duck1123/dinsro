@@ -72,14 +72,13 @@
 (defn account-selector
   ([store label field]
    (account-selector store label field (#'rfu/kw-prefix field "set-")))
-  ([store label field change-handler]
+  ([store _label field change-handler]
    (condp = @(st/subscribe store [::e.accounts/do-fetch-index-state])
      :invalid
      [:p "Invalid Account Fetch State"]
 
      :loaded
      (let [items @(st/subscribe store [::e.accounts/items])]
-       (comment [:label.label label])
        [:div.select
         (into [:select {:value (or @(st/subscribe store [field]) "")
                         :on-change #(st/dispatch store [change-handler (target-value %)])}]

@@ -12,19 +12,21 @@
 
 (eu/declare-form
  ns-sym
- ::s.a.rates/create-params-valid
- [[:currency-id ::s.e.f.create-rate/currency-id 0]
-  [:date        ::s.e.f.create-rate/date        ""]
-  [:rate-source-id ::s.e.f.create-rate/rate-source-id        1]
-  [:rate        ::s.e.f.create-rate/rate        1]])
+ ::s.a.rates/create-params-input
+ [[:currency-id    ::s.e.f.create-rate/currency-id    0]
+  [:date           ::s.e.f.create-rate/date           ""]
+  [:rate-source-id ::s.e.f.create-rate/rate-source-id 1]
+  [:rate           ::s.e.f.create-rate/rate           1]])
 
 (def default-rate 1)
 
 (s/def ::form-data ::s.a.rates/create-params-input)
 (def form-data ::form-data)
-(s/def ::form-data-db (s/keys :req [::s.e.f.create-rate/currency-id
-                                    ::s.e.f.create-rate/date
-                                    ::s.e.f.create-rate/rate]))
+
+(s/def ::form-data-db
+  (s/keys :req [::s.e.f.create-rate/currency-id
+                ::s.e.f.create-rate/date
+                ::s.e.f.create-rate/rate]))
 (s/def ::form-data-event (s/cat :kw keyword?))
 
 (defn form-data-sub
@@ -36,7 +38,7 @@
                       (tick/instant))]
     {:currency-id (int currency-id)
      :rate   (js/Number.parseFloat (or rate "0"))
-     :date   date-inst}))
+     :date   (str date-inst)}))
 
 (s/fdef form-data-sub
   :args (s/cat :db ::form-data-db

@@ -7,15 +7,18 @@
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
 
-(s/def ::currency-id ::ds/id)
+(s/def :dinsro.spec.actions.rates.lax/currency-id
+  (s/or :id ::ds/id
+        :zero zero?))
+(s/def ::currency-id (s/or :id ::ds/id))
 (def currency-id ::currency-id)
 
 ;; Create
 
-(s/def ::date ::ds/date)
+(s/def ::date ::ds/date-string)
 (s/def ::create-params (s/keys :opt-un [::s.rates/rate ::currency-id ::date]))
-(s/def ::create-params-input (s/keys :req-un [::s.rates/rate ::currency-id ::ds/date]))
-(s/def ::create-params-valid (s/keys :req-un [::s.rates/rate ::currency-id ::ds/date]))
+(s/def ::create-params-input (s/keys :req-un [::s.rates/rate :dinsro.spec.actions.rates.lax/currency-id ::date]))
+(s/def ::create-params-valid (s/keys :req-un [::s.rates/rate ::currency-id ::date]))
 (s/def :create-rates-request-valid/params ::create-params-valid)
 (s/def ::create-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 (def create-request-valid ::create-request-valid)

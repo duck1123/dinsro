@@ -3,9 +3,7 @@
    [cemerick.url :as url]
    [clojure.spec.alpha :as s]
    [dinsro.components :as c]
-   [dinsro.components.debug :as c.debug]
    [dinsro.components.forms.login :as c.f.login]
-   [dinsro.events.authentication :as e.authentication]
    [dinsro.events.forms.login :as e.f.login]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
@@ -24,9 +22,7 @@
         return-to (get (url/query->map query-string) "return-to")]
     [:section.section>div.container>div.content
      [:h1 "Login"]
-     (c.debug/hide store [:p "Authenticated: " @(st/subscribe store [::e.authentication/auth-id])])
      [:div.container
-      (c.debug/hide store [:p "Return To: " return-to])
       [c.f.login/form store return-to]]]))
 
 (s/fdef page

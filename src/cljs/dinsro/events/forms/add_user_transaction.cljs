@@ -12,9 +12,10 @@
 
 (eu/declare-subform
  ns-sym
- [::s.e.f.create-transaction/date
-  ::s.e.f.create-transaction/description
-  ::s.e.f.create-transaction/value])
+ ::s.a.transactions/create-params-valid
+ [[:date        ::s.e.f.create-transaction/date ""]
+  [:description ::s.e.f.create-transaction/description ""]
+  [:value ::s.e.f.create-transaction/value 0]])
 
 (s/def ::form-data-db (s/keys :req [::s.e.f.create-transaction/date
                                     ::s.e.f.create-transaction/description
