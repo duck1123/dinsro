@@ -7,6 +7,7 @@
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cljsjs/highcharts "7.0.3-0"]
                  [com.cemerick/url "0.1.1"]
+                 [com.cognitect/transit-cljs "0.8.264"]
                  [com.google.guava/guava "29.0-jre"]
                  [com.smxemail/re-frame-cookie-fx "0.0.2"]
                  [com.smxemail/re-frame-document-fx "0.0.1-SNAPSHOT"]
@@ -84,7 +85,7 @@
                  [ring/ring-defaults "0.3.2"
                   :exclusions [clj-time]]
                  [selmer "1.12.28"]
-                 [tick "0.4.21-alpha"]
+                 [tick "0.4.24-alpha"]
                  [time-specs "0.1.0-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
