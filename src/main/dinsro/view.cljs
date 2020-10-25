@@ -1,6 +1,6 @@
 (ns dinsro.view
   (:require
-   [com.smxemail.re-frame-document-fx]
+   ;; [com.smxemail.re-frame-document-fx]
    [dinsro.mappings :refer [mappings]]
    [dinsro.ui.navbar :refer [navbar]]
    [kee-frame.core :as kf]
