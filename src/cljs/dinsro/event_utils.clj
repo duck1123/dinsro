@@ -20,16 +20,16 @@
          :dinsro.spec/state)
 
        (clojure.spec.alpha/def-impl do-fetch-index-cofx-kw#
-         (s/keys)
-         (s/keys))
+         (clojure.spec.alpha/keys)
+         (clojure.spec.alpha/keys))
 
        (clojure.spec.alpha/def-impl do-fetch-index-event-kw#
-         (s/keys)
-         (s/keys))
+         (clojure.spec.alpha/keys)
+         (clojure.spec.alpha/keys))
 
        (clojure.spec.alpha/def-impl (keyword ~ns-sym "do-fetch-index-response")
-         (s/keys)
-         (s/keys)))))
+         (clojure.spec.alpha/keys)
+         (clojure.spec.alpha/keys)))))
 
 (defmacro declare-fetch-record-method
   [ns-sym]
@@ -46,16 +46,16 @@
          :dinsro.spec/state)
 
        (clojure.spec.alpha/def-impl do-fetch-record-failed-cofx-kw#
-         (s/keys)
-         (s/keys))
+         (clojure.spec.alpha/keys)
+         (clojure.spec.alpha/keys))
 
        (clojure.spec.alpha/def-impl do-fetch-record-failed-event-kw#
-         (s/keys)
-         (s/keys))
+         (clojure.spec.alpha/keys)
+         (clojure.spec.alpha/keys))
 
        (clojure.spec.alpha/def-impl do-fetch-record-failed-response-kw#
-         (s/keys)
-         (s/keys)))))
+         (clojure.spec.alpha/keys)
+         (clojure.spec.alpha/keys)))))
 
 (defmacro declare-delete-record-method
   [_ns-sym]
@@ -122,15 +122,15 @@
   `(do
      (taoensso.timbre/infof "registering index method - %s" ~ns-sym)
      (doto ~store
-       (st/reg-basic-sub
+       (dinsro.store/reg-basic-sub
         (keyword ~ns-sym "do-fetch-index-state"))
-       (st/reg-event-fx
+       (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-index-success")
         (partial dinsro.event-utils.impl/do-fetch-index-success ~ns-sym))
-       (st/reg-event-fx
+       (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-index-failed")
         (partial dinsro.event-utils.impl/do-fetch-index-failed ~ns-sym))
-       (st/reg-event-fx
+       (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-index")
         (partial dinsro.event-utils.impl/do-fetch-index ~ns-sym ~path-selector ~store)))))
 
