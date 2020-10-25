@@ -89,8 +89,8 @@
 
   :min-lein-version "2.0.0"
 
-  :source-paths ["src/clj" "src/cljs" "src/cljc"]
-  :test-paths ["test/clj" "test/cljc"]
+  :source-paths ["src"]
+  :test-paths ["test"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
   :main ^:skip-aot dinsro.core
@@ -126,10 +126,8 @@
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
              :cljsbuild
-             {:builds {:min {:source-paths ["src/cljc"
-                                            "src/cljs"
-                                            "env/prod/cljs"
-                                            "env/prod/cljc"]
+             {:builds {:min {:source-paths ["src"
+                                            "env/prod/src"]
                              :compiler
                              {:output-dir    "target/cljsbuild/public/js"
                               :output-to     "target/cljsbuild/public/js/app.js"
@@ -142,7 +140,7 @@
                               :externs       ["react/externs/react.js"]}}}}
              :aot :all
              :uberjar-name "dinsro.jar"
-             :source-paths ["env/prod/clj" "env/prod/cljc"]
+             :source-paths ["env/prod/src"]
              :resource-paths ["env/prod/resources"]}
 
    :dev           [:project/dev :profiles/dev]
@@ -173,11 +171,7 @@
 
                  :cljsbuild
                   {:builds
-                   {:app      {:source-paths ["src/cljs"
-                                              "src/cljc"
-                                              "env/dev/cljs"
-                                              "test/cljs"
-                                              "test/cljc"]
+                   {:app      {:source-paths ["src" "env/dev/src" "test"]
                                :figwheel     {:on-jsload "dinsro.core/mount-components"}
                                :compiler     {:main            "dinsro.app"
                                               :asset-path      "/js/out"
@@ -205,7 +199,7 @@
                        :alias {:default [:chrome-no-security]}}
 
 
-                 :source-paths ["env/dev/clj" "env/dev/cljc" "env/dev/cljs"]
+                 :source-paths ["env/dev/src"]
                  :resource-paths ["env/dev/resources"]
                  :repl-options   {:init-ns user}
                  :injections     [(require 'pjstadig.humane-test-output)
@@ -214,12 +208,7 @@
                                  :nrepl-port 7003}
                       :cljsbuild
                       {:builds
-                       {:devcards {:source-paths ["src/cljc"
-                                                  "src/cljs"
-                                                  "env/dev/cljc"
-                                                  "env/dev/cljs"
-                                                  "test/cljc"
-                                                  "test/cljs"]
+                       {:devcards {:source-paths ["src" "env/dev/src" "test"]
                                    :figwheel     {:devcards true}
                                    :compiler     {:main "starter.doo"
                                                   :asset-path "/js/devcards_out"
@@ -234,17 +223,12 @@
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
     :cljsbuild
-    {:builds {:test {:source-paths ["src/cljc"
-                                    "src/cljs"
-                                    "env/test/cljc"
-                                    "env/test/cljs"
-                                    "test/cljc"
-                                    "test/cljs"]
+    {:builds {:test {:source-paths ["src" "env/test/src" "test"]
                      :compiler
                      {:output-to "target/cljsbuild-test/public/js/test.js"
                       :output-dir "target/cljsbuild-test/public/js/out"
                       :main          "starter.doo"
                       :optimizations :none}}}}
-    :source-paths ["env/test/clj" "env/test/cljc" "env/test/cljs"]}
+    :source-paths ["env/test/src"]}
    :profiles/dev {}
    :profiles/test {}})
