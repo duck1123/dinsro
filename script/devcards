@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-lein with-profile devcards figwheel devcards
+set -ex
+
+npx shadow-cljs watch devcards

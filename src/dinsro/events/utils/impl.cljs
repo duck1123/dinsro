@@ -102,7 +102,6 @@
   {:db (update db (keyword ns-sym "item-map") #(dissoc % id))
    :dispatch [(keyword ns-sym "do-fetch-index") id]})
 
-
 (defn do-delete-record-failed
   [ns-sym {:keys [db]} [{:keys [id]}]]
   {:db (-> db

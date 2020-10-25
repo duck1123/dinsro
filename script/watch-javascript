@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-lein figwheel
+# lein figwheel
+npx shadow-cljs watch app

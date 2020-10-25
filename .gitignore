@@ -26,6 +26,7 @@ test-results/
 /out
 /pom.xml
 /public/js/
+/resources/public/devcards/
 /resources/public/js/
 /routes/
 /target

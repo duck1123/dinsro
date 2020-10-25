@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-lein with-profile +test doo chrome-no-security test once
+npx shadow-cljs compile ci
+npx karma start --single-run

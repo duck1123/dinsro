@@ -1,7 +1,4 @@
-(ns dinsro.cards
-  (:require
-   [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+(ns dinsro.cards)
 
 (defmacro defcard-rg
   [name & body]

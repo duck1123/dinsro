@@ -1,0 +1,50 @@
+;; shadow-cljs configuration
+{:dev-http {8080 "resources/public"}
+ :lein true
+ :nrepl {:port 3333}
+
+ :builds
+ {:app
+  {:target :browser
+   :modules {:main {:init-fn dinsro.app/init}}
+   ;; :devtools {:after-load app.main/reload!}
+   :output-dir "resources/public/js"
+   :asset-path "/js"}
+
+  :devcards
+  {:asset-path "/devcards/js"
+   :modules {:main {:init-fn dinsro.devcards/main}}
+   :compiler-options {:devcards true}
+   :output-dir "resources/public/devcards/js"
+   :target :browser
+   ;; :devtools  {:http-port 8022
+   ;;             :http-root "resources/public/devcards/js"}
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   }
+
+  :test
+  {:output-to "target/tests/test.js",
+   :target :browser-test
+   :test-dir "target/tests"
+   :runner-ns dinsro.runner
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :devtools  {:http-port 8021
+               :http-root "target/tests"}}
+
+  :ci
+  {:output-to "target/ci.js",
+   :target :karma
+   :ns-regexp "-test$"
+
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+
+   }}}

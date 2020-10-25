@@ -86,7 +86,8 @@
                   :exclusions [clj-time]]
                  [selmer "1.12.28"]
                  [tick "0.4.24-alpha"]
-                 [time-specs "0.1.0-SNAPSHOT"]]
+                 [time-specs "0.1.0-SNAPSHOT"]
+                 [thheller/shadow-cljs "2.11.5"]]
 
   :min-lein-version "2.0.0"
 
@@ -209,7 +210,7 @@
                                  :nrepl-port 7003}
                       :cljsbuild
                       {:builds
-                       {:devcards {:source-paths ["src" "env/dev/src" "test"]
+                       {:devcards {:source-paths ["src" "lib" "env/dev/src" "test"]
                                    :figwheel     {:devcards true}
                                    :compiler     {:main "starter.doo"
                                                   :asset-path "/js/devcards_out"

@@ -1,8 +1,7 @@
 (ns dinsro.core-test
   (:require
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [deftest]]
-   [dinsro.core]))
+   [dinsro.cards :refer-macros [deftest]]))
 
-(deftest test-home
-  (is (= true true)))
+(deftest a-test
+  (is true))

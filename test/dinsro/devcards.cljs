@@ -1,6 +1,12 @@
 (ns dinsro.devcards
-  #_(:require
-   [hiccup.page :refer [include-js include-css html5]]))
+  (:require
+   #_[hiccup.page :refer [include-js include-css html5]]
+   [devcards.core :as dc :include-macros true]
+   [dinsro.components-test]
+   [dinsro.core-test]
+   [reagent.core]
+   [taoensso.timbre :as timbre]
+   ))
 
 ;; (def mount-target
 ;;   [:div#app
@@ -33,3 +39,12 @@
 ;;   {:status 200
 ;;    :headers {"Content-Type" "text/html"}
 ;;    :body (cards-page)})
+
+
+(dc/defcard-rg foo
+  [:p "Foo"])
+
+(defn main
+  []
+  (timbre/info "Starting devcards")
+  (dc/start-devcard-ui!))
