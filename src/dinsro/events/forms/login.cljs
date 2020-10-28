@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.login
   (:require
    [clojure.spec.alpha]
-   [dinsro.event-utils :as eu]
+   [dinsro.events.utils :as eu]
    [dinsro.spec.actions.login :as s.a.login]
    [dinsro.spec.events.forms.login :as s.e.f.login]
    [dinsro.store :as st]

@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.create-rate
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu]
+   [dinsro.events.utils :as eu]
    [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]

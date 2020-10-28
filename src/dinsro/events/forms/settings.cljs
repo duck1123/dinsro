@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.settings
   (:require
    [clojure.spec.alpha]
-   [dinsro.event-utils :as eu]
+   [dinsro.events.utils :as eu]
    [dinsro.spec.actions.settings :as s.a.settings]
    [dinsro.spec.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]

@@ -1,4 +1,4 @@
-(ns dinsro.event-utils.impl
+(ns dinsro.events.utils.impl
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]

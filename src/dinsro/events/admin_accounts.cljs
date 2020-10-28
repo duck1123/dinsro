@@ -1,9 +1,9 @@
 (ns dinsro.events.admin-accounts
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils.impl :as eui]
    [dinsro.events :as e]
    [dinsro.events.accounts :as e.accounts]
+   [dinsro.events.utils.impl :as eui]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.events.accounts :as s.e.accounts]

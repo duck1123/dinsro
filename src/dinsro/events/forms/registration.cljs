@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.registration
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu]
+   [dinsro.events.utils :as eu]
    [dinsro.spec.actions.registration :as s.a.registration]
    [dinsro.spec.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]

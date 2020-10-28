@@ -1,9 +1,9 @@
 (ns dinsro.events.rate-sources
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu :include-macros true]
-   [dinsro.event-utils.impl :as eui]
    [dinsro.events :as e]
+   [dinsro.events.utils :as eu :include-macros true]
+   [dinsro.events.utils.impl :as eui]
    [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))

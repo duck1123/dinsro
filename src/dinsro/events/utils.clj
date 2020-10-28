@@ -1,4 +1,4 @@
-(ns dinsro.event-utils
+(ns dinsro.events.utils
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.store :as st]
@@ -10,7 +10,7 @@
   [ns-sym]
   `(do
      #_(taoensso.timbre/infof "declaring fetch index method - %s" ~ns-sym)
-     (require 'dinsro.event-utils.impl)
+     (require 'dinsro.events.utils.impl)
      (let [fetch-kw# (keyword ~ns-sym "do-fetch-index-state")
            do-fetch-index-cofx-kw# (keyword ~ns-sym "do-fetch-index-cofx")
            do-fetch-index-event-kw# (keyword ~ns-sym "do-fetch-index-event")
@@ -35,7 +35,7 @@
   [ns-sym]
   `(do
      #_(taoensso.timbre/infof "declaring fetch record - %s" ~ns-sym)
-     (require 'dinsro.event-utils.impl)
+     (require 'dinsro.events.utils.impl)
      (let [fetch-kw# (keyword ~ns-sym "do-fetch-record-state")
            do-fetch-record-failed-cofx-kw# (keyword ~ns-sym "do-fetch-record-failed-cofx")
            do-fetch-record-failed-event-kw# (keyword ~ns-sym "do-fetch-record-failed-event")
@@ -61,12 +61,12 @@
   [_ns-sym]
   `(do
      #_(taoensso.timbre/infof "declaring delete record - %s" ~ns-sym)
-     (require 'dinsro.event-utils.impl)))
+     (require 'dinsro.events.utils.impl)))
 
 (defmacro declare-model
   [ns-sym]
   `(do
-     (require 'dinsro.event-utils.impl)
+     (require 'dinsro.events.utils.impl)
      (let [item-key# (keyword ~ns-sym "item")
           items-key# (keyword ~ns-sym "items")
           item-map-key# (keyword ~ns-sym "items")]
@@ -84,7 +84,7 @@
    form-defs]
   `(do
      #_(taoensso.timbre/infof "declaring form - %s" ~ns-sym)
-     (require 'dinsro.event-utils.impl)
+     (require 'dinsro.events.utils.impl)
      (clojure.spec.alpha/def-impl
        (keyword ~ns-sym "shown?")
        boolean?
@@ -103,7 +103,7 @@
    form-defs]
   `(do
      (taoensso.timbre/infof "declaring sub form - %s" ~ns-sym)
-     (require 'dinsro.event-utils.impl)
+     (require 'dinsro.events.utils.impl)
 
      (clojure.spec.alpha/def-impl
        (keyword ~ns-sym "shown?")
@@ -126,13 +126,13 @@
         (keyword ~ns-sym "do-fetch-index-state"))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-index-success")
-        (partial dinsro.event-utils.impl/do-fetch-index-success ~ns-sym))
+        (partial dinsro.events.utils.impl/do-fetch-index-success ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-index-failed")
-        (partial dinsro.event-utils.impl/do-fetch-index-failed ~ns-sym))
+        (partial dinsro.events.utils.impl/do-fetch-index-failed ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-index")
-        (partial dinsro.event-utils.impl/do-fetch-index ~ns-sym ~path-selector ~store)))))
+        (partial dinsro.events.utils.impl/do-fetch-index ~ns-sym ~path-selector ~store)))))
 
 (defmacro register-fetch-record-method
   [store ns-sym path-selector]
@@ -143,13 +143,13 @@
         (keyword ~ns-sym "do-fetch-record-state"))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-record-success")
-        (partial dinsro.event-utils.impl/do-fetch-record-success ~ns-sym))
+        (partial dinsro.events.utils.impl/do-fetch-record-success ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-record-failed")
-        (partial dinsro.event-utils.impl/do-fetch-record-failed ~ns-sym))
+        (partial dinsro.events.utils.impl/do-fetch-record-failed ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-fetch-record")
-        (partial dinsro.event-utils.impl/do-fetch-record ~ns-sym ~path-selector ~store)))))
+        (partial dinsro.events.utils.impl/do-fetch-record ~ns-sym ~path-selector ~store)))))
 
 (defmacro register-delete-record-method
   [store ns-sym path-selector]
@@ -160,13 +160,13 @@
         (keyword ~ns-sym "do-delete-record-state"))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-delete-record-success")
-        (partial dinsro.event-utils.impl/do-delete-record-success ~ns-sym))
+        (partial dinsro.events.utils.impl/do-delete-record-success ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-delete-record-failed")
-        (partial dinsro.event-utils.impl/do-delete-record-failed ~ns-sym))
+        (partial dinsro.events.utils.impl/do-delete-record-failed ~ns-sym))
        (dinsro.store/reg-event-fx
         (keyword ~ns-sym "do-delete-record")
-        (partial dinsro.event-utils.impl/do-delete-record ~ns-sym ~path-selector ~store)))))
+        (partial dinsro.events.utils.impl/do-delete-record ~ns-sym ~path-selector ~store)))))
 
 (defmacro register-model-store
   [store ns-sym]
@@ -174,10 +174,10 @@
      (dinsro.store/reg-basic-sub (keyword ~ns-sym "item-map"))
      (dinsro.store/reg-sub
       (keyword ~ns-sym "item")
-      (partial dinsro.event-utils.impl/item-sub ~ns-sym))
+      (partial dinsro.events.utils.impl/item-sub ~ns-sym))
      (dinsro.store/reg-sub
       (keyword ~ns-sym "items")
-      (partial dinsro.event-utils.impl/items-sub ~ns-sym))))
+      (partial dinsro.events.utils.impl/items-sub ~ns-sym))))
 
 (defmacro register-form
   [store ns-sym]

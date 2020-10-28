@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.add-user-account
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu]
+   [dinsro.events.utils :as eu]
    [dinsro.spec.actions.accounts :as s.a.accounts]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
    [dinsro.store :as st]

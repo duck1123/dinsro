@@ -1,8 +1,8 @@
 (ns dinsro.events.rates
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu :include-macros true]
    [dinsro.events :as e]
+   [dinsro.events.utils :as eu :include-macros true]
    [dinsro.spec.events.rates :as s.e.rates]
    [dinsro.spec.rates :as s.rates]
    [dinsro.store :as st]

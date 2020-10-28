@@ -9,4 +9,6 @@
 --ignore-dir=out
 --ignore-dir=test-results
 --ignore-dir=target
+--ignore-dir=resources/public/js
+--ignore-dir=.shadow-cljs
 

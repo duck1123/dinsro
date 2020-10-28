@@ -1,8 +1,8 @@
 (ns dinsro.events.accounts
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu :include-macros true]
    [dinsro.events :as e]
+   [dinsro.events.utils :as eu :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.events.accounts :as s.e.accounts]

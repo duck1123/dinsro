@@ -3,7 +3,7 @@
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard deftest]]
    [dinsro.cards :as cards]
-   [dinsro.event_utils.impl :as eui]
+   [dinsro.events.utils.impl :as eui]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.transactions :as s.e.transactions]
    [dinsro.spec :as ds]

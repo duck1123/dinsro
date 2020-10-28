@@ -1,8 +1,8 @@
 (ns dinsro.events.currencies
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu :include-macros true]
    [dinsro.events :as e]
+   [dinsro.events.utils :as eu :include-macros true]
    [dinsro.spec.currencies :as s.currencies]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))

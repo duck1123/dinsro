@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.create-currency
   (:require
    [clojure.spec.alpha]
-   [dinsro.event-utils :as eu]
+   [dinsro.events.utils :as eu]
    [dinsro.spec.actions.currencies :as s.a.currencies]
    [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
    [dinsro.store :as st]

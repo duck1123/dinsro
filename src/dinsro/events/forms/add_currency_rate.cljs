@@ -1,8 +1,8 @@
 (ns dinsro.events.forms.add-currency-rate
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.event-utils :as eu]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
+   [dinsro.events.utils :as eu]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
