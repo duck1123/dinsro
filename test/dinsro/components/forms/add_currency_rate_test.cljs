@@ -41,4 +41,5 @@
       [c.f.add-currency-rate/form store currency-id])
 
     (deftest form-test
+      (st/dispatch store [::e.f.add-currency-rate/set-shown? true])
       (is (vector? (c.f.add-currency-rate/form store currency-id))))))
