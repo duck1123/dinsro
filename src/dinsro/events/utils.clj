@@ -102,7 +102,7 @@
    form-data-spec
    form-defs]
   `(do
-     (taoensso.timbre/infof "declaring sub form - %s" ~ns-sym)
+     #_(taoensso.timbre/infof "declaring sub form - %s" ~ns-sym)
      (require 'dinsro.events.utils.impl)
 
      (clojure.spec.alpha/def-impl
@@ -120,7 +120,7 @@
 (defmacro register-fetch-index-method
   [store ns-sym path-selector]
   `(do
-     (taoensso.timbre/infof "registering index method - %s" ~ns-sym)
+     #_(taoensso.timbre/infof "registering index method - %s" ~ns-sym)
      (doto ~store
        (dinsro.store/reg-basic-sub
         (keyword ~ns-sym "do-fetch-index-state"))
