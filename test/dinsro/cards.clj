@@ -2,12 +2,9 @@
 
 (defmacro defcard-rg
   [name & body]
-  `(do
-     (require 'dinsro.ui.boundary)
-     (devcards.core/defcard ~name
-       (reagent.core/as-element
-        [dinsro.ui.boundary/error-boundary
-         ((fn [] ~@body))]))))
+  `(nubank.workspaces.core/defcard ~name
+     (nubank.workspaces.card-types.react/react-card
+      (reagent.core/as-element ((fn [] ~@body))))))
 
 (defmacro deftest
   [name & body]

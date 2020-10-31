@@ -34,6 +34,9 @@
    [dinsro.ui.user-transactions-test]
    [taoensso.timbre :as timbre]))
 
+(defn element [name props & children]
+  (apply js/React.createElement name (clj->js props) children))
+
 (defn test-store
   []
   (let [store (doto (mock-store)

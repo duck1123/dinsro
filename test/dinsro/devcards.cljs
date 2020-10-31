@@ -5,6 +5,7 @@
    [dinsro.core-test]
    [dinsro.ui-test]
    [reagent.core]
+   [nubank.workspaces.core :as ws]
    [taoensso.timbre :as timbre]))
 
 ;; (def mount-target
@@ -47,3 +48,5 @@
   []
   (timbre/info "Starting devcards")
   (dc/start-devcard-ui!))
+
+(defonce init (ws/mount))

@@ -49,6 +49,7 @@
                  [mount "0.1.16"]
                  [mvxcvi/puget "1.3.1"]
                  [nrepl "0.8.1"]
+                 [nubank/workspaces "1.0.15"]
                  [orchestra "2020.07.12-1"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.773" :scope "provided"]
