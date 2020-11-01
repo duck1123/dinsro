@@ -12,7 +12,7 @@
   [store]
   (let [form-data @(st/subscribe store [::e.f.create-category/form-data])]
     (when @(st/subscribe store [::e.f.create-category/shown?])
-      [:<>
+      [:div
        [u/close-button store ::e.f.create-category/set-shown?]
        [u/text-input store (tr [:name]) ::s.e.f.create-category/name]
        [u/user-selector store (tr [:user]) ::s.e.f.create-category/user-id]

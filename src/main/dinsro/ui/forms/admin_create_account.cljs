@@ -12,7 +12,7 @@
   [store]
   (let [form-data @(st/subscribe store [::e.f.create-account/form-data])]
     (when @(st/subscribe store [::e.f.create-account/shown?])
-      [:<>
+      [:div
        [u/close-button store ::e.f.create-account/set-shown?]
        [u/text-input store (tr [:name]) ::s.e.f.create-account/name]
        [u/number-input store (tr [:initial-value]) ::s.e.f.create-account/initial-value]

@@ -17,7 +17,7 @@
 (defn form-shown
   [store]
   (let [form-data @(st/subscribe store [::e.f.create-rate-source/form-data])]
-    [:<>
+    [:div
      [u/close-button store ::e.f.create-rate-source/set-shown?]
      [u/text-input store (tr [:name]) ::s.e.f.create-rate-source/name]
      [u/text-input store (tr [:url]) ::s.e.f.create-rate-source/url]

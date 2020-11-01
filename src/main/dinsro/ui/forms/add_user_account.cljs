@@ -13,7 +13,7 @@
   [store id]
   (let [form-data (assoc @(st/subscribe store [::e.f.add-user-account/form-data]) :user-id id)]
     (when @(st/subscribe store [::e.f.add-user-account/shown?])
-      [:<>
+      [:div
        [u/close-button store ::e.f.add-user-account/set-shown?]
        [:div.field>div.control
         [u/text-input store (tr [:name]) ::s.e.f.create-account/name]]
