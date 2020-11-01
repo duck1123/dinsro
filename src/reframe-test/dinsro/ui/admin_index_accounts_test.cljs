@@ -64,7 +64,7 @@
       (is (vector? (u.admin-index-accounts/index-accounts store accounts)))))
 
   (let [store (accounts-store)]
-    (defcard-rg section
+    (defcard-rg admin-index-accounts-section
       [u.admin-index-accounts/section store])
 
     (deftest section-test

@@ -10,5 +10,5 @@
 (let [store (doto (mock-store)
               e.debug/init-handlers!
               e.f.registration/init-handlers!)]
-  (defcard-rg form
+  (defcard-rg registration-form
     [u.f.registration/form store]))
