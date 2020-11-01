@@ -1,7 +1,7 @@
 (ns dinsro.views.settings-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.settings :as e.f.settings]

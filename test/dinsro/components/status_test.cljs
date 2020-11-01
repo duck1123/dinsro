@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [day8.re-frame.http-fx]
-   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.status :as c.status]
    [dinsro.store :as st]

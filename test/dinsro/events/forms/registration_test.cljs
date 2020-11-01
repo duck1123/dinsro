@@ -1,7 +1,7 @@
 (ns dinsro.events.forms.registration-test
   (:require
    [clojure.spec.alpha]
-   [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.registration :as c.f.registration]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.spec :as ds]

@@ -3,7 +3,7 @@
    [cljs.pprint :as p]
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
    [dinsro.events.currencies :as e.currencies]

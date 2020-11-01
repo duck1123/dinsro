@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components :as c]
    [dinsro.components.admin-index-accounts-test]
    [dinsro.components.admin-index-categories-test]

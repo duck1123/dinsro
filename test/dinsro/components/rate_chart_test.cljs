@@ -1,6 +1,6 @@
 (ns dinsro.components.rate-chart-test
   (:require
-   [devcards.core :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.rate-chart :as c.rate-chart]
    [dinsro.translations :refer [tr]]

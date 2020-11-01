@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [defcard deftest]]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]

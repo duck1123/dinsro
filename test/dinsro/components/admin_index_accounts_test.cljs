@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.admin-accounts :as e.admin-accounts]

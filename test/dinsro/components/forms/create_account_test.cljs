@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.create-account-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-account :as c.f.create-account]
    [dinsro.events.currencies :as e.currencies]

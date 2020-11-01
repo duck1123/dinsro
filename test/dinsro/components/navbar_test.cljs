@@ -1,7 +1,7 @@
 (ns dinsro.components.navbar-test
   (:require
    [cljs.test :refer [is]]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.navbar :as c.navbar]
    [dinsro.events.authentication :as e.authentication]

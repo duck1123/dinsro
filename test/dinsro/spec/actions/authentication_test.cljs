@@ -1,6 +1,6 @@
 (ns dinsro.spec.actions.authentication-test
   (:require
-   [devcards.core :refer-macros [defcard]]
+   [dinsro.cards :refer-macros [defcard]]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [taoensso.timbre :as timbre]))

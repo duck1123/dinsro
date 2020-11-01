@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [defcard deftest]]
    [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.transactions :as s.a.transactions]

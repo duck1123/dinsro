@@ -1,7 +1,7 @@
 (ns dinsro.events.authentication-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [deftest]]
+   [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.store.mock :refer [mock-store]]))
 

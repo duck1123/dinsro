@@ -1,7 +1,7 @@
 (ns dinsro.events.transactions-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [defcard deftest]]
    [dinsro.events.utils.impl :as eui]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.transactions :as s.e.transactions]

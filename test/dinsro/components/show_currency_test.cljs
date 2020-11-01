@@ -1,7 +1,7 @@
 (ns dinsro.components.show-currency-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.debug :as e.debug]

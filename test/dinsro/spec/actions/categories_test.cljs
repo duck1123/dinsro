@@ -1,6 +1,6 @@
 (ns dinsro.spec.actions.categories-test
   (:require
-   [devcards.core :refer-macros [defcard]]
+   [dinsro.cards :refer-macros [defcard]]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.categories :as s.a.categories]))
 

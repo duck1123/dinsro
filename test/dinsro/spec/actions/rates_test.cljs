@@ -1,6 +1,6 @@
 (ns dinsro.spec.actions.rates-test
   (:require
-   [devcards.core :refer-macros [defcard]]
+   [dinsro.cards :refer-macros [defcard]]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.rates :as s.a.rates]))
 

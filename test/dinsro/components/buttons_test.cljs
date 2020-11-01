@@ -1,7 +1,7 @@
 (ns dinsro.components.buttons-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.events.accounts :as e.accounts]

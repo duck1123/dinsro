@@ -3,7 +3,7 @@
    [cljs.pprint :as p]
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [devcards.core :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.accounts :as e.accounts]

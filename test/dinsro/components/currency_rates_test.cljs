@@ -1,7 +1,7 @@
 (ns dinsro.components.currency-rates-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.currency-rates :as c.currency-rates]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]

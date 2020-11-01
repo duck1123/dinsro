@@ -1,7 +1,7 @@
 (ns dinsro.events.rates-test
   (:require
    [cljs.test :refer-macros [is]]
-   [devcards.core :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [defcard deftest]]
    [dinsro.events.rates :as e.rates]
    [dinsro.spec :as ds]
    [dinsro.spec.events.rates :as s.e.rates]
