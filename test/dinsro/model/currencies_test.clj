@@ -7,9 +7,9 @@
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.spec :as ds]
-   [dinsro.spec.currencies :as s.currencies]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.specs.users :as s.users]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 

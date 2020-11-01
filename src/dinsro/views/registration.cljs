@@ -4,7 +4,7 @@
    [dinsro.components :as c]
    [dinsro.components.forms.registration :as c.f.registration]
    [dinsro.events.forms.registration :as e.f.registration]
-   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
    [kee-frame.core :as kf]
    [reitit.core :as rc]

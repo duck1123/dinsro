@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.events.utils :as eu]
-   [dinsro.spec.actions.categories :as s.a.categories]
-   [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
+   [dinsro.specs.actions.categories :as s.a.categories]
+   [dinsro.specs.events.forms.create-category :as s.e.f.create-category]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

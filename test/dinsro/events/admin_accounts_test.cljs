@@ -5,7 +5,7 @@
    [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [dinsro.translations :refer [tr]]))
 

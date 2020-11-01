@@ -3,7 +3,7 @@
    [dinsro.components :as c]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.forms.registration :as e.f.registration]
-   [dinsro.spec.events.forms.registration :as s.e.f.registration]
+   [dinsro.specs.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

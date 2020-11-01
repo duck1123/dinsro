@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.events.utils :as eu]
-   [dinsro.spec.actions.settings :as s.a.settings]
-   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [dinsro.specs.actions.settings :as s.a.settings]
+   [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

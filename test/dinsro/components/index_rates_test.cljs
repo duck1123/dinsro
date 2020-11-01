@@ -7,8 +7,8 @@
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
-   [dinsro.spec :as ds]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs :as ds]
+   [dinsro.specs.rates :as s.rates]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 

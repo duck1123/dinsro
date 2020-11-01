@@ -3,9 +3,9 @@
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
-   [dinsro.spec.accounts :as s.accounts]
-   [dinsro.spec.currencies :as s.currencies]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

@@ -7,14 +7,14 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.accounts :as s.accounts]
-   [dinsro.spec.categories :as s.categories]
-   [dinsro.spec.currencies :as s.currencies]
-   [dinsro.spec.rate-sources :as s.rate-sources]
-   [dinsro.spec.rates :as s.rates]
-   [dinsro.spec.transactions :as s.transactions]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.specs.categories :as s.categories]
+   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.specs.rate-sources :as s.rate-sources]
+   [dinsro.specs.rates :as s.rates]
+   [dinsro.specs.transactions :as s.transactions]
+   [dinsro.specs.users :as s.users]
    [taoensso.timbre :as timbre]))
 
 (defn mock-user

@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.events.utils :as eu]
-   [dinsro.spec.actions.rate-sources :as s.a.rate-sources]
-   [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
+   [dinsro.specs.actions.rate-sources :as s.a.rate-sources]
+   [dinsro.specs.events.forms.create-rate-source :as s.e.f.create-rate-source]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

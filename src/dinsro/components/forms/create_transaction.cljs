@@ -4,7 +4,7 @@
    [dinsro.components.datepicker :as c.datepicker]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

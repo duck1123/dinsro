@@ -6,7 +6,7 @@
    [dinsro.components.links :as c.links]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.forms.create-rate-source :as e.f.create-rate-sources]
-   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]))
 

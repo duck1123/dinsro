@@ -4,11 +4,11 @@
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.rate-sources :as e.rate-sources]
-   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))

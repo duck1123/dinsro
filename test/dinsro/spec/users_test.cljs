@@ -1,3 +1,3 @@
-(ns dinsro.spec.users-test
+(ns dinsro.specs.users-test
   (:require
    [taoensso.timbre :as timbre]))

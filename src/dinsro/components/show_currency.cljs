@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs.currencies :as s.currencies]
    [dinsro.translations :refer [tr]]))
 
 (defn show-currency

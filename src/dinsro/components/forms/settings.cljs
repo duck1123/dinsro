@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.components :as c]
    [dinsro.events.settings :as e.settings]
-   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))

@@ -3,9 +3,9 @@
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.transactions :as s.e.transactions]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.transactions :as s.e.transactions]
+   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))

@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.events.utils :as eu]
-   [dinsro.spec.actions.login :as s.a.login]
-   [dinsro.spec.events.forms.login :as s.e.f.login]
+   [dinsro.specs.actions.login :as s.a.login]
+   [dinsro.specs.events.forms.login :as s.e.f.login]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

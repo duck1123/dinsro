@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.model.users :as m.users]
-   [dinsro.spec.actions.admin-users :as s.a.admin-users]
+   [dinsro.specs.actions.admin-users :as s.a.admin-users]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 

@@ -5,7 +5,7 @@
    [dinsro.components.forms.add-account-transaction :as c.f.add-account-transaction]
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

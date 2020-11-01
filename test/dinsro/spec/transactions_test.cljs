@@ -1,9 +1,9 @@
-(ns dinsro.spec.transactions-test
+(ns dinsro.specs.transactions-test
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs.transactions :as s.transactions]
    [expound.alpha :as expound]
    [tick.alpha.api :as tick]))
 

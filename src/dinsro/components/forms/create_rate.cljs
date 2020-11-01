@@ -4,7 +4,7 @@
    [dinsro.components.datepicker :as c.datepicker]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.events.rates :as e.rates]
-   [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+   [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]

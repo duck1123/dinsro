@@ -6,8 +6,8 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.navbar :as e.navbar]
    [dinsro.events.users :as e.users]
-   [dinsro.spec.events.forms.settings :as s.e.f.settings]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.events.forms.settings :as s.e.f.settings]
+   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

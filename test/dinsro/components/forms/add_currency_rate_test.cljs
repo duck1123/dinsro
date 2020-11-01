@@ -8,7 +8,7 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.test-utils :refer-macros [assert-spec]]

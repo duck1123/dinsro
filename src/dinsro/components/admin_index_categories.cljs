@@ -6,7 +6,7 @@
    [dinsro.components.links :as c.links]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.forms.create-category :as e.f.create-category]
-   [dinsro.spec.categories :as s.categories]
+   [dinsro.specs.categories :as s.categories]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]))
 

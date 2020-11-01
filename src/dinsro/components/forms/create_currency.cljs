@@ -3,7 +3,7 @@
    [dinsro.components :as c]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
-   [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
+   [dinsro.specs.events.forms.create-currency :as s.e.f.create-currency]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]

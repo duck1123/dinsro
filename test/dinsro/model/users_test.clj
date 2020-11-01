@@ -6,8 +6,8 @@
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.model.users :as m.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.users :as s.users]
    [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")
@@ -25,7 +25,7 @@
 
 (deftest create-record-valid
   (let [params (ds/gen-key ::s.users/params)
-        {:keys [dinsro.spec.users/email]} params
+        {:keys [dinsro.specs.users/email]} params
         id (m.users/create-record params)
         user (m.users/read-record id)]
     (is (= email (::s.users/email user)))))
@@ -39,7 +39,7 @@
 
 (deftest read-record
   (let [params (ds/gen-key ::s.users/params)
-        {:keys [dinsro.spec.users/email]} params
+        {:keys [dinsro.specs.users/email]} params
         id (m.users/create-record params)
         response (m.users/read-record id)]
     (is (= email (::s.users/email response)))))

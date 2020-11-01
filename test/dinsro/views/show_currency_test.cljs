@@ -7,8 +7,8 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.rates :as e.rates]
    [dinsro.events.rate-sources :as e.rate-sources]
-   [dinsro.spec :as ds]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs :as ds]
+   [dinsro.specs.currencies :as s.currencies]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))

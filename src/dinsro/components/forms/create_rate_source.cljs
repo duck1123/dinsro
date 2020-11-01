@@ -3,7 +3,7 @@
    [dinsro.components :as c]
    [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
    [dinsro.events.rate-sources :as e.rate-sources]
-   [dinsro.spec.events.forms.create-rate-source :as s.e.f.create-rate-source]
+   [dinsro.specs.events.forms.create-rate-source :as s.e.f.create-rate-source]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]

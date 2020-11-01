@@ -9,7 +9,7 @@
    [dinsro.events.navbar :as e.navbar]
    [dinsro.events.users :as e.users]
    [dinsro.mappings :as mappings]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]

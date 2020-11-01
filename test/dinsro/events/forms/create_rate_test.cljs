@@ -4,8 +4,8 @@
    [clojure.spec.alpha]
    [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))

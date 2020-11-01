@@ -64,7 +64,7 @@
   {::e.debug/shown?                                      debug?
    :token                                                nil
    ::e.debug/enabled?                                    debug?
-   :dinsro.spec.events.forms.settings/allow-registration true})
+   :dinsro.specs.events.forms.settings/allow-registration true})
 
 (s/def ::app-db (s/keys))
 

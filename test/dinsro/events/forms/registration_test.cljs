@@ -4,7 +4,7 @@
    [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.registration :as c.f.registration]
    [dinsro.events.forms.registration :as e.f.registration]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 

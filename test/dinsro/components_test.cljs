@@ -27,9 +27,9 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.users :as e.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.currencies :as s.currencies]
-   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.specs :as ds]
+   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))

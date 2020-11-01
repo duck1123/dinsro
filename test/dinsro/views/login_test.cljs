@@ -5,7 +5,7 @@
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.login :as e.f.login]
-   [dinsro.spec.events.forms.login :as s.e.f.login]
+   [dinsro.specs.events.forms.login :as s.e.f.login]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.login :as v.login]

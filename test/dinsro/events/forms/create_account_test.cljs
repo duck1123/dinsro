@@ -4,8 +4,8 @@
    [clojure.spec.alpha]
    [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.forms.create-account :as e.f.create-account]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-account :as s.e.f.create-account]
    [dinsro.test-utils :refer-macros [assert-spec]]))
 
 (let [currency-id (ds/gen-key ::s.e.f.create-account/currency-id)

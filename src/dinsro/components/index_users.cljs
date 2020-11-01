@@ -2,7 +2,7 @@
   (:require
    [dinsro.components.buttons :as c.buttons]
    [dinsro.components.debug :as c.debug]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]

@@ -4,10 +4,10 @@
    [dinsro.actions.categories :as a.categories]
    [dinsro.mocks :as mocks]
    [dinsro.model.categories :as m.categories]
-   [dinsro.spec :as ds]
-   [dinsro.spec.actions.categories :as s.a.categories]
-   [dinsro.spec.categories :as s.categories]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.actions.categories :as s.a.categories]
+   [dinsro.specs.categories :as s.categories]
+   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]))
 

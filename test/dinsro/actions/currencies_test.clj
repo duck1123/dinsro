@@ -4,9 +4,9 @@
    [dinsro.actions.currencies :as a.currencies]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.spec :as ds]
-   [dinsro.spec.actions.currencies :as s.a.currencies]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs :as ds]
+   [dinsro.specs.actions.currencies :as s.a.currencies]
+   [dinsro.specs.currencies :as s.currencies]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]))
 

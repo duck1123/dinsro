@@ -5,8 +5,8 @@
    [dinsro.components.datepicker :as c.datepicker]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

@@ -4,8 +4,8 @@
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.spec.accounts :as s.accounts]
-   [dinsro.spec.actions.accounts :as s.a.accounts]
+   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.specs.actions.accounts :as s.a.accounts]
    [dinsro.utils :as utils]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))

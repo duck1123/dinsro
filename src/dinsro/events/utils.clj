@@ -16,8 +16,8 @@
            do-fetch-index-event-kw# (keyword ~ns-sym "do-fetch-index-event")
            do-fetch-index-response-kw# (keyword ~ns-sym "do-fetch-index-response")]
        (clojure.spec.alpha/def-impl fetch-kw#
-         :dinsro.spec/state
-         :dinsro.spec/state)
+         :dinsro.specs/state
+         :dinsro.specs/state)
 
        (clojure.spec.alpha/def-impl do-fetch-index-cofx-kw#
          (clojure.spec.alpha/keys)
@@ -42,8 +42,8 @@
            do-fetch-record-failed-response-kw# (keyword ~ns-sym "do-fetch-record-failed-response")]
 
        (clojure.spec.alpha/def-impl fetch-kw#
-         :dinsro.spec/state
-         :dinsro.spec/state)
+         :dinsro.specs/state
+         :dinsro.specs/state)
 
        (clojure.spec.alpha/def-impl do-fetch-record-failed-cofx-kw#
          (clojure.spec.alpha/keys)
@@ -72,8 +72,8 @@
           item-map-key# (keyword ~ns-sym "items")]
       #_(timbre/infof "Declaring model - %s" ~ns-sym)
       (clojure.spec.alpha/def-impl item-map-key#
-        (clojure.spec.alpha/map-of :dinsro.spec/id item-key#)
-        (clojure.spec.alpha/map-of :dinsro.spec/id item-key#))
+        (clojure.spec.alpha/map-of :dinsro.specs/id item-key#)
+        (clojure.spec.alpha/map-of :dinsro.specs/id item-key#))
       (clojure.spec.alpha/def-impl items-key#
         (clojure.spec.alpha/coll-of item-key#)
         (clojure.spec.alpha/coll-of item-key#)))))

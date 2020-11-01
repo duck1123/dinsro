@@ -4,8 +4,8 @@
    [dinsro.components :as c]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-account :as s.e.f.create-account]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]))
 

@@ -8,7 +8,7 @@
    [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))

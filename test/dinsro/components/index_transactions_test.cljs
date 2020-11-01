@@ -6,8 +6,8 @@
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
-   [dinsro.spec :as ds]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs :as ds]
+   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
 

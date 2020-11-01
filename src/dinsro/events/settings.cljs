@@ -1,7 +1,7 @@
 (ns dinsro.events.settings
   (:require
    [dinsro.events :as e]
-   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

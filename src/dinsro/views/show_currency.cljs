@@ -13,9 +13,9 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.rates :as e.rates]
    [dinsro.events.users :as e.users]
-   [dinsro.spec.accounts :as s.accounts]
-   [dinsro.spec.currencies :as s.currencies]
-   [dinsro.spec.views.show-currency :as s.v.show-currency]
+   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.specs.views.show-currency :as s.v.show-currency]
    [dinsro.store :as st]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))

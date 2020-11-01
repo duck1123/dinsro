@@ -4,8 +4,8 @@
    [clojure.spec.alpha]
    [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-account :as s.e.f.create-account]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 

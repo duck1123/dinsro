@@ -5,7 +5,7 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.events.forms.settings :as e.f.settings]
-   [dinsro.spec.events.forms.settings :as s.e.f.settings]
+   [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.registration :as v.registration]

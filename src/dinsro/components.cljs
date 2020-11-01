@@ -4,7 +4,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.users :as e.users]
-   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [reframe-utils.core :as rfu]
@@ -83,7 +83,7 @@
         (into [:select {:value (or @(st/subscribe store [field]) "")
                         :on-change #(st/dispatch store [change-handler (target-value %)])}]
               (concat [[:option {:value ""} ""]]
-                      (for [{:keys [db/id dinsro.spec.accounts/name]} items]
+                      (for [{:keys [db/id dinsro.specs.accounts/name]} items]
                         ^{:key id} [:option {:value id} name])))])
 
      [:p "Unknown Account Fetch state"])))
@@ -98,7 +98,7 @@
        (into [:select {:value (or @(st/subscribe store [field]) "")
                        :on-change #(st/dispatch store [change-handler (target-value %)])}]
              (concat [[:option {:value ""} "sats"]]
-                     (for [{:keys [db/id dinsro.spec.currencies/name]} currencies]
+                     (for [{:keys [db/id dinsro.specs.currencies/name]} currencies]
                        ^{:key id} [:option {:value id} name])))]]]))
 
 (defn currency-selector
@@ -126,7 +126,7 @@
         [:select {:value value
                   :on-change #(st/dispatch store [change-handler (target-value %)])}]
         (concat [[:option {:value ""} ""]]
-                (for [{:keys [db/id dinsro.spec.users/name]} items]
+                (for [{:keys [db/id dinsro.specs.users/name]} items]
                   ^{:key id}
                   [:option {:value id} name])))]]]))
 

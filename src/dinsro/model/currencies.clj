@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
-   [dinsro.spec :as ds]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs :as ds]
+   [dinsro.specs.currencies :as s.currencies]
    [taoensso.timbre :as timbre]))
 
 (defn index-ids

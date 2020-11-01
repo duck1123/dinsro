@@ -4,9 +4,9 @@
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.users :as a.users]
    [dinsro.model.users :as m.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.actions.authentication :as s.a.authentication]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.actions.authentication :as s.a.authentication]
+   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.mock.request :as mock]
    [ring.util.http-status :as status]
@@ -20,8 +20,8 @@
     (start-db f [s.users/schema])))
 
 (deftest authenticate-handler-successful
-  (let [{:keys [dinsro.spec.users/email
-                dinsro.spec.users/password]
+  (let [{:keys [dinsro.specs.users/email
+                dinsro.specs.users/password]
          :as user-params} (ds/gen-key ::s.users/input-params-valid)]
     (m.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password password}
@@ -31,8 +31,8 @@
       (is (= (:status response) status/ok)))))
 
 (deftest authenticate-handler-failure
-  (let [{:keys [dinsro.spec.users/email
-                dinsro.spec.users/password]
+  (let [{:keys [dinsro.specs.users/email
+                dinsro.specs.users/password]
          :as user-params} (ds/gen-key ::s.users/input-params-valid)]
     (m.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password (str password "x")}

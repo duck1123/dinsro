@@ -7,7 +7,7 @@
    [dinsro.components.forms.create-currency :as c.f.create-currency]
    [dinsro.components.index-currencies :as c.index-currencies]
    [dinsro.components.links :as c.links]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs.currencies :as s.currencies]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
    [dinsro.store :as st]

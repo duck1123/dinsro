@@ -4,7 +4,7 @@
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
    [dinsro.events.utils.impl]
-   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

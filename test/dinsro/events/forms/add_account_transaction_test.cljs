@@ -4,8 +4,8 @@
    [clojure.spec.alpha]
    [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.test-utils :refer-macros [assert-spec]]))
 
 (let [account-id (ds/gen-key ::s.e.f.create-transaction/account-id)

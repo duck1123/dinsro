@@ -3,8 +3,8 @@
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.spec.actions.currencies :as s.a.currencies]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs.actions.currencies :as s.a.currencies]
+   [dinsro.specs.currencies :as s.currencies]
    [expound.alpha :as expound]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))

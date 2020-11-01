@@ -10,8 +10,8 @@
    [dinsro.events.forms.add-user-category :as e.f.add-user-category]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.events.users :as e.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs :as ds]
+   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 

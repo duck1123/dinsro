@@ -2,7 +2,7 @@
   (:require
    [cljsjs.highcharts]
    [clojure.spec.alpha :as s]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs.rates :as s.rates]
    [reagent.core :as r]
    [reagent.dom :as dom]))
 

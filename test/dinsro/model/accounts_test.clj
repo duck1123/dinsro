@@ -7,9 +7,9 @@
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.spec :as ds]
-   [dinsro.spec.accounts :as s.accounts]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.specs.users :as s.users]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 

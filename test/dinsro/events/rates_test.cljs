@@ -3,8 +3,8 @@
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.rates :as e.rates]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.rates :as s.e.rates]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.rates :as s.e.rates]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
 

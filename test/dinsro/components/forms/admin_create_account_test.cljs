@@ -9,8 +9,8 @@
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.events.users :as e.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
+   [dinsro.specs :as ds]
+   [dinsro.specs.events.forms.create-account :as s.e.f.create-account]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))

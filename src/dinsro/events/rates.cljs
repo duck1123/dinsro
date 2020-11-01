@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
-   [dinsro.spec.events.rates :as s.e.rates]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs.events.rates :as s.e.rates]
+   [dinsro.specs.rates :as s.rates]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))

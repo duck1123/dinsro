@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
-   [dinsro.spec :as ds]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.users :as s.users]
    [taoensso.timbre :as timbre]))
 
 (def attribute-list

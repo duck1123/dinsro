@@ -8,7 +8,7 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.add-user-category :as e.f.add-user-category]
    [dinsro.events.forms.create-category :as e.f.create-category]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))

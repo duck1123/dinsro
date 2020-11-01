@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
    [dinsro.model.rates :as m.rates]
-   [dinsro.spec.actions.admin-rates :as s.a.admin-rates]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs.actions.admin-rates :as s.a.admin-rates]
+   [dinsro.specs.rates :as s.rates]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))

@@ -3,9 +3,9 @@
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.events.utils :as eu]
-   [dinsro.spec :as ds]
-   [dinsro.spec.actions.rates :as s.a.rates]
-   [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
+   [dinsro.specs :as ds]
+   [dinsro.specs.actions.rates :as s.a.rates]
+   [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

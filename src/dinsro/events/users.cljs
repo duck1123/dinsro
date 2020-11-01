@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events.utils :as eu :include-macros true]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.users :as s.users]
    [taoensso.timbre :as timbre]))
 
 (s/def ::item ::s.users/item)

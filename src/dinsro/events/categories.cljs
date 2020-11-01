@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
-   [dinsro.spec.categories :as s.categories]
+   [dinsro.specs.categories :as s.categories]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

@@ -10,7 +10,7 @@
    [dinsro.events.rates :as e.rates]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

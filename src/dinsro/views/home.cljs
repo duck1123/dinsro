@@ -7,7 +7,7 @@
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]

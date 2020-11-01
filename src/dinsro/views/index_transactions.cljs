@@ -10,7 +10,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [kee-frame.core :as kf]

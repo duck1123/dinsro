@@ -4,8 +4,8 @@
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.debug :as e.debug]
-   [dinsro.spec :as ds]
-   [dinsro.spec.currencies :as s.currencies]
+   [dinsro.specs :as ds]
+   [dinsro.specs.currencies :as s.currencies]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))

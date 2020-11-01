@@ -2,7 +2,7 @@
   (:require
    [dinsro.components.links :as c.links]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]))
 

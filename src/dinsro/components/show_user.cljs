@@ -6,7 +6,7 @@
 
 (defn show-user
   [store user]
-  (let [{:keys [dinsro.spec.users/name dinsro.spec.users/email]} user]
+  (let [{:keys [dinsro.specs.users/name dinsro.specs.users/email]} user]
     [:<>
      [:h1 name]
      [:p "(" email ")"]

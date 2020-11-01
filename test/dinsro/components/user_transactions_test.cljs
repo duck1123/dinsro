@@ -11,7 +11,7 @@
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))

@@ -7,8 +7,8 @@
    [dinsro.components.admin-index-users :as c.admin-index-users]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))

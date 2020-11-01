@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
-   [dinsro.spec :as ds]
-   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.specs :as ds]
+   [dinsro.specs.accounts :as s.accounts]
    [taoensso.timbre :as timbre]))
 
 (def record-limit 1000)

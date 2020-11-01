@@ -5,7 +5,7 @@
    [dinsro.components.show-user :as c.show-user]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]

@@ -1,9 +1,9 @@
-(ns dinsro.spec.rates-test
+(ns dinsro.specs.rates-test
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [deftest]]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs.rates :as s.rates]
    [tick.alpha.api :as tick]))
 
 (let [item {:db/id 1

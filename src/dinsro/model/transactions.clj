@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
-   [dinsro.spec :as ds]
-   [dinsro.spec.transactions :as s.transactions]
+   [dinsro.specs :as ds]
+   [dinsro.specs.transactions :as s.transactions]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 

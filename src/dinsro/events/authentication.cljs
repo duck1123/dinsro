@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
-   [dinsro.spec.actions.authentication :as s.a.authentication]
-   [dinsro.spec.events.forms.registration :as s.e.f.registration]
+   [dinsro.specs.actions.authentication :as s.a.authentication]
+   [dinsro.specs.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))

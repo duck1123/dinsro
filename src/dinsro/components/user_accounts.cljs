@@ -7,8 +7,8 @@
    [dinsro.components.forms.add-user-account :as c.f.add-user-account]
    [dinsro.components.links :as c.links]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
-   [dinsro.spec :as ds]
-   [dinsro.spec.accounts :as s.accounts]
+   [dinsro.specs :as ds]
+   [dinsro.specs.accounts :as s.accounts]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 

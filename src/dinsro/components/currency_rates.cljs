@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.components.rate-chart :as c.rate-chart]
-   [dinsro.spec :as ds]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs :as ds]
+   [dinsro.specs.rates :as s.rates]
    [taoensso.timbre :as timbre]))
 
 (defn section

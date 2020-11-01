@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
-   [dinsro.spec :as ds]
-   [dinsro.spec.rate-sources :as s.rate-sources]
+   [dinsro.specs :as ds]
+   [dinsro.specs.rate-sources :as s.rate-sources]
    [taoensso.timbre :as timbre]))
 
 (defn create-record

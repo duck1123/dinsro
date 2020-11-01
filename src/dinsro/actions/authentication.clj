@@ -7,8 +7,8 @@
    [dinsro.actions.users :as a.users]
    [dinsro.config :refer [secret]]
    [dinsro.model.users :as m.users]
-   [dinsro.spec.actions.authentication :as s.a.authentication]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.actions.authentication :as s.a.authentication]
+   [dinsro.specs.users :as s.users]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 

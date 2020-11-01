@@ -3,7 +3,7 @@
    [dinsro.components :as c]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.forms.create-category :as e.f.create-category]
-   [dinsro.spec.events.forms.create-category :as s.e.f.create-category]
+   [dinsro.specs.events.forms.create-category :as s.e.f.create-category]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

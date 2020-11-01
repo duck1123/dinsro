@@ -7,7 +7,7 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.events.forms.create-account :as e.f.create-account]
-   [dinsro.spec :as ds]
+   [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))

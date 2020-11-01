@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha]
    [dinsro.events.utils :as eu]
-   [dinsro.spec.actions.currencies :as s.a.currencies]
-   [dinsro.spec.events.forms.create-currency :as s.e.f.create-currency]
+   [dinsro.specs.actions.currencies :as s.a.currencies]
+   [dinsro.specs.events.forms.create-currency :as s.e.f.create-currency]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 

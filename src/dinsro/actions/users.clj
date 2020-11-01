@@ -4,8 +4,8 @@
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [dinsro.model.users :as m.users]
-   [dinsro.spec.actions.users :as s.a.users]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs.actions.users :as s.a.users]
+   [dinsro.specs.users :as s.users]
    [expound.alpha :as expound]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))

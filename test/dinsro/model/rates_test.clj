@@ -7,9 +7,9 @@
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.rates :as m.rates]
-   [dinsro.spec :as ds]
-   [dinsro.spec.currencies :as s.currencies]
-   [dinsro.spec.rates :as s.rates]
+   [dinsro.specs :as ds]
+   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.specs.rates :as s.rates]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]
    [tick.core :as tick]))

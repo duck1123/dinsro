@@ -4,8 +4,8 @@
    [dinsro.actions.users :as a.users]
    [dinsro.mocks :as mocks]
    [dinsro.model.users :as m.users]
-   [dinsro.spec :as ds]
-   [dinsro.spec.users :as s.users]
+   [dinsro.specs :as ds]
+   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.mock.request :as mock]
    [ring.util.http-status :as status]))

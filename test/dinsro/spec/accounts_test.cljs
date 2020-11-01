@@ -1,9 +1,9 @@
-(ns dinsro.spec.accounts-test
+(ns dinsro.specs.accounts-test
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [deftest]]
-   [dinsro.spec.accounts :as s.accounts]))
+   [dinsro.specs.accounts :as s.accounts]))
 
 (let [item {:db/id 1
             ::s.accounts/name "foo"
