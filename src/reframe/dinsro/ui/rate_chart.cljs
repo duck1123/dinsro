@@ -4,10 +4,10 @@
    [clojure.spec.alpha :as s]
    [dinsro.model.rates :as m.rates]
    [reagent.core :as r]
-   [reagent.dom :as dom]))
+   [reagent.dom :as rdom]))
 
 (defn mount-chart [comp]
-  (.chart js/Highcharts (dom/dom-node comp) (clj->js (r/props comp))))
+  (.chart js/Highcharts (rdom/dom-node comp) (clj->js (r/props comp))))
 
 (defn update-chart [comp]
   (mount-chart comp))

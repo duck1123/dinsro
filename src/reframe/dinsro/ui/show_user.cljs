@@ -1,8 +1,8 @@
 (ns dinsro.ui.show-user
   (:require
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]))
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.translations :refer [tr]]))
 
 (defn show-user
   [store user]

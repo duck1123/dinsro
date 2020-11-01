@@ -1,7 +1,4 @@
-(ns dinsro.ui
-  (:require
-   [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+(ns dinsro.ui)
 
 (def strings {})
 

@@ -1,7 +1,5 @@
 (ns dinsro.ui.navbar
   (:require
-   [clojure.spec.alpha :as s]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.navbar :as e.navbar]
@@ -10,15 +8,8 @@
    [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.debug :as u.debug]
    [taoensso.timbre :as timbre]))
-
-;; Subscriptions
-
-(s/def ::expanded? boolean?)
-
-;; Events
-
-;; Components
 
 (defn nav-link
   [store title page]
@@ -35,8 +26,8 @@
      {:role :button
       :aria-label :menu
       :aria-expanded false
-      :on-click #(st/dispatch store [::e.navbar/toggle-navbar])
-      :class (when expanded? :is-active)}
+      :onClick #(st/dispatch store [::e.navbar/toggle-navbar])
+      :className (when expanded? :is-active)}
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]
      [:span {:aria-hidden true}]]))

@@ -12,5 +12,6 @@
   [:div.box
    [:h1 "Index Transactions"]
    (let [items @(st/subscribe store [::e.transactions/items])]
-     (when (seq items)
-       [index-transactions items]))])
+     (if (seq items)
+       [index-transactions store items]
+       [:p "No data"]))])
