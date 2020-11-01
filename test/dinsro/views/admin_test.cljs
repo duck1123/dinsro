@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
@@ -17,10 +16,6 @@
    [dinsro.events.users :as e.users]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.admin :as v.admin]))
-
-(cards/header
- 'dinsro.views.admin-test
- "Admin View" [])
 
 (defn test-store
   []

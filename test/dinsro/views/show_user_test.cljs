@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
@@ -24,10 +23,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-user :as v.show-user]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.show-user-test
- "Show User View" [])
 
 (let [users (ds/gen-key (s/coll-of ::s.users/item :count 3))
       user (first users)

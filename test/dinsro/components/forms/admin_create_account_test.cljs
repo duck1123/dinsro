@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.admin-create-account :as c.f.admin-create-account]
    [dinsro.events.accounts :as e.accounts]
@@ -17,11 +16,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.forms.admin-create-account-test
- "Admin Create Account Form Components"
- [#{:accounts :components} #{:admin} #{:accounts :forms}])
 
 (defn test-store
   []

@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -16,10 +15,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-transactions :as v.index-transactions]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.index-transactions-test
- "Index Transactions View" [])
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))
       index-transaction-store

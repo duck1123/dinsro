@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.navbar :as c.navbar]
    [dinsro.events.authentication :as e.authentication]
@@ -16,10 +15,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.navbar-test
- "Navbar Components" [])
 
 (def user (ds/gen-key ::e.users/item))
 (def user-id (:db/id user))

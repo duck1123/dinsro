@@ -2,16 +2,11 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :as cards :include-macros true]
    [devcards.core :refer-macros [defcard deftest]]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.test-utils :refer-macros [assert-spec]]))
-
-(cards/header
- 'dinsro.events.forms.add-account-transaction-test
- "Add Account Transaction Form Events" [#{:accounts}])
 
 (let [account-id (ds/gen-key ::s.e.f.create-transaction/account-id)
       date (ds/gen-key ::s.e.f.create-transaction/date)

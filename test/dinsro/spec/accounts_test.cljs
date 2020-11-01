@@ -3,14 +3,9 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.accounts :as s.accounts]
    [expound.alpha :as expound]))
-
-(cards/header
- 'dinsro.spec.accounts-test
- "Account Specs" [])
 
 (defcard item
   (ds/gen-key ::s.accounts/item))

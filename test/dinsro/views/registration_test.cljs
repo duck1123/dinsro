@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.registration :as e.f.registration]
@@ -12,10 +11,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.registration :as v.registration]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.registration-test
- "Registration Page" [])
 
 (defn test-store
   []

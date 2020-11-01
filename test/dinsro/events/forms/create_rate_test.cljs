@@ -2,27 +2,13 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
-   [devcards.core :refer-macros [defcard
-                                 ;; defcard-rg
-                                 deftest]]
-   [dinsro.cards :as cards]
-   ;; [dinsro.components.boundary :refer [error-boundary]]
-   ;; [dinsro.components.forms.create-account :as c.f.create-account]
-   ;; [dinsro.components.forms.create-rate :as c.f.create-rate]
-   ;; [dinsro.events.forms.create-account :as e.f.create-account]
+   [devcards.core :refer-macros [defcard deftest]]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.spec :as ds]
-   ;; [dinsro.spec.actions.rates :as s.a.rates]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
-   ;; [dinsro.store.mock :refer [mock-store]]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
-
-(cards/header
- 'dinsro.events.forms.create-rate-test
- "Create Rate Form Events"
- [#{:forms :rates} #{:rates}])
 
 (defcard form-data (ds/gen-key ::e.f.create-rate/form-data))
 (comment (defcard form-data-db (ds/gen-key ::e.f.create-rate/form-data-db)))

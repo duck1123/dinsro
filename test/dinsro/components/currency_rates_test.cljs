@@ -2,16 +2,10 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.currency-rates :as c.currency-rates]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.store.mock :refer [mock-store]]))
-
-(cards/header
- 'dinsro.components.currency-rates-test
- "Currency Rates Components"
- [#{:rates} #{:currencies} #{:rates :components}])
 
 (let [currency-id 7
       rates [[1 1]

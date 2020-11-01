@@ -1,14 +1,9 @@
 (ns dinsro.spec.views.show-currency-test
   (:require
    [devcards.core :refer-macros [defcard]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.views.show-currency :as s.v.show-currency]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.spec.views.show-currency-test
- "Show Currency View Spec" [])
 
 (defcard init-page-cofx (ds/gen-key ::s.v.show-currency/init-page-cofx))
 (defcard init-page-event (ds/gen-key ::s.v.show-currency/init-page-event))

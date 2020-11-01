@@ -1,13 +1,8 @@
 (ns dinsro.spec.actions.accounts-test
   (:require
    [devcards.core :refer-macros [defcard]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.accounts :as s.a.accounts]))
-
-(cards/header
- 'dinsro.spec.actions.accounts-test
- "Account Actions Specs" [])
 
 (defcard "**Create**")
 

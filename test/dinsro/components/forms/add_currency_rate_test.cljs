@@ -4,7 +4,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
    [dinsro.events.currencies :as e.currencies]
@@ -16,11 +15,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.forms.add-currency-rate-test
- "Add Currency Rate Form Components"
- [#{:rates} #{:rates :components} #{:rates :forms}])
 
 (defn test-store
   []

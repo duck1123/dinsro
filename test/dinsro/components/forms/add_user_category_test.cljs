@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.add-user-category :as c.f.add-user-category]
    [dinsro.events.accounts :as e.accounts]
@@ -15,10 +14,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
-
-(cards/header
- 'dinsro.components.forms.add-user-category-test
- "Add User Category Form Components" [])
 
 (defn test-store
   []

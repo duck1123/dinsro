@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.user-categories :as c.user-categories]
    [dinsro.events.accounts :as e.accounts]
@@ -16,10 +15,6 @@
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.user-categories-test
- "User Categories Components" [])
 
 (let [user (ds/gen-key ::e.users/item)
       user-id (:db/id user)

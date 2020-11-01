@@ -4,7 +4,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.accounts :as e.accounts]
@@ -17,11 +16,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.forms.create-transaction-test
- "Create Transaction Form Components"
- [#{:transactions} #{:transactions :components}])
 
 (def accounts (ds/gen-key (s/coll-of ::s.accounts/item :count 3)))
 (def transactions (ds/gen-key (s/coll-of ::s.transactions/item :count 3)))

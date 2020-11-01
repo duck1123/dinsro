@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.debug :as e.debug]
@@ -11,11 +10,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
-
-(cards/header
- 'dinsro.components.show-currency-test
- "Show Currency Components"
- [#{:currencies :components} #{:currencies}])
 
 (let [item (ds/gen-key ::s.currencies/item)
       store (doto (mock-store)

@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-user :as c.show-user]
    [dinsro.events.debug :as e.debug]
@@ -12,10 +11,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.show-user-test
- "Show User Components" [])
 
 (let [user {::s.users/name "Bart"
             ::s.users/email "bob@example.com"

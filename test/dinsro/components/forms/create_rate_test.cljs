@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-rate :as c.f.create-rate]
    [dinsro.events.currencies :as e.currencies]
@@ -15,10 +14,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.forms.create-rate-test
- "Create Account Form Components" [])
 
 (let [currencies (ds/gen-key (s/coll-of ::e.currencies/item :count 3))
       store (doto (mock-store)

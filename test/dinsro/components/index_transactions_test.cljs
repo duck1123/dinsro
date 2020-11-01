@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.events.accounts :as e.accounts]
@@ -12,10 +11,6 @@
    [dinsro.spec.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
-
-(cards/header
- 'dinsro.components.index-transactions-test
- "Index Transaction Components" [])
 
 (let [items (ds/gen-key (s/coll-of ::s.transactions/item))
       transaction-store (fn []

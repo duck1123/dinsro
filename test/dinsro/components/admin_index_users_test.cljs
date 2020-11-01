@@ -3,7 +3,6 @@
    [cljs.test :refer [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.admin-index-users :as c.admin-index-users]
    [dinsro.components.boundary :refer [error-boundary]]
@@ -14,10 +13,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
-
-(cards/header
- 'dinsro.components.admin-index-users-test
- "Admin Index Users Components" [])
 
 (defn test-store
   []

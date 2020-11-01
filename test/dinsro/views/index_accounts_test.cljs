@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.authentication :as e.authentication]
@@ -21,11 +20,6 @@
    [dinsro.views.index-accounts :as v.index-accounts]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.index-accounts-test
- "Index Accounts View"
- [#{:accounts :views} #{:accounts}])
 
 (defn test-app
   []

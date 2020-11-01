@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
-   [dinsro.events.utils.impl :as eui]
    [dinsro.spec.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))

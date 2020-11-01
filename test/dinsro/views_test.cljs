@@ -1,6 +1,5 @@
 (ns dinsro.views-test
   (:require
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.views.about-test]
    [dinsro.views.admin-test]
    [dinsro.views.index-accounts-test]
@@ -13,8 +12,3 @@
    [dinsro.views.show-currency-test]
    [dinsro.views.show-user-test]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views-test
- "Views"
- [#{:views}])

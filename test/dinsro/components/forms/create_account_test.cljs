@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-account :as c.f.create-account]
    [dinsro.events.currencies :as e.currencies]
@@ -13,10 +12,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.forms.create-account-test
- "Create Account Form Components" [])
 
 (defn test-store
   []

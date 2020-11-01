@@ -2,17 +2,12 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.settings :as e.f.settings]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.settings :as v.settings]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.settings-test
- "Settings View" [])
 
 (defn test-store
   []

@@ -1,14 +1,9 @@
 (ns dinsro.spec.actions.authentication-test
   (:require
    [devcards.core :refer-macros [defcard]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.actions.authentication :as s.a.authentication]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.spec.actions.authentication-test
- "Authentication Actions Specs" [])
 
 (defcard register-params
   (ds/gen-key ::s.a.authentication/register-params))

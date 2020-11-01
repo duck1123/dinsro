@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components :as c]
    [dinsro.components.admin-index-accounts-test]
    [dinsro.components.admin-index-categories-test]
@@ -36,11 +35,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components-test
- "Components"
- [#{:components}])
 
 (defn test-store
   []

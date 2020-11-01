@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
@@ -12,10 +11,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.login :as v.login]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.login-test
- "Login View" [])
 
 (defn login-store
   []

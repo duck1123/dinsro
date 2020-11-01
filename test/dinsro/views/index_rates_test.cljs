@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -15,10 +14,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-rates :as v.index-rates]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.views.index-rates-test
- "Index Rates Test" [])
 
 (let [currency (ds/gen-key ::e.currencies/item)
       rates (map

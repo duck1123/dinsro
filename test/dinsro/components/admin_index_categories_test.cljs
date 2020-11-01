@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.categories :as e.categories]
@@ -17,11 +16,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.admin-index-categories-test
- "Admin Index Categories Components"
- [#{:admin} #{:categories}])
 
 (def users (ds/gen-key (s/coll-of ::s.users/item :count 3)))
 

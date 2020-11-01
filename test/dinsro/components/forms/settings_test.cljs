@@ -2,17 +2,12 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.settings :as c.f.settings]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.settings :as e.f.settings]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.forms.settings-test
- "Settings Form Components" [])
 
 (let [store (doto (mock-store)
               e.debug/init-handlers!

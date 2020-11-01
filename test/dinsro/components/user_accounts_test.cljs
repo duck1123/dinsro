@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.user-accounts :as c.user-accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -10,10 +9,6 @@
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.user-accounts-test
- "User Accounts Components" [])
 
 (let [user-id 1
       accounts []

@@ -2,17 +2,11 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :as cards]
    [devcards.core :refer-macros [defcard deftest]]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.test-utils :refer-macros [assert-spec]]))
-
-(cards/header
- 'dinsro.events.forms.add-currency-rate-test
- "Add Currency Rate Form Events"
- [#{:events :forms} #{:rates} #{:rates :forms}])
 
 (let [
       currency-id (ds/gen-key ::s.e.f.create-rate/currency-id)

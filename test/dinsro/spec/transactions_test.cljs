@@ -3,15 +3,10 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.spec :as ds]
    [dinsro.spec.transactions :as s.transactions]
    [expound.alpha :as expound]
    [tick.alpha.api :as tick]))
-
-(cards/header
- 'dinsro.spec.transactions-test
- "Transaction Spec" [])
 
 (defcard generated-item
   (ds/gen-key ::s.transactions/item))

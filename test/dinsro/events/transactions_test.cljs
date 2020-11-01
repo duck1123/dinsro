@@ -2,18 +2,12 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard deftest]]
-   [dinsro.cards :as cards]
    [dinsro.events.utils.impl :as eui]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.spec.events.transactions :as s.e.transactions]
    [dinsro.spec :as ds]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.events.transactions-test
- "Transaction Events"
- [#{:events} #{:transactions} #{:transactions :events}])
 
 (defcard item
   (ds/gen-key ::e.transactions/item))

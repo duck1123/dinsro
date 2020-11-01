@@ -2,15 +2,10 @@
   (:require
    [cljs.test :refer-macros [is]]
    [devcards.core :refer-macros [defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.about :as v.about]
    [pjstadig.humane-test-output]))
-
-(cards/header
- 'dinsro.views.about-test
- "About View" [])
 
 (defn test-store
   []

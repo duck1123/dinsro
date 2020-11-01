@@ -3,16 +3,11 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
    [devcards.core :refer-macros [defcard deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
    [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.events.forms.add-user-account-test
- "Add User Account Form Events" [])
 
 (let [currency-id (ds/gen-key ::s.e.f.create-account/currency-id)
       initial-value (ds/gen-key ::s.e.f.create-account/initial-value)

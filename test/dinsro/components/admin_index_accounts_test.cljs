@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.admin-accounts :as e.admin-accounts]
@@ -21,11 +20,6 @@
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
-
-(cards/header
- 'dinsro.components.admin-index-accounts-test
- "Admin Index Accounts Components"
- [#{:admin :accounts} #{:accounts :components}])
 
 (let [users (ds/gen-key (s/coll-of ::s.users/item :count 3))
       currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))

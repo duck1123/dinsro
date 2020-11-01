@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.index-rates :as c.index-rates]
    [dinsro.events.accounts :as e.accounts]
@@ -13,10 +12,6 @@
    [dinsro.spec.rates :as s.rates]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
-
-(cards/header
- 'dinsro.components.index-rates-test
- "Index Rates Components" [])
 
 (defn test-store
   []

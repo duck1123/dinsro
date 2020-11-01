@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [devcards.core :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.cards :as cards :include-macros true]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
    [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.spec :as ds]
@@ -14,11 +13,6 @@
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]))
-
-(cards/header
- 'dinsro.components.admin-index-rate-sources-test
- "Admin Index Rate Source Components"
- [#{:rates} #{:components}])
 
 (defn test-store
   []
