@@ -51,7 +51,9 @@
     (defcard-rg page-card
       [v.index-accounts/page store match])
 
-    (defcard-rg form-data (fn [] (pr-str @form-data)))
+    (defcard-rg form-data
+      [:pre (pr-str @form-data)])
+
     (let [form-data-sub @form-data]
       (assert-spec ::e.f.add-user-account/form-data form-data-sub))
 
