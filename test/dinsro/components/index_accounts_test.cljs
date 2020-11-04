@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.index-accounts :as c.index-accounts]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -55,10 +54,8 @@
   (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
   (defcard-rg row-line
-    (fn []
-      [error-boundary
-       [:table.table>tbody
-        [c.index-accounts/row-line store account]]]))
+    [:table.table>tbody
+     [c.index-accounts/row-line store account]])
 
   (deftest row-line-test
     (is (vector (c.index-accounts/row-line store account)))))
@@ -71,9 +68,7 @@
   (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
   (defcard-rg section
-    (fn []
-      [error-boundary
-       [c.index-accounts/section store accounts]]))
+    [c.index-accounts/section store accounts])
 
   (deftest section-test
     (is (vector? (c.index-accounts/section store accounts)))))

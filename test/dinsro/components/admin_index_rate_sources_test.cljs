@@ -4,7 +4,6 @@
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.spec :as ds]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -34,10 +33,8 @@
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
 
     (defcard-rg c.admin-index-rate-sources/index-line
-      (fn []
-        [error-boundary
-         [:table.table>tbody
-          [c.admin-index-rate-sources/index-line store rate-source]]]))
+      [:table.table>tbody
+       [c.admin-index-rate-sources/index-line store rate-source]])
 
     (deftest index-line-test
       (is (vector? (c.admin-index-rate-sources/index-line store rate-source)))))
@@ -46,9 +43,7 @@
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
 
     (defcard-rg c.admin-index-rate-sources/rate-sources-table
-      (fn []
-        [error-boundary
-         [c.admin-index-rate-sources/rate-sources-table store rate-sources]]))
+      [c.admin-index-rate-sources/rate-sources-table store rate-sources])
 
     (deftest rate-sources-table-test
       (is (vector? (c.admin-index-rate-sources/rate-sources-table store rate-sources)))))
@@ -57,9 +52,7 @@
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
 
     (defcard-rg c.admin-index-rate-sources/section
-      (fn []
-        [error-boundary
-         [c.admin-index-rate-sources/section store]]))
+      [c.admin-index-rate-sources/section store])
 
     (deftest section-test
       (is (vector? (c.admin-index-rate-sources/section store))))))

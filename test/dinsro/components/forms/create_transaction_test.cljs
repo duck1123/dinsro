@@ -4,7 +4,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -36,14 +35,10 @@
   (st/dispatch store [::e.f.create-transaction/set-shown? true])
 
   (defcard-rg form-data-card
-    (fn []
-      [error-boundary
-       [:pre (with-out-str (p/pprint @(st/subscribe store [::e.f.create-transaction/form-data])))]]))
+    [:pre (with-out-str (p/pprint @(st/subscribe store [::e.f.create-transaction/form-data])))])
 
   (defcard-rg create-transaction-card
-    (fn []
-      [error-boundary
-       [c.f.create-transaction/form store]]))
+    [c.f.create-transaction/form store])
 
   (deftest create-transaction-test
     (is (vector? (c.f.create-transaction/form store)))))

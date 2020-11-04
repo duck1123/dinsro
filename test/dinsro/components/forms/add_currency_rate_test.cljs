@@ -4,7 +4,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -36,14 +35,10 @@
       (assert-spec ::e.f.add-currency-rate/form-data expected-result)
 
       (defcard-rg form-data-card
-        (fn []
-          [error-boundary
-           [:pre (with-out-str (p/pprint form-data))]])))
+        [:pre (with-out-str (p/pprint form-data))]))
 
     (defcard-rg form
-      (fn []
-        [error-boundary
-         [c.f.add-currency-rate/form store currency-id]]))
+      [c.f.add-currency-rate/form store currency-id])
 
     (deftest form-test
       (is (vector? (c.f.add-currency-rate/form store currency-id))))))

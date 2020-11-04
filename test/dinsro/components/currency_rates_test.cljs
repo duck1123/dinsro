@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.currency-rates :as c.currency-rates]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.store.mock :refer [mock-store]]))
@@ -15,9 +14,7 @@
               e.f.add-currency-rate/init-handlers!)]
 
   (defcard-rg c.currency-rates/section
-    (fn []
-      [error-boundary
-       [c.currency-rates/section store currency-id rates]]))
+    [c.currency-rates/section store currency-id rates])
 
   (deftest section-test
     (is (vector? (c.currency-rates/section store currency-id rates)))))

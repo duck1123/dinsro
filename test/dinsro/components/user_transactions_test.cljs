@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.user-transactions :as c.user-transactions]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -47,9 +46,7 @@
     (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
     (defcard-rg section
-      (fn []
-        [error-boundary
-         [c.user-transactions/section store user-id accounts]]))
+      [c.user-transactions/section store user-id accounts])
 
     (deftest section-test
       (is (vector? (c.user-transactions/section store user-id accounts))))))

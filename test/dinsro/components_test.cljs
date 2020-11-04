@@ -8,7 +8,6 @@
    [dinsro.components.admin-index-categories-test]
    [dinsro.components.admin-index-rate-sources-test]
    [dinsro.components.admin-index-users-test]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.buttons-test]
    [dinsro.components.currency-rates-test]
    [dinsro.components.datepicker-test]
@@ -62,9 +61,7 @@
     (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
     (defcard-rg currency-selector
-      (fn []
-        [error-boundary
-         [c/currency-selector store label field]]))
+      [c/currency-selector store label field])
 
     (deftest currency-selector-test
       (is (vector? (c/currency-selector store label field)))))
@@ -74,9 +71,7 @@
     (st/reg-set-event store field)
 
     (defcard-rg checkbox-input
-      (fn []
-        [error-boundary
-         [c/checkbox-input store label field handler]]))
+      [c/checkbox-input store label field handler])
 
     (deftest checkbox-input-test
       (is (vector? (c/checkbox-input store label field handler)))))
@@ -87,9 +82,7 @@
     (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
     (defcard-rg account-selector
-      (fn []
-        [error-boundary
-         [c/account-selector store label field]]))
+      [c/account-selector store label field])
 
     (deftest account-selector-test
       (is (vector? (c/account-selector store label field)))))
@@ -102,9 +95,7 @@
     (comment (defcard rate-sources-card rate-sources))
 
     (defcard-rg rate-source-selector
-      (fn []
-        [error-boundary
-         [c/rate-source-selector store label field]]))
+      [c/rate-source-selector store label field])
 
     (deftest rate-source-selector-test
       (is (vector? (c/rate-source-selector store label field)))))
@@ -115,9 +106,7 @@
     (st/dispatch store [::e.users/do-fetch-index-success {:users users}])
 
     (defcard-rg user-selector
-      (fn []
-        [error-boundary
-         [c/user-selector store label field]]))
+      [c/user-selector store label field])
 
     (deftest user-selector-test
       (is (vector? (c/user-selector store label field))))))

@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.events.forms.settings :as e.f.settings]
@@ -26,20 +25,16 @@
 
   (let [store (test-store)]
     (defcard-rg form-registration-not-enabled
-      (fn []
-        (st/dispatch store [::s.e.f.settings/set-allow-registration false])
-        [error-boundary
-         [v.registration/page store match]]))
+      (st/dispatch store [::s.e.f.settings/set-allow-registration false])
+      [v.registration/page store match])
 
     (deftest form-registration-not-enabled-test
       (is (vector? (v.registration/page store match)))))
 
   (let [store (test-store)]
     (defcard-rg form-registration-enabled
-      (fn []
-        (st/dispatch store [::s.e.f.settings/set-allow-registration true])
-        [error-boundary
-         [v.registration/page store match]]))
+      (st/dispatch store [::s.e.f.settings/set-allow-registration true])
+      [v.registration/page store match])
 
     (deftest form-registration-enabled-test
       (is (vector? (v.registration/page store match))))))

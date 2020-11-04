@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.settings :as e.f.settings]
    [dinsro.store.mock :refer [mock-store]]
@@ -19,9 +18,7 @@
 (let [match nil
       store (test-store)]
   (defcard-rg page-card
-    (fn []
-      [error-boundary
-       [v.settings/page store match]]))
+    [v.settings/page store match])
 
   (deftest page-test
     (is (vector? (v.settings/page store match)))))

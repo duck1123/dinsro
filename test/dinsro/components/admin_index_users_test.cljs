@@ -5,7 +5,6 @@
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.admin-index-users :as c.admin-index-users]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
    [dinsro.spec :as ds]
@@ -30,10 +29,8 @@
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
     (defcard-rg c.admin-index-categories/category-line
-      (fn []
-        [error-boundary
-         [:table.table>tbody
-          [c.admin-index-categories/category-line store item]]]))
+      [:table.table>tbody
+       [c.admin-index-categories/category-line store item]])
 
     (deftest category-line-test
       (is (vector? [c.admin-index-categories/category-line store item]))))
@@ -42,9 +39,7 @@
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
     (defcard-rg c.admin-index-categories/index-categories
-      (fn []
-        [error-boundary
-         [c.admin-index-categories/index-categories store items]]))
+      [c.admin-index-categories/index-categories store items])
 
     (deftest index-categories-test
       (is (vector? (c.admin-index-categories/index-categories store items)))))
@@ -53,9 +48,7 @@
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
     (defcard-rg c.admin-index-users/section
-      (fn []
-        [error-boundary
-         [c.admin-index-users/section store]]))
+      [c.admin-index-users/section store])
 
     (deftest section-test
       (is (vector? (c.admin-index-users/section store))))))

@@ -4,7 +4,6 @@
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -54,29 +53,23 @@
 
   (let [store (accounts-store)]
     (defcard-rg row-line
-      (fn []
-        [error-boundary
-         [:table.table
-          [:tbody
-           [c.admin-index-accounts/row-line store account]]]]))
+      [:table.table
+       [:tbody
+        [c.admin-index-accounts/row-line store account]]])
 
     (deftest row-line-test
       (is (vector? (c.admin-index-accounts/row-line store account)))))
 
   (let [store (accounts-store)]
     (defcard-rg c.admin-index-accounts/index-accounts
-      (fn []
-        [error-boundary
-         [c.admin-index-accounts/index-accounts store accounts]]))
+      [c.admin-index-accounts/index-accounts store accounts])
 
     (deftest index-accounts-test
       (is (vector? (c.admin-index-accounts/index-accounts store accounts)))))
 
   (let [store (accounts-store)]
     (defcard-rg c.admin-index-accounts/section
-      (fn []
-        [error-boundary
-         [c.admin-index-accounts/section store]]))
+      [c.admin-index-accounts/section store])
 
     (deftest section-test
       (is (vector? (c.admin-index-accounts/section store))))))

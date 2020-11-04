@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.add-user-transaction :as c.f.add-user-transaction]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -29,9 +28,7 @@
   (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
   (defcard-rg form
-    (fn []
-      [error-boundary
-       [c.f.add-user-transaction/form-shown store]]))
+    [c.f.add-user-transaction/form-shown store])
 
   (deftest form-test
     (is (vector? (c.f.add-user-transaction/form store)))))

@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-user :as c.show-user]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
@@ -23,9 +22,7 @@
   (comment (st/dispatch store [::e.debug/set-shown? true]))
 
   (defcard-rg show-user
-    (fn []
-      [error-boundary
-       [c.show-user/show-user store user]]))
+    [c.show-user/show-user store user])
 
   (deftest show-user-test
     (is (vector? (c.show-user/show-user store user)))))

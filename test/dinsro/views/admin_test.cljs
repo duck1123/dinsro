@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.categories :as e.categories]
@@ -37,16 +36,12 @@
 
   (let [store (test-store)]
     (defcard-rg load-buttons
-      (fn []
-        [error-boundary
-         [v.admin/load-buttons store]]))
+      [v.admin/load-buttons store])
     (deftest load-buttons-test
       (is (vector? (v.admin/load-buttons store)))))
 
   (let [store (test-store)]
     (defcard-rg page-card
-      (fn []
-        [error-boundary
-         [v.admin/page store match]]))
+      [v.admin/page store match])
     (deftest page-test
       (is (vector? (v.admin/page store match))))))

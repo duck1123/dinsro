@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -32,17 +31,13 @@
   (comment (defcard view-map (ds/gen-key ::s.v.show-currency/view-map)))
 
   (defcard-rg v.show-currency/page-loaded
-    (fn []
-      [error-boundary
-       [v.show-currency/page-loaded store currency]]))
+    [v.show-currency/page-loaded store currency])
 
   (deftest page-loaded-test
     (is (vector? (v.show-currency/page-loaded store currency))))
 
   (defcard-rg page-card
-    (fn []
-      [error-boundary
-       [v.show-currency/page store match]]))
+    [v.show-currency/page store match])
 
   (deftest page-test
     (is (vector? (v.show-currency/page store match)))))

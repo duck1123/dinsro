@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -23,9 +22,7 @@
     (comment (defcard item item))
 
     (defcard-rg row-line
-      (fn []
-        [error-boundary
-         [c.index-transactions/row-line store item]]))
+      [c.index-transactions/row-line store item])
 
     (deftest row-line-test
       (is (vector? (c.index-transactions/row-line store item)))))
@@ -34,9 +31,7 @@
     (comment (defcard items items))
 
     (defcard-rg c.index-transactions/index-transactions
-      (fn []
-        [error-boundary
-         [c.index-transactions/index-transactions store items]]))
+      [c.index-transactions/index-transactions store items])
 
     (deftest index-transactions-test
       (is (vector? (c.index-transactions/index-transactions store items))))))

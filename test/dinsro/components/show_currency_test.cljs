@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.debug :as e.debug]
    [dinsro.spec :as ds]
@@ -17,10 +16,8 @@
   (defcard item item)
 
   (defcard-rg show-currency
-    (fn []
-      (st/dispatch store [::e.debug/set-shown? true])
-      [error-boundary
-       [c.show-currency/show-currency store item]]))
+    (st/dispatch store [::e.debug/set-shown? true])
+    [c.show-currency/show-currency store item])
 
   (deftest show-currency-test
     (is (vector? (c.show-currency/show-currency store item)))))

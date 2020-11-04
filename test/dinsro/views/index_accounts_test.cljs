@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
@@ -53,9 +52,7 @@
     (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
     (defcard-rg page-card
-      (fn []
-        [error-boundary
-         [v.index-accounts/page store match]]))
+      [v.index-accounts/page store match])
 
     (defcard-rg form-data (fn [] (pr-str @form-data)))
     (let [form-data-sub @form-data]
@@ -69,9 +66,7 @@
     (st/dispatch store [::e.accounts/do-fetch-index-success {:items items}])
 
     (defcard-rg page-unauthenticated
-      (fn []
-        [error-boundary
-         [v.index-accounts/page store match]]))
+      [v.index-accounts/page store match])
 
     (deftest page-unauthenticated-test
       (is (vector? (v.index-accounts/page store match))))))

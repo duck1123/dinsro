@@ -3,7 +3,6 @@
    [cljs.test :refer [is]]
    [day8.re-frame.http-fx]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.status :as c.status]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
@@ -20,9 +19,7 @@
 (let [store (test-store)
       body [:p "Body passed to component"]]
   (defcard-rg require-status-unloaded
-    (fn []
-      [error-boundary
-       [c.status/require-status store body]]))
+    [c.status/require-status store body])
 
   (deftest require-status-unloaded
     (is (vector? (c.status/require-status store body)))))
@@ -34,9 +31,7 @@
   (st/dispatch store [::c.status/set-status-state :loaded])
 
   (defcard-rg require-status-loaded
-    (fn []
-      [error-boundary
-       [c.status/require-status store body]]))
+    [c.status/require-status store body])
 
   (deftest require-status-loaded
     (is (vector? (c.status/require-status store body)))))

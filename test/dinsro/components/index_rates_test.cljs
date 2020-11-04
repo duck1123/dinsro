@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.index-rates :as c.index-rates]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -28,10 +27,8 @@
     (comment (defcard item item))
 
     (defcard-rg rate-line
-      (fn []
-        [error-boundary
-         [:table.table>tbody
-          [c.index-rates/rate-line store item]]]))
+      [:table.table>tbody
+       [c.index-rates/rate-line store item]])
 
     (deftest rate-line-test
       (is (vector (c.index-rates/rate-line store item)))))
@@ -40,9 +37,7 @@
     (comment (defcard items items))
 
     (defcard-rg section
-      (fn []
-        [error-boundary
-         [c.index-rates/section store items]]))
+      [c.index-rates/section store items])
 
     (deftest section-test
       (is (vector? (c.index-rates/section store items))))))

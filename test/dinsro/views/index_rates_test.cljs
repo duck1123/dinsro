@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
@@ -32,9 +31,7 @@
   (comment (defcard rates rates))
 
   (defcard-rg page
-    (fn []
-      [error-boundary
-       [v.index-rates/page store match]]))
+    [v.index-rates/page store match])
 
   (deftest page-test
     (is (vector? (v.index-rates/page store match)))))

@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.add-user-account :as c.f.add-user-account]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -29,14 +28,11 @@
   (comment (defcard currencies currencies))
 
   (defcard-rg form-data
-    (fn []
-      (timbre/info "form data")
-      [:pre (pr-str @(st/subscribe store [::e.f.add-user-account/form-data]))]))
+    (timbre/info "form data")
+    [:pre (pr-str @(st/subscribe store [::e.f.add-user-account/form-data]))])
 
   (defcard-rg form
-    (fn []
-      [error-boundary
-       [c.f.add-user-account/form store id]]))
+    [c.f.add-user-account/form store id])
 
   (deftest form-test
     (is (vector? (c.f.add-user-account/form store id)))))

@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.navbar :as c.navbar]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
@@ -37,9 +36,7 @@
 
 (let [store (test-store)]
   (defcard-rg nav-burger
-    (fn []
-      [error-boundary
-       [c.navbar/nav-burger store]]))
+    [c.navbar/nav-burger store])
   (deftest nav-burger-test
     (is (vector? [c.navbar/nav-burger store]))))
 
@@ -47,9 +44,7 @@
 
 (let [store (test-store)]
   (defcard-rg navbar
-    (fn []
-      [error-boundary
-       [c.navbar/navbar store]]))
+    [c.navbar/navbar store])
   (deftest navbar-test
     (is (vector? [c.navbar/navbar store]))))
 
@@ -59,9 +54,7 @@
   (st/dispatch store [::e.navbar/set-expanded? true])
 
   (defcard-rg navbar-expanded
-    (fn []
-      [error-boundary
-       [c.navbar/navbar store]]))
+    [c.navbar/navbar store])
   (deftest navbar-expanded-test
     (is (vector? [c.navbar/navbar store]))))
 
@@ -72,9 +65,7 @@
   (st/dispatch store [::e.users/do-fetch-record-success {:user user}])
 
   (defcard-rg navbar-authenticated
-    (fn []
-      [error-boundary
-       [c.navbar/navbar store]]))
+    [c.navbar/navbar store])
   (deftest navbar-authenticated-test
     (is (vector? [c.navbar/navbar store]))))
 
@@ -86,8 +77,6 @@
   (st/dispatch store [::e.users/do-fetch-record-success {:user user}])
 
   (defcard-rg navbar-authenticated-expanded
-    (fn []
-      [error-boundary
-       [c.navbar/navbar store]]))
+    [c.navbar/navbar store])
   (deftest navbar-authenticated-expanded-test
     (is (vector? [c.navbar/navbar store]))))

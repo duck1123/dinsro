@@ -4,7 +4,6 @@
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-category :as e.f.create-category]
@@ -45,26 +44,20 @@
   ;; (st/dispatch store [::e.f.create-categories/set-shown? true])
 
   (defcard-rg c.admin-index-categories/category-line
-    (fn []
-      [error-boundary
-       [:table.table>tbody
-        [c.admin-index-categories/category-line store category]]]))
+    [:table.table>tbody
+     [c.admin-index-categories/category-line store category]])
 
   (deftest category-line-test
     (is (vector? (c.admin-index-categories/category-line store category))))
 
   (defcard-rg c.admin-index-categories/index-categories
-    (fn []
-      [error-boundary
-       [c.admin-index-categories/index-categories store categories]]))
+    [c.admin-index-categories/index-categories store categories])
 
   (deftest index-categories-test
     (is (vector? (c.admin-index-categories/index-categories store categories))))
 
   (defcard-rg c.admin-index-categories/section
-    (fn []
-      [error-boundary
-       [c.admin-index-categories/section store]]))
+    [c.admin-index-categories/section store])
 
   (deftest section-test
     (is (vector? (c.admin-index-categories/section store)))))

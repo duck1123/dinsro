@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.user-accounts :as c.user-accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -21,15 +20,11 @@
     (is (vector? (c.user-accounts/index-accounts store accounts))))
 
   (defcard-rg index-accounts
-    (fn []
-      [error-boundary
-       [c.user-accounts/index-accounts store accounts]]))
+    [c.user-accounts/index-accounts store accounts])
 
   (deftest section-test
     (is (vector? (c.user-accounts/section store user-id accounts))))
 
 
   (defcard-rg section
-    (fn []
-      [error-boundary
-       [c.user-accounts/section store user-id accounts]])))
+    [c.user-accounts/section store user-id accounts]))

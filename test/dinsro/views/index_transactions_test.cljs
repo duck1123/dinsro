@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -32,18 +31,14 @@
 
   (let [store (index-transaction-store)]
     (defcard-rg v.index-transactions/section-inner
-      (fn []
-        [error-boundary
-         [v.index-transactions/section-inner store items]]))
+      [v.index-transactions/section-inner store items])
 
     (deftest section-inner-test
       (is (vector? (v.index-transactions/section-inner store items)))))
 
   (let [store (index-transaction-store)]
     (defcard-rg page-card
-      (fn []
-        [error-boundary
-         (v.index-transactions/page store match)]))
+      (v.index-transactions/page store match))
 
     (deftest page-test
       (is (vector? (v.index-transactions/page store match))))))

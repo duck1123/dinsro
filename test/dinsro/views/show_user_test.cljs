@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.currencies :as e.currencies]
@@ -52,9 +51,7 @@
   (comment (defcard view-map           (ds/gen-key ::s.v.show-user/view-map)))
 
   (defcard-rg page-card
-    (fn []
-      [error-boundary
-       [v.show-user/page store match]]))
+    [v.show-user/page store match])
 
   (deftest page-test
     (is (vector? (v.show-user/page store match)))))

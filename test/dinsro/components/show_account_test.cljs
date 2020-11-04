@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.show-account :as c.show-account]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -28,12 +27,10 @@
   (comment (defcard account account))
 
   (defcard-rg show-account-card
-    (fn []
-      (st/dispatch store [::e.debug/set-shown? true])
-      (st/dispatch store [::e.users/do-fetch-record-success {:item user}])
+    (st/dispatch store [::e.debug/set-shown? true])
+    (st/dispatch store [::e.users/do-fetch-record-success {:item user}])
 
-      [error-boundary
-       [c.show-account/show-account store account]]))
+    [c.show-account/show-account store account])
 
   (deftest show-account-test
     (is (vector? (c.show-account/show-account store account)))))

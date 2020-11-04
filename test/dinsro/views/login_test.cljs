@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.login :as e.f.login]
@@ -29,9 +28,7 @@
   (st/dispatch store [::s.e.f.login/set-password password])
 
   (defcard-rg page-card
-    (fn []
-      [error-boundary
-       [v.login/page store match]]))
+    [v.login/page store match])
 
   (deftest page-test
     (is (vector? (v.login/page store match)))))

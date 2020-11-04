@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.user-categories :as c.user-categories]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
@@ -30,9 +29,7 @@
   (comment (defcard categories categories))
 
   (defcard-rg section
-    (fn []
-      [error-boundary
-       [c.user-categories/section store user-id categories]]))
+    [c.user-categories/section store user-id categories])
 
   (deftest section-test
     (is (vector? (c.user-categories/section store user-id categories)))))

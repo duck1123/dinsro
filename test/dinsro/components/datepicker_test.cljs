@@ -2,7 +2,6 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.datepicker :as c.datepicker]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
@@ -15,11 +14,9 @@
               (st/reg-set-event value-key))
       props {:on-select #(st/dispatch store [setter-key %])}]
   (defcard-rg datepicker
-    (fn []
-      [error-boundary
-       [:<>
-        [:pre (pr-str @(st/subscribe store [value-key]))]
-        [c.datepicker/datepicker props]]]))
+    [:<>
+     [:pre (pr-str @(st/subscribe store [value-key]))]
+     [c.datepicker/datepicker props]])
 
   (deftest datepicker-text
     (is (vector? (c.datepicker/datepicker props)))))

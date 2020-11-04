@@ -3,7 +3,6 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.components.forms.create-rate :as c.f.create-rate]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -30,13 +29,10 @@
   (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
   (defcard-rg form-data
-    (fn []
-      [:pre (pr-str @(st/subscribe store [::e.f.create-rate/form-data]))]))
+    [:pre (pr-str @(st/subscribe store [::e.f.create-rate/form-data]))])
 
   (defcard-rg form
-    (fn []
-      [error-boundary
-       [c.f.create-rate/form store]]))
+    [c.f.create-rate/form store])
 
   (deftest form-test
     (is (vector? (c.f.create-rate/form store)))))
