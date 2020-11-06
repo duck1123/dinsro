@@ -1,11 +1,11 @@
 (ns dinsro.lib.logging
   "Some helpers to make logging a bit nicer."
   (:require
-   ;; IMPORTANT: No explicit require for pprint in cljs. It bloats builds.
-   #?@(:clj [[clojure.pprint :refer [pprint]]])
-   #?@(:clj [[clojure.string :as str]])
-   #?@(:clj [[taoensso.encore :as enc]])
-   [taoensso.timbre :as log]))
+    ;; IMPORTANT: No explicit require for pprint in cljs. It bloats builds.
+   #?@(:clj [[clojure.pprint :refer [pprint]]
+             [clojure.string :as str]
+             [taoensso.encore :as enc]])
+   [taoensso.timbre :as timbre]))
 
 #?(:clj
    (defmacro p
@@ -48,7 +48,7 @@
                 (force msg_)
                 (enc/if-let [_   (not no-stacktrace?)
                              err ?err]
-                  (str "\n" (log/stacktrace err opts))
+                  (str "\n" (timbre/stacktrace err opts))
                   ""))))))
 
 #?(:clj
@@ -57,7 +57,7 @@
      `:taoensso.timbre/logging-config` as a key."
      [config]
      (let [{:keys [taoensso.timbre/logging-config]} config]
-       (log/merge-config! (assoc logging-config
-                                 :middleware [(pretty-middleware #(with-out-str (pprint %)))]
-                                 :output-fn custom-output-fn))
-       (log/debug "Configured Timbre with " (p logging-config)))))
+       (timbre/merge-config! (assoc logging-config
+                                    :middleware [(pretty-middleware #(with-out-str (pprint %)))]
+                                    :output-fn custom-output-fn))
+       (timbre/debug "Configured Timbre with " (p logging-config)))))
