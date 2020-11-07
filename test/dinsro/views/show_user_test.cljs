@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.currencies :as e.currencies]
@@ -17,7 +17,6 @@
    [dinsro.events.users :as e.users]
    [dinsro.spec :as ds]
    [dinsro.spec.users :as s.users]
-   [dinsro.spec.views.show-user :as s.v.show-user]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-user :as v.show-user]
@@ -42,13 +41,6 @@
 
   (st/dispatch store [::e.users/do-fetch-record-success {:item user}])
   ;; (st/dispatch store [::e.users/do-fetch-index-success {:items users}])
-
-  (comment (defcard users users))
-  (comment (defcard match match))
-  (comment (defcard init-page-cofx     (ds/gen-key ::s.v.show-user/init-page-cofx)))
-  (comment (defcard init-page-event    (ds/gen-key ::s.v.show-user/init-page-event)))
-  (comment (defcard init-page-response (ds/gen-key ::s.v.show-user/init-page-response)))
-  (comment (defcard view-map           (ds/gen-key ::s.v.show-user/view-map)))
 
   (defcard-rg page-card
     [v.show-user/page store match])

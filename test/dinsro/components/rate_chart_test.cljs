@@ -1,6 +1,6 @@
 (ns dinsro.components.rate-chart-test
   (:require
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.rate-chart :as c.rate-chart]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
@@ -10,7 +10,5 @@
             [3  4]
             [4  8]
             [5 16]]]
-  (defcard data data)
-
   (defcard-rg rate-chart
     (c.rate-chart/rate-chart data)))

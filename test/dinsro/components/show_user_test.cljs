@@ -1,7 +1,7 @@
 (ns dinsro.components.show-user-test
   (:require
    [cljs.test :refer [is]]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.show-user :as c.show-user]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
@@ -18,7 +18,6 @@
       store (doto (mock-store)
               e.debug/init-handlers!
               e.users/init-handlers!)]
-  (comment (defcard user user))
   (comment (st/dispatch store [::e.debug/set-shown? true]))
 
   (defcard-rg show-user

@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-transaction :as s.e.f.create-transaction]
@@ -19,21 +19,12 @@
       db {::s.e.f.create-transaction/date date
           ::s.e.f.create-transaction/description description
           ::s.e.f.create-transaction/value value}
-
-      ;; (ds/gen-key ::e.f.add-account-transaction/form-data-db)
       event [::e.f.add-account-transaction/form-data account-id]
       result (e.f.add-account-transaction/form-data-sub db event)]
 
-  (defcard db db)
   (assert-spec ::e.f.add-account-transaction/form-data-db db)
-
-  (defcard event event)
   (assert-spec ::e.f.add-account-transaction/form-data-event event)
-
-  (defcard expected-result expected-result)
   (assert-spec ::e.f.add-account-transaction/form-data expected-result)
-
-  (defcard result result)
   (assert-spec ::e.f.add-account-transaction/form-data result)
 
   (deftest form-data-sub-test

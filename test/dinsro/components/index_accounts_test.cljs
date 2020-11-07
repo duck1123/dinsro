@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.index-accounts :as c.index-accounts]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -40,10 +40,6 @@
                 e.debug/init-handlers!
                 e.users/init-handlers!)]
     store))
-
-(comment (defcard accounts-card accounts))
-(comment (defcard currencies-card currencies))
-(comment (defcard users-card users))
 
 ;; row-line
 

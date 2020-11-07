@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.add-user-account-test
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.add-user-account :as c.f.add-user-account]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -23,8 +23,6 @@
 
   (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
   (st/dispatch store [::e.f.add-user-account/set-shown? shown?])
-
-  (comment (defcard currencies currencies))
 
   (defcard-rg form-data
     (timbre/info "form data")

@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.admin-create-account-test
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.admin-create-account :as c.f.admin-create-account]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -30,21 +30,21 @@
       users (ds/gen-key (s/coll-of ::e.users/item :count 3))
       accounts (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
       name "Foo"
-      initial-value 42]
+      initial-value 42
+      store (test-store)]
+  (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
+  (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
+  (st/dispatch store [::e.users/do-fetch-index-success {:items users}])
+  (st/dispatch store [::s.e.f.create-account/set-name name])
+  (st/dispatch store [::s.e.f.create-account/set-initial-value initial-value])
+  (st/dispatch store [::e.f.create-account/set-shown? true])
 
-  (comment (defcard accounts accounts))
-  (comment (defcard currencies currencies))
-  (comment (defcard users users))
+  (st/dispatch store [::e.debug/set-shown? true])
 
-  (let [store (test-store)]
-    (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
-    (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
-    (st/dispatch store [::e.users/do-fetch-index-success {:items users}])
-    (st/dispatch store [::s.e.f.create-account/set-name name])
-    (st/dispatch store [::s.e.f.create-account/set-initial-value initial-value])
-    (st/dispatch store [::e.f.create-account/set-shown? true])
+  (defcard-rg form-inner
+    [c.f.admin-create-account/form store])
 
     (st/dispatch store [::e.debug/set-shown? true])
 
     (defcard-rg form-inner
-      [c.f.admin-create-account/form store])))
+      [c.f.admin-create-account/form store]))

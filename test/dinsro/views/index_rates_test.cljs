@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
@@ -26,9 +26,6 @@
       match nil]
 
   (st/dispatch store [::e.rates/do-fetch-index-success {:items rates}])
-
-  (comment (defcard currency currency))
-  (comment (defcard rates rates))
 
   (defcard-rg page
     [v.index-rates/page store match])

@@ -1,7 +1,7 @@
 (ns dinsro.components.buttons-test
   (:require
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.buttons :as c.buttons]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
@@ -17,8 +17,6 @@
 
 (let [account (ds/gen-key ::e.accounts/item)
       store (mock-store)]
-  (comment (defcard account account))
-
   (defcard-rg delete-account
     [c.buttons/delete-account store account])
 
@@ -45,8 +43,6 @@
 
 (let [store (mock-store)
       rate (ds/gen-key ::e.rates/item)]
-  (comment (defcard rate rate))
-
   (defcard-rg delete-rate
     [c.buttons/delete-rate store rate])
 

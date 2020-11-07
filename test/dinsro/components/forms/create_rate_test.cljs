@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.create-rate-test
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.create-rate :as c.f.create-rate]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -20,8 +20,6 @@
               e.f.create-account/init-handlers!
               e.f.create-rate/init-handlers!
               e.f.add-user-account/init-handlers!)]
-
-  (comment (defcard currencies currencies))
 
   (st/dispatch store [::e.debug/set-shown? true])
   (st/dispatch store [::e.f.create-rate/set-shown? true])

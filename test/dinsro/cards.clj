@@ -10,10 +10,6 @@
       [dinsro.components.boundary/error-boundary
        ((fn [] ~@body))])))
 
-(defmacro defcard
-  [name & body]
-  `(devcards.core/defcard ~name ~@body))
-
 (defmacro deftest
   [name & body]
   `(devcards.core/deftest ~name ~@body))

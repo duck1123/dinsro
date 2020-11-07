@@ -1,7 +1,7 @@
 (ns dinsro.views.registration-test
   (:require
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.events.forms.settings :as e.f.settings]
@@ -20,9 +20,6 @@
     store))
 
 (let [match nil]
-
-  (comment (defcard match match))
-
   (let [store (test-store)]
     (defcard-rg form-registration-not-enabled
       (st/dispatch store [::s.e.f.settings/set-allow-registration false])

@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.accounts :as e.accounts]
@@ -47,10 +47,6 @@
           (st/dispatch store [::e.currencies/do-fetch-index-success {:items currencies}])
 
           store))]
-  (comment (defcard accounts accounts))
-  (comment (defcard currencies currencies))
-  (comment (defcard users users))
-
   (let [store (accounts-store)]
     (defcard-rg row-line
       [:table.table

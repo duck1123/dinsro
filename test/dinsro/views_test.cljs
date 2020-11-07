@@ -6,7 +6,6 @@
    [dinsro.views.index-rates-test]
    [dinsro.views.index-transactions-test]
    [dinsro.views.login-test]
-   [dinsro.views.rate-sources-test]
    [dinsro.views.registration-test]
    [dinsro.views.settings-test]
    [dinsro.views.show-currency-test]

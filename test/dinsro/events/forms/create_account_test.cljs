@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.spec :as ds]
    [dinsro.spec.events.forms.create-account :as s.e.f.create-account]
@@ -22,9 +22,6 @@
           ::s.e.f.create-account/user-id user-id}
       event [::e.f.create-account/form-data]
       result (e.f.create-account/form-data-sub db event)]
-
-  (comment (defcard db db))
-  (comment (defcard result result))
 
   (assert-spec ::e.f.create-account/form-data-db db)
   (assert-spec ::e.f.create-account/form-data-event event)

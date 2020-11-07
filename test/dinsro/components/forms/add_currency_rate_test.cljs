@@ -2,7 +2,7 @@
   (:require
    [cljs.pprint :as p]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -23,18 +23,16 @@
                 e.f.create-rate/init-handlers!)]
     store))
 
-(let [currency-id (ds/gen-key :db/id)]
-  (defcard currency-id-card (pr-str currency-id))
+(let [currency-id (ds/gen-key :db/id)
+      store (test-store)
+      expected-result @(st/subscribe store [::e.f.add-currency-rate/form-data])]
+  (st/dispatch store [::e.f.add-currency-rate/set-shown? true])
 
-  (let [store (test-store)
-        expected-result @(st/subscribe store [::e.f.add-currency-rate/form-data])]
-    (st/dispatch store [::e.f.add-currency-rate/set-shown? true])
+  (let [form-data @(st/subscribe store [::e.f.add-currency-rate/form-data])]
+    (assert-spec ::e.f.add-currency-rate/form-data expected-result)
 
-    (let [form-data @(st/subscribe store [::e.f.add-currency-rate/form-data])]
-      (assert-spec ::e.f.add-currency-rate/form-data expected-result)
-
-      (defcard-rg form-data-card
-        [:pre (with-out-str (p/pprint form-data))]))
+    (defcard-rg form-data-card
+      [:pre (with-out-str (p/pprint form-data))]))
 
     (defcard-rg form
-      [c.f.add-currency-rate/form store currency-id])))
+      [c.f.add-currency-rate/form store currency-id]))

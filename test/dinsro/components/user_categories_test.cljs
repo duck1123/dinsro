@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.user-categories :as c.user-categories]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
@@ -25,9 +25,6 @@
               e.f.add-user-category/init-handlers!
               e.f.create-category/init-handlers!
               e.users/init-handlers!)]
-
-  (comment (defcard categories categories))
-
   (defcard-rg section
     [c.user-categories/section store user-id categories])
 

@@ -9,7 +9,6 @@
    [dinsro.events-test]
    [dinsro.events.forms-test]
    [dinsro.spec-test]
-   [dinsro.spec.actions-test]
    [dinsro.views-test]
    [doo.runner :refer-macros [doo-all-tests]]
    [expound.alpha :as expound]

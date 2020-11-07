@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.admin-index-users :as c.admin-index-users]
    [dinsro.events.debug :as e.debug]
@@ -22,9 +22,6 @@
 
 (let [items (ds/gen-key (s/coll-of ::s.users/item :count 3))
       item (first items)]
-  (defcard items items)
-  (defcard item item)
-
   (let [store (test-store)]
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 

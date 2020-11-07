@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
    [dinsro.spec :as ds]
    [dinsro.events.currencies :as e.currencies]
@@ -26,8 +26,6 @@
 
 (let [rate-sources (ds/gen-key (s/coll-of ::s.rate-sources/item :count 3))
       rate-source (first rate-sources)]
-
-  (comment (defcard rate-sources rate-sources))
 
   (let [store (test-store)]
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])

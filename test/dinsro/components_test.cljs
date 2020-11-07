@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components :as c]
    [dinsro.components.admin-index-accounts-test]
    [dinsro.components.admin-index-categories-test]
@@ -18,7 +18,6 @@
    [dinsro.components.rate-chart-test]
    [dinsro.components.show-account-test]
    [dinsro.components.show-currency-test]
-   ;; [dinsro.components.show-transaction-test]
    [dinsro.components.show-user-test]
    [dinsro.components.status-test]
    [dinsro.components.user-accounts-test]
@@ -52,8 +51,6 @@
       currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))
       users (ds/gen-key ::e.users/items)
       handler [::event-name]]
-
-  (comment (defcard currencies currencies))
 
   (let [store (test-store)]
     (st/reg-basic-sub store field)
@@ -91,8 +88,6 @@
     (st/reg-basic-sub store field)
     (st/reg-set-event store field)
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
-
-    (comment (defcard rate-sources-card rate-sources))
 
     (defcard-rg rate-source-selector
       [c/rate-source-selector store label field])

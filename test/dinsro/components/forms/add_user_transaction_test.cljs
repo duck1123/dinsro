@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.add-user-transaction-test
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.add-user-transaction :as c.f.add-user-transaction]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -20,8 +20,6 @@
               e.f.add-user-transaction/init-handlers!
               e.f.create-transaction/init-handlers!
               e.transactions/init-handlers!)]
-
-  (comment (defcard accounts accounts))
 
   (st/dispatch store [::e.f.add-user-transaction/set-shown? true])
   (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])

@@ -1,7 +1,7 @@
 (ns dinsro.components.navbar-test
   (:require
    [cljs.test :refer [is]]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.navbar :as c.navbar]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
@@ -28,9 +28,6 @@
                 e.users/init-handlers!
                 mappings/init-handlers!)]
     store))
-
-(comment (defcard user-id-card (pr-str user-id)))
-(comment (defcard user-card user))
 
 ;; nav-burger
 

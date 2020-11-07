@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.index-transactions :as c.index-transactions]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -19,8 +19,6 @@
 
   (let [item (first items)
         store (transaction-store)]
-    (comment (defcard item item))
-
     (defcard-rg row-line
       [c.index-transactions/row-line store item])
 
@@ -28,8 +26,6 @@
       (is (vector? (c.index-transactions/row-line store item)))))
 
   (let [store (transaction-store)]
-    (comment (defcard items items))
-
     (defcard-rg c.index-transactions/index-transactions
       [c.index-transactions/index-transactions store items])
 

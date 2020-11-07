@@ -2,7 +2,7 @@
   (:require
    [cljs.pprint :as p]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -25,9 +25,6 @@
                 e.debug/init-handlers!
                 e.f.create-transaction/init-handlers!)]
     store))
-
-(comment (defcard accounts-card accounts))
-(comment (defcard transactions-card transactions))
 
 (let [store (test-store)]
   (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])

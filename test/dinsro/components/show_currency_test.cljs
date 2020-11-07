@@ -1,7 +1,7 @@
 (ns dinsro.components.show-currency-test
   (:require
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.debug :as e.debug]
    [dinsro.spec :as ds]
@@ -13,8 +13,6 @@
 (let [item (ds/gen-key ::s.currencies/item)
       store (doto (mock-store)
               e.debug/init-handlers!)]
-  (defcard item item)
-
   (defcard-rg show-currency
     (st/dispatch store [::e.debug/set-shown? true])
     [c.show-currency/show-currency store item])

@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.user-transactions :as c.user-transactions]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -12,7 +12,6 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
    [dinsro.spec :as ds]
-   [dinsro.spec.transactions :as s.transactions]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
@@ -31,22 +30,12 @@
 (let [user (ds/gen-key ::e.users/item)
       user-id (:db/id user)
       accounts (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
-      account (first accounts)
-      transactions (map
-                    #(assoc-in % [::s.transactions/account :db/id] nil)
-                    (ds/gen-key (s/coll-of ::e.transactions/item :count 3)))]
+      store (test-store)]
+  (st/dispatch store [::e.f.add-user-transaction/set-shown? true])
+  (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
-  (comment (defcard user user))
-  (comment (defcard accounts accounts))
-  (comment (defcard account account))
-  (comment (defcard transactions transactions))
+  (defcard-rg section
+    [c.user-transactions/section store user-id accounts])
 
-  (let [store (test-store)]
-    (st/dispatch store [::e.f.add-user-transaction/set-shown? true])
-    (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
-
-    (defcard-rg section
-      [c.user-transactions/section store user-id accounts])
-
-    (deftest section-test
-      (is (vector? (c.user-transactions/section store user-id accounts))))))
+  (deftest section-test
+    (is (vector? (c.user-transactions/section store user-id accounts)))))

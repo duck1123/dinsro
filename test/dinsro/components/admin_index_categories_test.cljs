@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.debug :as e.debug]
@@ -34,9 +34,6 @@
                 e.users/init-handlers!
                 e.f.create-category/init-handlers!)]
     store))
-
-(comment (defcard users-card users))
-(comment (defcard categories-card categories))
 
 (let [store (test-store)]
   (st/dispatch store [::e.categories/do-fetch-index-success {:items categories}])

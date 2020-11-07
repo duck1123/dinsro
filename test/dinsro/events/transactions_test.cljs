@@ -1,25 +1,10 @@
 (ns dinsro.events.transactions-test
   (:require
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard deftest]]
+   [dinsro.cards :refer-macros [deftest]]
    [dinsro.events.utils.impl :as eui]
-   [dinsro.events.transactions :as e.transactions]
-   [dinsro.spec.events.transactions :as s.e.transactions]
-   [dinsro.spec :as ds]
    [dinsro.store.mock :refer [mock-store]]
    [taoensso.timbre :as timbre]))
-
-(defcard item
-  (ds/gen-key ::e.transactions/item))
-
-(defcard ::e.transactions/do-fetch-index-cofx
-  (ds/gen-key ::s.e.transactions/do-fetch-index-cofx))
-
-(defcard do-fetch-index-response
-  "7")
-
-(defcard do-fetch-index-response-card
-  (ds/gen-key ::e.transactions/do-fetch-index-response))
 
 (let [store (mock-store)]
   (deftest do-fetch-index

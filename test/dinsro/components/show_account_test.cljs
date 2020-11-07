@@ -1,7 +1,7 @@
 (ns dinsro.components.show-account-test
   (:require
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.show-account :as c.show-account]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -22,9 +22,6 @@
               e.debug/init-handlers!
               e.currencies/init-handlers!
               e.users/init-handlers!)]
-
-  (comment (defcard user user))
-  (comment (defcard account account))
 
   (defcard-rg show-account-card
     (st/dispatch store [::e.debug/set-shown? true])

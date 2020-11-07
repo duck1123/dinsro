@@ -1,7 +1,7 @@
 (ns dinsro.components.forms.add-user-category-test
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.add-user-category :as c.f.add-user-category]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
@@ -24,13 +24,10 @@
     store))
 
 (let [accounts (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
-      user-id 1]
+      user-id 1
+      store (test-store)]
+  (st/dispatch store [::e.f.add-user-category/set-shown? true])
+  (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
-  (comment (defcard accounts accounts))
-
-  (let [store (test-store)]
-    (st/dispatch store [::e.f.add-user-category/set-shown? true])
-    (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
-
-    (defcard-rg form
-      [c.f.add-user-category/form store user-id])))
+  (defcard-rg form
+    [c.f.add-user-category/form store user-id]))
