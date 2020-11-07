@@ -90,7 +90,7 @@
 
   :min-lein-version "2.0.0"
 
-  :source-paths ["src"]
+  :source-paths ["src" "lib"]
   :test-paths ["test"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
@@ -127,7 +127,7 @@
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
              :cljsbuild
-             {:builds {:min {:source-paths ["src"
+             {:builds {:min {:source-paths ["src" "lib"
                                             "env/prod/src"]
                              :compiler
                              {:output-dir    "target/cljsbuild/public/js"
@@ -172,7 +172,7 @@
 
                  :cljsbuild
                   {:builds
-                   {:app      {:source-paths ["src" "env/dev/src" "test"]
+                   {:app      {:source-paths ["src" "lib" "env/dev/src" "test"]
                                :figwheel     {:on-jsload "dinsro.core/mount-components"}
                                :compiler     {:main            "dinsro.app"
                                               :asset-path      "/js/out"
