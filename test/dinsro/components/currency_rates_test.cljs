@@ -2,19 +2,14 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
-   [dinsro.components.currency-rates :as c.currency-rates]
-   [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
-   [dinsro.store.mock :refer [mock-store]]))
+   [dinsro.components.currency-rates :as c.currency-rates]))
 
-(let [currency-id 7
-      rates [[1 1]
+(let [rates [[1 1]
              [2 2]
-             [3 4]]
-      store (doto (mock-store)
-              e.f.add-currency-rate/init-handlers!)]
+             [3 4]]]
 
   (defcard-rg c.currency-rates/section
-    [c.currency-rates/section store currency-id rates])
+    [c.currency-rates/section rates])
 
   (deftest section-test
-    (is (vector? (c.currency-rates/section store currency-id rates)))))
+    (is (vector? (c.currency-rates/section rates)))))
