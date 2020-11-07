@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.components.boundary]
    [dinsro.components.currency-rates :as c.currency-rates]))
 
 (let [rates [[1 1]

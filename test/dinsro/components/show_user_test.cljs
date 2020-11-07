@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.components.boundary]
    [dinsro.components.show-user :as c.show-user]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]

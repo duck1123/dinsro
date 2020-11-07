@@ -4,6 +4,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
+   [dinsro.components.boundary]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-category :as e.f.create-category]

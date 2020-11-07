@@ -5,6 +5,7 @@
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.components.admin-index-categories :as c.admin-index-categories]
    [dinsro.components.admin-index-users :as c.admin-index-users]
+   [dinsro.components.boundary]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
    [dinsro.specs :as ds]

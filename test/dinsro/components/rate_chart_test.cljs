@@ -1,6 +1,7 @@
 (ns dinsro.components.rate-chart-test
   (:require
    [dinsro.cards :refer-macros [defcard-rg]]
+   [dinsro.components.boundary]
    [dinsro.components.rate-chart :as c.rate-chart]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))

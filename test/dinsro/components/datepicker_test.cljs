@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.components.boundary]
    [dinsro.components.datepicker :as c.datepicker]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]

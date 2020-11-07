@@ -32,6 +32,7 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.settings :as e.settings]
+   [dinsro.events.utils.impl]
    [dinsro.events.users :as e.users]
    [dinsro.events.websocket :as e.websocket]
    [dinsro.mappings :as mappings]

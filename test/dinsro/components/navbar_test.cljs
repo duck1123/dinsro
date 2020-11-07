@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.components.boundary]
    [dinsro.components.navbar :as c.navbar]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]

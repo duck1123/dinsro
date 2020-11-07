@@ -3,6 +3,7 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.components.boundary]
    [dinsro.components.user-categories :as c.user-categories]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
