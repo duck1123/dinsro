@@ -1,8 +1,7 @@
 (ns dinsro.components.forms.create-rate-test
   (:require
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.create-rate :as c.f.create-rate]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -32,7 +31,4 @@
     [:pre (pr-str @(st/subscribe store [::e.f.create-rate/form-data]))])
 
   (defcard-rg form
-    [c.f.create-rate/form store])
-
-  (deftest form-test
-    (is (vector? (c.f.create-rate/form store)))))
+    [c.f.create-rate/form store]))

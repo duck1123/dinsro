@@ -1,8 +1,7 @@
 (ns dinsro.components.forms.add-user-category-test
   (:require
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.add-user-category :as c.f.add-user-category]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
@@ -34,7 +33,4 @@
     (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
     (defcard-rg form
-      [c.f.add-user-category/form store user-id])
-
-    (deftest form-test
-      (is (vector? (c.f.add-user-category/form store user-id))))))
+      [c.f.add-user-category/form store user-id])))

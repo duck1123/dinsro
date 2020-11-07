@@ -1,8 +1,7 @@
 (ns dinsro.components.forms.admin-create-account-test
   (:require
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.admin-create-account :as c.f.admin-create-account]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -48,7 +47,4 @@
     (st/dispatch store [::e.debug/set-shown? true])
 
     (defcard-rg form-inner
-      [c.f.admin-create-account/form store])
-
-    (deftest form-inner-test
-      (is (vector? (c.f.admin-create-account/form store))))))
+      [c.f.admin-create-account/form store])))

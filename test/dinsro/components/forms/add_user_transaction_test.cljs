@@ -1,8 +1,7 @@
 (ns dinsro.components.forms.add-user-transaction-test
   (:require
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.add-user-transaction :as c.f.add-user-transaction]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -28,7 +27,4 @@
   (st/dispatch store [::e.accounts/do-fetch-index-success {:items accounts}])
 
   (defcard-rg form
-    [c.f.add-user-transaction/form-shown store])
-
-  (deftest form-test
-    (is (vector? (c.f.add-user-transaction/form store)))))
+    [c.f.add-user-transaction/form-shown store]))

@@ -1,7 +1,6 @@
 (ns dinsro.components.forms.create-account-test
   (:require
-   [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard-rg]]
    [dinsro.components.forms.create-account :as c.f.create-account]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -27,7 +26,4 @@
   (st/dispatch store [::e.f.create-account/set-shown? true])
 
   (defcard-rg form
-    [c.f.create-account/form store])
-
-  (deftest form-test
-    (is (vector? (c.f.create-account/form store)))))
+    [c.f.create-account/form store]))

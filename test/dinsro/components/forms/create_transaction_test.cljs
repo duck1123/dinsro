@@ -1,9 +1,8 @@
 (ns dinsro.components.forms.create-transaction-test
   (:require
    [cljs.pprint :as p]
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.create-transaction :as c.f.create-transaction]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
@@ -38,7 +37,4 @@
     [:pre (with-out-str (p/pprint @(st/subscribe store [::e.f.create-transaction/form-data])))])
 
   (defcard-rg create-transaction-card
-    [c.f.create-transaction/form store])
-
-  (deftest create-transaction-test
-    (is (vector? (c.f.create-transaction/form store)))))
+    [c.f.create-transaction/form store]))

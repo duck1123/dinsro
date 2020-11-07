@@ -1,9 +1,8 @@
 (ns dinsro.components.forms.add-currency-rate-test
   (:require
    [cljs.pprint :as p]
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.add-currency-rate :as c.f.add-currency-rate]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -38,8 +37,4 @@
         [:pre (with-out-str (p/pprint form-data))]))
 
     (defcard-rg form
-      [c.f.add-currency-rate/form store currency-id])
-
-    (deftest form-test
-      (st/dispatch store [::e.f.add-currency-rate/set-shown? true])
-      (is (vector? (c.f.add-currency-rate/form store currency-id))))))
+      [c.f.add-currency-rate/form store currency-id])))

@@ -1,8 +1,7 @@
 (ns dinsro.components.forms.add-user-account-test
   (:require
-   [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [defcard defcard-rg deftest]]
+   [dinsro.cards :refer-macros [defcard defcard-rg]]
    [dinsro.components.forms.add-user-account :as c.f.add-user-account]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
@@ -32,7 +31,4 @@
     [:pre (pr-str @(st/subscribe store [::e.f.add-user-account/form-data]))])
 
   (defcard-rg form
-    [c.f.add-user-account/form store id])
-
-  (deftest form-test
-    (is (vector? (c.f.add-user-account/form store id)))))
+    [c.f.add-user-account/form store id]))
