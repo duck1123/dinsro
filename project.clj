@@ -91,7 +91,7 @@
 
   :min-lein-version "2.0.0"
 
-  :source-paths ["src" "lib"]
+  :source-paths ["src/main" "lib"]
   :test-paths ["test"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
@@ -128,7 +128,7 @@
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
              :cljsbuild
-             {:builds {:min {:source-paths ["src" "lib"
+             {:builds {:min {:source-paths ["src/main" "lib"
                                             "env/prod/src"]
                              :compiler
                              {:output-dir    "target/cljsbuild/public/js"
@@ -173,7 +173,7 @@
 
                  :cljsbuild
                   {:builds
-                   {:app      {:source-paths ["src" "lib" "env/dev/src" "test"]
+                   {:app      {:source-paths ["src/main" "lib" "env/dev/src" "test"]
                                :figwheel     {:on-jsload "dinsro.core/mount-components"}
                                :compiler     {:main            "dinsro.app"
                                               :asset-path      "/js/out"
@@ -210,7 +210,7 @@
                                  :nrepl-port 7003}
                       :cljsbuild
                       {:builds
-                       {:devcards {:source-paths ["src" "lib" "env/dev/src" "test"]
+                       {:devcards {:source-paths ["src/main" "lib" "env/dev/src" "test"]
                                    :figwheel     {:devcards true}
                                    :compiler     {:main "starter.doo"
                                                   :asset-path "/js/devcards_out"
@@ -225,7 +225,7 @@
    {:jvm-opts ["-Dconf=test-config.edn"]
     :resource-paths ["env/test/resources"]
     :cljsbuild
-    {:builds {:test {:source-paths ["src" "env/test/src" "test"]
+    {:builds {:test {:source-paths ["src/main" "env/test/src" "test"]
                      :compiler
                      {:output-to "target/cljsbuild-test/public/js/test.js"
                       :output-dir "target/cljsbuild-test/public/js/out"
