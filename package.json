@@ -25,7 +25,7 @@
   "dependencies": {
     "@cljs-oss/module-deps": "^1.1.1",
     "@js-joda/core": "^3.2.0",
-    "create-react-class": "15.6.3",
+    "create-react-class": "^15.7.0",
     "highcharts": "^8.2.2",
     "highlight.js": "9.18.1",
     "hljs": "^6.2.3",
@@ -36,7 +36,6 @@
     "react-grid-layout": "0.16.6",
     "react-highlight.js": "1.0.7",
     "react-icons": "2.2.7",
-    "reakit": "0.11.2",
     "semantic-ui-css": "^2.4.1",
     "shadow": "0.0.1",
     "xmlhttprequest": "^1.8.0"
