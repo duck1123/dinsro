@@ -12,6 +12,7 @@
 .nrepl-port
 .rebel_readline_history
 .secret
+.shadow-cljs
 data
 dev-config.edn
 node_modules/
