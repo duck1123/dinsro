@@ -1,6 +1,5 @@
 (ns dinsro.cards
   (:require
-   [dinsro.components.boundary :refer [error-boundary]]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
