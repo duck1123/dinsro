@@ -6,7 +6,9 @@
 (defmacro defcard-rg
   [name & body]
   `(devcards.core/defcard ~name
-     (reagent.core/as-element [error-boundary ((fn [] ~@body))])))
+     (reagent.core/as-element
+      [dinsro.components.boundary/error-boundary
+       ((fn [] ~@body))])))
 
 (defmacro defcard
   [name & body]
