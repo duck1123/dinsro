@@ -1,6 +1,6 @@
 module.exports = function (config) {
   config.set({
-    browsers: ["ChromeHeadless"],
+    browsers: ["Chrome_without_security"],
     // The directory where the output file lives
     basePath: "target",
     // The file itself
@@ -12,6 +12,13 @@ module.exports = function (config) {
     client: {
       args: ["shadow.test.karma.init"],
       singleRun: true,
+    },
+    // you can define custom flags
+    customLaunchers: {
+      Chrome_without_security: {
+        base: "ChromeHeadless",
+        flags: ["--disable-web-security", "--no-sandbox"],
+      },
     },
   });
 };
