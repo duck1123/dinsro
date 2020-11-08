@@ -2,6 +2,5 @@
 
 set -ex
 
-# lein with-profile uberjar run
+npx shadow-cljs compile release
 lein uberjar
-
