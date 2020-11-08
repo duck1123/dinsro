@@ -5,11 +5,23 @@
 
  :builds
  {:app
-  {:target :browser
+  {:asset-path "/js"
+   :closure-defines
+   {"re_frame.trace.trace_enabled_QMARK_"        true
+    "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+   :target :browser
    :modules {:main {:init-fn dinsro.app/init}}
-   ;; :devtools {:after-load app.main/reload!}
-   :output-dir "resources/public/js"
-   :asset-path "/js"}
+   :output-dir "resources/public/js"}
+
+  :ci
+  {:output-to "target/ci.js",
+   :target :karma
+   :ns-regexp "-test$"
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}}
 
   :devcards
   {:asset-path "/devcards/js"
@@ -23,8 +35,7 @@
                                 devcards-syntax-highlighter cljsjs.highlight}}
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   }
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}}
 
   :test
   {:output-to "target/tests/test.js",
@@ -36,15 +47,11 @@
    :devtools  {:http-port 8021
                :http-root "target/tests"}}
 
-  :ci
-  {:output-to "target/ci.js",
-   :target :karma
-   :ns-regexp "-test$"
-
-   :js-options {:resolve
-                {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   :build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-
-   }}}
+  :release
+  {:asset-path "/js"
+   :closure-defines
+   {"re_frame.trace.trace_enabled_QMARK_"        false
+    "day8.re_frame.tracing.trace_enabled_QMARK_" false}
+   :target :browser
+   :modules {:main {:init-fn dinsro.app/init}}
+   :output-dir "resources/public/js"}}}

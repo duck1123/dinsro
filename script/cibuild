@@ -4,5 +4,5 @@
 
 set -ex
 
-npx shadow-cljs compile app
-lein uberjar
+npx shadow-cljs compile release
+script/build-production
