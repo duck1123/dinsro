@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.categories :as a.categories]
    [dinsro.mocks :as mocks]
-   [dinsro.model.categories :as m.categories]
+   [dinsro.queries.categories :as q.categories]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.categories :as s.a.categories]
    [dinsro.specs.categories :as s.categories]
@@ -37,7 +37,7 @@
   (let [request (ds/gen-key ::s.a.categories/create-request-valid)
         response (a.categories/create-handler request)
         id (get-in response [:body :item :db/id])
-        created-record (m.categories/read-record id)]
+        created-record (q.categories/read-record id)]
     (is (not (nil? created-record))
         "record can be read")
     (is (= status/ok (:status response)))
@@ -54,10 +54,10 @@
   (let [currency (mocks/mock-category)
         id (:db/id currency)
         request {:path-params {:id (str id)}}]
-    (is (not (nil? (m.categories/read-record id))))
+    (is (not (nil? (q.categories/read-record id))))
     (let [response (a.categories/delete-handler request)]
       (is (= status/ok (:status response)))
-      (is (nil? (m.categories/read-record id))))))
+      (is (nil? (q.categories/read-record id))))))
 
 (deftest read-handler-success
   (let [category (mocks/mock-category)

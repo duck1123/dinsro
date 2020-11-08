@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs.actions.admin-rate-sources :as s.a.admin-rate-sources]
    [dinsro.specs.rate-sources :as s.rate-sources]
    [ring.util.http-response :as http]
@@ -31,8 +31,8 @@
   [request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
-          (when-let [id (m.rate-sources/create-record params)]
-            (http/ok {:item (m.rate-sources/read-record id)}))))
+          (when-let [id (q.rate-sources/create-record params)]
+            (http/ok {:item (q.rate-sources/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -44,7 +44,7 @@
 (defn read-handler
   [request]
   (if-let [id (get-in request [:path-params :id])]
-    (if-let [item (m.rate-sources/read-record id)]
+    (if-let [item (q.rate-sources/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
@@ -58,7 +58,7 @@
 (defn delete-handler
   [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
-    (m.rate-sources/delete-record id)
+    (q.rate-sources/delete-record id)
     (http/ok {:id id})))
 
 (s/fdef delete-handler
@@ -72,7 +72,7 @@
   (let [
         ;; TODO: parse from request
         limit 50
-        items (m.rate-sources/index-records)
+        items (q.rate-sources/index-records)
         response {:model :rate-sources
                   :limit limit
                   :items items}]

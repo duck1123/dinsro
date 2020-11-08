@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.users :as a.users]
-   [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.authentication :as s.a.authentication]
    [dinsro.specs.users :as s.users]
@@ -23,7 +23,7 @@
   (let [{:keys [dinsro.specs.users/email
                 dinsro.specs.users/password]
          :as user-params} (ds/gen-key ::s.users/input-params-valid)]
-    (m.users/create-record (a.users/prepare-record user-params))
+    (q.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password password}
           path (str url-root "/authenticate")
           request (-> (mock/request :post path) (assoc :params body))
@@ -34,7 +34,7 @@
   (let [{:keys [dinsro.specs.users/email
                 dinsro.specs.users/password]
          :as user-params} (ds/gen-key ::s.users/input-params-valid)]
-    (m.users/create-record (a.users/prepare-record user-params))
+    (q.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password (str password "x")}
           path (str url-root "/authenticate")
           request (-> (mock/request :post path) (assoc :params body))

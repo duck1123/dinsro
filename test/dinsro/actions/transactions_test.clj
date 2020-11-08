@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.transactions :as a.transactions]
    [dinsro.mocks :as mocks]
-   [dinsro.model.transactions :as m.transactions]
+   [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.transactions :as s.a.transactions]
    [dinsro.specs.currencies :as s.currencies]
@@ -69,11 +69,11 @@
   (let [item (mocks/mock-transaction)
         id (:db/id item)
         request {:path-params {:id (str id)}}]
-    (is (not (nil? (m.transactions/read-record id))))
+    (is (not (nil? (q.transactions/read-record id))))
     (let [response (a.transactions/delete-handler request)]
       (is (= status/ok (:status response))
           "returns ok status")
-      (is (nil? (m.transactions/read-record id))
+      (is (nil? (q.transactions/read-record id))
           "record can no longer be found"))))
 
 (deftest read-handler-success

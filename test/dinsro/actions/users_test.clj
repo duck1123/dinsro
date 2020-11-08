@@ -3,7 +3,7 @@
    [clojure.test :refer [are deftest is use-fixtures]]
    [dinsro.actions.users :as a.users]
    [dinsro.mocks :as mocks]
-   [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
@@ -35,7 +35,7 @@
 
 (deftest read-handler-success
   (let [params (ds/gen-key ::s.users/params)
-        id (m.users/create-record params)
+        id (q.users/create-record params)
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]
     (is (= status/ok (:status response))

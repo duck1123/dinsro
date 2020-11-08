@@ -1,4 +1,4 @@
-(ns dinsro.model.currencies
+(ns dinsro.queries.currencies
   (:require
    [clojure.spec.alpha :as s]
    [datahike.api :as d]

@@ -3,9 +3,9 @@
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.rates :as m.rates]
+   [dinsro.queries.rate-sources :as q.rate-sources]
+   [dinsro.queries.currencies :as q.currencies]
+   [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.rate-sources :as s.a.rate-sources]
    [dinsro.specs.currencies :as s.currencies]
@@ -44,8 +44,8 @@
   [request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
-          (when-let [id (m.rate-sources/create-record params)]
-            (http/ok {:item (m.rate-sources/read-record id)}))))
+          (when-let [id (q.rate-sources/create-record params)]
+            (http/ok {:item (q.rate-sources/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -59,7 +59,7 @@
   (let [
         ;; TODO: parse from request
         limit 50
-        items (m.rate-sources/index-records)
+        items (q.rate-sources/index-records)
         response {:model :rate-sources
                   :limit limit
                   :items items}]
@@ -74,7 +74,7 @@
 (defn read-handler
   [request]
   (if-let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
-    (if-let [item (m.rate-sources/read-record id)]
+    (if-let [item (q.rate-sources/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
@@ -88,7 +88,7 @@
 (defn delete-handler
   [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
-    (m.rate-sources/delete-record id)
+    (q.rate-sources/delete-record id)
     (http/ok {:id id})))
 
 (s/fdef delete-handler
@@ -115,13 +115,13 @@
 (defn fetch-source
   [item]
   (if-let [currency-id (some-> item ::s.rate-sources/currency :db/id)]
-    (if-let [currency (m.currencies/read-record currency-id)]
+    (if-let [currency (q.currencies/read-record currency-id)]
       (if-let [rate (fetch-rate item)]
         (let [rate-item {::s.rates/currency {:db/id currency-id}
                          ::s.rates/rate rate
                          ::s.rates/date (tick/instant)}]
           (timbre/infof "Updating rate for currency %s => %s" (::s.currencies/name currency) rate)
-          (m.rates/create-record rate-item))
+          (q.rates/create-record rate-item))
         (timbre/error "No rate"))
       (timbre/error "Couldn't find currency"))
     (timbre/error "No Currency id")))
@@ -133,10 +133,10 @@
 (defn run-handler
   [request]
   (let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
-    (if-let [item (m.rate-sources/read-record id)]
+    (if-let [item (q.rate-sources/read-record id)]
       (try
         (let [id (fetch-source item)
-              rate (m.rates/read-record id)]
+              rate (q.rates/read-record id)]
           (http/ok {:status :ok :item rate}))
         (catch NumberFormatException e
           (http/internal-server-error {:status :error :message (.getMessage e)})))
@@ -144,7 +144,7 @@
 
 (defn check-rates
   []
-  (doseq [item (m.rate-sources/index-records)]
+  (doseq [item (q.rate-sources/index-records)]
     (fetch-source item)))
 
 (defn stop-scheduler

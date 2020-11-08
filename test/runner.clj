@@ -3,6 +3,6 @@
             dinsro.actions.authentication-test
             dinsro.actions.currencies-test
             dinsro.actions.users-test
-            dinsro.model.accounts-test
-            dinsro.model.currencies-test
-            dinsro.model.users-test))
+            dinsro.queries.accounts-test
+            dinsro.queries.currencies-test
+            dinsro.queries.users-test))

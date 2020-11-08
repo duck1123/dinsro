@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.accounts :as a.accounts]
    [dinsro.mocks :as mocks]
-   [dinsro.model.accounts :as m.accounts]
+   [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs :as ds]
    [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.actions.accounts :as s.a.accounts]
@@ -72,5 +72,5 @@
     (is (= status/ok (:status response))
         "successful status")
 
-    (is (nil? (m.accounts/read-record id))
+    (is (nil? (q.accounts/read-record id))
         "account is deleted")))

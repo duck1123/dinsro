@@ -6,7 +6,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.actions.users :as a.users]
    [dinsro.config :refer [secret]]
-   [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs.actions.authentication :as s.a.authentication]
    [dinsro.specs.users :as s.users]
    [ring.util.http-response :as http]
@@ -16,7 +16,7 @@
   [request]
   (let [{{:keys [email password]} :params} request]
     (if (and (seq email) (seq password))
-      (if-let [user (m.users/find-by-email email)]
+      (if-let [user (q.users/find-by-email email)]
         (if-let [password-hash (::s.users/password-hash user)]
           (if (hashers/check password password-hash)
             (let [id (:db/id user)
@@ -49,7 +49,7 @@
         params (a.users/prepare-record params)]
     (if (s/valid? ::s.users/params params)
       (try
-        (let [id (m.users/create-record params)]
+        (let [id (q.users/create-record params)]
           (http/ok {:id id}))
         (catch RuntimeException _
           (http/bad-request {:status :failed

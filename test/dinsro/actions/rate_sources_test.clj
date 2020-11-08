@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.rate-sources :as a.rate-sources]
    [dinsro.mocks :as mocks]
-   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.rate-sources :as s.a.rate-sources]
    [dinsro.specs.currencies :as s.currencies]
@@ -49,7 +49,7 @@
     (is (= status/ok (:status response)))
     (let [id (get-in response [:body :item :db/id])]
       (is (not (nil? ident?)))
-      (let [created-record (m.rate-sources/read-record id)]
+      (let [created-record (q.rate-sources/read-record id)]
         (is (not (nil? created-record))
             "record can be read")
         (is (= (:name request) (::s.rate-sources/name response)))))))

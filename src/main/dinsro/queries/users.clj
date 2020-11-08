@@ -1,4 +1,4 @@
-(ns dinsro.model.users
+(ns dinsro.queries.users
   (:require
    [clojure.spec.alpha :as s]
    [datahike.api :as d]

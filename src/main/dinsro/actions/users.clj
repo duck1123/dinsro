@@ -3,7 +3,7 @@
    [buddy.hashers :as hashers]
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
-   [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs.actions.users :as s.a.users]
    [dinsro.specs.users :as s.users]
    [expound.alpha :as expound]
@@ -36,19 +36,19 @@
 (defn create-handler
   [{:keys [params]}]
   (or (when-let [params (prepare-record params)]
-        (if-let [id (m.users/create-record params)]
-          (http/ok {:item (m.users/read-record id)})))
+        (if-let [id (q.users/create-record params)]
+          (http/ok {:item (q.users/read-record id)})))
       (http/bad-request {:status :invalid})))
 
 (defn delete-handler
   [request]
   (let [user-id (Integer/parseInt (:id (:path-params request)))]
-    (m.users/delete-record user-id)
+    (q.users/delete-record user-id)
     (http/ok {:id user-id})))
 
 (defn index-handler
   [_]
-  (let [users (m.users/index-records)]
+  (let [users (q.users/index-records)]
     (http/ok {:items users})))
 
 (s/fdef index-handler
@@ -61,7 +61,7 @@
   [request ]
   (let [{{id :id} :path-params} request]
     (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _ nil))]
-      (if-let [user (m.users/read-record id)]
+      (if-let [user (q.users/read-record id)]
         (http/ok {:item user})
         (http/not-found {:status :not-found}))
       (http/bad-request {:status :bad-request}))))

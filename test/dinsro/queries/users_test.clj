@@ -1,11 +1,11 @@
-(ns dinsro.model.users-test
+(ns dinsro.queries.users-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
    [datahike.api :as d]
    [datahike.config :refer [uri->config]]
    [dinsro.config :as config]
    [dinsro.db :as db]
-   [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.specs.users :as s.users]
    [mount.core :as mount]))
@@ -26,20 +26,20 @@
 (deftest create-record-valid
   (let [params (ds/gen-key ::s.users/params)
         {:keys [dinsro.specs.users/email]} params
-        id (m.users/create-record params)
-        user (m.users/read-record id)]
+        id (q.users/create-record params)
+        user (q.users/read-record id)]
     (is (= email (::s.users/email user)))))
 
 (deftest create-record-invalid
   (let [params (ds/gen-key ::s.users/params)
-        id (m.users/create-record params)]
-    (m.users/read-record id)
+        id (q.users/create-record params)]
+    (q.users/read-record id)
     ;; TODO: Throw a better error
-    (is (thrown? RuntimeException (m.users/create-record params)))))
+    (is (thrown? RuntimeException (q.users/create-record params)))))
 
 (deftest read-record
   (let [params (ds/gen-key ::s.users/params)
         {:keys [dinsro.specs.users/email]} params
-        id (m.users/create-record params)
-        response (m.users/read-record id)]
+        id (q.users/create-record params)
+        response (q.users/read-record id)]
     (is (= email (::s.users/email response)))))

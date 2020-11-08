@@ -1,4 +1,4 @@
-(ns dinsro.model.categories
+(ns dinsro.queries.categories
   (:require
    [clojure.spec.alpha :as s]
    [datahike.api :as d]

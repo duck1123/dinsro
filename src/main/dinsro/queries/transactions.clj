@@ -1,4 +1,4 @@
-(ns dinsro.model.transactions
+(ns dinsro.queries.transactions
   (:require
    [clojure.spec.alpha :as s]
    [datahike.api :as d]

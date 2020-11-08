@@ -1,4 +1,4 @@
-(ns dinsro.model.rates
+(ns dinsro.queries.rates
   (:require
    [clojure.spec.alpha :as s]
    [datahike.api :as d]

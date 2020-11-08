@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.rates :as m.rates]
+   [dinsro.queries.rates :as q.rates]
    [dinsro.specs.actions.rates :as s.a.rates]
    [dinsro.specs.rates :as s.rates]
    [dinsro.utils :as utils]
@@ -31,8 +31,8 @@
   [{:keys [params]}]
   (or (when-let [item (some-> params
                               prepare-record
-                              m.rates/create-record
-                              m.rates/read-record)]
+                              q.rates/create-record
+                              q.rates/read-record)]
         (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
@@ -47,7 +47,7 @@
   (let [
         ;; TODO: parse from request
         limit 50
-        items (m.rates/index-records)
+        items (q.rates/index-records)
         response {:model :rates
                   :limit limit
                   :items items}]
@@ -62,7 +62,7 @@
 (defn read-handler
   [{{:keys [id]} :path-params}]
   (if-let [id (utils/try-parse-int id)]
-    (if-let [item (m.rates/read-record id)]
+    (if-let [item (q.rates/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
@@ -76,7 +76,7 @@
 (defn delete-handler
   [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
-    (m.rates/delete-record id)
+    (q.rates/delete-record id)
     (http/ok {:id id})))
 
 (s/fdef delete-handler
@@ -89,7 +89,7 @@
   [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
    (http/ok {:currency-id id
-             :items (sort-by first (m.rates/index-records-by-currency id))})))
+             :items (sort-by first (q.rates/index-records-by-currency id))})))
 
 (s/fdef index-by-currency-handler
   :args (s/cat :request ::s.a.rates/index-by-currency-request)
@@ -100,7 +100,7 @@
   (let [
         ;; TODO: parse from request
         limit 50
-        items (m.rates/index-records)
+        items (q.rates/index-records)
         response {:model :rates
                   :limit limit
                   :items items}]

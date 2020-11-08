@@ -1,4 +1,4 @@
-(ns dinsro.model.rate-sources-test
+(ns dinsro.queries.rate-sources-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
    [datahike.api :as d]
@@ -6,7 +6,7 @@
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
-   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
    [dinsro.specs.currencies :as s.currencies]
    [dinsro.specs.rate-sources :as s.rate-sources]
@@ -28,27 +28,27 @@
 
 (deftest create-record-test
   (let [params (ds/gen-key ::s.rate-sources/params)
-        id (m.rate-sources/create-record params)
-        item (m.rate-sources/read-record id)]
+        id (q.rate-sources/create-record params)
+        item (q.rate-sources/read-record id)]
     (is (= (::s.rate-sources/name params) (::s.rate-sources/name item))
         "rate sources match")))
 
 (deftest read-record-test-not-found
   (let [id (ds/gen-key :db/id)
-        response (m.rate-sources/read-record id)]
+        response (q.rate-sources/read-record id)]
     (is (nil? response)
         "Should return nil")))
 
 (deftest read-record-test-found
   (let [item (mocks/mock-rate-source)
-        response (m.rate-sources/read-record (:db/id item))]
+        response (q.rate-sources/read-record (:db/id item))]
     (is (= item response)
         "Return the matching item")))
 
 (deftest index-records-no-records
-  (is (= [] (m.rate-sources/index-records))))
+  (is (= [] (q.rate-sources/index-records))))
 
 (deftest index-records-with-records
   (let [item (mocks/mock-rate-source)
-        response (m.rate-sources/index-records)]
+        response (q.rate-sources/index-records)]
     (is (= [item] response))))

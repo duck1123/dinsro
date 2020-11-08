@@ -3,7 +3,7 @@
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.categories :as m.categories]
+   [dinsro.queries.categories :as q.categories]
    [dinsro.specs.categories :as s.categories]
    [dinsro.specs.actions.categories :as s.a.categories]
    [dinsro.utils :as utils]
@@ -37,8 +37,8 @@
 (defn create-handler
   [{:keys [params]}]
   (or (when-let [params (prepare-record params)]
-        (let [id (m.categories/create-record params)]
-          (http/ok {:item (m.categories/read-record id)})))
+        (let [id (q.categories/create-record params)]
+          (http/ok {:item (q.categories/read-record id)})))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -50,7 +50,7 @@
 (defn read-handler
   [{{:keys [id]} :path-params}]
   (if-let [id (utils/try-parse-int id)]
-    (if-let [category (m.categories/read-record id)]
+    (if-let [category (q.categories/read-record id)]
       (http/ok category)
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :invalid})))
@@ -65,7 +65,7 @@
   [{{:keys [id]} :path-params}]
   (if-let [id (utils/try-parse-int id)]
     (do
-      (m.categories/delete-record id)
+      (q.categories/delete-record id)
       (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))
 
@@ -77,7 +77,7 @@
 
 (defn index-handler
   [_]
-  (let [categories (m.categories/index-records)]
+  (let [categories (q.categories/index-records)]
     (http/ok {:items categories})))
 
 (s/fdef index-handler

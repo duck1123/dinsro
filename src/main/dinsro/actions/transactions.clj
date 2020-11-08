@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.transactions :as m.transactions]
+   [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs.actions.transactions :as s.a.transactions]
    [dinsro.specs.transactions :as s.transactions]
    [dinsro.translations :refer [tr]]
@@ -34,8 +34,8 @@
   [request]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
-          (when-let [id (m.transactions/create-record params)]
-            (http/ok {:item (m.transactions/read-record id)}))))
+          (when-let [id (q.transactions/create-record params)]
+            (http/ok {:item (q.transactions/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -47,7 +47,7 @@
 (defn read-handler
   [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
-    (if-let [item (m.transactions/read-record id)]
+    (if-let [item (q.transactions/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
@@ -62,7 +62,7 @@
   [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (do
-      (m.transactions/delete-record id)
+      (q.transactions/delete-record id)
       (http/ok {:id id}))
     (http/bad-request
      {:status :bad-request
@@ -76,7 +76,7 @@
 
 (defn index-handler
   [_]
-  (let [items (m.transactions/index-records)]
+  (let [items (q.transactions/index-records)]
     (http/ok {:model :transactions :items items})))
 
 (s/fdef index-handler

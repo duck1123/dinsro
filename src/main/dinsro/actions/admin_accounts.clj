@@ -3,7 +3,7 @@
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.accounts :as m.accounts]
+   [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs.actions.admin-accounts :as s.a.admin-accounts]
    [dinsro.specs.accounts :as s.accounts]
    [dinsro.utils :as utils]
@@ -42,8 +42,8 @@
 (defn create-handler
   [{:keys [params]}]
   (or (when-let [params (prepare-record params)]
-        (let [id (m.accounts/create-record params)]
-          (http/ok {:item (m.accounts/read-record id)})))
+        (let [id (q.accounts/create-record params)]
+          (http/ok {:item (q.accounts/read-record id)})))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -55,7 +55,7 @@
 (defn read-handler
   [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
-    (if-let [account (m.accounts/read-record {:id id})]
+    (if-let [account (q.accounts/read-record {:id id})]
       (http/ok account)
       (http/not-found {}))
     (http/bad-request {:status :bad-request})))
@@ -70,7 +70,7 @@
   [{{:keys [id]} :path-params}]
   (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _ nil))]
     (do
-      (m.accounts/delete-record id)
+      (q.accounts/delete-record id)
       (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
 
@@ -82,7 +82,7 @@
 
 (defn index-handler
   [_request]
-  (let [accounts (m.accounts/index-records)]
+  (let [accounts (q.accounts/index-records)]
     (http/ok {:items accounts})))
 
 (s/fdef index-handler

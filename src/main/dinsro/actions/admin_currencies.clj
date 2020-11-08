@@ -2,7 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
-   [dinsro.model.currencies :as m.currencies]
+   [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs.actions.admin-currencies :as s.a.admin-currencies]
    [dinsro.specs.currencies :as s.currencies]
    [expound.alpha :as expound]
@@ -35,8 +35,8 @@
   [request]
   (or (let [{:keys [params]} request]
         (when-let [params (prepare-record params)]
-          (let [id (m.currencies/create-record params)]
-            (http/ok {:item (m.currencies/read-record id)}))))
+          (let [id (q.currencies/create-record params)]
+            (http/ok {:item (q.currencies/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -48,7 +48,7 @@
 (defn read-handler
   [request]
   (let [id (some-> request :path-params :id Integer/parseInt)]
-    (if-let [item (m.currencies/read-record id)]
+    (if-let [item (q.currencies/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))))
 
@@ -63,7 +63,7 @@
   (let [{{:keys [id]} :path-params} request]
     (or (try
           (let [id (Integer/parseInt id)]
-            (m.currencies/delete-record id)
+            (q.currencies/delete-record id)
             (http/ok {:id id}))
           (catch NumberFormatException _ nil))
         (http/bad-request {:status :invalid}))))
@@ -76,7 +76,7 @@
 
 (defn index-handler
   [_request]
-  (let [items (m.currencies/index-records)]
+  (let [items (q.currencies/index-records)]
     (http/ok {:items items})))
 
 (s/fdef index-handler

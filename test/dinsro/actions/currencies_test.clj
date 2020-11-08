@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.currencies :as a.currencies]
    [dinsro.mocks :as mocks]
-   [dinsro.model.currencies :as m.currencies]
+   [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.currencies :as s.a.currencies]
    [dinsro.specs.currencies :as s.currencies]
@@ -36,7 +36,7 @@
   (let [request (ds/gen-key ::s.a.currencies/create-request-valid)
         response (a.currencies/create-handler request)
         id (get-in response [:body :item :db/id])
-        created-record (m.currencies/read-record id)]
+        created-record (q.currencies/read-record id)]
     (is (not (nil? created-record))
         "record can be read")
     (is (= status/ok (:status response)))
@@ -53,10 +53,10 @@
   (let [currency (mocks/mock-currency)
         id (:db/id currency)
         request {:path-params {:id (str id)}}]
-    (is (not (nil? (m.currencies/read-record id))))
+    (is (not (nil? (q.currencies/read-record id))))
     (let [response (a.currencies/delete-handler request)]
       (is (= status/ok (:status response)))
-      (is (nil? (m.currencies/read-record id))))))
+      (is (nil? (q.currencies/read-record id))))))
 
 (deftest read-handler-success
   (let [currency (mocks/mock-currency)

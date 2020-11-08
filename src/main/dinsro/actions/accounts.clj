@@ -3,7 +3,7 @@
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
-   [dinsro.model.accounts :as m.accounts]
+   [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.actions.accounts :as s.a.accounts]
    [dinsro.utils :as utils]
@@ -45,8 +45,8 @@
 (defn create-handler
   [{:keys [params]}]
   (or (when-let [params (prepare-record params)]
-        (let [id (m.accounts/create-record params)]
-          (http/ok {:item (m.accounts/read-record id)})))
+        (let [id (q.accounts/create-record params)]
+          (http/ok {:item (q.accounts/read-record id)})))
       (http/bad-request {:status :invalid})))
 
 (s/fdef create-handler
@@ -58,7 +58,7 @@
 (defn read-handler
   [request]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
-    (if-let [account (m.accounts/read-record id)]
+    (if-let [account (q.accounts/read-record id)]
       (http/ok {:item account})
       (http/not-found {}))
     (http/bad-request {:status :bad-request})))
@@ -73,7 +73,7 @@
   [{{:keys [id]} :path-params}]
   (if-let [id (utils/try-parse-int id)]
     (do
-      (m.accounts/delete-record id)
+      (q.accounts/delete-record id)
       (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
 
@@ -86,7 +86,7 @@
 (defn index-handler
   [request]
   (if-let [user-id (:identity (:session request))]
-    (let [accounts (m.accounts/index-records-by-user user-id)]
+    (let [accounts (q.accounts/index-records-by-user user-id)]
       (http/ok {:items accounts}))
 
     ;; FIXME: user is not authenticated. Shouldn't pass filter
@@ -98,10 +98,10 @@
 
 (defn index-by-category-handler
   [_]
-  (let [accounts (m.accounts/index-records)]
+  (let [accounts (q.accounts/index-records)]
     (http/ok {:items accounts})))
 
 (defn index-by-currency-handler
   [_]
-  (let [accounts (m.accounts/index-records)]
+  (let [accounts (q.accounts/index-records)]
     (http/ok {:items accounts})))
