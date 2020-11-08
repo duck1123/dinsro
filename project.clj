@@ -92,7 +92,7 @@
 
   :min-lein-version "2.0.0"
 
-  :source-paths ["src/main" "lib"]
+  :source-paths ["src/main" "src/reframe" "lib"]
   :test-paths ["src/test"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
