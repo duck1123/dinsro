@@ -1,19 +1,19 @@
 (ns dinsro.views.show-user
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
-   [dinsro.components.show-user :refer [show-user]]
-   [dinsro.components.user-accounts :as c.user-accounts]
-   [dinsro.components.user-categories :as c.user-categories]
-   [dinsro.components.user-transactions :as c.user-transactions]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
+   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.show-user :refer [show-user]]
+   [dinsro.ui.user-accounts :as u.user-accounts]
+   [dinsro.ui.user-categories :as u.user-categories]
+   [dinsro.ui.user-transactions :as u.user-transactions]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
@@ -37,12 +37,12 @@
 (defn load-buttons
   [store id]
   [:div.box
-   [c.buttons/fetch-users store]
-   [c.buttons/fetch-accounts store]
-   [c.buttons/fetch-categories store]
-   [c.buttons/fetch-currencies store]
-   [c.buttons/fetch-transactions store]
-   [c.buttons/fetch-user store id]])
+   [u.buttons/fetch-users store]
+   [u.buttons/fetch-accounts store]
+   [u.buttons/fetch-categories store]
+   [u.buttons/fetch-currencies store]
+   [u.buttons/fetch-transactions store]
+   [u.buttons/fetch-user store id]])
 
 (defn page-loaded
   [store id]
@@ -53,11 +53,11 @@
         [show-user store user]]
        [:<>
         (when-let [accounts @(st/subscribe store [::e.accounts/items-by-user user-id])]
-          [c.user-accounts/section store user-id accounts])
+          [u.user-accounts/section store user-id accounts])
         (when-let [categories @(st/subscribe store [::e.categories/items-by-user user-id])]
-          [c.user-categories/section store user-id categories])
+          [u.user-categories/section store user-id categories])
         (when-let [transactions @(st/subscribe store [::e.transactions/items-by-user user-id])]
-          [c.user-transactions/section store user-id transactions])]])
+          [u.user-transactions/section store user-id transactions])]])
     [:p "User not found"]))
 
 (s/fdef page-loaded
@@ -73,7 +73,7 @@
   (let [{{:keys [id]} :path-params} match
         state @(st/subscribe store [::e.users/do-fetch-record-state])]
     [:section.section>div.container>div.content
-     (c.debug/hide store [load-buttons store id])
+     (u.debug/hide store [load-buttons store id])
      (condp = state
        :invalid [:p "invalid"]
        :failed [:p "Failed"]
@@ -94,7 +94,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-param-page :show-user-page)
+   {:params (u/filter-param-page :show-user-page)
     :start  [::init-page]})
 
   store)

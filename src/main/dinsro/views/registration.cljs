@@ -1,11 +1,11 @@
 (ns dinsro.views.registration
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.forms.registration :as c.f.registration]
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
+   [dinsro.ui :as u]
+   [dinsro.ui.forms.registration :as u.f.registration]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -22,7 +22,7 @@
      (if allow-registration
        [:<>
         [:h1 "Registration Page"]
-        [c.f.registration/form store]]
+        [u.f.registration/form store]]
        [:div
         [:p "Registrations are not enabled"]])]))
 
@@ -38,7 +38,7 @@
 
   (kf/reg-controller
    ::page
-   {:params (c/filter-page :register-page)
+   {:params (u/filter-page :register-page)
     :start [::init-page]})
 
   store)

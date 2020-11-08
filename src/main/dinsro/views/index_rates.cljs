@@ -1,17 +1,17 @@
 (ns dinsro.views.index-rates
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
-   [dinsro.components.forms.create-rate :as c.f.create-rate]
-   [dinsro.components.index-rates :as c.index-rates]
-   [dinsro.components.rate-chart :as c.rate-chart]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.events.rates :as e.rates]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.create-rate :as u.f.create-rate]
+   [dinsro.ui.index-rates :as u.index-rates]
+   [dinsro.ui.rate-chart :as u.rate-chart]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -26,22 +26,22 @@
 (defn load-buttons
   [store]
   [:div.box
-   [c.buttons/fetch-rates store]
-   [c.buttons/fetch-currencies store]])
+   [u.buttons/fetch-rates store]
+   [u.buttons/fetch-currencies store]])
 
 (defn page
   [store _match]
   (let [items @(st/subscribe store [::e.rates/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide store [load-buttons store])
+     (u.debug/hide store [load-buttons store])
      [:div.box
       [:h1
        (tr [:rates "Rates"])
-       [c/show-form-button store ::e.f.create-rate/shown?]]
-      [c.f.create-rate/form store]
+       [u/show-form-button store ::e.f.create-rate/shown?]]
+      [u.f.create-rate/form store]
       [:hr]
-      [c.rate-chart/rate-chart store items]
-      [c.index-rates/section store items]]]))
+      [u.rate-chart/rate-chart store items]
+      [u.index-rates/section store items]]]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)
@@ -55,7 +55,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-page :index-rates-page)
+   {:params (u/filter-page :index-rates-page)
     :start [::init-page]})
 
   store)

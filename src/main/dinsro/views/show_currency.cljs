@@ -1,13 +1,6 @@
 (ns dinsro.views.show-currency
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.currency-accounts :as c.currency-accounts]
-   [dinsro.components.currency-rates :as c.currency-rates]
-   [dinsro.components.currency-rate-sources :as c.currency-rate-sources]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
-   [dinsro.components.show-currency :as c.show-currency]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.rate-sources :as e.rate-sources]
@@ -17,6 +10,13 @@
    [dinsro.specs.currencies :as s.currencies]
    [dinsro.specs.views.show-currency :as s.v.show-currency]
    [dinsro.store :as st]
+   [dinsro.ui :as u]
+   [dinsro.ui.currency-accounts :as u.currency-accounts]
+   [dinsro.ui.currency-rates :as u.currency-rates]
+   [dinsro.ui.currency-rate-sources :as u.currency-rate-sources]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.show-currency :as u.show-currency]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
@@ -37,13 +37,13 @@
 (defn loading-buttons
   [store id]
   [:<>
-   (c.debug/hide store
+   (u.debug/hide store
     [:div.box
-     [c.buttons/fetch-rates store]
-     [c.buttons/fetch-accounts store]
-     [c.buttons/fetch-currencies store]
-     [c.buttons/fetch-rate-sources store]
-     [c.buttons/fetch-currency store id]])])
+     [u.buttons/fetch-rates store]
+     [u.buttons/fetch-accounts store]
+     [u.buttons/fetch-currencies store]
+     [u.buttons/fetch-rate-sources store]
+     [u.buttons/fetch-currency store id]])])
 
 (s/fdef loading-buttons
   :args (s/cat :id :db/id)
@@ -53,16 +53,16 @@
   [store currency]
   (let [currency-id (:db/id currency)]
     [:<>
-     [:div.box [c.show-currency/show-currency store currency]]
+     [:div.box [u.show-currency/show-currency store currency]]
      (when-let [rates @(st/subscribe store [::e.rates/rate-feed currency-id])]
-       [c.currency-rates/section store rates])
+       [u.currency-rates/section store rates])
      (when-let [accounts (some->> @(st/subscribe store [::e.accounts/items-by-currency currency])
                                   (sort-by ::s.accounts/date))]
-       [c.currency-accounts/section store accounts])
+       [u.currency-accounts/section store accounts])
      (when-let [rate-sources @(st/subscribe store [::e.rate-sources/items
                                              ;; -by-currency currency
                                              ])]
-       [c.currency-rate-sources/section store currency-id rate-sources])]))
+       [u.currency-rate-sources/section store currency-id rate-sources])]))
 
 (s/fdef page-loaded
   :args (s/cat :currency ::s.currencies/item)
@@ -98,7 +98,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-param-page :show-currency-page)
+   {:params (u/filter-param-page :show-currency-page)
     :start  [::init-page]})
 
   store)

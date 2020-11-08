@@ -2,11 +2,10 @@
   (:require
    #_[hiccup.page :refer [include-js include-css html5]]
    [devcards.core :as dc :include-macros true]
-   [dinsro.components-test]
    [dinsro.core-test]
+   [dinsro.ui-test]
    [reagent.core]
-   [taoensso.timbre :as timbre]
-   ))
+   [taoensso.timbre :as timbre]))
 
 ;; (def mount-target
 ;;   [:div#app

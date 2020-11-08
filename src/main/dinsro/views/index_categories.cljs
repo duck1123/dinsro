@@ -1,16 +1,16 @@
 (ns dinsro.views.index-categories
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
-   [dinsro.components.forms.create-category :as c.f.create-category]
-   [dinsro.components.index-categories :refer [index-categories]]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.create-category :as u.f.create-category]
+   [dinsro.ui.index-categories :refer [index-categories]]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -25,19 +25,19 @@
 (defn load-buttons
   [store]
   [:div.box
-   [c.buttons/fetch-categories store]
-   [c.buttons/fetch-currencies store]])
+   [u.buttons/fetch-categories store]
+   [u.buttons/fetch-currencies store]])
 
 (defn page
   [store _match]
   (let [items @(st/subscribe store [::e.categories/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide store [load-buttons store])
+     (u.debug/hide store [load-buttons store])
      [:div.box
       [:h1
        (tr [:categories "Categories"])
-       [c/show-form-button store ::e.f.create-category/shown?]]
-      [c.f.create-category/form store]
+       [u/show-form-button store ::e.f.create-category/shown?]]
+      [u.f.create-category/form store]
       [:hr]
       (when items
         [index-categories store items])]]))
@@ -54,7 +54,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-page :index-categories-page)
+   {:params (u/filter-page :index-categories-page)
     :start [::init-page]})
 
   store)

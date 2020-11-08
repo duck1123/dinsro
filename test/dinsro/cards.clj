@@ -3,10 +3,10 @@
 (defmacro defcard-rg
   [name & body]
   `(do
-     (require 'dinsro.components.boundary)
+     (require 'dinsro.ui.boundary)
      (devcards.core/defcard ~name
        (reagent.core/as-element
-        [dinsro.components.boundary/error-boundary
+        [dinsro.ui.boundary/error-boundary
          ((fn [] ~@body))]))))
 
 (defmacro deftest

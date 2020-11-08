@@ -2,11 +2,11 @@
   (:require
    [cemerick.url :as url]
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.forms.login :as c.f.login]
    [dinsro.events.forms.login :as e.f.login]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.forms.login :as u.f.login]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -23,7 +23,7 @@
     [:section.section>div.container>div.content
      [:h1 "Login"]
      [:div.container
-      [c.f.login/form store return-to]]]))
+      [u.f.login/form store return-to]]]))
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)
@@ -37,7 +37,7 @@
 
   (kf/reg-controller
    ::page
-   {:params (c/filter-page :login-page)
+   {:params (u/filter-page :login-page)
     :start [::init-page]})
 
   store)

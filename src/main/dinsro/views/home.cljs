@@ -1,8 +1,6 @@
 (ns dinsro.views.home
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.account-picker :as c.account-picker]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.currencies :as e.currencies]
@@ -10,6 +8,8 @@
    [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.account-picker :as u.account-picker]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -31,7 +31,7 @@
           (let [name (some-> user ::s.users/name)]
             [:h1.title "Welcome, " name])
           [:div.box.is-danger "User is not loaded"])
-        [c.account-picker/section store]]
+        [u.account-picker/section store]]
        [:div.box
         [:h1 (tr [:home-page])]
         [:p "Not authenticated. " [:a {:href (st/path-for store [:login-page])} "login"]]])]))
@@ -48,7 +48,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-page :home-page)
+   {:params (u/filter-page :home-page)
     :start [::init-page]})
 
   store)

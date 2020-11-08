@@ -1,16 +1,16 @@
 (ns dinsro.views.index-rate-sources
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
-   [dinsro.components.forms.create-rate-source :as c.f.create-rate-source]
-   [dinsro.components.index-rate-sources :as c.index-rate-sources]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.create-rate-source :as u.f.create-rate-source]
+   [dinsro.ui.index-rate-sources :as u.index-rate-sources]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -25,24 +25,24 @@
 (defn load-buttons
   [store]
   [:div.box
-   [c.buttons/fetch-rate-sources store]
-   [c.buttons/fetch-currencies store]])
+   [u.buttons/fetch-rate-sources store]
+   [u.buttons/fetch-currencies store]])
 
 (defn section
   [store items]
   [:div.box
    [:h1
     (tr [:rate-sources "Rate Sources"])
-    [c/show-form-button store ::e.f.create-rate-source/shown?]]
-   [c.f.create-rate-source/form store]
+    [u/show-form-button store ::e.f.create-rate-source/shown?]]
+   [u.f.create-rate-source/form store]
    [:hr]
-   [c.index-rate-sources/section store items]])
+   [u.index-rate-sources/section store items]])
 
 (defn page
   [store _match]
   (let [items @(st/subscribe store [::e.rate-sources/items])]
     [:section.section>div.container>div.content
-     (c.debug/hide store [load-buttons store])
+     (u.debug/hide store [load-buttons store])
      [section store items]]))
 
 (s/fdef page
@@ -57,7 +57,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-page :index-rate-sources-page)
+   {:params (u/filter-page :index-rate-sources-page)
     :start [::init-page]})
 
   store)

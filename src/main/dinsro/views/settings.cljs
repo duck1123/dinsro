@@ -1,10 +1,10 @@
 (ns dinsro.views.settings
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.forms.settings :as c.f.settings]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.forms.settings :as u.f.settings]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -18,7 +18,7 @@
   [:section.section>div.container>div.content
    [:div.box
     [:h1 "Settings Page"]
-    [c.f.settings/form store]]])
+    [u.f.settings/form store]]])
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)
@@ -32,7 +32,7 @@
 
   (kf/reg-controller
    ::page
-   {:params (c/filter-page :settings-page)
+   {:params (u/filter-page :settings-page)
     :start [::init-page]})
 
   store)

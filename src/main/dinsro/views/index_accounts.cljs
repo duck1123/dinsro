@@ -1,14 +1,14 @@
 (ns dinsro.views.index-accounts
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
-   [dinsro.components.user-accounts :as c.user-accounts]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
+   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.user-accounts :as u.user-accounts]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -26,9 +26,9 @@
 (defn loading-buttons
   [store]
   [:div.box
-   [c.buttons/fetch-accounts store]
-   [c.buttons/fetch-currencies store]
-   [c.buttons/fetch-users store]])
+   [u.buttons/fetch-accounts store]
+   [u.buttons/fetch-currencies store]
+   [u.buttons/fetch-users store]])
 
 (s/fdef loading-buttons
   :ret vector?)
@@ -37,7 +37,7 @@
   [store _match]
   (if-let [user-id @(st/subscribe store [:dinsro.events.authentication/auth-id])]
     [:section.section>div.container>div.content
-     (c.debug/hide store [loading-buttons store])
+     (u.debug/hide store [loading-buttons store])
 
      (let [state @(st/subscribe store [::e.accounts/do-fetch-index-state])]
        (condp = state
@@ -46,7 +46,7 @@
 
          :loaded
          (let [accounts @(st/subscribe store [::e.accounts/items-by-user user-id])]
-           [c.user-accounts/section store user-id accounts])
+           [u.user-accounts/section store user-id accounts])
 
          [:p "Unknown state: " state]))]
     [:p "Not Authenticated"]))
@@ -63,7 +63,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-page :index-accounts-page)
+   {:params (u/filter-page :index-accounts-page)
     :start [::init-page]})
 
   store)

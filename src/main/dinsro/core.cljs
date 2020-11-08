@@ -4,9 +4,6 @@
    [com.smxemail.re-frame-cookie-fx]
    [day8.re-frame.http-fx]
    [dinsro.ajax :as ajax]
-   [dinsro.components.boundary :refer [error-boundary]]
-   [dinsro.components.settings :as c.settings]
-   [dinsro.components.status :as c.status]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.authentication :as e.authentication]
@@ -54,6 +51,9 @@
    [dinsro.views.show-account :as v.show-account]
    [dinsro.views.show-currency :as v.show-currency]
    [dinsro.views.show-user :as v.show-user]
+   [dinsro.ui.boundary :refer [error-boundary]]
+   [dinsro.ui.settings :as u.settings]
+   [dinsro.ui.status :as u.status]
    [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
@@ -72,14 +72,14 @@
 (defn app-store
   []
   (doto (reframe-store)
-    c.status/init-handlers!
+    u.status/init-handlers!
     e.accounts/init-handlers!
     e.categories/init-handlers!
     e.admin-accounts/init-handlers!
     e.currencies/init-handlers!
     e.rates/init-handlers!
     e.debug/init-handlers!
-    c.settings/init-handlers!
+    u.settings/init-handlers!
     e.settings/init-handlers!
     e.authentication/init-handlers!
     e.transactions/init-handlers!
@@ -133,9 +133,9 @@
     :root-component [(fn []
                        [error-boundary
                         (let [store (app-store)]
-                          [c.status/require-status
+                          [u.status/require-status
                            store
-                           (c.settings/require-settings
+                           (u.settings/require-settings
                             store
                             [view/root-component store])])])]}))
 

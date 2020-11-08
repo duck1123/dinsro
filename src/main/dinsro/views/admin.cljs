@@ -1,15 +1,6 @@
 (ns dinsro.views.admin
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.components :as c]
-   [dinsro.components.admin-index-accounts :as c.admin-index-accounts]
-   [dinsro.components.admin-index-categories :as c.admin-index-categories]
-   [dinsro.components.admin-index-currencies :as c.admin-index-currencies]
-   [dinsro.components.admin-index-rate-sources :as c.admin-index-rate-sources]
-   [dinsro.components.admin-index-transactions :as c.admin-index-transactions]
-   [dinsro.components.admin-index-users :as c.admin-index-users]
-   [dinsro.components.buttons :as c.buttons]
-   [dinsro.components.debug :as c.debug]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.categories :as e.categories]
    [dinsro.events.rate-sources :as e.rate-sources]
@@ -17,6 +8,15 @@
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui :as u]
+   [dinsro.ui.admin-index-accounts :as u.admin-index-accounts]
+   [dinsro.ui.admin-index-categories :as u.admin-index-categories]
+   [dinsro.ui.admin-index-currencies :as u.admin-index-currencies]
+   [dinsro.ui.admin-index-rate-sources :as u.admin-index-rate-sources]
+   [dinsro.ui.admin-index-transactions :as u.admin-index-transactions]
+   [dinsro.ui.admin-index-users :as u.admin-index-users]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -33,24 +33,24 @@
 (defn load-buttons
   [store]
   [:div.box
-   [c.buttons/fetch-accounts store]
-   [c.buttons/fetch-categories store]
-   [c.buttons/fetch-currencies store]
-   [c.buttons/fetch-rate-sources store]
-   [c.buttons/fetch-users store]])
+   [u.buttons/fetch-accounts store]
+   [u.buttons/fetch-categories store]
+   [u.buttons/fetch-currencies store]
+   [u.buttons/fetch-rate-sources store]
+   [u.buttons/fetch-users store]])
 
 (defn page
   [store _match]
   [:section.section>div.container>div.content
-   (c.debug/hide store [load-buttons store])
+   (u.debug/hide store [load-buttons store])
    [:div.box
     [:h1.title "Admin"]]
-   [c.admin-index-accounts/section store]
-   [c.admin-index-transactions/section store]
-   [c.admin-index-categories/section store]
-   [c.admin-index-currencies/section store]
-   [c.admin-index-rate-sources/section store]
-   [c.admin-index-users/section store]])
+   [u.admin-index-accounts/section store]
+   [u.admin-index-transactions/section store]
+   [u.admin-index-categories/section store]
+   [u.admin-index-currencies/section store]
+   [u.admin-index-rate-sources/section store]
+   [u.admin-index-users/section store]])
 
 (s/fdef page
   :args (s/cat :store #(instance? st/Store %)
@@ -64,7 +64,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (c/filter-page :admin-page)
+   {:params (u/filter-page :admin-page)
     :start [::init-page]})
 
   store)
