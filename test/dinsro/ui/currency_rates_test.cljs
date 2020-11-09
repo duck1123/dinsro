@@ -9,7 +9,7 @@
              [2 2]
              [3 4]]]
 
-  (defcard-rg u.currency-rates/section
+  (defcard-rg section
     [u.currency-rates/section rates])
 
   (deftest section-test

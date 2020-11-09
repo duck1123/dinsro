@@ -30,7 +30,7 @@
   (let [store (test-store)]
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
 
-    (defcard-rg u.admin-index-rate-sources/index-line
+    (defcard-rg index-line
       [:table.table>tbody
        [u.admin-index-rate-sources/index-line store rate-source]])
 
@@ -40,7 +40,7 @@
   (let [store (test-store)]
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
 
-    (defcard-rg u.admin-index-rate-sources/rate-sources-table
+    (defcard-rg rate-sources-table
       [u.admin-index-rate-sources/rate-sources-table store rate-sources])
 
     (deftest rate-sources-table-test
@@ -49,7 +49,7 @@
   (let [store (test-store)]
     (st/dispatch store [::e.rate-sources/do-fetch-index-success {:items rate-sources}])
 
-    (defcard-rg u.admin-index-rate-sources/section
+    (defcard-rg section
       [u.admin-index-rate-sources/section store])
 
     (deftest section-test

@@ -27,7 +27,7 @@
       (is (vector? (u.index-transactions/row-line store item)))))
 
   (let [store (transaction-store)]
-    (defcard-rg u.index-transactions/index-transactions
+    (defcard-rg index-transactions
       [u.index-transactions/index-transactions store items])
 
     (deftest index-transactions-test

@@ -41,20 +41,20 @@
   (st/dispatch store [::e.users/do-fetch-index-success {:users users}])
   ;; (st/dispatch store [::e.f.create-categories/set-shown? true])
 
-  (defcard-rg u.admin-index-categories/category-line
+  (defcard-rg category-line
     [:table.table>tbody
      [u.admin-index-categories/category-line store category]])
 
   (deftest category-line-test
     (is (vector? (u.admin-index-categories/category-line store category))))
 
-  (defcard-rg u.admin-index-categories/index-categories
+  (defcard-rg index-categories
     [u.admin-index-categories/index-categories store categories])
 
   (deftest index-categories-test
     (is (vector? (u.admin-index-categories/index-categories store categories))))
 
-  (defcard-rg u.admin-index-categories/section
+  (defcard-rg section
     [u.admin-index-categories/section store])
 
   (deftest section-test

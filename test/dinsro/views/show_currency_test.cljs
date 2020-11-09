@@ -22,7 +22,7 @@
               e.rate-sources/init-handlers!)
       match {:path-params {:id "1"}}]
 
-  (defcard-rg v.show-currency/page-loaded
+  (defcard-rg page-loaded
     [v.show-currency/page-loaded store currency])
 
   (deftest page-loaded-test

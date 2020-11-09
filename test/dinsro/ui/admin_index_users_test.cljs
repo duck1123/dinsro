@@ -26,7 +26,7 @@
   (let [store (test-store)]
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-    (defcard-rg u.admin-index-categories/category-line
+    (defcard-rg category-line
       [:table.table>tbody
        [u.admin-index-categories/category-line store item]])
 
@@ -36,7 +36,7 @@
   (let [store (test-store)]
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-    (defcard-rg u.admin-index-categories/index-categories
+    (defcard-rg index-categories
       [u.admin-index-categories/index-categories store items])
 
     (deftest index-categories-test
@@ -45,7 +45,7 @@
   (let [store (test-store)]
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-    (defcard-rg u.admin-index-users/section
+    (defcard-rg section
       [u.admin-index-users/section store])
 
     (deftest section-test

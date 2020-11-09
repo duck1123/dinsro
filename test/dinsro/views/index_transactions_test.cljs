@@ -30,7 +30,7 @@
       match nil]
 
   (let [store (index-transaction-store)]
-    (defcard-rg v.index-transactions/section-inner
+    (defcard-rg section-inner
       [v.index-transactions/section-inner store items])
 
     (deftest section-inner-test
