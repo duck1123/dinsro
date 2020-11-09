@@ -36,6 +36,7 @@
     "react-grid-layout": "0.16.6",
     "react-highlight.js": "1.0.7",
     "react-icons": "2.2.7",
+    "reakit": "^1.2.5",
     "semantic-ui-css": "^2.4.1",
     "shadow": "0.0.1",
     "xmlhttprequest": "^1.8.0"
