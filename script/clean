@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-lein clean
+set -ex
 
+lein clean
+rm -rf .shadow-cljs/builds
