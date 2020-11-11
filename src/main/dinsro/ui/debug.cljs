@@ -10,8 +10,11 @@
   [store data]
   (when @(st/subscribe store [::e.debug/shown?]) data))
 
+(defn debug-box-shown
+  [data]
+  [:pre {:style {:max-height "200px"}}
+   (with-out-str (p/pprint data))])
+
 (defn debug-box
   [store data]
-  (hide store
-   [:pre {:style {:max-height "200px"}}
-    (with-out-str (p/pprint data))]))
+  (hide store [debug-box-shown data]))
