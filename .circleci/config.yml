@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/dinsro
     docker:
-      - image: circleci/clojure:openjdk-14-lein-2.9.1-buster-node-browsers-legacy
+      - image: duck1123/dinsro-dev
     steps:
       - checkout
       - restore_cache:
@@ -14,6 +14,7 @@ jobs:
             - node-{{ checksum "package.json" }}
       - run: node --version
       - run: npm install
+      - run: npm install -g karma-cli
       - save_cache:
           paths:
             - ~/dinsro/node_modules
