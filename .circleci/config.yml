@@ -25,6 +25,7 @@ jobs:
           key: dinsro-{{ checksum "project.clj" }}
       - run: script/lint
       - run: cp test-config.edn.example test-config.edn
+      - run: cp test-config.edn.example config.edn
       - run: script/test
       # - run: script/test-javascript
       - run: script/build-production
