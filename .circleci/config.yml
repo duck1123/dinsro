@@ -23,11 +23,12 @@ jobs:
           paths:
             - ~/.m2
           key: dinsro-{{ checksum "project.clj" }}
+      - run: mkdir -p /tmp/dinsro/test
       - run: script/lint
       - run: cp test-config.edn.example test-config.edn
       - run: cp test-config.edn.example config.edn
       - run: script/test
-      # - run: script/test-javascript
+      - run: script/test-javascript
       - run: script/build-production
       - store_artifacts:
           path: target/uberjar/dinsro.jar
