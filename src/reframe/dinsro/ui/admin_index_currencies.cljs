@@ -6,7 +6,6 @@
    [dinsro.events.forms.create-currency :as e.f.create-currency]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.forms.create-currency :as u.f.create-currency]

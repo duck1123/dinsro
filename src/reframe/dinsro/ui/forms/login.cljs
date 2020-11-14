@@ -5,7 +5,6 @@
    [dinsro.specs.events.forms.login :as s.e.f.login]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 

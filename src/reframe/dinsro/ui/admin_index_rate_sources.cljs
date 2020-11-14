@@ -5,7 +5,6 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-rate-source :as u.f.create-rate-source]
    [dinsro.ui.links :as u.links]))

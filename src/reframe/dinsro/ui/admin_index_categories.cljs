@@ -5,7 +5,6 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.ui.links :as u.links]))

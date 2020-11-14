@@ -5,7 +5,6 @@
    [dinsro.specs.events.forms.create-rate-source :as s.e.f.create-rate-source]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.inputs :as u.inputs]
    [kee-frame.core :as kf]

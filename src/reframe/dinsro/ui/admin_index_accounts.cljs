@@ -6,7 +6,6 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]

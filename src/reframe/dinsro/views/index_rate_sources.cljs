@@ -6,7 +6,6 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.filters :as u.filters]

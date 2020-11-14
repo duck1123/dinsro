@@ -8,7 +8,6 @@
    [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.datepicker :as u.datepicker]
    [dinsro.ui.inputs :as u.inputs]

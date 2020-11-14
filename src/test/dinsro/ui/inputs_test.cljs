@@ -12,7 +12,6 @@
    [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
-   [dinsro.ui :as u]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 

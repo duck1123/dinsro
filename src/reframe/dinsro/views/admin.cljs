@@ -8,7 +8,6 @@
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.admin-index-accounts :as u.admin-index-accounts]
    [dinsro.ui.admin-index-categories :as u.admin-index-categories]
    [dinsro.ui.admin-index-currencies :as u.admin-index-currencies]
