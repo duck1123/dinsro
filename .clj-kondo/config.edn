@@ -10,6 +10,7 @@
   dinsro.cards/defcard-rg                   cljs.core/def
   dinsro.cards/deftest                      cljs.test/deftest
   mount.core/defstate                       cljs.core/def
+  nubank.workspaces.core/defcard            cljs.core/def
   }
 
  :linters
