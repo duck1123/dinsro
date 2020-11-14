@@ -9,52 +9,50 @@
    :closure-defines
    {"re_frame.trace.trace_enabled_QMARK_"        true
     "day8.re_frame.tracing.trace_enabled_QMARK_" true}
-   :target :browser
    :modules {:main {:init-fn dinsro.app/init}}
-   :output-dir "resources/public/js"}
+   :output-dir "resources/public/js"
+   :target :browser}
 
   :ci
-  {:output-to "target/ci.js",
-   :target :karma
-   :ns-regexp "-test$"
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
                  "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   :build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}}
+   :ns-regexp "-test$"
+   :output-to "target/ci.js",
+   :target :karma}
 
   :devcards
   {:asset-path "/devcards/js"
-   :modules {:main {:init-fn dinsro.devcards/main}}
-   :compiler-options {:devcards true}
-   :output-dir "resources/public/devcards/js"
-   :target :browser
-   ;; :devtools  {:http-port 8022
-   ;;             :http-root "resources/public/devcards/js"}
    :build-options {:ns-aliases {devcards-marked cljsjs.marked
                                 devcards-syntax-highlighter cljsjs.highlight}}
+   :compiler-options {:devcards true}
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :modules {:main {:init-fn dinsro.devcards/main}}
+   :output-dir "resources/public/devcards/js"
+   :target :browser}
 
   :test
-  {:output-to "target/tests/test.js",
-   :target :browser-test
-   :test-dir "target/tests"
-   :runner-ns dinsro.runner
-   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
                                 devcards-syntax-highlighter cljsjs.highlight}}
    :devtools  {:http-port 8021
-               :http-root "target/tests"}}
+               :http-root "target/tests"}
+   :output-to "target/tests/test.js",
+   :runner-ns dinsro.runner
+   :target :browser-test
+   :test-dir "target/tests"}
 
   :release
   {:asset-path "/js"
    :closure-defines
    {"re_frame.trace.trace_enabled_QMARK_"        false
     "day8.re_frame.tracing.trace_enabled_QMARK_" false}
-   :target :browser
    :modules {:main {:init-fn dinsro.app/init}}
-   :output-dir "resources/public/js"}
+   :output-dir "resources/public/js"
+   :target :browser}
 
   :workspaces
   {:asset-path "/js/workspaces"
