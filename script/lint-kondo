@@ -2,5 +2,4 @@
 
 set -ex
 
-# clj-kondo --lint src
-npx clj-kondo --lint src:test
+npx clj-kondo --lint src
