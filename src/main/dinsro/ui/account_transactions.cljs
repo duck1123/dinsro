@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
-   [dinsro.specs.transactions :as s.transactions]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -25,5 +25,5 @@
 (s/fdef section
   :args (s/cat :store #(instance? st/Store %)
                :account-id :db/id
-               :items (s/coll-of ::s.transactions/item))
+               :items (s/coll-of ::m.transactions/item))
   :ret vector?)

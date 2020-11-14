@@ -4,13 +4,13 @@
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
    [dinsro.events.utils.impl]
+   [dinsro.model.rates :as m.rates]
    [dinsro.specs.events.rates :as s.e.rates]
-   [dinsro.specs.rates :as s.rates]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
-(s/def ::item ::s.rates/item)
+(s/def ::item ::m.rates/item)
 
 (eu/declare-model 'dinsro.events.rates)
 (eu/declare-fetch-index-method 'dinsro.events.rates)
@@ -20,7 +20,7 @@
 (defn items-by-currency
   "Subscription handler: Index items by currency"
   [{:keys [::item-map]} [_ {:keys [db/id]}]]
-  (filter #(= (get-in % [::s.rates/currency :db/id]) id) (vals item-map)))
+  (filter #(= (get-in % [::m.rates/currency :db/id]) id) (vals item-map)))
 
 (s/fdef items-by-currency
   :args (s/cat :db (s/keys :req [::item-map])
@@ -79,9 +79,9 @@
   (if response
     (if-let [rate (:item response)]
       (do (timbre/infof "Adding new rate: %s" rate)
-          (let [currency-id (get-in rate [::s.rates/currency :db/id])
-                time (.getTime (tick/inst (::s.rates/date rate)))
-                rate-value (::s.rates/rate rate)
+          (let [currency-id (get-in rate [::m.rates/currency :db/id])
+                time (.getTime (tick/inst (::m.rates/date rate)))
+                rate-value (::m.rates/rate rate)
                 rate-item [time rate-value]]
             {:db (update-in db [::rate-feed currency-id] concat [rate-item])}))
       (do

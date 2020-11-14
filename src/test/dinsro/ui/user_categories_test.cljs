@@ -9,8 +9,8 @@
    [dinsro.events.forms.add-user-category :as e.f.add-user-category]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.events.users :as e.users]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.ui.boundary]
    [dinsro.ui.user-categories :as u.user-categories]
@@ -18,7 +18,7 @@
 
 (let [user (ds/gen-key ::e.users/item)
       user-id (:db/id user)
-      categories (ds/gen-key (s/coll-of ::s.transactions/item :count 3))
+      categories (ds/gen-key (s/coll-of ::m.transactions/item :count 3))
       store (doto (mock-store)
               e.accounts/init-handlers!
               e.categories/init-handlers!

@@ -10,23 +10,23 @@
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.events.users :as e.users]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-accounts :as u.admin-index-accounts]
    [taoensso.timbre :as timbre]))
 
-(let [users (ds/gen-key (s/coll-of ::s.users/item :count 3))
-      currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))
+(let [users (ds/gen-key (s/coll-of ::m.users/item :count 3))
+      currencies (ds/gen-key (s/coll-of ::m.currencies/item :count 3))
       accounts (map
                 (fn [account]
-                  (assoc-in account [::s.accounts/user :db/id]
+                  (assoc-in account [::m.accounts/user :db/id]
                              (:db/id (rand-nth users))))
-                (ds/gen-key (s/coll-of ::s.accounts/item :count 3)))
+                (ds/gen-key (s/coll-of ::m.accounts/item :count 3)))
       account (first accounts)
       accounts-store
       (fn []

@@ -3,13 +3,13 @@
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.events.accounts :as s.e.accounts]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
-(s/def ::item ::s.accounts/item)
+(s/def ::item ::m.accounts/item)
 
 (eu/declare-model 'dinsro.events.accounts)
 (eu/declare-fetch-index-method 'dinsro.events.accounts)
@@ -19,7 +19,7 @@
 
 (defn items-by-user
   [{:keys [::item-map]} [_ id]]
-  (filter #(= id (get-in % [::s.accounts/user :db/id])) (vals item-map)))
+  (filter #(= id (get-in % [::m.accounts/user :db/id])) (vals item-map)))
 
 (s/fdef items-by-user
   :args (s/cat :db (s/keys :req [::item-map])
@@ -32,7 +32,7 @@
 (defn items-by-currency
   [{:keys [::item-map]} [_ item]]
   (let [id (:db/id item)]
-    (filter #(= id (get-in % [::s.accounts/currency :db/id])) (vals item-map))))
+    (filter #(= id (get-in % [::m.accounts/currency :db/id])) (vals item-map))))
 
 (s/fdef items-by-currency
   :args (s/cat :db (s/keys :req [::item-map])

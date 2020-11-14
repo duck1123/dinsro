@@ -4,13 +4,13 @@
    [dinsro.events :as e]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.utils.impl :as eui]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.events.accounts :as s.e.accounts]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
-(s/def ::item ::s.accounts/item)
+(s/def ::item ::m.accounts/item)
 
 (s/def ::items (s/coll-of ::item))
 

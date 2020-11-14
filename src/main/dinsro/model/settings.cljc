@@ -1,4 +1,4 @@
-(ns dinsro.specs.settings
+(ns dinsro.model.settings
   (:require
    [clojure.spec.alpha :as s]))
 

@@ -1,12 +1,12 @@
 (ns dinsro.specs.events.categories
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.categories :as m.categories]
    [dinsro.specs :as ds]
-   [dinsro.specs.categories :as s.categories]
    [taoensso.timbre :as timbre]))
 
-(s/def ::item (s/nilable ::s.categories/item))
-(s/def ::items (s/coll-of ::s.categories/item))
+(s/def ::item (s/nilable ::m.categories/item))
+(s/def ::items (s/coll-of ::m.categories/item))
 
 
 (s/def ::do-fetch-record-failed-cofx (s/keys))

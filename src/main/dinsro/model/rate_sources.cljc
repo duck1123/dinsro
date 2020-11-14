@@ -1,4 +1,4 @@
-(ns dinsro.specs.rate-sources
+(ns dinsro.model.rate-sources
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]))

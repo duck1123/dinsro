@@ -3,9 +3,9 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [deftest]]
-   [dinsro.specs.currencies :as s.currencies]))
+   [dinsro.model.currencies :as m.currencies]))
 
 (let [item {:db/id 1
-            ::s.currencies/name "foo"}]
+            ::m.currencies/name "foo"}]
   (deftest item-test
-    (is (s/valid? ::s.currencies/item item))))
+    (is (s/valid? ::m.currencies/item item))))

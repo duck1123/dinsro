@@ -2,8 +2,8 @@
   (:refer-clojure :exclude [time])
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs :as ds]
-   [dinsro.specs.rates :as s.rates]))
+   [dinsro.model.rates :as m.rates]
+   [dinsro.specs :as ds]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)
@@ -25,5 +25,5 @@
 
 
 (s/def ::add-currency-rate-form
-  (s/keys :req-un [::s.rates/date ::s.rates/rate ::s.rates/currency-id]))
+  (s/keys :req-un [::m.rates/date ::m.rates/rate ::m.rates/currency-id]))
 (def add-currency-rate-form ::add-currency-rate-form)

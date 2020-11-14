@@ -7,13 +7,13 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.rates :as e.rates]
    [dinsro.events.rate-sources :as e.rate-sources]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-currency :as v.show-currency]
    [taoensso.timbre :as timbre]))
 
-(let [currency (ds/gen-key ::s.currencies/item)
+(let [currency (ds/gen-key ::m.currencies/item)
       store (doto (mock-store)
               e.accounts/init-handlers!
               e.currencies/init-handlers!

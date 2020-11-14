@@ -6,17 +6,17 @@
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.forms.create-transaction :as u.f.create-transaction]
    [taoensso.timbre :as timbre]))
 
-(def accounts (ds/gen-key (s/coll-of ::s.accounts/item :count 3)))
-(def transactions (ds/gen-key (s/coll-of ::s.transactions/item :count 3)))
+(def accounts (ds/gen-key (s/coll-of ::m.accounts/item :count 3)))
+(def transactions (ds/gen-key (s/coll-of ::m.transactions/item :count 3)))
 
 (defn test-store
   []

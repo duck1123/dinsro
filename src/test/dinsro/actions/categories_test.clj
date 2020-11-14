@@ -4,10 +4,10 @@
    [dinsro.actions.categories :as a.categories]
    [dinsro.mocks :as mocks]
    [dinsro.queries.categories :as q.categories]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.categories :as s.a.categories]
-   [dinsro.specs.categories :as s.categories]
-   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]))
 
@@ -16,7 +16,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [s.users/schema s.categories/schema])))
+    (start-db f [m.users/schema m.categories/schema])))
 
 (deftest index-handler-test-success
   (let [request {}
@@ -41,7 +41,7 @@
     (is (not (nil? created-record))
         "record can be read")
     (is (= status/ok (:status response)))
-    (is (= (:name request) (::s.categories/name response)))))
+    (is (= (:name request) (::m.categories/name response)))))
 
 (deftest create-handler-invalid
   (let [params {}

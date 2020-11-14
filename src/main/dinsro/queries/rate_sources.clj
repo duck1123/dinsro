@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs :as ds]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [taoensso.timbre :as timbre]))
 
 (defn create-record
@@ -13,22 +13,22 @@
     (get-in response [:tempids "rate-source-id"])))
 
 (s/fdef create-record
-  :args (s/cat :params ::s.rate-sources/params)
+  :args (s/cat :params ::m.rate-sources/params)
   :ret :db/id)
 
 (defn read-record
   [id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::s.rate-sources/name)
+    (when (get record ::m.rate-sources/name)
       record)))
 
 (s/fdef read-record
   :args (s/cat :id :db/id)
-  :ret (s/nilable ::s.rate-sources/item))
+  :ret (s/nilable ::m.rate-sources/item))
 
 (defn index-ids
   []
-  (map first (d/q '[:find ?e :where [?e ::s.rate-sources/name _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.rate-sources/name _]] @db/*conn*)))
 
 (s/fdef index-ids
   :args (s/cat)
@@ -40,7 +40,7 @@
 
 (s/fdef index-records
   :args (s/cat)
-  :ret (s/coll-of ::s.rate-sources/item))
+  :ret (s/coll-of ::m.rate-sources/item))
 
 (defn delete-record
   [id]

@@ -2,9 +2,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
+   [dinsro.model.rates :as m.rates]
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs.actions.admin-rates :as s.a.admin-rates]
-   [dinsro.specs.rates :as s.rates]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
@@ -13,18 +13,18 @@
 
 (defn prepare-record
   [params]
-  (let [params {::s.rates/currency {:db/id (:currency-id params)}
-                ::s.rates/rate (some-> params :rate double)
-                ::s.rates/date (some-> params :date tick/instant)}]
-    (if (s/valid? ::s.rates/params params)
+  (let [params {::m.rates/currency {:db/id (:currency-id params)}
+                ::m.rates/rate (some-> params :rate double)
+                ::m.rates/date (some-> params :date tick/instant)}]
+    (if (s/valid? ::m.rates/params params)
       params
       (do
-        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.rates/params params)))
+        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.rates/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.admin-rates/create-params)
-  :ret  (s/nilable ::s.rates/params))
+  :ret  (s/nilable ::m.rates/params))
 
 ;; Create
 

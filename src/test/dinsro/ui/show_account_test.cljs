@@ -5,8 +5,8 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.users :as s.users]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.users :as m.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
@@ -14,10 +14,10 @@
    [taoensso.timbre :as timbre]))
 
 (let [user-id 1
-      user {:db/id user-id ::s.users/name "Bob"}
-      account {::s.accounts/name "Bart"
-               ::s.accounts/user {:db/id user-id}
-               ::s.accounts/currency {:db/id 1}}
+      user {:db/id user-id ::m.users/name "Bob"}
+      account {::m.accounts/name "Bart"
+               ::m.accounts/user {:db/id user-id}
+               ::m.accounts/currency {:db/id 1}}
       store (doto (mock-store)
               e.debug/init-handlers!
               e.currencies/init-handlers!

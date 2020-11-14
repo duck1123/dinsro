@@ -1,12 +1,12 @@
 (ns dinsro.specs.events.rates
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.rates :as s.rates]))
+   [dinsro.model.rates :as m.rates]))
 
 (s/def ::do-delete-record-success-cofx (s/keys))
 (s/def ::do-delete-record-failed-cofx (s/keys))
 (s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat :item ::s.rates/item))
+(s/def ::do-delete-record-event (s/cat :item ::m.rates/item))
 
 (s/def ::do-delete-record-success-response (s/keys))
 

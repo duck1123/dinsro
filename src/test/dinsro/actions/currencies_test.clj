@@ -3,10 +3,10 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.currencies :as a.currencies]
    [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.currencies :as s.a.currencies]
-   [dinsro.specs.currencies :as s.currencies]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]))
 
@@ -15,7 +15,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [s.currencies/schema])))
+    (start-db f [m.currencies/schema])))
 
 (deftest index-handler-test-success
   (let [request {}
@@ -40,7 +40,7 @@
     (is (not (nil? created-record))
         "record can be read")
     (is (= status/ok (:status response)))
-    (is (= (:name request) (::s.currencies/name response)))))
+    (is (= (:name request) (::m.currencies/name response)))))
 
 (deftest create-handler-invalid
   (let [params {}

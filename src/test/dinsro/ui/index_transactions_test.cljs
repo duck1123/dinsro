@@ -5,14 +5,14 @@
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.debug :as e.debug]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.boundary]
    [dinsro.ui.index-transactions :as u.index-transactions]))
 
-(let [items (ds/gen-key (s/coll-of ::s.transactions/item))
+(let [items (ds/gen-key (s/coll-of ::m.transactions/item))
       transaction-store (fn []
                           (doto (mock-store)
                             e.debug/init-handlers!

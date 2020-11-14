@@ -1,7 +1,7 @@
 (ns dinsro.ui.admin-index-currencies
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-currency :as e.f.create-currency]
    [dinsro.store :as st]
@@ -22,7 +22,7 @@
      (u.debug/hide store [:td [u.buttons/delete-currency store currency]])]))
 
 (s/fdef index-currency-line
-  :args (s/cat :currency ::s.currencies/item)
+  :args (s/cat :currency ::m.currencies/item)
   :ret vector?)
 
 (defn index-currencies
@@ -39,7 +39,7 @@
         ^{:key id} [index-currency-line store currency]))]))
 
 (s/fdef index-currencies
-  :args (s/cat :currencies (s/coll-of ::s.currencies/item))
+  :args (s/cat :currencies (s/coll-of ::m.currencies/item))
   :ret vector?)
 
 (defn section-inner

@@ -4,7 +4,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.users :as e.users]
-   [dinsro.specs.rate-sources :as s.rate-sources]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [reframe-utils.core :as rfu]
@@ -153,7 +153,7 @@
                   :on-change #(st/dispatch store [change-handler (target-value %)])}]
         (for [source items]
           ^{:key (:db/id source)}
-          [:option (str (::s.rate-sources/name source))]))]]]))
+          [:option (str (::m.rate-sources/name source))]))]]]))
 
 (defn rate-source-selector
   ([store label field]

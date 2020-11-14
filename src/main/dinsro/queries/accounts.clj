@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [taoensso.timbre :as timbre]))
 
 (def record-limit 1000)
@@ -15,22 +15,22 @@
     (get-in response [:tempids "account-id"])))
 
 (s/fdef create-record
-  :args (s/cat :params ::s.accounts/params)
+  :args (s/cat :params ::m.accounts/params)
   :ret ::ds/id)
 
 (defn read-record
   [id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::s.accounts/name)
+    (when (get record ::m.accounts/name)
       record)))
 
 (s/fdef read-record
   :args (s/cat :id ::ds/id)
-  :ret  (s/nilable ::s.accounts/item))
+  :ret  (s/nilable ::m.accounts/item))
 
 (defn index-ids
   []
-  (map first (d/q '[:find ?e :where [?e ::s.accounts/name _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.accounts/name _]] @db/*conn*)))
 
 (s/fdef index-ids
   :args (s/cat)
@@ -42,7 +42,7 @@
 
 (s/fdef index-records
   :args (s/cat)
-  :ret (s/coll-of ::s.accounts/item))
+  :ret (s/coll-of ::m.accounts/item))
 
 (defn index-records-by-user
   [user-id]
@@ -52,7 +52,7 @@
                       :keys db/id name
                       :in $ ?user-id
                       :where
-                      [?id ::s.accounts/user ?user-id]]
+                      [?id ::m.accounts/user ?user-id]]
              :args [@db/*conn* user-id]})
        (map :db/id)
        (map read-record)
@@ -60,7 +60,7 @@
 
 (s/fdef index-records-by-user
   :args (s/cat :user-id :db/id)
-  :ret (s/coll-of ::s.accounts/item))
+  :ret (s/coll-of ::m.accounts/item))
 
 (defn delete-record
   [id]

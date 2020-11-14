@@ -3,14 +3,14 @@
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
    [dinsro.cards :refer-macros [deftest]]
-   [dinsro.specs.rates :as s.rates]
+   [dinsro.model.rates :as m.rates]
    [tick.alpha.api :as tick]))
 
 (let [item {:db/id 1
-            ::s.rates/name "foo"
-            ::s.rates/rate 1.0
-            ::s.rates/date (tick/instant)
-            ::s.rates/currency {:db/id 1}}]
+            ::m.rates/name "foo"
+            ::m.rates/rate 1.0
+            ::m.rates/date (tick/instant)
+            ::m.rates/currency {:db/id 1}}]
   (deftest item-test
-    (is (s/valid? ::s.rates/item item)
+    (is (s/valid? ::m.rates/item item)
         "Valid map")))

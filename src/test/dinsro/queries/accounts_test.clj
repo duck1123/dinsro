@@ -6,10 +6,10 @@
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.users :as s.users]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 
@@ -21,8 +21,8 @@
   (when-not (d/database-exists? (uri->config uri))
     (d/create-database uri))
   (with-redefs [db/*conn* (d/connect uri)]
-    (d/transact db/*conn* s.users/schema)
-    (d/transact db/*conn* s.accounts/schema)
+    (d/transact db/*conn* m.users/schema)
+    (d/transact db/*conn* m.accounts/schema)
     (f)))
 
 (use-fixtures
@@ -33,10 +33,10 @@
     #_(f)))
 
 (deftest create-record
-  (let [params (ds/gen-key ::s.accounts/params)
+  (let [params (ds/gen-key ::m.accounts/params)
         id (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
-    (is (= (get params ::s.accounts/name) (get created-record ::s.accounts/name)))))
+    (is (= (get params ::m.accounts/name) (get created-record ::m.accounts/name)))))
 
 (deftest index-records
   (is (= [] (q.accounts/index-records))))
@@ -47,7 +47,7 @@
 
 (deftest index-records-by-user-found
   (let [record (mocks/mock-account)
-        user-id (get-in record [::s.accounts/user :db/id])]
+        user-id (get-in record [::m.accounts/user :db/id])]
     (is (= [record] (q.accounts/index-records-by-user user-id)))))
 
 (deftest read-record-not-found

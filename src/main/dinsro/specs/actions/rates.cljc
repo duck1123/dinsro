@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]
+   [dinsro.model.rates :as m.rates]
    [dinsro.specs :as ds]
-   [dinsro.specs.rates :as s.rates]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
 
@@ -16,9 +16,9 @@
 ;; Create
 
 (s/def ::date ::ds/date-string)
-(s/def ::create-params (s/keys :opt-un [::s.rates/rate ::currency-id ::date]))
-(s/def ::create-params-input (s/keys :req-un [::s.rates/rate :dinsro.specs.actions.rates.lax/currency-id ::date]))
-(s/def ::create-params-valid (s/keys :req-un [::s.rates/rate ::currency-id ::date]))
+(s/def ::create-params (s/keys :opt-un [::m.rates/rate ::currency-id ::date]))
+(s/def ::create-params-input (s/keys :req-un [::m.rates/rate :dinsro.specs.actions.rates.lax/currency-id ::date]))
+(s/def ::create-params-valid (s/keys :req-un [::m.rates/rate ::currency-id ::date]))
 (s/def :create-rates-request-valid/params ::create-params-valid)
 (s/def ::create-request-valid (s/keys :req-un [:create-rates-request-valid/params]))
 (def create-request-valid ::create-request-valid)
@@ -32,7 +32,7 @@
   (ds/gen-key create-request)
   )
 
-(s/def :create-rates-response-valid/body (s/keys :req-un [::s.rates/item]))
+(s/def :create-rates-response-valid/body (s/keys :req-un [::m.rates/item]))
 (s/def :create-rates-response-valid/status #{status/ok})
 (s/def ::create-response-valid (s/keys :req-un [:create-rates-response-valid/body
                                                         :create-rates-response-valid/status]))
@@ -52,7 +52,7 @@
 (s/def ::read-request (s/keys :req-un [:read-rates-request/path-params]))
 (def read-request ::read-request)
 
-(s/def :read-rates-response/body (s/keys :req-un [::s.rates/item]))
+(s/def :read-rates-response/body (s/keys :req-un [::m.rates/item]))
 (s/def ::read-response-valid (s/keys :req-un [:read-rates-response/body]))
 (def read-response-valid ::read-response-valid)
 
@@ -75,7 +75,7 @@
 (s/def ::index-request (s/keys))
 (def index-request ::index-request)
 
-(s/def :index-rates-response/items (s/coll-of ::s.rates/item))
+(s/def :index-rates-response/items (s/coll-of ::m.rates/item))
 (s/def :index-rates-response/body (s/keys :req-un [:index-rates-response/items]))
 (s/def ::index-response (s/keys :req-un [:index-rates-response/body]))
 (def index-response ::index-response)
@@ -85,7 +85,7 @@
 (s/def ::index-by-currency-request (s/keys :req-un [:common-request-show/path-params]))
 (def index-by-currency-request ::index-by-currency-request)
 
-(s/def :index-rates-by-currency-response-body/items ::s.rates/rate-feed)
+(s/def :index-rates-by-currency-response-body/items ::m.rates/rate-feed)
 (s/def :index-rates-by-currency-response-body/currency-id ds/id)
 (s/def :index-rates-by-currency-response/body
   (s/keys :req-un [:index-rates-by-currency-response-body/currency-id

@@ -2,7 +2,7 @@
   (:require
    [cljsjs.highcharts]
    [clojure.spec.alpha :as s]
-   [dinsro.specs.rates :as s.rates]
+   [dinsro.model.rates :as m.rates]
    [reagent.core :as r]
    [reagent.dom :as dom]))
 
@@ -35,5 +35,5 @@
     [chart-outer config]))
 
 (s/fdef rate-chart
-  :args (s/cat :rate-feed ::s.rates/rate-feed)
+  :args (s/cat :rate-feed ::m.rates/rate-feed)
   :ret vector?)

@@ -1,4 +1,4 @@
-(ns dinsro.specs.categories
+(ns dinsro.model.categories
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]

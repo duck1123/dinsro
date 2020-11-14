@@ -3,12 +3,12 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.transactions :as a.transactions]
    [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.transactions :as s.a.transactions]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.transactions :as s.transactions]
-   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]
    [tick.alpha.api :as tick]))
@@ -16,9 +16,9 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [s.users/schema
-                 s.currencies/schema
-                 s.transactions/schema])))
+    (start-db f [m.users/schema
+                 m.currencies/schema
+                 m.transactions/schema])))
 
 (deftest prepare-record
   (let [account-id 1
@@ -30,10 +30,10 @@
                 :date (str date)
                 :value value}
         response (a.transactions/prepare-record params)
-        expected {::s.transactions/date date
-                  ::s.transactions/description description
-                  ::s.transactions/value (double value)
-                  ::s.transactions/account {:db/id account-id}}]
+        expected {::m.transactions/date date
+                  ::m.transactions/description description
+                  ::m.transactions/value (double value)
+                  ::m.transactions/account {:db/id account-id}}]
     (is (= expected response)
         "Returns all params in the expected format")))
 

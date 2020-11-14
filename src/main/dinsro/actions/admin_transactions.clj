@@ -2,9 +2,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs.actions.admin-transactions :as s.a.admin-transactions]
-   [dinsro.specs.transactions :as s.transactions]
    [dinsro.translations :refer [tr]]
    [dinsro.utils :as utils]
    [ring.util.http-response :as http]
@@ -16,18 +16,18 @@
 (defn prepare-record
   [params]
   (let [account-id (utils/get-as-int params :account-id)
-        params {::s.transactions/value (some-> params :value str Double/parseDouble)
-                ::s.transactions/account {:db/id account-id}
-                ::s.transactions/date (some-> params :date str tick/instant)}]
-    (if (s/valid? ::s.transactions/params params)
+        params {::m.transactions/value (some-> params :value str Double/parseDouble)
+                ::m.transactions/account {:db/id account-id}
+                ::m.transactions/date (some-> params :date str tick/instant)}]
+    (if (s/valid? ::m.transactions/params params)
       params
       (do
-        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.transactions/params params)))
+        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.transactions/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.admin-transactions/create-params)
-  :ret  (s/nilable ::s.transactions/params))
+  :ret  (s/nilable ::m.transactions/params))
 
 ;; Create
 

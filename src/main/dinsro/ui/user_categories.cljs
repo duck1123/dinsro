@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.add-user-category :as e.f.add-user-category]
-   [dinsro.specs.categories :as s.categories]
+   [dinsro.model.categories :as m.categories]
    [dinsro.ui :as u]
    [dinsro.ui.forms.add-user-category :as u.f.add-user-category]
    [dinsro.ui.index-categories :as u.index-categories]
@@ -20,5 +20,5 @@
 
 (s/fdef section
   :args (s/cat :user-id pos-int?
-               :categories (s/coll-of ::s.categories/item))
+               :categories (s/coll-of ::m.categories/item))
   :ret vector?)

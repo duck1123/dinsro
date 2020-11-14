@@ -5,7 +5,7 @@
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
-   [dinsro.specs.users :as s.users]
+   [dinsro.model.users :as m.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -28,7 +28,7 @@
      (if auth-id
        [:<>
         (if-let [user @(st/subscribe store [::e.users/item auth-id])]
-          (let [name (some-> user ::s.users/name)]
+          (let [name (some-> user ::m.users/name)]
             [:h1.title "Welcome, " name])
           [:div.box.is-danger "User is not loaded"])
         [u.account-picker/section store]]

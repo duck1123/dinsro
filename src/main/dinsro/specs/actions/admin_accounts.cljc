@@ -1,24 +1,24 @@
 (ns dinsro.specs.actions.admin-accounts
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [taoensso.timbre :as timbre]))
 
 ;; Create
 
 (s/def ::create-params-valid
-  (s/keys :req-un [::s.accounts/name
-                   ::s.accounts/initial-value
-                   ::s.accounts/user-id
-                   ::s.accounts/currency-id]))
+  (s/keys :req-un [::m.accounts/name
+                   ::m.accounts/initial-value
+                   ::m.accounts/user-id
+                   ::m.accounts/currency-id]))
 (def create-params-valid ::create-params-valid)
 
 (s/def ::create-params
-  (s/keys :opt-un [::s.accounts/name
-                   ::s.accounts/initial-value
-                   ::s.accounts/user-id
-                   ::s.accounts/currency-id]))
+  (s/keys :opt-un [::m.accounts/name
+                   ::m.accounts/initial-value
+                   ::m.accounts/user-id
+                   ::m.accounts/currency-id]))
 (def create-params ::create-params)
 
 (s/def :create-admin-account-valid/params ::create-params-valid)
@@ -34,7 +34,7 @@
 (s/def ::read-request (s/keys :req-un [:common-request-show/path-params]))
 (def read-request ::read-request)
 
-(s/def :read-admin-account-response-body/item ::s.accounts/item)
+(s/def :read-admin-account-response-body/item ::m.accounts/item)
 (s/def ::read-request-body (s/keys :req-un [:read-admin-account-response-body/item]))
 
 (s/def :read-admin-account-response-success/body ::read-request-body)
@@ -64,7 +64,7 @@
 (s/def ::index-request (s/keys))
 (def index-request ::index-request)
 
-(s/def :index-accounts-response/items (s/coll-of ::s.accounts/item))
+(s/def :index-accounts-response/items (s/coll-of ::m.accounts/item))
 (s/def :index-accounts-response/body (s/keys :req-un [:index-accounts-response/items]))
 (s/def ::index-response (s/keys :req-un [:index-accounts-response/body]))
 (def index-response ::index-response)

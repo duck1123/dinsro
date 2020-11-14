@@ -6,8 +6,8 @@
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
+   [dinsro.model.rates :as m.rates]
    [dinsro.specs :as ds]
-   [dinsro.specs.rates :as s.rates]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.index-rates :as u.index-rates]))
@@ -20,7 +20,7 @@
                 e.debug/init-handlers!)]
     store))
 
-(let [items (ds/gen-key (s/coll-of ::s.rates/item :count 3))]
+(let [items (ds/gen-key (s/coll-of ::m.rates/item :count 3))]
 
   (let [item (first items)
         store (test-store)]

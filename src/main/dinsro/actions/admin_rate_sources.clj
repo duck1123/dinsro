@@ -2,9 +2,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs.actions.admin-rate-sources :as s.a.admin-rate-sources]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
@@ -12,18 +12,18 @@
 
 (defn prepare-record
   [params]
-  (let [params {::s.rate-sources/currency {:db/id (:currency-id params)}
-                ::s.rate-sources/name (some-> params :name)
-                ::s.rate-sources/url (some-> params :url)}]
-    (if (s/valid? ::s.rate-sources/params params)
+  (let [params {::m.rate-sources/currency {:db/id (:currency-id params)}
+                ::m.rate-sources/name (some-> params :name)
+                ::m.rate-sources/url (some-> params :url)}]
+    (if (s/valid? ::m.rate-sources/params params)
       params
       (do
-        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.rate-sources/params params)))
+        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.rate-sources/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.admin-rate-sources/create-params)
-  :ret  (s/nilable ::s.rate-sources/params))
+  :ret  (s/nilable ::m.rate-sources/params))
 
 ;; Create
 

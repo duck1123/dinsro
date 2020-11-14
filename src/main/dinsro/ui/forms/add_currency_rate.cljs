@@ -3,9 +3,9 @@
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.events.rates :as e.rates]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs :as ds]
    [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -22,7 +22,7 @@
   [store currency-id]
   (when @(st/subscribe store [::e.f.add-currency-rate/shown?])
     (let [form-data @(st/subscribe store [::e.f.add-currency-rate/form-data currency-id])
-          rate-sources (ds/gen-key (s/coll-of ::s.rate-sources/item))]
+          rate-sources (ds/gen-key (s/coll-of ::m.rate-sources/item))]
       [:<>
        [u/close-button store ::e.f.add-currency-rate/set-shown?]
        [:div.field>div.control

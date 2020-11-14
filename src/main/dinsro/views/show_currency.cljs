@@ -6,8 +6,8 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.rates :as e.rates]
    [dinsro.events.users :as e.users]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs.views.show-currency :as s.v.show-currency]
    [dinsro.store :as st]
    [dinsro.ui :as u]
@@ -57,7 +57,7 @@
      (when-let [rates @(st/subscribe store [::e.rates/rate-feed currency-id])]
        [u.currency-rates/section store rates])
      (when-let [accounts (some->> @(st/subscribe store [::e.accounts/items-by-currency currency])
-                                  (sort-by ::s.accounts/date))]
+                                  (sort-by ::m.accounts/date))]
        [u.currency-accounts/section store accounts])
      (when-let [rate-sources @(st/subscribe store [::e.rate-sources/items
                                              ;; -by-currency currency
@@ -65,7 +65,7 @@
        [u.currency-rate-sources/section store currency-id rate-sources])]))
 
 (s/fdef page-loaded
-  :args (s/cat :currency ::s.currencies/item)
+  :args (s/cat :currency ::m.currencies/item)
   :ret vector?)
 
 (defn page

@@ -2,30 +2,30 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs.actions.currencies :as s.a.currencies]
-   [dinsro.specs.currencies :as s.currencies]
    [expound.alpha :as expound]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
 (def param-rename-map
-  {:name ::s.currencies/name})
+  {:name ::m.currencies/name})
 
 (defn prepare-record
   [params]
   (let [params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map)))]
-    (if (s/valid? ::s.currencies/params params)
+    (if (s/valid? ::m.currencies/params params)
       params
       (do
-        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.currencies/params params)))
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.currencies/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.currencies/create-params)
-  :ret  (s/nilable ::s.currencies/params))
+  :ret  (s/nilable ::m.currencies/params))
 
 ;; Create
 

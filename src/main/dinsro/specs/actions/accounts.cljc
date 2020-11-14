@@ -1,7 +1,7 @@
 (ns dinsro.specs.actions.accounts
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.model.accounts :as m.accounts]
    [taoensso.timbre :as timbre]))
 
 ;; Create
@@ -9,23 +9,23 @@
 (s/def ::initial-value (s/or :int int? :double double?))
 
 (s/def ::create-params-valid-no-currency
-  (s/keys :req-un [::s.accounts/name
+  (s/keys :req-un [::m.accounts/name
                    ::initial-value
-                   ::s.accounts/user-id]))
+                   ::m.accounts/user-id]))
 (def create-params-valid-no-currency ::create-params-valid-no-currency)
 
 (s/def ::create-params-valid
-  (s/keys :req-un [::s.accounts/name
+  (s/keys :req-un [::m.accounts/name
                    ::initial-value
-                   ::s.accounts/user-id
-                   ::s.accounts/currency-id]))
+                   ::m.accounts/user-id
+                   ::m.accounts/currency-id]))
 (def create-params-valid ::create-params-valid)
 
 (s/def ::create-params
-  (s/keys :opt-un [::s.accounts/name
+  (s/keys :opt-un [::m.accounts/name
                    ::initial-value
-                   ::s.accounts/user-id
-                   ::s.accounts/currency-id]))
+                   ::m.accounts/user-id
+                   ::m.accounts/currency-id]))
 (def create-params ::create-params)
 
 
@@ -48,7 +48,7 @@
 (s/def ::read-request (s/keys :req-un [:common-request-show/path-params]))
 (def read-request ::read-request)
 
-(s/def :read-account-response-body/item ::s.accounts/item)
+(s/def :read-account-response-body/item ::m.accounts/item)
 (s/def :read-account-response-success/body
   (s/keys :req-un [:read-account-response-body/item]))
 (s/def ::read-response-success
@@ -78,7 +78,7 @@
 (s/def ::index-request (s/keys))
 (def index-request ::index-request)
 
-(s/def :index-accounts-response/items (s/coll-of ::s.accounts/item))
+(s/def :index-accounts-response/items (s/coll-of ::m.accounts/item))
 (s/def :index-accounts-response/body (s/keys :req-un [:index-accounts-response/items]))
 (s/def ::index-response (s/keys :req-un [:index-accounts-response/body]))
 (def index-response ::index-response)

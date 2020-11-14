@@ -3,10 +3,10 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.users :as a.users]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.authentication :as s.a.authentication]
-   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.mock.request :as mock]
    [ring.util.http-status :as status]
@@ -17,12 +17,11 @@
 (use-fixtures
   :once
   (fn [f]
-    (start-db f [s.users/schema])))
+    (start-db f [m.users/schema])))
 
 (deftest authenticate-handler-successful
-  (let [{:keys [dinsro.specs.users/email
-                dinsro.specs.users/password]
-         :as user-params} (ds/gen-key ::s.users/input-params-valid)]
+  (let [{::m.users/keys [email password] :as user-params}
+        (ds/gen-key ::m.users/input-params-valid)]
     (q.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password password}
           path (str url-root "/authenticate")
@@ -31,9 +30,8 @@
       (is (= (:status response) status/ok)))))
 
 (deftest authenticate-handler-failure
-  (let [{:keys [dinsro.specs.users/email
-                dinsro.specs.users/password]
-         :as user-params} (ds/gen-key ::s.users/input-params-valid)]
+  (let [{::m.users/keys [email password] :as user-params}
+        (ds/gen-key ::m.users/input-params-valid)]
     (q.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password (str password "x")}
           path (str url-root "/authenticate")

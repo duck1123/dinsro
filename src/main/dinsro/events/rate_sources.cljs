@@ -4,11 +4,11 @@
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
    [dinsro.events.utils.impl]
-   [dinsro.specs.rate-sources :as s.rate-sources]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
-(s/def ::item ::s.rate-sources/item)
+(s/def ::item ::m.rate-sources/item)
 
 (eu/declare-model 'dinsro.events.rate-sources)
 (eu/declare-fetch-index-method 'dinsro.events.rate-sources)

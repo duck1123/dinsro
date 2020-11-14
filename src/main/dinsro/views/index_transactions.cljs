@@ -5,7 +5,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.specs.transactions :as s.transactions]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -46,7 +46,7 @@
    [u.index-transactions/index-transactions store transactions]])
 
 (s/fdef section-inner
-  :args (s/cat :transactions (s/coll-of ::s.transactions/item))
+  :args (s/cat :transactions (s/coll-of ::m.transactions/item))
   :ret vector?)
 
 (defn page

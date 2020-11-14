@@ -7,9 +7,9 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-category :as e.f.create-category]
    [dinsro.events.users :as e.users]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
-   [dinsro.specs.categories :as s.categories]
-   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
@@ -17,14 +17,14 @@
    [dinsro.ui.boundary]
    [taoensso.timbre :as timbre]))
 
-(def users (ds/gen-key (s/coll-of ::s.users/item :count 3)))
+(def users (ds/gen-key (s/coll-of ::m.users/item :count 3)))
 
 (def categories (map
                  (fn [category]
                    (let [user-ids (map :db/id users)
                          user-id (rand-nth user-ids)]
-                     (assoc-in category [::s.categories/user :db/id] user-id)))
-                 (ds/gen-key (s/coll-of ::s.categories/item :count 3))))
+                     (assoc-in category [::m.categories/user :db/id] user-id)))
+                 (ds/gen-key (s/coll-of ::m.categories/item :count 3))))
 (def category (first categories))
 
 (defn test-store

@@ -2,8 +2,8 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]))
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.specs :as ds]))
 
 (s/def ::shown? boolean?)
 (def shown? ::shown?)
@@ -21,7 +21,7 @@
 (def user-id ::user-id)
 
 (s/def ::create-request
-  (s/keys :req-un [::s.accounts/name]))
+  (s/keys :req-un [::m.accounts/name]))
 (def create-request ::create-request)
 
 (s/def ::form-bindings (s/cat

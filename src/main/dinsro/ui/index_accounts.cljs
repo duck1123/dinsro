@@ -1,6 +1,6 @@
 (ns dinsro.ui.index-accounts
   (:require
-   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -10,9 +10,9 @@
 (defn row-line
   [store account]
   (let [id (:db/id account)
-        initial-value (::s.accounts/initial-value account)
-        currency-id (get-in account [::s.accounts/currency :db/id])
-        user-id (get-in account [::s.accounts/user :db/id])]
+        initial-value (::m.accounts/initial-value account)
+        currency-id (get-in account [::m.accounts/currency :db/id])
+        user-id (get-in account [::m.accounts/user :db/id])]
     [:tr
      (u.debug/hide store [:td id])
      [:td (u.links/account-link store id)]

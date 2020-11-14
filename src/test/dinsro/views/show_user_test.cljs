@@ -15,14 +15,14 @@
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
+   [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
-   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.show-user :as v.show-user]
    [taoensso.timbre :as timbre]))
 
-(let [users (ds/gen-key (s/coll-of ::s.users/item :count 3))
+(let [users (ds/gen-key (s/coll-of ::m.users/item :count 3))
       user (first users)
       store (doto (mock-store)
               e.accounts/init-handlers!

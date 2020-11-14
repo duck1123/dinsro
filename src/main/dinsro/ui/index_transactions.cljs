@@ -1,7 +1,7 @@
 (ns dinsro.ui.index-transactions
   (:require
    [dinsro.events.transactions :as e.transactions]
-   [dinsro.specs.transactions :as s.transactions]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
@@ -12,20 +12,20 @@
 
 (defn row-line
   [store transaction]
-  (let [date (::s.transactions/date transaction)
-        account-id (:db/id (::s.transactions/account transaction))]
+  (let [date (::m.transactions/date transaction)
+        account-id (:db/id (::m.transactions/account transaction))]
     [:div.card
      {:style {:margin-bottom "5px"}}
      [:div.card-content
       [:div.level.is-mobile
        [:div.level-left
         [:div.level-item
-         [:p (::s.transactions/description transaction)]]]]
+         [:p (::m.transactions/description transaction)]]]]
 
       [:div.level.is-mobile
        [:div.level-left
         [:div.level-item
-         [:p (::s.transactions/value transaction)]]]]
+         [:p (::m.transactions/value transaction)]]]]
 
       [:div.level.is-mobile
        [:div.level-left

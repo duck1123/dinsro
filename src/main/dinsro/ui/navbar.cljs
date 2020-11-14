@@ -6,8 +6,8 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.navbar :as e.navbar]
    [dinsro.events.users :as e.users]
+   [dinsro.model.users :as m.users]
    [dinsro.specs.events.forms.settings :as s.e.f.settings]
-   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
@@ -67,7 +67,7 @@
        (when @(st/subscribe store [::e.debug/enabled?]) [debug-button])
        (if auth-id
          [:div.navbar-item.has-dropdown.is-hoverable
-          [:a.navbar-link (::s.users/name @(st/subscribe store [::e.users/item auth-id]))]
+          [:a.navbar-link (::m.users/name @(st/subscribe store [::e.users/item auth-id]))]
           [:div.navbar-dropdown
            (nav-link store (tr [:settings]) :settings-page)
            (u.debug/hide store (nav-link store (tr [:currencies]) :index-currencies-page))

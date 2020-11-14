@@ -3,10 +3,10 @@
    [clojure.spec.alpha :as s]
    [dinsro.events.utils :as eu :include-macros true]
    [dinsro.events.utils.impl]
-   [dinsro.specs.users :as s.users]
+   [dinsro.model.users :as m.users]
    [taoensso.timbre :as timbre]))
 
-(s/def ::item ::s.users/item)
+(s/def ::item ::m.users/item)
 
 (eu/declare-model 'dinsro.events.users)
 (eu/declare-fetch-index-method 'dinsro.events.users)

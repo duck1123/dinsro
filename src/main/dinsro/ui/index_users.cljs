@@ -1,6 +1,6 @@
 (ns dinsro.ui.index-users
   (:require
-   [dinsro.specs.users :as s.users]
+   [dinsro.model.users :as m.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
@@ -14,14 +14,14 @@
 
 (defn user-link
   [store user]
-  (let [name (::s.users/name user)
+  (let [name (::m.users/name user)
         id (:db/id user)]
     [:a {:href (st/path-for store [:show-user-page {:id id}])} name]))
 
 (defn user-line
   [store user]
   (let [id (:db/id user)
-        email (::s.users/email user)]
+        email (::m.users/email user)]
     [:tr
      [:td id]
      [:td [user-link store user]]

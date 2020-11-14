@@ -1,14 +1,14 @@
 (ns dinsro.specs.events.accounts
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.actions.accounts :as s.a.accounts]
    [taoensso.timbre :as timbre]))
 
-(s/def ::item (s/nilable ::s.accounts/item))
+(s/def ::item (s/nilable ::m.accounts/item))
 (def item ::item)
-(s/def ::items (s/coll-of ::s.accounts/item))
+(s/def ::items (s/coll-of ::m.accounts/item))
 (def items ::items)
 
 (s/def ::sub-item-event (s/cat

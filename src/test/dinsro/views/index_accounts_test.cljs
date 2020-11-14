@@ -10,9 +10,9 @@
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
    [dinsro.events.forms.create-account :as e.f.create-account]
    [dinsro.events.users :as e.users]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.currencies :as s.currencies]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.test-utils :refer-macros [assert-spec]]
@@ -32,8 +32,8 @@
                 e.users/init-handlers!)]
     store))
 
-(let [currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))
-      items (ds/gen-key (s/coll-of ::s.accounts/item :count 2))
+(let [currencies (ds/gen-key (s/coll-of ::m.currencies/item :count 3))
+      items (ds/gen-key (s/coll-of ::m.accounts/item :count 2))
       template nil
       data nil
       result nil

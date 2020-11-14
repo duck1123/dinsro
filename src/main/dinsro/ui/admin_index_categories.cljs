@@ -2,7 +2,7 @@
   (:require
    [dinsro.events.categories :as e.categories]
    [dinsro.events.forms.create-category :as e.f.create-category]
-   [dinsro.specs.categories :as s.categories]
+   [dinsro.model.categories :as m.categories]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -12,8 +12,8 @@
 
 (defn category-line
   [store item]
-  (let [name (::s.categories/name item)
-        user-id (get-in item [::s.categories/user :db/id])]
+  (let [name (::m.categories/name item)
+        user-id (get-in item [::m.categories/user :db/id])]
     [:tr
      [:td name]
      [:td [u.links/user-link store user-id]]

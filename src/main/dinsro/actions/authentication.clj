@@ -7,8 +7,8 @@
    [dinsro.actions.users :as a.users]
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
+   [dinsro.model.users :as m.users]
    [dinsro.specs.actions.authentication :as s.a.authentication]
-   [dinsro.specs.users :as s.users]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
@@ -17,7 +17,7 @@
   (let [{{:keys [email password]} :params} request]
     (if (and (seq email) (seq password))
       (if-let [user (q.users/find-by-email email)]
-        (if-let [password-hash (::s.users/password-hash user)]
+        (if-let [password-hash (::m.users/password-hash user)]
           (if (hashers/check password password-hash)
             (let [id (:db/id user)
                   claims {:user id
@@ -43,11 +43,11 @@
   [request]
   (let [{:keys [params]} request
         params (if-let [password (:password params)]
-                 (assoc params ::s.users/password password)
+                 (assoc params ::m.users/password password)
                  params)
         params (dissoc params :password)
         params (a.users/prepare-record params)]
-    (if (s/valid? ::s.users/params params)
+    (if (s/valid? ::m.users/params params)
       (try
         (let [id (q.users/create-record params)]
           (http/ok {:id id}))

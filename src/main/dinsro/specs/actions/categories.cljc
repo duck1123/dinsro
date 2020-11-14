@@ -1,14 +1,14 @@
 (ns dinsro.specs.actions.categories
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.categories :as m.categories]
    [dinsro.specs :as ds]
-   [dinsro.specs.categories :as s.categories]
    [taoensso.timbre :as timbre]))
 
-(s/def ::create-params-valid (s/keys :req-un [::s.categories/name ::s.categories/user-id]))
+(s/def ::create-params-valid (s/keys :req-un [::m.categories/name ::m.categories/user-id]))
 (def create-params-valid ::create-params-valid)
 
-(s/def ::create-params (s/keys :opt-un [::s.categories/name ::s.categories/user-id]))
+(s/def ::create-params (s/keys :opt-un [::m.categories/name ::m.categories/user-id]))
 (def create-params ::create-params)
 
 (s/def :create-category/params ::create-params)
@@ -30,7 +30,7 @@
 (s/def ::read-request ::ds/common-read-request)
 (def read-request ::read-request)
 
-(s/def :read-category-response-success/body ::s.categories/item #_(s/keys :req-un []))
+(s/def :read-category-response-success/body ::m.categories/item #_(s/keys :req-un []))
 (s/def :read-category-response-success/status #{200})
 (s/def ::read-response-success (s/keys :req-un [:read-category-response-success/body]))
 (def read-response-success ::read-response-success)

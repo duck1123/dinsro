@@ -3,11 +3,11 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.rate-sources :as a.rate-sources]
    [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.rate-sources :as s.a.rate-sources]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
@@ -17,7 +17,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [s.currencies/schema s.rate-sources/schema])
+    (start-db f [m.currencies/schema m.rate-sources/schema])
 
     ))
 
@@ -28,9 +28,9 @@
         params {:name name
                 :url url
                 :currency-id currency-id}
-        expected {::s.rate-sources/name name
-                  ::s.rate-sources/url url
-                  ::s.rate-sources/currency {:db/id currency-id}}
+        expected {::m.rate-sources/name name
+                  ::m.rate-sources/url url
+                  ::m.rate-sources/currency {:db/id currency-id}}
         response (a.rate-sources/prepare-record params)]
     (is (= expected response))))
 
@@ -52,7 +52,7 @@
       (let [created-record (q.rate-sources/read-record id)]
         (is (not (nil? created-record))
             "record can be read")
-        (is (= (:name request) (::s.rate-sources/name response)))))))
+        (is (= (:name request) (::m.rate-sources/name response)))))))
 
 (deftest create-handler-invalid
   (let [params {}

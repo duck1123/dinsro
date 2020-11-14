@@ -1,4 +1,4 @@
-(ns dinsro.specs.currencies
+(ns dinsro.model.currencies
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]))

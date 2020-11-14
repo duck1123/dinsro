@@ -7,7 +7,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.rate-sources :as e.rate-sources]
-   [dinsro.specs.rate-sources :as s.rate-sources]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
@@ -24,7 +24,7 @@
 
     store))
 
-(let [rate-sources (ds/gen-key (s/coll-of ::s.rate-sources/item :count 3))
+(let [rate-sources (ds/gen-key (s/coll-of ::m.rate-sources/item :count 3))
       rate-source (first rate-sources)]
 
   (let [store (test-store)]

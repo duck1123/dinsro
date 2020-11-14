@@ -5,8 +5,8 @@
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
+   [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
-   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
@@ -21,7 +21,7 @@
                 e.users/init-handlers!)]
     store))
 
-(let [items (ds/gen-key (s/coll-of ::s.users/item :count 3))
+(let [items (ds/gen-key (s/coll-of ::m.users/item :count 3))
       item (first items)]
   (let [store (test-store)]
     (st/dispatch store [::e.users/do-fetch-index-success {:items items}])

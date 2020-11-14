@@ -1,4 +1,4 @@
-(ns dinsro.specs.rates
+(ns dinsro.model.rates
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.specs :as ds]))

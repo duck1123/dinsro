@@ -4,14 +4,14 @@
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
    [dinsro.queries.categories :as q.categories]
-   [dinsro.specs.categories :as s.categories]
+   [dinsro.model.categories :as m.categories]
    [dinsro.specs.actions.categories :as s.a.categories]
    [dinsro.utils :as utils]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
 (def param-rename-map
-  {:name          ::s.categories/name})
+  {:name          ::m.categories/name})
 
 ;; Prepare
 
@@ -21,16 +21,16 @@
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
-                   (assoc-in [::s.categories/user :db/id] user-id))]
-    (if (s/valid? ::s.categories/params params)
+                   (assoc-in [::m.categories/user :db/id] user-id))]
+    (if (s/valid? ::m.categories/params params)
       params
       (do
-        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.categories/params params)))
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.categories/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.categories/create-params)
-  :ret  (s/nilable ::s.categories/params))
+  :ret  (s/nilable ::m.categories/params))
 
 ;; Create
 

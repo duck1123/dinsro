@@ -1,7 +1,7 @@
 (ns dinsro.ui.index-rates
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.rates :as s.rates]
+   [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -9,10 +9,10 @@
 
 (defn rate-line
   [store item]
-  (let [value (::s.rates/rate item)
-        currency-id (get-in item [::s.rates/currency :db/id])]
+  (let [value (::m.rates/rate item)
+        currency-id (get-in item [::m.rates/currency :db/id])]
     [:tr
-     [:td (str (::s.rates/date item))]
+     [:td (str (::m.rates/date item))]
      [:td value]
      [:td [u.links/currency-link store currency-id]]
      (u.debug/hide store [:td [u.buttons/delete-rate store item]])]))
@@ -33,5 +33,5 @@
         ^{:key (:db/id item)} [rate-line store item]))]))
 
 (s/fdef section
-  :args (s/cat :items (s/coll-of ::s.rates/item))
+  :args (s/cat :items (s/coll-of ::m.rates/item))
   :ret vector?)

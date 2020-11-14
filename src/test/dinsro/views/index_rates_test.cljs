@@ -7,8 +7,8 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-rate :as e.f.create-rate]
    [dinsro.events.rates :as e.rates]
+   [dinsro.model.rates :as m.rates]
    [dinsro.specs :as ds]
-   [dinsro.specs.rates :as s.rates]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-rates :as v.index-rates]
@@ -16,7 +16,7 @@
 
 (let [currency (ds/gen-key ::e.currencies/item)
       rates (map
-             (fn [rate] (assoc-in rate [::s.rates/currency :db/id] (:db/id currency)))
+             (fn [rate] (assoc-in rate [::m.rates/currency :db/id] (:db/id currency)))
              (ds/gen-key (s/coll-of ::e.rates/item :count 3)))
       store (doto (mock-store)
               e.debug/init-handlers!

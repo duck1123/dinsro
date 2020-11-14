@@ -7,18 +7,18 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.users :as e.users]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.users :as s.users]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.index-accounts :as u.index-accounts]))
 
-(def users (ds/gen-key (s/coll-of ::s.users/item :count 3)))
+(def users (ds/gen-key (s/coll-of ::m.users/item :count 3)))
 
-(def currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3)))
+(def currencies (ds/gen-key (s/coll-of ::m.currencies/item :count 3)))
 
 (def accounts
   (map
@@ -28,9 +28,9 @@
            currency-ids (map :db/id currencies)
            currency-id (rand-nth (concat [nil] currency-ids))]
        (-> account
-           (assoc-in [::s.accounts/user :db/id] user-id)
-           (assoc-in [::s.accounts/currency :db/id] currency-id))))
-   (ds/gen-key (s/coll-of ::s.accounts/item :count 3))))
+           (assoc-in [::m.accounts/user :db/id] user-id)
+           (assoc-in [::m.accounts/currency :db/id] currency-id))))
+   (ds/gen-key (s/coll-of ::m.accounts/item :count 3))))
 
 (defn test-store
   []

@@ -2,7 +2,7 @@
   (:require
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.forms.create-rate-source :as e.f.create-rate-sources]
-   [dinsro.specs.rate-sources :as s.rate-sources]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -13,9 +13,9 @@
 (defn index-line
   [store item]
   (let [id (:db/id item)
-        name (::s.rate-sources/name item)
-        url (::s.rate-sources/url item)
-        currency-id (get-in item [::s.rate-sources/currency :db/id])]
+        name (::m.rate-sources/name item)
+        url (::m.rate-sources/url item)
+        currency-id (get-in item [::m.rate-sources/currency :db/id])]
     [:tr
      [:td id]
      [:td name]

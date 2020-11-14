@@ -6,12 +6,12 @@
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rates :as m.rates]
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.rates :as s.rates]
-   [dinsro.specs.transactions :as s.transactions]
-   [dinsro.specs.users :as s.users]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 
@@ -25,19 +25,19 @@
     (when-not (d/database-exists? (uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* s.users/schema)
-      (d/transact db/*conn* s.currencies/schema)
-      (d/transact db/*conn* s.rates/schema)
-      (d/transact db/*conn* s.transactions/schema)
+      (d/transact db/*conn* m.users/schema)
+      (d/transact db/*conn* m.currencies/schema)
+      (d/transact db/*conn* m.rates/schema)
+      (d/transact db/*conn* m.transactions/schema)
       (f))))
 
 (deftest create-record-test
-  (let [params (ds/gen-key ::s.transactions/params)
+  (let [params (ds/gen-key ::m.transactions/params)
         id (q.transactions/create-record params)
         record (q.transactions/read-record id)]
 
-    (is (= (double (::s.transactions/value params))
-           (::s.transactions/value record))
+    (is (= (double (::m.transactions/value params))
+           (::m.transactions/value record))
         "values match")))
 
 (deftest read-record-success
@@ -57,7 +57,7 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::s.transactions/params)]
+  (let [params (ds/gen-key ::m.transactions/params)]
     (q.transactions/create-record params)
     (is (not= [params] (q.transactions/index-records)))))
 

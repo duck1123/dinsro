@@ -1,6 +1,6 @@
 (ns dinsro.ui.show-account
   (:require
-   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
@@ -9,9 +9,9 @@
 
 (defn show-account
   [store account]
-  (let [name (::s.accounts/name account)
-        user-id (get-in account [::s.accounts/user :db/id])
-        currency-id (get-in account [::s.accounts/currency :db/id])]
+  (let [name (::m.accounts/name account)
+        user-id (get-in account [::m.accounts/user :db/id])
+        currency-id (get-in account [::m.accounts/currency :db/id])]
     [:<>
      [:h3 name]
      [:p

@@ -3,13 +3,13 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
    [taoensso.timbre :as timbre]))
 
 (defn index-ids
   []
-  (map first (d/q '[:find ?e :where [?e ::s.currencies/name _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.currencies/name _]] @db/*conn*)))
 
 (s/fdef index-ids
   :args (s/cat)
@@ -17,11 +17,11 @@
 
 (defn index-records
   []
-  (d/pull-many @db/*conn* '[::s.currencies/name :db/id] (index-ids)))
+  (d/pull-many @db/*conn* '[::m.currencies/name :db/id] (index-ids)))
 
 (s/fdef index-records
   :args (s/cat)
-  :ret (s/coll-of ::s.currencies/item))
+  :ret (s/coll-of ::m.currencies/item))
 
 (defn create-record
   [params]
@@ -30,18 +30,18 @@
     (get-in response [:tempids "currency-id"])))
 
 (s/fdef create-record
-  :args (s/cat :params ::s.currencies/params)
+  :args (s/cat :params ::m.currencies/params)
   :ret ::ds/id)
 
 (defn read-record
   [id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::s.currencies/name)
+    (when (get record ::m.currencies/name)
       record)))
 
 (s/fdef read-record
   :args (s/cat :id ::ds/id)
-  :ret  (s/nilable ::s.currencies/item))
+  :ret  (s/nilable ::m.currencies/item))
 
 (defn delete-record
   [id]

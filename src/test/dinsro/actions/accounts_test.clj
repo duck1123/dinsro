@@ -3,11 +3,11 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.actions.accounts :as a.accounts]
    [dinsro.mocks :as mocks]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.actions.accounts :as s.a.accounts]
-   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
@@ -15,8 +15,8 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [s.users/schema
-                 s.accounts/schema])))
+    (start-db f [m.users/schema
+                 m.accounts/schema])))
 
 (deftest index-handler-test-empty
   (let [request {:session {:identity 1}
@@ -28,7 +28,7 @@
 
 (deftest index-handler-test-with-records
   (let [record (mocks/mock-account)
-        user-id (get-in record [::s.accounts/user :db/id])
+        user-id (get-in record [::m.accounts/user :db/id])
         request {:session {:identity user-id}}
         response (a.accounts/index-handler request)
         {{:keys [items]} :body} response]
@@ -41,7 +41,7 @@
 
 (deftest create-handler-no-initial-value
   (let [request (assoc (ds/gen-key ::s.a.accounts/create-request-valid)
-                       ::s.accounts/initial-value 0)
+                       ::m.accounts/initial-value 0)
         response (a.accounts/create-handler request)]
     (is (= status/ok (:status response)))))
 

@@ -3,9 +3,9 @@
    [clojure.test :refer [are deftest is use-fixtures]]
    [dinsro.actions.users :as a.users]
    [dinsro.mocks :as mocks]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
-   [dinsro.specs.users :as s.users]
    [dinsro.test-helpers :refer [start-db]]
    [ring.mock.request :as mock]
    [ring.util.http-status :as status]))
@@ -13,10 +13,10 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [s.users/schema])))
+    (start-db f [m.users/schema])))
 
 (deftest create-record-response-test
-  (let [params (ds/gen-key ::s.users/input-params-valid)
+  (let [params (ds/gen-key ::m.users/input-params-valid)
         response (a.users/create-handler {:params params})]
     (is (= (:status response) status/ok))))
 
@@ -34,7 +34,7 @@
     (is (= 1 (count (:body response))))))
 
 (deftest read-handler-success
-  (let [params (ds/gen-key ::s.users/params)
+  (let [params (ds/gen-key ::m.users/params)
         id (q.users/create-record params)
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]

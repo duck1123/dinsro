@@ -6,10 +6,10 @@
 (s/def ::create-params-valid
   (s/keys
    ;; :req-un [
-   ;;                 ::s.accounts/name
+   ;;                 ::m.accounts/name
    ;;                 ::initial-value
-   ;;                 ::s.accounts/user-id
-   ;;                 ::s.accounts/currency-id
+   ;;                 ::m.accounts/user-id
+   ;;                 ::m.accounts/currency-id
    ;;                 ]
 
           ))

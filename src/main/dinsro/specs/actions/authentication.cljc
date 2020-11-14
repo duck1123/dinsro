@@ -1,11 +1,11 @@
 (ns dinsro.specs.actions.authentication
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.users :as s.users]))
+   [dinsro.model.users :as m.users]))
 
 (s/def :register-optional/params
-  (s/keys :opt-un [::s.users/name ::s.users/email ::s.users/password]))
-(s/def ::register-params (s/keys :req-un [::s.users/name ::s.users/email ::s.users/password]))
+  (s/keys :opt-un [::m.users/name ::m.users/email ::m.users/password]))
+(s/def ::register-params (s/keys :req-un [::m.users/name ::m.users/email ::m.users/password]))
 (s/def :register/params ::register-params)
 
 (s/def ::register-request (s/keys :req-un [:register-optional/params]))

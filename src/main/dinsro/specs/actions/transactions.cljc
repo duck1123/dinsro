@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.transactions :as s.transactions]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
 
@@ -39,7 +39,7 @@
 (s/def ::create-request (s/keys :req-un [:create-transactions-request/params]))
 (def create-request ::create-request)
 
-(s/def :create-transactions-response-valid/body (s/keys :req-un [::s.transactions/item]))
+(s/def :create-transactions-response-valid/body (s/keys :req-un [::m.transactions/item]))
 (s/def :create-transactions-response-valid/status #{status/ok})
 (s/def ::create-response-valid (s/keys :req-un [:create-transactions-response-valid/body
                                                 :create-transactions-response-valid/status]))
@@ -53,7 +53,7 @@
 
 (s/def ::read-request ::ds/common-read-request)
 
-(s/def :read-transactions-response/body (s/keys :req-un [::s.transactions/item]))
+(s/def :read-transactions-response/body (s/keys :req-un [::m.transactions/item]))
 (s/def ::read-response-valid (s/keys :req-un [:read-transactions-response/body]))
 (def read-response-valid ::read-response-valid)
 
@@ -71,7 +71,7 @@
 
 ;; Index
 
-(s/def :index-transactions-response/items (s/coll-of ::s.transactions/item))
+(s/def :index-transactions-response/items (s/coll-of ::m.transactions/item))
 (s/def :index-transactions-response/body (s/keys :req-un [:index-transactions-response/items]))
 (s/def ::index-request (s/keys))
 (s/def ::index-response (s/keys :req-un [:index-transactions-response/body]))

@@ -3,15 +3,15 @@
    [cljs.test :refer-macros [is]]
    [dinsro.cards :refer-macros [defcard-rg deftest]]
    [dinsro.events.debug :as e.debug]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.boundary]
    [dinsro.ui.show-currency :as u.show-currency]))
 
-(let [item (ds/gen-key ::s.currencies/item)
+(let [item (ds/gen-key ::m.currencies/item)
       store (doto (mock-store)
               e.debug/init-handlers!)]
   (defcard-rg show-currency

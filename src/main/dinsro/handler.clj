@@ -5,14 +5,14 @@
    [dinsro.db :as db]
    [dinsro.layout :refer [error-page] :as layout]
    [dinsro.middleware :as middleware]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.rates :as m.rates]
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.users :as m.users]
    [dinsro.routes :as routes]
-   [dinsro.specs.accounts :as s.accounts]
-   [dinsro.specs.categories :as s.categories]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.rate-sources :as s.rate-sources]
-   [dinsro.specs.rates :as s.rates]
-   [dinsro.specs.transactions :as s.transactions]
-   [dinsro.specs.users :as s.users]
    [mount.core :as mount]
    [reitit.coercion.spec]
    [reitit.ring :as ring]
@@ -41,13 +41,13 @@
 
 (defn init-schemata
   []
-  (let [schemata [s.accounts/schema
-                  s.categories/schema
-                  s.currencies/schema
-                  s.rates/schema
-                  s.rate-sources/schema
-                  s.transactions/schema
-                  s.users/schema]]
+  (let [schemata [m.accounts/schema
+                  m.categories/schema
+                  m.currencies/schema
+                  m.rates/schema
+                  m.rate-sources/schema
+                  m.transactions/schema
+                  m.users/schema]]
     (doseq [schema schemata]
       (d/transact db/*conn* schema))))
 

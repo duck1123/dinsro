@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.events.forms.create-account :as e.f.create-account]
-   [dinsro.specs.accounts :as s.accounts]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
@@ -16,9 +16,9 @@
 (defn row-line
   [store account]
   (let [id (:db/id account)
-        initial-value (::s.accounts/initial-value account)
-        currency-id (get-in account [::s.accounts/currency :db/id])
-        user-id (get-in account [::s.accounts/user :db/id])]
+        initial-value (::m.accounts/initial-value account)
+        currency-id (get-in account [::m.accounts/currency :db/id])
+        user-id (get-in account [::m.accounts/user :db/id])]
     [:tr
      (u.debug/hide store [:td id])
      [:td (u.links/account-link store id)]
@@ -28,7 +28,7 @@
      (u.debug/hide store [:td [u.buttons/delete-account store account]])]))
 
 (s/fdef row-line
-  :args (s/cat :account ::s.accounts/item)
+  :args (s/cat :account ::m.accounts/item)
   :ret vector?)
 
 (defn index-accounts
@@ -50,7 +50,7 @@
              (row-line store account)))]))
 
 (s/fdef index-accounts
-  :args (s/cat :accounts (s/coll-of ::s.accounts/item))
+  :args (s/cat :accounts (s/coll-of ::m.accounts/item))
   :ret vector?)
 
 (defn section

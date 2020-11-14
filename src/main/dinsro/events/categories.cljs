@@ -3,16 +3,16 @@
    [clojure.spec.alpha :as s]
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
-   [dinsro.specs.categories :as s.categories]
+   [dinsro.model.categories :as m.categories]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
 (def example-category
   {:db/id 1
-   ::s.categories/name "Foo"
-   ::s.categories/user {:db/id 12}})
+   ::m.categories/name "Foo"
+   ::m.categories/user {:db/id 12}})
 
-(s/def ::item ::s.categories/item)
+(s/def ::item ::m.categories/item)
 
 (eu/declare-model 'dinsro.events.categories)
 (eu/declare-fetch-index-method 'dinsro.events.categories)
@@ -24,7 +24,7 @@
 (defn items-by-user
   [{:keys [::item-map]} event]
   (let [[_ id] event]
-    (filter #(= id (get-in % [::s.categories/user :db/id])) (vals item-map))))
+    (filter #(= id (get-in % [::m.categories/user :db/id])) (vals item-map))))
 
 ;; Create
 

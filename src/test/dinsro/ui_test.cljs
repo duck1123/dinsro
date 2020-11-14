@@ -7,9 +7,9 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.users :as e.users]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.ui :as u]
@@ -46,12 +46,12 @@
                 e.users/init-handlers!)]
     store))
 
-(def rate-sources (ds/gen-key (s/coll-of ::s.rate-sources/item :count 3)))
+(def rate-sources (ds/gen-key (s/coll-of ::m.rate-sources/item :count 3)))
 
 (let [field :foo
       label "Label"
       accounts (ds/gen-key ::e.accounts/items)
-      currencies (ds/gen-key (s/coll-of ::s.currencies/item :count 3))
+      currencies (ds/gen-key (s/coll-of ::m.currencies/item :count 3))
       users (ds/gen-key ::e.users/items)
       handler [::event-name]]
 

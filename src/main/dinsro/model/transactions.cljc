@@ -1,4 +1,4 @@
-(ns dinsro.specs.transactions
+(ns dinsro.model.transactions
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.specs :as ds]))

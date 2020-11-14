@@ -1,7 +1,7 @@
 (ns dinsro.ui.index-categories
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.categories :as s.categories]
+   [dinsro.model.categories :as m.categories]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -9,8 +9,8 @@
 
 (defn category-line
   [store item]
-  (let [name (::s.categories/name item)
-        user-id (get-in item [::s.categories/user :db/id])]
+  (let [name (::m.categories/name item)
+        user-id (get-in item [::m.categories/user :db/id])]
     [:tr
      [:td name]
      [:td [u.links/user-link store user-id]]
@@ -30,5 +30,5 @@
       (for [item items] ^{:key (:db/id item)} [category-line store item]))]))
 
 (s/fdef index-categories
-  :args (s/cat :item ::s.categories/item)
+  :args (s/cat :item ::m.categories/item)
   :ret vector?)

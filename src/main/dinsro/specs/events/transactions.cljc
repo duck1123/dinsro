@@ -1,10 +1,10 @@
 (ns dinsro.specs.events.transactions
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs.actions.transactions :as s.a.transactions]
-   [dinsro.specs.transactions :as s.transactions]))
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.specs.actions.transactions :as s.a.transactions]))
 
-(s/def ::items-by-account-event (s/cat :keyword keyword? :id ::s.transactions/account-id))
+(s/def ::items-by-account-event (s/cat :keyword keyword? :id ::m.transactions/account-id))
 (def items-by-account-event ::items-by-account-event)
 
 (s/def :fetch-transactions-cofx/db (s/keys))
@@ -20,7 +20,7 @@
 (s/def ::do-delete-record-success-cofx (s/keys))
 (s/def ::do-delete-record-failed-cofx (s/keys))
 (s/def ::do-delete-record-cofx (s/keys))
-(s/def ::do-delete-record-event (s/cat :item ::s.transactions/item))
+(s/def ::do-delete-record-event (s/cat :item ::m.transactions/item))
 
 (s/def ::do-submit-response (s/keys))
 (s/def ::do-submit-success-cofx (s/keys))

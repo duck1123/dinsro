@@ -6,10 +6,10 @@
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [mount.core :as mount]))
 
 (def uri "datahike:file:///tmp/file-example2")
@@ -22,15 +22,15 @@
     (when-not (d/database-exists? (dc/uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* s.currencies/schema)
-      (d/transact db/*conn* s.rate-sources/schema)
+      (d/transact db/*conn* m.currencies/schema)
+      (d/transact db/*conn* m.rate-sources/schema)
       (f))))
 
 (deftest create-record-test
-  (let [params (ds/gen-key ::s.rate-sources/params)
+  (let [params (ds/gen-key ::m.rate-sources/params)
         id (q.rate-sources/create-record params)
         item (q.rate-sources/read-record id)]
-    (is (= (::s.rate-sources/name params) (::s.rate-sources/name item))
+    (is (= (::m.rate-sources/name params) (::m.rate-sources/name item))
         "rate sources match")))
 
 (deftest read-record-test-not-found

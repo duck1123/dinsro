@@ -2,8 +2,8 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs :as ds]
-   [dinsro.specs.rate-sources :as s.rate-sources]
    [ring.util.http-status :as status]
    [taoensso.timbre :as timbre]))
 
@@ -30,7 +30,7 @@
 (s/def ::create-request (s/keys :req-un [:create-rate-sources-request/params]))
 (def create-request ::create-request)
 
-(s/def :create-rate-sources-response-valid/body (s/keys :req-un [::s.rate-sources/item]))
+(s/def :create-rate-sources-response-valid/body (s/keys :req-un [::m.rate-sources/item]))
 (s/def :create-rate-sources-response-valid/status #{status/ok})
 (s/def ::create-response-valid (s/keys :req-un [:create-rate-sources-response-valid/body
                                                         :create-rate-sources-response-valid/status]))
@@ -50,7 +50,7 @@
 (s/def ::read-request (s/keys :req-un [:common-request-show/path-params]))
 (def read-request ::read-request)
 
-(s/def :read-rate-sources-response/body (s/keys :req-un [::s.rate-sources/item]))
+(s/def :read-rate-sources-response/body (s/keys :req-un [::m.rate-sources/item]))
 (s/def ::read-response-valid (s/keys :req-un [:read-rate-sources-response/body]))
 (s/def ::read-response (s/or :not-found ::ds/common-response-not-found
                                      :valid     ::read-response-valid))
@@ -69,7 +69,7 @@
 (s/def ::index-request (s/keys))
 (def index-request ::index-request)
 
-(s/def :index-rate-sources-response/items (s/coll-of ::s.rate-sources/item))
+(s/def :index-rate-sources-response/items (s/coll-of ::m.rate-sources/item))
 (s/def :index-rate-sources-response/body (s/keys :req-un [:index-rate-sources-response/items]))
 (s/def ::index-response (s/keys :req-un [:index-rate-sources-response/body]))
 (def index-response ::index-response)

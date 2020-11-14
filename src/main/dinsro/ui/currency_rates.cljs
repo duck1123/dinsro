@@ -1,8 +1,8 @@
 (ns dinsro.ui.currency-rates
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.rates :as m.rates]
    [dinsro.specs :as ds]
-   [dinsro.specs.rates :as s.rates]
    [dinsro.ui.rate-chart :as u.rate-chart]
    [taoensso.timbre :as timbre]))
 
@@ -13,5 +13,5 @@
 
 (s/fdef section
   :args (s/cat :currency-id ::ds/id
-               :rate-feed ::s.rates/rate-feed)
+               :rate-feed ::m.rates/rate-feed)
   :ret vector?)

@@ -1,4 +1,4 @@
-(ns dinsro.specs.users
+(ns dinsro.model.users
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]

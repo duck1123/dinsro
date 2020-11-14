@@ -6,10 +6,10 @@
    [dinsro.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.users :as s.users]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 
@@ -23,12 +23,12 @@
     (when-not (d/database-exists? (uri->config uri))
       (d/create-database uri))
     (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* s.users/schema)
-      (d/transact db/*conn* s.currencies/schema)
+      (d/transact db/*conn* m.users/schema)
+      (d/transact db/*conn* m.currencies/schema)
       (f))))
 
 (deftest create-record-success
-  (let [params (ds/gen-key ::s.currencies/params)
+  (let [params (ds/gen-key ::m.currencies/params)
         response (q.currencies/create-record params)]
     (is (not (nil? response)))))
 
@@ -49,7 +49,7 @@
 
 (deftest index-records-with-records
   (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::s.currencies/params)]
+  (let [params (ds/gen-key ::m.currencies/params)]
     (q.currencies/create-record params)
     (is (not= [params] (q.currencies/index-records)))))
 

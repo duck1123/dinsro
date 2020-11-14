@@ -3,14 +3,14 @@
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.rates :as m.rates]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.rate-sources :as s.a.rate-sources]
-   [dinsro.specs.currencies :as s.currencies]
-   [dinsro.specs.rate-sources :as s.rate-sources]
-   [dinsro.specs.rates :as s.rates]
    [dinsro.utils :as utils]
    [http.async.client :as http-client]
    [manifold.time :as t]
@@ -25,18 +25,18 @@
 
 (defn prepare-record
   [params]
-  (let [params {::s.rate-sources/currency {:db/id (:currency-id params)}
-                ::s.rate-sources/name (some-> params :name)
-                ::s.rate-sources/url (some-> params :url)}]
-    (if (s/valid? ::s.rate-sources/params params)
+  (let [params {::m.rate-sources/currency {:db/id (:currency-id params)}
+                ::m.rate-sources/name (some-> params :name)
+                ::m.rate-sources/url (some-> params :url)}]
+    (if (s/valid? ::m.rate-sources/params params)
       params
       (do
-        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::s.rate-sources/params params)))
+        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.rate-sources/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.rate-sources/create-params)
-  :ret  (s/nilable ::s.rate-sources/params))
+  :ret  (s/nilable ::m.rate-sources/params))
 
 ;; Create
 
@@ -99,7 +99,7 @@
 (defn fetch-rate
   [item]
   (with-open [client (http-client/create-client)]
-    (let [url (::s.rate-sources/url item)
+    (let [url (::m.rate-sources/url item)
           response (http-client/GET client url)
           body (some-> response
                        http-client/await
@@ -109,25 +109,25 @@
         (/ 100000000 price)))))
 
 (s/fdef fetch-rate
-  :args (s/cat :item ::s.rate-sources/item)
+  :args (s/cat :item ::m.rate-sources/item)
   :ret (s/nilable ::ds/valid-double))
 
 (defn fetch-source
   [item]
-  (if-let [currency-id (some-> item ::s.rate-sources/currency :db/id)]
+  (if-let [currency-id (some-> item ::m.rate-sources/currency :db/id)]
     (if-let [currency (q.currencies/read-record currency-id)]
       (if-let [rate (fetch-rate item)]
-        (let [rate-item {::s.rates/currency {:db/id currency-id}
-                         ::s.rates/rate rate
-                         ::s.rates/date (tick/instant)}]
-          (timbre/infof "Updating rate for currency %s => %s" (::s.currencies/name currency) rate)
+        (let [rate-item {::m.rates/currency {:db/id currency-id}
+                         ::m.rates/rate rate
+                         ::m.rates/date (tick/instant)}]
+          (timbre/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)
           (q.rates/create-record rate-item))
         (timbre/error "No rate"))
       (timbre/error "Couldn't find currency"))
     (timbre/error "No Currency id")))
 
 (s/fdef fetch-source
-  :args (s/cat :item ::s.rate-sources/item)
+  :args (s/cat :item ::m.rate-sources/item)
   :ret :db/id)
 
 (defn run-handler

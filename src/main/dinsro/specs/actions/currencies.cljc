@@ -1,14 +1,14 @@
 (ns dinsro.specs.actions.currencies
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]
-   [dinsro.specs.currencies :as s.currencies]
    [taoensso.timbre :as timbre]))
 
 ;; Create
 
-(s/def ::create-params (s/keys :opt-un [::s.currencies/name]))
-(s/def ::create-params-valid (s/keys :req-un [::s.currencies/name]))
+(s/def ::create-params (s/keys :opt-un [::m.currencies/name]))
+(s/def ::create-params-valid (s/keys :req-un [::m.currencies/name]))
 
 (s/def :create-currency-request/params ::create-params)
 (s/def :create-currency-request-valid/params ::create-params-valid)
@@ -19,7 +19,7 @@
 (s/def ::create-request (s/keys :req-un [:create-currency-request/params]))
 (def create-request ::create-request)
 
-(s/def :create-currency-response/item ::s.currencies/item)
+(s/def :create-currency-response/item ::m.currencies/item)
 (s/def :create-currency-response/body (s/keys :req-un [:create-currency-response/item]))
 (s/def ::create-response-valid (s/keys :req-un [:create-currency-response/body]))
 (def create-response-valid ::create-response-valid)
@@ -33,7 +33,7 @@
 (s/def ::read-request ::ds/common-read-request)
 (def read-request ::read-request)
 
-(s/def :read-currency-response-body/item ::s.currencies/item)
+(s/def :read-currency-response-body/item ::m.currencies/item)
 (s/def :read-currency-response-success/body
   (s/keys :req-un [:read-currency-response-body/item]))
 (s/def ::read-response-success

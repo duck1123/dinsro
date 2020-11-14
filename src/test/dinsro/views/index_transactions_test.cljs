@@ -8,14 +8,14 @@
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.events.transactions :as e.transactions]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.transactions :as s.transactions]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
    [dinsro.views.index-transactions :as v.index-transactions]
    [taoensso.timbre :as timbre]))
 
-(let [items (ds/gen-key (s/coll-of ::s.transactions/item :count 5))
+(let [items (ds/gen-key (s/coll-of ::m.transactions/item :count 5))
       index-transaction-store
       (fn []
         (let [store (doto (mock-store)

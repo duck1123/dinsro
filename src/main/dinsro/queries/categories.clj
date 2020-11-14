@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.categories :as m.categories]
    [dinsro.specs :as ds]
-   [dinsro.specs.categories :as s.categories]
    [taoensso.timbre :as timbre]))
 
 (defn create-record
@@ -13,22 +13,22 @@
     (get-in response [:tempids "record-id"])))
 
 (s/fdef create-record
-  :args (s/cat :params ::s.categories/params)
+  :args (s/cat :params ::m.categories/params)
   :ret ::ds/id)
 
 (defn read-record
   [id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::s.categories/name)
+    (when (get record ::m.categories/name)
       record)))
 
 (s/fdef read-record
   :args (s/cat :id ::ds/id)
-  :ret  (s/nilable ::s.categories/item))
+  :ret  (s/nilable ::m.categories/item))
 
 (defn index-ids
   []
-  (map first (d/q '[:find ?e :where [?e ::s.categories/name _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.categories/name _]] @db/*conn*)))
 
 (s/fdef index-ids
   :args (s/cat)
@@ -40,7 +40,7 @@
 
 (s/fdef index-records
   :args (s/cat)
-  :ret (s/coll-of ::s.categories/item))
+  :ret (s/coll-of ::m.categories/item))
 
 (defn delete-record
   [id]

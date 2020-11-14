@@ -5,7 +5,7 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.transactions :as e.transactions]
    [dinsro.events.users :as e.users]
-   [dinsro.specs.transactions :as s.transactions]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs.views.show-account :as s.v.show-account]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
@@ -49,7 +49,7 @@
         [show-account store account])]
      (when account
        (let [items @(st/subscribe store [::e.transactions/items-by-account id])
-             transactions (sort-by ::s.transactions/date items)]
+             transactions (sort-by ::m.transactions/date items)]
          [u.account-transactions/section store id transactions]))]))
 
 (s/fdef page

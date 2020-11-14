@@ -4,13 +4,13 @@
    [dinsro.events :as e]
    [dinsro.events.utils :as eu :include-macros true]
    [dinsro.events.utils.impl]
-   [dinsro.specs.currencies :as s.currencies]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.store :as st]
    [taoensso.timbre :as timbre]))
 
 (def items-sub-default [])
 
-(s/def ::item ::s.currencies/item)
+(s/def ::item ::m.currencies/item)
 
 (eu/declare-model 'dinsro.events.currencies)
 (eu/declare-fetch-index-method 'dinsro.events.currencies)

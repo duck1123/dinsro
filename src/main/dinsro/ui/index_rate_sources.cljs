@@ -1,6 +1,6 @@
 (ns dinsro.ui.index-rate-sources
   (:require
-   [dinsro.specs.rate-sources :as s.rate-sources]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -8,9 +8,9 @@
 
 (defn index-line
   [store item]
-  (let [name (::s.rate-sources/name item)
-        url (::s.rate-sources/url item)
-        currency-id (get-in item [::s.rate-sources/currency :db/id])]
+  (let [name (::m.rate-sources/name item)
+        url (::m.rate-sources/url item)
+        currency-id (get-in item [::m.rate-sources/currency :db/id])]
     [:tr
      [:td name]
      [:td url]

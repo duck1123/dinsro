@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [dinsro.events.forms.add-user-account :as e.f.add-user-account]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
-   [dinsro.specs.accounts :as s.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
@@ -15,8 +15,8 @@
 (defn row-line
   [store account]
   (let [id (:db/id account)
-        initial-value (::s.accounts/initial-value account)
-        currency-id (get-in account [::s.accounts/currency :db/id])]
+        initial-value (::m.accounts/initial-value account)
+        currency-id (get-in account [::m.accounts/currency :db/id])]
     [:tr
      (u.debug/hide store [:td id])
      [:td (u.links/account-link store id)]
@@ -53,5 +53,5 @@
 
 (s/fdef section
   :args (s/cat :user-id ::ds/id
-               :accounts (s/coll-of ::s.accounts/item))
+               :accounts (s/coll-of ::m.accounts/item))
   :ret vector?)

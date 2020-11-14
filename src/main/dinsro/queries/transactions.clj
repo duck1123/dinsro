@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]
-   [dinsro.specs.transactions :as s.transactions]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
@@ -13,27 +13,27 @@
   (let [tempid (d/tempid "transaction-id")
         prepared-params (-> params
                             (assoc  :db/id tempid)
-                            (update ::s.transactions/date tick/inst))
+                            (update ::m.transactions/date tick/inst))
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
 (s/fdef create-record
-  :args (s/cat :params ::s.transactions/params)
+  :args (s/cat :params ::m.transactions/params)
   :ret ::ds/id)
 
 (defn read-record
   [id]
   (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::s.transactions/value)
-      (update record ::s.transactions/date tick/instant))))
+    (when (get record ::m.transactions/value)
+      (update record ::m.transactions/date tick/instant))))
 
 (s/fdef read-record
   :args (s/cat :id ::ds/id)
-  :ret  (s/nilable ::s.transactions/item))
+  :ret  (s/nilable ::m.transactions/item))
 
 (defn index-ids
   []
-  (map first (d/q '[:find ?e :where [?e ::s.transactions/value _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.transactions/value _]] @db/*conn*)))
 
 (s/fdef index-ids
   :args (s/cat)
@@ -43,11 +43,11 @@
   []
   (->> (index-ids)
        (d/pull-many @db/*conn* '[*])
-       (map #(update % ::s.transactions/date tick/instant))))
+       (map #(update % ::m.transactions/date tick/instant))))
 
 (s/fdef index-records
   :args (s/cat)
-  :ret (s/coll-of ::s.transactions/item))
+  :ret (s/coll-of ::m.transactions/item))
 
 (defn delete-record
   [id]

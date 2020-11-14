@@ -3,16 +3,16 @@
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.queries.accounts :as q.accounts]
-   [dinsro.specs.accounts :as s.accounts]
    [dinsro.specs.actions.accounts :as s.a.accounts]
    [dinsro.utils :as utils]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
 (def param-rename-map
-  {:name          ::s.accounts/name
-   :initial-value ::s.accounts/initial-value})
+  {:name          ::m.accounts/name
+   :initial-value ::m.accounts/initial-value})
 
 ;; Prepare
 
@@ -24,21 +24,21 @@
         params (-> params
                    (set/rename-keys param-rename-map)
                    (select-keys (vals param-rename-map))
-                   (assoc-in [::s.accounts/initial-value] (and initial-value (double initial-value)))
-                   (assoc-in [::s.accounts/user :db/id] user-id))
+                   (assoc-in [::m.accounts/initial-value] (and initial-value (double initial-value)))
+                   (assoc-in [::m.accounts/user :db/id] user-id))
         params (merge
                 (when (and currency-id (not= currency-id 0))
-                  {::s.accounts/currency {:db/id currency-id}})
+                  {::m.accounts/currency {:db/id currency-id}})
                 params)]
-    (if (s/valid? ::s.accounts/params params)
+    (if (s/valid? ::m.accounts/params params)
       params
       (do
-        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::s.accounts/params params)))
+        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.accounts/params params)))
         nil))))
 
 (s/fdef prepare-record
   :args (s/cat :params ::s.a.accounts/create-params)
-  :ret  (s/nilable ::s.accounts/params))
+  :ret  (s/nilable ::m.accounts/params))
 
 ;; Create
 
