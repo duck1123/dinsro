@@ -6,9 +6,9 @@
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.ui.index-categories :refer [index-categories]]
    [kee-frame.core :as kf]
@@ -36,7 +36,7 @@
      [:div.box
       [:h1
        (tr [:categories "Categories"])
-       [u/show-form-button store ::e.f.create-category/shown?]]
+       [u.buttons/show-form-button store ::e.f.create-category/shown?]]
       [u.f.create-category/form store]
       [:hr]
       (when items
@@ -54,7 +54,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-categories-page)
+   {:params (u.filters/filter-page :index-categories-page)
     :start [::init-page]})
 
   store)

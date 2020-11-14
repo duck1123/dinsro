@@ -6,6 +6,7 @@
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
+   [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
 (defn on-submit
@@ -20,11 +21,11 @@
   (let [form-data @(st/subscribe store [::e.f.login/form-data])]
     [:form.is-centered {:on-submit (partial on-submit store return-to)}
      [:div.field>div.control
-      [u/email-input store (tr [:email]) ::s.e.f.login/email]]
+      [u.inputs/email-input store (tr [:email]) ::s.e.f.login/email]]
      [:div.field>div.control
-      [u/password-input store (tr [:password]) ::s.e.f.login/password]]
+      [u.inputs/password-input store (tr [:password]) ::s.e.f.login/password]]
      [:div.field>div.control
-      [u/primary-button
+      [u.inputs/primary-button
        store
        (tr [:login])
        [::e.authentication/do-authenticate form-data return-to]]]]))

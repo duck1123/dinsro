@@ -17,6 +17,7 @@
    [dinsro.ui.admin-index-users :as u.admin-index-users]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -64,7 +65,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :admin-page)
+   {:params (u.filters/filter-page :admin-page)
     :start [::init-page]})
 
   store)

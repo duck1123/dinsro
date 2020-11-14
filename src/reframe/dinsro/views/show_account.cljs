@@ -9,10 +9,10 @@
    [dinsro.specs.views.show-account :as s.v.show-account]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.account-transactions :as u.account-transactions]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.show-account :refer [show-account]]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
@@ -65,7 +65,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-param-page :show-account-page)
+   {:params (u.filters/filter-param-page :show-account-page)
     :start  [::init-page]})
 
   store)

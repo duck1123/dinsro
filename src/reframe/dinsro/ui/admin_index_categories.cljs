@@ -38,7 +38,7 @@
     [:div.box
      [:h1
       (tr [:categories "Categories"])
-      [u/show-form-button store ::e.f.create-category/shown?]]
+      [u.buttons/show-form-button store ::e.f.create-category/shown?]]
      [u.f.create-category/form store]
      [:hr]
      (when (seq items)

@@ -5,9 +5,9 @@
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.user-accounts :as u.user-accounts]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
@@ -63,7 +63,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-accounts-page)
+   {:params (u.filters/filter-page :index-accounts-page)
     :start [::init-page]})
 
   store)

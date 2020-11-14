@@ -48,6 +48,6 @@
     [:div.box
      [:h2.title.is-2
       (tr [:rate-sources])
-      [u/show-form-button store ::e.f.create-rate-sources/shown?]]
+      [u.buttons/show-form-button store ::e.f.create-rate-sources/shown?]]
      [u.f.create-rate-source/form store]
      (rate-sources-table store items)]))

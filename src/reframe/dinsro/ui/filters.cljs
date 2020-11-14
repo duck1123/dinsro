@@ -1,4 +1,4 @@
-(ns dinsro.ui
+(ns dinsro.ui.filters
   (:require
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.currencies :as e.currencies]
@@ -10,8 +10,12 @@
    [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
-(def strings {})
+(defn filter-page
+  [page]
+  #(when (= (get-in % [:data :name]) page) true))
 
-(defn l
-  [keyword]
-  (get strings keyword (str "Missing string: " keyword)))
+(defn filter-param-page
+  [page]
+  (fn [match]
+    (when (= (get-in match [:data :name]) page)
+      (:path-params match))))

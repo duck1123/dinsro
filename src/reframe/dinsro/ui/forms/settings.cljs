@@ -4,7 +4,7 @@
    [dinsro.events.settings :as e.settings]
    [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
+   [dinsro.ui.inputs :as u.inputs]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
@@ -17,7 +17,7 @@
   [store]
   [:div
    [:label.checkbox]
-   (u/checkbox-input
+   (u.inputs/checkbox-input
     store
     "Allow Registration"
     ::s.e.f.settings/allow-registration

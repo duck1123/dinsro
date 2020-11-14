@@ -4,7 +4,7 @@
    [dinsro.events.forms.registration :as e.f.registration]
    [dinsro.specs.events.forms.settings :as s.e.f.settings]
    [dinsro.store :as st]
-   [dinsro.ui :as u]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.registration :as u.f.registration]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
@@ -38,7 +38,7 @@
 
   (kf/reg-controller
    ::page
-   {:params (u/filter-page :register-page)
+   {:params (u.filters/filter-page :register-page)
     :start [::init-page]})
 
   store)

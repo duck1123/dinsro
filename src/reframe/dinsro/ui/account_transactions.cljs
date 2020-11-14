@@ -5,7 +5,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-account-transaction :as u.f.add-account-transaction]
    [dinsro.ui.index-transactions :as u.index-transactions]
    [taoensso.timbre :as timbre]))
@@ -17,7 +17,7 @@
     [:div.box
      [:h2
       (tr [:transactions])
-      [u/show-form-button store ::e.f.add-account-transaction/shown?]]
+      [u.buttons/show-form-button store ::e.f.add-account-transaction/shown?]]
      [u.f.add-account-transaction/form store account-id]
      [:hr]
      [u.index-transactions/index-transactions store items]]))

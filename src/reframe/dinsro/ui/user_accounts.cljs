@@ -5,7 +5,6 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.forms.add-user-account :as u.f.add-user-account]
@@ -46,7 +45,7 @@
   [:div.box
    [:h2
     (tr [:accounts])
-    [u/show-form-button store ::e.f.add-user-account/shown?]]
+    [u.buttons/show-form-button store ::e.f.add-user-account/shown?]]
    [u.f.add-user-account/form store user-id]
    [:hr]
    [index-accounts store accounts]])

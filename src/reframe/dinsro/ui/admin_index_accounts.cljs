@@ -60,7 +60,7 @@
     [:div.box
      [:h1
       (tr [:index-accounts])
-      [u/show-form-button store ::e.f.create-account/shown?]]
+      [u.buttons/show-form-button store ::e.f.create-account/shown?]]
      [u.f.admin-create-account/form store]
      [:hr]
      (condp = state

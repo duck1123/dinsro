@@ -47,7 +47,7 @@
   [:div.box
    [:h1
     (tr [:index-currencies "Index Currencies"])
-    [u/show-form-button store ::e.f.create-currency/shown?]]
+    [u.buttons/show-form-button store ::e.f.create-currency/shown?]]
    [u.f.create-currency/form store]
    [:hr]
    (when currencies

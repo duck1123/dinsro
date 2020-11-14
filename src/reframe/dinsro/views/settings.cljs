@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.settings :as u.f.settings]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
@@ -32,7 +32,7 @@
 
   (kf/reg-controller
    ::page
-   {:params (u/filter-page :settings-page)
+   {:params (u.filters/filter-page :settings-page)
     :start [::init-page]})
 
   store)

@@ -8,8 +8,8 @@
    [dinsro.model.users :as m.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.account-picker :as u.account-picker]
+   [dinsro.ui.filters :as u.filters]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))
@@ -48,7 +48,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :home-page)
+   {:params (u.filters/filter-page :home-page)
     :start [::init-page]})
 
   store)

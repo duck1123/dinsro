@@ -5,7 +5,7 @@
    [dinsro.events.forms.login :as e.f.login]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.login :as u.f.login]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
@@ -37,7 +37,7 @@
 
   (kf/reg-controller
    ::page
-   {:params (u/filter-page :login-page)
+   {:params (u.filters/filter-page :login-page)
     :start [::init-page]})
 
   store)

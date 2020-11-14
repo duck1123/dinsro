@@ -9,6 +9,7 @@
    [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.create-rate :as u.f.create-rate]
    [dinsro.ui.index-rates :as u.index-rates]
    [dinsro.ui.rate-chart :as u.rate-chart]
@@ -37,7 +38,7 @@
      [:div.box
       [:h1
        (tr [:rates "Rates"])
-       [u/show-form-button store ::e.f.create-rate/shown?]]
+       [u.buttons/show-form-button store ::e.f.create-rate/shown?]]
       [u.f.create-rate/form store]
       [:hr]
       [u.rate-chart/rate-chart store items]
@@ -55,7 +56,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-rates-page)
+   {:params (u.filters/filter-page :index-rates-page)
     :start [::init-page]})
 
   store)

@@ -5,7 +5,8 @@
    [dinsro.specs.events.forms.registration :as s.e.f.registration]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
 (defn on-submit
@@ -19,9 +20,9 @@
         error-message @(st/subscribe store [::s.e.f.registration/error-message])]
     [:div.box
      [:form {:on-submit (partial on-submit store form-data)}
-      [u/error-message-box error-message]
-      [u/text-input store "Name" ::s.e.f.registration/name]
-      [u/email-input store "Email" ::s.e.f.registration/email]
-      [u/password-input store "Password" ::s.e.f.registration/password]
-      [u/password-input store "Confirm Password" ::s.e.f.registration/confirm-password]
-      [u/primary-button store (tr [:submit]) [::e.authentication/submit-registration form-data]]]]))
+      [u.debug/error-message-box error-message]
+      [u.inputs/text-input store "Name" ::s.e.f.registration/name]
+      [u.inputs/email-input store "Email" ::s.e.f.registration/email]
+      [u.inputs/password-input store "Password" ::s.e.f.registration/password]
+      [u.inputs/password-input store "Confirm Password" ::s.e.f.registration/confirm-password]
+      [u.inputs/primary-button store (tr [:submit]) [::e.authentication/submit-registration form-data]]]]))

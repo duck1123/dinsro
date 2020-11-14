@@ -5,9 +5,9 @@
    [dinsro.events.forms.create-currency :as e.f.create-currency]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.create-currency :as u.f.create-currency]
    [dinsro.ui.index-currencies :as u.index-currencies]
    [kee-frame.core :as kf]
@@ -32,7 +32,7 @@
      [:div.box
       [:h1
        (tr [:index-currencies "Index Currencies"])
-       [u/show-form-button store ::e.f.create-currency/shown?]]
+       [u.buttons/show-form-button store ::e.f.create-currency/shown?]]
       [u.f.create-currency/form store]
       [:hr]
       (when currencies
@@ -50,7 +50,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-currencies-page)
+   {:params (u.filters/filter-page :index-currencies-page)
     :start  [::init-page]})
 
   store)

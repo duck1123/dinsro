@@ -7,6 +7,7 @@
    [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.index-users :refer [index-users]]
    [kee-frame.core :as kf]
    [reitit.core :as rc]
@@ -44,7 +45,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-users-page)
+   {:params (u.filters/filter-page :index-users-page)
     :start [::init-page]})
 
   store)

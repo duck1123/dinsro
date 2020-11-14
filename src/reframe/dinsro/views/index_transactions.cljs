@@ -11,6 +11,7 @@
    [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.create-transaction :as u.f.create-transaction]
    [dinsro.ui.index-transactions :as u.index-transactions]
    [kee-frame.core :as kf]
@@ -40,7 +41,7 @@
   [:div.box
    [:h1
     (tr [:index-transactions-title "Index Transactions"])
-    [u/show-form-button store ::e.f.create-transaction/shown?]]
+    [u.buttons/show-form-button store ::e.f.create-transaction/shown?]]
    [u.f.create-transaction/form store]
    [:hr]
    [u.index-transactions/index-transactions store transactions]])
@@ -68,7 +69,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-transactions-page)
+   {:params (u.filters/filter-page :index-transactions-page)
     :start [::init-page]})
 
   store)

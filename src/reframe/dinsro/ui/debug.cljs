@@ -18,3 +18,12 @@
 (defn debug-box
   [store data]
   (hide store [debug-box-shown data]))
+
+(defn error-message-box
+  [message]
+  (when (seq message)
+    [:div.message.is-danger
+     [:div.message-header
+      [:p "Error"]]
+     [:div.message-body
+      message]]))

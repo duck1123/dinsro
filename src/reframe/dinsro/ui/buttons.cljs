@@ -9,6 +9,7 @@
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
+   [reframe-utils.core :as rfu]
    [taoensso.timbre :as timbre]))
 
 (defn delete-account
@@ -106,3 +107,16 @@
   (let [state @(st/subscribe store [::e.users/do-fetch-index-state])]
     [:a.button {:on-click #(st/dispatch store [::e.users/do-fetch-index])}
      (tr [:fetch-users] [state])]))
+
+(defn close-button
+  [store key]
+  [:a.delete.is-pulled-right
+   {:on-click #(st/dispatch store [key false])}])
+
+(defn show-form-button
+  ([store state]
+   (show-form-button store state (#'rfu/kw-prefix state "set-")))
+  ([store state change]
+   (when-not @(st/subscribe store [state])
+     [:a.is-pulled-right {:on-click #(st/dispatch store [change true])}
+      (tr [:show-form "Show"])])))

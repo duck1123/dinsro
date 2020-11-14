@@ -5,7 +5,8 @@
    [dinsro.specs.events.forms.create-currency :as s.e.f.create-currency]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.inputs :as u.inputs]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
@@ -19,7 +20,7 @@
   (let [form-data @(st/subscribe store [::e.f.create-currency/form-data])]
     (when @(st/subscribe store [::e.f.create-currency/shown?])
       [:div
-       [u/close-button store ::e.f.create-currency/set-shown?]
+       [u.buttons/close-button store ::e.f.create-currency/set-shown?]
        [:form
-        [u/text-input store (tr [:name]) ::s.e.f.create-currency/name]
-        [u/primary-button store (tr [:submit]) [::e.currencies/do-submit form-data]]]])))
+        [u.inputs/text-input store (tr [:name]) ::s.e.f.create-currency/name]
+        [u.inputs/primary-button store (tr [:submit]) [::e.currencies/do-submit form-data]]]])))

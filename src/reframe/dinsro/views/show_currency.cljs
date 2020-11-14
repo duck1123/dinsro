@@ -10,12 +10,12 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs.views.show-currency :as s.v.show-currency]
    [dinsro.store :as st]
-   [dinsro.ui :as u]
    [dinsro.ui.currency-accounts :as u.currency-accounts]
    [dinsro.ui.currency-rates :as u.currency-rates]
    [dinsro.ui.currency-rate-sources :as u.currency-rate-sources]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.show-currency :as u.show-currency]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
@@ -98,7 +98,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-param-page :show-currency-page)
+   {:params (u.filters/filter-param-page :show-currency-page)
     :start  [::init-page]})
 
   store)

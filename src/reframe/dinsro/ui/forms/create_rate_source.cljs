@@ -6,6 +6,8 @@
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as u]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.inputs :as u.inputs]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
 
@@ -18,12 +20,12 @@
   [store]
   (let [form-data @(st/subscribe store [::e.f.create-rate-source/form-data])]
     [:div
-     [u/close-button store ::e.f.create-rate-source/set-shown?]
-     [u/text-input store (tr [:name]) ::s.e.f.create-rate-source/name]
-     [u/text-input store (tr [:url]) ::s.e.f.create-rate-source/url]
-     [u/currency-selector store (tr [:currency]) ::s.e.f.create-rate-source/currency-id]
+     [u.buttons/close-button store ::e.f.create-rate-source/set-shown?]
+     [u.inputs/text-input store (tr [:name]) ::s.e.f.create-rate-source/name]
+     [u.inputs/text-input store (tr [:url]) ::s.e.f.create-rate-source/url]
+     [u.inputs/currency-selector store (tr [:currency]) ::s.e.f.create-rate-source/currency-id]
      [:div.field>div.control
-      [u/primary-button store (tr [:submit]) [::e.rate-sources/do-submit form-data]]]]))
+      [u.inputs/primary-button store (tr [:submit]) [::e.rate-sources/do-submit form-data]]]]))
 
 (defn form
   [store]

@@ -5,26 +5,28 @@
    [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
-   [dinsro.ui.datepicker :as u.datepicker]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.datepicker :as u.datepicker]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.inputs :as u.inputs]))
 
 (defn form-shown
   [store form-data]
   (let [state @(st/subscribe store [::e.transactions/do-submit-state])]
     [:div
-     [u/close-button store ::e.f.add-user-transaction/set-shown?]
+     [u.buttons/close-button store ::e.f.add-user-transaction/set-shown?]
      (when (= state :failed)
-       [u/error-message-box "There was an error submitting"])
+       [u.debug/error-message-box "There was an error submitting"])
      [:div.field>div.control
-      [u/number-input store (tr [:value]) ::s.e.f.create-transaction/value]]
+      [u.inputs/number-input store (tr [:value]) ::s.e.f.create-transaction/value]]
      [:div.field>div.control
-      [u/account-selector store (tr [:account]) ::s.e.f.create-transaction/account-id]]
+      [u.inputs/account-selector store (tr [:account]) ::s.e.f.create-transaction/account-id]]
      [:div.field>div.control
       [:label.label (tr [:date])]
       [u.datepicker/datepicker
        {:on-select #(st/dispatch store [::s.e.f.create-transaction/set-date %])}]]
      [:div.field>div.control
-      [u/primary-button store (tr [:submit]) [::e.transactions/do-submit form-data]]]]))
+      [u.inputs/primary-button store (tr [:submit]) [::e.transactions/do-submit form-data]]]]))
 
 (defn form
   [store]

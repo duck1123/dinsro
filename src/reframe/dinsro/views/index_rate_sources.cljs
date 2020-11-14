@@ -9,6 +9,7 @@
    [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.forms.create-rate-source :as u.f.create-rate-source]
    [dinsro.ui.index-rate-sources :as u.index-rate-sources]
    [kee-frame.core :as kf]
@@ -33,7 +34,7 @@
   [:div.box
    [:h1
     (tr [:rate-sources "Rate Sources"])
-    [u/show-form-button store ::e.f.create-rate-source/shown?]]
+    [u.buttons/show-form-button store ::e.f.create-rate-source/shown?]]
    [u.f.create-rate-source/form store]
    [:hr]
    [u.index-rate-sources/section store items]])
@@ -57,7 +58,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :index-rate-sources-page)
+   {:params (u.filters/filter-page :index-rate-sources-page)
     :start [::init-page]})
 
   store)

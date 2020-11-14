@@ -3,9 +3,9 @@
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui :as u]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.filters :as u.filters]
    [dinsro.ui.index-users :refer [index-users]]
    [kee-frame.core :as kf]
    [taoensso.timbre :as timbre]))
@@ -37,7 +37,7 @@
 
   (kf/reg-controller
    ::page-controller
-   {:params (u/filter-page :admin-index-users-page)
+   {:params (u.filters/filter-page :admin-index-users-page)
     :start [::init-page]})
 
   store)
