@@ -93,7 +93,7 @@
   :min-lein-version "2.0.0"
 
   :source-paths ["src/main" "src/reframe" "lib"]
-  :test-paths ["src/test"]
+  :test-paths ["src/test" "src/reframe-test"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
   :main ^:skip-aot dinsro.core
