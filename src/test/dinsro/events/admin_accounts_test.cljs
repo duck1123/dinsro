@@ -7,7 +7,8 @@
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.specs :as ds]
    [dinsro.test-utils :refer-macros [assert-spec]]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.translations :refer [tr]]
+   [expound.alpha]))
 
 (let [items (ds/gen-key (s/coll-of ::e.accounts/item :count 3))
       item (first items)
