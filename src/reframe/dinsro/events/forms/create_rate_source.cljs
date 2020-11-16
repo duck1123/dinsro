@@ -22,7 +22,7 @@
   [{:keys [::s.e.f.create-rate-source/currency-id
            ::s.e.f.create-rate-source/name
            ::s.e.f.create-rate-source/url]}
-    _]
+   _]
   {:name name
    :url url
    :currency-id (int currency-id)})

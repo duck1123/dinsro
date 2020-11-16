@@ -68,15 +68,15 @@
   `(do
      (require 'dinsro.events.utils.impl)
      (let [item-key# (keyword ~ns-sym "item")
-          items-key# (keyword ~ns-sym "items")
-          item-map-key# (keyword ~ns-sym "items")]
-      #_(timbre/infof "Declaring model - %s" ~ns-sym)
-      (clojure.spec.alpha/def-impl item-map-key#
-        (clojure.spec.alpha/map-of :dinsro.specs/id item-key#)
-        (clojure.spec.alpha/map-of :dinsro.specs/id item-key#))
-      (clojure.spec.alpha/def-impl items-key#
-        (clojure.spec.alpha/coll-of item-key#)
-        (clojure.spec.alpha/coll-of item-key#)))))
+           items-key# (keyword ~ns-sym "items")
+           item-map-key# (keyword ~ns-sym "items")]
+       #_(timbre/infof "Declaring model - %s" ~ns-sym)
+       (clojure.spec.alpha/def-impl item-map-key#
+         (clojure.spec.alpha/map-of :dinsro.specs/id item-key#)
+         (clojure.spec.alpha/map-of :dinsro.specs/id item-key#))
+       (clojure.spec.alpha/def-impl items-key#
+         (clojure.spec.alpha/coll-of item-key#)
+         (clojure.spec.alpha/coll-of item-key#)))))
 
 (defmacro declare-form
   [ns-sym

@@ -44,7 +44,7 @@
   (defcard-rg form-inner
     [u.f.admin-create-account/form store])
 
-    (st/dispatch store [::e.debug/set-shown? true])
+  (st/dispatch store [::e.debug/set-shown? true])
 
-    (defcard-rg form-inner
-      [u.f.admin-create-account/form store]))
+  (defcard-rg form-inner
+    [u.f.admin-create-account/form store]))

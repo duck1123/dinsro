@@ -15,8 +15,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [m.currencies/schema m.rates/schema])
-    ))
+    (start-db f [m.currencies/schema m.rates/schema])))
 
 (deftest index-handler
   (let [request {}

@@ -69,11 +69,11 @@
 (defn index-records-by-currency
   [currency-id]
   (->> (d/q {:query '[:find ?date ?rate
-                  :in $ ?currency
-                  :where
-                  [?e ::m.rates/currency ?currency]
-                  [?e ::m.rates/rate ?rate]
-                  [?e ::m.rates/date ?date]]
+                      :in $ ?currency
+                      :where
+                      [?e ::m.rates/currency ?currency]
+                      [?e ::m.rates/rate ?rate]
+                      [?e ::m.rates/date ?date]]
              :args [@db/*conn* currency-id]})
        (sort-by first)
        (reverse)

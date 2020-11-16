@@ -62,5 +62,4 @@
 (comment
   (index-ids)
   (index-records)
-  (delete-all)
-  )
+  (delete-all))

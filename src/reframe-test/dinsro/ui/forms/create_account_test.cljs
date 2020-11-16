@@ -14,11 +14,11 @@
 (defn test-store
   []
   (let [store (doto (mock-store)
-          e.currencies/init-handlers!
-          e.debug/init-handlers!
-          e.f.add-user-account/init-handlers!
-          e.f.create-account/init-handlers!
-          e.users/init-handlers!)]
+                e.currencies/init-handlers!
+                e.debug/init-handlers!
+                e.f.add-user-account/init-handlers!
+                e.f.create-account/init-handlers!
+                e.users/init-handlers!)]
     store))
 
 (let [store (test-store)]

@@ -46,7 +46,7 @@
                                  :password s.e.f.registration/password))
 
 (s/fdef form-data-sub
-  :args (s/cat ))
+  :args (s/cat))
 
 (s/def ::form-data
   (s/keys :req-un [::s.e.f.registration/name

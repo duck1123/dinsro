@@ -20,7 +20,6 @@
 (s/def ::create-params (s/keys :opt-un [::name ::url ::currency-id]))
 (s/def ::create-params-valid (s/keys :req-un [::name ::url ::currency-id]))
 
-
 (s/def :create-rate-sources-request-valid/params ::create-params-valid)
 (s/def :create-rate-sources-request/params ::create-params)
 
@@ -33,19 +32,19 @@
 (s/def :create-rate-sources-response-valid/body (s/keys :req-un [::m.rate-sources/item]))
 (s/def :create-rate-sources-response-valid/status #{status/ok})
 (s/def ::create-response-valid (s/keys :req-un [:create-rate-sources-response-valid/body
-                                                        :create-rate-sources-response-valid/status]))
+                                                :create-rate-sources-response-valid/status]))
 (def create-response-valid ::create-response-valid)
 
 (s/def ::create-response (s/or :invalid ::ds/common-response-invalid
-                                       :valid   ::create-response-valid))
+                               :valid   ::create-response-valid))
 (def create-response ::create-response)
 
 (comment
   (ds/gen-key create-request-valid)
-  (ds/gen-key create-response-valid)
- )
+  (ds/gen-key create-response-valid))
 
 ;; Read
+
 
 (s/def ::read-request (s/keys :req-un [:common-request-show/path-params]))
 (def read-request ::read-request)
@@ -53,7 +52,7 @@
 (s/def :read-rate-sources-response/body (s/keys :req-un [::m.rate-sources/item]))
 (s/def ::read-response-valid (s/keys :req-un [:read-rate-sources-response/body]))
 (s/def ::read-response (s/or :not-found ::ds/common-response-not-found
-                                     :valid     ::read-response-valid))
+                             :valid     ::read-response-valid))
 (def read-response ::read-response)
 
 ;; Delete
@@ -77,5 +76,4 @@
 (comment
 
   (ds/gen-key index-request)
-  (ds/gen-key index-response)
-  )
+  (ds/gen-key index-response))

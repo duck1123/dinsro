@@ -10,7 +10,6 @@
 
 (s/def ::do-delete-record-success-response (s/keys))
 
-
 (s/def ::add-record-event-response (s/keys))
 (s/def ::add-record-event-without-response (s/cat :id :db/id))
 (s/def ::add-record-event-with-response (s/cat :id :db/id :response ::add-record-event-response))

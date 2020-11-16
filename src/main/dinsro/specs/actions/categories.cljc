@@ -36,7 +36,7 @@
 (def read-response-success ::read-response-success)
 
 (s/def ::read-response (s/or :success   ::read-response-success
-                                     :not-found ::ds/common-response-not-found))
+                             :not-found ::ds/common-response-not-found))
 (def read-response ::read-response)
 
 ;; Delete

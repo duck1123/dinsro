@@ -23,7 +23,6 @@
 (s/def ::rate-source-id ::ds/id-string)
 (def rate-source-id ::rate-source-id)
 
-
 (s/def ::add-currency-rate-form
   (s/keys :req-un [::m.rates/date ::m.rates/rate ::m.rates/currency-id]))
 (def add-currency-rate-form ::add-currency-rate-form)

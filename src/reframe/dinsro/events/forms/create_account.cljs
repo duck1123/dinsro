@@ -31,7 +31,7 @@
            ::s.e.f.create-account/initial-value
            ::s.e.f.create-account/name
            ::s.e.f.create-account/user-id]}
-    _]
+   _]
   {:name          name
    :currency-id   (int currency-id)
    :user-id       (int user-id)

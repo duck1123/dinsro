@@ -29,7 +29,7 @@
 (s/def :read-user-response/body (s/keys :req-un [::m.users/item]))
 (s/def ::read-response-valid (s/keys :req-un [:read-user-response/body]))
 (s/def ::read-response (s/or :not-found ::ds/common-response-not-found
-                                     :valid     ::read-response-valid))
+                             :valid     ::read-response-valid))
 
 (s/def ::index-request (s/keys))
 (s/def ::index-response (s/keys))

@@ -17,9 +17,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (start-db f [m.currencies/schema m.rate-sources/schema])
-
-    ))
+    (start-db f [m.currencies/schema m.rate-sources/schema])))
 
 (deftest prepare-record
   (let [currency-id 1

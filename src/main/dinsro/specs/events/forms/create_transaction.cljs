@@ -6,8 +6,7 @@
 
 (s/def ::account-id
   ;; ::ds/id-string
-  ::ds/id
-  )
+  ::ds/id)
 (def account-id ::account-id)
 
 (s/def ::date string?)
@@ -18,8 +17,7 @@
 
 (s/def ::value
   ;; ::ds/double-string
-  ::ds/valid-double
-  )
+  ::ds/valid-double)
 (def value ::value)
 
 (s/def ::description string?)

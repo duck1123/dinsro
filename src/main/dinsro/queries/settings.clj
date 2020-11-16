@@ -5,9 +5,7 @@
 
 (defn get-settings
   []
-  {
-   ;; Enable Registration if there are no users
+  {;; Enable Registration if there are no users
    :allow-registration (not (seq (q.users/index-ids)))
 
-   :first-run (not (seq (q.users/index-ids)))
-   })
+   :first-run (not (seq (q.users/index-ids)))})

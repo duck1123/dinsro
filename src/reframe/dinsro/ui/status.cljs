@@ -26,7 +26,7 @@
 
 (defn init-status
   [store {:keys [db]
-    cookies :cookie/get} _]
+          cookies :cookie/get} _]
   (let [token (or (:token db) (:token cookies))]
     {:db (assoc db :token token)
      :http-xhrio

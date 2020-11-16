@@ -25,6 +25,5 @@
   (deftest section-test
     (is (vector? (u.user-accounts/section store user-id accounts))))
 
-
   (defcard-rg section
     [u.user-accounts/section store user-id accounts]))

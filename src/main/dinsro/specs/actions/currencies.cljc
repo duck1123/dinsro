@@ -25,7 +25,7 @@
 (def create-response-valid ::create-response-valid)
 
 (s/def ::create-response (s/or :valid   ::create-response-valid
-                                       :invalid ::ds/common-response-invalid))
+                               :invalid ::ds/common-response-invalid))
 (def create-response ::create-response)
 
 ;; Read

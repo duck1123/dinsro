@@ -11,10 +11,10 @@
 (defstate env
   :start
   (load-config
-    :merge
-    [(args)
-     (source/from-system-props)
-     (source/from-env)]))
+   :merge
+   [(args)
+    (source/from-system-props)
+    (source/from-env)]))
 
 (defn generate-secret
   []

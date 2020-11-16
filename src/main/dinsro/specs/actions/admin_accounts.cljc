@@ -72,5 +72,4 @@
 (comment
 
   (ds/gen-key index-request)
-  (ds/gen-key index-response)
-  )
+  (ds/gen-key index-response))

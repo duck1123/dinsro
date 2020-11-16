@@ -56,8 +56,7 @@
 
 (defn index-handler
   [_]
-  (let [
-        ;; TODO: parse from request
+  (let [;; TODO: parse from request
         limit 50
         items (q.rate-sources/index-records)
         response {:model :rate-sources

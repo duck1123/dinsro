@@ -10,9 +10,9 @@
 (defn inspect-registry
   []
   (.log js/console
-     (sort
-      (fn [a# b#] (compare (str a#) (str b#)))
-      (keys (s/registry)))))
+        (sort
+         (fn [a# b#] (compare (str a#) (str b#)))
+         (keys (s/registry)))))
 
 (defn item-sub
   [ns-sym db [_ id]]
@@ -21,7 +21,7 @@
 
 (defn items-sub
   "Subscription handler: Index all items"
-  [ns-sym db _event ]
+  [ns-sym db _event]
   #_(timbre/debugf "Getting items: %s" ns-sym)
   (let [item-map (get db (keyword ns-sym "item-map"))]
     (sort-by :db/id (vals item-map))))
@@ -55,16 +55,16 @@
   {:db (assoc db (keyword ns-sym "do-fetch-index-state") :failed)})
 
 (defn do-fetch-index
-   [ns-sym path-selector store {:keys [db]} _]
-   #_(timbre/debugf "Fetching index - %s - %s" ns-sym path-selector)
-   {:db (assoc db (keyword ns-sym "do-fetch-index-state") :loading)
-    :http-xhrio
-    (e/fetch-request-auth
-     path-selector
-     store
-     (:token db)
-     [(keyword ns-sym "do-fetch-index-success")]
-     [(keyword ns-sym "do-fetch-index-failed")])})
+  [ns-sym path-selector store {:keys [db]} _]
+  #_(timbre/debugf "Fetching index - %s - %s" ns-sym path-selector)
+  {:db (assoc db (keyword ns-sym "do-fetch-index-state") :loading)
+   :http-xhrio
+   (e/fetch-request-auth
+    path-selector
+    store
+    (:token db)
+    [(keyword ns-sym "do-fetch-index-success")]
+    [(keyword ns-sym "do-fetch-index-failed")])})
 
 (defn do-fetch-record-success
   [ns-sym {:keys [db]} [{:keys [item]}]]
@@ -86,15 +86,15 @@
     {:db (assoc db (keyword ns-sym "do-fetch-record-state") :failed)}))
 
 (defn do-fetch-record
-   [ns-sym path-selector store {:keys [db]} [id success failure]]
-   {:db (assoc db (keyword ns-sym "do-fetch-record-state") :loading)
-    :http-xhrio
-    (e/fetch-request-auth
-     (conj path-selector {:id id})
-     store
-     (:token db)
-     (or success [(keyword ns-sym "do-fetch-record-success")])
-     (or failure [(keyword ns-sym "do-fetch-record-failed")]))})
+  [ns-sym path-selector store {:keys [db]} [id success failure]]
+  {:db (assoc db (keyword ns-sym "do-fetch-record-state") :loading)
+   :http-xhrio
+   (e/fetch-request-auth
+    (conj path-selector {:id id})
+    store
+    (:token db)
+    (or success [(keyword ns-sym "do-fetch-record-success")])
+    (or failure [(keyword ns-sym "do-fetch-record-failed")]))})
 
 (defn do-delete-record-success
   [ns-sym {:keys [db]} [{:keys [id]}]]
@@ -109,11 +109,11 @@
            (assoc (keyword ns-sym "do-fetch-record-failure-id") id))})
 
 (defn do-delete-record
-   [ns-sym path-selector store {:keys [db]} [item]]
-   {:http-xhrio
-    (e/delete-request-auth
-     (conj path-selector {:id (:db/id item)})
-     store
-     (:token db)
-     [(keyword ns-sym "do-delete-record-success")]
-     [(keyword ns-sym "do-delete-record-failed")])})
+  [ns-sym path-selector store {:keys [db]} [item]]
+  {:http-xhrio
+   (e/delete-request-auth
+    (conj path-selector {:id (:db/id item)})
+    store
+    (:token db)
+    [(keyword ns-sym "do-delete-record-success")]
+    [(keyword ns-sym "do-delete-record-failed")])})

@@ -42,8 +42,7 @@
    :settings-page           v.settings/page
    :show-account-page       v.show-account/page
    :show-currency-page      v.show-currency/page
-   :show-user-page          v.show-user/page
-   })
+   :show-user-page          v.show-user/page})
 
 (defn route-name
   [_ [route-name]]

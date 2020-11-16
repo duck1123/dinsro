@@ -25,7 +25,7 @@
       accounts (map
                 (fn [account]
                   (assoc-in account [::m.accounts/user :db/id]
-                             (:db/id (rand-nth users))))
+                            (:db/id (rand-nth users))))
                 (ds/gen-key (s/coll-of ::m.accounts/item :count 3)))
       account (first accounts)
       accounts-store

@@ -34,5 +34,5 @@
     (defcard-rg form-data-card
       [:pre (with-out-str (p/pprint form-data))]))
 
-    (defcard-rg form
-      [u.f.add-currency-rate/form store currency-id]))
+  (defcard-rg form
+    [u.f.add-currency-rate/form store currency-id]))

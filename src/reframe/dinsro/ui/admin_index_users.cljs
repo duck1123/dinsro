@@ -1,5 +1,5 @@
 (ns dinsro.ui.admin-index-users
-(:require
+  (:require
    [dinsro.events.users :as e.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]

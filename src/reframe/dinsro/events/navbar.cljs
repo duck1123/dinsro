@@ -2,7 +2,6 @@
   (:require
    [dinsro.store :as st]))
 
-
 (defn toggle-navbar
   [{:keys [db]} _]
   {:db (update db ::expanded? not)})

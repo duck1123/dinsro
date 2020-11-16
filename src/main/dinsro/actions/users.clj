@@ -58,7 +58,7 @@
 ;; Read
 
 (defn read-handler
-  [request ]
+  [request]
   (let [{{id :id} :path-params} request]
     (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _ nil))]
       (if-let [user (q.users/read-record id)]

@@ -44,8 +44,7 @@
 
 (defn index-handler
   [_]
-  (let [
-        ;; TODO: parse from request
+  (let [;; TODO: parse from request
         limit 50
         items (q.rates/index-records)
         response {:model :rates
@@ -88,8 +87,8 @@
 (defn index-by-currency-handler
   [request]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
-   (http/ok {:currency-id id
-             :items (sort-by first (q.rates/index-records-by-currency id))})))
+    (http/ok {:currency-id id
+              :items (sort-by first (q.rates/index-records-by-currency id))})))
 
 (s/fdef index-by-currency-handler
   :args (s/cat :request ::s.a.rates/index-by-currency-request)
@@ -97,8 +96,7 @@
 
 (defn index-by-category-handler
   [_]
-  (let [
-        ;; TODO: parse from request
+  (let [;; TODO: parse from request
         limit 50
         items (q.rates/index-records)
         response {:model :rates

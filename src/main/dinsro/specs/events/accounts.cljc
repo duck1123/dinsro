@@ -16,10 +16,10 @@
                          :id ::ds/id))
 
 (comment
-  (ds/gen-key ::sub-item-event)
-  )
+  (ds/gen-key ::sub-item-event))
 
 ;; Index
+
 
 (s/def ::do-fetch-index-state ::ds/state)
 

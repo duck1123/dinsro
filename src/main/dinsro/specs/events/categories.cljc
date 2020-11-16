@@ -8,7 +8,6 @@
 (s/def ::item (s/nilable ::m.categories/item))
 (s/def ::items (s/coll-of ::m.categories/item))
 
-
 (s/def ::do-fetch-record-failed-cofx (s/keys))
 (s/def ::do-fetch-record-failed-event (s/keys))
 (s/def ::do-fetch-record-failed-response (s/keys))

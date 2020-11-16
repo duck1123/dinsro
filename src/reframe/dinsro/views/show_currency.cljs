@@ -38,12 +38,12 @@
   [store id]
   [:<>
    (u.debug/hide store
-    [:div.box
-     [u.buttons/fetch-rates store]
-     [u.buttons/fetch-accounts store]
-     [u.buttons/fetch-currencies store]
-     [u.buttons/fetch-rate-sources store]
-     [u.buttons/fetch-currency store id]])])
+                 [:div.box
+                  [u.buttons/fetch-rates store]
+                  [u.buttons/fetch-accounts store]
+                  [u.buttons/fetch-currencies store]
+                  [u.buttons/fetch-rate-sources store]
+                  [u.buttons/fetch-currency store id]])])
 
 (s/fdef loading-buttons
   :args (s/cat :id :db/id)
@@ -61,7 +61,7 @@
        [u.currency-accounts/section store accounts])
      (when-let [rate-sources @(st/subscribe store [::e.rate-sources/items
                                              ;; -by-currency currency
-                                             ])]
+                                                   ])]
        [u.currency-rate-sources/section store currency-id rate-sources])]))
 
 (s/fdef page-loaded

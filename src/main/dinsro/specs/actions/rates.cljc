@@ -29,24 +29,23 @@
 
 (comment
   (ds/gen-key create-request-valid)
-  (ds/gen-key create-request)
-  )
+  (ds/gen-key create-request))
 
 (s/def :create-rates-response-valid/body (s/keys :req-un [::m.rates/item]))
 (s/def :create-rates-response-valid/status #{status/ok})
 (s/def ::create-response-valid (s/keys :req-un [:create-rates-response-valid/body
-                                                        :create-rates-response-valid/status]))
+                                                :create-rates-response-valid/status]))
 (def create-response-valid ::create-response-valid)
 
 (s/def ::create-response (s/or :invalid ::ds/common-response-invalid
-                                       :valid   ::create-response-valid))
+                               :valid   ::create-response-valid))
 (def create-response ::create-response)
 
 (comment
-  (ds/gen-key create-response)
-  )
+  (ds/gen-key create-response))
 
 ;; Read
+
 
 (s/def :read-rates-request/path-params (s/keys :req-un []))
 (s/def ::read-request (s/keys :req-un [:read-rates-request/path-params]))

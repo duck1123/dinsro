@@ -7,8 +7,7 @@
     ["/:id"         :api-show-account]]
    ["/admin"
     ["/accounts"    :api-admin-index-accounts]
-    ["/users"       :api-admin-index-users]
-    ]
+    ["/users"       :api-admin-index-users]]
 
    ["/categories"
     [""             :api-index-categories]
@@ -23,8 +22,7 @@
     [""             :api-index-rate-sources]
     ["/:id"
      ["" :api-show-rate-source]
-     ["/run" :api-run-rate-source]
-     ]]
+     ["/run" :api-run-rate-source]]]
    ["/rates"
     [""             :api-index-rates]
     ["/:id"         :api-show-rate]]

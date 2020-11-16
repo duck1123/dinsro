@@ -4,8 +4,7 @@
    [taoensso.timbre :as timbre]))
 
 (def dictionary
-  {
-   ;; :missing {:missing "Missing: %1"}
+  {;; :missing {:missing "Missing: %1"}
 
    :en
    {:missing (fn [arg1 arg2] (str "Missing text: " arg1 " - " arg2))
