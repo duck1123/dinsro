@@ -3,15 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "build": "yarn clean && shadow-cljs release app",
+    "build-report": "shadow-cljs run shadow.cljs.build-report app report.html",
+    "build:sass": "rollup -c",
+    "clean": "rimraf public/js",
+    "cljfmt": "clojure -Sdeps '{:deps {cljfmt {:mvn/version \"0.6.7\"}}}' -m cljfmt.main fix src shadow-cljs.edn",
+    "cljfmt:check": "clojure -Sdeps '{:deps {cljfmt {:mvn/version \"0.6.7\"}}}' -m cljfmt.main check src shadow-cljs.edn || true",
+    "e2e": "shadow-cljs compile e2e && node out/e2e.js",
+    "format": "zprint-clj -i \"./src/**/*.{clj,cljs,cljc,edn}\" -o ./ && zprint-clj -i \"./*.edn\" -o ./",
+    "lint": "clj-kondo --lint src",
+    "lint:sass": "stylelint --fix src/styles",
     "sc": "shadow-cljs",
     "start": "shadow-cljs watch app",
-    "build": "yarn clean && shadow-cljs release app",
     "test": "shadow-cljs watch test --config-merge \"{:autorun true}\"",
     "test:once": "shadow-cljs compile test && node out/test.js",
-    "e2e": "shadow-cljs compile e2e && node out/e2e.js",
-    "lint": "clj-kondo --lint src",
-    "format": "zprint-clj -i \"./src/**/*.{clj,cljs,cljc,edn}\" -o ./ && zprint-clj -i \"./*.edn\" -o ./",
-    "clean": "rimraf public/js"
+    "watch:sass": "rollup -c -w"
   },
   "devDependencies": {
     "clj-kondo": "^2020.1.13",
