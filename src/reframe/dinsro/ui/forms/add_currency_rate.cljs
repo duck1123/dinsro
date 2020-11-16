@@ -24,7 +24,7 @@
   (when @(st/subscribe store [::e.f.add-currency-rate/shown?])
     (let [form-data @(st/subscribe store [::e.f.add-currency-rate/form-data currency-id])
           rate-sources (ds/gen-key (s/coll-of ::m.rate-sources/item))]
-      [:<>
+      [:div
        [u.buttons/close-button store ::e.f.add-currency-rate/set-shown?]
        [:div.field>div.control
         [u.inputs/number-input store (tr [:rate]) ::s.e.f.create-rate/rate]]
