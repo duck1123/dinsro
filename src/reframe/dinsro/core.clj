@@ -4,6 +4,7 @@
    [dinsro.config :refer [env]]
    [dinsro.handler :as handler]
    [dinsro.middleware]
+   [dinsro.middleware.middleware]
    [dinsro.nrepl :as nrepl]
    [luminus.http-server :as http]
    [mount.core :as mount]
@@ -62,7 +63,7 @@
 (defn -main [& args]
   (mount/start #'dinsro.config/env)
   (mount/start #'dinsro.config/secret)
-  (mount/start #'dinsro.middleware/token-backend)
+  (mount/start #'dinsro.middleware.middleware/token-backend)
   (cond
     ;; (nil? (:datahike-url env))
     ;; (do

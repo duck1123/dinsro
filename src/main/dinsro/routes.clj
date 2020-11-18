@@ -19,7 +19,7 @@
    [dinsro.actions.transactions :as a.transactions]
    [dinsro.actions.users :as a.users]
    [dinsro.actions.websocket :as a.websocket]
-   [dinsro.middleware :as middleware]
+   [dinsro.middleware.middleware :as middleware]
    [taoensso.timbre :as timbre]))
 
 (def view-mappings
