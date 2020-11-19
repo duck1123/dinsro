@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-lein run
+set -ex
+
+script/server-reframe

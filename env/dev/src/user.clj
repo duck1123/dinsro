@@ -14,12 +14,17 @@
   "Starts application.
   You'll usually want to run this on startup."
   []
-  (mount/start-without #'dinsro.core/repl-server))
+  (mount/start-without
+   ;; #'dinsro.core/repl-server
+
+   ))
 
 (defn stop
   "Stops application."
   []
-  (mount/stop-except #'dinsro.core/repl-server))
+  (mount/stop
+   ;; #'dinsro.core/repl-server
+   ))
 
 (defn restart
   "Restarts application."
@@ -31,4 +36,4 @@
   []
   (stest/instrument))
 
-(instrument)
+;; (instrument)

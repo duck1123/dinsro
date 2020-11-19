@@ -3,9 +3,12 @@ FROM openjdk:8-alpine
 
 LABEL author="Duck Nebuchadnezzar <duck@kronkltd.net>"
 
+VOLUME /var/lib/dinsro/data
+
 RUN mkdir -p /dinsro/data
-ADD target/uberjar/dinsro.jar /dinsro/app.jar
+ADD target/dinsro.jar /dinsro.jar
+ADD docker-config.edn /config.edn
 
 EXPOSE 3000
 
-CMD ["java", "-jar", "/dinsro/app.jar"]
+CMD ["java", "-jar", "/dinsro.jar"]

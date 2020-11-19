@@ -2,4 +2,4 @@
 
 set -ex
 
-npx shadow-cljs watch devcards
+script/devcards-reframe

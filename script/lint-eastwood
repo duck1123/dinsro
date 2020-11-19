@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
-lein eastwood
+clojure -M:eastwood:dev:reframe '{:source-paths ["src/main" "src/reframe" "src/reframe-test" "src/test" "env/dev/src"]}'

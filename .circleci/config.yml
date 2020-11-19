@@ -3,36 +3,35 @@ jobs:
   build:
     working_directory: ~/dinsro
     docker:
-      - image: duck1123/dinsro-dev
+      - image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - dinsro-{{ checksum "project.clj" }}
-      - restore_cache:
-          keys:
-            - node-{{ checksum "package.json" }}
       - run: node --version
       - run: npm install
-      - run: npm install -g karma-cli
+      - run: clojure -P -M:eastwood
       - save_cache:
           paths:
             - ~/dinsro/node_modules
           key: node-{{ checksum "package.json" }}
-      - run: lein deps
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: dinsro-{{ checksum "project.clj" }}
       - run: mkdir -p /tmp/dinsro/test
+      - run: mkdir -p classes
       - run: script/lint-kondo
       - run: script/lint-eastwood
       - run: script/lint-kibit
       - run: cp test-config.edn.example test-config.edn
       - run: cp test-config.edn.example config.edn
       - run: script/test
-      # - run: script/test-javascript
+      - run: script/test-javascript
       - run: script/build-production
       - store_artifacts:
-          path: target/uberjar/dinsro.jar
+          path: target/dinsro.jar
           destination: dinsro.jar
+      - setup_remote_docker
+      - run: |
+          TAG="0.1-circle-${CIRCLE_BUILD_NUM}"
+          docker build -t duck1123/dinsro:$TAG .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push duck1123/dinsro:$TAG

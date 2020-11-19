@@ -2,5 +2,7 @@
 
 set -ex
 
-npx shadow-cljs compile release
-lein uberjar
+script/compile-production
+script/compile-production-clj
+
+clojure -M:uberdeps --main-class dinsro.core --aliases reframe

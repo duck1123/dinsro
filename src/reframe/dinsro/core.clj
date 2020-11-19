@@ -5,7 +5,7 @@
    [dinsro.handler :as handler]
    [dinsro.middleware]
    [dinsro.middleware.middleware]
-   [dinsro.nrepl :as nrepl]
+   ;; [dinsro.nrepl :as nrepl]
    [luminus.http-server :as http]
    [mount.core :as mount]
    [taoensso.timbre :as timbre])
@@ -23,9 +23,9 @@
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
 
-(defn nrepl-handler []
-  (require 'cider.nrepl)
-  (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
+;; (defn nrepl-handler []
+;;   (require 'cider.nrepl)
+;;   (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
 
 (mount/defstate ^{:on-reload :noop} http-server
   :start
@@ -37,16 +37,16 @@
   :stop
   (http/stop http-server))
 
-(mount/defstate ^{:on-reload :noop} repl-server
-  :start
-  (when (env :nrepl-port)
-    (timbre/info "starting in core")
-    (nrepl/start {:bind (env :nrepl-bind)
-                  :handler (nrepl-handler)
-                  :port (env :nrepl-port)}))
-  :stop
-  (when repl-server
-    (nrepl/stop repl-server)))
+;; (mount/defstate ^{:on-reload :noop} repl-server
+;;   :start
+;;   (when (env :nrepl-port)
+;;     (timbre/info "starting in core")
+;;     (nrepl/start {:bind (env :nrepl-bind)
+;;                   :handler (nrepl-handler)
+;;                   :port (env :nrepl-port)}))
+;;   :stop
+;;   (when repl-server
+;;     (nrepl/stop repl-server)))
 
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
@@ -65,9 +65,9 @@
   (mount/start #'dinsro.config/secret)
   (mount/start #'dinsro.middleware.middleware/token-backend)
   (cond
-    ;; (nil? (:datahike-url env))
-    ;; (do
-    ;;   (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
-    ;;   (System/exit 1))
+    (nil? (:datahike-url (timbre/spy :info env)))
+    (do
+      (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
+      (System/exit 1))
     :else
     (start-app args)))

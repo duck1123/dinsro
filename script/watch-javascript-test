@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-lein with-profile +test doo chrome-headless test auto
+set -ex
+
+npx shadow-cljs watch test

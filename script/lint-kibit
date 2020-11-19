@@ -2,4 +2,4 @@
 
 set -ex
 
-lein kibit
+clojure -M:kibit:dev:reframe:reframe-devcards --paths src/main,src/test,src/reframe

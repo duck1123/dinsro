@@ -1,71 +1,70 @@
 ;; shadow-cljs configuration
-{:dev-http {8080 "resources/public"}
- :lein true
+{:dev-http {8000 "resources/public"}
  :nrepl {:port 3333}
+ :deps true
 
  :builds
- {:app
-  {:asset-path "/js"
-   :closure-defines
-   {"re_frame.trace.trace_enabled_QMARK_"        true
-    "day8.re_frame.tracing.trace_enabled_QMARK_" true}
-   :modules {:main {:init-fn dinsro.app/init}}
-   :output-dir "resources/public/js"
-   :target :browser}
-
-  :ci
+ {:reframe-ci
   {:build-options {:ns-aliases {devcards-marked cljsjs.marked
                                 devcards-syntax-highlighter cljsjs.highlight}}
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
                  "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
    :ns-regexp "-test$"
-   :output-to "target/ci.js",
+   :output-to "target/ci-reframe.js",
    :target :karma}
 
-  :devcards
-  {:asset-path "/devcards/js"
+  :reframe-devcards
+  {:asset-path "/js"
    :build-options {:ns-aliases {devcards-marked cljsjs.marked
                                 devcards-syntax-highlighter cljsjs.highlight}}
    :compiler-options {:devcards true}
+   :devtools  {:http-port 3680
+               :http-root "resources/reframe-cards/public"}
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
                  "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
    :modules {:main {:init-fn dinsro.devcards/main}}
-   :output-dir "resources/public/devcards/js"
+   :output-dir "resources/reframe-cards/public/js"
    :target :browser}
 
-  :test
-  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :devtools  {:http-port 8021
-               :http-root "target/tests"}
-   :output-to "target/tests/test.js",
-   :runner-ns dinsro.runner
-   :target :browser-test
-   :test-dir "target/tests"}
-
-  :release
+  :reframe-main
   {:asset-path "/js"
    :closure-defines
-   {"re_frame.trace.trace_enabled_QMARK_"        false
-    "day8.re_frame.tracing.trace_enabled_QMARK_" false}
-   :modules {:main {:init-fn dinsro.app/init}}
-   :output-dir "resources/public/js"
+   {"re_frame.trace.trace_enabled_QMARK_"        true
+    "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+   :devtools   {:after-load dinsro.app/refresh}
+   :modules {:main {:init-fn dinsro.app/init
+                    :entries [dinsro.app]}}
+   :output-dir "resources/reframe/public/js"
+   :release {:build-options {:ns-aliases {day8.re-frame.tracing day8.re-frame.tracing-stubs}}
+             :closure-defines
+             {re_frame.trace/trace_enabled_QMARK_        false
+              day8.re_frame.tracing/trace_enabled_QMARK_ false}}
    :target :browser}
 
-  :workspaces
-  {:asset-path "/js/workspaces"
+  :reframe-test
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :devtools  {:http-port 3681
+               :http-root "target/tests-reframe"}
+   :output-to "target/tests/test-reframe.js",
+   :runner-ns dinsro.runner
+   :target :browser-test
+   :test-dir "target/tests-reframe"}
+
+  :reframe-workspaces
+  {:asset-path "/js"
    :build-options {:ns-aliases {devcards-marked cljsjs.marked
                                 devcards-syntax-highlighter cljsjs.highlight}}
-   :devtools         {:http-root          "resources/public"
-                      :http-port          3689
+   :devtools         {:http-root          "resources/reframe-workspaces/public"
+                      :http-port          3682
                       :http-resource-root "."
                       :preloads []}
-
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
                  "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
    :modules          {:main {:entries [dinsro.devcards]}}
+   :ns-regexp  "-test$"
    :output-dir "resources/public/js/workspaces"
-   :target :browser}}}
+   :target nubank.workspaces.shadow-cljs.target}}}

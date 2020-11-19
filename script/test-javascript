@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 
-npx shadow-cljs compile ci
-npx karma start --single-run
+set -ex
+
+script/test-reframe-cljs
+
+# npx shadow-cljs compile ci
+# npx karma start --single-run
