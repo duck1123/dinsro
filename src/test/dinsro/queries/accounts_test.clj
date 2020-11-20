@@ -52,7 +52,7 @@
 
 (deftest read-record-not-found
   (let [id (ds/gen-key ::ds/id)]
-    (is (= nil (q.accounts/read-record id)))))
+    (is (nil? (q.accounts/read-record id)))))
 
 (deftest read-record-found
   (let [record (mocks/mock-account)

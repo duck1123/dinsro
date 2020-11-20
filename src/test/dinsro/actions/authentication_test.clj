@@ -25,7 +25,7 @@
     (q.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password password}
           path (str url-root "/authenticate")
-          request (-> (mock/request :post path) (assoc :params body))
+          request (assoc (mock/request :post path) :params body)
           response (a.authentication/authenticate-handler request)]
       (is (= (:status response) status/ok)))))
 
@@ -35,7 +35,7 @@
     (q.users/create-record (a.users/prepare-record user-params))
     (let [body {:email email :password (str password "x")}
           path (str url-root "/authenticate")
-          request (-> (mock/request :post path) (assoc :params body))
+          request (assoc (mock/request :post path) :params body)
           response (a.authentication/authenticate-handler request)]
       (is (= (:status response) status/unauthorized)))))
 
