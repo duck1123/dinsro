@@ -25,7 +25,9 @@ jobs:
             - ~/.m2
           key: dinsro-{{ checksum "project.clj" }}
       - run: mkdir -p /tmp/dinsro/test
-      - run: script/lint
+      - run: script/lint-kondo
+      - run: script/lint-eastwood
+      - run: script/lint-kibit
       - run: cp test-config.edn.example test-config.edn
       - run: cp test-config.edn.example config.edn
       - run: script/test
