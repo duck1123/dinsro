@@ -1,20 +1,11 @@
 (ns dinsro.config
   (:require
    [buddy.core.nonce :refer [random-bytes]]
-   [cprop.core :refer [load-config]]
-   [cprop.source :as source]
-   [mount.core :refer [args defstate]]
+   [dinsro.components.config :as config]
+   [mount.core :refer [defstate]]
    [ring.util.codec :refer [base64-encode base64-decode]]
    [taoensso.timbre :as timbre])
   (:import java.io.FileNotFoundException))
-
-(defstate env
-  :start
-  (load-config
-   :merge
-   [(args)
-    (source/from-system-props)
-    (source/from-env)]))
 
 (defn generate-secret
   []
@@ -32,7 +23,7 @@
 
 (defstate secret
   :start
-  (or (env :secret)
+  (or (:secret config/config)
       (if-let [stored-secret (read-secret)]
         stored-secret
         (do

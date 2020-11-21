@@ -2,13 +2,13 @@
   (:require
    [datahike.api :as d]
    [datahike.config :as d.config]
-   [dinsro.config :refer [env]]
+   [dinsro.components.config :as config]
    [mount.core :refer [defstate]]
    [taoensso.timbre :as timbre]))
 
 (defstate ^:dynamic *conn*
   "The connection to the datahike database"
-  :start (if-let [uri (env :datahike-url)]
+  :start (if-let [uri ((timbre/spy :info config/config) :datahike-url)]
            (do
              (when-not (d/database-exists? (d.config/uri->config uri))
                (timbre/info "Creating database: " uri)
@@ -22,10 +22,10 @@
 
 (defn create-database
   []
-  (let [uri (env :datahike-url)]
+  (let [uri (config/config :datahike-url)]
     (d/create-database uri)))
 
 (defn delete-database
   []
-  (let [uri (env :datahike-url)]
+  (let [uri (config/config :datahike-url)]
     (d/delete-database uri)))

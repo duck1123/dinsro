@@ -1,7 +1,8 @@
 (ns dinsro.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
-   [dinsro.config :refer [env]]
+   [dinsro.config]
+   [dinsro.components.config :as config]
    [dinsro.handler :as handler]
    [dinsro.middleware]
    [dinsro.middleware.middleware]
@@ -30,10 +31,10 @@
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
-   (-> env
+   (-> config/config
        (assoc :handler (handler/app))
        (update :io-threads #(or % (* 2 (.availableProcessors (Runtime/getRuntime)))))
-       (update :port #(or (-> env :options :port) %))))
+       (update :port #(or (-> config/config :options :port) %))))
   :stop
   (http/stop http-server))
 
@@ -61,11 +62,11 @@
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
-  (mount/start #'dinsro.config/env)
+  (mount/start #'dinsro.components.config/config)
   (mount/start #'dinsro.config/secret)
   (mount/start #'dinsro.middleware.middleware/token-backend)
   (cond
-    (nil? (:datahike-url (timbre/spy :info env)))
+    (nil? (:datahike-url (timbre/spy :info config/config)))
     (do
       (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
       (System/exit 1))

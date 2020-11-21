@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [datahike.api :as d]
    [datahike.config :as dc]
-   [dinsro.config :as config]
+   [dinsro.components.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
@@ -19,7 +19,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
+    (mount/start #'config/config #'db/*conn*)
     (d/delete-database uri)
     (when-not (d/database-exists? (dc/uri->config uri))
       (d/create-database uri))

@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [datahike.api :as d]
    [datahike.config :refer [uri->config]]
-   [dinsro.config :as config]
+   [dinsro.components.config :as config]
    [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
@@ -28,7 +28,7 @@
 (use-fixtures
   :each
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
+    (mount/start #'config/config #'db/*conn*)
     (test-db f)
     #_(f)))
 

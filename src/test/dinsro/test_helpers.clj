@@ -2,7 +2,8 @@
   (:require
    [datahike.api :as d]
    [datahike.config :refer [uri->config]]
-   [dinsro.config :as config]
+   [dinsro.config :refer [secret]]
+   [dinsro.components.config :as config]
    [dinsro.db :as db]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
@@ -11,7 +12,7 @@
 
 (defn start-db
   [f schemata]
-  (mount/start #'config/env #'config/secret #'db/*conn*)
+  (mount/start #'config/config #'secret #'db/*conn*)
   (d/delete-database uri)
   (when-not (d/database-exists? (uri->config uri))
     (d/create-database uri))

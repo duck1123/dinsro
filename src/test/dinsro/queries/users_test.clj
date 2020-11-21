@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [datahike.api :as d]
    [datahike.config :refer [uri->config]]
-   [dinsro.config :as config]
+   [dinsro.components.config :as config]
    [dinsro.db :as db]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
@@ -15,7 +15,7 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'config/env #'db/*conn*)
+    (mount/start #'config/config #'db/*conn*)
     (d/delete-database uri)
     (when-not (d/database-exists? (uri->config uri))
       (d/create-database uri))

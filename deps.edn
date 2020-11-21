@@ -7,6 +7,7 @@
   ch.qos.logback/logback-classic         {:mvn/version "1.2.3"}
   cljsjs/highcharts                      {:mvn/version "7.0.3-0"}
   com.cemerick/url                       {:mvn/version "0.1.1"}
+  com.fulcrologic/fulcro                 {:mvn/version "3.4.3"}
   com.google.guava/guava                 {:mvn/version "29.0-jre"}
   com.taoensso/tempura                   {:mvn/version "1.2.1"}
   com.taoensso/timbre                    {:mvn/version "4.10.0"}
