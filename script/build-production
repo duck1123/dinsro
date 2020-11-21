@@ -2,7 +2,4 @@
 
 set -ex
 
-script/compile-production
-script/compile-production-clj
-
-clojure -M:uberdeps --main-class dinsro.core --aliases reframe
+script/build-reframe-production

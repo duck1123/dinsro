@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
-script/build-production
-script/run-production
+script/server-reframe-production

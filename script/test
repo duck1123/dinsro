@@ -2,4 +2,5 @@
 
 set -ex
 
-clojure -M:test -d src/test -d src/reframe-test
+script/test-clj
+script/test-cljs

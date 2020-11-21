@@ -23,8 +23,8 @@ jobs:
       - run: script/lint-kibit
       - run: cp test-config.edn.example test-config.edn
       - run: cp test-config.edn.example config.edn
-      - run: script/test
-      - run: script/test-javascript
+      - run: script/test-clj
+      - run: script/test-cljs
       - run: script/build-production
       - store_artifacts:
           path: target/dinsro.jar
