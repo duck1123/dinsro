@@ -21,32 +21,33 @@
                 e.users/init-handlers!)]
     store))
 
-(let [items (ds/gen-key (s/coll-of ::m.users/item :count 3))
-      item (first items)]
-  (let [store (test-store)]
-    (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
+(def items (ds/gen-key (s/coll-of ::m.users/item :count 3)))
+(def item (first items))
 
-    (defcard-rg category-line
-      [:table.table>tbody
-       [u.admin-index-categories/category-line store item]])
+(let [store (test-store)]
+  (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-    (deftest category-line-test
-      (is (vector? [u.admin-index-categories/category-line store item]))))
+  (defcard-rg category-line
+    [:table.table>tbody
+     [u.admin-index-categories/category-line store item]])
 
-  (let [store (test-store)]
-    (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
+  (deftest category-line-test
+    (is (vector? [u.admin-index-categories/category-line store item]))))
 
-    (defcard-rg index-categories
-      [u.admin-index-categories/index-categories store items])
+(let [store (test-store)]
+  (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-    (deftest index-categories-test
-      (is (vector? (u.admin-index-categories/index-categories store items)))))
+  (defcard-rg index-categories
+    [u.admin-index-categories/index-categories store items])
 
-  (let [store (test-store)]
-    (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
+  (deftest index-categories-test
+    (is (vector? (u.admin-index-categories/index-categories store items)))))
 
-    (defcard-rg section
-      [u.admin-index-users/section store])
+(let [store (test-store)]
+  (st/dispatch store [::e.users/do-fetch-index-success {:items items}])
 
-    (deftest section-test
-      (is (vector? (u.admin-index-users/section store))))))
+  (defcard-rg section
+    [u.admin-index-users/section store])
+
+  (deftest section-test
+    (is (vector? (u.admin-index-users/section store)))))
