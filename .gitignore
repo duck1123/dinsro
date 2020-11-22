@@ -26,6 +26,7 @@ test-results/
 /out
 /pom.xml
 /public/js/
+/resources/fulcro/public/js
 /resources/fulcro-cards/public/js
 /resources/fulcro-workspaces/public/js
 /resources/reframe/public/js
