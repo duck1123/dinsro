@@ -5,7 +5,6 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
-   [kee-frame.core :as kf]
    [re-frame.core :as rf]
    [taoensso.timbre :as timbre]))
 
@@ -33,7 +32,7 @@
   (if-not (seq users)
     [:div [:p (tr [:no-users])]]
     [:div
-     [:p [:a {:href (kf/path-for [:admin-index-users-page])} "Users"]]
+     [:p [:a {:href (st/path-for store [:admin-index-users-page])} "Users"]]
      [:table.table
       [:thead
        [:tr
