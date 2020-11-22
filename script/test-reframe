@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-script/test-reframe-clj
-script/test-reframe-cljs

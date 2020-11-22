@@ -18,14 +18,14 @@ jobs:
           key: node-{{ checksum "package.json" }}
       - run: mkdir -p /tmp/dinsro/test
       - run: mkdir -p classes
-      - run: script/lint-kondo
-      - run: script/lint-eastwood
-      - run: script/lint-kibit
+      - run: make lint-kondo
+      - run: make lint-eastwood
+      - run: make lint-kibit
       - run: cp test-config.edn.example test-config.edn
       - run: cp test-config.edn.example config.edn
-      - run: script/test-clj
-      - run: script/test-cljs
-      - run: script/build-production
+      - run: make test-clj
+      - run: make test-cljs
+      - run: make build-production
       - store_artifacts:
           path: target/dinsro.jar
           destination: dinsro.jar

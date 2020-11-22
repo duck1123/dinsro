@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -M:kibit:dev:reframe:reframe-devcards --paths src/main,src/test,src/reframe

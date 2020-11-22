@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-script/compile-reframe-production-clj
-script/compile-reframe-production-cljs

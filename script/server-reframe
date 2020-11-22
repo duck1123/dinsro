@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -A:reframe:dev -X dinsro.core/-main

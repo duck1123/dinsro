@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -M:test -d src/test -d src/reframe-test

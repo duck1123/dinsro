@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-script/test-clj
-script/test-cljs

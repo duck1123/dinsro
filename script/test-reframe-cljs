@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -M:test:reframe:shadow-cljs:devcards:reframe-devcards compile reframe-ci
-npx karma start --single-run --check="ci-reframe.js"

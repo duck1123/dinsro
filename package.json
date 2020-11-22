@@ -7,8 +7,6 @@
     "build-report": "shadow-cljs run shadow.cljs.build-report app report.html",
     "build:sass": "rollup -c",
     "clean": "rimraf public/js",
-    "cljfmt": "clojure -Sdeps '{:deps {cljfmt {:mvn/version \"0.6.7\"}}}' -m cljfmt.main fix src shadow-cljs.edn",
-    "cljfmt:check": "clojure -Sdeps '{:deps {cljfmt {:mvn/version \"0.6.7\"}}}' -m cljfmt.main check src shadow-cljs.edn || true",
     "e2e": "shadow-cljs compile e2e && node out/e2e.js",
     "format": "zprint-clj -i \"./src/**/*.{clj,cljs,cljc,edn}\" -o ./ && zprint-clj -i \"./*.edn\" -o ./",
     "lint": "clj-kondo --lint src",

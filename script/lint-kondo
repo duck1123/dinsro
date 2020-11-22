@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-npx clj-kondo --parallel --lint "src/main:src/reframe:src/reframe-test:src/reframe-workspaces:src/test"
-npx clj-kondo --parallel --lint "src/main:src/reframe:src/reframe-cards:src/reframe-test:src/test"

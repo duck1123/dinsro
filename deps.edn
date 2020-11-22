@@ -42,7 +42,11 @@
   time-specs/time-specs                  {:mvn/version "0.1.0-SNAPSHOT"}}
 
  :aliases
- {:dev
+ {:cljfmt
+  {:extra-deps
+   {cljfmt/cljfmt {:mvn/version "0.6.7"}}
+   :main-opts ["-m" "cljfmt.main"]}
+  :dev
   {:extra-paths ["src/dev" "dev" "env/dev/resources" "env/dev/src"]
    :extra-deps
    {binaryage/devtools {:mvn/version "1.0.2"}}}

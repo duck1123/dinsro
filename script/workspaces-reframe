@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -A:test:reframe:reframe-workspaces:workspaces:shadow-cljs watch reframe-workspaces

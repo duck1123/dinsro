@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -M:test:reframe:shadow-cljs watch reframe-main

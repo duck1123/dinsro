@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -M:shadow-cljs:reframe release reframe-main

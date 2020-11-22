@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-script/test-reframe-cljs
-
-# npx shadow-cljs compile ci
-# npx karma start --single-run

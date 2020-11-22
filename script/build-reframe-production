@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-script/compile-reframe-production
-clojure -M:uberdeps --main-class dinsro.core --aliases reframe

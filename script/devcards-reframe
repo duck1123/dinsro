@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-clojure -M:test:reframe:reframe-devcards:devcards:shadow-cljs watch reframe-devcards
