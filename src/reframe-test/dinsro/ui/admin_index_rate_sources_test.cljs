@@ -6,6 +6,7 @@
    [dinsro.specs :as ds]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
+   [dinsro.events.forms.create-rate-source :as e.f.create-rate-source]
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.store :as st]
@@ -18,6 +19,7 @@
   (let [store (doto (mock-store)
                 e.currencies/init-handlers!
                 e.debug/init-handlers!
+                e.f.create-rate-source/init-handlers!
                 e.rate-sources/init-handlers!)]
 
     (comment (st/dispatch store [::e.debug/set-shown? true]))
