@@ -18,8 +18,7 @@
    [reitit.ring :as ring]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.webjars :refer [wrap-webjars]]
-   [taoensso.timbre :as timbre]
-   ))
+   [taoensso.timbre :as timbre]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))

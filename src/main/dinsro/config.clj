@@ -11,13 +11,10 @@
 (defstate env
   :start
   (load-config
-   :file "config.edn"
    :merge
    [(args)
     (source/from-system-props)
-    (source/from-env)
-    (source/from-resource "config.edn")
-    (source/from-file "config.edn")]))
+    (source/from-env)]))
 
 (defn generate-secret
   []

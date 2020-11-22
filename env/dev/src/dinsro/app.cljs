@@ -32,8 +32,6 @@
 
 (devtools/install!)
 
-
-
 (timbre/merge-config!
  {:min-level [[#{"dinsro.store.mock"} :info]
               :debug]})
