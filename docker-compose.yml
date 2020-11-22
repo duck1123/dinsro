@@ -1,6 +1,66 @@
 version: '3.3'
 
 services:
+  fulcro:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    working_dir: "/usr/src/app"
+    command: ["make", "dev-fulcro-bootstrap"]
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    - "./data/fulcro:/tmp/dinsro/data/dev"
+    ports:
+    - 3001:3000
+    labels:
+    - "traefik.docker.network=default"
+    environment:
+    - HOME=/home/node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      timeout: 10s
+      retries: 30
+
+  fulcro-watch:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    working_dir: "/usr/src/app"
+    command: ["make", "watch-fulcro-cljs"]
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    - "./data/fulcro:/tmp/dinsro/data/dev"
+    ports:
+    - 9631:9630
+    labels:
+    - "traefik.docker.network=default"
+    environment:
+    - HOME=/home/node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9630"]
+      timeout: 10s
+      retries: 30
+
+  fulcro-workspaces:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    working_dir: "/usr/src/app"
+    command: ["make", "workspaces-fulcro"]
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    - "./data/fulcro:/tmp/dinsro/data/dev"
+    ports:
+    - 3693:3693
+    labels:
+    - "traefik.docker.network=default"
+    environment:
+    - HOME=/home/node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3693"]
+      timeout: 10s
+      retries: 30
+
   reframe:
     image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
     command: ["make", "dev-reframe-bootstrap"]

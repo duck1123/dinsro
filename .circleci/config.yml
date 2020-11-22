@@ -16,7 +16,7 @@ jobs:
           paths:
             - ~/dinsro/node_modules
           key: node-{{ checksum "package.json" }}
-      - run: mkdir -p /tmp/dinsro/test
+      - run: mkdir -p /tmp/dinsro/data/test
       - run: mkdir -p classes
       - run: make lint-kondo
       - run: make lint-eastwood
