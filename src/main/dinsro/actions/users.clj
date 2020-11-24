@@ -3,6 +3,7 @@
    [buddy.hashers :as hashers]
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [dinsro.specs.actions.users :as s.a.users]
@@ -14,8 +15,9 @@
   {:name     ::m.users/name
    :email    ::m.users/email})
 
-(defn prepare-record
+(>defn prepare-record
   [params]
+  [::s.a.users/create-params => (? ::m.users/params)]
   (let [password-hash (some-> params ::m.users/password hashers/derive)
         params (-> params
                    (set/rename-keys param-rename-map)
@@ -28,10 +30,6 @@
       (do
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.users/params params)))
         nil))))
-
-(s/fdef prepare-record
-  :args (s/cat :params ::s.a.users/create-params)
-  :ret (s/nilable ::m.users/params))
 
 (defn create-handler
   [{:keys [params]}]
@@ -46,26 +44,20 @@
     (q.users/delete-record user-id)
     (http/ok {:id user-id})))
 
-(defn index-handler
+(>defn index-handler
   [_]
+  [(s/keys) => (s/keys)]
   (let [users (q.users/index-records)]
     (http/ok {:items users})))
 
-(s/fdef index-handler
-  :args (s/cat :request (s/keys))
-  :ret (s/keys))
-
 ;; Read
 
-(defn read-handler
+(>defn read-handler
   [request]
+  [::s.a.users/read-request => ::s.a.users/read-response]
   (let [{{id :id} :path-params} request]
     (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _ nil))]
       (if-let [user (q.users/read-record id)]
         (http/ok {:item user})
         (http/not-found {:status :not-found}))
       (http/bad-request {:status :bad-request}))))
-
-(s/fdef read-handler
-  :args (s/cat :request ::s.a.users/read-request)
-  :ret ::s.a.users/read-response)

@@ -1,6 +1,7 @@
 (ns dinsro.queries.users
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.users :as m.users]
@@ -17,43 +18,32 @@
     :in $ ?email
     :where [?id ::m.users/email ?email]])
 
-(defn read-record
+(>defn read-record
   [user-id]
+  [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-id)]
     (when (get record ::m.users/name)
       record)))
 
-(s/fdef read-record
-  :args (s/cat :user-id :db/id)
-  :ret (s/nilable ::m.users/item))
-
-(defn read-records
+(>defn read-records
   [ids]
+  [(s/coll-of ::ds/id) => (s/coll-of ::m.users/item)]
   (d/pull-many @db/*conn* attribute-list ids))
 
-(s/fdef read-records
-  :args (s/cat :ids (s/coll-of ::ds/id))
-  :ret (s/coll-of (s/nilable ::m.users/item)))
-
-(defn find-id-by-email
+(>defn find-id-by-email
   [email]
+  [::m.users/email => (? ::ds/id)]
   (ffirst (d/q find-by-email-query @db/*conn* email)))
 
-(s/fdef find-id-by-email
-  :args (s/cat :email ::m.users/email)
-  :ret  (s/nilable ::ds/id))
-
-(defn find-by-email
+(>defn find-by-email
   [email]
+  [::m.users/email => (? ::m.users/item)]
   (when-let [id (find-id-by-email email)]
     (read-record id)))
 
-(s/fdef find-by-email
-  :args (s/cat :email ::m.users/email)
-  :ret (s/nilable ::m.users/item))
-
-(defn create-record
+(>defn create-record
   [params]
+  [::m.users/params => ::ds/id]
   (if (nil? (find-id-by-email (::m.users/email params)))
     (let [tempid (d/tempid "user-id")
           record (assoc params :db/id tempid)
@@ -61,40 +51,24 @@
       (get-in response [:tempids tempid]))
     (throw (RuntimeException. "User already exists"))))
 
-(s/fdef create-record
-  :args (s/cat :params ::m.users/params)
-  :ret ::ds/id)
-
-(defn index-ids
+(>defn index-ids
   []
+  [=> (s/coll-of ::ds/id)]
   (map first (d/q '[:find ?e :where [?e ::m.users/email _]] @db/*conn*)))
 
-(s/fdef index-ids
-  :args (s/cat)
-  :ret (s/coll-of ::ds/id))
-
-(defn index-records
+(>defn index-records
   []
+  [=> (s/coll-of ::m.users/item)]
   (read-records (index-ids)))
 
-(s/fdef index-records
-  :args (s/cat)
-  :ret (s/coll-of ::m.users/item))
-
-(defn delete-record
+(>defn delete-record
   [id]
+  [::ds/id => nil?]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 
-(s/fdef delete-record
-  :args (s/cat :id ::ds/id)
-  :ret nil?)
-
-(defn delete-all
+(>defn delete-all
   []
+  [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(s/fdef delete-all
-  :args (s/cat)
-  :ret nil?)

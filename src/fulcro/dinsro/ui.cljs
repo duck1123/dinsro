@@ -31,7 +31,7 @@
    (u.navbar/ui-navbar)
    (dom/div
     :.container
-    (comment (v.home/ui-page))
+    (v.home/ui-page)
     (comment (v.index-accounts/ui-page))
     (dom/div "Foo")
     (ui-foo foo-picker)

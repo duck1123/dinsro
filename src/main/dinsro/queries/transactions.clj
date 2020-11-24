@@ -1,6 +1,7 @@
 (ns dinsro.queries.transactions
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.transactions :as m.transactions]
@@ -8,8 +9,9 @@
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
-(defn create-record
+(>defn create-record
   [params]
+  [::m.transactions/params => ::ds/id]
   (let [tempid (d/tempid "transaction-id")
         prepared-params (-> params
                             (assoc  :db/id tempid)
@@ -17,52 +19,34 @@
         response (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
-(s/fdef create-record
-  :args (s/cat :params ::m.transactions/params)
-  :ret ::ds/id)
-
-(defn read-record
+(>defn read-record
   [id]
+  [::ds/id => (? ::m.transactions/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.transactions/value)
       (update record ::m.transactions/date tick/instant))))
 
-(s/fdef read-record
-  :args (s/cat :id ::ds/id)
-  :ret  (s/nilable ::m.transactions/item))
-
-(defn index-ids
+(>defn index-ids
   []
+  [=> (s/coll-of ::ds/id)]
   (map first (d/q '[:find ?e :where [?e ::m.transactions/value _]] @db/*conn*)))
 
-(s/fdef index-ids
-  :args (s/cat)
-  :ret (s/coll-of ::ds/id))
-
-(defn index-records
+(>defn index-records
   []
+  [=> (s/coll-of ::m.transactions/item)]
   (->> (index-ids)
        (d/pull-many @db/*conn* '[*])
        (map #(update % ::m.transactions/date tick/instant))))
 
-(s/fdef index-records
-  :args (s/cat)
-  :ret (s/coll-of ::m.transactions/item))
-
-(defn delete-record
+(>defn delete-record
   [id]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
-  nil)
+  [::ds/id => nil?]
+  (do
+    (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+    nil))
 
-(s/fdef delete-record
-  :args (s/cat :id ::ds/id)
-  :ret nil?)
-
-(defn delete-all
+(>defn delete-all
   []
+  [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(s/fdef delete-all
-  :args (s/cat)
-  :ret nil?)

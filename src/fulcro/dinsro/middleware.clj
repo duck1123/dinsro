@@ -36,15 +36,15 @@
 (defn wrap-base [handler]
   (let [session-store (cookie-store {:key (b/slice secret 0 16)})]
     (-> ((:middleware defaults) handler)
-             (server/wrap-api {:uri "/pathom"
-                               :parser (fn [query] (async/<!! (api-parser {:foo :bar} query)))})
-             (blob/wrap-blob-service "/images" bs/image-blob-store)
-             (blob/wrap-blob-service "/files" bs/file-blob-store)
-             (file-upload/wrap-mutation-file-uploads {})
-             (server/wrap-transit-params)
-             (server/wrap-transit-response)
-             middleware/wrap-auth
-             middleware/wrap-csrf
-             (wrap-defaults
-              (assoc-in site-defaults [:session :store] session-store))
-             middleware/wrap-internal-error)))
+        (server/wrap-api {:uri "/pathom"
+                          :parser (fn [query] (async/<!! (api-parser {:foo :bar} query)))})
+        (blob/wrap-blob-service "/images" bs/image-blob-store)
+        (blob/wrap-blob-service "/files" bs/file-blob-store)
+        (file-upload/wrap-mutation-file-uploads {})
+        (server/wrap-transit-params)
+        (server/wrap-transit-response)
+        middleware/wrap-auth
+        middleware/wrap-csrf
+        (wrap-defaults
+         (assoc-in site-defaults [:session :store] session-store))
+        middleware/wrap-internal-error)))
