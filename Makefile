@@ -56,7 +56,7 @@ devcards-reframe:
 	clojure -M:test:dev:reframe:reframe-devcards:devcards:shadow-cljs watch reframe-devcards
 
 format:
-	clojure -M:cljfmt fix src env deps.edn shadow-cljs.edn
+	clojure -M:cljfmt fix src env deps.edn shadow-cljs.edn --indents indentation.edn
 
 install: init
 	yarn install
