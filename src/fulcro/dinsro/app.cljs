@@ -2,7 +2,9 @@
   (:require
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.networking.http-remote :as http]
+   [dinsro.routing :as routing]
    [dinsro.ui :refer [Root]]
    [taoensso.timbre :as timbre]))
 
@@ -24,7 +26,10 @@
 (defn ^:export init
   "Shadow-cljs sets this up to be our entry-point function. See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
-  (app/mount! app Root "app")
+  (app/set-root! app Root {:initialize-state? true})
+  (dr/initialize! app)
+  (dr/change-route-relative! app routing/RootRouter ["login"])
+  (app/mount! app Root "app" {:initialize-state? false})
   (js/console.log "Loaded"))
 
 (defn ^:export refresh

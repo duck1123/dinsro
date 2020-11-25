@@ -2,6 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.navbar :as u.navbar]
    [dinsro.views.home :as v.home]
@@ -23,17 +25,17 @@
 
 (def ui-foo (comp/factory Foo))
 
-(defsc Root [_this {:root/keys [foo-picker]}]
-  {:query [{:root/foo-picker (comp/get-query Foo)}]
-   :initial-state (fn [_] {:root/foo-picker {:foo/id 1}
-                           :page-name :home})}
-  (dom/div
-   (u.navbar/ui-navbar)
-   (dom/div
-    :.container
-    (v.home/ui-page)
-    (comment (v.index-accounts/ui-page))
-    (dom/div "Foo")
-    (ui-foo foo-picker)
-    (ui-foo foo-picker)
-    (dom/div "Bar"))))
+(defsc Root [this {:root/keys [router]}]
+  {:query [{:root/router (comp/get-query routing/RootRouter)}
+           [::uism/asm-id ::routing/RootRouter]]
+   :initial-state (fn [_] {:root/router {}})}
+  (let [top-router-state (or (uism/get-active-state this ::routing/RootRouter) :home)]
+    (dom/div
+     (u.navbar/ui-navbar)
+     (dom/div
+      :.container
+      (if (= :initial top-router-state)
+        (dom/div :.loading "Loading...")
+        (routing/ui-root-router router))
+      (comment (v.home/ui-page))
+      (comment (v.index-accounts/ui-page))))))
