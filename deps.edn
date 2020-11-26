@@ -5,6 +5,7 @@
  :deps
  {buddy/buddy                            {:mvn/version "2.0.0"}
   ch.qos.logback/logback-classic         {:mvn/version "1.2.3"}
+  cider/cider-nrepl                      {:mvn/version "0.25.0-SNAPSHOT"}
   cljsjs/highcharts                      {:mvn/version "7.0.3-0"}
   com.cemerick/url                       {:mvn/version "0.1.1"}
   com.fulcrologic/fulcro                 {:mvn/version "3.4.3"}
