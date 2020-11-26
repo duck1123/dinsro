@@ -1,11 +1,97 @@
-version: '2'
+version: '3.3'
 
 services:
-  web:
-    build: .
-    image: duck1123/dinsro:latest
+  reframe:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    command: ["make", "dev-reframe-bootstrap"]
+    working_dir: "/usr/src/app"
+    depends_on:
+    - frontend
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    - "./data/reframe:/tmp/dinsro/data/dev"
     ports:
-    - 3000:3000
+    - 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      timeout: 10s
+      retries: 30
+
+  reframe-devcards:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    command: ["make", "devcards-reframe"]
+    working_dir: "/usr/src/app"
+    depends_on:
+    - frontend
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    ports:
+    - 3680
+    - 9633:9630
+    labels:
+    - "traefik.docker.network=default"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3680"]
+      timeout: 10s
+      retries: 30
+
+  reframe-watch:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    command: ["make", "watch-reframe-cljs"]
+    working_dir: "/usr/src/app"
+    depends_on:
+    - frontend
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    - "./data/fulcro:/tmp/dinsro/data/dev"
+    ports:
+    - 9630
+    labels:
+    - "traefik.docker.network=default"
     environment:
-      DATABASE_URL: jdbc:h2:./dinsro_docker.db
-      DATAHIKE_URL: datahike:file:///dinsro/data
+    - HOME=/home/node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9630"]
+      timeout: 10s
+      retries: 30
+
+  reframe-workspaces:
+    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
+    working_dir: "/usr/src/app"
+    command: ["make", "dev-reframe-workspaces-bootstrap"]
+    depends_on:
+    - frontend
+    user: "1000:1000"
+    volumes:
+    - ".:/usr/src/app"
+    - "${HOME}/.m2:/home/node/.m2"
+    - "./data/fulcro:/tmp/dinsro/data/dev"
+    ports:
+    - 3683
+    - 9634:9630
+    labels:
+    - "traefik.docker.network=default"
+    environment:
+    - HOME=/home/node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9630"]
+      timeout: 10s
+      retries: 30
+
+  frontend:
+    image: traefik:v2.0
+    working_dir: "/usr/src/app"
+    ports:
+      - "8081:8081"
+      - "8080:8080"
+    volumes:
+      - ${PWD}/traefik.yml:/etc/traefik/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=false"

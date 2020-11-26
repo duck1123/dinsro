@@ -48,7 +48,10 @@ check:
 	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn
 
 dev-reframe-bootstrap:
-	make server-reframe
+	make run-reframe
+
+dev-reframe-workspaces-bootstrap:
+	make workspaces-reframe
 
 devcards: devcards-reframe
 
@@ -94,6 +97,9 @@ test-reframe-cljs: install
 
 run-production: run-reframe-production
 
+run-reframe:
+	clojure -M:reframe:dev:reframe-dev
+
 run-reframe-production:
 	export DATAHIKE_URL="datahike:file://$(pwd)/data/dev"
 	java -jar target/dinsro.jar
@@ -102,8 +108,7 @@ server: server-reframe
 
 server-production: server-reframe-production
 
-server-reframe: compile-reframe
-	clojure -M:reframe:dev:reframe-dev
+server-reframe: compile-reframe run-reframe
 
 server-reframe-production: build-reframe-production run-reframe-production
 
