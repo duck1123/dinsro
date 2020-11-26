@@ -30,11 +30,11 @@ compile-production-cljs: compile-reframe-production-cljs
 
 compile-reframe: compile-reframe-clj compile-reframe-cljs
 
-compile-reframe-clj:
+compile-reframe-clj: init
 	clojure -M:reframe:dev -e "(compile 'dinsro.core)"
 
 compile-reframe-cljs: init
-	clojure -M:shadow-cljs:reframe:dev compile reframe-main
+	clojure -M:dev:reframe:shadow-cljs compile reframe-main
 
 compile-reframe-production: compile-reframe-production-clj compile-reframe-production-cljs
 

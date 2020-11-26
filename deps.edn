@@ -1,7 +1,7 @@
 {:jvm-opts ["-Dclojure.spec.check-asserts=true"
             "-Dlogback.configurationFile=resources/logback.xml"]
 
- :paths   ["lib" "resources/main" "src/main" "src/test" "classes"]
+ :paths   ["lib" "resources/main" "src/main" "src/test"]
  :deps
  {buddy/buddy                            {:mvn/version "2.0.0"}
   ch.qos.logback/logback-classic         {:mvn/version "1.2.3"}
@@ -69,7 +69,7 @@
   :production
   {:extra-deps
    {day8.re-frame/tracing-stubs {:mvn/version "0.6.0"}}
-   :extra-paths ["env/prod/src" "env/prod/resources"]}
+   :extra-paths ["env/prod/src" "env/prod/resources" "classes"]}
 
   :reframe
   {:extra-deps
@@ -91,6 +91,9 @@
     reagent/reagent                   {:mvn/version "0.10.0"}
     ring-webjars/ring-webjars         {:mvn/version "0.2.0"}}
    :extra-paths ["src/reframe" "src/reframe-test" "resources/reframe"]}
+
+  :reframe-dev
+  {:main-opts ["-m" "dinsro.core"]}
 
   :reframe-devcards
   {:extra-paths ["src/reframe-cards" "src/reframe-test" "resources/reframe-cards"]}
