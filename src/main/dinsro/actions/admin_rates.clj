@@ -1,6 +1,7 @@
 (ns dinsro.actions.admin-rates
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [expound.alpha :as expound]
    [dinsro.model.rates :as m.rates]
    [dinsro.queries.rates :as q.rates]
@@ -9,10 +10,9 @@
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
-;; Prepare
-
-(defn prepare-record
+(>defn prepare-record
   [params]
+  [::s.a.admin-rates/create-params => (? ::m.rates/params)]
   (let [params {::m.rates/currency {:db/id (:currency-id params)}
                 ::m.rates/rate (some-> params :rate double)
                 ::m.rates/date (some-> params :date tick/instant)}]
@@ -22,54 +22,34 @@
         (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.rates/params params)))
         nil))))
 
-(s/fdef prepare-record
-  :args (s/cat :params ::s.a.admin-rates/create-params)
-  :ret  (s/nilable ::m.rates/params))
-
-;; Create
-
-(defn create-handler
+(>defn create-handler
   [request]
+  [::s.a.admin-rates/create-request => ::s.a.admin-rates/create-response]
   (or (let [{params :params} request]
         (when-let [params (prepare-record params)]
           (when-let [id (q.rates/create-record params)]
             (http/ok {:item (q.rates/read-record id)}))))
       (http/bad-request {:status :invalid})))
 
-(s/fdef create-handler
-  :args (s/cat :request ::s.a.admin-rates/create-request)
-  :ret ::s.a.admin-rates/create-response)
-
-;; Read
-
-(defn read-handler
+(>defn read-handler
   [request]
+  [::s.a.admin-rates/read-request => ::s.a.admin-rates/read-response]
   (if-let [id (get-in request [:path-params :id])]
     (if-let [item (q.rates/read-record id)]
       (http/ok {:item item})
       (http/not-found {:status :not-found}))
     (http/bad-request {:status :bad-request})))
 
-(s/fdef read-handler
-  :args (s/cat :request ::s.a.admin-rates/read-request)
-  :ret ::s.a.admin-rates/read-response)
-
-;; Delete
-
-(defn delete-handler
+(>defn delete-handler
   [request]
+  [::s.a.admin-rates/delete-request => ::s.a.admin-rates/delete-response]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (q.rates/delete-record id)
     (http/ok {:id id})))
 
-(s/fdef delete-handler
-  :args (s/cat :request ::s.a.admin-rates/delete-request)
-  :ret ::s.a.admin-rates/delete-response)
-
-;; Index
-
-(defn index-handler
+(>defn index-handler
   [_request]
+  [::s.a.admin-rates/index-request => ::s.a.admin-rates/index-response]
   (let [;; TODO: parse from request
         limit 50
         items (q.rates/index-records)
@@ -77,7 +57,3 @@
                   :limit limit
                   :items items}]
     (http/ok response)))
-
-(s/fdef index-handler
-  :args (s/cat :request ::s.a.admin-rates/index-request)
-  :ret ::s.a.admin-rates/index-response)

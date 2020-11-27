@@ -2,6 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [expound.alpha :as expound]
    [dinsro.queries.categories :as q.categories]
    [dinsro.model.categories :as m.categories]
@@ -13,8 +14,9 @@
 (def param-rename-map
   {:name          ::m.categories/name})
 
-(defn prepare-record
+(>defn prepare-record
   [params]
+  [:create-category/params => (? ::m.categories/params)]
   (let [user-id (utils/get-as-int params :user-id)
         params (-> params
                    (set/rename-keys param-rename-map)
@@ -26,49 +28,33 @@
         (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.categories/params params)))
         nil))))
 
-(s/fdef prepare-record
-  :args (s/cat :params :create-category/params)
-  :ret (s/nilable ::m.categories/params))
-
-(defn create-handler
+(>defn create-handler
   [{:keys [params]}]
+  [::s.a.categories/create-request => ::s.a.categories/create-response]
   (or
    (when-let [params (prepare-record params)]
      (let [id (q.categories/create-record params)]
        (http/ok {:item (q.categories/read-record id)})))
    (http/bad-request {:status :invalid})))
 
-(s/fdef create-handler
-  :args (s/cat :request ::s.a.categories/create-request)
-  :ret ::s.a.categories/create-response)
-
-(defn index-handler
+(>defn index-handler
   [_]
+  [(s/keys) => (s/keys)]
   (let [categories (q.categories/index-records)]
     (http/ok {:items categories})))
 
-(s/fdef index-handler
-  :args (s/cat :request (s/keys))
-  :ret (s/keys))
-
-(defn read-handler
+(>defn read-handler
   [{{:keys [id]} :path-params}]
+  [::s.a.categories/read-request => ::s.a.categories/read-response]
   (if-let [category (q.categories/read-record (utils/try-parse-int id))]
     (http/ok category)
     (http/not-found {:status :not-found})))
 
-(s/fdef read-handler
-  :args (s/cat :request ::s.a.categories/read-request)
-  :ret ::s.a.categories/read-response)
-
-(defn delete-handler
+(>defn delete-handler
   [{{:keys [id]} :path-params}]
+  [::s.a.categories/delete-request => ::s.a.categories/delete-response]
   (if-let [id (utils/try-parse-int id)]
     (do
       (q.categories/delete-record id)
       (http/ok {:status "ok"}))
     (http/bad-request {:input :invalid})))
-
-(s/fdef delete-handler
-  :args (s/cat :request ::s.a.categories/delete-request)
-  :ret ::s.a.categories/delete-response)

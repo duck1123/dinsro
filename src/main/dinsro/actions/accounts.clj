@@ -2,6 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [expound.alpha :as expound]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.queries.accounts :as q.accounts]
@@ -14,10 +15,9 @@
   {:name          ::m.accounts/name
    :initial-value ::m.accounts/initial-value})
 
-;; Prepare
-
-(defn prepare-record
+(>defn prepare-record
   [params]
+  [::s.a.accounts/create-params => (? ::m.accounts/params)]
   (let [currency-id (some-> params :currency-id)
         user-id (some-> params :user-id)
         initial-value (some-> params :initial-value str utils/try-parse-double)
@@ -36,65 +36,41 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.accounts/params params)))
         nil))))
 
-(s/fdef prepare-record
-  :args (s/cat :params ::s.a.accounts/create-params)
-  :ret  (s/nilable ::m.accounts/params))
-
-;; Create
-
-(defn create-handler
+(>defn create-handler
   [{:keys [params]}]
+  [::s.a.accounts/create-request => ::s.a.accounts/create-response]
   (or (when-let [params (prepare-record params)]
         (let [id (q.accounts/create-record params)]
           (http/ok {:item (q.accounts/read-record id)})))
       (http/bad-request {:status :invalid})))
 
-(s/fdef create-handler
-  :args (s/cat :request ::s.a.accounts/create-request)
-  :ret ::s.a.accounts/create-response)
-
-;; Read
-
-(defn read-handler
+(>defn read-handler
   [request]
+  [::s.a.accounts/read-request => ::s.a.accounts/read-response]
   (if-let [id (some-> request :path-params :id utils/try-parse-int)]
     (if-let [account (q.accounts/read-record id)]
       (http/ok {:item account})
       (http/not-found {}))
     (http/bad-request {:status :bad-request})))
 
-(s/fdef read-handler
-  :args (s/cat :request ::s.a.accounts/read-request)
-  :ret ::s.a.accounts/read-response)
-
-;; Delete
-
-(defn delete-handler
+(>defn delete-handler
   [{{:keys [id]} :path-params}]
+  [::s.a.accounts/delete-request => ::s.a.accounts/delete-response]
   (if-let [id (utils/try-parse-int id)]
     (do
       (q.accounts/delete-record id)
       (http/ok {:status :ok}))
     (http/bad-request {:input :invalid})))
 
-(s/fdef delete-handler
-  :args (s/cat :request ::s.a.accounts/delete-request)
-  :ret ::s.a.accounts/delete-response)
-
-;; Index
-
-(defn index-handler
+(>defn index-handler
   [request]
+  [::s.a.accounts/index-request => ::s.a.accounts/index-response]
   (if-let [user-id (:identity (:session request))]
     (let [accounts (q.accounts/index-records-by-user user-id)]
       (http/ok {:items accounts}))
 
     ;; FIXME: user is not authenticated. Shouldn't pass filter
     (http/bad-request {:input :invalid})))
-
-(s/fdef index-handler
-  :args (s/cat :request ::s.a.accounts/index-request)
-  :ret ::s.a.accounts/index-response)
 
 (defn index-by-category-handler
   [_]

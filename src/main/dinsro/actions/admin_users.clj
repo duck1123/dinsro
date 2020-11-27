@@ -1,12 +1,10 @@
 (ns dinsro.actions.admin-users
   (:require
-   [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.queries.users :as q.users]
    [dinsro.specs.actions.admin-users :as s.a.admin-users]
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
-
-;; Create
 
 (defn create-handler
   [{:keys [params]}]
@@ -15,10 +13,9 @@
            (catch Exception _ nil))
       (http/bad-request {:status :invalid})))
 
-;; Read
-
-(defn read-handler
+(>defn read-handler
   [request]
+  [::s.a.admin-users/read-request => ::s.a.admin-users/read-response]
   (let [{{id :id} :path-params} request]
     (if-let [id (try (Integer/parseInt id) (catch NumberFormatException _ nil))]
       (if-let [user (q.users/read-record id)]
@@ -26,19 +23,11 @@
         (http/not-found {:status :not-found}))
       (http/bad-request {:status :bad-request}))))
 
-(s/fdef read-handler
-  :args (s/cat :request ::s.a.admin-users/read-request)
-  :ret ::s.a.admin-users/read-response)
-
-;; Delete
-
 (defn delete-handler
   [request]
   (let [user-id (Integer/parseInt (:id (:path-params request)))]
     (q.users/delete-record user-id)
     (http/ok {:id user-id})))
-
-;; Index
 
 (defn index-handler
   [_]

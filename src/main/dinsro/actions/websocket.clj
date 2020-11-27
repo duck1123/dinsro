@@ -1,8 +1,8 @@
 (ns dinsro.actions.websocket
   (:require
-   [clojure.spec.alpha :as s]
    [clojure.java.io :as io]
    [cognitect.transit :as transit]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.streams :as streams]
    [manifold.stream :as ms]
    [mount.core :as mount]
@@ -20,19 +20,16 @@
   (timbre/infof "channel %s closed: " key status)
   (swap! streams/channels #(dissoc % key)))
 
-(defn notify-clients
+(>defn notify-clients
   "Send a message to all connected clients"
   [msg]
+  [any? => nil?]
   (doseq [[target-key channel] @streams/channels]
     (timbre/infof "Sending to channel %s => %s" target-key msg)
     (let [out (ByteArrayOutputStream. 4096)
           writer (transit/writer out :json)]
       (transit/write writer msg)
       (send! channel (str out)))))
-
-(s/fdef notify-clients
-  :args (s/cat :msg any?)
-  :ret nil?)
 
 (defn handle-stream-message
   [[_source-key msg]]

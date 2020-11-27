@@ -4,6 +4,7 @@
    [buddy.sign.jwt :as jwt]
    [clj-time.core :as time]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.users :as a.users]
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
@@ -12,8 +13,9 @@
    [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
-(defn authenticate-handler
+(>defn authenticate-handler
   [request]
+  [::s.a.authentication/authenticate-request => ::s.a.authentication/authenticate-response]
   (let [{{:keys [email password]} :params} request]
     (if (and (seq email) (seq password))
       (if-let [user (q.users/find-by-email email)]
@@ -34,13 +36,10 @@
         (http/unauthorized {:status :unauthorized}))
       (http/bad-request {:status :invalid}))))
 
-(s/fdef authenticate-handler
-  :args (s/cat :request ::s.a.authentication/authenticate-request)
-  :ret ::s.a.authentication/authenticate-response)
-
-(defn register-handler
+(>defn register-handler
   "Register a user"
   [request]
+  [::s.a.authentication/register-request => ::s.a.authentication/register-response]
   (let [{:keys [params]} request
         params (if-let [password (:password params)]
                  (assoc params ::m.users/password password)
@@ -56,10 +55,6 @@
                              :message "User already exists"})))
       (http/bad-request {:status :failed
                          :message "Invalid"}))))
-
-(s/fdef register-handler
-  :args (s/cat :request ::s.a.authentication/register-request)
-  :ret ::s.a.authentication/register-response)
 
 (defn logout-handler
   [_]
