@@ -21,6 +21,7 @@
     (dom/div
      (dom/p "Index Categories")
      (dom/table
+      :.table
       (dom/thead
        (dom/tr
         (dom/th (tr [:name]))

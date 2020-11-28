@@ -18,11 +18,10 @@
         on-y-change (fn [evt _] (fm/set-string! this :my-y-val :event evt))]
     (ui-form
      {:error true}
-     (dom/p {} (str "x: " my-x-val))
-     (dom/p {} (str "y: " my-y-val))
      (ui-form-input {:label "Email" :value my-x-val :onChange on-x-change})
      (ui-form-input {:label "Password" :value my-y-val :onChange on-y-change})
-     (ui-button {:content (tr [:login])}))))
+     (ui-button {:className "button"
+                 :content (tr [:login])}))))
 
 (defsc FormInput
   [this {:keys [my-x-val my-y-val]}]

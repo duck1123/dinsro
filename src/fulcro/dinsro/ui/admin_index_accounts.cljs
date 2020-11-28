@@ -2,39 +2,57 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]
    [taoensso.timbre :as timbre]))
 
 (defsc AdminIndexAccountLine
-  [_this {:account/keys [id name user-id currency-id initial-value]}]
+  [_this {::m.accounts/keys [id name user-id currency-id initial-value]}]
+  {:query [::m.accounts/id
+           ::m.accounts/name
+           ::m.accounts/user-id
+           ::m.accounts/currency-id
+           ::m.accounts/initial-value]
+   :initial-state {::m.accounts/id 0
+                   ::m.accounts/name ""
+                   ::m.accounts/user-id 0
+                   ::m.accounts/currency-id 0
+                   ::m.accounts/initial-value 0}}
   (dom/tr
    (dom/td id)
    (dom/td name)
    (dom/td user-id)
    (dom/td currency-id)
-   (dom/td initial-value)))
+   (dom/td initial-value)
+   (dom/td
+    (dom/button :.button.is-danger "Delete"))))
 
-(def ui-admin-index-account-line (comp/factory AdminIndexAccountLine))
+(def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [_this {:keys [accounts]}]
-  {:initial-state {:accounts [{:account/name "foo"}]}
-   :query [:accounts]}
+  [_this {:keys [accounts form-data]}]
+  {:initial-state {:accounts [{:m.accounts/name "foo"}]
+                   :form-data {}}
+   :query [:accounts
+           {:form-data (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}]}
   (dom/div
    :.box
    (dom/h1 (tr [:index-accounts])
            (dom/button "+"))
-   (dom/div "Admin create account form")
+   (u.f.admin-create-account/ui-admin-create-account-form form-data)
    (dom/hr)
    (if (empty? accounts)
      (dom/div (tr [:no-accounts]))
      (dom/table
+      :.table
       (dom/thead
-       (dom/th "Id")
-       (dom/th (tr [:name]))
-       (dom/th (tr [:user-label]))
-       (dom/th (tr [:currency-label]))
-       (dom/th (tr [:initial-value-label]))
-       (dom/th (tr [:buttons])))
+       (dom/tr
+        (dom/th "Id")
+        (dom/th (tr [:name]))
+        (dom/th (tr [:user-label]))
+        (dom/th (tr [:currency-label]))
+        (dom/th (tr [:initial-value-label]))
+        (dom/th (tr [:buttons]))))
       (dom/tbody
        (map ui-admin-index-account-line accounts))))))

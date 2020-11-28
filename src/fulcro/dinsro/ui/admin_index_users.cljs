@@ -7,9 +7,10 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AdminIndexUsers
-  [_this _props]
-  (let [users []]
-    (dom/div
-     :.box
-     (dom/h2 (tr [:users]))
-     (u.index-users/ui-index-users users))))
+  [_this {:keys [users]}]
+  {:query [{:users (comp/get-query u.index-users/IndexUsers)}]
+   :initial-state {:users {}}}
+  (dom/div
+   :.box
+   (dom/h2 (tr [:users]))
+   (u.index-users/ui-index-users users)))

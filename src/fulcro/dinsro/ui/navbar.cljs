@@ -15,21 +15,20 @@
 (s/def ::expanded? boolean?)
 
 (defsc NavLink
-  [_this {:navlink/keys [name href] :as props}]
+  [_this {:navlink/keys [name href]}]
   {:query [:navlink/id :navlink/name :navlink/href]
-   :ident (fn [] [:navlink/id (:navlink/id props)])
-   :initial-state {:navlink/name "foo"
-                   :navlink/href "/foo"}}
+   :ident :navlink/id
+   :initial-state (fn [{:navlink/keys [id name href]}]
+                    {:navlink/id id
+                     :navlink/name name
+                     :navlink/href href})}
   (dom/a
    :.navbar-item
    {:href href
-    :onClick (fn [evt]
-               (.preventDefault evt)
-               (timbre/info "navlink")
-               false)}
+    :onClick (fn [evt] (.preventDefault evt) false)}
    name))
 
-(def ui-nav-link (comp/factory NavLink))
+(def ui-nav-link (comp/factory NavLink {:keyfn :navlink/id}))
 
 (defsc NavbarBurger
   [_this {:navbar/keys [expanded?]}]
@@ -63,7 +62,8 @@
 
 (defsc NavbarAuthLink
   [_this _props]
-  (ui-nav-link {:navlink/name "User"
+  (ui-nav-link {:navlink/id :user
+                :navlink/name "User"
                 :navlink/href "/users"}))
 
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
@@ -76,7 +76,7 @@
                    :navlink/name (tr [:login])
                    :navlink/href :login-page})
      (when registration-enabled?
-       (ui-nav-link {:navlink/id :login
+       (ui-nav-link {:navlink/id :register
                      :navlink/name (tr [:register])
                      :navlink/href :register-page})))))
 
@@ -84,20 +84,20 @@
 
 (defsc Navbar
   [_this {auth-id :auth/id
-          :navbar/keys [auth-data expanded? menu-links dropdown-menu-links]
-          :as props}]
-  (js/console.log props)
-  {:query [:auth/id
+          :navbar/keys [auth-data
+                        expanded?
+                        menu-links
+                        dropdown-menu-links]}]
+  {:query [:auth/id :navbar/expanded?
            :navbar/auth-data
-           :navbar/dropdown-menu-links
-           :navbar/expanded?
-           ;; :navbar/menu-links
-           {:navbar/menu-links (comp/get-query NavLink)}]
+           :navbar/menu-links
+           :navbar/dropdown-menu-links]
+   :css [[:.navbar {:background-color "red"}]]
    :initial-state {:auth/id 1
-                   :navbar/expanded? false
+                   :navbar/auth-data {}
                    :navbar/dropdown-menu-links []
-                   :navbar/menu-links default-menu-links
-                   :navbar/auth-data {}}}
+                   :navbar/expanded? false
+                   :navbar/menu-links []}}
   (dom/nav
    :.navbar.is-info
    (dom/div

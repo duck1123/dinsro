@@ -1,5 +1,6 @@
 (ns dinsro.ui.links-test
   (:require
+   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
@@ -32,6 +33,4 @@
    ::wsm/card-width 2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/UserLink
-    ::ct.fulcro3/initial-state
-    (fn [] {:user/id 1
-            :user/name "User"})}))
+    ::ct.fulcro3/initial-state (fn [] (rand-nth (vals sample/user-map)))}))

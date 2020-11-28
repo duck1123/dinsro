@@ -1,0 +1,17 @@
+(ns dinsro.ui.forms.admin-create-account-test
+  (:require
+   [clojure.spec.alpha]
+   [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]
+   [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
+   [nubank.workspaces.core :as ws]
+   [nubank.workspaces.model :as wsm]
+   [taoensso.timbre :as timbre]))
+
+(ws/defcard AdminCreateAccountForm
+  {::wsm/card-height 5
+   ::wsm/card-width 2}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root u.f.admin-create-account/AdminCreateAccountForm
+    ::ct.fulcro3/initial-state
+    (fn [] {:accounts []})
+    ::ct.fulcro3/wrap-root? false}))

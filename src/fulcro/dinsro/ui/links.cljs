@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -24,10 +25,13 @@
     (dom/a {:href path} name)))
 
 (defsc UserLink
-  [_this {:user/keys [id name]}]
-  {:ident :user/id
-   :query [:user/id :user/name]
-   :initial-state {:user/id 1
-                   :user/name "Unloaded"}}
+  [_this {::m.users/keys [id name]}]
+  {:ident ::m.users/id
+   :query [::m.users/id ::m.users/name]
+   :initial-state {::m.users/id 1
+                   ::m.users/name "Unloaded"}}
+  (timbre/info "link")
   (let [path (str "/users/" id)]
     (dom/a {:href path} name)))
+
+(def ui-user-link (comp/factory UserLink {:keyfn ::m.users/id}))

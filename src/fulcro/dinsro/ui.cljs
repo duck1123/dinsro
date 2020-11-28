@@ -3,11 +3,10 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.fulcro-css.css-injection :as inj]
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.navbar :as u.navbar]
-   [dinsro.views.home :as v.home]
-   [dinsro.views.index-accounts :as v.index-accounts]
    [taoensso.timbre :as timbre]))
 
 (defn email-input-f
@@ -29,13 +28,13 @@
   {:query [{:root/router (comp/get-query routing/RootRouter)}
            [::uism/asm-id ::routing/RootRouter]]
    :initial-state (fn [_] {:root/router {}})}
-  (let [top-router-state (or (uism/get-active-state this ::routing/RootRouter) :home)]
+  (let [top-router-state (or (uism/get-active-state this ::routing/RootRouter) :initial)]
     (dom/div
+     {}
+     (inj/style-element {:component Root})
      (u.navbar/ui-navbar)
      (dom/div
       :.container
       (if (= :initial top-router-state)
         (dom/div :.loading "Loading...")
-        (routing/ui-root-router router))
-      (comment (v.home/ui-page))
-      (comment (v.index-accounts/ui-page))))))
+        (routing/ui-root-router router))))))

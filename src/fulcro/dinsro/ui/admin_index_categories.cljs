@@ -2,14 +2,23 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.translations :refer [tr]]))
 
 (defsc AdminIndexCategoryLine
-  [_this {:category/keys [name user-id]}]
+  [_this {::m.categories/keys [name user-id]}]
+  {:query [::m.categories/id
+           ::m.categories/name
+           ::m.categories/user-id]
+   :ident ::m.categories/id
+   :initial-state {::m.categories/id 0
+                   ::m.categories/name ""
+                   ::m.categories/user-id 0}}
   (dom/tr
    (dom/td name)
    (dom/td user-id)
-   (dom/td (dom/button "Delete"))))
+   (dom/td (dom/button :.button.is-danger "Delete"))))
 
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine))
 
@@ -22,11 +31,12 @@
    (dom/h1
     (tr [:categories "Categories"])
     (dom/button "+"))
-   (dom/div "Create category form")
+   (u.f.create-category/ui-create-category-form)
    (dom/hr)
    (if (empty? categories)
      (dom/p (tr [:no-categories]))
      (dom/table
+      :.table
       (dom/thead
        (dom/tr
         (dom/th (tr [:name]))

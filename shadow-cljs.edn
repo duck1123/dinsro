@@ -69,6 +69,7 @@
                       :http-resource-root "."
                       :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
                       :preloads [com.fulcrologic.fulcro.inspect.preload
+                                 com.fulcrologic.fulcro.inspect.dom-picker-preload
                                  com.fulcrologic.fulcro.inspect.websocket-preload]}
    :js-options {:resolve
                 {"devcards-marked" {:target :npm :require "marked"}
