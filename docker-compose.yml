@@ -32,32 +32,19 @@ services:
     - "./data/fulcro:/tmp/dinsro/data/dev"
     ports:
     - 9631:9630
+    - 3693
     labels:
     - "traefik.docker.network=default"
+    - "traefik.http.routers.fulcro-watch.rule=host(`fulcro-watch-dinsro.docker.localhost`)"
+    - "traefik.http.routers.fulcro-watch.service=fulcro-watch-dinsro"
+    - "traefik.http.services.fulcro-watch-dinsro.loadbalancer.server.port=9630"
+    - "traefik.http.routers.fulcro-workspaces.rule=host(`fulcro-workspaces-dinsro.docker.localhost`)"
+    - "traefik.http.routers.fulcro-workspaces.service=fulcro-workspaces-dinsro"
+    - "traefik.http.services.fulcro-workspaces-dinsro.loadbalancer.server.port=3693"
     environment:
     - HOME=/home/node
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9630"]
-      timeout: 10s
-      retries: 30
-
-  fulcro-workspaces:
-    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
-    working_dir: "/usr/src/app"
-    command: ["make", "workspaces-fulcro"]
-    user: "1000:1000"
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/node/.m2"
-    - "./data/fulcro:/tmp/dinsro/data/dev"
-    ports:
-    - 3693:3693
-    labels:
-    - "traefik.docker.network=default"
-    environment:
-    - HOME=/home/node
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3693"]
       timeout: 10s
       retries: 30
 

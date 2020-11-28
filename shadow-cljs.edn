@@ -67,6 +67,7 @@
                       :http-host          "0.0.0.0"
                       :http-port          3693
                       :http-resource-root "."
+                      :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
                       :preloads [com.fulcrologic.fulcro.inspect.preload
                                  com.fulcrologic.fulcro.inspect.websocket-preload]}
    :js-options {:resolve

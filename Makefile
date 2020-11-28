@@ -169,7 +169,7 @@ server-reframe-production: build-reframe-production run-reframe-production
 watch-cljs: watch-fulcro-cljs watch-reframe-cljs
 
 watch-fulcro-cljs: install
-	clojure -M:test:fulcro:datomic:shadow-cljs watch fulcro-main
+	clojure -M:test:fulcro:datomic:shadow-cljs:fulcro-workspaces:workspaces watch fulcro-main fulcro-workspaces
 
 watch-reframe: watch-reframe-cljs
 
