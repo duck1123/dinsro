@@ -78,7 +78,7 @@ dev-fulcro-bootstrap:
 	make run-fulcro
 
 check:
-	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn
+	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn --indents indentation.edn
 
 dev-reframe-bootstrap:
 	make run-reframe
