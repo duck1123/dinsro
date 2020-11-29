@@ -12,7 +12,7 @@
   (let [name (::m.accounts/name account)
         user-id (get-in account [::m.accounts/user :db/id])
         currency-id (get-in account [::m.accounts/currency :db/id])]
-    [:<>
+    [:div
      [:h3 name]
      [:p
       (tr [:user-label])
