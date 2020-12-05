@@ -74,6 +74,7 @@ services:
     - "./data/reframe:/tmp/dinsro/data/dev"
     ports:
     - 3000
+    - 7001:7000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       timeout: 10s
