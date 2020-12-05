@@ -5,7 +5,7 @@
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
 
-(>def ::settings (s/cat))
+(>def ::settings (s/keys))
 
 (>defn get-settings
   []
