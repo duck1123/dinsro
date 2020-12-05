@@ -1,5 +1,6 @@
 .calva
 .clj-kondo/.cache
+.cpcache
 .eastwood
 .env
 .idea
@@ -11,6 +12,7 @@
 .nrepl-port
 .rebel_readline_history
 .secret
+.shadow-cljs
 data
 dev-config.edn
 node_modules/
@@ -20,11 +22,17 @@ test-results/
 /classes
 /checkouts
 /coverage
-/lib
 /log
 /out
 /pom.xml
 /public/js/
+/resources/fulcro/public/js
+/resources/fulcro-cards/public/js
+/resources/fulcro-workspaces/public/js
+/resources/reframe/public/js
+/resources/reframe-cards/public/js
+/resources/reframe-workspaces/public/js
+/resources/public/devcards/
 /resources/public/js/
 /routes/
 /target

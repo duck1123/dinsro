@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-export DATAHIKE_URL="datahike:file://$(pwd)/data/dev"
-java -jar target/uberjar/dinsro.jar

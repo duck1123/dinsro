@@ -7,4 +7,4 @@
  ;; when :nrepl-port is set the application starts the nREPL server on load
  :nrepl-port 7000
  :database-url "jdbc:h2:./dinsro_test.db"
- :datahike-url "datahike:file:///dinsro/test"}
+ :datahike-url "datahike:file:///tmp/dinsro/test"}

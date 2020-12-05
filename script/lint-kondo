@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-# clj-kondo --lint src
-npx clj-kondo --lint src:test

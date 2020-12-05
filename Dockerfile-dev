@@ -1,5 +1,5 @@
 # FROM clojure
-FROM circleci/clojure:openjdk-14-lein-2.9.1-buster-node-browsers-legacy
+FROM circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
 
 LABEL maintainer="Duck Nebuchadnezzar <duck@kronkltd.net>"
 MAINTAINER Duck Nebuchadnezzar <duck@kronkltd.net>

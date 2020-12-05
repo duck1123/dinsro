@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-script/lint-kondo
-script/lint-eastwood
-script/lint-kibit

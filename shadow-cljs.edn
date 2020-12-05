@@ -1,0 +1,144 @@
+;; shadow-cljs configuration
+{:dev-http {8000 {:host "0.0.0.0"
+                  :roots ["resources/public"]}}
+ :http {:host "0.0.0.0" :port 9630}
+ :nrepl {:host "0.0.0.0" :port 3333}
+ :deps {:aliases [:datomic :dev]}
+
+ :builds
+ {:fulcro-cards
+  {:asset-path "/js"
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :compiler-options {:devcards true}
+   :devtools {:http-root "resources/fulcro-cards/public"
+              :http-port 3690}
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :modules {:main {:init-fn dinsro.devcards/main}}
+   :output-dir "resources/fulcro-cards/public/js"
+   :target :browser}
+
+  :fulcro-ci
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :ns-regexp "-test$"
+   :output-to "target/ci-fulcro.js",
+   :target :karma}
+
+  :fulcro-main
+  {:asset-path "/js"
+   :closure-defines
+   {"re_frame.trace.trace_enabled_QMARK_"        true
+    "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+   :dev {:compiler-options {:closure-defines {'goog.DEBUG true}
+                            :external-config {:guardrails {}}}}
+   :devtools   {:after-load dinsro.app/refresh
+                :http-port 3691
+                :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
+                :preloads   [com.fulcrologic.fulcro.inspect.preload
+                             com.fulcrologic.fulcro.inspect.dom-picker-preload
+                             com.fulcrologic.fulcro.inspect.websocket-preload]}
+   :modules {:main {:init-fn dinsro.app/init
+                    :entries [dinsro.app]}}
+   :output-dir "resources/fulcro/public/js"
+   :release {}
+   :target :browser}
+
+  :fulcro-test
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :devtools  {:http-port 3692
+               :http-root "target/tests-fulcro"}
+   :output-to "target/tests/test-fulcro.js",
+   :ns-regexp  "-test$"
+   :target :browser-test
+   :test-dir "target/tests-fulcro"}
+
+  :fulcro-workspaces
+  {:asset-path "/js"
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :devtools         {:http-root          "resources/fulcro-workspaces/public"
+                      :http-host          "0.0.0.0"
+                      :http-port          3693
+                      :http-resource-root "."
+                      :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
+                      :preloads [com.fulcrologic.fulcro.inspect.preload
+                                 com.fulcrologic.fulcro.inspect.dom-picker-preload
+                                 com.fulcrologic.fulcro.inspect.websocket-preload]}
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :modules          {:main {:entries [dinsro.devcards]}}
+   :ns-regexp  "-test$"
+   :output-dir "resources/fulcro-workspaces/public/js"
+   :target nubank.workspaces.shadow-cljs.target}
+
+  :reframe-ci
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :ns-regexp "-test$"
+   :output-to "target/ci-reframe.js",
+   :target :karma}
+
+  :reframe-devcards
+  {:asset-path "/js"
+   :build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :compiler-options {:devcards true}
+   :devtools  {:http-port 3680
+               :http-root "resources/reframe-cards/public"
+               :devtools-url "http://reframe-devcards-dinsro.docker.localhost:9633"}
+   :js-options {:resolve
+                {"devcards-marked" {:target :npm :require "marked"}
+                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
+   :modules {:main {:init-fn dinsro.devcards/main}}
+   :output-dir "resources/reframe-cards/public/js"
+   :target :browser}
+
+  :reframe-main
+  {:asset-path "/js"
+   :closure-defines
+   {"re_frame.trace.trace_enabled_QMARK_"        true
+    "day8.re_frame.tracing.trace_enabled_QMARK_" true}
+   :devtools   {:after-load dinsro.app/refresh
+                :http-port 3681
+                :devtools-url "http://reframe-watch-dinsro.docker.localhost:8081"}
+   :modules {:main {:init-fn dinsro.app/init
+                    :entries [dinsro.app]}}
+   :output-dir "resources/reframe/public/js"
+   :release {:build-options {:ns-aliases {day8.re-frame.tracing day8.re-frame.tracing-stubs}}
+             :closure-defines
+             {re_frame.trace/trace_enabled_QMARK_        false
+              day8.re_frame.tracing/trace_enabled_QMARK_ false}}
+   :target :browser}
+
+  :reframe-test
+  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
+                                devcards-syntax-highlighter cljsjs.highlight}}
+   :devtools  {:http-port 3682
+               :http-root "target/tests-reframe"}
+   :output-to "target/tests/test-reframe.js",
+   :ns-regexp  "-test$"
+   ;; :runner-ns dinsro.runner
+   :target :browser-test
+   :test-dir "target/tests-reframe"}
+
+  :reframe-workspaces
+  {:asset-path "/js"
+   :devtools         {:http-root          "resources/reframe-workspaces/public"
+                      :http-port          3683
+                      :http-resource-root "."
+                      :devtools-url "http://reframe-workspaces-dinsro.docker.localhost:9634"}
+   :modules          {:main {:entries [dinsro.devcards]}}
+   :ns-regexp  "-test$"
+   :output-dir "resources/reframe-workspaces/public/js"
+   :target nubank.workspaces.shadow-cljs.target}}}

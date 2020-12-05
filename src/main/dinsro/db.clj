@@ -1,0 +1,31 @@
+(ns dinsro.db
+  (:require
+   [datahike.api :as d]
+   [datahike.config :as d.config]
+   [dinsro.components.config :as config]
+   [mount.core :refer [defstate]]
+   [taoensso.timbre :as timbre]))
+
+(defstate ^:dynamic *conn*
+  "The connection to the datahike database"
+  :start (if-let [uri ((timbre/spy :info config/config) :datahike-url)]
+           (do
+             (when-not (d/database-exists? (d.config/uri->config uri))
+               (timbre/info "Creating database: " uri)
+               (d/create-database uri))
+             (d/connect uri))
+           (throw (ex-info "Could not find uri" {})))
+
+  :stop (do
+          (timbre/info "stopping real connection")
+          (d/release *conn*)))
+
+(defn create-database
+  []
+  (let [uri (config/config :datahike-url)]
+    (d/create-database uri)))
+
+(defn delete-database
+  []
+  (let [uri (config/config :datahike-url)]
+    (d/delete-database uri)))

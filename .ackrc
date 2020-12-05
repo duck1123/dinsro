@@ -1,4 +1,5 @@
 --ignore-dir=.clj-kondo
+--ignore-dir=.shadow-cljs
 --ignore-dir=.idea
 --ignore-dir=build
 --ignore-dir=checkouts.bak
@@ -9,4 +10,6 @@
 --ignore-dir=out
 --ignore-dir=test-results
 --ignore-dir=target
+--ignore-dir=resources/public/js
+--ignore-dir=resources/public/devcards
 
