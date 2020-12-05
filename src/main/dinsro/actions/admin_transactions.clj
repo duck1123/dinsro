@@ -1,7 +1,7 @@
 (ns dinsro.actions.admin-transactions
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [expound.alpha :as expound]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.queries.transactions :as q.transactions]

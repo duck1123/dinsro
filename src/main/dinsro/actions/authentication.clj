@@ -4,7 +4,7 @@
    [buddy.sign.jwt :as jwt]
    [clj-time.core :as time]
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.users :as a.users]
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
