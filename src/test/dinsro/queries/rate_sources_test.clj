@@ -1,30 +1,17 @@
 (ns dinsro.queries.rate-sources-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
-   [datahike.api :as d]
-   [datahike.config :as dc]
-   [dinsro.components.config :as config]
-   [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
-   [mount.core :as mount]))
+   [dinsro.test-helpers :as th]))
 
-(def uri "datahike:file:///tmp/file-example2")
+(def schemata [m.currencies/schema
+               m.rate-sources/schema])
 
-(use-fixtures
-  :each
-  (fn [f]
-    (mount/start #'config/config #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (dc/uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.currencies/schema)
-      (d/transact db/*conn* m.rate-sources/schema)
-      (f))))
+(use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-test
   (let [params (ds/gen-key ::m.rate-sources/params)

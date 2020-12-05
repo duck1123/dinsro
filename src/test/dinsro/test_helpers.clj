@@ -16,7 +16,6 @@
   (d/delete-database uri)
   (when-not (d/database-exists? (uri->config uri))
     (d/create-database uri))
-
   (with-redefs [db/*conn* (d/connect uri)]
     (doseq [schema schemata]
       (d/transact db/*conn* schema))

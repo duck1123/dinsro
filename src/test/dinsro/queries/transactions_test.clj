@@ -1,10 +1,6 @@
 (ns dinsro.queries.transactions-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
-   [datahike.api :as d]
-   [datahike.config :refer [uri->config]]
-   [dinsro.components.config :as config]
-   [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
@@ -12,24 +8,16 @@
    [dinsro.model.users :as m.users]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
-   [mount.core :as mount]
+   [dinsro.test-helpers :as th]
    [taoensso.timbre :as timbre]))
 
-(def uri "datahike:file:///tmp/file-example2")
+(def schemata
+  [m.users/schema
+   m.currencies/schema
+   m.rates/schema
+   m.transactions/schema])
 
-(use-fixtures
-  :each
-  (fn [f]
-    (mount/start #'config/config #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.users/schema)
-      (d/transact db/*conn* m.currencies/schema)
-      (d/transact db/*conn* m.rates/schema)
-      (d/transact db/*conn* m.transactions/schema)
-      (f))))
+(use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-test
   (let [params (ds/gen-key ::m.transactions/params)

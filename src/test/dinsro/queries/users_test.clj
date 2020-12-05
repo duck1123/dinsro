@@ -1,29 +1,17 @@
 (ns dinsro.queries.users-test
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
-   [datahike.api :as d]
-   [datahike.config :refer [uri->config]]
-   [dinsro.components.config :as config]
-   [dinsro.db :as db]
    [dinsro.mocks :as mocks]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
-   [mount.core :as mount]
+   [dinsro.test-helpers :as th]
    [taoensso.timbre :as timbre]))
 
-(def uri "datahike:file:///tmp/file-example2")
+(def schemata
+  [m.users/schema])
 
-(use-fixtures
-  :each
-  (fn [f]
-    (mount/start #'config/config #'db/*conn*)
-    (d/delete-database uri)
-    (when-not (d/database-exists? (uri->config uri))
-      (d/create-database uri))
-    (with-redefs [db/*conn* (d/connect uri)]
-      (d/transact db/*conn* m.users/schema)
-      (f))))
+(use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-valid
   (let [{::m.users/keys [email] :as params} (ds/gen-key ::m.users/params)
