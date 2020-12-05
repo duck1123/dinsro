@@ -58,7 +58,7 @@ compile-production-cljs: compile-reframe-production-cljs
 compile-reframe: compile-reframe-clj compile-reframe-cljs
 
 compile-reframe-clj: init
-	clojure -M:reframe:dev:datomic -e "(compile 'dinsro.core)"
+	# clojure -M:reframe:dev:datomic -e "(compile 'dinsro.core)"
 
 compile-reframe-cljs: init
 	clojure -M:dev:reframe:shadow-cljs:datomic compile reframe-main
@@ -158,8 +158,7 @@ run-reframe-production:
 
 server: server-reframe
 
-server-fulcro: compile-fulcro
-	clojure -M:fulcro-dev:fulcro:datomic:dev
+server-fulcro: compile-fulcro run-fulcro
 
 server-production: server-reframe-production
 
