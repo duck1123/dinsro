@@ -1,7 +1,7 @@
 (ns dinsro.nrepl
   (:require
    [nrepl.server :as nrepl]
-   [clojure.tools.logging :as log]))
+   [taoensso.timbre :as timbre]))
 
 (defn start
   "Start a network repl for debugging on specified port followed by
@@ -10,7 +10,7 @@
   clojure.tools.nrepl.server/start-server as they are."
   [{:keys [port bind transport-fn handler ack-port greeting-fn]}]
   (try
-    (log/info "starting nREPL server on port" port)
+    (timbre/info "starting nREPL server on port" port)
     (nrepl/start-server :port port
                         :bind bind
                         :transport-fn transport-fn
@@ -19,9 +19,9 @@
                         :greeting-fn greeting-fn)
 
     (catch Throwable t
-      (log/error t "failed to start nREPL")
+      (timbre/error t "failed to start nREPL")
       (throw t))))
 
 (defn stop [server]
   (nrepl/stop-server server)
-  (log/info "nREPL server stopped"))
+  (timbre/info "nREPL server stopped"))
