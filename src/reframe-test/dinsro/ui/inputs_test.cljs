@@ -82,7 +82,7 @@
   (let [store (test-store)]
     (st/reg-basic-sub store field)
     (st/reg-set-event store field)
-    (st/dispatch store [::e.users/do-fetch-index-success {:users users}])
+    (st/dispatch store [::e.users/do-fetch-index-success {:items users}])
 
     (defcard-rg user-selector
       [u.inputs/user-selector store label field])

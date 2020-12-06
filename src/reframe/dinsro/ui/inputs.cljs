@@ -5,6 +5,7 @@
    [dinsro.events.rate-sources :as e.rate-sources]
    [dinsro.events.users :as e.users]
    [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.users :as m.users]
    [dinsro.store :as st]
    [dinsro.translations :refer [tr]]
    [reframe-utils.core :as rfu]
@@ -120,7 +121,8 @@
         [:select {:value value
                   :on-change #(st/dispatch store [change-handler (target-value %)])}]
         (concat [[:option {:value ""} ""]]
-                (for [{:keys [db/id dinsro.specs.users/name]} items]
+                (for [{::m.users/keys [name]
+                       :db/keys [id]} items]
                   ^{:key id}
                   [:option {:value id} name])))]]]))
 
