@@ -2,11 +2,10 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [deftest]]
+   [dinsro.cards :refer-macros [assert-spec deftest]]
    [dinsro.events.forms.create-transaction :as e.f.create-transaction]
    [dinsro.specs :as ds]
    [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
-   [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 
 (let [account-id (ds/gen-key ::s.e.f.create-transaction/account-id)

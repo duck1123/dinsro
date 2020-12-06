@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [cljs.test :refer-macros [is]]
-   [dinsro.cards :refer-macros [defcard-rg deftest]]
+   [dinsro.cards :refer-macros [assert-spec defcard-rg deftest]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.authentication :as e.authentication]
    [dinsro.events.debug :as e.debug]
@@ -15,7 +15,6 @@
    [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
-   [dinsro.test-utils :refer-macros [assert-spec]]
    [dinsro.views.index-accounts :as v.index-accounts]
    [reitit.core :as rc]
    [taoensso.timbre :as timbre]))

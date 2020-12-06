@@ -2,7 +2,7 @@
   (:require
    [cljs.pprint :as p]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [defcard-rg]]
+   [dinsro.cards :refer-macros [assert-spec defcard-rg]]
    [dinsro.events.currencies :as e.currencies]
    [dinsro.events.debug :as e.debug]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
@@ -10,7 +10,6 @@
    [dinsro.specs :as ds]
    [dinsro.store :as st]
    [dinsro.store.mock :refer [mock-store]]
-   [dinsro.test-utils :refer-macros [assert-spec]]
    [dinsro.ui.forms.add-currency-rate :as u.f.add-currency-rate]
    [taoensso.timbre :as timbre]))
 

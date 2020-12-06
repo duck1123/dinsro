@@ -2,12 +2,11 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [deftest]]
+   [dinsro.cards :refer-macros [assert-spec deftest]]
    [dinsro.events.forms.add-user-transaction :as e.f.add-user-transaction]
    [dinsro.specs :as ds]
    [dinsro.specs.actions.transactions :as s.a.transactions]
    [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
-   [dinsro.test-utils :refer-macros [assert-spec]]
    [taoensso.timbre :as timbre]))
 
 (let [date (ds/gen-key ::s.a.transactions/date)

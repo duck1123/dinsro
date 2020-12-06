@@ -2,11 +2,10 @@
   (:require
    [cljs.test :refer-macros [is]]
    [clojure.spec.alpha :as s]
-   [dinsro.cards :refer-macros [deftest]]
+   [dinsro.cards :refer-macros [assert-spec deftest]]
    [dinsro.events.accounts :as e.accounts]
    [dinsro.events.admin-accounts :as e.admin-accounts]
    [dinsro.specs :as ds]
-   [dinsro.test-utils :refer-macros [assert-spec]]
    [dinsro.translations :refer [tr]]
    [expound.alpha]))
 

@@ -27,3 +27,7 @@
 (defmacro defcard
   [name & body]
   `(comment ~name ~@body))
+
+(defmacro assert-spec
+  [_spec _value]
+  `(comment))

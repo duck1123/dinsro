@@ -2,11 +2,10 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [deftest]]
+   [dinsro.cards :refer-macros [assert-spec deftest]]
    [dinsro.events.forms.add-currency-rate :as e.f.add-currency-rate]
    [dinsro.specs :as ds]
-   [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]
-   [dinsro.test-utils :refer-macros [assert-spec]]))
+   [dinsro.specs.events.forms.create-rate :as s.e.f.create-rate]))
 
 (let [currency-id (ds/gen-key ::s.e.f.create-rate/currency-id)
       date (ds/gen-key ::s.e.f.create-rate/date)

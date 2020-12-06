@@ -2,11 +2,10 @@
   (:require
    [cljs.test :refer [is]]
    [clojure.spec.alpha]
-   [dinsro.cards :refer-macros [deftest]]
+   [dinsro.cards :refer-macros [assert-spec deftest]]
    [dinsro.events.forms.add-account-transaction :as e.f.add-account-transaction]
    [dinsro.specs :as ds]
-   [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]
-   [dinsro.test-utils :refer-macros [assert-spec]]))
+   [dinsro.specs.events.forms.create-transaction :as s.e.f.create-transaction]))
 
 (let [account-id (ds/gen-key ::s.e.f.create-transaction/account-id)
       date (ds/gen-key ::s.e.f.create-transaction/date)
