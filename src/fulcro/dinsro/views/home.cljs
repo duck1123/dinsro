@@ -11,9 +11,9 @@
 
 (defsc HomePage
   [_this {:keys [auth-id]}]
-  {:query [:auth-id :page-name]
+  {:query [:auth-id :page/id]
    :route-segment [""]
-   :ident (fn [_] [:page-name :home-page])}
+   :ident (fn [] [:page/id ::home])}
   (dom/section
    :.section
    (dom/div

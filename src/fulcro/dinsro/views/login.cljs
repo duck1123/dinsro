@@ -9,7 +9,7 @@
   [_this {:keys [foo]}]
   {:query [:foo]
    :route-segment ["login"]
-   :ident (fn [_] [:page-name :login])
+   :ident (fn [_] [:page/id :login])
    :initial-state {:foo "bar"}}
   (timbre/info "login page")
   (dom/section

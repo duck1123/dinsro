@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -49,7 +50,8 @@
 
 (defsc IndexTransactions
   [_this {:keys [transactions]}]
-  {:query [:transactions]}
+  {:query [:transactions]
+   :initial-state {:transactions (vals sample/transaction-map)}}
   (if (seq transactions)
     (dom/div
      (map ui-index-transaction-line transactions))

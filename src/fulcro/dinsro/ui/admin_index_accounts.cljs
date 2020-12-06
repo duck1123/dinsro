@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]
    [taoensso.timbre :as timbre]))
 
@@ -31,15 +32,17 @@
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [_this {:keys [accounts form-data]}]
+  [_this {:keys [accounts show-button form-data]}]
   {:initial-state {:accounts [{:m.accounts/name "foo"}]
-                   :form-data {}}
+                   :form-data {}
+                   :show-button {}}
    :query [:accounts
+           {:show-button (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}]}
   (dom/div
    :.box
    (dom/h1 (tr [:index-accounts])
-           (dom/button "+"))
+           (u.buttons/ui-show-form-button show-button))
    (u.f.admin-create-account/ui-admin-create-account-form form-data)
    (dom/hr)
    (if (empty? accounts)
@@ -56,3 +59,5 @@
         (dom/th (tr [:buttons]))))
       (dom/tbody
        (map ui-admin-index-account-line accounts))))))
+
+(def ui-section (comp/factory AdminIndexAccounts))

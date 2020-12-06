@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.ui.buttons :as u.buttons]
    [taoensso.timbre :as timbre]))
 
 (defsc AddUserTransactionForm
@@ -9,6 +10,8 @@
   {:query []}
   (dom/div
    :.box
+   (u.buttons/ui-close-button #_close-button)
+
    "Add User Transaction"))
 
 (def ui-form (comp/factory AddUserTransactionForm))

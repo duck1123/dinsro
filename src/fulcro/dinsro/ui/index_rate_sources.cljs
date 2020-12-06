@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -34,14 +35,18 @@
   {:query [:index-rate-sources/items
            {:index-rate-source-line/rate-data (comp/get-query IndexRateSourceLine)}]
    :initial-state (fn [_] {:index-rate-sources/data []
-                           :index-rate-sources/items []})}
-  (dom/table
-   :.table
-   (dom/thead
-    (dom/tr
-     (dom/th (tr [:name]))
-     (dom/th (tr [:url]))
-     (dom/th (tr [:currency]))
-     (dom/th (tr [:actions]))))
-   (dom/tbody
-    (map ui-index-rate-source-line items))))
+                           :index-rate-sources/items (vals sample/rate-source-map)})}
+  (if (seq items)
+    (dom/table
+     :.table
+     (dom/thead
+      (dom/tr
+       (dom/th (tr [:name]))
+       (dom/th (tr [:url]))
+       (dom/th (tr [:currency]))
+       (dom/th (tr [:actions]))))
+     (dom/tbody
+      (map ui-index-rate-source-line items)))
+    (dom/p "no items")))
+
+(def ui-index-rate-sources (comp/factory IndexRateSources))

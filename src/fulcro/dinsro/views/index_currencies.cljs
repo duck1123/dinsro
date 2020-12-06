@@ -12,7 +12,12 @@
   [_this {:keys [button-data currencies form-data]}]
   {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.create-currency/CreateCurrencyForm)}
-           {:currencies (comp/get-query u.index-currencies/IndexCurrencies)}]}
+           {:currencies (comp/get-query u.index-currencies/IndexCurrencies)}]
+   :ident (fn [] [:page/id :currencies])
+   :initial-state {:button-data {}
+                   :form-data {}
+                   :currencies {}}
+   :route-segment ["currencies"]}
   (dom/section
    :.section
    (dom/div

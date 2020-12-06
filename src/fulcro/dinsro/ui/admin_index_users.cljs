@@ -14,3 +14,5 @@
    :.box
    (dom/h2 (tr [:users]))
    (u.index-users/ui-index-users users)))
+
+(def ui-section (comp/factory AdminIndexUsers))

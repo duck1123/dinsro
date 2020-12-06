@@ -32,6 +32,7 @@
     :fetch-transactions "Fetch Transactions: %1"
     :fetch-users "Fetch Users: %1"
     :home-page "Home Page"
+    :id "Id"
     :id-label "Id: %1"
     :index-accounts "Index Accounts"
     :initial-value "Initial Value"
@@ -63,6 +64,7 @@
     :user "User"
     :users "Users"
     :user-label "User: %1"
+    :url "Url"
     :value "Value"}})
 
 (def opts {:dict dictionary})

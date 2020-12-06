@@ -5,7 +5,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.add-user-categories :as u.f.add-user-categories]
+   [dinsro.ui.forms.add-user-category :as u.f.add-user-category]
    [taoensso.timbre :as timbre]))
 
 (defsc IndexCategoryLine
@@ -37,7 +37,7 @@
 
 (defsc UserCategories
   [_this {:keys [form-data button-data index-data]}]
-  {:query [{:form-data (comp/get-query u.f.add-user-categories/AddUserCategoriesForm)}
+  {:query [{:form-data (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
            {:button-data (comp/get-query u.buttons/ShowFormButton)}
            {:index-data (comp/get-query IndexUserCategories)}]
    :initial-state {:form-data {}
@@ -46,7 +46,7 @@
   (dom/div
    :.box
    (dom/h2 (tr [:categories]) (u.buttons/ui-show-form-button button-data))
-   (u.f.add-user-categories/ui-form form-data)
+   (u.f.add-user-category/ui-form form-data)
    (ui-index-user-categories index-data)))
 
 (def ui-user-categories

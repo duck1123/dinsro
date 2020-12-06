@@ -1,10 +1,10 @@
 (ns dinsro.cards
-  (:require
-   ;; [nubank.workspaces.core]
-   ;; [nubank.workspaces.card-types.react :as ct.react]
-   [reagent.core :as r])
-  (:require-macros
-   [dinsro.cards]))
+  #?(:cljs
+     (:require
+      [reagent.core :as r]))
+  #?(:cljs
+     (:require-macros
+      [dinsro.cards])))
 
 (defmacro defcard-rg
   [name & body]
@@ -15,3 +15,7 @@
 (defmacro deftest
   [name & body]
   `(nubank.workspaces.core/deftest ~name ~@body))
+
+(defmacro defcard
+  [name & body]
+  `(comment ~name ~@body))

@@ -6,6 +6,7 @@
    [dinsro.ui.admin-index-users-test]
    [dinsro.ui.index-accounts-test]
    [dinsro.ui.index-transactions-test]
+   [dinsro.ui.inputs-test]
    [dinsro.ui.navbar-test]
    [dinsro.ui.show-account-test]
    [dinsro.ui.show-currency-test]

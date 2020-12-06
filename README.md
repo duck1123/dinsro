@@ -8,48 +8,49 @@ Sats-first personal finance management
 
 ## Prerequisites
 
-You will need [Leiningen][2] 2.0 or above installed.
+* clojure cli
+* java
+* yarn
 
-[2]: https://github.com/technomancy/leiningen
+Recommended:
+
+* docker-compose
 
 ## Running
 
 To start a web server for the application, run:
 
-    script/server-production
+    make server-production
 
 ## Developing
 
 * To start a web server for the application development, run:
 
-        script/server
+        make server
 
   Then navigate to http://localhost:3000/
 
 * To build and watch the front-end for changes, run:
 
-        script/watch-javascript
+        make watch-cljs
 
   Alternately, `C-c C-x C-c <enter> <enter> <enter>` and then probably a `y <enter>` in emacs.
 
 * To start devcards, runner:
 
-        script/devcards
+        make devcards
 
 Then navigate to http://localhost:3450/devcards.html
 
 ## Testing
 
-    script/test
-    script/test-javascript
+    make test
 
 ## Docker
 
-To build a production-ready docker image, finish that feature for me.
+   TODO: Document docker-based environment
 
-It'll probably be something like:
-
-    script/docker
+         docker-compose up
 
 ## License
 

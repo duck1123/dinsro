@@ -23,3 +23,7 @@
      [body]
      (ct.react/react-card
       (r/as-element body))))
+
+(defmacro defcard
+  [name & body]
+  `(comment ~name ~@body))

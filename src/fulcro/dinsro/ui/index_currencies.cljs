@@ -3,7 +3,9 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.sample :as sample]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (defsc IndexCurrencyLine
   [_this {::m.currencies/keys [id name]}]
@@ -13,13 +15,14 @@
    (dom/td name)
    (dom/td id)))
 
-(def ui-index-currency-line (comp/factory IndexCurrencyLine))
+(def ui-index-currency-line (comp/factory IndexCurrencyLine {:keyfn ::m.currencies/id}))
 
 (defsc IndexCurrencies
   [_this {:keys [currencies]}]
-  {:query [{:currencies (comp/get-query IndexCurrencyLine)}]
-   :initial-state {:currencies []}}
-  (if (seq currencies)
+  {:query [:currencies
+           #_{:currencies (comp/get-query IndexCurrencyLine)}]
+   :initial-state (fn [_] {:currencies (vals sample/currency-map)})}
+  (if (seq (timbre/spy :info currencies))
     (dom/table
      :.table
      (dom/thead

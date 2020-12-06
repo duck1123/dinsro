@@ -1,4 +1,4 @@
-(ns dinsro.ui.forms.admin-create-currency
+(ns dinsro.ui.forms.add-user-category
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -7,13 +7,13 @@
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
-(defsc AdminCreateCurrencyForm
+(defsc AddUserCategoryForm
   [_this _props]
   {:query []}
   (dom/div
+   :.box
    (u.buttons/ui-close-button #_close-button)
+   (u.inputs/ui-text-input)
+   (u.inputs/ui-primary-button)))
 
-   "Admin Create Currency"
-   (u.inputs/ui-text-input {:label (tr [:name])})))
-
-(def ui-admin-create-currency-form (comp/factory AdminCreateCurrencyForm))
+(def ui-form (comp/factory AddUserCategoryForm))
