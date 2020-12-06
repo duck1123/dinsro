@@ -7,8 +7,12 @@
 
 (defsc IndexAccountsPage
   [_this {:keys [accounts]}]
-  {:query [{:accounts (comp/get-query u.user-accounts/UserAccounts)}]
-   :initial-state (fn [_] {:accounts []})}
+  {:query [:page/id
+           {:accounts (comp/get-query u.user-accounts/UserAccounts)}]
+   :initial-state {:accounts {}
+                   :page/id :accounts}
+   :ident (fn [] [:page/id :accounts])
+   :route-segment ["accounts"]}
   (dom/section
    :.section
    (dom/div

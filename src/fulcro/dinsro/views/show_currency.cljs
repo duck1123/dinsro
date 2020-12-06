@@ -6,5 +6,7 @@
 
 (defsc ShowCurrencyPage
   [_this _props]
-  {:initial-state {}}
+  {:initial-state {}
+   :route-segment ["show-currency"]}
+
   (dom/div "Show Currency Page"))

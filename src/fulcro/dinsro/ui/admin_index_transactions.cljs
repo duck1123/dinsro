@@ -5,4 +5,7 @@
 
 (defsc AdminIndexTransactions
   [_this _props]
+  {:query []}
   (dom/h1 "admin index transactions"))
+
+(def ui-section (comp/factory AdminIndexTransactions))

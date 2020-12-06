@@ -3,6 +3,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rates :as m.rates]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]))
@@ -29,6 +30,12 @@
    ::m.rate-sources/name name
    ::m.rate-sources/currency-id currency-id
    ::m.rate-sources/url url})
+
+(def rate-map
+  {1 {::m.rates/id 1
+      ::m.rates/currency 1
+      ::m.rates/rate 1.01
+      ::m.rates/date "2020-12-05 22:11:04"}})
 
 (def rate-source-map
   {1 (rate-line 1 "CoinLott0" 1 "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD")

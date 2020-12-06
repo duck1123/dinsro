@@ -56,3 +56,5 @@
         (dom/th "actions")))
       (dom/tbody
        (map ui-admin-index-rate-source-line rate-sources))))))
+
+(def ui-section (comp/factory AdminIndexRateSources))

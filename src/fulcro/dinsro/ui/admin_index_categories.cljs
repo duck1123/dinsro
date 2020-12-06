@@ -44,3 +44,5 @@
         (dom/th (tr [:actions]))))
       (dom/tbody
        (map ui-admin-index-category-line categories))))))
+
+(def ui-section (comp/factory AdminIndexCategories))

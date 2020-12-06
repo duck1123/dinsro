@@ -2,21 +2,23 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.model.categories :as m.categories]
+   [dinsro.sample :as sample]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (defsc IndexCategoryLine
-  [_this {:user/keys [name]
-          user-id :user/id}]
+  [_this {::m.categories/keys [name user-id]}]
   (dom/tr
    (dom/td name)
    (dom/td user-id)))
 
-(def ui-index-category-line (comp/factory IndexCategoryLine))
+(def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
 
 (defsc IndexCategories
   [_this {categories :categories/list}]
   {:query [:categories/list]
-   :initial-state {:categories/list []}}
+   :initial-state (fn [_] {:categories/list (vals sample/category-map)})}
   (if (seq categories)
     (dom/div
      (dom/p "Index Categories")
@@ -29,3 +31,5 @@
       (dom/tbody
        (map ui-index-category-line categories))))
     (dom/p (tr [:no-categories]))))
+
+(def ui-index-categories (comp/factory IndexCategories))

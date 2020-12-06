@@ -50,3 +50,5 @@
    (u.f.admin-create-currency/ui-admin-create-currency-form form-data)
    (dom/hr)
    (ui-admin-index-currencies currencies)))
+
+(def ui-section (comp/factory AdminIndexCurrencies))
