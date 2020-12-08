@@ -1,5 +1,6 @@
 (ns dinsro.ui.datepicker
   (:require
+   ["bulma-calendar" :as BulmaCalendar]
    [reagent.core :as r]
    [reagent.dom :as rd]
    [taoensso.timbre :as timbre]))
@@ -9,7 +10,7 @@
   (let [opts (r/props comp)
         e (rd/dom-node comp)
         js-opts (clj->js (dissoc opts :on-select))
-        instance (js/bulmaCalendar. e js-opts)]
+        instance (BulmaCalendar. e js-opts)]
     (when-let [on-select (:on-select opts)]
       (.on instance "select"
            (fn [datepicker]
