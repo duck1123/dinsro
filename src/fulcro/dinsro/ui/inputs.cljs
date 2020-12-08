@@ -2,6 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
@@ -39,7 +41,7 @@
   (dom/div
    :.select
    (dom/select
-    (map (fn [{::m.users/keys [id name]}]
+    (map (fn [{::m.accounts/keys [id name]}]
            ^{:key id}
            (dom/option {:value id} name))
          accounts))))
@@ -53,7 +55,7 @@
   (dom/div
    :.select
    (dom/select
-    (map (fn [{::m.users/keys [id name]}]
+    (map (fn [{::m.currencies/keys [id name]}]
            ^{:key id}
            (dom/option {:value id} name))
          currencies))))
@@ -76,6 +78,6 @@
 
 (defsc PrimaryButton
   [_this _props]
-  (dom/button))
+  (dom/button :.button "submit"))
 
 (def ui-primary-button (comp/factory PrimaryButton))
