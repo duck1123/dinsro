@@ -17,8 +17,10 @@
 
 (defn form
   [store return-to]
-  (let [form-data @(st/subscribe store [::e.f.login/form-data])]
+  (let [form-data @(st/subscribe store [::e.f.login/form-data])
+        message @(st/subscribe store [::e.authentication/error-message])]
     [:form.is-centered {:on-submit (partial on-submit store return-to)}
+     [:p.error message]
      [:div.field>div.control
       [u.inputs/email-input store (tr [:email]) ::s.e.f.login/email]]
      [:div.field>div.control

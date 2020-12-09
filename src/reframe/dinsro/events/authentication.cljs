@@ -29,8 +29,9 @@
      :navigate-to [:home-page]}))
 
 (defn do-authenticate-failure
-  [_ _]
-  {})
+  [{:keys [db]} [{{:keys [message]
+                   :or {message "LoginFailed"}} :response}]]
+  {:db (assoc db ::error-message message)})
 
 (defn do-authenticate
   [store _cofx [data _]]
@@ -92,6 +93,7 @@
   [store]
   (doto store
     (st/reg-basic-sub ::auth-id)
+    (st/reg-basic-sub ::error-message)
     (st/reg-set-event ::auth-id)
     (st/reg-event-fx ::do-authenticate-success
                      [(rf/inject-cofx :cookie/get [:token])] do-authenticate-success)
