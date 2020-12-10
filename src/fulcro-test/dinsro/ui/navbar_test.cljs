@@ -1,6 +1,7 @@
 (ns dinsro.ui.navbar-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.navbar :as u.navbar]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
@@ -17,26 +18,6 @@
     (fn [] {:navbar/expanded? true})
     ::ct.fulcro3/wrap-root? false}))
 
-(def navlink-table
-  {:foo {:navlink/id :foo
-         :navlink/name "foo"
-         :navlink/href "/foo"}
-   :bar {:navlink/id :bar
-         :navlink/name "bar"
-         :navlink/href "/bar"}
-   :baz {:navlink/id :baz
-         :navlink/name "baz"
-         :navlink/href "/baz"}
-   :accounts {:navlink/id :accounts
-              :navlink/name "Accounts"
-              :navlink/href "/accounts"}
-   :transactions {:navlink/id :transactions
-                  :navlink/name "transactions"
-                  :navlink/href "/transactions"}
-   :users {:navlink/id :users
-           :navlink/name "User"
-           :navlink/href "/users"}})
-
 (defn navlink-idents
   [kws]
   (map
@@ -46,20 +27,24 @@
 
 (defn map-links
   [links]
-  (map #(comp/get-initial-state u.navbar/NavLink (navlink-table %)) links))
+  (map #(comp/get-initial-state u.navbar/NavLink (sample/navlink-map %)) links))
 
 (ws/defcard Navbar
   {::wsm/align {:flex 1}
    ::wsm/card-height 5
-   ::wsm/card-width 4}
+   ::wsm/card-width 6}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.navbar/Navbar
     ::ct.fulcro3/initial-state
-    (fn [] {:navlink/id navlink-table
+    (fn [] {:navlink/id sample/navlink-map
             :auth/id 1
             :navbar/expanded? true
-            :navbar/menu-links (map-links [:foo :bar])
-            :navbar/top-level-links (map-links [:accounts :transactions])
+            :navbar/auth-data {:link {:navlink/id :user
+                                      :navlink/name "User"
+                                      :navlink/href "/users"}}
+            :navbar/navbar-brand {}
+            :navbar/menu-links (map sample/navlink-map [:foo :bar])
+            :navbar/top-level-links (map sample/navlink-map [:accounts :transactions])
             :navbar/unauthenticated-links (map-links [:login :register])
-            :navbar/dropdown-menu-links (map-links [:foo :bar :baz])})
+            :navbar/dropdown-menu-links (map sample/navlink-map [:foo :bar :baz])})
     ::ct.fulcro3/wrap-root? false}))

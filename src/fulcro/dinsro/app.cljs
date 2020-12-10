@@ -2,10 +2,12 @@
   (:require
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.networking.http-remote :as http]
    [dinsro.routing :as routing]
-   [dinsro.ui :refer [Root]]
+   [dinsro.ui :as u :refer [Root]]
+   [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as timbre]))
 
 (defonce app
@@ -28,7 +30,13 @@
   []
   (app/set-root! app Root {:initialize-state? true})
   (dr/initialize! app)
-  (dr/change-route-relative! app routing/RootRouter ["login"])
+
+  (comment (df/load! app :root/navbar u.navbar/Navbar))
+  (df/load! app :debug-menu/list u/DebugLinkButton {:target [:root/debug-link-bar :all-debug-menus]})
+
+  ;; TODO: parse from url
+  (dr/change-route-relative! app routing/RootRouter [""])
+
   (app/mount! app Root "app" {:initialize-state? false})
   (js/console.log "Loaded"))
 

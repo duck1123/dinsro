@@ -8,12 +8,12 @@
    [taoensso.timbre :as timbre]))
 
 (defsc CreateRateSourceForm
-  [_this _props]
-  {:initial-state {}
-   :query []}
+  [_this {::keys [button]}]
+  {:query [{::button (comp/get-query u.buttons/CloseButton)}]
+   :initial-state (fn [_] {::button (comp/get-initial-state u.buttons/CloseButton)})}
   (dom/div
    :.box
-   (u.buttons/ui-close-button #_close-button)
+   (u.buttons/ui-close-button button)
 
    "Create Rate Source"
    (u.inputs/ui-text-input {:label (tr [:name])})))

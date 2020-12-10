@@ -17,11 +17,7 @@
 (defsc NavLink
   [_this {:navlink/keys [name href]}]
   {:query [:navlink/id :navlink/name :navlink/href]
-   :ident :navlink/id
-   :initial-state (fn [{:navlink/keys [id name href]}]
-                    {:navlink/id id
-                     :navlink/name name
-                     :navlink/href href})}
+   :ident :navlink/id}
   (dom/a
    :.navbar-item
    {:href href
@@ -49,6 +45,8 @@
 
 (defsc NavbarBrand
   [_this {:navbar/keys [expanded?]}]
+  {:query [:navbar/expanded?]
+   :initial-state {:navbar/expanded? true}}
   (dom/div
    :.navbar-brand
    (dom/a
@@ -61,10 +59,12 @@
 (def ui-navbar-brand (comp/factory NavbarBrand))
 
 (defsc NavbarAuthLink
-  [_this _props]
-  (ui-nav-link {:navlink/id :user
-                :navlink/name "User"
-                :navlink/href "/users"}))
+  [_this {:keys [link]}]
+  {:query [:link]
+   :initial-state
+   (fn [_]
+     {:link (comp/get-initial-state NavLink)})}
+  (ui-nav-link link))
 
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
 
@@ -87,24 +87,30 @@
           :navbar/keys [auth-data
                         expanded?
                         menu-links
+                        navbar-brand
                         dropdown-menu-links]}]
-  {:query [:auth/id :navbar/expanded?
-           :navbar/auth-data
-           :navbar/menu-links
-           :navbar/dropdown-menu-links]
+  {:query [:auth/id
+           :navbar/expanded?
+           {:navbar/auth-data (comp/get-query NavbarAuthLink)}
+           {:navbar/menu-links (comp/get-query NavLink)}
+           {:navbar/navbar-brand (comp/get-query NavbarBrand)}
+           {:navbar/dropdown-menu-links (comp/get-query NavLink)}]
    :css [[:.navbar {:background-color "red"}]]
-   :initial-state {:auth/id 1
-                   :navbar/auth-data {}
-                   :navbar/dropdown-menu-links []
-                   :navbar/expanded? false
-                   :navbar/menu-links []}}
+   :initial-state
+   (fn [_]
+     {:auth/id nil
+      :navbar/auth-data (comp/get-initial-state NavbarAuthLink)
+      :navbar/navbar-brand (comp/get-initial-state NavbarBrand {})
+      :navbar/dropdown-menu-links [#_(comp/get-initial-state NavLink)]
+      :navbar/expanded? false
+      :navbar/menu-links [#_(comp/get-initial-state NavLink {})]})}
   (dom/nav
    :.navbar.is-info
    (dom/div
     :.container
     {:aria-label "main navigation"
      :role "navigation"}
-    (ui-navbar-brand {})
+    (ui-navbar-brand navbar-brand)
     (dom/div
      :.navbar-menu {:className (when expanded? "is-active")}
      (dom/div

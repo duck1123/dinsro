@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-transaction :as u.f.create-transaction]
@@ -10,16 +9,17 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexTransactionsPage
-  [_this {:keys [button-data form-data transactions]}]
+  [_this {::keys [button-data form-data transactions]}]
   {:query [:page/id
-           {:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.create-transaction/CreateTransactionForm)}
-           {:transactions (comp/get-query u.index-transactions/IndexTransactions)}]
+           {::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data (comp/get-query u.f.create-transaction/CreateTransactionForm)}
+           {::transactions (comp/get-query u.index-transactions/IndexTransactions)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state (fn [_] {:button-data {}
-                           :form-data {:form-button/id 2
-                                       :form-button/state false}
-                           :transactions {:transactions (vals sample/transaction-map)}})
+   :initial-state
+   (fn [_]
+     {::button-data (comp/get-initial-state u.buttons/ShowFormButton)
+      ::form-data (comp/get-initial-state u.f.create-transaction/CreateTransactionForm)
+      ::transactions (comp/get-initial-state u.index-transactions/IndexTransactions)})
    :route-segment ["transactions"]}
   (dom/section
    :.section

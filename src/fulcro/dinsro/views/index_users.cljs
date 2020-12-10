@@ -2,16 +2,17 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.index-users :as u.index-users]
    [taoensso.timbre :as timbre]))
 
 (defsc IndexUsersPage
-  [_this {:keys [users]}]
-  {:query [{:users (comp/get-query u.index-users/IndexUsers)}]
+  [_this {::keys [users]}]
+  {:query [{::users (comp/get-query u.index-users/IndexUsers)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state (fn [_] {:users {:users/list (vals sample/user-map)}})
+   :initial-state
+   (fn [_]
+     {::users (comp/get-initial-state u.index-users/IndexUsers)})
    :route-segment ["users"]}
   (dom/section
    :.section

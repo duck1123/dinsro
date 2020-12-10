@@ -8,31 +8,36 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AddUserAccountForm
-  [_this _props]
-  {:query []}
+  [_this {::keys [a b c d close-button]}]
+  {:query [{::close-button (comp/get-query u.buttons/CloseButton)}
+           {::a (comp/get-query u.inputs/TextInput)}
+           {::b (comp/get-query u.inputs/NumberInput)}
+           {::c (comp/get-query u.inputs/CurrencySelector)}
+           {::d (comp/get-query u.inputs/PrimaryButton)}]
+   :initial-state {}}
   (dom/div
    :.box
-   (u.buttons/ui-close-button #_close-button)
+   (u.buttons/ui-close-button close-button)
    (dom/div
     :.field
     (dom/div
      :.control
-     (u.inputs/ui-text-input)))
+     (u.inputs/ui-text-input a)))
    (dom/div
     :.field
     (dom/div
      :.control
-     (u.inputs/ui-number-input)))
+     (u.inputs/ui-number-input b)))
    (dom/div
     :.field
     (dom/div
      :.control
-     (u.inputs/ui-currency-selector)))
+     (u.inputs/ui-currency-selector c)))
    (dom/div
     :.field
     (dom/div
      :.control
-     (u.inputs/ui-primary-button)))
+     (u.inputs/ui-primary-button d)))
 
    "Add User Account"))
 

@@ -29,6 +29,8 @@
 
 (defsc CloseButton
   [_this _props]
+  {:query []
+   :initial-state {}}
   (dom/a
    :.delete.is-pulled-right
    {:onClick (fn [] (timbre/info "close button"))}

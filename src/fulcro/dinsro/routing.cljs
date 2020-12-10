@@ -16,9 +16,8 @@
    [taoensso.timbre :as timbre]))
 
 (defrouter RootRouter
-  [_this props]
+  [_this {:keys [current-state]}]
   {:router-targets [v.admin/AdminPage
-
                     v.home/HomePage
                     v.index-accounts/IndexAccountsPage
                     v.index-categories/IndexCategoriesPage
@@ -27,9 +26,11 @@
                     v.index-rate-sources/IndexRateSourcesPage
                     v.index-transactions/IndexTransactionsPage
                     v.index-users/IndexUsersPage
-
                     v.login/LoginPage]}
-  (do (timbre/spy :info props)
-      (dom/div "No route selected")))
+  (case current-state
+    :pending (dom/div "Loading...")
+    :failed (dom/div "Failed!")
+    ;; default will be used when the current state isn't yet set
+    (dom/div "No route selected.")))
 
 (def ui-root-router (comp/factory RootRouter))

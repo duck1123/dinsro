@@ -9,15 +9,18 @@
    [taoensso.timbre :as timbre]))
 
 (defsc ShowUserPage
-  [_this {:keys [user user-accounts user-categories user-transactions]}]
-  {:initial-state {:user {}
-                   :user-accounts {}}
+  [_this {::keys [user user-accounts user-categories user-transactions]}]
+  {:query [{::user (comp/get-query u.show-user/ShowUser)}
+           {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}
+           {::user-categories (comp/get-query u.user-categories/UserCategories)}
+           {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
    :route-segment ["show-user"]
-
-   :query [{:user (comp/get-query u.show-user/ShowUser)}
-           {:user-accounts (comp/get-query u.user-accounts/UserAccounts)}
-           {:user-categories (comp/get-query u.user-categories/UserCategories)}
-           {:user-transactions (comp/get-query u.user-transactions/UserTransactions)}]}
+   :initial-state
+   (fn [_]
+     {::user (comp/get-initial-state u.show-user/ShowUser)
+      ::user-accounts (comp/get-initial-state u.user-accounts/UserAccounts)
+      ::user-categories (comp/get-initial-state u.user-categories/UserCategories)
+      ::user-transactions (comp/get-initial-state u.user-transactions/UserTransactions)})}
   (dom/section
    :.section
    (dom/div

@@ -6,11 +6,12 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexAccountsPage
-  [_this {:keys [accounts]}]
+  [_this {::keys [accounts]}]
   {:query [:page/id
-           {:accounts (comp/get-query u.user-accounts/UserAccounts)}]
-   :initial-state {:accounts {}
-                   :page/id :accounts}
+           {::accounts (comp/get-query u.user-accounts/UserAccounts)}]
+   :initial-state
+   (fn [_]
+     {::accounts (comp/get-initial-state u.user-accounts/UserAccounts)})
    :ident (fn [] [:page/id ::page])
    :route-segment ["accounts"]}
   (dom/section

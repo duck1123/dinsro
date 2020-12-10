@@ -17,7 +17,7 @@
                    :form-data {}
                    :transaction-data {}}}
   (dom/div
-   :.box
+   :.box.container
    (dom/h2 (tr [:transactions])
            (u.buttons/ui-show-form-button button-data))
    (u.f.add-account-transaction/ui-add-account-transaction-form form-data)

@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -17,13 +16,16 @@
            ::m.rate-sources/name
            ::m.rate-sources/url]
    :ident ::m.rate-sources/id
-   :initial-state (fn [_] {::m.rate-sources/name "sally"
-                           ::m.rate-sources/url "sally"})}
+   :initial-state
+   (fn [{::m.rate-sources/keys [id]}]
+     {::m.rate-sources/id id
+      ::m.rate-sources/currency-id 1
+      ::m.rate-sources/name ""
+      ::m.rate-sources/url ""})}
   (dom/tr
    (dom/td name)
    (dom/td url)
-   (dom/td currency-id
-           #_(c.links/currency-link currency-id))
+   (dom/td currency-id #_(c.links/currency-link currency-id))
    (dom/td
     (dom/button :.button.is-danger "Delete")
     #_(c.buttons/delete-rate-source item))))
@@ -31,11 +33,12 @@
 (def ui-index-rate-source-line (comp/factory IndexRateSourceLine {:keyfn ::m.rate-sources/id}))
 
 (defsc IndexRateSources
-  [_this {:index-rate-sources/keys [items]}]
-  {:query [:index-rate-sources/items
-           {:index-rate-source-line/rate-data (comp/get-query IndexRateSourceLine)}]
-   :initial-state (fn [_] {:index-rate-sources/data []
-                           :index-rate-sources/items (vals sample/rate-source-map)})}
+  [_this {::keys [items]}]
+  {:query [{::items (comp/get-query IndexRateSourceLine)}]
+   :initial-state
+   (fn [_]
+     (let [ids [1 2]]
+       {::items (map #(comp/get-initial-state IndexRateSourceLine {::m.rate-sources/id %}) ids)}))}
   (if (seq items)
     (dom/table
      :.table

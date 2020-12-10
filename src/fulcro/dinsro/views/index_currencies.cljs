@@ -9,14 +9,16 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexCurrenciesPage
-  [_this {:keys [button-data currencies form-data]}]
-  {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.create-currency/CreateCurrencyForm)}
-           {:currencies (comp/get-query u.index-currencies/IndexCurrencies)}]
+  [_this {::keys [show-form-button currencies form-data]}]
+  {:query [{::show-form-button (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data (comp/get-query u.f.create-currency/CreateCurrencyForm)}
+           {::currencies (comp/get-query u.index-currencies/IndexCurrencies)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state {:button-data {}
-                   :form-data {}
-                   :currencies {}}
+   :initial-state
+   (fn [_]
+     {::show-form-button (comp/get-initial-state u.buttons/ShowFormButton)
+      ::form-data (comp/get-initial-state u.f.create-currency/CreateCurrencyForm)
+      ::currencies (comp/get-initial-state u.index-currencies/IndexCurrencies)})
    :route-segment ["currencies"]}
   (dom/section
    :.section
@@ -25,12 +27,14 @@
     (dom/div
      :.content
      (dom/div
-      :.box
-      (dom/h1
-       (tr [:index-currencies "Index Currencies"])
-       (u.buttons/ui-show-form-button button-data))
-      (u.f.create-currency/ui-create-currency-form form-data)
-      (dom/hr)
-      (u.index-currencies/ui-index-currencies currencies))))))
+      :.content
+      (dom/div
+       :.box
+       (dom/h1
+        (tr [:index-currencies "Index Currencies"])
+        (u.buttons/ui-show-form-button show-form-button))
+       (u.f.create-currency/ui-create-currency-form form-data)
+       (dom/hr)
+       (u.index-currencies/ui-index-currencies currencies)))))))
 
 (def ui-page (comp/factory IndexCurrenciesPage))

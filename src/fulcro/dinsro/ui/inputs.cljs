@@ -10,6 +10,8 @@
 
 (defsc TextInput
   [_this _props]
+  {:query []
+   :initial-state {}}
   (dom/div
    (dom/label
     :.label
@@ -23,6 +25,8 @@
 
 (defsc NumberInput
   [_this _props]
+  {:query []
+   :initial-state {}}
   (dom/div
    (dom/label
     :.label
@@ -78,6 +82,8 @@
 
 (defsc PrimaryButton
   [_this _props]
+  {:query []
+   :initial-state {}}
   (dom/button :.button "submit"))
 
 (def ui-primary-button (comp/factory PrimaryButton))

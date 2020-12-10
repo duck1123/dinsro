@@ -9,14 +9,16 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexRateSourcesPage
-  [_this {:keys [button-data rates form-data]}]
-  {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
-           {:rates (comp/get-query u.index-rate-sources/IndexRateSources)}]
+  [_this {::keys [button-data rates form-data]}]
+  {:query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
+           {::rates (comp/get-query u.index-rate-sources/IndexRateSources)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state {:button-data {}
-                   :form-data {}
-                   :rates {}}
+   :initial-state
+   (fn [_]
+     {::button-data (comp/get-initial-state u.buttons/ShowFormButton)
+      ::form-data (comp/get-initial-state u.f.create-rate-source/CreateRateSourceForm)
+      ::rates (comp/get-initial-state u.index-rate-sources/IndexRateSources)})
    :route-segment ["rate-sources"]}
   (dom/section
    :.section
@@ -31,6 +33,6 @@
        (u.buttons/ui-show-form-button button-data))
       (u.f.create-rate-source/ui-create-rate-source-form form-data)
       (dom/hr)
-      (u.index-rate-sources/ui-index-rate-sources (timbre/spy :info rates)))))))
+      (u.index-rate-sources/ui-index-rate-sources rates))))))
 
 (def ui-page (comp/factory IndexRateSourcesPage))

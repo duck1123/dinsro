@@ -8,12 +8,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc CreateCurrencyForm
-  [_this _props]
-  {:query []}
+  [_this {:keys [close-button]}]
+  {:query [{:close-button (comp/get-query u.buttons/CloseButton)}]
+   :initial-state
+   (fn [_]
+     {:close-button (comp/get-initial-state u.buttons/CloseButton)})}
   (dom/div
-   (u.buttons/ui-close-button #_close-button)
-
-   "Create Currency"
+   (u.buttons/ui-close-button close-button)
+   "Create Currency form"
    (u.inputs/ui-text-input {:label (tr [:name])})))
 
 (def ui-create-currency-form (comp/factory CreateCurrencyForm))

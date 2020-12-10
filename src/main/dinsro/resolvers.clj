@@ -67,7 +67,7 @@
   [_env _props]
   {::pc/output [{:all-currencies [::m.currencies/id]}]}
   {:all-currencies (map (fn [id] [::m.currencies/id id])
-                    (keys sample/currency-map))})
+                        (keys sample/currency-map))})
 
 (defresolver currency-resolver
   [_env {::m.currencies/keys [id]}]

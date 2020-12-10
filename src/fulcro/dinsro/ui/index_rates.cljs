@@ -14,8 +14,12 @@
            ::m.rates/date
            ::m.rates/rate]
    :ident ::m.rates/id
-   :initial-state (fn [_] {::m.rates/name "sally"
-                           ::m.rates/url "sally"})}
+   :initial-state
+   (fn [{::m.rates/keys [id]}]
+     (get sample/rate-map id {::m.rates/id id
+                              ::m.rates/currency 1
+                              ::m.rates/rate 1.001
+                              ::m.rates/date "2020-12-12 13:52:40"}))}
   (dom/tr
    (dom/td currency)
    (dom/td date)
@@ -28,11 +32,11 @@
 
 (defsc IndexRates
   [_this {:rates/keys [items]}]
-  {:query [:rates/items
-           {:rates/rate-data (comp/get-query IndexRateLine)}]
-   :initial-state (fn [_]
-                    {:rates/data []
-                     :rates/items (vals sample/rate-map)})}
+  {:query [{:rates/items (comp/get-query IndexRateLine)}]
+   :initial-state
+   (fn [_]
+     (let [ids [1 2]]
+       {:rates/items (map #(comp/get-initial-state IndexRateLine {::m.rates/id %}) ids)}))}
   (if (seq items)
     (dom/table
      :.table

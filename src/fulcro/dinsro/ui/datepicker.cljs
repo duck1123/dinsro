@@ -24,20 +24,21 @@
   [_this _props]
   {:componentDidMount
    (fn [this]
-     (when-let [e (comp/get-parent this)]
+     (if-let [e (js/ReactDOM.findDOMNode this)]
        (let [props (comp/props this)
              js-opts (clj->js (dissoc props :on-select))
              instance (BulmaCalendar. e js-opts)]
          (when-let [on-select (:on-select props)]
            (.on instance "select"
                 (fn [datepicker]
-                  (let [value (.toISOString (js/Date. (.value (.-data datepicker))))]
+                  (let [value (.toISOString (js/Date. (.. datepicker -data value)))]
                     (on-select value))))))
        (timbre/info "nil")))
-   :query []}
+   :query []
+   :initial-state {}}
   (dom/input
-   {;; :type "date"
-    :onSelect (fn [_] (timbre/info "on select"))
+   :.input
+   {:onSelect (fn [_] (timbre/info "on select"))
     :onChange (fn [_] (timbre/info "changed"))
     :value ""}))
 

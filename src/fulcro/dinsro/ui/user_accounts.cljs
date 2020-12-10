@@ -50,13 +50,15 @@
 (def ui-index-accounts (comp/factory IndexAccounts))
 
 (defsc UserAccounts
-  [_this {:keys [form-data button-data index-data]}]
-  {:query [{:form-data (comp/get-query u.f.add-user-account/AddUserAccountForm)}
-           {:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:index-data (comp/get-query u.index-accounts/IndexAccounts)}]
-   :initial-state {:form-data {}
-                   :button-data {}
-                   :index-data {}}}
+  [_this {::keys [form-data button-data index-data]}]
+  {:query [{::form-data (comp/get-query u.f.add-user-account/AddUserAccountForm)}
+           {::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::index-data (comp/get-query u.index-accounts/IndexAccounts)}]
+   :initial-state
+   (fn [_]
+     {::form-data (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
+      ::button-data (comp/get-initial-state u.buttons/ShowFormButton)
+      ::index-data (comp/get-initial-state u.index-accounts/IndexAccounts)})}
   (dom/div
    :.box
    (dom/h2 (tr [:accounts]) (u.buttons/ui-show-form-button button-data))

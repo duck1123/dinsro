@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -14,6 +13,7 @@
            ::m.transactions/description
            ::m.transactions/account-id]
    :ident ::m.transactions/id
+   :initial-state (fn [{::m.transactions/keys [id]}] {::m.transactions/id id})
    :css [[:.card {:margin-bottom "5px"}]]}
   (dom/div
    :.card
@@ -49,9 +49,13 @@
   (comp/factory IndexTransactionLine {:keyfn ::m.transactions/id}))
 
 (defsc IndexTransactions
-  [_this {:keys [transactions]}]
-  {:query [:transactions]
-   :initial-state {:transactions (vals sample/transaction-map)}}
+  [_this {::keys [transactions]}]
+  {:query [{::transactions (comp/get-query IndexTransactionLine)}]
+   :initial-state
+   (fn [_]
+     (let [ids [1]]
+       {::transactions
+        (map #(comp/get-initial-state IndexTransactionLine {::m.transactions/id %}) ids)}))}
   (if (seq transactions)
     (dom/div
      (map ui-index-transaction-line transactions))

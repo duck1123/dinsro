@@ -6,12 +6,11 @@
    [taoensso.timbre :as timbre]))
 
 (defsc LoginPage
-  [_this {:keys [foo]}]
-  {:query [:foo]
+  [_this {::keys [foo]}]
+  {:query [::foo]
    :route-segment ["login"]
    :ident (fn [_] [:page/id ::page])
-   :initial-state {:foo "bar"}}
-  (timbre/info "login page")
+   :initial-state {::foo "bar"}}
   (dom/section
    :.section
    (dom/div

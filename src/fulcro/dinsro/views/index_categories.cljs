@@ -9,14 +9,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexCategoriesPage
-  [_this {:keys [button-data categories form-data]}]
-  {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.create-category/CreateCategoryForm)}
-           {:categories (comp/get-query u.index-categories/IndexCategories)}]
+  [_this {::keys [button-data categories form-data]}]
+  {:query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data (comp/get-query u.f.create-category/CreateCategoryForm)}
+           {::categories (comp/get-query u.index-categories/IndexCategories)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state {:button-data {}
-                   :form-data {}
-                   :categories {}}
+   :initial-state {::button-data {}
+                   ::form-data {}
+                   ::categories {}}
    :route-segment ["categories"]}
   (dom/section
    :.section
