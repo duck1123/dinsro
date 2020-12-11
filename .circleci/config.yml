@@ -11,7 +11,8 @@ jobs:
       - checkout
       - run: node --version
       - run: npm install
-      - run: clojure -P -M:eastwood
+      - run: npx clj-kondo --version
+      # - run: clojure -P -M:eastwood
       - save_cache:
           paths:
             - ~/dinsro/node_modules
