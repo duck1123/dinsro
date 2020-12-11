@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
       - run: node --version
-      - run: npm install
+      - run: yarn install
       - run: npx clj-kondo --version
       # - run: clojure -P -M:eastwood
       - save_cache:
