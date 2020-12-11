@@ -62,7 +62,7 @@
         response (a.accounts/read-handler request)]
     (is (= status/ok (:status response)))
     (let [body (:body response)]
-      (= account body))))
+      (is (= account body)))))
 
 (deftest delete-handler
   (let [account (mocks/mock-account)

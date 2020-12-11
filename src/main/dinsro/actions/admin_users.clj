@@ -8,7 +8,7 @@
 
 (defn create-handler
   [{:keys [params]}]
-  (or (try (if-let [user (q.users/create-record params)]
+  (or (try (when-let [user (q.users/create-record params)]
              (http/ok {:user user}))
            (catch Exception _ nil))
       (http/bad-request {:status :invalid})))

@@ -34,7 +34,7 @@
 (defn create-handler
   [{:keys [params]}]
   (or (when-let [params (prepare-record params)]
-        (if-let [id (q.users/create-record params)]
+        (when-let [id (q.users/create-record params)]
           (http/ok {:item (q.users/read-record id)})))
       (http/bad-request {:status :invalid})))
 
