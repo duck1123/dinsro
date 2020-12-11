@@ -8,8 +8,9 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexAccounts
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 7
+   ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.user-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
@@ -17,8 +18,9 @@
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard UserAccounts
-  {::wsm/card-height 11
-   ::wsm/card-width 3}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 11
+   ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.user-accounts/UserAccounts
     ::ct.fulcro3/initial-state

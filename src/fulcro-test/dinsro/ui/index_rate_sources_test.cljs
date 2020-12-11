@@ -18,8 +18,8 @@
       ::ct.fulcro3/wrap-root? false})))
 
 (ws/defcard IndexRateSources
-  {::wsm/card-height 7
-   ::wsm/card-width 4}
+  {::wsm/card-height 9
+   ::wsm/card-width 6}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.index-rate-sources/IndexRateSources
     ::ct.fulcro3/initial-state

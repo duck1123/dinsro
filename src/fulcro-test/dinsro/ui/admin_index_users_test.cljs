@@ -8,8 +8,9 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard AdminIndexUsers
-  {::wsm/card-height 11
-   ::wsm/card-width 3}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 15
+   ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-users/AdminIndexUsers
     ::ct.fulcro3/initial-state

@@ -10,7 +10,6 @@
   {:query []}
   (dom/input
    :.input
-   {:onSelect (fn [_] (timbre/info "on select"))}
-   "Datepicker"))
+   {:onSelect (fn [_] (timbre/info "on select"))}))
 
 (def ui-datepicker (comp/factory Datepicker))

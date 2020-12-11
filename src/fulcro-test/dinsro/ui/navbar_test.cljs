@@ -49,8 +49,9 @@
   (map #(comp/get-initial-state u.navbar/NavLink (navlink-table %)) links))
 
 (ws/defcard Navbar
-  {::wsm/card-height 7
-   ::wsm/card-width 2}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 5
+   ::wsm/card-width 4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.navbar/Navbar
     ::ct.fulcro3/initial-state

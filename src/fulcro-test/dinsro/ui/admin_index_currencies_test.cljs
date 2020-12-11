@@ -9,8 +9,9 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AdminIndexCurrenciesSection
-  {::wsm/card-height 11
-   ::wsm/card-width 6}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 15
+   ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-currencies/AdminIndexCurrenciesSection
     ::ct.fulcro3/initial-state

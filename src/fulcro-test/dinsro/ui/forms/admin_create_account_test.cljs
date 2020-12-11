@@ -8,8 +8,9 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AdminCreateAccountForm
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 9
+   ::wsm/card-width 4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.admin-create-account/AdminCreateAccountForm
     ::ct.fulcro3/initial-state

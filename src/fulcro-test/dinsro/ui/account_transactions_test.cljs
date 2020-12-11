@@ -8,7 +8,8 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AccountTransactions
-  {::wsm/card-height 8
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 15
    ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.account-transactions/AccountTransactions

@@ -8,8 +8,9 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AddUserAccountForm
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 11
+   ::wsm/card-width 3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.add-user-account/AddUserAccountForm
     ::ct.fulcro3/initial-state
