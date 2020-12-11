@@ -19,7 +19,7 @@
     (assert-spec ::e.admin-accounts/item-sub-response response)
 
     (deftest item-sub-no-match
-      (is (= nil response))))
+      (is (nil? response))))
 
   (let [id (:db/id item)
         response (e.admin-accounts/item-sub db [::e.accounts/item id])]
