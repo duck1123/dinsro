@@ -3,6 +3,7 @@
 .cpcache
 .eastwood
 .env
+.gradle
 .idea
 .lein-*
 *.class
