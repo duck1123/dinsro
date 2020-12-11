@@ -18,7 +18,7 @@
            ::m.accounts/currency-id
            ::m.accounts/user-id
            ::m.accounts/initial-value
-           {:button-data (comp/factory u.buttons/DeleteButton)}]}
+           {:button-data (comp/get-query u.buttons/DeleteButton)}]}
   (dom/tr
    (dom/td name)
    (dom/td user-id)
