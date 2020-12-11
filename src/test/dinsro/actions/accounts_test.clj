@@ -61,8 +61,8 @@
         request {:path-params {:id (str id)}}
         response (a.accounts/read-handler request)]
     (is (= status/ok (:status response)))
-    (let [body (:body response)]
-      (is (= account body)))))
+    (let [response-item (get-in response [:body :item])]
+      (is (= account response-item)))))
 
 (deftest delete-handler
   (let [account (mocks/mock-account)
