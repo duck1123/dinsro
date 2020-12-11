@@ -8,10 +8,10 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexUsersPage
-  {::wsm/card-height 11
-   ::wsm/card-width 4}
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 11
+   ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.index-users/IndexUsersPage
     ::ct.fulcro3/initial-state
-    (fn [] {:users {:users/list (map sample/user-map [1 2])}})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn [] {:users {:users/list (map sample/user-map [1 2])}})}))

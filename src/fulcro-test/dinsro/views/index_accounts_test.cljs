@@ -8,9 +8,10 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexAccountsPage
-  {::wsm/card-height 12
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 12
    ::wsm/card-width 5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.index-accounts/IndexAccountsPage
-    ::ct.fulcro3/initial-state (fn [] {:accounts {:index-data {:accounts (map sample/account-map [1 2])}}})
-    ::ct.fulcro3/wrap-root? false}))
+    ::ct.fulcro3/initial-state
+    (fn [] {:accounts {:index-data {:accounts (map sample/account-map [1 2])}}})}))

@@ -8,7 +8,8 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard ShowUserPage
-  {::wsm/card-height 26
+  {::wsm/align {:flex 1}
+   ::wsm/card-height 26
    ::wsm/card-width 7}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.show-user/ShowUserPage
