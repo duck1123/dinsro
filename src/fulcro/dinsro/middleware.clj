@@ -16,6 +16,8 @@
    [ring.middleware.session.cookie :refer [cookie-store]]
    [taoensso.timbre :as timbre]))
 
+(def pathom-endpoint "/pathom")
+
 (def not-found-handler
   (fn [_req]
     {:status  404
@@ -24,20 +26,33 @@
 
 (def my-resolvers [dr/resolvers])
 
-(def api-parser
+(def parser
   (p/parallel-parser
-   {::p/env {::p/reader [p/map-reader pc/parallel-reader pc/open-ident-reader]
-             ::pc/mutation-join-globals [:tempids]}
+   {::p/env {::p/reader [p/map-reader
+                         pc/parallel-reader
+                         pc/open-ident-reader
+                         p/env-placeholder-reader]
+             ::pc/mutation-join-globals [:tempids]
+             ::p/placeholder-prefixes #{">"}}
     ::p/mutate pc/mutate-async
     ::p/plugins [(pc/connect-plugin {::pc/register my-resolvers})
                  (p/post-process-parser-plugin p/elide-not-found)
-                 p/error-handler-plugin]}))
+                 p/error-handler-plugin
+                 p/request-cache-plugin
+                 p/trace-plugin]}))
+
+(defn wrap-api
+  [handler]
+  (let [parser (fn [env query] (async/<!! (parser env query)))]
+    (fn [{:keys [uri] :as request}]
+      (if (= pathom-endpoint uri)
+        (server/handle-api-request (:transit-params request) (partial parser {:request request}))
+        (handler request)))))
 
 (defn wrap-base [handler]
   (let [session-store (cookie-store {:key (b/slice secret 0 16)})]
     (-> ((:middleware defaults) handler)
-        (server/wrap-api {:uri "/pathom"
-                          :parser (fn [query] (async/<!! (api-parser {:foo :bar} query)))})
+        (wrap-api)
         (blob/wrap-blob-service "/images" bs/image-blob-store)
         (blob/wrap-blob-service "/files" bs/file-blob-store)
         (file-upload/wrap-mutation-file-uploads {})
