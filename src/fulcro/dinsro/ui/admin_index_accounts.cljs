@@ -43,6 +43,7 @@
   (let [shown? false]
     (bulma/box
      (dom/h1
+      :.title.is-2
       (tr [:index-accounts])
       (u.buttons/ui-show-form-button toggle-button))
      (when shown?

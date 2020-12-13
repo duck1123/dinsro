@@ -22,39 +22,31 @@
 (def ui-admin-index-currency-line (comp/factory AdminIndexCurrencyLine {:keyfn ::m.currencies/id}))
 
 (defsc AdminIndexCurrencies
-  [_this {::keys [currencies]}]
-  {:initial-state {::currencies []}
-   :query [{::currencies (comp/get-query AdminIndexCurrencyLine)}]}
-  (if (seq currencies)
-    (dom/table
-     :.table
-     (dom/thead
-      (dom/tr
-       (dom/th (tr [:name-label]))
-       (dom/th "Buttons")))
-
-     (dom/tbody
-      (map ui-admin-index-currency-line currencies)))
-    (dom/div (tr [:no-currencies]))))
-
-(def ui-admin-index-currencies (comp/factory AdminIndexCurrencies))
-
-(defsc AdminIndexCurrenciesSection
   [_this {::keys [currencies form toggle-button]}]
-  {:initial-state {::currencies    {}
+  {:initial-state {::currencies    []
                    ::form          {}
                    ::toggle-button {}}
-   :query [{::currencies    (comp/get-query AdminIndexCurrencies)}
+   :query [{::currencies    (comp/get-query AdminIndexCurrencyLine)}
            {::form          (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (let [shown? false]
     (bulma/box
      (dom/h1
+      :.title.is-2
       (tr [:admin-index-currencies "Admin Index Currencies"])
       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.admin-create-currency/ui-admin-create-currency-form form))
      (dom/hr)
-     (ui-admin-index-currencies currencies))))
+     (if (seq currencies)
+       (dom/table
+        :.table
+        (dom/thead
+         (dom/tr
+          (dom/th (tr [:name-label]))
+          (dom/th "Buttons")))
+        (dom/tbody
+         (map ui-admin-index-currency-line currencies)))
+       (dom/div (tr [:no-currencies]))))))
 
 (def ui-section (comp/factory AdminIndexCurrencies))

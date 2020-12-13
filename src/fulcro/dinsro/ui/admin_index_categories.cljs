@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.categories :as m.categories]
    [dinsro.ui.bulma :as bulma]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.translations :refer [tr]]))
 
@@ -24,16 +25,19 @@
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine))
 
 (defsc AdminIndexCategories
-  [_this {::keys [categories form]}]
-  {:initial-state {::categories []
-                   ::form       {}}
-   :query [{::categories (comp/get-query AdminIndexCategoryLine)}
-           {::form       (comp/get-query u.f.create-category/CreateCategoryForm)}]}
+  [_this {::keys [categories form toggle-button]}]
+  {:initial-state {::categories    []
+                   ::form          {}
+                   ::toggle-button {}}
+   :query [{::categories    (comp/get-query AdminIndexCategoryLine)}
+           {::form          (comp/get-query u.f.create-category/CreateCategoryForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (let [shown? false]
     (bulma/box
      (dom/h1
+      :.title.is-2
       (tr [:categories "Categories"])
-      (dom/button "+"))
+      (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.create-category/ui-create-category-form form))
      (dom/hr)

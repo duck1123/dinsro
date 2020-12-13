@@ -10,9 +10,9 @@
   [_this {::m.rates/keys [currency date rate]}]
   {:ident ::m.rates/id
    :initial-state {::m.rates/currency 0
-                   ::m.rates/date ""
-                   ::m.rates/id 0
-                   ::m.rates/rate 0}
+                   ::m.rates/date     ""
+                   ::m.rates/id       0
+                   ::m.rates/rate     0}
    :query [::m.rates/id
            ::m.rates/currency
            ::m.rates/date
