@@ -10,7 +10,7 @@
 (defsc IndexUsersPage
   [_this {:keys [users]}]
   {:query [{:users (comp/get-query u.index-users/IndexUsers)}]
-   :ident (fn [] [:page/id ::users])
+   :ident (fn [] [:page/id ::page])
    :initial-state (fn [_] {:users {:users/list (vals sample/user-map)}})
    :route-segment ["users"]}
   (dom/section

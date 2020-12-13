@@ -11,7 +11,7 @@
            {:accounts (comp/get-query u.user-accounts/UserAccounts)}]
    :initial-state {:accounts {}
                    :page/id :accounts}
-   :ident (fn [] [:page/id :accounts])
+   :ident (fn [] [:page/id ::page])
    :route-segment ["accounts"]}
   (dom/section
    :.section

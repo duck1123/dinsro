@@ -13,7 +13,7 @@
   {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.create-currency/CreateCurrencyForm)}
            {:currencies (comp/get-query u.index-currencies/IndexCurrencies)}]
-   :ident (fn [] [:page/id :currencies])
+   :ident (fn [] [:page/id ::page])
    :initial-state {:button-data {}
                    :form-data {}
                    :currencies {}}

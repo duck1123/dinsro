@@ -19,7 +19,7 @@
            {:currencies (comp/get-query u.admin-index-currencies/AdminIndexCurrencies)}
            {:rate-sources (comp/get-query u.admin-index-rate-sources/AdminIndexRateSources)}
            {:users (comp/get-query u.admin-index-users/AdminIndexUsers)}]
-   :ident (fn [_] [:page/id ::admin])
+   :ident (fn [_] [:page/id ::page])
    :route-segment ["admin"]}
   (dom/section
    :.section

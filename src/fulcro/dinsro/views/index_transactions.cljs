@@ -15,7 +15,7 @@
            {:button-data (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.create-transaction/CreateTransactionForm)}
            {:transactions (comp/get-query u.index-transactions/IndexTransactions)}]
-   :ident (fn [] [:page/id :transactions])
+   :ident (fn [] [:page/id ::page])
    :initial-state (fn [_] {:button-data {}
                            :form-data {:form-button/id 2
                                        :form-button/state false}

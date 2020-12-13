@@ -14,7 +14,7 @@
   {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.create-rate/CreateRateForm)}
            {:rates (comp/get-query u.index-rates/IndexRates)}]
-   :ident (fn [] [:page/id :rates])
+   :ident (fn [] [:page/id ::page])
    :initial-state {:button-data {}
                    :form-data {}
                    :rates {:rates/items (vals sample/rate-map)}}

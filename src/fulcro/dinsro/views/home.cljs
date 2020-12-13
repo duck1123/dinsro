@@ -13,7 +13,7 @@
   [_this {:keys [auth-id]}]
   {:query [:auth-id :page/id]
    :route-segment [""]
-   :ident (fn [] [:page/id ::home])}
+   :ident (fn [] [:page/id ::page])}
   (dom/section
    :.section
    (dom/div
