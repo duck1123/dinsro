@@ -7,18 +7,21 @@
    [taoensso.timbre :as timbre]))
 
 (defsc RegistrationPage
-  [_this {:keys [registration-form-data]}]
-  {:query [{:registration-form-data (comp/get-query u.f.registration/RegistrationForm)}]
+  [_this {::keys [allow-registration form]}]
+  {:ident (fn [_] [:page/id ::page])
+   :initial-state {::allow-registration true
+                   ::form               {}}
+   :query [::allow-registration
+           {::form (comp/get-query u.f.registration/RegistrationForm)}]
    :route-segment ["registration"]}
-  (let [allow-registration true]
-    (bulma/section
-     (bulma/container
-      (bulma/content
-       (if allow-registration
-         (dom/div
-          (dom/h1 "Registration Page")
-          (u.f.registration/ui-registration-form registration-form-data))
-         (dom/div
-          (dom/p "Registrations are not enabled"))))))))
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (if allow-registration
+       (dom/div
+        (dom/h1 "Registration Page")
+        (u.f.registration/ui-registration-form form))
+       (dom/div
+        (dom/p "Registrations are not enabled")))))))
 
 (def ui-page (comp/factory RegistrationPage))

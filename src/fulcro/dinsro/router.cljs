@@ -13,6 +13,7 @@
    [dinsro.views.index-transactions :as v.index-transactions]
    [dinsro.views.index-users :as v.index-users]
    [dinsro.views.login :as v.login]
+   [dinsro.views.registration :as v.registration]
    [taoensso.timbre :as timbre]))
 
 (defrouter RootRouter
@@ -26,7 +27,8 @@
                     v.index-rate-sources/IndexRateSourcesPage
                     v.index-transactions/IndexTransactionsPage
                     v.index-users/IndexUsersPage
-                    v.login/LoginPage]}
+                    v.login/LoginPage
+                    v.registration/RegistrationPage]}
   (case current-state
     :pending (dom/div "Loading...")
     :failed (dom/div "Failed!")

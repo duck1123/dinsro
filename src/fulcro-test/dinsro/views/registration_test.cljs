@@ -12,9 +12,9 @@
    {::ct.fulcro3/root v.registration/RegistrationPage
     ::ct.fulcro3/initial-state
     (fn []
-      {:registration-form-data
+      {::v.registration/allow-registration true
+       ::v.registration/form
        {:name ""
         :email ""
         :password ""
-        :confirm-password ""}})
-    ::ct.fulcro3/wrap-root? false}))
+        :confirm-password ""}})}))

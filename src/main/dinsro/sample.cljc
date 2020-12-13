@@ -88,6 +88,7 @@
    :login        (debug-menu-line :login        ["login"]        "login")
    :rates        (debug-menu-line :rates        ["rates"]        "rates")
    :rate-sources (debug-menu-line :rate-sources ["rate-sources"] "rate-sources")
+   :registration (debug-menu-line :registration ["registration"] "registration")
    :transactions (debug-menu-line :transactions ["transactions"] "transactions")
    :users        (debug-menu-line :users        ["users"]        "users")})
 

@@ -74,6 +74,7 @@
     (fn [id] [:debug-menu/id id])
     [:home
      :login
+     :registration
      :admin
      :accounts
      :categories
