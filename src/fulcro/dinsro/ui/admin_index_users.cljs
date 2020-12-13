@@ -8,9 +8,9 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AdminIndexUsers
-  [_this {:keys [users]}]
-  {:initial-state {:users {}}
-   :query [{:users (comp/get-query u.index-users/IndexUsers)}]}
+  [_this {::keys [users]}]
+  {:initial-state {::users []}
+   :query [{::users (comp/get-query u.index-users/IndexUsers)}]}
   (bulma/box
    (dom/h2 (tr [:users]))
    (u.index-users/ui-index-users users)))

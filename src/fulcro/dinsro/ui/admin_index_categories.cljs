@@ -24,16 +24,18 @@
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine))
 
 (defsc AdminIndexCategories
-  [_this {::keys [categories]}]
-  {:initial-state {::categories []}
-   :query [::categories]}
+  [_this {::keys [categories form]}]
+  {:initial-state {::categories []
+                   ::form       {}}
+   :query [{::categories (comp/get-query AdminIndexCategoryLine)}
+           {::form       (comp/get-query u.f.create-category/CreateCategoryForm)}]}
   (let [shown? false]
     (bulma/box
      (dom/h1
       (tr [:categories "Categories"])
       (dom/button "+"))
      (when shown?
-       (u.f.create-category/ui-create-category-form))
+       (u.f.create-category/ui-create-category-form form))
      (dom/hr)
      (if (empty? categories)
        (dom/p (tr [:no-categories]))

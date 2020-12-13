@@ -12,10 +12,11 @@
   [_this {::m.rate-sources/keys [currency-id id name url]
           ::keys [button-data]}]
   {:ident ::m.rate-sources/id
-   :initial-state {::m.rate-sources/currency-id 0
-                   ::m.rate-sources/id   0
-                   ::m.rate-sources/name "unloaded"
-                   ::m.rate-sources/url  ""}
+   :initial-state {::button-data                {}
+                   ::m.rate-sources/currency-id 0
+                   ::m.rate-sources/id          0
+                   ::m.rate-sources/name        ""
+                   ::m.rate-sources/url         ""}
    :query [::button-data
            ::m.rate-sources/currency-id
            ::m.rate-sources/id

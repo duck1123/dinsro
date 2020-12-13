@@ -12,6 +12,8 @@
 (defsc AdminIndexCurrencyLine
   [_this {::m.currencies/keys [id name]}]
   {:ident ::m.currencies/id
+   :initial-state {::m.currencies/id   0
+                   ::m.currencies/name ""}
    :query [::m.currencies/id ::m.currencies/name]}
   (dom/tr
    (dom/td name)
@@ -33,7 +35,6 @@
 
      (dom/tbody
       (map ui-admin-index-currency-line currencies)))
-
     (dom/div (tr [:no-currencies]))))
 
 (def ui-admin-index-currencies (comp/factory AdminIndexCurrencies))
@@ -43,8 +44,8 @@
   {:initial-state {::currencies    {}
                    ::form          {}
                    ::toggle-button {}}
-   :query [{::currencies  (comp/get-query AdminIndexCurrencies)}
-           {::form   (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
+   :query [{::currencies    (comp/get-query AdminIndexCurrencies)}
+           {::form          (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (let [shown? false]
     (bulma/box

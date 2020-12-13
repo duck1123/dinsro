@@ -19,9 +19,9 @@
    {::ct.fulcro3/root v.admin/AdminPage
     ::ct.fulcro3/initial-state
     (fn []
-      {:accounts     (comp/get-initial-state u.admin-index-accounts/AdminIndexAccounts {})
-       :categories   (comp/get-initial-state u.admin-index-categories/AdminIndexCategories {})
-       :currencies   (comp/get-initial-state u.admin-index-currencies/AdminIndexCurrencies {})
-       :rate-sources (comp/get-initial-state u.admin-index-rate-sources/AdminIndexRateSources {})
-       :transactions (comp/get-initial-state u.admin-index-transactions/AdminIndexTransactions {})
-       :users        (comp/get-initial-state u.admin-index-users/AdminIndexUsers {})})}))
+      {::v.admin/accounts     (comp/get-initial-state u.admin-index-accounts/AdminIndexAccounts {})
+       ::v.admin/categories   (comp/get-initial-state u.admin-index-categories/AdminIndexCategories {})
+       ::v.admin/currencies   (comp/get-initial-state u.admin-index-currencies/AdminIndexCurrencies {})
+       ::v.admin/rate-sources (comp/get-initial-state u.admin-index-rate-sources/AdminIndexRateSources {})
+       ::v.admin/transactions (comp/get-initial-state u.admin-index-transactions/AdminIndexTransactions {})
+       ::v.admin/users        (comp/get-initial-state u.admin-index-users/AdminIndexUsers {})})}))
