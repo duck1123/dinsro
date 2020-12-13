@@ -16,6 +16,7 @@
   {:ident (fn [_] [:page/id ::page])
    :initial-state {:accounts     {}
                    :categories   {}
+                   :currencies   {}
                    :rate-sources {}
                    :transactions {}
                    :users        {}}
@@ -38,5 +39,4 @@
      (u.admin-index-currencies/ui-section currencies)
      (u.admin-index-rate-sources/ui-section rate-sources)
      (u.admin-index-users/ui-section users)))
-
    "admin page"))

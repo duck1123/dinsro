@@ -9,10 +9,10 @@
 
 (defsc IndexAccountLine
   [_this {:keys [name user currency initial-value]}]
-  {:initial-state {:name "name"
-                   :user "bob"
-                   :currency "sats"
-                   :initial-value 23}
+  {:initial-state {:currency      ""
+                   :initial-value 0
+                   :name          ""
+                   :user          ""}
    :query [::m.accounts/id :name :user :currency :initial-value]}
   (dom/tr
    (dom/td name)

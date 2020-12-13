@@ -26,6 +26,12 @@
   {::pc/output [::m.accounts/map]}
   {::m.accounts/map sample/account-map})
 
+(defresolver accounts-resolver
+  [_env _props]
+  {::pc/output [{:all-accounts [::m.accounts/id]}]}
+  {:all-accounts (map (fn [id] [::m.accounts/id id])
+                      (keys sample/account-map))})
+
 (defresolver auth-resolver
   [_env _props]
   {::pc/output [:auth/id]}
@@ -198,6 +204,7 @@
 (def resolvers
   [account-resolver
    account-map-resolver
+   accounts-resolver
    auth-resolver
    category-resolver
    category-map-resolver
