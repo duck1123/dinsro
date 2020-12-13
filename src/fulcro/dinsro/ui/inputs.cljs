@@ -97,6 +97,6 @@
   [_this _props]
   {:initial-state {}
    :query []}
-  (dom/button :.button "submit"))
+  (dom/button :.button.is-primary "submit"))
 
 (def ui-primary-button (comp/factory PrimaryButton))
