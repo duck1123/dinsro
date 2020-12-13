@@ -19,11 +19,14 @@
               :list/label  "Enemies"
               :list/people [4 3]}}))
 
-;; Given :person/id, this can generate the details of a person
-(defresolver person-resolver [_env {:person/keys [id]}]
-  {::pc/input  #{:person/id}
-   ::pc/output [:person/name :person/age]}
-  (get @people-table id))
+(defresolver all-lists-resolver [_env _props]
+  {::pc/output [:all-lists]}
+  {:all-lists [{:list/id :friends}
+               {:list/id :enemies}]})
+
+(defresolver foo-resolver [_env _props]
+  {::pc/output [:foo/name]}
+  {:foo/name "Foo Name"})
 
 ;; Given a :list/id, this can generate a list label and the people
 ;; in that list (but just with their IDs)
@@ -34,17 +37,14 @@
     (assoc list
            :list/people (mapv (fn [id] {:person/id id}) (:list/people list)))))
 
-(defresolver foo-resolver [_env _props]
-  {::pc/output [:foo/name]}
-  {:foo/name "Foo Name"})
-
-(defresolver all-lists-resolver [_env _props]
-  {::pc/output [:all-lists]}
-  {:all-lists [{:list/id :friends}
-               {:list/id :enemies}]})
+;; Given :person/id, this can generate the details of a person
+(defresolver person-resolver [_env {:person/keys [id]}]
+  {::pc/input  #{:person/id}
+   ::pc/output [:person/name :person/age]}
+  (get @people-table id))
 
 (def resolvers
-  [person-resolver
-   list-resolver
+  [all-lists-resolver
    foo-resolver
-   all-lists-resolver])
+   list-resolver
+   person-resolver])
