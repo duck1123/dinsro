@@ -22,13 +22,13 @@
 
 (defsc IndexCategories
   [_this {::keys [categories]}]
-  {:query [{::categories (comp/get-query IndexCategoryLine)}]
-   :initial-state {::categories []}}
+  {:initial-state {::categories []}
+   :query [{::categories (comp/get-query IndexCategoryLine)}]}
   (if (seq categories)
     (dom/div
      (dom/p "Index Categories")
      (dom/table
-      :.table
+      :.table.is-fullwidth
       (dom/thead
        (dom/tr
         (dom/th (tr [:name]))

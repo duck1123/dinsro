@@ -17,12 +17,13 @@
       (fn [] {:index-rate-source-line/name "bob"})
       ::ct.fulcro3/wrap-root? false})))
 
+(def rate-sources (map sample/rate-source-map [1 2 3 4]))
+
 (ws/defcard IndexRateSources
   {::wsm/card-height 3
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.index-rate-sources/IndexRateSources
     ::ct.fulcro3/initial-state
-    (fn [] {:index-rate-source-line/id sample/rate-source-map
-            :index-rate-sources/items (map sample/rate-source-map [1 2 3 4])})
+    (fn [] {:index-rate-sources/items rate-sources})
     ::ct.fulcro3/wrap-root? false}))

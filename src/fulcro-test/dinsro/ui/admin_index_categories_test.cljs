@@ -8,6 +8,8 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
 
+(def categories (map sample/category-map [1 2]))
+
 (ws/defcard AdminIndexCategories
   {::wsm/align       {:flex 1}
    ::wsm/card-height 8
@@ -15,5 +17,5 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-categories/AdminIndexCategories
     ::ct.fulcro3/initial-state
-    (fn [] {:categories (map sample/category-map [1 2])})
+    (fn [] {::u.admin-index-categories/categories categories})
     ::ct.fulcro3/wrap-root? false}))
