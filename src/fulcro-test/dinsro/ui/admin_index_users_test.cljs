@@ -7,6 +7,8 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+(def users (map sample/user-map [1 2]))
+
 (ws/defcard AdminIndexUsers
   {::wsm/align       {:flex 1}
    ::wsm/card-height 11
@@ -14,5 +16,5 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-users/AdminIndexUsers
     ::ct.fulcro3/initial-state
-    (fn [] {:users {:users/list (map sample/user-map [1])}})
+    (fn [] {::u.admin-index-users/users {:users/list users}})
     ::ct.fulcro3/wrap-root? false}))

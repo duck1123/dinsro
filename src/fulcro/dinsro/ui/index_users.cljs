@@ -8,11 +8,11 @@
 
 (defsc IndexUserLine
   [_this {::m.users/keys [id name email]}]
-  {:ident ::m.users/id
-   :initial-state {::m.users/id    0
-                   ::m.users/name  ""
-                   ::m.users/email ""}
-   :query [::m.users/email ::m.users/id ::m.users/name]}
+  {:query [::m.users/id ::m.users/name ::m.users/email]
+   :ident ::m.users/id
+   :initial-state {::m.users/email ""
+                   ::m.users/id    0
+                   ::m.users/name  ""}}
   (dom/tr
    (dom/td id)
    (dom/th name)
