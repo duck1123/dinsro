@@ -68,15 +68,15 @@
 (def ui-account-selector (comp/factory AccountSelector))
 
 (defsc CurrencySelector
-  [_this {:keys [currencies]}]
-  {:initial-state {:currencies []}
-   :query [:currencies]}
+  [_this {:keys [all-currencies]}]
+  {:initial-state {:all-currencies :param/currencies}
+   :query [:all-currencies]}
   (dom/div
    :.select
    (dom/select
     (map (fn [{::m.currencies/keys [id name]}]
            (ui-selector-option {:id (str id) :name name}))
-         currencies))))
+         all-currencies))))
 
 (def ui-currency-selector (comp/factory CurrencySelector))
 
