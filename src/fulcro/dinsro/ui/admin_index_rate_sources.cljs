@@ -17,7 +17,7 @@
                    ::m.rate-sources/id          0
                    ::m.rate-sources/name        ""
                    ::m.rate-sources/url         ""}
-   :query [::button-data
+   :query [{::button-data (comp/get-query u.buttons/DeleteButton)}
            ::m.rate-sources/currency-id
            ::m.rate-sources/id
            ::m.rate-sources/name

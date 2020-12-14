@@ -8,7 +8,8 @@
    [dinsro.ui.forms.admin-create-rate-source :as u.f.admin-create-rate-source]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
-   [nubank.workspaces.model :as wsm]))
+   [nubank.workspaces.model :as wsm]
+   [taoensso.timbre :as timbre]))
 
 (ws/defcard AdminIndexRateSources
   {::wsm/align       {:flex 1}
