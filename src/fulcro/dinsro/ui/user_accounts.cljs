@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-user-account :as u.f.add-user-account]
    [dinsro.ui.index-accounts :as u.index-accounts]
@@ -59,8 +60,7 @@
      {::form-data (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
       ::button-data (comp/get-initial-state u.buttons/ShowFormButton)
       ::index-data (comp/get-initial-state u.index-accounts/IndexAccounts)})}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h2 (tr [:accounts]) (u.buttons/ui-show-form-button button-data))
    (u.f.add-user-account/ui-form form-data)
    (ui-index-accounts index-data)))

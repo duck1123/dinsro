@@ -6,6 +6,7 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [taoensso.timbre :as timbre]))
 
 (defsc RegistrationForm
@@ -17,8 +18,7 @@
         on-email-change (fn [evt _] (fm/set-string! this :email :event evt))
         on-password-change (fn [evt _] (fm/set-string! this :password :event evt))
         on-confirm-password-change (fn [evt _] (fm/set-string! this :confirm-password :event evt))]
-    (dom/div
-     :.box
+    (bulma/box
      (dom/div "Registration form")
      (dom/form
       (ui-form-input {:label "Name" :value name :onChange on-name-change})

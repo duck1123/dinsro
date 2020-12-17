@@ -8,6 +8,7 @@
    [dinsro.ui.admin-index-rate-sources :as u.admin-index-rate-sources]
    [dinsro.ui.admin-index-transactions :as u.admin-index-transactions]
    [dinsro.ui.admin-index-users :as u.admin-index-users]
+   [dinsro.ui.bulma :as bulma]
    [taoensso.timbre :as timbre]))
 
 (defsc AdminPage
@@ -21,17 +22,11 @@
            {:users (comp/get-query u.admin-index-users/AdminIndexUsers)}]
    :ident (fn [_] [:page/id ::page])
    :route-segment ["admin"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.box
-      (dom/h1
-       :.title
-       "Admin"))
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/box
+      (dom/h1 :.title "Admin"))
      (u.admin-index-accounts/ui-section accounts)
      (u.admin-index-transactions/ui-section transactions)
      (u.admin-index-categories/ui-section categories)

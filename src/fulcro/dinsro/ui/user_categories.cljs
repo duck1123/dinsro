@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.categories :as m.categories]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-user-category :as u.f.add-user-category]
    [taoensso.timbre :as timbre]))
@@ -43,8 +44,7 @@
    :initial-state {:form-data {}
                    :button-data {}
                    :index-data {}}}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h2 (tr [:categories]) (u.buttons/ui-show-form-button button-data))
    (u.f.add-user-category/ui-form form-data)
    (ui-index-user-categories index-data)))

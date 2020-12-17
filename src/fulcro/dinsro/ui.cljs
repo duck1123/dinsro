@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as timbre]))
 
@@ -26,9 +27,9 @@
    :initial-state
    (fn [_]
      :all-debug-menus [(comp/get-initial-state DebugLinkButton)])}
-  (dom/div
-   :.box.container
-   (map ui-debug-link-button all-debug-menus)))
+  (bulma/container
+   (bulma/box
+    (map ui-debug-link-button all-debug-menus))))
 
 (def ui-debug-link-bar (comp/factory DebugLinkBar))
 
@@ -45,8 +46,7 @@
     (dom/div
      (u.navbar/ui-navbar navbar)
      (ui-debug-link-bar debug-link-bar)
-     (dom/div
-      :.container
+     (bulma/container
       (if (= :initial top-router-state)
         (dom/div :.loading "Loading...")
         (routing/ui-root-router router))))))

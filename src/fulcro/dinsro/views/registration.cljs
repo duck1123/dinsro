@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.forms.registration :as u.f.registration]
    [taoensso.timbre :as timbre]))
 
@@ -10,12 +11,9 @@
   {:route-segment ["registration"]
    :query [{:registration-form-data (comp/get-query u.f.registration/RegistrationForm)}]}
   (let [allow-registration true]
-    (dom/section
-     :.section
-     (dom/div
-      :.container
-      (dom/div
-       :.content
+    (bulma/section
+     (bulma/container
+      (bulma/content
        (if allow-registration
          (dom/div
           (dom/h1 "Registration Page")

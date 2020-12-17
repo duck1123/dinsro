@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.show-user :as u.show-user]
    [dinsro.ui.user-accounts :as u.user-accounts]
    [dinsro.ui.user-categories :as u.user-categories]
@@ -21,14 +22,10 @@
       ::user-accounts (comp/get-initial-state u.user-accounts/UserAccounts)
       ::user-categories (comp/get-initial-state u.user-categories/UserCategories)
       ::user-transactions (comp/get-initial-state u.user-transactions/UserTransactions)})}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.box
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/box
       (u.show-user/ui-show-user user)
       (u.user-accounts/ui-user-accounts user-accounts)
       (u.user-categories/ui-user-categories user-categories)

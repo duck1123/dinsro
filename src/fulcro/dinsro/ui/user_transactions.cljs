@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-user-transaction :as u.f.add-user-transaction]
    [dinsro.ui.index-transactions :as u.index-transactions]
@@ -45,8 +46,7 @@
    :initial-state {:form-data {}
                    :button-data {}
                    :index-data {}}}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button button-data))
    (u.f.add-user-transaction/ui-form form-data)
    (ui-index-transactions index-data)))

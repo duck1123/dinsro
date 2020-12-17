@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.categories :as m.categories]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.translations :refer [tr]]))
 
@@ -26,8 +27,7 @@
   [_this {:keys [categories]}]
   {:query [:categories]
    :initial-state {:categories []}}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h1
     (tr [:categories "Categories"])
     (dom/button "+"))

@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-account-transaction :as u.f.add-account-transaction]
    [dinsro.ui.index-transactions :as u.index-transactions]
@@ -16,12 +17,12 @@
    :initial-state {:button-data {}
                    :form-data {}
                    :transaction-data {}}}
-  (dom/div
-   :.box.container
-   (dom/h2 (tr [:transactions])
-           (u.buttons/ui-show-form-button button-data))
-   (u.f.add-account-transaction/ui-add-account-transaction-form form-data)
-   (dom/hr)
-   (u.index-transactions/ui-index-transactions transaction-data)))
+  (bulma/container
+   (bulma/box
+    (dom/h2 (tr [:transactions])
+            (u.buttons/ui-show-form-button button-data))
+    (u.f.add-account-transaction/ui-add-account-transaction-form form-data)
+    (dom/hr)
+    (u.index-transactions/ui-index-transactions transaction-data))))
 
 (def ui-account-transactions (comp/factory AccountTransactions))

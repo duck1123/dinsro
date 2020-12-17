@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-rate-source :as u.f.admin-create-rate-source]
    [dinsro.translations :refer [tr]]))
@@ -35,8 +36,7 @@
    :initial-state {:rate-sources []
                    :form-data {}
                    :button-data {}}}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h2
     :.title.is-2
     (tr [:rate-sources])

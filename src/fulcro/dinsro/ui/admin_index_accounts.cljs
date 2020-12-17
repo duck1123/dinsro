@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]
    [taoensso.timbre :as timbre]))
@@ -39,8 +40,7 @@
    :query [:accounts
            {:show-button (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}]}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h1 (tr [:index-accounts])
            (u.buttons/ui-show-form-button show-button))
    (u.f.admin-create-account/ui-admin-create-account-form form-data)

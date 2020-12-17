@@ -1,7 +1,7 @@
 (ns dinsro.views.index-accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-accounts :as u.user-accounts]
    [taoensso.timbre :as timbre]))
 
@@ -14,12 +14,9 @@
      {::accounts (comp/get-initial-state u.user-accounts/UserAccounts)})
    :ident (fn [] [:page/id ::page])
    :route-segment ["accounts"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
+  (bulma/section
+   (bulma/container
+    (bulma/content
      (u.user-accounts/ui-user-accounts accounts)))))
 
 (def ui-page (comp/factory IndexAccountsPage))

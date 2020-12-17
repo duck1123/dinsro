@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [taoensso.timbre :as timbre]))
 
 (defsc LoginPage
@@ -11,11 +12,8 @@
    :route-segment ["login"]
    :ident (fn [_] [:page/id ::page])
    :initial-state {::foo "bar"}}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
+  (bulma/section
+   (bulma/container
+    (bulma/content
      (dom/h1 "Login")
      (dom/p (str "foo: " foo))))))

@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.ui.index-categories :as u.index-categories]
@@ -18,14 +19,10 @@
                    ::form-data {}
                    ::categories {}}
    :route-segment ["categories"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.box
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/box
       (dom/h1
        (tr [:index-categories "Index Categories"])
        (u.buttons/ui-show-form-button button-data))

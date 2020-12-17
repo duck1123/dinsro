@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [taoensso.timbre :as timbre]))
 
 (defn path-for
@@ -14,16 +15,12 @@
   {:query [:auth-id :page/id]
    :route-segment [""]
    :ident (fn [] [:page/id ::page])}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
+  (bulma/section
+   (bulma/container
+    (bulma/content
      (if auth-id
        (dom/div "Authenticated")
-       (dom/div
-        :.box
+       (bulma/box
         (dom/h1 :.title (tr [:home-page]))
         (dom/p
          "Not Authenticated. "

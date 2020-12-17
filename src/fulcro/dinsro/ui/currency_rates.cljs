@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.ui.bulma :as bulma]
    [taoensso.timbre :as timbre]))
 
 (defn ui-show-form-button
@@ -18,8 +19,7 @@
           currency-id :currency/id}]
   {:initial-state {:currency/id 1
                    :rate-feed []}}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h2
     "Rates"
     (ui-show-form-button {}))

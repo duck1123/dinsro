@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-rate :as u.f.create-rate]
    [dinsro.ui.index-rates :as u.index-rates]
@@ -20,18 +21,12 @@
       ::form (comp/get-initial-state u.f.create-rate/CreateRateForm)
       ::rates (comp/get-initial-state u.index-rates/IndexRates)})
    :route-segment ["rates"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.container
-      (dom/div
-       :.content
-       (dom/div
-        :.box
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/container
+      (bulma/content
+       (bulma/box
         (dom/h1
          (tr [:index-rates "Index Rates"])
          (u.buttons/ui-show-form-button show-form-button))

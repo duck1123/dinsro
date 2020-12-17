@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-transaction :as u.f.create-transaction]
    [dinsro.ui.index-transactions :as u.index-transactions]
@@ -21,14 +22,10 @@
       ::form-data (comp/get-initial-state u.f.create-transaction/CreateTransactionForm)
       ::transactions (comp/get-initial-state u.index-transactions/IndexTransactions)})
    :route-segment ["transactions"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.box
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/box
       (dom/h1
        (tr [:index-rates "Index Transactions"])
        (u.buttons/ui-show-form-button button-data))

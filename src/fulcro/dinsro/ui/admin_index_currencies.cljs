@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-currency :as u.f.admin-create-currency]
    [taoensso.timbre :as timbre]))
@@ -42,8 +43,7 @@
   {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
            {:form-data (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
            {:currencies (comp/get-query AdminIndexCurrencies)}]}
-  (dom/div
-   :.box
+  (bulma/box
    (dom/h1
     (tr [:admin-index-currencies "Admin Index Currencies"])
     (u.buttons/ui-show-form-button button-data))

@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-currency :as u.f.create-currency]
    [dinsro.ui.index-currencies :as u.index-currencies]
@@ -20,16 +21,11 @@
       ::form-data (comp/get-initial-state u.f.create-currency/CreateCurrencyForm)
       ::currencies (comp/get-initial-state u.index-currencies/IndexCurrencies)})
    :route-segment ["currencies"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.content
-      (dom/div
-       :.box
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/content
+      (bulma/box
        (dom/h1
         (tr [:index-currencies "Index Currencies"])
         (u.buttons/ui-show-form-button show-form-button))

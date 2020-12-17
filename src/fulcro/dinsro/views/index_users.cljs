@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-users :as u.index-users]
    [taoensso.timbre :as timbre]))
 
@@ -14,14 +15,10 @@
    (fn [_]
      {::users (comp/get-initial-state u.index-users/IndexUsers)})
    :route-segment ["users"]}
-  (dom/section
-   :.section
-   (dom/div
-    :.container
-    (dom/div
-     :.content
-     (dom/div
-      :.box
+  (bulma/section
+   (bulma/container
+    (bulma/content
+     (bulma/box
       (dom/h1 (tr [:users-page "Users Page"]))
       (dom/hr)
       (u.index-users/ui-index-users users))))))

@@ -3,21 +3,10 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
-
-(defn field-group
-  [& body]
-  (apply dom/div :.field-group body))
-
-(defn field
-  [& body]
-  (apply dom/div :.field body))
-
-(defn column
-  [& body]
-  (apply dom/div :.column body))
 
 (defsc CreateTransactionForm
   [_this {::keys [button description value]}]
@@ -31,18 +20,16 @@
       ::input (comp/get-initial-state u.inputs/TextInput)
       ::description (comp/get-initial-state u.inputs/TextInput)
       ::value (comp/get-initial-state u.inputs/TextInput)})}
-  (dom/div
-   :.box
+  (bulma/box
    "Create Transaction"
    (u.buttons/ui-close-button button)
-   (field-group
-    (field
-     (column
+   (bulma/field-group
+    (bulma/field
+     (bulma/column
       (dom/label :.label (tr [:value]))
       (u.inputs/ui-text-input value)))
-
-    (field
-     (column
+    (bulma/field
+     (bulma/column
       (u.inputs/ui-text-input description)))
 
     #_(u.inputs/ui-text-input {:label (tr [:name])}))))
