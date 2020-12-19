@@ -32,9 +32,8 @@
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function. See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
-  (app/set-root! da/app Root {:initialize-state? true})
+  (app/mount! da/app Root "app")
   (routing/start!)
-  (app/mount! da/app Root "app" {:initialize-state? false})
   (js/console.log "Loaded"))
 
 (defn ^:export refresh
