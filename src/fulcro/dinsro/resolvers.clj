@@ -66,6 +66,11 @@
   {::pc/output [::m.currencies/map]}
   {::m.currencies/map sample/currency-map})
 
+(defresolver current-user
+  [_env _props]
+  {::pc/output [{:current-user [::m.users/id]}]}
+  {:current-user {::m.users/id nil}})
+
 (defresolver debug-menu-list-resolver
   [_env _props]
   {::pc/output [{:debug-menu/list [:debug-menu/id]}]}

@@ -37,14 +37,13 @@
     "day8.re_frame.tracing.trace_enabled_QMARK_" true}
    :dev {:compiler-options {:closure-defines {'goog.DEBUG true}
                             :external-config {:guardrails {}}}}
-   :devtools   {:after-load dinsro.app/refresh
+   :devtools   {:after-load dinsro.client/refresh
                 :http-port 3691
                 :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
                 :preloads   [com.fulcrologic.fulcro.inspect.preload
                              com.fulcrologic.fulcro.inspect.dom-picker-preload
                              com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules {:main {:init-fn dinsro.app/start
-                    :entries [dinsro.app]}}
+   :modules {:main {:init-fn dinsro.client/start}}
    :output-dir "resources/fulcro/public/js"
    :release {}
    :target :browser}
