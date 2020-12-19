@@ -1,8 +1,10 @@
 (ns dinsro.router
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.app :as da]
    [dinsro.views.admin :as v.admin]
    [dinsro.views.home :as v.home]
    [dinsro.views.index-accounts :as v.index-accounts]
@@ -14,6 +16,7 @@
    [dinsro.views.index-users :as v.index-users]
    [dinsro.views.login :as v.login]
    [dinsro.views.registration :as v.registration]
+   [dinsro.ui :as u]
    [taoensso.timbre :as timbre]))
 
 (defrouter RootRouter
@@ -36,3 +39,10 @@
     (dom/div "No route selected.")))
 
 (def ui-root-router (comp/factory RootRouter))
+
+(defn start!
+  []
+  (app/set-root! da/app u/Root {:initialize-state? true})
+  (dr/initialize! da/app)
+  ;; TODO: parse from url
+  (dr/change-route-relative! da/app RootRouter [""]))

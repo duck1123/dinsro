@@ -43,7 +43,7 @@
                 :preloads   [com.fulcrologic.fulcro.inspect.preload
                              com.fulcrologic.fulcro.inspect.dom-picker-preload
                              com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules {:main {:init-fn dinsro.app/init
+   :modules {:main {:init-fn dinsro.app/start
                     :entries [dinsro.app]}}
    :output-dir "resources/fulcro/public/js"
    :release {}
