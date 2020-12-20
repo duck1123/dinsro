@@ -68,9 +68,9 @@
   {::m.currencies/map sample/currency-map})
 
 (defresolver current-user-resolver
-  [env _props]
-  {::pc/output [{:current-user [::m.users/id]}]}
-  {:current-user {::m.users/id (:identity (:session (:request env)))}})
+  [{{{:keys [identity]} :session} :request} _props]
+  {::pc/output [{:session/current-user [:user/id :user/valid?]}]}
+  {:session/current-user {:user/id identity :user/valid? true}})
 
 (defresolver debug-menu-list-resolver
   [_env _props]

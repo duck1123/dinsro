@@ -6,7 +6,7 @@
 
 (defsc CurrentUser
   [_this _props]
-  {:query [:identity]})
+  {:query [:user/id :user/valid?]})
 
 (defmutation login [_]
   (action
@@ -18,8 +18,10 @@
    (timbre/info "error action"))
 
   (ok-action
-   [{:keys [state]}]
-   (timbre/info "ok"))
+   [{:keys [state] :as env}]
+   (timbre/infof "ok")
+   (let [{:user/keys [id valid?]} (get-in env [:result :body `login])]
+     (js/console.log id valid?)))
 
   (remote
    [env]
