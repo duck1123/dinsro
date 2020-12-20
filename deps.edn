@@ -1,7 +1,9 @@
 {:jvm-opts ["-Dclojure.spec.check-asserts=true"
             "-Dlogback.configurationFile=resources/logback.xml"]
 
- :paths   ["lib" "resources/main" "src/main" "src/test"]
+ :paths   ["lib" "resources/main" "src/main"
+           ;; "src/test"
+           ]
  :deps
  {buddy/buddy                            {:mvn/version "2.0.0"}
   ch.qos.logback/logback-classic         {:mvn/version "1.2.3"}
@@ -84,7 +86,7 @@
    :extra-paths ["src/datomic" "src/datomic-tests"]}
 
   :dev
-  {:extra-paths ["src/dev" "dev" "env/dev/resources" "env/dev/src"]
+  {:extra-paths ["src/dev" "dev" "env/dev/resources" "env/dev/src" "src/test"]
    :extra-deps
    {binaryage/devtools {:mvn/version "1.0.2"}}
    :jvm-opts ["-Dguardrails.enabled=true"]}
@@ -120,7 +122,7 @@
   :production
   {:extra-deps
    {day8.re-frame/tracing-stubs {:mvn/version "0.6.0"}}
-   :extra-paths ["env/prod/src" "env/prod/resources" "classes"]}
+   :extra-paths ["src/prod" "resources/prod" "classes"]}
 
   :reframe
   {:extra-deps

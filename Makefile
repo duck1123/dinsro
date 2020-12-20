@@ -26,7 +26,7 @@ clean-reframe:
 	rm -rf resources/reframe-workspaces/public/js
 
 check:
-	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn --indents indentation.edn
+	clojure -M:cljfmt check src deps.edn shadow-cljs.edn --indents indentation.edn
 
 compile: compile-fulcro compile-reframe
 
@@ -72,7 +72,7 @@ compile-reframe-production-clj: init
 	clojure -M:reframe:datomic:production -e "(compile 'dinsro.core)"
 
 compile-reframe-production-cljs: init
-	clojure -M:shadow-cljs:reframe:datomic release reframe-main
+	clojure -M:shadow-cljs:reframe:datomic:production release reframe-main
 
 dev-fulcro: start-lb
 	docker-compose up fulcro fulcro-watch
@@ -95,7 +95,7 @@ devcards-reframe:
 	clojure -M:test:dev:reframe:reframe-devcards:devcards:shadow-cljs:datomic watch reframe-devcards
 
 format:
-	clojure -M:cljfmt fix src env deps.edn shadow-cljs.edn --indents indentation.edn
+	clojure -M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn
 
 install: init
 	yarn install
