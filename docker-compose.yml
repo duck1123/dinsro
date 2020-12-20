@@ -33,6 +33,7 @@ services:
     ports:
     - 9631:9630
     - 3693
+    - 3333:3333
     labels:
     - "traefik.docker.network=default"
     - "traefik.http.routers.fulcro-watch.rule=host(`fulcro-watch-dinsro.docker.localhost`)"
