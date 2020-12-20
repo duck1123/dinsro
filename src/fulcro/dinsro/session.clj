@@ -5,8 +5,7 @@
    [taoensso.timbre :as timbre]))
 
 (defmutation login
-  [{{:keys [session]} :request}
-   {:user/keys [email password]}]
+  [{{:keys [session]} :request} {:user/keys [email password]}]
   {::pc/params #{:user/email :user/password}
    ::pc/output [:user/id :user/valid?]}
   (if (= password "hunter2")

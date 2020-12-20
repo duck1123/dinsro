@@ -72,11 +72,11 @@
     (comp/fragment
      (ui-nav-link {:navlink/id :login
                    :navlink/name (tr [:login])
-                   :navlink/href :login-page})
+                   :navlink/href :login})
      (when registration-enabled?
        (ui-nav-link {:navlink/id :register
                      :navlink/name (tr [:register])
-                     :navlink/href :register-page})))))
+                     :navlink/href :register})))))
 
 (def ui-navbar-unauthenticated (comp/factory NavbarUnauthenticated))
 

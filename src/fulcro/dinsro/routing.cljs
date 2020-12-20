@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
    [dinsro.app :as da]
+   [dinsro.router :refer [RootRouter]]
    [pushy.core :as pushy]
    [taoensso.timbre :as timbre]))
 
@@ -11,7 +12,7 @@
   (pushy/pushy
    (fn [p]
      (let [route-segments (vec (rest (string/split p "/")))]
-       (dr/change-route da/app route-segments)))
+       (dr/change-route-relative! da/app RootRouter route-segments)))
    identity))
 
 (defn route-to!
