@@ -80,6 +80,9 @@ dev-fulcro-bootstrap:
 check:
 	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn --indents indentation.edn
 
+dev-fulcro: start-lb
+	docker-compose up fulcro fulcro-watch
+
 dev-reframe-bootstrap:
 	make run-reframe
 
@@ -165,6 +168,9 @@ server-production: server-reframe-production
 server-reframe: compile-reframe run-reframe
 
 server-reframe-production: build-reframe-production run-reframe-production
+
+start-lb:
+	docker-compose up -d frontend
 
 watch-cljs: watch-fulcro-cljs watch-reframe-cljs
 
