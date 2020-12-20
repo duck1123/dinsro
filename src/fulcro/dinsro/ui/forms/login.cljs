@@ -5,34 +5,42 @@
    [com.fulcrologic.fulcro.mutations :as fm]
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
+   [dinsro.session :as session]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
 (defsc LoginForm
-  [this {:keys [my-x-val my-y-val]}]
-  {:initial-state {:my-x-val "" :my-y-val ""}
-   :ident         (fn [] [::id "singleton-form-input"])
-   :query         [:my-x-val :my-y-val]}
-  (let [on-x-change (fn [evt _] (fm/set-string! this :my-x-val :event evt))
-        on-y-change (fn [evt _] (fm/set-string! this :my-y-val :event evt))
-        message "failed to log in"]
-    (dom/form
-     :.is-centered
-     {:onSubmit (fn [] (timbre/info "submit"))}
-     (dom/p :.error message)
-     (bulma/field
-      (bulma/control
-       (u.inputs/ui-text-input {:label "Email" :value my-x-val :onChange on-x-change})))
-     (bulma/field
-      (bulma/control
-       (u.inputs/ui-text-input {:label "Password" :value my-y-val :onChange on-y-change})))
-     (bulma/field
-      (bulma/control
-       (u.inputs/ui-primary-button
-        {:className "button"
-         :content (tr [:login])}))))))
+  [this {:login/keys [email message password]}]
+  {:ident         (fn [] [:component/id ::form])
+   :initial-state {:login/message "failed to log in"
+                   :login/email ""
+                   :login/password ""}
+   :query         [:login/email :login/password]}
+  (dom/form
+   :.is-centered
+   {:onSubmit (fn [] (timbre/info "submit"))}
+   (dom/p :.error message)
+   (bulma/field
+    (bulma/control
+     (u.inputs/ui-text-input
+      {:label "Email"
+       :value email
+       :onChange (fn [evt _] (fm/set-string! this :login/email :event evt))})))
+   (bulma/field
+    (bulma/control
+     (u.inputs/ui-text-input
+      {:label "Password"
+       :value password
+       :onChange (fn [evt _] (fm/set-string! this :login/password :event evt))
+       })))
+   (bulma/field
+    (bulma/control
+     (u.inputs/ui-primary-button
+      {:className "button"
+       :content (tr [:login])
+       :onClick #(comp/transact! this [`(session/login ~{:email email :password password})])})))))
 
 (def ui-login-form (comp/factory LoginForm))
 
