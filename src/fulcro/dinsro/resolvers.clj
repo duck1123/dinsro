@@ -10,6 +10,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.sample :as sample]
+   [dinsro.session :as session]
    [taoensso.timbre :as timbre]))
 
 (defresolver account-resolver
@@ -223,6 +224,7 @@
    debug-menu-list-resolver
    debug-menu-map-resolver
    ;; index-explorer
+   session/login
    navlink-resolver
    navlink-map-resolver
    rate-map-resolver

@@ -1,16 +1,11 @@
 (ns dinsro.routing
   (:require
    [clojure.string :as string]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
    [dinsro.app :as da]
    [pushy.core :as pushy]
    [taoensso.timbre :as timbre]))
-
-(defsc CurrentUser
-  [_this _props]
-  {:query [:identity]})
 
 (defonce history
   (pushy/pushy

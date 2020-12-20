@@ -12,35 +12,33 @@
    [taoensso.timbre :as timbre]))
 
 (defsc LoginForm
-  [this {:login/keys [email message password]}]
+  [this {:user/keys [email message password]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {:login/message "failed to log in"
-                   :login/email ""
-                   :login/password ""}
-   :query         [:login/email :login/password]}
-  (dom/form
+   :initial-state {:user/message  "failed to log in"
+                   :user/email    ""
+                   :user/password ""}
+   :query         [:user/email :user/password :user/message]}
+  (dom/div
    :.is-centered
-   {:onSubmit (fn [] (timbre/info "submit"))}
    (dom/p :.error message)
    (bulma/field
     (bulma/control
      (u.inputs/ui-text-input
       {:label "Email"
-       :value email
-       :onChange (fn [evt _] (fm/set-string! this :login/email :event evt))})))
+       :value email}
+      {:onChange #(fm/set-string! this :user/email :event %)})))
    (bulma/field
     (bulma/control
      (u.inputs/ui-text-input
       {:label "Password"
-       :value password
-       :onChange (fn [evt _] (fm/set-string! this :login/password :event evt))
-       })))
+       :value password}
+      {:onChange #(fm/set-string! this :user/password :event %)})))
    (bulma/field
     (bulma/control
      (u.inputs/ui-primary-button
       {:className "button"
-       :content (tr [:login])
-       :onClick #(comp/transact! this [`(session/login ~{:email email :password password})])})))))
+       :content (tr [:login])}
+      {:onClick #(comp/transact! this [`(session/login {:user/email ~email :user/password ~password})])})))))
 
 (def ui-login-form (comp/factory LoginForm))
 
