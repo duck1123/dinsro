@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [dinsro.routing :as routing]
+   [dinsro.router :as router]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.navbar :as u.navbar]
@@ -36,17 +36,17 @@
 (defsc Root [this {:root/keys [debug-link-bar navbar router]}]
   {:query [{:root/debug-link-bar (comp/get-query DebugLinkBar)}
            {:root/navbar (comp/get-query u.navbar/Navbar)}
-           {:root/router (comp/get-query routing/RootRouter)}]
+           {:root/router (comp/get-query router/RootRouter)}]
    :initial-state
    (fn [_]
      {:root/debug-link-bar (comp/get-initial-state DebugLinkBar)
       :root/navbar (comp/get-initial-state u.navbar/Navbar)
-      :root/router (comp/get-initial-state routing/RootRouter)})}
-  (let [top-router-state (or (uism/get-active-state this ::routing/RootRouter) :initial)]
+      :root/router (comp/get-initial-state router/RootRouter)})}
+  (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
     (dom/div
      (u.navbar/ui-navbar navbar)
      (ui-debug-link-bar debug-link-bar)
      (bulma/container
       (if (= :initial top-router-state)
         (dom/div :.loading "Loading...")
-        (routing/ui-root-router router))))))
+        (router/ui-root-router router))))))

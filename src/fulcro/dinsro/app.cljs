@@ -5,7 +5,7 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.networking.http-remote :as http]
-   [dinsro.routing :as routing]
+   [dinsro.router :as router]
    [dinsro.ui :as u :refer [Root]]
    [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as timbre]))
@@ -37,7 +37,7 @@
   (app/set-root! app Root {:initialize-state? true})
   (dr/initialize! app)
   ;; TODO: parse from url
-  (dr/change-route-relative! app routing/RootRouter [""])
+  (dr/change-route-relative! app router/RootRouter [""])
   (app/mount! app Root "app" {:initialize-state? false}))
 
 (defn ^:export refresh

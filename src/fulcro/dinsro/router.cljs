@@ -1,4 +1,4 @@
-(ns dinsro.routing
+(ns dinsro.router
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
