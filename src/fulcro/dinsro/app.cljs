@@ -7,6 +7,7 @@
    [com.fulcrologic.fulcro.networking.http-remote :as http]
    [dinsro.router :as router]
    [dinsro.ui :as u :refer [Root]]
+   [dinsro.ui.debug-menu :as u.debug-menu]
    [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as timbre]))
 
@@ -16,7 +17,7 @@
     (fn [app]
       (js/console.log "Mounted")
       (comment (df/load! app :root/navbar u.navbar/Navbar))
-      (df/load! app :debug-menu/list u/DebugLinkButton
+      (df/load! app :debug-menu/list u.debug-menu/DebugLinkButton
                 {:target [:root/debug-link-bar :all-debug-menus]}))
     :remotes
     {:remote
