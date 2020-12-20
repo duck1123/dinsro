@@ -14,7 +14,9 @@
            :debug-menu/label]
    :ident :debug-menu/id
    :initial-state {}}
-  (dom/button {:onClick #(dr/change-route this path)} label))
+  (dom/button
+   :.button
+   {:onClick #(dr/change-route this path)} label))
 
 (def ui-debug-link-button (comp/factory DebugLinkButton {:keyfn :debug-menu/id}))
 
