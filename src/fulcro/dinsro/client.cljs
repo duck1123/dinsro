@@ -20,7 +20,7 @@
    :initial-state {::debug-links {}
                    ::navbar {}
                    ::router {}}}
-  (let [top-router-state (or (uism/get-active-state this ::routing/RootRouter) :initial)]
+  (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
     (dom/div
      (u.navbar/ui-navbar navbar)
      (u.debug-menu/ui-debug-link-bar debug-links)

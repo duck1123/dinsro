@@ -38,7 +38,8 @@
      (u.inputs/ui-primary-button
       {:className "button"
        :content (tr [:login])}
-      {:onClick #(comp/transact! this [`(session/login {:user/email ~email :user/password ~password})])})))))
+      {:onClick (fn [] (let [data {:user/email email :user/password password}]
+                         (comp/transact! this [`(session/login ~data)])))})))))
 
 (def ui-login-form (comp/factory LoginForm))
 
