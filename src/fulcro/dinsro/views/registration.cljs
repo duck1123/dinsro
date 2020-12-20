@@ -13,7 +13,7 @@
                    ::form               {}}
    :query [::allow-registration
            {::form (comp/get-query u.f.registration/RegistrationForm)}]
-   :route-segment ["registration"]}
+   :route-segment ["register"]}
   (bulma/section
    (bulma/container
     (bulma/content

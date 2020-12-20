@@ -14,13 +14,13 @@
 (defsc LoginForm
   [this {:user/keys [email message password]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {:user/message  "failed to log in"
-                   :user/email    ""
-                   :user/password ""}
+   :initial-state {:user/email    "bob@example.com"
+                   :user/message  nil
+                   :user/password "hunter2"}
    :query         [:user/email :user/password :user/message]}
   (dom/div
    :.is-centered
-   (dom/p :.error message)
+   (when message (dom/p :.notification.is-danger message))
    (bulma/field
     (bulma/control
      (u.inputs/ui-text-input

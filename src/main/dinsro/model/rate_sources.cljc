@@ -1,7 +1,8 @@
 (ns dinsro.model.rate-sources
   (:refer-clojure :exclude [name])
   (:require
-   [clojure.spec.alpha :as s]))
+   [clojure.spec.alpha :as s]
+   [dinsro.specs]))
 
 (s/def ::name string?)
 (def name ::name)

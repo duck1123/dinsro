@@ -42,9 +42,9 @@
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (let [shown? false]
     (bulma/box
-     (dom/h1
+     (dom/h2
       :.title.is-2
-      (tr [:index-accounts])
+      (tr [:accounts])
       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.admin-create-account/ui-admin-create-account-form form))

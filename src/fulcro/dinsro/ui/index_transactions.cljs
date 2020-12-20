@@ -4,20 +4,21 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (defsc IndexTransactionLine
-  [_this {::m.transactions/keys [date description account-id]}]
+  [_this {::m.transactions/keys [date description account]}]
   {:css [[:.card {:margin-bottom "5px"}]]
    :ident ::m.transactions/id
    :initial-state {::m.transactions/id          0
                    ::m.transactions/date        ""
                    ::m.transactions/description ""
-                   ::m.transactions/account-id  0}
-   :query [::m.transactions/account-id
+                   ::m.transactions/account     {}}
+   :query [::m.transactions/id
            ::m.transactions/date
            ::m.transactions/description
-           ::m.transactions/id]}
+           {::m.transactions/account (comp/get-query u.links/AccountLink)}]}
   (dom/div
    :.card
    (dom/div
@@ -26,21 +27,15 @@
      :.level.is-mobile
      (dom/div
       :.level-left
-      (dom/div
-       :.level-item
-       (dom/p description))))
+      (dom/div :.level-item (dom/p description))))
     (dom/div
      :.level.is-mobile
      (dom/div
       :.level-left
-      (dom/div
-       :.level-item
-       date))
+      (dom/div :.level-item date))
      (dom/div
       :.level-right
-      (dom/div
-       :.level-item
-       account-id))))
+      (dom/div :.level-item (u.links/ui-account-link account)))))
    (dom/footer
     :.card-footer
     (dom/a

@@ -19,6 +19,7 @@
     :.title.is-2
     (tr [:users])
     (u.buttons/ui-show-form-button toggle-button))
+   (dom/hr)
    (u.index-users/ui-index-users users)))
 
 (def ui-section (comp/factory AdminIndexUsers))

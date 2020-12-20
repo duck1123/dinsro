@@ -14,6 +14,6 @@
   (dom/div
    (dom/h1 name)
    (dom/p (str "(" email ")"))
-   (dom/button "Delete User")))
+   (dom/button :.button.is-danger "Delete User")))
 
 (def ui-show-user (comp/factory ShowUser))

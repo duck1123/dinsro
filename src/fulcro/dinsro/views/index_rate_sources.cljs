@@ -10,14 +10,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexRateSourcesPage
-  [_this {::keys [button-data form-data rates]}]
+  [_this {::keys [form rate-sources toggle-button]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {::button-data {}
-                   ::form-data   {}
-                   ::rates       {}}
-   :query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::form-data   (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
-           {::rates       (comp/get-query u.index-rate-sources/IndexRateSources)}]
+   :initial-state {::form           {}
+                   ::rate-sources   {}
+                   ::toggle-button  {}}
+   :query [{::form          (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
+           {::rate-sources  (comp/get-query u.index-rate-sources/IndexRateSources)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["rate-sources"]}
   (let [shown? false]
     (bulma/section
@@ -26,10 +26,10 @@
        (bulma/box
         (dom/h1
          (tr [:index-rates "Index Rate Sources"])
-         (u.buttons/ui-show-form-button button-data))
+         (u.buttons/ui-show-form-button toggle-button))
         (when shown?
-          (u.f.create-rate-source/ui-create-rate-source-form form-data))
+          (u.f.create-rate-source/ui-create-rate-source-form form))
         (dom/hr)
-        (u.index-rate-sources/ui-index-rate-sources rates)))))))
+        (u.index-rate-sources/ui-index-rate-sources rate-sources)))))))
 
 (def ui-page (comp/factory IndexRateSourcesPage))

@@ -38,18 +38,18 @@
 
 (defsc UserCategories
   [_this {::keys [categories form toggle-button]}]
-  {:initial-state {::categories {}
-                   ::form {}
+  {:initial-state {::categories    {}
+                   ::form          {}
                    ::toggle-button {}}
-   :query [{::categories (comp/get-query IndexUserCategories)}
-           {::form (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
+   :query [{::categories    (comp/get-query IndexUserCategories)}
+           {::form          (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (let [shown? false]
     (bulma/box
      (dom/h2 (tr [:categories]) (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-user-category/ui-form form))
+     (dom/hr)
      (ui-index-user-categories categories))))
 
-(def ui-user-categories
-  (comp/factory UserCategories))
+(def ui-user-categories (comp/factory UserCategories))

@@ -21,10 +21,10 @@
 (def ui-index-transaction-line (comp/factory IndexTransactionLine {:keyfn ::m.transactions/id}))
 
 (defsc IndexTransactions
-  [_this {:keys [transactions]}]
-  {:query [{:transactions (comp/get-query IndexTransactionLine)}
-           ::m.transactions/id]
-   :initial-state {:transactions []}}
+  [_this {::keys [transactions]}]
+  {:initial-state {::transactions []}
+   :query [{::transactions (comp/get-query IndexTransactionLine)}
+           ::m.transactions/id]}
   (if (seq transactions)
     (dom/table
      :.table
@@ -51,6 +51,7 @@
      (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-user-transaction/ui-form form))
+     (dom/hr)
      (ui-index-transactions transactions))))
 
 (def ui-user-transactions

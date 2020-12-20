@@ -31,9 +31,9 @@
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (let [shown? false]
     (bulma/box
-     (dom/h1
+     (dom/h2
       :.title.is-2
-      (tr [:admin-index-currencies "Admin Index Currencies"])
+      (tr [:currencies])
       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.admin-create-currency/ui-admin-create-currency-form form))

@@ -1,7 +1,9 @@
 (ns dinsro.views.index-rates
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -18,7 +20,16 @@
    :query [{::form          (comp/get-query u.f.create-rate/CreateRateForm)}
            {::rates         (comp/get-query u.index-rates/IndexRates)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]
-   :route-segment ["rates"]}
+   :route-segment ["rates"]
+   :will-enter
+   (fn [app _props]
+     (df/load! app :all-rates u.index-rates/IndexRateLine
+               {:target [:page/id
+                         ::page
+                         ::rates
+                         ::u.index-rates/items]})
+
+     (dr/route-immediate (comp/get-ident IndexRatesPage {})))}
   (let [shown? false]
     (bulma/section
      (bulma/container

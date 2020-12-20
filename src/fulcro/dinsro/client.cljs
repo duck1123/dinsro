@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.app :as da]
+   [dinsro.loader]
    [dinsro.router :as router]
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]

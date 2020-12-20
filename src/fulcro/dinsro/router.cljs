@@ -14,7 +14,13 @@
    [dinsro.views.index-users :as v.index-users]
    [dinsro.views.login :as v.login]
    [dinsro.views.registration :as v.registration]
+   [dinsro.views.settings :as v.settings]
+   [dinsro.views.show-account :as v.show-account]
+   [dinsro.views.show-currency :as v.show-currency]
+   [dinsro.views.show-user :as v.show-user]
    [taoensso.timbre :as timbre]))
+
+(comment v.settings/SettingsPage)
 
 (defrouter RootRouter
   [_this {:keys [current-state]}]
@@ -28,7 +34,10 @@
                     v.index-transactions/IndexTransactionsPage
                     v.index-users/IndexUsersPage
                     v.login/LoginPage
-                    v.registration/RegistrationPage]}
+                    v.registration/RegistrationPage
+                    v.show-account/ShowAccountPage
+                    v.show-currency/ShowCurrencyPage
+                    v.show-user/ShowUserPage]}
   (case current-state
     :pending (dom/div "Loading...")
     :failed (dom/div "Failed!")

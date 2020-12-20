@@ -7,12 +7,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexUserLine
-  [_this {::m.users/keys [id name email]}]
-  {:query [::m.users/id ::m.users/name ::m.users/email]
-   :ident ::m.users/id
+  [_this {::m.users/keys [email id name]}]
+  {:ident ::m.users/id
    :initial-state {::m.users/email ""
                    ::m.users/id    0
-                   ::m.users/name  ""}}
+                   ::m.users/name  ""}
+   :query [::m.users/email
+           ::m.users/id
+           ::m.users/name]}
   (dom/tr
    (dom/td id)
    (dom/th name)
@@ -21,28 +23,26 @@
 
 (def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/id}))
 
+(def users-path "/admin/users")
+
 (defsc IndexUsers
-  [_this {users :users/list}]
-  {:initial-state {:users/list []}
-   :query [:users/list]}
-  (let [path "/admin/users"]
+  [_this {::keys [items]}]
+  {:initial-state {::items []}
+   :query [{::items (comp/get-query IndexUserLine)}]}
+  (if-not (seq items)
+    (dom/div (dom/p (tr [:no-users])))
     (dom/div
-     (dom/h2 "Users")
-     (if (seq users)
-       (dom/div
-        (dom/p
-         (dom/a {:href path} "Users"))
-        (dom/table
-         :.table
-         (dom/thead
-          (dom/tr
-           (dom/th (tr [:id-label]))
-           (dom/th (tr [:name-label]))
-           (dom/th (tr [:email-label]))
-           (dom/th "Buttons")))
-         (dom/tbody
-          (map ui-index-user-line users))))
-       (dom/div
-        (dom/p (tr [:no-users])))))))
+     (dom/p
+      (dom/a {:href users-path} "Users"))
+     (dom/table
+      :.table
+      (dom/thead
+       (dom/tr
+        (dom/th (tr [:id-label]))
+        (dom/th (tr [:name-label]))
+        (dom/th (tr [:email-label]))
+        (dom/th "Buttons")))
+      (dom/tbody
+       (map ui-index-user-line items))))))
 
 (def ui-index-users (comp/factory IndexUsers))

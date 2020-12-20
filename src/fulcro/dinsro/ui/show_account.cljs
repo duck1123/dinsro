@@ -8,34 +8,27 @@
    [taoensso.timbre :as timbre]))
 
 (defsc ShowAccount
-  [_this {::m.accounts/keys [account-id currency-id name user-id]
-          :keys [user-link-data]}]
+  [_this {::m.accounts/keys [account currency name user]}]
   {:ident ::m.accounts/id
-   :initial-state {::m.accounts/id          1
-                   ::m.accounts/name        ""
-                   ::m.accounts/currency-id 0
-                   ::m.accounts/user-id     0
-                   ::m.accounts/account-id  0
-                   :user-link-data {}}
-   :query [::m.accounts/id
+   :initial-state {::m.accounts/account  {}
+                   ::m.accounts/currency {}
+                   ::m.accounts/name     ""
+                   ::m.accounts/user     {}}
+   :query [{::m.accounts/account  (comp/get-query u.links/AccountLink)}
+           {::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
+           ::m.accounts/id
            ::m.accounts/name
-           ::m.accounts/user-id
-           ::m.accounts/currency-id
-           ::m.accounts/account-id
+           {::m.accounts/user     (comp/get-query u.links/UserLink)}
            :user-link-data]}
   (dom/div
    (dom/h3 name)
-   (dom/p account-id)
+   (dom/p (u.links/ui-account-link account))
    (dom/p
     (tr [:user-label])
-    (str user-id)
-    (u.links/ui-user-link user-link-data))
+    (u.links/ui-user-link user))
    (dom/p
     (tr [:currency-label])
-    (str currency-id)
-    (comment (u.links/ui-currency-link currency-id)))
-   (dom/button
-    :.button.is-danger
-    "Delete Account")))
+    (u.links/ui-currency-link currency))
+   (dom/button :.button.is-danger "Delete Account")))
 
 (def ui-show-account (comp/factory ShowAccount))

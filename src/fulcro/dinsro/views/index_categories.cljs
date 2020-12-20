@@ -1,7 +1,9 @@
 (ns dinsro.views.index-categories
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -10,15 +12,17 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexCategoriesPage
-  [_this {::keys [button-data categories form-data]}]
+  [_this {::keys [categories form toggle-button]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {::button-data {}
-                   ::categories  {}
-                   ::form-data   {}}
-   :query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::categories  (comp/get-query u.index-categories/IndexCategories)}
-           {::form-data   (comp/get-query u.f.create-category/CreateCategoryForm)}]
-   :route-segment ["categories"]}
+   :initial-state {::categories    {}
+                   ::form          {}
+                   ::toggle-button {}}
+   :route-segment ["categories"]
+   :will-enter
+   (fn [app _props]
+     (df/load! app :all-categories u.index-categories/IndexCategoryLine
+                 {:target [:page/id ::page ::categories ::u.index-categories/categories]})
+     (dr/route-immediate (comp/get-ident IndexCategoriesPage {})))}
   (let [shown? false]
     (bulma/section
      (bulma/container
@@ -26,9 +30,8 @@
        (bulma/box
         (dom/h1
          (tr [:index-categories "Index Categories"])
-         (u.buttons/ui-show-form-button button-data))
-        (when shown?
-          (u.f.create-category/ui-create-category-form form-data))
+         (u.buttons/ui-show-form-button toggle-button))
+        (when shown? (u.f.create-category/ui-create-category-form form))
         (dom/hr)
         (u.index-categories/ui-index-categories categories)))))))
 

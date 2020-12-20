@@ -17,6 +17,9 @@
 (defsc NavLink
   [_this {:navlink/keys [name href]}]
   {:ident :navlink/id
+   :initial-state {:navlink/id   0
+                   :navlink/href ""
+                   :navlink/name ""}
    :query [:navlink/id :navlink/name :navlink/href]}
   (dom/a
    :.navbar-item
@@ -25,6 +28,21 @@
    name))
 
 (def ui-nav-link (comp/factory NavLink {:keyfn :navlink/id}))
+
+(defsc NavbarAuthLink
+  [_this {:navlink/keys [name href]}]
+  {:ident :navlink/id
+   :initial-state {:navlink/id   0
+                   :navlink/href ""
+                   :navlink/name ""}
+   :query [:navlink/id :navlink/name :navlink/href]}
+  (dom/a
+   :.navbar-link
+   {:href href
+    :onClick (fn [evt] (.preventDefault evt) false)}
+   name))
+
+(def ui-navbar-auth-link (comp/factory NavbarAuthLink))
 
 (defsc NavbarBurger
   [_this {:navbar/keys [expanded?]}]
@@ -58,14 +76,6 @@
 
 (def ui-navbar-brand (comp/factory NavbarBrand))
 
-(defsc NavbarAuthLink
-  [_this {:keys [link]}]
-  {:initial-state {:link {}}
-   :query [:link]}
-  (ui-nav-link link))
-
-(def ui-navbar-auth-link (comp/factory NavbarAuthLink))
-
 (defsc NavbarUnauthenticated
   [_this _props]
   (let [registration-enabled? true]
@@ -80,49 +90,48 @@
 
 (def ui-navbar-unauthenticated (comp/factory NavbarUnauthenticated))
 
+;; :session/current-user {:user/valid? true}
+
 (defsc Navbar
-  [_this {auth-id :auth/id
-          :navbar/keys [auth-data
-                        expanded?
-                        menu-links
-                        navbar-brand
-                        dropdown-menu-links]}]
+  [_this {::keys [auth-links dropdown-links expanded? menu-links navbar-brand]}]
   {:css [[:.navbar {:background-color "red"}]]
-   :initial-state {:auth/id                    nil
-                   :navbar/auth-data           {}
-                   :navbar/dropdown-menu-links []
-                   :navbar/expanded?           false
-                   :navbar/menu-links          []
-                   :navbar/navbar-brand        {}}
-   :query [:auth/id
-           {:navbar/auth-data           (comp/get-query NavbarAuthLink)}
-           {:navbar/dropdown-menu-links (comp/get-query NavLink)}
-           :navbar/expanded?
-           {:navbar/menu-links          (comp/get-query NavLink)}
-           {:navbar/navbar-brand        (comp/get-query NavbarBrand)}]}
-  (dom/nav
-   :.navbar.is-info
-   (dom/div
-    :.container
-    {:aria-label "main navigation"
-     :role "navigation"}
-    (ui-navbar-brand navbar-brand)
-    (dom/div
-     :.navbar-menu {:className (when expanded? "is-active")}
+   :ident (fn [_] [:component/id ::Navbar])
+   :initial-state {::auth-links     {}
+                   ::dropdown-links []
+                   ::expanded?      false
+                   ::menu-links     []
+                   ::navbar-brand   {}}
+   :query [{::auth-links     (comp/get-query NavbarAuthLink)}
+           :auth/id
+           {::dropdown-links (comp/get-query NavLink)}
+           ::expanded?
+           {::menu-links     (comp/get-query NavLink)}
+           {::navbar-brand   (comp/get-query NavbarBrand)}]}
+  (let [valid? true]
+    (dom/nav
+     :.navbar.is-info
      (dom/div
-      :.navbar-start
-      (when auth-id
-        (map ui-nav-link menu-links)))
-     (dom/div
-      :.navbar-end
-      (if auth-id
-        (comp/fragment
-         (dom/div
-          :.navbar-item.has-dropdown.is-hoverable
-          (ui-navbar-auth-link auth-data)
-          (dom/div
-           :.navbar-dropdown
-           (map ui-nav-link dropdown-menu-links))))
-        (ui-navbar-unauthenticated {})))))))
+      :.container
+      {:aria-label "main navigation"
+       :role "navigation"}
+      (ui-navbar-brand navbar-brand)
+      (dom/div
+       :.navbar-menu {:className (when expanded? "is-active")}
+       (dom/div
+        :.navbar-start
+        (when valid?
+          (map ui-nav-link menu-links)))
+       (dom/div
+        :.navbar-end
+        (if valid?
+          (comp/fragment
+           (dom/div
+            :.navbar-item.has-dropdown.is-hoverable
+            ;; (ui-nav-link [:navlink/id :users])
+            (ui-navbar-auth-link auth-links)
+            (dom/div
+             :.navbar-dropdown
+             (map ui-nav-link dropdown-links))))
+          (ui-navbar-unauthenticated {}))))))))
 
 (def ui-navbar (comp/factory Navbar))

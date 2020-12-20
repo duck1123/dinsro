@@ -1,7 +1,9 @@
 (ns dinsro.views.show-user
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [dinsro.model.users :as m.users]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.show-user :as u.show-user]
    [dinsro.ui.user-accounts :as u.user-accounts]
@@ -11,7 +13,8 @@
 
 (defsc ShowUserPage
   [_this {::keys [user user-accounts user-categories user-transactions]}]
-  {:initial-state {::user              {}
+  {:ident (fn [] [:page/id ::page])
+   :initial-state {::user              {}
                    ::user-accounts     {}
                    ::user-categories   {}
                    ::user-transactions {}}
@@ -19,13 +22,17 @@
            {::user-accounts     (comp/get-query u.user-accounts/UserAccounts)}
            {::user-categories   (comp/get-query u.user-categories/UserCategories)}
            {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
-   :route-segment ["show-user"]}
+   :route-segment ["users" ::m.users/id]
+   :will-enter
+   (fn [app {::m.users/keys [id]}]
+     (df/load app [::m.users/id (int id)] u.show-user/ShowUser
+              {:target [:page/id ::page ::user]})
+     (dr/route-immediate (comp/get-ident ShowUserPage {})))}
   (bulma/section
    (bulma/container
     (bulma/content
      (bulma/box
-      (u.show-user/ui-show-user user)
-      (u.user-accounts/ui-user-accounts user-accounts)
-      (u.user-categories/ui-user-categories user-categories)
-      (u.user-transactions/ui-user-transactions user-transactions)
-      (dom/div "Show User Page"))))))
+      (u.show-user/ui-show-user user))
+     (u.user-accounts/ui-user-accounts user-accounts)
+     (u.user-categories/ui-user-categories user-categories)
+     (u.user-transactions/ui-user-transactions user-transactions)))))

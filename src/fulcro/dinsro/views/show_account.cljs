@@ -1,7 +1,9 @@
 (ns dinsro.views.show-account
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.account-transactions :as u.account-transactions]
    [dinsro.ui.bulma :as bulma]
@@ -9,17 +11,21 @@
    [taoensso.timbre :as timbre]))
 
 (defsc ShowAccountPage
-  [_this {:keys [account-data transactions]}]
+  [_this {::keys [account transactions]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {:account-data {}
-                   :transactions {}}
-   :query [{:account-data (comp/get-query u.show-account/ShowAccount)}
-           {:transactions (comp/get-query u.account-transactions/AccountTransactions)}]
-   :route-segment ["show-account"]}
+   :initial-state {::account       {}
+                   ::transactions  {}}
+   :query [{::account      (comp/get-query u.show-account/ShowAccount)}
+           {::transactions (comp/get-query u.account-transactions/AccountTransactions)}]
+   :route-segment ["accounts" ::m.accounts/id]
+   :will-enter
+   (fn [app {::m.accounts/keys [id]}]
+     (df/load app [::m.accounts/id (int id)] u.show-account/ShowAccount
+              {:target [:page/id ::page ::account]})
+     (dr/route-immediate (comp/get-ident ShowAccountPage {})))}
   (bulma/section
    (bulma/container
     (bulma/content
      (bulma/box
-      (dom/h1 (tr [:show-account]))
-      (u.show-account/ui-show-account account-data)
-      (u.account-transactions/ui-account-transactions transactions))))))
+      (u.show-account/ui-show-account account))
+     (u.account-transactions/ui-account-transactions transactions)))))

@@ -29,8 +29,10 @@
   (ok-action
    [{:keys [state] :as env}]
    (timbre/infof "ok")
-   (let [{:user/keys [id valid?]} (get-in env [:result :body `login])]
-     (js/console.log id valid?)))
+   (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
+     (when-not valid?
+       (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
+                               "Can't log in")))))
 
   (remote
    [env]

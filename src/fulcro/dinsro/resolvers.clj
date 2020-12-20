@@ -38,6 +38,12 @@
   {::pc/output [:auth/id]}
   {:auth/id 1})
 
+(defresolver categories-resolver
+  [_env _props]
+  {::pc/output [{:all-categories [::m.categories/id]}]}
+  {:all-categories (map (fn [id] [::m.categories/id id])
+                        (keys sample/category-map))})
+
 (defresolver category-resolver
   [_env {::m.categories/keys [id]}]
   {::pc/input #{::m.categories/id}
@@ -70,7 +76,11 @@
 (defresolver current-user-resolver
   [{{{:keys [identity]} :session} :request} _props]
   {::pc/output [{:session/current-user [:user/id :user/valid?]}]}
-  {:session/current-user {:user/id identity :user/valid? true}})
+  {:session/current-user {:user/id (do
+                                     ;; FIXME: restore identity
+                                     (comment identity)
+                                     "bob@example.com")
+                          :user/valid? true}})
 
 (defresolver debug-menu-list-resolver
   [_env _props]
@@ -126,10 +136,41 @@
                 :navlink/name]}
   (get sample/navlink-map id))
 
+(defresolver navlinks-resolver
+  [_env _props]
+  {::pc/output [{:all-navlinks [:navlink/id]}]}
+  {:all-navlinks (map (fn [id] [:navlink/id id]) (keys sample/navlink-map))})
+
 (defresolver navlink-map-resolver
   [_env _props]
   {::pc/output [:navlink/map]}
   {:navlink/map sample/navlink-map})
+
+(defresolver auth-link-resolver
+  [_env _props]
+  {::pc/output [{:auth-link [:navlink/id]}]}
+  {:auth-link [:navlink/id :accounts]})
+
+(defresolver menu-links-resolver
+  [_env _props]
+  {::pc/output [{:menu-links [:navlink/id]}]}
+  {:menu-links (map (fn [id] [:navlink/id id]) [:accounts
+                                                :transactions])})
+
+(defresolver dropdown-links-resolver
+  [_env _props]
+  {::pc/output [{:dropdown-links [:navlink/id]}]}
+  {:dropdown-links
+   (map (fn [id] [:navlink/id id])
+        [:settings
+         :currencies
+         :admin
+         :rate-sources
+         :rates
+         :categories
+         :users
+         :transactions
+         :accounts])})
 
 (defresolver rate-resolver
   [_env {::m.rates/keys [id]}]
@@ -142,9 +183,7 @@
 (defresolver rates-resolver
   [_env _props]
   {::pc/output [{:all-rates [::m.rates/id]}]}
-  {:all-rates (map
-               (fn [id] [::m.rates/id id])
-               (keys sample/rate-map))})
+  {:all-rates (map (fn [id] [::m.rates/id id]) (keys sample/rate-map))})
 
 (defresolver rate-map-resolver
   [_env _props]
@@ -166,10 +205,8 @@
 
 (defresolver rate-sources-resolver
   [_env _props]
-  {::pc/output [{:all-rates [::m.rate-sources/id]}]}
-  {:all-rates (map
-               (fn [id] {::m.rate-sources/id id})
-               (keys sample/rate-source-map))})
+  {::pc/output [{:all-rate-sources [::m.rate-sources/id]}]}
+  {:all-rate-sources (map (fn [id] [::m.rate-sources/id id]) (keys sample/rate-source-map))})
 
 (defresolver transaction-resolver
   [_env {::m.transactions/keys [id]}]
@@ -213,6 +250,7 @@
    account-map-resolver
    accounts-resolver
    auth-resolver
+   categories-resolver
    category-resolver
    category-map-resolver
    currencies-resolver
@@ -223,12 +261,17 @@
    debug-menus-resolver
    debug-menu-list-resolver
    debug-menu-map-resolver
+   dropdown-links-resolver
    ;; index-explorer
-   session/login
+   session/resolvers
+   auth-link-resolver
+   menu-links-resolver
    navlink-resolver
+   navlinks-resolver
    navlink-map-resolver
    rate-map-resolver
    rate-source-resolver
+   rate-sources-resolver
    rate-source-map-resolver
    rate-resolver
    rates-resolver

@@ -16,3 +16,5 @@
        (assoc ring-response :session (assoc session :identity email))))
     {:user/id nil
      :user/valid? false}))
+
+(def resolvers [login])

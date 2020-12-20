@@ -12,9 +12,9 @@
   [id initial-value name currency-id user-id]
   {::m.accounts/id id
    ::m.accounts/initial-value initial-value
-   ::m.accounts/name name
-   ::m.accounts/currency-id {::m.currencies/id currency-id}
-   ::m.accounts/user        {::m.users/id user-id}})
+   ::m.accounts/name          name
+   ::m.accounts/currency      {::m.currencies/id currency-id}
+   ::m.accounts/user          {::m.users/id user-id}})
 
 (defn category-line
   [id name user-id]
@@ -88,15 +88,24 @@
    :login        (debug-menu-line :login        ["login"]        "login")
    :rates        (debug-menu-line :rates        ["rates"]        "rates")
    :rate-sources (debug-menu-line :rate-sources ["rate-sources"] "rate-sources")
-   :registration (debug-menu-line :registration ["registration"] "registration")
+   :registration (debug-menu-line :registration ["register"]     "registration")
    :transactions (debug-menu-line :transactions ["transactions"] "transactions")
    :users        (debug-menu-line :users        ["users"]        "users")})
 
 (def navlink-map
   {:accounts     (navlink-line :accounts     "Accounts"     "/accounts")
+   :admin        (navlink-line :admin        "admin"        "/admin")
    :bar          (navlink-line :bar          "bar"          "/bar")
    :baz          (navlink-line :baz          "baz"          "/baz")
+   :categories   (navlink-line :categories   "categories"   "/categories")
+   :currencies   (navlink-line :currencies   "currencies"   "/currencies")
    :foo          (navlink-line :foo          "foo"          "/foo")
+   :home         (navlink-line :home         "home"         "/")
+   :login        (navlink-line :login        "login"        "/login")
+   :rates        (navlink-line :rates        "rates"        "/rates")
+   :rate-sources (navlink-line :rate-sources "rate-sources" "/rate-sources")
+   :registration (navlink-line :registration "registration" "/register")
+   :settings     (navlink-line :settings     "settings"     "/settings")
    :transactions (navlink-line :transactions "Transactions" "/transactions")
    :users        (navlink-line :users         "User"        "/users")})
 

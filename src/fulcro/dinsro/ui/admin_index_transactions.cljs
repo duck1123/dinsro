@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]))
 
@@ -13,7 +14,7 @@
     (bulma/box
      (dom/h2
       :.title.is-2
-      "Index Transactions"
+      (tr [:transactions])
       (u.buttons/ui-show-form-button toggle-button))
      (dom/hr)
      (if (seq items)

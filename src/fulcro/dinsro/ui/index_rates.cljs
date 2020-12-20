@@ -4,21 +4,22 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (defsc IndexRateLine
   [_this {::m.rates/keys [currency date rate]}]
   {:ident ::m.rates/id
-   :initial-state {::m.rates/currency 0
+   :initial-state {::m.rates/currency {}
                    ::m.rates/date     ""
                    ::m.rates/id       0
                    ::m.rates/rate     0}
    :query [::m.rates/id
-           ::m.rates/currency
+           {::m.rates/currency (comp/get-query u.links/CurrencyLink)}
            ::m.rates/date
            ::m.rates/rate]}
   (dom/tr
-   (dom/td currency)
+   (dom/td (u.links/ui-currency-link currency))
    (dom/td date)
    (dom/td rate)
    (dom/td

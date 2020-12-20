@@ -8,12 +8,17 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexAccountLine
-  [_this {:keys [name user currency initial-value]}]
-  {:initial-state {:currency      ""
-                   :initial-value 0
-                   :name          ""
-                   :user          ""}
-   :query [::m.accounts/id :name :user :currency :initial-value]}
+  [_this {::m.accounts/keys [name user currency initial-value]}]
+  {:initial-state {::m.accounts/currency      ""
+                   ::m.accounts/id            1
+                   ::m.accounts/initial-value 0
+                   ::m.accounts/name          ""
+                   ::m.accounts/user          ""}
+   :query [::m.accounts/currency
+           ::m.accounts/id
+           ::m.accounts/initial-value
+           ::m.accounts/name
+           ::m.accounts/user]}
   (dom/tr
    (dom/td name)
    (dom/td user)
