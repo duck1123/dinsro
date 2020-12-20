@@ -21,7 +21,7 @@
 (defmutation finish-login [_]
   (action
    [{:keys [_app state]}]
-   (let [logged-in? (get-in @state [:session/current-user :user/valid])]
+   (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
      (when-not logged-in?
        (route-to! "/login"))
      (swap! state #(assoc % :root/ready? true)))))
