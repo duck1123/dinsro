@@ -10,17 +10,18 @@
    [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as timbre]))
 
-(defsc Root [this {:root/keys [debug-link-bar navbar router]}]
-  {:query [{:root/debug-link-bar (comp/get-query u.debug-menu/DebugLinkBar)}
-           {:root/navbar (comp/get-query u.navbar/Navbar)}
-           {:root/router (comp/get-query router/RootRouter)}]
-   :initial-state {:root/debug-link-bar {}
-                   :root/navbar {}
-                   :root/router {}}}
+(defsc Root
+  [this {::keys [debug-links navbar router]}]
+  {:query [{::debug-links (comp/get-query u.debug-menu/DebugLinkBar)}
+           {::navbar (comp/get-query u.navbar/Navbar)}
+           {::router (comp/get-query router/RootRouter)}]
+   :initial-state {::debug-links {}
+                   ::navbar {}
+                   ::router {}}}
   (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
     (dom/div
      (u.navbar/ui-navbar navbar)
-     (u.debug-menu/ui-debug-link-bar debug-link-bar)
+     (u.debug-menu/ui-debug-link-bar debug-links)
      (bulma/container
       (if (= :initial top-router-state)
         (dom/div :.loading "Loading...")

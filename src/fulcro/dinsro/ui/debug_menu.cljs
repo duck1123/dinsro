@@ -21,13 +21,11 @@
 (def ui-debug-link-button (comp/factory DebugLinkButton {:keyfn :debug-menu/id}))
 
 (defsc DebugLinkBar
-  [_this {:keys [all-debug-menus]}]
-  {:query [{:all-debug-menus (comp/get-query DebugLinkButton)}]
-   :initial-state
-   (fn [_]
-     :all-debug-menus [(comp/get-initial-state DebugLinkButton)])}
+  [_this {:keys [items]}]
+  {:query [{:items (comp/get-query DebugLinkButton)}]
+   :initial-state {:items []}}
   (bulma/container
    (bulma/box
-    (map ui-debug-link-button all-debug-menus))))
+    (map ui-debug-link-button items))))
 
 (def ui-debug-link-bar (comp/factory DebugLinkBar))
