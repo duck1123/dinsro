@@ -12,7 +12,13 @@
 
 (defonce app
   (app/fulcro-app
-   {:remotes
+   {:client-did-mount
+    (fn [app]
+      (js/console.log "Mounted")
+      (comment (df/load! app :root/navbar u.navbar/Navbar))
+      (df/load! app :debug-menu/list u/DebugLinkButton
+                {:target [:root/debug-link-bar :all-debug-menus]}))
+    :remotes
     {:remote
      (http/fulcro-http-remote
       {:url "/pathom"
@@ -30,15 +36,9 @@
   []
   (app/set-root! app Root {:initialize-state? true})
   (dr/initialize! app)
-
-  (comment (df/load! app :root/navbar u.navbar/Navbar))
-  (df/load! app :debug-menu/list u/DebugLinkButton {:target [:root/debug-link-bar :all-debug-menus]})
-
   ;; TODO: parse from url
   (dr/change-route-relative! app routing/RootRouter [""])
-
-  (app/mount! app Root "app" {:initialize-state? false})
-  (js/console.log "Loaded"))
+  (app/mount! app Root "app" {:initialize-state? false}))
 
 (defn ^:export refresh
   "During development, shadow-cljs will call this on every hot reload of source. See shadow-cljs.edn"
