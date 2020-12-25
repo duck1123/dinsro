@@ -24,5 +24,7 @@
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
 
-  :unresolved-symbol {:exclude [(org.httpkit.server/with-channel [channel])]}
-  }}
+  :unresolved-symbol
+  {:exclude
+   [(org.httpkit.server/with-channel [channel])
+    (com.fulcrologic.fulcro.mutations/defmutation)]}}}
