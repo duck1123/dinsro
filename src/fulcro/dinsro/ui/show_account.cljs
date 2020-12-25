@@ -17,12 +17,12 @@
            ::m.accounts/account-id
            :user-link-data]
    :ident ::m.accounts/id
-   :initial-state (fn [_] {::m.accounts/id 1
-                           ::m.accounts/name "initial-name"
-                           ::m.accounts/currency-id 0
-                           ::m.accounts/user-id 0
-                           ::m.accounts/account-id 0
-                           :user-link-data {}})}
+   :initial-state {::m.accounts/id 1
+                   ::m.accounts/name "initial-name"
+                   ::m.accounts/currency-id 0
+                   ::m.accounts/user-id 0
+                   ::m.accounts/account-id 0
+                   :user-link-data {}}}
   (dom/div
    (dom/h3 name)
    (dom/p account-id)

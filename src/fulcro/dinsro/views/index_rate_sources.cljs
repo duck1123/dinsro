@@ -15,11 +15,9 @@
            {::form-data (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
            {::rates (comp/get-query u.index-rate-sources/IndexRateSources)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state
-   (fn [_]
-     {::button-data (comp/get-initial-state u.buttons/ShowFormButton)
-      ::form-data (comp/get-initial-state u.f.create-rate-source/CreateRateSourceForm)
-      ::rates (comp/get-initial-state u.index-rate-sources/IndexRateSources)})
+   :initial-state {::button-data {}
+                   ::form-data {}
+                   ::rates {}}
    :route-segment ["rate-sources"]}
   (bulma/section
    (bulma/container

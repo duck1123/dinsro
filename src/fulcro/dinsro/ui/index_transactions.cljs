@@ -13,7 +13,10 @@
            ::m.transactions/description
            ::m.transactions/account-id]
    :ident ::m.transactions/id
-   :initial-state (fn [{::m.transactions/keys [id]}] {::m.transactions/id id})
+   :initial-state {::m.transactions/id 0
+                   ::m.transactions/date ""
+                   ::m.transactions/description ""
+                   ::m.transactions/account-id 0}
    :css [[:.card {:margin-bottom "5px"}]]}
   (dom/div
    :.card
@@ -51,11 +54,7 @@
 (defsc IndexTransactions
   [_this {::keys [transactions]}]
   {:query [{::transactions (comp/get-query IndexTransactionLine)}]
-   :initial-state
-   (fn [_]
-     (let [ids [1]]
-       {::transactions
-        (map #(comp/get-initial-state IndexTransactionLine {::m.transactions/id %}) ids)}))}
+   :initial-state {::transactions []}}
   (if (seq transactions)
     (dom/div
      (map ui-index-transaction-line transactions))

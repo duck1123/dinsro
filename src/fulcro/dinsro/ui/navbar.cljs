@@ -61,9 +61,7 @@
 (defsc NavbarAuthLink
   [_this {:keys [link]}]
   {:query [:link]
-   :initial-state
-   (fn [_]
-     {:link (comp/get-initial-state NavLink)})}
+   :initial-state {:link {}}}
   (ui-nav-link link))
 
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
@@ -96,14 +94,12 @@
            {:navbar/navbar-brand (comp/get-query NavbarBrand)}
            {:navbar/dropdown-menu-links (comp/get-query NavLink)}]
    :css [[:.navbar {:background-color "red"}]]
-   :initial-state
-   (fn [_]
-     {:auth/id nil
-      :navbar/auth-data (comp/get-initial-state NavbarAuthLink)
-      :navbar/navbar-brand (comp/get-initial-state NavbarBrand {})
-      :navbar/dropdown-menu-links [#_(comp/get-initial-state NavLink)]
-      :navbar/expanded? false
-      :navbar/menu-links [#_(comp/get-initial-state NavLink {})]})}
+   :initial-state {:auth/id nil
+                   :navbar/auth-data {}
+                   :navbar/navbar-brand {}
+                   :navbar/dropdown-menu-links []
+                   :navbar/expanded? false
+                   :navbar/menu-links []}}
   (dom/nav
    :.navbar.is-info
    (dom/div

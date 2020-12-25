@@ -16,12 +16,10 @@
            {::user-categories (comp/get-query u.user-categories/UserCategories)}
            {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
    :route-segment ["show-user"]
-   :initial-state
-   (fn [_]
-     {::user (comp/get-initial-state u.show-user/ShowUser)
-      ::user-accounts (comp/get-initial-state u.user-accounts/UserAccounts)
-      ::user-categories (comp/get-initial-state u.user-categories/UserCategories)
-      ::user-transactions (comp/get-initial-state u.user-transactions/UserTransactions)})}
+   :initial-state {::user {}
+                   ::user-accounts {}
+                   ::user-categories {}
+                   ::user-transactions {}}}
   (bulma/section
    (bulma/container
     (bulma/content

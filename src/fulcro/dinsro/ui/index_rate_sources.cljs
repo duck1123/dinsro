@@ -16,12 +16,10 @@
            ::m.rate-sources/name
            ::m.rate-sources/url]
    :ident ::m.rate-sources/id
-   :initial-state
-   (fn [{::m.rate-sources/keys [id]}]
-     {::m.rate-sources/id id
-      ::m.rate-sources/currency-id 1
-      ::m.rate-sources/name ""
-      ::m.rate-sources/url ""})}
+   :initial-state {::m.rate-sources/id 0
+                   ::m.rate-sources/currency-id 0
+                   ::m.rate-sources/name ""
+                   ::m.rate-sources/url ""}}
   (dom/tr
    (dom/td name)
    (dom/td url)
@@ -35,10 +33,7 @@
 (defsc IndexRateSources
   [_this {::keys [items]}]
   {:query [{::items (comp/get-query IndexRateSourceLine)}]
-   :initial-state
-   (fn [_]
-     (let [ids [1 2]]
-       {::items (map #(comp/get-initial-state IndexRateSourceLine {::m.rate-sources/id %}) ids)}))}
+   :initial-state {::items []}}
   (if (seq items)
     (dom/table
      :.table

@@ -14,12 +14,10 @@
            {::input (comp/get-query u.inputs/TextInput)}
            {::description (comp/get-query u.inputs/TextInput)}
            {::value (comp/get-query u.inputs/TextInput)}]
-   :initial-state
-   (fn [_]
-     {::button (comp/get-initial-state u.buttons/CloseButton)
-      ::input (comp/get-initial-state u.inputs/TextInput)
-      ::description (comp/get-initial-state u.inputs/TextInput)
-      ::value (comp/get-initial-state u.inputs/TextInput)})}
+   :initial-state {::button {}
+                   ::description {}
+                   ::input {}
+                   ::value {}}}
   (bulma/box
    "Create Transaction"
    (u.buttons/ui-close-button button)

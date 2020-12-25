@@ -16,11 +16,9 @@
            {::form-data (comp/get-query u.f.create-transaction/CreateTransactionForm)}
            {::transactions (comp/get-query u.index-transactions/IndexTransactions)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state
-   (fn [_]
-     {::button-data (comp/get-initial-state u.buttons/ShowFormButton)
-      ::form-data (comp/get-initial-state u.f.create-transaction/CreateTransactionForm)
-      ::transactions (comp/get-initial-state u.index-transactions/IndexTransactions)})
+   :initial-state {::button-data {}
+                   ::form-data {}
+                   ::transactions {}}
    :route-segment ["transactions"]}
   (bulma/section
    (bulma/container

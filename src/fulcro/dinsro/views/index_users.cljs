@@ -11,9 +11,7 @@
   [_this {::keys [users]}]
   {:query [{::users (comp/get-query u.index-users/IndexUsers)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state
-   (fn [_]
-     {::users (comp/get-initial-state u.index-users/IndexUsers)})
+   :initial-state {::users {}}
    :route-segment ["users"]}
   (bulma/section
    (bulma/container

@@ -12,8 +12,7 @@
 (defsc RegistrationForm
   [this {:keys [confirm-password email name password]}]
   {:query [:confirm-password :email :name :password]
-   :initial-state
-   (fn [_] {:confirm-password "" :email "" :name "" :password ""})}
+   :initial-state {:confirm-password "" :email "" :name "" :password ""}}
   (let [on-name-change (fn [evt _] (fm/set-string! this :name :event evt))
         on-email-change (fn [evt _] (fm/set-string! this :email :event evt))
         on-password-change (fn [evt _] (fm/set-string! this :password :event evt))

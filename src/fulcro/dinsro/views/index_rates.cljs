@@ -15,11 +15,9 @@
            {::form (comp/get-query u.f.create-rate/CreateRateForm)}
            {::rates (comp/get-query u.index-rates/IndexRates)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state
-   (fn [_]
-     {::show-form-button (comp/get-initial-state u.buttons/ShowFormButton)
-      ::form (comp/get-initial-state u.f.create-rate/CreateRateForm)
-      ::rates (comp/get-initial-state u.index-rates/IndexRates)})
+   :initial-state {::show-form-button {}
+                   ::form {}
+                   ::rates {}}
    :route-segment ["rates"]}
   (bulma/section
    (bulma/container

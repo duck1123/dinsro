@@ -28,9 +28,7 @@
 (defsc IndexAccounts
   [_this {::keys [accounts]}]
   {:query [{::accounts (comp/get-query IndexAccountLine)}]
-   :initial-state
-   (fn [_]
-     {::accounts [(comp/get-initial-state IndexAccountLine)]})}
+   :initial-state {::accounts []}}
   (dom/div
    (dom/table
     :.table

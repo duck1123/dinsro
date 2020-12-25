@@ -15,11 +15,9 @@
            {::form-data (comp/get-query u.f.create-currency/CreateCurrencyForm)}
            {::currencies (comp/get-query u.index-currencies/IndexCurrencies)}]
    :ident (fn [] [:page/id ::page])
-   :initial-state
-   (fn [_]
-     {::show-form-button (comp/get-initial-state u.buttons/ShowFormButton)
-      ::form-data (comp/get-initial-state u.f.create-currency/CreateCurrencyForm)
-      ::currencies (comp/get-initial-state u.index-currencies/IndexCurrencies)})
+   :initial-state {::show-form-button {}
+                   ::form-data {}
+                   ::currencies {}}
    :route-segment ["currencies"]}
   (bulma/section
    (bulma/container

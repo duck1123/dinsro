@@ -10,7 +10,8 @@
   [_this {:currency/keys [id name]}]
   {:query [:currency/id :currency/name]
    :ident :currency/id
-   :initial-state (fn [_] {:currency/id 1 :currency/name "foo"})}
+   :initial-state {:currency/id 1
+                   :currency/name ""}}
   (dom/div
    (dom/p name)
    (dom/p id)

@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.rates :as m.rates]
-   [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -14,12 +13,10 @@
            ::m.rates/date
            ::m.rates/rate]
    :ident ::m.rates/id
-   :initial-state
-   (fn [{::m.rates/keys [id]}]
-     (get sample/rate-map id {::m.rates/id id
-                              ::m.rates/currency 1
-                              ::m.rates/rate 1.001
-                              ::m.rates/date "2020-12-12 13:52:40"}))}
+   :initial-state {::m.rates/id 0
+                    ::m.rates/currency 0
+                    ::m.rates/rate 0
+                    ::m.rates/date ""}}
   (dom/tr
    (dom/td currency)
    (dom/td date)
@@ -33,10 +30,7 @@
 (defsc IndexRates
   [_this {:rates/keys [items]}]
   {:query [{:rates/items (comp/get-query IndexRateLine)}]
-   :initial-state
-   (fn [_]
-     (let [ids [1 2]]
-       {:rates/items (map #(comp/get-initial-state IndexRateLine {::m.rates/id %}) ids)}))}
+   :initial-state {:rates/items []}}
   (if (seq items)
     (dom/table
      :.table

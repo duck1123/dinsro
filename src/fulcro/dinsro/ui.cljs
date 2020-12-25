@@ -24,9 +24,7 @@
 (defsc DebugLinkBar
   [_this {:keys [all-debug-menus]}]
   {:query [{:all-debug-menus (comp/get-query DebugLinkButton)}]
-   :initial-state
-   (fn [_]
-     :all-debug-menus [(comp/get-initial-state DebugLinkButton)])}
+   :initial-state {:all-debug-menus []}}
   (bulma/container
    (bulma/box
     (map ui-debug-link-button all-debug-menus))))
@@ -37,11 +35,9 @@
   {:query [{:root/debug-link-bar (comp/get-query DebugLinkBar)}
            {:root/navbar (comp/get-query u.navbar/Navbar)}
            {:root/router (comp/get-query router/RootRouter)}]
-   :initial-state
-   (fn [_]
-     {:root/debug-link-bar (comp/get-initial-state DebugLinkBar)
-      :root/navbar (comp/get-initial-state u.navbar/Navbar)
-      :root/router (comp/get-initial-state router/RootRouter)})}
+   :initial-state {:root/debug-link-bar {}
+                   :root/navbar {}
+                   :root/router {}}}
   (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
     (dom/div
      (u.navbar/ui-navbar navbar)

@@ -9,9 +9,7 @@
   [_this {::keys [accounts]}]
   {:query [:page/id
            {::accounts (comp/get-query u.user-accounts/UserAccounts)}]
-   :initial-state
-   (fn [_]
-     {::accounts (comp/get-initial-state u.user-accounts/UserAccounts)})
+   :initial-state {::accounts {}}
    :ident (fn [] [:page/id ::page])
    :route-segment ["accounts"]}
   (bulma/section

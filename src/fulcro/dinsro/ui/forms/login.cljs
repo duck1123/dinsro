@@ -11,7 +11,7 @@
 
 (defsc LoginForm
   [this {:keys [my-x-val my-y-val]}]
-  {:initial-state (fn [_] {:my-x-val "" :my-y-val ""})
+  {:initial-state {:my-x-val "" :my-y-val ""}
    :ident         (fn [] [::id "singleton-form-input"])
    :query         [:my-x-val :my-y-val]}
   (let [on-x-change (fn [evt _] (fm/set-string! this :my-x-val :event evt))
@@ -25,7 +25,7 @@
 
 (defsc FormInput
   [this {:keys [my-x-val my-y-val]}]
-  {:initial-state (fn [_] {:my-x-val "" :my-y-val ""})
+  {:initial-state {:my-x-val "" :my-y-val ""}
    :ident         (fn [] [::id "singleton-form-input"])
    :query         [:my-x-val :my-y-val]}
   (let [on-x-change (fn [evt _] (fm/set-string! this :my-x-val :event evt))

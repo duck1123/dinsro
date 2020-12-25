@@ -8,13 +8,12 @@
 
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [name user-id]}]
-  {:query [::m.categories/name
+  {:query [::m.categories/id
+           ::m.categories/name
            ::m.categories/user-id]
-   :initial-state
-   (fn [{::m.categories/keys [id]}]
-     {::m.categories/id id
-      ::m.categories/name ""
-      ::m.categories/user-id 0})}
+   :initial-state {::m.categories/id 0
+                   ::m.categories/name ""
+                   ::m.categories/user-id 0}}
   (dom/tr
    (dom/td name)
    (dom/td user-id)))
@@ -24,10 +23,7 @@
 (defsc IndexCategories
   [_this {::keys [categories]}]
   {:query [{::categories (comp/get-query IndexCategoryLine)}]
-   :initial-state
-   (fn [_]
-     (let [ids [1]]
-       {::categories (map #(comp/get-initial-state IndexCategoryLine {::m.categories/id %}) ids)}))}
+   :initial-state {::categories []}}
   (if (seq categories)
     (dom/div
      (dom/p "Index Categories")

@@ -10,7 +10,7 @@
 (defsc CreateRateSourceForm
   [_this {::keys [button]}]
   {:query [{::button (comp/get-query u.buttons/CloseButton)}]
-   :initial-state (fn [_] {::button (comp/get-initial-state u.buttons/CloseButton)})}
+   :initial-state {::button {}}}
   (bulma/box
    (u.buttons/ui-close-button button)
 

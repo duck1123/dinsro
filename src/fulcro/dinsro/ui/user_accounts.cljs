@@ -55,11 +55,9 @@
   {:query [{::form-data (comp/get-query u.f.add-user-account/AddUserAccountForm)}
            {::button-data (comp/get-query u.buttons/ShowFormButton)}
            {::index-data (comp/get-query u.index-accounts/IndexAccounts)}]
-   :initial-state
-   (fn [_]
-     {::form-data (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
-      ::button-data (comp/get-initial-state u.buttons/ShowFormButton)
-      ::index-data (comp/get-initial-state u.index-accounts/IndexAccounts)})}
+   :initial-state {::button-data {}
+                   ::form-data {}
+                   ::index-data {}}}
   (bulma/box
    (dom/h2 (tr [:accounts]) (u.buttons/ui-show-form-button button-data))
    (u.f.add-user-account/ui-form form-data)

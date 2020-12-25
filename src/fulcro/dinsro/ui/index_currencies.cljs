@@ -10,10 +10,8 @@
   [_this {::m.currencies/keys [id name]}]
   {:query [::m.currencies/id ::m.currencies/name]
    :ident ::m.currencies/id
-   :initial-state
-   (fn [{::m.currencies/keys [id]}]
-     {::m.currencies/id id
-      ::m.currencies/name ""})}
+   :initial-state {::m.currencies/id 0
+                   ::m.currencies/name ""}}
   (dom/tr
    (dom/td name)
    (dom/td id)))
@@ -23,10 +21,7 @@
 (defsc IndexCurrencies
   [_this {::keys [currencies]}]
   {:query [{::currencies (comp/get-query IndexCurrencyLine)}]
-   :initial-state
-   (fn [_]
-     (let [ids [1 2]]
-       {::currencies (map #(comp/get-initial-state IndexCurrencyLine {::m.currencies/id %}) ids)}))}
+   :initial-state {::currencies []}}
   (if (seq currencies)
     (dom/table
      :.table
