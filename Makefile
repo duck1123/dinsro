@@ -25,6 +25,9 @@ clean-reframe:
 	rm -rf resources/reframe-cards/public/js
 	rm -rf resources/reframe-workspaces/public/js
 
+check:
+	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn --indents indentation.edn
+
 compile: compile-fulcro compile-reframe
 
 compile-fulcro: compile-fulcro-clj compile-fulcro-cljs
@@ -71,17 +74,11 @@ compile-reframe-production-clj: init
 compile-reframe-production-cljs: init
 	clojure -M:shadow-cljs:reframe:datomic release reframe-main
 
-dev-fulcro:
-	docker-compose up -d fulcro
+dev-fulcro: start-lb
+	docker-compose up fulcro fulcro-watch
 
 dev-fulcro-bootstrap:
 	make run-fulcro
-
-check:
-	clojure -M:cljfmt check src env deps.edn shadow-cljs.edn --indents indentation.edn
-
-dev-fulcro: start-lb
-	docker-compose up fulcro fulcro-watch
 
 dev-reframe-bootstrap:
 	make run-reframe
