@@ -9,8 +9,8 @@
 
 (defsc CreateCategoryForm
   [_this {:keys [close-button]}]
-  {:query [:close-button]
-   :initial-state {:close-button {}}}
+  {:initial-state {:close-button {}}
+   :query [:close-button]}
   (dom/div
    "Create Category"
    (u.buttons/ui-close-button close-button)

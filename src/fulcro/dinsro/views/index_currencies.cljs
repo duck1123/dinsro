@@ -11,13 +11,13 @@
 
 (defsc IndexCurrenciesPage
   [_this {::keys [show-form-button currencies form-data]}]
-  {:query [{::show-form-button (comp/get-query u.buttons/ShowFormButton)}
-           {::form-data (comp/get-query u.f.create-currency/CreateCurrencyForm)}
-           {::currencies (comp/get-query u.index-currencies/IndexCurrencies)}]
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::show-form-button {}
-                   ::form-data {}
-                   ::currencies {}}
+  {:ident (fn [] [:page/id ::page])
+   :initial-state {::currencies       {}
+                   ::form-data        {}
+                   ::show-form-button {}}
+   :query [{::currencies       (comp/get-query u.index-currencies/IndexCurrencies)}
+           {::form-data        (comp/get-query u.f.create-currency/CreateCurrencyForm)}
+           {::show-form-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["currencies"]}
   (bulma/section
    (bulma/container

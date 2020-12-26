@@ -9,27 +9,27 @@
 (defsc AccountLink
   [_this {:account/keys [id name]}]
   {:ident :account/id
-   :query [:account/id :account/name]
-   :initial-state {:account/id 1
-                   :account/name "Unloaded"}}
+   :initial-state {:account/id   0
+                   :account/name ""}
+   :query [:account/id :account/name]}
   (let [path (str "/accounts/" id)]
     (dom/a {:href path} name)))
 
 (defsc CurrencyLink
   [_this {:currency/keys [id name]}]
   {:ident :currency/id
-   :query [:currency/id :currency/name]
-   :initial-state {:currency/id 1
-                   :currency/name "Unloaded"}}
+   :initial-state {:currency/id   0
+                   :currency/name ""}
+   :query [:currency/id :currency/name]}
   (let [path (str "/currencies/" id)]
     (dom/a {:href path} name)))
 
 (defsc UserLink
   [_this {::m.users/keys [id name]}]
   {:ident ::m.users/id
-   :query [::m.users/id ::m.users/name]
-   :initial-state {::m.users/id 1
-                   ::m.users/name "Unloaded"}}
+   :initial-state {::m.users/id   0
+                   ::m.users/name ""}
+   :query [::m.users/id ::m.users/name]}
   (timbre/info "link")
   (let [path (str "/users/" id)]
     (dom/a {:href path} name)))

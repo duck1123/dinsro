@@ -11,8 +11,8 @@
 
 (defsc AdminIndexCurrencyLine
   [_this {::m.currencies/keys [id name]}]
-  {:query [::m.currencies/id ::m.currencies/name]
-   :ident ::m.currencies/id}
+  {:ident ::m.currencies/id
+   :query [::m.currencies/id ::m.currencies/name]}
   (dom/tr
    (dom/td name)
    (dom/td id)))
@@ -20,9 +20,9 @@
 (def ui-admin-index-currency-line (comp/factory AdminIndexCurrencyLine {:keyfn ::m.currencies/id}))
 
 (defsc AdminIndexCurrencies
-  [_this {:keys [currencies]}]
-  {:query [{:currencies (comp/get-query AdminIndexCurrencyLine)}]
-   :initial-state {:currencies []}}
+  [_this {::keys [currencies]}]
+  {:initial-state {::currencies []}
+   :query [{::currencies (comp/get-query AdminIndexCurrencyLine)}]}
   (if (seq currencies)
     (dom/table
      :.table
@@ -39,10 +39,10 @@
 (def ui-admin-index-currencies (comp/factory AdminIndexCurrencies))
 
 (defsc AdminIndexCurrenciesSection
-  [_this {:keys [button-data form-data currencies]}]
-  {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
-           {:currencies (comp/get-query AdminIndexCurrencies)}]}
+  [_this {::keys [button-data currencies form-data]}]
+  {:query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::currencies  (comp/get-query AdminIndexCurrencies)}
+           {::form-data   (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}]}
   (bulma/box
    (dom/h1
     (tr [:admin-index-currencies "Admin Index Currencies"])

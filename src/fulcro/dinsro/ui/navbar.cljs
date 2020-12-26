@@ -16,8 +16,8 @@
 
 (defsc NavLink
   [_this {:navlink/keys [name href]}]
-  {:query [:navlink/id :navlink/name :navlink/href]
-   :ident :navlink/id}
+  {:ident :navlink/id
+   :query [:navlink/id :navlink/name :navlink/href]}
   (dom/a
    :.navbar-item
    {:href href
@@ -28,8 +28,8 @@
 
 (defsc NavbarBurger
   [_this {:navbar/keys [expanded?]}]
-  {:query [:navbar/expanded?]
-   :initial-state {:navbar/expanded? true}}
+  {:initial-state {:navbar/expanded? true}
+   :query [:navbar/expanded?]}
   (dom/div
    :.navbar-burger.burger
    {:role :button
@@ -45,8 +45,8 @@
 
 (defsc NavbarBrand
   [_this {:navbar/keys [expanded?]}]
-  {:query [:navbar/expanded?]
-   :initial-state {:navbar/expanded? true}}
+  {:initial-state {:navbar/expanded? true}
+   :query [:navbar/expanded?]}
   (dom/div
    :.navbar-brand
    (dom/a
@@ -60,8 +60,8 @@
 
 (defsc NavbarAuthLink
   [_this {:keys [link]}]
-  {:query [:link]
-   :initial-state {:link {}}}
+  {:initial-state {:link {}}
+   :query [:link]}
   (ui-nav-link link))
 
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
@@ -87,19 +87,19 @@
                         menu-links
                         navbar-brand
                         dropdown-menu-links]}]
-  {:query [:auth/id
-           :navbar/expanded?
-           {:navbar/auth-data (comp/get-query NavbarAuthLink)}
-           {:navbar/menu-links (comp/get-query NavLink)}
-           {:navbar/navbar-brand (comp/get-query NavbarBrand)}
-           {:navbar/dropdown-menu-links (comp/get-query NavLink)}]
-   :css [[:.navbar {:background-color "red"}]]
-   :initial-state {:auth/id nil
-                   :navbar/auth-data {}
-                   :navbar/navbar-brand {}
+  {:css [[:.navbar {:background-color "red"}]]
+   :initial-state {:auth/id                    nil
+                   :navbar/auth-data           {}
                    :navbar/dropdown-menu-links []
-                   :navbar/expanded? false
-                   :navbar/menu-links []}}
+                   :navbar/expanded?           false
+                   :navbar/menu-links          []
+                   :navbar/navbar-brand        {}}
+   :query [:auth/id
+           {:navbar/auth-data           (comp/get-query NavbarAuthLink)}
+           {:navbar/dropdown-menu-links (comp/get-query NavLink)}
+           :navbar/expanded?
+           {:navbar/menu-links          (comp/get-query NavLink)}
+           {:navbar/navbar-brand        (comp/get-query NavbarBrand)}]}
   (dom/nav
    :.navbar.is-info
    (dom/div

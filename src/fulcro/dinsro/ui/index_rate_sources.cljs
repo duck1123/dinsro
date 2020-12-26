@@ -10,16 +10,16 @@
 (def default-url "https://example.com/")
 
 (defsc IndexRateSourceLine
-  [_this {::m.rate-sources/keys [name url currency-id]}]
-  {:query [::m.rate-sources/id
-           ::m.rate-sources/currency-id
+  [_this {::m.rate-sources/keys [currency-id name url]}]
+  {:ident ::m.rate-sources/id
+   :initial-state {::m.rate-sources/currency-id 0
+                   ::m.rate-sources/id          0
+                   ::m.rate-sources/name        ""
+                   ::m.rate-sources/url         ""}
+   :query [::m.rate-sources/currency-id
+           ::m.rate-sources/id
            ::m.rate-sources/name
-           ::m.rate-sources/url]
-   :ident ::m.rate-sources/id
-   :initial-state {::m.rate-sources/id 0
-                   ::m.rate-sources/currency-id 0
-                   ::m.rate-sources/name ""
-                   ::m.rate-sources/url ""}}
+           ::m.rate-sources/url]}
   (dom/tr
    (dom/td name)
    (dom/td url)
@@ -32,8 +32,8 @@
 
 (defsc IndexRateSources
   [_this {::keys [items]}]
-  {:query [{::items (comp/get-query IndexRateSourceLine)}]
-   :initial-state {::items []}}
+  {:initial-state {::items []}
+   :query [{::items (comp/get-query IndexRateSourceLine)}]}
   (if (seq items)
     (dom/table
      :.table

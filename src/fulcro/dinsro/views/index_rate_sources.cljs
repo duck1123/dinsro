@@ -10,14 +10,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexRateSourcesPage
-  [_this {::keys [button-data rates form-data]}]
-  {:query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::form-data (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
-           {::rates (comp/get-query u.index-rate-sources/IndexRateSources)}]
-   :ident (fn [] [:page/id ::page])
+  [_this {::keys [button-data form-data rates]}]
+  {:ident (fn [] [:page/id ::page])
    :initial-state {::button-data {}
-                   ::form-data {}
-                   ::rates {}}
+                   ::form-data   {}
+                   ::rates       {}}
+   :query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data   (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
+           {::rates       (comp/get-query u.index-rate-sources/IndexRateSources)}]
    :route-segment ["rate-sources"]}
   (bulma/section
    (bulma/container

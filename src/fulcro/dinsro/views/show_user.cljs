@@ -11,15 +11,15 @@
 
 (defsc ShowUserPage
   [_this {::keys [user user-accounts user-categories user-transactions]}]
-  {:query [{::user (comp/get-query u.show-user/ShowUser)}
+  {:initial-state {::user              {}
+                   ::user-accounts     {}
+                   ::user-categories   {}
+                   ::user-transactions {}}
+   :query [{::user (comp/get-query u.show-user/ShowUser)}
            {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}
            {::user-categories (comp/get-query u.user-categories/UserCategories)}
            {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
-   :route-segment ["show-user"]
-   :initial-state {::user {}
-                   ::user-accounts {}
-                   ::user-categories {}
-                   ::user-transactions {}}}
+   :route-segment ["show-user"]}
   (bulma/section
    (bulma/container
     (bulma/content

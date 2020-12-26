@@ -8,8 +8,8 @@
 
 (defsc RegistrationPage
   [_this {:keys [registration-form-data]}]
-  {:route-segment ["registration"]
-   :query [{:registration-form-data (comp/get-query u.f.registration/RegistrationForm)}]}
+  {:query [{:registration-form-data (comp/get-query u.f.registration/RegistrationForm)}]
+   :route-segment ["registration"]}
   (let [allow-registration true]
     (bulma/section
      (bulma/container

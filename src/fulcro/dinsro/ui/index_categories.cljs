@@ -8,12 +8,12 @@
 
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [name user-id]}]
-  {:query [::m.categories/id
+  {:initial-state {::m.categories/id      0
+                   ::m.categories/name    ""
+                   ::m.categories/user-id 0}
+   :query [::m.categories/id
            ::m.categories/name
-           ::m.categories/user-id]
-   :initial-state {::m.categories/id 0
-                   ::m.categories/name ""
-                   ::m.categories/user-id 0}}
+           ::m.categories/user-id]}
   (dom/tr
    (dom/td name)
    (dom/td user-id)))

@@ -11,13 +11,13 @@
 
 (defsc IndexCategoriesPage
   [_this {::keys [button-data categories form-data]}]
-  {:query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::form-data (comp/get-query u.f.create-category/CreateCategoryForm)}
-           {::categories (comp/get-query u.index-categories/IndexCategories)}]
-   :ident (fn [] [:page/id ::page])
+  {:ident (fn [] [:page/id ::page])
    :initial-state {::button-data {}
-                   ::form-data {}
-                   ::categories {}}
+                   ::categories  {}
+                   ::form-data   {}}
+   :query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::categories  (comp/get-query u.index-categories/IndexCategories)}
+           {::form-data   (comp/get-query u.f.create-category/CreateCategoryForm)}]
    :route-segment ["categories"]}
   (bulma/section
    (bulma/container

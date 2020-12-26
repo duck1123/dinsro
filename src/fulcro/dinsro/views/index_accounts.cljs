@@ -7,10 +7,10 @@
 
 (defsc IndexAccountsPage
   [_this {::keys [accounts]}]
-  {:query [:page/id
-           {::accounts (comp/get-query u.user-accounts/UserAccounts)}]
-   :initial-state {::accounts {}}
+  {:initial-state {::accounts {}}
    :ident (fn [] [:page/id ::page])
+   :query [{::accounts (comp/get-query u.user-accounts/UserAccounts)}
+           :page/id]
    :route-segment ["accounts"]}
   (bulma/section
    (bulma/container

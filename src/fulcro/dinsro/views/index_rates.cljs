@@ -10,14 +10,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexRatesPage
-  [_this {::keys [show-form-button rates form]}]
-  {:query [{::show-form-button (comp/get-query u.buttons/ShowFormButton)}
-           {::form (comp/get-query u.f.create-rate/CreateRateForm)}
-           {::rates (comp/get-query u.index-rates/IndexRates)}]
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::show-form-button {}
-                   ::form {}
-                   ::rates {}}
+  [_this {::keys [form rates show-form-button]}]
+  {:ident (fn [] [:page/id ::page])
+   :initial-state {::form             {}
+                   ::rates            {}
+                   ::show-form-button {}}
+   :query [{::form             (comp/get-query u.f.create-rate/CreateRateForm)}
+           {::rates            (comp/get-query u.index-rates/IndexRates)}
+           {::show-form-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["rates"]}
   (bulma/section
    (bulma/container

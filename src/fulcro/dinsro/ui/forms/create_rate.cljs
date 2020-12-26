@@ -10,10 +10,10 @@
 
 (defsc CreateRateForm
   [_this {::keys [close-button datepicker]}]
-  {:query [{::close-button (comp/get-query u.buttons/CloseButton)}
-           {::datepicker (comp/get-query u.datepicker/Datepicker)}]
-   :initial-state {::close-button {}
-                   ::datepicker {}}}
+  {:initial-state {::close-button {}
+                   ::datepicker   {}}
+   :query [{::close-button (comp/get-query u.buttons/CloseButton)}
+           {::datepicker   (comp/get-query u.datepicker/Datepicker)}]}
   (dom/div
    (u.buttons/ui-close-button close-button)
    (u.datepicker/ui-datepicker datepicker)

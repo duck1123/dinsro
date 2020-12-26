@@ -11,16 +11,16 @@
 
 (defsc AdminIndexAccountLine
   [_this {::m.accounts/keys [id name user-id currency-id initial-value]}]
-  {:query [::m.accounts/id
+  {:initial-state {::m.accounts/currency-id   0
+                   ::m.accounts/id            0
+                   ::m.accounts/initial-value 0
+                   ::m.accounts/name          ""
+                   ::m.accounts/user-id       0}
+   :query [::m.accounts/currency-id
+           ::m.accounts/id
+           ::m.accounts/initial-value
            ::m.accounts/name
-           ::m.accounts/user-id
-           ::m.accounts/currency-id
-           ::m.accounts/initial-value]
-   :initial-state {::m.accounts/id 0
-                   ::m.accounts/name ""
-                   ::m.accounts/user-id 0
-                   ::m.accounts/currency-id 0
-                   ::m.accounts/initial-value 0}}
+           ::m.accounts/user-id]}
   (dom/tr
    (dom/td id)
    (dom/td name)
@@ -33,13 +33,13 @@
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [_this {:keys [accounts show-button form-data]}]
-  {:initial-state {:accounts [{:m.accounts/name "foo"}]
-                   :form-data {}
-                   :show-button {}}
-   :query [:accounts
-           {:show-button (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}]}
+  [_this {::keys [accounts show-button form-data]}]
+  {:initial-state {::accounts    []
+                   ::form-data   {}
+                   ::show-button {}}
+   :query [{::accounts    (comp/get-query AdminIndexAccountLine)}
+           {::form-data   (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}
+           {::show-button (comp/get-query u.buttons/ShowFormButton)}]}
   (bulma/box
    (dom/h1 (tr [:index-accounts])
            (u.buttons/ui-show-form-button show-button))

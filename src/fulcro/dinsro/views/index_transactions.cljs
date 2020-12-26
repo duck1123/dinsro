@@ -11,14 +11,14 @@
 
 (defsc IndexTransactionsPage
   [_this {::keys [button-data form-data transactions]}]
-  {:query [:page/id
-           {::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::form-data (comp/get-query u.f.create-transaction/CreateTransactionForm)}
-           {::transactions (comp/get-query u.index-transactions/IndexTransactions)}]
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::button-data {}
-                   ::form-data {}
+  {:ident (fn [] [:page/id ::page])
+   :initial-state {::button-data  {}
+                   ::form-data    {}
                    ::transactions {}}
+   :query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data (comp/get-query u.f.create-transaction/CreateTransactionForm)}
+           :page/id
+           {::transactions (comp/get-query u.index-transactions/IndexTransactions)}]
    :route-segment ["transactions"]}
   (bulma/section
    (bulma/container

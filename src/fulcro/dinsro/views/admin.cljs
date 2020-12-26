@@ -12,15 +12,15 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AdminPage
-  [_this {:keys [accounts transactions categories currencies rate-sources users]}]
-  {:query [:page/id
-           {:accounts (comp/get-query u.admin-index-accounts/AdminIndexAccounts)}
-           {:transactions (comp/get-query u.admin-index-transactions/AdminIndexTransactions)}
+  [_this {:keys [accounts categories currencies rate-sources transactions users]}]
+  {:ident (fn [_] [:page/id ::page])
+   :query [{:accounts (comp/get-query u.admin-index-accounts/AdminIndexAccounts)}
            {:categories (comp/get-query u.admin-index-categories/AdminIndexCategories)}
            {:currencies (comp/get-query u.admin-index-currencies/AdminIndexCurrencies)}
+           :page/id
            {:rate-sources (comp/get-query u.admin-index-rate-sources/AdminIndexRateSources)}
+           {:transactions (comp/get-query u.admin-index-transactions/AdminIndexTransactions)}
            {:users (comp/get-query u.admin-index-users/AdminIndexUsers)}]
-   :ident (fn [_] [:page/id ::page])
    :route-segment ["admin"]}
   (bulma/section
    (bulma/container

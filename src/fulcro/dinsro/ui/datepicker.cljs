@@ -34,8 +34,8 @@
                   (let [value (.toISOString (js/Date. (.. datepicker -data value)))]
                     (on-select value))))))
        (timbre/info "nil")))
-   :query []
-   :initial-state {}}
+   :initial-state {}
+   :query []}
   (dom/input
    :.input
    {:onSelect (fn [_] (timbre/info "on select"))

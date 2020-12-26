@@ -8,10 +8,10 @@
 
 (defsc LoginPage
   [_this {::keys [foo]}]
-  {:query [::foo]
-   :route-segment ["login"]
-   :ident (fn [_] [:page/id ::page])
-   :initial-state {::foo "bar"}}
+  {:ident (fn [_] [:page/id ::page])
+   :initial-state {::foo "bar"}
+   :query [::foo]
+   :route-segment ["login"]}
   (bulma/section
    (bulma/container
     (bulma/content

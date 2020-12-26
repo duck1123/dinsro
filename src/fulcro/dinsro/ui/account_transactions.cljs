@@ -10,13 +10,13 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AccountTransactions
-  [_this {:keys [button-data form-data transaction-data]}]
-  {:query [{:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:form-data (comp/get-query u.f.add-account-transaction/AddAccountTransactionForm)}
-           {:transaction-data (comp/get-query u.index-transactions/IndexTransactions)}]
-   :initial-state {:button-data {}
-                   :form-data {}
-                   :transaction-data {}}}
+  [_this {::keys [button-data form-data transaction-data]}]
+  {:initial-state {::button-data      {}
+                   ::form-data        {}
+                   ::transaction-data {}}
+   :query [{::button-data      (comp/get-query u.buttons/ShowFormButton)}
+           {::form-data        (comp/get-query u.f.add-account-transaction/AddAccountTransactionForm)}
+           {::transaction-data (comp/get-query u.index-transactions/IndexTransactions)}]}
   (bulma/container
    (bulma/box
     (dom/h2 (tr [:transactions])

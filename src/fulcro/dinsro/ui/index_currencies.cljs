@@ -8,10 +8,10 @@
 
 (defsc IndexCurrencyLine
   [_this {::m.currencies/keys [id name]}]
-  {:query [::m.currencies/id ::m.currencies/name]
-   :ident ::m.currencies/id
-   :initial-state {::m.currencies/id 0
-                   ::m.currencies/name ""}}
+  {:ident ::m.currencies/id
+   :initial-state {::m.currencies/id   0
+                   ::m.currencies/name ""}
+   :query [::m.currencies/id ::m.currencies/name]}
   (dom/tr
    (dom/td name)
    (dom/td id)))

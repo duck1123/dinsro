@@ -8,11 +8,11 @@
 
 (defsc IndexUserLine
   [_this {::m.users/keys [id name email]}]
-  {:query [::m.users/id ::m.users/name ::m.users/email]
-   :ident ::m.users/id
-   :initial-state {::m.users/id 1
-                   ::m.users/name "Foo"
-                   ::m.users/email "bob2example.com"}}
+  {:ident ::m.users/id
+   :initial-state {::m.users/id    0
+                   ::m.users/name  ""
+                   ::m.users/email ""}
+   :query [::m.users/email ::m.users/id ::m.users/name]}
   (dom/tr
    (dom/td id)
    (dom/th name)
@@ -23,9 +23,9 @@
 
 (defsc IndexUsers
   [_this {users :users/list}]
-  {:query [:users/list]
-   :initial-state {:users/list []}}
-  (let [path "/admin/users" #_(kf/path-for [:admin-index-users-page])]
+  {:initial-state {:users/list []}
+   :query [:users/list]}
+  (let [path "/admin/users"]
     (dom/div
      (dom/h2 "Users")
      (if (seq users)

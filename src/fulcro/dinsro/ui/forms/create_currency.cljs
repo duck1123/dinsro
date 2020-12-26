@@ -9,8 +9,8 @@
 
 (defsc CreateCurrencyForm
   [_this {:keys [close-button]}]
-  {:query [{:close-button (comp/get-query u.buttons/CloseButton)}]
-   :initial-state {:close-button {}}}
+  {:initial-state {:close-button {}}
+   :query [{:close-button (comp/get-query u.buttons/CloseButton)}]}
   (dom/div
    (u.buttons/ui-close-button close-button)
    "Create Currency form"

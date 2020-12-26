@@ -8,15 +8,15 @@
 
 (defsc IndexRateLine
   [_this {::m.rates/keys [currency date rate]}]
-  {:query [::m.rates/id
+  {:ident ::m.rates/id
+   :initial-state {::m.rates/currency 0
+                   ::m.rates/date ""
+                   ::m.rates/id 0
+                   ::m.rates/rate 0}
+   :query [::m.rates/id
            ::m.rates/currency
            ::m.rates/date
-           ::m.rates/rate]
-   :ident ::m.rates/id
-   :initial-state {::m.rates/id 0
-                    ::m.rates/currency 0
-                    ::m.rates/rate 0
-                    ::m.rates/date ""}}
+           ::m.rates/rate]}
   (dom/tr
    (dom/td currency)
    (dom/td date)

@@ -10,14 +10,14 @@
 
 (defsc CreateTransactionForm
   [_this {::keys [button description value]}]
-  {:query [{::button (comp/get-query u.buttons/CloseButton)}
-           {::input (comp/get-query u.inputs/TextInput)}
-           {::description (comp/get-query u.inputs/TextInput)}
-           {::value (comp/get-query u.inputs/TextInput)}]
-   :initial-state {::button {}
+  {:initial-state {::button      {}
                    ::description {}
-                   ::input {}
-                   ::value {}}}
+                   ::input       {}
+                   ::value       {}}
+   :query [{::button (comp/get-query u.buttons/CloseButton)}
+           {::description (comp/get-query u.inputs/TextInput)}
+           {::input (comp/get-query u.inputs/TextInput)}
+           {::value (comp/get-query u.inputs/TextInput)}]}
   (bulma/box
    "Create Transaction"
    (u.buttons/ui-close-button button)

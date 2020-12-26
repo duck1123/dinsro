@@ -8,16 +8,16 @@
 
 (defsc IndexTransactionLine
   [_this {::m.transactions/keys [date description account-id]}]
-  {:query [::m.transactions/id
+  {:css [[:.card {:margin-bottom "5px"}]]
+   :ident ::m.transactions/id
+   :initial-state {::m.transactions/id          0
+                   ::m.transactions/date        ""
+                   ::m.transactions/description ""
+                   ::m.transactions/account-id  0}
+   :query [::m.transactions/account-id
            ::m.transactions/date
            ::m.transactions/description
-           ::m.transactions/account-id]
-   :ident ::m.transactions/id
-   :initial-state {::m.transactions/id 0
-                   ::m.transactions/date ""
-                   ::m.transactions/description ""
-                   ::m.transactions/account-id 0}
-   :css [[:.card {:margin-bottom "5px"}]]}
+           ::m.transactions/id]}
   (dom/div
    :.card
    (dom/div
@@ -53,8 +53,8 @@
 
 (defsc IndexTransactions
   [_this {::keys [transactions]}]
-  {:query [{::transactions (comp/get-query IndexTransactionLine)}]
-   :initial-state {::transactions []}}
+  {:initial-state {::transactions []}
+   :query [{::transactions (comp/get-query IndexTransactionLine)}]}
   (if (seq transactions)
     (dom/div
      (map ui-index-transaction-line transactions))

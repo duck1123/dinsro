@@ -12,10 +12,9 @@
   [_this {:keys [account-data transactions]}]
   {:initial-state {:account-data {}
                    :transactions {}}
-   :route-segment ["show-account"]
-
    :query [{:account-data (comp/get-query u.show-account/ShowAccount)}
-           {:transactions (comp/get-query u.account-transactions/AccountTransactions)}]}
+           {:transactions (comp/get-query u.account-transactions/AccountTransactions)}]
+   :route-segment ["show-account"]}
   (bulma/section
    (bulma/container
     (bulma/content

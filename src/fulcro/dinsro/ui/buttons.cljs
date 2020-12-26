@@ -8,11 +8,11 @@
 
 (defsc ShowFormButton
   [_this {:form-button/keys [id state]}]
-  {:query [:form-button/id
-           :form-button/state]
-   :initial-state {:form-button/id 1
+  {:ident (fn [_id] [:form-button/id (utils/uuid)])
+   :initial-state {:form-button/id    1
                    :form-button/state true}
-   :ident (fn [_id] [:form-button/id (utils/uuid)])}
+   :query [:form-button/id
+           :form-button/state]}
   (dom/a
    :.is-pulled-right
    {:onClick (fn [] (timbre/infof "clicked %s" id))}
@@ -29,8 +29,8 @@
 
 (defsc CloseButton
   [_this _props]
-  {:query []
-   :initial-state {}}
+  {:initial-state {}
+   :query []}
   (dom/a
    :.delete.is-pulled-right
    {:onClick (fn [] (timbre/info "close button"))}

@@ -9,9 +9,9 @@
 
 (defsc IndexUsersPage
   [_this {::keys [users]}]
-  {:query [{::users (comp/get-query u.index-users/IndexUsers)}]
-   :ident (fn [] [:page/id ::page])
+  {:ident (fn [] [:page/id ::page])
    :initial-state {::users {}}
+   :query [{::users (comp/get-query u.index-users/IndexUsers)}]
    :route-segment ["users"]}
   (bulma/section
    (bulma/container

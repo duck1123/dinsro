@@ -10,8 +10,8 @@
 
 (defsc TextInput
   [_this _props]
-  {:query []
-   :initial-state {}}
+  {:initial-state {}
+   :query []}
   (dom/div
    (dom/label
     :.label
@@ -25,8 +25,8 @@
 
 (defsc NumberInput
   [_this _props]
-  {:query []
-   :initial-state {}}
+  {:initial-state {}
+   :query []}
   (dom/div
    (dom/label
     :.label
@@ -40,8 +40,8 @@
 
 (defsc AccountSelector
   [_this {:keys [accounts]}]
-  {:query [:accounts]
-   :initial-state {:accounts []}}
+  {:initial-state {:accounts []}
+   :query [:accounts]}
   (dom/div
    :.select
    (dom/select
@@ -54,8 +54,8 @@
 
 (defsc CurrencySelector
   [_this {:keys [currencies]}]
-  {:query [:currencies]
-   :initial-state {:currencies []}}
+  {:initial-state {:currencies []}
+   :query [:currencies]}
   (dom/div
    :.select
    (dom/select
@@ -68,8 +68,8 @@
 
 (defsc UserSelector
   [_this {:keys [users]}]
-  {:query [:users]
-   :initial-state {:users []}}
+  {:initial-state {:users []}
+   :query [:users]}
   (dom/div
    :.select
    (dom/select
@@ -82,8 +82,8 @@
 
 (defsc PrimaryButton
   [_this _props]
-  {:query []
-   :initial-state {}}
+  {:initial-state {}
+   :query []}
   (dom/button :.button "submit"))
 
 (def ui-primary-button (comp/factory PrimaryButton))
