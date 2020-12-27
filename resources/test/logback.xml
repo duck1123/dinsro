@@ -31,7 +31,7 @@
     <logger name="com.zaxxer.hikari" level="warn" />
     <logger name="io.undertow.session" level="warn" />
     <logger name="io.undertow.request" level="warn" />
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
