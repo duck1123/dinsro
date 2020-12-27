@@ -113,6 +113,9 @@ lint-kondo-fulcro:
 lint-kondo-reframe:
 	npx clj-kondo --parallel --lint "src/main:src/reframe:src/reframe-test:src/reframe-workspaces:src/test"
 
+prepare-test-dirs:
+	mkdir -p /tmp/dinsro/data/test
+
 test: test-fulcro test-reframe
 
 test-clj: test-fulcro-clj test-reframe-clj
@@ -121,16 +124,16 @@ test-cljs: test-fulcro-cljs test-reframe-cljs
 
 test-fulcro: test-fulcro-clj test-fulcro-cljs
 
-test-fulcro-clj:
+test-fulcro-clj: prepare-test-dirs
 	clojure -M:dev:test:fulcro -d src/test -d src/fulcro-test
 
-test-fulcro-cljs:
+test-fulcro-cljs: install
 	clojure -M:test:fulcro:shadow-cljs:workspaces:fulcro-workspaces compile fulcro-ci
 	npx karma start --single-run --check="ci-fulcro.js"
 
 test-reframe: test-reframe-clj test-reframe-cljs
 
-test-reframe-clj: install
+test-reframe-clj: install prepare-test-dirs
 	clojure -M:test:reframe -d src/test -d src/reframe-test
 
 test-reframe-cljs: install
