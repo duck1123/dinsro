@@ -7,6 +7,8 @@
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc ShowAccount
   [_this {::m.accounts/keys [account currency name user]}]
   {:ident ::m.accounts/id

@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.app :as da]
+   [dinsro.machines :as machines]
    [dinsro.loader]
    [dinsro.router :as router]
    [dinsro.routing :as routing]
@@ -33,8 +34,10 @@
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function. See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
-  (app/mount! da/app Root "app")
+  (app/set-root! da/app Root {:initialize-state? true})
+  (app/mount! da/app Root "app" {:initialize-state? false})
   (routing/start!)
+  (uism/begin! da/app #_u.navbar/Navbar machines/hideable ::navbarsm {:actor/navbar u.navbar/Navbar})
   (js/console.log "Loaded"))
 
 (defn ^:export refresh

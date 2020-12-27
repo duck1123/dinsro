@@ -2,46 +2,56 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.machines :as machines]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-rate-source :as u.f.admin-create-rate-source]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
+
+(def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexRateSourceLine
-  [_this {::m.rate-sources/keys [currency-id id name url]
-          ::keys [button-data]}]
+  [_this {::m.rate-sources/keys [currency id url]
+          :as rate-source}]
   {:ident ::m.rate-sources/id
-   :initial-state {::button-data                {}
-                   ::m.rate-sources/currency-id 0
+   :initial-state {::rate-source                {::m.rate-sources/id 1}
+                   ::m.rate-sources/name    ""
+                   ::m.rate-sources/currency    {}
                    ::m.rate-sources/id          0
-                   ::m.rate-sources/name        ""
                    ::m.rate-sources/url         ""}
-   :query [{::button-data (comp/get-query u.buttons/DeleteButton)}
-           ::m.rate-sources/currency-id
+   :query [{::rate-source             (comp/get-query u.links/RateSourceLink)}
+           {::m.rate-sources/currency (comp/get-query u.links/CurrencyLink)}
            ::m.rate-sources/id
            ::m.rate-sources/name
            ::m.rate-sources/url]}
   (dom/tr
    (dom/td id)
-   (dom/td name)
+   (dom/td (u.links/ui-rate-source-link rate-source))
    (dom/td url)
-   (dom/td currency-id)
+   (dom/td (u.links/ui-currency-link currency))
    (dom/td
-    (u.buttons/ui-delete-button button-data))))
+    (u.buttons/ui-delete-button {::m.rate-sources/id id}))))
 
 (def ui-admin-index-rate-source-line
   (comp/factory AdminIndexRateSourceLine {:keyfn ::m.rate-sources/id}))
 
 (defsc AdminIndexRateSources
-  [_this {::keys [form rate-sources toggle-button]}]
-  {:initial-state {::form          {}
+  [this {::keys [form rate-sources toggle-button]}]
+  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexRateSources})
+   :ident (fn [_] [:component/id ::AdminIndexRateSources])
+   :initial-state {::form          {}
                    ::rate-sources  []
-                   ::toggle-button {}}
-   :query [{::form          (comp/get-query u.f.admin-create-rate-source/AdminCreateRateSourceForm)}
+                   ::toggle-button {:form-button/id form-toggle-sm}}
+   :query [:component/id
+           {::form          (comp/get-query u.f.admin-create-rate-source/AdminCreateRateSourceForm)}
            {::rate-sources  (comp/get-query AdminIndexRateSourceLine)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
-  (let [shown? false]
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+           [::uism/asm-id form-toggle-sm]]}
+  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h2
       :.title.is-2
@@ -53,7 +63,7 @@
      (if (empty? rate-sources)
        (dom/p (tr [:no-rate-sources]))
        (dom/table
-        :.table
+        :.table.is-fullwidth
         (dom/thead
          (dom/tr
           (dom/th "id")

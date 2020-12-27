@@ -7,6 +7,8 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [name user currency initial-value]}]
   {:initial-state {::m.accounts/currency      ""

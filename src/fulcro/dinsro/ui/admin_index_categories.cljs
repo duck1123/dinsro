@@ -2,37 +2,46 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.machines :as machines]
    [dinsro.model.categories :as m.categories]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-category :as u.f.create-category]
+   [dinsro.ui.links :as u.links]
    [dinsro.translations :refer [tr]]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc AdminIndexCategoryLine
-  [_this {::m.categories/keys [name user-id]}]
+  [_this {::m.categories/keys [user]
+          :as category}]
   {:ident ::m.categories/id
    :initial-state {::m.categories/id      0
-                   ::m.categories/name    ""
-                   ::m.categories/user-id 0}
+                   ::m.categories/user {}}
    :query [::m.categories/id
            ::m.categories/name
-           ::m.categories/user-id]}
+           {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr
-   (dom/td name)
-   (dom/td user-id)
-   (dom/td (dom/button :.button.is-danger "Delete"))))
+   (dom/td (u.links/ui-category-link category))
+   (dom/td (u.links/ui-user-link user))
+   (dom/td
+    (dom/button :.button.is-danger "Delete"))))
 
-(def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine))
+(def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine {:keyfn ::m.categories/id}))
 
 (defsc AdminIndexCategories
-  [_this {::keys [categories form toggle-button]}]
-  {:initial-state {::categories    []
+  [this {::keys [categories form toggle-button]}]
+  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexCategories})
+   :ident (fn [_] [:component/id ::AdminIndexCategories])
+   :initial-state {::categories    []
                    ::form          {}
-                   ::toggle-button {}}
+                   ::toggle-button {:form-button/id form-toggle-sm}}
    :query [{::categories    (comp/get-query AdminIndexCategoryLine)}
            {::form          (comp/get-query u.f.create-category/CreateCategoryForm)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
-  (let [shown? false]
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+           [::uism/asm-id form-toggle-sm]]}
+  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h2
       :.title.is-2

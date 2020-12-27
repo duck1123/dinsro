@@ -21,7 +21,12 @@
    {::ct.fulcro3/root u.admin-index-currencies/AdminIndexCurrencies
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.admin-index-currencies/currencies    currencies
-       ::u.admin-index-currencies/form          (comp/get-initial-state u.f.admin-create-currency/AdminCreateCurrencyForm)
-       ::u.admin-index-currencies/toggle-button (comp/get-initial-state u.buttons/ShowFormButton)})
+      {::u.admin-index-currencies/currencies currencies
+       ::u.admin-index-currencies/form
+       (comp/get-initial-state
+        u.f.admin-create-currency/AdminCreateCurrencyForm)
+       ::u.admin-index-currencies/toggle-button
+       (comp/get-initial-state
+        u.buttons/ShowFormButton
+        {:form-button/id u.admin-index-currencies/form-toggle-sm})})
     ::ct.fulcro3/wrap-root? false}))

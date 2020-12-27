@@ -16,7 +16,9 @@
    [dinsro.views.registration :as v.registration]
    [dinsro.views.settings :as v.settings]
    [dinsro.views.show-account :as v.show-account]
+   [dinsro.views.show-category :as v.show-category]
    [dinsro.views.show-currency :as v.show-currency]
+   [dinsro.views.show-rate-source :as v.show-rate-source]
    [dinsro.views.show-user :as v.show-user]
    [taoensso.timbre :as timbre]))
 
@@ -36,7 +38,9 @@
                     v.login/LoginPage
                     v.registration/RegistrationPage
                     v.show-account/ShowAccountPage
+                    v.show-category/ShowCategoryPage
                     v.show-currency/ShowCurrencyPage
+                    v.show-rate-source/ShowRateSourcePage
                     v.show-user/ShowUserPage]}
   (case current-state
     :pending (dom/div "Loading...")

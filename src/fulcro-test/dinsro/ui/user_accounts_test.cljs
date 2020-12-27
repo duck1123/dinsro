@@ -1,5 +1,6 @@
 (ns dinsro.ui.user-accounts-test
   (:require
+   [com.fulcrologic.fulcro.components :as comp]
    [dinsro.sample :as sample]
    [dinsro.ui.user-accounts :as u.user-accounts]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
@@ -21,10 +22,12 @@
 
 (ws/defcard UserAccounts
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 7
+   ::wsm/card-height 15
    ::wsm/card-width  5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.user-accounts/UserAccounts
     ::ct.fulcro3/initial-state
-    (fn [] {:index-data {:accounts (map sample/account-map [1 2])}})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn []
+      (-> (comp/get-initial-state u.user-accounts/UserAccounts)
+          (assoc-in [::u.user-accounts/accounts ::u.user-accounts/accounts]
+                    (vals sample/account-map))))}))

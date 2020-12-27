@@ -13,9 +13,7 @@
    :initial-state {::form {}}
    :query [{::form (comp/get-query u.f.login/LoginForm)}]
    :route-segment ["login"]}
-  (bulma/section
+  (bulma/page
+   (dom/h1 "Login")
    (bulma/container
-    (bulma/content
-     (dom/h1 "Login")
-     (bulma/container
-      (u.f.login/ui-login-form form))))))
+    (u.f.login/ui-login-form form))))

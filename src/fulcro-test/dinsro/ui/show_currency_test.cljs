@@ -1,5 +1,6 @@
 (ns dinsro.ui.show-currency-test
   (:require
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.show-currency :as u.show-currency]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
@@ -16,5 +17,6 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.show-currency/ShowCurrency
     ::ct.fulcro3/initial-state
-    (fn [] {:currency/id 1
-            :currency/name "Dollars"})}))
+    (fn []
+      {::m.currencies/id 1
+       ::m.currencies/name "Dollars"})}))

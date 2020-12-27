@@ -2,27 +2,32 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.mutations :as mutations]
    [dinsro.translations :refer [tr]]
-   [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
 
 (defsc ShowFormButton
-  [_this {:form-button/keys [id state]}]
-  {:ident (fn [_id] [:form-button/id (utils/uuid)])
-   :initial-state {:form-button/id    1
-                   :form-button/state true}
+  [this {:form-button/keys [id]}]
+  {:ident :form-button/id
+   :initial-state
+   (fn [{:form-button/keys [id]}]
+     {:form-button/id id})
    :query [:form-button/id
            :form-button/state]}
   (dom/a
    :.is-pulled-right
-   {:onClick (fn [] (timbre/infof "clicked %s" id))}
-   (tr [:show-form (str "Show" state)])))
+   {:onClick #(uism/trigger! this id :event/toggle {})}
+   (tr [:show-form "Show"])))
 
 (def ui-show-form-button (comp/factory ShowFormButton))
 
 (defsc DeleteButton
-  [_this _props]
+  [this props]
   {:query []}
-  (dom/button :.button.is-danger "Delete"))
+  (dom/button
+   :.button.is-danger
+   {:onClick #(comp/transact! this [(mutations/delete props)])}
+   "Delete"))
 
 (def ui-delete-button (comp/factory DeleteButton))

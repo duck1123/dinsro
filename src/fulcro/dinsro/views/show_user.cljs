@@ -11,14 +11,27 @@
    [dinsro.ui.user-transactions :as u.user-transactions]
    [taoensso.timbre :as timbre]))
 
+(defsc UserAccounts
+  [_this _props]
+  {:ident ::m.users/id
+   :initial-state {}
+   :query [{::m.users/accounts (comp/get-query u.user-accounts/IndexAccountLine)}
+           ::m.users/id]})
+
 (defsc ShowUserPage
   [_this {::keys [user user-accounts user-categories user-transactions]}]
-  {:ident (fn [] [:page/id ::page])
+  {:componentDidUpdate
+   (fn [this]
+     (let [{::m.users/keys [id]} (::user (comp/props this))]
+       (when (pos? id)
+         (df/load! this [::m.users/id id] UserAccounts))))
+   :ident (fn [] [:page/id ::page])
    :initial-state {::user              {}
                    ::user-accounts     {}
                    ::user-categories   {}
                    ::user-transactions {}}
-   :query [{::user              (comp/get-query u.show-user/ShowUser)}
+   :query [::m.users/id
+           {::user              (comp/get-query u.show-user/ShowUser)}
            {::user-accounts     (comp/get-query u.user-accounts/UserAccounts)}
            {::user-categories   (comp/get-query u.user-categories/UserCategories)}
            {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
@@ -28,11 +41,9 @@
      (df/load app [::m.users/id (int id)] u.show-user/ShowUser
               {:target [:page/id ::page ::user]})
      (dr/route-immediate (comp/get-ident ShowUserPage {})))}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (bulma/box
-      (u.show-user/ui-show-user user))
-     (u.user-accounts/ui-user-accounts user-accounts)
-     (u.user-categories/ui-user-categories user-categories)
-     (u.user-transactions/ui-user-transactions user-transactions)))))
+  (bulma/page
+   (bulma/box
+    (u.show-user/ui-show-user user))
+   (u.user-accounts/ui-user-accounts user-accounts)
+   (u.user-categories/ui-user-categories user-categories)
+   (u.user-transactions/ui-user-transactions user-transactions)))

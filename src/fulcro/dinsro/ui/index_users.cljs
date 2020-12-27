@@ -4,10 +4,14 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexUserLine
-  [_this {::m.users/keys [email id name]}]
+  [_this {::m.users/keys [email id] :as user}]
   {:ident ::m.users/id
    :initial-state {::m.users/email ""
                    ::m.users/id    0
@@ -17,9 +21,10 @@
            ::m.users/name]}
   (dom/tr
    (dom/td id)
-   (dom/th name)
+   (dom/th (u.links/ui-user-link user))
    (dom/th email)
-   (dom/th (dom/button :.button.is-danger "Delete"))))
+   (dom/th
+    (u.buttons/ui-delete-button {::m.users/id id}))))
 
 (def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/id}))
 

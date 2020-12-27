@@ -4,11 +4,14 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexRateLine
-  [_this {::m.rates/keys [currency date rate]}]
+  [_this {::m.rates/keys [currency date id rate]}]
   {:ident ::m.rates/id
    :initial-state {::m.rates/currency {}
                    ::m.rates/date     ""
@@ -23,8 +26,7 @@
    (dom/td date)
    (dom/td rate)
    (dom/td
-    (dom/button :.button.is-danger "Delete")
-    #_(c.buttons/delete-rate-source item))))
+    (u.buttons/ui-delete-button {::m.rates/id id}))))
 
 (def ui-index-rate-source-line (comp/factory IndexRateLine {:keyfn ::m.rates/id}))
 

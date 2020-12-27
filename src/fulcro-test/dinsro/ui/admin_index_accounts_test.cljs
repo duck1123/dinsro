@@ -23,5 +23,4 @@
     (fn []
       {::u.admin-index-accounts/accounts      accounts
        ::u.admin-index-accounts/form          (comp/get-initial-state u.f.admin-create-account/AdminCreateAccountForm)
-       ::u.admin-index-accounts/toggle-button (comp/get-initial-state u.buttons/ShowFormButton)})
-    ::ct.fulcro3/wrap-root? false}))
+       ::u.admin-index-accounts/toggle-button (comp/get-initial-state u.buttons/ShowFormButton)})}))

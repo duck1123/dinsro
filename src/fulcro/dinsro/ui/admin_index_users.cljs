@@ -8,9 +8,12 @@
    [dinsro.ui.index-users :as u.index-users]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc AdminIndexUsers
   [_this {::keys [toggle-button users]}]
-  {:initial-state {::toggle-button {}
+  {:ident (fn [_] [:component/id ::AdminIndexUsers])
+   :initial-state {::toggle-button {:form-button/id form-toggle-sm}
                    ::users         {}}
    :query [{::toggle-button (comp/get-query u.buttons/ShowFormButton)}
            {::users         (comp/get-query u.index-users/IndexUsers)}]}

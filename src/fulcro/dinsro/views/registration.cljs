@@ -14,14 +14,12 @@
    :query [::allow-registration
            {::form (comp/get-query u.f.registration/RegistrationForm)}]
    :route-segment ["register"]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (if allow-registration
-       (dom/div
-        (dom/h1 "Registration Page")
-        (u.f.registration/ui-registration-form form))
-       (dom/div
-        (dom/p "Registrations are not enabled")))))))
+  (bulma/page
+   (if allow-registration
+     (dom/div
+      (dom/h1 "Registration Page")
+      (u.f.registration/ui-registration-form form))
+     (dom/div
+      (dom/p "Registrations are not enabled")))))
 
 (def ui-page (comp/factory RegistrationPage))

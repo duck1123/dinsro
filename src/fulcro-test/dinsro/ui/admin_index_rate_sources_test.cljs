@@ -17,9 +17,11 @@
    ::wsm/card-width  6}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-rate-sources/AdminIndexRateSources
+    ;; ::ct.fulcro3/wrap-root? false
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.f.admin-create-rate-source/form
+      {:component/id {}
+       ::u.f.admin-create-rate-source/form
        (comp/get-initial-state u.f.admin-create-rate-source/AdminCreateRateSourceForm)
 
        ::u.f.admin-create-rate-source/rate-sources
@@ -27,5 +29,4 @@
             (vals sample/rate-source-map))
 
        ::u.f.admin-create-rate-source/toggle-button
-       (comp/get-initial-state u.buttons/ShowFormButton)})
-    ::ct.fulcro3/wrap-root? false}))
+       (comp/get-initial-state u.buttons/ShowFormButton)})}))

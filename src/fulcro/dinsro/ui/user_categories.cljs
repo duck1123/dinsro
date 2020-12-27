@@ -2,20 +2,31 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.machines :as machines]
    [dinsro.model.categories :as m.categories]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-user-category :as u.f.add-user-category]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexCategoryLine
-  [_this {::m.categories/keys [id name]}]
+  [_this {::m.categories/keys [id] :as category}]
   {:ident ::m.categories/id
-   :query [::m.categories/id ::m.categories/name]}
+   :initial-state {::m.categories/id   0
+                   ::m.categories/name ""}
+   :query [{::button-data (comp/get-query u.buttons/DeleteButton)}
+           ::m.categories/id
+           ::m.categories/name]}
   (dom/tr
    (dom/td id)
-   (dom/td name)))
+   (dom/td (u.links/ui-category-link category))
+   (dom/td
+    (u.buttons/ui-delete-button {::m.categories/id id}))))
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
 
@@ -29,7 +40,8 @@
      (dom/thead
       (dom/tr
        (dom/th "Id")
-       (dom/th "name")))
+       (dom/th "name")
+       (dom/th "Actions")))
      (dom/tbody
       (map ui-index-category-line categories)))
     (dom/div (tr [:no-categories]))))
@@ -37,14 +49,17 @@
 (def ui-index-user-categories (comp/factory IndexUserCategories))
 
 (defsc UserCategories
-  [_this {::keys [categories form toggle-button]}]
-  {:initial-state {::categories    {}
+  [this {::keys [categories form toggle-button]}]
+  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar UserCategories})
+   :ident (fn [_] [:component/id ::UserCategories])
+   :initial-state {::categories    {}
                    ::form          {}
-                   ::toggle-button {}}
+                   ::toggle-button {:form-button/id form-toggle-sm}}
    :query [{::categories    (comp/get-query IndexUserCategories)}
            {::form          (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
-  (let [shown? false]
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+           [::uism/asm-id form-toggle-sm]]}
+  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h2 (tr [:categories]) (u.buttons/ui-show-form-button toggle-button))
      (when shown?

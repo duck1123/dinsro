@@ -9,15 +9,15 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AccountTransactions
-  {::wsm/align {:flex 1}
+  {::wsm/align       {:flex 1}
    ::wsm/card-height 15
-   ::wsm/card-width 5}
+   ::wsm/card-width  5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.account-transactions/AccountTransactions
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.account-transactions/toggle-button {}
-       ::u.account-transactions/form {}
+      {:current-account 1
+       ::u.account-transactions/form          {}
+       ::u.account-transactions/toggle-button {}
        ::u.account-transactions/transactions
-       {::u.index-transactions/transactions (map sample/transaction-map [1 2])}})
-    ::ct.fulcro3/wrap-root? false}))
+       {::u.index-transactions/transactions (map sample/transaction-map [1 2])}})}))

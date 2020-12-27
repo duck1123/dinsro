@@ -4,17 +4,21 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexCurrencyLine
-  [_this {::m.currencies/keys [id name]}]
+  [_this {::m.currencies/keys [id] :as currency}]
   {:ident ::m.currencies/id
    :initial-state {::m.currencies/id   0
                    ::m.currencies/name ""}
    :query [::m.currencies/id ::m.currencies/name]}
   (dom/tr
-   (dom/td name)
-   (dom/td id)))
+   (dom/td (u.links/ui-currency-link currency))
+   (dom/td (u.buttons/ui-delete-button {::m.currencies/id id}))))
 
 (def ui-index-currency-line (comp/factory IndexCurrencyLine {:keyfn ::m.currencies/id}))
 

@@ -33,3 +33,9 @@
 (defn section
   [& body]
   (apply dom/section :.section body))
+
+(defn page
+  [& body]
+  (section
+   (container
+    (apply content body))))

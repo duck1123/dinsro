@@ -4,6 +4,8 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.machines :as machines]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -11,15 +13,19 @@
    [dinsro.ui.index-rates :as u.index-rates]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexRatesPage
-  [_this {::keys [form rates toggle-button]}]
-  {:ident (fn [] [:page/id ::page])
-   :initial-state {::form          {}
-                   ::rates         {}
-                   ::toggle-button {}}
-   :query [{::form          (comp/get-query u.f.create-rate/CreateRateForm)}
-           {::rates         (comp/get-query u.index-rates/IndexRates)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]
+  [this {::keys [show-form-button rates form]}]
+  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar IndexRatesPage})
+   :ident (fn [] [:page/id ::page])
+   :initial-state {::form             {}
+                   ::rates            {}
+                   ::show-form-button {:form-button/id form-toggle-sm}}
+   :query [{::form             (comp/get-query u.f.create-rate/CreateRateForm)}
+           {::rates            (comp/get-query u.index-rates/IndexRates)}
+           {::show-form-button (comp/get-query u.buttons/ShowFormButton)}
+           [::uism/asm-id form-toggle-sm]]
    :route-segment ["rates"]
    :will-enter
    (fn [app _props]
@@ -27,20 +33,16 @@
                {:target [:page/id
                          ::page
                          ::rates
-                         ::u.index-rates/items]})
-
+                         ::u.index-rates/rates]})
      (dr/route-immediate (comp/get-ident IndexRatesPage {})))}
-  (let [shown? false]
-    (bulma/section
-     (bulma/container
-      (bulma/content
-       (bulma/box
-        (dom/h1
-         (tr [:index-rates "Index Rates"])
-         (u.buttons/ui-show-form-button toggle-button))
-        (when shown?
-          (u.f.create-rate/ui-create-rate-form form))
-        (dom/hr)
-        (u.index-rates/ui-index-rates rates)))))))
+  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
+    (bulma/page
+     (bulma/box
+      (dom/h1
+       (tr [:index-rates "Index Rates"])
+       (u.buttons/ui-show-form-button show-form-button))
+      (when shown? (u.f.create-rate/ui-create-rate-form form))
+      (dom/hr)
+      (u.index-rates/ui-index-rates rates)))))
 
 (def ui-page (comp/factory IndexRatesPage))

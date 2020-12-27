@@ -2,6 +2,7 @@
   (:require
    [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
+   [dinsro.model.users :as m.users]
    [dinsro.session :as session]
    [dinsro.resolvers.accounts :as accounts]
    [dinsro.resolvers.categories :as categories]
@@ -21,8 +22,15 @@
 
 (defresolver current-user-resolver
   [{{{:keys [identity]} :session} :request} _props]
-  {::pc/output [{:session/current-user [:user/id :user/valid?]}]}
-  {:session/current-user {:user/id (do
+  {::pc/output
+   [{:session/current-user
+     [:user/id
+      {:user/ref [::m.users/id]}
+      :user/valid?]}]}
+  (timbre/spy :info identity)
+  {:session/current-user {:user/ref {::m.users/id 1}
+                          :user/id
+                          (do
                                      ;; FIXME: restore identity
                                      (comment identity)
                                      "bob@example.com")

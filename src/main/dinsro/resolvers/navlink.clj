@@ -8,7 +8,8 @@
   [_env {:navlink/keys [id]}]
   {::pc/input #{:navlink/id}
    ::pc/output [:navlink/href
-                :navlink/name]}
+                :navlink/name
+                :navlink/path]}
   (get sample/navlink-map id))
 
 (defresolver navlinks-resolver
@@ -48,7 +49,8 @@
          :accounts])})
 
 (def resolvers
-  [navlink-resolver
+  [dropdown-links-resolver
+   navlink-resolver
    navlinks-resolver
    navlink-map-resolver
    auth-link-resolver

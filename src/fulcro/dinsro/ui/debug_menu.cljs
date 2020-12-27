@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as string]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
@@ -9,22 +10,28 @@
    [taoensso.timbre :as timbre]))
 
 (defsc DebugLinkButton
-  [_this {:debug-menu/keys [path label]}]
-  {:query [:debug-menu/id
-           :debug-menu/path
-           :debug-menu/label]
-   :ident :debug-menu/id
-   :initial-state {}}
+  [_this {:navlink/keys [path name]}]
+  {:query [:navlink/id
+           :navlink/path
+           :navlink/name]
+   :ident :navlink/id
+   :initial-state {:navlink/id :unset
+                   :navlink/path ["unset"]
+                   :navlink/name "Unset"}}
   (dom/button
    :.button
-   {:onClick #(routing/route-to! (str "/" (string/join "/" path)))} label))
+   {:onClick #(routing/route-to! (str "/" (string/join "/" path)))} name))
 
-(def ui-debug-link-button (comp/factory DebugLinkButton {:keyfn :debug-menu/id}))
+(def ui-debug-link-button (comp/factory DebugLinkButton {:keyfn :navlink/id}))
 
 (defsc DebugLinkBar
   [_this {:keys [items]}]
-  {:query [{:items (comp/get-query DebugLinkButton)}]
-   :ident (fn [_] [:component/id ::component])
+  {:componentDidMount
+   (fn [this]
+     (df/load! this :debug-menu/list DebugLinkButton
+               {:target [:component/id ::DebugLinkBar :items]}))
+   :query [{:items (comp/get-query DebugLinkButton)}]
+   :ident (fn [_] [:component/id ::DebugLinkBar])
    :initial-state {:items []}}
   (bulma/container
    (bulma/box

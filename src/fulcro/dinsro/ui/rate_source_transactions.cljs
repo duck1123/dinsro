@@ -1,4 +1,4 @@
-(ns dinsro.ui.admin-index-transactions
+(ns dinsro.ui.rate-source-transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -13,10 +13,10 @@
 
 (def form-toggle-sm ::form-toggle)
 
-(defsc AdminIndexTransactions
+(defsc RateSourceTransactions
   [this {::keys [form toggle-button transactions]}]
-  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexTransactions})
-   :ident (fn [_] [:component/id ::AdminIndexTransactions])
+  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar RateSourceTransactions})
+   :ident (fn [_] [:component/id ::RateSourceTransactions])
    :initial-state {::form          {}
                    ::toggle-button {:form-button/id form-toggle-sm}
                    ::transactions  {}}
@@ -38,4 +38,4 @@
         (u.index-transactions/ui-index-transactions transactions))
        (dom/p "No data")))))
 
-(def ui-section (comp/factory AdminIndexTransactions))
+(def ui-rate-source-transactions (comp/factory RateSourceTransactions))

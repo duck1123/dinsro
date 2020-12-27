@@ -15,15 +15,13 @@
   {:ident (fn [] [:page/id ::page])
    :query [:auth-id :page/id]
    :route-segment [""]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (if auth-id
-       (dom/div "Authenticated")
-       (bulma/box
-        (dom/h1 :.title (tr [:home-page]))
-        (dom/p
-         "Not Authenticated. "
-         (dom/a {:href (path-for [:login-page])} "login"))))))))
+  (bulma/page
+   (if auth-id
+     (dom/div "Authenticated")
+     (bulma/box
+      (dom/h1 :.title (tr [:home-page]))
+      (dom/p
+       "Not Authenticated. "
+       (dom/a {:href (path-for [:login-page])} "login"))))))
 
 (def ui-page (comp/factory HomePage))

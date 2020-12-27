@@ -10,6 +10,7 @@
   {::pc/input #{::m.users/id}
    ::pc/output [::m.users/email
                 ::m.users/name]}
+  (timbre/infof "resolving user: %s" id)
   (get sample/user-map id))
 
 (defresolver users-resolver

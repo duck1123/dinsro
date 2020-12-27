@@ -1,4 +1,4 @@
-(ns dinsro.ui.index-transactions
+(ns dinsro.ui.category-transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -9,7 +9,7 @@
 
 (def form-toggle-sm ::form-toggle)
 
-(defsc IndexTransactionLine
+(defsc IndexCategoryTransactionLine
   [_this {::m.transactions/keys [date description account]}]
   {:css [[:.card {:margin-bottom "5px"}]]
    :ident ::m.transactions/id
@@ -45,17 +45,26 @@
      {:onClick (fn [_] (timbre/info "delete"))}
      (tr [:delete])))))
 
-(def ui-index-transaction-line
-  (comp/factory IndexTransactionLine {:keyfn ::m.transactions/id}))
+(def ui-index-category-transaction-line
+  (comp/factory IndexCategoryTransactionLine {:keyfn ::m.transactions/id}))
 
-(defsc IndexTransactions
+(defsc IndexCategoryTransactions
   [_this {::keys [transactions]}]
   {:initial-state {::transactions []}
-   :query [{::transactions (comp/get-query IndexTransactionLine)}]}
+   :query [{::transactions (comp/get-query IndexCategoryTransactionLine)}]}
   (if (seq transactions)
     (dom/div
-     (map ui-index-transaction-line transactions))
+     (map ui-index-category-transaction-line transactions))
     (dom/p "no items")))
 
-(def ui-index-transactions
-  (comp/factory IndexTransactions))
+(def ui-index-category-transactions
+  (comp/factory IndexCategoryTransactions))
+
+(defsc CategoryTransactions
+  [_this {::keys [transactions]}]
+  {:initial-state {::transactions []}
+   :query [{::transactions (comp/get-query IndexCategoryTransactionLine)}]}
+  (ui-index-category-transactions transactions))
+
+(def ui-category-transactions
+  (comp/factory CategoryTransactions))

@@ -9,15 +9,6 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
 
-(ws/defcard NavbarBurger
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.navbar/NavbarBurger
-    ::ct.fulcro3/initial-state
-    (fn [] {:navbar/expanded? true})
-    ::ct.fulcro3/wrap-root? false}))
-
 (defn navlink-idents
   [kws]
   (map
@@ -46,5 +37,4 @@
             :navbar/menu-links (map sample/navlink-map [:foo :bar])
             :navbar/top-level-links (map sample/navlink-map [:accounts :transactions])
             :navbar/unauthenticated-links (map-links [:login :register])
-            :navbar/dropdown-menu-links (map sample/navlink-map [:foo :bar :baz])})
-    ::ct.fulcro3/wrap-root? false}))
+            :navbar/dropdown-menu-links (map sample/navlink-map [:foo :bar :baz])})}))

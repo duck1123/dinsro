@@ -7,6 +7,8 @@
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
+(def form-toggle-sm ::form-toggle)
+
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [name user]}]
   {:ident ::m.categories/id

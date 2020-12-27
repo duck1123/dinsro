@@ -7,6 +7,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.account-transactions :as u.account-transactions]
    [dinsro.ui.bulma :as bulma]
+   [dinsro.ui.index-transactions :as u.index-transactions]
    [dinsro.ui.show-account :as u.show-account]
    [taoensso.timbre :as timbre]))
 
@@ -22,10 +23,15 @@
    (fn [app {::m.accounts/keys [id]}]
      (df/load app [::m.accounts/id (int id)] u.show-account/ShowAccount
               {:target [:page/id ::page ::account]})
+
+     (df/load! app :all-transactions
+               u.index-transactions/IndexTransactionLine
+               {:target [:component/id ::u.account-transactions/AccountTransactions
+                         ::u.account-transactions/transactions
+                         ::u.index-transactions/transactions]})
+
      (dr/route-immediate (comp/get-ident ShowAccountPage {})))}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (bulma/box
-      (u.show-account/ui-show-account account))
-     (u.account-transactions/ui-account-transactions transactions)))))
+  (bulma/page
+   (bulma/box
+    (u.show-account/ui-show-account account))
+   (u.account-transactions/ui-account-transactions transactions)))

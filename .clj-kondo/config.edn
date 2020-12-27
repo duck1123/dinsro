@@ -3,6 +3,7 @@
  {
   com.fulcrologic.fulcro.components/defsc                  cljs.core/defn
   com.fulcrologic.fulcro.routing.dynamic-routing/defrouter cljs.core/defn
+  com.fulcrologic.fulcro.ui-state-machines/defstatemachine cljs.core/def
   com.fulcrologic.guardrails.core/>defn                    cljs.core/defn
   com.wsscode.pathom.connect/defmutation                   cljs.core/defn
   com.wsscode.pathom.connect/defresolver                   cljs.core/defn

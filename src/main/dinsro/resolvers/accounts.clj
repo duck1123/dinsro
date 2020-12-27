@@ -28,4 +28,22 @@
   {:all-accounts (map (fn [id] [::m.accounts/id id])
                       (keys sample/account-map))})
 
-(def resolvers [account-resolver accounts-resolver account-map-resolver])
+(defresolver user-account-resolver
+  [_env {::m.accounts/keys [id]}]
+  {::pc/input #{::m.users/id}
+   ::pc/output [{::m.accounts/currency [::m.currencies/id]}
+                ::m.accounts/initial-value
+                ::m.accounts/name
+                {::m.accounts/user [::m.users/id]}]}
+  (get sample/account-map id))
+
+(defresolver user-accounts-resolver
+  [_env {::m.users/keys [id]}]
+  {::pc/input #{::m.users/id}
+   ::pc/output [{::m.users/accounts [::m.accounts/id]}]}
+  {::m.users/accounts
+   (->> (vals sample/account-map)
+        (filter (fn [account] (= id (get-in account [::m.accounts/user ::m.users/id]))))
+        (map (fn [{::m.accounts/keys [id]}] [::m.accounts/id id])))})
+
+(def resolvers [account-resolver accounts-resolver account-map-resolver user-accounts-resolver])
