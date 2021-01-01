@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
@@ -12,7 +11,6 @@
   {:initial-state {}
    :query []}
   (bulma/box
-   (u.buttons/ui-close-button #_close-button)
    (u.inputs/ui-text-input)
    (u.inputs/ui-text-input)
    (u.inputs/ui-currency-selector)

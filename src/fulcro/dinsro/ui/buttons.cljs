@@ -26,14 +26,3 @@
   (dom/button :.button.is-danger "Delete"))
 
 (def ui-delete-button (comp/factory DeleteButton))
-
-(defsc CloseButton
-  [_this _props]
-  {:initial-state {}
-   :query []}
-  (dom/a
-   :.delete.is-pulled-right
-   {:onClick (fn [] (timbre/info "close button"))}
-   (tr [:show-form "Show"])))
-
-(def ui-close-button (comp/factory CloseButton))

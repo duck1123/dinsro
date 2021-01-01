@@ -3,18 +3,14 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
 (defsc CreateRateSourceForm
-  [_this {::keys [button]}]
-  {:query [{::button (comp/get-query u.buttons/CloseButton)}]
-   :initial-state {::button {}}}
+  [_this _props]
+  {:query []
+   :initial-state {}}
   (bulma/box
-   (u.buttons/ui-close-button button)
-
-   "Create Rate Source"
    (u.inputs/ui-text-input {:label (tr [:name])})))
 
 (def ui-create-rate-source-form (comp/factory CreateRateSourceForm))

@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.datepicker :as u.datepicker]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
@@ -12,7 +11,6 @@
   [_this _props]
   {:query []}
   (dom/div
-   (u.buttons/ui-close-button #_close-button)
    (dom/div
     :.field
     (dom/div
