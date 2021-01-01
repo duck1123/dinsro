@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.datepicker :as u.datepicker]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
@@ -11,25 +12,17 @@
   [_this _props]
   {:query []}
   (dom/div
-   (dom/div
-    :.field
-    (dom/div
-     :.control
+   (bulma/field
+    (bulma/control
      (u.inputs/ui-text-input)))
-   (dom/div
-    :.field
-    (dom/div
-     :.control
+   (bulma/field
+    (bulma/control
      (u.inputs/ui-number-input)))
-   (dom/div
-    :.field
-    (dom/div
-     :.control
+   (bulma/field
+    (bulma/control
      (u.datepicker/ui-datepicker)))
-   (dom/div
-    :.field
-    (dom/div
-     :.control
+   (bulma/field
+    (bulma/control
      (u.inputs/ui-primary-button)))))
 
 (def ui-add-account-transaction-form
