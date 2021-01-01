@@ -1,5 +1,6 @@
 (ns dinsro.resolvers
   (:require
+   [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -96,11 +97,14 @@
                      (fn [id] [:debug-menu/id id])
                      (keys sample/debug-menu-map))})
 
-(pc/defresolver index-explorer [env _]
+(defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
    ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
-  {:com.wsscode.pathom.viz.index-explorer/index
-   (get env ::pc/indexes)})
+  (let [indexes (get env ::pc/indexes)]
+    {:com.wsscode.pathom.viz.index-explorer/index
+     (p/transduce-maps
+      (remove (comp #{::pc/resolve ::pc/mutate} key))
+      indexes)}))
 
 (defresolver navlink-resolver
   [_env {:navlink/keys [id]}]
