@@ -39,15 +39,18 @@
 (def ui-admin-index-currencies (comp/factory AdminIndexCurrencies))
 
 (defsc AdminIndexCurrenciesSection
-  [_this {::keys [button-data currencies form-data]}]
-  {:query [{::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::currencies  (comp/get-query AdminIndexCurrencies)}
-           {::form-data   (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}]}
+  [_this {::keys [currencies form toggle-button]}]
+  {:initial-state {::currencies    {}
+                   ::form          {}
+                   ::toggle-button {}}
+   :query [{::currencies  (comp/get-query AdminIndexCurrencies)}
+           {::form   (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (bulma/box
    (dom/h1
     (tr [:admin-index-currencies "Admin Index Currencies"])
-    (u.buttons/ui-show-form-button button-data))
-   (u.f.admin-create-currency/ui-admin-create-currency-form form-data)
+    (u.buttons/ui-show-form-button toggle-button))
+   (u.f.admin-create-currency/ui-admin-create-currency-form form)
    (dom/hr)
    (ui-admin-index-currencies currencies)))
 

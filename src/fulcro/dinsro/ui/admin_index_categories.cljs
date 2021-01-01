@@ -24,9 +24,9 @@
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine))
 
 (defsc AdminIndexCategories
-  [_this {:keys [categories]}]
-  {:query [:categories]
-   :initial-state {:categories []}}
+  [_this {::keys [categories]}]
+  {:initial-state {::categories []}
+   :query [::categories]}
   (bulma/box
    (dom/h1
     (tr [:categories "Categories"])

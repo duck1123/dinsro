@@ -33,17 +33,18 @@
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [_this {::keys [accounts show-button form-data]}]
-  {:initial-state {::accounts    []
-                   ::form-data   {}
-                   ::show-button {}}
-   :query [{::accounts    (comp/get-query AdminIndexAccountLine)}
-           {::form-data   (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}
-           {::show-button (comp/get-query u.buttons/ShowFormButton)}]}
+  [_this {::keys [accounts form toggle-button]}]
+  {:initial-state {::accounts      []
+                   ::form          {}
+                   ::toggle-button {}}
+   :query [{::accounts      (comp/get-query AdminIndexAccountLine)}
+           {::form          (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (bulma/box
-   (dom/h1 (tr [:index-accounts])
-           (u.buttons/ui-show-form-button show-button))
-   (u.f.admin-create-account/ui-admin-create-account-form form-data)
+   (dom/h1
+    (tr [:index-accounts])
+    (u.buttons/ui-show-form-button toggle-button))
+   (u.f.admin-create-account/ui-admin-create-account-form form)
    (dom/hr)
    (if (empty? accounts)
      (dom/div (tr [:no-accounts]))

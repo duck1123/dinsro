@@ -20,8 +20,8 @@
 
 (defsc IndexCurrencies
   [_this {::keys [currencies]}]
-  {:query [{::currencies (comp/get-query IndexCurrencyLine)}]
-   :initial-state {::currencies []}}
+  {:initial-state {::currencies []}
+   :query [{::currencies (comp/get-query IndexCurrencyLine)}]}
   (if (seq currencies)
     (dom/table
      :.table

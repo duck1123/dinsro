@@ -8,21 +8,21 @@
    [taoensso.timbre :as timbre]))
 
 (defsc ShowAccount
-  [_this {::m.accounts/keys [name user-id currency-id account-id]
+  [_this {::m.accounts/keys [account-id currency-id name user-id]
           :keys [user-link-data]}]
-  {:query [::m.accounts/id
+  {:ident ::m.accounts/id
+   :initial-state {::m.accounts/id          1
+                   ::m.accounts/name        ""
+                   ::m.accounts/currency-id 0
+                   ::m.accounts/user-id     0
+                   ::m.accounts/account-id  0
+                   :user-link-data {}}
+   :query [::m.accounts/id
            ::m.accounts/name
            ::m.accounts/user-id
            ::m.accounts/currency-id
            ::m.accounts/account-id
-           :user-link-data]
-   :ident ::m.accounts/id
-   :initial-state {::m.accounts/id 1
-                   ::m.accounts/name "initial-name"
-                   ::m.accounts/currency-id 0
-                   ::m.accounts/user-id 0
-                   ::m.accounts/account-id 0
-                   :user-link-data {}}}
+           :user-link-data]}
   (dom/div
    (dom/h3 name)
    (dom/p account-id)

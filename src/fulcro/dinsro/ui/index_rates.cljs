@@ -28,10 +28,10 @@
 (def ui-index-rate-source-line (comp/factory IndexRateLine {:keyfn ::m.rates/id}))
 
 (defsc IndexRates
-  [_this {:rates/keys [items]}]
-  {:query [{:rates/items (comp/get-query IndexRateLine)}]
-   :initial-state {:rates/items []}}
-  (if (seq items)
+  [_this {::keys [rates]}]
+  {:initial-state {::rates []}
+   :query [{::rates (comp/get-query IndexRateLine)}]}
+  (if (seq rates)
     (dom/table
      :.table
      (dom/thead
@@ -41,7 +41,7 @@
        (dom/th (tr [:rate]))
        (dom/th (tr [:actions]))))
      (dom/tbody
-      (map ui-index-rate-source-line items)))
+      (map ui-index-rate-source-line rates)))
     (dom/p "no items")))
 
 (def ui-index-rates (comp/factory IndexRates))

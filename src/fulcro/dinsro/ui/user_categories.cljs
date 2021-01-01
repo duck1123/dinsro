@@ -20,9 +20,9 @@
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
 
 (defsc IndexUserCategories
-  [_this {:keys [categories]}]
-  {:query [{:categories (comp/get-query IndexCategoryLine)}]
-   :initial-state {:categories []}}
+  [_this {::keys [categories]}]
+  {:initial-state {::categories []}
+   :query [{::categories (comp/get-query IndexCategoryLine)}]}
   (if (seq categories)
     (dom/table
      :.table
@@ -37,17 +37,17 @@
 (def ui-index-user-categories (comp/factory IndexUserCategories))
 
 (defsc UserCategories
-  [_this {:keys [form-data button-data index-data]}]
-  {:query [{:form-data (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
-           {:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:index-data (comp/get-query IndexUserCategories)}]
-   :initial-state {:form-data {}
-                   :button-data {}
-                   :index-data {}}}
+  [_this {::keys [categories form toggle-button]}]
+  {:initial-state {::categories {}
+                   ::form {}
+                   ::toggle-button {}}
+   :query [{::categories (comp/get-query IndexUserCategories)}
+           {::form (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
   (bulma/box
-   (dom/h2 (tr [:categories]) (u.buttons/ui-show-form-button button-data))
-   (u.f.add-user-category/ui-form form-data)
-   (ui-index-user-categories index-data)))
+   (dom/h2 (tr [:categories]) (u.buttons/ui-show-form-button toggle-button))
+   (u.f.add-user-category/ui-form form)
+   (ui-index-user-categories categories)))
 
 (def ui-user-categories
   (comp/factory UserCategories))

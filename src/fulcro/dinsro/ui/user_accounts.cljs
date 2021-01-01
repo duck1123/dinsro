@@ -51,17 +51,19 @@
 (def ui-index-accounts (comp/factory IndexAccounts))
 
 (defsc UserAccounts
-  [_this {::keys [form-data button-data index-data]}]
-  {:query [{::form-data (comp/get-query u.f.add-user-account/AddUserAccountForm)}
-           {::button-data (comp/get-query u.buttons/ShowFormButton)}
-           {::index-data (comp/get-query u.index-accounts/IndexAccounts)}]
-   :initial-state {::button-data {}
-                   ::form-data {}
-                   ::index-data {}}}
+  [_this {::keys [accounts form toggle-button]}]
+  {:query [{::accounts      (comp/get-query u.index-accounts/IndexAccounts)}
+           {::form          (comp/get-query u.f.add-user-account/AddUserAccountForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]
+   :initial-state {::accounts      {}
+                   ::form          {}
+                   ::toggle-button {}}}
   (bulma/box
-   (dom/h2 (tr [:accounts]) (u.buttons/ui-show-form-button button-data))
-   (u.f.add-user-account/ui-form form-data)
-   (ui-index-accounts index-data)))
+   (dom/h2
+    (tr [:accounts])
+    (u.buttons/ui-show-form-button toggle-button))
+   (u.f.add-user-account/ui-form form)
+   (ui-index-accounts accounts)))
 
 (def ui-user-accounts
   (comp/factory UserAccounts))
