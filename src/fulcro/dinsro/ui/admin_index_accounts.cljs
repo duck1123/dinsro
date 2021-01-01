@@ -40,25 +40,27 @@
    :query [{::accounts      (comp/get-query AdminIndexAccountLine)}
            {::form          (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
-  (bulma/box
-   (dom/h1
-    (tr [:index-accounts])
-    (u.buttons/ui-show-form-button toggle-button))
-   (u.f.admin-create-account/ui-admin-create-account-form form)
-   (dom/hr)
-   (if (empty? accounts)
-     (dom/div (tr [:no-accounts]))
-     (dom/table
-      :.table
-      (dom/thead
-       (dom/tr
-        (dom/th "Id")
-        (dom/th (tr [:name]))
-        (dom/th (tr [:user-label]))
-        (dom/th (tr [:currency-label]))
-        (dom/th (tr [:initial-value-label]))
-        (dom/th (tr [:buttons]))))
-      (dom/tbody
-       (map ui-admin-index-account-line accounts))))))
+  (let [shown? false]
+    (bulma/box
+     (dom/h1
+      (tr [:index-accounts])
+      (u.buttons/ui-show-form-button toggle-button))
+     (when shown?
+       (u.f.admin-create-account/ui-admin-create-account-form form))
+     (dom/hr)
+     (if (empty? accounts)
+       (dom/div (tr [:no-accounts]))
+       (dom/table
+        :.table
+        (dom/thead
+         (dom/tr
+          (dom/th "Id")
+          (dom/th (tr [:name]))
+          (dom/th (tr [:user-label]))
+          (dom/th (tr [:currency-label]))
+          (dom/th (tr [:initial-value-label]))
+          (dom/th (tr [:buttons]))))
+        (dom/tbody
+         (map ui-admin-index-account-line accounts)))))))
 
 (def ui-section (comp/factory AdminIndexAccounts))

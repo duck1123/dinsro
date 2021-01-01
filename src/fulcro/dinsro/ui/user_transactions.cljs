@@ -46,10 +46,12 @@
    :initial-state {:form-data {}
                    :button-data {}
                    :index-data {}}}
-  (bulma/box
-   (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button button-data))
-   (u.f.add-user-transaction/ui-form form-data)
-   (ui-index-transactions index-data)))
+  (let [shown? false]
+    (bulma/box
+     (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button button-data))
+     (when shown?
+       (u.f.add-user-transaction/ui-form form-data))
+     (ui-index-transactions index-data))))
 
 (def ui-user-transactions
   (comp/factory UserTransactions))

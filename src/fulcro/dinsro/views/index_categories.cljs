@@ -19,15 +19,17 @@
            {::categories  (comp/get-query u.index-categories/IndexCategories)}
            {::form-data   (comp/get-query u.f.create-category/CreateCategoryForm)}]
    :route-segment ["categories"]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (bulma/box
-      (dom/h1
-       (tr [:index-categories "Index Categories"])
-       (u.buttons/ui-show-form-button button-data))
-      (u.f.create-category/ui-create-category-form form-data)
-      (dom/hr)
-      (u.index-categories/ui-index-categories categories))))))
+  (let [shown? false]
+    (bulma/section
+     (bulma/container
+      (bulma/content
+       (bulma/box
+        (dom/h1
+         (tr [:index-categories "Index Categories"])
+         (u.buttons/ui-show-form-button button-data))
+        (when shown?
+          (u.f.create-category/ui-create-category-form form-data))
+        (dom/hr)
+        (u.index-categories/ui-index-categories categories)))))))
 
 (def ui-page (comp/factory IndexCategoriesPage))

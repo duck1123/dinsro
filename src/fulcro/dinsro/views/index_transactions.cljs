@@ -20,15 +20,17 @@
            :page/id
            {::transactions (comp/get-query u.index-transactions/IndexTransactions)}]
    :route-segment ["transactions"]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (bulma/box
-      (dom/h1
-       (tr [:index-rates "Index Transactions"])
-       (u.buttons/ui-show-form-button button-data))
-      (u.f.create-transaction/ui-create-transaction-form form-data)
-      (dom/hr)
-      (u.index-transactions/ui-index-transactions transactions))))))
+  (let [shown? false]
+    (bulma/section
+     (bulma/container
+      (bulma/content
+       (bulma/box
+        (dom/h1
+         (tr [:index-rates "Index Transactions"])
+         (u.buttons/ui-show-form-button button-data))
+        (when shown?
+          (u.f.create-transaction/ui-create-transaction-form form-data))
+        (dom/hr)
+        (u.index-transactions/ui-index-transactions transactions)))))))
 
 (def ui-page (comp/factory IndexTransactionsPage))

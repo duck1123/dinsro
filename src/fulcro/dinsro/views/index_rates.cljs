@@ -19,17 +19,17 @@
            {::rates            (comp/get-query u.index-rates/IndexRates)}
            {::show-form-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["rates"]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
+  (let [shown? false]
+    (bulma/section
      (bulma/container
       (bulma/content
        (bulma/box
         (dom/h1
          (tr [:index-rates "Index Rates"])
          (u.buttons/ui-show-form-button show-form-button))
-        (u.f.create-rate/ui-create-rate-form form)
+        (when shown?
+          (u.f.create-rate/ui-create-rate-form form))
         (dom/hr)
-        (u.index-rates/ui-index-rates rates))))))))
+        (u.index-rates/ui-index-rates rates)))))))
 
 (def ui-page (comp/factory IndexRatesPage))

@@ -14,16 +14,18 @@
   {:initial-state {::form          {}
                    ::toggle-button {}
                    ::transactions  {}}
-   :query [{::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           {::form          (comp/get-query u.f.add-account-transaction/AddAccountTransactionForm)}
+   :query [{::form          (comp/get-query u.f.add-account-transaction/AddAccountTransactionForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
            {::transactions  (comp/get-query u.index-transactions/IndexTransactions)}]}
-  (bulma/container
-   (bulma/box
-    (dom/h2
-     (tr [:transactions])
-     (u.buttons/ui-show-form-button toggle-button))
-    (u.f.add-account-transaction/ui-add-account-transaction-form form)
-    (dom/hr)
-    (u.index-transactions/ui-index-transactions transactions))))
+  (let [shown? false]
+    (bulma/container
+     (bulma/box
+      (dom/h2
+       (tr [:transactions])
+       (u.buttons/ui-show-form-button toggle-button))
+      (when shown?
+        (u.f.add-account-transaction/ui-add-account-transaction-form form))
+      (dom/hr)
+      (u.index-transactions/ui-index-transactions transactions)))))
 
 (def ui-account-transactions (comp/factory AccountTransactions))

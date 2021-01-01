@@ -19,16 +19,18 @@
            {::form-data        (comp/get-query u.f.create-currency/CreateCurrencyForm)}
            {::show-form-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["currencies"]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (bulma/content
-      (bulma/box
-       (dom/h1
-        (tr [:index-currencies "Index Currencies"])
-        (u.buttons/ui-show-form-button show-form-button))
-       (u.f.create-currency/ui-create-currency-form form-data)
-       (dom/hr)
-       (u.index-currencies/ui-index-currencies currencies)))))))
+  (let [shown? false]
+    (bulma/section
+     (bulma/container
+      (bulma/content
+       (bulma/content
+        (bulma/box
+         (dom/h1
+          (tr [:index-currencies "Index Currencies"])
+          (u.buttons/ui-show-form-button show-form-button))
+         (when shown?
+           (u.f.create-currency/ui-create-currency-form form-data))
+         (dom/hr)
+         (u.index-currencies/ui-index-currencies currencies))))))))
 
 (def ui-page (comp/factory IndexCurrenciesPage))

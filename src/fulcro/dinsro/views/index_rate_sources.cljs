@@ -19,15 +19,17 @@
            {::form-data   (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
            {::rates       (comp/get-query u.index-rate-sources/IndexRateSources)}]
    :route-segment ["rate-sources"]}
-  (bulma/section
-   (bulma/container
-    (bulma/content
-     (bulma/box
-      (dom/h1
-       (tr [:index-rates "Index Rate Sources"])
-       (u.buttons/ui-show-form-button button-data))
-      (u.f.create-rate-source/ui-create-rate-source-form form-data)
-      (dom/hr)
-      (u.index-rate-sources/ui-index-rate-sources rates))))))
+  (let [shown? false]
+    (bulma/section
+     (bulma/container
+      (bulma/content
+       (bulma/box
+        (dom/h1
+         (tr [:index-rates "Index Rate Sources"])
+         (u.buttons/ui-show-form-button button-data))
+        (when shown?
+          (u.f.create-rate-source/ui-create-rate-source-form form-data))
+        (dom/hr)
+        (u.index-rate-sources/ui-index-rate-sources rates)))))))
 
 (def ui-page (comp/factory IndexRateSourcesPage))

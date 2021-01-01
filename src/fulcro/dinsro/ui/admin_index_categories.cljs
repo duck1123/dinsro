@@ -27,22 +27,24 @@
   [_this {::keys [categories]}]
   {:initial-state {::categories []}
    :query [::categories]}
-  (bulma/box
-   (dom/h1
-    (tr [:categories "Categories"])
-    (dom/button "+"))
-   (u.f.create-category/ui-create-category-form)
-   (dom/hr)
-   (if (empty? categories)
-     (dom/p (tr [:no-categories]))
-     (dom/table
-      :.table
-      (dom/thead
-       (dom/tr
-        (dom/th (tr [:name]))
-        (dom/th (tr [:user]))
-        (dom/th (tr [:actions]))))
-      (dom/tbody
-       (map ui-admin-index-category-line categories))))))
+  (let [shown? false]
+    (bulma/box
+     (dom/h1
+      (tr [:categories "Categories"])
+      (dom/button "+"))
+     (when shown?
+       (u.f.create-category/ui-create-category-form))
+     (dom/hr)
+     (if (empty? categories)
+       (dom/p (tr [:no-categories]))
+       (dom/table
+        :.table
+        (dom/thead
+         (dom/tr
+          (dom/th (tr [:name]))
+          (dom/th (tr [:user]))
+          (dom/th (tr [:actions]))))
+        (dom/tbody
+         (map ui-admin-index-category-line categories)))))))
 
 (def ui-section (comp/factory AdminIndexCategories))

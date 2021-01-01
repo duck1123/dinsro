@@ -58,12 +58,14 @@
    :initial-state {::accounts      {}
                    ::form          {}
                    ::toggle-button {}}}
-  (bulma/box
-   (dom/h2
-    (tr [:accounts])
-    (u.buttons/ui-show-form-button toggle-button))
-   (u.f.add-user-account/ui-form form)
-   (ui-index-accounts accounts)))
+  (let [shown? false]
+    (bulma/box
+     (dom/h2
+      (tr [:accounts])
+      (u.buttons/ui-show-form-button toggle-button))
+     (when shown?
+       (u.f.add-user-account/ui-form form))
+     (ui-index-accounts accounts))))
 
 (def ui-user-accounts
   (comp/factory UserAccounts))

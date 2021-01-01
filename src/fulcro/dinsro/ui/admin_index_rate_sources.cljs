@@ -40,25 +40,27 @@
    :query [{::form          (comp/get-query u.f.admin-create-rate-source/AdminCreateRateSourceForm)}
            {::rate-sources  (comp/get-query AdminIndexRateSourceLine)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]}
-  (bulma/box
-   (dom/h2
-    :.title.is-2
-    (tr [:rate-sources])
-    (u.buttons/ui-show-form-button toggle-button))
-   (u.f.admin-create-rate-source/ui-admin-create-rate-source-form form)
-   (dom/hr)
-   (if (empty? rate-sources)
-     (dom/p (tr [:no-rate-sources]))
-     (dom/table
-      :.table
-      (dom/thead
-       (dom/tr
-        (dom/th "id")
-        (dom/th "name")
-        (dom/th "url")
-        (dom/th "currency")
-        (dom/th "actions")))
-      (dom/tbody
-       (map ui-admin-index-rate-source-line rate-sources))))))
+  (let [shown? false]
+    (bulma/box
+     (dom/h2
+      :.title.is-2
+      (tr [:rate-sources])
+      (u.buttons/ui-show-form-button toggle-button))
+     (when shown?
+       (u.f.admin-create-rate-source/ui-admin-create-rate-source-form form))
+     (dom/hr)
+     (if (empty? rate-sources)
+       (dom/p (tr [:no-rate-sources]))
+       (dom/table
+        :.table
+        (dom/thead
+         (dom/tr
+          (dom/th "id")
+          (dom/th "name")
+          (dom/th "url")
+          (dom/th "currency")
+          (dom/th "actions")))
+        (dom/tbody
+         (map ui-admin-index-rate-source-line rate-sources)))))))
 
 (def ui-section (comp/factory AdminIndexRateSources))

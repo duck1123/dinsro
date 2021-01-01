@@ -19,10 +19,12 @@
           currency-id :currency/id}]
   {:initial-state {:currency/id 1
                    :rate-feed []}}
-  (bulma/box
-   (dom/h2
-    "Rates"
-    (ui-show-form-button {}))
-   (ui-add-currency-rate-form {:currency/id currency-id})
-   (dom/hr)
-   (ui-rate-chart rate-feed)))
+  (let [shown? false]
+    (bulma/box
+     (dom/h2
+      "Rates"
+      (ui-show-form-button {}))
+     (when shown?
+       (ui-add-currency-rate-form {:currency/id currency-id}))
+     (dom/hr)
+     (ui-rate-chart rate-feed))))
