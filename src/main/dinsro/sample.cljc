@@ -114,4 +114,4 @@
 
 (def user-map
   {1 (user-line 1 "Foo McFooerson" "foo@example.com")
-   2 (user-line 1 "Bart "          "bar@example.com")})
+   2 (user-line 2 "Bart "          "bar@example.com")})
