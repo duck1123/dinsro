@@ -11,22 +11,6 @@
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
-(def people-table
-  (atom
-   {1 {:person/id 1 :person/name "Sally" :person/age 32}
-    2 {:person/id 2 :person/name "Joe" :person/age 22}
-    3 {:person/id 3 :person/name "Fred" :person/age 11}
-    4 {:person/id 4 :person/name "Bobby" :person/age 55}}))
-
-(def list-table
-  (atom
-   {:friends {:list/id     :friends
-              :list/label  "Friends"
-              :list/people [1 2]}
-    :enemies {:list/id     :enemies
-              :list/label  "Enemies"
-              :list/people [4 3]}}))
-
 (defresolver account-resolver
   [_env {::m.accounts/keys [id]}]
   {::pc/input #{::m.accounts/id}
@@ -40,11 +24,6 @@
   [_env _props]
   {::pc/output [::m.accounts/map]}
   {::m.accounts/map sample/account-map})
-
-(defresolver all-lists-resolver [_env _props]
-  {::pc/output [:all-lists]}
-  {:all-lists [{:list/id :friends}
-               {:list/id :enemies}]})
 
 (defresolver auth-resolver
   [_env _props]
@@ -117,30 +96,11 @@
                      (fn [id] [:debug-menu/id id])
                      (keys sample/debug-menu-map))})
 
-(defresolver foo-resolver [_env _props]
-  {::pc/output [:foo/name]}
-  {:foo/name "Foo Name"})
-
 (pc/defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
    ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
   {:com.wsscode.pathom.viz.index-explorer/index
    (get env ::pc/indexes)})
-
-;; Given a :list/id, this can generate a list label and the people
-;; in that list (but just with their IDs)
-(defresolver list-resolver [_env {:list/keys [id]}]
-  {::pc/input  #{:list/id}
-   ::pc/output [:list/label {:list/people [:person/id]}]}
-  (when-let [list (get @list-table id)]
-    (assoc list
-           :list/people (mapv (fn [id] {:person/id id}) (:list/people list)))))
-
-;; Given :person/id, this can generate the details of a person
-(defresolver person-resolver [_env {:person/keys [id]}]
-  {::pc/input  #{:person/id}
-   ::pc/output [:person/name :person/age]}
-  (get @people-table id))
 
 (defresolver navlink-resolver
   [_env {:navlink/keys [id]}]
@@ -234,7 +194,6 @@
 (def resolvers
   [account-resolver
    account-map-resolver
-   all-lists-resolver
    auth-resolver
    category-resolver
    category-map-resolver
@@ -245,12 +204,9 @@
    debug-menus-resolver
    debug-menu-list-resolver
    debug-menu-map-resolver
-   foo-resolver
    ;; index-explorer
-   list-resolver
    navlink-resolver
    navlink-map-resolver
-   person-resolver
    rate-map-resolver
    rate-source-resolver
    rate-source-map-resolver
