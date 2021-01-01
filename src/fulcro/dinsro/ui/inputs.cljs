@@ -9,34 +9,44 @@
    [taoensso.timbre :as timbre]))
 
 (defsc TextInput
-  [_this _props]
-  {:initial-state {}
-   :query []}
+  [_this {:keys [label value]} {:keys [onChange]}]
+  {:query [:label :value]
+   :initial-state
+   (fn [{:keys [label value]
+         :or {label ""
+              value ""}}]
+     {:label label
+      :value value})}
   (dom/div
-   (dom/label
-    :.label
-    "label")
+   (dom/label :.label label)
    (dom/input
     :.input
-    {:type :text})))
+    {:type :text
+     :value value
+     :onChange (fn [e] (onChange e))})))
 
 (def ui-text-input
-  (comp/factory TextInput))
+  (comp/computed-factory TextInput))
 
 (defsc NumberInput
-  [_this _props]
-  {:initial-state {}
-   :query []}
+  [_this {:keys [label value]} {:keys [onChange]}]
+  {:initial-state
+   (fn [{:keys [label value]
+         :or {label ""
+              value ""}}]
+     {:label label
+      :value value})
+   :query [:label :value]}
   (dom/div
-   (dom/label
-    :.label
-    "label")
+   (dom/label :.label label)
    (dom/input
     :.input
-    {:type :text})))
+    {:type :number
+     :value value
+     :onChange onChange})))
 
 (def ui-number-input
-  (comp/factory NumberInput))
+  (comp/computed-factory NumberInput))
 
 (defsc AccountSelector
   [_this {:keys [accounts]}]
