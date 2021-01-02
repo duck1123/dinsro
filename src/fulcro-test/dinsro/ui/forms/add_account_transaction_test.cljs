@@ -9,9 +9,12 @@
 
 (ws/defcard AddAccountTransactionForm
   {::wsm/card-height 10
-   ::wsm/card-width 3}
+   ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.add-account-transaction/AddAccountTransactionForm
     ::ct.fulcro3/initial-state
-    (fn [] {})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn []
+      {::u.f.add-account-transaction/datepicker    {}
+       ::u.f.add-account-transaction/description   ""
+       ::u.f.add-account-transaction/name          ""
+       ::u.f.add-account-transaction/submit-button {}})}))

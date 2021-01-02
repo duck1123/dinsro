@@ -8,9 +8,10 @@
 
 (defsc CreateAccountForm
   [_this _props]
-  {:query []}
+  {:ident (fn [] [:form/id ::form])
+   :initial-state {}
+   :query []}
   (dom/div
-   "Create Account"
    (u.inputs/ui-text-input {:label (tr [:name])})))
 
 (def ui-create-account-form (comp/factory CreateAccountForm))

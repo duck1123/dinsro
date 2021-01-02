@@ -9,9 +9,8 @@
 
 (ws/defcard CreateCategoryForm
   {::wsm/card-height 5
-   ::wsm/card-width 2}
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.create-category/CreateCategoryForm
     ::ct.fulcro3/initial-state
-    (fn [] {:accounts []})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn [] {::u.f.create-category/name ""})}))

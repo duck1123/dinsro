@@ -9,9 +9,9 @@
 
 (ws/defcard CreateCurrencyForm
   {::wsm/card-height 5
-   ::wsm/card-width 2}
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.create-currency/CreateCurrencyForm
     ::ct.fulcro3/initial-state
-    (fn [] {})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn []
+      {::u.f.create-currency/name ""})}))

@@ -8,11 +8,14 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AdminCreateAccountForm
-  {::wsm/align {:flex 1}
+  {::wsm/align       {:flex 1}
    ::wsm/card-height 9
-   ::wsm/card-width 4}
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.admin-create-account/AdminCreateAccountForm
     ::ct.fulcro3/initial-state
-    (fn [] {:accounts []})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn []
+      {::u.f.admin-create-account/currency      {}
+       ::u.f.admin-create-account/initial-value "0"
+       ::u.f.admin-create-account/name          ""
+       ::u.f.admin-create-account/user          {}})}))

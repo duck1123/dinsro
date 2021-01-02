@@ -8,11 +8,13 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AddUserAccountForm
-  {::wsm/align {:flex 1}
+  {::wsm/align       {:flex 1}
    ::wsm/card-height 11
-   ::wsm/card-width 3}
+   ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.add-user-account/AddUserAccountForm
     ::ct.fulcro3/initial-state
-    (fn [] {})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn []
+      {::u.f.add-user-account/currency      {:label "currency"      :value "7"}
+       ::u.f.add-user-account/initial-value "1"
+       ::u.f.add-user-account/name          "Savings Account"})}))

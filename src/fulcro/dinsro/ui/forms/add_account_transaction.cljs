@@ -9,21 +9,31 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AddAccountTransactionForm
-  [_this _props]
-  {:query []}
+  [_this {::keys [datepicker description name submit-button]}]
+  {:ident (fn [] [:form/id ::form])
+   :initial-state {::datepicker    {}
+                   ::description   ""
+                   ::name          ""
+                   ::submit-button {}}
+   :query [::datepicker
+           ::description
+           ::name
+           ::submit-button]}
   (dom/div
    (bulma/field
     (bulma/control
-     (u.inputs/ui-text-input)))
+     (u.inputs/ui-text-input
+      {:label (tr [:name]) :value name})))
    (bulma/field
     (bulma/control
-     (u.inputs/ui-number-input)))
+     (u.inputs/ui-number-input
+      {:label (tr [:description]) :value description})))
    (bulma/field
     (bulma/control
-     (u.datepicker/ui-datepicker)))
+     (u.datepicker/ui-datepicker datepicker)))
    (bulma/field
     (bulma/control
-     (u.inputs/ui-primary-button)))))
+     (u.inputs/ui-primary-button submit-button)))))
 
 (def ui-add-account-transaction-form
   (comp/factory AddAccountTransactionForm))
