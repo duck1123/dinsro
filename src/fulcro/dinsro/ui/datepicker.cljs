@@ -27,19 +27,20 @@
      (if-let [e (js/ReactDOM.findDOMNode this)]
        (let [props (comp/props this)
              js-opts (clj->js (dissoc props :on-select))
-             instance (BulmaCalendar. e js-opts)]
+             instance (BulmaCalendar. (.querySelector e "input") js-opts)]
          (when-let [on-select (:on-select props)]
            (.on instance "select"
                 (fn [datepicker]
                   (let [value (.toISOString (js/Date. (.. datepicker -data value)))]
                     (on-select value))))))
-       (timbre/info "nil")))
+       (timbre/warn "Datepicker element was nil")))
    :initial-state {}
    :query []}
-  (dom/input
-   :.input
-   {:onSelect (fn [_] (timbre/info "on select"))
-    :onChange (fn [_] (timbre/info "changed"))
-    :value ""}))
+  (dom/div
+   (dom/input
+    :.input
+    {:onSelect (fn [_] (timbre/info "on select"))
+     :onChange (fn [_] (timbre/info "changed"))
+     :value ""})))
 
 (def ui-datepicker (comp/factory Datepicker))

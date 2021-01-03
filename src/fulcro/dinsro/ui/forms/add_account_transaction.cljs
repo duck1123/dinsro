@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.datepicker :as u.datepicker]
@@ -9,7 +10,7 @@
    [taoensso.timbre :as timbre]))
 
 (defsc AddAccountTransactionForm
-  [_this {::keys [datepicker description name submit-button]}]
+  [this {::keys [datepicker description name submit-button]}]
   {:ident (fn [] [:form/id ::form])
    :initial-state {::datepicker    {}
                    ::description   ""
@@ -26,8 +27,9 @@
       {:label (tr [:name]) :value name})))
    (bulma/field
     (bulma/control
-     (u.inputs/ui-number-input
-      {:label (tr [:description]) :value description})))
+     (u.inputs/ui-text-input
+      {:label (tr [:description]) :value description}
+      {:onChange #(fm/set-string! this ::name :event %)})))
    (bulma/field
     (bulma/control
      (u.datepicker/ui-datepicker datepicker)))

@@ -39,19 +39,19 @@
 (def ui-index-transactions (comp/factory IndexTransactions))
 
 (defsc UserTransactions
-  [_this {:keys [form-data button-data index-data]}]
-  {:query [{:form-data (comp/get-query u.f.add-user-transaction/AddUserTransactionForm)}
-           {:button-data (comp/get-query u.buttons/ShowFormButton)}
-           {:index-data (comp/get-query u.index-transactions/IndexTransactions)}]
-   :initial-state {:form-data {}
-                   :button-data {}
-                   :index-data {}}}
+  [_this {::keys [form toggle-button transactions]}]
+  {:initial-state {::form          {}
+                   ::toggle-button {}
+                   ::transactions  {}}
+   :query [{::form          (comp/get-query u.f.add-user-transaction/AddUserTransactionForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+           {::transactions  (comp/get-query u.index-transactions/IndexTransactions)}]}
   (let [shown? false]
     (bulma/box
-     (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button button-data))
+     (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
      (when shown?
-       (u.f.add-user-transaction/ui-form form-data))
-     (ui-index-transactions index-data))))
+       (u.f.add-user-transaction/ui-form form))
+     (ui-index-transactions transactions))))
 
 (def ui-user-transactions
   (comp/factory UserTransactions))

@@ -10,14 +10,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexCurrenciesPage
-  [_this {::keys [show-form-button currencies form-data]}]
+  [_this {::keys [currencies form toggle-button]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {::currencies       {}
-                   ::form-data        {}
-                   ::show-form-button {}}
-   :query [{::currencies       (comp/get-query u.index-currencies/IndexCurrencies)}
-           {::form-data        (comp/get-query u.f.create-currency/CreateCurrencyForm)}
-           {::show-form-button (comp/get-query u.buttons/ShowFormButton)}]
+   :initial-state {::currencies    {}
+                   ::form          {}
+                   ::toggle-button {}}
+   :query [{::currencies    (comp/get-query u.index-currencies/IndexCurrencies)}
+           {::form          (comp/get-query u.f.create-currency/CreateCurrencyForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["currencies"]}
   (let [shown? false]
     (bulma/section
@@ -27,9 +27,9 @@
         (bulma/box
          (dom/h1
           (tr [:index-currencies "Index Currencies"])
-          (u.buttons/ui-show-form-button show-form-button))
+          (u.buttons/ui-show-form-button toggle-button))
          (when shown?
-           (u.f.create-currency/ui-create-currency-form form-data))
+           (u.f.create-currency/ui-create-currency-form form))
          (dom/hr)
          (u.index-currencies/ui-index-currencies currencies))))))))
 

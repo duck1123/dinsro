@@ -9,13 +9,14 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AdminIndexCurrenciesSection
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 15
-   ::wsm/card-width 5}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 10
+   ::wsm/card-width  7}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-currencies/AdminIndexCurrenciesSection
     ::ct.fulcro3/initial-state
-    (fn [] {:button-data {}
-            :form-data {}
-            :currencies {:currencies (map sample/currency-map [1 2])}})
+    (fn [] {::u.admin-index-currencies/currencies
+            {::u.admin-index-currencies/currencies (map sample/currency-map [1 2])}
+            ::u.admin-index-currencies/form          {}
+            ::u.admin-index-currencies/toggle-button {}})
     ::ct.fulcro3/wrap-root? false}))

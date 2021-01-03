@@ -9,8 +9,8 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard ShowUser
-  {::wsm/card-height 9
-   ::wsm/card-width 4}
+  {::wsm/card-height 7
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.show-user/ShowUser
     ::ct.fulcro3/initial-state

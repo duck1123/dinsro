@@ -10,14 +10,14 @@
    [taoensso.timbre :as timbre]))
 
 (defsc IndexRatesPage
-  [_this {::keys [form rates show-form-button]}]
+  [_this {::keys [form rates toggle-button]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {::form             {}
-                   ::rates            {}
-                   ::show-form-button {}}
-   :query [{::form             (comp/get-query u.f.create-rate/CreateRateForm)}
-           {::rates            (comp/get-query u.index-rates/IndexRates)}
-           {::show-form-button (comp/get-query u.buttons/ShowFormButton)}]
+   :initial-state {::form          {}
+                   ::rates         {}
+                   ::toggle-button {}}
+   :query [{::form          (comp/get-query u.f.create-rate/CreateRateForm)}
+           {::rates         (comp/get-query u.index-rates/IndexRates)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}]
    :route-segment ["rates"]}
   (let [shown? false]
     (bulma/section
@@ -26,7 +26,7 @@
        (bulma/box
         (dom/h1
          (tr [:index-rates "Index Rates"])
-         (u.buttons/ui-show-form-button show-form-button))
+         (u.buttons/ui-show-form-button toggle-button))
         (when shown?
           (u.f.create-rate/ui-create-rate-form form))
         (dom/hr)

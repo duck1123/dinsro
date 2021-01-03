@@ -14,9 +14,9 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/initial-state
     (fn []
-      {:name (ds/gen-key ::m.users/name)
-       :email (ds/gen-key ::m.users/email)
-       :password (ds/gen-key ::m.users/password)
+      {:name             (ds/gen-key ::m.users/name)
+       :email            (ds/gen-key ::m.users/email)
+       :password         (ds/gen-key ::m.users/password)
        :confirm-password (ds/gen-key ::m.users/password)})
     ::ct.fulcro3/root u.f.registration/RegistrationForm
     ::ct.fulcro3/wrap-root? false}))

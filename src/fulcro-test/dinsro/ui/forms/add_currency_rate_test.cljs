@@ -8,7 +8,7 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AddCurrencyRate
-  {::wsm/card-height 5
+  {::wsm/card-height 3
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.add-currency-rate/AddCurrencyRate

@@ -8,12 +8,13 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexCurrenciesPage
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 11
-   ::wsm/card-width 5}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 8
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.index-currencies/IndexCurrenciesPage
     ::ct.fulcro3/initial-state
-    (fn [] {:button-data {}
-            :form-data {}
-            :currencies {:currencies (map sample/currency-map [1 2])}})}))
+    (fn []
+      {::v.index-currencies/currencies    {:currencies (map sample/currency-map [1 2])}
+       ::v.index-currencies/form          {}
+       ::v.index-currencies/toggle-button {}})}))

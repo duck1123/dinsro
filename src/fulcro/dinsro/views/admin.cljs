@@ -14,13 +14,18 @@
 (defsc AdminPage
   [_this {:keys [accounts categories currencies rate-sources transactions users]}]
   {:ident (fn [_] [:page/id ::page])
-   :query [{:accounts (comp/get-query u.admin-index-accounts/AdminIndexAccounts)}
-           {:categories (comp/get-query u.admin-index-categories/AdminIndexCategories)}
-           {:currencies (comp/get-query u.admin-index-currencies/AdminIndexCurrencies)}
+   :initial-state {:accounts     {}
+                   :categories   {}
+                   :rate-sources {}
+                   :transactions {}
+                   :users        {}}
+   :query [{:accounts     (comp/get-query u.admin-index-accounts/AdminIndexAccounts)}
+           {:categories   (comp/get-query u.admin-index-categories/AdminIndexCategories)}
+           {:currencies   (comp/get-query u.admin-index-currencies/AdminIndexCurrencies)}
            :page/id
            {:rate-sources (comp/get-query u.admin-index-rate-sources/AdminIndexRateSources)}
            {:transactions (comp/get-query u.admin-index-transactions/AdminIndexTransactions)}
-           {:users (comp/get-query u.admin-index-users/AdminIndexUsers)}]
+           {:users        (comp/get-query u.admin-index-users/AdminIndexUsers)}]
    :route-segment ["admin"]}
   (bulma/section
    (bulma/container

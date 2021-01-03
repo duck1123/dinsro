@@ -7,12 +7,13 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexCategoriesPage
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 10
-   ::wsm/card-width 5}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 9
+   ::wsm/card-width  5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.index-categories/IndexCategoriesPage
     ::ct.fulcro3/initial-state
-    (fn [] {:button-data {}
-            :form-data {}
-            :categories {}})}))
+    (fn []
+      {::v.index-categories/button-data {}
+       ::v.index-categories/categories  {}
+       ::v.index-categories/form-data   {}})}))

@@ -45,7 +45,7 @@
        (dom/th (tr [:initial-value-label]))
        (dom/th (tr [:buttons]))))
      (dom/tbody
-      (map ui-index-account-line (timbre/spy :info accounts))))
+      (map ui-index-account-line accounts)))
     (dom/div (tr [:no-accounts]))))
 
 (def ui-index-accounts (comp/factory IndexAccounts))

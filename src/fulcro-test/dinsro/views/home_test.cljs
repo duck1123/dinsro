@@ -6,8 +6,8 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard HomePage
-  {::wsm/card-height 11
-   ::wsm/card-width 2}
+  {::wsm/card-height 8
+   ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.home/HomePage
     ;; ::ct.fulcro3/wrap-root? false

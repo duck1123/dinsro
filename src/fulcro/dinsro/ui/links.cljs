@@ -30,7 +30,6 @@
    :initial-state {::m.users/id   0
                    ::m.users/name ""}
    :query [::m.users/id ::m.users/name]}
-  (timbre/info "link")
   (let [path (str "/users/" id)]
     (dom/a {:href path} name)))
 

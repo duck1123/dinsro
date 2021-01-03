@@ -8,8 +8,8 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard IndexCategories
-  {::wsm/card-height 7
-   ::wsm/card-width 2}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.index-categories/IndexCategories
     ::ct.fulcro3/initial-state

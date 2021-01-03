@@ -10,7 +10,7 @@
 (comment
   (ws/defcard IndexRateSourceLine
     {::wsm/card-height 5
-     ::wsm/card-width 2}
+     ::wsm/card-width  2}
     (ct.fulcro3/fulcro-card
      {::ct.fulcro3/root u.index-rate-sources/IndexRateSourceLine
       ::ct.fulcro3/initial-state
@@ -18,8 +18,8 @@
       ::ct.fulcro3/wrap-root? false})))
 
 (ws/defcard IndexRateSources
-  {::wsm/card-height 9
-   ::wsm/card-width 6}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.index-rate-sources/IndexRateSources
     ::ct.fulcro3/initial-state

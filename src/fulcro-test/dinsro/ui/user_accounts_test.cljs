@@ -8,19 +8,21 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexAccounts
-  {::wsm/align {:flex 1}
+  {::wsm/align       {:flex 1}
    ::wsm/card-height 7
-   ::wsm/card-width 5}
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.user-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
-    (fn [] {:accounts (map sample/account-map [1 2])})
+    (fn [] {:accounts (map
+                       (fn [m] (assoc m :button-data {}))
+                       (vals sample/account-map))})
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard UserAccounts
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 11
-   ::wsm/card-width 5}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 7
+   ::wsm/card-width  5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.user-accounts/UserAccounts
     ::ct.fulcro3/initial-state

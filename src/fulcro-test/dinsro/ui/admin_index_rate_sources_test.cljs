@@ -8,11 +8,16 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard AdminIndexRateSources
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 15
-   ::wsm/card-width 5}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 12
+   ::wsm/card-width  6}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-rate-sources/AdminIndexRateSources
     ::ct.fulcro3/initial-state
-    (fn [] {:rate-sources (map sample/rate-source-map [1 2])})
+    (fn []
+      {::u.admin-index-rate-sources/form          {}
+       ::u.admin-index-rate-sources/rate-sources
+       (map (fn [m] (assoc m ::u.admin-index-rate-sources/button-data {}))
+            (vals sample/rate-source-map))
+       ::u.admin-index-rate-sources/toggle-button {}})
     ::ct.fulcro3/wrap-root? false}))

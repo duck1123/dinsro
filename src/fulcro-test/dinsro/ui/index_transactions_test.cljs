@@ -8,9 +8,9 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard IndexTransactions
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 10
-   ::wsm/card-width 3}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 4
+   ::wsm/card-width  1}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.index-transactions/IndexTransactions
     ::ct.fulcro3/initial-state

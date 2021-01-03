@@ -8,8 +8,8 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AddAccountTransactionForm
-  {::wsm/card-height 10
-   ::wsm/card-width  3}
+  {::wsm/card-height 8
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.add-account-transaction/AddAccountTransactionForm
     ::ct.fulcro3/initial-state

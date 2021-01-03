@@ -48,6 +48,12 @@
 (def ui-number-input
   (comp/computed-factory NumberInput))
 
+(defsc SelectorOption
+  [_this {:keys [id name]}]
+  (dom/option {:value id} name))
+
+(def ui-selector-option (comp/factory SelectorOption {:keyfn :id}))
+
 (defsc AccountSelector
   [_this {:keys [accounts]}]
   {:initial-state {:accounts []}
@@ -56,8 +62,7 @@
    :.select
    (dom/select
     (map (fn [{::m.accounts/keys [id name]}]
-           ^{:key id}
-           (dom/option {:value id} name))
+           (ui-selector-option {:id (str id) :name name}))
          accounts))))
 
 (def ui-account-selector (comp/factory AccountSelector))
@@ -70,8 +75,7 @@
    :.select
    (dom/select
     (map (fn [{::m.currencies/keys [id name]}]
-           ^{:key id}
-           (dom/option {:value id} name))
+           (ui-selector-option {:id (str id) :name name}))
          currencies))))
 
 (def ui-currency-selector (comp/factory CurrencySelector))
@@ -84,8 +88,7 @@
    :.select
    (dom/select
     (map (fn [{::m.users/keys [id name]}]
-           ^{:key id}
-           (dom/option {:value id} name))
+           (ui-selector-option {:id (str id) :name name}))
          users))))
 
 (def ui-user-selector (comp/factory UserSelector))

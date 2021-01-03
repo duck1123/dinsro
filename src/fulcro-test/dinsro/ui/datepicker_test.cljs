@@ -7,8 +7,8 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard Datepicker
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 4
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.datepicker/Datepicker
     ::ct.fulcro3/initial-state

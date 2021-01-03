@@ -9,8 +9,8 @@
 
 (ws/defcard AddUserAccountForm
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 11
-   ::wsm/card-width  3}
+   ::wsm/card-height 8
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.add-user-account/AddUserAccountForm
     ::ct.fulcro3/initial-state

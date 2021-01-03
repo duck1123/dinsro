@@ -9,8 +9,8 @@
 
 (ws/defcard AdminCreateAccountForm
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 9
-   ::wsm/card-width  4}
+   ::wsm/card-height 7
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.admin-create-account/AdminCreateAccountForm
     ::ct.fulcro3/initial-state

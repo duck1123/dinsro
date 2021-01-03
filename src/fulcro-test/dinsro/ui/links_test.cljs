@@ -9,8 +9,8 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard AccountLink
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/AccountLink
     ::ct.fulcro3/initial-state
@@ -20,8 +20,8 @@
             :account/name "Foo"})}))
 
 (ws/defcard CurrencyLink
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/CurrencyLink
     ::ct.fulcro3/initial-state
@@ -29,8 +29,10 @@
             :currency/name "Currency"})}))
 
 (ws/defcard UserLink
-  {::wsm/card-height 5
-   ::wsm/card-width 2}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/UserLink
-    ::ct.fulcro3/initial-state (fn [] (rand-nth (vals sample/user-map)))}))
+    ::ct.fulcro3/initial-state
+    (fn []
+      (rand-nth (vals sample/user-map)))}))

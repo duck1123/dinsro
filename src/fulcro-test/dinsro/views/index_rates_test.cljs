@@ -8,12 +8,12 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexRatesPage
-  {::wsm/align {:flex 1}
-   ::wsm/card-height 11
-   ::wsm/card-width 5}
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 9
+   ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root v.index-rates/IndexRatesPage
     ::ct.fulcro3/initial-state
-    (fn [] {:button-data {}
-            :form-data {}
-            :rates {:rates/items (vals sample/rate-map)}})}))
+    (fn [] {::v.index-rates/form          {}
+            ::v.index-rates/rates         {:rates/items (vals sample/rate-map)}
+            ::v.index-rates/toggle-button {}})}))

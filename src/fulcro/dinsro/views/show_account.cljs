@@ -10,7 +10,8 @@
 
 (defsc ShowAccountPage
   [_this {:keys [account-data transactions]}]
-  {:initial-state {:account-data {}
+  {:ident (fn [] [:page/id ::page])
+   :initial-state {:account-data {}
                    :transactions {}}
    :query [{:account-data (comp/get-query u.show-account/ShowAccount)}
            {:transactions (comp/get-query u.account-transactions/AccountTransactions)}]
@@ -20,5 +21,5 @@
     (bulma/content
      (bulma/box
       (dom/h1 (tr [:show-account]))
-      (u.show-account/ui-show-account (timbre/spy :info account-data))
+      (u.show-account/ui-show-account account-data)
       (u.account-transactions/ui-account-transactions transactions))))))

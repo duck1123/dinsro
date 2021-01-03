@@ -12,7 +12,7 @@
 
 (ws/defcard ShowCurrency
   {::wsm/card-height 6
-   ::wsm/card-width 1}
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.show-currency/ShowCurrency
     ::ct.fulcro3/initial-state

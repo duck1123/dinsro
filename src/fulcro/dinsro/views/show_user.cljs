@@ -15,9 +15,9 @@
                    ::user-accounts     {}
                    ::user-categories   {}
                    ::user-transactions {}}
-   :query [{::user (comp/get-query u.show-user/ShowUser)}
-           {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}
-           {::user-categories (comp/get-query u.user-categories/UserCategories)}
+   :query [{::user              (comp/get-query u.show-user/ShowUser)}
+           {::user-accounts     (comp/get-query u.user-accounts/UserAccounts)}
+           {::user-categories   (comp/get-query u.user-categories/UserCategories)}
            {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
    :route-segment ["show-user"]}
   (bulma/section

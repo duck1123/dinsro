@@ -8,26 +8,26 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard TextInput
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 4
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/TextInput
     ::ct.fulcro3/initial-state
-    (fn [] {})
+    (fn [] {:label "label" :value "value"})
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard NumberInput
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 4
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/NumberInput
     ::ct.fulcro3/initial-state
-    (fn [] {})
+    (fn [] {:label "label" :value "1"})
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard AccountSelector
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/AccountSelector
     ::ct.fulcro3/initial-state
@@ -36,8 +36,8 @@
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard CurrencySelector
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/CurrencySelector
     ::ct.fulcro3/initial-state
@@ -45,8 +45,8 @@
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard UserSelector
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/UserSelector
     ::ct.fulcro3/initial-state
@@ -54,8 +54,8 @@
     ::ct.fulcro3/wrap-root? false}))
 
 (ws/defcard PrimaryButton
-  {::wsm/card-height 6
-   ::wsm/card-width 3}
+  {::wsm/card-height 3
+   ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/PrimaryButton
     ::ct.fulcro3/initial-state
