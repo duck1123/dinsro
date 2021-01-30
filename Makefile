@@ -145,7 +145,7 @@ test-reframe-cljs: install
 	npx karma start --single-run --check="ci-reframe.js"
 
 run-fulcro:
-	clojure -M:fulcro:dev:datomic:fulcro-dev
+	clojure -M:fulcro:dev:datomic:fulcro-dev `pwd`/config.edn
 
 run-production: run-reframe-production
 
