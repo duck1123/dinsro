@@ -77,6 +77,9 @@ dev-fulcro: start-lb
 dev-fulcro-bootstrap:
 	make run-fulcro
 
+dev-reframe: start-lb
+	docker-compose up reframe reframe-watch
+
 dev-reframe-bootstrap:
 	make run-reframe
 
@@ -135,7 +138,7 @@ test-reframe-cljs: install
 	npx karma start --single-run --check="ci-reframe.js"
 
 run-fulcro:
-	clojure -M:fulcro:dev:fulcro-dev `pwd`/config.edn
+	clojure -A:fulcro:dev:fulcro-dev ${CONFIG_PATH:-`pwd`/config3.edn}
 
 run-production: run-reframe-production
 

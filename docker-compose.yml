@@ -9,11 +9,12 @@ services:
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/node/.m2"
-    - "./data/fulcro:/tmp/dinsro/data/dev"
+    # - "./data/fulcro:/usr/src/app/data"
     ports:
     - 3001:3000
     environment:
     - HOME=/home/node
+    - CONFIG_FILE=/usr/src/app/docker-config.edn
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       timeout: 10s
@@ -27,7 +28,6 @@ services:
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/node/.m2"
-    - "./data/fulcro:/tmp/dinsro/data/dev"
     ports:
     - 9631:9630
     - 3693
@@ -53,10 +53,12 @@ services:
     depends_on:
     - frontend
     user: "1000:1000"
+    environment:
+    - CONFIG_FILE=/usr/src/app/docker-config.edn
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/node/.m2"
-    - "./data/reframe:/tmp/dinsro/data/dev"
+    # - "./data/reframe:/usr/src/app/data"
     ports:
     - 3000
     - 7001:7000
@@ -75,7 +77,6 @@ services:
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/node/.m2"
-    - "./data/fulcro:/tmp/dinsro/data/dev"
     ports:
     - 9630
     environment:
@@ -95,7 +96,6 @@ services:
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/node/.m2"
-    - "./data/fulcro:/tmp/dinsro/data/dev"
     ports:
     - 3683
     - 9634:9630

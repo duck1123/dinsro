@@ -1,3 +1,2 @@
 {:port 3000
- :nrepl-port 7000
- :datahike-url "datahike:file:///var/tmp/dinso-data"}
+ :nrepl-port 7000}

@@ -141,7 +141,6 @@
     fulcrologic/fulcro-spec     {:mvn/version "3.1.6"}
     pjstadig/humane-test-output {:mvn/version "0.10.0"}}
    :extra-paths ["src/test"]
-   :jvm-opts ["-Dconf=test-config.edn"]
    :main-opts ["-m" "cognitect.test-runner"]}
 
   :workspaces

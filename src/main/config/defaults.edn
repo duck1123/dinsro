@@ -1,5 +1,4 @@
-{:datahike-url "datahike:file:///tmp/dinsro/data/dev"
- :default :this
+{:default :this
  :foo :defaults
  :nrepl-port 7000
  :port 3000}

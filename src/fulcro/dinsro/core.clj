@@ -64,7 +64,7 @@
   [& args]
   (let [[config-file] args]
     (-> (mount/only #{#'dinsro.components.config/config})
-        (mount/with-args {:config (or config-file "config.edn")})
+        (mount/with-args {:config config-file})
         mount/start))
   (mount/start #'dinsro.config/secret)
   (mount/start #'dinsro.middleware.middleware/token-backend)

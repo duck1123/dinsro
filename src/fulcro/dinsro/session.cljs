@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
+   [dinsro.routing :as routing]
    [taoensso.timbre :as timbre]))
 
 (defsc CurrentUser
@@ -13,7 +14,7 @@
    [{:keys [_app state]}]
    (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
      (when-not logged-in?
-       (route-to! "/login"))
+       (routing/route-to! "/login"))
      (swap! state #(assoc % :root/ready? true)))))
 
 (defmutation login [_]
