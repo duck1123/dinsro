@@ -65,24 +65,6 @@ services:
       timeout: 10s
       retries: 30
 
-  reframe-devcards:
-    image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
-    command: ["make", "devcards-reframe"]
-    working_dir: "/usr/src/app"
-    depends_on:
-    - frontend
-    user: "1000:1000"
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/node/.m2"
-    ports:
-    - 3680
-    - 9633:9630
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3680"]
-      timeout: 10s
-      retries: 30
-
   reframe-watch:
     image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
     command: ["make", "watch-reframe-cljs"]

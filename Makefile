@@ -12,7 +12,6 @@ clean: clean-fulcro clean-outputs clean-reframe
 
 clean-fulcro:
 	rm -rf resources/fulcro/public/js
-	rm -rf resources/fulcro-cards/public/js
 	rm -rf resources/fulcro-workspaces/public/js
 
 clean-outputs:
@@ -22,7 +21,6 @@ clean-outputs:
 
 clean-reframe:
 	rm -rf resources/reframe/public/js
-	rm -rf resources/reframe-cards/public/js
 	rm -rf resources/reframe-workspaces/public/js
 
 check:
@@ -86,14 +84,6 @@ dev-reframe-bootstrap:
 dev-reframe-workspaces-bootstrap:
 	make workspaces-reframe
 
-devcards: devcards-fulcro devcards-reframe
-
-devcards-fulcro:
-	clojure -M:test:dev:fulcro:fulcro-devcards:devcards:shadow-cljs watch fulcro-devcards
-
-devcards-reframe:
-	clojure -M:test:dev:reframe:reframe-devcards:devcards:shadow-cljs watch reframe-devcards
-
 format:
 	clojure -M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn
 
@@ -108,17 +98,15 @@ lint-eastwood:
 lint-kibit: lint-kibit-reframe
 
 lint-kibit-reframe:
-	clojure -M:kibit:dev:reframe:reframe-devcards --paths src/main,src/test,src/reframe
+	clojure -M:kibit:dev:reframe:reframe-workspaces --paths src/main,src/test,src/reframe
 
 lint-kondo: lint-kondo-fulcro lint-kondo-reframe
 
 lint-kondo-fulcro:
 	npx clj-kondo --parallel --lint "src/main:src/fulcro:src/fulcro-test:src/fulcro-workspaces:src/test"
-	npx clj-kondo --parallel --lint "src/main:src/fulcro:src/fulcro-cards:src/fulcro-test:src/test"
 
 lint-kondo-reframe:
 	npx clj-kondo --parallel --lint "src/main:src/reframe:src/reframe-test:src/reframe-workspaces:src/test"
-	npx clj-kondo --parallel --lint "src/main:src/reframe:src/reframe-cards:src/reframe-test:src/test"
 
 test: test-fulcro test-reframe
 
@@ -141,7 +129,7 @@ test-reframe-clj: install
 	clojure -M:test:reframe -d src/test -d src/reframe-test
 
 test-reframe-cljs: install
-	clojure -M:test:reframe:shadow-cljs:devcards:reframe-devcards compile reframe-ci
+	clojure -M:test:reframe:shadow-cljs:workspaces:reframe-workspaces compile reframe-ci
 	npx karma start --single-run --check="ci-reframe.js"
 
 run-fulcro:

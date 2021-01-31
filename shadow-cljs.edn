@@ -6,27 +6,8 @@
  :deps {:aliases [:dev]}
 
  :builds
- {:fulcro-cards
-  {:asset-path "/js"
-   :build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :compiler-options {:devcards true}
-   :devtools {:http-root "resources/fulcro-cards/public"
-              :http-port 3690}
-   :js-options {:resolve
-                {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   :modules {:main {:init-fn dinsro.devcards/main}}
-   :output-dir "resources/fulcro-cards/public/js"
-   :target :browser}
-
-  :fulcro-ci
-  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :js-options {:resolve
-                {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   :ns-regexp "-test$"
+ {:fulcro-ci
+  {:ns-regexp "-test$"
    :output-to "target/ci-fulcro.js",
    :target :karma}
 
@@ -49,9 +30,7 @@
    :target :browser}
 
   :fulcro-test
-  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :devtools  {:http-port 3692
+  {:devtools  {:http-port 3692
                :http-root "target/tests-fulcro"}
    :output-to "target/tests/test-fulcro.js",
    :ns-regexp  "-test$"
@@ -60,8 +39,6 @@
 
   :fulcro-workspaces
   {:asset-path "/js"
-   :build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
    :devtools         {:http-root          "resources/fulcro-workspaces/public"
                       :http-host          "0.0.0.0"
                       :http-port          3693
@@ -70,38 +47,15 @@
                       :preloads [com.fulcrologic.fulcro.inspect.preload
                                  com.fulcrologic.fulcro.inspect.dom-picker-preload
                                  com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :js-options {:resolve
-                {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
    :modules          {:main {:entries [dinsro.devcards]}}
    :ns-regexp  "-test$"
    :output-dir "resources/fulcro-workspaces/public/js"
    :target nubank.workspaces.shadow-cljs.target}
 
   :reframe-ci
-  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :js-options {:resolve
-                {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   :ns-regexp "-test$"
+  {:ns-regexp "-test$"
    :output-to "target/ci-reframe.js",
    :target :karma}
-
-  :reframe-devcards
-  {:asset-path "/js"
-   :build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :compiler-options {:devcards true}
-   :devtools  {:http-port 3680
-               :http-root "resources/reframe-cards/public"
-               :devtools-url "http://reframe-devcards-dinsro.docker.localhost:9633"}
-   :js-options {:resolve
-                {"devcards-marked" {:target :npm :require "marked"}
-                 "devcards-syntax-highlighter" {:target :npm :require "highlight.js"}}}
-   :modules {:main {:init-fn dinsro.devcards/main}}
-   :output-dir "resources/reframe-cards/public/js"
-   :target :browser}
 
   :reframe-main
   {:asset-path "/js"
@@ -121,9 +75,7 @@
    :target :browser}
 
   :reframe-test
-  {:build-options {:ns-aliases {devcards-marked cljsjs.marked
-                                devcards-syntax-highlighter cljsjs.highlight}}
-   :devtools  {:http-port 3682
+  {:devtools  {:http-port 3682
                :http-root "target/tests-reframe"}
    :output-to "target/tests/test-reframe.js",
    :ns-regexp  "-test$"

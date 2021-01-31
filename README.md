@@ -36,12 +36,6 @@ To start a web server for the application, run:
 
   Alternately, `C-c C-x C-c <enter> <enter> <enter>` and then probably a `y <enter>` in emacs.
 
-* To start devcards, runner:
-
-        make devcards
-
-Then navigate to http://localhost:3450/devcards.html
-
 ## Testing
 
     make test
