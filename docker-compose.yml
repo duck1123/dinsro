@@ -12,8 +12,6 @@ services:
     - "./data/fulcro:/tmp/dinsro/data/dev"
     ports:
     - 3001:3000
-    labels:
-    - "traefik.docker.network=default"
     environment:
     - HOME=/home/node
     healthcheck:
@@ -35,7 +33,6 @@ services:
     - 3693
     - 3333:3333
     labels:
-    - "traefik.docker.network=default"
     - "traefik.http.routers.fulcro-watch.rule=host(`fulcro-watch-dinsro.docker.localhost`)"
     - "traefik.http.routers.fulcro-watch.service=fulcro-watch-dinsro"
     - "traefik.http.services.fulcro-watch-dinsro.loadbalancer.server.port=9630"
@@ -81,8 +78,6 @@ services:
     ports:
     - 3680
     - 9633:9630
-    labels:
-    - "traefik.docker.network=default"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3680"]
       timeout: 10s
@@ -101,8 +96,6 @@ services:
     - "./data/fulcro:/tmp/dinsro/data/dev"
     ports:
     - 9630
-    labels:
-    - "traefik.docker.network=default"
     environment:
     - HOME=/home/node
     healthcheck:
@@ -124,8 +117,6 @@ services:
     ports:
     - 3683
     - 9634:9630
-    labels:
-    - "traefik.docker.network=default"
     environment:
     - HOME=/home/node
     healthcheck:
@@ -142,5 +133,3 @@ services:
     volumes:
       - ${PWD}/traefik.yml:/etc/traefik/traefik.yml
       - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      - "traefik.enable=false"
