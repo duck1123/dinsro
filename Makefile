@@ -33,18 +33,18 @@ compile: compile-fulcro compile-reframe
 compile-fulcro: compile-fulcro-clj compile-fulcro-cljs
 
 compile-fulcro-clj: init
-	clojure -M:fulcro:dev:datomic -e "(compile 'dinsro.core)"
+	clojure -M:fulcro:dev -e "(compile 'dinsro.core)"
 
 compile-fulcro-cljs: init
-	clojure -M:dev:fulcro:datomic:shadow-cljs compile fulcro-main
+	clojure -M:dev:fulcro:shadow-cljs compile fulcro-main
 
 compile-fulcro-production: compile-fulcro-production-clj compile-production-cljs
 
 compile-fulcro-production-clj: install
-	clojure -M:fulcro:datomic:production -e "(compile 'dinsro.core)"
+	clojure -M:fulcro:production -e "(compile 'dinsro.core)"
 
 compile-fulcro-production-cljs: install
-	clojure -M:shadow-cljs:fulcro:datomic release fulcro-main
+	clojure -M:shadow-cljs:fulcro release fulcro-main
 
 compile-production: compile-fulcro-production compile-reframe-production
 
@@ -61,18 +61,18 @@ compile-production-cljs: compile-reframe-production-cljs
 compile-reframe: compile-reframe-clj compile-reframe-cljs
 
 compile-reframe-clj: init
-	# clojure -M:reframe:dev:datomic -e "(compile 'dinsro.core)"
+	# clojure -M:reframe:dev -e "(compile 'dinsro.core)"
 
 compile-reframe-cljs: init
-	clojure -M:dev:reframe:shadow-cljs:datomic compile reframe-main
+	clojure -M:dev:reframe:shadow-cljs compile reframe-main
 
 compile-reframe-production: compile-reframe-production-clj compile-reframe-production-cljs
 
 compile-reframe-production-clj: init
-	clojure -M:reframe:datomic:production -e "(compile 'dinsro.core)"
+	clojure -M:reframe:production -e "(compile 'dinsro.core)"
 
 compile-reframe-production-cljs: init
-	clojure -M:shadow-cljs:reframe:datomic:production release reframe-main
+	clojure -M:shadow-cljs:reframe:production release reframe-main
 
 dev-fulcro: start-lb
 	docker-compose up fulcro fulcro-watch
@@ -89,10 +89,10 @@ dev-reframe-workspaces-bootstrap:
 devcards: devcards-fulcro devcards-reframe
 
 devcards-fulcro:
-	clojure -M:test:dev:fulcro:fulcro-devcards:devcards:shadow-cljs:datomic watch fulcro-devcards
+	clojure -M:test:dev:fulcro:fulcro-devcards:devcards:shadow-cljs watch fulcro-devcards
 
 devcards-reframe:
-	clojure -M:test:dev:reframe:reframe-devcards:devcards:shadow-cljs:datomic watch reframe-devcards
+	clojure -M:test:dev:reframe:reframe-devcards:devcards:shadow-cljs watch reframe-devcards
 
 format:
 	clojure -M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn
@@ -103,12 +103,12 @@ install: init
 lint: lint-kondo lint-eastwood lint-kibit
 
 lint-eastwood:
-	clojure -M:eastwood:dev:reframe:datomic '{:source-paths ["src/main" "src/reframe" "src/reframe-test" "src/test" "env/dev/src"]}'
+	clojure -M:eastwood:dev:reframe '{:source-paths ["src/main" "src/reframe" "src/reframe-test" "src/test" "env/dev/src"]}'
 
 lint-kibit: lint-kibit-reframe
 
 lint-kibit-reframe:
-	clojure -M:kibit:dev:reframe:reframe-devcards:datomic --paths src/main,src/test,src/reframe
+	clojure -M:kibit:dev:reframe:reframe-devcards --paths src/main,src/test,src/reframe
 
 lint-kondo: lint-kondo-fulcro lint-kondo-reframe
 
@@ -129,28 +129,28 @@ test-cljs: test-fulcro-cljs test-reframe-cljs
 test-fulcro: test-fulcro-clj test-fulcro-cljs
 
 test-fulcro-clj:
-	clojure -M:dev:test:datomic:fulcro -d src/test -d src/fulcro-test
+	clojure -M:dev:test:fulcro -d src/test -d src/fulcro-test
 
 test-fulcro-cljs:
-	clojure -M:test:fulcro:shadow-cljs:workspaces:fulcro-workspaces:datomic compile fulcro-ci
+	clojure -M:test:fulcro:shadow-cljs:workspaces:fulcro-workspaces compile fulcro-ci
 	npx karma start --single-run --check="ci-fulcro.js"
 
 test-reframe: test-reframe-clj test-reframe-cljs
 
 test-reframe-clj: install
-	clojure -M:test:reframe:datomic -d src/test -d src/reframe-test
+	clojure -M:test:reframe -d src/test -d src/reframe-test
 
 test-reframe-cljs: install
-	clojure -M:test:reframe:shadow-cljs:devcards:reframe-devcards:datomic compile reframe-ci
+	clojure -M:test:reframe:shadow-cljs:devcards:reframe-devcards compile reframe-ci
 	npx karma start --single-run --check="ci-reframe.js"
 
 run-fulcro:
-	clojure -M:fulcro:dev:datomic:fulcro-dev `pwd`/config.edn
+	clojure -M:fulcro:dev:fulcro-dev `pwd`/config.edn
 
 run-production: run-reframe-production
 
 run-reframe:
-	clojure -M:reframe:dev:datomic:reframe-dev
+	clojure -M:reframe:dev:reframe-dev
 
 run-reframe-production:
 	export DATAHIKE_URL="datahike:file://$(pwd)/data/dev"
@@ -172,17 +172,17 @@ start-lb:
 watch-cljs: watch-fulcro-cljs watch-reframe-cljs
 
 watch-fulcro-cljs: install
-	clojure -M:test:fulcro:datomic:shadow-cljs:fulcro-workspaces:workspaces watch fulcro-main fulcro-workspaces
+	clojure -M:test:fulcro:shadow-cljs:fulcro-workspaces:workspaces watch fulcro-main fulcro-workspaces
 
 watch-reframe: watch-reframe-cljs
 
 watch-reframe-cljs: install
-	clojure -M:test:reframe:shadow-cljs:datomic watch reframe-main
+	clojure -M:test:reframe:shadow-cljs watch reframe-main
 
 workspaces: workspaces-fulcro workspaces-reframe
 
 workspaces-fulcro:
-	clojure -M:fulcro-workspaces:test:datomic:fulcro:workspaces:shadow-cljs watch fulcro-workspaces
+	clojure -M:fulcro-workspaces:test:fulcro:workspaces:shadow-cljs watch fulcro-workspaces
 
 workspaces-reframe:
-	clojure -M:reframe-workspaces:test:datomic:reframe:workspaces:shadow-cljs watch reframe-workspaces
+	clojure -M:reframe-workspaces:test:reframe:workspaces:shadow-cljs watch reframe-workspaces

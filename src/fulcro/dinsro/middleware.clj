@@ -4,10 +4,8 @@
    [clojure.core.async :as async]
    [com.fulcrologic.fulcro.server.api-middleware :as server]
    [com.fulcrologic.fulcro.networking.file-upload :as file-upload]
-   [com.fulcrologic.rad.blob :as blob]
    [com.wsscode.pathom.connect :as pc]
    [com.wsscode.pathom.core :as p]
-   [dinsro.components.blob-store :as bs]
    [dinsro.config :refer [secret]]
    [dinsro.env :refer [defaults]]
    [dinsro.middleware.middleware :as middleware]
@@ -53,8 +51,6 @@
   (let [session-store (cookie-store {:key (b/slice secret 0 16)})]
     (-> ((:middleware defaults) handler)
         (wrap-api)
-        (blob/wrap-blob-service "/images" bs/image-blob-store)
-        (blob/wrap-blob-service "/files" bs/file-blob-store)
         (file-upload/wrap-mutation-file-uploads {})
         (server/wrap-transit-params)
         (server/wrap-transit-response)

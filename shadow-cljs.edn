@@ -3,7 +3,7 @@
                   :roots ["resources/public"]}}
  :http {:host "0.0.0.0" :port 9630}
  :nrepl {:host "0.0.0.0" :port 3333}
- :deps {:aliases [:datomic :dev]}
+ :deps {:aliases [:dev]}
 
  :builds
  {:fulcro-cards
