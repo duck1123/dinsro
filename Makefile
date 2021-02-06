@@ -3,7 +3,10 @@ all: init install
 init:
 	echo "Hello World"
 
-build-production: build-reframe-production
+build-production: build-reframe-production build-fulcro-production
+
+build-fulcro-production: compile-fulcro-production
+	clojure -M:uberdeps --main-class dinsro.core --aliases fulcro
 
 build-reframe-production: compile-reframe-production
 	clojure -M:uberdeps --main-class dinsro.core --aliases reframe
@@ -36,7 +39,7 @@ compile-fulcro-clj: init
 compile-fulcro-cljs: init
 	clojure -M:dev:fulcro:shadow-cljs compile fulcro-main
 
-compile-fulcro-production: compile-fulcro-production-clj compile-production-cljs
+compile-fulcro-production: compile-fulcro-production-clj compile-fulcro-production-cljs
 
 compile-fulcro-production-clj: install
 	clojure -M:fulcro:production -e "(compile 'dinsro.core)"
@@ -49,12 +52,6 @@ compile-production: compile-fulcro-production compile-reframe-production
 compile-production-clj: compile-fulcro-production-clj compile-reframe-production-clj
 
 compile-production-cljs: compile-fulcro-production-cljs compile-reframe-production-cljs
-
-compile-production: compile-reframe-production
-
-compile-production-clj: compile-reframe-production-clj
-
-compile-production-cljs: compile-reframe-production-cljs
 
 compile-reframe: compile-reframe-clj compile-reframe-cljs
 
@@ -72,6 +69,8 @@ compile-reframe-production-clj: init
 compile-reframe-production-cljs: init
 	clojure -M:shadow-cljs:reframe:production release reframe-main
 
+dev: dev-fulcro
+
 dev-fulcro: start-lb
 	docker-compose up fulcro fulcro-watch
 
@@ -88,7 +87,7 @@ format:
 	clojure -M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn
 
 install: init
-	yarn install
+	npx yarn install
 
 lint: lint-kondo lint-eastwood lint-kibit
 
@@ -96,6 +95,9 @@ lint-eastwood:
 	clojure -M:eastwood:dev:reframe '{:source-paths ["src/main" "src/reframe" "src/reframe-test" "src/test" "env/dev/src"]}'
 
 lint-kibit: lint-kibit-reframe
+
+lint-kibit-fulcro:
+	clojure -M:kibit:dev:fulcro:fulcro-workspaces --paths src/main,src/test,src/fulcro
 
 lint-kibit-reframe:
 	clojure -M:kibit:dev:reframe:reframe-workspaces --paths src/main,src/test,src/reframe
@@ -140,6 +142,10 @@ run-production: run-reframe-production
 run-reframe:
 	clojure -M:reframe:dev:reframe-dev
 
+run-fulcro-production:
+	export DATAHIKE_URL="datahike:file://$(pwd)/data/dev"
+	java -jar target/dinsro.jar
+
 run-reframe-production:
 	export DATAHIKE_URL="datahike:file://$(pwd)/data/dev"
 	java -jar target/dinsro.jar
@@ -158,6 +164,8 @@ start-lb:
 	docker-compose up -d frontend
 
 watch-cljs: watch-fulcro-cljs watch-reframe-cljs
+
+watch-fulcro: watch-fulcro-cljs
 
 watch-fulcro-cljs: install
 	clojure -M:test:fulcro:shadow-cljs:fulcro-workspaces:workspaces watch fulcro-main fulcro-workspaces
