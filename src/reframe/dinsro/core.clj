@@ -67,7 +67,7 @@
   (cond
     (nil? (:datahike-url (timbre/spy :info config/config)))
     (do
-      (timbre/error "Database configuration not found, :database-url environment variable must be set before running")
+      (timbre/error "Database configuration not found, :datahike-url environment variable must be set before running")
       (System/exit 1))
     :else
     (start-app args)))
