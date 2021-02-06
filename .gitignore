@@ -11,6 +11,7 @@
 *.log
 *.jar
 .nrepl-port
+.preprocessor-cljs
 .rebel_readline_history
 .secret
 .shadow-cljs
@@ -23,6 +24,8 @@ test-results/
 /classes
 /checkouts
 /coverage
+/cypress/screenshots
+/cypress/videos
 /log
 /out
 /pom.xml

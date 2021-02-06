@@ -1,0 +1,13 @@
+TAGS
+.clj-kondo
+.shadow-cljs
+.idea
+build
+checkouts.bak
+coverage
+public/js
+log
+out
+target
+resources/public/js
+
