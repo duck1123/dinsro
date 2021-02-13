@@ -22,11 +22,11 @@
    :query [::accounts]}
   (dom/div
    (dom/table :.table
-    (dom/thead
-     (dom/tr
-      (dom/th "Name")))
-    (dom/tbody
-     (map ui-index-currency-account-line accounts)))))
+              (dom/thead
+               (dom/tr
+                (dom/th "Name")))
+              (dom/tbody
+               (map ui-index-currency-account-line accounts)))))
 
 (def ui-index-currency-accounts (comp/factory IndexCurrencyAccounts))
 

@@ -7,7 +7,6 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
 
-
 (ws/defcard CurrencyAccounts
   {::wsm/card-height 12
    ::wsm/card-width  4}

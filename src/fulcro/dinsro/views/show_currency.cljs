@@ -33,13 +33,11 @@
      ;;          ;; {:target [:page/id ::page ::currency ::currency-accounts]}
      ;;          )
 
+
      (df/load app :all-rates u.currency-rates/IndexCurrencyRateLine
               {:target [:page/id ::page ::currency-rates
                         ::u.currency-rates/currency-rates
-                        ::u.currency-rates/items
-                        ]}
-              )
-
+                        ::u.currency-rates/items]})
 
      (dr/route-immediate (comp/get-ident ShowCurrencyPage {})))}
   (bulma/page

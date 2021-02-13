@@ -6,7 +6,6 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-
 (defsc AdminCreateTransactionForm
   [_this {::keys [description value]}]
   {:initial-state {::description ""

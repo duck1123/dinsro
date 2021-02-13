@@ -14,7 +14,7 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc UserCurrencies
-  [this {::keys [ currencies form toggle-button ]}]
+  [this {::keys [currencies form toggle-button]}]
   {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar UserCurrencies})
    :ident (fn [_] [:component/id ::UserCurrencies])
    :initial-state {::currencies    {}

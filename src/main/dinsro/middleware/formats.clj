@@ -38,17 +38,16 @@
    (if (#{:json :json-verbose :msgpack} type)
      (let [handler-map (merge transit/default-write-handlers handlers)]
        (transit/->Writer
-         (TransitFactory/writer (#'transit/transit-format type) out handler-map default-handler
-           (when transform
-             (reify Function
-               (apply [_ x]
-                 (transform x)))))))
+        (TransitFactory/writer (#'transit/transit-format type) out handler-map default-handler
+                               (when transform
+                                 (reify Function
+                                   (apply [_ x]
+                                     (transform x)))))))
      (throw (ex-info "Type must be :json, :json-verbose or :msgpack" {:type type})))))
 
 (defn write-transit [x]
   (let [baos (ByteArrayOutputStream.)
-        w    (writer baos :json {
-                                 ;; :handlers transit-write-handlers ; use your handlers here
+        w    (writer baos :json {;; :handlers transit-write-handlers ; use your handlers here
                                  :default-handler (DefaultHandler.)})
         _    (transit/write w x)
         ret  (str baos)]

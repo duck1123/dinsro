@@ -32,8 +32,8 @@
                           :user/id
                           (do
                                      ;; FIXME: restore identity
-                                     (comment identity)
-                                     "bob@example.com")
+                            (comment identity)
+                            "bob@example.com")
                           :user/valid? true}})
 
 (defresolver index-explorer [env _]

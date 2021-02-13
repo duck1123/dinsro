@@ -18,7 +18,5 @@
     (fn []
       {::v.index-categories/button-data {}
        ::v.index-categories/categories
-       {
-        ::u.user-categories/categories {::u.user-categories/categories (vals sample/category-map)}
-        }
+       {::u.user-categories/categories {::u.user-categories/categories (vals sample/category-map)}}
        ::v.index-categories/form-data   {}})}))
