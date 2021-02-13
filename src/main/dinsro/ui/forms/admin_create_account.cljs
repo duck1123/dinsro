@@ -9,7 +9,7 @@
 
 (defsc AdminCreateAccountForm
   [this {::keys [currency initial-value name user]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::currency      {}
                    ::initial-value ""
                    ::name          ""

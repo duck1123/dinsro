@@ -10,9 +10,9 @@
 
 (defsc AddUserAccountForm
   [this {::keys [currency name initial-value submit]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::currency      {:label (tr [:currency])}
-                   ::initial-value ""
+                   ::initial-value 0
                    ::name          ""
                    ::submit        {:label (tr [:submit])}}
    :query [{::currency      (comp/get-query u.inputs/CurrencySelector)}

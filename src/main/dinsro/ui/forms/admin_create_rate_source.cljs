@@ -9,7 +9,7 @@
 
 (defsc AdminCreateRateSourceForm
   [_this {::keys [name url currency submit-button]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::currency      {}
                    ::name          ""
                    ::submit-button {}

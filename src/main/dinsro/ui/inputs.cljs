@@ -1,6 +1,7 @@
 (ns dinsro.ui.inputs
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
@@ -69,20 +70,28 @@
 
 (defsc CurrencySelectorOption
   [_this {::m.currencies/keys [id name]}]
-  {:initial-state {::m.currencies/id   ""
-                   ::m.currencies/name ""}
+  {:initial-state {::m.currencies/id   1
+                   ::m.currencies/name "Foo"}
    :query [::m.currencies/id ::m.currencies/name]}
   (dom/option {:value id} name))
 
 (def ui-currency-selector-option (comp/factory CurrencySelectorOption {:keyfn ::m.currencies/id}))
 
 (defsc CurrencySelector
-  [_this {:keys [all-currencies]}]
-  {:initial-state {:all-currencies [{::m.currencies/id 1 ::m.currencies/name "foo"}]}
-   :query [{:all-currencies (comp/get-query CurrencySelectorOption)}]}
+  [_this {:keys [all-currencies selected-currency]}]
+  {:componentDidMount
+   (fn [this]
+     (df/load! this :all-currencies
+               CurrencySelectorOption))
+   :initial-state {:all-currencies [{::m.currencies/id 1 ::m.currencies/name "foo"}]
+                   :selected-currency nil}
+   :query [{:all-currencies (comp/get-query CurrencySelectorOption)}
+           :selected-currency]}
   (dom/div
    :.select
    (dom/select
+    {:onChange (fn [_] (js/console.log selected-currency))}
+    (ui-currency-selector-option {::m.currencies/id nil ::m.currencies/name "unset"})
     (map ui-currency-selector-option all-currencies))))
 
 (def ui-currency-selector (comp/factory CurrencySelector))

@@ -38,7 +38,7 @@
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [this {::keys [accounts form toggle-button] :as props}]
+  [this {::keys [accounts form toggle-button]}]
   {:componentDidMount
    (fn [this]
      (timbre/info "did mount")

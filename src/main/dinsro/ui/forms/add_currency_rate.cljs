@@ -7,7 +7,7 @@
 
 (defsc AddCurrencyRate
   [_this _props]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {}
-   :query [:form/id]}
+   :query [:component/id]}
   (dom/div "Add Currency Rate"))

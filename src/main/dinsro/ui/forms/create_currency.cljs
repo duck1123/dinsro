@@ -9,7 +9,7 @@
 
 (defsc CreateCurrencyForm
   [this {::keys [name]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::name ""}
    :query [::name]}
   (dom/div

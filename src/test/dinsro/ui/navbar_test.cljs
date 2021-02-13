@@ -12,7 +12,7 @@
 (defn navlink-idents
   [kws]
   (map (partial vector :navlink/id)
-   kws))
+       kws))
 
 (defn map-links
   [links]

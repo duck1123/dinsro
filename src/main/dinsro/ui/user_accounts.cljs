@@ -18,7 +18,7 @@
   [_this {::m.accounts/keys [currency id initial-value user]
           :keys [link]}]
   {:ident ::m.accounts/id
-   :initial-state {:link                      {}
+   :initial-state {:link                      {::m.accounts/id :param/id}
                    ::m.accounts/currency      {}
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
