@@ -1,6 +1,7 @@
 (ns dinsro.resolvers.currencies
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
+   [dinsro.actions.currencies :as a.currencies]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
@@ -22,4 +23,13 @@
   {::pc/output [::m.currencies/map]}
   {::m.currencies/map sample/currency-map})
 
-(def resolvers [currencies-resolver currency-resolver currency-map-resolver])
+(defresolver user-currencies-resolver
+  [_env _props]
+  {::pc/input #{::m.users/id}}
+  (a.currencies/index-by-user-handler {}))
+
+(def resolvers
+  [currencies-resolver
+   currency-resolver
+   currency-map-resolver
+   user-currencies-resolver])

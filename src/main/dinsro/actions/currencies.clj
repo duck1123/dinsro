@@ -64,3 +64,9 @@
   [::s.a.currencies/index-request => ::s.a.currencies/index-response]
   (let [items (q.currencies/index-records)]
     (http/ok {:items items})))
+
+(>defn index-by-user-handler
+  [_]
+  [::s.a.currencies/index-request => ::s.a.currencies/index-response]
+  (let [items (q.currencies/index-records)]
+    (http/ok {:items items})))
