@@ -16,18 +16,20 @@
 
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value user]
-          :as account}]
+          :keys [link]}]
   {:ident ::m.accounts/id
-   :initial-state {::m.accounts/currency      {}
+   :initial-state {:link                      {}
+                   ::m.accounts/currency      {}
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
                    ::m.accounts/user          {}}
-   :query [{::m.accounts/currency     (comp/get-query u.links/CurrencyLink)}
+   :query [{:link                     (comp/get-query u.links/AccountLink)}
+           {::m.accounts/currency     (comp/get-query u.links/CurrencyLink)}
            ::m.accounts/id
            ::m.accounts/initial-value
            {::m.accounts/user         (comp/get-query u.links/UserLink)}]}
   (dom/tr
-   (dom/td (u.links/ui-account-link account))
+   (dom/td (u.links/ui-account-link link))
    (dom/td (u.links/ui-user-link user))
    (dom/td (u.links/ui-currency-link currency))
    (dom/td initial-value)

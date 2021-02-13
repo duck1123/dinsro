@@ -14,15 +14,12 @@
    [dinsro.views.index-users :as v.index-users]
    [dinsro.views.login :as v.login]
    [dinsro.views.registration :as v.registration]
-   [dinsro.views.settings :as v.settings]
    [dinsro.views.show-account :as v.show-account]
    [dinsro.views.show-category :as v.show-category]
    [dinsro.views.show-currency :as v.show-currency]
    [dinsro.views.show-rate-source :as v.show-rate-source]
    [dinsro.views.show-user :as v.show-user]
    [taoensso.timbre :as timbre]))
-
-(comment v.settings/SettingsPage)
 
 (defrouter RootRouter
   [_this {:keys [current-state]}]

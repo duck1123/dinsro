@@ -37,6 +37,6 @@
       {:onChange #(fm/set-string! this ::currency :event %)})))
    (bulma/field
     (bulma/control
-     (u.inputs/ui-primary-button submit)))))
+     (u.inputs/ui-primary-button submit {:onClick (fn [_] (timbre/info "click"))})))))
 
 (def ui-form (comp/factory AddUserAccountForm))

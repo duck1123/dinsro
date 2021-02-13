@@ -21,25 +21,28 @@
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
                    ::m.accounts/user          {}}
-   :query [{::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
+   :query [{::m.accounts/currency     (comp/get-query u.links/CurrencyLink)}
+           {::link                    (comp/get-query u.links/AccountLink)}
            ::m.accounts/id
            ::m.accounts/initial-value
-           ::m.accounts/name
-           {::m.accounts/user (comp/get-query u.links/UserLink)}]}
+           {::m.accounts/user         (comp/get-query u.links/UserLink)}]}
   (dom/tr
-   (dom/td id)
-   (dom/td (u.links/ui-account-link props))
-   (dom/td (u.links/ui-user-link user))
-   (dom/td (u.links/ui-currency-link currency))
-   (dom/td initial-value)
+   (dom/td {} id)
+   (dom/td {} (u.links/ui-account-link props))
+   (dom/td {} (u.links/ui-user-link user))
+   (dom/td {} (u.links/ui-currency-link currency))
+   (dom/td {} initial-value)
    (dom/td
-    (dom/button :.button.is-danger "Delete"))))
+    (dom/button :.button.is-danger {} "Delete"))))
 
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [this {::keys [accounts form toggle-button]}]
-  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts})
+  [this {::keys [accounts form toggle-button] :as props}]
+  {:componentDidMount
+   (fn [this]
+     (timbre/info "did mount")
+     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts}))
    :ident (fn [_] [:component/id ::AdminIndexAccounts])
    :initial-state {::accounts      []
                    ::form          {:form-button/id form-toggle-sm}
