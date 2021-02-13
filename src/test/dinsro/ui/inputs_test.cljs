@@ -5,7 +5,8 @@
    [dinsro.ui.inputs :as u.inputs]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
-   [nubank.workspaces.model :as wsm]))
+   [nubank.workspaces.model :as wsm]
+   [taoensso.timbre :as timbre]))
 
 (ws/defcard TextInput
   {::wsm/card-height 4
@@ -41,8 +42,8 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.inputs/CurrencySelector
     ::ct.fulcro3/initial-state
-    (fn [] {:currencies (vals sample/currency-map)})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn []
+      {:all-currencies [(vals sample/currency-map)]})}))
 
 (ws/defcard UserSelector
   {::wsm/card-height 3
