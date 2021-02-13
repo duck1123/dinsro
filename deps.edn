@@ -73,7 +73,8 @@
   :production
   {:extra-deps
    {day8.re-frame/tracing-stubs {:mvn/version "0.6.0"}}
-   :extra-paths ["src/prod" "resources/prod" "classes"]}
+   :extra-paths ["src/prod" "resources/prod" "classes"]
+   :main-opts ["-m" "dinsro.core"]}
 
   :shadow-cljs
   {:extra-deps
@@ -85,7 +86,7 @@
    {com.cognitect/test-runner   {:git/url "https://github.com/cognitect-labs/test-runner.git"
                                  :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}
     com.fulcrologic/fulcro      {:mvn/version "3.4.3"}
-    com.github.awkay/workspaces {:mvn/version "1.0.2"}
+    com.github.awkay/workspaces {:mvn/version "1.0.3"}
     fulcrologic/fulcro-spec     {:mvn/version "3.1.6"}
     pjstadig/humane-test-output {:mvn/version "0.10.0"}}
    :extra-paths ["src/test"]

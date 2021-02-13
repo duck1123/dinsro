@@ -2,11 +2,44 @@
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
 WORKDIR /usr/src/app
 
+EXPOSE_DOCKER_PORTS:
+  COMMAND
+  # Main web interface
+  EXPOSE 3000/tcp
+  # nRepl interface (cljs)
+  EXPOSE 3333/tcp
+  # Main cljs devtools
+  EXPOSE 3691/tcp
+  # Tests
+  EXPOSE 3692/tcp
+  # Workspaces
+  EXPOSE 3693/tcp
+  # nRepl interface (clj)
+  EXPOSE 7000/tcp
+  # shadow-cljs watcher
+  EXPOSE 9630/tcp
+  RUN echo "hello"
+
+INSTALL_CHROMIUM:
+  COMMAND
+  RUN apt update && apt install -y \
+          chromium \
+      && rm -rf /var/lib/apt/lists/*
+  ENV CHROME_BIN=chromium
+
+INSTALL_NODE:
+  COMMAND
+  RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
+      && apt-get install -y nodejs \
+      && rm -rf /var/lib/apt/lists/*
+  RUN npm install -g npm@7.7.0
+
 base-builder:
   FROM +base-builder-ubuntu
 
 base-builder-nix:
   FROM nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
+  ENV USER_HOME=/home/dinsro
   WORKDIR /usr/src/app
   RUN nix-env -i autoconf
   RUN nix-env -i gnumake-4.2.1
@@ -27,25 +60,17 @@ base-builder-nix:
   RUN nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   RUN nix-channel --update
   USER "1000"
-  RUN mkdir -p ${HOME}/.cache/yarn && mkdir -p ${HOME}/.m2 && chown -R 1000:1000 /home/dinsro
+  RUN mkdir -p ${USER_HOME}/.cache/yarn && mkdir -p ${USER_HOME}/.m2 && chown -R 1000:1000 ${USER_HOME}
 
 base-builder-ubuntu:
-  FROM clojure:tools-deps
+  FROM clojure:openjdk-11-tools-deps
   WORKDIR /usr/src/app
-  RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
-      && apt-get install -y nodejs \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt install -y \
-          tree \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt install -y \
-          chromium \
-  && rm -rf /var/lib/apt/lists/*
-  ENV CHROME_BIN=chromium
+  ENV USER_HOME=/home/dinsro
+  DO +INSTALL_NODE
+  DO +INSTALL_CHROMIUM
   RUN addgroup --gid 1000 dinsro && adduser --ingroup dinsro --uid 1000 dinsro
   RUN chown -R 1000:1000 /usr/src/app
   USER "1000"
-  RUN mkdir -p ${HOME}/.cache/yarn && mkdir -p ${HOME}/.m2 && chown -R 1000:1000 /home/dinsro
 
 base-cypress-dind:
   FROM earthly/dind:ubuntu
@@ -139,32 +164,24 @@ compile-production:
 
 deps-builder:
   FROM +base-builder
-  RUN mkdir -p ${HOME}/.cache/yarn && mkdir -p ${HOME}/.m2 && chown -R 1000:1000 /home/dinsro
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
   COPY Makefile deps.edn .
-  COPY --dir +jar-deps/.m2 /home/dinsro/
-  USER root
-  RUN chown -R 1000 /home/dinsro/.m2
-  USER 1000
+  COPY --dir --chown 1000:1000 +jar-deps/.m2 ${USER_HOME}/
 
 deps-builder-ubuntu:
   FROM +base-builder-ubuntu
-  RUN mkdir -p ${HOME}/.cache/yarn && mkdir -p ${HOME}/.m2 && chown -R 1000:1000 /home/dinsro
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
   COPY Makefile deps.edn .
-  COPY --dir +jar-deps/.m2 /home/dinsro/
-  USER root
-  RUN chown -R 1000 /home/dinsro/.m2
-  USER 1000
+  COPY --dir +jar-deps/.m2 ${USER_HOME}/
 
 deps-dind-builder:
   FROM +base-dind-builder
   COPY package.json yarn.lock .
   COPY Makefile deps.edn .
-  COPY --dir +jar-deps/.m2 /home/dinsro/
-  RUN --mount=type=cache,target=/home/dinsro/.m2 \
+  COPY --dir +jar-deps/.m2 ${USER_HOME}
+  RUN --mount=type=cache,target=${USER_HOME}/.m2 \
       make display-path || make display-path
 
 dev-builder:
@@ -174,20 +191,7 @@ dev-image:
   FROM +dev-builder
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
-  # Main web interface
-  EXPOSE 3000/tcp
-  # nRepl interface (cljs)
-  EXPOSE 3333/tcp
-  # Main cljs devtools
-  EXPOSE 3691/tcp
-  # Tests
-  EXPOSE 3692/tcp
-  # Workspaces
-  EXPOSE 3693/tcp
-  # nRepl interface (clj)
-  EXPOSE 7000/tcp
-  # shadow-cljs watcher
-  EXPOSE 9630/tcp
+  DO +EXPOSE_DOCKER_PORTS
   VOLUME /var/lib/dinsro/data
   COPY docker-config.edn config.edn
   CMD ["make", "dev-bootstrap"]
@@ -196,36 +200,52 @@ dev-image:
 dev-image-sources:
   FROM +dev-sources
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
-  # Main web interface
-  EXPOSE 3000/tcp
-  # nRepl interface (cljs)
-  EXPOSE 3333/tcp
-  # Main cljs devtools
-  EXPOSE 3691/tcp
-  # Tests
-  EXPOSE 3692/tcp
-  # Workspaces
-  EXPOSE 3693/tcp
-  # nRepl interface (clj)
-  EXPOSE 7000/tcp
-  # shadow-cljs watcher
-  EXPOSE 9630/tcp
+  DO +EXPOSE_DOCKER_PORTS
   WORKDIR /usr/src/app
   VOLUME /var/lib/dinsro/data
-  COPY dev-image-config.edn /etc/dinsro/config.edn
-  COPY . /usr/src/app
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
   CMD ["make", "dev-bootstrap"]
   SAVE IMAGE duck1123/dinsro:dev-sources-latest
 
 dev-sources:
   FROM +dev-builder
-  CMD ["zsh"]
   COPY dev-image-config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
-  COPY . /usr/src/app
+  COPY --dir . /usr/src/app
+  RUN ls -al
 
 e2e:
+  FROM cypress/browsers
+  ENV USER_HOME=/root
+  RUN apt update && apt install -y \
+          openjdk-11-jdk \
+      && rm -rf /var/lib/apt/lists/*
+  RUN apt update && apt install -y \
+          docker.io \
+      && rm -rf /var/lib/apt/lists/*
+  RUN curl -O https://download.clojure.org/install/linux-install-1.10.2.790.sh \
+      && chmod +x linux-install-1.10.2.790.sh \
+      && ./linux-install-1.10.2.790.sh
+  COPY --dir +node-deps/node_modules node_modules
+  COPY --dir +jar-deps/.m2 ${USER_HOME}/
+  # RUN --mount=type=cache,target=/home/dinsro/.cache \
+  #     npx yarn install --frozen-lockfile
+  COPY cypress.json .
+  RUN npx cypress install
+  COPY . .
+  RUN make init
+  # RUN make display-path || make display-path
+  RUN npx cypress install
+  WITH DOCKER \
+       --compose e2e-docker-compose.yml \
+       --service dinsro \
+       --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
+       RUN docker ps -a \
+           && env | sort \
+           && make await-app \
+           && make test-integration
+  END
+
+e2e-dind:
   FROM +base-dind-builder
   COPY e2e-docker-compose.yml docker-compose.yml
   COPY Makefile .
@@ -235,11 +255,9 @@ e2e:
       --service dinsro \
       --load duck1123/dinsro:e2e-latest=+e2e-image \
       --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
-      RUN docker ps -a \
-          && make await-app \
-          && docker run --network=host duck1123/dinsro:e2e-latest \
-              make test-integration
-      END
+      RUN make await-app \
+          && docker run --network=host duck1123/dinsro:e2e-latest
+  END
 
 e2e-image:
   FROM cypress/browsers
@@ -248,7 +266,7 @@ e2e-image:
           openjdk-11-jdk \
       && rm -rf /var/lib/apt/lists/*
   COPY --dir +node-deps/node_modules node_modules
-  COPY --dir +jar-deps/.m2 /home/dinsro/
+  COPY --dir +jar-deps/.m2 ${USER_HOME}/
   COPY cypress.json .
   RUN npx cypress install
   COPY --dir cypress .
@@ -275,13 +293,14 @@ jar-deps:
   FROM +base-builder-ubuntu
   COPY Makefile deps.edn .
   USER root
-  RUN rm -rf /home/dinsro/.m2
+  RUN rm -rf ${USER_HOME}/.m2
   RUN --mount=type=cache,target=/root/.m2 \
       (make display-path || make display-path) \
-      && cp -r /root/.m2 /home/dinsro/
-  RUN chown -R 1000 /home/dinsro/.m2
+      && cp -r /root/.m2 ${USER_HOME}/
+  RUN chown -R 1000 ${USER_HOME}/.m2
   USER 1000
-  SAVE ARTIFACT /home/dinsro/.m2
+  SAVE ARTIFACT ${USER_HOME}/.m2
+  SAVE ARTIFACT .cpcache
 
 lint:
   BUILD +lint-eastwood
@@ -329,12 +348,13 @@ test-cljs:
 test-sources:
   FROM +src
   COPY --dir src/test src
-  COPY --dir +jar-deps/.m2 /home/dinsro/
+  COPY --dir +jar-deps/.m2 ${USER_HOME}/
+  COPY --dir --chown 1000:1000 +jar-deps/.cpcache .
   COPY karma.conf.js .
 
 test-ubuntu:
   FROM +src-ubuntu
   COPY --dir src/test src
-  COPY --dir +jar-deps/.m2 /home/dinsro/
+  COPY --dir +jar-deps/.m2 ${USER_HOME}/
   COPY karma.conf.js .
   RUN make test

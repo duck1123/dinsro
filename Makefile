@@ -4,9 +4,11 @@ init:
 	@echo "Hello World"
 
 await-app:
-	while [ "`docker inspect -f {{.State.Health.Status}} app_dinsro_1`" != "healthy" ]; do \
-	    docker logs app_dinsro_1 \
-	    && sleep 5; \
+	docker-compose logs -f &
+	docker inspect -f {{.State.Health.Status}} default_dinsro_1
+	until [ "`docker inspect -f {{.State.Health.Status}} default_dinsro_1`" = "healthy" ] \
+			|| [ "`docker inspect -f {{.State.Health.Status}} default_dinsro_1`" = "exited" ]  ; do \
+	    sleep 5; \
 	done
 
 build-dev-image:
@@ -17,10 +19,12 @@ build-image:
 
 build-production: compile-production package-jar
 
+ci:
+	earthly -P +ci
+
 clean:
 	rm -rf resources/main/public/js
 	rm -rf resources/workspaces/public/js
-	rm -rf resources/dev/public/js
 	rm -rf .shadow-cljs/builds
 	rm -rf classes/*
 	rm -rf target
@@ -47,7 +51,7 @@ compile-production-cljs: install
 dev: build-dev-image start-dev
 
 dev-bootstrap:
-	@echo "Bootstrapping dev"
+	make watch-cljs &
 	make run
 
 dev-workspaces-bootstrap: workspaces
