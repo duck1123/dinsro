@@ -12,7 +12,7 @@
       {:url "/pathom"
        :request-middleware
        (comp (http/wrap-fulcro-request)
-             (http/wrap-csrf-token js/csrfToken))})}
+             (http/wrap-csrf-token js/window.csrfToken))})}
     :remote-error? (fn [result]
                      (let [{:keys [status-code]} result]
                        (when-not (= status-code 200)
