@@ -11,19 +11,23 @@
    [taoensso.timbre :as timbre]))
 
 (defsc ShowRateSourcePage
-  [_this {::keys [rate-source transactions]}]
+  [_this {::keys [id rate-source transactions]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {::rate-source       {}
-                   ::transactions  {}}
-   :query [{::rate-source      (comp/get-query u.show-rate-source/ShowRateSource)}
+   :initial-state {::id 1
+                   ::rate-source  {}
+                   ::transactions {}}
+   :query [{::rate-source  (comp/get-query u.show-rate-source/ShowRateSource)}
            {::transactions (comp/get-query u.rate-source-transactions/RateSourceTransactions)}]
    :route-segment ["rate-sources" ::m.rate-sources/id]
    :will-enter
    (fn [app {::m.rate-sources/keys [id]}]
      (df/load app [::m.rate-sources/id (int id)] u.show-rate-source/ShowRateSource
               {:target [:page/id ::page ::rate-source]})
+
      (dr/route-immediate (comp/get-ident ShowRateSourcePage {})))}
   (bulma/page
    (bulma/box
     (u.show-rate-source/ui-show-rate-source rate-source))
-   (u.rate-source-transactions/ui-rate-source-transactions transactions)))
+   (u.rate-source-transactions/ui-rate-source-transactions
+    {::m.rate-sources/id id}
+    transactions)))
