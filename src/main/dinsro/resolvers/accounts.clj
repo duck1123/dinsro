@@ -30,8 +30,8 @@
 (defresolver account-link-resolver
   [_env {::m.accounts/keys [id]}]
   {::pc/input #{::m.accounts/id}
-   ::pc/output [{:dinsro.ui.user-accounts/link [::m.accounts/id]}]}
-  {:dinsro.ui.user-accounts/link [[::m.accounts/id id]]})
+   ::pc/output [{:dinsro.ui.links/link [::m.accounts/id]}]}
+  {:dinsro.ui.links/link [[::m.accounts/id id]]})
 
 (defresolver user-account-resolver
   [_env {::m.accounts/keys [id]}]
@@ -51,4 +51,9 @@
         (filter (fn [account] (= id (get-in account [::m.accounts/user ::m.users/id]))))
         (map (fn [{::m.accounts/keys [id]}] [::m.accounts/id id])))})
 
-(def resolvers [account-resolver account-link-resolver accounts-resolver account-map-resolver user-accounts-resolver])
+(def resolvers
+  [account-resolver
+   account-link-resolver
+   accounts-resolver
+   account-map-resolver
+   user-accounts-resolver])

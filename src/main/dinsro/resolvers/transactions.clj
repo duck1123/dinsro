@@ -14,6 +14,12 @@
                 ::m.transactions/description]}
   (get sample/transaction-map id))
 
+(defresolver transaction-link-resolver
+  [_env {::m.transactions/keys [id]}]
+  {::pc/input #{::m.transactions/id}
+   ::pc/output [{:dinsro.ui.links/link [::m.accounts/id]}]}
+  {:dinsro.ui.links/link [[::m.transactions/id id]]})
+
 (defresolver transactions-resolver
   [_env _props]
   {::pc/output [{:all-transactions [::m.transactions/id]}]}
@@ -25,6 +31,8 @@
   {::pc/output [::m.transactions/map]}
   {::m.transactions/map sample/transaction-map})
 
-(def resolvers [transaction-resolver
-                transactions-resolver
-                transaction-map-resolver])
+(def resolvers
+  [transaction-resolver
+   transaction-link-resolver
+   transactions-resolver
+   transaction-map-resolver])
