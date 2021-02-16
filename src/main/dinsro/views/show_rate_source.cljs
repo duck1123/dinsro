@@ -16,7 +16,8 @@
    :initial-state {::id 1
                    ::rate-source  {}
                    ::transactions {}}
-   :query [{::rate-source  (comp/get-query u.show-rate-source/ShowRateSource)}
+   :query [::id
+           {::rate-source  (comp/get-query u.show-rate-source/ShowRateSource)}
            {::transactions (comp/get-query u.rate-source-transactions/RateSourceTransactions)}]
    :route-segment ["rate-sources" ::m.rate-sources/id]
    :will-enter
