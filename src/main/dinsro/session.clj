@@ -17,4 +17,14 @@
     {:user/id nil
      :user/valid? false}))
 
-(def resolvers [login])
+(defmutation logout
+  [{{:keys [session]} :request} _]
+  {::pc/params #{}
+   ::pc/output [:user/id :user/valid?]}
+  (augment-response
+   {:user/id nil
+    :user/valid? false}
+   (fn [ring-response]
+     (assoc ring-response :session (assoc session :identity nil)))))
+
+(def resolvers [login logout])

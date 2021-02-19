@@ -50,6 +50,23 @@
 
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
 
+(defsc NavbarLogoutLink
+  [this {:navlink/keys [href]}]
+  {:ident (fn [_] [:navlink/id :logout])
+   :initial-state {:navlink/id   0
+                   :navlink/href "/logout"}
+   :query [:navlink/id :navlink/name :navlink/href]}
+  (dom/a
+   :.navbar-item
+   {:href href
+    :onClick (fn [evt]
+               (.preventDefault evt)
+               (comp/transact! this [`(dinsro.session/logout)])
+               false)}
+   "Logout"))
+
+(def ui-navbar-logout-link (comp/factory NavbarLogoutLink))
+
 (defn toggle
   []
   `(toggle))
@@ -78,7 +95,8 @@
    (navbar-burger expanded? burger-clicked)))
 
 (defsc Navbar
-  [this {::keys [auth-links dropdown-links expanded? menu-links]}]
+  [this {::keys [auth-links dropdown-links expanded? menu-links]
+         :session/keys [current-user]}]
   {:componentDidMount
    (fn [this]
      (df/load! this :menu-links NavLink
@@ -94,14 +112,16 @@
    :initial-state {::auth-links     {}
                    ::dropdown-links []
                    ::expanded?      false
-                   ::menu-links     []}
+                   ::menu-links     []
+                   :session/current-user {:user/valid? false}}
    :query [{::auth-links     (comp/get-query NavbarAuthLink)}
+           [:session/current-user '_]
            {::dropdown-links (comp/get-query NavLink)}
            ::expanded?
            {::menu-links     (comp/get-query NavLink)}]}
   (let [burger-clicked #(comp/transact! this [`(dinsro.mutations/toggle)])
         registration-enabled? true
-        valid? true
+        valid? (boolean (:user/valid? current-user))
         _unauth-links (filter identity
                               [{:navlink/id :login
                                 :navlink/name (tr [:login])
@@ -117,25 +137,28 @@
       {:aria-label "main navigation"
        :role "navigation"}
       (navbar-brand expanded? burger-clicked)
-      (dom/div :.navbar-menu {:className (when expanded? "is-active")}
-               (dom/div :.navbar-start (when valid? (map ui-nav-link menu-links)))
-               (dom/div
-                :.navbar-end
-                (if valid?
-                  (comp/fragment
-                   (dom/div
-                    :.navbar-item.has-dropdown.is-hoverable
-                    (ui-navbar-auth-link auth-links)
-                    (dom/div
-                     :.navbar-dropdown
-                     (map ui-nav-link dropdown-links))))
-                  (comp/fragment
-                   (ui-nav-link {:navlink/id :login
-                                 :navlink/name (tr [:login])
-                                 :navlink/href :login})
-                   (when registration-enabled?
-                     (ui-nav-link {:navlink/id :register
-                                   :navlink/name (tr [:register])
-                                   :navlink/href :register}))))))))))
+      (dom/div
+       :.navbar-menu
+       {:className (when expanded? "is-active")}
+       (dom/div :.navbar-start (when valid? (map ui-nav-link menu-links)))
+       (dom/div
+        :.navbar-end
+        (if valid?
+          (comp/fragment
+           (dom/div
+            :.navbar-item.has-dropdown.is-hoverable
+            (ui-navbar-auth-link auth-links)
+            (dom/div
+             :.navbar-dropdown
+             (map ui-nav-link dropdown-links)
+             (ui-navbar-logout-link {}))))
+          (comp/fragment
+           (ui-nav-link {:navlink/id :login
+                         :navlink/name (tr [:login])
+                         :navlink/href :login})
+           (when registration-enabled?
+             (ui-nav-link {:navlink/id :register
+                           :navlink/name (tr [:register])
+                           :navlink/href :register}))))))))))
 
 (def ui-navbar (comp/factory Navbar))

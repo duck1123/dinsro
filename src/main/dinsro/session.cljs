@@ -39,3 +39,21 @@
    (-> env
        (fm/returning CurrentUser)
        (fm/with-target [:session/current-user]))))
+
+(defmutation logout [_]
+  (action
+   [{:keys [state]}]
+   (timbre/info "busy"))
+
+  (error-action
+   [{:keys [state]}]
+   (timbre/info "error action"))
+
+  (ok-action
+   [{:keys [state] :as env}]
+   (timbre/infof "ok"))
+
+  (remote
+   [env]
+   (-> env
+       (fm/with-target [:session/current-user]))))

@@ -27,14 +27,8 @@
      [:user/id
       {:user/ref [::m.users/id]}
       :user/valid?]}]}
-  (timbre/spy :info identity)
-  {:session/current-user {:user/ref {::m.users/id 1}
-                          :user/id
-                          (do
-                                     ;; FIXME: restore identity
-                            (comment identity)
-                            "bob@example.com")
-                          :user/valid? true}})
+  {:session/current-user {:user/id identity
+                          :user/valid? (seq identity)}})
 
 (defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}

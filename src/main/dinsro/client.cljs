@@ -37,7 +37,7 @@
   (app/set-root! da/app Root {:initialize-state? true})
   (app/mount! da/app Root "app" {:initialize-state? false})
   (routing/start!)
-  (uism/begin! da/app #_u.navbar/Navbar machines/hideable ::navbarsm {:actor/navbar u.navbar/Navbar})
+  (uism/begin! da/app machines/hideable ::navbarsm {:actor/navbar u.navbar/Navbar})
   (js/console.log "Loaded"))
 
 (defn ^:export refresh
