@@ -4,6 +4,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
+   [dinsro.queries.accounts :as q.accounts]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
@@ -14,18 +15,15 @@
                 ::m.accounts/initial-value
                 ::m.accounts/name
                 {::m.accounts/user [::m.users/id]}]}
-  (get sample/account-map id))
-
-(defresolver account-map-resolver
-  [_env _props]
-  {::pc/output [::m.accounts/map]}
-  {::m.accounts/map sample/account-map})
+  (let [record (q.accounts/read-record id)
+        id (:db/id record)]
+    (assoc record ::m.accounts/id id)))
 
 (defresolver accounts-resolver
   [_env _props]
   {::pc/output [{:all-accounts [::m.accounts/id]}]}
-  {:all-accounts (map (fn [id] [::m.accounts/id id])
-                      (keys sample/account-map))})
+  {:all-accounts
+   (map (fn [id] [::m.accounts/id id]) (q.accounts/index-ids))})
 
 (defresolver account-link-resolver
   [_env {::m.accounts/keys [id]}]
@@ -55,5 +53,10 @@
   [account-resolver
    account-link-resolver
    accounts-resolver
-   account-map-resolver
    user-accounts-resolver])
+
+(comment
+  (q.accounts/index-records)
+
+  (require 'dinsro.mocks)
+  (dinsro.mocks/mock-account))

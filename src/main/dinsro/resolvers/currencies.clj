@@ -3,6 +3,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.actions.currencies :as a.currencies]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
@@ -25,8 +26,9 @@
 
 (defresolver user-currencies-resolver
   [_env _props]
-  {::pc/input #{::m.users/id}}
-  (a.currencies/index-by-user-handler {}))
+  {::pc/input #{::m.users/id}
+   ::pc/output [::m.currencies/index]}
+  {::m.currencies/index (a.currencies/index-by-user-handler {})})
 
 (def resolvers
   [currencies-resolver

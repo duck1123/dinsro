@@ -55,5 +55,4 @@
 
   (remote
    [env]
-   (-> env
-       (fm/with-target [:session/current-user]))))
+   (fm/with-target env [:session/current-user])))
