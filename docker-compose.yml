@@ -60,7 +60,7 @@ services:
     - "${HOME}/.m2:/home/node/.m2"
     # - "./data/reframe:/usr/src/app/data"
     ports:
-    - 3000
+    - 3000:3000
     - 7001:7000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
@@ -78,7 +78,7 @@ services:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/node/.m2"
     ports:
-    - 9630
+    - 9630:9630
     environment:
     - HOME=/home/node
     healthcheck:
