@@ -131,6 +131,11 @@ test-fulcro-cljs: install
 	clojure -M:test:fulcro:shadow-cljs:workspaces:fulcro-workspaces compile fulcro-ci
 	npx karma start --single-run --check="ci-fulcro.js"
 
+test-integration: test-integration-fulcro
+
+test-integration-fulcro:
+	npx cypress run
+
 test-reframe: test-reframe-clj test-reframe-cljs
 
 test-reframe-clj: install prepare-test-dirs

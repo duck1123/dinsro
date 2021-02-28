@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "clj-kondo": "^2020.11.7",
+    "cypress": "^6.3.0",
+    "cypress-clojurescript-preprocessor": "^0.1.4",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
