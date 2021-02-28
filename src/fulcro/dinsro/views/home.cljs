@@ -8,7 +8,7 @@
 
 (defn path-for
   [_p]
-  "")
+  "/login")
 
 (defsc HomePage
   [_this {:keys [auth-id]}]
@@ -22,6 +22,6 @@
       (dom/h1 :.title (tr [:home-page]))
       (dom/p
        "Not Authenticated. "
-       (dom/a {:href (path-for [:login-page])} "login"))))))
+       (dom/a :.login-link {:href (path-for [:login-page])} "login"))))))
 
 (def ui-page (comp/factory HomePage))

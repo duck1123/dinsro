@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Reset environment and run tests
-
-set -ex
-
-script/build-production

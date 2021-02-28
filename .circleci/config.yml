@@ -1,38 +1,16 @@
-version: 2
+# .circleci/config.yml
+
+version: 2.1
 jobs:
   build:
-    working_directory: ~/dinsro
-    docker:
-      - image: circleci/clojure:openjdk-16-tools-deps-buster-node-browsers
-        auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - run: node --version
-      - run: yarn install
-      - run: npx clj-kondo --version
-      # - run: clojure -P -M:eastwood
-      - save_cache:
-          paths:
-            - ~/dinsro/node_modules
-          key: node-{{ checksum "package.json" }}
-      - run: mkdir -p /tmp/dinsro/data/test
-      - run: mkdir -p classes
-      - run: make lint-kondo
-      - run: make lint-eastwood
-      - run: make lint-kibit
-      - run: cp test-config.edn.example test-config.edn
-      - run: cp test-config.edn.example config.edn
-      - run: make test-clj
-      - run: make test-cljs
-      - run: make build-production
-      - store_artifacts:
-          path: target/dinsro.jar
-          destination: dinsro.jar
-      - setup_remote_docker
-      - run: |
-          TAG="0.1-circle-${CIRCLE_BUILD_NUM}"
-          docker build -t duck1123/dinsro:$TAG .
-          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          docker push duck1123/dinsro:$TAG
+      - run: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
+      - run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
+      - run: earthly --version
+      - run: earthly --ci --remote-cache=duck1123/dinsro:cache +lint
+      - run: earthly --ci --remote-cache=duck1123/dinsro:cache +test
+      - run: earthly --ci --remote-cache=duck1123/dinsro:cache --push +image-fulcro
+      - run: earthly --ci --remote-cache=duck1123/dinsro:cache --push +image-reframe

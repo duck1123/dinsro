@@ -20,7 +20,6 @@
   {:initial-state {::m.accounts/currency      {}
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
-                   ::m.accounts/name          ""
                    ::m.accounts/user          {}}
    :query [{::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
            ::m.accounts/id

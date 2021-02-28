@@ -14,6 +14,6 @@
    :query [{::form (comp/get-query u.f.login/LoginForm)}]
    :route-segment ["login"]}
   (bulma/page
-   (dom/h1 "Login")
+   (dom/h1 :.title "Login")
    (bulma/container
     (u.f.login/ui-login-form form))))

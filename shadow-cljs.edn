@@ -88,7 +88,7 @@
    :devtools         {:http-root          "resources/reframe-workspaces/public"
                       :http-port          3683
                       :http-resource-root "."
-                      :devtools-url "http://reframe-workspaces-dinsro.docker.localhost:9634"}
+                      :devtools-url "http://reframe-watch-dinsro.docker.localhost:8081"}
    :modules          {:main {:entries [dinsro.devcards]}}
    :ns-regexp  "-test$"
    :output-dir "resources/reframe-workspaces/public/js"

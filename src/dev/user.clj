@@ -5,7 +5,6 @@
    [expound.alpha :as expound]
    [mount.core :as mount]
    [dinsro.core]
-   [orchestra.spec.test :as stest]
    [taoensso.timbre :as timbre]))
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
@@ -30,9 +29,3 @@
   []
   (stop)
   (start))
-
-(defn instrument
-  []
-  (stest/instrument))
-
-;; (instrument)

@@ -42,3 +42,6 @@ test-results/
 /target
 /tmp
 /.preprocessor-cljs/
+*.macaroon
+*.cert
+*.bak

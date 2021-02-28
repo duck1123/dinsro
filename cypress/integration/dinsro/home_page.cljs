@@ -3,7 +3,7 @@
 
 (def cy js/cy)
 
-(def base-url "http://fulcro-dinsro.docker.localhost:8081/")
+(def base-url "http://localhost:3000/")
 
 (describe "Home Page"
   (beforeEach
