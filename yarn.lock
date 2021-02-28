@@ -613,7 +613,7 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
-clj-kondo@^2020.1.13:
+clj-kondo@^2020.11.7:
   version "2020.11.7"
   resolved "https://registry.yarnpkg.com/clj-kondo/-/clj-kondo-2020.11.7.tgz#4df12eca22422a6bd32ecfbc171a0f0ff901b926"
   integrity sha512-r/J/sdOx8LQerNKZgGoqZNbsx1BySfLHyXd8EmZc2oqt7PJMrpIuWCTnny7r7fCqrXcsWOW29PLea57Glj0OJg==
