@@ -1,61 +1,8 @@
 version: '3.3'
 
 services:
-  fulcro:
-    image: duck1123/dinsro:dev-sources-fulcro-latest
-    depends_on:
-    - frontend
-    ports:
-      - 3000:3000
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data/fulcro:/var/lib/dinsro/data"
-    - "./docker-config.edn:/etc/dinsro/config.edn"
-
-  fulcro-watch:
-    image: duck1123/dinsro:dev-sources-fulcro-latest
-    command: ["make", "watch-fulcro-cljs"]
-    depends_on:
-    - frontend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9630"]
-      timeout: 10s
-      retries: 30
-    labels:
-    - "traefik.http.routers.fulcro-watch.rule=host(`fulcro-watch-dinsro.docker.localhost`)"
-    - "traefik.http.routers.fulcro-watch.service=fulcro-watch"
-    - "traefik.http.services.fulcro-watch.loadbalancer.server.port=9630"
-    ports:
-    - 9631:9630
-    - 3693
-    - 3333:3333
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/dinsro/.m2"
-    - "${HOME}/cache/.yarn:/home/dinsro/cache/.yarn"
-    - "./data/fulcro:/var/lib/dinsro/data"
-
-  fulcro-workspaces:
-    image: duck1123/dinsro:dev-sources-fulcro-latest
-    command: ["make", "dev-fulcro-workspaces-bootstrap"]
-    depends_on:
-    - frontend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3693"]
-      timeout: 10s
-      retries: 30
-    labels:
-    - "traefik.http.routers.fulcro-workspaces.rule=host(`fulcro-workspaces-dinsro.docker.localhost`)"
-    - "traefik.http.routers.fulcro-workspaces.service=fulcro-workspaces"
-    - "traefik.http.services.fulcro-workspaces.loadbalancer.server.port=3693"
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data/fulcro:/var/lib/dinsro/data"
-
-  reframe:
-    image: duck1123/dinsro:dev-sources-reframe-latest
+  dinsro:
+    image: duck1123/dinsro:2-dev-sources-latest
     depends_on:
     - frontend
     ports:
@@ -64,43 +11,43 @@ services:
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data/reframe:/var/lib/dinsro/data"
+    - "./data:/var/lib/dinsro/data"
 
-  reframe-watch:
-    image: duck1123/dinsro:dev-sources-reframe-latest
-    command: ["make", "watch-reframe-cljs"]
+  watch:
+    image: duck1123/dinsro:2-dev-sources-latest
+    command: ["make", "watch-cljs"]
     depends_on:
     - frontend
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data/reframe:/var/lib/dinsro/data"
+    - "./data:/var/lib/dinsro/data"
     ports:
     - 9630:9630
     labels:
-    - "traefik.http.routers.reframe-watch.rule=host(`reframe-watch-dinsro.docker.localhost`)"
-    - "traefik.http.routers.reframe-watch.service=reframe-watch"
-    - "traefik.http.services.reframe-watch.loadbalancer.server.port=9630"
+    - "traefik.http.routers.watch.rule=host(`watch-dinsro.docker.localhost`)"
+    - "traefik.http.routers.watch.service=watch"
+    - "traefik.http.services.watch.loadbalancer.server.port=9630"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9630"]
       timeout: 10s
       retries: 30
 
-  reframe-workspaces:
-    image: duck1123/dinsro:dev-sources-reframe-latest
-    command: ["make", "dev-reframe-workspaces-bootstrap"]
+  workspaces:
+    image: duck1123/dinsro:2-dev-sources-latest
+    command: ["make", "dev-workspaces-bootstrap"]
     depends_on:
     - frontend
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data/reframe:/var/lib/dinsro/data"
+    - "./data:/var/lib/dinsro/data"
     ports:
     - 9634:9630
     labels:
-    - "traefik.http.routers.reframe-workspaces.rule=host(`reframe-workspaces-dinsro.docker.localhost`)"
-    - "traefik.http.routers.reframe-workspaces.service=reframe-workspaces"
-    - "traefik.http.services.reframe-workspaces.loadbalancer.server.port=3693"
+    - "traefik.http.routers.workspaces.rule=host(`workspaces-dinsro.docker.localhost`)"
+    - "traefik.http.routers.workspaces.service=workspaces"
+    - "traefik.http.services.workspaces.loadbalancer.server.port=3693"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3693"]
       timeout: 10s

@@ -6,90 +6,44 @@
  :deps {:aliases [:dev]}
 
  :builds
- {:fulcro-ci
+ {:ci
   {:ns-regexp "-test$"
-   :output-to "target/ci-fulcro.js",
+   :output-to "target/ci.js",
    :target :karma}
 
-  :fulcro-main
-  {:asset-path "/js"
-   :closure-defines
-   {"re_frame.trace.trace_enabled_QMARK_"        true
-    "day8.re_frame.tracing.trace_enabled_QMARK_" true}
-   :dev {:compiler-options {:closure-defines {'goog.DEBUG true}
-                            :external-config {:guardrails {}}}}
-   :devtools   {:after-load dinsro.client/refresh
-                :http-port 3691
-                :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
-                :preloads   [com.fulcrologic.fulcro.inspect.preload
-                             com.fulcrologic.fulcro.inspect.dom-picker-preload
-                             com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules {:main {:init-fn dinsro.client/start}}
-   :output-dir "resources/fulcro/public/js"
-   :release {}
-   :target :browser}
-
-  :fulcro-test
-  {:devtools  {:http-port 3692
-               :http-root "target/tests-fulcro"}
-   :output-to "target/tests/test-fulcro.js",
-   :ns-regexp  "-test$"
-   :target :browser-test
-   :test-dir "target/tests-fulcro"}
-
-  :fulcro-workspaces
-  {:asset-path "/js"
-   :devtools         {:http-root          "resources/fulcro-workspaces/public"
-                      :http-host          "0.0.0.0"
-                      :http-port          3693
-                      :http-resource-root "."
-                      :devtools-url "http://fulcro-watch-dinsro.docker.localhost:8081"
-                      :preloads [com.fulcrologic.fulcro.inspect.preload
-                                 com.fulcrologic.fulcro.inspect.dom-picker-preload
-                                 com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules          {:main {:entries [dinsro.devcards]}}
-   :ns-regexp  "-test$"
-   :output-dir "resources/fulcro-workspaces/public/js"
-   :target nubank.workspaces.shadow-cljs.target}
-
-  :reframe-ci
-  {:ns-regexp "-test$"
-   :output-to "target/ci-reframe.js",
-   :target :karma}
-
-  :reframe-main
+  :main
   {:asset-path "/js"
    :closure-defines
    {"re_frame.trace.trace_enabled_QMARK_"        true
     "day8.re_frame.tracing.trace_enabled_QMARK_" true}
    :devtools   {:after-load dinsro.app/refresh
                 :http-port 3681
-                :devtools-url "http://reframe-watch-dinsro.docker.localhost:8081"}
+                :devtools-url "http://watch-dinsro.docker.localhost:8081"}
    :modules {:main {:init-fn dinsro.app/init
                     :entries [dinsro.app]}}
-   :output-dir "resources/reframe/public/js"
+   :output-dir "resources/main/public/js"
    :release {:build-options {:ns-aliases {day8.re-frame.tracing day8.re-frame.tracing-stubs}}
              :closure-defines
              {re_frame.trace/trace_enabled_QMARK_        false
               day8.re_frame.tracing/trace_enabled_QMARK_ false}}
    :target :browser}
 
-  :reframe-test
+  :test
   {:devtools  {:http-port 3682
-               :http-root "target/tests-reframe"}
-   :output-to "target/tests/test-reframe.js",
+               :http-root "target/tests"}
+   :output-to "target/tests/test.js",
    :ns-regexp  "-test$"
    ;; :runner-ns dinsro.runner
    :target :browser-test
-   :test-dir "target/tests-reframe"}
+   :test-dir "target/tests"}
 
-  :reframe-workspaces
+  :workspaces
   {:asset-path "/js"
-   :devtools         {:http-root          "resources/reframe-workspaces/public"
+   :devtools         {:http-root          "resources/workspaces/public"
                       :http-port          3683
                       :http-resource-root "."
-                      :devtools-url "http://reframe-watch-dinsro.docker.localhost:8081"}
+                      :devtools-url "http://watch-dinsro.docker.localhost:8081"}
    :modules          {:main {:entries [dinsro.devcards]}}
    :ns-regexp  "-test$"
-   :output-dir "resources/reframe-workspaces/public/js"
+   :output-dir "resources/workspaces/public/js"
    :target nubank.workspaces.shadow-cljs.target}}}
