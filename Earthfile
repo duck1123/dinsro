@@ -233,11 +233,12 @@ e2e:
 
 e2e-image:
   FROM cypress/browsers
+  WORKDIR /usr/src/app
   RUN apt update && apt install -y \
           openjdk-11-jdk \
       && rm -rf /var/lib/apt/lists/*
-  RUN --mount=type=cache,target=/home/dinsro/.cache \
-  npx yarn install --frozen-lockfile
+  COPY --dir +node-deps/node_modules node_modules
+  COPY --dir +jar-deps/.m2 /home/dinsro/
   COPY cypress.json .
   RUN npx cypress install
   COPY --dir cypress .

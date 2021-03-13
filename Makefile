@@ -29,7 +29,7 @@ check:
 compile: compile-clj compile-cljs
 
 compile-clj: init
-	clojure -M:dev -e "(compile 'dinsro.core)"
+	# clojure -M:dev -e "(compile 'dinsro.core)"
 
 compile-cljs: init
 	clojure -M:dev:shadow-cljs compile main

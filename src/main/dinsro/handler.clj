@@ -16,8 +16,6 @@
    [mount.core :as mount]
    [reitit.coercion.spec]
    [reitit.ring :as ring]
-   [ring.middleware.content-type :refer [wrap-content-type]]
-   [ring.middleware.webjars :refer [wrap-webjars]]
    [taoensso.timbre :as timbre]))
 
 (mount/defstate init-app
@@ -30,8 +28,6 @@
    (ring/router routes/routes)
    (ring/routes
     (ring/create-resource-handler {:path "/"})
-    (wrap-content-type
-     (wrap-webjars (constantly nil)))
     (ring/create-default-handler
      {:not-found
       (constantly (error-page {:status 404, :title "404 - Page not found"}))
