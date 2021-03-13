@@ -1,8 +1,8 @@
 version: '3.3'
 
 services:
-  fulcro:
-    image: duck1123/dinsro:dev-sources-fulcro-latest
+  dinsro:
+    image: duck1123/dinsro:dev-sources-latest
     environment:
       CONFIG_FILE: /etc/dinsro/config.edn
     ports:

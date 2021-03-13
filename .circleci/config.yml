@@ -10,7 +10,5 @@ jobs:
       - run: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
       - run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
       - run: earthly --version
-      - run: earthly --ci --remote-cache=duck1123/dinsro:cache +lint
-      - run: earthly --ci --remote-cache=duck1123/dinsro:cache +test
-      - run: earthly --ci --remote-cache=duck1123/dinsro:cache --push +image-fulcro
-      - run: earthly --ci --remote-cache=duck1123/dinsro:cache --push +image-reframe
+      - run: earthly --remote-cache=duck1123/dinsro:cache +ci
+      - run: earthly --remote-cache=duck1123/dinsro:cache --push +image

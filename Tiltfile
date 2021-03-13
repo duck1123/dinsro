@@ -1,25 +1,14 @@
 # Tilt
 
 custom_build(
-  'duck1123/dinsro:dev-sources-fulcro-latest',
-  'earthly +dev-image-sources-fulcro',
+  'duck1123/dinsro:dev-sources-latest',
+  'earthly +dev-image-sources',
   [
     'Earthfile',
     '.dockerignore',
     'Makefile'
   ],
-  tag='dev-sources-fulcro-latest'
-)
-
-custom_build(
-  'duck1123/dinsro:dev-sources-reframe-latest',
-  'earthly +dev-image-sources-reframe',
-  [
-    'Earthfile',
-    '.dockerignore',
-    'Makefile'
-  ],
-  tag='dev-sources-reframe-latest'
+  tag='dev-sources-latest'
 )
 
 docker_compose("./docker-compose.yml")

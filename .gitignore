@@ -30,14 +30,8 @@ test-results/
 /out
 /pom.xml
 /public/js/
-/resources/fulcro/public/js
-/resources/fulcro-cards/public/js
-/resources/fulcro-workspaces/public/js
-/resources/reframe/public/js
-/resources/reframe-cards/public/js
-/resources/reframe-workspaces/public/js
-/resources/public/devcards/
-/resources/public/js/
+/resources/main/public/js
+/resources/workspaces/public/js
 /routes/
 /target
 /tmp

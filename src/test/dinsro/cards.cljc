@@ -18,12 +18,6 @@
   [name & body]
   `(nubank.workspaces.core/deftest ~name ~@body))
 
-#?(:cljs
-   (defn reframe-card
-     [body]
-     (ct.react/react-card
-      (r/as-element body))))
-
 (defmacro defcard
   [name & body]
   `(comment ~name ~@body))

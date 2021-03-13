@@ -11,9 +11,7 @@
 
 (defn navlink-idents
   [kws]
-  (map
-   (fn [kw]
-     [:navlink/id kw])
+  (map (partial vector :navlink/id)
    kws))
 
 (defn map-links

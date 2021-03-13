@@ -118,42 +118,17 @@ builder-ubuntu:
 ci:
   BUILD +lint
   BUILD +test
-  BUILD +e2e
+  # BUILD +e2e
 
-ci-reframe:
-  BUILD +lint-reframe
-  BUILD +test-reframe
-  BUILD +e2e-reframe
-
-ci-fulcro:
-  BUILD +lint-reframe
-  BUILD +test-reframe
-  BUILD +e2e-reframe
-
-compile-frontend-fulcro:
-  FROM +src-fulcro-ubuntu
-  RUN make compile-cljs-fulcro
-  SAVE ARTIFACT resources
-
-compile-frontend-reframe:
-  FROM +src-reframe-ubuntu
-  RUN make compile-cljs-reframe
+compile-frontend:
+  FROM +src-ubuntu
+  RUN make compile-cljs
   SAVE ARTIFACT resources
 
 compile-production:
-  BUILD +compile-production-fulcro
-  BUILD +compile-production-reframe
-
-compile-production-fulcro:
-  FROM +src-fulcro-ubuntu
+  FROM +src-ubuntu
   COPY --dir src/prod src/prod
-  RUN make compile-production-fulcro
-  SAVE ARTIFACT classes
-
-compile-production-reframe:
-  FROM +src-reframe-ubuntu
-  COPY --dir src/prod src/prod
-  RUN make compile-production-reframe
+  RUN make compile-production
   SAVE ARTIFACT classes
 
 deps-builder:
@@ -184,16 +159,12 @@ deps-dind-builder:
   COPY Makefile deps.edn .
   COPY --dir +jar-deps/.m2 /home/dinsro/
   RUN --mount=type=cache,target=/home/dinsro/.m2 \
-      make display-path-fulcro || make display-path-fulcro
+      make display-path || make display-path
 
 dev-builder:
   FROM +deps-builder-ubuntu
 
 dev-image:
-  BUILD +dev-image-fulcro
-  BUILD +dev-image-reframe
-
-dev-image-fulcro:
   FROM +dev-builder
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
@@ -211,31 +182,10 @@ dev-image-fulcro:
   EXPOSE 7000/tcp
   VOLUME /var/lib/dinsro/data
   COPY docker-config.edn config.edn
-  CMD ["make", "dev-fulcro-bootstrap"]
-  SAVE IMAGE duck1123/dinsro:dev-fulcro-latest
+  CMD ["make", "dev-bootstrap"]
+  SAVE IMAGE duck1123/dinsro:dev-latest
 
-dev-image-reframe:
-  FROM +dev-builder
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
-  HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
-  # Main web interface
-  EXPOSE 3000/tcp
-  # nRepl interface (cljs)
-  EXPOSE 3333/tcp
-  # Main cljs devtools
-  EXPOSE 3691/tcp
-  # Tests
-  EXPOSE 3692/tcp
-  # Workspaces
-  EXPOSE 3693/tcp
-  # nRepl interface (clj)
-  EXPOSE 7000/tcp
-  VOLUME /var/lib/dinsro/data
-  COPY docker-config.edn config.edn
-  CMD ["make", "dev-reframe-bootstrap"]
-  SAVE IMAGE duck1123/dinsro:dev-reframe-latest
-
-dev-image-sources-fulcro:
+dev-image-sources:
   FROM +dev-builder
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
   # Main web interface
@@ -255,40 +205,10 @@ dev-image-sources-fulcro:
   COPY dev-image-config.edn /etc/dinsro/config.edn
   COPY . /usr/src/app
   ENV CONFIG_FILE=/etc/dinsro/config.edn
-  CMD ["make", "dev-bootstrap-fulcro"]
-  SAVE IMAGE duck1123/dinsro:dev-sources-fulcro-latest
+  CMD ["make", "dev-bootstrap"]
+  SAVE IMAGE duck1123/dinsro:dev-sources-latest
 
-dev-image-sources-reframe:
-  FROM +dev-builder
-  HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
-  # Main web interface
-  EXPOSE 3000/tcp
-  # nRepl interface (cljs)
-  EXPOSE 3333/tcp
-  # Main cljs devtools
-  EXPOSE 3691/tcp
-  # Tests
-  EXPOSE 3692/tcp
-  # Workspaces
-  EXPOSE 3693/tcp
-  # nRepl interface (clj)
-  EXPOSE 7000/tcp
-  WORKDIR /usr/src/app
-  VOLUME /var/lib/dinsro/data
-  COPY dev-image-config.edn /etc/dinsro/config.edn
-  COPY . /usr/src/app
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
-  CMD ["make", "dev-bootstrap-reframe"]
-  SAVE IMAGE duck1123/dinsro:dev-sources-reframe-latest
-
-dev-sources-fulcro:
-  FROM +dev-builder
-  CMD ["zsh"]
-  COPY dev-image-config.edn /etc/dinsro/config.edn
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
-  COPY . /usr/src/app
-
-dev-sources-reframe:
+dev-sources:
   FROM +dev-builder
   CMD ["zsh"]
   COPY dev-image-config.edn /etc/dinsro/config.edn
@@ -296,41 +216,22 @@ dev-sources-reframe:
   COPY . /usr/src/app
 
 e2e:
-  BUILD +e2e-fulcro
-  BUILD +e2e-reframe
-
-e2e-fulcro:
   FROM +base-dind-builder
   COPY e2e-docker-compose.yml docker-compose.yml
   COPY Makefile .
   RUN make init
   WITH DOCKER \
       --compose docker-compose.yml \
-      --service fulcro \
-      --load duck1123/dinsro:e2e-latest-fulcro=+e2e-image-fulcro \
-      --load duck1123/dinsro:dev-sources-fulcro-latest=+dev-image-sources-fulcro
+      --service dinsro \
+      --load duck1123/dinsro:e2e-latest=+e2e-image \
+      --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
       RUN docker ps -a \
           && make await-app \
-          && docker run --network=host duck1123/dinsro:e2e-latest-fulcro \
-              make test-integration-fulcro
+          && docker run --network=host duck1123/dinsro:e2e-latest \
+              make test-integration
       END
 
-e2e-reframe:
-  FROM +base-dind-builder
-  COPY e2e-docker-compose.yml docker-compose.yml
-  COPY Makefile .
-  RUN make init
-  WITH DOCKER \
-      --compose docker-compose.yml \
-      --service reframe \
-      --load duck1123/dinsro:e2e-latest-reframe=+e2e-image-reframe \
-      --load duck1123/dinsro:dev-sources-reframe-latest=+dev-image-sources-reframe
-  RUN docker ps -a \
-      && make await-app \
-      && docker run --network=host duck1123/dinsro:e2e-latest-reframe make test-integration-reframe
-  END
-
-e2e-image-fulcro:
+e2e-image:
   FROM cypress/browsers
   RUN apt update && apt install -y \
           openjdk-11-jdk \
@@ -342,39 +243,16 @@ e2e-image-fulcro:
   COPY --dir cypress .
   COPY Makefile .
   ENTRYPOINT []
-  CMD ["make", "test-integration-fulcro"]
-  SAVE IMAGE duck1123/dinsro:e2e-latest-fulcro
+  CMD ["make", "test-integration"]
+  SAVE IMAGE duck1123/dinsro:e2e-latest
 
-e2e-image-reframe:
-  FROM cypress/browsers
-  RUN apt update && apt install -y \
-          openjdk-11-jdk \
-      && rm -rf /var/lib/apt/lists/*
-  RUN --mount=type=cache,target=/home/dinsro/.cache \
-      npx yarn install --frozen-lockfile
-  COPY cypress.json .
-  RUN npx cypress install
-  COPY --dir cypress .
-  COPY Makefile .
-  ENTRYPOINT []
-  CMD ["make", "test-integration-reframe"]
-  SAVE IMAGE duck1123/dinsro:e2e-latest-fulcro
-
-image-fulcro:
+image:
   FROM openjdk:8-alpine
   VOLUME /var/lib/dinsro/data
-  COPY +jar-fulcro/dinsro.jar dinsro.jar
+  COPY +jar/dinsro.jar dinsro.jar
   COPY docker-config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]
-  SAVE IMAGE duck1123/dinsro:latest-fulcro
-
-image-reframe:
-  FROM openjdk:8-alpine
-  VOLUME /var/lib/dinsro/data
-  COPY +jar-reframe/dinsro.jar dinsro.jar
-  COPY docker-config.edn config.edn
-  CMD ["java", "-jar", "dinsro.jar"]
-  SAVE IMAGE duck1123/dinsro:latest-reframe
+  SAVE IMAGE duck1123/dinsro:latest
 
 jar-deps:
   FROM +base-builder-ubuntu
@@ -382,47 +260,34 @@ jar-deps:
   USER root
   RUN rm -rf /home/dinsro/.m2
   RUN --mount=type=cache,target=/root/.m2 \
-      (make display-path-fulcro || make display-path-fulcro) \
+      (make display-path || make display-path) \
       && cp -r /root/.m2 /home/dinsro/
   RUN chown -R 1000 /home/dinsro/.m2
   USER 1000
   SAVE ARTIFACT /home/dinsro/.m2
 
-jar-fulcro:
-  FROM +src-fulcro-ubuntu
-  COPY --dir +compile-production-fulcro/classes .
-  RUN make package-jar-fulcro
-  SAVE ARTIFACT target/app.jar /dinsro.jar
-
-jar-reframe:
-  FROM +src-reframe-ubuntu
-  COPY --dir +compile-production-reframe/classes .
-  RUN make build-production-reframe
+jar:
+  FROM +src-ubuntu
+  COPY --dir +compile-production/classes .
+  RUN make package-jar
   SAVE ARTIFACT target/app.jar /dinsro.jar
 
 lint:
-  BUILD +lint-fulcro
-  BUILD +lint-reframe
+  BUILD +lint-eastwood
+  BUILD +lint-kibit
+  BUILD +lint-kondo
 
-lint-fulcro:
-  FROM +dev-sources-fulcro
-  RUN make lint-fulcro
+lint-eastwood:
+  FROM +dev-sources
+  RUN make lint-eastwood
 
-lint-reframe:
-  FROM +dev-sources-reframe
-  RUN make lint-reframe
+lint-kibit:
+  FROM +dev-sources
+  RUN make lint-kibit
 
 lint-kondo:
-  BUILD +lint-kondo-fulcro
-  BUILD +lint-kondo-reframe
-
-lint-kondo-fulcro:
-  FROM +dev-sources-fulcro
-  RUN make lint-kondo-fulcro
-
-lint-kondo-reframe:
-  FROM +dev-sources-reframe
-  RUN make lint-kondo-reframe
+  FROM +dev-sources
+  RUN make lint-kondo
 
 node-deps:
   FROM +base-builder-ubuntu
@@ -430,65 +295,35 @@ node-deps:
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
 
-src-fulcro:
+src:
   FROM +builder
-  COPY --dir resources/fulcro resources
-  COPY --dir src/fulcro src
+  COPY --dir resources/main resources
 
-src-fulcro-ubuntu:
+src-ubuntu:
   FROM +builder-ubuntu
-  COPY --dir resources/fulcro resources
-  COPY --dir src/fulcro src
-
-src-reframe:
-  FROM +builder
-  COPY --dir resources/reframe resources/reframe
-  COPY --dir src/reframe src
-
-src-reframe-ubuntu:
-  FROM +builder-ubuntu
-  COPY --dir resources/reframe resources/reframe
-  COPY --dir src/reframe src
+  COPY --dir resources/main resources
 
 test:
-  BUILD +test-fulcro-ubuntu
-  BUILD +test-reframe-ubuntu
+  BUILD +test-clj
+  BUILD +test-cljs
 
-test-fulcro:
-  BUILD +test-fulcro-clj
-  BUILD +test-fulcro-cljs
+test-clj:
+  FROM +test-sources
+  RUN make test-clj
 
-test-fulcro-clj:
-  FROM +test-sources-fulcro
-  RUN make test-fulcro-clj
+test-cljs:
+  FROM +test-sources
+  RUN make test-cljs
 
-test-fulcro-cljs:
-  FROM +test-sources-fulcro
-  RUN make test-fulcro-cljs
-
-test-fulcro-ubuntu:
-  FROM +src-fulcro-ubuntu
-  COPY --dir src/test src/fulcro-test src
+test-ubuntu:
+  FROM +src-ubuntu
+  COPY --dir src/test src
   COPY --dir +jar-deps/.m2 /home/dinsro/
   COPY karma.conf.js .
-  RUN make test-fulcro
+  RUN make test
 
-test-reframe:
-  FROM +src-reframe
-  COPY --dir src/test src/reframe-test src
-  COPY --dir +jar-deps/.m2 /home/dinsro/
-  COPY karma.conf.js .
-  RUN make test-reframe
-
-test-reframe-ubuntu:
-  FROM +src-reframe-ubuntu
-  COPY --dir src/test src/reframe-test src
-  COPY --dir +jar-deps/.m2 /home/dinsro/
-  COPY karma.conf.js .
-  RUN make test-reframe
-
-test-sources-fulcro:
-  FROM +src-fulcro
-  COPY --dir src/test src/fulcro-test src
+test-sources:
+  FROM +src
+  COPY --dir src/test src
   COPY --dir +jar-deps/.m2 /home/dinsro/
   COPY karma.conf.js .
