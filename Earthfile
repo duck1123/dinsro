@@ -115,10 +115,16 @@ builder-ubuntu:
   COPY docker-config.edn config.edn
   COPY shadow-cljs.edn .
 
+check:
+  FROM +src-ubuntu
+  COPY indentation.edn .
+  RUN make check
+
 ci:
+  BUILD +check
   BUILD +lint
   BUILD +test
-  # BUILD +e2e
+  BUILD +e2e
 
 compile-frontend:
   FROM +src-ubuntu
