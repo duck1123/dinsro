@@ -255,6 +255,12 @@ image:
   CMD ["java", "-jar", "dinsro.jar"]
   SAVE IMAGE duck1123/dinsro:latest
 
+jar:
+  FROM +src-ubuntu
+  COPY --dir +compile-production/classes .
+  RUN make package-jar
+  SAVE ARTIFACT target/app.jar /dinsro.jar
+
 jar-deps:
   FROM +base-builder-ubuntu
   COPY Makefile deps.edn .
@@ -266,12 +272,6 @@ jar-deps:
   RUN chown -R 1000 /home/dinsro/.m2
   USER 1000
   SAVE ARTIFACT /home/dinsro/.m2
-
-jar:
-  FROM +src-ubuntu
-  COPY --dir +compile-production/classes .
-  RUN make package-jar
-  SAVE ARTIFACT target/app.jar /dinsro.jar
 
 lint:
   BUILD +lint-eastwood
@@ -316,15 +316,15 @@ test-cljs:
   FROM +test-sources
   RUN make test-cljs
 
+test-sources:
+  FROM +src
+  COPY --dir src/test src
+  COPY --dir +jar-deps/.m2 /home/dinsro/
+  COPY karma.conf.js .
+
 test-ubuntu:
   FROM +src-ubuntu
   COPY --dir src/test src
   COPY --dir +jar-deps/.m2 /home/dinsro/
   COPY karma.conf.js .
   RUN make test
-
-test-sources:
-  FROM +src
-  COPY --dir src/test src
-  COPY --dir +jar-deps/.m2 /home/dinsro/
-  COPY karma.conf.js .
