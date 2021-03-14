@@ -3,6 +3,9 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.mutations :as mutations]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
@@ -37,6 +40,14 @@
       {:onChange #(fm/set-string! this ::currency :event %)})))
    (bulma/field
     (bulma/control
-     (u.inputs/ui-primary-button submit {:onClick (fn [_] (timbre/info "click"))})))))
+     (u.inputs/ui-primary-button
+      submit
+      {:onClick
+       (fn [_]
+         (timbre/info "click")
+         (let [data {::m.accounts/currency {::m.currencies/id currency}
+                     ::m.accounts/name name
+                     ::m.accounts/initial-value initial-value}]
+           (comp/transact! this [(mutations/submit data)])))})))))
 
 (def ui-form (comp/factory AddUserAccountForm))

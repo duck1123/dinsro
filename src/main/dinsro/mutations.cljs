@@ -14,6 +14,11 @@
    (let [href (get-in @state [:navlink/id id :navlink/href])]
      (routing/route-to! href))))
 
+(defmutation submit [props]
+  (action
+   [{:keys [state]}]
+   (timbre/infof "submitting: %s" props)))
+
 (defmutation delete [props]
   (action
    [{:keys [state]}]
