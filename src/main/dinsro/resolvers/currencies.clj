@@ -27,8 +27,8 @@
 (defresolver user-currencies-resolver
   [_env _props]
   {::pc/input #{::m.users/id}
-   ::pc/output [::m.currencies/index]}
-  {::m.currencies/index (a.currencies/index-by-user-handler {})})
+   ::pc/output [{::m.users/currencies [::m.currencies/id]}]}
+  (a.currencies/index-by-user-handler {}))
 
 (def resolvers
   [currencies-resolver

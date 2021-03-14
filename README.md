@@ -8,6 +8,11 @@ Sats-first personal finance management
 
 ## Prerequisites
 
+* docker
+* earthly
+
+If building locally, not using docker, you will need:
+
 * clojure cli
 * java
 * yarn
@@ -26,25 +31,23 @@ To start a web server for the application, run:
 
 * To start a web server for the application development, run:
 
-        make server
+        make dev
 
-  Then navigate to http://localhost:3000/
+  Then navigate to http://web-dinsro.docker.localhost:8081/
+
+  To view status of frontend, go to http://localhost:8080/dashboard/#/
+
+  To view shadow-cljs builds, go to http://watch-dinsro.docker.localhost:8081/dashboard
+
+  To view workspaces, go to http://workspaces-dinsro.docker.localhost:8081/
 
 * To build and watch the front-end for changes, run:
 
         make watch-cljs
 
-  Alternately, `C-c C-x C-c <enter> <enter> <enter>` and then probably a `y <enter>` in emacs.
-
 ## Testing
 
     make test
-
-## Docker
-
-   TODO: Document docker-based environment
-
-         docker-compose up
 
 ## License
 

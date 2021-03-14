@@ -41,7 +41,7 @@
   :start
   (when (config/config :nrepl-port)
     (timbre/info "starting in core")
-    (nrepl/start {:bind (config/config :nrepl-bind)
+    (nrepl/start {:bind (or (config/config :nrepl-bind) "0.0.0.0")
                   :handler (nrepl-handler)
                   :port (config/config :nrepl-port)}))
   :stop

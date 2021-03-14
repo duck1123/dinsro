@@ -110,7 +110,7 @@ run-production:
 server: compile run
 
 start-dev: start-lb
-	docker-compose up dinsro watch workspaces
+	docker-compose up dinsro
 
 start-lb:
 	docker-compose up -d frontend

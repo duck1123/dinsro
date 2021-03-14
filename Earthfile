@@ -186,13 +186,15 @@ dev-image:
   EXPOSE 3693/tcp
   # nRepl interface (clj)
   EXPOSE 7000/tcp
+  # shadow-cljs watcher
+  EXPOSE 9630/tcp
   VOLUME /var/lib/dinsro/data
   COPY docker-config.edn config.edn
   CMD ["make", "dev-bootstrap"]
   SAVE IMAGE duck1123/dinsro:dev-latest
 
 dev-image-sources:
-  FROM +dev-builder
+  FROM +dev-sources
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
   # Main web interface
   EXPOSE 3000/tcp
@@ -206,6 +208,8 @@ dev-image-sources:
   EXPOSE 3693/tcp
   # nRepl interface (clj)
   EXPOSE 7000/tcp
+  # shadow-cljs watcher
+  EXPOSE 9630/tcp
   WORKDIR /usr/src/app
   VOLUME /var/lib/dinsro/data
   COPY dev-image-config.edn /etc/dinsro/config.edn

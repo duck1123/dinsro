@@ -5,54 +5,27 @@ services:
     image: duck1123/dinsro:dev-sources-latest
     depends_on:
     - frontend
+    labels:
+    - "traefik.http.routers.web-dinsro.rule=host(`web-dinsro.docker.localhost`)"
+    - "traefik.http.routers.web-dinsro.service=web-dinsro"
+    - "traefik.http.services.web-dinsro.loadbalancer.server.port=3000"
+    - "traefik.http.routers.watch-dinsro.rule=host(`watch-dinsro.docker.localhost`)"
+    - "traefik.http.routers.watch-dinsro.service=watch-dinsro"
+    - "traefik.http.services.watch-dinsro.loadbalancer.server.port=9630"
+    - "traefik.http.routers.workspaces-dinsro.rule=host(`workspaces-dinsro.docker.localhost`)"
+    - "traefik.http.routers.workspaces-dinsro.service=workspaces-dinsro"
+    - "traefik.http.services.workspaces-dinsro.loadbalancer.server.port=3693"
     ports:
-      - 3000:3000
+    - 3000:3000
+    - 9630:9630
+    - 3693:3693
+    - 3333:3333
+    - 7000:7000
     volumes:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
     - "./data:/var/lib/dinsro/data"
     - "./docker-config.edn:/etc/dinsro/config.edn"
-
-  watch:
-    image: duck1123/dinsro:dev-sources-latest
-    command: ["make", "watch-cljs"]
-    depends_on:
-    - frontend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9630"]
-      timeout: 10s
-      retries: 30
-    labels:
-    - "traefik.http.routers.watch.rule=host(`watch-dinsro.docker.localhost`)"
-    - "traefik.http.routers.watch.service=watch"
-    - "traefik.http.services.watch.loadbalancer.server.port=9630"
-    ports:
-    - 9631:9630
-    - 3693
-    - 3333:3333
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/dinsro/.m2"
-    - "${HOME}/cache/.yarn:/home/dinsro/cache/.yarn"
-    - "./data:/var/lib/dinsro/data"
-
-  workspaces:
-    image: duck1123/dinsro:dev-sources-latest
-    command: ["make", "dev-workspaces-bootstrap"]
-    depends_on:
-    - frontend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3693"]
-      timeout: 10s
-      retries: 30
-    labels:
-    - "traefik.http.routers.workspaces.rule=host(`workspaces-dinsro.docker.localhost`)"
-    - "traefik.http.routers.workspaces.service=workspaces"
-    - "traefik.http.services.workspaces.loadbalancer.server.port=3693"
-    volumes:
-    - ".:/usr/src/app"
-    - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data:/var/lib/dinsro/data"
 
   frontend:
     image: traefik:v2.0
