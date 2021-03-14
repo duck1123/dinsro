@@ -2,10 +2,12 @@ all: init install
 
 init:
 	@echo "Hello World"
-	# TODO: common init here
 
 await-app:
-	while [ "`docker inspect -f {{.State.Health.Status}} app_dinsro_1`" != "healthy" ]; do docker inspect app_dinsro_1 && docker logs app_dinsro_1 && sleep 5; done
+	while [ "`docker inspect -f {{.State.Health.Status}} app_dinsro_1`" != "healthy" ]; do \
+	    docker logs app_dinsro_1 \
+	    && sleep 5; \
+	done
 
 build-dev-image:
 	earthly -i +dev-image-sources
