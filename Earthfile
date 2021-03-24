@@ -149,7 +149,7 @@ ci:
   BUILD +check
   BUILD +lint
   BUILD +test
-  BUILD +e2e
+  # BUILD +e2e
 
 compile-frontend:
   FROM +src-ubuntu
