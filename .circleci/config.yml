@@ -12,5 +12,5 @@ jobs:
       - run: earthly --version
       - run: earthly -P --remote-cache=duck1123/dinsro:cache +src-ubuntu
       - run: earthly -P --remote-cache=duck1123/dinsro:cache +ci
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache +e2e
+      # - run: earthly -P --remote-cache=duck1123/dinsro:cache +e2e
       - run: earthly --remote-cache=duck1123/dinsro:cache --push +image
