@@ -9,22 +9,23 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-user-transaction :as u.f.add-user-transaction]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexTransactionLine
-  [_this {::m.transactions/keys [id description]}]
+  [_this {::m.transactions/keys [id link]}]
   {:ident ::m.transactions/id
    :initial-state {::m.transactions/id          1
-                   ::m.transactions/description ""}
+                   ::m.transactions/link        {}}
    :query [::m.transactions/id
-           ::m.transactions/description]}
+           {::m.transactions/link (comp/get-query u.links/TransactionLink)}]}
   (dom/tr
-   (dom/td id)
-   (dom/td description)
-   (dom/td
-    (u.buttons/ui-delete-button {::m.transactions/id id}))))
+   {}
+   (dom/td {} id)
+   (dom/td {} (u.links/ui-transaction-link (first link)))
+   (dom/td {} (u.buttons/ui-delete-button {::m.transactions/id id}))))
 
 (def ui-index-transaction-line (comp/factory IndexTransactionLine {:keyfn ::m.transactions/id}))
 
@@ -36,13 +37,16 @@
     (dom/table
      :.table
      (dom/thead
+      {}
       (dom/tr
-       (dom/th "Id")
-       (dom/th "initial value")
-       (dom/th "Actions")))
+       {}
+       (dom/th {} "Id")
+       (dom/th {} "initial value")
+       (dom/th {} "Actions")))
      (dom/tbody
+      {}
       (map ui-index-transaction-line transactions)))
-    (dom/div (tr [:no-transactions]))))
+    (dom/div {} (tr [:no-transactions]))))
 
 (def ui-index-transactions (comp/factory IndexTransactions))
 
@@ -61,10 +65,10 @@
            [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
-     (dom/h2 (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
+     (dom/h2 {} (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-user-transaction/ui-form form))
-     (dom/hr)
+     (dom/hr {})
      (ui-index-transactions transactions))))
 
 (def ui-user-transactions

@@ -6,6 +6,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
@@ -55,6 +56,18 @@
     (dom/a {:href path} name)))
 
 (def ui-rate-source-link (comp/factory RateSourceLink {:keyfn ::m.rate-sources/id}))
+
+(defsc TransactionLink
+  [_this {::m.transactions/keys [id description]}]
+  {:ident ::m.transactions/id
+   :initial-state {::m.transactions/id   0
+                   ::m.transactions/description ""}
+   :query [::m.transactions/id
+           ::m.transactions/description]}
+  (let [path (str "/transactions/" id)]
+    (dom/a {:href path} description)))
+
+(def ui-transaction-link (comp/factory TransactionLink {:keyfn ::m.transactions/id}))
 
 (defsc UserLink
   [_this {::m.users/keys [id name]}]

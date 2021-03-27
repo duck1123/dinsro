@@ -17,8 +17,8 @@
 (defresolver transaction-link-resolver
   [_env {::m.transactions/keys [id]}]
   {::pc/input #{::m.transactions/id}
-   ::pc/output [{:dinsro.ui.links/link [::m.accounts/id]}]}
-  {:dinsro.ui.links/link [[::m.transactions/id id]]})
+   ::pc/output [{::m.transactions/link [::m.transactions/id]}]}
+  {::m.transactions/link [[::m.transactions/id id]]})
 
 (defresolver transactions-resolver
   [_env _props]
