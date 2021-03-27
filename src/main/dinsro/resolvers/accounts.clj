@@ -28,8 +28,8 @@
 (defresolver account-link-resolver
   [_env {::m.accounts/keys [id]}]
   {::pc/input #{::m.accounts/id}
-   ::pc/output [{:dinsro.ui.links/link [::m.accounts/id]}]}
-  {:dinsro.ui.links/link [[::m.accounts/id id]]})
+   ::pc/output [{::m.accounts/link [::m.accounts/id]}]}
+  {::m.accounts/link [[::m.accounts/id id]]})
 
 (defresolver user-account-resolver
   [_env {::m.accounts/keys [id]}]
