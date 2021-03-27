@@ -4,25 +4,20 @@
    [dinsro.actions.currencies :as a.currencies]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
-   [dinsro.sample :as sample]
+   [dinsro.queries.currencies :as q.currencies]
    [taoensso.timbre :as timbre]))
 
 (defresolver currencies-resolver
   [_env _props]
   {::pc/output [{:all-currencies [::m.currencies/id]}]}
-  {:all-currencies (map (fn [id] [::m.currencies/id id])
-                        (keys sample/currency-map))})
+  {:all-currencies (map (fn [id] [::m.currencies/id id]) (q.currencies/index-ids))})
 
 (defresolver currency-resolver
   [_env {::m.currencies/keys [id]}]
   {::pc/input #{::m.currencies/id}
    ::pc/output [::m.currencies/name]}
-  (get sample/currency-map id))
-
-(defresolver currency-map-resolver
-  [_env _props]
-  {::pc/output [::m.currencies/map]}
-  {::m.currencies/map sample/currency-map})
+  (let [record (q.currencies/read-record id)]
+    (assoc record ::m.currencies/id id)))
 
 (defresolver user-currencies-resolver
   [_env _props]
@@ -33,5 +28,4 @@
 (def resolvers
   [currencies-resolver
    currency-resolver
-   currency-map-resolver
    user-currencies-resolver])
