@@ -3,7 +3,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.sample :as sample]
+   [dinsro.queries.rate-sources :as q.rate-sources]
    [taoensso.timbre :as timbre]))
 
 (defresolver rate-source-resolver
@@ -12,16 +12,13 @@
    ::pc/output [::m.rate-sources/name
                 {::m.rate-sources/currency [::m.currencies/id]}
                 ::m.rate-sources/url]}
-  (get sample/rate-source-map id))
-
-(defresolver rate-source-map-resolver
-  [_env _props]
-  {::pc/output [::m.rate-sources/map]}
-  {::m.rate-sources/map sample/rate-source-map})
+  (let [record (q.rate-sources/read-record id)
+        id (:db/id record)]
+    (assoc record ::m.rate-sources/id id)))
 
 (defresolver rate-sources-resolver
   [_env _props]
   {::pc/output [{:all-rate-sources [::m.rate-sources/id]}]}
-  {:all-rate-sources (map (fn [id] [::m.rate-sources/id id]) (keys sample/rate-source-map))})
+  {:all-rate-sources (map (fn [id] [::m.rate-sources/id id]) (q.rate-sources/index-ids))})
 
-(def resolvers [rate-source-resolver rate-source-map-resolver rate-sources-resolver])
+(def resolvers [rate-source-resolver rate-sources-resolver])
