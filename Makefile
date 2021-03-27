@@ -105,7 +105,7 @@ test-integration:
 	npx cypress run
 
 run:
-	clojure -M:dev
+	clojure -M:dev:dev-main
 
 run-production:
 	export DATAHIKE_URL="datahike:file://$(pwd)/data/dev"

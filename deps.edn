@@ -60,6 +60,9 @@
    :jvm-opts ["-Dguardrails.enabled=true"]
    :main-opts ["-m" "dinsro.core"]}
 
+  :dev-main
+  {:main-opts ["-m" "dinsro.core"]}
+
   :eastwood
   {:extra-deps
    {jonase/eastwood {:mvn/version "0.3.11"}}
@@ -73,8 +76,10 @@
   :production
   {:extra-deps
    {day8.re-frame/tracing-stubs {:mvn/version "0.6.0"}}
-   :extra-paths ["src/prod" "resources/prod" "classes"]
-   :main-opts ["-m" "dinsro.core"]}
+   :extra-paths ["src/prod" "resources/prod" "classes"]}
+
+  :production-main
+  {:main-opts ["-m" "dinsro.core"]}
 
   :shadow-cljs
   {:extra-deps
