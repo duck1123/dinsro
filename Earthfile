@@ -281,13 +281,13 @@ image:
   COPY +jar/dinsro.jar dinsro.jar
   COPY docker-config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]
-  SAVE IMAGE duck1123/dinsro:latest
+  SAVE IMAGE --push duck1123/dinsro:latest
 
 jar:
   FROM +src-ubuntu
   COPY --dir +compile-production/classes .
   RUN make package-jar
-  SAVE ARTIFACT target/app.jar /dinsro.jar
+  SAVE ARTIFACT target/app.jar /dinsro.jar AS LOCAL target/dinsro.jar
 
 jar-deps:
   FROM +base-builder-ubuntu
@@ -331,7 +331,7 @@ src:
 
 src-ubuntu:
   FROM +builder-ubuntu
-  COPY --dir resources/main resources
+  COPY --dir resources/main resources/
 
 test:
   BUILD +test-clj
