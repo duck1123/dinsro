@@ -129,6 +129,10 @@ builder:
   RUN mkdir -p classes data target
   COPY --dir lib .
   COPY --dir src/main src/main
+  USER root
+  RUN mkdir -p /var/lib/dinsro/data && chown -R dinsro:dinsro /var/lib/dinsro/data
+  USER 1000
+  VOLUME /var/lib/dinsro/data
   COPY docker-config.edn config.edn
   COPY shadow-cljs.edn .
 
@@ -137,6 +141,10 @@ builder-ubuntu:
   RUN mkdir -p classes data target
   COPY --dir lib .
   COPY --dir src/main src/main
+  USER root
+  RUN mkdir -p /var/lib/dinsro/data && chown -R dinsro:dinsro /var/lib/dinsro/data
+  USER 1000
+  VOLUME /var/lib/dinsro/data
   COPY docker-config.edn config.edn
   COPY shadow-cljs.edn .
 
@@ -327,7 +335,7 @@ node-deps:
 
 src:
   FROM +builder
-  COPY --dir resources/main resources
+  COPY --dir resources/main resources/
 
 src-ubuntu:
   FROM +builder-ubuntu
