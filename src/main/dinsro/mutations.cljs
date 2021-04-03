@@ -19,10 +19,29 @@
    [{:keys [state]}]
    (timbre/infof "submitting: %s" props)))
 
-(defmutation delete [props]
-  (action
-   [{:keys [state]}]
-   (timbre/infof "deleting: %s" props)))
+(defmutation delete [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
+(defmutation delete-account [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
+(defmutation delete-category [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
+(defmutation delete-currency [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
+(defmutation delete-rate-source [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
+(defmutation delete-user [_props]
+  (action [_env] true)
+  (remote [_env] true))
 
 (defmutation toggle [_]
   (action
