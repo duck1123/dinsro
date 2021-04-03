@@ -29,7 +29,7 @@
       {:user/ref [::m.users/id]}
       :user/valid?]}]}
   {:session/current-user {:user/id     identity
-                          :user/valid? (seq identity)}})
+                          :user/valid? (boolean (seq identity))}})
 
 (defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
