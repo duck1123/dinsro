@@ -9,7 +9,8 @@
 
 (defsc CreateRateSourceForm
   [this {::keys [name]}]
-  {:initial-state {::name ""}
+  {:ident (fn [] [:component/id ::form])
+   :initial-state {::name ""}
    :query [::name]}
   (dom/div
    (u.inputs/ui-text-input
