@@ -1,6 +1,7 @@
 (ns dinsro.model.transactions
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]))
 
 (s/def ::id        uuid?)
@@ -18,7 +19,9 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::account (s/keys :req [:db/id]))
+(s/def ::account
+  (s/keys :opt [:db/id
+                ::m.accounts/id]))
 (def account ::account)
 (def account-spec
   {:db/ident       ::account
@@ -42,10 +45,13 @@
 (s/def ::account-id :db/id)
 (def account-id ::account-id)
 
+(s/def ::required-params (s/keys :req [::date ::description ::value]))
+(def required-params ::required-params)
+
 (s/def ::params (s/keys :req [::account ::date ::description ::value]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [:db/id ::account ::date ::description ::value]))
+(s/def ::item (s/keys :req [::id ::account ::date ::description ::value]))
 (def item ::item)
 
 (def schema

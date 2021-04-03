@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [expound.alpha :as expound]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs.actions.admin-rate-sources :as s.a.admin-rate-sources]
@@ -12,7 +13,7 @@
 (>defn prepare-record
   [params]
   [::s.a.admin-rate-sources/create-params => (? ::m.rate-sources/params)]
-  (let [params {::m.rate-sources/currency {:db/id (:currency-id params)}
+  (let [params {::m.rate-sources/currency {::m.currencies/id (:currency-id params)}
                 ::m.rate-sources/name     (some-> params :name)
                 ::m.rate-sources/url      (some-> params :url)}]
     (if (s/valid? ::m.rate-sources/params params)

@@ -1,6 +1,7 @@
 (ns dinsro.model.rates
   (:require
    [clojure.spec.alpha :as s]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]))
 
 (s/def ::id        uuid?)
@@ -18,9 +19,11 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id :db/id)
+(s/def ::currency-id ::m.currencies/id)
 
-(s/def ::currency (s/keys :req [:db/id]))
+(s/def ::currency
+  (s/keys :opt [:db/id
+                ::m.currencies/id]))
 (def currency ::currency)
 (def currency-spec
   {:db/ident       ::currency
@@ -39,10 +42,13 @@
    :db/valueType   :db.type/instant
    :db/cardinality :db.cardinality/one})
 
+(s/def ::required-params (s/keys :req [::rate ::date]))
+(def required-params ::required-params)
+
 (s/def ::params (s/keys :req [::rate ::currency ::date]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [:db/id ::rate ::currency ::date]))
+(s/def ::item (s/keys :req [::id ::rate ::currency ::date]))
 (def item ::item)
 
 (def schema

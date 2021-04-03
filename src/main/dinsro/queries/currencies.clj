@@ -7,23 +7,42 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs]
+   [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
 
+(def attribute-list
+  '[:db/id
+    ::m.currencies/id
+    ::m.currencies/name])
 (def record-limit 1000)
+
+(def find-eid-by-id-query
+  '[:find  ?eid
+    :in    $ ?id
+    :where [?eid ::m.currencies/id ?id]])
+
+(def find-id-by-eid-query
+  '[:find  ?id
+    :in    $ ?eid
+    :where [?eid ::m.currencies/id ?id]])
+
+(>defn find-eid-by-id
+  [id]
+  [::m.currencies/id => :db/id]
+  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+
+(>defn find-id-by-eid
+  [eid]
+  [:db/id => ::m.currencies/id]
+  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
 (>defn create-record
   [params]
   [::m.currencies/params => :db/id]
   (let [params   (assoc params :db/id "currency-id")
+        params   (assoc params ::m.currencies/id (utils/uuid))
         response (d/transact db/*conn* {:tx-data [params]})]
     (get-in response [:tempids "currency-id"])))
-
-(>defn read-record
-  [id]
-  [:db/id => (? ::m.currencies/item)]
-  (let [record (d/pull @db/*conn* '[*] id)]
-    (when (get record ::m.currencies/name)
-      record)))
 
 (>defn index-ids
   []
@@ -33,7 +52,14 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.currencies/item)]
-  (d/pull-many @db/*conn* '[::m.currencies/name :db/id] (index-ids)))
+  (d/pull-many @db/*conn* attribute-list (index-ids)))
+
+(>defn read-record
+  [id]
+  [:db/id => (? ::m.currencies/item)]
+  (let [record (d/pull @db/*conn* attribute-list id)]
+    (when (get record ::m.currencies/name)
+      record)))
 
 (defn index-records-by-account
   [currency-id]

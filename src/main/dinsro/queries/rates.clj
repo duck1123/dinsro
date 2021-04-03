@@ -7,11 +7,32 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.specs]
    [dinsro.streams :as streams]
+   [dinsro.utils :as utils]
    [manifold.stream :as ms]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
 (def record-limit 75)
+
+(def find-eid-by-id-query
+  '[:find  ?eid
+    :in    $ ?id
+    :where [?eid ::m.rates/id ?id]])
+
+(def find-id-by-eid-query
+  '[:find  ?id
+    :in    $ ?eid
+    :where [?eid ::m.rates/id ?id]])
+
+(>defn find-eid-by-id
+  [id]
+  [::m.rates/id => :db/id]
+  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+
+(>defn find-id-by-eid
+  [eid]
+  [:db/id => ::m.rates/id]
+  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
 (>defn prepare-record
   [params]
@@ -23,6 +44,7 @@
   [::m.rates/params => :db/id]
   (let [tempid          (d/tempid "rate-id")
         prepared-params (-> (prepare-record params)
+                            (assoc ::m.rates/id (utils/uuid))
                             (assoc :db/id tempid)
                             (update ::m.rates/date tick/inst))
         response        (d/transact db/*conn* {:tx-data [prepared-params]})

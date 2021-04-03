@@ -14,9 +14,12 @@
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-test
-  (let [params (ds/gen-key ::m.rate-sources/params)
-        id     (q.rate-sources/create-record params)
-        item   (q.rate-sources/read-record id)]
+  (let [currency    (mocks/mock-currency)
+        currency-id (:db/id currency)
+        params      (ds/gen-key ::m.rate-sources/required-params)
+        params      (assoc-in params [::m.rate-sources/currency :db/id] currency-id)
+        id          (q.rate-sources/create-record params)
+        item        (q.rate-sources/read-record id)]
     (is (= (::m.rate-sources/name params) (::m.rate-sources/name item))
         "rate sources match")))
 
@@ -28,7 +31,8 @@
 
 (deftest read-record-test-found
   (let [item     (mocks/mock-rate-source)
-        response (q.rate-sources/read-record (:db/id item))]
+        id       (:db/id item)
+        response (q.rate-sources/read-record id)]
     (is (= item response)
         "Return the matching item")))
 

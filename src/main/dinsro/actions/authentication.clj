@@ -21,7 +21,7 @@
       (if-let [user (q.users/find-by-email email)]
         (if-let [password-hash (::m.users/password-hash user)]
           (if (hashers/check password password-hash)
-            (let [id     (:db/id user)
+            (let [id     (::m.users/id user)
                   claims {:user id
                           :exp  (time/plus (time/now) (time/minutes 3600))}]
               (-> {::s.a.authentication/identity id

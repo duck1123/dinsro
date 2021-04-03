@@ -23,13 +23,15 @@
         "rates match")))
 
 (deftest read-record-test-not-found
-  (let [response (q.rates/read-record (ds/gen-key pos-int?))]
+  (let [id       (ds/gen-key pos-int?)
+        response (q.rates/read-record id)]
     (is (nil? response)
         "Should return nil")))
 
 (deftest read-record-test-found
   (let [item     (mocks/mock-rate)
-        response (q.rates/read-record (:db/id item))]
+        id       (:db/id item)
+        response (q.rates/read-record id)]
     (is (= item response)
         "Return the matching item")))
 

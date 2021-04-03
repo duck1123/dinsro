@@ -22,10 +22,12 @@
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-test
-  (let [params (ds/gen-key ::m.transactions/params)
-        id     (q.transactions/create-record params)
-        record (q.transactions/read-record id)]
-
+  (let [account    (mocks/mock-account)
+        account-id (:db/id account)
+        params     (ds/gen-key ::m.transactions/required-params)
+        params     (assoc params ::m.transactions/account {:db/id account-id})
+        id         (q.transactions/create-record params)
+        record     (q.transactions/read-record id)]
     (is (= (double (::m.transactions/value params))
            (::m.transactions/value record))
         "values match")))

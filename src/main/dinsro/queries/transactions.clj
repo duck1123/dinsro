@@ -6,14 +6,36 @@
    [dinsro.db :as db]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.specs]
+   [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
+
+(def find-eid-by-id-query
+  '[:find  ?eid
+    :in    $ ?id
+    :where [?eid ::m.transactions/id ?id]])
+
+(def find-id-by-eid-query
+  '[:find  ?id
+    :in    $ ?eid
+    :where [?eid ::m.transactions/id ?id]])
+
+(>defn find-eid-by-id
+  [id]
+  [::m.transactions/id => :db/id]
+  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+
+(>defn find-id-by-eid
+  [eid]
+  [:db/id => ::m.transactions/id]
+  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
 (>defn create-record
   [params]
   [::m.transactions/params => :db/id]
   (let [tempid          (d/tempid "transaction-id")
         prepared-params (-> params
+                            (assoc  ::m.transactions/id (utils/uuid))
                             (assoc  :db/id tempid)
                             (update ::m.transactions/date tick/inst))
         response        (d/transact db/*conn* {:tx-data [prepared-params]})]

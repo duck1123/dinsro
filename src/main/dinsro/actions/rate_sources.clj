@@ -25,7 +25,7 @@
 (>defn prepare-record
   [params]
   [::s.a.rate-sources/create-params => (? ::m.rate-sources/params)]
-  (let [params {::m.rate-sources/currency {:db/id (:currency-id params)}
+  (let [params {::m.rate-sources/currency {::m.currencies/id (:currency-id params)}
                 ::m.rate-sources/name     (some-> params :name)
                 ::m.rate-sources/url      (some-> params :url)}]
     (if (s/valid? ::m.rate-sources/params params)
@@ -89,11 +89,11 @@
 
 (>defn fetch-source
   [item]
-  [::m.rate-sources/item => :db/id]
-  (if-let [currency-id (some-> item ::m.rate-sources/currency :db/id)]
+  [::m.rate-sources/item => ::m.currencies/id]
+  (if-let [currency-id (some-> item ::m.rate-sources/currency ::m.currencies/id)]
     (if-let [currency (q.currencies/read-record currency-id)]
       (if-let [rate (fetch-rate item)]
-        (let [rate-item {::m.rates/currency {:db/id currency-id}
+        (let [rate-item {::m.rates/currency {::m.currencies/id currency-id}
                          ::m.rates/rate     rate
                          ::m.rates/date     (tick/instant)}]
           (timbre/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)

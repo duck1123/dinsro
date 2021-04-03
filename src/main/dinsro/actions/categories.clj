@@ -6,6 +6,7 @@
    [expound.alpha :as expound]
    [dinsro.queries.categories :as q.categories]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.users :as m.users]
    [dinsro.specs.actions.categories :as s.a.categories]
    [dinsro.utils :as utils]
    [ring.util.http-response :as http]
@@ -21,7 +22,7 @@
         params  (-> params
                     (set/rename-keys param-rename-map)
                     (select-keys (vals param-rename-map))
-                    (assoc-in [::m.categories/user :db/id] user-id))]
+                    (assoc-in [::m.categories/user ::m.users/id] user-id))]
     (if (s/valid? ::m.categories/params params)
       params
       (do

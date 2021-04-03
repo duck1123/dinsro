@@ -18,10 +18,18 @@
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record
-  (let [params         (ds/gen-key ::m.accounts/params)
+  (let [user           (mocks/mock-user)
+        user-id        (:db/id user)
+        currency       (mocks/mock-currency)
+        currency-id    (:db/id currency)
+        params         (ds/gen-key m.accounts/required-params)
+        params         (-> params
+                           (assoc-in [::m.accounts/user :db/id] user-id)
+                           (assoc-in [::m.accounts/currency :db/id] currency-id))
         id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
-    (is (= (get params ::m.accounts/name) (get created-record ::m.accounts/name)))))
+    (is (= (get params m.accounts/name)
+           (get created-record m.accounts/name)))))
 
 (deftest index-records
   (is (= [] (q.accounts/index-records))))
@@ -32,7 +40,7 @@
 
 (deftest index-records-by-user-found
   (let [record  (mocks/mock-account)
-        user-id (get-in record [::m.accounts/user :db/id])]
+        user-id (get-in record [m.accounts/user :db/id])]
     (is (= [record] (q.accounts/index-records-by-user user-id)))))
 
 (deftest read-record-not-found

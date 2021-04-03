@@ -2,6 +2,7 @@
   (:require
    [cljsjs.highcharts]
    [clojure.spec.alpha :as s]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.spec.accounts :as s.accounts]
    [dinsro.spec.rates :as s.rates]
    [reagent.core :as r]
@@ -36,12 +37,12 @@
 
 (defn transaction-value-chart
   [account data]
-  (let [currency-id (get-in account [::s.accounts/currency :db/id])]
-    (let [config (get-config account data)]
-      [:<>
-       [:p "Chart"]
-       [:p "Currency ID: " currency-id]
-       [chart-outer config]])))
+  (let [currency-id (get-in account [::s.accounts/currency ::m.currencies/id])
+        config (get-config account data)]
+    [:<>
+     [:p "Chart"]
+     [:p "Currency ID: " currency-id]
+     [chart-outer config]]))
 
 (s/fdef transaction-value-chart
   :args (s/cat

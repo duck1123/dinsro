@@ -39,7 +39,7 @@
 
 (defresolver currency-account-resolver
   [_env {::m.currencies/keys [id]}]
-  {::pc/input #{::m.currencies/id}
+  {::pc/input  #{::m.currencies/id}
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name

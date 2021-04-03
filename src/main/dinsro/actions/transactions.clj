@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [expound.alpha :as expound]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs.actions.transactions :as s.a.transactions]
@@ -19,7 +20,7 @@
   [::s.a.transactions/create-params => (? ::m.transactions/params)]
   (let [account-id (utils/get-as-int params :account-id)
         params     {::m.transactions/value       (some-> params :value str Double/parseDouble)
-                    ::m.transactions/account     {:db/id account-id}
+                    ::m.transactions/account     {::m.accounts/id account-id}
                     ::m.transactions/description (some-> params :description)
                     ::m.transactions/date        (some-> params :date str tick/instant)}]
     (if (s/valid? ::m.transactions/params params)

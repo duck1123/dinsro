@@ -14,9 +14,10 @@
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-valid
-  (let [{::m.users/keys [email] :as params} (ds/gen-key ::m.users/params)
-        id                                  (q.users/create-record params)
-        user                                (q.users/read-record id)]
+  (let [{::m.users/keys [email]
+         :as            params} (ds/gen-key ::m.users/params)
+        id                      (q.users/create-record params)
+        user                    (q.users/read-record id)]
     (is (= email (::m.users/email user)))))
 
 (deftest create-record-invalid
@@ -27,9 +28,10 @@
     (is (thrown? RuntimeException (q.users/create-record params)))))
 
 (deftest read-record
-  (let [{::m.users/keys [email] :as params} (ds/gen-key ::m.users/params)
-        id                                  (q.users/create-record params)
-        response                            (q.users/read-record id)]
+  (let [{::m.users/keys [email]
+         :as            params} (ds/gen-key ::m.users/params)
+        id                      (q.users/create-record params)
+        response                (q.users/read-record id)]
     (is (= email (::m.users/email response)))))
 
 (deftest read-record-missing

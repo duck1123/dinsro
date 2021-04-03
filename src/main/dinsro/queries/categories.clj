@@ -6,12 +6,41 @@
    [dinsro.db :as db]
    [dinsro.model.categories :as m.categories]
    [dinsro.specs]
+   [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
+
+(def attributes-list
+  '[:db/id
+    ::m.categories/id
+    ::m.categories/name])
+(def record-limit 1000)
+
+(def find-eid-by-id-query
+  '[:find  ?eid
+    :in    $ ?id
+    :where [?eid ::m.categories/id ?id]])
+
+(def find-id-by-eid-query
+  '[:find  ?id
+    :in    $ ?eid
+    :where [?eid ::m.categories/id ?id]])
+
+(>defn find-eid-by-id
+  [id]
+  [::m.categories/id => :db/id]
+  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+
+(>defn find-id-by-eid
+  [eid]
+  [:db/id => ::m.categories/id]
+  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
 (>defn create-record
   [params]
   [::m.categories/params => :db/id]
-  (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "record-id")]})]
+  (let [params   (assoc params ::m.categories/id (utils/uuid))
+        params   (assoc params :db/id "record-id")
+        response (d/transact db/*conn* {:tx-data [params]})]
     (get-in response [:tempids "record-id"])))
 
 (>defn read-record

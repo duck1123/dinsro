@@ -50,7 +50,7 @@
 (s/def ::params (s/keys :req [::name ::email ::password-hash]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [:db/id ::name ::email ::password-hash]))
+(s/def ::item (s/keys :req [::id ::name ::email ::password-hash]))
 (def item ::item)
 
 (def schema

@@ -25,7 +25,7 @@
 (s/def ::item-opt (s/keys :opt [::name]))
 (def item-opt ::item-opt)
 
-(s/def ::item (s/keys :req [:db/id ::name]))
+(s/def ::item (s/keys :req [::name]))
 (def item ::item)
 
 (def schema
