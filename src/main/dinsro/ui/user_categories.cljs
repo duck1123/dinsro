@@ -25,8 +25,7 @@
   (dom/tr
    (dom/td id)
    (dom/td (u.links/ui-category-link category))
-   (dom/td
-    (u.buttons/ui-delete-button {::m.categories/id id}))))
+   (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
 

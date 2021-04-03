@@ -14,7 +14,7 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexCategoryLine
-  [_this {::m.categories/keys [user]
+  [_this {::m.categories/keys [id user]
           :as category}]
   {:ident ::m.categories/id
    :initial-state {::m.categories/id      0
@@ -25,8 +25,7 @@
   (dom/tr
    (dom/td (u.links/ui-category-link category))
    (dom/td (u.links/ui-user-link user))
-   (dom/td
-    (dom/button :.button.is-danger "Delete"))))
+   (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine {:keyfn ::m.categories/id}))
 

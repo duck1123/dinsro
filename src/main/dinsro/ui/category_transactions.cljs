@@ -4,13 +4,14 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexCategoryTransactionLine
-  [_this {::m.transactions/keys [date description account]}]
+  [_this {::m.transactions/keys [account date description id]}]
   {:css [[:.card {:margin-bottom "5px"}]]
    :ident ::m.transactions/id
    :initial-state {::m.transactions/id          0
@@ -40,10 +41,7 @@
       (dom/div :.level-item (u.links/ui-account-link account)))))
    (dom/footer
     :.card-footer
-    (dom/a
-     :.button.card-footer-item
-     {:onClick (fn [_] (timbre/info "delete"))}
-     (tr [:delete])))))
+    (u.buttons/ui-delete-transaction-button {::m.transactions/id id}))))
 
 (def ui-index-category-transaction-line
   (comp/factory IndexCategoryTransactionLine {:keyfn ::m.transactions/id}))

@@ -23,8 +23,7 @@
    (dom/td id)
    (dom/th (u.links/ui-user-link user))
    (dom/th email)
-   (dom/th
-    (u.buttons/ui-delete-button {::m.users/id id}))))
+   (dom/th (u.buttons/ui-delete-user-button {::m.users/id id}))))
 
 (def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/id}))
 

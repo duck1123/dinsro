@@ -2,9 +2,9 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
@@ -18,7 +18,6 @@
   (dom/div
    (dom/p name)
    (dom/p id)
-   (ui-button {:className "button is-danger"
-               :content "Delete"})))
+   (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id})))
 
 (def ui-show-rate-source (comp/factory ShowRateSource))

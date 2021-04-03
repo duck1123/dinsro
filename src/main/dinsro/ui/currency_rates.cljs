@@ -31,8 +31,7 @@
   (dom/tr
    (dom/td date)
    (dom/td rate)
-   (dom/td
-    (u.buttons/ui-delete-button {::m.rates/id id}))))
+   (dom/td (u.buttons/ui-delete-rate-button {::m.rates/id id}))))
 
 (def ui-index-currency-rate-line (comp/factory IndexCurrencyRateLine {:keyfn ::m.rates/id}))
 

@@ -18,7 +18,7 @@
    :query [::m.currencies/id ::m.currencies/name]}
   (dom/tr
    (dom/td (u.links/ui-currency-link currency))
-   (dom/td (u.buttons/ui-delete-button {::m.currencies/id id}))))
+   (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
 
 (def ui-index-currency-line (comp/factory IndexCurrencyLine {:keyfn ::m.currencies/id}))
 

@@ -33,8 +33,7 @@
    (dom/td (u.links/ui-rate-source-link rate-source))
    (dom/td url)
    (dom/td (u.links/ui-currency-link currency))
-   (dom/td
-    (u.buttons/ui-delete-button {::m.rate-sources/id id}))))
+   (dom/td (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id}))))
 
 (def ui-admin-index-rate-source-line
   (comp/factory AdminIndexRateSourceLine {:keyfn ::m.rate-sources/id}))

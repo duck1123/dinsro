@@ -35,7 +35,15 @@
   (action [_env] true)
   (remote [_env] true))
 
+(defmutation delete-rate [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
 (defmutation delete-rate-source [_props]
+  (action [_env] true)
+  (remote [_env] true))
+
+(defmutation delete-transaction [_props]
   (action [_env] true)
   (remote [_env] true))
 

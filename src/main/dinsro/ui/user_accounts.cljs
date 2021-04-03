@@ -33,7 +33,7 @@
    (dom/td (u.links/ui-user-link user))
    (dom/td (u.links/ui-currency-link currency))
    (dom/td initial-value)
-   (dom/td (u.buttons/ui-delete-button {::m.accounts/id id}))))
+   (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 
 (def ui-index-account-line (comp/factory IndexAccountLine {:keyfn ::m.accounts/id}))
 
