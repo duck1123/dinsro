@@ -11,9 +11,9 @@
 (defsc ShowUser
   [_this {::m.users/keys [email id name]}]
   {:ident ::m.users/id
-   :initial-state {::m.users/id    0
-                   ::m.users/name  "initial-name"
-                   ::m.users/email "initial-email"}
+   :initial-state {::m.users/email "initial-email"
+                   ::m.users/id    0
+                   ::m.users/name  "initial-name"}
    :query [::m.users/email
            ::m.users/id
            ::m.users/name]}
