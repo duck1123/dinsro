@@ -70,31 +70,27 @@
 
 (defsc CurrencySelectorOption
   [_this {::m.currencies/keys [id name]}]
-  {:initial-state {::m.currencies/id   1
-                   ::m.currencies/name "Foo"}
+  {:ident ::m.currencies/id
+   :initial-state {::m.currencies/id   0
+                   ::m.currencies/name "sats"}
    :query [::m.currencies/id ::m.currencies/name]}
   (dom/option {:value id} name))
 
 (def ui-currency-selector-option (comp/factory CurrencySelectorOption {:keyfn ::m.currencies/id}))
 
 (defsc CurrencySelector
-  [_this {:keys [all-currencies selected-currency]}]
+  [_this {:keys [all-currencies]} {:keys [onChange]}]
   {:componentDidMount
-   (fn [this]
-     (df/load! this :all-currencies
-               CurrencySelectorOption))
-   :initial-state {:all-currencies [{::m.currencies/id 1 ::m.currencies/name "foo"}]
-                   :selected-currency nil}
-   :query [{:all-currencies (comp/get-query CurrencySelectorOption)}
-           :selected-currency]}
+   (fn [this] (df/load! this :all-currencies CurrencySelectorOption))
+   :initial-state {}
+   :query [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
   (dom/div
    :.select
    (dom/select
-    {:onChange (fn [_] (js/console.log selected-currency))}
-    (ui-currency-selector-option {::m.currencies/id nil ::m.currencies/name "unset"})
+    {:onChange onChange}
     (map ui-currency-selector-option all-currencies))))
 
-(def ui-currency-selector (comp/factory CurrencySelector))
+(def ui-currency-selector (comp/computed-factory CurrencySelector))
 
 (defsc UserSelector
   [_this {:keys [users]}]
