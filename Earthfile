@@ -219,7 +219,6 @@ dev-sources:
   COPY dev-image-config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir . /usr/src/app
-  RUN ls -al
 
 e2e:
   FROM cypress/browsers
@@ -235,13 +234,10 @@ e2e:
       && ./linux-install-1.10.2.790.sh
   COPY --dir +node-deps/node_modules node_modules
   COPY --dir +jar-deps/.m2 ${USER_HOME}/
-  # RUN --mount=type=cache,target=/home/dinsro/.cache \
-  #     npx yarn install --frozen-lockfile
   COPY cypress.json .
   RUN npx cypress install
   COPY . .
   RUN make init
-  # RUN make display-path || make display-path
   RUN npx cypress install
   WITH DOCKER \
        --compose e2e-docker-compose.yml \
