@@ -26,13 +26,13 @@
 
 (def parser
   (p/parallel-parser
-   {::p/env {::p/reader [p/map-reader
-                         pc/parallel-reader
-                         pc/open-ident-reader
-                         p/env-placeholder-reader]
-             ::pc/mutation-join-globals [:tempids]
-             ::p/placeholder-prefixes #{">"}}
-    ::p/mutate pc/mutate-async
+   {::p/env     {::p/reader                 [p/map-reader
+                                             pc/parallel-reader
+                                             pc/open-ident-reader
+                                             p/env-placeholder-reader]
+                 ::pc/mutation-join-globals [:tempids]
+                 ::p/placeholder-prefixes   #{">"}}
+    ::p/mutate  pc/mutate-async
     ::p/plugins [(pc/connect-plugin {::pc/register my-resolvers})
                  (p/post-process-parser-plugin p/elide-not-found)
                  p/error-handler-plugin

@@ -18,9 +18,9 @@
   [params]
   [::s.a.admin-transactions/create-params => ::m.transactions/params]
   (let [account-id (utils/get-as-int params :account-id)
-        params {::m.transactions/value (some-> params :value str Double/parseDouble)
-                ::m.transactions/account {:db/id account-id}
-                ::m.transactions/date (some-> params :date str tick/instant)}]
+        params     {::m.transactions/value   (some-> params :value str Double/parseDouble)
+                    ::m.transactions/account {:db/id account-id}
+                    ::m.transactions/date    (some-> params :date str tick/instant)}]
     (if (s/valid? ::m.transactions/params params)
       params
       (do
@@ -53,7 +53,7 @@
       (q.transactions/delete-record id)
       (http/ok {:id id}))
     (http/bad-request
-     {:status :bad-request
+     {:status  :bad-request
       :message (tr [:missing-id "Id parameter was not supplied"])})))
 
 (>defn index-handler

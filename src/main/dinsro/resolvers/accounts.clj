@@ -10,13 +10,13 @@
 
 (defresolver account-resolver
   [_env {::m.accounts/keys [id]}]
-  {::pc/input #{::m.accounts/id}
+  {::pc/input  #{::m.accounts/id}
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
                 {::m.accounts/user [::m.users/id]}]}
   (let [record (q.accounts/read-record id)
-        id (:db/id record)]
+        id     (:db/id record)]
     (assoc record ::m.accounts/id id)))
 
 (defresolver accounts-resolver
@@ -27,13 +27,13 @@
 
 (defresolver account-link-resolver
   [_env {::m.accounts/keys [id]}]
-  {::pc/input #{::m.accounts/id}
+  {::pc/input  #{::m.accounts/id}
    ::pc/output [{::m.accounts/link [::m.accounts/id]}]}
   {::m.accounts/link [[::m.accounts/id id]]})
 
 (defresolver user-account-resolver
   [_env {::m.accounts/keys [id]}]
-  {::pc/input #{::m.users/id}
+  {::pc/input  #{::m.users/id}
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
@@ -42,7 +42,7 @@
 
 (defresolver user-accounts-resolver
   [_env {::m.users/keys [id]}]
-  {::pc/input #{::m.users/id}
+  {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/accounts [::m.accounts/id]}]}
   {::m.users/accounts
    (->> (vals sample/account-map)

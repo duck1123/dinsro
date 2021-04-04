@@ -8,12 +8,12 @@
 
 (defresolver rate-source-resolver
   [_env {::m.rate-sources/keys [id]}]
-  {::pc/input #{::m.rate-sources/id}
+  {::pc/input  #{::m.rate-sources/id}
    ::pc/output [::m.rate-sources/name
                 {::m.rate-sources/currency [::m.currencies/id]}
                 ::m.rate-sources/url]}
   (let [record (q.rate-sources/read-record id)
-        id (:db/id record)]
+        id     (:db/id record)]
     (assoc record ::m.rate-sources/id id)))
 
 (defresolver rate-sources-resolver

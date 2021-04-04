@@ -49,7 +49,7 @@
 (def item ::item)
 
 (def item-spec
-  {:db/ident ::item
+  {:db/ident        ::item
    :db.entity/attrs [::name ::initial-value ::currency ::user]})
 
 (def schema

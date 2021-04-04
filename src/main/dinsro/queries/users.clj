@@ -45,8 +45,8 @@
   [params]
   [::m.users/params => :db/id]
   (if (nil? (find-id-by-email (::m.users/email params)))
-    (let [tempid (d/tempid "user-id")
-          record (assoc params :db/id tempid)
+    (let [tempid   (d/tempid "user-id")
+          record   (assoc params :db/id tempid)
           response (d/transact db/*conn* {:tx-data [record]})]
       (get-in response [:tempids tempid]))
     (throw (RuntimeException. "User already exists"))))

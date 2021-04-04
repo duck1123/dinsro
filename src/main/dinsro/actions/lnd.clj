@@ -72,9 +72,9 @@
 (def lnd-host "127.0.0.1")
 (def payment-request "")
 
-(def config {:host lnd-host
-             :port 10009
-             :cert-path (str wallet-base "tls.cert")
+(def config {:host          lnd-host
+             :port          10009
+             :cert-path     (str wallet-base "tls.cert")
              :macaroon-path (str wallet-base "admin.macaroon")})
 
 (comment

@@ -12,11 +12,11 @@
    configuration in tests."
   :start
   (let [{:keys [config overrides]} (args)
-        config-path (or config
-                        (.getAbsolutePath
-                         (File. (or (env :config-file) "config.edn"))))
-        loaded-config (merge (fserver/load-config! {:config-path config-path})
-                             overrides)]
+        config-path                (or config
+                                       (.getAbsolutePath
+                                        (File. (or (env :config-file) "config.edn"))))
+        loaded-config              (merge (fserver/load-config! {:config-path config-path})
+                                          overrides)]
     (timbre/info "Loading config" config)
     (logging/configure-logging! loaded-config)
     loaded-config))

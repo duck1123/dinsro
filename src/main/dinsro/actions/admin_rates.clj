@@ -14,8 +14,8 @@
   [params]
   [::s.a.admin-rates/create-params => (? ::m.rates/params)]
   (let [params {::m.rates/currency {:db/id (:currency-id params)}
-                ::m.rates/rate (some-> params :rate double)
-                ::m.rates/date (some-> params :date tick/instant)}]
+                ::m.rates/rate     (some-> params :rate double)
+                ::m.rates/date     (some-> params :date tick/instant)}]
     (if (s/valid? ::m.rates/params params)
       params
       (do
@@ -51,8 +51,8 @@
   [_request]
   [::s.a.admin-rates/index-request => ::s.a.admin-rates/index-response]
   (let [;; TODO: parse from request
-        limit 50
-        items (q.rates/index-records)
+        limit    50
+        items    (q.rates/index-records)
         response {:model :rates
                   :limit limit
                   :items items}]

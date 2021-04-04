@@ -33,7 +33,7 @@
      [:link {:href "https://cdn.jsdelivr.net/webjars/org.webjars.npm/bulma-calendar/6.0.7/dist/css/bulma-calendar.min.css"
              :rel  "stylesheet"}]
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
-     [:script {:src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+     [:script {:src   "https://use.fontawesome.com/releases/v5.3.1/js/all.js"
                :defer true}]
      [:script {:src "https://cdn.jsdelivr.net/webjars/org.webjars.npm/bulma-calendar/6.0.7/dist/js/bulma-calendar.js"}]
      [:link {:href "https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -56,8 +56,8 @@
       (catch Throwable t
         (log/error (.getCause t))
         (log/error t (.getMessage t))
-        (error-page {:status 500
-                     :title "Something very bad has happened!"
+        (error-page {:status  500
+                     :title   "Something very bad has happened!"
                      :message "We've dispatched a team of highly trained gnomes to take care of the problem."})))))
 
 (defn wrap-html-routes [ring-handler]
@@ -77,7 +77,7 @@
    {:error-response
     (error-page
      {:status 403
-      :title "Invalid anti-forgery token"})}))
+      :title  "Invalid anti-forgery token"})}))
 
 (defn wrap-formats [handler]
   (let [wrapped (-> handler wrap-params (wrap-format formats/instance))]
@@ -92,12 +92,12 @@
    :body    (str "Access to " (:uri request) " is not authorized")})
 
 (defn wrap-restricted [handler]
-  (restrict handler {:handler (fn [request] (authenticated? request))
+  (restrict handler {:handler  (fn [request] (authenticated? request))
                      :on-error on-error}))
 
 (defn wrap-restricted2
   [handler]
-  (restrict handler {:handler (fn [request] (authenticated? request))
+  (restrict handler {:handler  (fn [request] (authenticated? request))
                      :on-error on-error}))
 
 (defn users-authenticated?

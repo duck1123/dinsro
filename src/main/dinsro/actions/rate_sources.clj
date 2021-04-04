@@ -26,8 +26,8 @@
   [params]
   [::s.a.rate-sources/create-params => (? ::m.rate-sources/params)]
   (let [params {::m.rate-sources/currency {:db/id (:currency-id params)}
-                ::m.rate-sources/name (some-> params :name)
-                ::m.rate-sources/url (some-> params :url)}]
+                ::m.rate-sources/name     (some-> params :name)
+                ::m.rate-sources/url      (some-> params :url)}]
     (if (s/valid? ::m.rate-sources/params params)
       params
       (do
@@ -47,8 +47,8 @@
   [_]
   [::s.a.rate-sources/index-request => ::s.a.rate-sources/index-response]
   (let [;; TODO: parse from request
-        limit 50
-        items (q.rate-sources/index-records)
+        limit    50
+        items    (q.rate-sources/index-records)
         response {:model :rate-sources
                   :limit limit
                   :items items}]
@@ -75,12 +75,12 @@
   [item]
   [::m.rate-sources/item => (? ::ds/valid-double)]
   (with-open [client (http-client/create-client)]
-    (let [url (::m.rate-sources/url item)
+    (let [url      (::m.rate-sources/url item)
           response (http-client/GET client url)
-          body (some-> response
-                       http-client/await
-                       http-client/string
-                       (json/read-str :key-fn keyword))]
+          body     (some-> response
+                           http-client/await
+                           http-client/string
+                           (json/read-str :key-fn keyword))]
       (when-let [price (some-> body :price utils/parse-double)]
         (/ 100000000 price)))))
 
@@ -91,8 +91,8 @@
     (if-let [currency (q.currencies/read-record currency-id)]
       (if-let [rate (fetch-rate item)]
         (let [rate-item {::m.rates/currency {:db/id currency-id}
-                         ::m.rates/rate rate
-                         ::m.rates/date (tick/instant)}]
+                         ::m.rates/rate     rate
+                         ::m.rates/date     (tick/instant)}]
           (timbre/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)
           (q.rates/create-record rate-item))
         (timbre/error "No rate"))
@@ -104,7 +104,7 @@
   (let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
     (if-let [item (q.rate-sources/read-record id)]
       (try
-        (let [id (fetch-source item)
+        (let [id   (fetch-source item)
               rate (q.rates/read-record id)]
           (http/ok {:status :ok :item rate}))
         (catch NumberFormatException e

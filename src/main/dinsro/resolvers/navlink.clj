@@ -6,7 +6,7 @@
 
 (defresolver navlink-resolver
   [_env {:navlink/keys [id]}]
-  {::pc/input #{:navlink/id}
+  {::pc/input  #{:navlink/id}
    ::pc/output [:navlink/href
                 :navlink/name
                 :navlink/path]}

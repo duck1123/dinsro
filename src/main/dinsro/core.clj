@@ -15,9 +15,9 @@
 (Thread/setDefaultUncaughtExceptionHandler
  (reify Thread$UncaughtExceptionHandler
    (uncaughtException [_ thread ex]
-     (timbre/error {:what :uncaught-exception
+     (timbre/error {:what      :uncaught-exception
                     :exception ex
-                    :where (str "Uncaught exception on" (.getName thread))} ex))))
+                    :where     (str "Uncaught exception on" (.getName thread))} ex))))
 
 (def cli-options
   [["-p" "--port PORT" "Port number"
@@ -41,9 +41,9 @@
   :start
   (when (config/config :nrepl-port)
     (timbre/info "starting in core")
-    (nrepl/start {:bind (or (config/config :nrepl-bind) "0.0.0.0")
+    (nrepl/start {:bind    (or (config/config :nrepl-bind) "0.0.0.0")
                   :handler (nrepl-handler)
-                  :port (config/config :nrepl-port)}))
+                  :port    (config/config :nrepl-port)}))
   :stop
   (when repl-server
     (nrepl/stop repl-server)))

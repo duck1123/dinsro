@@ -7,7 +7,7 @@
 
 (defresolver user-resolver
   [_env {::m.users/keys [id]}]
-  {::pc/input #{::m.users/id}
+  {::pc/input  #{::m.users/id}
    ::pc/output [::m.users/email
                 ::m.users/name]}
   (timbre/infof "resolving user: %s" id)

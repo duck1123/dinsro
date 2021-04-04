@@ -43,7 +43,7 @@
                       :in $ ?user-id
                       :where
                       [?id ::m.accounts/user ?user-id]]
-             :args [@db/*conn* user-id]})
+             :args  [@db/*conn* user-id]})
        (map :db/id)
        (map read-record)
        (take record-limit)))

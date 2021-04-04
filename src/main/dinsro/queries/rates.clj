@@ -21,12 +21,12 @@
 (>defn create-record
   [params]
   [::m.rates/params => :db/id]
-  (let [tempid (d/tempid "rate-id")
+  (let [tempid          (d/tempid "rate-id")
         prepared-params (-> (prepare-record params)
                             (assoc :db/id tempid)
                             (update ::m.rates/date tick/inst))
-        response (d/transact db/*conn* {:tx-data [prepared-params]})
-        id (get-in response [:tempids tempid])]
+        response        (d/transact db/*conn* {:tx-data [prepared-params]})
+        id              (get-in response [:tempids tempid])]
     (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]])
     id))
 
@@ -61,7 +61,7 @@
                       [?e ::m.rates/currency ?currency]
                       [?e ::m.rates/rate ?rate]
                       [?e ::m.rates/date ?date]]
-             :args [@db/*conn* currency-id]})
+             :args  [@db/*conn* currency-id]})
        (sort-by first)
        (reverse)
        (take record-limit)

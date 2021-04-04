@@ -12,16 +12,16 @@
    [taoensso.timbre :as timbre]))
 
 (def param-rename-map
-  {:name          ::m.categories/name})
+  {:name ::m.categories/name})
 
 (>defn prepare-record
   [params]
   [::s.a.categories/create-params => (? ::m.categories/params)]
   (let [user-id (utils/get-as-int params :user-id)
-        params (-> params
-                   (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map))
-                   (assoc-in [::m.categories/user :db/id] user-id))]
+        params  (-> params
+                    (set/rename-keys param-rename-map)
+                    (select-keys (vals param-rename-map))
+                    (assoc-in [::m.categories/user :db/id] user-id))]
     (if (s/valid? ::m.categories/params params)
       params
       (do

@@ -21,7 +21,7 @@
 (>defn create-record
   [params]
   [::m.currencies/params => :db/id]
-  (let [params (assoc params :db/id "currency-id")
+  (let [params   (assoc params :db/id "currency-id")
         response (d/transact db/*conn* {:tx-data [params]})]
     (get-in response [:tempids "currency-id"])))
 

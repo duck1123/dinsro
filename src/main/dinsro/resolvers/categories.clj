@@ -14,11 +14,11 @@
 
 (defresolver category-resolver
   [_env {::m.categories/keys [id]}]
-  {::pc/input #{::m.categories/id}
+  {::pc/input  #{::m.categories/id}
    ::pc/output [::m.categories/name
                 {::m.categories/user [::m.users/id]}]}
   (let [record (q.categories/read-record id)
-        id (:db/id record)]
+        id     (:db/id record)]
     (assoc record ::m.categories/id id)))
 
 (def resolvers [category-resolver categories-resolver])

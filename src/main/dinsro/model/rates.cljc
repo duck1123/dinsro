@@ -27,8 +27,8 @@
 (def date-inst ::date-inst)
 
 (def date-spec
-  {:db/ident ::date
-   :db/valueType :db.type/instant
+  {:db/ident       ::date
+   :db/valueType   :db.type/instant
    :db/cardinality :db.cardinality/one})
 
 (s/def ::params (s/keys :req [::rate ::currency ::date]))

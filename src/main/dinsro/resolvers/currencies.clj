@@ -14,14 +14,14 @@
 
 (defresolver currency-resolver
   [_env {::m.currencies/keys [id]}]
-  {::pc/input #{::m.currencies/id}
+  {::pc/input  #{::m.currencies/id}
    ::pc/output [::m.currencies/name]}
   (let [record (q.currencies/read-record id)]
     (assoc record ::m.currencies/id id)))
 
 (defresolver user-currencies-resolver
   [_env _props]
-  {::pc/input #{::m.users/id}
+  {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/currencies [::m.currencies/id]}]}
   (a.currencies/index-by-user-handler {}))
 

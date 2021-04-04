@@ -15,8 +15,8 @@
   [params]
   [::s.a.rates/create-params => (? ::m.rates/params)]
   (let [params {::m.rates/currency {:db/id (:currency-id params)}
-                ::m.rates/rate (some-> params :rate double)
-                ::m.rates/date (some-> params :date tick/instant)}]
+                ::m.rates/rate     (some-> params :rate double)
+                ::m.rates/date     (some-> params :date tick/instant)}]
     (if (s/valid? ::m.rates/params params)
       params
       (do
@@ -37,8 +37,8 @@
   [_]
   [::s.a.rates/index-request => ::s.a.rates/index-response]
   (let [;; TODO: parse from request
-        limit 50
-        items (q.rates/index-records)
+        limit    50
+        items    (q.rates/index-records)
         response {:model :rates
                   :limit limit
                   :items items}]
@@ -65,13 +65,13 @@
   [::s.a.rates/index-by-currency-request => ::s.a.rates/index-by-currency-response]
   (let [id (Integer/parseInt (get-in request [:path-params :id]))]
     (http/ok {:currency-id id
-              :items (sort-by first (q.rates/index-records-by-currency id))})))
+              :items       (sort-by first (q.rates/index-records-by-currency id))})))
 
 (defn index-by-category-handler
   [_]
   (let [;; TODO: parse from request
-        limit 50
-        items (q.rates/index-records)
+        limit    50
+        items    (q.rates/index-records)
         response {:model :rates
                   :limit limit
                   :items items}]

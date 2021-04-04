@@ -20,7 +20,7 @@
 (defn mock-user
   []
   (let [params (ds/gen-key ::m.users/params)
-        id (q.users/create-record params)]
+        id     (q.users/create-record params)]
     (q.users/read-record id)))
 
 (defn mock-account
@@ -29,19 +29,19 @@
      (mock-account (:db/id user))))
   ([user-id]
    (let [params (assoc (ds/gen-key ::m.accounts/params) ::m.accounts/user {:db/id user-id})
-         id (q.accounts/create-record params)]
+         id     (q.accounts/create-record params)]
      (q.accounts/read-record id))))
 
 (defn mock-category
   []
   (let [params (ds/gen-key ::m.categories/params)
-        id (q.categories/create-record params)]
+        id     (q.categories/create-record params)]
     (q.categories/read-record id)))
 
 (defn mock-currency
   []
   (let [params (ds/gen-key ::m.currencies/params)
-        id (q.currencies/create-record params)]
+        id     (q.currencies/create-record params)]
     (q.currencies/read-record id)))
 
 (defn mock-rate
@@ -53,7 +53,7 @@
 (defn mock-rate-source
   []
   (let [params (ds/gen-key ::m.rate-sources/params)
-        id (q.rate-sources/create-record params)]
+        id     (q.rate-sources/create-record params)]
     (q.rate-sources/read-record id)))
 
 (defn mock-transaction
@@ -62,5 +62,5 @@
         params (assoc-in params [::m.transactions/account :db/id]
                          ;; TODO: get better linked record picker
                          (ds/gen-key (into #{1} (q.accounts/index-ids))))
-        id (q.transactions/create-record params)]
+        id     (q.transactions/create-record params)]
     (q.transactions/read-record id)))

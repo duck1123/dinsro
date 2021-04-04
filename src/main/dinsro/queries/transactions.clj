@@ -12,11 +12,11 @@
 (>defn create-record
   [params]
   [::m.transactions/params => :db/id]
-  (let [tempid (d/tempid "transaction-id")
+  (let [tempid          (d/tempid "transaction-id")
         prepared-params (-> params
                             (assoc  :db/id tempid)
                             (update ::m.transactions/date tick/inst))
-        response (d/transact db/*conn* {:tx-data [prepared-params]})]
+        response        (d/transact db/*conn* {:tx-data [prepared-params]})]
     (get-in response [:tempids tempid])))
 
 (>defn read-record

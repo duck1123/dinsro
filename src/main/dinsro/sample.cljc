@@ -10,7 +10,7 @@
 
 (defn account-line
   [id initial-value name currency-id user-id]
-  {::m.accounts/id id
+  {::m.accounts/id            id
    ::m.accounts/initial-value initial-value
    ::m.accounts/name          name
    ::m.accounts/currency      {::m.currencies/id currency-id}
@@ -18,47 +18,47 @@
 
 (defn category-line
   [id name user-id]
-  {::m.categories/id id
+  {::m.categories/id   id
    ::m.categories/name name
    ::m.categories/user {::m.users/id user-id}})
 
 (defn currency-line
   [id name]
-  {::m.currencies/id id
+  {::m.currencies/id   id
    ::m.currencies/name name})
 
 (defn navlink-line
   [id name href path]
-  {:navlink/id id
+  {:navlink/id   id
    :navlink/name name
    :navlink/href href
    :navlink/path path})
 
 (defn rate-line
   [id currency-id rate date]
-  {::m.rates/id id
+  {::m.rates/id       id
    ::m.rates/currency {::m.currencies/id currency-id}
-   ::m.rates/rate rate
-   ::m.rates/date date})
+   ::m.rates/rate     rate
+   ::m.rates/date     date})
 
 (defn rate-source-line
   [id name currency-id url]
-  {::m.rate-sources/id id
-   ::m.rate-sources/name name
+  {::m.rate-sources/id       id
+   ::m.rate-sources/name     name
    ::m.rate-sources/currency {::m.currencies/id currency-id}
-   ::m.rate-sources/url url})
+   ::m.rate-sources/url      url})
 
 (defn transaction-line
   [id description date account-id]
-  {::m.transactions/id id
+  {::m.transactions/id          id
    ::m.transactions/description description
-   ::m.transactions/date date
-   ::m.transactions/account {::m.accounts/id account-id}})
+   ::m.transactions/date        date
+   ::m.transactions/account     {::m.accounts/id account-id}})
 
 (defn user-line
   [id name email]
-  {::m.users/id id
-   ::m.users/name name
+  {::m.users/id    id
+   ::m.users/name  name
    ::m.users/email email})
 
 (def account-map

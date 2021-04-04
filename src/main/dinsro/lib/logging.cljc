@@ -1,7 +1,7 @@
 (ns dinsro.lib.logging
   "Some helpers to make logging a bit nicer."
   (:require
-    ;; IMPORTANT: No explicit require for pprint in cljs. It bloats builds.
+   ;; IMPORTANT: No explicit require for pprint in cljs. It bloats builds.
    #?@(:clj [[clojure.pprint :refer [pprint]]
              [clojure.string :as str]
              [taoensso.encore :as enc]])
@@ -38,7 +38,7 @@
      "Derived from Timbre's default output function. Used server-side."
      ([data] (custom-output-fn nil data))
      ([opts data]
-      (let [{:keys [no-stacktrace?]} opts
+      (let [{:keys [no-stacktrace?]}                                 opts
             {:keys [level ?err msg_ ?ns-str ?file timestamp_ ?line]} data]
         (format "%1.1S %s %40s:-%3s - %s%s"
                 (name level)

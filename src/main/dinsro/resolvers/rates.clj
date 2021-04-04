@@ -8,7 +8,7 @@
 
 (defresolver rate-resolver
   [_env {::m.rates/keys [id]}]
-  {::pc/input #{::m.rates/id}
+  {::pc/input  #{::m.rates/id}
    ::pc/output [{::m.rates/currency [::m.currencies/id]}
                 ::m.rates/date
                 ::m.rates/rate]}

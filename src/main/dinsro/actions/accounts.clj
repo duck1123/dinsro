@@ -19,18 +19,19 @@
 (>defn prepare-record
   [params]
   [::s.a.accounts/create-params => (? ::m.accounts/params)]
-  (let [currency-id (some-> params :currency-id)
-        user-id (some-> params :user-id)
+  (let [currency-id   (some-> params :currency-id)
+        user-id       (some-> params :user-id)
         initial-value (some-> params :initial-value str utils/try-parse-double)
-        params (-> params
-                   (set/rename-keys param-rename-map)
-                   (select-keys (vals param-rename-map))
-                   (assoc-in [::m.accounts/initial-value] (and initial-value (double initial-value)))
-                   (assoc-in [::m.accounts/user :db/id] user-id))
-        params (merge
-                (when (and currency-id (not= currency-id 0))
-                  {::m.accounts/currency {:db/id currency-id}})
-                params)]
+        params        (-> params
+                          (set/rename-keys param-rename-map)
+                          (select-keys (vals param-rename-map))
+                          (assoc-in [::m.accounts/initial-value]
+                                    (and initial-value (double initial-value)))
+                          (assoc-in [::m.accounts/user :db/id] user-id))
+        params        (merge
+                       (when (and currency-id (not= currency-id 0))
+                         {::m.accounts/currency {:db/id currency-id}})
+                       params)]
     (if (s/valid? ::m.accounts/params params)
       params
       (do

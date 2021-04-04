@@ -10,11 +10,11 @@
    ::pc/output [:user/id :user/valid?]}
   (if (= password "hunter2")
     (augment-response
-     {:user/id email
+     {:user/id     email
       :user/valid? true}
      (fn [ring-response]
        (assoc ring-response :session (assoc session :identity email))))
-    {:user/id nil
+    {:user/id     nil
      :user/valid? false}))
 
 (defmutation logout
@@ -22,7 +22,7 @@
   {::pc/params #{}
    ::pc/output [:user/id :user/valid?]}
   (augment-response
-   {:user/id nil
+   {:user/id     nil
     :user/valid? false}
    (fn [ring-response]
      (assoc ring-response :session (assoc session :identity nil)))))

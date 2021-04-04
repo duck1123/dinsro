@@ -26,7 +26,7 @@
   [any? => nil?]
   (doseq [[target-key channel] @streams/channels]
     (timbre/infof "Sending to channel %s => %s" target-key msg)
-    (let [out (ByteArrayOutputStream. 4096)
+    (let [out    (ByteArrayOutputStream. 4096)
           writer (transit/writer out :json)]
       (transit/write writer msg)
       (send! channel (str out)))))
@@ -38,9 +38,9 @@
 (defn handle-message
   "Handle messages from the stream"
   [key message]
-  (let [in (io/input-stream (.getBytes message))
+  (let [in     (io/input-stream (.getBytes message))
         reader (transit/reader in :json)
-        data (transit/read reader)]
+        data   (transit/read reader)]
     (timbre/debugf "Received message: %s => %s" key data)
 
     ;; Echo messages back out

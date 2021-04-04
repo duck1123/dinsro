@@ -27,7 +27,7 @@
      [:user/id
       {:user/ref [::m.users/id]}
       :user/valid?]}]}
-  {:session/current-user {:user/id identity
+  {:session/current-user {:user/id     identity
                           :user/valid? (seq identity)}})
 
 (defresolver index-explorer [env _]

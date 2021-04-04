@@ -13,8 +13,8 @@
   [params]
   [::s.a.admin-rate-sources/create-params => (? ::m.rate-sources/params)]
   (let [params {::m.rate-sources/currency {:db/id (:currency-id params)}
-                ::m.rate-sources/name (some-> params :name)
-                ::m.rate-sources/url (some-> params :url)}]
+                ::m.rate-sources/name     (some-> params :name)
+                ::m.rate-sources/url      (some-> params :url)}]
     (if (s/valid? ::m.rate-sources/params params)
       params
       (do
@@ -50,8 +50,8 @@
   [_request]
   [::s.a.admin-rate-sources/index-request => ::s.a.admin-rate-sources/index-response]
   (let [;; TODO: parse from request
-        limit 50
-        items (q.rate-sources/index-records)
+        limit    50
+        items    (q.rate-sources/index-records)
         response {:model :rate-sources
                   :limit limit
                   :items items}]

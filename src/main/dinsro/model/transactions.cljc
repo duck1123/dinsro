@@ -13,15 +13,15 @@
 (s/def ::account (s/keys :req [:db/id]))
 (def account ::account)
 (def account-spec
-  {:db/ident ::account
-   :db/valueType :db.type/ref
+  {:db/ident       ::account
+   :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
 (s/def ::date ::ds/date)
 (def date ::date)
 (def date-spec
-  {:db/ident ::date
-   :db/valueType :db.type/instant
+  {:db/ident       ::date
+   :db/valueType   :db.type/instant
    :db/cardinality :db.cardinality/one})
 
 (s/def ::value ::ds/valid-double)
