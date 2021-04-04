@@ -1,39 +1,45 @@
 (ns dinsro.ui.forms.registration
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [dinsro.session :as session]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
 (defsc RegistrationForm
-  [this {:keys [confirm-password email name password]}]
-  {:ident (fn [] [:component/id ::form])
-   :initial-state {:confirm-password ""
-                   :email            ""
-                   :name             ""
-                   :password         ""}
-   :query [:confirm-password
-           :email
-           :name
-           :password]}
+  [this {::keys [confirm-password email name password]}]
+  {:ident         (fn [] [:component/id ::form])
+   :initial-state {::confirm-password "hunter2"
+                   ::email            "bob@example.com"
+                   ::name             "bob"
+                   ::password         "hunter2"}
+   :query         [::confirm-password
+                   ::email
+                   ::name
+                   ::password]}
   (bulma/box
-   (dom/form
-    (u.inputs/ui-text-input
-     {:label "Name" :value name}
-     {:onChange (fn [evt _] (fm/set-string! this :name :event evt))})
-    (u.inputs/ui-text-input
-     {:label "Email" :value email}
-     {:onChange (fn [evt _] (fm/set-string! this :email :event evt))})
-    (u.inputs/ui-text-input
-     {:label "Password" :value password}
-     {:onChange (fn [evt _] (fm/set-string! this :password :event evt))})
-    (u.inputs/ui-text-input
-     {:label "Confirm Password" :value confirm-password}
-     {:onChange (fn [evt _] (fm/set-string! this :confirm-password :event evt))})
-    (ui-button {:content "Submit"}))))
+   (u.inputs/ui-text-input
+    {:label "Name" :value name}
+    {:onChange #(fm/set-string! this ::name :event %)})
+   (u.inputs/ui-text-input
+    {:label "Email" :value email}
+    {:onChange #(fm/set-string! this ::email :event %)})
+   (u.inputs/ui-password-input
+    {:label "Password" :value password}
+    {:onChange #(fm/set-string! this ::password :event %)})
+   (u.inputs/ui-password-input
+    {:label "Confirm Password" :value confirm-password}
+    {:onChange #(fm/set-string! this ::confirm-password :event %)})
+   (u.inputs/ui-primary-button
+    {:content "Submit"}
+    {:onClick
+     (fn []
+       (timbre/info "clicked")
+       (let [data {:user/name     name
+                   :user/email    email
+                   :user/password password}]
+         (comp/transact! this [(session/register data)])))})))
 
 (def ui-registration-form (comp/factory RegistrationForm))

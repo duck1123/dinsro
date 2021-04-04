@@ -29,6 +29,26 @@
 (def ui-text-input
   (comp/computed-factory TextInput))
 
+(defsc PasswordInput
+  [_this {:keys [label value]} {:keys [onChange]}]
+  {:query [:label :value]
+   :initial-state
+   (fn [{:keys [label value]
+         :or   {label ""
+                value ""}}]
+     {:label label
+      :value value})}
+  (dom/div
+   (dom/label :.label label)
+   (dom/input
+    :.input
+    {:type     :password
+     :value    value
+     :onChange (fn [e] (onChange e))})))
+
+(def ui-password-input
+  (comp/computed-factory PasswordInput))
+
 (defsc NumberInput
   [_this {:keys [label value]} {:keys [onChange]}]
   {:initial-state

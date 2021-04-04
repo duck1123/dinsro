@@ -17,6 +17,10 @@
        (routing/route-to! "/login"))
      (swap! state #(assoc % :root/ready? true)))))
 
+(defmutation register [_]
+  (action [_env] (timbre/info "register"))
+  (remote [_env] true))
+
 (defmutation login [_]
   (action
    [{:keys [state]}]

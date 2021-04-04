@@ -38,7 +38,7 @@
     (bulma/control
      (u.inputs/ui-primary-button
       {:className "button"
-       :content (tr [:login])}
+       :content   (tr [:login])}
       {:onClick
        (fn []
          (let [data {:user/email email :user/password password}]

@@ -2,7 +2,18 @@
   (:require
    [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]]
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]
+   [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
+
+(defmutation register
+  [_env _params]
+  {::pc/params #{:user/email :user/password}
+   ::pc/output [:user/id :user/valid? :user/registered?]}
+
+  (let [params {:user/id          "id"
+                :user/valid?      true
+                :user/registered? true}]
+    (q.users/create-record params)))
 
 (defmutation login
   [{{:keys [session]} :request} {:user/keys [email password]}]
@@ -27,4 +38,4 @@
    (fn [ring-response]
      (assoc ring-response :session (assoc session :identity nil)))))
 
-(def resolvers [login logout])
+(def resolvers [login logout register])
