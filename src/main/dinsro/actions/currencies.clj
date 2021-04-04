@@ -25,13 +25,16 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.currencies/params params)))
         nil))))
 
+(>defn create!
+  [params]
+  [::s.a.currencies/create-params => (? ::m.currencies/item)]
+  (some-> params q.currencies/create-record q.currencies/read-record))
+
 (>defn create-handler
-  [request]
+  [{:keys [params]}]
   [::s.a.currencies/create-request => ::s.a.currencies/create-response]
-  (or (let [{:keys [params]} request]
-        (when-let [params (prepare-record params)]
-          (let [id (q.currencies/create-record params)]
-            (http/ok {:item (q.currencies/read-record id)}))))
+  (or (when-let [item (some-> params prepare-record create!)]
+        (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
 (>defn read-handler

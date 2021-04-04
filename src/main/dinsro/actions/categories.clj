@@ -28,12 +28,16 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.categories/params params)))
         nil))))
 
+(>defn create!
+  [params]
+  [::s.a.categories/create-params => (? ::m.categories/item)]
+  (some-> params q.categories/create-record q.categories/read-record))
+
 (>defn create-handler
   [{:keys [params]}]
   [::s.a.categories/create-request => ::s.a.categories/create-response]
-  (or (when-let [params (prepare-record params)]
-        (let [id (q.categories/create-record params)]
-          (http/ok {:item (q.categories/read-record id)})))
+  (or (when-let [item (some-> params prepare-record create!)]
+        (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
 (>defn read-handler

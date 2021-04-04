@@ -34,13 +34,16 @@
         (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.rate-sources/params params)))
         nil))))
 
+(>defn create!
+  [params]
+  [::s.a.rate-sources/create-params => (? ::m.rate-sources/item)]
+  (some-> params q.rate-sources/create-record q.rate-sources/read-record))
+
 (>defn create-handler
-  [request]
+  [{params :params}]
   [::s.a.rate-sources/create-request => ::s.a.rate-sources/create-response]
-  (or (let [{params :params} request]
-        (when-let [params (prepare-record params)]
-          (when-let [id (q.rate-sources/create-record params)]
-            (http/ok {:item (q.rate-sources/read-record id)}))))
+  (or (when-let [item (some-> params prepare-record create!)]
+        (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
 (>defn index-handler

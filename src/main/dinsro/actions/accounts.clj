@@ -38,12 +38,16 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.accounts/params params)))
         nil))))
 
+(>defn create!
+  [params]
+  [::s.a.accounts/create-params => (? ::m.accounts/item)]
+  (some-> params q.accounts/create-record q.accounts/read-record))
+
 (>defn create-handler
   [{:keys [params]}]
   [::s.a.accounts/create-request => ::s.a.accounts/create-response]
-  (or (when-let [params (prepare-record params)]
-        (let [id (q.accounts/create-record params)]
-          (http/ok {:item (q.accounts/read-record id)})))
+  (or (when-let [item (some-> params prepare-record create!)]
+        (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
 (>defn read-handler

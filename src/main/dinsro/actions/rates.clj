@@ -23,13 +23,15 @@
         (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.rates/params params)))
         nil))))
 
+(>defn create!
+  [params]
+  [::s.a.rates/create-params => (? ::m.rates/item)]
+  (some-> params q.rates/create-record q.rates/read-record))
+
 (>defn create-handler
   [{:keys [params]}]
   [::s.a.rates/create-request => ::s.a.rates/create-response]
-  (or (when-let [item (some-> params
-                              prepare-record
-                              q.rates/create-record
-                              q.rates/read-record)]
+  (or (when-let [item (some-> params prepare-record create!)]
         (http/ok {:item item}))
       (http/bad-request {:status :invalid})))
 
