@@ -44,7 +44,7 @@
       :id :email)))
 
 (deftest read-handler-not-found
-  (let [id (ds/gen-key ::ds/id)
+  (let [id (ds/gen-key :db/id)
         request {:path-params {:id (str id)}}
         response (a.users/read-handler request)]
     (is (= (:status response) status/not-found)

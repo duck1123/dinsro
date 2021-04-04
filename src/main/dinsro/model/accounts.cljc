@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs :as ds]))
+   [dinsro.specs]))
 
 (s/def ::name string?)
 (def name ::name)
@@ -19,7 +19,7 @@
    :db/valueType   :db.type/number
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id (s/or :id ::ds/id :zero zero?))
+(s/def ::currency-id (s/or :id :db/id :zero zero?))
 (def currency-id ::currency-id)
 (s/def ::currency (s/keys :req [:db/id]))
 (def currency ::currency)
@@ -29,7 +29,7 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
-(s/def ::user-id ::ds/id)
+(s/def ::user-id :db/id)
 (def user-id ::user-id)
 
 (s/def ::user (s/keys :req [:db/id]))

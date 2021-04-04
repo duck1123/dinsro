@@ -5,25 +5,25 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.categories :as m.categories]
-   [dinsro.specs :as ds]
+   [dinsro.specs]
    [taoensso.timbre :as timbre]))
 
 (>defn create-record
   [params]
-  [::m.categories/params => ::ds/id]
+  [::m.categories/params => :db/id]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "record-id")]})]
     (get-in response [:tempids "record-id"])))
 
 (>defn read-record
   [id]
-  [::ds/id => (? ::m.categories/item)]
+  [:db/id => (? ::m.categories/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.categories/name)
       record)))
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::ds/id)]
+  [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.categories/name _]] @db/*conn*)))
 
 (>defn index-records
@@ -33,7 +33,7 @@
 
 (>defn delete-record
   [id]
-  [::ds/id => nil?]
+  [:db/id => nil?]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 

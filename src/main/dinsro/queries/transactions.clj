@@ -5,13 +5,13 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.specs :as ds]
+   [dinsro.specs]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
 
 (>defn create-record
   [params]
-  [::m.transactions/params => ::ds/id]
+  [::m.transactions/params => :db/id]
   (let [tempid (d/tempid "transaction-id")
         prepared-params (-> params
                             (assoc  :db/id tempid)
@@ -21,14 +21,14 @@
 
 (>defn read-record
   [id]
-  [::ds/id => (? ::m.transactions/item)]
+  [:db/id => (? ::m.transactions/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.transactions/value)
       (update record ::m.transactions/date tick/instant))))
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::ds/id)]
+  [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.transactions/value _]] @db/*conn*)))
 
 (>defn index-records
@@ -40,7 +40,7 @@
 
 (>defn delete-record
   [id]
-  [::ds/id => nil?]
+  [:db/id => nil?]
   (do
     (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
     nil))

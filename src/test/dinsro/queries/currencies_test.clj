@@ -27,7 +27,7 @@
     (is (= item response))))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key ::ds/id)
+  (let [id (ds/gen-key :db/id)
         response (q.currencies/read-record id)]
     (is (nil? response))))
 

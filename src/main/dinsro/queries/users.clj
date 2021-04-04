@@ -5,7 +5,7 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.users :as m.users]
-   [dinsro.specs :as ds]
+   [dinsro.specs]
    [taoensso.timbre :as timbre]))
 
 (def attribute-list
@@ -27,12 +27,12 @@
 
 (>defn read-records
   [ids]
-  [(s/coll-of ::ds/id) => (s/coll-of ::m.users/item)]
+  [(s/coll-of :db/id) => (s/coll-of ::m.users/item)]
   (d/pull-many @db/*conn* attribute-list ids))
 
 (>defn find-id-by-email
   [email]
-  [::m.users/email => (? ::ds/id)]
+  [::m.users/email => (? :db/id)]
   (ffirst (d/q find-by-email-query @db/*conn* email)))
 
 (>defn find-by-email
@@ -43,7 +43,7 @@
 
 (>defn create-record
   [params]
-  [::m.users/params => ::ds/id]
+  [::m.users/params => :db/id]
   (if (nil? (find-id-by-email (::m.users/email params)))
     (let [tempid (d/tempid "user-id")
           record (assoc params :db/id tempid)
@@ -53,7 +53,7 @@
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::ds/id)]
+  [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.users/email _]] @db/*conn*)))
 
 (>defn index-records
@@ -63,7 +63,7 @@
 
 (>defn delete-record
   [id]
-  [::ds/id => nil?]
+  [:db/id => nil?]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 

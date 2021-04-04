@@ -31,7 +31,7 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(s/def ::account-id ::ds/id)
+(s/def ::account-id :db/id)
 (def account-id ::account-id)
 
 (s/def ::params (s/keys :req [::account ::date ::description ::value]))

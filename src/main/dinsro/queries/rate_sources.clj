@@ -5,7 +5,7 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.specs :as ds]
+   [dinsro.specs]
    [taoensso.timbre :as timbre]))
 
 (>defn create-record
@@ -23,7 +23,7 @@
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::ds/id)]
+  [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.rate-sources/name _]] @db/*conn*)))
 
 (>defn index-records

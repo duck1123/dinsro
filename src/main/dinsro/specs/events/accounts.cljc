@@ -11,9 +11,10 @@
 (s/def ::items (s/coll-of ::m.accounts/item))
 (def items ::items)
 
-(s/def ::sub-item-event (s/cat
-                         :event-name keyword?
-                         :id ::ds/id))
+(s/def ::sub-item-event
+  (s/cat
+   :event-name keyword?
+   :id         :db/id))
 
 (comment
   (ds/gen-key ::sub-item-event))

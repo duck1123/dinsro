@@ -5,27 +5,27 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.specs :as ds]
+   [dinsro.specs]
    [taoensso.timbre :as timbre]))
 
 (def record-limit 1000)
 
 (>defn create-record
   [params]
-  [::m.accounts/params => ::ds/id]
+  [::m.accounts/params => :db/id]
   (let [response (d/transact db/*conn* {:tx-data [(assoc params :db/id "account-id")]})]
     (get-in response [:tempids "account-id"])))
 
 (>defn read-record
   [id]
-  [::ds/id => (? ::m.accounts/item)]
+  [:db/id => (? ::m.accounts/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.accounts/name)
       record)))
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::ds/id)]
+  [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.accounts/name _]] @db/*conn*)))
 
 (>defn index-records
@@ -50,7 +50,7 @@
 
 (>defn delete-record
   [id]
-  [::ds/id => nil?]
+  [:db/id => nil?]
   (do
     (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
     nil))

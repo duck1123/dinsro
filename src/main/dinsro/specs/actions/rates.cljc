@@ -8,9 +8,9 @@
    [taoensso.timbre :as timbre]))
 
 (s/def :dinsro.specs.actions.rates.lax/currency-id
-  (s/or :id ::ds/id
+  (s/or :id   :db/id
         :zero zero?))
-(s/def ::currency-id (s/or :id ::ds/id))
+(s/def ::currency-id (s/or :id :db/id))
 (def currency-id ::currency-id)
 
 ;; Create

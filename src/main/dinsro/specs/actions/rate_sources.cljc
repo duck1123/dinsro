@@ -13,7 +13,7 @@
 (s/def ::url string?)
 (def url ::url)
 
-(s/def ::currency-id ::ds/id)
+(s/def ::currency-id :db/id)
 (def currency-id ::currency-id)
 
 ;; Create

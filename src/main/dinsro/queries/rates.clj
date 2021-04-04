@@ -5,7 +5,7 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.rates :as m.rates]
-   [dinsro.specs :as ds]
+   [dinsro.specs]
    [dinsro.streams :as streams]
    [manifold.stream :as ms]
    [taoensso.timbre :as timbre]
@@ -20,7 +20,7 @@
 
 (>defn create-record
   [params]
-  [::m.rates/params => ::ds/id]
+  [::m.rates/params => :db/id]
   (let [tempid (d/tempid "rate-id")
         prepared-params (-> (prepare-record params)
                             (assoc :db/id tempid)
@@ -32,14 +32,14 @@
 
 (>defn read-record
   [id]
-  [::ds/id => (? ::m.rates/item)]
+  [:db/id => (? ::m.rates/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.rates/rate)
       (update record ::m.rates/date tick/instant))))
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::ds/id)]
+  [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.rates/rate _]] @db/*conn*)))
 
 (>defn index-records
@@ -54,7 +54,7 @@
 
 (>defn index-records-by-currency
   [currency-id]
-  [::ds/id => ::m.rates/rate-feed]
+  [:db/id => ::m.rates/rate-feed]
   (->> (d/q {:query '[:find ?date ?rate
                       :in $ ?currency
                       :where
@@ -69,7 +69,7 @@
 
 (>defn delete-record
   [id]
-  [::ds/id => nil?]
+  [:db/id => nil?]
   (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
   nil)
 

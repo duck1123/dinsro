@@ -4,9 +4,7 @@
    [dinsro.specs :as ds]
    [taoensso.timbre :as timbre]))
 
-(s/def ::account-id
-  ;; ::ds/id-string
-  ::ds/id)
+(s/def ::account-id :db/id)
 (def account-id ::account-id)
 
 (s/def ::date string?)

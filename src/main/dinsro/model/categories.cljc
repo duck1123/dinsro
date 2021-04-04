@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs :as ds]))
+   [dinsro.specs]))
 
 (s/def ::name string?)
 (def name ::name)
@@ -11,7 +11,7 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::user-id ::ds/id)
+(s/def ::user-id :db/id)
 (def user-id ::user-id)
 
 (s/def ::user (s/keys :req [:db/id]))
