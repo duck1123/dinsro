@@ -5,7 +5,6 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.model.users :as m.users]
-   [dinsro.specs.actions.users :as s.a.users]
    [expound.alpha :as expound]
    [taoensso.timbre :as timbre]))
 
@@ -14,7 +13,7 @@
 
 (>defn prepare-record
   [params]
-  [::s.a.users/create-params => (? ::m.users/params)]
+  [::m.users/input-params => (? ::m.users/params)]
   (let [password-hash (some-> params ::m.users/password hashers/derive)
         params        (-> params
                           (set/rename-keys param-rename-map)

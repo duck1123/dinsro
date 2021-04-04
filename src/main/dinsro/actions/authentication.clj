@@ -9,7 +9,6 @@
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
    [dinsro.model.users :as m.users]
-   [dinsro.specs.actions.authentication :as s.a.authentication]
    [taoensso.timbre :as timbre]))
 
 (>defn authenticate
@@ -21,8 +20,8 @@
         (let [username (::m.users/username user)
               claims   {:user username
                         :exp  (time/plus (time/now) (time/minutes 3600))}]
-          {::s.a.authentication/identity username
-           :token                        (jwt/sign claims secret)})
+          {:identity username
+           :token    (jwt/sign claims secret)})
         ;; Password does not match
         (do
           (timbre/info "password not matched")
