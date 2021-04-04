@@ -2,6 +2,7 @@
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.mocks :as mocks]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -13,6 +14,7 @@
 
 (def schemata
   [m.users/schema
+   m.accounts/schema
    m.currencies/schema
    m.rates/schema
    m.transactions/schema])

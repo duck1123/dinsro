@@ -3,14 +3,17 @@
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [taoensso.timbre :as timbre]))
 
-(def schemata [m.users/schema
-               m.accounts/schema])
+(def schemata
+  [m.users/schema
+   m.currencies/schema
+   m.accounts/schema])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
