@@ -17,8 +17,20 @@
   {::pc/input  #{::m.categories/id}
    ::pc/output [::m.categories/name
                 {::m.categories/user [::m.users/id]}]}
-  (let [record (q.categories/read-record id)
-        id     (:db/id record)]
-    (assoc record ::m.categories/id id)))
+  (let [record  (q.categories/read-record id)
+        id      (:db/id record)
+        user-id (get-in record [::m.categories/user :db/id])]
+    (-> record
+        (assoc ::m.categories/id id)
+        (assoc ::m.categories/user [[::m.users/id user-id]]))))
 
-(def resolvers [category-resolver categories-resolver])
+(defresolver category-link-resolver
+  [_env {::m.categories/keys [id]}]
+  {::pc/input #{::m.categories/id}
+   ::pc/output [{::m.categories/link [::m.categories/id]}]}
+  {::m.categories/link [[::m.categories/id id]]})
+
+(def resolvers
+  [category-resolver
+   category-link-resolver
+   categories-resolver])

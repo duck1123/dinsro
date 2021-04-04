@@ -9,7 +9,8 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.ui.links :as u.links]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -24,7 +25,7 @@
            {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr
    (dom/td (u.links/ui-category-link category))
-   (dom/td (u.links/ui-user-link user))
+   (dom/td (u.links/ui-user-link (first user)))
    (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine {:keyfn ::m.categories/id}))

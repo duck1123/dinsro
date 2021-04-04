@@ -4,19 +4,12 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs]
    [taoensso.timbre :as timbre]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.currencies/name _]] @db/*conn*)))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.currencies/item)]
-  (d/pull-many @db/*conn* '[::m.currencies/name :db/id] (index-ids)))
+(def record-limit 1000)
 
 (>defn create-record
   [params]
@@ -31,6 +24,30 @@
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.currencies/name)
       record)))
+
+(>defn index-ids
+  []
+  [=> (s/coll-of :db/id)]
+  (map first (d/q '[:find ?e :where [?e ::m.currencies/name _]] @db/*conn*)))
+
+(>defn index-records
+  []
+  [=> (s/coll-of ::m.currencies/item)]
+  (d/pull-many @db/*conn* '[::m.currencies/name :db/id] (index-ids)))
+
+(defn index-records-by-account
+  [currency-id]
+  (->> (d/q {:query '[:find
+                      ?id
+                      ?currency-id
+                      :keys db/id name
+                      :in $ ?currency-id
+                      :where
+                      [?id ::m.accounts/currency ?currency-id]]
+             :args  [@db/*conn* currency-id]})
+       (map :db/id)
+       (map read-record)
+       (take record-limit)))
 
 (>defn delete-record
   [id]

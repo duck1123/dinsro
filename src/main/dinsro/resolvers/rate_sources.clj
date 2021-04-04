@@ -12,9 +12,12 @@
    ::pc/output [::m.rate-sources/name
                 {::m.rate-sources/currency [::m.currencies/id]}
                 ::m.rate-sources/url]}
-  (let [record (q.rate-sources/read-record id)
-        id     (:db/id record)]
-    (assoc record ::m.rate-sources/id id)))
+  (let [record      (q.rate-sources/read-record id)
+        id          (:db/id record)
+        currency-id (get-in record [::m.rate-sources/currency :db/id])]
+    (-> record
+        (assoc ::m.rate-sources/id id)
+        (assoc ::m.rate-sources/currency [[::m.currencies/id currency-id]]))))
 
 (defresolver rate-sources-resolver
   [_env _props]

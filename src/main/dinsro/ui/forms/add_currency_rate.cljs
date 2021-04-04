@@ -5,9 +5,11 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
-(defsc AddCurrencyRate
+(defsc AddCurrencyRateForm
   [_this _props]
   {:ident (fn [] [:component/id ::form])
    :initial-state {}
    :query [:component/id]}
   (dom/div "Add Currency Rate"))
+
+(def ui-form (comp/factory AddCurrencyRateForm))

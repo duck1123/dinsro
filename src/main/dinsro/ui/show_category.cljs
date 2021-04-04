@@ -17,7 +17,6 @@
                    ::m.categories/name ""}}
   (dom/div
    (dom/p name)
-   (dom/p id)
    (u.buttons/ui-delete-category-button {::m.categories/id id})))
 
 (def ui-show-category (comp/factory ShowCategory))

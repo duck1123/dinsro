@@ -39,9 +39,7 @@
 (defsc AdminIndexAccounts
   [this {::keys [accounts form toggle-button]}]
   {:componentDidMount
-   (fn [this]
-     (timbre/info "did mount")
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts}))
+   #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts})
    :ident (fn [_] [:component/id ::AdminIndexAccounts])
    :initial-state {::accounts      []
                    ::form          {:form-button/id form-toggle-sm}

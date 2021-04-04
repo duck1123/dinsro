@@ -28,10 +28,10 @@
    (dom/p (u.links/ui-account-link account))
    (dom/p
     (tr [:user-label])
-    (u.links/ui-user-link user))
+    (u.links/ui-user-link (first user)))
    (dom/p
     (tr [:currency-label])
-    (u.links/ui-currency-link currency))
+    (u.links/ui-currency-link (first currency)))
    (u.buttons/ui-delete-account-button {::m.accounts/id id})))
 
 (def ui-show-account (comp/factory ShowAccount))

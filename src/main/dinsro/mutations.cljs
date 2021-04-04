@@ -29,16 +29,16 @@
   (remote [_env] true)
   (ok-action
    [{{:keys [body]} :result
-     :keys [state]
-     :as env}]
-   (let [cc (get body 'dinsro.mutations/create-category)
+     :keys          [state]
+     :as            env}]
+   (let [cc         (get body 'dinsro.mutations/create-category)
          categories (:created-category cc)
-         ids (map ::m.categories/id categories)
-         path [:component/id
-               :dinsro.ui.user-categories/UserCategories
-               :dinsro.ui.user-categories/categories
-               :dinsro.ui.user-categories/categories]
-         idents (map #(vector ::m.categories/id %) ids)]
+         ids        (map ::m.categories/id categories)
+         path       [:component/id
+                     :dinsro.ui.user-categories/UserCategories
+                     :dinsro.ui.user-categories/categories
+                     :dinsro.ui.user-categories/categories]
+         idents     (map #(vector ::m.categories/id %) ids)]
      (swap! state update-in path concat idents))))
 
 (defmutation create-currency [_props]
@@ -51,7 +51,20 @@
 
 (defmutation create-rate-source [_props]
   (action [_env] true)
-  (remote [_env] true))
+  (remote [_env] true)
+  (ok-action
+   [{{:keys [body]} :result
+     :keys          [state]
+     :as            env}]
+   (let [cc         (get body 'dinsro.mutations/create-category)
+         categories (:created-category cc)
+         ids        (map ::m.categories/id categories)
+         path       [:component/id
+                     :dinsro.ui.user-categories/UserCategories
+                     :dinsro.ui.user-categories/categories
+                     :dinsro.ui.user-categories/categories]
+         idents     (map #(vector ::m.categories/id %) ids)]
+     (swap! state update-in path concat idents))))
 
 (defmutation create-transaction [_props]
   (action [_env] true)

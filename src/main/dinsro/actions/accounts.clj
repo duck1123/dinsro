@@ -35,7 +35,7 @@
     (if (s/valid? ::m.accounts/params params)
       params
       (do
-        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.accounts/params params)))
+        (timbre/warnf "not valid: %s" (expound/expound-str ::m.accounts/params params))
         nil))))
 
 (>defn create!

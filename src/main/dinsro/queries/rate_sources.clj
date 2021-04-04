@@ -8,6 +8,8 @@
    [dinsro.specs]
    [taoensso.timbre :as timbre]))
 
+(def record-limit 1000)
+
 (>defn create-record
   [params]
   [::m.rate-sources/params => :db/id]
@@ -31,6 +33,20 @@
   [=> (s/coll-of ::m.rate-sources/item)]
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
+(defn index-records-by-currency
+  [currency-id]
+  (->> (d/q {:query '[:find
+                      ?id
+                      ?currency-id
+                      :keys db/id name
+                      :in $ ?currency-id
+                      :where
+                      [?id ::m.rate-sources/currency ?currency-id]]
+             :args [@db/*conn* currency-id]})
+       (map :db/id)
+       (map read-record)
+       (take record-limit)))
+
 (>defn delete-record
   [id]
   [:db/id => any?]
@@ -45,4 +61,5 @@
 (comment
   (index-ids)
   (index-records)
+  (index-records-by-currency 408231720)
   (delete-all))

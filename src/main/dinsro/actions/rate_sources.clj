@@ -31,7 +31,7 @@
     (if (s/valid? ::m.rate-sources/params params)
       params
       (do
-        (comment (timbre/debugf "not valid: %s" (expound/expound-str ::m.rate-sources/params params)))
+        (timbre/debugf "not valid: %s" (expound/expound-str ::m.rate-sources/params params))
         nil))))
 
 (>defn create!

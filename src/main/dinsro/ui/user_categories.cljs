@@ -15,16 +15,17 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexCategoryLine
-  [_this {::m.categories/keys [id] :as category}]
+  [_this {::m.categories/keys [id link]}]
   {:ident ::m.categories/id
    :initial-state {::m.categories/id   0
-                   ::m.categories/name ""}
-   :query [{::button-data (comp/get-query u.buttons/DeleteButton)}
+                   ::m.categories/name ""
+                   ::m.categories/link {}}
+   :query [{::button-data (comp/get-query u.buttons/DeleteCategoryButton)}
            ::m.categories/id
+           {::m.categories/link (comp/get-query u.links/CategoryLink)}
            ::m.categories/name]}
   (dom/tr
-   (dom/td id)
-   (dom/td (u.links/ui-category-link category))
+   (dom/td (u.links/ui-category-link (first link)))
    (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
@@ -38,9 +39,8 @@
      :.table
      (dom/thead
       (dom/tr
-       (dom/th "Id")
-       (dom/th "name")
-       (dom/th "Actions")))
+       (dom/th (tr [:name]))
+       (dom/th (tr [:actions]))))
      (dom/tbody
       (map ui-index-category-line categories)))
     (dom/div (tr [:no-categories]))))

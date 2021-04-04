@@ -22,9 +22,11 @@
   [_this {::keys [user user-accounts user-categories user-transactions]}]
   {:componentDidUpdate
    (fn [this]
+
      (let [{::m.users/keys [id]} (::user (comp/props this))]
        (when (pos? id)
          (df/load! this [::m.users/id id] UserAccounts))))
+
    :ident (fn [] [:page/id ::page])
    :initial-state {::user              {}
                    ::user-accounts     {}

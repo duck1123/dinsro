@@ -15,23 +15,22 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexAccountLine
-  [_this {::m.accounts/keys [currency id initial-value user]
-          ::keys [link]}]
+  [_this {::m.accounts/keys [currency id initial-value link user]}]
   {:ident ::m.accounts/id
-   :initial-state {::link                     {}
+   :initial-state {::m.accounts/link          {}
                    ::m.accounts/currency      {}
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
                    ::m.accounts/user          {}}
-   :query [{::link                    (comp/get-query u.links/AccountLink)}
+   :query [{::m.accounts/link         (comp/get-query u.links/AccountLink)}
            {::m.accounts/currency     (comp/get-query u.links/CurrencyLink)}
            ::m.accounts/id
            ::m.accounts/initial-value
            {::m.accounts/user         (comp/get-query u.links/UserLink)}]}
   (dom/tr
-   (dom/td (map u.links/ui-account-link link))
-   (dom/td (u.links/ui-user-link user))
-   (dom/td (u.links/ui-currency-link currency))
+   (dom/td (u.links/ui-account-link (first link)))
+   (dom/td (u.links/ui-user-link (first user)))
+   (dom/td (u.links/ui-currency-link (first currency)))
    (dom/td initial-value)
    (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 

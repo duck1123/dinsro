@@ -9,19 +9,19 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-currency :as u.f.admin-create-currency]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexCurrencyLine
-  [_this {::m.currencies/keys [id name]}]
+  [_this {::m.currencies/keys [id] :as currency}]
   {:ident ::m.currencies/id
-   :initial-state {::m.currencies/id   0
-                   ::m.currencies/name ""}
+   :initial-state {::m.currencies/id   0}
    :query [::m.currencies/id ::m.currencies/name]}
   (dom/tr
-   (dom/td name)
-   (dom/td id)))
+   (dom/td (u.links/ui-currency-link currency))
+   (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
 
 (def ui-admin-index-currency-line (comp/factory AdminIndexCurrencyLine {:keyfn ::m.currencies/id}))
 

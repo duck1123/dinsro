@@ -33,6 +33,21 @@
   [=> (s/coll-of ::m.accounts/item)]
   (d/pull-many @db/*conn* '[*] (index-ids)))
 
+(>defn index-records-by-currency
+  [currency-id]
+  [:db/id => (s/coll-of ::m.accounts/item)]
+  (->> (d/q {:query '[:find
+                      ?id
+                      ?currency-id
+                      :keys db/id name
+                      :in $ ?currency-id
+                      :where
+                      [?id ::m.accounts/currency ?currency-id]]
+             :args  [@db/*conn* currency-id]})
+       (map :db/id)
+       (map read-record)
+       (take record-limit)))
+
 (>defn index-records-by-user
   [user-id]
   [:db/id => (s/coll-of ::m.accounts/item)]

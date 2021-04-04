@@ -1,10 +1,14 @@
-(ns dinsro.ui.index-rate-sources
+(ns dinsro.ui.currency-rate-sources
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.machines :as machines]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.forms.add-currency-rate-source :as u.f.add-currency-rate-source]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
@@ -29,12 +33,13 @@
   (dom/tr
    (dom/td (u.links/ui-rate-source-link rate-source))
    (dom/td url)
-   (dom/td (u.links/ui-currency-link (first currency)))
-   (dom/td (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id}))))
+   (dom/td (u.links/ui-currency-link currency))
+   (dom/td
+    (u.buttons/ui-delete-button {::m.rate-sources/id id}))))
 
 (def ui-index-rate-source-line (comp/factory IndexRateSourceLine {:keyfn ::m.rate-sources/id}))
 
-(defsc IndexRateSources
+(defsc IndexCurrencyRateSources
   [_this {::keys [items]}]
   {:initial-state {::items []}
    :query [{::items (comp/get-query IndexRateSourceLine)}]}
@@ -51,4 +56,28 @@
       (map ui-index-rate-source-line items)))
     (dom/p "no items")))
 
-(def ui-index-rate-sources (comp/factory IndexRateSources))
+(def ui-index-currency-rate-sources (comp/factory IndexCurrencyRateSources))
+
+(defsc CurrencyRateSources
+  [this {::keys [form rate-sources toggle-button]}]
+  {:componentDidMount
+   #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar CurrencyRateSources})
+   :ident (fn [_] [:component/id ::CurrencyRateSources])
+   :initial-state {::rate-sources  {}
+                   ::form          {}
+                   ::toggle-button {:form-button/id form-toggle-sm}}
+   :query [{::rate-sources  (comp/get-query IndexCurrencyRateSources)}
+           {::form          (comp/get-query u.f.add-currency-rate-source/AddCurrencyRateSourceForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+           [::uism/asm-id form-toggle-sm]]}
+  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
+    (bulma/box
+     (dom/h2
+      (tr [:rate-sources])
+      (u.buttons/ui-show-form-button toggle-button))
+     (when shown?
+       (u.f.add-currency-rate-source/ui-form form))
+     (dom/hr)
+     (ui-index-currency-rate-sources rate-sources))))
+
+(def ui-currency-rate-sources (comp/factory CurrencyRateSources))
