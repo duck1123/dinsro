@@ -13,7 +13,7 @@
    ::wsm/card-height 7
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.user-accounts/IndexAccounts
+   {::ct.fulcro3/root       u.user-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
     (fn [] {:accounts (map
                        (fn [m] (assoc m :button-data {}))

@@ -16,18 +16,18 @@
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-success
-  (let [params (ds/gen-key ::m.currencies/params)
+  (let [params   (ds/gen-key ::m.currencies/params)
         response (q.currencies/create-record params)]
     (is (not (nil? response)))))
 
 (deftest read-record-success
-  (let [item (mocks/mock-currency)
-        id (:db/id item)
+  (let [item     (mocks/mock-currency)
+        id       (:db/id item)
         response (q.currencies/read-record id)]
     (is (= item response))))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key :db/id)
+  (let [id       (ds/gen-key :db/id)
         response (q.currencies/read-record id)]
     (is (nil? response))))
 
@@ -43,7 +43,7 @@
 
 (deftest delete-record
   (let [currency (mocks/mock-currency)
-        id (:db/id currency)]
+        id       (:db/id currency)]
     (is (not (nil? (q.currencies/read-record id))))
     (let [response (q.currencies/delete-record id)]
       (is (nil? response))

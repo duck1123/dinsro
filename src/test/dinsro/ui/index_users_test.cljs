@@ -8,12 +8,12 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard IndexUsers
-  {::wsm/align {:flex 1}
+  {::wsm/align       {:flex 1}
    ::wsm/card-height 10
-   ::wsm/card-width 4}
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.index-users/IndexUsers
+   {::ct.fulcro3/root       u.index-users/IndexUsers
     ::ct.fulcro3/initial-state
-    (fn [] {:user/id sample/user-map
+    (fn [] {:user/id    sample/user-map
             :users/list (map sample/user-map [1 2])})
     ::ct.fulcro3/wrap-root? false}))

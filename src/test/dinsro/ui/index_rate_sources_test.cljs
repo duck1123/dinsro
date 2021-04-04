@@ -12,7 +12,7 @@
     {::wsm/card-height 5
      ::wsm/card-width  2}
     (ct.fulcro3/fulcro-card
-     {::ct.fulcro3/root u.index-rate-sources/IndexRateSourceLine
+     {::ct.fulcro3/root       u.index-rate-sources/IndexRateSourceLine
       ::ct.fulcro3/initial-state
       (fn [] {:index-rate-source-line/name "bob"})
       ::ct.fulcro3/wrap-root? false})))
@@ -23,7 +23,7 @@
   {::wsm/card-height 3
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.index-rate-sources/IndexRateSources
+   {::ct.fulcro3/root       u.index-rate-sources/IndexRateSources
     ::ct.fulcro3/initial-state
     (fn [] {:index-rate-sources/items rate-sources})
     ::ct.fulcro3/wrap-root? false}))

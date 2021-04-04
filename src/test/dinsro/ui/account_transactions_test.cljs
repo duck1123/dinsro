@@ -16,7 +16,7 @@
    {::ct.fulcro3/root u.account-transactions/AccountTransactions
     ::ct.fulcro3/initial-state
     (fn []
-      {:current-account 1
+      {:current-account                       1
        ::u.account-transactions/form          {}
        ::u.account-transactions/toggle-button {}
        ::u.account-transactions/transactions

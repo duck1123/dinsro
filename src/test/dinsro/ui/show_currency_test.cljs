@@ -8,7 +8,7 @@
    [nubank.workspaces.model :as wsm]))
 
 (def currency-map
-  {1 {:currency/id 1
+  {1 {:currency/id   1
       :currency/name "foo"}})
 
 (ws/defcard ShowCurrency
@@ -18,5 +18,5 @@
    {::ct.fulcro3/root u.show-currency/ShowCurrency
     ::ct.fulcro3/initial-state
     (fn []
-      {::m.currencies/id 1
+      {::m.currencies/id   1
        ::m.currencies/name "Dollars"})}))

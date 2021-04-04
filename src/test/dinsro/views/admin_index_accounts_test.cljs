@@ -7,6 +7,6 @@
 
 (ws/defcard AdminIndexAccountsPage
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root v.admin-index-accounts/AdminIndexAccountsPage
+   {::ct.fulcro3/root          v.admin-index-accounts/AdminIndexAccountsPage
     ::ct.fulcro3/initial-state (fn [] {})
-    ::ct.fulcro3/wrap-root? false}))
+    ::ct.fulcro3/wrap-root?    false}))

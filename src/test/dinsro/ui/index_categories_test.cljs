@@ -11,7 +11,7 @@
   {::wsm/card-height 3
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.index-categories/IndexCategories
+   {::ct.fulcro3/root       u.index-categories/IndexCategories
     ::ct.fulcro3/initial-state
     (fn [] {::u.index-categories/categories (map sample/category-map [1 2 3])})
     ::ct.fulcro3/wrap-root? false}))

@@ -24,17 +24,17 @@
    {::ct.fulcro3/root u.admin-index-accounts/AdminIndexAccounts
     ::ct.fulcro3/initial-state
     (fn []
-      {::m.currencies/id sample/currency-map
-       :component/id {}
+      {::m.currencies/id                      sample/currency-map
+       :component/id                          {}
        ::u.admin-index-accounts/accounts
        [{::m.accounts/currency
-         {::m.currencies/id 1
+         {::m.currencies/id   1
           ::m.currencies/name "foo"}
-         ::m.accounts/id 1
+         ::m.accounts/id            1
          ::m.accounts/initial-value 42
-         ::m.users/name "x"
+         ::m.users/name             "x"
          ::m.accounts/user
-         {::m.users/id 1
+         {::m.users/id   1
           ::m.users/name "Bob"}}]
        ::u.admin-index-accounts/form          (comp/get-initial-state u.f.admin-create-account/AdminCreateAccountForm)
        ::u.admin-index-accounts/toggle-button (comp/get-initial-state u.buttons/ShowFormButton)})}))

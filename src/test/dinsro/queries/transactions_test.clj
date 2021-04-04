@@ -21,7 +21,7 @@
 
 (deftest create-record-test
   (let [params (ds/gen-key ::m.transactions/params)
-        id (q.transactions/create-record params)
+        id     (q.transactions/create-record params)
         record (q.transactions/read-record id)]
 
     (is (= (double (::m.transactions/value params))
@@ -29,13 +29,13 @@
         "values match")))
 
 (deftest read-record-success
-  (let [item (mocks/mock-transaction)
-        id (:db/id item)
+  (let [item     (mocks/mock-transaction)
+        id       (:db/id item)
         response (q.transactions/read-record id)]
     (is (= item response))))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key :db/id)
+  (let [id       (ds/gen-key :db/id)
         response (q.transactions/read-record id)]
     (is (nil? response))))
 
@@ -51,7 +51,7 @@
 
 (deftest delete-record
   (let [item (mocks/mock-transaction)
-        id (:db/id item)]
+        id   (:db/id item)]
     (is (not (nil? (q.transactions/read-record id))))
     (let [response (q.transactions/delete-record id)]
       (is (nil? response))

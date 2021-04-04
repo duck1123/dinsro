@@ -12,7 +12,7 @@
    ::wsm/card-height 4
    ::wsm/card-width  1}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.index-transactions/IndexTransactions
+   {::ct.fulcro3/root       u.index-transactions/IndexTransactions
     ::ct.fulcro3/initial-state
     (fn []
       {:transactions

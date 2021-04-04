@@ -15,8 +15,8 @@
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record
-  (let [params (ds/gen-key ::m.accounts/params)
-        id (q.accounts/create-record params)
+  (let [params         (ds/gen-key ::m.accounts/params)
+        id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
     (is (= (get params ::m.accounts/name) (get created-record ::m.accounts/name)))))
 
@@ -28,7 +28,7 @@
     (is (= [] (q.accounts/index-records-by-user user-id)))))
 
 (deftest index-records-by-user-found
-  (let [record (mocks/mock-account)
+  (let [record  (mocks/mock-account)
         user-id (get-in record [::m.accounts/user :db/id])]
     (is (= [record] (q.accounts/index-records-by-user user-id)))))
 
@@ -38,12 +38,12 @@
 
 (deftest read-record-found
   (let [record (mocks/mock-account)
-        id (:db/id record)]
+        id     (:db/id record)]
     (is (= record (q.accounts/read-record id)))))
 
 (deftest delete-record
   (let [account (mocks/mock-account)
-        id (:db/id account)]
+        id      (:db/id account)]
     (is (not (nil? (q.accounts/read-record id))))
     (let [response (q.accounts/delete-record id)]
       (is (nil? response))

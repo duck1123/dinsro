@@ -11,7 +11,7 @@
   {::wsm/card-height 6
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.index-accounts/IndexAccounts
+   {::ct.fulcro3/root       u.index-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
     (fn []
       {::u.index-accounts/accounts (vals sample/account-map)})

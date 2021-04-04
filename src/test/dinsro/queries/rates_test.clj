@@ -17,8 +17,8 @@
 
 (deftest create-record-test
   (let [params (ds/gen-key ::m.rates/params)
-        id (q.rates/create-record params)
-        item (q.rates/read-record id)]
+        id     (q.rates/create-record params)
+        item   (q.rates/read-record id)]
     (is (= (double (::m.rates/rate params)) (::m.rates/rate item))
         "rates match")))
 
@@ -28,7 +28,7 @@
         "Should return nil")))
 
 (deftest read-record-test-found
-  (let [item (mocks/mock-rate)
+  (let [item     (mocks/mock-rate)
         response (q.rates/read-record (:db/id item))]
     (is (= item response)
         "Return the matching item")))
@@ -37,18 +37,18 @@
   (is (= [] (q.rates/index-records))))
 
 (deftest index-records-with-records
-  (let [item (mocks/mock-rate)
+  (let [item     (mocks/mock-rate)
         response (q.rates/index-records)]
     (is (= [item] response))))
 
 (deftest index-records-by-currency-with-records
-  (let [currency (mocks/mock-currency)
+  (let [currency    (mocks/mock-currency)
         currency-id (:db/id currency)
-        params (ds/gen-key ::m.rates/params)
-        params (assoc params ::m.rates/currency {:db/id currency-id})
-        rate-id (q.rates/create-record params)
-        rate (q.rates/read-record rate-id)
-        response (q.rates/index-records-by-currency currency-id)
-        date (.getTime (tick/inst (::m.rates/date rate)))]
+        params      (ds/gen-key ::m.rates/params)
+        params      (assoc params ::m.rates/currency {:db/id currency-id})
+        rate-id     (q.rates/create-record params)
+        rate        (q.rates/read-record rate-id)
+        response    (q.rates/index-records-by-currency currency-id)
+        date        (.getTime (tick/inst (::m.rates/date rate)))]
     (is (= date (nth (first response) 0)))
     (is (= (::m.rates/rate rate) (nth (first response) 1)))))

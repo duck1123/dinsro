@@ -18,9 +18,9 @@
     ::ct.fulcro3/initial-state
     (fn []
       {::m.accounts/id sample/account-map
-       :account-data (assoc (sample/account-map 1)
-                            :user-link-data
-                            (rand-nth (vals sample/user-map)))
+       :account-data   (assoc (sample/account-map 1)
+                              :user-link-data
+                              (rand-nth (vals sample/user-map)))
        :transactions
        {::u.account-transactions/transactions  {:transactions (map sample/transaction-map [1 2])}
         ::u.account-transactions/form          {}
