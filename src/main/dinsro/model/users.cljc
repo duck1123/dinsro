@@ -5,6 +5,14 @@
    [dinsro.specs :as ds]
    [taoensso.timbre :as timbre]))
 
+(s/def ::id        uuid?)
+(def id            ::id)
+(def id-spec
+  {:db/ident       id
+   :db/valueType   :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
+
 (s/def ::password string?)
 (def password ::password)
 
@@ -46,4 +54,7 @@
 (def item ::item)
 
 (def schema
-  [name-spec password-hash-spec email-spec])
+  [email-spec
+   id-spec
+   name-spec
+   password-hash-spec])

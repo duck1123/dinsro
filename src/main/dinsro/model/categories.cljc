@@ -4,6 +4,14 @@
    [clojure.spec.alpha :as s]
    [dinsro.specs]))
 
+(s/def ::id        uuid?)
+(def id            ::id)
+(def id-spec
+  {:db/ident       id
+   :db/valueType   :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
+
 (s/def ::name string?)
 (def name ::name)
 (def name-spec
@@ -28,4 +36,6 @@
 (def item ::item)
 
 (def schema
-  [name-spec user-spec])
+  [id-spec
+   name-spec
+   user-spec])

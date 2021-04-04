@@ -3,6 +3,14 @@
    [clojure.spec.alpha :as s]
    [dinsro.specs :as ds]))
 
+(s/def ::id        uuid?)
+(def id            ::id)
+(def id-spec
+  {:db/ident       id
+   :db/valueType   :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
+
 (s/def ::rate ds/valid-double)
 (def rate ::rate)
 (def rate-spec
@@ -38,7 +46,10 @@
 (def item ::item)
 
 (def schema
-  [rate-spec currency-spec date-spec])
+  [currency-spec
+   date-spec
+   id-spec
+   rate-spec])
 
 (s/def ::rate-feed-item (s/cat :date ::date-ms
                                :rate ::rate))

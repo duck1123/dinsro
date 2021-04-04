@@ -4,8 +4,20 @@
    [clojure.spec.alpha :as s]
    [dinsro.specs]))
 
+(s/def ::id uuid?)
+(def id
+  "Primary id of the account"
+  ::id)
+(def id-spec
+  {:db/ident       id
+   :db/valueType   :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
+
 (s/def ::name string?)
-(def name ::name)
+(def name
+  "User-assigned name for the account"
+  ::name)
 (def name-spec
   {:db/ident       ::name
    :db/valueType   :db.type/string
@@ -53,4 +65,8 @@
    :db.entity/attrs [::name ::initial-value ::currency ::user]})
 
 (def schema
-  [name-spec initial-value-spec currency-spec user-spec])
+  [currency-spec
+   id-spec
+   initial-value-spec
+   name-spec
+   user-spec])
