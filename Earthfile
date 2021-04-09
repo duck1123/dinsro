@@ -290,6 +290,7 @@ image:
 jar:
   FROM +src-ubuntu
   COPY --dir +compile-production/classes .
+  RUN make compile-production-cljs
   RUN make package-jar
   SAVE ARTIFACT target/app.jar /dinsro.jar AS LOCAL target/dinsro.jar
 
