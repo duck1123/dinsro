@@ -1,9 +1,16 @@
 (ns dinsro.resolvers.users
   (:require
-   [com.wsscode.pathom.connect :as pc :refer [defresolver]]
+   [com.wsscode.pathom.connect :as pc :refer [defmutation defresolver]]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
+
+(defmutation delete!
+  [_request {::m.users/keys [id]}]
+  {::pc/params #{::m.users/id}
+   ::pc/output [:status]}
+  (q.users/delete-record id)
+  {:status :success})
 
 (defresolver user-resolver
   [_env {::m.users/keys [id]}]

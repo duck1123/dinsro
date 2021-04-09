@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.mutations :as mutations]
+   [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -61,7 +62,7 @@
    {:href    href
     :onClick (fn [evt]
                (.preventDefault evt)
-               (comp/transact! this [`(dinsro.session/logout)])
+               (comp/transact! this [(mu.session/logout {})])
                false)}
    "Logout"))
 

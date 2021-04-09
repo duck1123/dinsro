@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.mutations :as fm]
-   [dinsro.session :as session]
+   [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
@@ -40,6 +40,6 @@
        (let [data {:user/name     name
                    :user/email    email
                    :user/password password}]
-         (comp/transact! this [(session/register data)])))})))
+         (comp/transact! this [(mu.session/register data)])))})))
 
 (def ui-registration-form (comp/factory RegistrationForm))

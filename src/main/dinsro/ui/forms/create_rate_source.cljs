@@ -3,7 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
-   [dinsro.mutations :as mutations]
+   [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
@@ -45,6 +45,6 @@
          (let [data {:name name
                      :currency-id currency-id
                      :url url}]
-           (comp/transact! this [(mutations/create-rate-source data)])))})))))
+           (comp/transact! this [(mu.rate-sources/create! data)])))})))))
 
 (def ui-create-rate-source-form (comp/factory CreateRateSourceForm))

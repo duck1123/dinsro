@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.model.categories :as m.categories]
-   [dinsro.mutations :as mutations]
+   [dinsro.mutations.categories :as mu.categories]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
@@ -21,6 +21,6 @@
    (u.inputs/ui-primary-button
     {}
     {:onClick
-     #(comp/transact! this [(mutations/create-category {::m.categories/name name})])})))
+     #(comp/transact! this [(mu.categories/create! {::m.categories/name name})])})))
 
 (def ui-form (comp/factory AddUserCategoryForm))

@@ -1,4 +1,4 @@
-(ns dinsro.session
+(ns dinsro.mutations.session
   (:require
    [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]]
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]

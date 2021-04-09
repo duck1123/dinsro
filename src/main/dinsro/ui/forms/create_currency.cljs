@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.mutations :as mutations]
+   [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
@@ -21,6 +21,6 @@
     {:onChange #(fm/set-string! this ::name :event %)})
    (u.inputs/ui-primary-button
     {}
-    {:onClick #(comp/transact! this [(mutations/create-currency {::m.currencies/name name})])})))
+    {:onClick #(comp/transact! this [(mu.currencies/create! {::m.currencies/name name})])})))
 
 (def ui-create-currency-form (comp/factory CreateCurrencyForm))

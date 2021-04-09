@@ -44,7 +44,6 @@
                 ::m.accounts/initial-value
                 ::m.accounts/name
                 {::m.accounts/user [::m.users/id]}]}
-  ;; (q.accounts/)
   (get sample/account-map id))
 
 (defresolver user-account-resolver

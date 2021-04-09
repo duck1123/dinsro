@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.mutations :as mutations]
+   [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
@@ -49,6 +49,6 @@
          (let [data {::m.accounts/currency      {:db/id currency-id}
                      ::m.accounts/name          name
                      ::m.accounts/initial-value initial-value}]
-           (comp/transact! this [(mutations/create-account data)])))})))))
+           (comp/transact! this [(mu.accounts/create! data)])))})))))
 
 (def ui-form (comp/factory AddUserAccountForm))

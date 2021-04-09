@@ -1,4 +1,4 @@
-(ns dinsro.session
+(ns dinsro.mutations.session
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]

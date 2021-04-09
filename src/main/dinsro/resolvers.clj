@@ -3,8 +3,8 @@
    [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.users :as m.users]
-   [dinsro.mutations :as mutations]
-   [dinsro.session :as session]
+   ;; [dinsro.mutations :as mutations]
+   [dinsro.mutations.session :as session]
    [dinsro.resolvers.accounts :as accounts]
    [dinsro.resolvers.categories :as categories]
    [dinsro.resolvers.currencies :as currencies]
@@ -48,7 +48,7 @@
    current-user-resolver
    debug-menu/resolvers
    index-explorer
-   mutations/mutations
+   ;; mutations/mutations
    session/resolvers
    navlink/resolvers
    rates/resolvers

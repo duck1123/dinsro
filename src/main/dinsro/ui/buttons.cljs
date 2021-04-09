@@ -3,7 +3,13 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [dinsro.mutations :as mutations]
+   [dinsro.mutations.accounts :as mutations.accounts]
+   [dinsro.mutations.categories :as mutations.categories]
+   [dinsro.mutations.currencies :as mutations.currencies]
+   [dinsro.mutations.rates :as mutations.rates]
+   [dinsro.mutations.rate-sources :as mutations.rate-sources]
+   [dinsro.mutations.transactions :as mutations.transactions]
+   [dinsro.mutations.users :as mutations.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as timbre]))
 
@@ -22,22 +28,12 @@
 
 (def ui-show-form-button (comp/factory ShowFormButton))
 
-(defsc DeleteButton
-  [this props]
-  {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete props)])}
-   "Delete"))
-
-(def ui-delete-button (comp/factory DeleteButton))
-
 (defsc DeleteAccountButton
   [this props]
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-account props)])}
+   {:onClick #(comp/transact! this [(mutations.accounts/delete! props)])}
    "Delete Account"))
 
 (def ui-delete-account-button (comp/factory DeleteAccountButton))
@@ -47,7 +43,7 @@
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-category props)])}
+   {:onClick #(comp/transact! this [(mutations.categories/delete! props)])}
    "Delete Category"))
 
 (def ui-delete-category-button (comp/factory DeleteCategoryButton))
@@ -57,7 +53,7 @@
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-currency props)])}
+   {:onClick #(comp/transact! this [(mutations.currencies/delete! props)])}
    "Delete Currency"))
 
 (def ui-delete-currency-button (comp/factory DeleteCurrencyButton))
@@ -67,7 +63,7 @@
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-rate props)])}
+   {:onClick #(comp/transact! this [(mutations.rates/delete! props)])}
    "Delete Rate"))
 
 (def ui-delete-rate-button (comp/factory DeleteRateButton))
@@ -77,7 +73,7 @@
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-rate-source props)])}
+   {:onClick #(comp/transact! this [(mutations.rate-sources/delete! props)])}
    "Delete Rate Source"))
 
 (def ui-delete-rate-source-button (comp/factory DeleteRateSourceButton))
@@ -87,7 +83,7 @@
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-transaction props)])}
+   {:onClick #(comp/transact! this [(mutations.transactions/delete! props)])}
    "Delete Transaction"))
 
 (def ui-delete-transaction-button (comp/factory DeleteRateSourceButton))
@@ -97,7 +93,7 @@
   {:query []}
   (dom/button
    :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations/delete-user props)])}
+   {:onClick #(comp/transact! this [(mutations.users/delete! props)])}
    "Delete User"))
 
 (def ui-delete-user-button (comp/factory DeleteUserButton))

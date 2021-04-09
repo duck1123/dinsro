@@ -6,7 +6,7 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [dinsro.mutations]
-   [dinsro.session :as session]
+   [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
@@ -42,7 +42,7 @@
       {:onClick
        (fn []
          (let [data {:user/email email :user/password password}]
-           (comp/transact! this [`(session/login ~data)])))})))))
+           (comp/transact! this [(mu.session/login data)])))})))))
 
 (def ui-login-form (comp/factory LoginForm))
 
