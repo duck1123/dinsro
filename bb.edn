@@ -1,0 +1,35 @@
+{:tasks
+ {build-dev-image {:doc  "Build dev image"
+                   :task (shell "earthly -i +dev-image-sources")}
+  build-image     {:doc  "Build production image"
+                   :task (shell "earthly +image")}
+  clean           {:doc  "Clean all the things"
+                   :task (do
+                           (shell "rm -rf resources/main/public/js")
+                           (shell "rm -rf resources/main/public/js")
+                           (shell "rm -rf resources/workspaces/public/js")
+                           (shell "rm -rf .shadow-cljs/builds")
+                           (shell "rm -rf classes/*")
+                           (shell "rm -rf target"))}
+  check           {:doc  "Check sources are formatted correctly"
+                   :task (clojure (->> ["-M:cljfmt check src deps.edn shadow-cljs.edn"
+                                        "--indents indentation.edn"]
+                                       (clojure.string/join " ")))}
+  dev             {:doc     "Build android start development"
+                   :depends [build-dev-image start-dev]}
+  init            {:doc  "Initialize the system"
+                   :task (shell "echo" "Hello World")}
+  start-dev       {:doc     "Start development"
+                   :depends [start-lb start-web]}
+  start-lb        {:doc  "Run the load balancer"
+                   :task (shell "docker-compose up -d frontend")}
+  start-web       {:doc  "Start the main server"
+                   :task (shell "docker-compose up dinsro")}
+  test            {:doc     "Run all tests"
+                   :depends [test-clj test-cljs]}
+  test-clj        {:doc  "Run clojure tests"
+                   :task (clojure "-M:dev:test -d src/test")}
+  test-cljs       {:doc  "Run clojurescript tests"
+                   :task (do
+                           (clojure "-M:test:shadow-cljs compile ci")
+                           (shell "npx karma start --single-run --check=\"ci.js\""))}}}
