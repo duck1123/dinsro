@@ -41,7 +41,7 @@
 
 (defn wrap-api
   [handler]
-  (let [parser (fn [env query] (async/<!! (parser env (timbre/spy :info query))))]
+  (let [parser (fn [env query] (async/<!! (parser env (timbre/spy query))))]
     (fn [{:keys [uri] :as request}]
       (if (= pathom-endpoint uri)
         (server/handle-api-request

@@ -56,7 +56,7 @@
      "Configure clojure logging for this project. `config` is the global config map that should contain
      `:taoensso.timbre/logging-config` as a key."
      [config]
-     (let [{:keys [taoensso.timbre/logging-config]} config]
+     (let [{::timbre/keys [logging-config]} config]
        (timbre/merge-config! (assoc logging-config
                                     :middleware [(pretty-middleware #(with-out-str (pprint %)))]
                                     :output-fn custom-output-fn))
