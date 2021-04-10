@@ -6,7 +6,7 @@ custom_build(
   [
     'Earthfile',
     '.dockerignore',
-    'Makefile'
+    'bb.edn'
   ],
   tag='dev-sources-latest'
 )
@@ -16,14 +16,14 @@ docker_compose("./tilt-docker-compose.yml")
 
 local_resource(
     'kondo',
-    cmd='make lint-kondo',
+    cmd='bb lint-kondo',
     deps=['src'],
     allow_parallel=True
 )
 
 local_resource(
     'check',
-    cmd='make check',
+    cmd='bb check',
     deps=['src'],
     allow_parallel=True
 )

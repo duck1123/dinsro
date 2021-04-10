@@ -1,35 +1,175 @@
 {:tasks
- {build-dev-image {:doc  "Build dev image"
-                   :task (shell "earthly -i +dev-image-sources")}
-  build-image     {:doc  "Build production image"
-                   :task (shell "earthly +image")}
-  clean           {:doc  "Clean all the things"
-                   :task (do
-                           (shell "rm -rf resources/main/public/js")
-                           (shell "rm -rf resources/main/public/js")
-                           (shell "rm -rf resources/workspaces/public/js")
-                           (shell "rm -rf .shadow-cljs/builds")
-                           (shell "rm -rf classes/*")
-                           (shell "rm -rf target"))}
-  check           {:doc  "Check sources are formatted correctly"
-                   :task (clojure (->> ["-M:cljfmt check src deps.edn shadow-cljs.edn"
-                                        "--indents indentation.edn"]
-                                       (clojure.string/join " ")))}
-  dev             {:doc     "Build android start development"
-                   :depends [build-dev-image start-dev]}
-  init            {:doc  "Initialize the system"
-                   :task (shell "echo" "Hello World")}
-  start-dev       {:doc     "Start development"
-                   :depends [start-lb start-web]}
-  start-lb        {:doc  "Run the load balancer"
-                   :task (shell "docker-compose up -d frontend")}
-  start-web       {:doc  "Start the main server"
-                   :task (shell "docker-compose up dinsro")}
-  test            {:doc     "Run all tests"
-                   :depends [test-clj test-cljs]}
-  test-clj        {:doc  "Run clojure tests"
-                   :task (clojure "-M:dev:test -d src/test")}
-  test-cljs       {:doc  "Run clojurescript tests"
-                   :task (do
-                           (clojure "-M:test:shadow-cljs compile ci")
-                           (shell "npx karma start --single-run --check=\"ci.js\""))}}}
+ {_8
+  {:doc  "Summons bot"
+   :task (shell
+          (str "echo \""
+               (clojure.string/join
+                "\n"
+                ["    _-=-_    "
+                 "   ´´´-```   "
+                 "  (  (O)  )  "
+                 "  []=__○_[]  "
+                 " ´ |    °  `  "
+                 "´-´ ° _---_ ` "
+                 "|    ´ □=□ `|"
+                 "|  ° |  -  || "
+                 "`    | □=□ ´´"
+                 " `--_____--´  "])
+               "\""))}
+
+  all
+  {:depends [init install]}
+
+  await-app
+  {:task (do
+           (shell "docker-compose logs -f &")
+           (shell "docker inspect -f {{.State.Health.Status}} default_dinsro_1")
+           (shell "until [ \"`docker inspect -f {{.State.Health.Status}} default_dinsro_1`\" = \"healthy\" ] || [ \"`docker inspect -f {{.State.Health.Status}} default_dinsro_1`\" = \"exited\" ] ; do sleep 5; done"))}
+
+
+  build-dev-image
+  {:doc  "Build dev image"
+   :task (shell "earthly -i +dev-image-sources")}
+
+  build-image
+  {:doc  "Build production image"
+   :task (shell "earthly +image")}
+
+  build-production
+  {:depends [compile-production package-jar]}
+
+  ci
+  {:task (shell "earthly -P +ci")}
+
+  clean
+  {:doc  "Clean all the things"
+   :task (do
+           (shell "rm -rf resources/main/public/js")
+           (shell "rm -rf resources/main/public/js")
+           (shell "rm -rf resources/workspaces/public/js")
+           (shell "rm -rf .shadow-cljs/builds")
+           (shell "rm -rf classes/*")
+           (shell "rm -rf target"))}
+
+  check
+  {:doc  "Check sources are formatted correctly"
+   :task (clojure (->> ["-M:cljfmt check src deps.edn shadow-cljs.edn"
+                        "--indents indentation.edn"]
+                       (clojure.string/join " ")))}
+
+  compile
+  {:depends [compile-clj compile-cljs]}
+
+  compile-clj
+  {:depends [init]}
+
+  compile-cljs
+  {:depends [init]
+   :task    (clojure "-M:dev:shadow-cljs compile main")}
+
+  compile-production
+  {:depends [compile-production-clj compile-production-cljs]}
+
+  compile-production-clj
+  {:depends [install]
+   :task    (clojure "-M:production -e \"(compile 'dinsro.core)\"")}
+
+  compile-production-cljs
+  {:depends [install]
+   :task    (clojure "-M:shadow-cljs release main")}
+
+  dev
+  {:doc     "Build android start development"
+   :depends [build-dev-image start-dev]}
+
+  dev-bootstrap
+  {:task (do
+           (shell "bb watch-cljs &")
+           (shell "bb run"))}
+
+  dev-workspaces-bootstrap
+  {:depends [workspaces]}
+
+  display-path
+  {:task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production"
+                        "shadow-cljs" "test" "uberdeps"]]
+           (shell (str "clojure -A:" alias " -Stree")))}
+
+  e2e
+  {:task (shell "earthly -P -i +e2e")}
+
+  format
+  {:task (clojure "-M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn")}
+
+  init
+  {:doc  "Initialize the system"
+   }
+
+  install
+  {:task (shell "npx yarn install --frozen-lockfile")}
+
+
+  lint
+  {:depends [lint-kondo lint-eastwood lint-kibit]}
+
+  lint-eastwood
+  {:task (clojure "-M:dev:eastwood '{:source-paths [\"src/main\" \"src/test\"]}'")}
+
+  lint-kibit
+  {:task (clojure "-M:dev:kibit --paths src/main,src/test")}
+
+  lint-kondo
+  {:task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
+
+  package-jar
+  {:task (clojure "-M:uberdeps:production --main-class dinsro.core --aliases production")}
+
+  prepare-test-dirs
+  {:task (shell "mkdir -p /tmp/dinsro/data/test")}
+
+  run
+  {:task (clojure "-M:dev:dev-main")}
+
+  run-production
+  {:task (shell "DATAHIKE_URL=\"datahike:file://$(pwd)/data/dev\" java -jar target/dinsro.jar")}
+
+  server
+  {:depends [compile run]}
+
+  start-dev
+  {:doc     "Start development"
+   :depends [start-lb start-web]}
+
+  start-lb
+  {:doc  "Run the load balancer"
+   :task (shell "docker-compose up -d frontend")}
+
+  start-web
+  {:doc  "Start the main server"
+   :task (shell "docker-compose up dinsro")}
+
+  test
+  {:doc     "Run all tests"
+   :depends [test-clj test-cljs]}
+
+  test-clj
+  {:doc  "Run clojure tests"
+   :task (clojure "-M:dev:test -d src/test")}
+
+  test-cljs
+  {:doc  "Run clojurescript tests"
+   :task (do
+           (clojure "-M:test:shadow-cljs compile ci")
+           (shell "npx karma start --single-run --check=\"ci.js\""))}
+
+  test-integration
+  {:task (shell "npx cypress run")}
+
+  watch {:depnds [watch-cljs]}
+
+  watch-cljs
+  {:depends [install]
+   :task    (clojure "-M:test:dev:shadow-cljs watch main workspaces")}
+
+  workspaces
+  {:task (clojure "-M:test:dev:shadow-cljs watch workspaces")}}}

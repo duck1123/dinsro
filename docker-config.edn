@@ -2,5 +2,5 @@
  ;; when :nrepl-port is set the application starts the nREPL server on load
  :nrepl-port   7000
  :taoensso.timbre/logging-config
- {:level :info}
+ {:level :debug}
  :datahike-url "datahike:file:///var/lib/dinsro/data"}

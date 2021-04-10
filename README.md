@@ -10,6 +10,7 @@ Sats-first personal finance management
 
 * docker
 * earthly
+* babashka
 
 If building locally, not using docker, you will need:
 
@@ -25,13 +26,13 @@ Recommended:
 
 To start a web server for the application, run:
 
-    make server-production
+    bb server-production
 
 ## Developing
 
 * To start a web server for the application development, run:
 
-        make dev
+        bb dev
 
   Then navigate to http://web-dinsro.docker.localhost:8081/
 
@@ -43,11 +44,11 @@ To start a web server for the application, run:
 
 * To build and watch the front-end for changes, run:
 
-        make watch-cljs
+        bb watch-cljs
 
 ## Testing
 
-    make test
+    bb test
 
 ## License
 

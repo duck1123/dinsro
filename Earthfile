@@ -20,6 +20,13 @@ EXPOSE_DOCKER_PORTS:
   EXPOSE 9630/tcp
   RUN echo "hello"
 
+INSTALL_BABASHKA:
+  COMMAND
+  RUN curl -sLO https://raw.githubusercontent.com/babashka/babashka/master/install \
+      && chmod +x install \
+      && ./install \
+      && rm -f install
+
 INSTALL_CHROMIUM:
   COMMAND
   RUN apt update && apt install -y \
@@ -32,7 +39,8 @@ INSTALL_NODE:
   RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
       && apt-get install -y nodejs \
       && rm -rf /var/lib/apt/lists/*
-  RUN npm install -g npm@7.7.0
+  RUN npm install -g npm@7.9.0
+  RUN npm install -g yarn
 
 base-builder:
   FROM +base-builder-ubuntu
@@ -53,6 +61,7 @@ base-builder-nix:
   ENV CHROME_BIN=chromium
   RUN mkdir -p /etc/fonts
   ENV FONTCONFIG_PATH=/etc/fonts
+  DO +INSTALL_BABASHKA
   RUN nix-env -i tree
   RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
   RUN chown -R 1000:1000 /usr/src/app
@@ -68,6 +77,7 @@ base-builder-ubuntu:
   ENV USER_HOME=/home/dinsro
   DO +INSTALL_NODE
   DO +INSTALL_CHROMIUM
+  DO +INSTALL_BABASHKA
   RUN addgroup --gid 1000 dinsro && adduser --ingroup dinsro --uid 1000 dinsro
   RUN chown -R 1000:1000 /usr/src/app
   USER "1000"
@@ -151,7 +161,7 @@ builder-ubuntu:
 check:
   FROM +src-ubuntu
   COPY indentation.edn .
-  RUN make check
+  RUN bb check
 
 ci:
   BUILD +check
@@ -161,36 +171,36 @@ ci:
 
 compile-frontend:
   FROM +src-ubuntu
-  RUN make compile-cljs
+  RUN bb compile-cljs
   SAVE ARTIFACT resources
 
 compile-production:
   FROM +src-ubuntu
   COPY --dir src/prod src/prod
-  RUN make compile-production
+  RUN bb compile-production
   SAVE ARTIFACT classes
 
 deps-builder:
   FROM +base-builder
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
-  COPY Makefile deps.edn .
+  COPY bb.edn deps.edn .
   COPY --dir --chown 1000:1000 +jar-deps/.m2 ${USER_HOME}/
 
 deps-builder-ubuntu:
   FROM +base-builder-ubuntu
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
-  COPY Makefile deps.edn .
+  COPY bb.edn deps.edn .
   COPY --dir +jar-deps/.m2 ${USER_HOME}/
 
 deps-dind-builder:
   FROM +base-dind-builder
   COPY package.json yarn.lock .
-  COPY Makefile deps.edn .
+  COPY bb.edn deps.edn .
   COPY --dir +jar-deps/.m2 ${USER_HOME}
   RUN --mount=type=cache,target=${USER_HOME}/.m2 \
-      make display-path || make display-path
+      bb display-path || bb display-path
 
 dev-builder:
   FROM +deps-builder-ubuntu
@@ -202,7 +212,7 @@ dev-image:
   DO +EXPOSE_DOCKER_PORTS
   VOLUME /var/lib/dinsro/data
   COPY docker-config.edn config.edn
-  CMD ["make", "dev-bootstrap"]
+  CMD ["bb", "dev-bootstrap"]
   SAVE IMAGE duck1123/dinsro:dev-latest
 
 dev-image-sources:
@@ -211,7 +221,7 @@ dev-image-sources:
   DO +EXPOSE_DOCKER_PORTS
   WORKDIR /usr/src/app
   VOLUME /var/lib/dinsro/data
-  CMD ["make", "dev-bootstrap"]
+  CMD ["bb", "dev-bootstrap"]
   SAVE IMAGE duck1123/dinsro:dev-sources-latest
 
 dev-sources:
@@ -237,7 +247,7 @@ e2e:
   COPY cypress.json .
   RUN npx cypress install
   COPY . .
-  RUN make init
+  RUN bb init
   RUN npx cypress install
   WITH DOCKER \
        --compose e2e-docker-compose.yml \
@@ -245,21 +255,21 @@ e2e:
        --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
        RUN docker ps -a \
            && env | sort \
-           && make await-app \
-           && make test-integration
+           && bb await-app \
+           && bb test-integration
   END
 
 e2e-dind:
   FROM +base-dind-builder
   COPY e2e-docker-compose.yml docker-compose.yml
-  COPY Makefile .
-  RUN make init
+  COPY bb.edn .
+  RUN bb init
   WITH DOCKER \
       --compose docker-compose.yml \
       --service dinsro \
       --load duck1123/dinsro:e2e-latest=+e2e-image \
       --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
-      RUN make await-app \
+      RUN bb await-app \
           && docker run --network=host duck1123/dinsro:e2e-latest
   END
 
@@ -274,9 +284,9 @@ e2e-image:
   COPY cypress.json .
   RUN npx cypress install
   COPY --dir cypress .
-  COPY Makefile .
+  COPY bb.edn .
   ENTRYPOINT []
-  CMD ["make", "test-integration"]
+  CMD ["bb", "test-integration"]
   SAVE IMAGE duck1123/dinsro:e2e-latest
 
 image:
@@ -290,17 +300,17 @@ image:
 jar:
   FROM +src-ubuntu
   COPY --dir +compile-production/classes .
-  RUN make compile-production-cljs
-  RUN make package-jar
+  RUN bb compile-production-cljs
+  RUN bb package-jar
   SAVE ARTIFACT target/app.jar /dinsro.jar AS LOCAL target/dinsro.jar
 
 jar-deps:
   FROM +base-builder-ubuntu
-  COPY Makefile deps.edn .
+  COPY bb.edn deps.edn .
   USER root
   RUN rm -rf ${USER_HOME}/.m2
   RUN --mount=type=cache,target=/root/.m2 \
-      (make display-path || make display-path) \
+      (bb display-path || bb display-path) \
       && cp -r /root/.m2 ${USER_HOME}/
   RUN chown -R 1000 ${USER_HOME}/.m2
   USER 1000
@@ -314,15 +324,15 @@ lint:
 
 lint-eastwood:
   FROM +dev-sources
-  RUN make lint-eastwood
+  RUN bb lint-eastwood
 
 lint-kibit:
   FROM +dev-sources
-  RUN make lint-kibit
+  RUN bb lint-kibit
 
 lint-kondo:
   FROM +dev-sources
-  RUN make lint-kondo
+  RUN bb lint-kondo
 
 node-deps:
   FROM +base-builder-ubuntu
@@ -344,11 +354,11 @@ test:
 
 test-clj:
   FROM +test-sources
-  RUN make test-clj
+  RUN bb test-clj
 
 test-cljs:
   FROM +test-sources
-  RUN make test-cljs
+  RUN bb test-cljs
 
 test-sources:
   FROM +src
@@ -362,4 +372,4 @@ test-ubuntu:
   COPY --dir src/test src
   COPY --dir +jar-deps/.m2 ${USER_HOME}/
   COPY karma.conf.js .
-  RUN make test
+  RUN bb test
