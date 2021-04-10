@@ -23,7 +23,7 @@
                (timbre/info "Creating database: " uri)
                (d/create-database uri))
              (d/connect uri))
-           (throw (ex-info "Could not find uri" {})))
+           (throw (ex-info "Database configuration not found, :datahike-url environment variable must be set before running" {})))
 
   :stop (do
           (timbre/info "stopping real connection")

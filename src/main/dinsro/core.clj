@@ -1,12 +1,11 @@
 (ns dinsro.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
-   [dinsro.config]
    [dinsro.components.config :as config]
-   [dinsro.handler :as handler]
-   [dinsro.middleware.middleware]
-   [dinsro.nrepl :as nrepl]
-   [luminus.http-server :as http]
+   [dinsro.components.http]
+   [dinsro.components.nrepl]
+   [dinsro.components.secrets :as secrets]
+   [dinsro.middleware.middleware :as middleware]
    [mount.core :as mount]
    [taoensso.timbre :as timbre])
   (:gen-class))
@@ -23,31 +22,6 @@
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
 
-(defn nrepl-handler []
-  (require 'cider.nrepl)
-  (ns-resolve 'cider.nrepl 'cider-nrepl-handler))
-
-(mount/defstate ^{:on-reload :noop} http-server
-  :start
-  (http/start
-   (-> config/config
-       (assoc :handler (handler/app))
-       (update :io-threads #(or % (* 2 (.availableProcessors (Runtime/getRuntime)))))
-       (update :port #(or (-> config/config :options :port) %))))
-  :stop
-  (http/stop http-server))
-
-(mount/defstate ^{:on-reload :noop} repl-server
-  :start
-  (when (config/config :nrepl-port)
-    (timbre/info "starting in core")
-    (nrepl/start {:bind    (or (config/config :nrepl-bind) "0.0.0.0")
-                  :handler (nrepl-handler)
-                  :port    (config/config :nrepl-port)}))
-  :stop
-  (when repl-server
-    (nrepl/stop repl-server)))
-
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
     (timbre/info component "stopped"))
@@ -57,21 +31,15 @@
   (timbre/info "starting app")
   (let [options (parse-opts args cli-options)]
     (doseq [component (-> options mount/start-with-args :started)]
-      (timbre/info component "started")))
+      (timbre/debug component "started")))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main
   [& args]
   (let [[config-file] args]
-    (-> (mount/only #{#'dinsro.components.config/config})
+    (-> (mount/only #{#'config/config})
         (mount/with-args {:config config-file})
         mount/start))
-  (mount/start #'dinsro.config/secret)
-  (mount/start #'dinsro.middleware.middleware/token-backend)
-  (cond
-    (nil? (:datahike-url config/config))
-    (do
-      (timbre/error "Database configuration not found, :datahike-url environment variable must be set before running")
-      (System/exit 1))
-    :else
-    (start-app args)))
+  (mount/start #'secrets/secret)
+  (mount/start #'middleware/token-backend)
+  (start-app args))
