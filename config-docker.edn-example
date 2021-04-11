@@ -1,4 +1,0 @@
-{:dev true
- :port 3000
- :nrepl-port 7000
- :datahike-url "datahike:file:///home/duck/projects/dinsro/data/dev"}

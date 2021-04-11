@@ -162,7 +162,7 @@ builder:
   RUN mkdir -p /var/lib/dinsro/data && chown -R dinsro:dinsro /var/lib/dinsro/data
   USER 1000
   VOLUME /var/lib/dinsro/data
-  COPY docker-config.edn config.edn
+  COPY resources/docker/config.edn config.edn
   COPY shadow-cljs.edn .
 
 check:
@@ -222,7 +222,7 @@ dev-image-sources:
 
 dev-sources:
   FROM +deps-builder
-  COPY dev-image-config.edn /etc/dinsro/config.edn
+  COPY resources/docker/config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir . /usr/src/app
 
@@ -247,7 +247,7 @@ e2e:
   RUN bb init
   RUN npx cypress install
   WITH DOCKER \
-       --compose e2e-docker-compose.yml \
+       --compose resources/cypress/docker-compose.yml \
        --service dinsro \
        --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
        RUN docker ps -a \
@@ -258,7 +258,7 @@ e2e:
 
 e2e-dind:
   FROM +base-dind-builder
-  COPY e2e-docker-compose.yml docker-compose.yml
+  COPY resources/cypres/docker-compose.yml docker-compose.yml
   COPY --dir bb.edn deps.edn script .
   RUN bb init
   WITH DOCKER \
@@ -290,7 +290,7 @@ image:
   FROM openjdk:8-alpine
   VOLUME /var/lib/dinsro/data
   COPY +jar/dinsro.jar dinsro.jar
-  COPY docker-config.edn config.edn
+  COPY resources/docker/config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]
   SAVE IMAGE --push duck1123/dinsro:latest
 

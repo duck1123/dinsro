@@ -7,7 +7,7 @@ services:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
     - "./data:/var/lib/dinsro/data"
-    - "./docker-config.edn:/etc/dinsro/config.edn"
+    - "./resources/docker/config.edn:/etc/dinsro/config.edn"
     ports:
     - 3000:3000
     - 9630:9630
