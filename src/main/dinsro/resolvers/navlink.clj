@@ -33,6 +33,16 @@
   {:menu-links (map (fn [id] [:navlink/id id]) [:accounts
                                                 :transactions])})
 
+(defresolver unauth-links-resolver
+  [_env _props]
+  {::pc/output [{:unauth-links [:navlink/id]}]}
+  (let [registration-enabled? true]
+    {:unauth-links
+     (filter identity
+             [(:login sample/navlink-map)
+              (when registration-enabled?
+                (:registration sample/navlink-map))])}))
+
 (defresolver dropdown-links-resolver
   [_env _props]
   {::pc/output [{:dropdown-links [:navlink/id]}]}
@@ -54,4 +64,5 @@
    navlinks-resolver
    navlink-map-resolver
    auth-link-resolver
+   unauth-links-resolver
    menu-links-resolver])

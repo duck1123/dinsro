@@ -12,7 +12,8 @@
                           :dinsro.ui.navbar/Navbar
                           :dinsro.ui.navbar/expanded?]
           false)
-   (let [href (get-in @state [:navlink/id id :navlink/href])]
+   (let [link (get-in @state [:navlink/id id])
+         href (:navlink/href link)]
      (routing/route-to! href))))
 
 (defmutation submit [props]

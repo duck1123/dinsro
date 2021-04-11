@@ -18,14 +18,14 @@
 
 (defsc NavLink
   [this {:navlink/keys [href id name]}]
-  {:ident :navlink/id
+  {:ident         :navlink/id
    :initial-state {:navlink/id   0
                    :navlink/href ""
                    :navlink/name ""}
-   :query [:navlink/id :navlink/name :navlink/href]}
+   :query         [:navlink/id :navlink/name :navlink/href]}
   (dom/a
    :.navbar-item
-   {:href href
+   {:href    href
     :onClick (fn [evt]
                (.preventDefault evt)
                (.stopPropagation evt)
@@ -37,14 +37,14 @@
 
 (defsc NavbarAuthLink
   [_this {:navlink/keys [name href]}]
-  {:ident :navlink/id
+  {:ident         :navlink/id
    :initial-state {:navlink/id   0
                    :navlink/href ""
                    :navlink/name ""}
-   :query [:navlink/id :navlink/name :navlink/href]}
+   :query         [:navlink/id :navlink/name :navlink/href]}
   (dom/a
    :.navbar-link
-   {:href href
+   {:href    href
     :onClick (fn [evt] (.preventDefault evt) false)}
    name))
 
@@ -52,13 +52,13 @@
 
 (defsc NavbarLogoutLink
   [this {:navlink/keys [href]}]
-  {:ident (fn [_] [:navlink/id :logout])
+  {:ident         (fn [_] [:navlink/id :logout])
    :initial-state {:navlink/id   0
                    :navlink/href "/logout"}
-   :query [:navlink/id :navlink/name :navlink/href]}
+   :query         [:navlink/id :navlink/name :navlink/href]}
   (dom/a
    :.navbar-item
-   {:href href
+   {:href    href
     :onClick (fn [evt]
                (.preventDefault evt)
                (comp/transact! this [`(dinsro.session/logout)])
@@ -75,11 +75,11 @@
   [expanded? burger-clicked]
   (dom/div
    :.navbar-burger.burger
-   {:role :button
-    :aria-label :menu
+   {:role          :button
+    :aria-label    :menu
     :aria-expanded false
-    :onClick burger-clicked
-    :className (when expanded? "is-active")}
+    :onClick       burger-clicked
+    :className     (when expanded? "is-active")}
    (dom/span {:aria-hidden true})
    (dom/span {:aria-hidden true})
    (dom/span {:aria-hidden true})))
@@ -89,13 +89,13 @@
   (dom/div
    :.navbar-brand
    (dom/a :.navbar-item
-          {:href "/"
+          {:href  "/"
            :style {:fontWeight :bold}}
           "Dinsro")
    (navbar-burger expanded? burger-clicked)))
 
 (defsc Navbar
-  [this {::keys [auth-links dropdown-links expanded? menu-links]
+  [this {::keys        [auth-links dropdown-links expanded? menu-links unauth-links]
          :session/keys [current-user]}]
   {:componentDidMount
    (fn [this]
@@ -106,37 +106,32 @@
                {:target [:component/id ::Navbar ::dropdown-links]})
 
      (df/load! this [:navlink/id :transactions] NavbarAuthLink
-               {:target [:component/id ::Navbar ::auth-links]}))
-   :css [[:.navbar {:background-color "red"}]]
-   :ident (fn [_] [:component/id ::Navbar])
-   :initial-state {::auth-links     {}
-                   ::dropdown-links []
-                   ::expanded?      false
-                   ::menu-links     []
+               {:target [:component/id ::Navbar ::auth-links]})
+
+     (df/load! this :unauth-links NavLink
+               {:target [:component/id ::Navbar ::unauth-links]}))
+   :css           [[:.navbar {:background-color "red"}]]
+   :ident         (fn [_] [:component/id ::Navbar])
+   :initial-state {::auth-links          {}
+                   ::dropdown-links      []
+                   ::expanded?           false
+                   ::menu-links          []
+                   ::unauth-links        []
                    :session/current-user {:user/valid? false}}
-   :query [{::auth-links     (comp/get-query NavbarAuthLink)}
-           [:session/current-user '_]
-           {::dropdown-links (comp/get-query NavLink)}
-           ::expanded?
-           {::menu-links     (comp/get-query NavLink)}]}
-  (let [burger-clicked #(comp/transact! this [`(dinsro.mutations/toggle)])
-        registration-enabled? true
-        valid? (boolean (:user/valid? current-user))
-        _unauth-links (filter identity
-                              [{:navlink/id :login
-                                :navlink/name (tr [:login])
-                                :navlink/href :login}
-                               (when registration-enabled?
-                                 {:navlink/id :register
-                                  :navlink/name (tr [:register])
-                                  :navlink/href :register})])]
+   :query         [{::auth-links (comp/get-query NavbarAuthLink)}
+                   [:session/current-user '_]
+                   {::dropdown-links (comp/get-query NavLink)}
+                   ::expanded?
+                   {::menu-links (comp/get-query NavLink)}
+                   {::unauth-links (comp/get-query NavLink)}]}
+  (let [valid? (boolean (:user/valid? current-user))]
     (dom/nav
      :.navbar.is-info
      (dom/div
       :.container
       {:aria-label "main navigation"
-       :role "navigation"}
-      (navbar-brand expanded? burger-clicked)
+       :role       "navigation"}
+      (navbar-brand expanded? #(comp/transact! this [`(dinsro.mutations/toggle)]))
       (dom/div
        :.navbar-menu
        {:className (when expanded? "is-active")}
@@ -152,13 +147,6 @@
              :.navbar-dropdown
              (map ui-nav-link dropdown-links)
              (ui-navbar-logout-link {}))))
-          (comp/fragment
-           (ui-nav-link {:navlink/id :login
-                         :navlink/name (tr [:login])
-                         :navlink/href :login})
-           (when registration-enabled?
-             (ui-nav-link {:navlink/id :register
-                           :navlink/name (tr [:register])
-                           :navlink/href :register}))))))))))
+          (map ui-nav-link unauth-links))))))))
 
 (def ui-navbar (comp/factory Navbar))
