@@ -5,13 +5,6 @@
    [dinsro.db :as db]
    [dinsro.layout :refer [error-page] :as layout]
    [dinsro.middleware :as middleware]
-   [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.categories :as m.categories]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.model.rates :as m.rates]
-   [dinsro.model.transactions :as m.transactions]
-   [dinsro.model.users :as m.users]
    [dinsro.routes :as routes]
    [mount.core :as mount]
    [reitit.coercion.spec]
@@ -38,17 +31,10 @@
 
 (defn init-schemata
   []
-  (let [schemata [m.accounts/schema
-                  m.categories/schema
-                  m.currencies/schema
-                  m.rates/schema
-                  m.rate-sources/schema
-                  m.transactions/schema
-                  m.users/schema]]
-    (doseq [schema schemata]
-      (d/transact db/*conn* schema))))
+  (doseq [schema db/schemata]
+    (d/transact db/*conn* schema)))
 
 (defn app []
-  (timbre/info "starting app")
+  (timbre/info "starting app handler")
   (init-schemata)
   (middleware/wrap-base #'app-routes))
