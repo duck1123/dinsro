@@ -20,6 +20,13 @@ EXPOSE_DOCKER_PORTS:
   EXPOSE 9630/tcp
   RUN echo "hello"
 
+IMPORT_JAR_DEPS:
+  COMMAND
+  COPY --dir +jar-deps/.clojure ${USER_HOME}
+  COPY --dir +jar-deps/.deps.clj ${USER_HOME}
+  COPY --dir +jar-deps/.m2 ${USER_HOME}
+  COPY --dir +jar-deps/.cpcache .
+
 INSTALL_BABASHKA:
   COMMAND
   RUN curl -sLO https://raw.githubusercontent.com/babashka/babashka/master/install \
@@ -42,15 +49,24 @@ INSTALL_NODE:
   RUN npm install -g npm@7.9.0
   RUN npm install -g yarn
 
-base-builder:
-  FROM +base-builder-ubuntu
+CREATE_USER_NIX:
+  COMMAND
+  RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
+  RUN chown -R 1000:1000 /usr/src/app
+
+CREATE_USER_UBUNTU:
+  COMMAND
+  RUN addgroup --gid 1000 dinsro && adduser --ingroup dinsro --uid 1000 dinsro
+  RUN chown -R 1000:1000 /usr/src/app
+
+# base-builder:
+#   FROM +base-builder-ubuntu
 
 base-builder-nix:
   FROM nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
   ENV USER_HOME=/home/dinsro
   WORKDIR /usr/src/app
   RUN nix-env -i autoconf
-  RUN nix-env -i gnumake-4.2.1
   RUN nix-env -i bash-5.1-p4
   RUN nix-env -i curl-7.74.0
   RUN nix-env -i openjdk-11.0.9+11
@@ -63,23 +79,28 @@ base-builder-nix:
   ENV FONTCONFIG_PATH=/etc/fonts
   DO +INSTALL_BABASHKA
   RUN nix-env -i tree
+  DO +CREATE_USER_NIX
   RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
   RUN chown -R 1000:1000 /usr/src/app
   RUN nix-env -i clj-kondo
-  RUN nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-  RUN nix-channel --update
+  # RUN nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  # RUN nix-channel --update
   USER "1000"
-  RUN mkdir -p ${USER_HOME}/.cache/yarn && mkdir -p ${USER_HOME}/.m2 && chown -R 1000:1000 ${USER_HOME}
+  RUN mkdir -p ${USER_HOME}/.cache/yarn \
+      && mkdir -p ${USER_HOME}/.m2 \
+      && chown -R 1000:1000 ${USER_HOME}
 
-base-builder-ubuntu:
+base-builder:
   FROM clojure:openjdk-11-tools-deps
   WORKDIR /usr/src/app
   ENV USER_HOME=/home/dinsro
   DO +INSTALL_NODE
   DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
-  RUN addgroup --gid 1000 dinsro && adduser --ingroup dinsro --uid 1000 dinsro
-  RUN chown -R 1000:1000 /usr/src/app
+  DO +CREATE_USER_UBUNTU
+  RUN apt update && apt install -y \
+          tree \
+      && rm -rf /var/lib/apt/lists/*
   USER "1000"
 
 base-cypress-dind:
@@ -120,14 +141,12 @@ base-dind-builder:
   FROM earthly/dind:alpine
   WORKDIR /usr/src/app
   RUN apk add curl
-  RUN apk add make
   RUN curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
   && chmod +x /usr/local/bin/docker-compose
 
 base-dind-builder-nix:
   RUN nix-env -i bash-5.0-p2
   RUN nix-env -i clojure-1.10.0.411
-  RUN nix-env -i gnumake-4.2.1
   RUN nix-env -i nodejs-10.15.0
   RUN nix-env -i openjdk-11.0.2-b9
   RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
@@ -146,20 +165,8 @@ builder:
   COPY docker-config.edn config.edn
   COPY shadow-cljs.edn .
 
-builder-ubuntu:
-  FROM +deps-builder-ubuntu
-  RUN mkdir -p classes data target
-  COPY --dir lib .
-  COPY --dir src/main src/main
-  USER root
-  RUN mkdir -p /var/lib/dinsro/data && chown -R dinsro:dinsro /var/lib/dinsro/data
-  USER 1000
-  VOLUME /var/lib/dinsro/data
-  COPY docker-config.edn config.edn
-  COPY shadow-cljs.edn .
-
 check:
-  FROM +src-ubuntu
+  FROM +src
   COPY indentation.edn .
   RUN bb check
 
@@ -170,12 +177,12 @@ ci:
   # BUILD +e2e
 
 compile-frontend:
-  FROM +src-ubuntu
+  FROM +src
   RUN bb compile-cljs
   SAVE ARTIFACT resources
 
 compile-production:
-  FROM +src-ubuntu
+  FROM +src
   COPY --dir src/prod src/prod
   RUN bb compile-production
   SAVE ARTIFACT classes
@@ -184,34 +191,23 @@ deps-builder:
   FROM +base-builder
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
-  COPY bb.edn deps.edn .
-  COPY --dir --chown 1000:1000 +jar-deps/.m2 ${USER_HOME}/
-
-deps-builder-ubuntu:
-  FROM +base-builder-ubuntu
-  COPY package.json yarn.lock .
-  COPY --dir +node-deps/node_modules node_modules
-  COPY bb.edn deps.edn .
-  COPY --dir +jar-deps/.m2 ${USER_HOME}/
+  COPY --dir bb.edn deps.edn script .
+  DO +IMPORT_JAR_DEPS
 
 deps-dind-builder:
   FROM +base-dind-builder
   COPY package.json yarn.lock .
-  COPY bb.edn deps.edn .
-  COPY --dir +jar-deps/.m2 ${USER_HOME}
+  COPY --dir bb.edn deps.edn script .
+  DO +IMPORT_JAR_DEPS
   RUN --mount=type=cache,target=${USER_HOME}/.m2 \
       bb display-path || bb display-path
 
-dev-builder:
-  FROM +deps-builder-ubuntu
-
 dev-image:
-  FROM +dev-builder
+  FROM +deps-builder
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   VOLUME /var/lib/dinsro/data
-  COPY docker-config.edn config.edn
   CMD ["bb", "dev-bootstrap"]
   SAVE IMAGE duck1123/dinsro:dev-latest
 
@@ -225,7 +221,7 @@ dev-image-sources:
   SAVE IMAGE duck1123/dinsro:dev-sources-latest
 
 dev-sources:
-  FROM +dev-builder
+  FROM +deps-builder
   COPY dev-image-config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir . /usr/src/app
@@ -242,8 +238,9 @@ e2e:
   RUN curl -O https://download.clojure.org/install/linux-install-1.10.2.790.sh \
       && chmod +x linux-install-1.10.2.790.sh \
       && ./linux-install-1.10.2.790.sh
+  DO +INSTALL_BABASHKA
   COPY --dir +node-deps/node_modules node_modules
-  COPY --dir +jar-deps/.m2 ${USER_HOME}/
+  DO +IMPORT_JAR_DEPS
   COPY cypress.json .
   RUN npx cypress install
   COPY . .
@@ -262,7 +259,7 @@ e2e:
 e2e-dind:
   FROM +base-dind-builder
   COPY e2e-docker-compose.yml docker-compose.yml
-  COPY bb.edn .
+  COPY --dir bb.edn deps.edn script .
   RUN bb init
   WITH DOCKER \
       --compose docker-compose.yml \
@@ -280,11 +277,11 @@ e2e-image:
           openjdk-11-jdk \
       && rm -rf /var/lib/apt/lists/*
   COPY --dir +node-deps/node_modules node_modules
-  COPY --dir +jar-deps/.m2 ${USER_HOME}/
+  DO +IMPORT_JAR_DEPS
   COPY cypress.json .
   RUN npx cypress install
   COPY --dir cypress .
-  COPY bb.edn .
+  COPY --dir bb.edn deps.edn script .
   ENTRYPOINT []
   CMD ["bb", "test-integration"]
   SAVE IMAGE duck1123/dinsro:e2e-latest
@@ -298,22 +295,32 @@ image:
   SAVE IMAGE --push duck1123/dinsro:latest
 
 jar:
-  FROM +src-ubuntu
+  FROM +src
   COPY --dir +compile-production/classes .
   RUN bb compile-production-cljs
   RUN bb package-jar
   SAVE ARTIFACT target/app.jar /dinsro.jar AS LOCAL target/dinsro.jar
 
 jar-deps:
-  FROM +base-builder-ubuntu
-  COPY bb.edn deps.edn .
+  FROM +base-builder
+  COPY --dir bb.edn deps.edn script .
   USER root
   RUN rm -rf ${USER_HOME}/.m2
-  RUN --mount=type=cache,target=/root/.m2 \
+  RUN --mount=type=cache,target=/root/.clojure \
+      --mount=type=cache,target=/root/.m2 \
+      --mount=type=cache,target=/root/.deps.clj \
       (bb display-path || bb display-path) \
+      && bb init-bb \
+      && cp -r /root/.clojure ${USER_HOME}/ \
+      && cp -r /root/.deps.clj ${USER_HOME}/ \
       && cp -r /root/.m2 ${USER_HOME}/
+  RUN chown -R 1000 .cpcache
+  RUN chown -R 1000 ${USER_HOME}/.clojure
+  RUN chown -R 1000 ${USER_HOME}/.deps.clj
   RUN chown -R 1000 ${USER_HOME}/.m2
   USER 1000
+  SAVE ARTIFACT ${USER_HOME}/.clojure
+  SAVE ARTIFACT ${USER_HOME}/.deps.clj
   SAVE ARTIFACT ${USER_HOME}/.m2
   SAVE ARTIFACT .cpcache
 
@@ -335,17 +342,13 @@ lint-kondo:
   RUN bb lint-kondo
 
 node-deps:
-  FROM +base-builder-ubuntu
+  FROM +base-builder
   COPY package.json yarn.lock .
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
 
 src:
   FROM +builder
-  COPY --dir resources/main resources/
-
-src-ubuntu:
-  FROM +builder-ubuntu
   COPY --dir resources/main resources/
 
 test:
@@ -363,13 +366,9 @@ test-cljs:
 test-sources:
   FROM +src
   COPY --dir src/test src
-  COPY --dir +jar-deps/.m2 ${USER_HOME}/
-  COPY --dir --chown 1000:1000 +jar-deps/.cpcache .
+  DO +IMPORT_JAR_DEPS
+  # COPY --dir +jar-deps/.clojure ${USER_HOME}
+  # COPY --dir +jar-deps/.deps.clj ${USER_HOME}
+  # COPY --dir +jar-deps/.m2 ${USER_HOME}
+  # COPY --dir +jar-deps/.cpcache .
   COPY karma.conf.js .
-
-test-ubuntu:
-  FROM +src-ubuntu
-  COPY --dir src/test src
-  COPY --dir +jar-deps/.m2 ${USER_HOME}/
-  COPY karma.conf.js .
-  RUN bb test
