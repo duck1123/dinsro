@@ -1,6 +1,7 @@
 (ns dinsro.resolvers.navlink
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
+   [dinsro.queries.settings :as q.settings]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
@@ -36,7 +37,7 @@
 (defresolver unauth-links-resolver
   [_env _props]
   {::pc/output [{:unauth-links [:navlink/id]}]}
-  (let [registration-enabled? true]
+  (let [registration-enabled? (:allow-registration (q.settings/get-settings))]
     {:unauth-links
      (filter identity
              [(:login sample/navlink-map)
