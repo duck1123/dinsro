@@ -36,12 +36,10 @@
         (http/unauthorized {:status :unauthorized}))
       (http/bad-request {:status :invalid}))))
 
-(>defn register-handler
-  "Register a user"
-  [request]
-  [::s.a.authentication/register-request => ::s.a.authentication/register-response]
-  (let [{:keys [params]} request
-        params           (if-let [password (:password params)]
+(>defn register
+  [params]
+  [::m.users/params => ::m.users/item]
+  (let [params           (if-let [password (:password params)]
                            (assoc params ::m.users/password password)
                            params)
         params           (dissoc params :password)
@@ -49,12 +47,22 @@
     (if (s/valid? ::m.users/params params)
       (try
         (let [id (q.users/create-record params)]
-          (http/ok {:id id}))
+          (q.users/read-record id))
         (catch RuntimeException _
-          (http/bad-request {:status  :failed
-                             :message "User already exists"})))
-      (http/bad-request {:status  :failed
-                         :message "Invalid"}))))
+          (throw "User already exists")))
+      (throw "Invalid"))))
+
+(>defn register-handler
+  "Register a user"
+  [request]
+  [::s.a.authentication/register-request => ::s.a.authentication/register-response]
+  (let [{:keys [params]} request]
+    (try
+      (let [id (::m.users/id (register params))]
+        (http/ok {:id id}))
+      (catch RuntimeException _
+        (http/bad-request {:status  :failed
+                           :message "User already exists"})))))
 
 (defn logout-handler
   [_]

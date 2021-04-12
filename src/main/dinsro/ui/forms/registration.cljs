@@ -1,10 +1,10 @@
 (ns dinsro.ui.forms.registration
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as timbre]))
 
@@ -19,7 +19,7 @@
                    ::email
                    ::name
                    ::password]}
-  (bulma/box
+  (dom/div
    (u.inputs/ui-text-input
     {:label "Name" :value name}
     {:onChange #(fm/set-string! this ::name :event %)})
