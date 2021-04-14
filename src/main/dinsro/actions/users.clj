@@ -28,7 +28,7 @@
     (if (s/valid? ::m.users/params params)
       params
       (do
-        (comment (timbre/warnf "not valid: %s" (expound/expound-str ::m.users/params params)))
+        (timbre/warnf "not valid: %s" (expound/expound-str ::m.users/params params))
         nil))))
 
 (>defn create!

@@ -56,19 +56,19 @@
 
 (>defn register
   [params]
-  [::m.users/input-params => ::m.users/item]
+  [::m.users/input-params => (? ::m.users/item)]
   (let [params (if-let [password (:password params)]
                  (assoc params ::m.users/password password)
                  params)
         params (dissoc params :password)
         params (a.users/prepare-record params)]
-    (if (s/valid? ::m.users/params params)
+    (when (s/valid? ::m.users/params params)
       (try
         (let [id (q.users/create-record params)]
           (q.users/read-record id))
         (catch RuntimeException _
           (throw "User already exists")))
-      (throw "Invalid"))))
+      #_(throw "Invalid"))))
 
 (>defn register-handler
   "Register a user"

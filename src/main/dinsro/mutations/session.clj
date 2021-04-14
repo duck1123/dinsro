@@ -8,11 +8,12 @@
    [taoensso.timbre :as timbre]))
 
 (defmutation register
-  [_env {::m.users/keys [email password]}]
-  {::pc/params #{:user/email :user/password}
+  [_env {::m.users/keys [email name password]}]
+  {::pc/params #{:user/email :user/name :user/password}
    ::pc/output [:user/id :user/valid? :user/registered?]}
-  (let [params {::m.users/email    email
-                ::m.users/password password}]
+  (let [params #::m.users{:email    email
+                          :password password
+                          :name     name}]
     (try
       (a.authentication/register params)
       (catch Exception ex

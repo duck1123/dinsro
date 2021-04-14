@@ -5,6 +5,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.session :as mu.session]
    [dinsro.test-helpers :as th]
+   [fulcro-spec.check :as _]
    [fulcro-spec.core :refer [assertions specification]]
    [taoensso.timbre :as timbre]))
 
@@ -19,9 +20,9 @@
           data     #::m.users{:name "bob" :email "foo@bar.baz" :password "1234567"}
           f        (::pc/mutate mu.session/register)
           response (f env data)]
-
       (assertions
-       response => data))
+       (::m.users/email response) => (::m.users/email data)
+       (:db/id response) =check=> (_/valid?* number?)))
     (catch Exception ex
       (timbre/error ex "caught"))))
 
