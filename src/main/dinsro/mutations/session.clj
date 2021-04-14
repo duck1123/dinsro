@@ -13,7 +13,12 @@
    ::pc/output [:user/id :user/valid? :user/registered?]}
   (let [params {::m.users/email    email
                 ::m.users/password password}]
-    (a.authentication/register params)))
+    (try
+      (a.authentication/register params)
+      (catch Exception ex
+        (timbre/error ex "error")
+        {::error true
+         :ex     ex}))))
 
 (defmutation login
   [{{:keys [session]} :request} {:user/keys [email password]}]

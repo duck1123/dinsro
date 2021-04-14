@@ -56,7 +56,7 @@
 
 (>defn register
   [params]
-  [::m.users/params => ::m.users/item]
+  [::m.users/input-params => ::m.users/item]
   (let [params (if-let [password (:password params)]
                  (assoc params ::m.users/password password)
                  params)
