@@ -102,7 +102,7 @@
   [_this {:keys [all-currencies]} {:keys [onChange]}]
   {:componentDidMount
    (fn [this] (df/load! this :all-currencies CurrencySelectorOption))
-   :initial-state {}
+   :initial-state {:all-currencies []}
    :query [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
   (dom/div
    :.select

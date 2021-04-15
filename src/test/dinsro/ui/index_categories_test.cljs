@@ -11,7 +11,7 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexCategories
-  {::wsm/card-height 3
+  {::wsm/card-height 6
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.index-categories/IndexCategories

@@ -11,9 +11,8 @@
   {::wsm/card-height 12
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root       u.currency-accounts/CurrencyAccounts
+   {::ct.fulcro3/root u.currency-accounts/CurrencyAccounts
     ::ct.fulcro3/initial-state
     (fn []
       {::u.currency-accounts/accounts
-       {::u.currency-accounts/accounts (vals sample/account-map)}})
-    ::ct.fulcro3/wrap-root? false}))
+       {::u.currency-accounts/accounts (vals sample/account-map)}})}))

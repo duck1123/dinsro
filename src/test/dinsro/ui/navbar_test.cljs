@@ -25,14 +25,15 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.navbar/Navbar
     ::ct.fulcro3/initial-state
-    (fn [] {:navlink/id                   sample/navlink-map
-            :auth/id                      1
-            :navbar/expanded?             true
-            :navbar/auth-data             {:link {:navlink/id   :user
-                                                  :navlink/name "User"
-                                                  :navlink/href "/users"}}
-            :navbar/navbar-brand          {}
-            :navbar/menu-links            (map sample/navlink-map [:foo :bar])
-            :navbar/top-level-links       (map sample/navlink-map [:accounts :transactions])
-            :navbar/unauthenticated-links (map-links [:login :register])
-            :navbar/dropdown-menu-links   (map sample/navlink-map [:foo :bar :baz])})}))
+    (fn []
+      {:navlink/id                   sample/navlink-map
+       :auth/id                      1
+       :navbar/expanded?             true
+       :navbar/auth-data             {:link {:navlink/id   :user
+                                             :navlink/name "User"
+                                             :navlink/href "/users"}}
+       :navbar/navbar-brand          {}
+       :navbar/menu-links            (map sample/navlink-map [:foo :bar])
+       :navbar/top-level-links       (map sample/navlink-map [:accounts :transactions])
+       :navbar/unauthenticated-links (map-links [:login :register])
+       :navbar/dropdown-menu-links   (map sample/navlink-map [:foo :bar :baz])})}))

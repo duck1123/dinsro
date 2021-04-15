@@ -1,5 +1,6 @@
 (ns dinsro.ui.index-accounts-test
   (:require
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.sample :as sample]
    [dinsro.ui.index-accounts :as u.index-accounts]
@@ -14,5 +15,10 @@
    {::ct.fulcro3/root       u.index-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.index-accounts/accounts (vals sample/account-map)})
+      {::u.index-accounts/accounts
+       (map
+        (fn [account] (-> account
+                          (assoc ::m.accounts/user "foo")
+                          (assoc ::m.accounts/currency "bar")))
+        (vals sample/account-map))})
     ::ct.fulcro3/wrap-root? false}))

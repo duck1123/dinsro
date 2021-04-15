@@ -14,4 +14,4 @@
    {::ct.fulcro3/root u.f.add-currency-rate/AddCurrencyRateForm
     ::ct.fulcro3/initial-state
     (fn []
-      {:form/id ::u.f.add-currency-rate/form})}))
+      {:component/id ::u.f.add-currency-rate/form})}))

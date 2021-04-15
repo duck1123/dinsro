@@ -40,10 +40,11 @@
   {::wsm/card-height 3
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.inputs/CurrencySelector
+   {::ct.fulcro3/root       u.inputs/CurrencySelector
+    ::ct.fulcro3/wrap-root? false
     ::ct.fulcro3/initial-state
     (fn []
-      {:all-currencies [(vals sample/currency-map)]})}))
+      {:all-currencies (vals sample/currency-map)})}))
 
 (ws/defcard UserSelector
   {::wsm/card-height 3
