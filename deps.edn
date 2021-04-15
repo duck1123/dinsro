@@ -57,7 +57,8 @@
   :dev
   {:extra-paths ["src/dev" "src/test"]
    :extra-deps
-   {binaryage/devtools {:mvn/version "1.0.2"}}
+   {binaryage/devtools      {:mvn/version "1.0.2"}
+    fulcrologic/fulcro-spec {:mvn/version "3.1.12"}}
    :jvm-opts    ["-Dguardrails.enabled=true"]
    :main-opts   ["-m" "dinsro.core"]}
 
@@ -91,9 +92,7 @@
   {:extra-deps
    {com.cognitect/test-runner   {:git/url "https://github.com/cognitect-labs/test-runner.git"
                                  :sha     "209b64504cb3bd3b99ecfec7937b358a879f55c1"}
-    com.fulcrologic/fulcro      {:mvn/version "3.4.3"}
     com.github.awkay/workspaces {:mvn/version "1.0.3"}
-    fulcrologic/fulcro-spec     {:mvn/version "3.1.6"}
     pjstadig/humane-test-output {:mvn/version "0.10.0"}}
    :extra-paths ["src/test"]
    :main-opts   ["-m" "cognitect.test-runner"]}
