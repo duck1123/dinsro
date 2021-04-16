@@ -16,17 +16,17 @@
 
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value link user]}]
-  {:ident ::m.accounts/id
+  {:ident         ::m.accounts/id
    :initial-state {::m.accounts/link          {}
                    ::m.accounts/currency      {}
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
                    ::m.accounts/user          {}}
-   :query [{::m.accounts/link         (comp/get-query u.links/AccountLink)}
-           {::m.accounts/currency     (comp/get-query u.links/CurrencyLink)}
-           ::m.accounts/id
-           ::m.accounts/initial-value
-           {::m.accounts/user         (comp/get-query u.links/UserLink)}]}
+   :query         [{::m.accounts/link (comp/get-query u.links/AccountLink)}
+                   {::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
+                   ::m.accounts/id
+                   ::m.accounts/initial-value
+                   {::m.accounts/user (comp/get-query u.links/UserLink)}]}
   (dom/tr
    (dom/td (u.links/ui-account-link (first link)))
    (dom/td (u.links/ui-user-link (first user)))
@@ -39,7 +39,7 @@
 (defsc IndexAccounts
   [_this {::keys [accounts]}]
   {:initial-state {::accounts []}
-   :query [{::accounts (comp/get-query IndexAccountLine)}]}
+   :query         [{::accounts (comp/get-query IndexAccountLine)}]}
   (if (seq accounts)
     (dom/table
      :.table
@@ -61,14 +61,14 @@
   {:componentDidMount
    (fn [this]
      (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar UserAccounts}))
-   :ident (fn [_] [:component/id ::UserAccounts])
+   :ident         (fn [_] [:component/id ::UserAccounts])
    :initial-state {::accounts      {}
                    ::form          {}
                    ::toggle-button {:form-button/id form-toggle-sm}}
-   :query [{::accounts      (comp/get-query IndexAccounts)}
-           {::form          (comp/get-query u.f.add-user-account/AddUserAccountForm)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           [::uism/asm-id form-toggle-sm]]}
+   :query         [{::accounts (comp/get-query IndexAccounts)}
+                   {::form (comp/get-query u.f.add-user-account/AddUserAccountForm)}
+                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                   [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h2
