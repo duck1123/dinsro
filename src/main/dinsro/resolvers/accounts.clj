@@ -60,7 +60,7 @@
   [_env {::m.users/keys [id]}]
   {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/accounts [::m.accounts/id]}]}
-  (let [records (q.accounts/index-records-by-user id)
+  (let [records  (q.accounts/index-records-by-user id)
         accounts (map
                   (fn [{{:db/keys [id]} ::m.accounts/user}]
                     [::m.accounts/id id])

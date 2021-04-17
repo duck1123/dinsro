@@ -82,7 +82,7 @@
                       :in $ ?currency-id
                       :where
                       [?id ::m.rate-sources/currency ?currency-id]]
-             :args [@db/*conn* currency-id]})
+             :args  [@db/*conn* currency-id]})
        (map :db/id)
        (map read-record)
        (take record-limit)))

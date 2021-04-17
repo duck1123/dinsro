@@ -28,7 +28,7 @@
 
 (defresolver account-currencies-resolver
   [_env _props]
-  {::pc/input #{::m.accounts/id}
+  {::pc/input  #{::m.accounts/id}
    ::pc/output [{::m.accounts/currencies [::m.currencies/id]}]}
   (a.currencies/index-by-account-handler {}))
 

@@ -26,7 +26,7 @@
 
 (defresolver category-link-resolver
   [_env {::m.categories/keys [id]}]
-  {::pc/input #{::m.categories/id}
+  {::pc/input  #{::m.categories/id}
    ::pc/output [{::m.categories/link [::m.categories/id]}]}
   {::m.categories/link [[::m.categories/id id]]})
 
