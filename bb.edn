@@ -69,9 +69,10 @@
    :depends [compile-production-clj compile-production-cljs]}
 
   compile-production-clj
-  {:doc     "Compile clojure source files for production"
-   :depends [install]
-   :task    (clojure "-M:production -e " "(compile 'dinsro.core)")}
+  {:doc  "Compile clojure source files for production"
+   :task (do
+           (shell "mkdir -p classes")
+           (clojure "-M:production -e " "(compile 'dinsro.core)"))}
 
   compile-production-cljs
   {:doc     "Compile clojurescript source files for production"

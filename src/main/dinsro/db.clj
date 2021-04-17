@@ -21,13 +21,11 @@
 
 (defn get-url
   []
-  (let [datahike-url (config/config :datahike-url)
-        data-path (config/config :data-path)]
-    (or datahike-url
-        (when data-path
-          (let [file (File. data-path)]
-            (when (.exists file)
-              (str "datahike:file://" (.getAbsolutePath file))))))))
+  (or (config/config :datahike-url)
+      (when-let [data-path (config/config :data-path)]
+        (let [file (File. data-path)]
+          (when (.exists file)
+            (str "datahike:file://" (.getAbsolutePath file)))))))
 
 (defn initialize-db!
   [uri]

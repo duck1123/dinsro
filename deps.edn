@@ -76,9 +76,7 @@
    :main-opts ["-m" "kibit-runner.cmdline"]}
 
   :production
-  {:extra-deps
-   {day8.re-frame/tracing-stubs {:mvn/version "0.6.0"}}
-   :extra-paths ["src/prod" "resources/prod" "classes"]}
+  {:extra-paths ["src/prod" "resources/prod" "classes"]}
 
   :production-main
   {:main-opts ["-m" "dinsro.core"]}
