@@ -8,6 +8,7 @@
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
+   [fulcro-spec.core :refer [assertions specification]]
    [taoensso.timbre :as timbre]))
 
 (def schemata
@@ -17,7 +18,7 @@
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
-(deftest create-record
+(specification "create-record"
   (let [user           (mocks/mock-user)
         user-id        (:db/id user)
         currency       (mocks/mock-currency)
@@ -28,11 +29,13 @@
                            (assoc-in [::m.accounts/currency :db/id] currency-id))
         id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
-    (is (= (get params m.accounts/name)
-           (get created-record m.accounts/name)))))
 
-(deftest index-records
-  (is (= [] (q.accounts/index-records))))
+    (assertions
+     (get params m.accounts/name) => (get created-record m.accounts/name))))
+
+(specification "index-records"
+  (assertions
+   (q.accounts/index-records) => []))
 
 (deftest index-records-by-user
   (let [user-id 1]
