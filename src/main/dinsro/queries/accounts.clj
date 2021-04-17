@@ -5,6 +5,10 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
+   [dinsro.queries.currencies :as q.currencies]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
@@ -51,7 +55,16 @@
   [:db/id => (? ::m.accounts/item)]
   (let [record (d/pull @db/*conn* attribute-list id)]
     (when (get record ::m.accounts/name)
-      record)))
+      (let [user-id (get-in record [::m.accounts/user :db/id])
+            currency-id (get-in record [::m.accounts/currency :db/id])]
+        (-> record
+            (dissoc :db/id)
+            (update ::m.accounts/currency dissoc :db/id)
+            (update ::m.accounts/user dissoc :db/id)
+            (assoc-in [::m.accounts/currency ::m.currencies/id]
+                      (q.currencies/find-id-by-eid currency-id))
+            (assoc-in [::m.accounts/user ::m.users/id]
+                      (q.users/find-id-by-eid user-id)))))))
 
 (>defn index-ids
   []
@@ -61,7 +74,7 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.accounts/item)]
-  (d/pull-many @db/*conn* '[*] (index-ids)))
+  (map read-record (index-ids)))
 
 (>defn index-records-by-currency
   [currency-id]

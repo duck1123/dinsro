@@ -48,7 +48,7 @@
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-id)]
     (when (get record m.users/name)
-      record)))
+      (dissoc record :db/id))))
 
 (>defn read-record-by-eid
   [user-dbid]

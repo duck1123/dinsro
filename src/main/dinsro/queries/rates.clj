@@ -4,6 +4,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.queries.currencies :as q.currencies]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
    [dinsro.specs]
    [dinsro.streams :as streams]
@@ -49,7 +51,7 @@
                             (update ::m.rates/date tick/inst))
         response        (d/transact db/*conn* {:tx-data [prepared-params]})
         id              (get-in response [:tempids tempid])]
-    (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]])
+    (comment (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]]))
     id))
 
 (>defn read-record
@@ -57,7 +59,12 @@
   [:db/id => (? ::m.rates/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.rates/rate)
-      (update record ::m.rates/date tick/instant))))
+      (let [currency-id (get-in record [::m.rates/currency :db/id])]
+        (-> record
+            (update ::m.rates/date tick/instant)
+            (assoc-in [::m.rates/currency ::m.currencies/id] (q.currencies/find-id-by-eid currency-id))
+            (update ::m.rates/currency dissoc :db/id)
+            (dissoc :db/id))))))
 
 (>defn index-ids
   []
@@ -67,12 +74,7 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.rates/item)]
-  (->> (index-ids)
-       (d/pull-many @db/*conn* '[*])
-       (sort-by ::m.rates/date)
-       (reverse)
-       (take record-limit)
-       (map #(update % ::m.rates/date tick/instant))))
+  (map read-record (index-ids)))
 
 (>defn index-records-by-currency
   [currency-id]

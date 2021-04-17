@@ -4,11 +4,15 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]
    [tick.alpha.api :as tick]))
+
+(def record-limit 75)
 
 (def find-eid-by-id-query
   '[:find  ?eid
@@ -46,7 +50,13 @@
   [:db/id => (? ::m.transactions/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.transactions/value)
-      (update record ::m.transactions/date tick/instant))))
+      (let [account-id (get-in record [::m.transactions/account :db/id])]
+        (-> record
+            (update ::m.transactions/date tick/instant)
+            (dissoc :db/id)
+            (assoc-in [::m.transactions/account ::m.accounts/id]
+                      (q.accounts/find-id-by-eid account-id))
+            (update ::m.transactions/account dissoc :db/id))))))
 
 (>defn index-ids
   []
@@ -56,9 +66,7 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.transactions/item)]
-  (->> (index-ids)
-       (d/pull-many @db/*conn* '[*])
-       (map #(update % ::m.transactions/date tick/instant))))
+  (map read-record (index-ids)))
 
 (>defn delete-record
   [id]

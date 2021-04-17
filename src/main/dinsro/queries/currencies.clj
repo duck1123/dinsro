@@ -49,17 +49,17 @@
   [=> (s/coll-of :db/id)]
   (map first (d/q '[:find ?e :where [?e ::m.currencies/name _]] @db/*conn*)))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.currencies/item)]
-  (d/pull-many @db/*conn* attribute-list (index-ids)))
-
 (>defn read-record
   [id]
   [:db/id => (? ::m.currencies/item)]
   (let [record (d/pull @db/*conn* attribute-list id)]
     (when (get record ::m.currencies/name)
-      record)))
+      (dissoc record :db/id))))
+
+(>defn index-records
+  []
+  [=> (s/coll-of ::m.currencies/item)]
+  (map read-record (index-ids)))
 
 (defn index-records-by-account
   [currency-id]

@@ -1,6 +1,6 @@
 (ns dinsro.queries.users-test
   (:require
-   [clojure.test :refer [deftest is use-fixtures]]
+   [clojure.test :refer [use-fixtures]]
    [dinsro.mocks :as mocks]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
@@ -21,7 +21,7 @@
           id                       (q.users/create-record params)
           user                     (q.users/read-record id)]
       (assertions
-       email => (::m.users/email user))))
+       (::m.users/email user) => email)))
   (behavior "when the params are invalid"
     (let [params (ds/gen-key ::m.users/params)
           _id    (q.users/create-record params)]
@@ -35,22 +35,20 @@
           id                       (q.users/create-record params)
           response                 (q.users/read-record id)]
       (assertions
-       email => (::m.users/email response)))))
+       (::m.users/email response) => email)))
+  (behavior "missing"
+    (let [id (ds/gen-key :db/id)]
+      (assertions
+       (q.users/read-record id) => nil))))
 
-(deftest read-record-missing
-  (let [id       (ds/gen-key :db/id)
-        response (q.users/read-record id)]
-    (is (nil? response))))
-
-(deftest read-records-empty
-  (let [ids      []
-        response (q.users/read-records ids)]
-    (is (= [] response))))
-
-(deftest read-records-existing
-  (let [n 2]
-    (dotimes [_ n] (mocks/mock-user))
-    (let [records  (q.users/index-records)
-          ids      (map :db/id records)
-          response (q.users/read-records ids)]
-      (is (= records response)))))
+(specification "read-records"
+  (behavior "empty"
+    (assertions
+     (q.users/read-records []) => []))
+  (behavior "existing"
+    (let [n 2]
+      (dotimes [_ n] (mocks/mock-user))
+      (let [records (q.users/index-records)
+            ids     (map :db/id records)]
+        (assertions
+         (q.users/read-records ids) => records)))))

@@ -1,6 +1,6 @@
 (ns dinsro.queries.transactions-test
   (:require
-   [clojure.test :refer [deftest is use-fixtures]]
+   [clojure.test :refer [use-fixtures]]
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
@@ -10,6 +10,7 @@
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
+   [fulcro-spec.core :refer [assertions behavior specification]]
    [taoensso.timbre :as timbre]))
 
 (def schemata
@@ -21,42 +22,47 @@
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
-(deftest create-record-test
-  (let [account    (mocks/mock-account)
-        account-id (:db/id account)
-        params     (ds/gen-key ::m.transactions/required-params)
-        params     (assoc params ::m.transactions/account {:db/id account-id})
-        id         (q.transactions/create-record params)
-        record     (q.transactions/read-record id)]
-    (is (= (double (::m.transactions/value params))
-           (::m.transactions/value record))
-        "values match")))
+(specification "create-record"
+  (behavior "success"
+    (let [account    (mocks/mock-account)
+          account-id (::m.accounts/id account)
+          params     (ds/gen-key ::m.transactions/required-params)
+          params     (assoc params ::m.transactions/account {::m.accounts/id account-id})
+          id         (q.transactions/create-record params)
+          record     (q.transactions/read-record id)]
+      (assertions
+       (double (::m.transactions/value params)) => (::m.transactions/value record)))))
 
-(deftest read-record-success
-  (let [item     (mocks/mock-transaction)
-        id       (:db/id item)
-        response (q.transactions/read-record id)]
-    (is (= item response))))
+(specification "read-record"
+  (behavior "success"
+    (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)]
+      (assertions
+       (q.transactions/read-record (q.transactions/find-eid-by-id id)) => item)))
+  (behavior "not-found"
+    (let [id (ds/gen-key :db/id)]
+      (assertions
+       (q.transactions/read-record id) => nil))))
 
-(deftest read-record-not-found
-  (let [id       (ds/gen-key :db/id)
-        response (q.transactions/read-record id)]
-    (is (nil? response))))
+(specification "index-records"
+  (behavior "success"
+    (q.transactions/delete-all)
+    (assertions
+     (q.transactions/index-records) => []))
+  (behavior "with-records"
+    (let [transaction (mocks/mock-transaction)]
+      (assertions
+       (q.transactions/index-records) => [transaction]))))
 
-(deftest index-records-success
-  (q.transactions/delete-all)
-  (is (= [] (q.transactions/index-records))))
+(specification "delete-record"
+  (behavior "success"
+    (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)
+          eid                                   (q.transactions/find-eid-by-id id)]
+      (assertions
+       "the record should exist to start"
+       (q.transactions/read-record eid) => item
 
-(deftest index-records-with-records
-  (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::m.transactions/params)]
-    (q.transactions/create-record params)
-    (is (not= [params] (q.transactions/index-records)))))
+       "should return nil"
+       (q.transactions/delete-record eid) => nil
 
-(deftest delete-record
-  (let [item (mocks/mock-transaction)
-        id   (:db/id item)]
-    (is (not (nil? (q.transactions/read-record id))))
-    (let [response (q.transactions/delete-record id)]
-      (is (nil? response))
-      (is (nil? (q.transactions/read-record id))))))
+       "the record shouldn't exist after"
+       (q.transactions/read-record eid) => nil))))

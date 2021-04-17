@@ -4,7 +4,9 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
    [dinsro.db :as db]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
@@ -61,7 +63,11 @@
   [:db/id => (? ::m.rate-sources/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.rate-sources/name)
-      record)))
+      (let [currency-id (get-in record [::m.rate-sources/currency :db/id])]
+        (-> record
+            (dissoc :db/id)
+            (assoc-in [::m.rate-sources/currency ::m.currencies/id] (q.currencies/find-id-by-eid currency-id))
+            (update ::m.rate-sources/currency dissoc :db/id))))))
 
 (>defn index-ids
   []
@@ -71,7 +77,7 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.rate-sources/item)]
-  (d/pull-many @db/*conn* '[*] (index-ids)))
+  (map read-record (index-ids)))
 
 (defn index-records-by-currency
   [currency-id]

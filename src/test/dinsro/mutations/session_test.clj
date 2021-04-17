@@ -20,9 +20,10 @@
           data     #::m.users{:name "bob" :email "foo@bar.baz" :password "1234567"}
           f        (::pc/mutate mu.session/register)
           response (f env data)]
+
       (assertions
        (::m.users/email response) => (::m.users/email data)
-       (:db/id response) =check=> (_/valid?* number?)))
+       (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
     (catch Exception ex
       (timbre/error ex "caught"))))
 
