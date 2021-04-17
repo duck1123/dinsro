@@ -6,6 +6,9 @@
   (:import
    io.grpc.stub.StreamObserver
    java.io.File
+   org.bitcoinj.params.MainNetParams
+   org.bitcoinj.params.RegTestParams
+   org.bitcoinj.wallet.KeyChainGroup
    org.lightningj.lnd.wrapper.message.ListChannelsRequest
    org.lightningj.lnd.wrapper.message.ListInvoiceRequest
    org.lightningj.lnd.wrapper.AsynchronousLndAPI
@@ -17,6 +20,18 @@
                       (:port config)
                       (File. (:cert-path config))
                       (File. (:macaroon-path config))))
+
+(defn get-params
+  []
+  (RegTestParams/get))
+
+(defn get-mainnet-params
+  []
+  (MainNetParams/get))
+
+(defn get-keychain-group
+  []
+  (KeyChainGroup/createBasic (get-mainnet-params)))
 
 (defn get-async-api
   [config]
@@ -83,6 +98,15 @@
   (def a-lnd-api (get-async-api config))
 
   (parse (.getInfo s-lnd-api))
+
+  (String.
+   (.getScriptBytes
+    (first
+     (.getInputs
+      (first
+       (.getTransactions
+        (.getGenesisBlock
+         (get-mainnet-params))))))))
 
   (list-peers s-lnd-api)
 
