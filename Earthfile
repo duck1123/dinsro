@@ -175,6 +175,7 @@ ci:
   BUILD +lint
   BUILD +test
   # BUILD +e2e
+  BUILD +image
 
 compile-frontend:
   FROM +src
