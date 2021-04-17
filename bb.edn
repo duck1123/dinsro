@@ -52,58 +52,67 @@
    :task (cljfmt ["src" "deps.edn" "shadow-cljs.edn"])}
 
   compile
-  {:depends [compile-clj compile-cljs]}
+  {:doc     "Compile all source files"
+   :depends [compile-clj compile-cljs]}
 
   compile-clj
-  {:depends [init]}
+  {:doc     "Compile clojure source files"
+   :depends [init]}
 
   compile-cljs
-  {:depends [init]
+  {:doc     "Compile clojurescript source files"
+   :depends [init]
    :task    (clojure "-M:dev:shadow-cljs compile main")}
 
   compile-production
-  {:depends [compile-production-clj compile-production-cljs]}
+  {:doc     "Compile all source files for production"
+   :depends [compile-production-clj compile-production-cljs]}
 
   compile-production-clj
-  {:depends [install]
+  {:doc     "Compile clojure source files for production"
+   :depends [install]
    :task    (clojure "-M:production -e " "(compile 'dinsro.core)")}
 
   compile-production-cljs
-  {:depends [install]
+  {:doc     "Compile clojurescript source files for production"
+   :depends [install]
    :task    (clojure "-M:shadow-cljs release main")}
 
   dev
-  {:doc     "Build and start development server"
+  {:doc     "Build and start development server via docker"
    :depends [build-dev-image start-dev]}
 
   dev-bootstrap
-  {:task (do
+  {:doc  "Start clojurescript watch and main server"
+   :task (do
            (future (shell "bb watch-cljs"))
            (shell "bb run"))}
 
-  dev-workspaces-bootstrap
-  {:depends [workspaces]}
-
   display-path
-  {:task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production"
+  {:doc  "Display dependency trees for each alias"
+   :task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production"
                         "shadow-cljs" "test" "uberdeps"]]
            (shell (str "clojure -A:" alias " -Stree")))}
 
   e2e
-  {:task (earthly :e2e {:privileged true})}
+  {:doc  "Run end to end testing"
+   :task (earthly :e2e {:privileged true})}
 
   format
-  {:task (clojure "-M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn")}
+  {:doc  "Format source files"
+   :task (clojure "-M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn")}
 
   init
   {:doc     "Initialize the system"
    :depends [install init-bb]}
 
   init-bb
-  {:task (clojure "-e" "(+ 1 1)")}
+  {:doc  "Initialize babashka"
+   :task (clojure "-e" "(+ 1 1)")}
 
   install
-  {:task (shell "yarn install --frozen-lockfile")}
+  {:doc  "Install js dependencies"
+   :task (shell "yarn install --frozen-lockfile")}
 
 
   lint
@@ -119,19 +128,24 @@
   {:task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
 
   package-jar
-  {:task (clojure "-M:uberdeps:production --main-class dinsro.core --aliases production")}
+  {:doc  "Build production jar"
+   :task (clojure "-M:uberdeps:production --main-class dinsro.core --aliases production")}
 
   prepare-test-dirs
-  {:task (shell "mkdir -p /tmp/dinsro/data/test")}
+  {:doc  "Build test data directory"
+   :task (shell "mkdir -p /tmp/dinsro/data/test")}
 
   run
-  {:task (clojure "-M:dev:dev-main")}
+  {:doc  "Run server in dev mode"
+   :task (clojure "-M:dev:dev-main")}
 
   run-production
-  {:task (shell "DATAHIKE_URL=\"datahike:file://$(pwd)/data/dev\" java -jar target/dinsro.jar")}
+  {:doc  "Run server from jar"
+   :task (shell "DATAHIKE_URL=\"datahike:file://$(pwd)/data/dev\" java -jar target/dinsro.jar")}
 
   server
-  {:depends [compile run]}
+  {:doc     "compile and run server in dev mode"
+   :depends [compile run]}
 
   start-dev
   {:doc     "Start development"
