@@ -39,10 +39,15 @@
 (>defn create-record
   [params]
   [::m.currencies/params => :db/id]
-  (let [params   (assoc params :db/id "currency-id")
-        params   (assoc params ::m.currencies/id (utils/uuid))
-        response (d/transact db/*conn* {:tx-data [params]})]
-    (get-in response [:tempids "currency-id"])))
+  (try
+    (let [params   (assoc params :db/id "currency-id")
+          params   (dissoc params ::m.currencies/user)
+          params   (assoc params ::m.currencies/id (utils/uuid))
+          response (d/transact db/*conn* {:tx-data [params]})]
+      (get-in response [:tempids "currency-id"]))
+    (catch Exception ex
+      (timbre/error ex "Error creating")
+      nil)))
 
 (>defn index-ids
   []

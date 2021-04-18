@@ -4,6 +4,10 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.users :as m.users]
    ;; [dinsro.mutations :as mutations]
+   [dinsro.mutations.accounts :as mu-accounts]
+   [dinsro.mutations.categories :as mu-categories]
+   [dinsro.mutations.currencies :as mu-currencies]
+   [dinsro.mutations.rates :as mu-rates]
    [dinsro.mutations.session :as session]
    [dinsro.resolvers.accounts :as accounts]
    [dinsro.resolvers.categories :as categories]
@@ -41,7 +45,11 @@
       indexes)}))
 
 (def resolvers
-  [accounts/resolvers
+  [mu-accounts/resolvers
+   mu-categories/resolvers
+   mu-currencies/resolvers
+   mu-rates/resolvers
+   accounts/resolvers
    auth-resolver
    categories/resolvers
    currencies/resolvers

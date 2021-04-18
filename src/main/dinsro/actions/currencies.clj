@@ -28,7 +28,11 @@
 (>defn create!
   [params]
   [::s.a.currencies/create-params => (? ::m.currencies/item)]
-  (some-> params q.currencies/create-record q.currencies/read-record))
+  (if-let [eid (q.currencies/create-record params)]
+    (q.currencies/read-record eid)
+    (do
+      (timbre/warn "failed to create")
+      nil)))
 
 (>defn create-handler
   [{:keys [params]}]

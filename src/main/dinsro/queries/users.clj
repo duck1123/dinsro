@@ -66,7 +66,7 @@
 (>defn read-records
   [ids]
   [(s/coll-of :db/id) => (s/coll-of ::m.users/item)]
-  (d/pull-many @db/*conn* attribute-list ids))
+  (map read-record-by-eid ids))
 
 (>defn find-id-by-email
   [email]

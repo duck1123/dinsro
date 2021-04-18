@@ -5,6 +5,8 @@
    [datahike.api :as d]
    [dinsro.db :as db]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
@@ -48,7 +50,11 @@
   [:db/id => (? ::m.categories/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.categories/name)
-      record)))
+      (let [user-eid (get-in record [::m.categories/user :db/id])
+            user-id (q.users/find-id-by-eid user-eid)]
+        (-> record
+            (dissoc :db/id)
+            (assoc ::m.categories/user {::m.users/id user-id}))))))
 
 (>defn index-ids
   []
