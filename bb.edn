@@ -179,8 +179,7 @@
   watch {:depnds [watch-cljs]}
 
   watch-cljs
-  {:depends [install]
-   :task    (clojure "-M:test:dev:shadow-cljs watch main workspaces")}
+  {:task    (clojure "-M:test:dev:shadow-cljs watch main workspaces")}
 
   workspaces
   {:task (clojure "-M:test:dev:shadow-cljs watch workspaces")}}}
