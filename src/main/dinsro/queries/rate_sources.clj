@@ -63,10 +63,11 @@
   [:db/id => (? ::m.rate-sources/item)]
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.rate-sources/name)
-      (let [currency-id (get-in record [::m.rate-sources/currency :db/id])]
+      (let [currency-id (get-in record [::m.rate-sources/currency :db/id])
+            currency-eid (q.currencies/find-id-by-eid currency-id)]
         (-> record
             (dissoc :db/id)
-            (assoc-in [::m.rate-sources/currency ::m.currencies/id] (q.currencies/find-id-by-eid currency-id))
+            (assoc-in [::m.rate-sources/currency ::m.currencies/id] currency-eid)
             (update ::m.rate-sources/currency dissoc :db/id))))))
 
 (>defn index-ids

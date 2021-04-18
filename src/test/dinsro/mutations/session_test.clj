@@ -4,9 +4,10 @@
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.session :as mu.session]
+   [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.check :as _]
-   [fulcro-spec.core :refer [assertions specification]]
+   [fulcro-spec.core :refer [assertions behavior specification]]
    [taoensso.timbre :as timbre]))
 
 (def schemata
@@ -14,18 +15,30 @@
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
-(specification "register"
-  (try
-    (let [env      {}
-          data     #::m.users{:name "bob" :email "foo@bar.baz" :password "1234567"}
-          f        (::pc/mutate mu.session/register)
-          response (f env data)]
-
+(specification "do-register"
+  (behavior "success"
+    (let [email    (ds/gen-key ::m.users/email)
+          password (ds/gen-key ::m.users/password)
+          name     "foo"
+          response (mu.session/do-register email password name)]
       (assertions
-       (::m.users/email response) => (::m.users/email data)
-       (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
-    (catch Exception ex
-      (timbre/error ex "caught"))))
+       (::m.users/email response) => email
+       (::m.users/name response) => name))))
+
+(specification "register"
+  (behavior "success"
+    (try
+      (let [env      {}
+            data     #::m.users{:name "bob" :email "foo@bar.baz" :password "1234567"}
+            f        (::pc/mutate mu.session/register)
+            response (f env data)]
+
+        (assertions
+         true => true
+         (::m.users/email response) => (::m.users/email data)
+         (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
+      (catch Exception ex
+        (timbre/error ex "caught")))))
 
 (specification "login"
   (let [env      {:request {:session {}}}

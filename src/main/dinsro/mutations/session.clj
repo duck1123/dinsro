@@ -7,10 +7,8 @@
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
 
-(defmutation register
-  [_env {::m.users/keys [email name password]}]
-  {::pc/params #{:user/email :user/name :user/password}
-   ::pc/output [:user/id :user/valid? :user/registered?]}
+(defn do-register
+  [email password name]
   (let [params #::m.users{:email    email
                           :password password
                           :name     name}]
@@ -20,6 +18,13 @@
         (timbre/error ex "error")
         {::error true
          :ex     ex}))))
+
+(defmutation register
+  [_env {:user/keys [email name password]}]
+  {::pc/params #{:user/email :user/name :user/password}
+   ::pc/output [:user/id :user/valid? :user/registered?]}
+  (timbre/info "register")
+  (do-register email password name))
 
 (defmutation login
   [{{:keys [session]} :request} {:user/keys [email password]}]
