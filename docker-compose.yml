@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   dinsro:
-    image: duck1123/dinsro:dev-sources-latest
+    image: duck1123/dinsro:dev-latest
     depends_on:
     - frontend
     labels:

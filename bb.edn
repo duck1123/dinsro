@@ -24,7 +24,7 @@
 
   build-dev-image
   {:doc  "Build dev image"
-   :task (earthly :dev-image-sources)}
+   :task (earthly :dev-image)}
 
   build-image
   {:doc  "Build production image"
