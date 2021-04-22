@@ -115,6 +115,8 @@
   {:doc  "Install js dependencies"
    :task (shell "yarn install --frozen-lockfile")}
 
+  kondo
+  {:depends [lint-kondo]}
 
   lint
   {:depends [lint-kondo lint-eastwood lint-kibit]}
