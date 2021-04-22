@@ -68,7 +68,7 @@
 
   :eastwood
   {:extra-deps
-   {jonase/eastwood {:mvn/version "0.3.11"}}
+   {jonase/eastwood {:mvn/version "0.4.0"}}
    :main-opts ["-m" "eastwood.lint"]}
 
   :kibit
