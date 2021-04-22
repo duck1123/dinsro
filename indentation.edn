@@ -1,1 +1,3 @@
-{>defn [[:inner 0]]}
+{>defn         [[:inner 0]]
+ behavior      [[:inner 0]]
+ specification [[:inner 0]]}
