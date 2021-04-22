@@ -20,8 +20,7 @@
   }
 
  :linters
- {
-  :unused-namespace {:exclude [dinsro.translations
+ {:unused-namespace {:exclude [dinsro.translations
                                taoensso.timbre]}
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
@@ -29,4 +28,7 @@
   :unresolved-symbol
   {:exclude
    [(org.httpkit.server/with-channel [channel])
-    (com.fulcrologic.fulcro.mutations/defmutation)]}}}
+    (com.fulcrologic.fulcro.mutations/defmutation)
+
+    ;; ignore the arrow symbols
+    (fulcro-spec.core/assertions)]}}}
