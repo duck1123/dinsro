@@ -9,22 +9,23 @@
    [taoensso.timbre :as log]))
 
 (defsc IndexUsersPage
-  [_this {::keys [users]}]
+  [_this {:keys [all-users]}]
   {:componentDidMount
    (fn [this]
-     (df/load! this :all-users u.index-users/IndexUserLine
-               {:target [:page/id
-                         ::page
-                         ::users
-                         :dinsro.ui.index-users/items]}))
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::users {}}
-   :query [{::users (comp/get-query u.index-users/IndexUsers)}]
+     (df/load! this :all-users u.index-users/IndexUsers
+               ;; {:target [:page/id
+               ;;           ::page
+               ;;           ::users
+               ;;           :dinsro.ui.index-users/items]}
+               ))
+   :ident         (fn [] [:page/id ::page])
+   :initial-state {:all-users []}
+   :query         [{[:all-users '_] (comp/get-query u.index-users/IndexUsers)}]
    :route-segment ["users"]}
   (bulma/page
    (bulma/box
     (dom/h1 (tr [:users-page "Users Page"]))
     (dom/hr)
-    (u.index-users/ui-index-users users))))
+    (u.index-users/ui-index-users all-users))))
 
 (def ui-page (comp/factory IndexUsersPage))
