@@ -20,6 +20,13 @@ EXPOSE_DOCKER_PORTS:
   EXPOSE 9630/tcp
   RUN echo "hello"
 
+AWAIT:
+  COMMAND
+  ARG target
+  RUN echo Awaiting $target
+  COPY ${target}/.finished .
+  RUN echo Target $target finished at $(cat .finished)
+
 FINISHED:
   COMMAND
   RUN date -u > .finished
@@ -177,14 +184,13 @@ check:
 ci:
   BUILD +check
   BUILD +lint
-  COPY +check/.finished .
-  COPY +lint/.finished .
+  DO +AWAIT --target=+check
+  DO +AWAIT --target=+lint
   # BUILD +test
-  RUN echo ok
-  COPY +test/.finished .
+  DO +AWAIT --target=+test
   # BUILD +e2e
   # BUILD +image
-  COPY +image-wait/.finished .
+  DO +AWAIT --target=+image-wait
 
 compile-frontend:
   FROM +src
@@ -354,12 +360,12 @@ kondo:
   DO +FINISHED
 
 lint:
-  BUILD +eastwood
-  BUILD +kibit
-  BUILD +kondo
-  COPY +eastwood/.finished .
-  COPY +kibit/.finished .
-  COPY +kondo/.finished .
+  # BUILD +eastwood
+  # BUILD +kibit
+  # BUILD +kondo
+  DO +AWAIT --target=+eastwood
+  DO +AWAIT --target=+kibit
+  DO +AWAIT --target=+kondo
   DO +FINISHED
 
 node-deps:
@@ -375,8 +381,8 @@ src:
 test:
   # BUILD +test-clj
   # BUILD +test-cljs
-  COPY +test-clj/.finished .
-  COPY +test-cljs/.finished .
+  DO +AWAIT --target=+test-clj
+  DO +AWAIT --target=+test-cljs
   DO +FINISHED
 
 test-clj:
