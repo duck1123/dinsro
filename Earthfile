@@ -48,6 +48,7 @@ INSTALL_NODE:
       && rm -rf /var/lib/apt/lists/*
   RUN npm install -g npm@7.11.1
   RUN npm install -g yarn
+  RUN npm install -g karma-cli
 
 CREATE_USER_NIX:
   COMMAND

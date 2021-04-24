@@ -29,20 +29,19 @@
   (behavior "success"
     (try
       (let [env      {}
-            data     #::m.users{:name "bob" :email "foo@bar.baz" :password "1234567"}
+            data     #:user{:name "bob" :email "foo@bar.baz" :password "1234567"}
             f        (::pc/mutate mu.session/register)
             response (f env data)]
 
         (assertions
-         true => true
-         (::m.users/email response) => (::m.users/email data)
+         (::m.users/email response) => (:user/email data)
          (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
       (catch Exception ex
         (timbre/error ex "caught")))))
 
 (specification "login"
   (let [env      {:request {:session {}}}
-        data     #::m.users{:email "foo@bar.baz" :name "bob" :password "hunter2"}
+        data     #:user{:email "foo@bar.baz" :name "bob" :password "hunter2"}
         response ((::pc/mutate mu.session/login) env data)]
     (assertions
      response => #:user{:valid? false :id nil})))

@@ -49,6 +49,6 @@
     (let [n 2]
       (dotimes [_ n] (mocks/mock-user))
       (let [records (q.users/index-records)
-            ids     (map :db/id records)]
+            ids     (q.users/index-ids)]
         (assertions
          (q.users/read-records ids) => records)))))

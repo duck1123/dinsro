@@ -66,7 +66,8 @@
       (try
         (let [id (q.users/create-record params)]
           (q.users/read-record id))
-        (catch RuntimeException _
+        (catch RuntimeException ex
+          (timbre/error ex "User exists")
           (throw "User already exists")))
       #_(throw "Invalid"))))
 

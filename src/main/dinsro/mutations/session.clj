@@ -1,23 +1,26 @@
 (ns dinsro.mutations.session
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
 
-(defn do-register
+(>defn do-register
   [email password name]
+  [::m.users/email ::m.users/password ::m.users/name => (s/keys)]
   (let [params #::m.users{:email    email
                           :password password
                           :name     name}]
     (try
-      (a.authentication/register params)
+      (a.authentication/register (timbre/spy :info params))
       (catch Exception ex
-        (timbre/error ex "error")
+        ;; (timbre/error ex "error")
         {::error true
-         :ex     ex}))))
+         :ex     (str ex)}))))
 
 (defmutation register
   [_env {:user/keys [email name password]}]
