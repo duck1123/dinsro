@@ -287,6 +287,10 @@ e2e-image:
   CMD ["bb", "test-integration"]
   SAVE IMAGE duck1123/dinsro:e2e-latest
 
+eastwood:
+  FROM +dev-sources
+  RUN bb eastwood
+
 image:
   FROM openjdk:8-alpine
   VOLUME /var/lib/dinsro/data
@@ -325,22 +329,18 @@ jar-deps:
   SAVE ARTIFACT ${USER_HOME}/.m2
   SAVE ARTIFACT .cpcache
 
+kibit:
+  FROM +dev-sources
+  RUN bb kibit
+
+kondo:
+  FROM +dev-sources
+  RUN bb kondo
+
 lint:
-  BUILD +lint-eastwood
-  BUILD +lint-kibit
-  BUILD +lint-kondo
-
-lint-eastwood:
-  FROM +dev-sources
-  RUN bb lint-eastwood
-
-lint-kibit:
-  FROM +dev-sources
-  RUN bb lint-kibit
-
-lint-kondo:
-  FROM +dev-sources
-  RUN bb lint-kondo
+  BUILD +eastwood
+  BUILD +kibit
+  BUILD +kondo
 
 node-deps:
   FROM +base-builder

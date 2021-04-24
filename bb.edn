@@ -96,6 +96,10 @@
   {:doc  "Run end to end testing"
    :task (earthly :e2e {:privileged true})}
 
+  eastwood
+  {:doc  "Lint source code with eastwood"
+   :task (clojure "-M:dev:eastwood '{:source-paths [\"src/main\" \"src/test\"]}'")}
+
   format
   {:doc  "Format source files"
    :task (clojure "-M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn")}
@@ -112,20 +116,16 @@
   {:doc  "Install js dependencies"
    :task (shell "yarn install --frozen-lockfile")}
 
+  kibit
+  {:doc  "Lint source code with kibit"
+   :task (clojure "-M:dev:kibit --paths src/main,src/test")}
+
   kondo
-  {:depends [lint-kondo]}
+  {:doc  "Lint source code with clj-kondo"
+   :task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
 
   lint
-  {:depends [lint-kondo lint-eastwood lint-kibit]}
-
-  lint-eastwood
-  {:task (clojure "-M:dev:eastwood '{:source-paths [\"src/main\" \"src/test\"]}'")}
-
-  lint-kibit
-  {:task (clojure "-M:dev:kibit --paths src/main,src/test")}
-
-  lint-kondo
-  {:task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
+  {:depends [kondo eastwood kibit]}
 
   package-jar
   {:doc  "Build production jar"

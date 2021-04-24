@@ -16,7 +16,7 @@ docker_compose("./resources/tilt/docker-compose.yml")
 
 local_resource(
     'kondo',
-    cmd='bb lint-kondo',
+    cmd='bb kondo',
     deps=['src'],
     allow_parallel=True
 )
