@@ -122,7 +122,7 @@
 
   kondo
   {:doc  "Lint source code with clj-kondo"
-   :task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
+   :task (shell "clj-kondo --parallel --lint \"src/main:src/test\"")}
 
   lint
   {:depends [kondo eastwood kibit]}

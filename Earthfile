@@ -1,6 +1,7 @@
 # Earthfile
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
 WORKDIR /usr/src/app
+ARG kondo_version=2021.04.23
 
 EXPOSE_DOCKER_PORTS:
   COMMAND
@@ -53,6 +54,15 @@ INSTALL_CHROMIUM:
       && rm -rf /var/lib/apt/lists/*
   ENV CHROME_BIN=chromium
 
+INSTALL_KONDO:
+  COMMAND
+  ARG kondo_version=$kondo_version
+  RUN curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo \
+      && chmod +x install-clj-kondo \
+      && echo Version: $kondo_version \
+      && ./install-clj-kondo --version $kondo_version \
+      && rm -f install-clj-kondo
+
 INSTALL_NODE:
   COMMAND
   RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
@@ -102,11 +112,13 @@ base-builder-nix:
 
 base-builder:
   FROM clojure:openjdk-11-tools-deps
+  ARG kondo_version=$kondo_version
   WORKDIR /usr/src/app
   ENV USER_HOME=/home/dinsro
   DO +INSTALL_NODE
   DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
+  DO +INSTALL_KONDO --kondo_version=$kondo_version
   DO +CREATE_USER_UBUNTU
   RUN apt update && apt install -y \
           tree \
