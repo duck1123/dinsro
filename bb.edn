@@ -1,10 +1,7 @@
 {:paths ["script"]
 
  :tasks
- {:init
-  (ns my.tasks
-    (:require [babashka.tasks :refer [clojure shell]]
-              [dinsro.commands :refer :all]))
+ {:requires ([dinsro.commands :refer :all])
 
   _8
   {:doc  "Summons bot"
