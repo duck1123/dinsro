@@ -21,8 +21,8 @@
 
 (deftype DefaultHandler []
   WriteHandler
-  (tag [this v] "unknown")
-  (rep [this v] (pr-str v)))
+  (tag [_this _v] "unknown")
+  (rep [_this v] (pr-str v)))
 
 (defn writer
   "Creates a writer over the provided destination `out` using
