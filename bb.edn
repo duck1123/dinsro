@@ -165,7 +165,7 @@
 
   test-clj
   {:doc  "Run clojure tests"
-   :task (clojure "-M:dev:test -d src/test")}
+   :task (clojure "-M:dev -m kaocha.runner")}
 
   test-cljs
   {:doc  "Run clojurescript tests"
