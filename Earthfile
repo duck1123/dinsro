@@ -20,6 +20,11 @@ EXPOSE_DOCKER_PORTS:
   EXPOSE 9630/tcp
   RUN echo "hello"
 
+FINISHED:
+  COMMAND
+  RUN date -u > .finished
+  SAVE ARTIFACT .finished
+
 IMPORT_JAR_DEPS:
   COMMAND
   COPY --dir +jar-deps/.clojure ${USER_HOME}
@@ -59,9 +64,6 @@ CREATE_USER_UBUNTU:
   COMMAND
   RUN addgroup --gid 1000 dinsro && adduser --ingroup dinsro --uid 1000 dinsro
   RUN chown -R 1000:1000 /usr/src/app
-
-# base-builder:
-#   FROM +base-builder-ubuntu
 
 base-builder-nix:
   FROM nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
@@ -170,13 +172,19 @@ check:
   FROM +src
   COPY indentation.edn .
   RUN bb check
+  DO +FINISHED
 
 ci:
   BUILD +check
   BUILD +lint
-  BUILD +test
+  COPY +check/.finished .
+  COPY +lint/.finished .
+  # BUILD +test
+  RUN echo ok
+  COPY +test/.finished .
   # BUILD +e2e
-  BUILD +image
+  # BUILD +image
+  COPY +image-wait/.finished .
 
 compile-frontend:
   FROM +src
@@ -291,6 +299,7 @@ e2e-image:
 eastwood:
   FROM +dev-sources
   RUN bb eastwood
+  DO +FINISHED
 
 image:
   FROM openjdk:8-alpine
@@ -299,6 +308,10 @@ image:
   COPY resources/docker/config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]
   SAVE IMAGE --push duck1123/dinsro:latest
+
+image-wait:
+  FROM +image
+  DO +FINISHED
 
 jar:
   FROM +src
@@ -333,15 +346,21 @@ jar-deps:
 kibit:
   FROM +dev-sources
   RUN bb kibit
+  DO +FINISHED
 
 kondo:
   FROM +dev-sources
   RUN bb kondo
+  DO +FINISHED
 
 lint:
   BUILD +eastwood
   BUILD +kibit
   BUILD +kondo
+  COPY +eastwood/.finished .
+  COPY +kibit/.finished .
+  COPY +kondo/.finished .
+  DO +FINISHED
 
 node-deps:
   FROM +base-builder
@@ -354,23 +373,25 @@ src:
   COPY --dir resources/main resources/
 
 test:
-  BUILD +test-clj
-  BUILD +test-cljs
+  # BUILD +test-clj
+  # BUILD +test-cljs
+  COPY +test-clj/.finished .
+  COPY +test-cljs/.finished .
+  DO +FINISHED
 
 test-clj:
   FROM +test-sources
   RUN bb test-clj
+  DO +FINISHED
 
 test-cljs:
   FROM +test-sources
   RUN bb test-cljs
+  DO +FINISHED
 
 test-sources:
   FROM +src
+  COPY tests.edn .
   COPY --dir src/test src
   DO +IMPORT_JAR_DEPS
-  # COPY --dir +jar-deps/.clojure ${USER_HOME}
-  # COPY --dir +jar-deps/.deps.clj ${USER_HOME}
-  # COPY --dir +jar-deps/.m2 ${USER_HOME}
-  # COPY --dir +jar-deps/.cpcache .
   COPY karma.conf.js .
