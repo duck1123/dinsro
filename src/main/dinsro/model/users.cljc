@@ -16,6 +16,15 @@
 (s/def ::password string?)
 (def password ::password)
 
+(s/def ::username string?)
+(def username ::username)
+
+(def username-spec
+  {:db/ident       ::username
+   :db/valueType   :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
+
 (s/def ::name string?)
 (def name ::name)
 
@@ -41,20 +50,21 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
-(s/def ::input-params-valid (s/keys :req [::name ::email ::password]))
+(s/def ::input-params-valid (s/keys :req [::name ::email ::password ::username]))
 (def input-params-valid ::input-params-valid)
 
-(s/def ::input-params (s/keys :opt [::name ::email ::password]))
+(s/def ::input-params (s/keys :opt [::name ::email ::password ::username]))
 (def input-params ::input-params)
 
-(s/def ::params (s/keys :req [::name ::email ::password-hash]))
+(s/def ::params (s/keys :req [::name ::email ::password-hash ::username]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::id ::name ::email ::password-hash]))
+(s/def ::item (s/keys :req [::id ::name ::email ::password-hash ::username]))
 (def item ::item)
 
 (def schema
   [email-spec
    id-spec
    name-spec
-   password-hash-spec])
+   password-hash-spec
+   username-spec])

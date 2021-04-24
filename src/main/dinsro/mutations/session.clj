@@ -10,11 +10,12 @@
    [taoensso.timbre :as timbre]))
 
 (>defn do-register
-  [email password name]
-  [::m.users/email ::m.users/password ::m.users/name => (s/keys)]
+  [username email password name]
+  [::m.users/username ::m.users/email ::m.users/password ::m.users/name => (s/keys)]
   (let [params #::m.users{:email    email
                           :password password
-                          :name     name}]
+                          :name     name
+                          :username username}]
     (try
       (a.authentication/register (timbre/spy :info params))
       (catch Exception ex
@@ -23,11 +24,11 @@
          :ex     (str ex)}))))
 
 (defmutation register
-  [_env {:user/keys [email name password]}]
-  {::pc/params #{:user/email :user/name :user/password}
+  [_env {:user/keys [email name password username]}]
+  {::pc/params #{:user/email :user/name :user/password :user/username}
    ::pc/output [:user/id :user/valid? :user/registered?]}
   (timbre/info "register")
-  (do-register email password name))
+  (do-register username email password name))
 
 (defmutation login
   [{{:keys [session]} :request} {:user/keys [email password]}]

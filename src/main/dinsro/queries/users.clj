@@ -14,7 +14,8 @@
     ::m.users/email
     ::m.users/id
     ::m.users/name
-    ::m.users/password-hash])
+    ::m.users/password-hash
+    ::m.users/username])
 
 (def identity-attribute ::m.users/email)
 
@@ -22,6 +23,11 @@
   '[:find  ?eid
     :in    $ ?email
     :where [?eid ::m.users/email ?email]])
+
+(def find-by-username-query
+  '[:find  ?eid
+    :in    $ ?email
+    :where [?eid ::m.users/username ?email]])
 
 (def find-eid-by-id-query
   '[:find  ?eid
@@ -73,16 +79,27 @@
   [::m.users/email => (? :db/id)]
   (ffirst (d/q find-by-email-query @db/*conn* email)))
 
+(>defn find-id-by-username
+  [email]
+  [::m.users/username => (? :db/id)]
+  (ffirst (d/q find-by-username-query @db/*conn* email)))
+
 (>defn find-by-email
   [email]
   [::m.users/email => (? ::m.users/item)]
   (when-let [id (find-id-by-email email)]
     (read-record id)))
 
+(>defn find-by-username
+  [email]
+  [::m.users/username => (? ::m.users/item)]
+  (when-let [id (find-id-by-username email)]
+    (read-record id)))
+
 (>defn create-record
   [params]
   [::m.users/params => :db/id]
-  (if (nil? (find-id-by-email (::m.users/email params)))
+  (if (nil? (find-id-by-username (::m.users/username params)))
     (let [tempid   (d/tempid "user-id")
           params   (assoc params ::m.users/id (utils/uuid))
           params   (assoc params :db/id tempid)

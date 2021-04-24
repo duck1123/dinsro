@@ -20,7 +20,8 @@
     (let [email    (ds/gen-key ::m.users/email)
           password (ds/gen-key ::m.users/password)
           name     "foo"
-          response (mu.session/do-register email password name)]
+          username (ds/gen-key ::m.users/username)
+          response (mu.session/do-register username email password name)]
       (assertions
        (::m.users/email response) => email
        (::m.users/name response) => name))))
@@ -29,7 +30,7 @@
   (behavior "success"
     (try
       (let [env      {}
-            data     #:user{:name "bob" :email "foo@bar.baz" :password "1234567"}
+            data     #:user{:name "bob" :email "foo@bar.baz" :password "1234567" :username "bob"}
             f        (::pc/mutate mu.session/register)
             response (f env data)]
 
@@ -41,7 +42,7 @@
 
 (specification "login"
   (let [env      {:request {:session {}}}
-        data     #:user{:email "foo@bar.baz" :name "bob" :password "hunter2"}
+        data     #:user{:email "foo@bar.baz" :name "bob" :password "hunter2" :username "bob"}
         response ((::pc/mutate mu.session/login) env data)]
     (assertions
      response => #:user{:valid? false :id nil})))
