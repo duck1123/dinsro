@@ -135,6 +135,8 @@
   {:doc  "Build test data directory"
    :task (shell "mkdir -p /tmp/dinsro/data/test")}
 
+  repl (clojure.main/repl)
+
   run
   {:doc  "Run server in dev mode"
    :task (clojure "-M:dev:dev-main")}
