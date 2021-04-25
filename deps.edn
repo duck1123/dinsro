@@ -65,7 +65,8 @@
    {binaryage/devtools          {:mvn/version "1.0.2"}
     com.github.awkay/workspaces {:mvn/version "1.0.3"}
     fulcrologic/fulcro-spec     {:mvn/version "3.1.12"}
-    lambdaisland/kaocha         {:mvn/version "1.0.829"}}
+    lambdaisland/kaocha         {:mvn/version "1.0.829"}
+    thheller/shadow-cljs        {:mvn/version "2.11.7"}}
    :jvm-opts    ["-Dguardrails.enabled=true"]}
 
   :dev-main
