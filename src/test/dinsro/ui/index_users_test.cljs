@@ -7,16 +7,18 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+(defn get-state
+  []
+  {::u.index-users/items
+   [{::m.users/id   "admin"
+     ::m.users/link [{::m.users/id "admin"}]}
+    {::m.users/id   "bob"
+     ::m.users/link [{::m.users/id "bob"}]}]})
+
 (ws/defcard IndexUsers
   {::wsm/align       {:flex 1}
    ::wsm/card-height 7
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root       u.index-users/IndexUsers
-    ::ct.fulcro3/initial-state
-    (fn []
-      {::u.index-users/items
-       [{::m.users/id "admin"
-         ::m.users/link [{::m.users/id "admin"}]}
-        {::m.users/id   "bob"
-         ::m.users/link [{::m.users/id "bob"}]}]})}))
+   {::ct.fulcro3/root          u.index-users/IndexUsers
+    ::ct.fulcro3/initial-state get-state}))
