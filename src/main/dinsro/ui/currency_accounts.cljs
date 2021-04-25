@@ -31,7 +31,7 @@
   (dom/div {}
     (if (empty? accounts)
       (dom/div {} (tr [:no-currencies]))
-      (dom/table :.table
+      (dom/table :.ui.table
         (dom/thead {}
           (dom/tr {}
             (dom/th "Name")))
