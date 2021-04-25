@@ -26,7 +26,7 @@
      [_this {::m.transactions/keys [account date description id]}]
      {:css           [[:.card {:margin-bottom "5px"}]]
       :ident         ::m.transactions/id
-      :initial-state {::m.transactions/id          0
+      :initial-state {::m.transactions/id          ""
                       ::m.transactions/date        ""
                       ::m.transactions/description ""
                       ::m.transactions/account     {}}
@@ -51,26 +51,8 @@
    (def ui-index-category-transaction-line
      (comp/factory IndexCategoryTransactionLine {:keyfn ::m.transactions/id})))
 
-(s/def ::transactions ::IndexCategoryTransactionLine-state)
+(s/def ::transactions (s/coll-of ::IndexCategoryTransactionLine-state))
 ;; (s/def ::transactions (s/keys :req [::IndexCategoryTransactionLine-state]))
-
-(s/def ::IndexCategoryTransactions-state
-  (s/keys :req [::transactions]))
-
-#?(:cljs
-   (defsc IndexCategoryTransactions
-     [_this {::keys [transactions]}]
-     {:initial-state {::transactions []}
-      :query         [{::transactions (comp/get-query IndexCategoryTransactionLine)}]}
-     (if (seq transactions)
-       (dom/div {}
-         (map ui-index-category-transaction-line transactions))
-       (dom/p "no items"))))
-
-#?(:cljs
-   (def ui-index-category-transactions
-     (comp/factory IndexCategoryTransactions)))
-
 (s/def ::form (s/keys))
 (s/def ::toggle-button (s/keys))
 
@@ -97,7 +79,10 @@
           (u.buttons/ui-show-form-button toggle-button))
         (when shown?
           (u.f.add-category-transaction/ui-form form))
-        (ui-index-category-transactions transactions)))))
+        (if (seq transactions)
+          (dom/div {}
+            (map ui-index-category-transaction-line (timbre/spy :info transactions)))
+          (dom/p "no items"))))))
 
 #?(:cljs
    (def ui-category-transactions
