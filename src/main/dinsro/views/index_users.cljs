@@ -8,24 +8,26 @@
    [dinsro.ui.index-users :as u.index-users]
    [taoensso.timbre :as log]))
 
+(defn load-users!
+  [this]
+  (df/load! this :all-users u.index-users/IndexUsers
+            ;; {:target [:page/id
+            ;;           ::page
+            ;;           ::users
+            ;;           :dinsro.ui.index-users/items]}
+            ))
+
 (defsc IndexUsersPage
   [_this {:keys [all-users]}]
-  {:componentDidMount
-   (fn [this]
-     (df/load! this :all-users u.index-users/IndexUsers
-               ;; {:target [:page/id
-               ;;           ::page
-               ;;           ::users
-               ;;           :dinsro.ui.index-users/items]}
-               ))
-   :ident         (fn [] [:page/id ::page])
-   :initial-state {:all-users []}
-   :query         [{[:all-users '_] (comp/get-query u.index-users/IndexUsers)}]
-   :route-segment ["users"]}
+  {:componentDidMount load-users!
+   :ident             (fn [] [:page/id ::page])
+   :initial-state     {:all-users []}
+   :query             [{[:all-users '_] (comp/get-query u.index-users/IndexUsers)}]
+   :route-segment     ["users"]}
   (bulma/page
    (bulma/box
     (dom/h1 (tr [:users-page "Users Page"]))
     (dom/hr)
-    (u.index-users/ui-index-users all-users))))
+    (comment (u.index-users/ui-index-users all-users)))))
 
 (def ui-page (comp/factory IndexUsersPage))

@@ -7,12 +7,18 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as log]))
 
+(defn get-state
+  []
+  (timbre/info "getting state")
+  {:page/id ::v.index-users/page
+   :all-users {:users/list (map sample/user-map [1 2])}}
+  )
+
 (ws/defcard IndexUsersPage
   {::wsm/align       {:flex 1}
    ::wsm/card-height 13
    ::wsm/card-width  5}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root v.index-users/IndexUsersPage
-    ::ct.fulcro3/initial-state
-    (fn []
-      {::v.index-users/users {:users/list (map sample/user-map [1 2])}})}))
+   {::ct.fulcro3/root          v.index-users/IndexUsersPage
+    ;; ::ct.fulcro3/wrap-root? false
+    ::ct.fulcro3/initial-state get-state}))
