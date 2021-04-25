@@ -3,21 +3,23 @@
    [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.users :as m.users]
-   ;; [dinsro.mutations :as mutations]
-   [dinsro.mutations.accounts :as mu-accounts]
-   [dinsro.mutations.categories :as mu-categories]
-   [dinsro.mutations.currencies :as mu-currencies]
-   [dinsro.mutations.rates :as mu-rates]
-   [dinsro.mutations.session :as session]
-   [dinsro.resolvers.accounts :as accounts]
-   [dinsro.resolvers.categories :as categories]
-   [dinsro.resolvers.currencies :as currencies]
-   [dinsro.resolvers.debug-menu :as debug-menu]
-   [dinsro.resolvers.navlink :as navlink]
-   [dinsro.resolvers.rates :as rates]
-   [dinsro.resolvers.rate-sources :as rate-sources]
-   [dinsro.resolvers.transactions :as transactions]
-   [dinsro.resolvers.users :as users]
+   [dinsro.mutations.accounts :as mu.accounts]
+   [dinsro.mutations.categories :as mu.categories]
+   [dinsro.mutations.currencies :as mu.currencies]
+   [dinsro.mutations.rates :as mu.rates]
+   [dinsro.mutations.rate-sources :as mu.rate-sources]
+   [dinsro.mutations.session :as mu.session]
+   [dinsro.mutations.transactions :as mu.transactions]
+   [dinsro.mutations.users :as mu.users]
+   [dinsro.resolvers.accounts :as r.accounts]
+   [dinsro.resolvers.categories :as r.categories]
+   [dinsro.resolvers.currencies :as r.currencies]
+   [dinsro.resolvers.debug-menu :as r.debug-menu]
+   [dinsro.resolvers.navlink :as r.navlink]
+   [dinsro.resolvers.rates :as r.rates]
+   [dinsro.resolvers.rate-sources :as r.rate-sources]
+   [dinsro.resolvers.transactions :as r.transactions]
+   [dinsro.resolvers.users :as r.users]
    [taoensso.timbre :as timbre]))
 
 (defresolver auth-resolver
@@ -45,21 +47,23 @@
       indexes)}))
 
 (def resolvers
-  [mu-accounts/resolvers
-   mu-categories/resolvers
-   mu-currencies/resolvers
-   mu-rates/resolvers
-   accounts/resolvers
-   auth-resolver
-   categories/resolvers
-   currencies/resolvers
+  [auth-resolver
    current-user-resolver
-   debug-menu/resolvers
    index-explorer
-   ;; mutations/mutations
-   session/resolvers
-   navlink/resolvers
-   rates/resolvers
-   rate-sources/resolvers
-   transactions/resolvers
-   users/resolvers])
+   mu.accounts/resolvers
+   mu.categories/resolvers
+   mu.currencies/resolvers
+   mu.rates/resolvers
+   mu.rate-sources/resolvers
+   mu.session/resolvers
+   mu.transactions/resolvers
+   mu.users/resolvers
+   r.accounts/resolvers
+   r.categories/resolvers
+   r.currencies/resolvers
+   r.debug-menu/resolvers
+   r.navlink/resolvers
+   r.rates/resolvers
+   r.rate-sources/resolvers
+   r.transactions/resolvers
+   r.users/resolvers])
