@@ -4,7 +4,7 @@
    [datahike.config :refer [uri->config]]
    [dinsro.config :refer [secret]]
    [dinsro.components.config :as config]
-   [dinsro.db :as db]
+   [dinsro.components.datahike :as db]
    [mount.core :as mount]
    [taoensso.timbre :as timbre]))
 

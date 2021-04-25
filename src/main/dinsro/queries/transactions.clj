@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
-   [dinsro.db :as db]
+   [dinsro.components.datahike :as db]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.queries.accounts :as q.accounts]

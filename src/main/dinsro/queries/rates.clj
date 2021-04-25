@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [datahike.api :as d]
-   [dinsro.db :as db]
+   [dinsro.components.datahike :as db]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]

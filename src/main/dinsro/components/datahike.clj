@@ -1,16 +1,9 @@
-(ns dinsro.db
+(ns dinsro.components.datahike
   (:require
    [clojure.java.io :as io]
    [datahike.api :as d]
    [datahike.config :as d.config]
    [datahike.db :as db]
-   [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.categories :as m.categories]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.model.rates :as m.rates]
-   [dinsro.model.transactions :as m.transactions]
-   [dinsro.model.users :as m.users]
    [dinsro.components.config :as config]
    [mount.core :refer [defstate]]
    [taoensso.timbre :as timbre])
@@ -66,12 +59,3 @@
       (doseq [d (datahike.db/-datoms db :eavt [])]
         (when (not= (:a d) :db/txInstant)
           (prn d))))))
-
-(def schemata
-  [m.accounts/schema
-   m.categories/schema
-   m.currencies/schema
-   m.rates/schema
-   m.rate-sources/schema
-   m.transactions/schema
-   m.users/schema])

@@ -2,9 +2,10 @@
   (:require
    [dinsro.env :refer [defaults]]
    [datahike.api :as d]
-   [dinsro.db :as db]
+   [dinsro.components.datahike :as db]
    [dinsro.layout :refer [error-page] :as layout]
    [dinsro.middleware :as middleware]
+   [dinsro.model :as model]
    [dinsro.routes :as routes]
    [mount.core :as mount]
    [reitit.coercion.spec]
@@ -31,7 +32,7 @@
 
 (defn init-schemata
   []
-  (doseq [schema db/schemata]
+  (doseq [schema model/schemata]
     (d/transact db/*conn* schema)))
 
 (defn app []
