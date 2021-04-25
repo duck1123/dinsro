@@ -5,26 +5,27 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value name user]}]
-  {:initial-state {::m.accounts/currency      ""
+  {:initial-state {::m.accounts/currency      {}
                    ::m.accounts/id            1
                    ::m.accounts/initial-value 0
                    ::m.accounts/name          ""
-                   ::m.accounts/user          ""}
-   :query         [::m.accounts/currency
+                   ::m.accounts/user          {}}
+   :query         [{::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
                    ::m.accounts/id
                    ::m.accounts/initial-value
                    ::m.accounts/name
-                   ::m.accounts/user]}
+                   {::m.accounts/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
     (dom/td name)
-    (dom/td user)
-    (dom/td currency)
+    (dom/td (u.links/ui-user-link (first user)))
+    (dom/td (u.links/ui-currency-link (first currency)))
     (dom/td initial-value)
     (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 
@@ -36,7 +37,7 @@
   {:initial-state {::accounts []}
    :query         [{::accounts (comp/get-query IndexAccountLine)}]}
   (dom/div {}
-    (dom/table :.table
+    (dom/table :.ui.table
       (dom/thead {}
         (dom/tr {}
           (dom/th (tr [:name]))

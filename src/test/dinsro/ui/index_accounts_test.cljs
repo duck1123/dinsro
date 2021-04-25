@@ -1,6 +1,8 @@
 (ns dinsro.ui.index-accounts-test
   (:require
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.sample :as sample]
    [dinsro.ui.index-accounts :as u.index-accounts]
@@ -17,8 +19,11 @@
     (fn []
       {::u.index-accounts/accounts
        (map
-        (fn [account] (-> account
-                          (assoc ::m.accounts/user "foo")
-                          (assoc ::m.accounts/currency "bar")))
+        (fn [account]
+          (-> account
+              (assoc ::m.accounts/user [{::m.users/name "foo"
+                                         ::m.users/id   1}])
+              (assoc ::m.accounts/currency [{::m.currencies/name "bar"
+                                             ::m.currencies/id   1}])))
         (vals sample/account-map))})
     ::ct.fulcro3/wrap-root? false}))
