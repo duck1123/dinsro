@@ -159,7 +159,9 @@
 
   start-web
   {:doc  "Start the main server"
-   :task (shell "docker-compose up dinsro")}
+   :task (do
+           (shell "mkdir -p data")
+           (shell "docker-compose up dinsro"))}
 
   test
   {:doc     "Run all tests"
