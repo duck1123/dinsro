@@ -63,8 +63,8 @@
      {:initial-state {::transactions []}
       :query         [{::transactions (comp/get-query IndexCategoryTransactionLine)}]}
      (if (seq transactions)
-       (dom/div
-           (map ui-index-category-transaction-line transactions))
+       (dom/div {}
+         (map ui-index-category-transaction-line transactions))
        (dom/p "no items"))))
 
 #?(:cljs
