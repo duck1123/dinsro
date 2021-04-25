@@ -25,19 +25,17 @@
     :in    $ ?eid
     :where [?eid ::m.users/id ?id]])
 
-(>defn read-record
-  [user-id]
+(>defn read-record-by-eid
+  [user-eid]
   [:db/id => (? ::m.users/item)]
-  (let [record (d/pull @db/*conn* attribute-list user-id)]
+  (let [record (d/pull @db/*conn* attribute-list user-eid)]
     (when (get record ::m.users/id)
       (dissoc record :db/id))))
 
-(>defn read-record-by-eid
-  [user-dbid]
+(>defn read-record
+  [user-eid]
   [:db/id => (? ::m.users/item)]
-  (let [record (d/pull @db/*conn* attribute-list user-dbid)]
-    (when (get record ::m.users/id)
-      (dissoc record :db/id))))
+  (read-record-by-eid user-eid))
 
 (>defn read-records
   [ids]

@@ -22,13 +22,19 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::input-params-valid (s/keys :req [::password ::id]))
+(s/def ::input-params-valid
+  (s/keys :req [::name ::email ::password ::username]))
 
-(s/def ::input-params (s/keys :opt [::password ::id]))
+(s/def ::input-params
+  (s/keys :opt [::name ::email ::password ::username]))
 
-(s/def ::params (s/keys :req [::password-hash ::id]))
+(s/def ::params
+  (s/keys :req [::password-hash ::username]
+          :opt [::name ::email]))
 
-(s/def ::item (s/keys :req [::password-hash ::id]))
+(s/def ::item
+  (s/keys :req [::password-hash ::username]
+          :opt [::name ::email]))
 
 (s/def ::ident (s/tuple keyword? ::id))
 
