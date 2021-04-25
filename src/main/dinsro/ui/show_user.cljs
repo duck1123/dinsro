@@ -11,7 +11,7 @@
 (defsc ShowUser
   [_this {::m.users/keys [id]}]
   {:ident         ::m.users/id
-   :initial-state {::m.users/id "admin"}
+   :initial-state {::m.users/id ""}
    :query         [::m.users/id]}
   (dom/div {}
     (dom/h1 id)

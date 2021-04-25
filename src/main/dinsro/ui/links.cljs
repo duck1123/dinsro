@@ -39,8 +39,8 @@
   {:ident         ::m.currencies/id
    :initial-state {::m.currencies/id   ""
                    ::m.currencies/name ""}
-   :query         [::m.currencies/name
-                   ::m.currencies/id]}
+   :query         [::m.currencies/id
+                   ::m.currencies/name]}
   (let [path (str "/currencies/" id)]
     (dom/a {:href path} name)))
 
