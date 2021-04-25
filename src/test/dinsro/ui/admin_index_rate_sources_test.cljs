@@ -1,7 +1,8 @@
 (ns dinsro.ui.admin-index-rate-sources-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [dinsro.sample :as sample]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-rate-sources :as u.admin-index-rate-sources]
    [dinsro.ui.buttons :as u.buttons]
@@ -17,16 +18,18 @@
    ::wsm/card-width  6}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-rate-sources/AdminIndexRateSources
-    ;; ::ct.fulcro3/wrap-root? false
     ::ct.fulcro3/initial-state
     (fn []
-      {:component/id {}
-       ::u.admin-index-rate-sources/form
+      {::u.f.admin-create-rate-source/form
        (comp/get-initial-state u.f.admin-create-rate-source/AdminCreateRateSourceForm)
 
+       :component/id {}
        ::u.admin-index-rate-sources/rate-sources
-       (map (fn [m] (assoc m ::u.admin-index-rate-sources/button-data {}))
-            (vals sample/rate-source-map))
+       [{::m.rate-sources/id       1
+         ::m.rate-sources/currency [{::m.currencies/name "xccx"
+                                     ::m.currencies/id   1}]
+         ::m.rate-sources/name     "cxcxd"
+         ::m.rate-sources/url      "sdzxczx"}]
 
        ::u.admin-index-rate-sources/toggle-button
        (comp/get-initial-state u.buttons/ShowFormButton)})}))

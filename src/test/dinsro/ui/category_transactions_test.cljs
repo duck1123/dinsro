@@ -11,7 +11,7 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard CategoryTransactions
-  {::wsm/card-height 15
+  {::wsm/card-height 12
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.category-transactions/CategoryTransactions

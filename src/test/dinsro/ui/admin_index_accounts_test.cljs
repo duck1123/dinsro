@@ -18,7 +18,7 @@
 
 (ws/defcard AdminIndexAccounts
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 10
+   ::wsm/card-height 8
    ::wsm/card-width  5}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-accounts/AdminIndexAccounts
