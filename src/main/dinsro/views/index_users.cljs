@@ -10,24 +10,25 @@
 
 (defn load-users!
   [this]
-  (df/load! this :all-users u.index-users/IndexUsers
-            ;; {:target [:page/id
-            ;;           ::page
-            ;;           ::users
-            ;;           :dinsro.ui.index-users/items]}
-            ))
+  (df/load! this :all-users u.index-users/IndexUsers)
+  (comment
+    {:target [:page/id
+              ::page
+              ::users
+              :dinsro.ui.index-users/items]}))
 
 (defsc IndexUsersPage
   [_this {:keys [all-users]}]
   {:componentDidMount load-users!
    :ident             (fn [] [:page/id ::page])
    :initial-state     {:all-users []}
-   :query             [{[:all-users '_] (comp/get-query u.index-users/IndexUsers)}]
+   :query             [{:all-users (comp/get-query u.index-users/IndexUsers)}
+                       :page/id]
    :route-segment     ["users"]}
   (bulma/page
    (bulma/box
     (dom/h1 (tr [:users-page "Users Page"]))
     (dom/hr)
-    (comment (u.index-users/ui-index-users all-users)))))
+    (u.index-users/ui-index-users all-users))))
 
 (def ui-page (comp/factory IndexUsersPage))
