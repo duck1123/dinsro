@@ -1,6 +1,6 @@
 (ns dinsro.ui.index-users-test
   (:require
-   [dinsro.model.users :as m.users]
+   [dinsro.specs :as ds]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.index-users :as u.index-users]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
@@ -9,11 +9,7 @@
 
 (defn get-state
   []
-  {::u.index-users/items
-   [{::m.users/id   "admin"
-     ::m.users/link [{::m.users/id "admin"}]}
-    {::m.users/id   "bob"
-     ::m.users/link [{::m.users/id "bob"}]}]})
+  (ds/gen-key ::u.index-users/IndexUsers-state))
 
 (ws/defcard IndexUsers
   {::wsm/align       {:flex 1}
