@@ -9,8 +9,8 @@
    [taoensso.timbre :as log]))
 
 (ws/defcard RegistrationForm
-  {::wsm/card-width  2
-   ::wsm/card-height 11}
+  {::wsm/card-width  3
+   ::wsm/card-height 10}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/initial-state
     (fn []
