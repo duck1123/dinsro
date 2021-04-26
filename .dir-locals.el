@@ -13,6 +13,7 @@
            (button 1)
            (div 1)
            (footer 1)
+           (form 1)
            (h2 1)
            (input 1)
            (nav 1)

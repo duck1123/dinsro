@@ -14,7 +14,7 @@
   {:ident         (fn [] [:component/id ::form])
    :initial-state {::confirm-password "hunter2"
                    ::password         "hunter2"
-                   ::username         "username"}
+                   ::username         "bob"}
    :query         [::confirm-password
                    ::password
                    ::username]}
@@ -23,7 +23,7 @@
      {:value    username
       :onChange #(fm/set-string! this ::username :event %)
       :label    "Username"
-      :error    true})
+      :error    false})
     (ui-form-input
      {:value    password
       :onChange #(fm/set-string! this ::password :event %)

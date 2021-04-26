@@ -12,10 +12,9 @@
 (defsc CreateCurrencyForm
   [this {::keys [id name]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {::id   ""
-                   ::name ""}
+   :initial-state {::id "" ::name ""}
    :query         [::id ::name]}
-  (dom/div
+  (dom/form :.ui.form
     (u.inputs/ui-text-input
      {:label (tr [:id])
       :value id}
