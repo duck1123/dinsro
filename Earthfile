@@ -178,7 +178,6 @@ base-dind-builder-nix:
 builder:
   FROM +deps-builder
   RUN mkdir -p classes data target
-  COPY --dir lib .
   COPY --dir src/main src/main
   USER root
   RUN mkdir -p /var/lib/dinsro/data && chown -R dinsro:dinsro /var/lib/dinsro/data
