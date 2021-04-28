@@ -3,6 +3,7 @@
 .cpcache
 .eastwood
 .env
+.envrc
 .gradle
 .idea
 .lein-*
