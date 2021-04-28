@@ -21,12 +21,12 @@
     ::ct.fulcro3/initial-state
     (fn []
       {:component/id {}
-       ::u.f.admin-create-rate-source/form
+       ::u.admin-index-rate-sources/form
        (comp/get-initial-state u.f.admin-create-rate-source/AdminCreateRateSourceForm)
 
-       ::u.f.admin-create-rate-source/rate-sources
+       ::u.admin-index-rate-sources/rate-sources
        (map (fn [m] (assoc m ::u.admin-index-rate-sources/button-data {}))
             (vals sample/rate-source-map))
 
-       ::u.f.admin-create-rate-source/toggle-button
+       ::u.admin-index-rate-sources/toggle-button
        (comp/get-initial-state u.buttons/ShowFormButton)})}))

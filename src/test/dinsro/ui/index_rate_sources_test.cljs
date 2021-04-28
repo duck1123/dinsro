@@ -20,10 +20,9 @@
 (def rate-sources (map sample/rate-source-map [1 2 3 4]))
 
 (ws/defcard IndexRateSources
-  {::wsm/card-height 3
-   ::wsm/card-width  2}
+  {::wsm/card-height 8
+   ::wsm/card-width  6}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root       u.index-rate-sources/IndexRateSources
     ::ct.fulcro3/initial-state
-    (fn [] {:index-rate-sources/items rate-sources})
-    ::ct.fulcro3/wrap-root? false}))
+    (fn [] {::u.index-rate-sources/items rate-sources})}))

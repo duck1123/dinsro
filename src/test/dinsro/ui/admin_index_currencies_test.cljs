@@ -15,8 +15,8 @@
 
 (ws/defcard AdminIndexCurrencies
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 10
-   ::wsm/card-width  7}
+   ::wsm/card-height 9
+   ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-currencies/AdminIndexCurrencies
     ::ct.fulcro3/initial-state

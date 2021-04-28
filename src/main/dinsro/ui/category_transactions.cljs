@@ -63,25 +63,26 @@
   (comp/factory IndexCategoryTransactions))
 
 (defsc CategoryTransactions
-  [this {::keys [form transactions toggle-button]}]
+  [this {::keys [form transactions toggle-button] :as props}]
   {:componentDidMount
    #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar CategoryTransactions})
    :ident (fn [] [:component/id ::CategoryTransactions])
    :initial-state {::form          {}
                    ::toggle-button {:form-button/id form-toggle-sm}
-                   ::transactions  []}
+                   ::transactions  {}}
    :query [{::form (comp/get-query u.f.add-category-transaction/AddCategoryTransactionForm)}
            {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           {::transactions (comp/get-query IndexCategoryTransactionLine)}
+           {::transactions (comp/get-query IndexCategoryTransactions)}
            [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
+    (js/console.log props)
     (bulma/box
      (dom/h2
       "Transactions"
       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-category-transaction/ui-form form))
-     (ui-index-category-transactions transactions))))
+     (ui-index-category-transactions (timbre/spy :info transactions)))))
 
 (def ui-category-transactions
   (comp/factory CategoryTransactions))

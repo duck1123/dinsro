@@ -12,8 +12,8 @@
 
 (ws/defcard AdminIndexCategories
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 8
-   ::wsm/card-width  3}
+   ::wsm/card-height 10
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-categories/AdminIndexCategories
     ::ct.fulcro3/initial-state

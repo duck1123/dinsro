@@ -49,7 +49,7 @@
                    [::uism/asm-id form-toggle-sm]]}
   (if (seq items)
     (dom/table
-     :.table
+     :.ui.table
      (dom/thead
       (dom/tr
        (dom/th (tr [:date]))

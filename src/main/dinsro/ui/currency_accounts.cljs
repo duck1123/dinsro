@@ -14,10 +14,14 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexCurrencyAccountLine
-  [_ _]
+  [_ {::m.accounts/keys [name]}]
+  {:ident ::m.accounts/id
+   :initial-state {::m.accounts/name ""}
+   :query [::m.accounts/id
+           ::m.accounts/name]}
   (dom/tr
    (dom/td
-    "line")))
+    name)))
 
 (def ui-index-currency-account-line (comp/factory IndexCurrencyAccountLine {:keyfn ::m.accounts/id}))
 
