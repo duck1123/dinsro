@@ -5,7 +5,7 @@
       pkgs.clojure
       pkgs.docker
       pkgs.docker-compose
-      pkgs.openjdk
+      # pkgs.openjdk
       pkgs.tilt
       pkgs.yarn
     ];
