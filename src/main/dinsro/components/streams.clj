@@ -1,4 +1,4 @@
-(ns dinsro.streams
+(ns dinsro.components.streams
   (:require
    [clojure.spec.alpha :as s]
    [manifold.stream :as ms]))
