@@ -12,10 +12,9 @@
   {::pc/params #{::m.categories/name}
    ::pc/output [:status
                 :created-category [::m.categories/id]]}
-  (if-let [user-eid (q.users/find-id-by-email identity)]
-    (let [user-id (q.users/find-id-by-eid user-eid)
-          params  {::m.categories/name name
-                   ::m.categories/user {::m.users/id user-id}}]
+  (if-let [_user-eid (q.users/find-id-by-username identity)]
+    (let [params {::m.categories/name name
+                  ::m.categories/user {::m.users/username identity}}]
       (if-let [record (q.categories/create-record params)]
         {:status           :success
          :created-category [{::m.categories/id (:db/id record)}]}

@@ -20,10 +20,8 @@
       {::u.index-categories/categories
        (map
         (fn [category]
-          (let [user-id (::m.users/id (::m.categories/user category))
-                user    (get sample/user-map user-id)]
+          (let [username (::m.users/username (::m.categories/user category))]
             {::m.categories/id   (::m.categories/id category)
              ::m.categories/name (::m.categories/name category)
-             ::m.categories/user {::m.users/id   user-id
-                                  ::m.users/name (::m.users/name user)}}))
+             ::m.categories/user {::m.users/username username}}))
         (map sample/category-map [1 2 3]))})}))

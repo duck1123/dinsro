@@ -31,11 +31,11 @@
   [{{{:keys [identity]} :session} :request} _props]
   {::pc/output
    [{:session/current-user
-     [:user/id
-      {:user/ref [::m.users/id]}
+     [:user/username
+      {:user/ref [::m.users/username]}
       :user/valid?]}]}
-  {:session/current-user {:user/id     identity
-                          :user/valid? (boolean (seq identity))}})
+  {:session/current-user {:user/username identity
+                          :user/valid?   (boolean (seq identity))}})
 
 (defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}

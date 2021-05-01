@@ -39,6 +39,5 @@
            [::u.user-accounts/accounts ::u.user-accounts/accounts]
            (map (fn [account]
                   (-> account
-                      (assoc ::m.accounts/user {::m.users/id   1
-                                                ::m.users/name "foo"})))
+                      (assoc ::m.accounts/user {::m.users/username "foo"})))
                 (vals sample/account-map)))))}))

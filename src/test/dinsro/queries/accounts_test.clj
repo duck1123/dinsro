@@ -21,12 +21,12 @@
 
 (specification "create-record"
   (let [user           (mocks/mock-user)
-        user-id        (::m.users/id user)
+        username       (::m.users/username user)
         currency       (mocks/mock-currency)
         currency-id    (::m.currencies/id currency)
         params         (ds/gen-key m.accounts/required-params)
         params         (-> params
-                           (assoc-in [::m.accounts/user ::m.users/id] user-id)
+                           (assoc-in [::m.accounts/user ::m.users/username] username)
                            (assoc-in [::m.accounts/currency ::m.currencies/id] currency-id))
         id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
@@ -43,9 +43,9 @@
       (assertions
        (q.accounts/index-records-by-user user-id) => [])))
   (behavior "found"
-    (let [record  (mocks/mock-account)
-          user-id (get-in record [m.accounts/user ::m.users/id])
-          eid     (q.users/find-eid-by-id user-id)]
+    (let [record   (mocks/mock-account)
+          username (get-in record [m.accounts/user ::m.users/username])
+          eid      (q.users/find-eid-by-username username)]
       (assertions
        (q.accounts/index-records-by-user eid) => [record]))))
 

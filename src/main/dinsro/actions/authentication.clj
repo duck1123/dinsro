@@ -13,15 +13,15 @@
    [taoensso.timbre :as timbre]))
 
 (>defn authenticate
-  [email password]
+  [username password]
   [string? string? => (? (s/keys))]
-  (if-let [user (q.users/find-by-email email)]
+  (if-let [user (q.users/find-by-username username)]
     (if-let [password-hash (::m.users/password-hash user)]
       (if (hashers/check password password-hash)
-        (let [id     (::m.users/id user)
-              claims {:user id
-                      :exp  (time/plus (time/now) (time/minutes 3600))}]
-          {::s.a.authentication/identity id
+        (let [username (::m.users/username user)
+              claims   {:user username
+                        :exp  (time/plus (time/now) (time/minutes 3600))}]
+          {::s.a.authentication/identity username
            :token                        (jwt/sign claims secret)})
         ;; Password does not match
         (do

@@ -16,13 +16,13 @@
   [_env {::m.categories/keys [id]}]
   {::pc/input  #{::m.categories/id}
    ::pc/output [::m.categories/name
-                {::m.categories/user [::m.users/id]}]}
+                {::m.categories/user [::m.users/username]}]}
   (let [record  (q.categories/read-record id)
         id      (:db/id record)
-        user-id (get-in record [::m.categories/user :db/id])]
+        user-eid (get-in record [::m.categories/user :db/id])]
     (-> record
         (assoc ::m.categories/id id)
-        (assoc ::m.categories/user [[::m.users/id user-id]]))))
+        (assoc ::m.categories/user [[::m.users/username user-eid]]))))
 
 (defresolver category-link-resolver
   [_env {::m.categories/keys [id]}]

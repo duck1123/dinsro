@@ -9,23 +9,18 @@
    [taoensso.timbre :as timbre]))
 
 (defsc RegistrationForm
-  [this {::keys [confirm-password email name password]}]
+  [this {::keys [confirm-password password username]}]
   {:ident         (fn [] [:component/id ::form])
    :initial-state {::confirm-password "hunter2"
-                   ::email            "bob@example.com"
-                   ::name             "bob"
+                   ::username         "admin"
                    ::password         "hunter2"}
    :query         [::confirm-password
-                   ::email
-                   ::name
+                   ::username
                    ::password]}
   (dom/div
    (u.inputs/ui-text-input
-    {:label "Name" :value name}
-    {:onChange #(fm/set-string! this ::name :event %)})
-   (u.inputs/ui-text-input
-    {:label "Email" :value email}
-    {:onChange #(fm/set-string! this ::email :event %)})
+    {:label "Username" :value username}
+    {:onChange #(fm/set-string! this ::username :event %)})
    (u.inputs/ui-password-input
     {:label "Password" :value password}
     {:onChange #(fm/set-string! this ::password :event %)})
@@ -37,8 +32,7 @@
     {:onClick
      (fn []
        (timbre/info "clicked")
-       (let [data {:user/name     name
-                   :user/email    email
+       (let [data {:user/username username
                    :user/password password}]
          (comp/transact! this [(mu.session/register data)])))})))
 

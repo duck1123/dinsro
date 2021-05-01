@@ -4,8 +4,8 @@
    [dinsro.model.users :as m.users]))
 
 (s/def :register-optional/params
-  (s/keys :opt-un [::m.users/name ::m.users/email ::m.users/password]))
-(s/def ::register-params (s/keys :req-un [::m.users/name ::m.users/email ::m.users/password]))
+  (s/keys :opt-un [::m.users/username ::m.users/password]))
+(s/def ::register-params (s/keys :req-un [::m.users/username ::m.users/password]))
 (s/def :register/params ::register-params)
 
 (s/def ::register-request (s/keys :req-un [:register-optional/params]))

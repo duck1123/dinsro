@@ -6,28 +6,36 @@
    [taoensso.timbre :as timbre]))
 
 (defmutation delete!
-  [_request {::m.users/keys [id]}]
-  {::pc/params #{::m.users/id}
+  [_request {::m.users/keys [username]}]
+  {::pc/params #{::m.users/username}
    ::pc/output [:status]}
-  (q.users/delete-record id)
+  (q.users/delete-record username)
   {:status :success})
 
 (defresolver user-resolver
-  [_env {::m.users/keys [id]}]
-  {::pc/input  #{::m.users/id}
-   ::pc/output [::m.users/email
-                ::m.users/name]}
-  (timbre/infof "resolving user: %s" id)
-  (q.users/read-record id))
+  [_env {::m.users/keys [username]}]
+  {::pc/input  #{::m.users/username}
+   ::pc/output [::m.users/username]}
+  (timbre/infof "resolving user: %s" username)
+  (q.users/read-record username))
+
+(defresolver user-link-resolver
+  [_env {::m.users/keys [username]}]
+  {::pc/input  #{::m.users/username}
+   ::pc/output [{::m.users/link [::m.users/username]}]}
+  {::m.users/link [[::m.users/username username]]})
 
 (defresolver users-resolver
   [_env _props]
-  {::pc/output [{:all-users [::m.users/id]}]}
+  {::pc/output [{:all-users [::m.users/username]}]}
   {:all-users
-   (map (fn [id] [::m.users/id id]) (q.users/index-ids))})
+   (map (fn [{::m.users/keys [username]}]
+          [::m.users/username username])
+        (q.users/index-records))})
 
 (def resolvers
   [user-resolver
+   user-link-resolver
    users-resolver])
 
 (comment

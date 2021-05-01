@@ -16,12 +16,12 @@
 
 (specification "create-record"
   (behavior "when the params are valid"
-    (let [params                   (ds/gen-key ::m.users/params)
-          {::m.users/keys [email]} params
-          id                       (q.users/create-record params)
-          user                     (q.users/read-record id)]
+    (let [params                      (ds/gen-key ::m.users/params)
+          {::m.users/keys [username]} params
+          id                          (q.users/create-record params)
+          user                        (q.users/read-record id)]
       (assertions
-       (::m.users/email user) => email)))
+       (::m.users/username user) => username)))
   (behavior "when the params are invalid"
     (let [params (ds/gen-key ::m.users/params)
           _id    (q.users/create-record params)]
@@ -30,12 +30,12 @@
 
 (specification "read-record"
   (behavior "when the record exists"
-    (let [params                   (ds/gen-key ::m.users/params)
-          {::m.users/keys [email]} params
-          id                       (q.users/create-record params)
-          response                 (q.users/read-record id)]
+    (let [params                      (ds/gen-key ::m.users/params)
+          {::m.users/keys [username]} params
+          id                          (q.users/create-record params)
+          response                    (q.users/read-record id)]
       (assertions
-       (::m.users/email response) => email)))
+       (::m.users/username response) => username)))
   (behavior "missing"
     (let [id (ds/gen-key :db/id)]
       (assertions

@@ -6,102 +6,70 @@
    [dinsro.components.datahike :as db]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
 
 (def attribute-list
   '[:db/id
-    ::m.users/email
-    ::m.users/id
-    ::m.users/name
     ::m.users/password-hash
     ::m.users/username])
 
-(def identity-attribute ::m.users/email)
+(def identity-attribute ::m.users/username)
 
-(def find-by-email-query
+(def find-eid-by-username-query
   '[:find  ?eid
-    :in    $ ?email
-    :where [?eid ::m.users/email ?email]])
+    :in    $ ?username
+    :where [?eid ::m.users/username ?username]])
 
-(def find-by-username-query
-  '[:find  ?eid
-    :in    $ ?email
-    :where [?eid ::m.users/username ?email]])
-
-(def find-eid-by-id-query
-  '[:find  ?eid
-    :in    $ ?id
-    :where [?eid ::m.users/id ?id]])
-
-(def find-id-by-eid-query
-  '[:find  ?id
+(def find-username-by-eid-query
+  '[:find  ?username
     :in    $ ?eid
-    :where [?eid ::m.users/id ?id]])
-
-(>defn find-eid-by-id
-  [id]
-  [::m.users/id => :db/id]
-  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
-
-(>defn find-id-by-eid
-  [eid]
-  [:db/id => ::m.users/id]
-  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
+    :where [?eid ::m.users/username ?username]])
 
 (>defn read-record
   [user-id]
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-id)]
-    (when (get record m.users/name)
+    (when (get record m.users/username)
       (dissoc record :db/id))))
 
 (>defn read-record-by-eid
   [user-dbid]
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-dbid)]
-    (when (get record m.users/name)
+    (when (get record m.users/username)
       (dissoc record :db/id))))
-
-(>defn read-record-by-id
-  [id]
-  [::m.users/id => (? ::m.users/item)]
-  (let [eid (find-eid-by-id id)]
-    (read-record-by-eid eid)))
 
 (>defn read-records
   [ids]
   [(s/coll-of :db/id) => (s/coll-of ::m.users/item)]
   (map read-record-by-eid ids))
 
-(>defn find-id-by-email
-  [email]
-  [::m.users/email => (? :db/id)]
-  (ffirst (d/q find-by-email-query @db/*conn* email)))
-
 (>defn find-id-by-username
-  [email]
+  [username]
   [::m.users/username => (? :db/id)]
-  (ffirst (d/q find-by-username-query @db/*conn* email)))
+  (ffirst (d/q find-eid-by-username-query @db/*conn* username)))
 
-(>defn find-by-email
-  [email]
-  [::m.users/email => (? ::m.users/item)]
-  (when-let [id (find-id-by-email email)]
-    (read-record id)))
+(>defn find-eid-by-username
+  [username]
+  [::m.users/username => :db/id]
+  (ffirst (d/q find-eid-by-username-query @db/*conn* username)))
+
+(>defn find-username-by-eid
+  [eid]
+  [:db/id => ::m.users/username]
+  (ffirst (d/q find-username-by-eid-query @db/*conn* eid)))
 
 (>defn find-by-username
-  [email]
+  [username]
   [::m.users/username => (? ::m.users/item)]
-  (when-let [id (find-id-by-username email)]
+  (when-let [id (find-id-by-username username)]
     (read-record id)))
 
 (>defn create-record
   [params]
   [::m.users/params => :db/id]
-  (if (nil? (find-id-by-username (::m.users/username params)))
+  (if (nil? (find-id-by-username (m.users/username params)))
     (let [tempid   (d/tempid "user-id")
-          params   (assoc params ::m.users/id (utils/uuid))
           params   (assoc params :db/id tempid)
           response (d/transact db/*conn* {:tx-data [params]})]
       (get-in response [:tempids tempid]))
@@ -110,7 +78,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.users/email _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.users/username _]] @db/*conn*)))
 
 (>defn index-records
   []

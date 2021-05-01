@@ -9,18 +9,18 @@
    [dinsro.model.users :as m.users]))
 
 (defn account-line
-  [id initial-value name currency-id user-id]
+  [id initial-value name currency-id username]
   {::m.accounts/id            id
    ::m.accounts/initial-value initial-value
    ::m.accounts/name          name
    ::m.accounts/currency      {::m.currencies/id currency-id}
-   ::m.accounts/user          {::m.users/id user-id}})
+   ::m.accounts/user          {::m.users/username username}})
 
 (defn category-line
-  [id name user-id]
+  [id name username]
   {::m.categories/id   id
    ::m.categories/name name
-   ::m.categories/user {::m.users/id user-id}})
+   ::m.categories/user {::m.users/username username}})
 
 (defn currency-line
   [id name]
@@ -56,10 +56,8 @@
    ::m.transactions/account     {::m.accounts/id account-id}})
 
 (defn user-line
-  [id name email]
-  {::m.users/id    id
-   ::m.users/name  name
-   ::m.users/email email})
+  [username]
+  {::m.users/username username})
 
 (def account-map
   {1 (account-line 1 1  "Savings Account" 2 1)
@@ -105,5 +103,5 @@
    2 (transaction-line 2 "sold some things" "2020-11-28 01:00:00" 1)})
 
 (def user-map
-  {1 (user-line 1 "Foo McFooerson" "foo@example.com")
-   2 (user-line 2 "Bart "          "bar@example.com")})
+  {1 (user-line "foo")
+   2 (user-line "bar")})

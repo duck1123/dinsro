@@ -34,7 +34,6 @@
          ::m.accounts/initial-value 42
          ::m.users/name             "x"
          ::m.accounts/user
-         {::m.users/id   1
-          ::m.users/name "Bob"}}]
+         {::m.users/username "bob"}}]
        ::u.admin-index-accounts/form          (comp/get-initial-state u.f.admin-create-account/AdminCreateAccountForm)
        ::u.admin-index-accounts/toggle-button (comp/get-initial-state u.buttons/ShowFormButton)})}))

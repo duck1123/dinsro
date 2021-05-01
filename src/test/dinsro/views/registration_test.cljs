@@ -14,7 +14,6 @@
     (fn []
       {::v.registration/allow-registration true
        ::v.registration/form
-       {:name             ""
-        :email            ""
+       {:username         ""
         :password         ""
         :confirm-password ""}})}))

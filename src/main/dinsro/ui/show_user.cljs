@@ -9,17 +9,13 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc ShowUser
-  [_this {::m.users/keys [email id name]}]
-  {:ident ::m.users/id
-   :initial-state {::m.users/email "initial-email"
-                   ::m.users/id    0
-                   ::m.users/name  "initial-name"}
-   :query [::m.users/email
-           ::m.users/id
-           ::m.users/name]}
+  [_this {::m.users/keys [username]}]
+  {:ident         ::m.users/username
+   :initial-state {::m.users/username "admin"}
+   :query         [::m.users/username]}
   (dom/div
-   (dom/h1 name)
-   (dom/p (str "(" email ")"))
-   (u.buttons/ui-delete-user-button {::m.users/id id})))
+   (dom/h1 username)
+   (dom/p (str "(" username ")"))
+   (u.buttons/ui-delete-user-button {::m.users/username username})))
 
 (def ui-show-user (comp/factory ShowUser))

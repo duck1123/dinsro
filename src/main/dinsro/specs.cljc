@@ -21,16 +21,6 @@
   "Generator for non-empty alphanumeric strings"
   (gen/such-that #(not= "" %) (gen/string-alphanumeric)))
 
-(def email-gen-fn
-  "Generator for email addresses"
-  (gen/fmap
-   (fn [[name host tld]]
-     (str name "@" host "." tld))
-   (gen/tuple
-    non-empty-string-alphanumeric
-    non-empty-string-alphanumeric
-    non-empty-string-alphanumeric)))
-
 (s/def ::id pos-int?)
 (s/def :db/id ::id)
 (def id ::id)
@@ -47,9 +37,6 @@
 
 (s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
 (def date-string ::date-string)
-
-(s/def ::email (s/with-gen #(re-matches #".+@.+\..+" %) (fn [] email-gen-fn)))
-(def email-gen ::email)
 
 (s/def ::date (s/with-gen ts/instant? #(gen/fmap tick/instant (s/gen ::date-string))))
 (def date ::date)

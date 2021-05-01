@@ -7,7 +7,7 @@
 
 (defsc CurrentUser
   [_this _props]
-  {:query [:user/id :user/valid?]})
+  {:query [:user/username :user/valid?]})
 
 (defmutation finish-login [_]
   (action

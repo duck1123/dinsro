@@ -12,10 +12,8 @@
   {::pc/params #{::m.currencies/name}
    ::pc/output [:status
                 :created-category [::m.currencies/id]]}
-  (if-let [user-eid (q.users/find-id-by-email identity)]
-    (let [user-id (q.users/find-id-by-eid user-eid)
-          params  #::m.currencies{:name name
-                                  :user {::m.users/id user-id}}]
+  (if-let [_user-eid (q.users/find-eid-by-username identity)]
+    (let [params  #::m.currencies{:name name :user {::m.users/username identity}}]
       (if-let [record (q.currencies/create-record params)]
         {:status           :success
          :created-category [{::m.currencies/id (::m.currencies/id record)}]}

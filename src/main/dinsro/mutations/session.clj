@@ -10,12 +10,9 @@
    [taoensso.timbre :as timbre]))
 
 (>defn do-register
-  [username email password name]
-  [::m.users/username ::m.users/email ::m.users/password ::m.users/name => (s/keys)]
-  (let [params #::m.users{:email    email
-                          :password password
-                          :name     name
-                          :username username}]
+  [username password]
+  [::m.users/username ::m.users/password => (s/keys)]
+  (let [params #::m.users{:password password :username username}]
     (try
       (a.authentication/register (timbre/spy :info params))
       (catch Exception ex
@@ -24,35 +21,35 @@
          :ex     (str ex)}))))
 
 (defmutation register
-  [_env {:user/keys [email name password username]}]
-  {::pc/params #{:user/email :user/name :user/password :user/username}
-   ::pc/output [:user/id :user/valid? :user/registered?]}
+  [_env {:user/keys [password username]}]
+  {::pc/params #{:user/password :user/username}
+   ::pc/output [:user/username :user/valid? :user/registered?]}
   (timbre/info "register")
-  (do-register username email password name))
+  (do-register username password))
 
 (defmutation login
-  [{{:keys [session]} :request} {:user/keys [email password]}]
-  {::pc/params #{:user/email :user/password}
-   ::pc/output [:user/id :user/valid?]}
-  (if-let [_user (q.users/find-by-email email)]
+  [{{:keys [session]} :request} {:user/keys [username password]}]
+  {::pc/params #{:user/username :user/password}
+   ::pc/output [:user/username :user/valid?]}
+  (if-let [_user (q.users/find-by-username username)]
     (if (= password "hunter2")
       (augment-response
-       {:user/id     email
-        :user/valid? true}
+       {:user/username username
+        :user/valid?   true}
        (fn [ring-response]
-         (assoc ring-response :session (assoc session :identity email))))
-      {:user/id     nil
-       :user/valid? false})
-    {:user/id     nil
-     :user/valid? false}))
+         (assoc ring-response :session (assoc session :identity username))))
+      {:user/username nil
+       :user/valid?   false})
+    {:user/username nil
+     :user/valid?   false}))
 
 (defmutation logout
   [{{:keys [session]} :request} _]
   {::pc/params #{}
-   ::pc/output [:user/id :user/valid?]}
+   ::pc/output [:user/username :user/valid?]}
   (augment-response
-   {:user/id     nil
-    :user/valid? false}
+   {:user/username nil
+    :user/valid?   false}
    (fn [ring-response]
      (assoc ring-response :session (assoc session :identity nil)))))
 

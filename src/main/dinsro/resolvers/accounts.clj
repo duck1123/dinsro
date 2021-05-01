@@ -14,12 +14,12 @@
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
-                {::m.accounts/user [::m.users/id]}]}
+                {::m.accounts/user [::m.users/username]}]}
   (let [record      (q.accounts/read-record id)
         currency-id (get-in record [::m.accounts/currency :db/id])
-        user-id     (get-in record [::m.accounts/user :db/id])
+        user-eid     (get-in record [::m.accounts/user :db/id])
         record      (assoc record ::m.accounts/id id)
-        record      (assoc record ::m.accounts/user [[::m.users/id user-id]])
+        record      (assoc record ::m.accounts/user [[::m.users/username user-eid]])
         record      (if (nil? currency-id)
                       (assoc record ::m.accounts/currency [[::m.currencies/id 0]])
                       record)]
@@ -43,23 +43,23 @@
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
-                {::m.accounts/user [::m.users/id]}]}
+                {::m.accounts/user [::m.users/username]}]}
   (get sample/account-map id))
 
 (defresolver user-account-resolver
   [_env {::m.accounts/keys [id]}]
-  {::pc/input  #{::m.users/id}
+  {::pc/input  #{::m.users/username}
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
-                {::m.accounts/user [::m.users/id]}]}
+                {::m.accounts/user [::m.users/username]}]}
   (get sample/account-map id))
 
 (defresolver user-accounts-resolver
-  [_env {::m.users/keys [id]}]
-  {::pc/input  #{::m.users/id}
+  [_env {::m.users/keys [username]}]
+  {::pc/input  #{::m.users/username}
    ::pc/output [{::m.users/accounts [::m.accounts/id]}]}
-  (let [records  (q.accounts/index-records-by-user id)
+  (let [records  (q.accounts/index-records-by-user username)
         accounts (map
                   (fn [{{:db/keys [id]} ::m.accounts/user}]
                     [::m.accounts/id id])

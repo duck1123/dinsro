@@ -51,10 +51,10 @@
   (let [record (d/pull @db/*conn* '[*] id)]
     (when (get record ::m.categories/name)
       (let [user-eid (get-in record [::m.categories/user :db/id])
-            user-id (q.users/find-id-by-eid user-eid)]
+            username (q.users/find-username-by-eid user-eid)]
         (-> record
             (dissoc :db/id)
-            (assoc ::m.categories/user {::m.users/id user-id}))))))
+            (assoc ::m.categories/user {::m.users/username username}))))))
 
 (>defn index-ids
   []

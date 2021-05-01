@@ -63,8 +63,8 @@
             (update ::m.accounts/user dissoc :db/id)
             (assoc-in [::m.accounts/currency ::m.currencies/id]
                       (q.currencies/find-id-by-eid currency-id))
-            (assoc-in [::m.accounts/user ::m.users/id]
-                      (q.users/find-id-by-eid user-id)))))))
+            (assoc-in [::m.accounts/user ::m.users/username]
+                      (q.users/find-username-by-eid user-id)))))))
 
 (>defn index-ids
   []

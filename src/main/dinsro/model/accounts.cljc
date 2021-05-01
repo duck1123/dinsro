@@ -54,7 +54,7 @@
 (s/def ::user
   (s/keys
    ;; :req []
-   :opt [:db/id ::m.users/id]))
+   :opt [:db/id ::m.users/username]))
 (def user
   "User that created this account"
   ::user)

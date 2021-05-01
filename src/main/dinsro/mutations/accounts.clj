@@ -11,7 +11,7 @@
   {::pc/params #{::m.accounts/name}
    ::pc/output [:status
                 :items [::m.accounts/id]]}
-  (if-let [user-id (q.users/find-id-by-email identity)]
+  (if-let [user-id (q.users/find-id-by-username identity)]
     (let [currency-id (get-in params [::m.accounts/currency :db/id])
           params      (assoc-in params [::m.accounts/user :db/id] user-id)
           params      (if (zero? currency-id)

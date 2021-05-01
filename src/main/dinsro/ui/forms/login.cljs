@@ -13,21 +13,21 @@
    [taoensso.timbre :as timbre]))
 
 (defsc LoginForm
-  [this {:user/keys [email message password]}]
+  [this {:user/keys [message password username]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {:user/email    "bob@example.com"
-                   :user/message  nil
-                   :user/password "hunter2"}
-   :query         [:user/email :user/password :user/message]}
+   :initial-state {:user/message  nil
+                   :user/password "hunter2"
+                   :user/username    "admin"}
+   :query         [:user/password :user/message :user/username]}
   (dom/div
    :.is-centered
    (when message (dom/p :.notification.is-danger message))
    (bulma/field
     (bulma/control
      (u.inputs/ui-text-input
-      {:label "Email"
-       :value email}
-      {:onChange #(fm/set-string! this :user/email :event %)})))
+      {:label "Username"
+       :value username}
+      {:onChange #(fm/set-string! this :user/username :event %)})))
    (bulma/field
     (bulma/control
      (u.inputs/ui-text-input
@@ -41,7 +41,7 @@
        :content   (tr [:login])}
       {:onClick
        (fn []
-         (let [data {:user/email email :user/password password}]
+         (let [data #:user {:username username :password password}]
            (comp/transact! this [(mu.session/login data)])))})))))
 
 (def ui-login-form (comp/factory LoginForm))
