@@ -3,11 +3,11 @@
   (:require
    [clojure.spec.alpha :as s]))
 
-(s/def ::id uuid?)
+(s/def ::id string?)
 (def id ::id)
 (def id-spec
   {:db/ident       ::id
-   :db/valueType   :db.type/uuid
+   :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
@@ -19,7 +19,7 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::params (s/keys :req [::name]))
+(s/def ::params (s/keys :req [::id ::name]))
 (def params ::params)
 
 (s/def ::item-opt (s/keys :opt [::name]))

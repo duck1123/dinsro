@@ -68,9 +68,10 @@
    2 (category-line 2 "Spending" 2)})
 
 (def currency-map
-  {1 (currency-line 1 "Dollars")
-   2 (currency-line 2 "Euros")
-   3 (currency-line 3 "Yen")})
+  {"usd"  (currency-line "usd" "Dollars")
+   "eur"  (currency-line "eur" "Euros")
+   "sats" (currency-line "sats" "Sats")
+   "yen"  (currency-line "yen" "Yen")})
 
 (def navlink-map
   {:accounts     (navlink-line :accounts     "Accounts"     "/accounts"     ["accounts"])

@@ -8,7 +8,6 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
 
 (def attribute-list
@@ -43,7 +42,6 @@
   (try
     (let [params   (assoc params :db/id "currency-id")
           params   (dissoc params ::m.currencies/user)
-          params   (assoc params ::m.currencies/id (utils/uuid))
           response (d/transact db/*conn* {:tx-data [params]})]
       (get-in response [:tempids "currency-id"]))
     (catch Exception ex
@@ -59,6 +57,14 @@
   [id]
   [:db/id => (? ::m.currencies/item)]
   (let [record (d/pull @db/*conn* attribute-list id)]
+    (when (get record ::m.currencies/name)
+      (dissoc record :db/id))))
+
+(>defn find-by-id
+  [id]
+  [::m.currencies/id => (? ::m.currencies/item)]
+  (let [eid (find-eid-by-id id)
+        record (d/pull @db/*conn* attribute-list eid)]
     (when (get record ::m.currencies/name)
       (dissoc record :db/id))))
 

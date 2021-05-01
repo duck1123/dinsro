@@ -16,9 +16,9 @@
 
 (defsc AdminIndexCurrencyLine
   [_this {::m.currencies/keys [id] :as currency}]
-  {:ident ::m.currencies/id
-   :initial-state {::m.currencies/id   0}
-   :query [::m.currencies/id ::m.currencies/name]}
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id ""}
+   :query         [::m.currencies/id ::m.currencies/name]}
   (dom/tr
    (dom/td (u.links/ui-currency-link currency))
    (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
@@ -28,14 +28,14 @@
 (defsc AdminIndexCurrencies
   [this {::keys [currencies form toggle-button]}]
   {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexCurrencies})
-   :ident (fn [_] [:component/id ::AdminIndexCurrencies])
-   :initial-state {::currencies    []
-                   ::form          {}
-                   ::toggle-button {:form-button/id form-toggle-sm}}
-   :query [{::currencies    (comp/get-query AdminIndexCurrencyLine)}
-           {::form          (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           [::uism/asm-id form-toggle-sm]]}
+   :ident             (fn [_] [:component/id ::AdminIndexCurrencies])
+   :initial-state     {::currencies    []
+                       ::form          {}
+                       ::toggle-button {:form-button/id form-toggle-sm}}
+   :query             [{::currencies (comp/get-query AdminIndexCurrencyLine)}
+                       {::form (comp/get-query u.f.admin-create-currency/AdminCreateCurrencyForm)}
+                       {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                       [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h2

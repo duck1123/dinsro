@@ -28,7 +28,7 @@
        :component/id                          {}
        ::u.admin-index-accounts/accounts
        [{::m.accounts/currency
-         {::m.currencies/id   1
+         {::m.currencies/id   "foo"
           ::m.currencies/name "foo"}
          ::m.accounts/id            1
          ::m.accounts/initial-value 42

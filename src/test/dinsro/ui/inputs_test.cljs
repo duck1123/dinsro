@@ -1,5 +1,6 @@
 (ns dinsro.ui.inputs-test
   (:require
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
@@ -44,7 +45,9 @@
     ::ct.fulcro3/wrap-root? false
     ::ct.fulcro3/initial-state
     (fn []
-      {:all-currencies (vals sample/currency-map)})}))
+      {:all-currencies
+       [{::m.currencies/id "sats" ::m.currencies/name "Sats"}
+        {::m.currencies/id "usd" ::m.currencies/name "Dollars"}]})}))
 
 (ws/defcard UserSelector
   {::wsm/card-height 3

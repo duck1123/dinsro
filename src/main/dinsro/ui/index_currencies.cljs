@@ -12,10 +12,10 @@
 
 (defsc IndexCurrencyLine
   [_this {::m.currencies/keys [id] :as currency}]
-  {:ident ::m.currencies/id
-   :initial-state {::m.currencies/id   0
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
                    ::m.currencies/name ""}
-   :query [::m.currencies/id ::m.currencies/name]}
+   :query         [::m.currencies/id ::m.currencies/name]}
   (dom/tr
    (dom/td (u.links/ui-currency-link currency))
    (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
@@ -25,7 +25,7 @@
 (defsc IndexCurrencies
   [_this {::keys [currencies]}]
   {:initial-state {::currencies []}
-   :query [{::currencies (comp/get-query IndexCurrencyLine)}]}
+   :query         [{::currencies (comp/get-query IndexCurrencyLine)}]}
   (if (seq currencies)
     (dom/table
      :.table

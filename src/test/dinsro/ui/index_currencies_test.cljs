@@ -13,4 +13,4 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root       u.index-currencies/IndexCurrencies
     ::ct.fulcro3/initial-state
-    (fn [] {::u.index-currencies/currencies (map sample/currency-map [1 2 3])})}))
+    (fn [] {::u.index-currencies/currencies (map sample/currency-map ["sats" "yen" "eur"])})}))

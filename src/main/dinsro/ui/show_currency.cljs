@@ -11,9 +11,9 @@
 
 (defsc ShowCurrency
   [_this {::m.currencies/keys [id name]}]
-  {:query [::m.currencies/id ::m.currencies/name]
-   :ident ::m.currencies/id
-   :initial-state {::m.currencies/id 0
+  {:query         [::m.currencies/id ::m.currencies/name]
+   :ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
                    ::m.currencies/name ""}}
   (dom/div
    (dom/p name)

@@ -8,7 +8,7 @@
    [taoensso.timbre :as timbre]))
 
 (ws/defcard CreateCurrencyForm
-  {::wsm/card-height 5
+  {::wsm/card-height 7
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.f.create-currency/CreateCurrencyForm

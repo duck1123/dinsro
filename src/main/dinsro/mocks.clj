@@ -28,7 +28,7 @@
 (>defn mock-currency
   []
   [=> ::m.currencies/item]
-  (let [params (ds/gen-key ::m.currencies/params)
+  (let [params (ds/gen-key m.currencies/params)
         id     (q.currencies/create-record params)]
     (q.currencies/read-record id)))
 
@@ -36,7 +36,7 @@
   ([]
    [=> ::m.accounts/item]
    (let [user        (mock-user)
-         username     (::m.users/username user)
+         username    (::m.users/username user)
          currency    (mock-currency)
          currency-id (::m.currencies/id currency)]
      (mock-account username currency-id)))
@@ -69,7 +69,9 @@
   ([currency-id]
    [::m.currencies/id => ::m.rates/item]
    (let [params (ds/gen-key ::m.rates/params)
-         params (assoc-in params [::m.rates/currency :db/id] (q.currencies/find-eid-by-id currency-id))
+
+         params (assoc params ::m.rates/currency
+                       {::m.currencies/id currency-id})
          id     (q.rates/create-record params)]
      (q.rates/read-record id))))
 
@@ -82,8 +84,7 @@
   ([currency-id]
    [::m.currencies/id => ::m.rate-sources/item]
    (let [params (ds/gen-key ::m.rate-sources/params)
-         params (assoc-in params [::m.rate-sources/currency :db/id]
-                          (q.currencies/find-eid-by-id currency-id))
+         params (assoc params ::m.rate-sources/currency {::m.currencies/id currency-id})
          id     (q.rate-sources/create-record params)]
      (q.rate-sources/read-record id))))
 

@@ -7,23 +7,24 @@
    [dinsro.queries.currencies :as q.currencies]
    [taoensso.timbre :as timbre]))
 
-(def sats {::m.currencies/id   0
-           ::m.currencies/name "sats"})
+(def sats {::m.currencies/id   "sats"
+           ::m.currencies/name "Sats"})
 
 (defresolver currencies-resolver
   [_env _props]
   {::pc/output [{:all-currencies [::m.currencies/id]}]}
   {:all-currencies
-   (map #(vector ::m.currencies/id %) (concat [0] (q.currencies/index-ids)))})
+   (map (fn [{::m.currencies/keys [id]}]
+          [::m.currencies/id id])
+        (q.currencies/index-records))})
 
 (defresolver currency-resolver
   [_env {::m.currencies/keys [id]}]
   {::pc/input  #{::m.currencies/id}
    ::pc/output [::m.currencies/name]}
-  (if (zero? id)
-    sats
-    (let [record (q.currencies/read-record id)]
-      (assoc record ::m.currencies/id id))))
+  (let [eid (q.currencies/find-eid-by-id id)
+        record (q.currencies/read-record eid)]
+    (assoc record ::m.currencies/id id)))
 
 (defresolver account-currencies-resolver
   [_env _props]

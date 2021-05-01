@@ -11,11 +11,11 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
 
-(def currencies (map sample/currency-map [1 2]))
+(def currencies (map sample/currency-map ["sats" "usd" "eur" "yen"]))
 
 (ws/defcard AdminIndexCurrencies
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 9
+   ::wsm/card-height 12
    ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-currencies/AdminIndexCurrencies

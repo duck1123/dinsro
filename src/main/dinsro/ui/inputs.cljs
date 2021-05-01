@@ -14,16 +14,16 @@
   {:query [:label :value]
    :initial-state
    (fn [{:keys [label value]
-         :or {label ""
-              value ""}}]
+         :or   {label ""
+                value ""}}]
      {:label label
       :value value})}
   (dom/div
    (dom/label :.label label)
    (dom/input
     :.input
-    {:type :text
-     :value value
+    {:type     :text
+     :value    value
      :onChange (fn [e] (onChange e))})))
 
 (def ui-text-input
@@ -53,8 +53,8 @@
   [_this {:keys [label value]} {:keys [onChange]}]
   {:initial-state
    (fn [{:keys [label value]
-         :or {label ""
-              value ""}}]
+         :or   {label ""
+                value ""}}]
      {:label label
       :value value})
    :query [:label :value]}
@@ -62,8 +62,8 @@
    (dom/label :.label label)
    (dom/input
     :.input
-    {:type :number
-     :value value
+    {:type     :number
+     :value    value
      :onChange onChange})))
 
 (def ui-number-input
@@ -78,7 +78,7 @@
 (defsc AccountSelector
   [_this {:keys [accounts]}]
   {:initial-state {:accounts []}
-   :query [:accounts]}
+   :query         [:accounts]}
   (dom/div
    :.select
    (dom/select
@@ -90,10 +90,10 @@
 
 (defsc CurrencySelectorOption
   [_this {::m.currencies/keys [id name]}]
-  {:ident ::m.currencies/id
-   :initial-state {::m.currencies/id   0
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
                    ::m.currencies/name "sats"}
-   :query [::m.currencies/id ::m.currencies/name]}
+   :query         [::m.currencies/id ::m.currencies/name]}
   (dom/option {:value id} name))
 
 (def ui-currency-selector-option (comp/factory CurrencySelectorOption {:keyfn ::m.currencies/id}))
@@ -103,7 +103,7 @@
   {:componentDidMount
    (fn [this] (df/load! this :all-currencies CurrencySelectorOption))
    :initial-state {:all-currencies []}
-   :query [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
+   :query         [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
   (dom/div
    :.select
    (dom/select
@@ -115,7 +115,7 @@
 (defsc UserSelector
   [_this {:keys [users]}]
   {:initial-state {:users []}
-   :query [:users]}
+   :query         [:users]}
   (dom/div
    :.select
    (dom/select
@@ -128,7 +128,7 @@
 (defsc PrimaryButton
   [_this _props {:keys [onClick]}]
   {:initial-state {}
-   :query []}
+   :query         []}
   (dom/button :.button.is-primary {:onClick onClick} "submit"))
 
 (def ui-primary-button (comp/computed-factory PrimaryButton))

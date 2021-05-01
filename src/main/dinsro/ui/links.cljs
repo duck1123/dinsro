@@ -37,7 +37,7 @@
 (defsc CurrencyLink
   [_this {::m.currencies/keys [id name]}]
   {:ident ::m.currencies/id
-   :initial-state {::m.currencies/id   0
+   :initial-state {::m.currencies/id   ""
                    ::m.currencies/name ""}
    :query [::m.currencies/id ::m.currencies/name]}
   (let [path (str "/currencies/" id)]

@@ -1,5 +1,6 @@
 (ns dinsro.ui.links-test
   (:require
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
@@ -25,8 +26,8 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/CurrencyLink
     ::ct.fulcro3/initial-state
-    (fn [] {:currency/id   1
-            :currency/name "Currency"})}))
+    (fn [] {::m.currencies/id   "currency"
+            ::m.currencies/name "Currency"})}))
 
 (ws/defcard UserLink
   {::wsm/card-height 3
