@@ -10,7 +10,6 @@
    [dinsro.queries.users :as q.users]
    [dinsro.model.users :as m.users]
    [dinsro.specs.actions.authentication :as s.a.authentication]
-   [ring.util.http-response :as http]
    [taoensso.timbre :as timbre]))
 
 (>defn authenticate
@@ -38,22 +37,6 @@
       (timbre/info "user not found")
       nil)))
 
-(>defn authenticate-handler
-  [request]
-  [::s.a.authentication/authenticate-request => ::s.a.authentication/authenticate-response]
-  (let [{{:keys [email password]} :params} request]
-    (try
-      (if (and (seq email) (seq password))
-        (if-let [claim (authenticate email password)]
-          (let [id (::s.a.authentication/identity claim)]
-            (-> claim
-                (http/ok)
-                (assoc-in [:session :identity] id)))
-          (http/unauthorized {:status :unauthorized}))
-        (http/bad-request {:status :invalid}))
-      (catch Exception ex
-        (timbre/error ex "Failed to authenticate")))))
-
 (>defn register
   [params]
   [::m.users/input-params => (? ::m.users/item)]
@@ -70,19 +53,3 @@
           (timbre/error ex "User exists")
           (throw "User already exists")))
       #_(throw "Invalid"))))
-
-(>defn register-handler
-  "Register a user"
-  [request]
-  [::s.a.authentication/register-request => ::s.a.authentication/register-response]
-  (let [{:keys [params]} request]
-    (try
-      (let [id (::m.users/id (register params))]
-        (http/ok {:id id}))
-      (catch RuntimeException _
-        (http/bad-request {:status  :failed
-                           :message "User already exists"})))))
-
-(defn logout-handler
-  [_]
-  (assoc-in (http/ok {:identity nil}) [:session :identity] nil))

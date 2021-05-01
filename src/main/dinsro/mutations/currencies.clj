@@ -1,7 +1,6 @@
 (ns dinsro.mutations.currencies
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]
-   [dinsro.actions.currencies :as a.currencies]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.currencies :as q.currencies]
@@ -17,7 +16,7 @@
     (let [user-id (q.users/find-id-by-eid user-eid)
           params  #::m.currencies{:name name
                                   :user {::m.users/id user-id}}]
-      (if-let [record (a.currencies/create! params)]
+      (if-let [record (q.currencies/create-record params)]
         {:status           :success
          :created-category [{::m.currencies/id (::m.currencies/id record)}]}
         (do

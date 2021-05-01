@@ -1,7 +1,6 @@
 (ns dinsro.resolvers.currencies
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
-   [dinsro.actions.currencies :as a.currencies]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
@@ -30,13 +29,13 @@
   [_env _props]
   {::pc/input  #{::m.accounts/id}
    ::pc/output [{::m.accounts/currencies [::m.currencies/id]}]}
-  (a.currencies/index-by-account-handler {}))
+  (q.currencies/index-records))
 
 (defresolver user-currencies-resolver
-  [_env _props]
+  [_env {::m.users/keys [id]}]
   {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/currencies [::m.currencies/id]}]}
-  (a.currencies/index-by-user-handler {}))
+  (q.currencies/index-by-user id))
 
 (def resolvers
   [account-currencies-resolver

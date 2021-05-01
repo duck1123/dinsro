@@ -1,9 +1,7 @@
 (ns dinsro.actions.rate-sources
   (:require
    [clojure.data.json :as json]
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [expound.alpha :as expound]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -11,7 +9,6 @@
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
-   [dinsro.specs.actions.rate-sources :as s.a.rate-sources]
    [dinsro.utils :as utils]
    [http.async.client :as http-client]
    [manifold.time :as t]
@@ -21,57 +18,6 @@
    [tick.alpha.api :as tick]))
 
 (declare ^:dynamic *scheduler*)
-
-(>defn prepare-record
-  [params]
-  [::s.a.rate-sources/create-params => (? ::m.rate-sources/params)]
-  (let [params {::m.rate-sources/currency {::m.currencies/id (:currency-id params)}
-                ::m.rate-sources/name     (some-> params :name)
-                ::m.rate-sources/url      (some-> params :url)}]
-    (if (s/valid? ::m.rate-sources/params params)
-      params
-      (do
-        (timbre/debugf "not valid: %s" (expound/expound-str ::m.rate-sources/params params))
-        nil))))
-
-(>defn create!
-  [params]
-  [::s.a.rate-sources/create-params => (? ::m.rate-sources/item)]
-  (some-> params q.rate-sources/create-record q.rate-sources/read-record))
-
-(>defn create-handler
-  [{params :params}]
-  [::s.a.rate-sources/create-request => ::s.a.rate-sources/create-response]
-  (or (when-let [item (some-> params prepare-record create!)]
-        (http/ok {:item item}))
-      (http/bad-request {:status :invalid})))
-
-(>defn index-handler
-  [_]
-  [::s.a.rate-sources/index-request => ::s.a.rate-sources/index-response]
-  (let [;; TODO: parse from request
-        limit    50
-        items    (q.rate-sources/index-records)
-        response {:model :rate-sources
-                  :limit limit
-                  :items items}]
-    (http/ok response)))
-
-(>defn read-handler
-  [request]
-  [::s.a.rate-sources/read-request => ::s.a.rate-sources/read-response]
-  (if-let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
-    (if-let [item (q.rate-sources/read-record id)]
-      (http/ok {:item item})
-      (http/not-found {:status :not-found}))
-    (http/bad-request {:status :bad-request})))
-
-(>defn delete-handler
-  [request]
-  [::s.a.rate-sources/delete-request => ::s.a.rate-sources/delete-response]
-  (let [id (Integer/parseInt (get-in request [:path-params :id]))]
-    (q.rate-sources/delete-record id)
-    (http/ok {:id id})))
 
 ;; TODO: handle request failures and backoff
 (>defn fetch-rate
