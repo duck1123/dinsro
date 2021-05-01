@@ -5,7 +5,7 @@
    [dinsro.components.http]
    [dinsro.components.nrepl]
    [dinsro.components.secrets :as secrets]
-   [dinsro.middleware.middleware :as middleware]
+   [dinsro.middleware :as middleware]
    [mount.core :as mount]
    [taoensso.timbre :as timbre])
   (:gen-class))

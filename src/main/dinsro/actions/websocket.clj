@@ -3,7 +3,7 @@
    [clojure.java.io :as io]
    [cognitect.transit :as transit]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.streams :as streams]
+   [dinsro.components.streams :as streams]
    [manifold.stream :as ms]
    [mount.core :as mount]
    [org.httpkit.server :refer [send! with-channel on-close on-receive]]
