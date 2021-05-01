@@ -6,6 +6,7 @@
    [dinsro.components.datahike :as db]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.users :as m.users]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as timbre]))
@@ -64,6 +65,11 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.currencies/item)]
+  (map read-record (index-ids)))
+
+(>defn index-by-user
+  [_id]
+  [::m.users/id => (s/coll-of ::m.currencies/item)]
   (map read-record (index-ids)))
 
 (defn index-records-by-account

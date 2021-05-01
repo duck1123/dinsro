@@ -1,7 +1,6 @@
 (ns dinsro.mutations.categories
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]
-   [dinsro.actions.categories :as a.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.queries.categories :as q.categories]
@@ -17,7 +16,7 @@
     (let [user-id (q.users/find-id-by-eid user-eid)
           params  {::m.categories/name name
                    ::m.categories/user {::m.users/id user-id}}]
-      (if-let [record (a.categories/create! params)]
+      (if-let [record (q.categories/create-record params)]
         {:status           :success
          :created-category [{::m.categories/id (:db/id record)}]}
         {:status :failure}))
