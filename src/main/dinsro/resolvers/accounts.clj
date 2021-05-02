@@ -25,8 +25,9 @@
         (assoc ::m.accounts/user [(m.users/ident user-eid)])
         (assoc ::m.accounts/currency [(m.currencies/ident currency-name)]))))
 
-(defn resolve-account-link
+(>defn resolve-account-link
   [id]
+  [::m.accounts/id => (s/keys)]
   {::m.accounts/link [(m.accounts/ident id)]})
 
 (>defn resolve-accounts
