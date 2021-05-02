@@ -38,10 +38,10 @@
   {::m.accounts/currencies (q.currencies/index-records)})
 
 (defresolver user-currencies-resolver
-  [_env {::m.users/keys [username]}]
-  {::pc/input  #{::m.users/username}
+  [_env {::m.users/keys [id]}]
+  {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/currencies [::m.currencies/id]}]}
-  {::m.users/currencies (q.currencies/index-by-user username)})
+  {::m.users/currencies (q.currencies/index-by-user id)})
 
 (def resolvers
   [account-currencies-resolver

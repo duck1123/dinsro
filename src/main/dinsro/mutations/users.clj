@@ -6,15 +6,15 @@
    [taoensso.timbre :as timbre]))
 
 (defn do-delete
-  [username]
-  (q.users/delete-record username)
+  [id]
+  (q.users/delete-record id)
   {:status :success})
 
 (defmutation delete!
-  [_request {::m.users/keys [username]}]
-  {::pc/params #{::m.users/username}
+  [_request {::m.users/keys [id]}]
+  {::pc/params #{::m.users/id}
    ::pc/output [:status]}
-  (do-delete username))
+  (do-delete id))
 
 (def resolvers
   [delete!])

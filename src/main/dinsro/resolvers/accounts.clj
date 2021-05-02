@@ -16,7 +16,7 @@
    ::pc/output [{::m.accounts/currency [::m.currencies/name]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
-                {::m.accounts/user [::m.users/username]}]}
+                {::m.accounts/user [::m.users/id]}]}
   (let [record        (q.accounts/read-record id)
         currency-id   (get-in record [::m.accounts/currency :db/id])
         currency      (q.currencies/read-record currency-id)
@@ -45,23 +45,23 @@
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
-                {::m.accounts/user [::m.users/username]}]}
+                {::m.accounts/user [::m.users/id]}]}
   (get sample/account-map id))
 
 (defresolver user-account-resolver
   [_env {::m.accounts/keys [id]}]
-  {::pc/input  #{::m.users/username}
+  {::pc/input  #{::m.users/id}
    ::pc/output [{::m.accounts/currency [::m.currencies/id]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
-                {::m.accounts/user [::m.users/username]}]}
+                {::m.accounts/user [::m.users/id]}]}
   (get sample/account-map id))
 
 (defresolver user-accounts-resolver
-  [_env {::m.users/keys [username]}]
-  {::pc/input  #{::m.users/username}
+  [_env {::m.users/keys [id]}]
+  {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/accounts [::m.accounts/id]}]}
-  (let [eid      (q.users/find-eid-by-username username)
+  (let [eid      (q.users/find-eid-by-id id)
         records  (q.accounts/index-records-by-user eid)
         accounts (map
                   (fn [{{:db/keys [id]} ::m.accounts/user}]

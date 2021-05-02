@@ -8,11 +8,11 @@
 (s/def ::password string?)
 (def password ::password)
 
-(s/def ::username string?)
-(def username ::username)
+(s/def ::id string?)
+(def id ::id)
 
-(def username-spec
-  {:db/ident       ::username
+(def id-spec
+  {:db/ident       ::id
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
@@ -25,16 +25,16 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::input-params-valid (s/keys :req [::password ::username]))
+(s/def ::input-params-valid (s/keys :req [::password ::id]))
 (def input-params-valid ::input-params-valid)
 
-(s/def ::input-params (s/keys :opt [::password ::username]))
+(s/def ::input-params (s/keys :opt [::password ::id]))
 (def input-params ::input-params)
 
-(s/def ::params (s/keys :req [::password-hash ::username]))
+(s/def ::params (s/keys :req [::password-hash ::id]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [::password-hash ::username]))
+(s/def ::item (s/keys :req [::password-hash ::id]))
 (def item ::item)
 
 (s/def ::ident (s/tuple keyword? ::id))
@@ -51,4 +51,4 @@
 
 (def schema
   [password-hash-spec
-   username-spec])
+   id-spec])

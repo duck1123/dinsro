@@ -69,11 +69,11 @@
 (def ui-transaction-link (comp/factory TransactionLink {:keyfn ::m.transactions/id}))
 
 (defsc UserLink
-  [_this {::m.users/keys [username]}]
-  {:ident         ::m.users/username
-   :initial-state {::m.users/username ""}
-   :query         [::m.users/username]}
-  (let [path (str "/users/" username)]
-    (dom/a {:href path} username)))
+  [_this {::m.users/keys [id]}]
+  {:ident         ::m.users/id
+   :initial-state {::m.users/id ""}
+   :query         [::m.users/id]}
+  (let [path (str "/users/" id)]
+    (dom/a {:href path} id)))
 
-(def ui-user-link (comp/factory UserLink {:keyfn ::m.users/username}))
+(def ui-user-link (comp/factory UserLink {:keyfn ::m.users/id}))

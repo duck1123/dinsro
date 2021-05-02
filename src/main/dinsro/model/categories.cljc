@@ -24,7 +24,7 @@
 (s/def ::user-id :db/id)
 (def user-id ::user-id)
 
-(s/def ::user (s/keys :req [::m.users/username]))
+(s/def ::user (s/keys :req [::m.users/id]))
 (def user ::user)
 (def user-spec
   {:db/ident       user

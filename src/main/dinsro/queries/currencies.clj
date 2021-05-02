@@ -85,7 +85,7 @@
 
 (>defn index-by-user
   [_id]
-  [::m.users/username => (s/coll-of ::m.currencies/item)]
+  [::m.users/id => (s/coll-of ::m.currencies/item)]
   (map read-record (index-ids)))
 
 (defn index-records-by-account

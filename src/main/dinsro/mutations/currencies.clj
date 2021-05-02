@@ -8,7 +8,7 @@
 
 (defn do-create
   [identity {::m.currencies/keys [id name]}]
-  (if-let [_user-eid (q.users/find-eid-by-username identity)]
+  (if-let [_user-eid (q.users/find-eid-by-id identity)]
     (let [_can-create? true ;; should be admin
           params       #::m.currencies{:id   id
                                        :name name}]

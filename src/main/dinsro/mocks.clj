@@ -36,15 +36,15 @@
   ([]
    [=> ::m.accounts/item]
    (let [user        (mock-user)
-         username    (::m.users/username user)
+         username    (::m.users/id user)
          currency    (mock-currency)
          currency-id (::m.currencies/id currency)]
      (mock-account username currency-id)))
   ([username currency-id]
-   [::m.users/username ::m.currencies/id => ::m.accounts/item]
+   [::m.users/id ::m.currencies/id => ::m.accounts/item]
    (let [params (ds/gen-key ::m.accounts/required-params)
          params (-> params
-                    (assoc ::m.accounts/user {::m.users/username username})
+                    (assoc ::m.accounts/user {::m.users/id username})
                     (assoc ::m.accounts/currency {::m.currencies/id currency-id}))
          id     (q.accounts/create-record params)]
      (q.accounts/read-record id))))

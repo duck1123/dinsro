@@ -11,32 +11,32 @@
 (def attribute-list
   '[:db/id
     ::m.users/password-hash
-    ::m.users/username])
+    ::m.users/id])
 
-(def identity-attribute ::m.users/username)
+(def identity-attribute ::m.users/id)
 
-(def find-eid-by-username-query
+(def find-eid-by-id-query
   '[:find  ?eid
-    :in    $ ?username
-    :where [?eid ::m.users/username ?username]])
+    :in    $ ?id
+    :where [?eid ::m.users/id ?id]])
 
-(def find-username-by-eid-query
-  '[:find  ?username
+(def find-id-by-eid-query
+  '[:find  ?id
     :in    $ ?eid
-    :where [?eid ::m.users/username ?username]])
+    :where [?eid ::m.users/id ?id]])
 
 (>defn read-record
   [user-id]
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-id)]
-    (when (get record m.users/username)
+    (when (get record m.users/id)
       (dissoc record :db/id))))
 
 (>defn read-record-by-eid
   [user-dbid]
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-dbid)]
-    (when (get record m.users/username)
+    (when (get record m.users/id)
       (dissoc record :db/id))))
 
 (>defn read-records
@@ -44,31 +44,26 @@
   [(s/coll-of :db/id) => (s/coll-of ::m.users/item)]
   (map read-record-by-eid ids))
 
-(>defn find-id-by-username
-  [username]
-  [::m.users/username => (? :db/id)]
-  (ffirst (d/q find-eid-by-username-query @db/*conn* username)))
+(>defn find-eid-by-id
+  [id]
+  [::m.users/id => (? :db/id)]
+  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
 
-(>defn find-eid-by-username
-  [username]
-  [::m.users/username => :db/id]
-  (ffirst (d/q find-eid-by-username-query @db/*conn* username)))
-
-(>defn find-username-by-eid
+(>defn find-id-by-eid
   [eid]
-  [:db/id => ::m.users/username]
-  (ffirst (d/q find-username-by-eid-query @db/*conn* eid)))
+  [:db/id => ::m.users/id]
+  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
-(>defn find-by-username
-  [username]
-  [::m.users/username => (? ::m.users/item)]
-  (when-let [id (find-id-by-username username)]
-    (read-record id)))
+(>defn find-by-id
+  [id]
+  [::m.users/id => (? ::m.users/item)]
+  (when-let [eid (find-eid-by-id id)]
+    (read-record eid)))
 
 (>defn create-record
   [params]
   [::m.users/params => :db/id]
-  (if (nil? (find-id-by-username (m.users/username params)))
+  (if (nil? (find-eid-by-id (m.users/id params)))
     (let [tempid   (d/tempid "user-id")
           params   (assoc params :db/id tempid)
           response (d/transact db/*conn* {:tx-data [params]})]
@@ -78,7 +73,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.users/username _]] @db/*conn*)))
+  (map first (d/q '[:find ?e :where [?e ::m.users/id _]] @db/*conn*)))
 
 (>defn index-records
   []

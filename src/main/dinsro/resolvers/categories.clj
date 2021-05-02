@@ -18,7 +18,7 @@
         user-eid (get-in record [::m.categories/user :db/id])]
     (-> record
         (assoc ::m.categories/id id)
-        (assoc ::m.categories/user [[::m.users/username user-eid]]))))
+        (assoc ::m.categories/user [[::m.users/id user-eid]]))))
 
 (defn resolve-category-link
   [id]
@@ -33,7 +33,7 @@
   [_env {::m.categories/keys [id]}]
   {::pc/input  #{::m.categories/id}
    ::pc/output [::m.categories/name
-                {::m.categories/user [::m.users/username]}]}
+                {::m.categories/user [::m.users/id]}]}
   (resolve-category id))
 
 (defresolver category-link-resolver
