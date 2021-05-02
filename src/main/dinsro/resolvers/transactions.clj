@@ -3,12 +3,11 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
 (defn resolve-transaction
-  [id]
-  (get sample/transaction-map id))
+  [_id]
+  nil)
 
 (defn resolve-transaction-link
   [id]
@@ -16,7 +15,7 @@
 
 (defn resolve-transactions
   []
-  (let [ids (keys sample/transaction-map)
+  (let [ids    []
         idents (map m.transactions/ident ids)]
     {:all-transactions idents}))
 
