@@ -6,6 +6,8 @@
    [dinsro.layout :refer [error-page] :as layout]
    [dinsro.middleware :as middleware]
    [dinsro.model :as model]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.queries.currencies :as q.currencies]
    [dinsro.routes :as routes]
    [mount.core :as mount]
    [reitit.coercion.spec]
@@ -30,6 +32,10 @@
       :not-acceptable
       (constantly (error-page {:status 406, :title "406 - Not acceptable"}))}))))
 
+(defn seed-db!
+  []
+  (q.currencies/create-record {::m.currencies/id "sats" ::m.currencies/name "Sats"}))
+
 (defn init-schemata
   []
   (doseq [schema model/schemata]
@@ -38,4 +44,5 @@
 (defn app []
   (timbre/info "starting app handler")
   (init-schemata)
+  (seed-db!)
   (middleware/wrap-base #'app-routes))
