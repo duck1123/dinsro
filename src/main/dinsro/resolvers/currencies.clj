@@ -1,5 +1,7 @@
 (ns dinsro.resolvers.currencies
   (:require
+   [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
@@ -22,6 +24,11 @@
     (when-let [record (q.currencies/read-record eid)]
       (dissoc record :db/id))))
 
+(>defn resolve-currency-link
+  [id]
+  [::m.currencies/id => (s/keys)]
+  {::m.currencies/link [(m.currencies/ident id)]})
+
 (defn resolve-user-currencies
   [username]
   (let [currencies (q.currencies/index-by-user username)
@@ -37,13 +44,13 @@
   [_env {::m.currencies/keys [id]}]
   {::pc/input  #{::m.currencies/id}
    ::pc/output [{::m.currencies/link [::m.currencies/id]}]}
-  {::m.currencies/link [[::m.currencies/id id]]})
+  (resolve-currency-link id))
 
 (defresolver currency-resolver
-  [_env {::m.currencies/keys [name]}]
-  {::pc/input  #{::m.currencies/name}
+  [_env {::m.currencies/keys [id]}]
+  {::pc/input  #{::m.currencies/id}
    ::pc/output [::m.currencies/name]}
-  (resolve-currency name))
+  (resolve-currency id))
 
 (defresolver account-currencies-resolver
   [_env _props]
