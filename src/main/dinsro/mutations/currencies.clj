@@ -8,18 +8,20 @@
 
 (defmutation create!
   [{{{:keys [identity]} :session} :request} {::m.currencies/keys [id name]}]
-  {::pc/params #{::m.currencies/name}
+  {::pc/params #{::m.currencies/id ::m.currencies/name}
    ::pc/output [:status
-                :created-category [::m.currencies/id]]}
+                :created-currency [::m.currencies/id]]}
   (if-let [_user-eid (q.users/find-eid-by-username identity)]
-    (let [params #::m.currencies{:id   id
-                                 :name name}]
+    (let [_can-create? true ;; should be admin
+          params       #::m.currencies{:id   id
+                                       :name name}]
       (if-let [_record (q.currencies/create-record params)]
         {:status           :success
-         :created-category [[::m.currencies/id id]]}
+         :created-currency [{::m.currencies/id id}]}
         (do
           (timbre/warn "failed to create currency")
-          {:status :failure})))
+          {:status           :failure
+           :created-currency []})))
     {:status :no-user}))
 
 (defmutation delete!

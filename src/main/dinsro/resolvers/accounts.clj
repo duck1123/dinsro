@@ -5,25 +5,26 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
+   [dinsro.queries.currencies :as q.currencies]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
 (defresolver account-resolver
   [_env {::m.accounts/keys [id]}]
   {::pc/input  #{::m.accounts/id}
-   ::pc/output [{::m.accounts/currency [::m.currencies/id]}
+   ::pc/output [{::m.accounts/currency [::m.currencies/name]}
                 ::m.accounts/initial-value
                 ::m.accounts/name
                 {::m.accounts/user [::m.users/username]}]}
-  (let [record      (q.accounts/read-record id)
-        currency-id (get-in record [::m.accounts/currency :db/id])
-        user-eid     (get-in record [::m.accounts/user :db/id])
-        record      (assoc record ::m.accounts/id id)
-        record      (assoc record ::m.accounts/user [[::m.users/username user-eid]])
-        record      (if (nil? currency-id)
-                      (assoc record ::m.accounts/currency [[::m.currencies/id 0]])
-                      record)]
-    record))
+  (let [record        (q.accounts/read-record id)
+        currency-id   (get-in record [::m.accounts/currency :db/id])
+        currency      (q.currencies/read-record currency-id)
+        currency-name (::m.currencies/name currency)
+        user-eid      (get-in record [::m.accounts/user :db/id])]
+    (-> record
+        (assoc ::m.accounts/id id)
+        (assoc ::m.accounts/user [[::m.users/username user-eid]])
+        (assoc ::m.accounts/currency [[::m.currencies/name currency-name]]))))
 
 (defresolver accounts-resolver
   [_env _props]

@@ -15,12 +15,14 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexCurrencyLine
-  [_this {::m.currencies/keys [id] :as currency}]
+  [_this {::m.currencies/keys [id link]}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/id ""}
-   :query         [::m.currencies/id ::m.currencies/name]}
+   :initial-state {::m.currencies/id   ""
+                   ::m.currencies/link []}
+   :query         [::m.currencies/id
+                   {::m.currencies/link (comp/get-query u.links/CurrencyLink)}]}
   (dom/tr
-   (dom/td (u.links/ui-currency-link currency))
+   (dom/td (u.links/ui-currency-link (first link)))
    (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
 
 (def ui-admin-index-currency-line (comp/factory AdminIndexCurrencyLine {:keyfn ::m.currencies/id}))

@@ -22,10 +22,10 @@
 (s/def ::params (s/keys :req [::id ::name]))
 (def params ::params)
 
-(s/def ::item-opt (s/keys :opt [::name]))
+(s/def ::item-opt (s/keys :opt [::id ::name]))
 (def item-opt ::item-opt)
 
-(s/def ::item (s/keys :req [::name]))
+(s/def ::item (s/keys :req [::id ::name]))
 (def item ::item)
 
 (def schema

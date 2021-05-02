@@ -26,10 +26,20 @@
     :in    $ ?eid
     :where [?eid ::m.currencies/id ?id]])
 
+(def find-name-by-eid-query
+  '[:find  ?name
+    :in    $ ?eid
+    :where [?eid ::m.currencies/name ?name]])
+
 (>defn find-eid-by-id
   [id]
   [::m.currencies/id => :db/id]
   (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+
+(>defn find-name-by-eid
+  [eid]
+  [:db/id => ::m.currencies/name]
+  (ffirst (d/q find-name-by-eid-query @db/*conn* eid)))
 
 (>defn find-id-by-eid
   [eid]

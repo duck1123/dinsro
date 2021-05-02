@@ -29,9 +29,6 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id ::m.currencies/id)
-(def currency-id ::currency-id)
-
 (s/def ::currency
   (s/keys :opt [:db/id
                 ::m.currencies/id]))
