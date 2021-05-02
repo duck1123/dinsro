@@ -215,10 +215,7 @@ compile-production:
   SAVE ARTIFACT classes
 
 deps-builder:
-  FROM +base-builder
-  COPY package.json yarn.lock .
-  COPY --dir +node-deps/node_modules node_modules
-  COPY --dir bb.edn deps.edn script .
+  FROM +script-builder
   DO +IMPORT_JAR_DEPS
 
 deps-dind-builder:
@@ -338,8 +335,7 @@ jar:
   SAVE ARTIFACT target/app.jar /dinsro.jar AS LOCAL target/dinsro.jar
 
 jar-deps:
-  FROM +base-builder
-  COPY --dir bb.edn deps.edn script .
+  FROM +script-builder
   USER root
   RUN rm -rf ${USER_HOME}/.m2
   RUN --mount=type=cache,target=/root/.clojure \
@@ -384,6 +380,12 @@ node-deps:
   COPY package.json yarn.lock .
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
+
+script-builder:
+  FROM +base-builder
+  COPY package.json yarn.lock .
+  COPY --dir +node-deps/node_modules node_modules
+  COPY --dir bb.edn deps.edn script .
 
 src:
   FROM +builder
