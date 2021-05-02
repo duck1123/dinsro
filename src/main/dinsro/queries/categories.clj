@@ -40,7 +40,7 @@
 (>defn create-record
   [params]
   [::m.categories/params => :db/id]
-  (let [params   (assoc params ::m.categories/id (utils/uuid))
+  (let [params   (assoc params ::m.categories/id (str (utils/uuid)))
         params   (assoc params :db/id "record-id")
         response (d/transact db/*conn* {:tx-data [params]})]
     (get-in response [:tempids "record-id"])))

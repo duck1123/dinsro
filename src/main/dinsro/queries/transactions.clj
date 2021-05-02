@@ -39,7 +39,7 @@
   [::m.transactions/params => :db/id]
   (let [tempid          (d/tempid "transaction-id")
         prepared-params (-> params
-                            (assoc  ::m.transactions/id (utils/uuid))
+                            (assoc  ::m.transactions/id (str (utils/uuid)))
                             (assoc  :db/id tempid)
                             (update ::m.transactions/date tick/inst))
         response        (d/transact db/*conn* {:tx-data [prepared-params]})]

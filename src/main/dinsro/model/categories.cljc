@@ -6,11 +6,11 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
-(s/def ::id        uuid?)
+(s/def ::id        string?)
 (def id            ::id)
 (def id-spec
   {:db/ident       id
-   :db/valueType   :db.type/uuid
+   :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 

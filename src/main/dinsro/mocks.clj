@@ -116,7 +116,7 @@
   (q.accounts/read-record 60)
 
   (mock-rate-source)
-  (mock-rate-source #uuid "a9a4cdeb-5d82-4725-b834-d1fd22dbf26b")
+  (mock-rate-source "a9a4cdeb-5d82-4725-b834-d1fd22dbf26b")
   (q.rate-sources/index-ids)
   (q.rate-sources/read-record 111)
 
