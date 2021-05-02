@@ -10,13 +10,28 @@
 (def sats {::m.currencies/id   "sats"
            ::m.currencies/name "Sats"})
 
+(defn resolve-currencies
+  []
+  (let [records (q.currencies/index-records)
+        idents  (map m.currencies/ident-item records)]
+    {:all-currencies idents}))
+
+(defn resolve-currency
+  [id]
+  (when-let [eid (q.currencies/find-eid-by-id id)]
+    (when-let [record (q.currencies/read-record eid)]
+      (dissoc record :db/id))))
+
+(defn resolve-user-currencies
+  [username]
+  (let [currencies (q.currencies/index-by-user username)
+        idents     (map m.currencies/ident-item currencies)]
+    {::m.users/currencies idents}))
+
 (defresolver currencies-resolver
   [_env _props]
   {::pc/output [{:all-currencies [::m.currencies/name]}]}
-  {:all-currencies
-   (map (fn [{::m.currencies/keys [id]}]
-          [::m.currencies/id id])
-        (q.currencies/index-records))})
+  (resolve-currencies))
 
 (defresolver currencies-link-resolver
   [_env {::m.currencies/keys [id]}]
@@ -28,8 +43,7 @@
   [_env {::m.currencies/keys [name]}]
   {::pc/input  #{::m.currencies/name}
    ::pc/output [::m.currencies/name]}
-  (when-let [record (q.currencies/read-record name)]
-    (dissoc record :db/id)))
+  (resolve-currency name))
 
 (defresolver account-currencies-resolver
   [_env _props]
@@ -41,7 +55,7 @@
   [_env {::m.users/keys [id]}]
   {::pc/input  #{::m.users/id}
    ::pc/output [{::m.users/currencies [::m.currencies/id]}]}
-  {::m.users/currencies (q.currencies/index-by-user id)})
+  (resolve-user-currencies id))
 
 (def resolvers
   [account-currencies-resolver

@@ -8,8 +8,9 @@
 
 (defn resolve-categories
   []
-  {:all-categories
-   (map m.categories/ident (q.categories/index-ids))})
+  (let [ids        (q.categories/index-ids)
+        idents (map m.categories/ident ids)]
+    {:all-categories idents}))
 
 (defn resolve-category
   [id]
@@ -18,7 +19,7 @@
         user-eid (get-in record [::m.categories/user :db/id])]
     (-> record
         (assoc ::m.categories/id id)
-        (assoc ::m.categories/user [[::m.users/id user-eid]]))))
+        (assoc ::m.categories/user [(m.users/ident user-eid)]))))
 
 (defn resolve-category-link
   [id]
