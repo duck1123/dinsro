@@ -16,7 +16,7 @@
    :initial-state {::m.currencies/id   ""
                    ::m.currencies/link []}
    :query         [::m.currencies/id
-                   {::m.currencies/link (comp/factory u.links/ui-currency-link)}]}
+                   {::m.currencies/link (comp/get-query u.links/ui-currency-link)}]}
   (dom/tr
    (dom/td (u.links/ui-currency-link (first link)))
    (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))

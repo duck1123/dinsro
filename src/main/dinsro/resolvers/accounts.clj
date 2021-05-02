@@ -6,6 +6,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.currencies :as q.currencies]
+   [dinsro.queries.users :as q.users]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
@@ -60,7 +61,8 @@
   [_env {::m.users/keys [username]}]
   {::pc/input  #{::m.users/username}
    ::pc/output [{::m.users/accounts [::m.accounts/id]}]}
-  (let [records  (q.accounts/index-records-by-user username)
+  (let [eid      (q.users/find-eid-by-username username)
+        records  (q.accounts/index-records-by-user eid)
         accounts (map
                   (fn [{{:db/keys [id]} ::m.accounts/user}]
                     (m.accounts/ident id))
