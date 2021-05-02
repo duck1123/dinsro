@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs]))
 
@@ -50,6 +51,18 @@
 
 (s/def ::items (s/coll-of ::item))
 (def items ::items)
+
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
 
 (def schema
   [currency-spec

@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [taoensso.timbre :as timbre]))
 
 (s/def ::password string?)
@@ -35,6 +36,18 @@
 
 (s/def ::item (s/keys :req [::password-hash ::username]))
 (def item ::item)
+
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
 
 (def schema
   [password-hash-spec

@@ -1,6 +1,7 @@
 (ns dinsro.model.rates
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]))
 
@@ -50,6 +51,18 @@
 
 (s/def ::item (s/keys :req [::id ::rate ::currency ::date]))
 (def item ::item)
+
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
 
 (def schema
   [currency-spec

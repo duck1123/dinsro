@@ -1,6 +1,7 @@
 (ns dinsro.model.transactions
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]))
 
@@ -53,6 +54,18 @@
 
 (s/def ::item (s/keys :req [::id ::account ::date ::description ::value]))
 (def item ::item)
+
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
 
 (def schema
   [account-spec
