@@ -6,11 +6,8 @@
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
 
-(defmutation create!
-  [{{{:keys [identity]} :session} :request} params]
-  {::pc/params #{::m.accounts/name}
-   ::pc/output [:status
-                :items [::m.accounts/id]]}
+(defn do-create
+  [identity params]
   (if-let [user-id (q.users/find-id-by-username identity)]
     (let [currency-id (get-in params [::m.accounts/currency :db/id])
           params      (assoc-in params [::m.accounts/user :db/id] user-id)
@@ -23,12 +20,23 @@
         {:status :failure}))
     {:status :no-user}))
 
+(defn do-delete
+  [id]
+  (q.accounts/delete-record id)
+  {:status :success})
+
+(defmutation create!
+  [{{{:keys [identity]} :session} :request} params]
+  {::pc/params #{::m.accounts/name}
+   ::pc/output [:status
+                :items [::m.accounts/id]]}
+  (do-create identity params))
+
 (defmutation delete!
   [_env {::m.accounts/keys [id]}]
   {::pc/params #{::m.accounts/id}
    ::pc/output [:status]}
-  (q.accounts/delete-record id)
-  {:status :success})
+  (do-delete id))
 
 (def resolvers
   [create!

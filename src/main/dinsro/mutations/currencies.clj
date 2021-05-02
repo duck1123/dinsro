@@ -6,11 +6,8 @@
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as timbre]))
 
-(defmutation create!
-  [{{{:keys [identity]} :session} :request} {::m.currencies/keys [id name]}]
-  {::pc/params #{::m.currencies/id ::m.currencies/name}
-   ::pc/output [:status
-                :created-currency [::m.currencies/id]]}
+(defn do-create
+  [identity {::m.currencies/keys [id name]}]
   (if-let [_user-eid (q.users/find-eid-by-username identity)]
     (let [_can-create? true ;; should be admin
           params       #::m.currencies{:id   id
@@ -24,14 +21,24 @@
            :created-currency []})))
     {:status :no-user}))
 
+(defn do-delete
+  [id]
+  (let [eid (q.currencies/find-eid-by-id id)]
+    (q.currencies/delete-record eid))
+  {:status :success})
+
+(defmutation create!
+  [{{{:keys [identity]} :session} :request} params]
+  {::pc/params #{::m.currencies/id ::m.currencies/name}
+   ::pc/output [:status
+                :created-currency [::m.currencies/id]]}
+  (do-create identity params))
+
 (defmutation delete!
   [_request {::m.currencies/keys [id]}]
   {::pc/params #{::m.currencies/id}
    ::pc/output [:status :message]}
-  (do
-    (let [eid (q.currencies/find-eid-by-id id)]
-      (q.currencies/delete-record eid))
-    {:status :success}))
+  (do-delete id))
 
 (def resolvers
   [create!

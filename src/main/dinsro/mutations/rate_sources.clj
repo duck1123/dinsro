@@ -5,21 +5,28 @@
    [dinsro.queries.rate-sources :as q.rate-sources]
    [taoensso.timbre :as timbre]))
 
+(defn do-create
+  [params]
+  (if-let [record (q.rate-sources/create-record params)]
+    {:status :success
+     :item   [(m.rate-sources/ident (:db/id record))]}
+    {:status :failure}))
+
+(defn do-delete
+  [id]
+  (q.rate-sources/delete-record id)
+  {:status :success})
+
 (defmutation create!
   [_env params]
   {::pc/params #{:name :url :currency-id}
-   ::pc/output [:status
-                {:item [::m.rate-sources/id]}]}
-  (if-let [record (q.rate-sources/create-record params)]
-    {:status :success
-     :item   [{::m.rate-sources/id (:db/id record)}]}
-    {:status :failure}))
+   ::pc/output [:status {:item [::m.rate-sources/id]}]}
+  (do-create params))
 
 (defmutation delete!
   [_request {::m.rate-sources/keys [id]}]
   {::pc/params #{::m.rate-sources/id}
    ::pc/output [:status]}
-  (q.rate-sources/delete-record id)
-  {:status :success})
+  (do-delete id))
 
 (def resolvers [create! delete!])

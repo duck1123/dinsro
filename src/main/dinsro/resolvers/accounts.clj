@@ -23,20 +23,20 @@
         user-eid      (get-in record [::m.accounts/user :db/id])]
     (-> record
         (assoc ::m.accounts/id id)
-        (assoc ::m.accounts/user [[::m.users/username user-eid]])
-        (assoc ::m.accounts/currency [[::m.currencies/name currency-name]]))))
+        (assoc ::m.accounts/user [(m.users/ident user-eid)])
+        (assoc ::m.accounts/currency [(m.currencies/ident currency-name)]))))
 
 (defresolver accounts-resolver
   [_env _props]
   {::pc/output [{:all-accounts [::m.accounts/id]}]}
   {:all-accounts
-   (map (fn [id] [::m.accounts/id id]) (q.accounts/index-ids))})
+   (map m.accounts/ident (q.accounts/index-ids))})
 
 (defresolver account-link-resolver
   [_env {::m.accounts/keys [id]}]
   {::pc/input  #{::m.accounts/id}
    ::pc/output [{::m.accounts/link [::m.accounts/id]}]}
-  {::m.accounts/link [[::m.accounts/id id]]})
+  {::m.accounts/link [(m.accounts/ident id)]})
 
 (defresolver currency-account-resolver
   [_env {::m.currencies/keys [id]}]
@@ -63,7 +63,7 @@
   (let [records  (q.accounts/index-records-by-user username)
         accounts (map
                   (fn [{{:db/keys [id]} ::m.accounts/user}]
-                    [::m.accounts/id id])
+                    (m.accounts/ident id))
                   records)]
     {::m.users/accounts accounts}))
 
