@@ -52,13 +52,13 @@
 (defn mock-category
   ([]
    (let [user    (mock-user)
-         user-id (:db/id user)]
+         user-id (::m.users/id user)]
      (mock-category user-id)))
   ([user-id]
    (let [params (ds/gen-key ::m.categories/params)
-         params (assoc-in params [::m.categories/user :db/id] user-id)
-         id     (q.categories/create-record params)]
-     (q.categories/read-record id))))
+         params (assoc-in params [::m.categories/user ::m.users/id] user-id)
+         eid     (q.categories/create-record params)]
+     (q.categories/read-record eid))))
 
 (>defn mock-rate
   ([]

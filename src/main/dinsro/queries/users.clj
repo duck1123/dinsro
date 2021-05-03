@@ -51,7 +51,7 @@
 
 (>defn find-id-by-eid
   [eid]
-  [:db/id => ::m.users/id]
+  [:db/id => (? ::m.users/id)]
   (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
 (>defn find-by-id
