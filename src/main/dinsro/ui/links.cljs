@@ -26,7 +26,7 @@
 (defsc CategoryLink
   [_this {::m.categories/keys [id name]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   0
+   :initial-state {::m.categories/id   ""
                    ::m.categories/name ""}
    :query         [::m.categories/id ::m.categories/name]}
   (let [path (str "/categories/" id)]

@@ -8,23 +8,22 @@
    [taoensso.timbre :as timbre]))
 
 (defn do-create
-  [identity params]
-  (let [{::m.categories/keys [name]} params]
-    (if-let [_user-eid (q.users/find-eid-by-id identity)]
-      (let [params {::m.categories/name name
-                    ::m.categories/user {m.users/id identity}}]
-        (if-let [record (q.categories/create-record params)]
-          {:status           :success
-           :created-category [{::m.categories/id (:db/id record)}]}
-          {:status :failure}))
-      {:status :no-user})))
+  [identity name]
+  (if-let [_user-eid (q.users/find-eid-by-id identity)]
+    (let [params {::m.categories/name name
+                  ::m.categories/user {m.users/id identity}}]
+      (if-let [record (q.categories/create-record params)]
+        {:status           :success
+         :created-category [{::m.categories/id (:db/id record)}]}
+        {:status :failure}))
+    {:status :no-user}))
 
 (defmutation create!
-  [{{{:keys [identity]} :session} :request} params]
+  [{{{:keys [identity]} :session} :request} {::m.categories/keys [name]}]
   {::pc/params #{::m.categories/name}
    ::pc/output [:status
                 :created-category [::m.categories/id]]}
-  (do-create identity params))
+  (do-create identity name))
 
 (defmutation delete!
   [_request {::m.categories/keys [id]}]

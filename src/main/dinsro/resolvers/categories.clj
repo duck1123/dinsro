@@ -8,18 +8,18 @@
 
 (defn resolve-categories
   []
-  (let [ids        (q.categories/index-ids)
-        idents (map m.categories/ident ids)]
+  (let [records (q.categories/index-records)
+        idents  (map m.categories/ident-item records)]
     {:all-categories idents}))
 
 (defn resolve-category
   [id]
-  (let [record   (q.categories/read-record id)
-        id       (:db/id record)
-        user-eid (get-in record [::m.categories/user :db/id])]
+  (let [eid     (q.categories/find-eid-by-id id)
+        record  (q.categories/read-record eid)
+        user-id (get-in record [::m.categories/user ::m.users/id])]
     (-> record
         (assoc ::m.categories/id id)
-        (assoc ::m.categories/user [(m.users/ident user-eid)]))))
+        (assoc ::m.categories/user [(m.users/ident user-id)]))))
 
 (defn resolve-category-link
   [id]

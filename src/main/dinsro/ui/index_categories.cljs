@@ -12,7 +12,7 @@
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [name user]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   0
+   :initial-state {::m.categories/id   ""
                    ::m.categories/name ""
                    ::m.categories/user {}}
    :query         [::m.categories/id

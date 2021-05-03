@@ -29,12 +29,12 @@
 
 (>defn find-eid-by-id
   [id]
-  [::m.categories/id => :db/id]
+  [::m.categories/id => (? :db/id)]
   (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
 
 (>defn find-id-by-eid
   [eid]
-  [:db/id => ::m.categories/id]
+  [:db/id => (? ::m.categories/id)]
   (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
 (>defn create-record
@@ -64,7 +64,8 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.categories/item)]
-  (d/pull-many @db/*conn* '[*] (index-ids)))
+  (map read-record (index-ids))
+  #_(d/pull-many @db/*conn* '[*] (index-ids)))
 
 (>defn delete-record
   [id]
