@@ -16,7 +16,8 @@
    [mount.core :as mount]
    [reitit.coercion.spec]
    [reitit.ring :as ring]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as timbre]
+   [dinsro.mutations.accounts :as mu.accounts]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
@@ -48,7 +49,8 @@
   (mu.currencies/do-create "eur" "Euros" "admin")
   (mu.categories/do-create "admin" "a")
   (mu.categories/do-create "admin" "b")
-  (mu.categories/do-create "admin" "c"))
+  (mu.categories/do-create "admin" "c")
+  (mu.accounts/do-create "savings" "sats" "admin" 0))
 
 (defn init-schemata
   []

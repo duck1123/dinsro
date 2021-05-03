@@ -66,15 +66,13 @@
    :db/cardinality :db.cardinality/one})
 
 (s/def ::required-params
-  (s/keys :req [::id
-                ::name
+  (s/keys :req [::name
                 ::initial-value]))
 (def required-params
   "Required params for accounts"
   ::required-params)
 (s/def ::params
-  (s/keys :req [::id
-                ::name
+  (s/keys :req [::name
                 ::initial-value]
           :opt [::currency
                 ::user]))
