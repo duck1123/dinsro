@@ -24,7 +24,9 @@
    (fn [this]
      (let [{::m.users/keys [id]} (::user (comp/props this))]
        (when (seq id)
-         (df/load! this [::m.users/id id] UserAccounts))))
+         (df/load! this (m.users/ident id) UserAccounts)
+         (df/load! this {(m.users/ident id) ::m.users/categories}
+                   u.user-categories/UserCategories))))
    :ident (fn [] [:page/id ::page])
    :initial-state {::user              {}
                    ::user-accounts     {}
