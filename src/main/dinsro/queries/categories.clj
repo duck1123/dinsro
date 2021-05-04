@@ -37,6 +37,11 @@
   [:db/id => (? ::m.categories/id)]
   (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
 
+(>defn find-by-name-and-user
+  [_name _user-id]
+  [::m.categories/name ::m.categories/id => (? (s/keys))]
+  nil)
+
 (>defn create-record
   [params]
   [::m.categories/params => :db/id]
