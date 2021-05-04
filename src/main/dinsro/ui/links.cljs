@@ -35,11 +35,13 @@
 (def ui-category-link (comp/factory CategoryLink {:keyfn ::m.categories/id}))
 
 (defsc CurrencyLink
-  [_this {::m.currencies/keys [name]}]
-  {:ident         ::m.currencies/name
-   :initial-state {::m.currencies/name ""}
-   :query         [::m.currencies/name]}
-  (let [path (str "/currencies/" name)]
+  [_this {::m.currencies/keys [id name]}]
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
+                   ::m.currencies/name ""}
+   :query         [::m.currencies/name
+                   ::m.currencies/id]}
+  (let [path (str "/currencies/" id)]
     (dom/a {:href path} name)))
 
 (def ui-currency-link (comp/factory CurrencyLink {:keyfn ::m.currencies/name}))
