@@ -7,23 +7,21 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
-   [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.users :as q.users]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
 (>defn resolve-account
   [id]
-  [::m.accounts/id => ::m.accounts/item]
-  (let [record        (q.accounts/read-record id)
-        currency-id   (get-in record [::m.accounts/currency :db/id])
-        currency      (q.currencies/read-record currency-id)
-        currency-name (::m.currencies/name currency)
-        user-eid      (get-in record [::m.accounts/user :db/id])]
+  [::m.accounts/id => (s/keys) #_::m.accounts/item]
+  (let [eid         (q.accounts/find-eid-by-id id)
+        record      (q.accounts/read-record eid)
+        currency-id (get-in record [::m.accounts/currency ::m.currencies/id])
+        user-id     (get-in record [::m.accounts/user ::m.users/id])]
     (-> record
         (assoc ::m.accounts/id id)
-        (assoc ::m.accounts/user [(m.users/ident user-eid)])
-        (assoc ::m.accounts/currency [(m.currencies/ident currency-name)]))))
+        (assoc ::m.accounts/user [(m.users/ident user-id)])
+        (assoc ::m.accounts/currency [(m.currencies/ident currency-id)]))))
 
 (>defn resolve-account-link
   [id]
