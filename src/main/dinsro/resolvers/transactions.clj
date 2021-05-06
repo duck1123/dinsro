@@ -8,7 +8,7 @@
 
 (defresolver transaction-resolver
   [_env {::m.transactions/keys [id]}]
-  {::pc/input #{::m.transactions/id}
+  {::pc/input  #{::m.transactions/id}
    ::pc/output [{::m.transactions/account [::m.accounts/id]}
                 ::m.transactions/date
                 ::m.transactions/description]}
@@ -16,7 +16,7 @@
 
 (defresolver transaction-link-resolver
   [_env {::m.transactions/keys [id]}]
-  {::pc/input #{::m.transactions/id}
+  {::pc/input  #{::m.transactions/id}
    ::pc/output [{::m.transactions/link [::m.transactions/id]}]}
   {::m.transactions/link [[::m.transactions/id id]]})
 

@@ -25,7 +25,7 @@
    {}
    (dom/td {} id)
    (dom/td {} (u.links/ui-transaction-link (first link)))
-   (dom/td {} (u.buttons/ui-delete-button {::m.transactions/id id}))))
+   (dom/td {} (u.buttons/ui-delete-transaction-button {::m.transactions/id id}))))
 
 (def ui-index-transaction-line (comp/factory IndexTransactionLine {:keyfn ::m.transactions/id}))
 

@@ -9,12 +9,13 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.ui.links :as u.links]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.translations :refer [tr]]
+   [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexCategoryLine
-  [_this {::m.categories/keys [user]
+  [_this {::m.categories/keys [id user]
           :as category}]
   {:ident ::m.categories/id
    :initial-state {::m.categories/id      0
@@ -24,9 +25,8 @@
            {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr
    (dom/td (u.links/ui-category-link category))
-   (dom/td (u.links/ui-user-link user))
-   (dom/td
-    (dom/button :.button.is-danger "Delete"))))
+   (dom/td (u.links/ui-user-link (first user)))
+   (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine {:keyfn ::m.categories/id}))
 

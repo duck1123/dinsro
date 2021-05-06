@@ -1,12 +1,14 @@
 (ns dinsro.queries.currencies-test
   (:require
-   [clojure.test :refer [deftest is use-fixtures]]
+   [clojure.test :refer [use-fixtures]]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
+   [fulcro-spec.check :as _]
+   [fulcro-spec.core :refer [assertions behavior specification]]
    [taoensso.timbre :as timbre]))
 
 (def schemata
@@ -15,36 +17,38 @@
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
-(deftest create-record-success
-  (let [params (ds/gen-key ::m.currencies/params)
-        response (q.currencies/create-record params)]
-    (is (not (nil? response)))))
+(specification "create-record"
+  (behavior "when the params are valid"
+    (let [params (ds/gen-key ::m.currencies/params)]
+      (assertions
+       (q.currencies/create-record params) =check=> (_/is?* number?)))))
 
-(deftest read-record-success
-  (let [item (mocks/mock-currency)
-        id (:db/id item)
-        response (q.currencies/read-record id)]
-    (is (= item response))))
+(specification "read-record"
+  (behavior "success"
+    (let [{::m.currencies/keys [id] :as item} (mocks/mock-currency)]
+      (assertions
+       (q.currencies/read-record (q.currencies/find-eid-by-id id)) => item)))
+  (behavior "not found"
+    (let [id (ds/gen-key :db/id)]
+      (assertions
+       "should return nil"
+       (q.currencies/read-record id) => nil))))
 
-(deftest read-record-not-found
-  (let [id (ds/gen-key ::ds/id)
-        response (q.currencies/read-record id)]
-    (is (nil? response))))
+(specification "index-records"
+  (behavior "success"
+    (q.currencies/delete-all)
+    (assertions
+     (q.currencies/index-records) => []))
+  (behavior "with records"
+    (let [currency (mocks/mock-currency)]
+      (assertions
+       (q.currencies/index-records) => [currency]))))
 
-(deftest index-records-success
-  (q.currencies/delete-all)
-  (is (= [] (q.currencies/index-records))))
-
-(deftest index-records-with-records
-  (is (not= nil (mocks/mock-user)))
-  (let [params (ds/gen-key ::m.currencies/params)]
-    (q.currencies/create-record params)
-    (is (not= [params] (q.currencies/index-records)))))
-
-(deftest delete-record
-  (let [currency (mocks/mock-currency)
-        id (:db/id currency)]
-    (is (not (nil? (q.currencies/read-record id))))
-    (let [response (q.currencies/delete-record id)]
-      (is (nil? response))
-      (is (nil? (q.currencies/read-record id))))))
+(specification "delete-record"
+  (behavior "success"
+    (let [{::m.currencies/keys [id] :as record} (mocks/mock-currency)
+          eid                                   (q.currencies/find-eid-by-id id)]
+      (assertions
+       (q.currencies/read-record eid) => record
+       (q.currencies/delete-record eid) => nil
+       (q.currencies/read-record eid) => nil))))

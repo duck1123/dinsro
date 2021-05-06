@@ -2,15 +2,15 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexAccountLine
-  [_this {::m.accounts/keys [name user currency initial-value]}]
+  [_this {::m.accounts/keys [currency id initial-value name user]}]
   {:initial-state {::m.accounts/currency      ""
                    ::m.accounts/id            1
                    ::m.accounts/initial-value 0
@@ -26,8 +26,7 @@
    (dom/td user)
    (dom/td currency)
    (dom/td initial-value)
-   (dom/td
-    (ui-button {:content (tr [:delete])}))))
+   (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 
 (def ui-index-account-line
   (comp/factory IndexAccountLine {:keyfn ::m.accounts/id}))

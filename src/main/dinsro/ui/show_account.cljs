@@ -4,13 +4,14 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as timbre]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc ShowAccount
-  [_this {::m.accounts/keys [account currency name user]}]
+  [_this {::m.accounts/keys [account currency id name user]}]
   {:ident ::m.accounts/id
    :initial-state {::m.accounts/account  {}
                    ::m.accounts/currency {}
@@ -27,10 +28,10 @@
    (dom/p (u.links/ui-account-link account))
    (dom/p
     (tr [:user-label])
-    (u.links/ui-user-link user))
+    (u.links/ui-user-link (first user)))
    (dom/p
     (tr [:currency-label])
-    (u.links/ui-currency-link currency))
-   (dom/button :.button.is-danger "Delete Account")))
+    (u.links/ui-currency-link (first currency)))
+   (u.buttons/ui-delete-account-button {::m.accounts/id id})))
 
 (def ui-show-account (comp/factory ShowAccount))

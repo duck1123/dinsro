@@ -25,8 +25,7 @@
    (dom/td (u.links/ui-currency-link currency))
    (dom/td date)
    (dom/td rate)
-   (dom/td
-    (u.buttons/ui-delete-button {::m.rates/id id}))))
+   (dom/td (u.buttons/ui-delete-rate-button {::m.rates/id id}))))
 
 (def ui-index-rate-source-line (comp/factory IndexRateLine {:keyfn ::m.rates/id}))
 

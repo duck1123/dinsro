@@ -1,12 +1,13 @@
 (ns dinsro.resolvers.navlink
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
+   [dinsro.queries.settings :as q.settings]
    [dinsro.sample :as sample]
    [taoensso.timbre :as timbre]))
 
 (defresolver navlink-resolver
   [_env {:navlink/keys [id]}]
-  {::pc/input #{:navlink/id}
+  {::pc/input  #{:navlink/id}
    ::pc/output [:navlink/href
                 :navlink/name
                 :navlink/path]}
@@ -33,6 +34,16 @@
   {:menu-links (map (fn [id] [:navlink/id id]) [:accounts
                                                 :transactions])})
 
+(defresolver unauth-links-resolver
+  [_env _props]
+  {::pc/output [{:unauth-links [:navlink/id]}]}
+  (let [registration-enabled? (:allow-registration (q.settings/get-settings))]
+    {:unauth-links
+     (filter identity
+             [(:login sample/navlink-map)
+              (when registration-enabled?
+                (:registration sample/navlink-map))])}))
+
 (defresolver dropdown-links-resolver
   [_env _props]
   {::pc/output [{:dropdown-links [:navlink/id]}]}
@@ -54,4 +65,5 @@
    navlinks-resolver
    navlink-map-resolver
    auth-link-resolver
+   unauth-links-resolver
    menu-links-resolver])

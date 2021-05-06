@@ -6,19 +6,43 @@
    [dinsro.queries.categories :as q.categories]
    [taoensso.timbre :as timbre]))
 
+(defn resolve-categories
+  []
+  {:all-categories
+   (map m.categories/ident (q.categories/index-ids))})
+
+(defn resolve-category
+  [id]
+  (let [record   (q.categories/read-record id)
+        id       (:db/id record)
+        user-eid (get-in record [::m.categories/user :db/id])]
+    (-> record
+        (assoc ::m.categories/id id)
+        (assoc ::m.categories/user [[::m.users/username user-eid]]))))
+
+(defn resolve-category-link
+  [id]
+  {::m.categories/link [(m.categories/ident id)]})
+
 (defresolver categories-resolver
   [_env _props]
   {::pc/output [{:all-categories [::m.categories/id]}]}
-  {:all-categories
-   (map (fn [id] [::m.categories/id id]) (q.categories/index-ids))})
+  (resolve-categories))
 
 (defresolver category-resolver
   [_env {::m.categories/keys [id]}]
-  {::pc/input #{::m.categories/id}
+  {::pc/input  #{::m.categories/id}
    ::pc/output [::m.categories/name
-                {::m.categories/user [::m.users/id]}]}
-  (let [record (q.categories/read-record id)
-        id (:db/id record)]
-    (assoc record ::m.categories/id id)))
+                {::m.categories/user [::m.users/username]}]}
+  (resolve-category id))
 
-(def resolvers [category-resolver categories-resolver])
+(defresolver category-link-resolver
+  [_env {::m.categories/keys [id]}]
+  {::pc/input  #{::m.categories/id}
+   ::pc/output [{::m.categories/link [::m.categories/id]}]}
+  (resolve-category-link id))
+
+(def resolvers
+  [category-resolver
+   category-link-resolver
+   categories-resolver])

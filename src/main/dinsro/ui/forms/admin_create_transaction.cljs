@@ -8,7 +8,8 @@
 
 (defsc AdminCreateTransactionForm
   [_this {::keys [description value]}]
-  {:initial-state {::description ""
+  {:ident (fn [] [:component/id ::form])
+   :initial-state {::description ""
                    ::value       ""}
    :query [::description
            ::value]}

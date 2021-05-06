@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   dinsro:
-    image: duck1123/dinsro:dev-sources-latest
+    image: duck1123/dinsro:dev-latest
     depends_on:
     - frontend
     labels:
@@ -25,7 +25,7 @@ services:
     - ".:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
     - "./data:/var/lib/dinsro/data"
-    - "./docker-config.edn:/etc/dinsro/config.edn"
+    - "./resources/docker/config.edn:/etc/dinsro/config.edn"
 
   frontend:
     image: traefik:v2.0
@@ -34,5 +34,5 @@ services:
       - "8081:8081"
       - "8080:8080"
     volumes:
-      - ${PWD}/traefik.yml:/etc/traefik/traefik.yml
+      - ${PWD}/resources/traefik/traefik.yml:/etc/traefik/traefik.yml
       - /var/run/docker.sock:/var/run/docker.sock

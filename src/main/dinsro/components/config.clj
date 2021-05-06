@@ -7,16 +7,30 @@
    [taoensso.timbre :as timbre])
   (:import java.io.File))
 
+(defn get-config-path
+  []
+  (let [paths [(env :config-file)
+               "config/app.edn"
+               "config.edn"]
+        files (concat (map (fn [path]
+                             (when path
+                               (let [file (File. path)]
+                                 (when (.exists file)
+                                   (.getAbsolutePath file)))))
+                           paths)
+                      paths)
+        files (filter identity files)]
+    (first files)))
+
 (defstate config
   "The overrides option in args is for overriding
    configuration in tests."
   :start
-  (let [{:keys [config overrides]} (args)
-        config-path (or config
-                        (.getAbsolutePath
-                         (File. (or (env :config-file) "config.edn"))))
-        loaded-config (merge (fserver/load-config! {:config-path config-path})
-                             overrides)]
-    (timbre/info "Loading config" config)
+  (let [{:keys [overrides]} (args)
+        loaded-config       (merge (fserver/load-config!
+                                    {:config-path   (get-config-path)
+                                     :defaults-path "config/defaults.edn"})
+                                   overrides)]
     (logging/configure-logging! loaded-config)
+    (println (logging/p loaded-config))
     loaded-config))

@@ -4,7 +4,6 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.machines :as machines]
-   [dinsro.mutations :as mutations]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
@@ -16,7 +15,7 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexAccountLine
-  [this {::m.accounts/keys [currency id initial-value link user]}]
+  [_this {::m.accounts/keys [currency id initial-value link user]}]
   {:initial-state {::m.accounts/currency      {}
                    ::m.accounts/id            0
                    ::m.accounts/initial-value 0
@@ -33,24 +32,14 @@
    (dom/td {} (u.links/ui-user-link user))
    (dom/td {} (u.links/ui-currency-link (first currency)))
    (dom/td {} initial-value)
-   (dom/td
-    (dom/button
-     :.button.is-danger
-     {:onClick
-      (fn [ev]
-        (timbre/info "clicked")
-        (comp/transact! this [`(mutations/delete {::m.accounts/id id})])
-        (js/console.log ev))}
-     "Delete"))))
+   (dom/td {} (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
   [this {::keys [accounts form toggle-button]}]
   {:componentDidMount
-   (fn [this]
-     (timbre/info "did mount")
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts}))
+   #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts})
    :ident (fn [_] [:component/id ::AdminIndexAccounts])
    :initial-state {::accounts      []
                    ::form          {:form-button/id form-toggle-sm}

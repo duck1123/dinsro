@@ -9,7 +9,7 @@
 (defonce history
   (pushy/pushy
    (fn [p]
-     (let [parts (vec (rest (string/split p "/")))
+     (let [parts          (vec (rest (string/split p "/")))
            route-segments (if (seq parts) parts [""])]
        (dr/change-route! da/app route-segments)))
    identity))

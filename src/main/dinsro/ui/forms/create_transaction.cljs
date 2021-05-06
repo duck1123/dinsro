@@ -9,7 +9,8 @@
 
 (defsc CreateTransactionForm
   [_this {::keys [description value]}]
-  {:initial-state {::description {}
+  {:ident (fn [] [:component/id ::form])
+   :initial-state {::description {}
                    ::input       {}
                    ::value       {}}
    :query [{::description (comp/get-query u.inputs/TextInput)}

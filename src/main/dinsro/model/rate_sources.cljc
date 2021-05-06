@@ -2,7 +2,17 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.specs]))
+
+(s/def ::id        uuid?)
+(def id            ::id)
+(def id-spec
+  {:db/ident       id
+   :db/valueType   :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
 
 (s/def ::name string?)
 (def name ::name)
@@ -20,10 +30,9 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::currency-id :db/id)
-(def currency-id ::currency-id)
-
-(s/def ::currency (s/keys :req [:db/id]))
+(s/def ::currency
+  (s/keys :opt [:db/id
+                ::m.currencies/id]))
 (def currency ::currency)
 
 (def currency-spec
@@ -31,14 +40,32 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
+(s/def ::required-params (s/keys :req [::name ::url]))
+(def required-params ::required-params)
+
 (s/def ::params (s/keys :req [::name ::url ::currency]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [:db/id ::name ::url ::currency]))
+(s/def ::item (s/keys :req [::id ::name ::url ::currency]))
 (def item ::item)
 
 (s/def ::items (s/coll-of ::item))
 (def items ::items)
 
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
+
 (def schema
-  [name-spec url-spec currency-spec])
+  [currency-spec
+   id-spec
+   name-spec
+   url-spec])

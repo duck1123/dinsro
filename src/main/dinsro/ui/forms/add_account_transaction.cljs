@@ -11,7 +11,7 @@
 
 (defsc AddAccountTransactionForm
   [this {::keys [datepicker description name submit-button]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::datepicker    {}
                    ::description   ""
                    ::name          ""

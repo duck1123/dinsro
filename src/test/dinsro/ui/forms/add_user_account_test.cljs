@@ -21,6 +21,6 @@
                                              u.inputs/PrimaryButton)
        ::u.f.add-user-account/currency      (comp/get-initial-state
                                              u.inputs/CurrencySelector
-                                             {:label "currency"      :value "7"})
+                                             {:label "currency" :value "7"})
        ::u.f.add-user-account/initial-value "1"
        ::u.f.add-user-account/name          "Savings Account"})}))

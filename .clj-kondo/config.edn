@@ -2,6 +2,7 @@
  :lint-as
  {
   com.fulcrologic.fulcro.components/defsc                  cljs.core/defn
+  com.fulcrologic.fulcro.mutations/defmutation             cljs.core/defn
   com.fulcrologic.fulcro.routing.dynamic-routing/defrouter cljs.core/defn
   com.fulcrologic.fulcro.ui-state-machines/defstatemachine cljs.core/def
   com.fulcrologic.guardrails.core/>defn                    cljs.core/defn
@@ -19,8 +20,7 @@
   }
 
  :linters
- {
-  :unused-namespace {:exclude [dinsro.translations
+ {:unused-namespace {:exclude [dinsro.translations
                                taoensso.timbre]}
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
@@ -28,4 +28,7 @@
   :unresolved-symbol
   {:exclude
    [(org.httpkit.server/with-channel [channel])
-    (com.fulcrologic.fulcro.mutations/defmutation)]}}}
+    (com.fulcrologic.fulcro.mutations/defmutation)
+
+    ;; ignore the arrow symbols
+    (fulcro-spec.core/assertions)]}}}

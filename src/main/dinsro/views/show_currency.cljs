@@ -7,32 +7,35 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.currency-accounts :as u.currency-accounts]
    [dinsro.ui.currency-rates :as u.currency-rates]
+   [dinsro.ui.currency-rate-sources :as u.currency-rate-sources]
    [dinsro.ui.show-currency :as u.show-currency]
    [taoensso.timbre :as timbre]))
 
 (defsc ShowCurrencyPage
-  [_this {::keys [currency currency-accounts currency-rates]}]
+  [_this {::keys [currency currency-accounts currency-rates currency-rate-sources]}]
   {:ident (fn [] [:page/id ::page])
-   :initial-state {::currency       {}
-                   ::currency-rates {}}
-   :query [{::currency          (comp/get-query u.show-currency/ShowCurrency)}
-           {::currency-accounts (comp/get-query u.currency-accounts/CurrencyAccounts)}
-           {::currency-rates    (comp/get-query u.currency-rates/CurrencyRates)}]
-   :route-segment ["currencies" ::m.currencies/id]
+   :initial-state {::currency              {}
+                   ::currency-accounts     {}
+                   ::currency-rates        {}
+                   ::currency-rate-sources {}}
+   :query [{::currency              (comp/get-query u.show-currency/ShowCurrency)}
+           {::currency-accounts     (comp/get-query u.currency-accounts/CurrencyAccounts)}
+           {::currency-rates        (comp/get-query u.currency-rates/CurrencyRates)}
+           {::currency-rate-sources (comp/get-query u.currency-rate-sources/CurrencyRateSources)}]
+   :route-segment ["currencies" ::m.currencies/name]
    :will-enter
-   (fn [app {::m.currencies/keys [id]}]
-     (df/load app [::m.currencies/id (int id)] u.show-currency/ShowCurrency
+   (fn [app {::m.currencies/keys [name]}]
+     (df/load app [::m.currencies/name name] u.show-currency/ShowCurrency
               {:target [:page/id ::page ::currency]})
 
-
-     ;; (df/load app [::m.currencies/id (int id)] u.currency-accounts/CurrencyAccounts
-     ;;          ;; {:target [:page/id ::page ::currency ::currency-accounts]}
-     ;;          )
+     ;; (df/load app [::m.currencies/id (int id)] u.currency-accounts/IndexCurrencyAccountLine
+     ;;          {:target [:component/id
+     ;;                    ::u.currency-accounts/CurrencyAccounts
+     ;;                    ::u.currency-accounts/accounts
+     ;;                    ::u.currency-accounts/accounts]})
 
      ;; (df/load app [::m.currencies/id (int id)] u.currency-rates/CurrencyRates
-     ;;          ;; {:target [:page/id ::page ::currency ::currency-accounts]}
-     ;;          )
-
+     ;;          {:target [:page/id ::page ::currency ::currency-accounts]})
 
      (df/load app :all-rates u.currency-rates/IndexCurrencyRateLine
               {:target [:page/id ::page ::currency-rates
@@ -44,4 +47,5 @@
    (bulma/box
     (u.show-currency/ui-show-currency currency))
    (u.currency-accounts/ui-currency-accounts currency-accounts)
+   (u.currency-rate-sources/ui-currency-rate-sources currency-rate-sources)
    (u.currency-rates/ui-currency-rates currency-rates)))

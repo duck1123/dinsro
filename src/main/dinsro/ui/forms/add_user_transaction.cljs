@@ -6,7 +6,7 @@
 
 (defsc AddUserTransactionForm
   [_this {::keys [account date value]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::account {}
                    ::date    {}
                    ::value   ""}

@@ -54,7 +54,7 @@
                {:target [:component/id
                          ::u.admin-index-users/AdminIndexUsers
                          ::u.admin-index-users/users
-                         ::u.index-users/users]}))
+                         ::u.index-users/items]}))
    :ident (fn [_] [:page/id ::page])
    :initial-state {::accounts     {}
                    ::categories   {}

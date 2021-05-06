@@ -11,12 +11,12 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
 
-(def currencies (map sample/currency-map [1 2]))
+(def currencies (map sample/currency-map ["sats" "usd" "eur" "yen"]))
 
 (ws/defcard AdminIndexCurrencies
   {::wsm/align       {:flex 1}
-   ::wsm/card-height 10
-   ::wsm/card-width  7}
+   ::wsm/card-height 12
+   ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.admin-index-currencies/AdminIndexCurrencies
     ::ct.fulcro3/initial-state
@@ -28,5 +28,4 @@
        ::u.admin-index-currencies/toggle-button
        (comp/get-initial-state
         u.buttons/ShowFormButton
-        {:form-button/id u.admin-index-currencies/form-toggle-sm})})
-    ::ct.fulcro3/wrap-root? false}))
+        {:form-button/id u.admin-index-currencies/form-toggle-sm})})}))

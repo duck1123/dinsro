@@ -2,19 +2,20 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [dinsro.specs :as ds]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [taoensso.timbre :as timbre]))
 
 (s/def ::password string?)
 (def password ::password)
 
-(s/def ::name string?)
-(def name ::name)
+(s/def ::username string?)
+(def username ::username)
 
-(def name-spec
-  {:db/ident       ::name
+(def username-spec
+  {:db/ident       ::username
    :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one})
+   :db/cardinality :db.cardinality/one
+   :db/unique      :db.unique/identity})
 
 (s/def ::password-hash string?)
 (def password-hash ::password-hash)
@@ -24,26 +25,30 @@
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
 
-(s/def ::email ::ds/email)
-(def email ::email)
-
-(def email-spec
-  {:db/ident       ::email
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one
-   :db/unique      :db.unique/identity})
-
-(s/def ::input-params-valid (s/keys :req [::name ::email ::password]))
+(s/def ::input-params-valid (s/keys :req [::password ::username]))
 (def input-params-valid ::input-params-valid)
 
-(s/def ::input-params (s/keys :opt [::name ::email ::password]))
+(s/def ::input-params (s/keys :opt [::password ::username]))
 (def input-params ::input-params)
 
-(s/def ::params (s/keys :req [::name ::email ::password-hash]))
+(s/def ::params (s/keys :req [::password-hash ::username]))
 (def params ::params)
 
-(s/def ::item (s/keys :req [:db/id ::name ::email ::password-hash]))
+(s/def ::item (s/keys :req [::password-hash ::username]))
 (def item ::item)
 
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
+
 (def schema
-  [name-spec password-hash-spec email-spec])
+  [password-hash-spec
+   username-spec])

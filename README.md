@@ -8,8 +8,9 @@ Sats-first personal finance management
 
 ## Prerequisites
 
-* docker
-* earthly
+* docker (https://docs.docker.com/get-docker/)
+* earthly (https://earthly.dev/get-earthly)
+* babashka (https://github.com/babashka/babashka#installation)
 
 If building locally, not using docker, you will need:
 
@@ -20,18 +21,23 @@ If building locally, not using docker, you will need:
 Recommended:
 
 * docker-compose
+* Tilt (https://docs.tilt.dev/install.html)
 
 ## Running
 
 To start a web server for the application, run:
 
-    make server-production
+``` shell
+bb server-production
+```
 
 ## Developing
 
 * To start a web server for the application development, run:
 
-        make dev
+``` shell
+bb dev
+```
 
   Then navigate to http://web-dinsro.docker.localhost:8081/
 
@@ -43,11 +49,17 @@ To start a web server for the application, run:
 
 * To build and watch the front-end for changes, run:
 
-        make watch-cljs
+``` shell
+bb watch-cljs
+
+```
 
 ## Testing
 
-    make test
+``` shell
+bb test
+```
+
 
 ## License
 

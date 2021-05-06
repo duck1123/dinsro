@@ -11,21 +11,22 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexCurrencyLine
-  [_this {::m.currencies/keys [id] :as currency}]
-  {:ident ::m.currencies/id
-   :initial-state {::m.currencies/id   0
-                   ::m.currencies/name ""}
-   :query [::m.currencies/id ::m.currencies/name]}
+  [_this {::m.currencies/keys [id link]}]
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
+                   ::m.currencies/link []}
+   :query         [::m.currencies/id
+                   {::m.currencies/link (comp/get-query u.links/ui-currency-link)}]}
   (dom/tr
-   (dom/td (u.links/ui-currency-link currency))
-   (dom/td (u.buttons/ui-delete-button {::m.currencies/id id}))))
+   (dom/td (u.links/ui-currency-link (first link)))
+   (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
 
 (def ui-index-currency-line (comp/factory IndexCurrencyLine {:keyfn ::m.currencies/id}))
 
 (defsc IndexCurrencies
   [_this {::keys [currencies]}]
   {:initial-state {::currencies []}
-   :query [{::currencies (comp/get-query IndexCurrencyLine)}]}
+   :query         [{::currencies (comp/get-query IndexCurrencyLine)}]}
   (if (seq currencies)
     (dom/table
      :.table

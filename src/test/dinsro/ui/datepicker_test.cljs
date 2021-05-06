@@ -10,7 +10,7 @@
   {::wsm/card-height 4
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.datepicker/Datepicker
+   {::ct.fulcro3/root       u.datepicker/Datepicker
     ::ct.fulcro3/initial-state
     (fn [] {})
     ::ct.fulcro3/wrap-root? false}))

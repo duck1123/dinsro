@@ -14,27 +14,47 @@
   {:query [:label :value]
    :initial-state
    (fn [{:keys [label value]
-         :or {label ""
-              value ""}}]
+         :or   {label ""
+                value ""}}]
      {:label label
       :value value})}
   (dom/div
    (dom/label :.label label)
    (dom/input
     :.input
-    {:type :text
-     :value value
+    {:type     :text
+     :value    value
      :onChange (fn [e] (onChange e))})))
 
 (def ui-text-input
   (comp/computed-factory TextInput))
 
+(defsc PasswordInput
+  [_this {:keys [label value]} {:keys [onChange]}]
+  {:query [:label :value]
+   :initial-state
+   (fn [{:keys [label value]
+         :or   {label ""
+                value ""}}]
+     {:label label
+      :value value})}
+  (dom/div
+   (dom/label :.label label)
+   (dom/input
+    :.input
+    {:type     :password
+     :value    value
+     :onChange (fn [e] (onChange e))})))
+
+(def ui-password-input
+  (comp/computed-factory PasswordInput))
+
 (defsc NumberInput
   [_this {:keys [label value]} {:keys [onChange]}]
   {:initial-state
    (fn [{:keys [label value]
-         :or {label ""
-              value ""}}]
+         :or   {label ""
+                value ""}}]
      {:label label
       :value value})
    :query [:label :value]}
@@ -42,8 +62,8 @@
    (dom/label :.label label)
    (dom/input
     :.input
-    {:type :number
-     :value value
+    {:type     :number
+     :value    value
      :onChange onChange})))
 
 (def ui-number-input
@@ -58,7 +78,7 @@
 (defsc AccountSelector
   [_this {:keys [accounts]}]
   {:initial-state {:accounts []}
-   :query [:accounts]}
+   :query         [:accounts]}
   (dom/div
    :.select
    (dom/select
@@ -70,36 +90,32 @@
 
 (defsc CurrencySelectorOption
   [_this {::m.currencies/keys [id name]}]
-  {:initial-state {::m.currencies/id   1
-                   ::m.currencies/name "Foo"}
-   :query [::m.currencies/id ::m.currencies/name]}
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
+                   ::m.currencies/name "sats"}
+   :query         [::m.currencies/id ::m.currencies/name]}
   (dom/option {:value id} name))
 
 (def ui-currency-selector-option (comp/factory CurrencySelectorOption {:keyfn ::m.currencies/id}))
 
 (defsc CurrencySelector
-  [_this {:keys [all-currencies selected-currency]}]
+  [_this {:keys [all-currencies]} {:keys [onChange]}]
   {:componentDidMount
-   (fn [this]
-     (df/load! this :all-currencies
-               CurrencySelectorOption))
-   :initial-state {:all-currencies [{::m.currencies/id 1 ::m.currencies/name "foo"}]
-                   :selected-currency nil}
-   :query [{:all-currencies (comp/get-query CurrencySelectorOption)}
-           :selected-currency]}
+   (fn [this] (df/load! this :all-currencies CurrencySelectorOption))
+   :initial-state {:all-currencies []}
+   :query         [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
   (dom/div
    :.select
    (dom/select
-    {:onChange (fn [_] (js/console.log selected-currency))}
-    (ui-currency-selector-option {::m.currencies/id nil ::m.currencies/name "unset"})
+    {:onChange onChange}
     (map ui-currency-selector-option all-currencies))))
 
-(def ui-currency-selector (comp/factory CurrencySelector))
+(def ui-currency-selector (comp/computed-factory CurrencySelector))
 
 (defsc UserSelector
   [_this {:keys [users]}]
   {:initial-state {:users []}
-   :query [:users]}
+   :query         [:users]}
   (dom/div
    :.select
    (dom/select
@@ -112,7 +128,7 @@
 (defsc PrimaryButton
   [_this _props {:keys [onClick]}]
   {:initial-state {}
-   :query []}
+   :query         []}
   (dom/button :.button.is-primary {:onClick onClick} "submit"))
 
 (def ui-primary-button (comp/computed-factory PrimaryButton))

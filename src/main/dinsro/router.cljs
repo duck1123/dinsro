@@ -41,7 +41,7 @@
                     v.show-user/ShowUserPage]}
   (case current-state
     :pending (dom/div "Loading...")
-    :failed (dom/div "Failed!")
+    :failed  (dom/div "Failed!")
     ;; default will be used when the current state isn't yet set
     (dom/div "No route selected.")))
 

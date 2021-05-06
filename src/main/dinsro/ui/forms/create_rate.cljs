@@ -12,7 +12,7 @@
 (defsc CreateRateForm
   [this {::keys [datepicker]
          ::m.rates/keys [name]}]
-  {:ident (fn [] [:form/id ::form])
+  {:ident (fn [] [:component/id ::form])
    :initial-state {::datepicker   {}
                    ::m.rates/name ""}
    :query [{::datepicker   (comp/get-query u.datepicker/Datepicker)}

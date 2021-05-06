@@ -6,8 +6,8 @@
 
 (defstatemachine hideable
   {::uism/actor-names #{:actor/navbar}
-   ::uism/aliases {:expanded [:actor/navbar :navbar/expanded?]}
-   ::uism/plugins {:toggle (fn [data] data)}
+   ::uism/aliases     {:expanded [:actor/navbar :navbar/expanded?]}
+   ::uism/plugins     {:toggle (fn [data] data)}
    ::uism/states
    {:initial
     {::uism/events

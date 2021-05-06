@@ -4,6 +4,8 @@
    [dinsro.ui.admin-index-categories-test]
    [dinsro.ui.admin-index-rate-sources-test]
    [dinsro.ui.admin-index-users-test]
+   [dinsro.ui.category-transactions-test]
+   [dinsro.ui.currency-rates-test]
    [dinsro.ui.index-accounts-test]
    [dinsro.ui.index-rate-sources-test]
    [dinsro.ui.index-transactions-test]

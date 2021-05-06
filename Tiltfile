@@ -6,24 +6,24 @@ custom_build(
   [
     'Earthfile',
     '.dockerignore',
-    'Makefile'
+    'bb.edn'
   ],
   tag='dev-sources-latest'
 )
 
-docker_compose("./tilt-docker-compose.yml")
+docker_compose("./resources/tilt/docker-compose.yml")
 # k8s_yaml('k8s/deployment.yaml')
 
 local_resource(
     'kondo',
-    cmd='make lint-kondo',
+    cmd='bb kondo',
     deps=['src'],
     allow_parallel=True
 )
 
 local_resource(
     'check',
-    cmd='make check',
+    cmd='bb check',
     deps=['src'],
     allow_parallel=True
 )

@@ -9,7 +9,7 @@
   {::wsm/card-height 8
    ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root v.home/HomePage
+   {::ct.fulcro3/root          v.home/HomePage
     ;; ::ct.fulcro3/wrap-root? false
-    ::ct.fulcro3/initial-state (fn [] {:auth-id nil
+    ::ct.fulcro3/initial-state (fn [] {:auth-id   nil
                                        :page-name :home-page})}))

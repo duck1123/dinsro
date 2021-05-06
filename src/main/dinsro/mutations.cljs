@@ -11,18 +11,14 @@
                           :dinsro.ui.navbar/Navbar
                           :dinsro.ui.navbar/expanded?]
           false)
-   (let [href (get-in @state [:navlink/id id :navlink/href])]
+   (let [link (get-in @state [:navlink/id id])
+         href (:navlink/href link)]
      (routing/route-to! href))))
 
 (defmutation submit [props]
   (action
    [{:keys [state]}]
    (timbre/infof "submitting: %s" props)))
-
-(defmutation delete [props]
-  (action
-   [{:keys [state]}]
-   (timbre/infof "deleting: %s" props)))
 
 (defmutation toggle [_]
   (action

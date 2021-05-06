@@ -9,57 +9,55 @@
    [dinsro.model.users :as m.users]))
 
 (defn account-line
-  [id initial-value name currency-id user-id]
-  {::m.accounts/id id
+  [id initial-value name currency-id username]
+  {::m.accounts/id            id
    ::m.accounts/initial-value initial-value
    ::m.accounts/name          name
    ::m.accounts/currency      {::m.currencies/id currency-id}
-   ::m.accounts/user          {::m.users/id user-id}})
+   ::m.accounts/user          {::m.users/username username}})
 
 (defn category-line
-  [id name user-id]
-  {::m.categories/id id
+  [id name username]
+  {::m.categories/id   id
    ::m.categories/name name
-   ::m.categories/user {::m.users/id user-id}})
+   ::m.categories/user {::m.users/username username}})
 
 (defn currency-line
   [id name]
-  {::m.currencies/id id
+  {::m.currencies/id   id
    ::m.currencies/name name})
 
 (defn navlink-line
   [id name href path]
-  {:navlink/id id
+  {:navlink/id   id
    :navlink/name name
    :navlink/href href
    :navlink/path path})
 
 (defn rate-line
   [id currency-id rate date]
-  {::m.rates/id id
+  {::m.rates/id       id
    ::m.rates/currency {::m.currencies/id currency-id}
-   ::m.rates/rate rate
-   ::m.rates/date date})
+   ::m.rates/rate     rate
+   ::m.rates/date     date})
 
 (defn rate-source-line
   [id name currency-id url]
-  {::m.rate-sources/id id
-   ::m.rate-sources/name name
+  {::m.rate-sources/id       id
+   ::m.rate-sources/name     name
    ::m.rate-sources/currency {::m.currencies/id currency-id}
-   ::m.rate-sources/url url})
+   ::m.rate-sources/url      url})
 
 (defn transaction-line
   [id description date account-id]
-  {::m.transactions/id id
+  {::m.transactions/id          id
    ::m.transactions/description description
-   ::m.transactions/date date
-   ::m.transactions/account {::m.accounts/id account-id}})
+   ::m.transactions/date        date
+   ::m.transactions/account     {::m.accounts/id account-id}})
 
 (defn user-line
-  [id name email]
-  {::m.users/id id
-   ::m.users/name name
-   ::m.users/email email})
+  [username]
+  {::m.users/username username})
 
 (def account-map
   {1 (account-line 1 1  "Savings Account" 2 1)
@@ -70,9 +68,10 @@
    2 (category-line 2 "Spending" 2)})
 
 (def currency-map
-  {1 (currency-line 1 "Dollars")
-   2 (currency-line 2 "Euros")
-   3 (currency-line 3 "Yen")})
+  {"usd"  (currency-line "usd" "Dollars")
+   "eur"  (currency-line "eur" "Euros")
+   "sats" (currency-line "sats" "Sats")
+   "yen"  (currency-line "yen" "Yen")})
 
 (def navlink-map
   {:accounts     (navlink-line :accounts     "Accounts"     "/accounts"     ["accounts"])
@@ -105,5 +104,5 @@
    2 (transaction-line 2 "sold some things" "2020-11-28 01:00:00" 1)})
 
 (def user-map
-  {1 (user-line 1 "Foo McFooerson" "foo@example.com")
-   2 (user-line 2 "Bart "          "bar@example.com")})
+  {1 (user-line "foo")
+   2 (user-line "bar")})

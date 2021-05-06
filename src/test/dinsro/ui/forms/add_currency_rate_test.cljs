@@ -7,11 +7,11 @@
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
 
-(ws/defcard AddCurrencyRate
+(ws/defcard AddCurrencyRateForm
   {::wsm/card-height 3
    ::wsm/card-width  2}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.f.add-currency-rate/AddCurrencyRate
+   {::ct.fulcro3/root u.f.add-currency-rate/AddCurrencyRateForm
     ::ct.fulcro3/initial-state
     (fn []
-      {:form/id ::u.f.add-currency-rate/form})}))
+      {:component/id ::u.f.add-currency-rate/form})}))
