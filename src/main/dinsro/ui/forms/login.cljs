@@ -57,6 +57,6 @@
       (dom/p {} (str "x: " my-x-val))
       (dom/p {} (str "y: " my-y-val))
       (ui-form
-       {:error true}
-       (ui-form-input {:value my-x-val :onChange on-x-change :label "X" :error true})
-       (ui-form-input {:value my-y-val :onChange on-y-change :label "Y"})))))
+        {:error true}
+        (ui-form-input {:value my-x-val :onChange on-x-change :label "X" :error true})
+        (ui-form-input {:value my-y-val :onChange on-y-change :label "Y"})))))
