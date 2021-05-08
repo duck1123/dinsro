@@ -1,6 +1,6 @@
 (ns dinsro.ui.admin-index-users-test
   (:require
-   [dinsro.sample :as sample]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-users :as u.admin-index-users]
    [dinsro.ui.index-users :as u.index-users]
@@ -8,8 +8,6 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
    [taoensso.timbre :as timbre]))
-
-(def users (map sample/user-map [1 2]))
 
 (ws/defcard AdminIndexUsers
   {::wsm/align       {:flex 1}
@@ -19,5 +17,9 @@
    {::ct.fulcro3/root u.admin-index-users/AdminIndexUsers
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.admin-index-users/users
-       {::u.index-users/items users}})}))
+      {::u.admin-index-users/toggle-button {:form-button/id u.admin-index-users/form-toggle-sm}
+
+       ::u.admin-index-users/users
+       {::u.index-users/items
+        [{::m.users/id "admin"
+          ::m.users/link [{::m.users/id "admin"}]}]}})}))
