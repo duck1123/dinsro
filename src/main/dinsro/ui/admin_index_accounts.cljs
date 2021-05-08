@@ -57,7 +57,7 @@
      (dom/hr)
      (if (empty? accounts)
        (dom/div (tr [:no-accounts]))
-       (dom/table :.table
+       (dom/table :.table.ui
          (dom/thead {}
            (dom/tr {}
              (dom/th (tr [:name]))

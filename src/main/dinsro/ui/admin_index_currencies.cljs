@@ -47,13 +47,13 @@
        (u.f.admin-create-currency/ui-admin-create-currency-form form))
      (dom/hr)
      (if (seq currencies)
-       (dom/table :.table
+       (dom/table :.table.ui
          (dom/thead {}
            (dom/tr {}
              (dom/th (tr [:name-label]))
              (dom/th "Buttons")))
          (dom/tbody {}
            (map ui-admin-index-currency-line currencies)))
-       (dom/div (tr [:no-currencies]))))))
+       (dom/div {} (tr [:no-currencies]))))))
 
 (def ui-section (comp/factory AdminIndexCurrencies))

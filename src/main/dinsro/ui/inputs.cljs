@@ -122,6 +122,6 @@
   [_this _props {:keys [onClick]}]
   {:initial-state {}
    :query         []}
-  (dom/button :.button.is-primary {:onClick onClick} "submit"))
+  (dom/button :.ui.button.is-primary {:onClick onClick} "submit"))
 
 (def ui-primary-button (comp/computed-factory PrimaryButton))

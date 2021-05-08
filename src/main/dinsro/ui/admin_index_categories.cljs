@@ -51,7 +51,7 @@
      (dom/hr)
      (if (empty? categories)
        (dom/p (tr [:no-categories]))
-       (dom/table :.table
+       (dom/table :.table.ui
          (dom/thead {}
            (dom/tr {}
              (dom/th (tr [:name]))

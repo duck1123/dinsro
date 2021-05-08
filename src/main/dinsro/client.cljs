@@ -22,10 +22,10 @@
   (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
     (dom/div {}
       (u.navbar/ui-navbar navbar)
-      (bulma/container
-       (if (= :initial top-router-state)
-         (dom/div :.loading "Loading...")
-         (router/ui-root-router router))))))
+      (dom/div :.ui.container
+        (if (= :initial top-router-state)
+          (dom/div :.loading "Loading...")
+          (router/ui-root-router router))))))
 
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.

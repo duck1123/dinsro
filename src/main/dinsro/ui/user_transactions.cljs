@@ -33,7 +33,7 @@
   {:initial-state {::transactions []}
    :query         [{::transactions (comp/get-query IndexTransactionLine)}]}
   (if (seq transactions)
-    (dom/table :.table
+    (dom/table :.ui.table
       (dom/thead {}
         (dom/tr {}
           (dom/th {} "Id")

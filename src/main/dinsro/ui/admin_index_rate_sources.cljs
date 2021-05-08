@@ -59,7 +59,7 @@
      (dom/hr)
      (if (empty? rate-sources)
        (dom/p (tr [:no-rate-sources]))
-       (dom/table :.table.is-fullwidth
+       (dom/table :.table.is-fullwidth.ui
          (dom/thead {}
            (dom/tr {}
              (dom/th "name")

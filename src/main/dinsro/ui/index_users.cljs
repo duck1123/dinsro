@@ -34,7 +34,7 @@
     (dom/div {}
       (dom/p
        (dom/a {:href users-path} "Users"))
-      (dom/table :.table
+      (dom/table :.table.ui
         (dom/thead {}
           (dom/tr {}
             (dom/th (tr [:username]))
