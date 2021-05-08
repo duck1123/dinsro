@@ -18,7 +18,7 @@
                    :navlink/href ""
                    :navlink/name ""}
    :query         [:navlink/id :navlink/name :navlink/href]}
-  (dom/a :.navbar-item
+  (dom/a :.ui.simple.dropdown.item
     {:href    href
      :onClick (fn [evt]
                 (.preventDefault evt)
@@ -78,7 +78,7 @@
 (defn navbar-brand
   [expanded? burger-clicked]
   (dom/div :.navbar-brand
-    (dom/a :.navbar-item
+    (dom/a :.item
       {:href  "/"
        :style {:fontWeight :bold}}
       "Dinsro")
@@ -115,18 +115,19 @@
                    {::menu-links (comp/get-query NavLink)}
                    {::unauth-links (comp/get-query NavLink)}]}
   (let [valid? (boolean (:user/valid? current-user))]
-    (dom/nav :.navbar.is-info
-      (dom/div :.container
-        {:aria-label "main navigation"
-         :role       "navigation"}
-        (navbar-brand expanded? #(comp/transact! this [`(dinsro.mutations/toggle)]))
-        (dom/div :.navbar-menu
+    (dom/nav :.ui.menu
+      (dom/div :.ui.container
+        (dom/div :.header.item
+          {:aria-label "main navigation"
+           :role       "navigation"}
+          (navbar-brand expanded? #(comp/transact! this [`(dinsro.mutations/toggle)])))
+        (dom/div {} (when valid? (map ui-nav-link menu-links)))
+        (dom/div :.menu
           {:className (when expanded? "is-active")}
-          (dom/div :.navbar-start (when valid? (map ui-nav-link menu-links)))
           (dom/div :.navbar-end
             (if valid?
               (comp/fragment
-               (dom/div :.navbar-item.has-dropdown.is-hoverable
+               (dom/div :.navbar-item.has-dropdown.is-hoverable.menu
                  (ui-navbar-auth-link auth-links)
                  (dom/div :.navbar-dropdown
                    (map ui-nav-link dropdown-links)
