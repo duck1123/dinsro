@@ -17,7 +17,7 @@
    {::ct.fulcro3/root u.links/AccountLink
     ::ct.fulcro3/initial-state
     (fn [] {::m.accounts/id   "dsfdds"
-            ::m.accounts/name "Foo"}) }))
+            ::m.accounts/name "Foo"})}))
 
 (ws/defcard CurrencyLink
   {::wsm/card-height 3
