@@ -104,8 +104,9 @@
       [{:keys [app]}]
       (log/error "Login failed.")
       (auth/failed! app :local))
-     (remote [env]
-             (m/returning env auth/Session))))
+     (remote
+      [env]
+      (m/returning env auth/Session))))
 
 (def schema
   [currency-spec
