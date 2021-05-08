@@ -15,7 +15,8 @@
    :initial-state {::confirm-password "hunter2"
                    ::password         "hunter2"
                    ::username         "bob"}
-   :query         [::confirm-password
+   :query         [:component/id
+                   ::confirm-password
                    ::password
                    ::username]}
   (ui-form {}
