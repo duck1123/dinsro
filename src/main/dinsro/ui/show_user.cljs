@@ -14,8 +14,8 @@
    :initial-state {::m.users/username "admin"}
    :query         [::m.users/username]}
   (dom/div
-   (dom/h1 username)
-   (dom/p (str "(" username ")"))
-   (u.buttons/ui-delete-user-button {::m.users/username username})))
+    (dom/h1 username)
+    (dom/p (str "(" username ")"))
+    (u.buttons/ui-delete-user-button {::m.users/username username})))
 
 (def ui-show-user (comp/factory ShowUser))

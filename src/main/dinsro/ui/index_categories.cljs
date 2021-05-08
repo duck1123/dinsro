@@ -11,33 +11,32 @@
 
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [name user]}]
-  {:ident ::m.categories/id
+  {:ident         ::m.categories/id
    :initial-state {::m.categories/id   0
                    ::m.categories/name ""
                    ::m.categories/user {}}
-   :query [::m.categories/id
-           ::m.categories/name
-           {::m.categories/user (comp/get-query u.links/UserLink)}]}
-  (dom/tr
-   (dom/td name)
-   (dom/td (u.links/ui-user-link user))))
+   :query         [::m.categories/id
+                   ::m.categories/name
+                   {::m.categories/user (comp/get-query u.links/UserLink)}]}
+  (dom/tr {}
+    (dom/td name)
+    (dom/td (u.links/ui-user-link user))))
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
 
 (defsc IndexCategories
   [_this {::keys [categories]}]
   {:initial-state {::categories []}
-   :query [{::categories (comp/get-query IndexCategoryLine)}]}
+   :query         [{::categories (comp/get-query IndexCategoryLine)}]}
   (if (seq categories)
-    (dom/div
-     (dom/table
-      :.table.is-fullwidth
-      (dom/thead
-       (dom/tr
-        (dom/th (tr [:name]))
-        (dom/th (tr [:user]))))
-      (dom/tbody
-       (map ui-index-category-line categories))))
+    (dom/div {}
+      (dom/table :.table.is-fullwidth
+        (dom/thead {}
+          (dom/tr {}
+            (dom/th (tr [:name]))
+            (dom/th (tr [:user]))))
+        (dom/tbody {}
+          (map ui-index-category-line categories))))
     (dom/p (tr [:no-categories]))))
 
 (def ui-index-categories (comp/factory IndexCategories))

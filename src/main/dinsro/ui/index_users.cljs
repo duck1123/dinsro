@@ -17,9 +17,9 @@
                    ::m.users/username ""}
    :query         [::m.users/username
                    {::m.users/link (comp/get-query u.links/ui-user-link)}]}
-  (dom/tr
-   (dom/th (u.links/ui-user-link (first link)))
-   (dom/th (u.buttons/ui-delete-user-button {::m.users/username username}))))
+  (dom/tr {}
+    (dom/th (u.links/ui-user-link (first link)))
+    (dom/th (u.buttons/ui-delete-user-button {::m.users/username username}))))
 
 (def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/username}))
 
@@ -30,17 +30,16 @@
   {:initial-state {::items []}
    :query         [{::items (comp/get-query IndexUserLine)}]}
   (if-not (seq items)
-    (dom/div (dom/p (tr [:no-users])))
-    (dom/div
-     (dom/p
-      (dom/a {:href users-path} "Users"))
-     (dom/table
-      :.table
-      (dom/thead
-       (dom/tr
-        (dom/th (tr [:username]))
-        (dom/th "Buttons")))
-      (dom/tbody
-       (map ui-index-user-line items))))))
+    (dom/div {} (dom/p (tr [:no-users])))
+    (dom/div {}
+      (dom/p
+       (dom/a {:href users-path} "Users"))
+      (dom/table :.table
+        (dom/thead {}
+          (dom/tr {}
+            (dom/th (tr [:username]))
+            (dom/th "Buttons")))
+        (dom/tbody {}
+          (map ui-index-user-line items))))))
 
 (def ui-index-users (comp/factory IndexUsers))

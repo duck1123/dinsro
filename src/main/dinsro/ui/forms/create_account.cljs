@@ -13,8 +13,8 @@
    :initial-state {::name ""}
    :query [::name]}
   (dom/div
-   (u.inputs/ui-text-input
-    {:label (tr [:name]) :value name}
-    {:onChange #(fm/set-string! this ::name :event %)})))
+    (u.inputs/ui-text-input
+     {:label (tr [:name]) :value name}
+     {:onChange #(fm/set-string! this ::name :event %)})))
 
 (def ui-create-account-form (comp/factory CreateAccountForm))

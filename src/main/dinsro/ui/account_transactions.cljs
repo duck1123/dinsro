@@ -18,20 +18,20 @@
   {:componentDidMount
    (fn [this]
      (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar AccountTransactions}))
-   :ident (fn [] [:component/id ::AccountTransactions])
+   :ident         (fn [] [:component/id ::AccountTransactions])
    :initial-state {::toggle-button {:form-button/id form-toggle-sm}
                    ::form          {:form-button/id form-toggle-sm}
                    ::transactions  {}}
-   :query [{::form          (comp/get-query u.f.add-account-transaction/AddAccountTransactionForm)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           {::transactions  (comp/get-query u.index-transactions/IndexTransactions)}
-           [::uism/asm-id form-toggle-sm]]}
+   :query         [{::form (comp/get-query u.f.add-account-transaction/AddAccountTransactionForm)}
+                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                   {::transactions (comp/get-query u.index-transactions/IndexTransactions)}
+                   [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/container
      (bulma/box
-      (dom/h2
-       (tr [:transactions])
-       (u.buttons/ui-show-form-button toggle-button))
+      (dom/h2 {}
+        (tr [:transactions])
+        (u.buttons/ui-show-form-button toggle-button))
       (when shown?
         (u.f.add-account-transaction/ui-add-account-transaction-form form))
       (dom/hr)

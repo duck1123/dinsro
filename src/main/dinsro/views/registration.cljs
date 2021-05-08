@@ -17,9 +17,9 @@
   (bulma/page
    (if allow-registration
      (dom/div
-      (dom/h1 "Registration Page")
-      (u.f.registration/ui-registration-form form))
+       (dom/h1 "Registration Page")
+       (u.f.registration/ui-registration-form form))
      (dom/div
-      (dom/p "Registrations are not enabled")))))
+       (dom/p "Registrations are not enabled")))))
 
 (def ui-page (comp/factory RegistrationPage))

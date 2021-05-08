@@ -27,12 +27,12 @@
                    ::m.accounts/id
                    ::m.accounts/initial-value
                    {::m.accounts/user (comp/get-query u.links/UserLink)}]}
-  (dom/tr
-   (dom/td (u.links/ui-account-link (first link)))
-   (dom/td (u.links/ui-user-link (first user)))
-   (dom/td (u.links/ui-currency-link (first currency)))
-   (dom/td initial-value)
-   (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
+  (dom/tr {}
+    (dom/td (u.links/ui-account-link (first link)))
+    (dom/td (u.links/ui-user-link (first user)))
+    (dom/td (u.links/ui-currency-link (first currency)))
+    (dom/td initial-value)
+    (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 
 (def ui-index-account-line (comp/factory IndexAccountLine {:keyfn ::m.accounts/id}))
 
@@ -41,17 +41,16 @@
   {:initial-state {::accounts []}
    :query         [{::accounts (comp/get-query IndexAccountLine)}]}
   (if (seq accounts)
-    (dom/table
-     :.table
-     (dom/thead
-      (dom/tr
-       (dom/th (tr [:name]))
-       (dom/th (tr [:user-label]))
-       (dom/th (tr [:currency-label]))
-       (dom/th (tr [:initial-value-label]))
-       (dom/th (tr [:buttons]))))
-     (dom/tbody
-      (map ui-index-account-line accounts)))
+    (dom/table :.table
+      (dom/thead {}
+        (dom/tr {}
+          (dom/th (tr [:name]))
+          (dom/th (tr [:user-label]))
+          (dom/th (tr [:currency-label]))
+          (dom/th (tr [:initial-value-label]))
+          (dom/th (tr [:buttons]))))
+      (dom/tbody {}
+        (map ui-index-account-line accounts)))
     (dom/div (tr [:no-accounts]))))
 
 (def ui-index-accounts (comp/factory IndexAccounts))
@@ -71,9 +70,9 @@
                    [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
-     (dom/h2
-      (tr [:accounts])
-      (u.buttons/ui-show-form-button toggle-button))
+     (dom/h2 {}
+       (tr [:accounts])
+       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-user-account/ui-form form))
      (dom/hr)

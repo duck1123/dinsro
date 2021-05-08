@@ -16,7 +16,7 @@
    :initial-state {::m.categories/id 0
                    ::m.categories/name ""}}
   (dom/div
-   (dom/p name)
-   (u.buttons/ui-delete-category-button {::m.categories/id id})))
+    (dom/p name)
+    (u.buttons/ui-delete-category-button {::m.categories/id id})))
 
 (def ui-show-category (comp/factory ShowCategory))

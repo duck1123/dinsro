@@ -31,10 +31,10 @@
    :query         [::m.rates/id
                    ::m.rates/date
                    ::m.rates/rate]}
-  (dom/tr
-   (dom/td date)
-   (dom/td rate)
-   (dom/td (u.buttons/ui-delete-rate-button {::m.rates/id id}))))
+  (dom/tr {}
+    (dom/td date)
+    (dom/td rate)
+    (dom/td (u.buttons/ui-delete-rate-button {::m.rates/id id}))))
 
 (def ui-index-currency-rate-line (comp/factory IndexCurrencyRateLine {:keyfn ::m.rates/id}))
 
@@ -48,15 +48,14 @@
                    {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
                    [::uism/asm-id form-toggle-sm]]}
   (if (seq items)
-    (dom/table
-     :.ui.table
-     (dom/thead
-      (dom/tr
-       (dom/th (tr [:date]))
-       (dom/th (tr [:rate]))
-       (dom/th (tr [:actions]))))
-     (dom/tbody
-      (map ui-index-currency-rate-line items)))
+    (dom/table :.ui.table
+      (dom/thead {}
+        (dom/tr {}
+          (dom/th (tr [:date]))
+          (dom/th (tr [:rate]))
+          (dom/th (tr [:actions]))))
+      (dom/tbody {}
+        (map ui-index-currency-rate-line items)))
     (dom/p "no items")))
 
 (def ui-index-currency-rates (comp/factory IndexCurrencyRates))
@@ -80,9 +79,9 @@
                    [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
-     (dom/h2
-      "Rates"
-      (u.buttons/ui-show-form-button toggle-button))
+     (dom/h2 {}
+       "Rates"
+       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-currency-rate/ui-form form))
      (dom/hr)

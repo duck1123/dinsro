@@ -14,9 +14,9 @@
            ::date
            ::value]}
   (dom/div
-   (dom/p "value" (str value))
-   (dom/p "account" (str account))
-   (dom/p "date" (str date))
-   (dom/p "submit")))
+    (dom/p "value" (str value))
+    (dom/p "account" (str account))
+    (dom/p "date" (str date))
+    (dom/p "submit")))
 
 (def ui-form (comp/factory AddUserTransactionForm))

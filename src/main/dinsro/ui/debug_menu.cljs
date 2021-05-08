@@ -11,16 +11,15 @@
 
 (defsc DebugLinkButton
   [_this {:navlink/keys [path name]}]
-  {:query [:navlink/id
-           :navlink/path
-           :navlink/name]
-   :ident :navlink/id
-   :initial-state {:navlink/id :unset
+  {:query         [:navlink/id
+                   :navlink/path
+                   :navlink/name]
+   :ident         :navlink/id
+   :initial-state {:navlink/id   :unset
                    :navlink/path ["unset"]
                    :navlink/name "Unset"}}
-  (dom/button
-   :.button
-   {:onClick #(routing/route-to! (str "/" (string/join "/" path)))} name))
+  (dom/button :.button
+    {:onClick #(routing/route-to! (str "/" (string/join "/" path)))} name))
 
 (def ui-debug-link-button (comp/factory DebugLinkButton {:keyfn :navlink/id}))
 
@@ -30,8 +29,8 @@
    (fn [this]
      (df/load! this :debug-menu/list DebugLinkButton
                {:target [:component/id ::DebugLinkBar :items]}))
-   :query [{:items (comp/get-query DebugLinkButton)}]
-   :ident (fn [_] [:component/id ::DebugLinkBar])
+   :query         [{:items (comp/get-query DebugLinkButton)}]
+   :ident         (fn [_] [:component/id ::DebugLinkBar])
    :initial-state {:items []}}
   (bulma/container
    (bulma/box

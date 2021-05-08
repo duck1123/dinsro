@@ -19,15 +19,15 @@
            {::submit-button (comp/get-query u.inputs/PrimaryButton)}
            ::url]}
   (dom/div
-   (u.inputs/ui-text-input
-    {:label (tr [:name]) :value name})
-   (u.inputs/ui-text-input
-    {:label (tr [:url]) :value url})
-   (u.inputs/ui-currency-selector currency)
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button
-      submit-button
-      {:onClick (fn [_] (timbre/info "submit"))})))))
+    (u.inputs/ui-text-input
+     {:label (tr [:name]) :value name})
+    (u.inputs/ui-text-input
+     {:label (tr [:url]) :value url})
+    (u.inputs/ui-currency-selector currency)
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button
+       submit-button
+       {:onClick (fn [_] (timbre/info "submit"))})))))
 
 (def ui-admin-create-rate-source-form (comp/factory AdminCreateRateSourceForm))

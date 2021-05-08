@@ -21,79 +21,71 @@
      {:form-button/id id})
    :query [:form-button/id
            :form-button/state]}
-  (dom/a
-   :.is-pulled-right
-   {:onClick #(uism/trigger! this id :event/toggle {})}
-   (tr [:show-form "Show"])))
+  (dom/a :.is-pulled-right
+    {:onClick #(uism/trigger! this id :event/toggle {})}
+    (tr [:show-form "Show"])))
 
 (def ui-show-form-button (comp/factory ShowFormButton))
 
 (defsc DeleteAccountButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.accounts/delete! props)])}
-   "Delete Account"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.accounts/delete! props)])}
+    "Delete Account"))
 
 (def ui-delete-account-button (comp/factory DeleteAccountButton))
 
 (defsc DeleteCategoryButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.categories/delete! props)])}
-   "Delete Category"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.categories/delete! props)])}
+    "Delete Category"))
 
 (def ui-delete-category-button (comp/factory DeleteCategoryButton))
 
 (defsc DeleteCurrencyButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.currencies/delete! props)])}
-   "Delete Currency"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.currencies/delete! props)])}
+    "Delete Currency"))
 
 (def ui-delete-currency-button (comp/factory DeleteCurrencyButton))
 
 (defsc DeleteRateButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.rates/delete! props)])}
-   "Delete Rate"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.rates/delete! props)])}
+    "Delete Rate"))
 
 (def ui-delete-rate-button (comp/factory DeleteRateButton))
 
 (defsc DeleteRateSourceButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.rate-sources/delete! props)])}
-   "Delete Rate Source"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.rate-sources/delete! props)])}
+    "Delete Rate Source"))
 
 (def ui-delete-rate-source-button (comp/factory DeleteRateSourceButton))
 
 (defsc DeleteTransactionButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.transactions/delete! props)])}
-   "Delete Transaction"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.transactions/delete! props)])}
+    "Delete Transaction"))
 
 (def ui-delete-transaction-button (comp/factory DeleteRateSourceButton))
 
 (defsc DeleteUserButton
   [this props]
   {:query []}
-  (dom/button
-   :.button.is-danger
-   {:onClick #(comp/transact! this [(mutations.users/delete! props)])}
-   "Delete User"))
+  (dom/button :.button.is-danger
+    {:onClick #(comp/transact! this [(mutations.users/delete! props)])}
+    "Delete User"))
 
 (def ui-delete-user-button (comp/factory DeleteUserButton))

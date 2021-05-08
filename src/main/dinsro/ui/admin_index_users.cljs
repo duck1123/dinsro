@@ -18,10 +18,9 @@
    :query         [{::toggle-button (comp/get-query u.buttons/ShowFormButton)}
                    {::users (comp/get-query u.index-users/IndexUsers)}]}
   (bulma/box
-   (dom/h2
-    :.title.is-2
-    (tr [:users])
-    (u.buttons/ui-show-form-button toggle-button))
+   (dom/h2 :.title.is-2
+     (tr [:users])
+     (u.buttons/ui-show-form-button toggle-button))
    (dom/hr)
    (u.index-users/ui-index-users users)))
 

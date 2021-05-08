@@ -21,21 +21,21 @@
            ::name
            ::submit-button]}
   (dom/div
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label (tr [:name]) :value name})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label (tr [:description]) :value description}
-      {:onChange #(fm/set-string! this ::name :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.datepicker/ui-datepicker datepicker)))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button submit-button)))))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label (tr [:name]) :value name})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label (tr [:description]) :value description}
+       {:onChange #(fm/set-string! this ::name :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.datepicker/ui-datepicker datepicker)))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button submit-button)))))
 
 (def ui-add-account-transaction-form
   (comp/factory AddAccountTransactionForm))

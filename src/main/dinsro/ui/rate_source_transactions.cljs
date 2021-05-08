@@ -30,15 +30,15 @@
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h2
-      :.title.is-2
-      (tr [:transactions])
-      (u.buttons/ui-show-form-button toggle-button))
+       :.title.is-2
+       (tr [:transactions])
+       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.admin-create-transaction/ui-admin-create-transaction-form form))
      (dom/hr)
      (if (seq transactions)
        (dom/div
-        (u.index-transactions/ui-index-transactions transactions))
+         (u.index-transactions/ui-index-transactions transactions))
        (dom/p "No data")))))
 
 (def ui-rate-source-transactions (comp/factory RateSourceTransactions))

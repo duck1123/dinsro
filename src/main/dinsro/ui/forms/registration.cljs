@@ -18,22 +18,22 @@
                    ::username
                    ::password]}
   (dom/div
-   (u.inputs/ui-text-input
-    {:label "Username" :value username}
-    {:onChange #(fm/set-string! this ::username :event %)})
-   (u.inputs/ui-password-input
-    {:label "Password" :value password}
-    {:onChange #(fm/set-string! this ::password :event %)})
-   (u.inputs/ui-password-input
-    {:label "Confirm Password" :value confirm-password}
-    {:onChange #(fm/set-string! this ::confirm-password :event %)})
-   (u.inputs/ui-primary-button
-    {:content "Submit"}
-    {:onClick
-     (fn []
-       (timbre/info "clicked")
-       (let [data {:user/username username
-                   :user/password password}]
-         (comp/transact! this [(mu.session/register data)])))})))
+    (u.inputs/ui-text-input
+     {:label "Username" :value username}
+     {:onChange #(fm/set-string! this ::username :event %)})
+    (u.inputs/ui-password-input
+     {:label "Password" :value password}
+     {:onChange #(fm/set-string! this ::password :event %)})
+    (u.inputs/ui-password-input
+     {:label "Confirm Password" :value confirm-password}
+     {:onChange #(fm/set-string! this ::confirm-password :event %)})
+    (u.inputs/ui-primary-button
+     {:content "Submit"}
+     {:onClick
+      (fn []
+        (timbre/info "clicked")
+        (let [data {:user/username username
+                    :user/password password}]
+          (comp/transact! this [(mu.session/register data)])))})))
 
 (def ui-registration-form (comp/factory RegistrationForm))

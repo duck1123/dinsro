@@ -15,13 +15,12 @@
 
 (defsc IndexCurrencyAccountLine
   [_ {::m.accounts/keys [name]}]
-  {:ident ::m.accounts/id
+  {:ident         ::m.accounts/id
    :initial-state {::m.accounts/name ""}
-   :query [::m.accounts/id
-           ::m.accounts/name]}
-  (dom/tr
-   (dom/td
-    name)))
+   :query         [::m.accounts/id
+                   ::m.accounts/name]}
+  (dom/tr {}
+    (dom/td {} name)))
 
 (def ui-index-currency-account-line (comp/factory IndexCurrencyAccountLine {:keyfn ::m.accounts/id}))
 
@@ -29,16 +28,15 @@
   [_ {::keys [accounts]}]
   {:initial-state {::accounts []}
    :query         [::accounts]}
-  (dom/div
-   (if (empty? accounts)
-     (dom/div (tr [:no-currencies]))
-     (dom/table
-      :.table
-      (dom/thead
-       (dom/tr
-        (dom/th "Name")))
-      (dom/tbody
-       (map ui-index-currency-account-line accounts))))))
+  (dom/div {}
+    (if (empty? accounts)
+      (dom/div {} (tr [:no-currencies]))
+      (dom/table :.table
+        (dom/thead {}
+          (dom/tr {}
+            (dom/th "Name")))
+        (dom/tbody {}
+          (map ui-index-currency-account-line accounts))))))
 
 (def ui-index-currency-accounts (comp/factory IndexCurrencyAccounts))
 
