@@ -14,10 +14,10 @@
 (>defn authenticate
   [username password]
   [string? string? => (? (s/keys))]
-  (if-let [user (q.users/find-by-username username)]
+  (if-let [user (q.users/find-by-id username)]
     (if-let [password-hash (::m.users/password-hash user)]
       (if (hashers/check password password-hash)
-        (let [username (::m.users/username user)
+        (let [username (::m.users/id user)
               claims   {:user username
                         :exp  (time/plus (time/now) (time/minutes 3600))}]
           {:identity username

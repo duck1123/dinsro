@@ -10,9 +10,9 @@
    [taoensso.timbre :as timbre]))
 
 (>defn do-register
-  [username password]
-  [::m.users/username ::m.users/password => (s/keys)]
-  (let [params #::m.users{:password password :username username}]
+  [id password]
+  [::m.users/id ::m.users/password => (s/keys)]
+  (let [params #::m.users{:password password :id id}]
     (try
       (a.authentication/register (timbre/spy :info params))
       (catch Exception ex
@@ -31,7 +31,7 @@
   [{{:keys [session]} :request} {:user/keys [username password]}]
   {::pc/params #{:user/username :user/password}
    ::pc/output [:user/username :user/valid?]}
-  (if-let [_user (q.users/find-by-username username)]
+  (if-let [_user (q.users/find-by-id username)]
     (if (= password "hunter2")
       (augment-response
        {:user/username username

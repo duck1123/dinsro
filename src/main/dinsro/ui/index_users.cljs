@@ -11,17 +11,17 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexUserLine
-  [_this {::m.users/keys [link username]}]
-  {:ident         ::m.users/username
-   :initial-state {::m.users/link     {}
-                   ::m.users/username ""}
-   :query         [::m.users/username
+  [_this {::m.users/keys [id link]}]
+  {:ident         ::m.users/id
+   :initial-state {::m.users/id   ""
+                   ::m.users/link {}}
+   :query         [::m.users/id
                    {::m.users/link (comp/get-query u.links/ui-user-link)}]}
   (dom/tr {}
     (dom/th (u.links/ui-user-link (first link)))
-    (dom/th (u.buttons/ui-delete-user-button {::m.users/username username}))))
+    (dom/th (u.buttons/ui-delete-user-button {::m.users/id id}))))
 
-(def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/username}))
+(def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/id}))
 
 (def users-path "/admin/users")
 

@@ -7,13 +7,25 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
-(s/def ::id uuid?)
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident
+  [id]
+  [::id => ::ident]
+  [::id id])
+
+(>defn ident-item
+  [{::keys [id]}]
+  [::item => ::ident]
+  (ident id))
+
+(s/def ::id string?)
 (def id
   "Primary id of the account"
   ::id)
 (def id-spec
   {:db/ident       id
-   :db/valueType   :db.type/uuid
+   :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
@@ -37,9 +49,8 @@
 (s/def ::currency-id (s/or :id :db/id :zero zero?))
 (def currency-id ::currency-id)
 (s/def ::currency
-  (s/keys
-   :opt [:db/id
-         ::m.currencies/id]))
+  (s/or :map (s/keys :opt [:db/id ::m.currencies/id])
+        :idents (s/coll-of ::m.currencies/ident)))
 (def currency
   "Currency for this account"
   ::currency)
@@ -53,9 +64,8 @@
 (def user-id ::user-id)
 
 (s/def ::user
-  (s/keys
-   ;; :req []
-   :opt [:db/id ::m.users/username]))
+  (s/or :map    (s/keys :opt [:db/id ::m.users/id])
+        :idents (s/coll-of ::m.users/ident)))
 (def user
   "User that created this account"
   ::user)
@@ -66,15 +76,13 @@
    :db/cardinality :db.cardinality/one})
 
 (s/def ::required-params
-  (s/keys :req [::id
-                ::name
+  (s/keys :req [::name
                 ::initial-value]))
 (def required-params
   "Required params for accounts"
   ::required-params)
 (s/def ::params
-  (s/keys :req [::id
-                ::name
+  (s/keys :req [::name
                 ::initial-value]
           :opt [::currency
                 ::user]))
@@ -89,18 +97,6 @@
 (def item-spec
   {:db/ident        ::item
    :db.entity/attrs [::name ::initial-value ::currency ::user]})
-
-(s/def ::ident (s/tuple keyword? ::id))
-
-(>defn ident
-  [id]
-  [::id => ::ident]
-  [::id id])
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => ::ident]
-  (ident id))
 
 (def schema
   [currency-spec

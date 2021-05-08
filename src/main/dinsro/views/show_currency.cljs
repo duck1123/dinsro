@@ -22,10 +22,10 @@
            {::currency-accounts     (comp/get-query u.currency-accounts/CurrencyAccounts)}
            {::currency-rates        (comp/get-query u.currency-rates/CurrencyRates)}
            {::currency-rate-sources (comp/get-query u.currency-rate-sources/CurrencyRateSources)}]
-   :route-segment ["currencies" ::m.currencies/name]
+   :route-segment ["currencies" ::m.currencies/id]
    :will-enter
-   (fn [app {::m.currencies/keys [name]}]
-     (df/load app [::m.currencies/name name] u.show-currency/ShowCurrency
+   (fn [app {::m.currencies/keys [id]}]
+     (df/load app [::m.currencies/id id] u.show-currency/ShowCurrency
               {:target [:page/id ::page ::currency]})
 
      ;; (df/load app [::m.currencies/id (int id)] u.currency-accounts/IndexCurrencyAccountLine

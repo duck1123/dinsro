@@ -17,7 +17,7 @@
   {:ident         (fn [] [:component/id ::form])
    :initial-state {:user/message  nil
                    :user/password "hunter2"
-                   :user/username    "admin"}
+                   :user/username "admin"}
    :query         [:user/password :user/message :user/username]}
   (dom/div
     :.is-centered

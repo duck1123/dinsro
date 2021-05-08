@@ -36,15 +36,15 @@
   ([]
    [=> ::m.accounts/item]
    (let [user        (mock-user)
-         username    (::m.users/username user)
+         username    (::m.users/id user)
          currency    (mock-currency)
          currency-id (::m.currencies/id currency)]
      (mock-account username currency-id)))
   ([username currency-id]
-   [::m.users/username ::m.currencies/id => ::m.accounts/item]
+   [::m.users/id ::m.currencies/id => ::m.accounts/item]
    (let [params (ds/gen-key ::m.accounts/required-params)
          params (-> params
-                    (assoc ::m.accounts/user {::m.users/username username})
+                    (assoc ::m.accounts/user {::m.users/id username})
                     (assoc ::m.accounts/currency {::m.currencies/id currency-id}))
          id     (q.accounts/create-record params)]
      (q.accounts/read-record id))))
@@ -52,13 +52,13 @@
 (defn mock-category
   ([]
    (let [user    (mock-user)
-         user-id (:db/id user)]
+         user-id (::m.users/id user)]
      (mock-category user-id)))
   ([user-id]
    (let [params (ds/gen-key ::m.categories/params)
-         params (assoc-in params [::m.categories/user :db/id] user-id)
-         id     (q.categories/create-record params)]
-     (q.categories/read-record id))))
+         params (assoc-in params [::m.categories/user ::m.users/id] user-id)
+         eid     (q.categories/create-record params)]
+     (q.categories/read-record eid))))
 
 (>defn mock-rate
   ([]
@@ -116,7 +116,7 @@
   (q.accounts/read-record 60)
 
   (mock-rate-source)
-  (mock-rate-source #uuid "a9a4cdeb-5d82-4725-b834-d1fd22dbf26b")
+  (mock-rate-source "a9a4cdeb-5d82-4725-b834-d1fd22dbf26b")
   (q.rate-sources/index-ids)
   (q.rate-sources/read-record 111)
 

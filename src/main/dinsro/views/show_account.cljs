@@ -21,7 +21,7 @@
    :route-segment ["accounts" ::m.accounts/id]
    :will-enter
    (fn [app {::m.accounts/keys [id]}]
-     (df/load app [::m.accounts/id (int id)] u.show-account/ShowAccount
+     (df/load app [::m.accounts/id id] u.show-account/ShowAccount
               {:target [:page/id ::page ::account]})
 
      (df/load! app :all-transactions

@@ -32,7 +32,7 @@
   {::pc/output
    [{:session/current-user
      [:user/username
-      {:user/ref [::m.users/username]}
+      {:user/ref [::m.users/id]}
       :user/valid?]}]}
   {:session/current-user {:user/username identity
                           :user/valid?   (boolean (seq identity))}})

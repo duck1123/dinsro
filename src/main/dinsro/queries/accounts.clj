@@ -45,7 +45,7 @@
 (>defn create-record
   [params]
   [::m.accounts/params => :db/id]
-  (let [params   (assoc params ::m.accounts/id (utils/uuid))
+  (let [params   (assoc params ::m.accounts/id (str (utils/uuid)))
         params   (assoc params :db/id "account-id")
         response (d/transact db/*conn* {:tx-data [params]})]
     (get-in response [:tempids "account-id"])))
@@ -55,16 +55,16 @@
   [:db/id => (? ::m.accounts/item)]
   (let [record (d/pull @db/*conn* attribute-list id)]
     (when (get record ::m.accounts/name)
-      (let [user-id (get-in record [::m.accounts/user :db/id])
-            currency-id (get-in record [::m.accounts/currency :db/id])]
+      (let [user-eid     (get-in record [::m.accounts/user :db/id])
+            currency-eid (get-in record [::m.accounts/currency :db/id])
+            currency-id  (q.currencies/find-id-by-eid currency-eid)
+            user-id      (q.users/find-id-by-eid user-eid)]
         (-> record
             (dissoc :db/id)
             (update ::m.accounts/currency dissoc :db/id)
             (update ::m.accounts/user dissoc :db/id)
-            (assoc-in [::m.accounts/currency ::m.currencies/id]
-                      (q.currencies/find-id-by-eid currency-id))
-            (assoc-in [::m.accounts/user ::m.users/username]
-                      (q.users/find-username-by-eid user-id)))))))
+            (assoc-in [::m.accounts/currency ::m.currencies/id] currency-id)
+            (assoc-in [::m.accounts/user ::m.users/id] user-id))))))
 
 (>defn index-ids
   []
@@ -74,7 +74,7 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.accounts/item)]
-  (map read-record (index-ids)))
+  (map read-record (timbre/spy :info (index-ids))))
 
 (>defn index-records-by-currency
   [currency-id]

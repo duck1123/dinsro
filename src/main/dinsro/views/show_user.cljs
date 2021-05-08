@@ -13,32 +13,34 @@
 
 (defsc UserAccounts
   [_this _props]
-  {:ident ::m.users/username
+  {:ident ::m.users/id
    :initial-state {}
    :query [{::m.users/accounts (comp/get-query u.user-accounts/IndexAccountLine)}
-           ::m.users/username]})
+           ::m.users/id]})
 
 (defsc ShowUserPage
   [_this {::keys [user user-accounts user-categories user-transactions]}]
   {:componentDidUpdate
    (fn [this]
-     (let [{::m.users/keys [username]} (::user (comp/props this))]
-       (when (seq username)
-         (df/load! this [::m.users/username username] UserAccounts))))
+     (let [{::m.users/keys [id]} (::user (comp/props this))]
+       (when (seq id)
+         (df/load! this (m.users/ident id) UserAccounts)
+         (df/load! this {(m.users/ident id) ::m.users/categories}
+                   u.user-categories/UserCategories))))
    :ident (fn [] [:page/id ::page])
    :initial-state {::user              {}
                    ::user-accounts     {}
                    ::user-categories   {}
                    ::user-transactions {}}
-   :query [::m.users/username
+   :query [::m.users/id
            {::user              (comp/get-query u.show-user/ShowUser)}
            {::user-accounts     (comp/get-query u.user-accounts/UserAccounts)}
            {::user-categories   (comp/get-query u.user-categories/UserCategories)}
            {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
-   :route-segment ["users" ::m.users/username]
+   :route-segment ["users" ::m.users/id]
    :will-enter
-   (fn [app {::m.users/keys [username]}]
-     (df/load app [::m.users/username username] u.show-user/ShowUser
+   (fn [app {::m.users/keys [id]}]
+     (df/load app [::m.users/id id] u.show-user/ShowUser
               {:target [:page/id ::page ::user]})
      (dr/route-immediate (comp/get-ident ShowUserPage {})))}
   (bulma/page

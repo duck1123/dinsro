@@ -38,6 +38,7 @@
   ring/ring-devel                     {:mvn/version "1.8.1"}
   ring/ring-mock                      {:mvn/version "0.4.0"}
   selmer/selmer                       {:mvn/version "1.12.28"}
+  thheller/shadow-cljs                {:mvn/version "2.11.7"}
   tick/tick                           {:mvn/version "0.4.24-alpha"
                                        :exclusions  [cljsjs/js-joda-timezone
                                                      cljsjs/js-joda-timezone-en-us]}
@@ -82,9 +83,7 @@
   {:main-opts ["-m" "dinsro.core"]}
 
   :shadow-cljs
-  {:extra-deps
-   {thheller/shadow-cljs {:mvn/version "2.11.7"}}
-   :main-opts ["-m" "shadow.cljs.devtools.cli"]}
+  {:main-opts ["-m" "shadow.cljs.devtools.cli"]}
 
   :uberdeps
   {:main-opts   ["-m" "uberdeps.uberjar"]

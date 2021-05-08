@@ -17,11 +17,11 @@
 
 (specification "do-register"
   (behavior "success"
-    (let [password (ds/gen-key ::m.users/password)
-          username (ds/gen-key ::m.users/username)
+    (let [password (ds/gen-key m.users/password)
+          username (ds/gen-key m.users/id)
           response (mu.session/do-register username password)]
       (assertions
-       (::m.users/username response) => username))))
+       (::m.users/id response) => username))))
 
 (specification "register"
   (behavior "success"
@@ -32,8 +32,8 @@
             response (f env data)]
 
         (assertions
-         (::m.users/username response) => (:user/username data)
-         (::m.users/username response) =check=> (_/valid?* ::m.users/username)))
+         (::m.users/id response) => (:user/username data)
+         (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
       (catch Exception ex
         (timbre/error ex "caught")))))
 

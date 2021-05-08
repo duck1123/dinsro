@@ -12,15 +12,16 @@
 
 (defsc ShowCategoryPage
   [_this {::keys [category transactions]}]
-  {:ident (fn [] [:page/id ::page])
-   :initial-state {::category       {}
-                   ::transactions  {}}
-   :query [{::category      (comp/get-query u.show-category/ShowCategory)}
-           {::transactions (comp/get-query u.category-transactions/CategoryTransactions)}]
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::category     {}
+                   ::transactions {}}
+   :query         [{::category (comp/get-query u.show-category/ShowCategory)}
+                   {::transactions (comp/get-query u.category-transactions/CategoryTransactions)}]
    :route-segment ["categories" ::m.categories/id]
    :will-enter
    (fn [app {::m.categories/keys [id]}]
-     (df/load app [::m.categories/id (int id)] u.show-category/ShowCategory
+     (timbre/info "will enter")
+     (df/load app [::m.categories/id id] u.show-category/ShowCategory
               {:target [:page/id ::page ::category]})
      (dr/route-immediate (comp/get-ident ShowCategoryPage {})))}
   (bulma/page

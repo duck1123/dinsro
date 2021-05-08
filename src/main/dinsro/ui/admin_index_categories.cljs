@@ -18,7 +18,7 @@
   [_this {::m.categories/keys [id user]
           :as                 category}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   0
+   :initial-state {::m.categories/id   ""
                    ::m.categories/user {}}
    :query         [::m.categories/id
                    ::m.categories/name

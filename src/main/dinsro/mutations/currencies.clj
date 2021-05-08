@@ -7,8 +7,8 @@
    [taoensso.timbre :as timbre]))
 
 (defn do-create
-  [identity {::m.currencies/keys [id name]}]
-  (if-let [_user-eid (q.users/find-eid-by-username identity)]
+  [id name identity]
+  (if-let [_user-eid (q.users/find-eid-by-id identity)]
     (let [_can-create? true ;; should be admin
           params       #::m.currencies{:id   id
                                        :name name}]
@@ -28,11 +28,11 @@
   {:status :success})
 
 (defmutation create!
-  [{{{:keys [identity]} :session} :request} params]
+  [{{{:keys [identity]} :session} :request} {::m.currencies/keys [id name]}]
   {::pc/params #{::m.currencies/id ::m.currencies/name}
    ::pc/output [:status
                 :created-currency [::m.currencies/id]]}
-  (do-create identity params))
+  (do-create id name identity))
 
 (defmutation delete!
   [_request {::m.currencies/keys [id]}]

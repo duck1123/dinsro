@@ -9,7 +9,7 @@
    [taoensso.timbre :as timbre]))
 
 (def param-rename-map
-  {:username ::m.users/username})
+  {:username ::m.users/id})
 
 (>defn prepare-record
   [params]
