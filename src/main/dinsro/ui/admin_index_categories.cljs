@@ -15,16 +15,17 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexCategoryLine
-  [_this {::m.categories/keys [id user]
-          :as                 category}]
+  [_this {::m.categories/keys [id user link]}]
   {:ident         ::m.categories/id
    :initial-state {::m.categories/id   ""
-                   ::m.categories/user {}}
+                   ::m.categories/link []
+                   ::m.categories/user []}
    :query         [::m.categories/id
+                   {::m.categories/link (comp/get-query u.links/CategoryLink)}
                    ::m.categories/name
                    {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
-    (dom/td (u.links/ui-category-link category))
+    (dom/td (u.links/ui-category-link (first link)))
     (dom/td (u.links/ui-user-link (first user)))
     (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
