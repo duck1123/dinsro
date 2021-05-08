@@ -22,6 +22,8 @@
            (tbody 1)
            (thead 1)
            (tr 1)
+           (ui-form 1)
+           (ui-form-field 1)
            (ui-modal-content 1))))
       (clojure-align-forms-automatically t)
       (clojure-indent-style . always-align))
