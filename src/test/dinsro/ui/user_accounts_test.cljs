@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.sample :as sample]
    [dinsro.ui.user-accounts :as u.user-accounts]
@@ -18,13 +19,16 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.user-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
-    (fn [] {::u.user-accounts/toggle-button {}
-            ::u.user-accounts/form          {}
-            ::u.user-accounts/accounts
+    (fn [] {::u.user-accounts/accounts
             (map
-             (fn [m] (assoc m :button-data {}))
+             (fn [account]
+               (-> account
+                   (assoc ::m.accounts/currency [{::m.currencies/id   "sats"
+                                                  ::m.currencies/name "Sats"}])
+                   (assoc ::m.accounts/link [account])
+                   (assoc ::m.accounts/user [{::m.users/id "admin"}])))
              (vals sample/account-map))
-            ::uism/asm-id                   ::u.user-accounts/form-toggle})}))
+            ::uism/asm-id ::u.user-accounts/form-toggle})}))
 
 (ws/defcard UserAccounts
   {::wsm/align       {:flex 1}
@@ -39,5 +43,8 @@
            [::u.user-accounts/accounts ::u.user-accounts/accounts]
            (map (fn [account]
                   (-> account
-                      (assoc ::m.accounts/user {::m.users/id "foo"})))
+                      (assoc ::m.accounts/link [account])
+                      (assoc ::m.accounts/user [{::m.users/id "foo"}])
+                      (assoc ::m.accounts/currency [{::m.currencies/id   "sats"
+                                                     ::m.currencies/name "Sats"}])))
                 (vals sample/account-map)))))}))

@@ -8,13 +8,14 @@
    [dinsro.ui.index-accounts :as u.index-accounts]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
-   [nubank.workspaces.model :as wsm]))
+   [nubank.workspaces.model :as wsm]
+   [taoensso.timbre :as timbre]))
 
 (ws/defcard IndexAccounts
   {::wsm/card-height 6
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root       u.index-accounts/IndexAccounts
+   {::ct.fulcro3/root u.index-accounts/IndexAccounts
     ::ct.fulcro3/initial-state
     (fn []
       {::u.index-accounts/accounts
@@ -22,8 +23,7 @@
         (fn [account]
           (-> account
               (assoc ::m.accounts/user [{::m.users/name "foo"
-                                         ::m.users/id   1}])
-              (assoc ::m.accounts/currency [{::m.currencies/name "bar"
-                                             ::m.currencies/id   1}])))
-        (vals sample/account-map))})
-    ::ct.fulcro3/wrap-root? false}))
+                                         ::m.users/id   "admin"}])
+              (assoc ::m.accounts/currency [{::m.currencies/name "Sats"
+                                             ::m.currencies/id   "sats"}])))
+        (vals sample/account-map))})}))
