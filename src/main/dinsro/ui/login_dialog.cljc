@@ -10,6 +10,7 @@
    #?(:cljs [dinsro.model.accounts :as m.accounts])
    [taoensso.timbre :as log]))
 
+
 (defsc LoginForm
   [this {:ui/keys [username password]} {:keys [visible?]}]
   {:query         [:ui/username
@@ -18,8 +19,8 @@
                    :ui/password "letmein"}
 
    ::auth/provider      :local
-   ::auth/check-session `account/check-session
-   ::auth/logout        `account/logout
+   ::auth/check-session `m.accounts/check-session
+   ::auth/logout        `m.accounts/logout
 
    :ident (fn [] [:component/id ::LoginForm])}
   #?(:clj

@@ -3,6 +3,7 @@
   (:require
    [clojure.spec.alpha :as s]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]])
+   #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    #?(:clj [com.wsscode.pathom.connect :as pc :refer [defmutation]]
       :cljs [com.wsscode.pathom.connect :as pc])
@@ -111,6 +112,34 @@
      (remote
       [env]
       (m/returning env auth/Session))))
+
+
+#?(:clj
+   (defmutation check-session [env _]
+     {}
+     (exauth/check-session! env))
+   :cljs
+   (defmutation check-session [_]
+     (ok-action [{:keys [state app result]}]
+                (let [{::auth/keys [provider]}   (get-in result [:body `check-session])
+                      {:time-zone/keys [zone-id]
+                       ::auth/keys     [status]} (some-> state deref ::auth/authorization (get provider))]
+                  (when (= status :success)
+                    (when zone-id
+                      (log/info "Setting UI time zone" zone-id)
+                      #_(datetime/set-timezone! time-zone)))
+                  (uism/trigger! app auth/machine-id :event/session-checked {:provider provider})))
+     (remote [env]
+             (m/returning env auth/Session))))
+
+
+;; (defn check-session! [env]
+;;   (log/info "Checking for existing session")
+;;   (or
+;;    (some-> env :ring/request :session)
+;;    {::auth/provider :local
+;;     ::auth/status   :not-logged-in}))
+
 
 (def schema
   [currency-spec

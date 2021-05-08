@@ -41,10 +41,3 @@
   "Implementation of logout."
   [_env]
   (fmw/augment-response {} (fn [resp] (assoc resp :session {}))))
-
-(defn check-session! [env]
-  (log/info "Checking for existing session")
-  (or
-   (some-> env :ring/request :session)
-   {::auth/provider :local
-    ::auth/status   :not-logged-in}))
