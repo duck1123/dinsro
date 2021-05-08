@@ -10,7 +10,6 @@
    [dinsro.router :as router]
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as timbre]))
 
