@@ -17,3 +17,5 @@
    m.rate-sources/schema
    m.transactions/schema
    m.users/schema])
+
+(def all-attributes [])
