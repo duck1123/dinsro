@@ -35,12 +35,12 @@
     (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
                                                  :avatar-images bs/image-blob-store})
     {::p/wrap-parser
-     (fn transform-parser-out-plugin-external [parser]
+     (fn transform-parser-out-plugin-external [wrapped-parser]
        (fn transform-parser-out-plugin-internal [env tx]
          ;; TASK: This should be taken from account-based setting
          (dt/with-timezone "America/Los_Angeles"
            (if (and (map? env) (seq tx))
-             (parser env tx)
+             (wrapped-parser env tx)
              {}))))}]
    [automatic-resolvers
     form/resolvers

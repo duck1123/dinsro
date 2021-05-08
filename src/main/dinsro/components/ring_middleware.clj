@@ -50,9 +50,9 @@
             (str/starts-with? uri "/files")
             (str/starts-with? uri "/js"))
       (ring-handler req)
-
-      (-> (resp/response (index anti-forgery-token))
-          (resp/content-type "text/html")))))
+      (resp/content-type
+       (resp/response (index anti-forgery-token))
+       "text/html"))))
 
 (defstate middleware
   :start
