@@ -41,7 +41,7 @@
   {:initial-state {::accounts []}
    :query         [{::accounts (comp/get-query IndexAccountLine)}]}
   (if (seq accounts)
-    (dom/table :.table
+    (dom/table :.ui.table
       (dom/thead {}
         (dom/tr {}
           (dom/th (tr [:name]))

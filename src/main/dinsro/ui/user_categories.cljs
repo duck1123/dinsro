@@ -35,7 +35,7 @@
   {:initial-state {::categories []}
    :query         [{::categories (comp/get-query IndexCategoryLine)}]}
   (if (seq categories)
-    (dom/table :.table
+    (dom/table :.ui.table
       (dom/thead {}
         (dom/tr {}
           (dom/th (tr [:name]))
