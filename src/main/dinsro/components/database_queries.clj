@@ -1,8 +1,8 @@
 (ns dinsro.components.database-queries
   (:require
-   ;; [crux.api :as crux]
-   ;; [roterski.fulcro.rad.database-adapters.crux-options :as co]
-   ;; [taoensso.encore :as enc]
+   [crux.api :as crux]
+   [roterski.fulcro.rad.database-adapters.crux-options :as co]
+   [taoensso.encore :as enc]
    [taoensso.timbre :as log]))
 
 ;; (defn get-all-accounts
@@ -89,17 +89,17 @@
 ;;         ffirst)
 ;;     (log/error "No database atom for production schema!")))
 
-;; (defn get-login-info
-;;   "Get the account name, time zone, and password info via a username (email)."
-;;   [env username]
-;;   (enc/if-let [db (some-> (get-in env [co/databases :production]) deref)]
-;;     (-> db
-;;         (crux/q '{:find [(eql/project ?account [:account/name
-;;                                                 {:time-zone/zone-id [:db/ident]}
-;;                                                 :password/hashed-value
-;;                                                 :password/salt
-;;                                                 :password/iterations])]
-;;                   :in [?email]
-;;                   :where [[?account :account/email ?email]]}
-;;                 username)
-;;         ffirst)))
+(defn get-login-info
+  "Get the account name, time zone, and password info via a username (email)."
+  [env username]
+  (enc/if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (-> db
+        (crux/q '{:find  [(eql/project ?account [:account/name
+                                                 {:time-zone/zone-id [:db/ident]}
+                                                :password/hashed-value
+                                                :password/salt
+                                                :password/iterations])]
+                  :in    [?email]
+                  :where [[?account :account/email ?email]]}
+                username)
+        ffirst)))

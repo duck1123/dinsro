@@ -27,7 +27,7 @@
    configuration in tests."
   :start (let [{:keys [config overrides]
                 :or   {config "config/dev.edn"}} (args)
-               loaded-config                     (merge (fserver/load-config
+               loaded-config                     (merge (fserver/load-config!
                                                          {:config-path (or config "config/dev.edn")}) overrides)]
            (log/info "Loading config" config)
            (logging/configure-logging! loaded-config)
