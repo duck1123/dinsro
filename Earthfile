@@ -68,7 +68,7 @@ INSTALL_NODE:
   RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
       && apt-get install -y nodejs \
       && rm -rf /var/lib/apt/lists/*
-  RUN npm install -g npm@7.11.1
+  RUN npm install -g npm@7.11.2
   RUN npm install -g yarn
   RUN npm install -g karma-cli
 
