@@ -18,7 +18,7 @@
   edn-query-language/eql                 {:mvn/version "1.0.1"}
   http.async.client/http.async.client    {:mvn/version "1.3.1"}
   io.replikativ/datahike                 {:mvn/version "0.3.1"}
-  juxt/crux-core                         {:mvn/version "21.04-1.16.0-beta"}
+  juxt/crux-core                         {:mvn/version "21.02-1.15.0-beta"}
   juxt/crux-jdbc                         {:mvn/version "21.02-1.15.0-beta"}
   juxt/crux-rocksdb                      {:mvn/version "21.02-1.15.0-beta"}
   kibu/pushy                             {:mvn/version "0.3.8"}
