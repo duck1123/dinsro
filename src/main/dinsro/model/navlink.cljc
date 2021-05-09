@@ -12,19 +12,19 @@
 
 (defattr name :navlink/name :string
   {ao/identities #{:navlink/id}
-   ::pc/resolve (fn [] {:navlink/name "fred"})
-   ;; ao/schema    :production
+   ;; ::pc/resolve (fn [] {:navlink/name "fred"})
+   ao/schema    :production
    })
 
 (defattr href :navlink/href :string
   {ao/identities #{:navlink/id}
    ao/schema    :production})
 
-(defattr all-navlinks :all-navlinks :ref
+(defattr all-navlinks :navlink/all-navlinks :ref
   {ao/target :navlink/id
-   ::pc/output [{:all-navlinks [:navlink/id]}]
+   ::pc/output [{:navlink/all-navlinks [:navlink/id]}]
    ::pc/resolve (fn [_env _]
-                  {:all-navlinks []})})
+                  {:navlink/all-navlinks []})})
 
 (def attributes [id name href all-navlinks])
 
