@@ -3,6 +3,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.authorization :as auth]
    [taoensso.timbre :as log]))
 
 (s/def ::password string?)
@@ -15,12 +18,23 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
+(defattr id ::id :string
+  {ao/identity? true
+   ao/schema    :production})
+
 (s/def ::password-hash string?)
 
 (def password-hash-spec
   {:db/ident       ::password-hash
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
+
+(defattr password-hash ::password-hash :string
+  {ao/required?       true
+   ao/identities      #{:account/id}
+   ::auth/permissions (fn [_] #{})
+   ;; :com.fulcrologic.rad.database-adapters.sql/column-name "password"
+   ao/schema          :production})
 
 (s/def ::input-params-valid (s/keys :req [::password ::id]))
 
@@ -46,7 +60,7 @@
   [password-hash-spec
    id-spec])
 
-(def attributes [])
+(def attributes [id password-hash])
 
 #?(:clj
    (def resolvers []))

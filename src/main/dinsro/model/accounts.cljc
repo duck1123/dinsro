@@ -151,4 +151,5 @@
 (def attributes [])
 
 #?(:clj
-   (def resolvers []))
+   (def resolvers
+     [login check-session]))
