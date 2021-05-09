@@ -9,8 +9,7 @@
   [_env {:navlink/keys [id]}]
   {::pc/input  #{:navlink/id}
    ::pc/output [:navlink/href
-                :navlink/name
-                :navlink/path]}
+                :navlink/name]}
   (get sample/navlink-map id))
 
 (defresolver navlinks-resolver
