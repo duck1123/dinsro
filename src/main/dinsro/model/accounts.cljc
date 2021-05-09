@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
@@ -111,7 +112,17 @@
    name-spec
    user-spec])
 
-(def attributes [currency id initial-value name user])
+(defattr all-accounts ::accounts :ref
+  {ao/target    ::id
+   ao/pc-output [{::accounts [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::all-accounts (queries/get-all-accounts env query-params)}
+        :cljs
+        (comment env query-params)))})
+
+(def attributes [currency id initial-value name user all-accounts])
 
 #?(:clj
    (def resolvers []))

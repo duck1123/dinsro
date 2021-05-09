@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
@@ -60,12 +61,22 @@
   [::item => ::ident]
   (ident id))
 
+(defattr all-categories ::all-categories :ref
+  {ao/target    ::id
+   ao/pc-output [{::all-categories [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::all-categories (queries/get-all-categories env query-params)}
+        :cljs
+        (comment env query-params)))})
+
 (def schema
   [id-spec
    name-spec
    user-spec])
 
-(def attributes [id name user])
+(def attributes [id name user all-categories])
 
 #?(:clj
    (def resolvers []))

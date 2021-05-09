@@ -4,6 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]))
 
@@ -74,6 +75,16 @@
   [::item => ::ident]
   (ident id))
 
+(defattr all-rates ::all-rates :ref
+  {ao/target    ::id
+   ao/pc-output [{::all-rates [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::all-rates (queries/get-all-rates env query-params)}
+        :cljs
+        (comment env query-params)))})
+
 (def schema
   [currency-spec
    date-spec
@@ -85,7 +96,7 @@
 
 (s/def ::rate-feed (s/coll-of ::rate-feed-item))
 
-(def attributes [currency date id rate])
+(def attributes [currency date id rate all-rates])
 
 #?(:clj
    (def resolvers []))

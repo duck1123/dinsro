@@ -61,7 +61,7 @@
   [id-spec
    name-spec])
 
-(def attributes [id name])
+(def attributes [id name all-currencies])
 
 #?(:clj
    (def resolvers []))
