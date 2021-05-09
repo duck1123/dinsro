@@ -6,7 +6,7 @@
    [dinsro.components.datahike :as db]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def attribute-list
   '[:db/id
@@ -29,14 +29,14 @@
   [user-id]
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-id)]
-    (when (get record m.users/id)
+    (when (get record ::m.users/id)
       (dissoc record :db/id))))
 
 (>defn read-record-by-eid
   [user-dbid]
   [:db/id => (? ::m.users/item)]
   (let [record (d/pull @db/*conn* attribute-list user-dbid)]
-    (when (get record m.users/id)
+    (when (get record ::m.users/id)
       (dissoc record :db/id))))
 
 (>defn read-records
@@ -63,7 +63,7 @@
 (>defn create-record
   [params]
   [::m.users/params => :db/id]
-  (if (nil? (find-eid-by-id (m.users/id params)))
+  (if (nil? (find-eid-by-id (::m.users/id params)))
     (let [tempid   (d/tempid "user-id")
           params   (assoc params :db/id tempid)
           response (d/transact db/*conn* {:tx-data [params]})]

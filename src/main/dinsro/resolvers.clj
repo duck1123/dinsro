@@ -20,7 +20,7 @@
    [dinsro.resolvers.rate-sources :as r.rate-sources]
    [dinsro.resolvers.transactions :as r.transactions]
    [dinsro.resolvers.users :as r.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defresolver auth-resolver
   [_env _props]

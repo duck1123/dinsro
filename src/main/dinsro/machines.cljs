@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.ui-state-machines :as uism :refer [defstatemachine]]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defstatemachine hideable
   {::uism/actor-names #{:actor/navbar}

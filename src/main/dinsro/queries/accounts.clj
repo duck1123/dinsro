@@ -11,7 +11,7 @@
    [dinsro.queries.users :as q.users]
    [dinsro.specs]
    [dinsro.utils :as utils]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def attribute-list
   '[:db/id
@@ -74,7 +74,7 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.accounts/item)]
-  (map read-record (timbre/spy :info (index-ids))))
+  (map read-record (log/spy :info (index-ids))))
 
 (>defn index-records-by-currency
   [currency-id]

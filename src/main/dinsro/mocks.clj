@@ -16,7 +16,7 @@
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>defn mock-user
   []
@@ -28,7 +28,7 @@
 (>defn mock-currency
   []
   [=> ::m.currencies/item]
-  (let [params (ds/gen-key m.currencies/params)
+  (let [params (ds/gen-key ::m.currencies/params)
         id     (q.currencies/create-record params)]
     (q.currencies/read-record id)))
 

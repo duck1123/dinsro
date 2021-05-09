@@ -1,7 +1,7 @@
 (ns dinsro.resolvers.debug-menu
   (:require
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def debug-menu-list
   [:home

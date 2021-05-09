@@ -9,7 +9,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AccountLink
   [_this {::m.accounts/keys [id name]}]

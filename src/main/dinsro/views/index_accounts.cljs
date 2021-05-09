@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-accounts :as u.user-accounts]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexAccountsPage
   [_this {::keys [user-accounts]}]

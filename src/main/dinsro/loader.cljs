@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
    [dinsro.app :as da]
    [dinsro.mutations.session :as mu.session]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defmutation init
   [_]

@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddUserTransactionForm
   [_this {::keys [account date value]}]

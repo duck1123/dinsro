@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [dinsro.app :as da]
    [pushy.core :as pushy]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defonce history
   (pushy/pushy

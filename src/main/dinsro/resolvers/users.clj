@@ -5,7 +5,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>defn resolve-link
   [username]
@@ -15,7 +15,7 @@
 (>defn resolve-user
   [username]
   [::m.users/id => ::m.users/item]
-  (timbre/infof "resolving user: %s" username)
+  (log/infof "resolving user: %s" username)
   (q.users/read-record username))
 
 (>defn resolve-users

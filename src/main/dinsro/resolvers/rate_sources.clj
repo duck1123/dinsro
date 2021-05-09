@@ -4,7 +4,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.queries.rate-sources :as q.rate-sources]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn resolve-rate-source
   [id]

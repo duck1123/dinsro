@@ -1,7 +1,7 @@
 (ns dinsro.translations
   (:require
    [taoensso.tempura :as tempura]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def dictionary
   {;; :missing {:missing "Missing: %1"}

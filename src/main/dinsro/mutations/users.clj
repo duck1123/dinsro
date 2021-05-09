@@ -3,7 +3,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn do-delete
   [id]

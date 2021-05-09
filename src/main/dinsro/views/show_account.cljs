@@ -9,7 +9,7 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-transactions :as u.index-transactions]
    [dinsro.ui.show-account :as u.show-account]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc ShowAccountPage
   [_this {::keys [account transactions]}]

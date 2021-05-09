@@ -7,7 +7,7 @@
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions behavior specification]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def schemata
   [m.users/schema])
@@ -16,8 +16,8 @@
 
 (specification "create-record"
   (behavior "when the params are valid"
-    (let [params  (ds/gen-key m.users/params)
-          user-id (m.users/id params)
+    (let [params  (ds/gen-key ::m.users/params)
+          user-id (::m.users/id params)
           eid     (q.users/create-record params)
           user    (q.users/read-record eid)]
       (assertions

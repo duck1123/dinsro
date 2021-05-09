@@ -9,7 +9,7 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-currency-account :as u.f.add-currency-account]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

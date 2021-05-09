@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-currency :as u.f.admin-create-currency]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

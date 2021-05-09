@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn path-for
   [_p]

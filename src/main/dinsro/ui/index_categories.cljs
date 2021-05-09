@@ -5,7 +5,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

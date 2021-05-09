@@ -11,7 +11,7 @@
    [dinsro.specs]
    [dinsro.utils :as utils]
    [manifold.stream :as ms]
-   [taoensso.timbre :as timbre]
+   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (def record-limit 75)

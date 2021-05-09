@@ -7,7 +7,7 @@
    [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc CreateCurrencyForm
   [this {::keys [id name]}]

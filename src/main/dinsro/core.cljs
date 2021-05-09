@@ -1,7 +1,7 @@
 (ns dinsro.core
   (:require
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn init!
   [debug?]
-  (timbre/infof "init - %s" debug?))
+  (log/infof "init - %s" debug?))

@@ -8,7 +8,7 @@
    [dinsro.ui.category-transactions :as u.category-transactions]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.show-category :as u.show-category]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc ShowCategoryPage
   [_this {::keys [category transactions]}]
@@ -20,7 +20,7 @@
    :route-segment ["categories" ::m.categories/id]
    :will-enter
    (fn [app {::m.categories/keys [id]}]
-     (timbre/info "will enter")
+     (log/info "will enter")
      (df/load app [::m.categories/id id] u.show-category/ShowCategory
               {:target [:page/id ::page ::category]})
      (dr/route-immediate (comp/get-ident ShowCategoryPage {})))}

@@ -4,7 +4,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.queries.categories :as q.categories]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn resolve-categories
   []

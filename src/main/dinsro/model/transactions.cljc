@@ -6,15 +6,13 @@
    [dinsro.specs :as ds]))
 
 (s/def ::id        string?)
-(def id            ::id)
 (def id-spec
-  {:db/ident       id
+  {:db/ident       ::id
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
 (s/def ::description string?)
-(def description ::descriprion)
 (def description-spec
   {:db/ident       ::description
    :db/valueType   :db.type/string
@@ -23,37 +21,30 @@
 (s/def ::account
   (s/keys :opt [:db/id
                 ::m.accounts/id]))
-(def account ::account)
 (def account-spec
   {:db/ident       ::account
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
 (s/def ::date ::ds/date)
-(def date ::date)
 (def date-spec
   {:db/ident       ::date
    :db/valueType   :db.type/instant
    :db/cardinality :db.cardinality/one})
 
 (s/def ::value ::ds/valid-double)
-(def value ::value)
 (def value-spec
   {:db/ident       ::value
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
 (s/def ::account-id :db/id)
-(def account-id ::account-id)
 
 (s/def ::required-params (s/keys :req [::date ::description ::value]))
-(def required-params ::required-params)
 
 (s/def ::params (s/keys :req [::account ::date ::description ::value]))
-(def params ::params)
 
 (s/def ::item (s/keys :req [::id ::account ::date ::description ::value]))
-(def item ::item)
 
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -73,3 +64,8 @@
    description-spec
    id-spec
    value-spec])
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))

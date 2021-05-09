@@ -8,7 +8,7 @@
    [dinsro.ui.rate-source-transactions :as u.rate-source-transactions]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.show-rate-source :as u.show-rate-source]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc ShowRateSourcePage
   [_this {::keys [id rate-source transactions]}]

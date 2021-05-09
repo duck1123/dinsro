@@ -5,7 +5,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.forms.login :as u.f.login]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc LoginPage
   [_this {::keys [form]}]

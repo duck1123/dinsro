@@ -5,7 +5,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-transactions :as u.user-transactions]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexTransactionsPage
   [_this {::keys [transactions]}]

@@ -4,7 +4,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn do-create
   [id name identity]
@@ -16,7 +16,7 @@
         {:status           :success
          :created-currency [{::m.currencies/id id}]}
         (do
-          (timbre/warn "failed to create currency")
+          (log/warn "failed to create currency")
           {:status           :failure
            :created-currency []})))
     {:status :no-user}))

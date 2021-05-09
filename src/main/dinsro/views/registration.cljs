@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.forms.registration :as u.f.registration]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc RegistrationPage
   [_this {::keys [allow-registration form]}]

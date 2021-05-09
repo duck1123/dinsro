@@ -9,7 +9,7 @@
    [dinsro.ui.currency-rates :as u.currency-rates]
    [dinsro.ui.currency-rate-sources :as u.currency-rate-sources]
    [dinsro.ui.show-currency :as u.show-currency]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc ShowCurrencyPage
   [_this {::keys [currency currency-accounts currency-rates currency-rate-sources]}]

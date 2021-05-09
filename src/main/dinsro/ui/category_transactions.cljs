@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-category-transaction :as u.f.add-category-transaction]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -74,7 +74,7 @@
        (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.add-category-transaction/ui-form form))
-     (ui-index-category-transactions (timbre/spy :info transactions)))))
+     (ui-index-category-transactions (log/spy :info transactions)))))
 
 (def ui-category-transactions
   (comp/factory CategoryTransactions))

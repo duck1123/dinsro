@@ -8,7 +8,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddUserAccountForm
   [this {::keys [currency currency-id name initial-value submit]}]
@@ -45,7 +45,7 @@
        submit
        {:onClick
         (fn [_]
-          (timbre/info "click")
+          (log/info "click")
           (let [data {::m.accounts/currency      {:db/id currency-id}
                       ::m.accounts/name          name
                       ::m.accounts/initial-value initial-value}]

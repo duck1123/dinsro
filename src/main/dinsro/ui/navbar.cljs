@@ -7,7 +7,7 @@
    [dinsro.mutations :as mutations]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def default-menu-links
   [{:navlink/name (tr [:accounts])

@@ -5,7 +5,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn do-create
   [name currency-id user-id initial-value]

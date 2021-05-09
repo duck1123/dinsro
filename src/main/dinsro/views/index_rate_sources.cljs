@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-rate-source :as u.f.create-rate-source]
    [dinsro.ui.index-rate-sources :as u.index-rate-sources]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

@@ -8,7 +8,7 @@
    [dinsro.test-helpers :as th]
    [fulcro-spec.check :as _]
    [fulcro-spec.core :refer [assertions behavior specification]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def schemata
   [m.users/schema])
@@ -17,8 +17,8 @@
 
 (specification "do-register"
   (behavior "success"
-    (let [password (ds/gen-key m.users/password)
-          username (ds/gen-key m.users/id)
+    (let [password (ds/gen-key ::m.users/password)
+          username (ds/gen-key ::m.users/id)
           response (mu.session/do-register username password)]
       (assertions
        (::m.users/id response) => username))))
@@ -35,7 +35,7 @@
          (::m.users/id response) => (:user/username data)
          (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
       (catch Exception ex
-        (timbre/error ex "caught")))))
+        (log/error ex "caught")))))
 
 (specification "login"
   (let [env      {:request {:session {}}}

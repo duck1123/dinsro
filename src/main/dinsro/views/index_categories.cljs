@@ -5,7 +5,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-categories :as u.user-categories]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexCategoriesPage
   [_this {::keys [categories]}]

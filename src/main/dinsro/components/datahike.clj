@@ -6,7 +6,7 @@
    [datahike.db :as db]
    [dinsro.components.config :as config]
    [mount.core :refer [defstate]]
-   [taoensso.timbre :as timbre])
+   [taoensso.timbre :as log])
   (:import java.io.File))
 
 (def db-error-message
@@ -23,7 +23,7 @@
 (defn initialize-db!
   [uri]
   (when-not (d/database-exists? (d.config/uri->config uri))
-    (timbre/info "Creating database: " uri)
+    (log/info "Creating database: " uri)
     (d/create-database uri)))
 
 (defn start!
@@ -37,7 +37,7 @@
 (defstate ^:dynamic *conn*
   "The connection to the datahike database"
   :start (start!)
-  :stop (do (timbre/info "stopping real connection")
+  :stop (do (log/info "stopping real connection")
             (d/release *conn*)))
 
 (defn create-database

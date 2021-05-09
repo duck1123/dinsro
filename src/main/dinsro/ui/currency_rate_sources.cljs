@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-currency-rate-source :as u.f.add-currency-rate-source]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

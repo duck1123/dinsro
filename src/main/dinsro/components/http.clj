@@ -4,7 +4,7 @@
    [dinsro.handler :as handler]
    [luminus.http-server :as http]
    [mount.core :as mount]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (mount/defstate ^{:on-reload :noop} http-server
   :start

@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.add-user-transaction :as u.f.add-user-transaction]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
