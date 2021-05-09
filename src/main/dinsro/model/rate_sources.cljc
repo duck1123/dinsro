@@ -51,7 +51,8 @@
    :db/cardinality :db.cardinality/one})
 
 (defattr currency ::currency :ref
-  {ao/identities #{::id}
+  {ao/target     ::m.currencies/id
+   ao/identities #{::id}
    ao/schema     :production})
 
 (s/def ::required-params (s/keys :req [::name ::url]))

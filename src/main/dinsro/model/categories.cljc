@@ -40,7 +40,8 @@
    :db/cardinality :db.cardinality/one})
 
 (defattr user ::user :ref
-  {ao/identities #{::id}
+  {ao/target ::m.users/id
+   ao/identities #{::id}
    ao/schema     :production})
 
 (s/def ::params (s/keys :req [::name ::user]))

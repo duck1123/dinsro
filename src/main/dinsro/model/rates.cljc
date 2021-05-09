@@ -24,7 +24,7 @@
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
 
-(defattr rate :rate :double
+(defattr rate ::rate :double
   {ao/identities #{::id}
    ao/schema     :production})
 
