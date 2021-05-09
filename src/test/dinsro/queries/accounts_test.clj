@@ -31,7 +31,7 @@
         id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
     (assertions
-     (get params m.accounts/name) => (get created-record m.accounts/name))))
+     (get params ::m.accounts/name) => (get created-record ::m.accounts/name))))
 
 (specification "index-records"
   (assertions
@@ -44,7 +44,7 @@
        (q.accounts/index-records-by-user user-id) => [])))
   (behavior "found"
     (let [record  (mocks/mock-account)
-          user-id (get-in record [m.accounts/user ::m.users/id])
+          user-id (get-in record [::m.accounts/user ::m.users/id])
           eid     (q.users/find-eid-by-id user-id)]
       (assertions
        (q.accounts/index-records-by-user eid) => [record]))))

@@ -11,7 +11,7 @@
   [identity name]
   (if-let [_user-eid (q.users/find-eid-by-id identity)]
     (let [params {::m.categories/name name
-                  ::m.categories/user {m.users/id identity}}]
+                  ::m.categories/user {::m.users/id identity}}]
       (if-let [record (q.categories/create-record params)]
         {:status           :success
          :created-category [{::m.categories/id (:db/id record)}]}

@@ -28,7 +28,7 @@
 (>defn mock-currency
   []
   [=> ::m.currencies/item]
-  (let [params (ds/gen-key m.currencies/params)
+  (let [params (ds/gen-key ::m.currencies/params)
         id     (q.currencies/create-record params)]
     (q.currencies/read-record id)))
 

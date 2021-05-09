@@ -17,8 +17,8 @@
 
 (specification "do-register"
   (behavior "success"
-    (let [password (ds/gen-key m.users/password)
-          username (ds/gen-key m.users/id)
+    (let [password (ds/gen-key ::m.users/password)
+          username (ds/gen-key ::m.users/id)
           response (mu.session/do-register username password)]
       (assertions
        (::m.users/id response) => username))))
