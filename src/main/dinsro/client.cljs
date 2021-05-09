@@ -7,7 +7,11 @@
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [taoensso.tufte :as tufte]))
+
+(defonce stats-accumulator
+  (tufte/add-accumulating-handler! {:ns-pattern "*"}))
 
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.
@@ -26,3 +30,11 @@
   ;; As of Fulcro 3.3.0, this addition will help with stale queries when using dynamic routing:
   (comp/refresh-dynamic-queries! da/app)
   (js/console.log "Hot reload"))
+
+(defonce performance-stats (tufte/add-accumulating-handler! {}))
+
+(defn pperf
+  "Dump the currently-collected performance stats"
+  []
+  (let [stats (not-empty @performance-stats)]
+    (println (tufte/format-grouped-pstats stats))))
