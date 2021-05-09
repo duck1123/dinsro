@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>def ::settings (s/keys))
 

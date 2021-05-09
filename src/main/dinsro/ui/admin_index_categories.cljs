@@ -10,7 +10,7 @@
    [dinsro.ui.forms.create-category :as u.f.create-category]
    [dinsro.ui.links :as u.links]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

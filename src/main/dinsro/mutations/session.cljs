@@ -3,7 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
    [dinsro.routing :as routing]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc CurrentUser
   [_this _props]
@@ -18,21 +18,21 @@
      (swap! state #(assoc % :root/ready? true)))))
 
 (defmutation register [_]
-  (action [_env] (timbre/info "register"))
+  (action [_env] (log/info "register"))
   (remote [_env] true))
 
 (defmutation login [_]
   (action
    [{:keys [state]}]
-   (timbre/info "busy"))
+   (log/info "busy"))
 
   (error-action
    [{:keys [state]}]
-   (timbre/info "error action"))
+   (log/info "error action"))
 
   (ok-action
    [{:keys [state] :as env}]
-   (timbre/infof "ok")
+   (log/infof "ok")
    (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
      (when-not valid?
        (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
@@ -47,15 +47,15 @@
 (defmutation logout [_]
   (action
    [{:keys [state]}]
-   (timbre/info "busy"))
+   (log/info "busy"))
 
   (error-action
    [{:keys [state]}]
-   (timbre/info "error action"))
+   (log/info "error action"))
 
   (ok-action
    [{:keys [state] :as env}]
-   (timbre/infof "ok"))
+   (log/infof "ok"))
 
   (remote
    [env]

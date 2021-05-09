@@ -7,7 +7,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.datepicker :as u.datepicker]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc CreateRateForm
   [this {::keys [datepicker]

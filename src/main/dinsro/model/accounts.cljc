@@ -5,7 +5,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
-   [dinsro.specs]))
+   [dinsro.specs]
+   [taoensso.timbre :as log]))
 
 (s/def ::ident (s/tuple keyword? ::id))
 

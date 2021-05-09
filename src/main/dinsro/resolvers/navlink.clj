@@ -3,7 +3,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.queries.settings :as q.settings]
    [dinsro.sample :as sample]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defresolver navlink-resolver
   [_env {:navlink/keys [id]}]

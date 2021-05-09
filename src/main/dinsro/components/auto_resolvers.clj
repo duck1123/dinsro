@@ -4,7 +4,7 @@
    [mount.core :refer [defstate]]
    [com.fulcrologic.rad.resolvers :as res]
    [roterski.fulcro.rad.database-adapters.crux :as crux]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defstate automatic-resolvers
   :start

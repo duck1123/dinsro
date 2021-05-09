@@ -7,7 +7,7 @@
    [dinsro.mutations.categories :as mu.categories]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddUserCategoryForm
   [this {::keys [name]}]

@@ -10,7 +10,7 @@
    [dinsro.ui.forms.admin-create-rate-source :as u.f.admin-create-rate-source]
    [dinsro.ui.links :as u.links]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

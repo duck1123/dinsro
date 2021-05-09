@@ -3,7 +3,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn resolve-transaction
   [_id]

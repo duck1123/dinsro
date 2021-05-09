@@ -3,7 +3,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (s/def ::password string?)
 

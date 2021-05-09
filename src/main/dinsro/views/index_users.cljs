@@ -6,7 +6,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-users :as u.index-users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexUsersPage
   [_this {::keys [users]}]

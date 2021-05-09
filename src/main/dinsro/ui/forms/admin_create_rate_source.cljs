@@ -5,7 +5,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AdminCreateRateSourceForm
   [_this {::keys [name url currency submit-button]}]
@@ -28,6 +28,6 @@
      (bulma/control
       (u.inputs/ui-primary-button
        submit-button
-       {:onClick (fn [_] (timbre/info "submit"))})))))
+       {:onClick (fn [_] (log/info "submit"))})))))
 
 (def ui-admin-create-rate-source-form (comp/factory AdminCreateRateSourceForm))

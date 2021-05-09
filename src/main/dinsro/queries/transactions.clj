@@ -9,7 +9,7 @@
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.specs]
    [dinsro.utils :as utils]
-   [taoensso.timbre :as timbre]
+   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (def record-limit 75)

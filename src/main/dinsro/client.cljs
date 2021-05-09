@@ -7,7 +7,7 @@
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.

@@ -7,16 +7,16 @@
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>defn do-register
   [id password]
   [::m.users/id ::m.users/password => (s/keys)]
   (let [params #::m.users{:password password :id id}]
     (try
-      (a.authentication/register (timbre/spy :info params))
+      (a.authentication/register (log/spy :info params))
       (catch Exception ex
-        ;; (timbre/error ex "error")
+        ;; (log/error ex "error")
         {::error true
          :ex     (str ex)}))))
 
@@ -24,7 +24,7 @@
   [_env {:user/keys [password username]}]
   {::pc/params #{:user/password :user/username}
    ::pc/output [:user/username :user/valid? :user/registered?]}
-  (timbre/info "register")
+  (log/info "register")
   (do-register username password))
 
 (defmutation login

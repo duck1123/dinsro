@@ -6,7 +6,7 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-currencies :as u.index-currencies]
    [dinsro.ui.user-currencies :as u.user-currencies]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexCurrenciesPage
   [_this {::keys [currencies]}]

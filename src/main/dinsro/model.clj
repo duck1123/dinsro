@@ -10,7 +10,7 @@
    [dinsro.model.timezone :as m.timezone]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def schemata
   [m.accounts/schema

@@ -5,7 +5,7 @@
    #?@(:clj [[clojure.pprint :refer [pprint]]
              [clojure.string :as str]
              [taoensso.encore :as enc]])
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 #?(:clj
    (defmacro p
@@ -48,7 +48,7 @@
                 (force msg_)
                 (enc/if-let [_   (not no-stacktrace?)
                              err ?err]
-                  (str "\n" (timbre/stacktrace err opts))
+                  (str "\n" (log/stacktrace err opts))
                   ""))))))
 
 #?(:clj
@@ -56,8 +56,8 @@
      "Configure clojure logging for this project. `config` is the global config map that should contain
      `:taoensso.timbre/logging-config` as a key."
      [config]
-     (let [{::timbre/keys [logging-config]} config]
-       (timbre/merge-config! (assoc logging-config
-                                    :middleware [(pretty-middleware #(with-out-str (pprint %)))]
-                                    :output-fn custom-output-fn))
-       (timbre/debug "Configured Timbre with " (p logging-config)))))
+     (let [{::log/keys [logging-config]} config]
+       (log/merge-config! (assoc logging-config
+                                 :middleware [(pretty-middleware #(with-out-str (pprint %)))]
+                                 :output-fn custom-output-fn))
+       (log/debug "Configured Timbre with " (p logging-config)))))

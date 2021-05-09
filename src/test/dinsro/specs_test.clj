@@ -4,7 +4,7 @@
    [clojure.test.check.generators]
    [dinsro.specs :as ds]
    [fulcro-spec.core :refer [assertions specification]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 ;; TODO: move to cards
 

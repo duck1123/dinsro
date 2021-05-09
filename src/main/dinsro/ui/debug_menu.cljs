@@ -7,7 +7,7 @@
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc DebugLinkButton
   [_this {:navlink/keys [path name]}]

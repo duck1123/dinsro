@@ -9,7 +9,7 @@
    [dinsro.ui.user-accounts :as u.user-accounts]
    [dinsro.ui.user-categories :as u.user-categories]
    [dinsro.ui.user-transactions :as u.user-transactions]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc UserAccounts
   [_this _props]

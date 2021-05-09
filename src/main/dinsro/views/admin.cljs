@@ -12,7 +12,7 @@
    [dinsro.ui.index-transactions :as u.index-transactions]
    [dinsro.ui.index-users :as u.index-users]
    [dinsro.ui.bulma :as bulma]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AdminPage
   [_this {::keys [accounts categories currencies rate-sources transactions users]}]

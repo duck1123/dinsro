@@ -5,7 +5,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn do-create
   [identity name]

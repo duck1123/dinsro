@@ -1,7 +1,7 @@
 (ns dinsro.mutations.transactions
   (:require
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defmutation create! [_props]
   (action [_env] true)

@@ -7,7 +7,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.queries.currencies :as q.currencies]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def sats {::m.currencies/id   "sats"
            ::m.currencies/name "Sats"})

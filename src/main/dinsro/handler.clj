@@ -16,7 +16,7 @@
    [mount.core :as mount]
    [reitit.coercion.spec]
    [reitit.ring :as ring]
-   [taoensso.timbre :as timbre]
+   [taoensso.timbre :as log]
    [dinsro.mutations.accounts :as mu.accounts]))
 
 (mount/defstate init-app
@@ -44,7 +44,7 @@
   (try
     (mu.session/do-register "admin" "hunter2")
     (catch Exception ex
-      (timbre/error ex "Already created")))
+      (log/error ex "Already created")))
   (mu.currencies/do-create "usd" "Dollars" "admin")
   (mu.currencies/do-create "eur" "Euros" "admin")
   (mu.categories/do-create "admin" "a")
@@ -58,7 +58,7 @@
     (d/transact db/*conn* schema)))
 
 (defn app []
-  (timbre/info "starting app handler")
+  (log/info "starting app handler")
   (init-schemata)
   (seed-db!)
   (middleware/wrap-base #'app-routes))

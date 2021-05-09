@@ -8,7 +8,7 @@
    [dinsro.test-helpers :as th]
    [fulcro-spec.check :as _]
    [fulcro-spec.core :refer [assertions behavior specification]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def schemata
   [m.users/schema])
@@ -35,7 +35,7 @@
          (::m.users/id response) => (:user/username data)
          (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
       (catch Exception ex
-        (timbre/error ex "caught")))))
+        (log/error ex "caught")))))
 
 (specification "login"
   (let [env      {:request {:session {}}}

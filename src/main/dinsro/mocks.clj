@@ -16,7 +16,7 @@
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>defn mock-user
   []

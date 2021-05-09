@@ -9,7 +9,7 @@
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.users :as q.users]
    [dinsro.sample :as sample]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>defn resolve-account
   [id]

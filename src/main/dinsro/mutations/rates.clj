@@ -3,7 +3,7 @@
    [com.wsscode.pathom.connect :as pc :refer [defmutation]]
    [dinsro.model.rates :as m.rates]
    [dinsro.queries.rates :as q.rates]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn do-create
   [_params]

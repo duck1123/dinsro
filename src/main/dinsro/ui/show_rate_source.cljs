@@ -5,7 +5,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 

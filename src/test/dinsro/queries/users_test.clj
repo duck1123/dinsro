@@ -7,7 +7,7 @@
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions behavior specification]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def schemata
   [m.users/schema])

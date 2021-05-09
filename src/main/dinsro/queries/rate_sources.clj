@@ -9,7 +9,7 @@
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs]
    [dinsro.utils :as utils]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def attributes-list
   '[:db/id

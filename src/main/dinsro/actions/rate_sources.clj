@@ -14,7 +14,7 @@
    [manifold.time :as t]
    [mount.core :as mount]
    [ring.util.http-response :as http]
-   [taoensso.timbre :as timbre]
+   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (declare ^:dynamic *scheduler*)
@@ -42,11 +42,11 @@
         (let [rate-item {::m.rates/currency {::m.currencies/id currency-id}
                          ::m.rates/rate     rate
                          ::m.rates/date     (tick/instant)}]
-          (timbre/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)
+          (log/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)
           (q.rates/create-record rate-item))
-        (timbre/error "No rate"))
-      (timbre/error "Couldn't find currency"))
-    (timbre/error "No Currency id")))
+        (log/error "No rate"))
+      (log/error "Couldn't find currency"))
+    (log/error "No Currency id")))
 
 (defn run-handler
   [request]
@@ -67,13 +67,13 @@
 
 (defn stop-scheduler
   []
-  (timbre/info "stopping")
+  (log/info "stopping")
   (*scheduler*)
   nil)
 
 (defn start-scheduler
   []
-  (timbre/info "starting")
+  (log/info "starting")
   (t/every
    (t/minutes 5)
    (t/seconds 30)

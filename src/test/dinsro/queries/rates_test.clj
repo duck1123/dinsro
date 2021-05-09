@@ -9,7 +9,7 @@
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions behavior specification]]
-   [taoensso.timbre :as timbre]
+   [taoensso.timbre :as log]
    [tick.core :as tick]))
 
 (def schemata [m.currencies/schema

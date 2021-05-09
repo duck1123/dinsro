@@ -6,7 +6,7 @@
    [dinsro.components.datahike :as db]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def attribute-list
   '[:db/id
