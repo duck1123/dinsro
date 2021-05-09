@@ -38,10 +38,9 @@
   {::pc/output [{:unauth-links [:navlink/id]}]}
   (let [registration-enabled? (:allow-registration (q.settings/get-settings))]
     {:unauth-links
-     (filter identity
-             [(get sample/navlink-map "login")
-              (when registration-enabled?
-                (get sample/navlink-map "registration"))])}))
+     (filter identity [[:navlink/id "login"]
+                       (when registration-enabled?
+                         [:navlink/id "registration"])])}))
 
 (defresolver dropdown-links-resolver
   [_env _props]
