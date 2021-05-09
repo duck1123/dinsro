@@ -1,4 +1,5 @@
 (ns dinsro.model.navlink
+  (:refer-clojure :exclude [name])
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]

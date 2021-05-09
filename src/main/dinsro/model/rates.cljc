@@ -2,6 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs :as ds]))
 
@@ -12,11 +14,19 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
+(defattr id ::id :string
+  {ao/identity? true
+   ao/schema    :production})
+
 (s/def ::rate ds/valid-double)
 (def rate-spec
   {:db/ident       ::rate
    :db/valueType   :db.type/double
    :db/cardinality :db.cardinality/one})
+
+(defattr rate :rate :double
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::currency-id ::m.currencies/id)
 
@@ -28,6 +38,10 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
+(defattr currency ::currency :ref
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (s/def ::date ds/date)
 (s/def ::date-ms pos-int?)
 (s/def ::date-inst inst?)
@@ -36,6 +50,10 @@
   {:db/ident       ::date
    :db/valueType   :db.type/instant
    :db/cardinality :db.cardinality/one})
+
+(defattr date ::date
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::required-params (s/keys :req [::rate ::date]))
 
@@ -66,7 +84,7 @@
 
 (s/def ::rate-feed (s/coll-of ::rate-feed-item))
 
-(def attributes [])
+(def attributes [currency date id rate])
 
 #?(:clj
    (def resolvers []))

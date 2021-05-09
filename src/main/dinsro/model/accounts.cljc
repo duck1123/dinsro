@@ -2,6 +2,8 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
@@ -27,11 +29,19 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
+(defattr id :navlink/id :string
+  {ao/identity? true
+   ao/schema    :production})
+
 (s/def ::name string?)
 (def name-spec
   {:db/ident       ::name
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
+
+(defattr name ::name :string
+  {ao/identities #{::id}
+   ao/schema :production})
 
 (s/def ::initial-value (s/or :double double? :zero zero?))
 
@@ -39,6 +49,10 @@
   {:db/ident       ::initial-value
    :db/valueType   :db.type/number
    :db/cardinality :db.cardinality/one})
+
+(defattr initial-value ::initial-value :double
+  {ao/identities #{::id}
+   ao/schema :production})
 
 (s/def ::currency-id (s/or :id :db/id :zero zero?))
 (s/def ::currency
@@ -50,6 +64,10 @@
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
 
+(defattr currency ::currency :ref
+  {ao/identities #{::id}
+   ao/schema :production})
+
 (s/def ::user-id :db/id)
 
 (s/def ::user
@@ -60,6 +78,10 @@
   {:db/ident       ::user
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
+
+(defattr user ::user :ref
+  {ao/identities #{::id}
+   ao/schema :production})
 
 (s/def ::required-params
   (s/keys :req [::name
@@ -87,7 +109,7 @@
    name-spec
    user-spec])
 
-(def attributes [])
+(def attributes [currency id initial-value name user])
 
 #?(:clj
    (def resolvers []))

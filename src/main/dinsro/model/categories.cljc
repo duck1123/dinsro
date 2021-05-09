@@ -2,6 +2,8 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
@@ -13,11 +15,21 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
+(defattr id :navlink/id :string
+  {ao/identity? true
+   ao/schema    :production})
+
+
+
 (s/def ::name string?)
 (def name-spec
   {:db/ident       ::name
    :db/valueType   :db.type/string
    :db/cardinality :db.cardinality/one})
+
+(defattr name ::name :string
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::user-id :db/id)
 
@@ -26,6 +38,10 @@
   {:db/ident       ::user
    :db/valueType   :db.type/ref
    :db/cardinality :db.cardinality/one})
+
+(defattr user ::user :ref
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::params (s/keys :req [::name ::user]))
 
@@ -48,7 +64,7 @@
    name-spec
    user-spec])
 
-(def attributes [])
+(def attributes [id name user])
 
 #?(:clj
    (def resolvers []))
