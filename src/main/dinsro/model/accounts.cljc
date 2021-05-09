@@ -29,7 +29,7 @@
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity})
 
-(defattr id :navlink/id :string
+(defattr id ::id :string
   {ao/identity? true
    ao/schema    :production})
 

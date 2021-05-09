@@ -39,7 +39,8 @@
    :db/cardinality :db.cardinality/one})
 
 (defattr currency ::currency :ref
-  {ao/identities #{::id}
+  {ao/target ::m.currencies/id
+   ao/identities #{::id}
    ao/schema     :production})
 
 (s/def ::date ds/date)
@@ -51,7 +52,7 @@
    :db/valueType   :db.type/instant
    :db/cardinality :db.cardinality/one})
 
-(defattr date ::date
+(defattr date ::date :date
   {ao/identities #{::id}
    ao/schema     :production})
 
