@@ -2,7 +2,10 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   #?(:cljs [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]])
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   #?(:clj [com.wsscode.pathom.connect :as pc :refer [defmutation]])
+   #?(:clj [dinsro.model.authorization :as exauth])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
@@ -79,6 +82,30 @@
 (def item-spec
   {:db/ident        ::item
    :db.entity/attrs [::name ::initial-value ::currency ::user]})
+
+#?(:clj
+   (defmutation login [env params]
+     {::pc/params #{:username :password}}
+     (exauth/login! env params))
+   :cljs
+   (defmutation login [_params]
+     (ok-action
+      [{:keys [app state]}]
+      (let [{:time-zone/keys [zone-id]
+             ::auth/keys     [status]} (some-> state deref ::auth/authorization :local)]
+        (if (= status :success)
+          (do
+            (when zone-id
+              (log/info "Setting UI time zone" zone-id)
+              (datetime/set-timezone! zone-id))
+            (auth/logged-in! app :local))
+          (auth/failed! app :local))))
+     (error-action
+      [{:keys [app]}]
+      (log/error "Login failed.")
+      (auth/failed! app :local))
+     (remote [env]
+             (m/returning env auth/Session))))
 
 (def schema
   [currency-spec

@@ -25,12 +25,23 @@
 (defstate config
   "The overrides option in args is for overriding
    configuration in tests."
-  :start
-  (let [{:keys [overrides]} (args)
-        loaded-config       (merge (fserver/load-config!
-                                    {:config-path   (get-config-path)
-                                     :defaults-path "config/defaults.edn"})
-                                   overrides)]
-    (logging/configure-logging! loaded-config)
-    (println (logging/p loaded-config))
-    loaded-config))
+  :start (let [{:keys [config overrides]
+                :or   {config "config/dev.edn"}} (args)
+               loaded-config                     (merge (fserver/load-config
+                                                         {:config-path (or config "config/dev.edn")}) overrides)]
+           (log/info "Loading config" config)
+           (logging/configure-logging! loaded-config)
+           loaded-config))
+
+;; (defstate config
+;;   "The overrides option in args is for overriding
+;;    configuration in tests."
+;;   :start
+;;   (let [{:keys [overrides]} (args)
+;;         loaded-config       (merge (fserver/load-config!
+;;                                     {:config-path   (get-config-path)
+;;                                      :defaults-path "config/defaults.edn"})
+;;                                    overrides)]
+;;     (logging/configure-logging! loaded-config)
+;;     (println (logging/p loaded-config))
+;;     loaded-config))

@@ -2,9 +2,10 @@
   (:require
    [clojure.tools.cli :refer [parse-opts]]
    [dinsro.components.config :as config]
-   [dinsro.components.http]
+   ;; [dinsro.components.http]
    [dinsro.components.nrepl]
    [dinsro.components.secrets :as secrets]
+   [dinsro.components.server]
    [dinsro.middleware :as middleware]
    [mount.core :as mount]
    [taoensso.timbre :as log])
