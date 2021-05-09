@@ -45,8 +45,8 @@
 
 (defsc NavbarLogoutLink
   [this {:navlink/keys [href]}]
-  {:ident         (fn [_] [:navlink/id :logout])
-   :initial-state {:navlink/id   ""
+  {:ident         (fn [_] [:navlink/id "logout"])
+   :initial-state {:navlink/id   "logout"
                    :navlink/href "/logout"}
    :query         [:navlink/id :navlink/name :navlink/href]}
   (dom/a :.navbar-item
