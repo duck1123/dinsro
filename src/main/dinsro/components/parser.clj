@@ -16,7 +16,8 @@
    [dinsro.model :refer [all-attributes all-resolvers]]
    [dinsro.resolvers :as resolvers]
    [mount.core :refer [defstate]]
-   [roterski.fulcro.rad.database-adapters.crux :as crux]))
+   [roterski.fulcro.rad.database-adapters.crux :as crux]
+   [taoensso.timbre :as log]))
 
 (pc/defresolver index-explorer [{::pc/keys [indexes]} _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}

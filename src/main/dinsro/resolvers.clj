@@ -48,7 +48,6 @@
 (def resolvers
   [auth-resolver
    current-user-resolver
-   index-explorer
    mu.accounts/resolvers
    mu.categories/resolvers
    mu.currencies/resolvers
