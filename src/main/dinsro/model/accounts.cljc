@@ -5,16 +5,18 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]])
    #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.rad.authorization :as auth]
+   #?(:cljs [com.fulcrologic.rad.type-support.date-time :as datetime])
    #?(:clj [com.wsscode.pathom.connect :as pc :refer [defmutation]]
       :cljs [com.wsscode.pathom.connect :as pc])
    #?(:clj [dinsro.model.authorization :as exauth])
-   #?(:cljs [com.fulcrologic.rad.type-support.date-time :as datetime])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [taoensso.timbre :as log]))
 
-#?(:cljs (comment ::pc/_))
+#?(:clj (comment ::auth/_)
+   :cljs (comment ::pc/_))
 
 (s/def ::ident (s/tuple keyword? ::id))
 
