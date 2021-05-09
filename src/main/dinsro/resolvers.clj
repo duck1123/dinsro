@@ -3,22 +3,7 @@
    [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.users :as m.users]
-   [dinsro.mutations.accounts :as mu.accounts]
-   [dinsro.mutations.categories :as mu.categories]
-   [dinsro.mutations.currencies :as mu.currencies]
-   [dinsro.mutations.rates :as mu.rates]
-   [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.mutations.transactions :as mu.transactions]
-   [dinsro.mutations.users :as mu.users]
-   [dinsro.resolvers.accounts :as r.accounts]
-   [dinsro.resolvers.categories :as r.categories]
-   [dinsro.resolvers.currencies :as r.currencies]
-   [dinsro.resolvers.navlink :as r.navlink]
-   [dinsro.resolvers.rates :as r.rates]
-   [dinsro.resolvers.rate-sources :as r.rate-sources]
-   [dinsro.resolvers.transactions :as r.transactions]
-   [dinsro.resolvers.users :as r.users]
    [taoensso.timbre :as log]))
 
 (defresolver auth-resolver
@@ -51,19 +36,4 @@
 
 (def resolvers
   [current-user-resolver
-   mu.accounts/resolvers
-   mu.categories/resolvers
-   mu.currencies/resolvers
-   mu.rates/resolvers
-   mu.rate-sources/resolvers
-   mu.session/resolvers
-   mu.transactions/resolvers
-   mu.users/resolvers
-   r.accounts/resolvers
-   r.categories/resolvers
-   r.currencies/resolvers
-   r.navlink/resolvers
-   r.rates/resolvers
-   r.rate-sources/resolvers
-   r.transactions/resolvers
-   r.users/resolvers])
+   mu.session/resolvers])

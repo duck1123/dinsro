@@ -2,10 +2,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [datahike.api :as d]
-   [dinsro.components.datahike :as db]
+   [crux.api :as crux]
+   [dinsro.components.crux :as c.crux]
    [dinsro.components.streams :as streams]
-   [dinsro.queries.currencies :as q.currencies]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
    [dinsro.specs]
@@ -29,12 +28,14 @@
 (>defn find-eid-by-id
   [id]
   [::m.rates/id => :db/id]
-  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-id-query id))))
 
 (>defn find-id-by-eid
   [eid]
   [:db/id => ::m.rates/id]
-  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-id-by-eid-query eid))))
 
 (>defn prepare-record
   [params]
@@ -44,32 +45,31 @@
 (>defn create-record
   [params]
   [::m.rates/params => :db/id]
-  (let [tempid          (d/tempid "rate-id")
+  (let [node            (c.crux/main-node)
+        id              (utils/uuid)
         prepared-params (-> (prepare-record params)
-                            (assoc ::m.rates/id (str (utils/uuid)))
-                            (assoc :db/id tempid)
-                            (update ::m.rates/date tick/inst))
-        response        (d/transact db/*conn* {:tx-data [prepared-params]})
-        id              (get-in response [:tempids tempid])]
+                            (assoc ::m.rates/id id)
+                            (assoc :crux.db/id id)
+                            (update ::m.rates/date tick/inst))]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put prepared-params]]))
     (comment (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]]))
     id))
 
 (>defn read-record
   [id]
   [:db/id => (? ::m.rates/item)]
-  (let [record (d/pull @db/*conn* '[*] id)]
+  (let [db     (c.crux/main-db)
+        record (crux/pull db '[*] id)]
     (when (get record ::m.rates/rate)
-      (let [currency-id (get-in record [::m.rates/currency :db/id])]
-        (-> record
-            (update ::m.rates/date tick/instant)
-            (assoc-in [::m.rates/currency ::m.currencies/id] (q.currencies/find-id-by-eid currency-id))
-            (update ::m.rates/currency dissoc :db/id)
-            (dissoc :db/id))))))
+      (-> record
+          (update ::m.rates/date tick/instant)
+          (dissoc :db/id)))))
 
 (>defn index-ids
   []
   [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.rates/rate _]] @db/*conn*)))
+  (let [db (c.crux/main-db)]
+    (map first (crux/q db '[:find ?e :where [?e ::m.rates/rate _]]))))
 
 (>defn index-records
   []
@@ -79,22 +79,24 @@
 (>defn index-records-by-currency
   [currency-id]
   [:db/id => ::m.rates/rate-feed]
-  (->> (d/q {:query '[:find ?date ?rate
-                      :in $ ?currency
-                      :where
-                      [?e ::m.rates/currency ?currency]
-                      [?e ::m.rates/rate ?rate]
-                      [?e ::m.rates/date ?date]]
-             :args  [@db/*conn* currency-id]})
-       (sort-by first)
-       (reverse)
-       (take record-limit)
-       (map (fn [[date rate]] [(.getTime date) rate]))))
+  (let [db    (c.crux/main-db)
+        query '{:find  [?date ?rate]
+                :in    [?currency-eid]
+                :where [[?currency-eid ::m.currencies/id ?currency]
+                        [?e ::m.rates/currency ?currency]
+                        [?e ::m.rates/rate ?rate]
+                        [?e ::m.rates/date ?date]]}]
+    (->> (crux/q db query currency-id)
+         (sort-by first)
+         (reverse)
+         (take record-limit)
+         (map (fn [[date rate]] [(.getTime date) rate])))))
 
 (>defn delete-record
   [id]
   [:db/id => nil?]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+  (let [node (c.crux/main-node)]
+    (crux/submit-tx node [[:db/retractEntity id]]))
   nil)
 
 (>defn delete-all

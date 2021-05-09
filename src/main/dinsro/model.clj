@@ -4,6 +4,8 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.joins :as m.joins]
+   [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.settings :as m.settings]
@@ -12,20 +14,15 @@
    [dinsro.model.users :as m.users]
    [taoensso.timbre :as log]))
 
-(def schemata
-  [m.accounts/schema
-   m.categories/schema
-   m.currencies/schema
-   m.rates/schema
-   m.rate-sources/schema
-   m.transactions/schema
-   m.users/schema])
+(def schemata [])
 
 (def all-attributes
   (vec (concat
         m.accounts/attributes
         m.categories/attributes
         m.currencies/attributes
+        m.joins/attributes
+        m.navlink/attributes
         m.rates/attributes
         m.rate-sources/attributes
         m.settings/attributes

@@ -2,15 +2,13 @@
   (:require
    [com.fulcrologic.fulcro.server.config :as fserver]
    [dinsro.lib.logging :as logging]
-   [environ.core :refer [env]]
    [mount.core :refer [defstate args]]
    [taoensso.timbre :as log])
   (:import java.io.File))
 
 (defn get-config-path
   []
-  (let [paths [(env :config-file)
-               "config/app.edn"
+  (let [paths ["config/app.edn"
                "config.edn"]
         files (concat (map (fn [path]
                              (when path
@@ -32,5 +30,5 @@
                                      :defaults-path "config/defaults.edn"})
                                    overrides)]
     (logging/configure-logging! loaded-config)
-    (println (logging/p loaded-config))
+    #_(println (logging/p loaded-config))
     loaded-config))

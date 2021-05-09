@@ -10,15 +10,18 @@
    {:client-did-mount
     (fn [app]
       (comp/transact! app [`(dinsro.loader/init)]))
+
     :remotes
     {:remote
      (http/fulcro-http-remote
-      {:url "/pathom"
+      {:url "/api"
        :request-middleware
        (comp (http/wrap-fulcro-request)
-             (http/wrap-csrf-token js/window.csrfToken))})}
-    :remote-error? (fn [result]
-                     (let [{:keys [status-code]} result]
-                       (when-not (= status-code 200)
-                         (log/errorf "Error: %s" result)
-                         (js/console.log result))))}))
+             (http/wrap-csrf-token js/window.fulcro_network_csrf_token))})}
+
+    :remote-error?
+    (fn [result]
+      (let [{:keys [status-code]} result]
+        (when-not (= status-code 200)
+          (log/errorf "Error: %s" result)
+          (js/console.log result))))}))

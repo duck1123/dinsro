@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.navlink :as m.navlink]
    [dinsro.mutations :as mutations]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
@@ -12,30 +13,30 @@
 (s/def ::expanded? boolean?)
 
 (defsc NavLink
-  [this {:navlink/keys [href id name]}]
-  {:ident         :navlink/id
-   :initial-state {:navlink/id   ""
-                   :navlink/href ""
-                   :navlink/name ""}
-   :query         [:navlink/id :navlink/name :navlink/href]}
+  [this {::m.navlink/keys [href id name]}]
+  {:ident         ::m.navlink/id
+   :initial-state {::m.navlink/id   ""
+                   ::m.navlink/href ""
+                   ::m.navlink/name ""}
+   :query         [::m.navlink/id ::m.navlink/name ::m.navlink/href]}
   (dom/a :.navbar-item
     {:href    href
      :onClick (fn [evt]
                 (.preventDefault evt)
                 (.stopPropagation evt)
-                (comp/transact! this [`(mutations/activate-nav-link ~{:navlink/id id})])
+                (comp/transact! this [`(mutations/activate-nav-link ~{::m.navlink/id id})])
                 false)}
     name))
 
-(def ui-nav-link (comp/factory NavLink {:keyfn :navlink/id}))
+(def ui-nav-link (comp/factory NavLink {:keyfn ::m.navlink/id}))
 
 (defsc NavbarAuthLink
-  [_this {:navlink/keys [name href]}]
-  {:ident         :navlink/id
-   :initial-state {:navlink/id   ""
-                   :navlink/href ""
-                   :navlink/name ""}
-   :query         [:navlink/id :navlink/name :navlink/href]}
+  [_this {::m.navlink/keys [name href]}]
+  {:ident         ::m.navlink/id
+   :initial-state {::m.navlink/id   ""
+                   ::m.navlink/href ""
+                   ::m.navlink/name ""}
+   :query         [::m.navlink/id ::m.navlink/name ::m.navlink/href]}
   (dom/a :.navbar-link
     {:href    href
      :onClick (fn [evt] (.preventDefault evt) false)}
@@ -44,11 +45,11 @@
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
 
 (defsc NavbarLogoutLink
-  [this {:navlink/keys [href]}]
-  {:ident         (fn [_] [:navlink/id :logout])
-   :initial-state {:navlink/id   ""
-                   :navlink/href "/logout"}
-   :query         [:navlink/id :navlink/name :navlink/href]}
+  [this {::m.navlink/keys [href]}]
+  {:ident         (fn [_] [::m.navlink/id "logout"])
+   :initial-state {::m.navlink/id   "logout"
+                   ::m.navlink/href "/logout"}
+   :query         [::m.navlink/id ::m.navlink/name ::m.navlink/href]}
   (dom/a :.navbar-item
     {:href    href
      :onClick (fn [evt]
@@ -85,35 +86,36 @@
     (navbar-burger expanded? burger-clicked)))
 
 (defsc Navbar
-  [this {::keys        [auth-links dropdown-links expanded? menu-links unauth-links]
-         :session/keys [current-user]}]
+  [this {::keys           [expanded?]
+         ::m.navlink/keys [auth-links dropdown-links menu-links unauth-links]
+         :session/keys    [current-user]}]
   {:componentDidMount
    (fn [this]
-     (df/load! this :menu-links NavLink
-               {:target [:component/id ::Navbar ::menu-links]})
+     (df/load! this ::m.navlink/menu-links NavLink
+               {:target [:component/id ::Navbar ::m.navlink/menu-links]})
 
-     (df/load! this :dropdown-links NavLink
-               {:target [:component/id ::Navbar ::dropdown-links]})
+     (df/load! this ::m.navlink/dropdown-links NavLink
+               {:target [:component/id ::Navbar ::m.navlink/dropdown-links]})
 
-     (df/load! this [:navlink/id "transactions"] NavbarAuthLink
-               {:target [:component/id ::Navbar ::auth-links]})
+     (df/load! this [::m.navlink/id "transactions"] NavbarAuthLink
+               {:target [:component/id ::Navbar ::m.navlink/auth-links]})
 
-     (df/load! this :unauth-links NavLink
-               {:target [:component/id ::Navbar ::unauth-links]}))
+     (df/load! this ::m.navlink/unauth-links NavLink
+               {:target [:component/id ::Navbar ::m.navlink/unauth-links]}))
    :css           [[:.navbar {:background-color "red"}]]
    :ident         (fn [_] [:component/id ::Navbar])
-   :initial-state {::auth-links          {}
-                   ::dropdown-links      []
-                   ::expanded?           false
-                   ::menu-links          []
-                   ::unauth-links        []
-                   :session/current-user {:user/valid? false}}
-   :query         [{::auth-links (comp/get-query NavbarAuthLink)}
+   :initial-state {::m.navlink/auth-links     {}
+                   ::m.navlink/dropdown-links []
+                   ::expanded?                false
+                   ::m.navlink/menu-links     []
+                   ::m.navlink/unauth-links   []
+                   :session/current-user      {:user/valid? false}}
+   :query         [{::m.navlink/auth-links (comp/get-query NavbarAuthLink)}
                    [:session/current-user '_]
-                   {::dropdown-links (comp/get-query NavLink)}
+                   {::m.navlink/dropdown-links (comp/get-query NavLink)}
                    ::expanded?
-                   {::menu-links (comp/get-query NavLink)}
-                   {::unauth-links (comp/get-query NavLink)}]}
+                   {::m.navlink/menu-links (comp/get-query NavLink)}
+                   {::m.navlink/unauth-links (comp/get-query NavLink)}]}
   (let [valid? (boolean (:user/valid? current-user))]
     (dom/nav :.navbar.is-info
       (dom/div :.container

@@ -3,10 +3,16 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
+   [com.wsscode.pathom.connect :as pc]
+   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [taoensso.timbre :as log]))
+
+(comment ::pc/_)
 
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -20,50 +26,42 @@
   [::item => ::ident]
   (ident id))
 
-(s/def ::id string?)
-(def id-spec
-  {:db/ident       ::id
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one
-   :db/unique      :db.unique/identity})
+(s/def ::id uuid?)
+(defattr id ::id :uuid
+  {ao/identity? true
+   ao/schema    :production})
 
 (s/def ::name string?)
-(def name-spec
-  {:db/ident       ::name
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one})
+(defattr name ::name :string
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::initial-value (s/or :double double? :zero zero?))
 
-(def initial-value-spec
-  {:db/ident       ::initial-value
-   :db/valueType   :db.type/number
-   :db/cardinality :db.cardinality/one})
+(defattr initial-value ::initial-value :double
+  {ao/identities #{::id}
+   ao/schema     :production})
 
-(s/def ::currency-id (s/or :id :db/id :zero zero?))
-(s/def ::currency
-  (s/or :map (s/keys :opt [:db/id ::m.currencies/id])
-        :idents (s/coll-of ::m.currencies/ident)))
+(s/def ::currency ::m.currencies/id)
+(defattr currency ::currency :ref
+  {ao/cardinality :one
+   ao/required?   true
+   ao/identities  #{::id}
+   ao/schema      :production
+   ao/target      ::m.currencies/id})
 
-(def currency-spec
-  {:db/ident       ::currency
-   :db/valueType   :db.type/ref
-   :db/cardinality :db.cardinality/one})
-
-(s/def ::user-id :db/id)
-
-(s/def ::user
-  (s/or :map    (s/keys :opt [:db/id ::m.users/id])
-        :idents (s/coll-of ::m.users/ident)))
-
-(def user-spec
-  {:db/ident       ::user
-   :db/valueType   :db.type/ref
-   :db/cardinality :db.cardinality/one})
+(s/def ::user ::m.users/id)
+(defattr user ::user :ref
+  {ao/cardinality :one
+   ao/required?   true
+   ao/identities  #{::id}
+   ao/schema      :production
+   ao/target      ::m.users/id})
 
 (s/def ::required-params
   (s/keys :req [::name
                 ::initial-value]))
+
 (def required-params
   "Required params for accounts"
   ::required-params)
@@ -76,18 +74,30 @@
 (s/def ::item (s/keys :req [::id ::name ::initial-value ::user]
                       :opt [::currency]))
 
-(def item-spec
-  {:db/ident        ::item
-   :db.entity/attrs [::name ::initial-value ::currency ::user]})
+(defattr all-accounts ::all-accounts :ref
+  {ao/target    ::id
+   ao/pc-output [{::all-accounts [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     (comment env query-params)
+     {::all-accounts
+      #?(:clj  (queries/get-all-accounts env query-params)
+         :cljs [])})})
 
-(def schema
-  [currency-spec
-   id-spec
-   initial-value-spec
-   name-spec
-   user-spec])
+(defattr link ::link :ref
+  {ao/cardinality :one
+   ao/target      ::id
+   ao/pc-input    #{::id}
+   ao/pc-output   [{::link [::id]}]
+   ao/pc-resolve  (fn [_env params] {::link params})})
 
-(def attributes [])
+(defattr account-transactions ::account-transactions :ref
+  {ao/cardinality :one
+   ao/target     ::id
+   ao/pc-input   #{::id}
+   ao/pc-output  [{::account-transactions [::id]}]
+   ao/pc-resolve (fn [_env params] {::account-transactions params})})
 
-#?(:clj
-   (def resolvers []))
+(def attributes [account-transactions all-accounts currency id initial-value link name user])
+
+#?(:clj (def resolvers []))

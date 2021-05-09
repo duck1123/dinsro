@@ -1,18 +1,19 @@
 (ns dinsro.mutations
   (:require
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
+   [dinsro.model.navlink :as m.navlink]
    [dinsro.routing :as routing]
    [taoensso.timbre :as log]))
 
-(defmutation activate-nav-link [{:navlink/keys [id]}]
+(defmutation activate-nav-link [{::m.navlink/keys [id]}]
   (action
    [{:keys [state]}]
    (swap! state assoc-in [:component/id
                           :dinsro.ui.navbar/Navbar
                           :dinsro.ui.navbar/expanded?]
           false)
-   (let [link (get-in @state [:navlink/id id])
-         href (:navlink/href link)]
+   (let [link (get-in @state [::m.navlink/id id])
+         href (::m.navlink/href link)]
      (routing/route-to! href))))
 
 (defmutation submit [props]

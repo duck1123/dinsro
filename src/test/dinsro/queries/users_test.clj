@@ -10,17 +10,17 @@
    [taoensso.timbre :as log]))
 
 (def schemata
-  [m.users/schema])
+  [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-valid
-  (let [params  (ds/gen-key ::m.users/params)
-        user-id (::m.users/id params)
-        eid     (q.users/create-record params)
-        user    (q.users/read-record eid)]
+  (let [params   (ds/gen-key ::m.users/params)
+        username (::m.users/name params)
+        eid      (q.users/create-record params)
+        user     (q.users/read-record eid)]
     (assertions
-     (::m.users/id user) => user-id)))
+     (::m.users/name user) => username)))
 
 (deftest create-record-invalid
   (let [params (ds/gen-key ::m.users/params)
@@ -29,12 +29,12 @@
      (q.users/create-record params) =throws=> RuntimeException)))
 
 (deftest read-record-success
-  (let [params                (ds/gen-key ::m.users/params)
-        {::m.users/keys [id]} params
-        eid                   (q.users/create-record params)
-        response              (q.users/read-record eid)]
+  (let [params                  (ds/gen-key ::m.users/params)
+        {::m.users/keys [name]} params
+        eid                     (q.users/create-record params)
+        response                (q.users/read-record eid)]
     (assertions
-     (::m.users/id response) => id)))
+     (::m.users/name response) => name)))
 
 (deftest read-record-not-found
   (let [id (ds/gen-key :db/id)]

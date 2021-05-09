@@ -11,16 +11,16 @@
    [taoensso.timbre :as log]))
 
 (def schemata
-  [m.users/schema])
+  [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest do-register-success
   (let [password (ds/gen-key ::m.users/password)
-        username (ds/gen-key ::m.users/id)
+        username (ds/gen-key ::m.users/name)
         response (mu.session/do-register username password)]
     (assertions
-     (::m.users/id response) => username)))
+     (::m.users/name response) => username)))
 
 (deftest register-success
   (try
@@ -29,7 +29,7 @@
           f        (::pc/mutate mu.session/register)
           response (f env data)]
       (assertions
-       (::m.users/id response) => (:user/username data)
+       (::m.users/name response) => (:user/username data)
        (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
     (catch Exception ex
       (log/error ex "caught"))))

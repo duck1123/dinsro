@@ -44,8 +44,8 @@
    [::m.users/id ::m.currencies/id => ::m.accounts/item]
    (let [params (ds/gen-key ::m.accounts/required-params)
          params (-> params
-                    (assoc ::m.accounts/user {::m.users/id username})
-                    (assoc ::m.accounts/currency {::m.currencies/id currency-id}))
+                    (assoc ::m.accounts/user username)
+                    (assoc ::m.accounts/currency currency-id))
          id     (q.accounts/create-record params)]
      (q.accounts/read-record id))))
 
@@ -69,9 +69,7 @@
   ([currency-id]
    [::m.currencies/id => ::m.rates/item]
    (let [params (ds/gen-key ::m.rates/params)
-
-         params (assoc params ::m.rates/currency
-                       {::m.currencies/id currency-id})
+         params (assoc params ::m.rates/currency currency-id)
          id     (q.rates/create-record params)]
      (q.rates/read-record id))))
 
@@ -84,7 +82,7 @@
   ([currency-id]
    [::m.currencies/id => ::m.rate-sources/item]
    (let [params (ds/gen-key ::m.rate-sources/params)
-         params (assoc params ::m.rate-sources/currency {::m.currencies/id currency-id})
+         params (assoc params ::m.rate-sources/currency currency-id)
          id     (q.rate-sources/create-record params)]
      (q.rate-sources/read-record id))))
 
@@ -97,8 +95,7 @@
   ([account-id]
    [::m.accounts/id => ::m.transactions/item]
    (let [params (ds/gen-key ::m.transactions/params)
-         params (assoc-in params [::m.transactions/account :db/id]
-                          (q.accounts/find-eid-by-id account-id))
+         params (assoc params ::m.transactions/account account-id)
          id     (q.transactions/create-record params)]
      (q.transactions/read-record id))))
 
