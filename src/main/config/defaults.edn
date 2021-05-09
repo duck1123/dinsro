@@ -1,4 +1,7 @@
-{:org.httpkit.server/config
+{:nrepl-bind "0.0.0.0"
+ :nrepl-port 7000
+
+ :org.httpkit.server/config
  {:port 3000
   :ip   "0.0.0.0"}
 

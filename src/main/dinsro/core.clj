@@ -37,6 +37,7 @@
 
 (defn -main
   [& args]
+  (timbre/info "starting core")
   (let [[config-file] args]
     (-> (mount/only #{#'config/config})
         (mount/with-args {:config config-file})
