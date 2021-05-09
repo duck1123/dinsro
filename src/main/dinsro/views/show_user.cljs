@@ -14,7 +14,8 @@
 (defsc UserAccounts
   [_this _props]
   {:ident         ::m.users/id
-   :initial-state {}
+   :initial-state {::m.users/id       nil
+                   ::m.users/accounts []}
    :query         [{::m.users/accounts (comp/get-query u.user-accounts/IndexAccountLine)}
                    ::m.users/id]})
 

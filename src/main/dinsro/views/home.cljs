@@ -13,6 +13,7 @@
 (defsc HomePage
   [_this {:keys [auth-id]}]
   {:ident         (fn [] [:page/id ::page])
+   :initial-state {:page/id ::page}
    :query         [:auth-id :page/id]
    :route-segment [""]}
   (bulma/page

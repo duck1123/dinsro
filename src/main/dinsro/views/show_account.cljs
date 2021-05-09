@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.account-transactions :as u.account-transactions]
@@ -21,7 +22,7 @@
    :route-segment ["accounts" ::m.accounts/id]
    :will-enter
    (fn [app {::m.accounts/keys [id]}]
-     (df/load app [::m.accounts/id id] u.show-account/ShowAccount
+     (df/load app [::m.accounts/id (new-uuid id)] u.show-account/ShowAccount
               {:target [:page/id ::page ::account]})
 
      (df/load! app :all-transactions

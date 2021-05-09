@@ -14,7 +14,7 @@
   [_this {::keys [toggle-button users]}]
   {:ident         (fn [_] [:component/id ::AdminIndexUsers])
    :initial-state {::toggle-button {:form-button/id form-toggle-sm}
-                   ::users         []}
+                   ::users         {}}
    :query         [{::toggle-button (comp/get-query u.buttons/ShowFormButton)}
                    {::users (comp/get-query u.index-users/IndexUsers)}]}
   (bulma/box

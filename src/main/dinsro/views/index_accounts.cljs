@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-accounts :as u.user-accounts]
    [taoensso.timbre :as log]))
@@ -10,7 +11,7 @@
   [_this {::keys [user-accounts]}]
   {:componentDidMount
    (fn [this]
-     (df/load! this :all-accounts
+     (df/load! this ::m.accounts/all-accounts
                u.user-accounts/IndexAccountLine
                {:target [:component/id
                          ::u.user-accounts/UserAccounts

@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.machines :as machines]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -27,7 +28,9 @@
 (defsc IndexCurrencyAccounts
   [_ {::keys [accounts]}]
   {:initial-state {::accounts []}
-   :query         [::accounts]}
+   :query         [::accounts]
+   :pre-merge     (fn [{:keys [current-normalized data-tree]}]
+                    (merge {:bar :baz} current-normalized data-tree))}
   (dom/div {}
     (if (empty? accounts)
       (dom/div {} (tr [:no-currencies]))
@@ -41,14 +44,24 @@
 (def ui-index-currency-accounts (comp/factory IndexCurrencyAccounts))
 
 (defsc CurrencyAccounts
-  [this {::keys [accounts form toggle-button]}]
+  [this {::keys              [form toggle-button]
+         ::m.currencies/keys [accounts]}]
   {:componentDidMount
    #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar CurrencyAccounts})
-   :ident         (fn [] [:component/id ::CurrencyAccounts])
-   :initial-state {::accounts      {}
-                   ::form          {}
-                   ::toggle-button {:form-button/id form-toggle-sm}}
-   :query         [{::accounts (comp/get-query IndexCurrencyAccounts)}
+   :ident         ::m.currencies/id
+   :initial-state (fn [_]
+                    {::m.currencies/id       nil
+                     ::m.currencies/accounts []
+                     ::form                  {}
+                     ::toggle-button         {:form-button/id form-toggle-sm}})
+   :pre-merge     (fn [{:keys [current-normalized data-tree]}]
+                    (let [defaults    {::form          {}
+                                       ::toggle-button {:form-button/id form-toggle-sm}}
+                          merged-data (merge defaults current-normalized data-tree)]
+                      merged-data))
+   :query         [::m.currencies/id
+                   ::m.currencies/accounts
+                   {::accounts (comp/get-query IndexCurrencyAccounts)}
                    {::form (comp/get-query u.f.add-currency-account/AddCurrencyAccountForm)}
                    {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
                    [::uism/asm-id form-toggle-sm]]}
@@ -60,6 +73,6 @@
      (when shown?
        (u.f.add-currency-account/ui-form form))
      (dom/hr)
-     (ui-index-currency-accounts accounts))))
+     (ui-index-currency-accounts {::accounts accounts}))))
 
 (def ui-currency-accounts (comp/factory CurrencyAccounts))
