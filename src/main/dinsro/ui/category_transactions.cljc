@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    #?(:cljs [com.fulcrologic.fulcro.components :as comp :refer [defsc]])
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
-   #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    #?(:cljs [dinsro.machines :as machines])
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
@@ -12,6 +12,8 @@
    #?(:cljs [dinsro.ui.forms.add-category-transaction :as u.f.add-category-transaction])
    #?(:cljs [dinsro.ui.links :as u.links])
    [taoensso.timbre :as log]))
+
+#?(:clj (comment ::uism/_))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -81,7 +83,7 @@
           (u.f.add-category-transaction/ui-form form))
         (if (seq transactions)
           (dom/div {}
-            (map ui-index-category-transaction-line (timbre/spy :info transactions)))
+            (map ui-index-category-transaction-line transactions))
           (dom/p "no items"))))))
 
 #?(:cljs
