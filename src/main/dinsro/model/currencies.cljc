@@ -4,7 +4,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
-   [com.fulcrologic.rad.attributes-options :as ao]))
+   [com.fulcrologic.rad.attributes-options :as ao]
+   #?(:clj [dinsro.components.database-queries :as queries])))
 
 (s/def ::id string?)
 (def id-spec
@@ -35,6 +36,16 @@
 (s/def ::item (s/keys :req [::id ::name]))
 
 (s/def ::ident (s/tuple keyword? ::id))
+
+(defattr all-currencies ::all-currencies :ref
+  {ao/target    ::id
+   ao/pc-output [{::all-currencies [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::all-currencies (queries/get-all-currencies env query-params)}
+        :cljs
+        (comment env query-params)))})
 
 (>defn ident
   [id]
