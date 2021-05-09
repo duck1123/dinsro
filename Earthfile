@@ -229,7 +229,7 @@ deps-dind-builder:
 dev-image:
   FROM +deps-builder
   ENV CONFIG_FILE=/etc/dinsro/config.edn
-  HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
+  # HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   VOLUME /var/lib/dinsro/data
   CMD ["bb", "dev-bootstrap"]
