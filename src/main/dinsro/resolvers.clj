@@ -14,7 +14,6 @@
    [dinsro.resolvers.accounts :as r.accounts]
    [dinsro.resolvers.categories :as r.categories]
    [dinsro.resolvers.currencies :as r.currencies]
-   [dinsro.resolvers.debug-menu :as r.debug-menu]
    [dinsro.resolvers.navlink :as r.navlink]
    [dinsro.resolvers.rates :as r.rates]
    [dinsro.resolvers.rate-sources :as r.rate-sources]
@@ -61,7 +60,6 @@
    r.accounts/resolvers
    r.categories/resolvers
    r.currencies/resolvers
-   r.debug-menu/resolvers
    r.navlink/resolvers
    r.rates/resolvers
    r.rate-sources/resolvers
