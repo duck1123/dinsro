@@ -1,6 +1,7 @@
 (ns dinsro.components.database-queries
   (:require
    [crux.api :as crux]
+   [dinsro.model.users :as m.users]
    [roterski.fulcro.rad.database-adapters.crux-options :as co]
    [taoensso.encore :as enc]
    [taoensso.timbre :as log]))
@@ -94,12 +95,14 @@
   [env username]
   (enc/if-let [db (some-> (get-in env [co/databases :production]) deref)]
     (-> db
-        (crux/q '{:find  [(eql/project ?account [:account/name
-                                                 {:time-zone/zone-id [:db/ident]}
-                                                :password/hashed-value
-                                                :password/salt
-                                                :password/iterations])]
-                  :in    [?email]
-                  :where [[?account :account/email ?email]]}
+        (crux/q '{:find  [(pull ?account [::m.users/id
+                                         ;; :account/name
+                                         ;; {:time-zone/zone-id [:db/ident]}
+                                         ;; :password/hashed-value
+                                         ;; :password/salt
+                                         ;; :password/iterations
+                                         ])]
+                  :in    [?username]
+                  :where [[?account ::m.users/id ?username]]}
                 username)
         ffirst)))
