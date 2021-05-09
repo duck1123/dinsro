@@ -39,3 +39,8 @@
 (def schema
   [id-spec
    name-spec])
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))

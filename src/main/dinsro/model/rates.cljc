@@ -65,3 +65,8 @@
                                :rate ::rate))
 
 (s/def ::rate-feed (s/coll-of ::rate-feed-item))
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))

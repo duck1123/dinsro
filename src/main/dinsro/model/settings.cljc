@@ -9,3 +9,8 @@
   (s/keys :req-un
           [::allow-registration
            ::first-run]))
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))

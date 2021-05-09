@@ -61,3 +61,8 @@
    id-spec
    name-spec
    url-spec])
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))

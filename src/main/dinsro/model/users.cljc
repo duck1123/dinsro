@@ -45,3 +45,8 @@
 (def schema
   [password-hash-spec
    id-spec])
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))
