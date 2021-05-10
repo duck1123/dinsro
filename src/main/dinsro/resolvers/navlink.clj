@@ -25,13 +25,13 @@
 (defresolver auth-link-resolver
   [_env _props]
   {::pc/output [{:auth-link [:navlink/id]}]}
-  {:auth-link [:navlink/id :accounts]})
+  {:auth-link [:navlink/id "accounts"]})
 
 (defresolver menu-links-resolver
   [_env _props]
   {::pc/output [{:menu-links [:navlink/id]}]}
-  {:menu-links (map (fn [id] [:navlink/id id]) [:accounts
-                                                :transactions])})
+  {:menu-links (map (fn [id] [:navlink/id id]) ["accounts"
+                                                "transactions"])})
 
 (defresolver unauth-links-resolver
   [_env _props]
@@ -39,24 +39,24 @@
   (let [registration-enabled? (:allow-registration (q.settings/get-settings))]
     {:unauth-links
      (filter identity
-             [(:login sample/navlink-map)
+             [(get sample/navlink-map "login")
               (when registration-enabled?
-                (:registration sample/navlink-map))])}))
+                (get sample/navlink-map "registration"))])}))
 
 (defresolver dropdown-links-resolver
   [_env _props]
   {::pc/output [{:dropdown-links [:navlink/id]}]}
   {:dropdown-links
    (map (fn [id] [:navlink/id id])
-        [:settings
-         :currencies
-         :admin
-         :rate-sources
-         :rates
-         :categories
-         :users
-         :transactions
-         :accounts])})
+        ["settings"
+         "currencies"
+         "admin"
+         "rate-sources"
+         "rates"
+         "categories"
+         "users"
+         "transactions"
+         "accounts"])})
 
 (def resolvers
   [dropdown-links-resolver

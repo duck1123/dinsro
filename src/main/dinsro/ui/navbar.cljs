@@ -9,18 +9,12 @@
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as log]))
 
-(def default-menu-links
-  [{:navlink/name (tr [:accounts])
-    :navlink/href :index-accounts-page}
-   {:navlink/name (tr [:transactions])
-    :navlink/href :index-transactions-page}])
-
 (s/def ::expanded? boolean?)
 
 (defsc NavLink
   [this {:navlink/keys [href id name]}]
   {:ident         :navlink/id
-   :initial-state {:navlink/id   0
+   :initial-state {:navlink/id   ""
                    :navlink/href ""
                    :navlink/name ""}
    :query         [:navlink/id :navlink/name :navlink/href]}
@@ -38,7 +32,7 @@
 (defsc NavbarAuthLink
   [_this {:navlink/keys [name href]}]
   {:ident         :navlink/id
-   :initial-state {:navlink/id   0
+   :initial-state {:navlink/id   ""
                    :navlink/href ""
                    :navlink/name ""}
    :query         [:navlink/id :navlink/name :navlink/href]}
@@ -52,7 +46,7 @@
 (defsc NavbarLogoutLink
   [this {:navlink/keys [href]}]
   {:ident         (fn [_] [:navlink/id :logout])
-   :initial-state {:navlink/id   0
+   :initial-state {:navlink/id   ""
                    :navlink/href "/logout"}
    :query         [:navlink/id :navlink/name :navlink/href]}
   (dom/a :.navbar-item
@@ -101,7 +95,7 @@
      (df/load! this :dropdown-links NavLink
                {:target [:component/id ::Navbar ::dropdown-links]})
 
-     (df/load! this [:navlink/id :transactions] NavbarAuthLink
+     (df/load! this [:navlink/id "transactions"] NavbarAuthLink
                {:target [:component/id ::Navbar ::auth-links]})
 
      (df/load! this :unauth-links NavLink
