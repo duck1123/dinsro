@@ -63,7 +63,7 @@
         txes (->> data
                   vals
                   flatten
-                  (mapv (fn [d] [:crux.tx/put d])))]
+                  (mapv #(vector :crux.tx/put %)))]
     (crux/submit-tx node txes)))
 
 (defn seed-db!

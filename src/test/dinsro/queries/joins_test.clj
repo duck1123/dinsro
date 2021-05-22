@@ -29,4 +29,4 @@
 
     (assertions
      "should retutrn the matching account id"
-     (into #{} (q.accounts/find-by-currency currency-id)) => #{account-id2 account-id})))
+     (set (q.accounts/find-by-currency currency-id)) => #{account-id2 account-id})))

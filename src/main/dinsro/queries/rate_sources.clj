@@ -57,8 +57,7 @@
   (let [db     (c.crux/main-db)
         record (crux/pull db '[*] id)]
     (when (get record ::m.rate-sources/name)
-      (-> record
-          (dissoc :db/id)))))
+      record)))
 
 (>defn index-ids
   []

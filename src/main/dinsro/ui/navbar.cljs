@@ -15,7 +15,7 @@
 (defsc NavLink
   [this {::m.navlink/keys [href id name]}]
   {:ident         ::m.navlink/id
-   :initial-state {::m.navlink/id   ""
+   :initial-state {::m.navlink/id   nil
                    ::m.navlink/href ""
                    ::m.navlink/name ""}
    :query         [::m.navlink/id ::m.navlink/name ::m.navlink/href]}
@@ -33,7 +33,7 @@
 (defsc NavbarAuthLink
   [_this {::m.navlink/keys [name href]}]
   {:ident         ::m.navlink/id
-   :initial-state {::m.navlink/id   ""
+   :initial-state {::m.navlink/id   nil
                    ::m.navlink/href ""
                    ::m.navlink/name ""}
    :query         [::m.navlink/id ::m.navlink/name ::m.navlink/href]}

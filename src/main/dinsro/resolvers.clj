@@ -1,39 +1,31 @@
 (ns dinsro.resolvers
   (:require
-   [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc :refer [defresolver]]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.session :as mu.session]
+   [dinsro.queries.users :as q.users]
    [taoensso.timbre :as log]))
 
-(defresolver auth-resolver
-  [_env _props]
-  {::pc/output [:auth/id]}
-  {:auth/id 1})
-
 (defresolver current-user-resolver
-  [env _props]
+  [_env _props]
   {::pc/output
    [{:session/current-user
      [:user/username
       {:user/ref [::m.users/id]}
       :user/valid?]}]}
-  (let [{:keys [request]}  env
-        {:keys [session]}  request
-        {:keys [identity]} session]
-    {:session/current-user
-     {:user/username identity
-      :user/valid?   (boolean (seq identity))}}))
+  {:session/current-user
+   {:user/username "admin"
+    :user/ref {::m.users/id (q.users/find-eid-by-name "admin")}
+    :user/valid?   true}})
 
-(defresolver index-explorer [env _]
-  {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
-   ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
-  (let [indexes (get env ::pc/indexes)]
-    {:com.wsscode.pathom.viz.index-explorer/index
-     (p/transduce-maps
-      (remove (comp #{::pc/resolve ::pc/mutate} key))
-      indexes)}))
+(defresolver current-user-ref-resolver
+  [_env _props]
+  {::pc/output
+   [{:session/current-user-ref [::m.users/id]}]}
+  (when-let [user-id (q.users/find-eid-by-name "admin")]
+    {:session/current-user-ref {::m.users/id user-id}}))
 
 (def resolvers
   [current-user-resolver
+   current-user-ref-resolver
    mu.session/resolvers])

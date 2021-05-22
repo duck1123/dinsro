@@ -1,5 +1,6 @@
 (ns dinsro.ui.links-test
   (:require
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
@@ -16,7 +17,7 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/AccountLink
     ::ct.fulcro3/initial-state
-    (fn [] {::m.accounts/id   "dsfdds"
+    (fn [] {::m.accounts/id   (new-uuid)
             ::m.accounts/name "Foo"})}))
 
 (ws/defcard CurrencyLink
@@ -25,7 +26,7 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.links/CurrencyLink
     ::ct.fulcro3/initial-state
-    (fn [] {::m.currencies/id   "currency"
+    (fn [] {::m.currencies/id   (new-uuid)
             ::m.currencies/name "Currency"})}))
 
 (ws/defcard UserLink
@@ -35,4 +36,5 @@
    {::ct.fulcro3/root u.links/UserLink
     ::ct.fulcro3/initial-state
     (fn []
-      {::m.users/id "admin"})}))
+      {::m.users/id   (new-uuid)
+       ::m.users/name "admin"})}))

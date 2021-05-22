@@ -30,6 +30,17 @@
     (assertions
      (get params ::m.accounts/name) => (get created-record ::m.accounts/name))))
 
+(deftest find-by-currency
+  (let [user (mocks/mock-user)
+        user-id (::m.users/id user)
+        currency (mocks/mock-currency)
+        currency-id (::m.currencies/id currency)
+        account (mocks/mock-account user-id currency-id)
+        account-id (::m.accounts/id account)]
+    (assertions
+     "should retutrn the matching account id"
+     (q.accounts/find-by-currency currency-id) => [account-id])))
+
 (deftest index-records
   (assertions
    (q.accounts/index-records) => []))

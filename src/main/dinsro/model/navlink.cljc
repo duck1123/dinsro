@@ -45,8 +45,7 @@
       #?(:clj
          (queries/get-navlinks
           env
-          ["settings"
-           "currencies"
+          ["currencies"
            "admin"
            "rate-sources"
            "rates"

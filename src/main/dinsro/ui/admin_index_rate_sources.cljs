@@ -18,7 +18,7 @@
   [_this {::m.rate-sources/keys [currency id url]
           :as                   rate-source}]
   {:ident         ::m.rate-sources/id
-   :initial-state {::rate-source             {::m.rate-sources/id 1}
+   :initial-state {::rate-source             {::m.rate-sources/id nil}
                    ::m.rate-sources/name     ""
                    ::m.rate-sources/currency {}
                    ::m.rate-sources/id       nil

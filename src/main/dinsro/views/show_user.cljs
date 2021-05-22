@@ -3,12 +3,10 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.users :as m.users]
-   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.show-user :as u.show-user]
    [dinsro.ui.user-accounts :as u.user-accounts]
-   [dinsro.ui.user-categories :as u.user-categories]
-   [dinsro.ui.user-transactions :as u.user-transactions]
    [taoensso.timbre :as log]))
 
 (defsc UserAccounts
@@ -20,33 +18,16 @@
                    ::m.users/id]})
 
 (defsc ShowUserPage
-  [_this {::keys [user user-accounts user-categories user-transactions]}]
-  {:componentDidUpdate
-   (fn [this]
-     (let [{::m.users/keys [id]} (::user (comp/props this))]
-       (when (seq id)
-         (df/load! this (m.users/ident id) UserAccounts)
-         (df/load! this {(m.users/ident id) ::m.users/categories}
-                   u.user-categories/UserCategories))))
-   :ident         (fn [] [:page/id ::page])
-   :initial-state {::user              {}
-                   ::user-accounts     {}
-                   ::user-categories   {}
-                   ::user-transactions {}}
+  [_this {::m.users/keys [link]}]
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::m.users/link {}}
    :query         [::m.users/id
-                   {::user (comp/get-query u.show-user/ShowUser)}
-                   {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}
-                   {::user-categories (comp/get-query u.user-categories/UserCategories)}
-                   {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
+                   {::m.users/link (comp/get-query u.show-user/ShowUserFull)}]
    :route-segment ["users" ::m.users/id]
    :will-enter
    (fn [app {::m.users/keys [id]}]
-     (df/load app [::m.users/id id] u.show-user/ShowUser
-              {:target [:page/id ::page ::user]})
+     (when id
+       (df/load app [::m.users/id (new-uuid id)] u.show-user/ShowUserFull
+                {:target [:page/id ::page ::m.users/link]}))
      (dr/route-immediate (comp/get-ident ShowUserPage {})))}
-  (bulma/page
-   (bulma/box
-    (u.show-user/ui-show-user user))
-   (u.user-accounts/ui-user-accounts user-accounts)
-   (u.user-categories/ui-user-categories user-categories)
-   (u.user-transactions/ui-user-transactions user-transactions)))
+  (when link (u.show-user/ui-show-user-full link)))

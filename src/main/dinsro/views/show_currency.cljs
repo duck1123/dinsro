@@ -17,7 +17,7 @@
    :route-segment ["currencies" :id]
    :will-enter
    (fn [app {:keys [id]}]
-     (when id
+     (when (seq id)
        (df/load app [::m.currencies/id (new-uuid id)] u.show-currency/ShowCurrencyFull
                 {:target [:page/id ::page ::currency]}))
      (dr/route-immediate (comp/get-ident ShowCurrencyPage {})))}
