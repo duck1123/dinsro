@@ -5,9 +5,9 @@
       clojure
       docker
       docker-compose
-      earthly
+      # earthly
       openjdk
-      tilt
+      # tilt
       yarn
     ];
 }
