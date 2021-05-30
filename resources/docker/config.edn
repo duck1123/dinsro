@@ -3,4 +3,4 @@
  :nrepl-port   7000
  :taoensso.timbre/logging-config
  {:level :debug}
- :datahike-url "datahike:file:///var/lib/dinsro/data"}
+ :datahike-url "datahike:file:///usr/src/app/data"}

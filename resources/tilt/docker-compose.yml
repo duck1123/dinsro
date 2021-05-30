@@ -32,5 +32,5 @@ services:
       - "8081:8081"
       - "8080:8080"
     volumes:
-      - ${PWD}/traefik.yml:/etc/traefik/traefik.yml
+      - ${PWD}/resources/traefik/traefik.yml:/etc/traefik/traefik.yml
       - /var/run/docker.sock:/var/run/docker.sock

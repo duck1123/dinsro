@@ -240,7 +240,6 @@ dev-image-sources:
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   WORKDIR /usr/src/app
-  VOLUME /var/lib/dinsro/data
   CMD ["bb", "dev-bootstrap"]
   SAVE IMAGE duck1123/dinsro:dev-sources-latest
 
@@ -275,7 +274,8 @@ e2e:
        --service dinsro \
        --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
        RUN docker ps -a \
-           && env | sort \
+           && sh -c "docker logs -f cypress_dinsro_1" \
+           & env | sort \
            && bb await-app \
            && bb test-integration
   END
