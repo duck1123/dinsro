@@ -65,7 +65,7 @@ INSTALL_KONDO:
 
 INSTALL_NODE:
   COMMAND
-  RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
+  RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
       && apt-get install -y nodejs \
       && rm -rf /var/lib/apt/lists/*
   RUN npm install -g npm@7.11.2
