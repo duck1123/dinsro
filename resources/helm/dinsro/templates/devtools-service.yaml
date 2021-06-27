@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dinsro.fullname" . }}-devtools
+  labels:
+    {{- include "dinsro.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.devtools.service.type }}
+  ports:
+  - port: {{ .Values.devtools.service.port }}
+    targetPort: devtools
+    protocol: TCP
+    name: devtools
+  selector:
+    {{- include "dinsro.selectorLabels" . | nindent 4 }}

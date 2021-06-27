@@ -1,7 +1,17 @@
 # Earthfile
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
 WORKDIR /usr/src/app
+ARG repo=localhost:34371/duck1123
+ARG project=dinsro
+ARG version=latest
 ARG kondo_version=2021.04.23
+ARG npm_version=7.19.1
+ARG dev_group=circleci
+ARG dev_user=circleci
+ARG src_home=/usr/src/app
+ARG data_dir=/var/lib/dinsro/data
+ARG uid=3434
+ARG gid=3434
 
 EXPOSE_DOCKER_PORTS:
   COMMAND
@@ -19,19 +29,6 @@ EXPOSE_DOCKER_PORTS:
   EXPOSE 7000/tcp
   # shadow-cljs watcher
   EXPOSE 9630/tcp
-  RUN echo "hello"
-
-AWAIT:
-  COMMAND
-  ARG target
-  RUN echo Awaiting $target
-  COPY ${target}/.finished .
-  RUN echo Target $target finished at $(cat .finished)
-
-FINISHED:
-  COMMAND
-  RUN date -u > .finished
-  SAVE ARTIFACT .finished
 
 IMPORT_JAR_DEPS:
   COMMAND
@@ -68,23 +65,23 @@ INSTALL_NODE:
   RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
       && apt-get install -y nodejs \
       && rm -rf /var/lib/apt/lists/*
-  RUN npm install -g npm@7.11.2
-  RUN npm install -g yarn
+  RUN npm install -g npm@${npm_version}
+  # RUN npm install -g yarn
   RUN npm install -g karma-cli
 
 CREATE_USER_NIX:
   COMMAND
-  RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
-  RUN chown -R 1000:1000 /usr/src/app
+  RUN addgroup -g ${gid} -S ${dev_group} && adduser -S ${dev_user} -G ${dev_group} -u ${uid}
+  RUN chown -R ${uid}:${gid} ${src_home}
 
 CREATE_USER_UBUNTU:
   COMMAND
-  RUN addgroup --gid 1000 dinsro && adduser --ingroup dinsro --uid 1000 dinsro
-  RUN chown -R 1000:1000 /usr/src/app
+  RUN addgroup --gid ${gid} ${dev_group} && adduser --ingroup ${dev_group} --uid ${uid} ${dev_user}
+  RUN chown -R ${uid}:${gid} ${src_home}
 
 base-builder-nix:
   FROM nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
-  ENV USER_HOME=/home/dinsro
+  ENV USER_HOME=/home/${dev_user}
   WORKDIR /usr/src/app
   RUN nix-env -i autoconf
   RUN nix-env -i bash-5.1-p4
@@ -100,30 +97,33 @@ base-builder-nix:
   DO +INSTALL_BABASHKA
   RUN nix-env -i tree
   DO +CREATE_USER_NIX
-  RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
-  RUN chown -R 1000:1000 /usr/src/app
+  RUN addgroup -g ${gid} -S ${dev_group} && adduser -S ${dev_user} -G ${dev_group} -u ${uid}
+  RUN chown -R ${uid}:${gid} ${src_home}
   RUN nix-env -i clj-kondo
   # RUN nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   # RUN nix-channel --update
-  USER "1000"
+  USER ${uid}
   RUN mkdir -p ${USER_HOME}/.cache/yarn \
       && mkdir -p ${USER_HOME}/.m2 \
-      && chown -R 1000:1000 ${USER_HOME}
+      && chown -R ${uid}:${gid} ${USER_HOME}
 
 base-builder:
-  FROM clojure:openjdk-11-tools-deps
-  ARG kondo_version=$kondo_version
-  WORKDIR /usr/src/app
-  ENV USER_HOME=/home/dinsro
+  FROM circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
+  # ARG kondo_version=$kondo_version
+  WORKDIR ${src_home}
+  ENV USER_HOME=/home/${dev_user}
+  USER root
   DO +INSTALL_NODE
   DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
   DO +INSTALL_KONDO --kondo_version=$kondo_version
-  DO +CREATE_USER_UBUNTU
+  # DO +CREATE_USER_UBUNTU
+  RUN chown -R ${uid}:${gid} ${src_home}
   RUN apt update && apt install -y \
+          sudo \
           tree \
       && rm -rf /var/lib/apt/lists/*
-  USER "1000"
+  USER ${uid}
 
 base-cypress-dind:
   FROM earthly/dind:ubuntu
@@ -161,7 +161,7 @@ base-cypress-dind:
 
 base-dind-builder:
   FROM earthly/dind:alpine
-  WORKDIR /usr/src/app
+  WORKDIR ${src_home}
   RUN apk add curl
   RUN curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
   && chmod +x /usr/local/bin/docker-compose
@@ -171,18 +171,18 @@ base-dind-builder-nix:
   RUN nix-env -i clojure-1.10.0.411
   RUN nix-env -i nodejs-10.15.0
   RUN nix-env -i openjdk-11.0.2-b9
-  RUN addgroup -g 1000 -S dinsro && adduser -S dinsro -G dinsro -u 1000
-  RUN chown -R 1000:1000 /usr/src/app
-  USER "1000"
+  RUN addgroup -g ${gid} -S ${dev_group} && adduser -S ${dev_user} -G ${dev_group} -u ${uid}
+  RUN chown -R ${uid}:${gid} ${src_home}
+  USER ${uid}
 
 builder:
   FROM +deps-builder
   RUN mkdir -p classes data target
   COPY --dir src/main src/main
   USER root
-  RUN mkdir -p /var/lib/dinsro/data && chown -R dinsro:dinsro /var/lib/dinsro/data
-  USER 1000
-  VOLUME /var/lib/dinsro/data
+  RUN mkdir -p /var/lib/dinsro/data && chown -R ${uid}:${gid} /var/lib/dinsro/data
+  USER ${uid}
+  VOLUME ${data_dir}
   COPY resources/docker/config.edn config.edn
   COPY shadow-cljs.edn .
 
@@ -190,18 +190,13 @@ check:
   FROM +src
   COPY indentation.edn .
   RUN bb check
-  DO +FINISHED
 
 ci:
   BUILD +check
   BUILD +lint
-  DO +AWAIT --target=+check
-  DO +AWAIT --target=+lint
-  # BUILD +test
-  DO +AWAIT --target=+test
-  # BUILD +e2e
-  # BUILD +image
-  DO +AWAIT --target=+image-wait
+  BUILD +test
+  BUILD +e2e
+  BUILD +image
 
 compile-frontend:
   FROM +src
@@ -231,24 +226,26 @@ dev-image:
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   # HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
-  VOLUME /var/lib/dinsro/data
+  VOLUME ${data_dir}
   CMD ["bb", "dev-bootstrap"]
-  SAVE IMAGE duck1123/dinsro:dev-latest
+  SAVE IMAGE ${repo}/${project}:dev-${version}
 
 dev-image-sources:
   FROM +dev-sources
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
-  WORKDIR /usr/src/app
-  VOLUME /var/lib/dinsro/data
+  WORKDIR ${src_home}
+  VOLUME ${data_dir}
+  ENV CONFIG_FILE=/etc/dinsro/config.edn
+  USER root
   CMD ["bb", "dev-bootstrap"]
-  SAVE IMAGE duck1123/dinsro:dev-sources-latest
+  SAVE IMAGE ${repo}/${project}:dev-sources-${version}
 
 dev-sources:
   FROM +deps-builder
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
-  COPY --dir . /usr/src/app
+  COPY --dir . ${src_home}
 
 e2e:
   FROM cypress/browsers
@@ -273,7 +270,7 @@ e2e:
   WITH DOCKER \
        --compose resources/cypress/docker-compose.yml \
        --service dinsro \
-       --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
+       --load ${repo}/${project}:dev-sources-${version}=+dev-image-sources
        RUN docker ps -a \
            && env | sort \
            && bb await-app \
@@ -288,15 +285,15 @@ e2e-dind:
   WITH DOCKER \
       --compose docker-compose.yml \
       --service dinsro \
-      --load duck1123/dinsro:e2e-latest=+e2e-image \
-      --load duck1123/dinsro:dev-sources-latest=+dev-image-sources
+      --load ${repo}/${project}:e2e-${version}=+e2e-image \
+      --load ${repo}/${project}:dev-sources-${version}=+dev-image-sources
       RUN bb await-app \
-          && docker run --network=host duck1123/dinsro:e2e-latest
+          && docker run --network=host ${repo}/${project}:e2e-${version}
   END
 
 e2e-image:
   FROM cypress/browsers
-  WORKDIR /usr/src/app
+  WORKDIR ${src_home}
   RUN apt update && apt install -y \
           openjdk-11-jdk \
       && rm -rf /var/lib/apt/lists/*
@@ -308,24 +305,22 @@ e2e-image:
   COPY --dir bb.edn deps.edn script .
   ENTRYPOINT []
   CMD ["bb", "test-integration"]
-  SAVE IMAGE duck1123/dinsro:e2e-latest
+  SAVE IMAGE ${repo}/${project}:e2e-${version}
 
 eastwood:
   FROM +dev-sources
   RUN bb eastwood
-  DO +FINISHED
 
 image:
   FROM openjdk:8-alpine
-  VOLUME /var/lib/dinsro/data
+  VOLUME ${data_dir}
   COPY +jar/dinsro.jar dinsro.jar
   COPY resources/docker/config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]
-  SAVE IMAGE --push duck1123/dinsro:latest
+  SAVE IMAGE --push ${repo}/${project}:${version}
 
 image-wait:
   FROM +image
-  DO +FINISHED
 
 jar:
   FROM +src
@@ -346,11 +341,11 @@ jar-deps:
       && cp -r /root/.clojure ${USER_HOME}/ \
       && cp -r /root/.deps.clj ${USER_HOME}/ \
       && cp -r /root/.m2 ${USER_HOME}/
-  RUN chown -R 1000 .cpcache
-  RUN chown -R 1000 ${USER_HOME}/.clojure
-  RUN chown -R 1000 ${USER_HOME}/.deps.clj
-  RUN chown -R 1000 ${USER_HOME}/.m2
-  USER 1000
+  RUN chown -R ${uid} .cpcache
+  RUN chown -R ${uid} ${USER_HOME}/.clojure
+  RUN chown -R ${uid} ${USER_HOME}/.deps.clj
+  RUN chown -R ${uid} ${USER_HOME}/.m2
+  USER ${uid}
   SAVE ARTIFACT ${USER_HOME}/.clojure
   SAVE ARTIFACT ${USER_HOME}/.deps.clj
   SAVE ARTIFACT ${USER_HOME}/.m2
@@ -359,24 +354,19 @@ jar-deps:
 kibit:
   FROM +dev-sources
   RUN bb kibit
-  DO +FINISHED
 
 kondo:
   FROM +dev-sources
   RUN bb kondo
-  DO +FINISHED
 
 lint:
-  # BUILD +eastwood
-  # BUILD +kibit
-  # BUILD +kondo
-  DO +AWAIT --target=+eastwood
-  DO +AWAIT --target=+kibit
-  DO +AWAIT --target=+kondo
-  DO +FINISHED
+  BUILD +eastwood
+  BUILD +kibit
+  BUILD +kondo
 
 node-deps:
   FROM +base-builder
+  RUN pwd
   COPY package.json yarn.lock .
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
@@ -392,21 +382,16 @@ src:
   COPY --dir resources/main resources/
 
 test:
-  # BUILD +test-clj
-  # BUILD +test-cljs
-  DO +AWAIT --target=+test-clj
-  DO +AWAIT --target=+test-cljs
-  DO +FINISHED
+  BUILD +test-clj
+  BUILD +test-cljs
 
 test-clj:
   FROM +test-sources
   RUN bb test-clj
-  DO +FINISHED
 
 test-cljs:
   FROM +test-sources
   RUN bb test-cljs
-  DO +FINISHED
 
 test-sources:
   FROM +src

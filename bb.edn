@@ -85,10 +85,22 @@
    :depends [build-dev-image start-dev]}
 
   dev-bootstrap
-  {:doc  "Start clojurescript watch and main server"
-   :task (do
-           (future (shell "bb watch-cljs"))
-           (shell "bb run"))}
+  {:doc "Start clojurescript watch and main server"
+   :task
+   (let [user      "circleci"
+         group     "circleci"
+         data-path "/var/lib/dinsro"
+         sudo      (fn [cmd] (format "sudo -u %s %s" user cmd))]
+     (shell (format "chown -R %s:%s %s" user group data-path))
+     (shell (format "su %s" user))
+     (shell (sudo "bb dev-bootstrap-user")))}
+
+  dev-bootstrap-user
+  {:task
+   (do
+     (println "=========================================================================================")
+     (future (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb watch-cljs\""))
+     (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""))}
 
   display-path
   {:doc  "Display dependency trees for each alias"

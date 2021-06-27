@@ -1,6 +1,6 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.devtools.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
+{{- $svcPort := .Values.devtools.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else -}}
@@ -8,7 +8,7 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-devtools
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -16,9 +16,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.devtools.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.devtools.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -27,16 +27,16 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{- range .Values.devtools.ingress.hosts }}
   - host: {{ .host | quote }}
     http:
       paths:
       {{- range .paths }}
       - path: {{ .path }}
-        pathType: ImplementationSpecific
+        pathType: "ImplementationSpecific"
         backend:
           service:
-            name: {{ $fullName }}
+            name: {{ $fullName }}-devtools
             port:
               number: {{ $svcPort }}
       {{- end }}
