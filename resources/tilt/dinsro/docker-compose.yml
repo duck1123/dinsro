@@ -4,10 +4,10 @@ services:
   dinsro:
     image: duck1123/dinsro:dev-sources-latest
     volumes:
-    - ".:/usr/src/app"
+    - "${PWD}:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
-    - "./data:/var/lib/dinsro/data"
-    - "./resources/docker/config.edn:/etc/dinsro/config.edn"
+    - "${PWD}/data:/var/lib/dinsro/data"
+    - "${PWD}/resources/docker/config.edn:/etc/dinsro/config.edn"
     ports:
     - 3000:3000
     - 9630:9630
@@ -32,5 +32,5 @@ services:
       - "8081:8081"
       - "8080:8080"
     volumes:
-      - ${PWD}/traefik.yml:/etc/traefik/traefik.yml
+      - ${PWD}/resources/traefik/traefik.yml:/etc/traefik/traefik.yml
       - /var/run/docker.sock:/var/run/docker.sock
