@@ -3,7 +3,5 @@ version: '3.3'
 services:
   dinsro:
     image: duck1123/dinsro:dev-sources-latest
-    environment:
-      CONFIG_FILE: /etc/dinsro/config.edn
     ports:
-    - 127.0.0.1:3000:3000
+    - 3000:3000

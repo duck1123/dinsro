@@ -31,24 +31,40 @@ k8s_resource(
 )
 
 local_resource(
-    'kondo',
-    cmd='bb kondo',
-    deps = [ 'src' ],
-    allow_parallel=True
+  'check',
+  allow_parallel = True,
+  cmd='bb check',
+  deps = [ 'src' ],
 )
 
 local_resource(
-  'check',
-  cmd='bb check',
+  'eastwood',
+  allow_parallel = True,
+  auto_init = False,
+  cmd = 'bb eastwood',
   deps = [ 'src' ],
-  allow_parallel = True
+  trigger_mode = TRIGGER_MODE_MANUAL,
+)
+
+local_resource(
+  'kondo',
+  allow_parallel = True,
+  cmd='bb kondo',
+  deps = [ 'src' ],
 )
 
 local_resource(
   'test',
-  cmd = 'bb test',
   allow_parallel = True,
-  deps = [
-    'src/test',
-  ]
+  cmd = 'bb test',
+  deps = [ 'src/test' ],
+)
+
+local_resource(
+  'test-integration',
+  allow_parallel = True,
+  auto_init = False,
+  cmd = 'npx cypress run',
+  deps = [ 'src/test' ],
+  trigger_mode = TRIGGER_MODE_MANUAL,
 )

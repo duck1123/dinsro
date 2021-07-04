@@ -195,7 +195,7 @@ ci:
   BUILD +check
   BUILD +lint
   BUILD +test
-  BUILD +e2e
+  # BUILD +e2e
   BUILD +image
 
 compile-frontend:
@@ -248,23 +248,26 @@ dev-sources:
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir . ${src_home}
 
-e2e:
+e2e-base:
   FROM cypress/browsers
   ENV USER_HOME=/root
   RUN apt update && apt install -y \
-          openjdk-11-jdk \
-      && rm -rf /var/lib/apt/lists/*
+      openjdk-11-jdk \
+    && rm -rf /var/lib/apt/lists/*
   RUN apt update && apt install -y \
-          docker.io \
-      && rm -rf /var/lib/apt/lists/*
+      docker.io \
+    && rm -rf /var/lib/apt/lists/*
   RUN curl -O https://download.clojure.org/install/linux-install-1.10.2.790.sh \
-      && chmod +x linux-install-1.10.2.790.sh \
-      && ./linux-install-1.10.2.790.sh
+    && chmod +x linux-install-1.10.2.790.sh \
+    && ./linux-install-1.10.2.790.sh
   DO +INSTALL_BABASHKA
   COPY --dir +node-deps/node_modules node_modules
   DO +IMPORT_JAR_DEPS
   COPY cypress.json .
   RUN npx cypress install
+
+e2e:
+  FROM +e2e-base
   COPY . .
   RUN bb init
   RUN npx cypress install
@@ -273,7 +276,8 @@ e2e:
        --service dinsro \
        --load ${repo}/${project}:dev-sources-${version}=+dev-image-sources
        RUN docker ps -a \
-           && env | sort \
+           && sh -c "docker logs -f cypress_dinsro_1" \
+           & env | sort \
            && bb await-app \
            && bb test-integration
   END

@@ -3,12 +3,10 @@
 
 (def cy js/cy)
 
-(def base-url "http://localhost:3000/")
-
 (describe "Home Page"
   (beforeEach
    []
-   (.visit cy base-url))
+   (.visit cy "/"))
 
   (it "should display the homepage" []
     (.. cy (get ".title") (should "contain" "Home Page")))

@@ -11,13 +11,18 @@
   {:depends [init install]}
 
   await-app
-  {:task (do
-           (shell "docker-compose logs -f &")
-           (get-docker-status "default_dinsro_1")
-           (shell "docker inspect -f {{.State.Health.Status}} default_dinsro_1")
-           ;; this is what bb is supposed to fix
-           (shell "until [ \"`docker inspect -f {{.State.Health.Status}} default_dinsro_1`\" = \"healthy\" ] || [ \"`docker inspect -f {{.State.Health.Status}} default_dinsro_1`\" = \"exited\" ] ; do sleep 5; done"))}
-
+  {:task
+   (let [prefix "cypress"]
+     (try
+       (loop [i 0]
+         (let [status (get-docker-status (str prefix "_dinsro_1"))]
+           (println (str "status(" i "): "  status))
+           (if (#{"healthy" "exited"} (clojure.string/trim status))
+             (println "done")
+             (do (Thread/sleep 5000)
+                 (recur (inc i))))))
+       (catch Exception ex
+         (println (str "failed: " ex)))))}
 
   build-dev-image
   {:doc  "Build dev image"
@@ -195,7 +200,7 @@
            (shell "karma start --single-run --check=\"ci.js\""))}
 
   test-integration
-  {:task (shell "cypress run")}
+  {:task (shell "npx cypress run")}
 
   watch {:depnds [watch-cljs]}
 
