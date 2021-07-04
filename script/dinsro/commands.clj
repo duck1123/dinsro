@@ -42,5 +42,6 @@
 
 (defn get-docker-status
   [container-name]
-  (shell
-   (format "docker inspect -f {{.State.Health.Status}} %s" container-name)))
+  (:out (shell
+    {:out :string}
+    (format "docker inspect -f {{.State.Health.Status}} %s" container-name))))
