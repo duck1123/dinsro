@@ -21,18 +21,6 @@
    m.transactions/schema
    m.users/schema])
 
-(def all-resolvers
-  (vec (concat
-        m.accounts/resolvers
-        m.categories/resolvers
-        m.currencies/resolvers
-        m.rates/resolvers
-        m.rate-sources/resolvers
-        m.settings/resolvers
-        m.timezone/resolvers
-        m.transactions/resolvers
-        m.users/resolvers)))
-
 (def all-attributes
   (vec (concat
         m.accounts/attributes
