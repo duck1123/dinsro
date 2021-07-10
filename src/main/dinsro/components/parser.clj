@@ -13,7 +13,7 @@
    [dinsro.components.crux :refer [crux-nodes]]
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
-   [dinsro.model :refer [all-attributes all-resolvers]]
+   [dinsro.model :refer [all-attributes]]
    [dinsro.resolvers :as resolvers]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.crux :as crux]
@@ -48,5 +48,4 @@
     form/resolvers
     (blob/resolvers all-attributes)
     resolvers/resolvers
-    all-resolvers
     index-explorer]))
