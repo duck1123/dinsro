@@ -19,6 +19,8 @@
    [roterski.fulcro.rad.database-adapters.crux :as crux]
    [taoensso.timbre :as log]))
 
+(def default-timezone "America/Detroit")
+
 (pc/defresolver index-explorer [{::pc/keys [indexes]} _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
    ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
@@ -29,23 +31,24 @@
 
 (defstate parser
   :start
-  (pathom/new-parser
-   config
-   [(attr/pathom-plugin all-attributes)
-    (form/pathom-plugin save/middleware delete/middleware)
-    (crux/pathom-plugin (fn [_env] {:production (:main crux-nodes)}))
-    (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
-                                                 :avatar-images bs/image-blob-store})
-    {::p/wrap-parser
-     (fn transform-parser-out-plugin-external [wrapped-parser]
-       (fn transform-parser-out-plugin-internal [env tx]
-         ;; TASK: This should be taken from account-based setting
-         (dt/with-timezone "America/Los_Angeles"
-           (if (and (map? env) (seq tx))
-             (wrapped-parser env tx)
-             {}))))}]
-   [automatic-resolvers
-    form/resolvers
-    (blob/resolvers all-attributes)
-    resolvers/resolvers
-    index-explorer]))
+  (let [database-key :main]
+    (pathom/new-parser
+     config
+     [(attr/pathom-plugin all-attributes)
+      (form/pathom-plugin save/middleware delete/middleware)
+      (crux/pathom-plugin (fn [_env] {:production (database-key crux-nodes)}))
+      (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
+                                                   :avatar-images bs/image-blob-store})
+      {::p/wrap-parser
+       (fn transform-parser-out-plugin-external [wrapped-parser]
+         (fn transform-parser-out-plugin-internal [env tx]
+           ;; TASK: This should be taken from account-based setting
+           (dt/with-timezone default-timezone
+             (if (and (map? env) (seq tx))
+               (wrapped-parser env tx)
+               {}))))}]
+     [automatic-resolvers
+      form/resolvers
+      (blob/resolvers all-attributes)
+      resolvers/resolvers
+      index-explorer])))
