@@ -99,6 +99,7 @@
   {:task
    (do
      (println "=========================================================================================")
+     (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\"")
      (future (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb watch-cljs\""))
      (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""))}
 

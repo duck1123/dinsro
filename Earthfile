@@ -232,6 +232,7 @@ dev-image:
 
 dev-image-sources:
   FROM +dev-sources
+  RUN bb compile-cljs
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   WORKDIR ${src_home}
