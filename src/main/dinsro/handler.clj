@@ -47,9 +47,9 @@
       (log/error ex "Already created")))
   (mu.currencies/do-create "usd" "Dollars" "admin")
   (mu.currencies/do-create "eur" "Euros" "admin")
-  (mu.categories/do-create "admin" "a")
-  (mu.categories/do-create "admin" "b")
-  (mu.categories/do-create "admin" "c")
+  (mu.categories/do-create "admin" "Category A")
+  (mu.categories/do-create "admin" "Category B")
+  (mu.categories/do-create "admin" "Category C")
   (mu.accounts/do-create "savings" "sats" "admin" 0))
 
 (defn init-schemata
