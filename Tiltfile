@@ -38,6 +38,22 @@ local_resource(
 )
 
 local_resource(
+  'format',
+  allow_parallel = True,
+  auto_init = False,
+  cmd='bb format',
+  trigger_mode = TRIGGER_MODE_MANUAL,
+)
+
+local_resource(
+  'cypress',
+  allow_parallel = True,
+  auto_init = False,
+  serve_cmd='npx cypress open',
+  trigger_mode = TRIGGER_MODE_MANUAL,
+)
+
+local_resource(
   'eastwood',
   allow_parallel = True,
   auto_init = False,
@@ -54,9 +70,16 @@ local_resource(
 )
 
 local_resource(
-  'test',
+  'test-clj',
   allow_parallel = True,
-  cmd = 'bb test',
+  cmd = 'bb test-clj',
+  deps = [ 'src/test' ],
+)
+
+local_resource(
+  'test-cljs',
+  allow_parallel = True,
+  cmd = 'bb test-cljs',
   deps = [ 'src/test' ],
 )
 
