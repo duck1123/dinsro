@@ -1,13 +1,13 @@
 (ns dinsro.mutations.currencies
   (:require
-   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
-   [com.wsscode.pathom.connect :as pc #?@(:clj [:refer [defmutation]])]
+   [com.fulcrologic.fulcro.mutations :as fm]
+   [com.wsscode.pathom.connect :as pc]
    [dinsro.model.currencies :as m.currencies]
    #?(:clj [dinsro.queries.currencies :as q.currencies])
    #?(:clj [dinsro.queries.users :as q.users])
    [taoensso.timbre :as log]))
 
-(comment ::m.currencies/_ ::pc/_)
+(comment ::m.currencies/_ ::pc/_ ::fm/_)
 
 #?(:clj
    (defn do-create
@@ -33,29 +33,29 @@
      {:status :success}))
 
 #?(:clj
-   (defmutation create!
+   (pc/defmutation create!
      [{{{:keys [identity]} :session} :request} {::m.currencies/keys [id name]}]
      {::pc/params #{::m.currencies/id ::m.currencies/name}
       ::pc/output [:status
                    :created-currency [::m.currencies/id]]}
      (do-create id name identity))
    :cljs
-   (defmutation create! [_props]
+   (fm/defmutation create! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
 #?(:clj
-   (defmutation delete!
+   (pc/defmutation delete!
      [_request {::m.currencies/keys [id]}]
      {::pc/params #{::m.currencies/id}
       ::pc/output [:status :message]}
      (do-delete id))
    :cljs
-   (defmutation delete! [_props]
+   (fm/defmutation delete! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
-#(:clj
-  (def resolvers
-    [create!
-     delete!]))
+#?(:clj
+   (def resolvers
+     [create!
+      delete!]))

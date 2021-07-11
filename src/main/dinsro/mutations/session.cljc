@@ -53,20 +53,22 @@
 
 #?(:clj
    (pc/defmutation login
-     [{{:keys [session]} :request} {:user/keys [username password]}]
+     [env {:user/keys [username password]}]
      {::pc/params #{:user/username :user/password}
       ::pc/output [:user/username :user/valid?]}
-     (if-let [_user (q.users/find-by-id username)]
-       (if (= password "hunter2")
-         (augment-response
-          {:user/username username
-           :user/valid?   true}
-          (fn [ring-response]
-            (assoc ring-response :session (assoc session :identity username))))
+     (let [{:keys [request]} env
+           {:keys [session]} request]
+       (if-let [_user (q.users/find-by-id username)]
+         (if (= password "hunter2")
+           (let [response {:user/username username
+                           :user/valid?   true}
+                 handler  (fn [ring-response]
+                            (assoc ring-response :session (assoc session :identity username)))]
+             (augment-response response handler))
+           {:user/username nil
+            :user/valid?   false})
          {:user/username nil
-          :user/valid?   false})
-       {:user/username nil
-        :user/valid?   false}))
+          :user/valid?   false})))
    :cljs
    (fm/defmutation login [_]
      (action
