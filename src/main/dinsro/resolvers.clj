@@ -27,14 +27,18 @@
   {:auth/id 1})
 
 (defresolver current-user-resolver
-  [{{{:keys [identity]} :session} :request} _props]
+  [env _props]
   {::pc/output
    [{:session/current-user
      [:user/username
       {:user/ref [::m.users/id]}
       :user/valid?]}]}
-  {:session/current-user {:user/username identity
-                          :user/valid?   (boolean (seq identity))}})
+  (let [{:keys [request]}  env
+        {:keys [session]}  request
+        {:keys [identity]} session]
+    {:session/current-user
+     {:user/username identity
+      :user/valid?   (boolean (seq identity))}}))
 
 (defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -46,8 +50,7 @@
       indexes)}))
 
 (def resolvers
-  [auth-resolver
-   current-user-resolver
+  [current-user-resolver
    mu.accounts/resolvers
    mu.categories/resolvers
    mu.currencies/resolvers
