@@ -1,5 +1,6 @@
 #kaocha/v1
 {:tests    [{:id           :unit
+             :focus-meta [:focus]
              :source-paths ["src/main"]
              :test-paths   ["src/test"]}]
  :reporter [kaocha.report/documentation]}
