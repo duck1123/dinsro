@@ -1,6 +1,6 @@
 (ns dinsro.queries.accounts-test
   (:require
-   [clojure.test :refer [is use-fixtures]]
+   [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
@@ -9,7 +9,7 @@
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [fulcro-spec.core :refer [assertions behavior specification]]
+   [fulcro-spec.core :refer [assertions]]
    [taoensso.timbre :as log]))
 
 (def schemata
@@ -19,7 +19,7 @@
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
-(specification "create-record"
+(deftest create-record
   (let [user           (mocks/mock-user)
         user-id        (::m.users/id user)
         currency       (mocks/mock-currency)
@@ -33,45 +33,44 @@
     (assertions
      (get params ::m.accounts/name) => (get created-record ::m.accounts/name))))
 
-(specification "index-records"
+(deftest index-records
   (assertions
    (q.accounts/index-records) => []))
 
-(specification "index-records-by-user"
-  (behavior "not found"
-    (let [user-id 1]
-      (assertions
-       (q.accounts/index-records-by-user user-id) => [])))
-  (behavior "found"
-    (let [record  (mocks/mock-account)
-          user-id (get-in record [::m.accounts/user ::m.users/id])
-          eid     (q.users/find-eid-by-id user-id)]
-      (assertions
-       (q.accounts/index-records-by-user eid) => [record]))))
+(deftest index-records-by-user-not-found
+  (let [user-id 1]
+    (assertions
+     (q.accounts/index-records-by-user user-id) => [])))
 
-(specification "read-record"
-  (behavior "not found"
-    (let [id (ds/gen-key :db/id)]
-      (is (nil? (q.accounts/read-record id)))))
-  (behavior "found"
-    (let [record (mocks/mock-account)
-          id     (::m.accounts/id record)
-          eid    (q.accounts/find-eid-by-id id)]
-      (assertions
-       "Should return mocked account"
-       (q.accounts/read-record eid) => record))))
+(deftest index-records-by-user-found
+  (let [record  (mocks/mock-account)
+        user-id (get-in record [::m.accounts/user ::m.users/id])
+        eid     (q.users/find-eid-by-id user-id)]
+    (assertions
+     (q.accounts/index-records-by-user eid) => [record])))
 
-(specification "delete-record"
-  (behavior "success"
-    (let [account (mocks/mock-account)
-          id      (::m.accounts/id account)
-          eid     (q.accounts/find-eid-by-id id)]
-      (assertions
-       "record should exist"
-       (q.accounts/read-record eid) => account
+(deftest read-record-not-found
+  (let [id (ds/gen-key :db/id)]
+    (is (nil? (q.accounts/read-record id)))))
 
-       "should return nil"
-       (q.accounts/delete-record eid) => nil
+(deftest read-record-found
+  (let [record (mocks/mock-account)
+        id     (::m.accounts/id record)
+        eid    (q.accounts/find-eid-by-id id)]
+    (assertions
+     "Should return mocked account"
+     (q.accounts/read-record eid) => record)))
 
-       "record should note exist"
-       (q.accounts/read-record eid) => nil))))
+(deftest delete-record-success
+  (let [account (mocks/mock-account)
+        id      (::m.accounts/id account)
+        eid     (q.accounts/find-eid-by-id id)]
+    (assertions
+     "record should exist"
+     (q.accounts/read-record eid) => account
+
+     "should return nil"
+     (q.accounts/delete-record eid) => nil
+
+     "record should note exist"
+     (q.accounts/read-record eid) => nil)))
