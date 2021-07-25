@@ -1,7 +1,7 @@
 # Earthfile
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
 WORKDIR /usr/src/app
-ARG repo=localhost:34371/duck1123
+ARG repo=duck1123
 ARG project=dinsro
 ARG version=latest
 ARG kondo_version=2021.04.23

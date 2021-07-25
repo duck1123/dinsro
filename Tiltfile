@@ -2,7 +2,7 @@
 
 custom_build(
   'localhost:34371/duck1123/dinsro:dev-sources-latest',
-  'earthly +dev-image-sources',
+  'earthly --build-args repo=localhost:34371/duck1123 +dev-image-sources',
   [
     'Earthfile',
     '.dockerignore',

@@ -10,9 +10,9 @@ jobs:
       - run: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
       - run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
       - run: earthly --version
-      - run: earthly -P --build-arg repo=duck1123 --remote-cache=duck1123/dinsro:cache --push +check
-      - run: earthly -P --build-arg repo=duck1123 --remote-cache=duck1123/dinsro:cache --push +lint
-      - run: earthly -P --build-arg repo=duck1123 --remote-cache=duck1123/dinsro:cache --push +dev-image-sources
-      - run: earthly -P --build-arg repo=duck1123 --remote-cache=duck1123/dinsro:cache --push +image
-      - run: earthly -P --build-arg repo=duck1123 --remote-cache=duck1123/dinsro:cache --push +e2e-base
-      - run: earthly -P --build-arg repo=duck1123 --remote-cache=duck1123/dinsro:cache --push +ci
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +check
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +lint
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +dev-image-sources
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +image
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +e2e-base
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +ci
