@@ -13,15 +13,15 @@
 
 (defsc ShowCurrencyPage
   [_this {::keys [currency currency-accounts currency-rates currency-rate-sources]}]
-  {:ident (fn [] [:page/id ::page])
+  {:ident         (fn [] [:page/id ::page])
    :initial-state {::currency              {}
                    ::currency-accounts     {}
                    ::currency-rates        {}
                    ::currency-rate-sources {}}
-   :query [{::currency              (comp/get-query u.show-currency/ShowCurrency)}
-           {::currency-accounts     (comp/get-query u.currency-accounts/CurrencyAccounts)}
-           {::currency-rates        (comp/get-query u.currency-rates/CurrencyRates)}
-           {::currency-rate-sources (comp/get-query u.currency-rate-sources/CurrencyRateSources)}]
+   :query         [{::currency (comp/get-query u.show-currency/ShowCurrency)}
+                   {::currency-accounts (comp/get-query u.currency-accounts/CurrencyAccounts)}
+                   {::currency-rates (comp/get-query u.currency-rates/CurrencyRates)}
+                   {::currency-rate-sources (comp/get-query u.currency-rate-sources/CurrencyRateSources)}]
    :route-segment ["currencies" ::m.currencies/id]
    :will-enter
    (fn [app {::m.currencies/keys [id]}]

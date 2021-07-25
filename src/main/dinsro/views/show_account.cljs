@@ -13,11 +13,11 @@
 
 (defsc ShowAccountPage
   [_this {::keys [account transactions]}]
-  {:ident (fn [] [:page/id ::page])
-   :initial-state {::account       {}
-                   ::transactions  {}}
-   :query [{::account      (comp/get-query u.show-account/ShowAccount)}
-           {::transactions (comp/get-query u.account-transactions/AccountTransactions)}]
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::account      {}
+                   ::transactions {}}
+   :query         [{::account (comp/get-query u.show-account/ShowAccount)}
+                   {::transactions (comp/get-query u.account-transactions/AccountTransactions)}]
    :route-segment ["accounts" ::m.accounts/id]
    :will-enter
    (fn [app {::m.accounts/keys [id]}]

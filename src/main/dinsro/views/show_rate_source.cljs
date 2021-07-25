@@ -12,13 +12,13 @@
 
 (defsc ShowRateSourcePage
   [_this {::keys [id rate-source transactions]}]
-  {:ident (fn [] [:page/id ::page])
-   :initial-state {::id 1
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::id           1
                    ::rate-source  {}
                    ::transactions {}}
-   :query [::id
-           {::rate-source  (comp/get-query u.show-rate-source/ShowRateSource)}
-           {::transactions (comp/get-query u.rate-source-transactions/RateSourceTransactions)}]
+   :query         [::id
+                   {::rate-source (comp/get-query u.show-rate-source/ShowRateSource)}
+                   {::transactions (comp/get-query u.rate-source-transactions/RateSourceTransactions)}]
    :route-segment ["rate-sources" ::m.rate-sources/id]
    :will-enter
    (fn [app {::m.rate-sources/keys [id]}]

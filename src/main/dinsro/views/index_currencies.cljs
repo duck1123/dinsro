@@ -17,9 +17,9 @@
                          ::u.user-currencies/UserCurrencies
                          ::u.user-currencies/currencies
                          ::u.index-currencies/currencies]}))
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::currencies       {}}
-   :query [{::currencies (comp/get-query u.user-currencies/UserCurrencies)}]
+   :ident         (fn [] [:page/id ::page])
+   :initial-state {::currencies {}}
+   :query         [{::currencies (comp/get-query u.user-currencies/UserCurrencies)}]
    :route-segment ["currencies"]}
   (bulma/page
    (u.user-currencies/ui-user-currencies currencies)))

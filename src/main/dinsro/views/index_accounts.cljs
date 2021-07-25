@@ -16,10 +16,10 @@
                          ::u.user-accounts/UserAccounts
                          ::u.user-accounts/accounts
                          ::u.user-accounts/accounts]}))
-   :ident (fn [] [:page/id ::page])
+   :ident         (fn [] [:page/id ::page])
    :initial-state {::user-accounts {}}
-   :query [:page/id
-           {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}]
+   :query         [:page/id
+                   {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}]
    :route-segment ["accounts"]}
   (bulma/page
    (u.user-accounts/ui-user-accounts user-accounts)))

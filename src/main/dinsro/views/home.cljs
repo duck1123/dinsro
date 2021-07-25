@@ -12,8 +12,8 @@
 
 (defsc HomePage
   [_this {:keys [auth-id]}]
-  {:ident (fn [] [:page/id ::page])
-   :query [:auth-id :page/id]
+  {:ident         (fn [] [:page/id ::page])
+   :query         [:auth-id :page/id]
    :route-segment [""]}
   (bulma/page
    (if auth-id

@@ -13,10 +13,10 @@
 
 (defsc UserAccounts
   [_this _props]
-  {:ident ::m.users/id
+  {:ident         ::m.users/id
    :initial-state {}
-   :query [{::m.users/accounts (comp/get-query u.user-accounts/IndexAccountLine)}
-           ::m.users/id]})
+   :query         [{::m.users/accounts (comp/get-query u.user-accounts/IndexAccountLine)}
+                   ::m.users/id]})
 
 (defsc ShowUserPage
   [_this {::keys [user user-accounts user-categories user-transactions]}]
@@ -27,16 +27,16 @@
          (df/load! this (m.users/ident id) UserAccounts)
          (df/load! this {(m.users/ident id) ::m.users/categories}
                    u.user-categories/UserCategories))))
-   :ident (fn [] [:page/id ::page])
+   :ident         (fn [] [:page/id ::page])
    :initial-state {::user              {}
                    ::user-accounts     {}
                    ::user-categories   {}
                    ::user-transactions {}}
-   :query [::m.users/id
-           {::user              (comp/get-query u.show-user/ShowUser)}
-           {::user-accounts     (comp/get-query u.user-accounts/UserAccounts)}
-           {::user-categories   (comp/get-query u.user-categories/UserCategories)}
-           {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
+   :query         [::m.users/id
+                   {::user (comp/get-query u.show-user/ShowUser)}
+                   {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}
+                   {::user-categories (comp/get-query u.user-categories/UserCategories)}
+                   {::user-transactions (comp/get-query u.user-transactions/UserTransactions)}]
    :route-segment ["users" ::m.users/id]
    :will-enter
    (fn [app {::m.users/keys [id]}]
