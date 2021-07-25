@@ -1,5 +1,5 @@
 (ns dinsro.login-page
-  (:require-macros [latte.core :refer [describe beforeEach it]]))
+  (:require-macros [latte.core :refer [describe beforeEach it xit]]))
 
 (def cy js/cy)
 
@@ -10,6 +10,7 @@
   ([]
    (login DEFAULT-USERNAME DEFAULT-PASSWORD))
   ([username password]
+   (.. cy (log "logging in"))
    (.. cy (get ":nth-child(1) > .control > div > .input") clear (type username))
    (.. cy (get ":nth-child(2) > .control > div > .input") clear (type password))
    (.. cy (get ".control > .ui") click)))
@@ -19,7 +20,7 @@
    []
    (.visit cy "/login"))
 
-  (it "should have a login link" []
+  (xit "should have a login link" []
       ;; (.. cy (get ":nth-child(1) > .control > div > .input") clear (type "admin"))
       ;; (.. cy (get ":nth-child(2) > .control > div > .input") clear (type "hunter3"))
       ;; (.. cy (get ".control > .ui") click)
