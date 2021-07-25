@@ -9,18 +9,18 @@
    [dinsro.model.users :as m.users]))
 
 (defn account-line
-  [id initial-value name currency-id username]
+  [id initial-value name currency-id user-id]
   {::m.accounts/id            id
    ::m.accounts/initial-value initial-value
    ::m.accounts/name          name
    ::m.accounts/currency      {::m.currencies/id currency-id}
-   ::m.accounts/user          {::m.users/username username}})
+   ::m.accounts/user          {::m.users/id user-id}})
 
 (defn category-line
-  [id name username]
+  [id name user-id]
   {::m.categories/id   id
    ::m.categories/name name
-   ::m.categories/user {::m.users/username username}})
+   ::m.categories/user {::m.users/id user-id}})
 
 (defn currency-line
   [id name]
@@ -28,11 +28,10 @@
    ::m.currencies/name name})
 
 (defn navlink-line
-  [id name href path]
+  [id name href]
   {:navlink/id   id
    :navlink/name name
-   :navlink/href href
-   :navlink/path path})
+   :navlink/href href})
 
 (defn rate-line
   [id currency-id rate date]
@@ -56,8 +55,8 @@
    ::m.transactions/account     {::m.accounts/id account-id}})
 
 (defn user-line
-  [username]
-  {::m.users/username username})
+  [user-id]
+  {::m.users/user-id user-id})
 
 (def account-map
   {1 (account-line 1 1  "Savings Account" 2 1)
@@ -74,21 +73,21 @@
    "yen"  (currency-line "yen" "Yen")})
 
 (def navlink-map
-  {:accounts     (navlink-line :accounts     "Accounts"     "/accounts"     ["accounts"])
-   :admin        (navlink-line :admin        "Admin"        "/admin"        ["admin"])
-   :bar          (navlink-line :bar          "bar"          "/bar"          ["bar"])
-   :baz          (navlink-line :baz          "baz"          "/baz"          ["baz"])
-   :categories   (navlink-line :categories   "Categories"   "/categories"   ["categories"])
-   :currencies   (navlink-line :currencies   "Currencies"   "/currencies"   ["currencies"])
-   :foo          (navlink-line :foo          "foo"          "/foo"          ["foo"])
-   :home         (navlink-line :home         "Home"         "/"             [""])
-   :login        (navlink-line :login        "Login"        "/login"        ["login"])
-   :rates        (navlink-line :rates        "Rates"        "/rates"        ["rates"])
-   :rate-sources (navlink-line :rate-sources "Rate Sources" "/rate-sources" ["rate-sources"])
-   :registration (navlink-line :registration "Registration" "/register"     ["register"])
-   :settings     (navlink-line :settings     "Settings"     "/settings"     ["settings"])
-   :transactions (navlink-line :transactions "Transactions" "/transactions" ["transactions"])
-   :users        (navlink-line :users        "User"         "/users"        ["users"])})
+  {"accounts"     (navlink-line "accounts"     "Accounts"     "/accounts")
+   "admin"        (navlink-line "admin"        "Admin"        "/admin")
+   "bar"          (navlink-line "bar"          "bar"          "/bar")
+   "baz"          (navlink-line "baz"          "baz"          "/baz")
+   "categories"   (navlink-line "categories"   "Categories"   "/categories")
+   "currencies"   (navlink-line "currencies"   "Currencies"   "/currencies")
+   "foo"          (navlink-line "foo"          "foo"          "/foo")
+   "home"         (navlink-line "home"         "Home"         "/")
+   "login"        (navlink-line "login"        "Login"        "/login")
+   "rates"        (navlink-line "rates"        "Rates"        "/rates")
+   "rate-sources" (navlink-line "rate-sources" "Rate Sources" "/rate-sources")
+   "registration" (navlink-line "registration" "Registration" "/register")
+   "settings"     (navlink-line "settings"     "Settings"     "/settings")
+   "transactions" (navlink-line "transactions" "Transactions" "/transactions")
+   "users"        (navlink-line "users"        "User"         "/users")})
 
 (def rate-map
   {1 (rate-line 1 1 1.01 "2020-12-05 22:11:04")})

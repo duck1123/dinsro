@@ -5,7 +5,7 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (ws/defcard CreateAccountForm
   {::wsm/align       {:flex 1}

@@ -8,19 +8,20 @@
    [dinsro.ui.category-transactions :as u.category-transactions]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.show-category :as u.show-category]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc ShowCategoryPage
   [_this {::keys [category transactions]}]
-  {:ident (fn [] [:page/id ::page])
-   :initial-state {::category       {}
-                   ::transactions  {}}
-   :query [{::category      (comp/get-query u.show-category/ShowCategory)}
-           {::transactions (comp/get-query u.category-transactions/CategoryTransactions)}]
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::category     {}
+                   ::transactions {}}
+   :query         [{::category (comp/get-query u.show-category/ShowCategory)}
+                   {::transactions (comp/get-query u.category-transactions/CategoryTransactions)}]
    :route-segment ["categories" ::m.categories/id]
    :will-enter
    (fn [app {::m.categories/keys [id]}]
-     (df/load app [::m.categories/id (int id)] u.show-category/ShowCategory
+     (log/info "will enter")
+     (df/load app [::m.categories/id id] u.show-category/ShowCategory
               {:target [:page/id ::page ::category]})
      (dr/route-immediate (comp/get-ident ShowCategoryPage {})))}
   (bulma/page

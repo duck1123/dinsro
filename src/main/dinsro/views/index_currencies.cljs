@@ -6,7 +6,7 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-currencies :as u.index-currencies]
    [dinsro.ui.user-currencies :as u.user-currencies]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexCurrenciesPage
   [_this {::keys [currencies]}]
@@ -17,9 +17,9 @@
                          ::u.user-currencies/UserCurrencies
                          ::u.user-currencies/currencies
                          ::u.index-currencies/currencies]}))
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::currencies       {}}
-   :query [{::currencies (comp/get-query u.user-currencies/UserCurrencies)}]
+   :ident         (fn [] [:page/id ::page])
+   :initial-state {::currencies {}}
+   :query         [{::currencies (comp/get-query u.user-currencies/UserCurrencies)}]
    :route-segment ["currencies"]}
   (bulma/page
    (u.user-currencies/ui-user-currencies currencies)))

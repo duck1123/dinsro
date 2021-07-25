@@ -4,7 +4,6 @@
    [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
    [buddy.core.bytes :as b]
    [clojure.core.async :as async]
-   [clojure.tools.logging :as log]
    [com.fulcrologic.fulcro.server.api-middleware :as server]
    [com.wsscode.pathom.connect :as pc]
    [com.wsscode.pathom.core :as p]
@@ -16,7 +15,7 @@
    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.session.cookie :refer [cookie-store]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def pathom-endpoint "/pathom")
 
@@ -68,7 +67,7 @@
 
 (defn wrap-api
   [handler]
-  (let [parser (fn [env query] (async/<!! (parser env (timbre/spy query))))]
+  (let [parser (fn [env query] (async/<!! (parser env (log/spy query))))]
     (fn [{:keys [uri] :as request}]
       (if (= pathom-endpoint uri)
         (server/handle-api-request

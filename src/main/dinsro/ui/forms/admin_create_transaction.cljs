@@ -4,7 +4,7 @@
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AdminCreateTransactionForm
   [_this {::keys [description value]}]
@@ -18,11 +18,11 @@
     (bulma/column
      (u.inputs/ui-text-input
       {:label (tr [:value]) :value value}
-      {:onChange (fn [] (timbre/info "change"))})))
+      {:onChange (fn [] (log/info "change"))})))
    (bulma/field
     (bulma/column
      (u.inputs/ui-text-input
       {:label (tr [:description]) :value description}
-      {:onChange (fn [] (timbre/info "change"))})))))
+      {:onChange (fn [] (log/info "change"))})))))
 
 (def ui-admin-create-transaction-form (comp/factory AdminCreateTransactionForm))

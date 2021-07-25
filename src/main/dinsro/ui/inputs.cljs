@@ -7,7 +7,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc TextInput
   [_this {:keys [label value]} {:keys [onChange]}]
@@ -18,13 +18,12 @@
                 value ""}}]
      {:label label
       :value value})}
-  (dom/div
-   (dom/label :.label label)
-   (dom/input
-    :.input
-    {:type     :text
-     :value    value
-     :onChange (fn [e] (onChange e))})))
+  (dom/div {}
+    (dom/label :.label label)
+    (dom/input :.input
+      {:type     :text
+       :value    value
+       :onChange (fn [e] (onChange e))})))
 
 (def ui-text-input
   (comp/computed-factory TextInput))
@@ -38,13 +37,12 @@
                 value ""}}]
      {:label label
       :value value})}
-  (dom/div
-   (dom/label :.label label)
-   (dom/input
-    :.input
-    {:type     :password
-     :value    value
-     :onChange (fn [e] (onChange e))})))
+  (dom/div {}
+    (dom/label :.label label)
+    (dom/input :.input
+      {:type     :password
+       :value    value
+       :onChange (fn [e] (onChange e))})))
 
 (def ui-password-input
   (comp/computed-factory PasswordInput))
@@ -58,13 +56,12 @@
      {:label label
       :value value})
    :query [:label :value]}
-  (dom/div
-   (dom/label :.label label)
-   (dom/input
-    :.input
-    {:type     :number
-     :value    value
-     :onChange onChange})))
+  (dom/div {}
+    (dom/label :.label label)
+    (dom/input :.input
+      {:type     :number
+       :value    value
+       :onChange onChange})))
 
 (def ui-number-input
   (comp/computed-factory NumberInput))
@@ -79,12 +76,11 @@
   [_this {:keys [accounts]}]
   {:initial-state {:accounts []}
    :query         [:accounts]}
-  (dom/div
-   :.select
-   (dom/select
-    (map (fn [{::m.accounts/keys [id name]}]
-           (ui-selector-option {:id (str id) :name name}))
-         accounts))))
+  (dom/div :.select
+    (dom/select {}
+      (map (fn [{::m.accounts/keys [id name]}]
+             (ui-selector-option {:id (str id) :name name}))
+           accounts))))
 
 (def ui-account-selector (comp/factory AccountSelector))
 
@@ -104,11 +100,9 @@
    (fn [this] (df/load! this :all-currencies CurrencySelectorOption))
    :initial-state {:all-currencies []}
    :query         [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
-  (dom/div
-   :.select
-   (dom/select
-    {:onChange onChange}
-    (map ui-currency-selector-option all-currencies))))
+  (dom/div :.select
+    (dom/select {:onChange onChange}
+      (map ui-currency-selector-option all-currencies))))
 
 (def ui-currency-selector (comp/computed-factory CurrencySelector))
 
@@ -116,12 +110,11 @@
   [_this {:keys [users]}]
   {:initial-state {:users []}
    :query         [:users]}
-  (dom/div
-   :.select
-   (dom/select
-    (map (fn [{::m.users/keys [id name]}]
-           (ui-selector-option {:id (str id) :name name}))
-         users))))
+  (dom/div :.select
+    (dom/select {}
+      (map (fn [{::m.users/keys [id name]}]
+             (ui-selector-option {:id (str id) :name name}))
+           users))))
 
 (def ui-user-selector (comp/factory UserSelector))
 
@@ -129,6 +122,6 @@
   [_this _props {:keys [onClick]}]
   {:initial-state {}
    :query         []}
-  (dom/button :.button.is-primary {:onClick onClick} "submit"))
+  (dom/button :.ui.button.is-primary {:onClick onClick} "submit"))
 
 (def ui-primary-button (comp/computed-factory PrimaryButton))

@@ -3,7 +3,7 @@
    [dinsro.views.admin-index-accounts :as v.admin-index-accounts]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (ws/defcard AdminIndexAccountsPage
   (ct.fulcro3/fulcro-card

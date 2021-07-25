@@ -6,10 +6,10 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.model.users :as m.users]
    [expound.alpha :as expound]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def param-rename-map
-  {:username ::m.users/username})
+  {:username ::m.users/id})
 
 (>defn prepare-record
   [params]
@@ -24,5 +24,5 @@
     (if (s/valid? ::m.users/params params)
       params
       (do
-        (timbre/warnf "not valid: %s" (expound/expound-str ::m.users/params params))
+        (log/warnf "not valid: %s" (expound/expound-str ::m.users/params params))
         nil))))

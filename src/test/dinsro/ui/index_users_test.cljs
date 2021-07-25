@@ -1,6 +1,6 @@
 (ns dinsro.ui.index-users-test
   (:require
-   [dinsro.sample :as sample]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.index-users :as u.index-users]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
@@ -15,4 +15,8 @@
    {::ct.fulcro3/root       u.index-users/IndexUsers
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.index-users/items (map sample/user-map [1 2])})}))
+      {::u.index-users/items
+       [{::m.users/id "admin"
+         ::m.users/link [{::m.users/id "admin"}]}
+        {::m.users/id   "bob"
+         ::m.users/link [{::m.users/id "bob"}]}]})}))

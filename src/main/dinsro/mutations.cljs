@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
    [dinsro.routing :as routing]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defmutation activate-nav-link [{:navlink/keys [id]}]
   (action
@@ -18,7 +18,7 @@
 (defmutation submit [props]
   (action
    [{:keys [state]}]
-   (timbre/infof "submitting: %s" props)))
+   (log/infof "submitting: %s" props)))
 
 (defmutation toggle [_]
   (action

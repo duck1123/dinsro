@@ -12,7 +12,7 @@
    [dinsro.ui.index-transactions :as u.index-transactions]
    [dinsro.ui.index-users :as u.index-users]
    [dinsro.ui.bulma :as bulma]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AdminPage
   [_this {::keys [accounts categories currencies rate-sources transactions users]}]
@@ -55,20 +55,20 @@
                          ::u.admin-index-users/AdminIndexUsers
                          ::u.admin-index-users/users
                          ::u.index-users/items]}))
-   :ident (fn [_] [:page/id ::page])
+   :ident         (fn [_] [:page/id ::page])
    :initial-state {::accounts     {}
                    ::categories   {}
                    ::currencies   {}
                    ::rate-sources {}
                    ::transactions {}
                    ::users        {}}
-   :query [{::accounts     (comp/get-query u.admin-index-accounts/AdminIndexAccounts)}
-           {::categories   (comp/get-query u.admin-index-categories/AdminIndexCategories)}
-           {::currencies   (comp/get-query u.admin-index-currencies/AdminIndexCurrencies)}
-           :page/id
-           {::rate-sources (comp/get-query u.admin-index-rate-sources/AdminIndexRateSources)}
-           {::transactions (comp/get-query u.admin-index-transactions/AdminIndexTransactions)}
-           {::users        (comp/get-query u.admin-index-users/AdminIndexUsers)}]
+   :query         [{::accounts (comp/get-query u.admin-index-accounts/AdminIndexAccounts)}
+                   {::categories (comp/get-query u.admin-index-categories/AdminIndexCategories)}
+                   {::currencies (comp/get-query u.admin-index-currencies/AdminIndexCurrencies)}
+                   :page/id
+                   {::rate-sources (comp/get-query u.admin-index-rate-sources/AdminIndexRateSources)}
+                   {::transactions (comp/get-query u.admin-index-transactions/AdminIndexTransactions)}
+                   {::users (comp/get-query u.admin-index-users/AdminIndexUsers)}]
    :route-segment ["admin"]}
   (bulma/page
    (dom/h1 :.title.is-1 "Admin")

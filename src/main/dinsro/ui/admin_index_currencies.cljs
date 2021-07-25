@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.admin-create-currency :as u.f.admin-create-currency]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -21,9 +21,9 @@
                    ::m.currencies/link []}
    :query         [::m.currencies/id
                    {::m.currencies/link (comp/get-query u.links/CurrencyLink)}]}
-  (dom/tr
-   (dom/td (u.links/ui-currency-link (first link)))
-   (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
+  (dom/tr {}
+    (dom/td (u.links/ui-currency-link (first link)))
+    (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
 
 (def ui-admin-index-currency-line (comp/factory AdminIndexCurrencyLine {:keyfn ::m.currencies/id}))
 
@@ -40,22 +40,20 @@
                        [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
-     (dom/h2
-      :.title.is-2
-      (tr [:currencies])
-      (u.buttons/ui-show-form-button toggle-button))
+     (dom/h2 :.title.is-2
+       (tr [:currencies])
+       (u.buttons/ui-show-form-button toggle-button))
      (when shown?
        (u.f.admin-create-currency/ui-admin-create-currency-form form))
      (dom/hr)
      (if (seq currencies)
-       (dom/table
-        :.table
-        (dom/thead
-         (dom/tr
-          (dom/th (tr [:name-label]))
-          (dom/th "Buttons")))
-        (dom/tbody
-         (map ui-admin-index-currency-line currencies)))
-       (dom/div (tr [:no-currencies]))))))
+       (dom/table :.table.ui
+         (dom/thead {}
+           (dom/tr {}
+             (dom/th (tr [:name-label]))
+             (dom/th "Buttons")))
+         (dom/tbody {}
+           (map ui-admin-index-currency-line currencies)))
+       (dom/div {} (tr [:no-currencies]))))))
 
 (def ui-section (comp/factory AdminIndexCurrencies))

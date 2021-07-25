@@ -8,7 +8,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def attribute-list
   '[:db/id
@@ -55,7 +55,7 @@
           response (d/transact db/*conn* {:tx-data [params]})]
       (get-in response [:tempids "currency-id"]))
     (catch Exception ex
-      (timbre/error ex "Error creating")
+      (log/error ex "Error creating")
       nil)))
 
 (>defn index-ids
@@ -85,7 +85,7 @@
 
 (>defn index-by-user
   [_id]
-  [::m.users/username => (s/coll-of ::m.currencies/item)]
+  [::m.users/id => (s/coll-of ::m.currencies/item)]
   (map read-record (index-ids)))
 
 (defn index-records-by-account

@@ -3,7 +3,7 @@
    [dinsro.components.config :as config]
    [mount.core :as mount]
    [nrepl.server :as nrepl]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn nrepl-handler []
   (require 'cider.nrepl)
@@ -16,7 +16,7 @@
   clojure.tools.nrepl.server/start-server as they are."
   [{:keys [port bind transport-fn handler ack-port greeting-fn]}]
   (try
-    (timbre/info "starting nREPL server on port" port)
+    (log/info "starting nREPL server on port" port)
     (nrepl/start-server :port port
                         :bind bind
                         :transport-fn transport-fn
@@ -25,17 +25,17 @@
                         :greeting-fn greeting-fn)
 
     (catch Throwable t
-      (timbre/error t "failed to start nREPL")
+      (log/error t "failed to start nREPL")
       (throw t))))
 
 (defn stop [server]
   (nrepl/stop-server server)
-  (timbre/info "nREPL server stopped"))
+  (log/info "nREPL server stopped"))
 
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (config/config :nrepl-port)
-    (timbre/info "starting in core")
+    (log/info "starting in core")
     (start {:bind    (or (config/config :nrepl-bind) "0.0.0.0")
             :handler (nrepl-handler)
             :port    (config/config :nrepl-port)}))

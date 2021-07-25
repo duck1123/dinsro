@@ -5,7 +5,7 @@
    [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc CreateCategoryForm
   [this {::keys [name]}]
@@ -13,8 +13,8 @@
    :initial-state {::name ""}
    :query [::name]}
   (dom/div
-   (u.inputs/ui-text-input
-    {:label (tr [:name]) :value name}
-    {:onChange #(fm/set-string! this ::name :event %)})))
+    (u.inputs/ui-text-input
+     {:label (tr [:name]) :value name}
+     {:onChange #(fm/set-string! this ::name :event %)})))
 
 (def ui-create-category-form (comp/factory CreateCategoryForm))

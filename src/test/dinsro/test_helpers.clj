@@ -6,7 +6,7 @@
    [dinsro.components.config :as config]
    [dinsro.components.datahike :as db]
    [mount.core :as mount]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def uri "datahike:file:///tmp/file-example2")
 

@@ -6,7 +6,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -24,14 +24,14 @@
            {::m.accounts/user     (comp/get-query u.links/UserLink)}
            :user-link-data]}
   (dom/div
-   (dom/h3 name)
-   (dom/p (u.links/ui-account-link account))
-   (dom/p
-    (tr [:user-label])
-    (u.links/ui-user-link (first user)))
-   (dom/p
-    (tr [:currency-label])
-    (u.links/ui-currency-link (first currency)))
-   (u.buttons/ui-delete-account-button {::m.accounts/id id})))
+    (dom/h3 name)
+    (dom/p (u.links/ui-account-link account))
+    (dom/p
+     (tr [:user-label])
+     (u.links/ui-user-link (first user)))
+    (dom/p
+     (tr [:currency-label])
+     (u.links/ui-currency-link (first currency)))
+    (u.buttons/ui-delete-account-button {::m.accounts/id id})))
 
 (def ui-show-account (comp/factory ShowAccount))

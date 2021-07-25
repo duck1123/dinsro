@@ -5,7 +5,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-categories :as u.user-categories]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexCategoriesPage
   [_this {::keys [categories]}]
@@ -16,9 +16,9 @@
                          ::u.user-categories/UserCategories
                          ::u.user-categories/categories
                          ::u.user-categories/categories]}))
-   :ident (fn [] [:page/id ::page])
+   :ident         (fn [] [:page/id ::page])
    :initial-state {::categories {}}
-   :query [{::categories (comp/get-query u.user-categories/UserCategories)}]
+   :query         [{::categories (comp/get-query u.user-categories/UserCategories)}]
    :route-segment ["categories"]}
   (bulma/page
    (u.user-categories/ui-user-categories categories)))

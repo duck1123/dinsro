@@ -4,7 +4,7 @@
    [dinsro.lib.logging :as logging]
    [environ.core :refer [env]]
    [mount.core :refer [defstate args]]
-   [taoensso.timbre :as timbre])
+   [taoensso.timbre :as log])
   (:import java.io.File))
 
 (defn get-config-path

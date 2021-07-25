@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn path-for
   [_p]
@@ -12,8 +12,8 @@
 
 (defsc HomePage
   [_this {:keys [auth-id]}]
-  {:ident (fn [] [:page/id ::page])
-   :query [:auth-id :page/id]
+  {:ident         (fn [] [:page/id ::page])
+   :query         [:auth-id :page/id]
    :route-segment [""]}
   (bulma/page
    (if auth-id

@@ -8,7 +8,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddUserAccountForm
   [this {::keys [currency currency-id name initial-value submit]}]
@@ -24,31 +24,31 @@
                    ::name
                    {::submit (comp/get-query u.inputs/PrimaryButton)}]}
   (dom/div
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label (tr [:name]) :value name}
-      {:onChange #(fm/set-string! this ::name :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-number-input
-      {:label (tr [:initial-value]) :value (str initial-value)}
-      {:onChange #(fm/set-double! this ::initial-value :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-currency-selector
-      currency
-      {:onChange #(fm/set-integer! this ::currency-id :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button
-      submit
-      {:onClick
-       (fn [_]
-         (timbre/info "click")
-         (let [data {::m.accounts/currency      {:db/id currency-id}
-                     ::m.accounts/name          name
-                     ::m.accounts/initial-value initial-value}]
-           (comp/transact! this [(mu.accounts/create! data)])))})))))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label (tr [:name]) :value name}
+       {:onChange #(fm/set-string! this ::name :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-number-input
+       {:label (tr [:initial-value]) :value (str initial-value)}
+       {:onChange #(fm/set-double! this ::initial-value :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-currency-selector
+       currency
+       {:onChange #(fm/set-integer! this ::currency-id :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button
+       submit
+       {:onClick
+        (fn [_]
+          (log/info "click")
+          (let [data {::m.accounts/currency      {:db/id currency-id}
+                      ::m.accounts/name          name
+                      ::m.accounts/initial-value initial-value}]
+            (comp/transact! this [(mu.accounts/create! data)])))})))))
 
 (def ui-form (comp/factory AddUserAccountForm))

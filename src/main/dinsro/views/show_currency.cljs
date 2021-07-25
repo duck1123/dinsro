@@ -9,23 +9,23 @@
    [dinsro.ui.currency-rates :as u.currency-rates]
    [dinsro.ui.currency-rate-sources :as u.currency-rate-sources]
    [dinsro.ui.show-currency :as u.show-currency]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc ShowCurrencyPage
   [_this {::keys [currency currency-accounts currency-rates currency-rate-sources]}]
-  {:ident (fn [] [:page/id ::page])
+  {:ident         (fn [] [:page/id ::page])
    :initial-state {::currency              {}
                    ::currency-accounts     {}
                    ::currency-rates        {}
                    ::currency-rate-sources {}}
-   :query [{::currency              (comp/get-query u.show-currency/ShowCurrency)}
-           {::currency-accounts     (comp/get-query u.currency-accounts/CurrencyAccounts)}
-           {::currency-rates        (comp/get-query u.currency-rates/CurrencyRates)}
-           {::currency-rate-sources (comp/get-query u.currency-rate-sources/CurrencyRateSources)}]
-   :route-segment ["currencies" ::m.currencies/name]
+   :query         [{::currency (comp/get-query u.show-currency/ShowCurrency)}
+                   {::currency-accounts (comp/get-query u.currency-accounts/CurrencyAccounts)}
+                   {::currency-rates (comp/get-query u.currency-rates/CurrencyRates)}
+                   {::currency-rate-sources (comp/get-query u.currency-rate-sources/CurrencyRateSources)}]
+   :route-segment ["currencies" ::m.currencies/id]
    :will-enter
-   (fn [app {::m.currencies/keys [name]}]
-     (df/load app [::m.currencies/name name] u.show-currency/ShowCurrency
+   (fn [app {::m.currencies/keys [id]}]
+     (df/load app [::m.currencies/id id] u.show-currency/ShowCurrency
               {:target [:page/id ::page ::currency]})
 
      ;; (df/load app [::m.currencies/id (int id)] u.currency-accounts/IndexCurrencyAccountLine

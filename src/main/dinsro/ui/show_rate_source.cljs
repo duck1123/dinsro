@@ -5,7 +5,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.buttons :as u.buttons]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -16,8 +16,8 @@
    :initial-state {::m.rate-sources/id 0
                    ::m.rate-sources/name ""}}
   (dom/div
-   (dom/p name)
-   (dom/p id)
-   (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id})))
+    (dom/p name)
+    (dom/p id)
+    (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id})))
 
 (def ui-show-rate-source (comp/factory ShowRateSource))

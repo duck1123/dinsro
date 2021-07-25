@@ -10,7 +10,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-rate-source :as u.f.create-rate-source]
    [dinsro.ui.index-rate-sources :as u.index-rate-sources]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
@@ -26,15 +26,15 @@
                          ::page
                          ::rate-sources
                          :dinsro.ui.index-rate-sources/items]}))
-   :ident (fn [] [:page/id ::page])
+   :ident         (fn [] [:page/id ::page])
    :initial-state {::form          {}
                    ::rate-sources  {}
                    ::toggle-button {:form-button/id form-toggle-sm}}
    :route-segment ["rate-sources"]
-   :query [{::form          (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
-           {::rate-sources  (comp/get-query u.index-rate-sources/IndexRateSources)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           [::uism/asm-id form-toggle-sm]]}
+   :query         [{::form (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
+                   {::rate-sources (comp/get-query u.index-rate-sources/IndexRateSources)}
+                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                   [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/page
      (bulma/box

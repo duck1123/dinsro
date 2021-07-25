@@ -10,39 +10,39 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc LoginForm
   [this {:user/keys [message password username]}]
   {:ident         (fn [] [:component/id ::form])
    :initial-state {:user/message  nil
                    :user/password "hunter2"
-                   :user/username    "admin"}
+                   :user/username "admin"}
    :query         [:user/password :user/message :user/username]}
   (dom/div
-   :.is-centered
-   (when message (dom/p :.notification.is-danger message))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label "Username"
-       :value username}
-      {:onChange #(fm/set-string! this :user/username :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label "Password"
-       :value password}
-      {:onChange #(fm/set-string! this :user/password :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button
-      {:className "button"
-       :content   (tr [:login])}
-      {:onClick
-       (fn []
-         (let [data #:user {:username username :password password}]
-           (comp/transact! this [(mu.session/login data)])))})))))
+    :.is-centered
+    (when message (dom/p :.notification.is-danger message))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label "Username"
+        :value username}
+       {:onChange #(fm/set-string! this :user/username :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label "Password"
+        :value password}
+       {:onChange #(fm/set-string! this :user/password :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button
+       {:className "button"
+        :content   (tr [:login])}
+       {:onClick
+        (fn []
+          (let [data #:user {:username username :password password}]
+            (comp/transact! this [(mu.session/login data)])))})))))
 
 (def ui-login-form (comp/factory LoginForm))
 
@@ -54,9 +54,9 @@
   (let [on-x-change (fn [evt _] (fm/set-string! this :my-x-val :event evt))
         on-y-change (fn [evt _] (fm/set-string! this :my-y-val :event evt))]
     (dom/div
-     (dom/p {} (str "x: " my-x-val))
-     (dom/p {} (str "y: " my-y-val))
-     (ui-form
-      {:error true}
-      (ui-form-input {:value my-x-val :onChange on-x-change :label "X" :error true})
-      (ui-form-input {:value my-y-val :onChange on-y-change :label "Y"})))))
+      (dom/p {} (str "x: " my-x-val))
+      (dom/p {} (str "y: " my-y-val))
+      (ui-form
+        {:error true}
+        (ui-form-input {:value my-x-val :onChange on-x-change :label "X" :error true})
+        (ui-form-input {:value my-y-val :onChange on-y-change :label "Y"})))))

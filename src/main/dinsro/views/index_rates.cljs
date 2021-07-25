@@ -11,22 +11,22 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.forms.create-rate :as u.f.create-rate]
    [dinsro.ui.index-rates :as u.index-rates]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexRatesPage
   [this {::keys [show-form-button rates form]}]
   {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar IndexRatesPage})
-   :ident (fn [] [:page/id ::page])
-   :initial-state {::form             {}
-                   ::rates            {}
-                   ::show-form-button {:form-button/id form-toggle-sm}}
-   :query [{::form             (comp/get-query u.f.create-rate/CreateRateForm)}
-           {::rates            (comp/get-query u.index-rates/IndexRates)}
-           {::show-form-button (comp/get-query u.buttons/ShowFormButton)}
-           [::uism/asm-id form-toggle-sm]]
-   :route-segment ["rates"]
+   :ident             (fn [] [:page/id ::page])
+   :initial-state     {::form             {}
+                       ::rates            {}
+                       ::show-form-button {:form-button/id form-toggle-sm}}
+   :query             [{::form (comp/get-query u.f.create-rate/CreateRateForm)}
+                       {::rates (comp/get-query u.index-rates/IndexRates)}
+                       {::show-form-button (comp/get-query u.buttons/ShowFormButton)}
+                       [::uism/asm-id form-toggle-sm]]
+   :route-segment     ["rates"]
    :will-enter
    (fn [app _props]
      (df/load! app :all-rates u.index-rates/IndexRateLine

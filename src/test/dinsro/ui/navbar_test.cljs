@@ -7,7 +7,7 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn navlink-idents
   [kws]
@@ -29,11 +29,11 @@
       {:navlink/id                   sample/navlink-map
        :auth/id                      1
        :navbar/expanded?             true
-       :navbar/auth-data             {:link {:navlink/id   :user
+       :navbar/auth-data             {:link {:navlink/id   "user"
                                              :navlink/name "User"
                                              :navlink/href "/users"}}
        :navbar/navbar-brand          {}
-       :navbar/menu-links            (map sample/navlink-map [:foo :bar])
-       :navbar/top-level-links       (map sample/navlink-map [:accounts :transactions])
-       :navbar/unauthenticated-links (map-links [:login :register])
-       :navbar/dropdown-menu-links   (map sample/navlink-map [:foo :bar :baz])})}))
+       :navbar/menu-links            (map sample/navlink-map ["foo" "bar"])
+       :navbar/top-level-links       (map sample/navlink-map ["accounts" "transactions"])
+       :navbar/unauthenticated-links (map-links ["login" "register"])
+       :navbar/dropdown-menu-links   (map sample/navlink-map ["foo" "bar" "baz"])})}))

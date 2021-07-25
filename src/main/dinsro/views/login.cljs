@@ -5,13 +5,13 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.forms.login :as u.f.login]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc LoginPage
   [_this {::keys [form]}]
-  {:ident (fn [_] [:page/id ::page])
+  {:ident         (fn [_] [:page/id ::page])
    :initial-state {::form {}}
-   :query [{::form (comp/get-query u.f.login/LoginForm)}]
+   :query         [{::form (comp/get-query u.f.login/LoginForm)}]
    :route-segment ["login"]}
   (bulma/page
    (dom/h1 :.title "Login")

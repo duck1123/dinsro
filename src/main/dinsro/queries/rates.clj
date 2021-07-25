@@ -11,7 +11,7 @@
    [dinsro.specs]
    [dinsro.utils :as utils]
    [manifold.stream :as ms]
-   [taoensso.timbre :as timbre]
+   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (def record-limit 75)
@@ -46,7 +46,7 @@
   [::m.rates/params => :db/id]
   (let [tempid          (d/tempid "rate-id")
         prepared-params (-> (prepare-record params)
-                            (assoc ::m.rates/id (utils/uuid))
+                            (assoc ::m.rates/id (str (utils/uuid)))
                             (assoc :db/id tempid)
                             (update ::m.rates/date tick/inst))
         response        (d/transact db/*conn* {:tx-data [prepared-params]})

@@ -2,7 +2,7 @@
   (:require
    [clojure.data.json :as json]
    [puget.printer :as puget]
-   [taoensso.timbre :as timbre])
+   [taoensso.timbre :as log])
   (:import
    io.grpc.stub.StreamObserver
    java.io.File

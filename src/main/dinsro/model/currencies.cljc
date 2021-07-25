@@ -5,7 +5,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]))
 
 (s/def ::id string?)
-(def id ::id)
 (def id-spec
   {:db/ident       ::id
    :db/valueType   :db.type/string
@@ -13,7 +12,6 @@
    :db/unique      :db.unique/identity})
 
 (s/def ::name string?)
-(def name ::name)
 
 (def name-spec
   {:db/ident       ::name
@@ -21,13 +19,10 @@
    :db/cardinality :db.cardinality/one})
 
 (s/def ::params (s/keys :req [::id ::name]))
-(def params ::params)
 
 (s/def ::item-opt (s/keys :opt [::id ::name]))
-(def item-opt ::item-opt)
 
 (s/def ::item (s/keys :req [::id ::name]))
-(def item ::item)
 
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -44,3 +39,8 @@
 (def schema
   [id-spec
    name-spec])
+
+(def attributes [])
+
+#?(:clj
+   (def resolvers []))

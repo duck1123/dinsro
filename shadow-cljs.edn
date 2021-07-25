@@ -17,7 +17,7 @@
                             :external-config {:guardrails {}}}}
    :devtools   {:after-load dinsro.client/refresh
                 :http-port 3691
-                :devtools-url "http://watch-dinsro.docker.localhost:8081"
+                :devtools-url "http://devtools.dinsro.localhost"
                 :preloads   [com.fulcrologic.fulcro.inspect.preload
                              com.fulcrologic.fulcro.inspect.dom-picker-preload
                              com.fulcrologic.fulcro.inspect.websocket-preload]}
@@ -40,7 +40,7 @@
                       :http-host          "0.0.0.0"
                       :http-port          3693
                       :http-resource-root "."
-                      :devtools-url "http://watch-dinsro.docker.localhost:8081"
+                      :devtools-url "http://devtools.dinsro.localhost"
                       :preloads [com.fulcrologic.fulcro.inspect.preload
                                  com.fulcrologic.fulcro.inspect.dom-picker-preload
                                  com.fulcrologic.fulcro.inspect.websocket-preload]}

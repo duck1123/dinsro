@@ -4,21 +4,22 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.queries.categories :as q.categories]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn resolve-categories
   []
-  {:all-categories
-   (map m.categories/ident (q.categories/index-ids))})
+  (let [records (q.categories/index-records)
+        idents  (map m.categories/ident-item records)]
+    {:all-categories idents}))
 
 (defn resolve-category
   [id]
-  (let [record   (q.categories/read-record id)
-        id       (:db/id record)
-        user-eid (get-in record [::m.categories/user :db/id])]
+  (let [eid     (q.categories/find-eid-by-id id)
+        record  (q.categories/read-record eid)
+        user-id (get-in record [::m.categories/user ::m.users/id])]
     (-> record
         (assoc ::m.categories/id id)
-        (assoc ::m.categories/user [[::m.users/username user-eid]]))))
+        (assoc ::m.categories/user [(m.users/ident user-id)]))))
 
 (defn resolve-category-link
   [id]
@@ -33,7 +34,7 @@
   [_env {::m.categories/keys [id]}]
   {::pc/input  #{::m.categories/id}
    ::pc/output [::m.categories/name
-                {::m.categories/user [::m.users/username]}]}
+                {::m.categories/user [::m.users/id]}]}
   (resolve-category id))
 
 (defresolver category-link-resolver

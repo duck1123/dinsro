@@ -14,13 +14,12 @@
    [dinsro.resolvers.accounts :as r.accounts]
    [dinsro.resolvers.categories :as r.categories]
    [dinsro.resolvers.currencies :as r.currencies]
-   [dinsro.resolvers.debug-menu :as r.debug-menu]
    [dinsro.resolvers.navlink :as r.navlink]
    [dinsro.resolvers.rates :as r.rates]
    [dinsro.resolvers.rate-sources :as r.rate-sources]
    [dinsro.resolvers.transactions :as r.transactions]
    [dinsro.resolvers.users :as r.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defresolver auth-resolver
   [_env _props]
@@ -32,7 +31,7 @@
   {::pc/output
    [{:session/current-user
      [:user/username
-      {:user/ref [::m.users/username]}
+      {:user/ref [::m.users/id]}
       :user/valid?]}]}
   {:session/current-user {:user/username identity
                           :user/valid?   (boolean (seq identity))}})
@@ -49,7 +48,6 @@
 (def resolvers
   [auth-resolver
    current-user-resolver
-   index-explorer
    mu.accounts/resolvers
    mu.categories/resolvers
    mu.currencies/resolvers
@@ -61,7 +59,6 @@
    r.accounts/resolvers
    r.categories/resolvers
    r.currencies/resolvers
-   r.debug-menu/resolvers
    r.navlink/resolvers
    r.rates/resolvers
    r.rate-sources/resolvers

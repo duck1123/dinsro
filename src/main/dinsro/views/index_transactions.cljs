@@ -5,7 +5,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.user-transactions :as u.user-transactions]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexTransactionsPage
   [_this {::keys [transactions]}]
@@ -16,10 +16,10 @@
                          ::u.user-transactions/UserTransactions
                          ::u.user-transactions/transactions
                          ::u.user-transactions/transactions]}))
-   :ident (fn [] [:page/id ::page])
+   :ident         (fn [] [:page/id ::page])
    :initial-state {::transactions {}}
-   :query [:page/id
-           {::transactions (comp/get-query u.user-transactions/UserTransactions)}]
+   :query         [:page/id
+                   {::transactions (comp/get-query u.user-transactions/UserTransactions)}]
    :route-segment ["transactions"]}
   (bulma/page
    (u.user-transactions/ui-user-transactions transactions)))

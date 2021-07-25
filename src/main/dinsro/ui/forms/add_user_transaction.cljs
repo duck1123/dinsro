@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddUserTransactionForm
   [_this {::keys [account date value]}]
@@ -14,9 +14,9 @@
            ::date
            ::value]}
   (dom/div
-   (dom/p "value" (str value))
-   (dom/p "account" (str account))
-   (dom/p "date" (str date))
-   (dom/p "submit")))
+    (dom/p "value" (str value))
+    (dom/p "account" (str account))
+    (dom/p "date" (str date))
+    (dom/p "submit")))
 
 (def ui-form (comp/factory AddUserTransactionForm))

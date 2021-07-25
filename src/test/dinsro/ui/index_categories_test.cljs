@@ -8,7 +8,7 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (ws/defcard IndexCategories
   {::wsm/card-height 6
@@ -20,8 +20,8 @@
       {::u.index-categories/categories
        (map
         (fn [category]
-          (let [username (::m.users/username (::m.categories/user category))]
+          (let [user-id (::m.users/id (::m.categories/user category))]
             {::m.categories/id   (::m.categories/id category)
              ::m.categories/name (::m.categories/name category)
-             ::m.categories/user {::m.users/username username}}))
+             ::m.categories/user {::m.users/id user-id}}))
         (map sample/category-map [1 2 3]))})}))

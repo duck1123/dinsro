@@ -9,7 +9,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AccountLink
   [_this {::m.accounts/keys [id name]}]
@@ -26,7 +26,7 @@
 (defsc CategoryLink
   [_this {::m.categories/keys [id name]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   0
+   :initial-state {::m.categories/id   ""
                    ::m.categories/name ""}
    :query         [::m.categories/id ::m.categories/name]}
   (let [path (str "/categories/" id)]
@@ -35,11 +35,13 @@
 (def ui-category-link (comp/factory CategoryLink {:keyfn ::m.categories/id}))
 
 (defsc CurrencyLink
-  [_this {::m.currencies/keys [name]}]
-  {:ident         ::m.currencies/name
-   :initial-state {::m.currencies/name ""}
-   :query         [::m.currencies/name]}
-  (let [path (str "/currencies/" name)]
+  [_this {::m.currencies/keys [id name]}]
+  {:ident         ::m.currencies/id
+   :initial-state {::m.currencies/id   ""
+                   ::m.currencies/name ""}
+   :query         [::m.currencies/name
+                   ::m.currencies/id]}
+  (let [path (str "/currencies/" id)]
     (dom/a {:href path} name)))
 
 (def ui-currency-link (comp/factory CurrencyLink {:keyfn ::m.currencies/name}))
@@ -69,11 +71,11 @@
 (def ui-transaction-link (comp/factory TransactionLink {:keyfn ::m.transactions/id}))
 
 (defsc UserLink
-  [_this {::m.users/keys [username]}]
-  {:ident         ::m.users/username
-   :initial-state {::m.users/username ""}
-   :query         [::m.users/username]}
-  (let [path (str "/users/" username)]
-    (dom/a {:href path} username)))
+  [_this {::m.users/keys [id]}]
+  {:ident         ::m.users/id
+   :initial-state {::m.users/id ""}
+   :query         [::m.users/id]}
+  (let [path (str "/users/" id)]
+    (dom/a {:href path} id)))
 
-(def ui-user-link (comp/factory UserLink {:keyfn ::m.users/username}))
+(def ui-user-link (comp/factory UserLink {:keyfn ::m.users/id}))

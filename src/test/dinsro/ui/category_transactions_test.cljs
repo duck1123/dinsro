@@ -8,10 +8,10 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (ws/defcard CategoryTransactions
-  {::wsm/card-height 15
+  {::wsm/card-height 12
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.category-transactions/CategoryTransactions

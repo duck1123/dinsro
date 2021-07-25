@@ -11,13 +11,18 @@
   {:depends [init install]}
 
   await-app
-  {:task (do
-           (shell "docker-compose logs -f &")
-           (get-docker-status "default_dinsro_1")
-           (shell "docker inspect -f {{.State.Health.Status}} default_dinsro_1")
-           ;; this is what bb is supposed to fix
-           (shell "until [ \"`docker inspect -f {{.State.Health.Status}} default_dinsro_1`\" = \"healthy\" ] || [ \"`docker inspect -f {{.State.Health.Status}} default_dinsro_1`\" = \"exited\" ] ; do sleep 5; done"))}
-
+  {:task
+   (let [prefix "cypress"]
+     (try
+       (loop [i 0]
+         (let [status (get-docker-status (str prefix "_dinsro_1"))]
+           (println (str "status(" i "): "  status))
+           (if (#{"healthy" "exited"} (clojure.string/trim status))
+             (println "done")
+             (do (Thread/sleep 5000)
+                 (recur (inc i))))))
+       (catch Exception ex
+         (println (str "failed: " ex)))))}
 
   build-dev-image
   {:doc  "Build dev image"
@@ -43,6 +48,10 @@
            (shell "rm -rf .shadow-cljs/builds")
            (shell "rm -rf classes/*")
            (shell "rm -rf target"))}
+
+  clean-data
+  {:doc  "Cleans the database"
+   :task (shell "rm -rf data")}
 
   check
   {:doc  "Check sources are formatted correctly"
@@ -81,10 +90,23 @@
    :depends [build-dev-image start-dev]}
 
   dev-bootstrap
-  {:doc  "Start clojurescript watch and main server"
-   :task (do
-           (future (shell "bb watch-cljs"))
-           (shell "bb run"))}
+  {:doc "Start clojurescript watch and main server"
+   :task
+   (let [user      "circleci"
+         group     "circleci"
+         data-path "/var/lib/dinsro"
+         sudo      (fn [cmd] (format "sudo -u %s %s" user cmd))]
+     (shell (format "chown -R %s:%s %s" user group data-path))
+     (shell (format "su %s" user))
+     (shell (sudo "bb dev-bootstrap-user")))}
+
+  dev-bootstrap-user
+  {:task
+   (do
+     (println "=========================================================================================")
+     (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\"")
+     (future (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb watch-cljs\""))
+     (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""))}
 
   display-path
   {:doc  "Display dependency trees for each alias"
@@ -178,12 +200,12 @@
            (shell "karma start --single-run --check=\"ci.js\""))}
 
   test-integration
-  {:task (shell "cypress run")}
+  {:task (shell "npx cypress run")}
 
   watch {:depnds [watch-cljs]}
 
   watch-cljs
-  {:task    (clojure "-M:test:dev:shadow-cljs watch main workspaces")}
+  {:task (clojure "-M:test:dev:shadow-cljs watch main workspaces")}
 
   workspaces
   {:task (clojure "-M:test:dev:shadow-cljs watch workspaces")}}}

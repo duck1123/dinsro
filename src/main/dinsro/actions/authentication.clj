@@ -9,31 +9,31 @@
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
    [dinsro.model.users :as m.users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (>defn authenticate
   [username password]
   [string? string? => (? (s/keys))]
-  (if-let [user (q.users/find-by-username username)]
+  (if-let [user (q.users/find-by-id username)]
     (if-let [password-hash (::m.users/password-hash user)]
       (if (hashers/check password password-hash)
-        (let [username (::m.users/username user)
+        (let [username (::m.users/id user)
               claims   {:user username
                         :exp  (time/plus (time/now) (time/minutes 3600))}]
           {:identity username
            :token    (jwt/sign claims secret)})
         ;; Password does not match
         (do
-          (timbre/info "password not matched")
+          (log/info "password not matched")
           nil))
       (do
         ;; No password, invalid user
-        (timbre/info "no password")
+        (log/info "no password")
         nil))
 
     (do
       ;; User not found
-      (timbre/info "user not found")
+      (log/info "user not found")
       nil)))
 
 (>defn register
@@ -49,6 +49,6 @@
         (let [id (q.users/create-record params)]
           (q.users/read-record id))
         (catch RuntimeException ex
-          (timbre/error ex "User exists")
+          (log/error ex "User exists")
           (throw "User already exists")))
       #_(throw "Invalid"))))

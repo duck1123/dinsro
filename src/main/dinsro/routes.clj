@@ -1,7 +1,7 @@
 (ns dinsro.routes
   (:require
    [dinsro.actions.home :as a.home]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (def view-mappings
   ["/"

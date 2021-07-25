@@ -8,7 +8,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddCurrencyAccountForm
   [this {::keys [name initial-value]}]
@@ -18,24 +18,24 @@
    :query         [::initial-value
                    ::name]}
   (dom/div
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label (tr [:name]) :value (or name "")}
-      {:onChange #(fm/set-string! this ::name :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-number-input
-      {:label (tr [:initial-value]) :value (str (or initial-value 0))}
-      {:onChange #(fm/set-integer! this ::initial-value :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button
-      {}
-      {:onClick
-       (fn []
-         (let [data {::m.accounts/name          name
-                     ::m.accounts/initial-value initial-value}]
-           (comp/transact! this [(mu.accounts/create! data)])))})))))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label (tr [:name]) :value (or name "")}
+       {:onChange #(fm/set-string! this ::name :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-number-input
+       {:label (tr [:initial-value]) :value (str (or initial-value 0))}
+       {:onChange #(fm/set-integer! this ::initial-value :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button
+       {}
+       {:onClick
+        (fn []
+          (let [data {::m.accounts/name          name
+                      ::m.accounts/initial-value initial-value}]
+            (comp/transact! this [(mu.accounts/create! data)])))})))))
 
 (def ui-form (comp/factory AddCurrencyAccountForm))

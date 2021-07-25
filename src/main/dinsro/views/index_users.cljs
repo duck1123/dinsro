@@ -6,7 +6,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-users :as u.index-users]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc IndexUsersPage
   [_this {::keys [users]}]
@@ -17,9 +17,9 @@
                          ::page
                          ::users
                          :dinsro.ui.index-users/items]}))
-   :ident (fn [] [:page/id ::page])
+   :ident         (fn [] [:page/id ::page])
    :initial-state {::users {}}
-   :query [{::users (comp/get-query u.index-users/IndexUsers)}]
+   :query         [{::users (comp/get-query u.index-users/IndexUsers)}]
    :route-segment ["users"]}
   (bulma/page
    (bulma/box

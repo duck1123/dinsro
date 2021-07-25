@@ -4,7 +4,7 @@
    [dinsro.components.config :as config]
    [mount.core :refer [defstate]]
    [ring.util.codec :refer [base64-encode base64-decode]]
-   [taoensso.timbre :as timbre])
+   [taoensso.timbre :as log])
   (:import java.io.FileNotFoundException))
 
 (defn generate-secret
@@ -19,7 +19,7 @@
   []
   (try (base64-decode (slurp ".secret"))
        (catch FileNotFoundException _ex
-         (timbre/warn "No secret found"))))
+         (log/warn "No secret found"))))
 
 (defstate secret
   :start

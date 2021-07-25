@@ -2,7 +2,7 @@
   #?(:cljs (:refer-clojure :exclude [uuid]))
   (:require [com.fulcrologic.guardrails.core :refer [>defn =>]]
             [clojure.spec.alpha :as s]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as log]))
 
 ;; TODO: Find the source of this code
 (>defn uuid
@@ -40,7 +40,7 @@
      (try
        (parse-int v)
        (catch NumberFormatException e
-         (timbre/error e)
+         (log/error e)
          nil))))
 
 #?(:clj
@@ -49,7 +49,7 @@
      (try
        (parse-double v)
        (catch NumberFormatException e
-         (timbre/error e)
+         (log/error e)
          nil))))
 
 #?(:clj

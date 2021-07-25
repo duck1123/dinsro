@@ -7,7 +7,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc CreateRateSourceForm
   [this {::keys [currency currency-id name url]}]
@@ -21,30 +21,30 @@
            ::name
            ::url]}
   (dom/div
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label (tr [:name]) :value name}
-      {:onChange #(fm/set-string! this ::name :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-text-input
-      {:label (tr [:url]) :value url}
-      {:onChange #(fm/set-string! this ::url :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-currency-selector
-      currency
-      {:onChange #(fm/set-integer! this ::currency-id :event %)})))
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button
-      {}
-      {:onClick
-       (fn []
-         (let [data {:name name
-                     :currency-id currency-id
-                     :url url}]
-           (comp/transact! this [(mu.rate-sources/create! data)])))})))))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label (tr [:name]) :value name}
+       {:onChange #(fm/set-string! this ::name :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-text-input
+       {:label (tr [:url]) :value url}
+       {:onChange #(fm/set-string! this ::url :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-currency-selector
+       currency
+       {:onChange #(fm/set-integer! this ::currency-id :event %)})))
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button
+       {}
+       {:onClick
+        (fn []
+          (let [data {:name name
+                      :currency-id currency-id
+                      :url url}]
+            (comp/transact! this [(mu.rate-sources/create! data)])))})))))
 
 (def ui-create-rate-source-form (comp/factory CreateRateSourceForm))

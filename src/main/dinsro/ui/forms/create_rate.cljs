@@ -7,7 +7,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.datepicker :as u.datepicker]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc CreateRateForm
   [this {::keys [datepicker]
@@ -18,9 +18,9 @@
    :query [{::datepicker   (comp/get-query u.datepicker/Datepicker)}
            ::m.rates/name]}
   (dom/div
-   (u.datepicker/ui-datepicker datepicker)
-   (u.inputs/ui-text-input
-    {:label (tr [:name]) :value name}
-    {:onChange #(fm/set-string! this ::m.rates/name :event %)})))
+    (u.datepicker/ui-datepicker datepicker)
+    (u.inputs/ui-text-input
+     {:label (tr [:name]) :value name}
+     {:onChange #(fm/set-string! this ::m.rates/name :event %)})))
 
 (def ui-create-rate-form (comp/factory CreateRateForm))

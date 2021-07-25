@@ -6,13 +6,13 @@
    [dinsro.translations :refer [tr]]
    [reagent.core :as r]
    [reagent.dom :as rd]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defn mount-component
   [comp]
-  (let [opts (r/props comp)
-        e (rd/dom-node comp)
-        js-opts (clj->js (dissoc opts :on-select))
+  (let [opts     (r/props comp)
+        e        (rd/dom-node comp)
+        js-opts  (clj->js (dissoc opts :on-select))
         instance (BulmaCalendar. e js-opts)]
     (when-let [on-select (:on-select opts)]
       (.on instance "select"
@@ -25,22 +25,21 @@
   {:componentDidMount
    (fn [this]
      (if-let [e (js/ReactDOM.findDOMNode this)]
-       (let [props (comp/props this)
-             js-opts (clj->js (dissoc props :on-select))
+       (let [props    (comp/props this)
+             js-opts  (clj->js (dissoc props :on-select))
              instance (BulmaCalendar. (.querySelector e "input") js-opts)]
          (when-let [on-select (:on-select props)]
            (.on instance "select"
                 (fn [datepicker]
                   (let [value (.toISOString (js/Date. (.. datepicker -data value)))]
                     (on-select value))))))
-       (timbre/warn "Datepicker element was nil")))
+       (log/warn "Datepicker element was nil")))
    :initial-state {}
-   :query []}
-  (dom/div
-   (dom/input
-    :.input
-    {:onSelect (fn [_] (timbre/info "on select"))
-     :onChange (fn [_] (timbre/info "changed"))
-     :value ""})))
+   :query         []}
+  (dom/div {}
+    (dom/input :.input
+      {:onSelect (fn [_] (log/info "on select"))
+       :onChange (fn [_] (log/info "changed"))
+       :value    ""})))
 
 (def ui-datepicker (comp/factory Datepicker))

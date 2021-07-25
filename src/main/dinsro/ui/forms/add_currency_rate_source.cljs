@@ -8,7 +8,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (defsc AddCurrencyRateSourceForm
   [this {::keys [name submit]}]
@@ -17,16 +17,16 @@
    :query [::name
            {::submit (comp/get-query u.inputs/PrimaryButton)}]}
   (dom/div
-   (u.inputs/ui-text-input
-    {:label (tr [:name]) :value name}
-    {:onChange #(fm/set-string! this ::name :event %)})
-   (bulma/field
-    (bulma/control
-     (u.inputs/ui-primary-button
-      submit
-      {:onClick
-       (fn [_]
-         (let [data {::m.rate-sources/name name}]
-           (comp/transact! this [(mutations/submit data)])))})))))
+    (u.inputs/ui-text-input
+     {:label (tr [:name]) :value name}
+     {:onChange #(fm/set-string! this ::name :event %)})
+    (bulma/field
+     (bulma/control
+      (u.inputs/ui-primary-button
+       submit
+       {:onClick
+        (fn [_]
+          (let [data {::m.rate-sources/name name}]
+            (comp/transact! this [(mutations/submit data)])))})))))
 
 (def ui-form (comp/factory AddCurrencyRateSourceForm))

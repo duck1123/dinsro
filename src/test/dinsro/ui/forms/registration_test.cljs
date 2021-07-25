@@ -6,7 +6,7 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as timbre]))
+   [taoensso.timbre :as log]))
 
 (ws/defcard RegistrationForm
   {::wsm/card-width  2
@@ -14,7 +14,7 @@
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/initial-state
     (fn []
-      {::u.f.registration/username         (ds/gen-key ::m.users/username)
+      {::u.f.registration/username         (ds/gen-key ::m.users/id)
        ::u.f.registration/password         (ds/gen-key ::m.users/password)
        ::u.f.registration/confirm-password (ds/gen-key ::m.users/password)})
     ::ct.fulcro3/root u.f.registration/RegistrationForm}))
