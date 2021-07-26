@@ -25,7 +25,7 @@
                    {::m.categories/link (comp/get-query u.links/CategoryLink)}
                    ::m.categories/name]}
   (dom/tr {}
-    (dom/td (u.links/ui-category-link (first link)))
+    (dom/td (u.links/ui-category-link link))
     (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))

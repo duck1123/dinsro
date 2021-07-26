@@ -25,8 +25,8 @@
                    ::m.categories/name
                    {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
-    (dom/td (u.links/ui-category-link (first link)))
-    (dom/td (u.links/ui-user-link (first user)))
+    (dom/td (u.links/ui-category-link link))
+    (dom/td (u.links/ui-user-link user))
     (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine {:keyfn ::m.categories/id}))

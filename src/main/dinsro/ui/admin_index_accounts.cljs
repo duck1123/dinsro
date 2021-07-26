@@ -27,9 +27,9 @@
                    ::m.accounts/initial-value
                    {::m.accounts/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
-    (dom/td {} (u.links/ui-account-link (first link)))
-    (dom/td {} (u.links/ui-user-link (first user)))
-    (dom/td {} (u.links/ui-currency-link (first currency)))
+    (dom/td {} (u.links/ui-account-link link))
+    (dom/td {} (u.links/ui-user-link user))
+    (dom/td {} (u.links/ui-currency-link currency))
     (dom/td {} initial-value)
     (dom/td {} (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 

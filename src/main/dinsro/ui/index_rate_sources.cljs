@@ -29,7 +29,7 @@
   (dom/tr {}
     (dom/td (u.links/ui-rate-source-link rate-source))
     (dom/td url)
-    (dom/td (u.links/ui-currency-link (first currency)))
+    (dom/td (u.links/ui-currency-link currency))
     (dom/td (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id}))))
 
 (def ui-index-rate-source-line (comp/factory IndexRateSourceLine {:keyfn ::m.rate-sources/id}))
