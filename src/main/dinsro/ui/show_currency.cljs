@@ -15,7 +15,7 @@
    :ident         ::m.currencies/id
    :initial-state {::m.currencies/id   ""
                    ::m.currencies/name ""}}
-  (dom/div
+  (dom/div {}
     (dom/p name)
     (dom/p id)
     (u.buttons/ui-delete-currency-button {::m.currencies/id id})))

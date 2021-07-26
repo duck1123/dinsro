@@ -16,14 +16,14 @@
 (defsc UserCurrencies
   [this {::keys [currencies form toggle-button]}]
   {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar UserCurrencies})
-   :ident (fn [_] [:component/id ::UserCurrencies])
-   :initial-state {::currencies    {}
-                   ::form          {}
-                   ::toggle-button {:form-button/id form-toggle-sm}}
-   :query [{::currencies    (comp/get-query u.index-currencies/IndexCurrencies)}
-           {::form          (comp/get-query u.f.create-currency/CreateCurrencyForm)}
-           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-           [::uism/asm-id form-toggle-sm]]}
+   :ident             (fn [_] [:component/id ::UserCurrencies])
+   :initial-state     {::currencies    {}
+                       ::form          {}
+                       ::toggle-button {:form-button/id form-toggle-sm}}
+   :query             [{::currencies (comp/get-query u.index-currencies/IndexCurrencies)}
+                       {::form (comp/get-query u.f.create-currency/CreateCurrencyForm)}
+                       {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                       [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (bulma/box
      (dom/h1

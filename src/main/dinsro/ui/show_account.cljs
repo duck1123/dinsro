@@ -12,18 +12,18 @@
 
 (defsc ShowAccount
   [_this {::m.accounts/keys [account currency id name user]}]
-  {:ident ::m.accounts/id
+  {:ident         ::m.accounts/id
    :initial-state {::m.accounts/account  {}
                    ::m.accounts/currency {}
                    ::m.accounts/name     ""
                    ::m.accounts/user     {}}
-   :query [{::m.accounts/account  (comp/get-query u.links/AccountLink)}
-           {::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
-           ::m.accounts/id
-           ::m.accounts/name
-           {::m.accounts/user     (comp/get-query u.links/UserLink)}
-           :user-link-data]}
-  (dom/div
+   :query         [{::m.accounts/account (comp/get-query u.links/AccountLink)}
+                   {::m.accounts/currency (comp/get-query u.links/CurrencyLink)}
+                   ::m.accounts/id
+                   ::m.accounts/name
+                   {::m.accounts/user (comp/get-query u.links/UserLink)}
+                   :user-link-data]}
+  (dom/div {}
     (dom/h3 name)
     (dom/p (u.links/ui-account-link account))
     (dom/p
