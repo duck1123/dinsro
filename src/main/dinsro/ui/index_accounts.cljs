@@ -13,7 +13,7 @@
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value name user]}]
   {:initial-state {::m.accounts/currency      {}
-                   ::m.accounts/id            1
+                   ::m.accounts/id            nil
                    ::m.accounts/initial-value 0
                    ::m.accounts/name          ""
                    ::m.accounts/user          {}}

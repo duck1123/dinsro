@@ -13,7 +13,7 @@
   [_this {::m.currencies/keys [id name]}]
   {:query         [::m.currencies/id ::m.currencies/name]
    :ident         ::m.currencies/id
-   :initial-state {::m.currencies/id   ""
+   :initial-state {::m.currencies/id   nil
                    ::m.currencies/name ""}}
   (dom/div {}
     (dom/p name)

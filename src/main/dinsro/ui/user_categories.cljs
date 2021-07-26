@@ -17,7 +17,7 @@
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [id link]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
+   :initial-state {::m.categories/id   nil
                    ::m.categories/name ""
                    ::m.categories/link {}}
    :query         [{::button-data (comp/get-query u.buttons/DeleteCategoryButton)}

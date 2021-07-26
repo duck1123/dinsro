@@ -87,8 +87,8 @@
 (defsc CurrencySelectorOption
   [_this {::m.currencies/keys [id name]}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/id   ""
-                   ::m.currencies/name "sats"}
+   :initial-state {::m.currencies/id   nil
+                   ::m.currencies/name ""}
    :query         [::m.currencies/id ::m.currencies/name]}
   (dom/option {:value id} name))
 

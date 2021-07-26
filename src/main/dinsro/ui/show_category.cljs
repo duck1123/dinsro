@@ -16,7 +16,7 @@
                    ::m.categories/name
                    {::m.categories/user (comp/get-query u.links/UserLink)}]
    :ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
+   :initial-state {::m.categories/id   nil
                    ::m.categories/user []
                    ::m.categories/name ""}}
   (dom/div {}

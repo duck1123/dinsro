@@ -17,7 +17,7 @@
 (defsc AdminIndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value link user]}]
   {:initial-state {::m.accounts/currency      {}
-                   ::m.accounts/id            0
+                   ::m.accounts/id            nil
                    ::m.accounts/initial-value 0
                    ::m.accounts/link          {}
                    ::m.accounts/user          {}}

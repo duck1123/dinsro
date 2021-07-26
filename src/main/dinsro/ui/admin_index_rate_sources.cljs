@@ -21,7 +21,7 @@
    :initial-state {::rate-source             {::m.rate-sources/id 1}
                    ::m.rate-sources/name     ""
                    ::m.rate-sources/currency {}
-                   ::m.rate-sources/id       0
+                   ::m.rate-sources/id       nil
                    ::m.rate-sources/url      ""}
    :query         [{::rate-source (comp/get-query u.links/RateSourceLink)}
                    {::m.rate-sources/currency (comp/get-query u.links/CurrencyLink)}

@@ -18,7 +18,7 @@
   [this {::keys [form toggle-button transactions]}]
   {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar RateSourceTransactions})
    :ident             (fn [_] [:component/id ::RateSourceTransactions])
-   :initial-state     {::m.rate-sources/id 0
+   :initial-state     {::m.rate-sources/id nil
                        ::form              {}
                        ::toggle-button     {:form-button/id form-toggle-sm}
                        ::transactions      {}}

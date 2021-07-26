@@ -13,7 +13,7 @@
   [_this {::m.rate-sources/keys [id name]}]
   {:query         [::m.rate-sources/id ::m.rate-sources/name]
    :ident         ::m.rate-sources/id
-   :initial-state {::m.rate-sources/id   0
+   :initial-state {::m.rate-sources/id   nil
                    ::m.rate-sources/name ""}}
   (dom/div {}
     (dom/p name)

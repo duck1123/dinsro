@@ -17,7 +17,7 @@
 (defsc AdminIndexCategoryLine
   [_this {::m.categories/keys [id user link]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
+   :initial-state {::m.categories/id   nil
                    ::m.categories/link []
                    ::m.categories/user []}
    :query         [::m.categories/id

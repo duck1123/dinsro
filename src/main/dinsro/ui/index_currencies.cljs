@@ -13,7 +13,7 @@
 (defsc IndexCurrencyLine
   [_this {::m.currencies/keys [id link]}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/id   ""
+   :initial-state {::m.currencies/id   nil
                    ::m.currencies/link []}
    :query         [::m.currencies/id
                    {::m.currencies/link (comp/get-query u.links/ui-currency-link)}]}

@@ -28,7 +28,7 @@
                                       ::m.currencies/name "foo"}]
          ::m.accounts/link          [{::m.accounts/id   1
                                       ::m.accounts/name "Account Name"}]
-         ::m.accounts/id            1
+         ::m.accounts/id            nil
          ::m.accounts/initial-value 42
          ::m.accounts/user          [{::m.users/id "userid"}]}]
 
