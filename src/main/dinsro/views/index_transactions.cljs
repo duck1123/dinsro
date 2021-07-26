@@ -23,6 +23,7 @@
                    {::transactions (comp/get-query u.user-transactions/UserTransactions)}]
    :route-segment ["transactions"]}
   (bulma/page
+   {:className "index-transactions-page"}
    (when (::m.users/id transactions)
      (u.user-transactions/ui-user-transactions transactions))))
 

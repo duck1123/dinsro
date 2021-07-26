@@ -32,6 +32,18 @@
                 {::m.accounts/transactions []})
         :cljs (comment id)))})
 
+(defattr category-transactions ::m.categories/transactions :ref
+  {ao/cardinality :many
+   ao/pc-input    #{::m.categories/id}
+   ao/pc-output   [{::m.categories/transactions [::m.transactions/id]}]
+   ao/pc-resolve
+   (fn [_env {::m.categories/keys [id]}]
+     (if id
+       #?(:clj  (let [transaction-ids (q.transactions/find-by-category id)]
+                  {::m.categories/transactions (map (fn [id] {::m.categories/id id}) transaction-ids)})
+          :cljs {::m.categories/transactions []})
+       {::m.categories/transactions []}))})
+
 (defattr currency-accounts ::m.currencies/accounts :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.currencies/id}
@@ -95,6 +107,7 @@
 
 (def attributes
   [account-transactions
+   category-transactions
    currency-accounts
    currency-transactions
    user-accounts

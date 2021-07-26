@@ -54,7 +54,6 @@
         (u.buttons/ui-delete-user-button {::m.users/id id})))
      (u.user-accounts/ui-user-accounts user-accounts)
      (u.user-categories/ui-user-categories user-categories)
-     (dom/pre (str user-categories))
      (u.user-transactions/ui-user-transactions user-transactions))
     (dom/p {} "No id")))
 

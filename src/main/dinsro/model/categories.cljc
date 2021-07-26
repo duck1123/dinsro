@@ -58,6 +58,13 @@
    ao/pc-output   [{::link [::id]}]
    ao/pc-resolve  (fn [_env params] {::link params})})
 
-(def attributes [all-categories id link name user])
+(defattr category-transactions ::category-transactions :ref
+  {ao/cardinality :one
+   ao/target      ::id
+   ao/pc-input    #{::id}
+   ao/pc-output   [{::category-transactions [::id]}]
+   ao/pc-resolve  (fn [_env params] {::category-transactions params})})
+
+(def attributes [all-categories id link name user category-transactions])
 
 #?(:clj (def resolvers []))

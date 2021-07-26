@@ -53,11 +53,19 @@
   [this {::keys         [form toggle-button]
          ::m.users/keys [id categories]}]
   {:componentDidMount (fn [this]
-                        (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar this}))
+                        (uism/begin! this machines/hideable
+                                     form-toggle-sm
+                                     {:actor/navbar (uism/with-actor-class [::m.users/id :none]
+                                                      UserCategories)}))
    :ident             ::m.users/id
    :initial-state     {::m.users/categories {}
                        ::form               {}
                        ::toggle-button      {:form-button/id form-toggle-sm}}
+   :pre-merge         (fn [{:keys [current-normalized data-tree]}]
+                        (let [defaults    {::form          (comp/get-initial-state u.f.add-user-category/AddUserCategoryForm)
+                                           ::toggle-button {:form-button/id form-toggle-sm}}
+                              merged-data (merge current-normalized data-tree defaults)]
+                          merged-data))
    :query             [::m.users/id
                        {::m.users/categories (comp/get-query IndexCategoryLine)}
                        {::form (comp/get-query u.f.add-user-category/AddUserCategoryForm)}
@@ -68,9 +76,9 @@
       (bulma/box
        (dom/h2 {}
          (tr [:categories])
-         (u.buttons/ui-show-form-button toggle-button))
+         (when toggle-button (u.buttons/ui-show-form-button toggle-button)))
        (when shown?
-         (u.f.add-user-category/ui-form form))
+         (when form (u.f.add-user-category/ui-form form)))
        (dom/hr)
        (if (seq categories)
          (dom/table :.table

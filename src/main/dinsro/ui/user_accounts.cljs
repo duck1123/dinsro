@@ -49,17 +49,25 @@
          ::keys         [form toggle-button]}]
   {:componentDidMount
    (fn [this]
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar this}))
-   :ident         ::m.users/id
-   :initial-state {::m.users/accounts []
-                   ::m.users/id       nil
-                   ::form             {}
-                   ::toggle-button    {:form-button/id form-toggle-sm}}
-   :query         [::m.users/id
-                   {::m.users/accounts (comp/get-query IndexAccountLine)}
-                   {::form (comp/get-query u.f.add-user-account/AddUserAccountForm)}
-                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                   [::uism/asm-id form-toggle-sm]]}
+     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar
+                                                         (uism/with-actor-class [::m.users/id :none]
+                                                           UserAccounts)}))
+   :ident              ::m.users/id
+   :initial-state      (fn [_]
+                         {::m.users/accounts []
+                          ::m.users/id       nil
+                          ::form             (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
+                          ::toggle-button    {:form-button/id form-toggle-sm}})
+   :pre-merge          (fn [{:keys [current-normalized data-tree]}]
+                         (let [defaults    {::form          (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
+                                            ::toggle-button {:form-button/id form-toggle-sm}}
+                               merged-data (merge current-normalized data-tree defaults)]
+                           merged-data))
+   :query              [::m.users/id
+                        {::m.users/accounts (comp/get-query IndexAccountLine)}
+                        {::form (comp/get-query u.f.add-user-account/AddUserAccountForm)}
+                        {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                        [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
     (when id
       (bulma/box

@@ -30,4 +30,4 @@
        (df/load app [::m.users/id (new-uuid id)] u.show-user/ShowUserFull
                 {:target [:page/id ::page ::m.users/link]}))
      (dr/route-immediate (comp/get-ident ShowUserPage {})))}
-  (when link (u.show-user/ui-show-user-full link)))
+  (when (::m.users/id link) (u.show-user/ui-show-user-full link)))

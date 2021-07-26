@@ -51,7 +51,8 @@
          ::keys         [form toggle-button]}]
   {:componentDidMount
    (fn [this]
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar this}))
+     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar (uism/with-actor-class [::m.users/id :none]
+                                                                         UserTransactions)}))
    :ident ::m.users/id
    :initial-state
    (fn [_]
@@ -63,7 +64,7 @@
    (fn [{:keys [current-normalized data-tree]}]
      (let [defaults    {::form          (comp/get-initial-state u.f.add-user-transaction/AddUserTransactionForm)
                         ::toggle-button {:form-button/id form-toggle-sm}}
-           merged-data (merge defaults current-normalized data-tree)]
+           merged-data (merge current-normalized data-tree defaults)]
        merged-data))
    :query [::m.users/id
            {::form (comp/get-query u.f.add-user-transaction/AddUserTransactionForm)}
@@ -73,7 +74,9 @@
   (if id
     (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
       (bulma/box
-       (dom/h2 {} (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
+       (dom/h2 {}
+         (tr [:transactions])
+         (when toggle-button (u.buttons/ui-show-form-button toggle-button)))
        (when shown?
          (when form (u.f.add-user-transaction/ui-form form)))
        (dom/hr {})

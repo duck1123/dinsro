@@ -5,6 +5,8 @@
    [crux.api :as crux]
    [dinsro.components.crux :as c.crux]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
@@ -35,9 +37,18 @@
   (let [db (c.crux/main-db)]
     (map first (crux/q db find-eid-by-account-query id))))
 
+(>defn find-by-category
+  [id]
+  [::m.categories/id => (s/coll-of ::m.transactions/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?transaction-id]
+                :in    [?category-id]
+                :where [[?transaction-id ::m.transactions/category ?category-id]]}]
+    (map first (crux/q db query id))))
+
 (>defn find-by-currency
   [id]
-  [::m.users/id => (s/coll-of ::m.transactions/id)]
+  [::m.currencies/id => (s/coll-of ::m.transactions/id)]
   (let [db    (c.crux/main-db)
         query '{:find  [?transaction-id]
                 :in    [?user-id]
