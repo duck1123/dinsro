@@ -48,7 +48,7 @@
   [user-id]
   [::m.users/id => (s/coll-of ::m.categories/id)]
   (let [db    (c.crux/main-db)
-        query '{:find  [?catgory-eid]
+        query '{:find  [?category-eid]
                 :in    [?user-id]
                 :where [[?category-eid ::m.categories/user ?user-id]]}]
     (map first (crux/q db query user-id))))

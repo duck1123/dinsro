@@ -42,24 +42,29 @@
       :not-acceptable
       (constantly (error-page {:status 406, :title "406 - Not acceptable"}))}))))
 
+(def links
+  [["accounts"     "Accounts"     "/accounts"     :dinsro.views.index-accounts/IndexAccountsPage]
+   ["admin"        "Admin"        "/admin"        :dinsro.views.admin/AdminPage]
+   ["categories"   "Categories"   "/categories"   :dinsro.views.index-categories/IndexCategoriesPage]
+   ["currencies"   "Currencies"   "/currencies"   :dinsro.views.index-currencies/IndexCurrenciesPage]
+   ["home"         "Home"         "/"             :dinsro.views.home/HomePage]
+   ["login"        "Login"        "/login"        :dinsro.views.login/LoginPage]
+   ["rates"        "Rates"        "/rates"        :dinsro.views.index-rates/IndexRatesPage]
+   ["rate-sources" "Rate Sources" "/rate-sources" :dinsro.views.index-rate-sources/IndexRateSourcesPage]
+   ["registration" "Registration" "/register"     :dinsro.views.registration/RegistrationPage]
+   ["settings"     "Settings"     "/settings"     :dinsro.views.settings/SettingsPage]
+   ["transactions" "Transactions" "/transactions" :dinsro.views.index-transactions/IndexTransactionsPage]
+   ["users"        "User"         "/users"        :dinsro.views.index-users/IndexUsersPage]])
+
 (defn create-navlinks!
   []
   (let [node (:main c.crux/crux-nodes)
         add  (fnil conj [])
-        data
-        (-> {}
-            (update :navlinks add (seed/new-navlink "accounts"     "Accounts"     "/accounts"))
-            (update :navlinks add (seed/new-navlink "admin"        "Admin"        "/admin"))
-            (update :navlinks add (seed/new-navlink "categories"   "Categories"   "/categories"))
-            (update :navlinks add (seed/new-navlink "currencies"   "Currencies"   "/currencies"))
-            (update :navlinks add (seed/new-navlink "home"         "Home"         "/"))
-            (update :navlinks add (seed/new-navlink "login"        "Login"        "/login"))
-            (update :navlinks add (seed/new-navlink "rates"        "Rates"        "/rates"))
-            (update :navlinks add (seed/new-navlink "rate-sources" "Rate Sources" "/rate-sources"))
-            (update :navlinks add (seed/new-navlink "registration" "Registration" "/register"))
-            (update :navlinks add (seed/new-navlink "settings"     "Settings"     "/settings"))
-            (update :navlinks add (seed/new-navlink "transactions" "Transactions" "/transactions"))
-            (update :navlinks add (seed/new-navlink "users"        "User"         "/users")))
+        data (reduce
+              (fn [data link]
+                (let [[id name href target] link]
+                  (update data :navlinks add (seed/new-navlink id name href target))))
+              {} links)
         txes (->> data
                   vals
                   flatten

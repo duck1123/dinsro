@@ -56,9 +56,10 @@
    (>defn do-login
      [session username password]
      [any? ::m.users/name ::m.users/password => ::login-response]
-     (if-let [_user (q.users/find-eid-by-name username)]
+     (if-let [user-id (q.users/find-eid-by-name username)]
        (if (= password "hunter2")
          (let [response {:user/username username
+                         :session/current-user-ref {::m.users/id user-id}
                          :user/valid?   true}
                handler  (fn [ring-response]
                           (assoc ring-response :session (assoc session :identity username)))]
@@ -72,7 +73,9 @@
    (pc/defmutation login
      [env {:user/keys [username password]}]
      {::pc/params #{:user/username :user/password}
-      ::pc/output [:user/username :user/valid?]}
+      ::pc/output [:user/username
+                   :user/valid?
+                   {:session/current-user-ref [::m.users/id]}]}
      (let [{:keys [request]} env
            {:keys [session]} request]
        (do-login session username password)))
@@ -85,11 +88,15 @@
        (log/info "error action"))
 
      (ok-action [{:keys [state] :as env}]
-       (log/infof "ok")
-       (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
+       (let [body (get-in env [:result :body])
+             {:user/keys [valid?]
+              :session/keys [current-user-ref]} (get body `login)]
          (when-not valid?
-           (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
-                                   "Can't log in")))))
+           (-> state
+               (swap! #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
+                                 "Can't log in"))
+               (swap! #(assoc-in % [:component/id :dinsro.ui.navbar/Navbar :session/current-user-ref]
+                                 current-user-ref))))))
 
      (remote [env]
        (-> env
@@ -109,7 +116,8 @@
    :cljs
    (fm/defmutation logout [_]
      (action [{:keys [state]}]
-       (log/info "busy"))
+       (swap! state #(assoc-in % [:component/id :dinsro.ui.navbar/Navbar :session/current-user-ref]
+                               nil)))
 
      (error-action [{:keys [state]}]
        (log/info "error action"))
