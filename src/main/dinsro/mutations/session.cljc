@@ -20,12 +20,11 @@
 
 #?(:cljs
    (fm/defmutation finish-login [_]
-     (action
-      [{:keys [_app state]}]
-      (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
-        (when-not logged-in?
-          (routing/route-to! "/login"))
-        (swap! state #(assoc % :root/ready? true))))))
+     (action [{:keys [_app state]}]
+       (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
+         (when-not logged-in?
+           (routing/route-to! "/login"))
+         (swap! state #(assoc % :root/ready? true))))))
 
 #?(:clj
    (>defn do-register
@@ -79,27 +78,23 @@
        (do-login session username password)))
    :cljs
    (fm/defmutation login [_]
-     (action
-      [{:keys [state]}]
-      (log/info "busy"))
+     (action [{:keys [state]}]
+       (log/info "busy"))
 
-     (error-action
-      [{:keys [state]}]
-      (log/info "error action"))
+     (error-action [{:keys [state]}]
+       (log/info "error action"))
 
-     (ok-action
-      [{:keys [state] :as env}]
-      (log/infof "ok")
-      (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
-        (when-not valid?
-          (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
-                                  "Can't log in")))))
+     (ok-action [{:keys [state] :as env}]
+       (log/infof "ok")
+       (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
+         (when-not valid?
+           (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
+                                   "Can't log in")))))
 
-     (remote
-      [env]
-      (-> env
-          (fm/returning CurrentUser)
-          (fm/with-target [:session/current-user])))))
+     (remote [env]
+       (-> env
+           (fm/returning CurrentUser)
+           (fm/with-target [:session/current-user])))))
 
 #?(:clj
    (pc/defmutation logout
@@ -113,21 +108,17 @@
         (assoc ring-response :session (assoc session :identity nil)))))
    :cljs
    (fm/defmutation logout [_]
-     (action
-      [{:keys [state]}]
-      (log/info "busy"))
+     (action [{:keys [state]}]
+       (log/info "busy"))
 
-     (error-action
-      [{:keys [state]}]
-      (log/info "error action"))
+     (error-action [{:keys [state]}]
+       (log/info "error action"))
 
-     (ok-action
-      [{:keys [state] :as env}]
-      (log/infof "ok"))
+     (ok-action [{:keys [state] :as env}]
+       (log/infof "ok"))
 
-     (remote
-      [env]
-      (fm/with-target env [:session/current-user]))))
+     (remote [env]
+       (fm/with-target env [:session/current-user]))))
 
 #?(:clj
    (def resolvers [login logout register]))

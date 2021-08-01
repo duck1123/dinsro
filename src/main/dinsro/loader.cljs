@@ -8,8 +8,7 @@
 
 (defmutation init
   [_]
-  (action
-   [{:keys [state]}]
-   (df/load! da/app :session/current-user mu.session/CurrentUser
-             {:post-mutation `mu.session/finish-login})
-   {::loaded true}))
+  (action [{:keys [state]}]
+    (df/load! da/app :session/current-user mu.session/CurrentUser
+              {:post-mutation `mu.session/finish-login})
+    {::loaded true}))

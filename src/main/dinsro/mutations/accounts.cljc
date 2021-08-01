@@ -18,8 +18,8 @@
                    ::m.accounts/user          user-id}]
        (if-let [eid (q.accounts/create-record params)]
          (when-let [record (q.accounts/read-record eid)]
-           {:status :success
-            :created-item  (m.accounts/ident-item record)})
+           {:status       :success
+            :created-item (m.accounts/ident-item record)})
          {:status :failure}))))
 
 #?(:clj
