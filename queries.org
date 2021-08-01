@@ -1,0 +1,13 @@
+* Currency accounts
+** accounts for all currencies
+#+BEGIN_SRC clojure
+  [{:dinsro.model.currencies/all-currencies
+    [:dinsro.model.currencies/name
+     {:dinsro.model.currencies/accounts [:dinsro.model.accounts/name]}]}]
+#+END_SRC
+
+** just ids
+#+begin_src clojure
+  [{:dinsro.model.currencies/all-currencies
+    [:dinsro.model.currencies/name :dinsro.model.currencies/accounts]}]
+#+end_src

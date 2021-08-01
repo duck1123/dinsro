@@ -20,20 +20,19 @@
 
 #?(:cljs
    (fm/defmutation finish-login [_]
-     (action
-      [{:keys [_app state]}]
-      (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
-        (when-not logged-in?
-          (routing/route-to! "/login"))
-        (swap! state #(assoc % :root/ready? true))))))
+     (action [{:keys [_app state]}]
+       (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
+         (when-not logged-in?
+           (routing/route-to! "/login"))
+         (swap! state #(assoc % :root/ready? true))))))
 
 #?(:clj
    (>defn do-register
-     [id password]
-     [::m.users/id ::m.users/password => (s/keys)]
-     (let [params #::m.users{:password password :id id}]
+     [name password]
+     [::m.users/name ::m.users/password => (s/keys)]
+     (let [params #::m.users{:password password :name name}]
        (try
-         (a.authentication/register (log/spy :info params))
+         (a.authentication/register params)
          (catch Exception ex
            ;; (log/error ex "error")
            {::error true
@@ -51,6 +50,24 @@
      (action [_env] (log/info "register"))
      (remote [_env] true)))
 
+(s/def ::login-response (s/keys))
+
+#?(:clj
+   (>defn do-login
+     [session username password]
+     [any? ::m.users/name ::m.users/password => ::login-response]
+     (if-let [_user (q.users/find-eid-by-name username)]
+       (if (= password "hunter2")
+         (let [response {:user/username username
+                         :user/valid?   true}
+               handler  (fn [ring-response]
+                          (assoc ring-response :session (assoc session :identity username)))]
+           (augment-response response handler))
+         {:user/username nil
+          :user/valid?   false})
+       {:user/username nil
+        :user/valid?   false})))
+
 #?(:clj
    (pc/defmutation login
      [env {:user/keys [username password]}]
@@ -58,40 +75,26 @@
       ::pc/output [:user/username :user/valid?]}
      (let [{:keys [request]} env
            {:keys [session]} request]
-       (if-let [_user (q.users/find-by-id username)]
-         (if (= password "hunter2")
-           (let [response {:user/username username
-                           :user/valid?   true}
-                 handler  (fn [ring-response]
-                            (assoc ring-response :session (assoc session :identity username)))]
-             (augment-response response handler))
-           {:user/username nil
-            :user/valid?   false})
-         {:user/username nil
-          :user/valid?   false})))
+       (do-login session username password)))
    :cljs
    (fm/defmutation login [_]
-     (action
-      [{:keys [state]}]
-      (log/info "busy"))
+     (action [{:keys [state]}]
+       (log/info "busy"))
 
-     (error-action
-      [{:keys [state]}]
-      (log/info "error action"))
+     (error-action [{:keys [state]}]
+       (log/info "error action"))
 
-     (ok-action
-      [{:keys [state] :as env}]
-      (log/infof "ok")
-      (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
-        (when-not valid?
-          (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
-                                  "Can't log in")))))
+     (ok-action [{:keys [state] :as env}]
+       (log/infof "ok")
+       (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
+         (when-not valid?
+           (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
+                                   "Can't log in")))))
 
-     (remote
-      [env]
-      (-> env
-          (fm/returning CurrentUser)
-          (fm/with-target [:session/current-user])))))
+     (remote [env]
+       (-> env
+           (fm/returning CurrentUser)
+           (fm/with-target [:session/current-user])))))
 
 #?(:clj
    (pc/defmutation logout
@@ -105,21 +108,17 @@
         (assoc ring-response :session (assoc session :identity nil)))))
    :cljs
    (fm/defmutation logout [_]
-     (action
-      [{:keys [state]}]
-      (log/info "busy"))
+     (action [{:keys [state]}]
+       (log/info "busy"))
 
-     (error-action
-      [{:keys [state]}]
-      (log/info "error action"))
+     (error-action [{:keys [state]}]
+       (log/info "error action"))
 
-     (ok-action
-      [{:keys [state] :as env}]
-      (log/infof "ok"))
+     (ok-action [{:keys [state] :as env}]
+       (log/infof "ok"))
 
-     (remote
-      [env]
-      (fm/with-target env [:session/current-user]))))
+     (remote [env]
+       (fm/with-target env [:session/current-user]))))
 
 #?(:clj
    (def resolvers [login logout register]))

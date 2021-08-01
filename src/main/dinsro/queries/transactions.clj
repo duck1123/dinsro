@@ -2,17 +2,22 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [datahike.api :as d]
-   [dinsro.components.datahike :as db]
+   [crux.api :as crux]
+   [dinsro.components.crux :as c.crux]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.queries.accounts :as q.accounts]
+   [dinsro.model.users :as m.users]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (def record-limit 75)
+
+(def find-eid-by-account-query
+  '{:find  [?eid]
+    :in    [?account-id]
+    :where [[?eid ::m.transactions/account ?account-id]]})
 
 (def find-eid-by-id-query
   '[:find  ?eid
@@ -24,44 +29,72 @@
     :in    $ ?eid
     :where [?eid ::m.transactions/id ?id]])
 
+(>defn find-by-account
+  [id]
+  [::m.accounts/id => (s/coll-of ::m.transactions/id)]
+  (let [db (c.crux/main-db)]
+    (map first (crux/q db find-eid-by-account-query id))))
+
+(>defn find-by-currency
+  [id]
+  [::m.users/id => (s/coll-of ::m.transactions/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?transaction-id]
+                :in    [?user-id]
+                :where [[?transaction-id ::m.transactions/currency ?user-id]]}]
+    (map first (crux/q db query id))))
+
+(>defn find-by-user
+  [id]
+  [::m.users/id => (s/coll-of ::m.transactions/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?transaction-id]
+                :in    [?user-id]
+                :where [[?transaction-id ::m.transactions/account ?account-id]
+                        [?account-id ::m.accounts/user ?user-id]]}]
+    (map first (crux/q db query id))))
+
 (>defn find-eid-by-id
   [id]
   [::m.transactions/id => :db/id]
-  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-id-query id))))
 
 (>defn find-id-by-eid
   [eid]
   [:db/id => ::m.transactions/id]
-  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-id-by-eid-query eid))))
 
 (>defn create-record
   [params]
   [::m.transactions/params => :db/id]
-  (let [tempid          (d/tempid "transaction-id")
+  (let [node            (c.crux/main-node)
+        id              (utils/uuid)
         prepared-params (-> params
-                            (assoc  ::m.transactions/id (str (utils/uuid)))
-                            (assoc  :db/id tempid)
-                            (update ::m.transactions/date tick/inst))
-        response        (d/transact db/*conn* {:tx-data [prepared-params]})]
-    (get-in response [:tempids tempid])))
+                            (assoc ::m.transactions/id id)
+                            (assoc :crux.db/id id)
+                            (update ::m.transactions/date tick/inst))]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put prepared-params]]))
+    id))
 
 (>defn read-record
   [id]
   [:db/id => (? ::m.transactions/item)]
-  (let [record (d/pull @db/*conn* '[*] id)]
+  (let [db     (c.crux/main-db)
+        record (crux/pull db '[*] id)]
     (when (get record ::m.transactions/value)
-      (let [account-id (get-in record [::m.transactions/account :db/id])]
-        (-> record
-            (update ::m.transactions/date tick/instant)
-            (dissoc :db/id)
-            (assoc-in [::m.transactions/account ::m.accounts/id]
-                      (q.accounts/find-id-by-eid account-id))
-            (update ::m.transactions/account dissoc :db/id))))))
+      (-> record
+          (update ::m.transactions/date tick/instant)
+          (dissoc :db/id)))))
 
 (>defn index-ids
   []
   [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.transactions/value _]] @db/*conn*)))
+  (let [db (c.crux/main-db)
+        query '{:find [?e]
+                :where [[?e ::m.transactions/value _]]}]
+    (map first (crux/q db query))))
 
 (>defn index-records
   []
@@ -71,8 +104,8 @@
 (>defn delete-record
   [id]
   [:db/id => nil?]
-  (do
-    (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+  (let [node (c.crux/main-node)]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]]))
     nil))
 
 (>defn delete-all

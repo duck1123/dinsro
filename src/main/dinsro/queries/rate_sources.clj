@@ -2,11 +2,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [datahike.api :as d]
-   [dinsro.components.datahike :as db]
-   [dinsro.model.currencies :as m.currencies]
+   [crux.api :as crux]
+   [dinsro.components.crux :as c.crux]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [taoensso.timbre :as log]))
@@ -34,46 +32,39 @@
 (>defn find-eid-by-id
   [id]
   [::m.rate-sources/id => :db/id]
-  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-id-query id))))
 
 (>defn find-id-by-eid
   [eid]
   [:db/id => ::m.rate-sources/id]
-  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
-
-;; (def find-dbid-by-id-query
-;;   '[:find ?dbid
-;;     :where [?dbid ::m.rate-sources/id _]])
-
-;; (>defn find-dbid-by-id
-;;   [id]
-;;   [::m.rate-sources/id => (? :db/id)]
-;;   (d/q find-dbid-by-id-query @db/*conn* id))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-id-by-eid-query eid))))
 
 (>defn create-record
   [params]
   [::m.rate-sources/params => :db/id]
-  (let [params   (assoc params ::m.rate-sources/id (str (utils/uuid)))
-        params   (assoc params :db/id "rate-source-id")
-        response (d/transact db/*conn* {:tx-data [params]})]
-    (get-in response [:tempids "rate-source-id"])))
+  (let [node   (c.crux/main-node)
+        id     (utils/uuid)
+        params (assoc params ::m.rate-sources/id id)
+        params (assoc params :crux.db/id id)]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
+    id))
 
 (>defn read-record
   [id]
   [:db/id => (? ::m.rate-sources/item)]
-  (let [record (d/pull @db/*conn* '[*] id)]
+  (let [db     (c.crux/main-db)
+        record (crux/pull db '[*] id)]
     (when (get record ::m.rate-sources/name)
-      (let [currency-id (get-in record [::m.rate-sources/currency :db/id])
-            currency-eid (q.currencies/find-id-by-eid currency-id)]
-        (-> record
-            (dissoc :db/id)
-            (assoc-in [::m.rate-sources/currency ::m.currencies/id] currency-eid)
-            (update ::m.rate-sources/currency dissoc :db/id))))))
+      record)))
 
 (>defn index-ids
   []
   [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.rate-sources/name _]] @db/*conn*)))
+  (let [db (c.crux/main-db)]
+    (map first (crux/q db '{:find  [?e]
+                            :where [[?e ::m.rate-sources/name _]]}))))
 
 (>defn index-records
   []
@@ -82,22 +73,21 @@
 
 (defn index-records-by-currency
   [currency-id]
-  (->> (d/q {:query '[:find
-                      ?id
-                      ?currency-id
-                      :keys db/id name
-                      :in $ ?currency-id
-                      :where
-                      [?id ::m.rate-sources/currency ?currency-id]]
-             :args  [@db/*conn* currency-id]})
-       (map :db/id)
-       (map read-record)
-       (take record-limit)))
+  (let [db    (c.crux/main-db)
+        query '{:find  [?id ?currency-id]
+                :keys  [db/id name]
+                :in    [$ ?currency-id]
+                :where [[?id ::m.rate-sources/currency ?currency-id]]}]
+    (->> (crux/q db query currency-id)
+         (map :db/id)
+         (map read-record)
+         (take record-limit))))
 
 (>defn delete-record
   [id]
   [:db/id => any?]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]}))
+  (let [node (c.crux/main-node)]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]]))))
 
 (>defn delete-all
   []

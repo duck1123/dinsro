@@ -18,7 +18,7 @@
   [_this {::m.transactions/keys [account date description id]}]
   {:css           [[:.card {:margin-bottom "5px"}]]
    :ident         ::m.transactions/id
-   :initial-state {::m.transactions/id          0
+   :initial-state {::m.transactions/id          nil
                    ::m.transactions/date        ""
                    ::m.transactions/description ""
                    ::m.transactions/account     {}}

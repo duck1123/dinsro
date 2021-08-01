@@ -2,40 +2,49 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [datahike.api :as d]
-   [dinsro.components.datahike :as db]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
+   [crux.api :as crux]
+   [dinsro.components.crux :as c.crux]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [taoensso.timbre :as log]))
 
-(def attribute-list
-  '[:db/id
-    ::m.users/password-hash
-    ::m.users/id])
-
 (def identity-attribute ::m.users/id)
 
 (def find-eid-by-id-query
-  '[:find  ?eid
-    :in    $ ?id
-    :where [?eid ::m.users/id ?id]])
+  '{:find  [?eid]
+    :in    [?id]
+    :where [[?eid ::m.users/id ?id]]})
+
+(def find-eid-by-name-query
+  '{:find  [?eid]
+    :in    [?name]
+    :where [[?eid ::m.users/name ?name]]})
 
 (def find-id-by-eid-query
-  '[:find  ?id
-    :in    $ ?eid
-    :where [?eid ::m.users/id ?id]])
+  '{:find  [?id]
+    :in    [?eid]
+    :where [[?eid ::m.users/id ?id]]})
 
 (>defn read-record
   [user-id]
-  [:db/id => (? ::m.users/item)]
-  (let [record (d/pull @db/*conn* attribute-list user-id)]
+  [uuid? => (? ::m.users/item)]
+  (let [db     (c.crux/main-db)
+        query  '{:find  [(pull ?eid [*])]
+                 :in    [?eid]
+                 :where [[?eid ::m.users/id ?name]]}
+        result (crux/q db query user-id)
+        record (ffirst result)]
     (when (get record ::m.users/id)
-      (dissoc record :db/id))))
+      (dissoc record :crux.db/id))))
 
 (>defn read-record-by-eid
   [user-dbid]
   [:db/id => (? ::m.users/item)]
-  (let [record (d/pull @db/*conn* attribute-list user-dbid)]
+  (let [db     (c.crux/main-db)
+        query  '{:find [(pull ?user [*])]
+                 :in   [?user]}
+        record (ffirst (crux/q db query user-dbid))]
     (when (get record ::m.users/id)
       (dissoc record :db/id))))
 
@@ -47,12 +56,20 @@
 (>defn find-eid-by-id
   [id]
   [::m.users/id => (? :db/id)]
-  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-id-query id))))
+
+(>defn find-eid-by-name
+  [name]
+  [::m.users/name => (? :db/id)]
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-name-query name))))
 
 (>defn find-id-by-eid
   [eid]
   [:db/id => (? ::m.users/id)]
-  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-id-by-eid-query eid))))
 
 (>defn find-by-id
   [id]
@@ -62,18 +79,23 @@
 
 (>defn create-record
   [params]
-  [::m.users/params => :db/id]
-  (if (nil? (find-eid-by-id (::m.users/id params)))
-    (let [tempid   (d/tempid "user-id")
-          params   (assoc params :db/id tempid)
-          response (d/transact db/*conn* {:tx-data [params]})]
-      (get-in response [:tempids tempid]))
+  [::m.users/params => uuid?]
+  (if (nil? (find-eid-by-name (::m.users/name params)))
+    (let [node   (c.crux/main-node)
+          id     (new-uuid)
+          params (assoc params :crux.db/id id)
+          params (assoc params ::m.users/id id)]
+      (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
+      id)
     (throw (RuntimeException. "User already exists"))))
 
 (>defn index-ids
   []
-  [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.users/id _]] @db/*conn*)))
+  [=> (s/coll-of ::m.users/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?e]
+                :where [[?e ::m.users/id _]]}]
+    (map first (crux/q db query))))
 
 (>defn index-records
   []
@@ -83,8 +105,9 @@
 (>defn delete-record
   [id]
   [:db/id => nil?]
-  (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
-  nil)
+  (let [node (c.crux/main-node)]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]]))
+    nil))
 
 (>defn delete-all
   []

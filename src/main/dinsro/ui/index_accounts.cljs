@@ -13,7 +13,7 @@
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value name user]}]
   {:initial-state {::m.accounts/currency      {}
-                   ::m.accounts/id            1
+                   ::m.accounts/id            nil
                    ::m.accounts/initial-value 0
                    ::m.accounts/name          ""
                    ::m.accounts/user          {}}
@@ -24,8 +24,8 @@
                    {::m.accounts/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
     (dom/td name)
-    (dom/td (u.links/ui-user-link (first user)))
-    (dom/td (u.links/ui-currency-link (first currency)))
+    (dom/td (u.links/ui-user-link user))
+    (dom/td (u.links/ui-currency-link currency))
     (dom/td initial-value)
     (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 

@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.machines :as machines]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -22,8 +23,8 @@
    :query         [::m.transactions/id
                    {::m.transactions/link (comp/get-query u.links/TransactionLink)}]}
   (dom/tr {}
-    (dom/td {} id)
-    (dom/td {} (u.links/ui-transaction-link (first link)))
+    (dom/td {} (str id))
+    (dom/td {} (u.links/ui-transaction-link link))
     (dom/td {} (u.buttons/ui-delete-transaction-button {::m.transactions/id id}))))
 
 (def ui-index-transaction-line (comp/factory IndexTransactionLine {:keyfn ::m.transactions/id}))
@@ -46,25 +47,47 @@
 (def ui-index-transactions (comp/factory IndexTransactions))
 
 (defsc UserTransactions
-  [this {::keys [form toggle-button transactions]}]
+  [this {::m.users/keys [id transactions]
+         ::keys         [form toggle-button]}]
   {:componentDidMount
    (fn [this]
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar UserTransactions}))
-   :ident         (fn [] [:component/id ::UserTransactions])
-   :initial-state {::form          {}
-                   ::toggle-button {:form-button/id form-toggle-sm}
-                   ::transactions  {}}
-   :query         [{::form (comp/get-query u.f.add-user-transaction/AddUserTransactionForm)}
-                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                   {::transactions (comp/get-query IndexTransactions)}
-                   [::uism/asm-id form-toggle-sm]]}
-  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
-    (bulma/box
-     (dom/h2 {} (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
-     (when shown?
-       (u.f.add-user-transaction/ui-form form))
-     (dom/hr {})
-     (ui-index-transactions transactions))))
+     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar this}))
+   :ident ::m.users/id
+   :initial-state
+   (fn [_]
+     {::m.users/id           nil
+      ::form                 (comp/get-initial-state u.f.add-user-transaction/AddUserTransactionForm)
+      ::toggle-button        {:form-button/id form-toggle-sm}
+      ::m.users/transactions []})
+   :pre-merge
+   (fn [{:keys [current-normalized data-tree]}]
+     (let [defaults    {::form          (comp/get-initial-state u.f.add-user-transaction/AddUserTransactionForm)
+                        ::toggle-button {:form-button/id form-toggle-sm}}
+           merged-data (merge defaults current-normalized data-tree)]
+       merged-data))
+   :query [::m.users/id
+           {::form (comp/get-query u.f.add-user-transaction/AddUserTransactionForm)}
+           {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+           {::m.users/transactions (comp/get-query IndexTransactionLine)}
+           [::uism/asm-id form-toggle-sm]]}
+  (if id
+    (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
+      (bulma/box
+       (dom/h2 {} (tr [:transactions]) (u.buttons/ui-show-form-button toggle-button))
+       (when shown?
+         (when form (u.f.add-user-transaction/ui-form form)))
+       (dom/hr {})
+       (if (seq transactions)
+         (dom/table :.ui.table
+           (dom/thead {}
+             (dom/tr {}
+               (dom/th {} "Id")
+               (dom/th {} "initial value")
+               (dom/th {} "Actions")))
+           (dom/tbody {}
+             (map ui-index-transaction-line transactions)))
+         (dom/div {} (tr [:no-transactions])))))
+    (dom/p {} "User Transactions Not loaded")))
 
 (def ui-user-transactions
   (comp/factory UserTransactions))

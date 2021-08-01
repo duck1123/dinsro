@@ -2,9 +2,10 @@
   (:require
    [clojure.tools.cli :refer [parse-opts]]
    [dinsro.components.config :as config]
-   [dinsro.components.http]
    [dinsro.components.nrepl]
    [dinsro.components.secrets :as secrets]
+   [dinsro.components.server]
+   [dinsro.handler :as handler]
    [dinsro.middleware :as middleware]
    [mount.core :as mount]
    [taoensso.timbre :as log])
@@ -32,6 +33,7 @@
   (let [options (parse-opts args cli-options)]
     (doseq [component (-> options mount/start-with-args :started)]
       (log/debug component "started")))
+  (handler/seed-db!)
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main

@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.machines :as machines]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -21,7 +22,7 @@
      (uism/begin! this machines/hideable form-toggle-sm
                   {:actor/navbar IndexRateSourcesPage})
 
-     (df/load! this :all-rate-sources u.index-rate-sources/IndexRateSourceLine
+     (df/load! this ::m.rate-sources/all-rate-sources u.index-rate-sources/IndexRateSourceLine
                {:target [:page/id
                          ::page
                          ::rate-sources

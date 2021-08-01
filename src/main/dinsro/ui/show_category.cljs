@@ -16,12 +16,12 @@
                    ::m.categories/name
                    {::m.categories/user (comp/get-query u.links/UserLink)}]
    :ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
+   :initial-state {::m.categories/id   nil
                    ::m.categories/user []
                    ::m.categories/name ""}}
   (dom/div {}
     (dom/p name)
-    (dom/p (u.links/ui-user-link (first user)))
+    (dom/p (u.links/ui-user-link user))
     (u.buttons/ui-delete-category-button {::m.categories/id id})))
 
 (def ui-show-category (comp/factory ShowCategory))

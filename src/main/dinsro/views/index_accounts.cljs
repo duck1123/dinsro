@@ -7,21 +7,22 @@
    [taoensso.timbre :as log]))
 
 (defsc IndexAccountsPage
-  [_this {::keys [user-accounts]}]
+  [_this {:session/keys [current-user-ref]}]
   {:componentDidMount
    (fn [this]
-     (df/load! this :all-accounts
-               u.user-accounts/IndexAccountLine
-               {:target [:component/id
-                         ::u.user-accounts/UserAccounts
-                         ::u.user-accounts/accounts
-                         ::u.user-accounts/accounts]}))
+     (df/load! this :session/current-user-ref
+               u.user-accounts/UserAccounts
+               {:target [:page/id
+                         ::page
+                         :session/current-user-ref]}))
    :ident         (fn [] [:page/id ::page])
-   :initial-state {::user-accounts {}}
+   :initial-state {:session/current-user-ref {}}
    :query         [:page/id
-                   {::user-accounts (comp/get-query u.user-accounts/UserAccounts)}]
+                   {:session/current-user-ref (comp/get-query u.user-accounts/UserAccounts)}]
    :route-segment ["accounts"]}
-  (bulma/page
-   (u.user-accounts/ui-user-accounts user-accounts)))
+  (when current-user-ref
+    (bulma/page
+     {:className "index-accounts-page"}
+     (u.user-accounts/ui-user-accounts current-user-ref))))
 
 (def ui-page (comp/factory IndexAccountsPage))

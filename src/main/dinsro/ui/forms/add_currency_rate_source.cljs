@@ -12,11 +12,12 @@
 
 (defsc AddCurrencyRateSourceForm
   [this {::keys [name submit]}]
-  {:ident (fn [] [:component/id ::form])
-   :initial-state {::name ""}
-   :query [::name
-           {::submit (comp/get-query u.inputs/PrimaryButton)}]}
-  (dom/div
+  {:ident         (fn [] [:component/id ::form])
+   :initial-state {::name   ""
+                   ::submit {}}
+   :query         [::name
+                   {::submit (comp/get-query u.inputs/PrimaryButton)}]}
+  (dom/div {}
     (u.inputs/ui-text-input
      {:label (tr [:name]) :value name}
      {:onChange #(fm/set-string! this ::name :event %)})

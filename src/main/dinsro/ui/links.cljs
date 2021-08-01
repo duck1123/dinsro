@@ -14,7 +14,7 @@
 (defsc AccountLink
   [_this {::m.accounts/keys [id name]}]
   {:ident         ::m.accounts/id
-   :initial-state {::m.accounts/id   0
+   :initial-state {::m.accounts/id   nil
                    ::m.accounts/name ""}
    :query         [::m.accounts/id
                    ::m.accounts/name]}
@@ -26,7 +26,7 @@
 (defsc CategoryLink
   [_this {::m.categories/keys [id name]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
+   :initial-state {::m.categories/id   nil
                    ::m.categories/name ""}
    :query         [::m.categories/id ::m.categories/name]}
   (let [path (str "/categories/" id)]
@@ -37,9 +37,11 @@
 (defsc CurrencyLink
   [_this {::m.currencies/keys [id name]}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/id   ""
+   :initial-state {::m.currencies/id   nil
+                   ::m.currencies/code ""
                    ::m.currencies/name ""}
    :query         [::m.currencies/name
+                   ::m.currencies/code
                    ::m.currencies/id]}
   (let [path (str "/currencies/" id)]
     (dom/a {:href path} name)))
@@ -49,7 +51,7 @@
 (defsc RateSourceLink
   [_this {::m.rate-sources/keys [id name]}]
   {:ident         ::m.rate-sources/id
-   :initial-state {::m.rate-sources/id   0
+   :initial-state {::m.rate-sources/id   nil
                    ::m.rate-sources/name ""}
    :query         [::m.rate-sources/id
                    ::m.rate-sources/name]}
@@ -61,7 +63,7 @@
 (defsc TransactionLink
   [_this {::m.transactions/keys [id description]}]
   {:ident         ::m.transactions/id
-   :initial-state {::m.transactions/id          0
+   :initial-state {::m.transactions/id          nil
                    ::m.transactions/description ""}
    :query         [::m.transactions/id
                    ::m.transactions/description]}
@@ -71,11 +73,13 @@
 (def ui-transaction-link (comp/factory TransactionLink {:keyfn ::m.transactions/id}))
 
 (defsc UserLink
-  [_this {::m.users/keys [id]}]
+  [_this {::m.users/keys [id name]}]
   {:ident         ::m.users/id
-   :initial-state {::m.users/id ""}
-   :query         [::m.users/id]}
-  (let [path (str "/users/" id)]
-    (dom/a {:href path} id)))
+   :initial-state {::m.users/id   nil
+                   ::m.users/name ""}
+   :query         [::m.users/id ::m.users/name]}
+  (when id
+    (let [path (str "/users/" id)]
+      (dom/a {:href path} name))))
 
 (def ui-user-link (comp/factory UserLink {:keyfn ::m.users/id}))

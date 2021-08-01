@@ -11,11 +11,11 @@
 
 (defsc ShowRateSource
   [_this {::m.rate-sources/keys [id name]}]
-  {:query [::m.rate-sources/id ::m.rate-sources/name]
-   :ident ::m.rate-sources/id
-   :initial-state {::m.rate-sources/id 0
+  {:query         [::m.rate-sources/id ::m.rate-sources/name]
+   :ident         ::m.rate-sources/id
+   :initial-state {::m.rate-sources/id   nil
                    ::m.rate-sources/name ""}}
-  (dom/div
+  (dom/div {}
     (dom/p name)
     (dom/p id)
     (u.buttons/ui-delete-rate-source-button {::m.rate-sources/id id})))

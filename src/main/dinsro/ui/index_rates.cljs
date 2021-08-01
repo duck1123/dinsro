@@ -15,7 +15,7 @@
   {:ident         ::m.rates/id
    :initial-state {::m.rates/currency {}
                    ::m.rates/date     ""
-                   ::m.rates/id       0
+                   ::m.rates/id       nil
                    ::m.rates/rate     0}
    :query         [::m.rates/id
                    {::m.rates/currency (comp/get-query u.links/CurrencyLink)}

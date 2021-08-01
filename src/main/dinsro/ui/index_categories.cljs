@@ -10,16 +10,16 @@
 (def form-toggle-sm ::form-toggle)
 
 (defsc IndexCategoryLine
-  [_this {::m.categories/keys [name user]}]
+  [_this {::m.categories/keys [link user]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
-                   ::m.categories/name ""
+   :initial-state {::m.categories/id   nil
+                   ::m.categories/link {}
                    ::m.categories/user {}}
    :query         [::m.categories/id
-                   ::m.categories/name
+                   {::m.categories/link (comp/get-query u.links/CategoryLink)}
                    {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
-    (dom/td name)
+    (dom/td (u.links/ui-category-link link))
     (dom/td (u.links/ui-user-link user))))
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))

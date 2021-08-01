@@ -29,7 +29,7 @@
           (dom/div :.level-item (dom/p description))))
       (dom/div :.level.is-mobile
         (dom/div :.level-left
-          (dom/div :.level-item date))
+          (dom/div :.level-item (str date)))
         (dom/div :.level-right
           (dom/div :.level-item (u.links/ui-account-link account)))))
     (dom/footer :.card-footer

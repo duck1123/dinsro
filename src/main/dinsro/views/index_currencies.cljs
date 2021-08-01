@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.index-currencies :as u.index-currencies]
@@ -12,7 +13,7 @@
   [_this {::keys [currencies]}]
   {:componentDidMount
    (fn [this]
-     (df/load! this :all-currencies u.index-currencies/IndexCurrencyLine
+     (df/load! this ::m.currencies/all-currencies u.index-currencies/IndexCurrencyLine
                {:target [:component/id
                          ::u.user-currencies/UserCurrencies
                          ::u.user-currencies/currencies

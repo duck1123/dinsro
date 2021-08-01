@@ -21,7 +21,7 @@
   "Generator for non-empty alphanumeric strings"
   (gen/such-that #(not= "" %) (gen/string-alphanumeric)))
 
-(s/def ::id pos-int?)
+(s/def ::id uuid?)
 (s/def :db/id ::id)
 (def id ::id)
 

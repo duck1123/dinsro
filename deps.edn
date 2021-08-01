@@ -17,7 +17,6 @@
   com.wsscode/pathom                     {:mvn/version "2.3.0"}
   edn-query-language/eql                 {:mvn/version "1.0.1"}
   http.async.client/http.async.client    {:mvn/version "1.3.1"}
-  io.replikativ/datahike                 {:mvn/version "0.3.1"}
   kibu/pushy                             {:mvn/version "0.3.8"}
   luminus/ring-ttl-session               {:mvn/version "0.3.3"}
   luminus-http-kit/luminus-http-kit      {:mvn/version "0.1.7"}

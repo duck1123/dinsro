@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
-    "cypress": "8.0.0",
+    "cypress": "8.1.0",
     "cypress-clojurescript-preprocessor": "^0.1.4",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",

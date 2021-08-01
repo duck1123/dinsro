@@ -1,37 +1,45 @@
 (ns dinsro.mutations.categories
   (:require
-   #?(:clj [com.wsscode.pathom.connect :as pc :refer [defmutation]]
-      :cljs [com.wsscode.pathom.connect :as pc])
-   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
+   [clojure.spec.alpha :as s]
+   [com.wsscode.pathom.connect :as pc]
+   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
+   [com.fulcrologic.fulcro.mutations :as fm]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.users :as q.users])
    [taoensso.timbre :as log]))
 
-(comment ::m.categories/_ ::m.users/_ ::pc/_)
+(comment ::m.categories/_ ::m.users/_ ::pc/_ ::fm/_)
+
+(s/def ::created-category (s/coll-of ::m.categories/ident))
+(s/def ::status #{:success :failure :no-user})
+(s/def ::creation-response
+  (s/keys :req-un [::status]
+          :opt-un [::created-category]))
 
 #?(:clj
-   (defn do-create
+   (>defn do-create
      [identity name]
+     [::m.users/id ::m.categories/name => ::creation-response]
      (if-let [_user-eid (q.users/find-eid-by-id identity)]
        (let [params {::m.categories/name name
-                     ::m.categories/user {::m.users/id identity}}]
+                     ::m.categories/user identity}]
          (if-let [record (q.categories/create-record params)]
            {:status           :success
-            :created-category [{::m.categories/id (:db/id record)}]}
+            :created-category [(m.categories/ident record)]}
            {:status :failure}))
        {:status :no-user})))
 
 #?(:clj
-   (defmutation create!
+   (pc/defmutation create!
      [{{{:keys [identity]} :session} :request} {::m.categories/keys [name]}]
      {::pc/params #{::m.categories/name}
       ::pc/output [:status
                    :created-category [::m.categories/id]]}
      (do-create identity name))
    :cljs
-   (defmutation create! [_props]
+   (fm/defmutation create! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
@@ -45,13 +53,13 @@
          {:status :failure})))
 
 #?(:clj
-   (defmutation delete!
+   (pc/defmutation delete!
      [_request {::m.categories/keys [id]}]
      {::pc/params #{::m.categories/id}
       ::pc/output [:status :message]}
      (do-delete id))
    :cljs
-   (defmutation delete! [_props]
+   (fm/defmutation delete! [_props]
      (action [_env] true)
      (remote [_env] true)))
 

@@ -1,6 +1,7 @@
 (ns dinsro.ui.admin-index-rate-sources-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
@@ -20,16 +21,18 @@
    {::ct.fulcro3/root u.admin-index-rate-sources/AdminIndexRateSources
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.f.admin-create-rate-source/form
-       (comp/get-initial-state u.f.admin-create-rate-source/AdminCreateRateSourceForm)
+      (let [currency-id (new-uuid)
+            currency    {::m.currencies/name "xccx"
+                         ::m.currencies/id   currency-id}]
+        {::u.f.admin-create-rate-source/form
+         (comp/get-initial-state u.f.admin-create-rate-source/AdminCreateRateSourceForm)
 
-       :component/id {}
-       ::u.admin-index-rate-sources/rate-sources
-       [{::m.rate-sources/id       1
-         ::m.rate-sources/currency [{::m.currencies/name "xccx"
-                                     ::m.currencies/id   1}]
-         ::m.rate-sources/name     "cxcxd"
-         ::m.rate-sources/url      "sdzxczx"}]
+         :component/id {}
+         ::u.admin-index-rate-sources/rate-sources
+         [{::m.rate-sources/id       (new-uuid)
+           ::m.rate-sources/currency currency
+           ::m.rate-sources/name     "cxcxd"
+           ::m.rate-sources/url      "sdzxczx"}]
 
-       ::u.admin-index-rate-sources/toggle-button
-       (comp/get-initial-state u.buttons/ShowFormButton)})}))
+         ::u.admin-index-rate-sources/toggle-button
+         (comp/get-initial-state u.buttons/ShowFormButton)}))}))

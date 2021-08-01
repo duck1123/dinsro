@@ -1,6 +1,8 @@
 (ns dinsro.mutations.currencies
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.mutations :as fm]
+   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.currencies :as m.currencies]
    #?(:clj [dinsro.queries.currencies :as q.currencies])
@@ -9,16 +11,21 @@
 
 (comment ::m.currencies/_ ::pc/_ ::fm/_)
 
+(s/def ::created-currency (s/coll-of ::m.currencies/ident))
+(s/def ::status #{:success :failure :no-user})
+(s/def ::creation-response (s/keys :req-un [::status ::created-currency]))
+
 #?(:clj
-   (defn do-create
-     [id name identity]
-     (if-let [_user-eid (q.users/find-eid-by-id identity)]
+   (>defn do-create
+     [code name identity]
+     [::m.currencies/code ::m.currencies/name string? => ::creation-response]
+     (if-let [_user-eid (q.users/find-eid-by-name identity)]
        (let [_can-create? true ;; should be admin
-             params       #::m.currencies{:id   id
+             params       #::m.currencies{:code code
                                           :name name}]
-         (if-let [_record (q.currencies/create-record params)]
+         (if-let [record (q.currencies/create-record params)]
            {:status           :success
-            :created-currency [{::m.currencies/id id}]}
+            :created-currency [(m.currencies/ident record)]}
            (do
              (log/warn "failed to create currency")
              {:status           :failure

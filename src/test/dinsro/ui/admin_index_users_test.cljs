@@ -1,5 +1,6 @@
 (ns dinsro.ui.admin-index-users-test
   (:require
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-users :as u.admin-index-users]
@@ -17,9 +18,12 @@
    {::ct.fulcro3/root u.admin-index-users/AdminIndexUsers
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.admin-index-users/toggle-button {:form-button/id u.admin-index-users/form-toggle-sm}
+      (let [user-id (new-uuid)
+            user {::m.users/id user-id
+                  ::m.users/name   "admin"
+                  ::m.users/link {::m.users/id   user-id
+                                  ::m.users/name "admin"}}]
+        {::u.admin-index-users/toggle-button {:form-button/id u.admin-index-users/form-toggle-sm}
 
-       ::u.admin-index-users/users
-       {::u.index-users/items
-        [{::m.users/id "admin"
-          ::m.users/link [{::m.users/id "admin"}]}]}})}))
+         ::u.admin-index-users/users
+         {::u.index-users/items [user]}}))}))

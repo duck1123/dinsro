@@ -165,7 +165,7 @@
 
   run-production
   {:doc  "Run server from jar"
-   :task (shell "DATAHIKE_URL=\"datahike:file://$(pwd)/data/dev\" java -jar target/dinsro.jar")}
+   :task (shell "java -jar target/dinsro.jar")}
 
   server
   {:doc     "compile and run server in dev mode"

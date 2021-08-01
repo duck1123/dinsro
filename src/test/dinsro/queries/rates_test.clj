@@ -12,23 +12,22 @@
    [taoensso.timbre :as log]
    [tick.core :as tick]))
 
-(def schemata [m.currencies/schema
-               m.rates/schema])
+(def schemata [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-success
-  (let [currency (mocks/mock-currency)
-        id       (::m.currencies/id currency)
-        params   (ds/gen-key ::m.rates/params)
-        params   (assoc params ::m.rates/currency #::m.currencies{:id id})
-        id       (q.rates/create-record params)
-        item     (q.rates/read-record id)]
+  (let [currency    (mocks/mock-currency)
+        currency-id (::m.currencies/id currency)
+        params      (ds/gen-key ::m.rates/params)
+        params      (assoc params ::m.rates/currency currency-id)
+        id          (q.rates/create-record params)
+        item        (q.rates/read-record id)]
     (assertions
      (double (::m.rates/rate params)) => (::m.rates/rate item))))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key pos-int?)]
+  (let [id (ds/gen-key uuid?)]
     (assertions
      (q.rates/read-record id) => nil)))
 
@@ -49,14 +48,15 @@
      (q.rates/index-records) => [item])))
 
 (deftest index-records-by-currency-with-currency
-  (let [currency    (mocks/mock-currency)
-        currency-id (::m.currencies/id currency)
-        params      (ds/gen-key ::m.rates/params)
-        params      (assoc params ::m.rates/currency {::m.currencies/id currency-id})
-        rate-id     (q.rates/create-record params)
-        rate        (q.rates/read-record rate-id)
-        response    (q.rates/index-records-by-currency (q.currencies/find-eid-by-id currency-id))
-        date        (.getTime (tick/inst (::m.rates/date rate)))]
+  (let [currency     (mocks/mock-currency)
+        currency-id  (::m.currencies/id currency)
+        params       (ds/gen-key ::m.rates/params)
+        params       (assoc params ::m.rates/currency currency-id)
+        rate-id      (q.rates/create-record params)
+        rate         (q.rates/read-record rate-id)
+        currency-eid (q.currencies/find-eid-by-id currency-id)
+        response     (q.rates/index-records-by-currency currency-eid)
+        date         (.getTime (tick/inst (::m.rates/date rate)))]
     (assertions
      (nth (first response) 0) => date
      (nth (first response) 1) => (::m.rates/rate rate))))

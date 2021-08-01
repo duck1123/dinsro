@@ -1,51 +1,42 @@
 (ns dinsro.model.transactions
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]))
 
-(s/def ::id        string?)
-(def id-spec
-  {:db/ident       ::id
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one
-   :db/unique      :db.unique/identity})
+(s/def ::id        uuid?)
+(defattr id ::id :uuid
+  {ao/identity? true
+   ao/schema    :production})
 
 (s/def ::description string?)
-(def description-spec
-  {:db/ident       ::description
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one})
+(defattr description ::description :string
+  {ao/identities #{::id}
+   ao/schema     :production})
 
-(s/def ::account
-  (s/keys :opt [:db/id
-                ::m.accounts/id]))
-(def account-spec
-  {:db/ident       ::account
-   :db/valueType   :db.type/ref
-   :db/cardinality :db.cardinality/one})
+(s/def ::account ::m.accounts/id)
+(defattr account ::account :ref
+  {ao/identities #{::id}
+   ao/schema     :production
+   ao/target     ::m.accounts/id})
 
 (s/def ::date ::ds/date)
-(def date-spec
-  {:db/ident       ::date
-   :db/valueType   :db.type/instant
-   :db/cardinality :db.cardinality/one})
+(defattr date ::date :date
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::value ::ds/valid-double)
-(def value-spec
-  {:db/ident       ::value
-   :db/valueType   :db.type/double
-   :db/cardinality :db.cardinality/one})
-
-(s/def ::account-id :db/id)
+(defattr value ::value :double
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::required-params (s/keys :req [::date ::description ::value]))
-
 (s/def ::params (s/keys :req [::account ::date ::description ::value]))
-
 (s/def ::item (s/keys :req [::id ::account ::date ::description ::value]))
-
 (s/def ::ident (s/tuple keyword? ::id))
 
 (>defn ident
@@ -58,14 +49,23 @@
   [::item => ::ident]
   (ident id))
 
-(def schema
-  [account-spec
-   date-spec
-   description-spec
-   id-spec
-   value-spec])
+(defattr all-transactions ::all-transactions :ref
+  {ao/target    ::id
+   ao/pc-output [{::all-transactions [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::all-transactions (queries/get-all-transactions env query-params)}
+        :cljs
+        (comment env query-params)))})
 
-(def attributes [])
+(defattr link ::link :ref
+  {ao/cardinality :one
+   ao/target      ::id
+   ao/pc-input    #{::id}
+   ao/pc-output   [{::link [::id]}]
+   ao/pc-resolve  (fn [_env params] {::link params})})
 
-#?(:clj
-   (def resolvers []))
+(def attributes [account all-transactions date description id link value])
+
+#?(:clj (def resolvers []))
