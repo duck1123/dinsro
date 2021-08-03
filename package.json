@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "cypress": "8.1.0",
-    "cypress-clojurescript-preprocessor": "^0.1.4",
+    "cypress-clojurescript-preprocessor": "^0.1.7",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
