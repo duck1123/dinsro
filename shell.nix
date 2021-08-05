@@ -7,6 +7,7 @@
       docker-compose
       # earthly
       openjdk
+      nodejs
       # tilt
       yarn
     ];
