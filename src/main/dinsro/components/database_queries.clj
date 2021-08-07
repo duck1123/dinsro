@@ -2,6 +2,7 @@
   (:require
    [crux.api :as crux]
    [roterski.fulcro.rad.database-adapters.crux-options :as co]
+   [taoensso.encore :as enc]
    [taoensso.timbre :as log]))
 
 (defn get-all-accounts-
@@ -115,6 +116,21 @@
   (if-let [db (some-> (get-in env [co/databases :production]) deref)]
     (get-all-users- db)
     (log/error "No database atom for production schema!")))
+
+(defn get-login-info
+  "Get the account name, time zone, and password info via a username (email)."
+  [env username]
+  (enc/if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (ffirst (crux/q db '{:find  [(pull ?user-id
+                                       [:dinsro.model.users/id
+                                        :dinsro.model.users/name
+                                        {:time-zone/zone-id [:db/ident]}
+                                        :password/hashed-value
+                                        :password/salt
+                                        :password/iterations])]
+                         :in    [?username]
+                         :where [[?user-id :dinsro.model.users/name ?username]]}
+                    username))))
 
 (defn get-navlinks
   [env names]

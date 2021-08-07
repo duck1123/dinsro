@@ -4,14 +4,18 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    #?(:clj [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]])
+   #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
    #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
+   [com.fulcrologic.rad.authorization :as auth]
+   #?(:cljs [com.fulcrologic.rad.type-support.date-time :as datetime])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
+   #?(:clj [dinsro.model.authorization :as exauth])
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.users :as q.users])
    [taoensso.timbre :as log]))
 
-(comment ::m.users/_ ::pc/_ ::s/_)
+(comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
 
 (defsc CurrentUser
   [_this _props]
@@ -49,9 +53,9 @@
      [any? ::m.users/name ::m.users/password => ::login-response]
      (if-let [user-id (q.users/find-eid-by-name username)]
        (if (= password "hunter2")
-         (let [response {:user/username username
+         (let [response {:user/username            username
                          :session/current-user-ref {::m.users/id user-id}
-                         :user/valid?   true}
+                         :user/valid?              true}
                handler  (fn [ring-response]
                           (assoc ring-response :session (assoc session :identity username)))]
            (augment-response response handler))
@@ -61,38 +65,26 @@
         :user/valid?   false})))
 
 #?(:clj
-   (pc/defmutation login
-     [env {:user/keys [username password]}]
-     {::pc/params #{:user/username :user/password}
-      ::pc/output [:user/username
-                   :user/valid?
-                   {:session/current-user-ref [::m.users/id]}]}
-     (let [{:keys [request]} env
-           {:keys [session]} request]
-       (do-login session username password)))
+   (pc/defmutation login [env params]
+     {::pc/params #{:user/username :user/password}}
+     (exauth/login! env params))
    :cljs
-   (fm/defmutation login [_]
-     (action [{:keys [state]}]
-       (log/info "busy"))
-
-     (error-action [{:keys [state]}]
-       (log/info "error action"))
-
-     (ok-action [{:keys [state] :as env}]
-       (let [body (get-in env [:result :body])
-             {:user/keys [valid?]
-              :session/keys [current-user-ref]} (get body `login)]
-         (when-not valid?
-           (-> state
-               (swap! #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
-                                 "Can't log in"))
-               (swap! #(assoc-in % [:component/id :dinsro.ui.navbar/Navbar :session/current-user-ref]
-                                 current-user-ref))))))
-
+   (fm/defmutation login [_params]
+     (ok-action [{:keys [app state]}]
+       (let [{:time-zone/keys [zone-id]
+              ::auth/keys     [status]} (some-> state deref ::auth/authorization :local)]
+         (if (= status :success)
+           (do
+             (when zone-id
+               (log/info "Setting UI time zone" zone-id)
+               (datetime/set-timezone! zone-id))
+             (auth/logged-in! app :local))
+           (auth/failed! app :local))))
+     (error-action [{:keys [app]}]
+       (log/error "Login failed.")
+       (auth/failed! app :local))
      (remote [env]
-       (-> env
-           (fm/returning CurrentUser)
-           (fm/with-target [:session/current-user])))))
+       (fm/returning env auth/Session))))
 
 #?(:clj
    (pc/defmutation logout
@@ -120,4 +112,22 @@
        (fm/with-target env [:session/current-user]))))
 
 #?(:clj
-   (def resolvers [login logout register]))
+   (pc/defmutation check-session [env _]
+     {}
+     (exauth/check-session! env))
+   :cljs
+   (fm/defmutation check-session [_]
+     (ok-action [{:keys [state app result]}]
+       (let [{::auth/keys [provider]}   (get-in result [:body `check-session])
+             {:time-zone/keys [zone-id]
+              ::auth/keys     [status]} (some-> state deref ::auth/authorization (get provider))]
+         (when (= status :success)
+           (when zone-id
+             (log/info "Setting UI time zone" zone-id)
+             #_(datetime/set-timezone! time-zone)))
+         (uism/trigger! app auth/machine-id :event/session-checked {:provider provider})))
+     (remote [env]
+       (fm/returning env auth/Session))))
+
+#?(:clj
+   (def resolvers [check-session login logout register]))

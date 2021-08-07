@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.authorization :as auth]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.users :as m.users]
    [dinsro.mutations :as mutations]
@@ -85,7 +86,8 @@
 (defsc Navbar
   [this {::keys           [expanded?]
          ::m.navlink/keys [dropdown-links menu-links unauth-links]
-         :session/keys    [current-user-ref]}]
+         :session/keys    [current-user-ref]
+         :as              props}]
   {:css           [[:.navbar {:background-color "red"}]]
    :ident         (fn [_] [:component/id ::Navbar])
    :initial-state {::m.navlink/dropdown-links []
@@ -93,12 +95,16 @@
                    ::m.navlink/menu-links     []
                    ::m.navlink/unauth-links   []
                    :session/current-user-ref  {}}
-   :query         [{:session/current-user-ref (comp/get-query NavbarAuthLink)}
+   :query         [[::auth/authorization :local]
+                   {:session/current-user-ref (comp/get-query NavbarAuthLink)}
                    {::m.navlink/dropdown-links (comp/get-query NavLink)}
                    ::expanded?
                    {::m.navlink/menu-links (comp/get-query NavLink)}
                    {::m.navlink/unauth-links (comp/get-query NavLink)}]}
-  (let [valid? (::m.users/id current-user-ref)]
+  (let [valid? (some-> props
+                       (get [::auth/authorization :local])
+                       :session/current-user-ref
+                       second)]
     (dom/nav :.navbar.is-info
       (dom/div :.container
         {:aria-label "main navigation"

@@ -1,6 +1,7 @@
 (ns dinsro.mutations.session-test
   (:require
    [clojure.test :refer [deftest use-fixtures]]
+   [com.fulcrologic.rad.authorization :as auth]
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.session :as mu.session]
@@ -39,4 +40,5 @@
         data     #:user{:password "hunter2" :username "bob"}
         response ((::pc/mutate mu.session/login) env data)]
     (assertions
-     response => #:user{:valid? false :username nil})))
+     response => {::auth/provider :local
+                  ::auth/status   :failed})))
