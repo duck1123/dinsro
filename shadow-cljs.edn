@@ -1,50 +1,50 @@
 ;; shadow-cljs configuration
-{:dev-http {8000 {:host "0.0.0.0"
+{:dev-http {8000 {:host  "0.0.0.0"
                   :roots ["resources/main/public"]}}
- :http {:host "0.0.0.0" :port 9630}
- :nrepl {:host "0.0.0.0" :port 3333}
- :deps {:aliases [:dev]}
+ :http     {:host "0.0.0.0" :port 9630}
+ :nrepl    {:host "0.0.0.0" :port 3333}
+ :deps     {:aliases [:dev]}
 
  :builds
  {:ci
   {:ns-regexp "-test$"
    :output-to "target/ci.js",
-   :target :karma}
+   :target    :karma}
 
   :main
   {:asset-path "/js"
-   :dev {:compiler-options {:closure-defines {'goog.DEBUG true}
-                            :external-config {:guardrails {}}}}
-   :devtools   {:after-load dinsro.client/refresh
-                :http-port 3691
+   :dev        {:compiler-options {:closure-defines {'goog.DEBUG true}
+                                   :external-config {:guardrails {}}}}
+   :devtools   {:after-load   dinsro.client/refresh
+                :http-port    3691
                 :devtools-url "http://devtools.dinsro.localhost"
-                :preloads   [com.fulcrologic.fulcro.inspect.preload
-                             com.fulcrologic.fulcro.inspect.dom-picker-preload
-                             com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules {:main {:init-fn dinsro.client/start}}
+                :preloads     [com.fulcrologic.fulcro.inspect.preload
+                               com.fulcrologic.fulcro.inspect.dom-picker-preload
+                               com.fulcrologic.fulcro.inspect.websocket-preload]}
+   :modules    {:main {:init-fn dinsro.client/start}}
    :output-dir "resources/main/public/js"
-   :release {}
-   :target :browser}
+   :release    {}
+   :target     :browser}
 
   :test
   {:devtools  {:http-port 3692
                :http-root "target/tests"}
    :output-to "target/tests/test.js",
-   :ns-regexp  "-test$"
-   :target :browser-test
-   :test-dir "target/tests"}
+   :ns-regexp "-test$"
+   :target    :browser-test
+   :test-dir  "target/tests"}
 
   :workspaces
   {:asset-path "/js"
-   :devtools         {:http-root          "resources/workspaces/public"
-                      :http-host          "0.0.0.0"
-                      :http-port          3693
-                      :http-resource-root "."
-                      :devtools-url "http://devtools.dinsro.localhost"
-                      :preloads [com.fulcrologic.fulcro.inspect.preload
-                                 com.fulcrologic.fulcro.inspect.dom-picker-preload
-                                 com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules          {:main {:entries [dinsro.devcards]}}
+   :devtools   {:http-root          "resources/workspaces/public"
+                :http-host          "0.0.0.0"
+                :http-port          3693
+                :http-resource-root "."
+                :devtools-url       "http://devtools.dinsro.localhost"
+                :preloads           [com.fulcrologic.fulcro.inspect.preload
+                                     com.fulcrologic.fulcro.inspect.dom-picker-preload
+                                     com.fulcrologic.fulcro.inspect.websocket-preload]}
+   :modules    {:main {:entries [dinsro.devcards]}}
    :ns-regexp  "-test$"
    :output-dir "resources/workspaces/public/js"
-   :target nubank.workspaces.shadow-cljs.target}}}
+   :target     nubank.workspaces.shadow-cljs.target}}}
