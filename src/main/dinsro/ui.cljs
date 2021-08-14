@@ -7,6 +7,7 @@
    [dinsro.machines :as machines]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.router :as router]
+   [dinsro.ui.media :as u.media]
    [dinsro.ui.navbar :as u.navbar]
    [taoensso.timbre :as log]))
 
@@ -22,11 +23,14 @@
    :initial-state {::navbar {}
                    ::router {}}}
   (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
-    (dom/div {}
+    (comp/fragment
+     (u.media/ui-media-styles)
+     (u.media/ui-media-context-provider
+      {}
       (u.navbar/ui-navbar navbar)
       (dom/div :.ui.container
         (if (= :initial top-router-state)
           (dom/div :.loading "Loading...")
-          (router/ui-root-router router))))))
+          (router/ui-root-router router)))))))
 
 (def ui-root (comp/factory Root))
