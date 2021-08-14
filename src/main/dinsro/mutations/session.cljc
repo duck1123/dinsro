@@ -9,7 +9,6 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.users :as q.users])
-   #?(:cljs [dinsro.routing :as routing])
    [taoensso.timbre :as log]))
 
 (comment ::m.users/_ ::pc/_ ::s/_)
