@@ -225,7 +225,6 @@
                data         {:devtools {:devtools-url devtools-url}}
                args         (format "-M:dev:shadow-cljs watch main workspaces --config-merge '%s'"
                                     (pr-str data))]
-           (println (str "devtools: " devtools-url))
            (clojure args))}
 
   workspaces
@@ -233,5 +232,4 @@
                data         {:devtools {:devtools-url devtools-url}}
                args         (format "-M:dev:shadow-cljs watch workspaces --config-merge '%s'"
                                     (pr-str data))]
-           (println (str "devtools: " devtools-url))
            (clojure args))}}}
