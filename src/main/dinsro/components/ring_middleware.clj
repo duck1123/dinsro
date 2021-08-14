@@ -33,7 +33,7 @@
      ;; [:script {:src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
     [:body
-     [:div#app]
+     [:div#app {:style "height: 100%"}]
      [:script {:src "/js/main.js"}]]]))
 
 (defn wrap-api [handler uri]
