@@ -7,6 +7,8 @@
       docker
       docker-compose
       # earthly
+      # helm
+      nodejs
       openjdk
       nodejs
       # tilt
