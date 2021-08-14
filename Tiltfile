@@ -1,5 +1,7 @@
 # Tilt
 
+base_url = 'dinsro.localhost'
+
 custom_build(
   'localhost:34371/duck1123/dinsro:dev-sources-latest',
   'earthly --build-arg repo=localhost:34371/duck1123 +dev-image-sources',
@@ -15,8 +17,20 @@ custom_build(
   ]
 )
 
+helm_yaml = helm(
+  'resources/helm/dinsro',
+  set = [
+    'devtools.ingress.enabled=true',
+    'devtools.ingress.hosts[0].host=devtools.' + base_url,
+    'devtools.ingress.hosts[0].paths[0].path=/',
+    'ingress.enabled=true',
+    'ingress.hosts[0].host=' + base_url,
+    'ingress.hosts[0].paths[0].path=/',
+  ]
+)
+
 # docker_compose("./resources/tilt/dinsro/docker-compose.yml")
-k8s_yaml(helm('resources/helm/dinsro'))
+k8s_yaml(helm_yaml)
 k8s_resource(
   workload='chart-dinsro',
   port_forwards = [
@@ -26,7 +40,7 @@ k8s_resource(
     port_forward(9630, 9630, name='devtools')
   ],
   links = [
-    link('dinsro.localhost', 'Dinsro')
+    link(base_url, 'Dinsro')
   ]
 )
 
