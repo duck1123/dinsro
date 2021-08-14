@@ -1,1 +1,4 @@
 use_nix
+
+# Used by karma
+# export CHROME_BIN=chromium

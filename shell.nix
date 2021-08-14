@@ -3,6 +3,7 @@
     buildInputs = with pkgs; [
       babashka
       clojure
+      chromium
       docker
       docker-compose
       # earthly
