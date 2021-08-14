@@ -121,16 +121,16 @@
   "Get the account name, time zone, and password info via a username (email)."
   [env username]
   (enc/if-let [db (some-> (get-in env [co/databases :production]) deref)]
-    (ffirst (crux/q db '{:find  [(pull ?user-id
-                                       [:dinsro.model.users/id
-                                        :dinsro.model.users/name
-                                        {:time-zone/zone-id [:db/ident]}
-                                        :password/hashed-value
-                                        :password/salt
-                                        :password/iterations])]
-                         :in    [?username]
-                         :where [[?user-id :dinsro.model.users/name ?username]]}
-                    username))))
+    (let [query '{:find  [(pull ?user-id
+                                [:dinsro.model.users/id
+                                 :dinsro.model.users/name
+                                 {:time-zone/zone-id [:db/ident]}
+                                 :password/hashed-value
+                                 :password/salt
+                                 :password/iterations])]
+                  :in    [?username]
+                  :where [[?user-id :dinsro.model.users/name ?username]]}]
+      (ffirst (crux/q db query username)))))
 
 (defn get-navlinks
   [env names]

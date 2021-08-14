@@ -92,6 +92,16 @@
    ao/pc-output  [{::current-navbar [:navbar/id]}]
    ao/pc-resolve (fn [_ _] {::current-navbar {:navbar/id :main}})})
 
+(defattr current-navbar-navbar :dinsro.ui/navbar :ref
+  {ao/target     :navbar/id
+   ao/pc-output  [{:dinsro.ui/navbar [:navbar/id]}]
+   ao/pc-resolve (fn [_ _] {:dinsro.ui/navbar {:navbar/id :main}})})
+
+(defattr current-navbar-sidebar :dinsro.ui/sidebar :ref
+  {ao/target     :navbar/id
+   ao/pc-output  [{:dinsro.ui/sidebar [:navbar/id]}]
+   ao/pc-resolve (fn [_ _] {:dinsro.ui/sidebar {:navbar/id :main}})})
+
 (def attributes
   [id
    name
@@ -99,6 +109,8 @@
    target
    navbar-id
    current-navbar
+   current-navbar-navbar
+   current-navbar-sidebar
    all-navlinks
    dropdown-links
    menu-links

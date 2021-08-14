@@ -22,7 +22,6 @@
                    ::m.categories/user []}
    :query         [::m.categories/id
                    {::m.categories/link (comp/get-query u.links/CategoryLink)}
-                   ::m.categories/name
                    {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
     (dom/td (u.links/ui-category-link link))

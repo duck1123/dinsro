@@ -16,13 +16,15 @@
     (if (= password "hunter2")
       (do
         (log/info "Login for" username name)
-        (let [s {::auth/provider :local
-                 ::auth/status   :success
-                 ::m.users/name  name
-                 :session/current-user-ref (when id [::m.users/id id])}]
-          (fmw/augment-response s (fn [resp]
-                                    (let [current-session (-> env :ring/request :session)]
-                                      (assoc resp :session (merge current-session s)))))))
+        (let [s {::auth/provider           :local
+                 ::auth/status             :success
+                 :session/current-user-ref [::m.users/id id]
+                 ::m.users/name            name}]
+          (fmw/augment-response
+           s
+           (fn [resp]
+             (let [current-session (-> env :ring/request :session)]
+               (assoc resp :session (merge current-session s)))))))
       (do
         (log/error "Login failure for" username)
         {::auth/provider :local
@@ -40,6 +42,6 @@
 (defn check-session! [env]
   (log/info "Checking for existing session")
   (or
-   (log/spy :info (some-> env :ring/request :session))
+   (some-> env :ring/request :session)
    {::auth/provider :local
     ::auth/status   :not-logged-in}))

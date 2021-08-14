@@ -5,6 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.authorization :as auth]
    #?(:clj [dinsro.components.database-queries :as queries])
    [taoensso.timbre :as log]))
 
@@ -22,11 +23,12 @@
 
 (s/def ::password-hash string?)
 (defattr password-hash ::password-hash :string
-  {ao/identities #{::id}
-   ao/schema     :production})
+  {ao/required?       true
+   ao/identities      #{::id}
+   ::auth/permissions (fn [_] #{})
+   ao/schema          :production})
 
 (s/def ::input-params-valid (s/keys :req [::password ::id]))
-
 (s/def ::input-params (s/keys :opt [::password ::name]))
 (s/def ::params (s/keys :req [::password-hash ::name]))
 (s/def ::item (s/keys :req [::password-hash ::id ::name]))

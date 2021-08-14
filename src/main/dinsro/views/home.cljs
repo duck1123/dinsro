@@ -2,8 +2,10 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.routing :as rroute]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
+   [dinsro.views.login :as v.login]
    [taoensso.timbre :as log]))
 
 (defn path-for
@@ -11,7 +13,7 @@
   "/login")
 
 (defsc HomePage
-  [_this {:keys [auth-id]}]
+  [this {:keys [auth-id]}]
   {:ident         (fn [] [:page/id ::page])
    :initial-state {:page/id ::page}
    :query         [:auth-id :page/id]
@@ -23,6 +25,8 @@
       (dom/h1 :.title (tr [:home-page]))
       (dom/p {}
         "Not Authenticated. "
-        (dom/a :.login-link {:href (path-for [:login-page])} "login"))))))
+        (dom/a :.login-link
+          {:onClick (fn [] (rroute/route-to! this v.login/LoginPage {}))}
+          "login"))))))
 
 (def ui-page (comp/factory HomePage))

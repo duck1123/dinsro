@@ -5,6 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.authorization :as auth]
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.currencies :as m.currencies]
@@ -12,7 +13,7 @@
    [dinsro.specs]
    [taoensso.timbre :as log]))
 
-(comment ::pc/_)
+(comment ::auth/_ ::pc/_)
 
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -73,7 +74,6 @@
 
 (s/def ::item (s/keys :req [::id ::name ::initial-value ::user]
                       :opt [::currency]))
-
 (defattr all-accounts ::all-accounts :ref
   {ao/target    ::id
    ao/pc-output [{::all-accounts [::id]}]

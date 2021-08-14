@@ -5,41 +5,66 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
+   [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
+   [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
    [dinsro.machines :as machines]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.router :as router]
+   [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.media :as u.media]
    [dinsro.ui.navbar :as u.navbar]
-   [dinsro.views.login :as v.login]
    [taoensso.timbre :as log]))
 
-(auth/defauthenticator Authenticator {:local v.login/LoginPage})
+(defsc NavbarUnion
+  [_this _props]
+  {:query         [:navbar/id
+                   {::navbar (comp/get-query u.navbar/Navbar)}
+                   {::sidebar (comp/get-query u.navbar/NavbarSidebar)}]
+   :initial-state {:navbar/id :main
+                   ::navbar   {}
+                   ::sidebar  {}}})
 
-(def ui-authenticator (comp/factory Authenticator))
-
-(defsc Root [this {::keys [navbar router]}]
+(defsc Root [this {:root/keys [navbar sidebar]
+                   ::keys     [router]}]
   {:componentDidMount
    (fn [this]
-     (uism/begin! this machines/hideable ::navbarsm {:actor/navbar u.navbar/Navbar})
-
+     (uism/begin! this machines/hideable ::u.navbar/navbarsm
+                  {:actor/navbar (uism/with-actor-class [:navbar/id :main] u.navbar/Navbar)})
      (df/load! this ::m.navlink/current-navbar u.navbar/Navbar
-               {:target [::m.navlink/current-navbar]}))
-   :query         [{:authenticator (comp/get-query Authenticator)}
-                   {::navbar (comp/get-query u.navbar/Navbar)}
-                   {::router (comp/get-query router/RootRouter)}
-                   ::auth/authorization]
-   :initial-state {:authenticator {}
-                   ::navbar       {}
+               {:target [:root/navbar]})
+     (df/load! this ::m.navlink/current-navbar u.navbar/NavbarSidebar
+               {:target [:root/sidebar]}))
+   :query
+   [{:authenticator (comp/get-query u.authenticator/Authenticator)}
+
+    {:root/navbar (comp/get-query u.navbar/Navbar)}
+    {:root/sidebar (comp/get-query u.navbar/NavbarSidebar)}
+    {::router (comp/get-query router/RootRouter)}
+    ::auth/authorization]
+   :initial-state {:root/navbar   {}
+                   :root/sidebar  {}
+                   :authenticator {}
                    ::router       {}}}
-  (let [top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
+  (let [inverted         true
+        visible          (= (uism/get-active-state this ::u.navbar/navbarsm) :state/shown)
+        top-router-state (or (uism/get-active-state this ::router/RootRouter) :initial)]
     (comp/fragment
      (u.media/ui-media-styles)
      (u.media/ui-media-context-provider
       {}
-      (u.navbar/ui-navbar navbar)
-      (dom/div :.ui.container
-        (if (= :initial top-router-state)
-          (dom/div :.loading "Loading...")
-          (router/ui-root-router router)))))))
+      (dom/div {:className "ui container"
+                :style     {:height "100%"}}
+        (when navbar
+          (u.navbar/ui-navbar navbar))
+        (ui-sidebar-pushable
+         {:inverted (str inverted)
+          :visible  (str visible)}
+         (when sidebar
+           (u.navbar/ui-navbar-sidebar sidebar))
+         (ui-sidebar-pusher
+          {}
+          (if (= :initial top-router-state)
+            (dom/div :.loading "Loading...")
+            (router/ui-root-router router)))))))))
 
 (def ui-root (comp/factory Root))

@@ -6,6 +6,21 @@
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as log]))
 
+(defresolver current-user-resolver
+  [_env props]
+  {::pc/output
+   [{:session/current-user
+     [:user/username
+      {:user/ref [::m.users/id]}
+      :user/valid?]}]}
+  (log/spy :info props)
+  (let [username "admin"
+        user-id  (q.users/find-eid-by-name "admin")]
+    {:session/current-user
+     {:user/username username
+      :user/ref      {::m.users/id user-id}
+      :user/valid?   true}}))
+
 (defresolver current-user-ref-resolver
   [{{{:keys [identity]} :session} :ring/request} _props]
   {::pc/output
