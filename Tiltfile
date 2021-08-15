@@ -77,6 +77,17 @@ local_resource(
 )
 
 local_resource(
+  'karma',
+  allow_parallel = True,
+  auto_init = False,
+  serve_cmd = 'npx karma start',
+  trigger_mode = TRIGGER_MODE_MANUAL,
+  links = [
+    link('http://localhost:9876/debug.html', 'Debug'),
+  ],
+)
+
+local_resource(
   'kondo',
   allow_parallel = True,
   cmd='bb kondo',
