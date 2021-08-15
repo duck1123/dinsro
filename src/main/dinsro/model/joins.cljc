@@ -24,6 +24,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.accounts/id}
    ao/pc-output   [{::m.accounts/transactions [::m.transactions/id]}]
+   ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.accounts/keys [id]}]
      #?(:clj  (if id
@@ -36,6 +37,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.categories/id}
    ao/pc-output   [{::m.categories/transactions [::m.transactions/id]}]
+   ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.categories/keys [id]}]
      (if id
@@ -48,6 +50,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.currencies/id}
    ao/pc-output   [{::m.currencies/accounts [::m.accounts/id]}]
+   ao/target      ::m.accounts/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
      #?(:clj  (if id
@@ -60,6 +63,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.currencies/id}
    ao/pc-output   [{::m.currencies/transactions [::m.transactions/id]}]
+   ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
      (if id
@@ -72,6 +76,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
    ao/pc-output   [{::m.users/accounts [::m.accounts/id]}]
+   ao/target      ::m.accounts/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      #?(:clj  (if id
@@ -84,6 +89,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
    ao/pc-output   [{::m.users/categories [::m.categories/id]}]
+   ao/target      ::m.categories/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      #?(:clj  (if id
@@ -96,6 +102,7 @@
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
    ao/pc-output   [{::m.users/transactions [::m.transactions/id]}]
+   ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
 
