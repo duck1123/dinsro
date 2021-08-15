@@ -81,7 +81,7 @@
          (when form (u.f.add-user-category/ui-form form)))
        (dom/hr)
        (if (seq categories)
-         (dom/table :.table
+         (dom/table :.ui.table
            (dom/thead {}
              (dom/tr {}
                (dom/th (tr [:name]))

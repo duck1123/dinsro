@@ -31,7 +31,7 @@
   {:initial-state {::currencies []}
    :query         [{::currencies (comp/get-query IndexCurrencyLine)}]}
   (if (seq currencies)
-    (dom/table :.table
+    (dom/table :.ui.table
       (dom/thead {}
         (dom/tr {}
           (dom/th {} (tr [:code]))

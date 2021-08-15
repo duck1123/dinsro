@@ -78,7 +78,7 @@
          (when form (u.f.add-user-account/ui-form form)))
        (dom/hr)
        (if (seq accounts)
-         (dom/table :.table
+         (dom/table :.ui.table
            (dom/thead {}
              (dom/tr {}
                (dom/th (tr [:name]))

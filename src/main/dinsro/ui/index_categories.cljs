@@ -30,7 +30,7 @@
    :query         [{::categories (comp/get-query IndexCategoryLine)}]}
   (if (seq categories)
     (dom/div {}
-      (dom/table :.table.is-fullwidth
+      (dom/table :.ui.table
         (dom/thead {}
           (dom/tr {}
             (dom/th (tr [:name]))

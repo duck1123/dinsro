@@ -39,7 +39,7 @@
   {:initial-state {::items []}
    :query         [{::items (comp/get-query IndexRateSourceLine)}]}
   (if (seq items)
-    (dom/table :.table
+    (dom/table :.ui.table
       (dom/thead {}
         (dom/tr {}
           (dom/th (tr [:name]))
