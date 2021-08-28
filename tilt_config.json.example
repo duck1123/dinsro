@@ -11,6 +11,7 @@
   "useProduction": false,
   "useLnd1": true,
   "useLnd2": true,
+  "useMempool": false,
   "useTests": true,
   "useRtl": true
 }

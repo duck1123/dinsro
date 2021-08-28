@@ -24,6 +24,8 @@ config.define_bool('useBitcoin')
 config.define_bool('useLinting')
 config.define_bool('useLnd1')
 config.define_bool('useLnd2')
+# Deploy Mempool
+config.define_bool('useMempool')
 # Enable Notebook
 config.define_bool('useNotebook')
 config.define_bool('useProduction')
@@ -42,6 +44,7 @@ use_bitcoin           = cfg.get('useBitcoin',          True)
 use_linting           = cfg.get('useLinting',          True)
 use_lnd1              = cfg.get('useLnd1',             True)
 use_lnd2              = cfg.get('useLnd2',             True)
+use_mempool           = cfg.get('useMempool',          False)
 use_notebook          = cfg.get('useNotebook',         True)
 use_nrepl             = cfg.get('useNrepl',            True)
 use_production        = cfg.get('useProduction',       False)
@@ -88,7 +91,10 @@ if use_bitcoin and use_lnd1:
     'resources/helm/fold/charts/lnd',
     name = 'lnd1',
     namespace = 'lnd1',
-    values = [ 'resources/tilt/lnd1_values.yaml' ]
+    set = [
+      "fileserver.image.repository=%s/lnd-fileserver" % repo,
+    ],
+    values = [ 'resources/tilt/lnd1_values.yaml' ],
   ))
 
 if use_bitcoin and use_lnd2:
@@ -101,7 +107,17 @@ if use_bitcoin and use_lnd2:
     'resources/helm/fold/charts/lnd',
     name = 'lnd2',
     namespace = 'lnd2',
-    values = [ 'resources/tilt/lnd2_values.yaml' ]
+    set = [
+      'fileserver.image.repository=%s/lnd-fileserver' % repo,
+    ],
+    values = [ 'resources/tilt/lnd2_values.yaml' ],
+  ))
+
+if use_bitcoin and use_mempool:
+  k8s_yaml(helm(
+    'resources/helm/mempool',
+    name = 'mempool',
+    namespace = 'mempool',
   ))
 
 if use_bitcoin and use_rtl:
@@ -110,7 +126,6 @@ if use_bitcoin and use_rtl:
     annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
     labels = [ "field.cattle.io/projectId: %s" % project_id ],
   )
-
   k8s_yaml(helm(
     'resources/helm/rtl',
     namespace = 'rtl',
@@ -118,6 +133,27 @@ if use_bitcoin and use_rtl:
       'certDownloader.image.repository=%s/cert-downloader' % repo,
     ],
   ))
+
+if use_bitcoin and use_mempool:
+  namespace_create(
+    'mempool',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
+
+  k8s_yaml(helm(
+    'resources/helm/mempool',
+    name = 'mempool',
+    namespace = 'mempool',
+  ))
+
+  custom_build(
+    "%s/dinsro:mempool-%s" % (repo, version),
+    "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +mempool" % repo,
+    [
+      'Earthfile'
+    ],
+  )
 
 devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
 
@@ -130,6 +166,7 @@ k8s_yaml(helm(
     "devtools.ingress.enabled=%s" % ('false' if local_devtools else 'true'),
     "devtools.ingress.hosts[0].host=%s" % devtools_host,
     'devtools.ingress.hosts[0].paths[0].path=/',
+    'image.repository=%s/dinsro' % repo,
     'ingress.enabled=true',
     'ingress.hosts[0].host=' + base_url,
     'ingress.hosts[0].paths[0].path=/',
@@ -208,6 +245,17 @@ custom_build(
   ]
 )
 
+if use_bitcoin:
+  custom_build(
+    "%s/cert-downloader:%s" % (repo, version),
+    "earthly --build-arg repo=%s +cert-downloader" % repo,
+    [
+      'Earthfile',
+      'resources/cert-downloader',
+    ],
+    tag = version,
+  )
+
 if use_bitcoin and (use_lnd1 or use_lnd2):
   custom_build(
     "%s/lnd-fileserver:%s" % (repo, version),
@@ -219,13 +267,36 @@ if use_bitcoin and (use_lnd1 or use_lnd2):
     tag = version,
   )
 
+if use_bitcoin:
+  k8s_resource(
+    workload = 'bitcoind',
+    labels = [ 'bitcoin' ],
+  )
+
 if use_bitcoin and use_rtl:
+  k8s_resource(
+    workload = 'cert-downloader',
+    labels = [ 'bitcoin' ],
+  )
+
+if use_bitcoin and (use_lnd1 or use_lnd2):
   custom_build(
     "%s/cert-downloader:%s" % (repo, version),
     "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +cert-downloader" % repo,
     [
       'Earthfile',
       'resources/cert-downloader',
+    ],
+    tag = version,
+  )
+
+if use_bitcoin and (use_lnd1 or use_lnd2):
+  custom_build(
+    "%s/lnd-fileserver:%s" % (repo, version),
+    "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +fileserver" % repo,
+    [
+      'Earthfile',
+      'resources/fileserver',
     ],
   )
 
@@ -234,6 +305,32 @@ if use_bitcoin:
     workload = 'bitcoind',
     labels = [ 'bitcoin' ],
   )
+
+if use_bitcoin and use_rtl:
+  k8s_resource(
+    workload = 'cert-downloader',
+    labels = [ 'bitcoin' ],
+  )
+
+if use_bitcoin:
+  k8s_resource(
+    workload = 'bitcoind',
+    labels = [ 'bitcoin' ],
+  )
+
+k8s_resource(
+  workload='dinsro',
+  port_forwards = [
+    port_forward(3333, 3333, name='cljs nrepl'),
+    port_forward(7000, 7000, name='nRepl'),
+  ],
+  links = [
+    link(base_url, 'Dinsro'),
+    link('devtools.' + base_url, 'Devtools'),
+    link('workspaces.' + base_url, 'Workspaces'),
+  ],
+  labels = [ 'Dinsro' ],
+)
 
 if use_bitcoin and use_lnd1:
   k8s_resource(
@@ -253,7 +350,16 @@ if use_bitcoin and use_lnd2:
     labels = [ 'bitcoin' ],
   )
 
-if use_bitcoin and use_rtl:
+if use_bitcoin and use_mempool:
+  k8s_resource(
+    workload = 'mempool',
+    links = [
+      link('http://mempool.localhost/', 'Mempool')
+    ],
+    labels = [ 'bitcoin' ],
+  )
+
+if use_bitcoin:
   k8s_resource(
     workload='rtl',
     links = [

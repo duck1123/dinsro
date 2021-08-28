@@ -1,0 +1,14 @@
+{:tasks
+ {:requires ([babashka.fs :as fs]
+             [babashka.pods :as pods])
+
+  foo
+  {:doc "foo"
+   :task (shell "echo bar")}
+
+  watch
+  {:task
+   (do
+     (pods/load-pod "pod-babashka-filewatcher")
+     (require '[pod.babashka.filewatcher :as fw])
+     (fw/watch "." (fn [event] (prn event)) {:delay-ms 50}))}}}

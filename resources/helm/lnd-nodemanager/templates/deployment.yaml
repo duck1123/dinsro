@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "lnd-nodemanager.fullname" . }}
+  labels:
+    app: {{ template "lnd-nodemanager.name" . }}
+    chart: {{ template "lnd-nodemanager.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "lnd-nodemanager.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "lnd-nodemanager.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: "fileserver"
+          image: duck1123/lnd-fileserver:latest
+          volumeMounts:
+          - name: data
+            mountPath: /mnt/data
+            subPath: .lnd
+          ports:
+          - name: files
+            containerPort: 80
+      volumes:
+        {{- if .Values.configurationFile }}
+        - name: config
+          emptyDir: {}
+        - name: configmap
+          configMap:
+            name: {{ template "lnd-nodemanager.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "lnd-nodemanager.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

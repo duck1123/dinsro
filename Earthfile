@@ -18,6 +18,7 @@ ARG src_home=/usr/src/app
 ARG data_dir=/var/lib/dinsro/data
 ARG uid=3434
 ARG gid=3434
+ARG base_url=dinsro.localhost
 
 WORKDIR /usr/src/app
 
@@ -414,6 +415,11 @@ lint:
   BUILD +eastwood
   BUILD +kibit
   BUILD +kondo
+
+mempool:
+  FROM mempool/mempool:v1.0
+  # RUN apk add curl
+  SAVE IMAGE ${repo}/${project}:mempool-${version}
 
 node-deps:
   FROM +base-builder
