@@ -1,17 +1,12 @@
 (ns dinsro.app
   (:require
    [com.fulcrologic.fulcro.application :as app]
-   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.networking.http-remote :as http]
    [taoensso.timbre :as log]))
 
 (defonce app
   (app/fulcro-app
-   {:client-did-mount
-    (fn [app]
-      (comp/transact! app [`(dinsro.loader/init)]))
-
-    :remotes
+   {:remotes
     {:remote
      (http/fulcro-http-remote
       {:url "/api"
