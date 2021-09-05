@@ -41,8 +41,9 @@ k8s_resource(
     port_forward(9630, 9630, name='devtools')
   ],
   links = [
-    link(base_url, 'Dinsro')
-  ]
+    link(base_url, 'Dinsro'),
+  ],
+  labels = [ 'Dinsro' ],
 )
 
 local_resource(
@@ -50,6 +51,7 @@ local_resource(
   allow_parallel = True,
   cmd='bb check',
   deps = [ 'src' ],
+  labels = [ 'format' ],
 )
 
 local_resource(
@@ -58,6 +60,7 @@ local_resource(
   auto_init = False,
   cmd='bb format',
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'format' ],
 )
 
 local_resource(
@@ -66,6 +69,7 @@ local_resource(
   auto_init = False,
   serve_cmd='npx cypress open',
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -75,6 +79,7 @@ local_resource(
   cmd = 'bb eastwood',
   deps = [ 'src' ],
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'lint' ],
 )
 
 local_resource(
@@ -86,6 +91,7 @@ local_resource(
   links = [
     link('http://localhost:9876/debug.html', 'Debug'),
   ],
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -93,6 +99,7 @@ local_resource(
   allow_parallel = True,
   cmd='bb kondo',
   deps = [ 'src' ],
+  labels = [ 'lint' ],
 )
 
 local_resource(
@@ -100,6 +107,7 @@ local_resource(
   allow_parallel = True,
   cmd = 'bb test-clj',
   deps = [ 'src/test' ],
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -107,6 +115,7 @@ local_resource(
   allow_parallel = True,
   cmd = 'bb test-cljs',
   deps = [ 'src/test' ],
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -116,4 +125,5 @@ local_resource(
   cmd = 'npx cypress run',
   deps = [ 'src/test' ],
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'test' ],
 )
