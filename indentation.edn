@@ -6,6 +6,7 @@
  div              [[:inner 0]]
  error-action     [[:inner 0]]
  footer           [[:inner 0]]
+ form             [[:inner 0]]
  h2               [[:inner 0]]
  input            [[:inner 0]]
  nav              [[:inner 0]]
