@@ -21,8 +21,8 @@
      (dom/div "Authenticated")
      (bulma/box
       (dom/h1 :.title (tr [:home-page]))
-      (dom/p
-       "Not Authenticated. "
-       (dom/a :.login-link {:href (path-for [:login-page])} "login"))))))
+      (dom/p {}
+        "Not Authenticated. "
+        (dom/a :.login-link {:href (path-for [:login-page])} "login"))))))
 
 (def ui-page (comp/factory HomePage))

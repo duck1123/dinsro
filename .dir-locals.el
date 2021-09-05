@@ -19,6 +19,7 @@
            (it 1)
            (nav 1)
            (ok-action 1)
+           (p 1)
            (remote 1)
            (select 1)
            (specification 1)

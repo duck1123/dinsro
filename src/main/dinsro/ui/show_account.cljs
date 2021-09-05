@@ -27,13 +27,13 @@
                    :user-link-data]}
   (dom/div {}
     (dom/h3 name)
-    (dom/p (u.links/ui-account-link account))
-    (dom/p
-     (tr [:user-label])
-     (u.links/ui-user-link user))
-    (dom/p
-     (tr [:currency-label])
-     (u.links/ui-currency-link currency))
+    (dom/p {} (u.links/ui-account-link account))
+    (dom/p {}
+      (tr [:user-label])
+      (u.links/ui-user-link user))
+    (dom/p {}
+      (tr [:currency-label])
+      (u.links/ui-currency-link currency))
     (u.buttons/ui-delete-account-button {::m.accounts/id id})))
 
 (def ui-show-account (comp/factory ShowAccount))
@@ -59,16 +59,16 @@
      (bulma/box
       (dom/div {}
         (dom/h3 name)
-        (dom/p (when link (u.links/ui-account-link link)))
-        (dom/p
-         (tr [:user-label])
-         (when user (u.links/ui-user-link user)))
-        (dom/p
-         (tr [:currency-label])
-         (when currency (u.links/ui-currency-link currency)))
+        (dom/p {} (when link (u.links/ui-account-link link)))
+        (dom/p {}
+          (tr [:user-label])
+          (when user (u.links/ui-user-link user)))
+        (dom/p {}
+          (tr [:currency-label])
+          (when currency (u.links/ui-currency-link currency)))
         (u.buttons/ui-delete-account-button {::m.accounts/id id})))
      (when account-transactions
        (u.account-transactions/ui-account-transactions account-transactions)))
-    (dom/p "no account")))
+    (dom/p {} "no account")))
 
 (def ui-show-account-full (comp/factory ShowAccountFull))

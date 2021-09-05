@@ -36,8 +36,8 @@
   (if-not (seq items)
     (dom/div {} (dom/p (tr [:no-users])))
     (dom/div {}
-      (dom/p
-       (dom/a {:href users-path} "Users"))
+      (dom/p {}
+        (dom/a {:href users-path} "Users"))
       (dom/table :.table.ui
         (dom/thead {}
           (dom/tr {}
@@ -64,8 +64,8 @@
     (if-not (seq items)
       (dom/div {} (dom/p (tr [:no-users])))
       (dom/div {}
-        (dom/p
-         (dom/a {:href users-path} "Users"))
+        (dom/p {}
+          (dom/a {:href users-path} "Users"))
         (dom/table :.table.ui
           (dom/thead {}
             (dom/tr {}
