@@ -1,3 +1,4 @@
+# -*- mode: python -*-
 # Tilt
 
 base_url = 'dinsro.localhost'
