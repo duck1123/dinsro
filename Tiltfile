@@ -106,7 +106,10 @@ local_resource(
   'kondo',
   allow_parallel = True,
   cmd='bb kondo',
-  deps = [ 'src' ],
+  deps = [
+    '.clj-kondo/config.edn',
+    'src',
+  ],
   labels = [ 'lint' ],
 )
 
