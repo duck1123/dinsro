@@ -3,6 +3,14 @@
 
 base_url = 'dinsro.localhost'
 
+load('ext://namespace', 'namespace_create')
+
+disable_snapshots()
+docker_prune_settings(disable=False)
+
+# Create Namespaces
+namespace_create('dinsro')
+
 custom_build(
   'localhost:34371/duck1123/dinsro:dev-sources-latest',
   'earthly --build-arg repo=localhost:34371/duck1123 +dev-image-sources',
