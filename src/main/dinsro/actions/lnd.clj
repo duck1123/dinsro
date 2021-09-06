@@ -9,10 +9,6 @@
   (:import
    io.grpc.stub.StreamObserver
    java.io.File
-   java.net.URL
-   org.bitcoinj.params.MainNetParams
-   org.bitcoinj.params.RegTestParams
-   org.bitcoinj.wallet.KeyChainGroup
    org.lightningj.lnd.wrapper.Message
    org.lightningj.lnd.wrapper.message.AddressType
    org.lightningj.lnd.wrapper.message.LightningAddress
@@ -24,8 +20,7 @@
    org.lightningj.lnd.wrapper.walletunlocker.AsynchronousWalletUnlockerAPI
    org.lightningj.lnd.wrapper.walletunlocker.message.InitWalletRequest
    org.lightningj.lnd.wrapper.walletunlocker.message.UnlockWalletRequest
-   org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI
-   wf.bitcoin.javabitcoindrpcclient.BitcoinJSONRPCClient))
+   org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI))
 
 (def wallet-base "/usr/src/app/")
 (def payment-request "")
@@ -57,14 +52,6 @@
                    "robot"  "riot"     "swamp"   "pulp"]})
 
 (def configs [config1 config2])
-
-(defn get-url
-  []
-  (let [user     "rpcuser"
-        password "rpcpassword"
-        host     "bitcoind.bitcoin"
-        port     "18443"]
-    (URL. (str "http://" user ":" password "@" host ":" port))))
 
 (defn download-file
   [uri file]
@@ -120,18 +107,6 @@
    (File. (:cert-path config))
    nil))
 
-(defn get-params
-  []
-  (RegTestParams/get))
-
-(defn get-mainnet-params
-  []
-  (MainNetParams/get))
-
-(defn get-keychain-group
-  []
-  (KeyChainGroup/createBasic (get-mainnet-params)))
-
 (defn get-async-api
   [config]
   (AsynchronousLndAPI.
@@ -180,10 +155,6 @@
   [api]
   (let [request (ListInvoiceRequest.)]
     (parse (.listInvoices api request))))
-
-(defn get-client
-  [url]
-  (BitcoinJSONRPCClient. url))
 
 (defn get-pub-key
   [client]
@@ -248,13 +219,6 @@
   (let [response1 (.initWallet unlocker1 (get-init-wallet mnemonic1))]
     response1))
 
-(defn get-genesis-block
-  []
-  (let [block        (.getGenesisBlock (get-mainnet-params))
-        transactions (.getTransactions block)
-        inputs       (.getInputs (first transactions))]
-    (String. (.getScriptBytes (first inputs)))))
-
 (defn get-unlock-request
   []
   (let [request (UnlockWalletRequest.)]
@@ -278,7 +242,6 @@
 (comment
   (download-certs)
   (download-macaroons)
-  (def client (get-client (get-url)))
 
   (init-wallet! config1)
   (download-macaroon config1)
@@ -296,14 +259,13 @@
   (def s-lnd-api2 (get-api config2))
   (def a-lnd-api2 (get-async-api config2))
   (def address (get-lnd-address s-lnd-api))
-  (dotimes [_ 100] (.generateToAddress client 1 address))
   (parse (.getInfo s-lnd-api))
   (parse (.getInfo s-lnd-api2))
   (connect-peer s-lnd-api s-lnd-api2)
   (list-peers s-lnd-api)
   (list-peers s-lnd-api2)
   (open-channel a-lnd-api s-lnd-api2)
-  (dotimes [_ 100] (.generateToAddress client 1 address))
+
   (channel-balance s-lnd-api)
   (channel-balance s-lnd-api2)
   (parse (.walletBalance s-lnd-api))
@@ -314,9 +276,6 @@
   (get-wallet-unlocker config1)
 
   ;; btc node options
-  (.getWalletInfo client)
-  (.listTransactions client)
-  (.generateToAddress client 1 address)
 
   (parse (.getNetworkInfo s-lnd-api))
 
