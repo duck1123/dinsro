@@ -7,6 +7,7 @@
    #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-peers :as m.ln-peers]
@@ -54,6 +55,16 @@
      {::m.accounts/all-accounts
       #?(:clj  (queries/get-all-accounts env query-params)
          :cljs [])})})
+
+(defattr all-core-nodes ::m.core-nodes/all-nodes :ref
+  {ao/target    ::m.core-nodes/id
+   ao/pc-output [{::m.core-nodes/all-nodes [::m.core-nodes/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.core-nodes/all-nodes (queries/get-all-core-nodes env query-params)}
+        :cljs
+        (comment env query-params)))})
 
 (defattr all-currencies ::m.currencies/all-currencies :ref
   {ao/target    ::m.currencies/id
@@ -216,6 +227,7 @@
 (def attributes
   [account-transactions
    all-accounts
+   all-core-nodes
    all-currencies
    all-users
    category-transactions
