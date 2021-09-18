@@ -14,6 +14,7 @@
    org.bitcoinj.params.RegTestParams
    org.bitcoinj.wallet.KeyChainGroup
    org.lightningj.lnd.wrapper.Message
+   org.lightningj.lnd.wrapper.message.AddressType
    org.lightningj.lnd.wrapper.message.LightningAddress
    org.lightningj.lnd.wrapper.message.ListChannelsRequest
    org.lightningj.lnd.wrapper.message.ListInvoiceRequest
@@ -206,10 +207,7 @@
 
 (defn get-lnd-address
   [s-lnd-api]
-  (.getAddress
-   (.newAddress s-lnd-api
-                org.lightningj.lnd.wrapper.message.AddressType/WITNESS_PUBKEY_HASH
-                "foo")))
+  (.getAddress (.newAddress s-lnd-api AddressType/WITNESS_PUBKEY_HASH "foo")))
 
 (defn open-channel-request
   [pubkey]
