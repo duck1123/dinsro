@@ -3,6 +3,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
@@ -29,9 +30,9 @@
 
 (defn navlink-line
   [id name href]
-  {:navlink/id   id
-   :navlink/name name
-   :navlink/href href})
+  {::m.navlink/id   id
+   ::m.navlink/name name
+   ::m.navlink/href href})
 
 (defn rate-line
   [id currency-id rate date]

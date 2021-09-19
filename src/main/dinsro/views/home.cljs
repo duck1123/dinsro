@@ -13,6 +13,7 @@
 (defsc HomePage
   [_this {:keys [auth-id]}]
   {:ident         (fn [] [:page/id ::page])
+   :initial-state {:page/id ::page}
    :query         [:auth-id :page/id]
    :route-segment [""]}
   (bulma/page
@@ -20,8 +21,8 @@
      (dom/div "Authenticated")
      (bulma/box
       (dom/h1 :.title (tr [:home-page]))
-      (dom/p
-       "Not Authenticated. "
-       (dom/a :.login-link {:href (path-for [:login-page])} "login"))))))
+      (dom/p {}
+        "Not Authenticated. "
+        (dom/a :.login-link {:href (path-for [:login-page])} "login"))))))
 
 (def ui-page (comp/factory HomePage))

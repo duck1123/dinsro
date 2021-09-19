@@ -3,7 +3,6 @@
    [clojure.test :refer [deftest use-fixtures]]
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.users :as m.users]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
@@ -11,16 +10,14 @@
    [fulcro-spec.core :refer [assertions]]
    [taoensso.timbre :as log]))
 
-(def schemata
-  [m.users/schema
-   m.currencies/schema])
+(def schemata [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
 (deftest create-record-valid
   (let [params (ds/gen-key ::m.currencies/params)]
     (assertions
-     (q.currencies/create-record params) =check=> (_/is?* number?))))
+     (q.currencies/create-record params) =check=> (_/is?* uuid?))))
 
 (deftest read-record-success
   (let [{::m.currencies/keys [id] :as item} (mocks/mock-currency)]
@@ -44,8 +41,9 @@
      (q.currencies/index-records) => [currency])))
 
 (deftest delete-record-success
-  (let [{::m.currencies/keys [id] :as record} (mocks/mock-currency)
-        eid                                   (q.currencies/find-eid-by-id id)]
+  (let [record                     (mocks/mock-currency)
+        {::m.currencies/keys [id]} record
+        eid                        (q.currencies/find-eid-by-id id)]
     (assertions
      (q.currencies/read-record eid) => record
      (q.currencies/delete-record eid) => nil

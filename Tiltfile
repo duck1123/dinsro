@@ -1,8 +1,19 @@
+# -*- mode: python -*-
 # Tilt
+
+base_url = 'dinsro.localhost'
+
+load('ext://namespace', 'namespace_create')
+
+disable_snapshots()
+docker_prune_settings(disable=False)
+
+# Create Namespaces
+namespace_create('dinsro')
 
 custom_build(
   'localhost:34371/duck1123/dinsro:dev-sources-latest',
-  'earthly --build-args repo=localhost:34371/duck1123 +dev-image-sources',
+  'earthly --build-arg repo=localhost:34371/duck1123 +dev-image-sources',
   [
     'Earthfile',
     '.dockerignore',
@@ -15,8 +26,20 @@ custom_build(
   ]
 )
 
+helm_yaml = helm(
+  'resources/helm/dinsro',
+  set = [
+    'devtools.ingress.enabled=true',
+    'devtools.ingress.hosts[0].host=devtools.' + base_url,
+    'devtools.ingress.hosts[0].paths[0].path=/',
+    'ingress.enabled=true',
+    'ingress.hosts[0].host=' + base_url,
+    'ingress.hosts[0].paths[0].path=/',
+  ]
+)
+
 # docker_compose("./resources/tilt/dinsro/docker-compose.yml")
-k8s_yaml(helm('resources/helm/dinsro'))
+k8s_yaml(helm_yaml)
 k8s_resource(
   workload='chart-dinsro',
   port_forwards = [
@@ -26,8 +49,9 @@ k8s_resource(
     port_forward(9630, 9630, name='devtools')
   ],
   links = [
-    link('dinsro.localhost', 'Dinsro')
-  ]
+    link(base_url, 'Dinsro'),
+  ],
+  labels = [ 'Dinsro' ],
 )
 
 local_resource(
@@ -35,6 +59,7 @@ local_resource(
   allow_parallel = True,
   cmd='bb check',
   deps = [ 'src' ],
+  labels = [ 'format' ],
 )
 
 local_resource(
@@ -43,6 +68,7 @@ local_resource(
   auto_init = False,
   cmd='bb format',
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'format' ],
 )
 
 local_resource(
@@ -51,6 +77,7 @@ local_resource(
   auto_init = False,
   serve_cmd='npx cypress open',
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -60,13 +87,30 @@ local_resource(
   cmd = 'bb eastwood',
   deps = [ 'src' ],
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'lint' ],
+)
+
+local_resource(
+  'karma',
+  allow_parallel = True,
+  auto_init = False,
+  serve_cmd = 'npx karma start',
+  trigger_mode = TRIGGER_MODE_MANUAL,
+  links = [
+    link('http://localhost:9876/debug.html', 'Debug'),
+  ],
+  labels = [ 'test' ],
 )
 
 local_resource(
   'kondo',
   allow_parallel = True,
   cmd='bb kondo',
-  deps = [ 'src' ],
+  deps = [
+    '.clj-kondo/config.edn',
+    'src',
+  ],
+  labels = [ 'lint' ],
 )
 
 local_resource(
@@ -74,6 +118,7 @@ local_resource(
   allow_parallel = True,
   cmd = 'bb test-clj',
   deps = [ 'src/test' ],
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -81,6 +126,7 @@ local_resource(
   allow_parallel = True,
   cmd = 'bb test-cljs',
   deps = [ 'src/test' ],
+  labels = [ 'test' ],
 )
 
 local_resource(
@@ -90,4 +136,5 @@ local_resource(
   cmd = 'npx cypress run',
   deps = [ 'src/test' ],
   trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'test' ],
 )

@@ -17,12 +17,12 @@
 (defsc AdminIndexCurrencyLine
   [_this {::m.currencies/keys [id link]}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/id   ""
+   :initial-state {::m.currencies/id   nil
                    ::m.currencies/link []}
    :query         [::m.currencies/id
                    {::m.currencies/link (comp/get-query u.links/CurrencyLink)}]}
   (dom/tr {}
-    (dom/td (u.links/ui-currency-link (first link)))
+    (dom/td (u.links/ui-currency-link link))
     (dom/td (u.buttons/ui-delete-currency-button {::m.currencies/id id}))))
 
 (def ui-admin-index-currency-line (comp/factory AdminIndexCurrencyLine {:keyfn ::m.currencies/id}))

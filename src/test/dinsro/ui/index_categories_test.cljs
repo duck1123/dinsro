@@ -1,5 +1,6 @@
 (ns dinsro.ui.index-categories-test
   (:require
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.sample :as sample]
@@ -20,8 +21,9 @@
       {::u.index-categories/categories
        (map
         (fn [category]
-          (let [user-id (::m.users/id (::m.categories/user category))]
-            {::m.categories/id   (::m.categories/id category)
+          (let [user {::m.users/id   (new-uuid)
+                      ::m.users/name "bob"}]
+            {::m.categories/id   (new-uuid)
              ::m.categories/name (::m.categories/name category)
-             ::m.categories/user {::m.users/id user-id}}))
-        (map sample/category-map [1 2 3]))})}))
+             ::m.categories/user user}))
+        (vals sample/category-map))})}))

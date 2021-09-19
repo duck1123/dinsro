@@ -21,12 +21,19 @@
      [:meta {:charset "utf-8"}]
      [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
 
+     [:link {:href "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.1/css/bulma.min.css"
+             :rel  "stylesheet"}]
      [:link {:href "https://cdn.jsdelivr.net/npm/fomantic-ui@2.7.8/dist/semantic.min.css"
              :rel  "stylesheet"}]
+
+     ;; [:link {:href "https://fonts.googleapis.com/icon?family=Material+Icons"
+     ;;         :rel  "stylesheet"}]
+
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
+     ;; [:script {:src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
     [:body
-     [:div#app]
+     [:div#app {:style "height: 100%"}]
      [:script {:src "/js/main.js"}]]]))
 
 (defn wrap-api [handler uri]

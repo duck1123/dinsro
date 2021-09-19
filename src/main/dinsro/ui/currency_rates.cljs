@@ -26,7 +26,7 @@
   [_this {::m.rates/keys [date id rate]}]
   {:ident         ::m.rates/id
    :initial-state {::m.rates/date ""
-                   ::m.rates/id   0
+                   ::m.rates/id   nil
                    ::m.rates/rate 0}
    :query         [::m.rates/id
                    ::m.rates/date

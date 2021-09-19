@@ -7,6 +7,9 @@
   com.fulcrologic.fulcro.routing.dynamic-routing/defrouter cljs.core/defn
   com.fulcrologic.fulcro.ui-state-machines/defstatemachine cljs.core/def
   com.fulcrologic.rad.attributes/defattr                   cljs.core/def
+  com.fulcrologic.rad.container/defsc-container            cljs.core/defn
+  com.fulcrologic.rad.form/defsc-form                      cljs.core/defn
+  com.fulcrologic.rad.report/defsc-report                  cljs.core/defn
   com.fulcrologic.guardrails.core/>defn                    cljs.core/defn
   com.wsscode.pathom.connect/defmutation                   cljs.core/defn
   com.wsscode.pathom.connect/defresolver                   cljs.core/defn

@@ -12,10 +12,7 @@
    [fulcro-spec.core :refer [assertions]]
    [taoensso.timbre :as log]))
 
-(def schemata
-  [m.users/schema
-   m.currencies/schema
-   m.accounts/schema])
+(def schemata [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
@@ -26,25 +23,36 @@
         currency-id    (::m.currencies/id currency)
         params         (ds/gen-key m.accounts/required-params)
         params         (-> params
-                           (assoc-in [::m.accounts/user ::m.users/id] user-id)
-                           (assoc-in [::m.accounts/currency ::m.currencies/id] currency-id))
+                           (assoc ::m.accounts/user user-id)
+                           (assoc ::m.accounts/currency currency-id))
         id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
     (assertions
      (get params ::m.accounts/name) => (get created-record ::m.accounts/name))))
+
+(deftest find-by-currency
+  (let [user (mocks/mock-user)
+        user-id (::m.users/id user)
+        currency (mocks/mock-currency)
+        currency-id (::m.currencies/id currency)
+        account (mocks/mock-account user-id currency-id)
+        account-id (::m.accounts/id account)]
+    (assertions
+     "should retutrn the matching account id"
+     (q.accounts/find-by-currency currency-id) => [account-id])))
 
 (deftest index-records
   (assertions
    (q.accounts/index-records) => []))
 
 (deftest index-records-by-user-not-found
-  (let [user-id 1]
+  (let [user-id (ds/gen-key uuid?)]
     (assertions
      (q.accounts/index-records-by-user user-id) => [])))
 
 (deftest index-records-by-user-found
   (let [record  (mocks/mock-account)
-        user-id (get-in record [::m.accounts/user ::m.users/id])
+        user-id (::m.accounts/user record)
         eid     (q.users/find-eid-by-id user-id)]
     (assertions
      (q.accounts/index-records-by-user eid) => [record])))

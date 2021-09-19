@@ -144,7 +144,7 @@
 
   kondo
   {:doc  "Lint source code with clj-kondo"
-   :task (shell "clj-kondo --parallel --lint \"src/main:src/test\"")}
+   :task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
 
   lint
   {:depends [kondo eastwood kibit]}
@@ -165,7 +165,7 @@
 
   run-production
   {:doc  "Run server from jar"
-   :task (shell "DATAHIKE_URL=\"datahike:file://$(pwd)/data/dev\" java -jar target/dinsro.jar")}
+   :task (shell "java -jar target/dinsro.jar")}
 
   server
   {:doc     "compile and run server in dev mode"
@@ -197,7 +197,7 @@
   {:doc  "Run clojurescript tests"
    :task (do
            (clojure "-M:dev:test:shadow-cljs compile ci")
-           (shell "karma start --single-run --check=\"ci.js\""))}
+           (shell "npx karma start --single-run --check=\"ci.js\""))}
 
   test-integration
   {:task (shell "npx cypress run")}

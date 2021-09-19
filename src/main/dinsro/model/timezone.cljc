@@ -7,7 +7,8 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.attributes :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]))
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [dinsro.model.users :as m.users]))
 
 (comment ::pc/_)
 
@@ -636,7 +637,7 @@
 
 (defattr zone-id :time-zone/zone-id :enum
   {ao/required?         true
-   ao/identities        #{:account/id}
+   ao/identities        #{::m.users/id}
    ao/schema            :production
    ao/enumerated-values (set (keys datomic-time-zones))
    ao/enumerated-labels datomic-time-zones

@@ -12,7 +12,8 @@ jobs:
       - run: earthly --version
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +check
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +lint
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +dev-image-sources
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +test
+      # - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +dev-image-sources
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +image
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +e2e-base
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +ci
+      # - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +e2e-base
+      # - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +ci

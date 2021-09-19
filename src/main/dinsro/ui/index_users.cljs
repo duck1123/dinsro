@@ -4,8 +4,12 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.user-accounts :as u.user-accounts :refer [UserAccounts]]
+   [dinsro.ui.user-categories :as u.user-categories :refer [UserCategories]]
+   [dinsro.ui.user-transactions :as u.user-transactions :refer [UserTransactions]]
    [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
@@ -18,7 +22,7 @@
    :query         [::m.users/id
                    {::m.users/link (comp/get-query u.links/ui-user-link)}]}
   (dom/tr {}
-    (dom/th (u.links/ui-user-link (first link)))
+    (dom/th (u.links/ui-user-link link))
     (dom/th (u.buttons/ui-delete-user-button {::m.users/id id}))))
 
 (def ui-index-user-line (comp/factory IndexUserLine {:keyfn ::m.users/id}))
@@ -32,8 +36,8 @@
   (if-not (seq items)
     (dom/div {} (dom/p (tr [:no-users])))
     (dom/div {}
-      (dom/p
-       (dom/a {:href users-path} "Users"))
+      (dom/p {}
+        (dom/a {:href users-path} "Users"))
       (dom/table :.table.ui
         (dom/thead {}
           (dom/tr {}
@@ -43,3 +47,34 @@
           (map ui-index-user-line items))))))
 
 (def ui-index-users (comp/factory IndexUsers))
+
+(defsc IndexUsersFull
+  [_this {::keys [items]
+          ::m.users/keys [user-accounts user-categories user-transactions]}]
+  {:initial-state {::items                     []
+                   ::m.users/user-accounts     {}
+                   ::m.users/user-categories   {}
+                   ::m.users/user-transactions {}}
+   :query         [{::items (comp/get-query IndexUserLine)}
+                   {::m.users/user-accounts (comp/get-query UserAccounts)}
+                   {::m.users/user-categories (comp/get-query UserCategories)}
+                   {::m.users/user-transactions (comp/get-query UserTransactions)}]}
+  (bulma/page
+   (bulma/box
+    (if-not (seq items)
+      (dom/div {} (dom/p (tr [:no-users])))
+      (dom/div {}
+        (dom/p {}
+          (dom/a {:href users-path} "Users"))
+        (dom/table :.table.ui
+          (dom/thead {}
+            (dom/tr {}
+              (dom/th (tr [:username]))
+              (dom/th "Buttons")))
+          (dom/tbody {}
+            (map ui-index-user-line items))))))
+   (u.user-accounts/ui-user-accounts user-accounts)
+   (u.user-categories/ui-user-categories user-categories)
+   (u.user-transactions/ui-user-transactions user-transactions)))
+
+(def ui-index-users-full (comp/factory IndexUsersFull))

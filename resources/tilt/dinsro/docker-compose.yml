@@ -4,7 +4,7 @@ services:
   dinsro:
     image: duck1123/dinsro:dev-sources-latest
     volumes:
-    - "${PWD}:/usr/src/app"
+    # - "${PWD}:/usr/src/app"
     - "${HOME}/.m2:/home/dinsro/.m2"
     - "${PWD}/data:/var/lib/dinsro/data"
     - "${PWD}/resources/docker/config.edn:/etc/dinsro/config.edn"

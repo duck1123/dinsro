@@ -37,4 +37,4 @@
   :log-responses? true}
 
  :taoensso.timbre/logging-config
- {:min-level :info}}
+ {:min-level :info :level :info}}

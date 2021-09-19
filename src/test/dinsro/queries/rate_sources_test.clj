@@ -7,10 +7,10 @@
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [fulcro-spec.core :refer [assertions]]))
+   [fulcro-spec.core :refer [assertions]]
+   [taoensso.timbre :as log]))
 
-(def schemata [m.currencies/schema
-               m.rate-sources/schema])
+(def schemata [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
 
@@ -18,7 +18,7 @@
   (let [currency    (mocks/mock-currency)
         currency-id (::m.currencies/id currency)
         params      (ds/gen-key ::m.rate-sources/required-params)
-        params      (assoc-in params [::m.rate-sources/currency ::m.currencies/id] currency-id)
+        params      (assoc params ::m.rate-sources/currency currency-id)
         id          (q.rate-sources/create-record params)
         item        (q.rate-sources/read-record id)]
     (assertions

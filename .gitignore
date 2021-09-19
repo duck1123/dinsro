@@ -5,6 +5,7 @@
 .env
 .envrc
 .gradle
+.helm
 .idea
 .lein-*
 *.class
@@ -16,6 +17,7 @@
 .rebel_readline_history
 .secret
 .shadow-cljs
+.vscode
 data
 dev-config.edn
 node_modules/

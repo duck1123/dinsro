@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.machines :as machines]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
@@ -19,7 +20,7 @@
   {:ident         ::m.accounts/id
    :initial-state {::m.accounts/link          {}
                    ::m.accounts/currency      {}
-                   ::m.accounts/id            0
+                   ::m.accounts/id            nil
                    ::m.accounts/initial-value 0
                    ::m.accounts/user          {}}
    :query         [{::m.accounts/link (comp/get-query u.links/AccountLink)}
@@ -28,55 +29,66 @@
                    ::m.accounts/initial-value
                    {::m.accounts/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
-    (dom/td (u.links/ui-account-link (first link)))
-    (dom/td (u.links/ui-user-link (first user)))
-    (dom/td (u.links/ui-currency-link (first currency)))
+    (dom/td (u.links/ui-account-link link))
+    (dom/td (u.links/ui-user-link user))
+    (dom/td (u.links/ui-currency-link currency))
     (dom/td initial-value)
     (dom/td (u.buttons/ui-delete-account-button {::m.accounts/id id}))))
 
 (def ui-index-account-line (comp/factory IndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc IndexAccounts
-  [_this {::keys [accounts]}]
-  {:initial-state {::accounts []}
-   :query         [{::accounts (comp/get-query IndexAccountLine)}]}
-  (if (seq accounts)
-    (dom/table :.table
-      (dom/thead {}
-        (dom/tr {}
-          (dom/th (tr [:name]))
-          (dom/th (tr [:user-label]))
-          (dom/th (tr [:currency-label]))
-          (dom/th (tr [:initial-value-label]))
-          (dom/th (tr [:buttons]))))
-      (dom/tbody {}
-        (map ui-index-account-line accounts)))
-    (dom/div (tr [:no-accounts]))))
+  [_this _]
+  {:initial-state {}
+   :query         []})
 
 (def ui-index-accounts (comp/factory IndexAccounts))
 
 (defsc UserAccounts
-  [this {::keys [accounts form toggle-button]}]
+  [this {::m.users/keys [accounts id]
+         ::keys         [form toggle-button]}]
   {:componentDidMount
    (fn [this]
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar UserAccounts}))
-   :ident         (fn [_] [:component/id ::UserAccounts])
-   :initial-state {::accounts      {}
-                   ::form          {}
-                   ::toggle-button {:form-button/id form-toggle-sm}}
-   :query         [{::accounts (comp/get-query IndexAccounts)}
-                   {::form (comp/get-query u.f.add-user-account/AddUserAccountForm)}
-                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                   [::uism/asm-id form-toggle-sm]]}
+     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar
+                                                         (uism/with-actor-class [::m.users/id :none]
+                                                           UserAccounts)}))
+   :ident              ::m.users/id
+   :initial-state      (fn [_]
+                         {::m.users/accounts []
+                          ::m.users/id       nil
+                          ::form             (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
+                          ::toggle-button    {:form-button/id form-toggle-sm}})
+   :pre-merge          (fn [{:keys [current-normalized data-tree]}]
+                         (let [defaults    {::form          (comp/get-initial-state u.f.add-user-account/AddUserAccountForm)
+                                            ::toggle-button {:form-button/id form-toggle-sm}}
+                               merged-data (merge current-normalized data-tree defaults)]
+                           merged-data))
+   :query              [::m.users/id
+                        {::m.users/accounts (comp/get-query IndexAccountLine)}
+                        {::form (comp/get-query u.f.add-user-account/AddUserAccountForm)}
+                        {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                        [::uism/asm-id form-toggle-sm]]}
   (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
-    (bulma/box
-     (dom/h2 {}
-       (tr [:accounts])
-       (u.buttons/ui-show-form-button toggle-button))
-     (when shown?
-       (u.f.add-user-account/ui-form form))
-     (dom/hr)
-     (ui-index-accounts accounts))))
+    (when id
+      (bulma/box
+       (dom/h2 {}
+         (tr [:accounts])
+         (when toggle-button (u.buttons/ui-show-form-button toggle-button)))
+       (when shown?
+         (when form (u.f.add-user-account/ui-form form)))
+       (dom/hr)
+       (if (seq accounts)
+         (dom/table :.table
+           (dom/thead {}
+             (dom/tr {}
+               (dom/th (tr [:name]))
+               (dom/th (tr [:user-label]))
+               (dom/th (tr [:currency-label]))
+               (dom/th (tr [:initial-value-label]))
+               (dom/th (tr [:buttons]))))
+           (dom/tbody {}
+             (map ui-index-account-line accounts)))
+         (dom/div (tr [:no-accounts])))))))
 
 (def ui-user-accounts
   (comp/factory UserAccounts))

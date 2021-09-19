@@ -17,7 +17,7 @@
 (defsc AdminIndexCategoryLine
   [_this {::m.categories/keys [id user link]}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   ""
+   :initial-state {::m.categories/id   nil
                    ::m.categories/link []
                    ::m.categories/user []}
    :query         [::m.categories/id
@@ -25,8 +25,8 @@
                    ::m.categories/name
                    {::m.categories/user (comp/get-query u.links/UserLink)}]}
   (dom/tr {}
-    (dom/td (u.links/ui-category-link (first link)))
-    (dom/td (u.links/ui-user-link (first user)))
+    (dom/td (u.links/ui-category-link link))
+    (dom/td (u.links/ui-user-link user))
     (dom/td (u.buttons/ui-delete-category-button {::m.categories/id id}))))
 
 (def ui-admin-index-category-line (comp/factory AdminIndexCategoryLine {:keyfn ::m.categories/id}))

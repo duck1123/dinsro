@@ -1,6 +1,7 @@
 (ns dinsro.ui.navbar-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [dinsro.model.navlink :as m.navlink]
    [dinsro.sample :as sample]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.navbar :as u.navbar]
@@ -11,7 +12,7 @@
 
 (defn navlink-idents
   [kws]
-  (map (partial vector :navlink/id)
+  (map (partial vector ::m.navlink/id)
        kws))
 
 (defn map-links
@@ -26,12 +27,12 @@
    {::ct.fulcro3/root u.navbar/Navbar
     ::ct.fulcro3/initial-state
     (fn []
-      {:navlink/id                   sample/navlink-map
+      {::m.navlink/id                sample/navlink-map
        :auth/id                      1
        :navbar/expanded?             true
-       :navbar/auth-data             {:link {:navlink/id   "user"
-                                             :navlink/name "User"
-                                             :navlink/href "/users"}}
+       :navbar/auth-data             {:link {::m.navlink/id   "user"
+                                             ::m.navlink/name "User"
+                                             ::m.navlink/href "/users"}}
        :navbar/navbar-brand          {}
        :navbar/menu-links            (map sample/navlink-map ["foo" "bar"])
        :navbar/top-level-links       (map sample/navlink-map ["accounts" "transactions"])

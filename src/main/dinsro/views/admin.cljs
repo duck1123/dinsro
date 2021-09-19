@@ -3,6 +3,12 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.categories :as m.categories]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.users :as m.users]
    [dinsro.ui.admin-index-accounts :as u.admin-index-accounts]
    [dinsro.ui.admin-index-categories :as u.admin-index-categories]
    [dinsro.ui.admin-index-currencies :as u.admin-index-currencies]
@@ -18,38 +24,38 @@
   [_this {::keys [accounts categories currencies rate-sources transactions users]}]
   {:componentDidMount
    (fn [this]
-     (df/load! this :all-accounts
+     (df/load! this ::m.accounts/all-accounts
                u.admin-index-accounts/AdminIndexAccountLine
                {:target [:component/id
                          ::u.admin-index-accounts/AdminIndexAccounts
                          ::u.admin-index-accounts/accounts]})
 
-     (df/load! this :all-categories
+     (df/load! this ::m.categories/all-categories
                u.admin-index-categories/AdminIndexCategoryLine
                {:target [:component/id
                          ::u.admin-index-categories/AdminIndexCategories
                          ::u.admin-index-categories/categories]})
 
-     (df/load! this :all-currencies
+     (df/load! this ::m.currencies/all-currencies
                u.admin-index-currencies/AdminIndexCurrencyLine
                {:target [:component/id
                          ::u.admin-index-currencies/AdminIndexCurrencies
                          ::u.admin-index-currencies/currencies]})
 
-     (df/load! this :all-rate-sources
+     (df/load! this ::m.rate-sources/all-rate-sources
                u.admin-index-rate-sources/AdminIndexRateSourceLine
                {:target [:component/id
                          ::u.admin-index-rate-sources/AdminIndexRateSources
                          ::u.admin-index-rate-sources/rate-sources]})
 
-     (df/load! this :all-transactions
+     (df/load! this ::m.transactions/all-transactions
                u.index-transactions/IndexTransactionLine
                {:target [:component/id
                          ::u.admin-index-transactions/AdminIndexTransactions
                          ::u.admin-index-transactions/transactions
                          ::u.index-transactions/transactions]})
 
-     (df/load! this :all-users
+     (df/load! this ::m.users/all-users
                u.index-users/IndexUserLine
                {:target [:component/id
                          ::u.admin-index-users/AdminIndexUsers

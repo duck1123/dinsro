@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
    [dinsro.app :as da]
-   [dinsro.loader]
    [dinsro.routing :as routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]

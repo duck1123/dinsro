@@ -2,35 +2,33 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
-(s/def ::id        string?)
-(def id-spec
-  {:db/ident       ::id
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one
-   :db/unique      :db.unique/identity})
+(s/def ::id uuid?)
+(defattr id ::id :uuid
+  {ao/identity? true
+   ao/schema    :production})
 
 (s/def ::name string?)
-(def name-spec
-  {:db/ident       ::name
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one})
+(defattr name ::name :string
+  {ao/identities #{::id}
+   ao/schema     :production})
 
-(s/def ::user-id :db/id)
-
-(s/def ::user (s/keys :req [::m.users/id]))
-(def user-spec
-  {:db/ident       ::user
-   :db/valueType   :db.type/ref
-   :db/cardinality :db.cardinality/one})
+(s/def ::user ::m.users/id)
+(defattr user ::user :ref
+  {ao/cardinality :one
+   ao/required?   true
+   ao/identities #{::id}
+   ao/schema     :production
+   ao/target     ::m.users/id})
 
 (s/def ::params (s/keys :req [::name ::user]))
-
 (s/def ::item (s/keys :req [::id ::name ::user]))
-
 (s/def ::ident (s/tuple keyword? ::id))
 
 (>defn ident
@@ -43,12 +41,30 @@
   [::item => ::ident]
   (ident id))
 
-(def schema
-  [id-spec
-   name-spec
-   user-spec])
+(defattr all-categories ::all-categories :ref
+  {ao/target    ::id
+   ao/pc-output [{::all-categories [::id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::all-categories (queries/get-all-categories env query-params)}
+        :cljs
+        (comment env query-params)))})
 
-(def attributes [])
+(defattr link ::link :ref
+  {ao/cardinality :one
+   ao/target      ::id
+   ao/pc-input    #{::id}
+   ao/pc-output   [{::link [::id]}]
+   ao/pc-resolve  (fn [_env params] {::link params})})
 
-#?(:clj
-   (def resolvers []))
+(defattr category-transactions ::category-transactions :ref
+  {ao/cardinality :one
+   ao/target      ::id
+   ao/pc-input    #{::id}
+   ao/pc-output   [{::category-transactions [::id]}]
+   ao/pc-resolve  (fn [_env params] {::category-transactions params})})
+
+(def attributes [all-categories id link name user category-transactions])
+
+#?(:clj (def resolvers []))

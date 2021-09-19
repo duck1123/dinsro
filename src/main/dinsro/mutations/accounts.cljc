@@ -4,26 +4,23 @@
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
    [taoensso.timbre :as log]))
 
-#?(:cljs (comment ::pc/_ ::m.accounts/_ ::m.currencies/_ ::m.users/_))
+#?(:cljs (comment ::pc/_ ::m.accounts/_ ::m.currencies/_))
 
 #?(:clj
    (defn do-create
      [name currency-id user-id initial-value]
-
      (let [params {::m.accounts/name          name
-                   ::m.accounts/currency      {::m.currencies/id currency-id}
+                   ::m.accounts/currency      currency-id
                    ::m.accounts/initial-value initial-value
-                   ::m.accounts/user          {::m.users/id user-id}}]
+                   ::m.accounts/user          user-id}]
        (if-let [eid (q.accounts/create-record params)]
-         (let [record (q.accounts/read-record eid)]
-           {:status :success
-            :items  [(m.accounts/ident-item record)]})
-         {:status :failure}))
-     {:status :no-user}))
+         (when-let [record (q.accounts/read-record eid)]
+           {:status       :success
+            :created-item (m.accounts/ident-item record)})
+         {:status :failure}))))
 
 #?(:clj
    (defn do-delete
@@ -36,7 +33,7 @@
      [{{{:keys [identity]} :session} :request} params]
      {::pc/params #{::m.accounts/name}
       ::pc/output [:status
-                   :items [::m.accounts/id]]}
+                   :created-item [::m.accounts/id]]}
      (let [{::m.accounts/keys               [name initial-value]
             {currency-id ::m.currencies/id} ::m.accounts/currency} params]
        (do-create name currency-id identity initial-value)))

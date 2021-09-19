@@ -2,15 +2,13 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [datahike.api :as d]
-   [dinsro.components.datahike :as db]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
+   [crux.api :as crux]
+   [dinsro.components.crux :as c.crux]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
-   [dinsro.queries.currencies :as q.currencies]
-   [dinsro.queries.users :as q.users]
    [dinsro.specs]
-   [dinsro.utils :as utils]
    [taoensso.timbre :as log]))
 
 (def attribute-list
@@ -23,94 +21,107 @@
 (def record-limit 1000)
 
 (def find-eid-by-id-query
-  '[:find  ?eid
-    :in    $ ?id
-    :where [?eid ::m.accounts/id ?id]])
+  '{:find  [?eid]
+    :in    [?id]
+    :where [[?eid ::m.accounts/id ?id]]})
 
 (def find-id-by-eid-query
-  '[:find  ?id
-    :in    $ ?eid
-    :where [?eid ::m.accounts/id ?id]])
+  '{:find  [?id]
+    :in    [?eid]
+    :where [[?eid ::m.accounts/id ?id]]})
 
 (>defn find-eid-by-id
   [id]
   [::m.accounts/id => :db/id]
-  (ffirst (d/q find-eid-by-id-query @db/*conn* id)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-id-query id))))
 
 (>defn find-id-by-eid
   [eid]
   [:db/id => ::m.accounts/id]
-  (ffirst (d/q find-id-by-eid-query @db/*conn* eid)))
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-id-by-eid-query eid))))
+
+(>defn find-by-currency
+  [currency-id]
+  [::m.currencies/id => (s/coll-of ::m.accounts/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?account-eid]
+                :in    [?currency-id]
+                :where [[?account-eid ::m.accounts/currency ?currency-id]]}]
+    (map first (crux/q db query currency-id))))
+
+(>defn find-by-user
+  [user-id]
+  [::m.users/id => (s/coll-of ::m.accounts/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?account-eid]
+                :in    [?users-id]
+                :where [[?account-eid ::m.accounts/user ?user-id]]}]
+    (map first (crux/q db query user-id))))
 
 (>defn create-record
   [params]
   [::m.accounts/params => :db/id]
-  (let [params   (assoc params ::m.accounts/id (str (utils/uuid)))
-        params   (assoc params :db/id "account-id")
-        response (d/transact db/*conn* {:tx-data [params]})]
-    (get-in response [:tempids "account-id"])))
+  (let [id       (new-uuid)
+        node     (c.crux/main-node)
+        params   (assoc params ::m.accounts/id id)
+        params   (assoc params :crux.db/id id)]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
+    id))
 
 (>defn read-record
   [id]
   [:db/id => (? ::m.accounts/item)]
-  (let [record (d/pull @db/*conn* attribute-list id)]
+  (let [db     (c.crux/main-db)
+        record (crux/pull db '[*] id)]
     (when (get record ::m.accounts/name)
-      (let [user-eid     (get-in record [::m.accounts/user :db/id])
-            currency-eid (get-in record [::m.accounts/currency :db/id])
-            currency-id  (q.currencies/find-id-by-eid currency-eid)
-            user-id      (q.users/find-id-by-eid user-eid)]
-        (-> record
-            (dissoc :db/id)
-            (update ::m.accounts/currency dissoc :db/id)
-            (update ::m.accounts/user dissoc :db/id)
-            (assoc-in [::m.accounts/currency ::m.currencies/id] currency-id)
-            (assoc-in [::m.accounts/user ::m.users/id] user-id))))))
+      record)))
 
 (>defn index-ids
   []
   [=> (s/coll-of :db/id)]
-  (map first (d/q '[:find ?e :where [?e ::m.accounts/name _]] @db/*conn*)))
+  (let [db    (c.crux/main-db)
+        query '[:find ?e :where [?e ::m.accounts/name _]]]
+    (map first (crux/q db query))))
 
 (>defn index-records
   []
   [=> (s/coll-of ::m.accounts/item)]
-  (map read-record (log/spy :info (index-ids))))
+  (map read-record (index-ids)))
 
 (>defn index-records-by-currency
   [currency-id]
   [:db/id => (s/coll-of ::m.accounts/item)]
-  (->> (d/q {:query '[:find
-                      ?id
-                      ?currency-id
-                      :keys db/id name
-                      :in $ ?currency-id
-                      :where
-                      [?id ::m.accounts/currency ?currency-id]]
-             :args  [@db/*conn* currency-id]})
-       (map :db/id)
-       (map read-record)
-       (take record-limit)))
+  (let [db    (c.crux/main-db)
+        query '{:find  [?id ?currency-id]
+                :keys  [db/id name]
+                :in    [?currency-id]
+                :where [[?id ::m.accounts/currency ?currency-id]]}]
+    (->> (crux/q db query currency-id)
+         (map :db/id)
+         (map read-record)
+         (take record-limit))))
 
 (>defn index-records-by-user
   [user-id]
   [:db/id => (s/coll-of ::m.accounts/item)]
-  (->> (d/q {:query '[:find
-                      ?id
-                      ?user-id
-                      :keys db/id name
-                      :in $ ?user-id
-                      :where
-                      [?id ::m.accounts/user ?user-id]]
-             :args  [@db/*conn* user-id]})
-       (map :db/id)
-       (map read-record)
-       (take record-limit)))
+  (let [db    (c.crux/main-db)
+        query '{:find  [?id ?user-id]
+                :keys  [db/id name]
+                :in    [?user-eid]
+                :where [[?id ::m.accounts/user ?user-id]
+                        [?user-eid ::m.users/id ?user-id]]}]
+    (->> (crux/q db query user-id)
+         (map :db/id)
+         (map read-record)
+         (take record-limit))))
 
 (>defn delete-record
   [id]
   [:db/id => nil?]
-  (do
-    (d/transact db/*conn* {:tx-data [[:db/retractEntity id]]})
+  (let [node (c.crux/main-node)]
+    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]]))
     nil))
 
 (>defn delete-all

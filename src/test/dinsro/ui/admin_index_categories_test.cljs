@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
@@ -20,17 +21,22 @@
    {::ct.fulcro3/root u.admin-index-categories/AdminIndexCategories
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.admin-index-categories/form
-       (comp/get-initial-state u.f.create-category/CreateCategoryForm)
+      (let [category-id (new-uuid)
+            user-id     (new-uuid)
+            user        {::m.users/id   user-id
+                         ::m.users/name "admin"}
+            category    {::m.categories/id   category-id
+                         ::m.categories/name "A"}]
+        {::u.admin-index-categories/form
+         (comp/get-initial-state u.f.create-category/CreateCategoryForm)
 
-       ::u.admin-index-categories/categories
-       [{::m.categories/id 1
-         ::m.categories/link [{::m.categories/id 1
-                               ::m.categories/name "A"}]
-         ::m.categories/user [{::m.users/id "admin"}]}]
+         ::u.admin-index-categories/categories
+         [{::m.categories/id   category-id
+           ::m.categories/link category
+           ::m.categories/user user}]
 
-       ::u.admin-index-categories/toggle-button
-       {:form-button/id u.admin-index-categories/form-toggle-sm}
+         ::u.admin-index-categories/toggle-button
+         {:form-button/id u.admin-index-categories/form-toggle-sm}
 
-       ::uism/asm-id
-       u.admin-index-categories/form-toggle-sm})}))
+         ::uism/asm-id
+         u.admin-index-categories/form-toggle-sm}))}))

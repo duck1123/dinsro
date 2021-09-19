@@ -9,7 +9,6 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.users :as q.users])
-   #?(:cljs [dinsro.routing :as routing])
    [taoensso.timbre :as log]))
 
 (comment ::m.users/_ ::pc/_ ::s/_)
@@ -18,22 +17,13 @@
   [_this _props]
   {:query [:user/username :user/valid?]})
 
-#?(:cljs
-   (fm/defmutation finish-login [_]
-     (action
-      [{:keys [_app state]}]
-      (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
-        (when-not logged-in?
-          (routing/route-to! "/login"))
-        (swap! state #(assoc % :root/ready? true))))))
-
 #?(:clj
    (>defn do-register
-     [id password]
-     [::m.users/id ::m.users/password => (s/keys)]
-     (let [params #::m.users{:password password :id id}]
+     [name password]
+     [::m.users/name ::m.users/password => (s/keys)]
+     (let [params #::m.users{:password password :name name}]
        (try
-         (a.authentication/register (log/spy :info params))
+         (a.authentication/register params)
          (catch Exception ex
            ;; (log/error ex "error")
            {::error true
@@ -51,45 +41,58 @@
      (action [_env] (log/info "register"))
      (remote [_env] true)))
 
+(s/def ::login-response (s/keys))
+
 #?(:clj
-   (pc/defmutation login
-     [{{:keys [session]} :request} {:user/keys [username password]}]
-     {::pc/params #{:user/username :user/password}
-      ::pc/output [:user/username :user/valid?]}
-     (if-let [_user (q.users/find-by-id username)]
+   (>defn do-login
+     [session username password]
+     [any? ::m.users/name ::m.users/password => ::login-response]
+     (if-let [user-id (q.users/find-eid-by-name username)]
        (if (= password "hunter2")
-         (augment-response
-          {:user/username username
-           :user/valid?   true}
-          (fn [ring-response]
-            (assoc ring-response :session (assoc session :identity username))))
+         (let [response {:user/username username
+                         :session/current-user-ref {::m.users/id user-id}
+                         :user/valid?   true}
+               handler  (fn [ring-response]
+                          (assoc ring-response :session (assoc session :identity username)))]
+           (augment-response response handler))
          {:user/username nil
           :user/valid?   false})
        {:user/username nil
-        :user/valid?   false}))
+        :user/valid?   false})))
+
+#?(:clj
+   (pc/defmutation login
+     [env {:user/keys [username password]}]
+     {::pc/params #{:user/username :user/password}
+      ::pc/output [:user/username
+                   :user/valid?
+                   {:session/current-user-ref [::m.users/id]}]}
+     (let [{:keys [request]} env
+           {:keys [session]} request]
+       (do-login session username password)))
    :cljs
    (fm/defmutation login [_]
-     (action
-      [{:keys [state]}]
-      (log/info "busy"))
+     (action [{:keys [state]}]
+       (log/info "busy"))
 
-     (error-action
-      [{:keys [state]}]
-      (log/info "error action"))
+     (error-action [{:keys [state]}]
+       (log/info "error action"))
 
-     (ok-action
-      [{:keys [state] :as env}]
-      (log/infof "ok")
-      (let [{:user/keys [valid?]} (get-in env [:result :body `login])]
-        (when-not valid?
-          (swap! state #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
-                                  "Can't log in")))))
+     (ok-action [{:keys [state] :as env}]
+       (let [body (get-in env [:result :body])
+             {:user/keys [valid?]
+              :session/keys [current-user-ref]} (get body `login)]
+         (when-not valid?
+           (-> state
+               (swap! #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
+                                 "Can't log in"))
+               (swap! #(assoc-in % [:component/id :dinsro.ui.navbar/Navbar :session/current-user-ref]
+                                 current-user-ref))))))
 
-     (remote
-      [env]
-      (-> env
-          (fm/returning CurrentUser)
-          (fm/with-target [:session/current-user])))))
+     (remote [env]
+       (-> env
+           (fm/returning CurrentUser)
+           (fm/with-target [:session/current-user])))))
 
 #?(:clj
    (pc/defmutation logout
@@ -103,21 +106,18 @@
         (assoc ring-response :session (assoc session :identity nil)))))
    :cljs
    (fm/defmutation logout [_]
-     (action
-      [{:keys [state]}]
-      (log/info "busy"))
+     (action [{:keys [state]}]
+       (swap! state #(assoc-in % [:component/id :dinsro.ui.navbar/Navbar :session/current-user-ref]
+                               nil)))
 
-     (error-action
-      [{:keys [state]}]
-      (log/info "error action"))
+     (error-action [{:keys [state]}]
+       (log/info "error action"))
 
-     (ok-action
-      [{:keys [state] :as env}]
-      (log/infof "ok"))
+     (ok-action [{:keys [state] :as env}]
+       (log/infof "ok"))
 
-     (remote
-      [env]
-      (fm/with-target env [:session/current-user]))))
+     (remote [env]
+       (fm/with-target env [:session/current-user]))))
 
 #?(:clj
    (def resolvers [login logout register]))

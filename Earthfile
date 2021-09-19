@@ -4,14 +4,19 @@ WORKDIR /usr/src/app
 ARG repo=duck1123
 ARG project=dinsro
 ARG version=latest
-ARG kondo_version=2021.04.23
-ARG npm_version=7.19.1
 ARG dev_group=circleci
 ARG dev_user=circleci
 ARG src_home=/usr/src/app
 ARG data_dir=/var/lib/dinsro/data
 ARG uid=3434
 ARG gid=3434
+
+ARG clojure_version=1.10.1.727
+# https://github.com/clj-kondo/clj-kondo/releases
+ARG kondo_version=2021.08.06
+# https://www.npmjs.com/package/npm?activeTab=versions
+ARG npm_version=7.21.1
+ARG nixos_image=nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
 
 EXPOSE_DOCKER_PORTS:
   COMMAND
@@ -53,7 +58,6 @@ INSTALL_CHROMIUM:
 
 INSTALL_KONDO:
   COMMAND
-  ARG kondo_version=$kondo_version
   RUN curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo \
       && chmod +x install-clj-kondo \
       && echo Version: $kondo_version \
@@ -80,14 +84,14 @@ CREATE_USER_UBUNTU:
   RUN chown -R ${uid}:${gid} ${src_home}
 
 base-builder-nix:
-  FROM nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
+  FROM ${nixos_image}
   ENV USER_HOME=/home/${dev_user}
   WORKDIR /usr/src/app
   RUN nix-env -i autoconf
   RUN nix-env -i bash-5.1-p4
   RUN nix-env -i curl-7.74.0
   RUN nix-env -i openjdk-11.0.9+11
-  RUN nix-env -i clojure-1.10.1.727
+  RUN nix-env -i clojure-${clojure_version}
   RUN nix-env -i nodejs-14.15.3
   RUN nix-env -i xvfb-run
   RUN NIXPKGS_ALLOW_UNFREE=1 nix-env -i chromium
@@ -109,15 +113,13 @@ base-builder-nix:
 
 base-builder:
   FROM circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
-  # ARG kondo_version=$kondo_version
   WORKDIR ${src_home}
   ENV USER_HOME=/home/${dev_user}
   USER root
   DO +INSTALL_NODE
   DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
-  DO +INSTALL_KONDO --kondo_version=$kondo_version
-  # DO +CREATE_USER_UBUNTU
+  DO +INSTALL_KONDO
   RUN chown -R ${uid}:${gid} ${src_home}
   RUN apt update && apt install -y \
           sudo \
