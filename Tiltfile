@@ -3,6 +3,8 @@
 
 base_url = 'dinsro.localhost'
 
+load('ext://helm_remote', 'helm_remote')
+load('ext://local_output', 'local_output')
 load('ext://namespace', 'namespace_create')
 
 disable_snapshots()
