@@ -37,6 +37,7 @@ test-results/
 /resources/workspaces/public/js
 /routes/
 /target
+/tilt_config.json
 /tmp
 /.preprocessor-cljs/
 *.macaroon
