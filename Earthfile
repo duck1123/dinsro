@@ -318,6 +318,13 @@ eastwood:
   FROM +dev-sources
   RUN bb eastwood
 
+fileserver:
+  FROM babashka/babashka:latest
+  COPY resources/fileserver .
+  RUN mkdir -p /mnt/lnd-data
+  CMD ["bb", "watch.clj", "/mnt/lnd-data"]
+  SAVE IMAGE ${repo}/lnd-fileserver:${version}
+
 image:
   FROM openjdk:8-alpine
   VOLUME ${data_dir}
