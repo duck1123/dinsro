@@ -13,7 +13,7 @@ config.define_string('version')
 cfg        = config.parse()
 base_url   = cfg.get('baseUrl',   'dinsro.localhost')
 project_id = cfg.get('projectId', 'p-vhkqf')
-repo       = cfg.get('repo',      'localhost:34371/duck1123')
+repo       = cfg.get('repo',      'duck1123')
 version    = cfg.get('baseUrl',   'latest')
 
 load('ext://helm_remote', 'helm_remote')
