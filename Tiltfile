@@ -1,7 +1,20 @@
 # -*- mode: python -*-
 # Tilt
 
-base_url = 'dinsro.localhost'
+# Base Url for the dinsro instance
+config.define_string('baseUrl')
+# Rancher project id to assign namespaces to
+config.define_string('procjectId')
+# Repo for docker images
+config.define_string('repo')
+# Version for built images
+config.define_string('version')
+
+cfg        = config.parse()
+base_url   = cfg.get('baseUrl',   'dinsro.localhost')
+project_id = cfg.get('projectId', 'p-vhkqf')
+repo       = cfg.get('repo',      'localhost:34371/duck1123')
+version    = cfg.get('baseUrl',   'latest')
 
 load('ext://helm_remote', 'helm_remote')
 load('ext://local_output', 'local_output')
@@ -15,24 +28,28 @@ docker_prune_settings(
 )
 
 # Create Namespaces
-namespace_create('dinsro')
+namespace_create(
+  'dinsro',
+  annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+  labels = [ "field.cattle.io/projectId: %s" % project_id ],
+)
 
 custom_build(
-  'localhost:34371/duck1123/dinsro:dev-sources-latest',
-  'earthly --build-arg repo=localhost:34371/duck1123 +dev-image-sources',
+  "%s/dinsro:dev-sources-%s" % (repo, version),
+  "earthly --build-arg repo=%s +dev-image-sources" % repo,
   [
     'Earthfile',
     '.dockerignore',
     'bb.edn',
     'src'
   ],
-  tag = 'dev-sources-latest',
+  tag = "dev-sources-%s" % version,
   live_update=[
     sync('src', '/usr/src/app/src')
   ]
 )
 
-helm_yaml = helm(
+k8s_yaml(helm(
   'resources/helm/dinsro',
   set = [
     'devtools.ingress.enabled=true',
@@ -42,10 +59,8 @@ helm_yaml = helm(
     'ingress.hosts[0].host=' + base_url,
     'ingress.hosts[0].paths[0].path=/',
   ]
-)
+))
 
-# docker_compose("./resources/tilt/dinsro/docker-compose.yml")
-k8s_yaml(helm_yaml)
 k8s_resource(
   workload='chart-dinsro',
   port_forwards = [
