@@ -19,6 +19,11 @@
       "Name": "local_output",
       "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
       "TimeFetched": "2021-09-26T09:28:53.471875009-04:00"
+    },
+    {
+      "Name": "namespace",
+      "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
+      "TimeFetched": "2021-09-26T09:40:06.747284213-04:00"
     }
   ]
 }
