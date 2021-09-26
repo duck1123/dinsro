@@ -8,7 +8,11 @@ load('ext://local_output', 'local_output')
 load('ext://namespace', 'namespace_create')
 
 disable_snapshots()
-docker_prune_settings(disable=False)
+docker_prune_settings(
+  disable = False,
+  num_builds = 2,
+  keep_recent = 2,
+)
 
 # Create Namespaces
 namespace_create('dinsro')
