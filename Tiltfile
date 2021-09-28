@@ -85,6 +85,7 @@ custom_build(
     'Earthfile',
     '.dockerignore',
     'bb.edn',
+    'deps.edn',
     'src'
   ],
   tag = "dev-sources-%s" % version,
