@@ -18,6 +18,8 @@ project_id  = cfg.get('projectId', 'p-vhkqf')
 repo        = cfg.get('repo',      'duck1123')
 version     = cfg.get('baseUrl',   'latest')
 use_bitcoin = cfg.get('useBitcoin', True)
+use_lnd1    = cfg.get('useLnd1', True)
+use_lnd2    = cfg.get('useLnd2', True)
 
 load('ext://helm_remote', 'helm_remote')
 load('ext://local_output', 'local_output')
@@ -32,22 +34,48 @@ docker_prune_settings(
 
 # Create Namespaces
 namespace_create(
-  'bitcoin',
-  annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
-  labels = [ "field.cattle.io/projectId: %s" % project_id ],
-)
-namespace_create(
   'dinsro',
   annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
   labels = [ "field.cattle.io/projectId: %s" % project_id ],
 )
 
 if use_bitcoin:
+  namespace_create(
+    'bitcoin',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
   k8s_yaml(helm(
     'resources/helm/fold/charts/bitcoind',
     name = 'bitcoind',
     namespace = 'bitcoin',
     values = [ 'resources/tilt/bitcoin_values.yaml' ],
+  ))
+
+if use_bitcoin and use_lnd1:
+  namespace_create(
+    'lnd1',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
+  k8s_yaml(helm(
+    'resources/helm/fold/charts/lnd',
+    name = 'lnd1',
+    namespace = 'lnd1',
+    values = [ 'resources/tilt/lnd1_values.yaml' ]
+  ))
+
+if use_bitcoin and use_lnd2:
+  namespace_create(
+    'lnd2',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
+  k8s_yaml(helm(
+    'resources/helm/fold/charts/lnd',
+    name = 'lnd2',
+    namespace = 'lnd2',
+    values = [ 'resources/tilt/lnd2_values.yaml' ]
   ))
 
 custom_build(
@@ -77,6 +105,17 @@ k8s_yaml(helm(
   ]
 ))
 
+if use_bitcoin and (use_lnd1 or use_lnd2):
+  custom_build(
+    "%s/lnd-fileserver:%s" % (repo, version),
+    "earthly --build-arg repo=%s +fileserver" % repo,
+    [
+      'Earthfile',
+      'resources/fileserver',
+    ],
+    tag = version,
+  )
+
 if use_bitcoin:
   k8s_resource(
     workload = 'bitcoind',
@@ -96,6 +135,24 @@ k8s_resource(
   ],
   labels = [ 'Dinsro' ],
 )
+
+if use_bitcoin and use_lnd1:
+  k8s_resource(
+    workload='lnd1',
+    links = [
+      link('http://lnd1.localhost', 'lnd')
+    ],
+    labels = [ 'bitcoin' ],
+  )
+
+if use_bitcoin and use_lnd2:
+  k8s_resource(
+    workload='lnd2',
+    links = [
+      link('http://lnd2.localhost', 'lnd')
+    ],
+    labels = [ 'bitcoin' ],
+  )
 
 local_resource(
   'check',
