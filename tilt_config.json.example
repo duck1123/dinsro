@@ -2,5 +2,6 @@
   "baseUrl":   "dinsro.localhost",
   "projectId": "",
   "repo":      "duck1123",
-  "version":   "latest"
+  "version":   "latest",
+  "useBitcoin": false
 }

@@ -9,12 +9,15 @@ config.define_string('procjectId')
 config.define_string('repo')
 # Version for built images
 config.define_string('version')
+# Deploy core node
+config.define_bool('useBitcoin')
 
-cfg        = config.parse()
-base_url   = cfg.get('baseUrl',   'dinsro.localhost')
-project_id = cfg.get('projectId', 'p-vhkqf')
-repo       = cfg.get('repo',      'duck1123')
-version    = cfg.get('baseUrl',   'latest')
+cfg         = config.parse()
+base_url    = cfg.get('baseUrl',   'dinsro.dev.kronkltd.net')
+project_id  = cfg.get('projectId', 'p-vhkqf')
+repo        = cfg.get('repo',      'duck1123')
+version     = cfg.get('baseUrl',   'latest')
+use_bitcoin = cfg.get('useBitcoin', True)
 
 load('ext://helm_remote', 'helm_remote')
 load('ext://local_output', 'local_output')
@@ -29,10 +32,23 @@ docker_prune_settings(
 
 # Create Namespaces
 namespace_create(
+  'bitcoin',
+  annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+  labels = [ "field.cattle.io/projectId: %s" % project_id ],
+)
+namespace_create(
   'dinsro',
   annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
   labels = [ "field.cattle.io/projectId: %s" % project_id ],
 )
+
+if use_bitcoin:
+  k8s_yaml(helm(
+    'resources/helm/fold/charts/bitcoind',
+    name = 'bitcoind',
+    namespace = 'bitcoin',
+    values = [ 'resources/tilt/bitcoin_values.yaml' ],
+  ))
 
 custom_build(
   "%s/dinsro:dev-sources-%s" % (repo, version),
@@ -60,6 +76,12 @@ k8s_yaml(helm(
     'ingress.hosts[0].paths[0].path=/',
   ]
 ))
+
+if use_bitcoin:
+  k8s_resource(
+    workload = 'bitcoind',
+    labels = [ 'bitcoin' ],
+  )
 
 k8s_resource(
   workload='chart-dinsro',
