@@ -31,7 +31,7 @@
   org.clojure/clojurescript              {:mvn/version "1.10.773"}
   org.clojure/test.check                 {:mvn/version "1.1.0"}
   org.clojure/tools.cli                  {:mvn/version "1.0.194"}
-  org.lightningj/lightningj              {:mvn/version "0.9.0-Beta-rc1"}
+  org.lightningj/lightningj              {:mvn/version "0.13.1-Beta"}
   org.slf4j/log4j-over-slf4j             {:mvn/version "1.7.30"}
   org.slf4j/jul-to-slf4j                 {:mvn/version "1.7.30"}
   org.slf4j/jcl-over-slf4j               {:mvn/version "1.7.30"}
@@ -51,7 +51,8 @@
   tick/tick                              {:mvn/version "0.4.24-alpha"
                                           :exclusions  [cljsjs/js-joda-timezone
                                                         cljsjs/js-joda-timezone-en-us]}
-  time-specs/time-specs                  {:mvn/version "0.1.0-SNAPSHOT"}}
+  time-specs/time-specs                  {:mvn/version "0.1.0-SNAPSHOT"}
+  wf.bitcoin/bitcoin-rpc-client          {:mvn/version "1.2.2"}}
 
  :aliases
  {:cljfmt
