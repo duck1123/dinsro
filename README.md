@@ -22,6 +22,23 @@ Recommended:
 
 * docker-compose
 * Tilt (https://docs.tilt.dev/install.html)
+* Helm (https://helm.sh/docs/intro/install/)
+* K3D (https://k3d.io/#install-script)
+
+
+## Tilt-based development
+
+You will need a kubernetes server to test with. For local development, I run the following command
+
+``` shell
+k3d cluster create \
+  --api-port 6550 \
+  -p "80:80@loadbalancer" \
+  -p "443:443@loadbalancer" \
+  --servers 1 \
+  --registry-create \
+  --kubeconfig-update-default
+```
 
 ## Running
 
