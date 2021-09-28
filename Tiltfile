@@ -96,6 +96,7 @@ custom_build(
 
 k8s_yaml(helm(
   'resources/helm/dinsro',
+  namespace = 'dinsro',
   set = [
     'devtools.ingress.enabled=true',
     'devtools.ingress.hosts[0].host=devtools.' + base_url,
