@@ -32,6 +32,19 @@
    ["transactions" "Transactions" "/transactions" :dinsro.views.index-transactions/IndexTransactionsPage]
    ["users"        "User"         "/users"        :dinsro.views.index-users/IndexUsersPage]])
 
+(def category-names ["Category A" "Category B" "Category C"])
+(def usernames ["admin" "alice" "bob" "carol" "dave" "eve"])
+
+(def rate-sources
+  [{::m.rate-sources/name "CoinLott0"
+    ::m.rate-sources/url  "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"}
+   {::m.rate-sources/name "BitPonzi"
+    ::m.rate-sources/url  "https://www.bitponzi.biz.localhost/cgi?id=3496709"}
+   {::m.rate-sources/name "DuckBitcoin"
+    ::m.rate-sources/url  "https://www.duckbitcoin.localhost/api/current-rates"}
+   {::m.rate-sources/name "Leviathan"
+    ::m.rate-sources/url  "https://www.leviathan.localhost/prices"}])
+
 (defn create-navlinks!
   []
   (let [node (:main c.crux/crux-nodes)
@@ -47,66 +60,54 @@
                   (mapv #(vector :crux.tx/put %)))]
     (crux/submit-tx node txes)))
 
+(def account-data
+  [["exchange account" 620000.]
+   ["hot wallet"       1000000.]
+   ["duress account"   (* 6.15 100000000 0.01)]
+   ["hodl stack"       (* 6.15 100000000)]])
+
+(def transaction-data
+  [["a" 1.0]
+   ["b" 2.0]])
+
+(def password "hunter2")
+
 (defn seed-db!
   []
-  (let [username   "admin"
-        password   "hunter2"
-        categories ["Category A"
-                    "Category B"
-                    "Category C"]]
+  (create-navlinks!)
+  (dt/set-timezone! "America/Los_Angeles")
 
-    (create-navlinks!)
-    (dt/set-timezone! "America/Los_Angeles")
+  (doseq [username usernames]
     (mu.session/do-register username password)
 
     (let [user-eid (q.users/find-eid-by-name username)]
-      (doseq [name categories] (mu.categories/do-create user-eid name))
+      (doseq [name category-names] (mu.categories/do-create user-eid name))
 
       (mu.currencies/do-create "sats" "Sats" username)
       (let [currency-id (q.currencies/find-eid-by-code "sats")]
-        (mu.accounts/do-create "exchange account" currency-id user-eid 620000.)
-        (mu.accounts/do-create "hot wallet" currency-id user-eid 1000000.)
-        (mu.accounts/do-create "duress account" currency-id user-eid (* 6.15 100000000 0.01))
-        (mu.accounts/do-create "hodl stack" currency-id user-eid (* 6.15 100000000)))
+        (doseq [[name value] account-data]
+          (mu.accounts/do-create name currency-id user-eid value)))
 
       (mu.currencies/do-create "usd" "Dollars" username)
-
       (if-let [currency-id (q.currencies/find-eid-by-code "usd")]
         (do
-          (mu.rate-sources/do-create
-           {::m.rate-sources/name     "CoinLott0"
-            ::m.rate-sources/url      "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"
-            ::m.rate-sources/currency currency-id})
-          (mu.rate-sources/do-create
-           {::m.rate-sources/name     "BitPonzi"
-            ::m.rate-sources/url      "https://www.bitponzi.biz.localhost/cgi?id=3496709"
-            ::m.rate-sources/currency currency-id})
-          (mu.rate-sources/do-create
-           {::m.rate-sources/name     "DuckBitcoin"
-            ::m.rate-sources/url      "https://www.duckbitcoin.localhost/api/current-rates"
-            ::m.rate-sources/currency currency-id})
-          (mu.rate-sources/do-create
-           {::m.rate-sources/name     "Leviathan"
-            ::m.rate-sources/url      "https://www.leviathan.localhost/prices"
-            ::m.rate-sources/currency currency-id})
+          (doseq [rate-source rate-sources]
+            (mu.rate-sources/do-create
+             (assoc rate-source ::m.rate-sources/currency currency-id)))
 
-          (mu.accounts/do-create "cash" currency-id user-eid 3.50)
-          (mu.accounts/do-create "Fun Money" currency-id user-eid 23.67)
+          (doseq [[name value] [["cash" 3.50]
+                                ["Fun Money" 23.67]]]
+            (mu.accounts/do-create name currency-id user-eid value))
 
           (if-let [account-id
                    (nth (:created-item (mu.accounts/do-create "debit" currency-id user-eid 500.))
                         1)]
-            (do
+            (doseq [[description value] transaction-data]
               (mu.transactions/do-create
                {::m.transactions/account     account-id
-                ::m.transactions/description "a"
+                ::m.transactions/description description
                 ::m.transactions/date        (tick/instant)
-                ::m.transactions/value       1.0})
-              (mu.transactions/do-create
-               {::m.transactions/account     account-id
-                ::m.transactions/description "b"
-                ::m.transactions/date        (tick/instant)
-                ::m.transactions/value       2.0}))
+                ::m.transactions/value       value}))
             (throw "no account")))
         (throw "no currency"))
 
