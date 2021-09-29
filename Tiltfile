@@ -99,6 +99,7 @@ if use_bitcoin and use_rtl:
 
 k8s_yaml(helm(
   'resources/helm/dinsro',
+  name = 'dinsro',
   namespace = 'dinsro',
   set = [
     'devtools.ingress.enabled=true',
@@ -186,7 +187,7 @@ if use_bitcoin and use_rtl:
   )
 
 k8s_resource(
-  workload='chart-dinsro',
+  workload='dinsro',
   port_forwards = [
     port_forward(3333, 3333, name='cljs nrepl'),
     port_forward(3693, 3693, name='workspaces'),
