@@ -4,6 +4,7 @@
   "repo":      "duck1123",
   "version":   "latest",
   "useBitcoin": true,
+  "useProduction": false,
   "useLnd1": true,
   "useLnd2": true,
   "useRtl": true

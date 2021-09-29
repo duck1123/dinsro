@@ -13,17 +13,19 @@ config.define_string('version')
 config.define_bool('useBitcoin')
 config.define_bool('useLnd1')
 config.define_bool('useLnd2')
+config.define_bool('useProduction')
 config.define_bool('useRtl')
 
-cfg         = config.parse()
-base_url    = cfg.get('baseUrl',   'dinsro.localhost')
-project_id  = cfg.get('projectId', 'p-vhkqf')
-repo        = cfg.get('repo',      'duck1123')
-version     = cfg.get('baseUrl',   'latest')
-use_bitcoin = cfg.get('useBitcoin', True)
-use_lnd1    = cfg.get('useLnd1', True)
-use_lnd2    = cfg.get('useLnd2', True)
-use_rtl     = cfg.get('useRtl', True)
+cfg            = config.parse()
+base_url       = cfg.get('baseUrl',       'dinsro.localhost')
+project_id     = cfg.get('projectId',     'p-vhkqf')
+repo           = cfg.get('repo',          'duck1123')
+version        = cfg.get('baseUrl',       'latest')
+use_bitcoin    = cfg.get('useBitcoin',    True)
+use_lnd1       = cfg.get('useLnd1',       True)
+use_lnd2       = cfg.get('useLnd2',       True)
+use_production = cfg.get('useProduction', False)
+use_rtl        = cfg.get('useRtl',        True)
 
 load('ext://helm_remote', 'helm_remote')
 load('ext://local_output', 'local_output')
@@ -110,6 +112,49 @@ k8s_yaml(helm(
     'ingress.hosts[0].paths[0].path=/',
   ]
 ))
+
+if use_production:
+  namespace_create(
+    'dinsro-production',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
+
+  k8s_yaml(helm(
+    'resources/helm/dinsro',
+    name = 'dinsro-production',
+    namespace = 'dinsro-production',
+    set = [
+      'devtools.ingress.enabled=true',
+      'devtools.ingress.hosts[0].host=devtools.' + 'dinsro-production.localhost',
+      'devtools.ingress.hosts[0].paths[0].path=/',
+      'ingress.enabled=true',
+      'ingress.hosts[0].host=' + 'dinsro-production.localhost',
+      'ingress.hosts[0].paths[0].path=/',
+      'image.tag=' + version,
+    ]
+  ))
+
+  custom_build(
+    "%s/dinsro:%s" % (repo, version),
+    "earthly --build-arg repo=%s +image" % repo,
+    [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      'deps.edn',
+      'src'
+    ],
+    tag = version,
+  )
+
+  k8s_resource(
+    workload='dinsro-production',
+    links = [
+      link('dinsro-production.localhost', 'Dinsro'),
+    ],
+    labels = [ 'Dinsro' ],
+  )
 
 custom_build(
   "%s/dinsro:dev-sources-%s" % (repo, version),
