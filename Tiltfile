@@ -16,7 +16,7 @@ config.define_bool('useLnd2')
 config.define_bool('useRtl')
 
 cfg         = config.parse()
-base_url    = cfg.get('baseUrl',   'dinsro.dev.kronkltd.net')
+base_url    = cfg.get('baseUrl',   'dinsro.localhost')
 project_id  = cfg.get('projectId', 'p-vhkqf')
 repo        = cfg.get('repo',      'duck1123')
 version     = cfg.get('baseUrl',   'latest')
