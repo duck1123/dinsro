@@ -3,5 +3,8 @@
   "projectId": "",
   "repo":      "duck1123",
   "version":   "latest",
-  "useBitcoin": false
+  "useBitcoin": true,
+  "useLnd1": true,
+  "useLnd2": true,
+  "useRtl": true
 }

@@ -200,6 +200,15 @@ ci:
   # BUILD +e2e
   BUILD +image
 
+cert-downloader:
+  FROM +base-builder
+  USER root
+  COPY resources/cert-downloader .
+  RUN npm install
+  ENTRYPOINT []
+  CMD ["/bin/bash", "bootstrap.sh"]
+  SAVE IMAGE ${repo}/cert-downloader:${version}
+
 compile-frontend:
   FROM +src
   RUN bb compile-cljs

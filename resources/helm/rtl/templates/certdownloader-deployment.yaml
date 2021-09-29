@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-downloader
+spec:
+  selector:
+    matchLabels:
+      {{- include "rtl.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "rtl.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: rtl
+        image: "{{ .Values.certDownloader.image.repository }}:{{ .Values.certDownloader.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: certs
+          mountPath: /mnt/data
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: certs
+        persistentVolumeClaim:
+          claimName: certs

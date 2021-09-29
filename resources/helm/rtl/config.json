@@ -1,0 +1,46 @@
+{
+  "multiPassHashed": "f52fbd32b2b3b86ff88ef6c490628285f482af15ddcb29541f94bcf526a3f6c7",
+  "port": 3000,
+  "defaultNodeIndex": 1,
+  "SSO": {
+    "rtlSSO": 0,
+    "rtlCookiePath": "",
+    "logoutRedirectLink": ""
+  },
+  "nodes": [
+    {
+      "index": 1,
+      "lnNode": "Node 1",
+      "lnImplementation": "LND",
+      "Authentication": {
+        "macaroonPath": "/mnt/data/lnd"
+      },
+      "Settings": {
+        "userPersona": "MERCHANT",
+        "themeMode": "NIGHT",
+        "themeColor": "PURPLE",
+        "channelBackupPath": "/mnt/data/lnd/backups",
+        "enableLogging": true,
+        "lnServerUrl": "https://lnd-internal.lnd.svc.cluster.local:8080",
+        "fiatConversion": false
+      }
+    },
+    {
+      "index": 2,
+      "lnNode": "Node 2",
+      "lnImplementation": "LND",
+      "Authentication": {
+        "macaroonPath": "/mnt/data/lnd2"
+      },
+      "Settings": {
+        "userPersona": "MERCHANT",
+        "themeMode": "NIGHT",
+        "themeColor": "PURPLE",
+        "channelBackupPath": "/mnt/data/lnd2/backups",
+        "enableLogging": true,
+        "lnServerUrl": "https://lnd2-internal.lnd2.svc.cluster.local:8080",
+        "fiatConversion": false
+      }
+    }
+  ]
+}

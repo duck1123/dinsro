@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtl
+spec:
+  selector:
+    matchLabels:
+      {{- include "rtl.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "rtl.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: rtl
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        environment:
+        - name: RTL_SSO
+          value: 0
+        - name: multiPass
+          value: hunter2
+        - name: BITCOIN_HOST
+          value: bitcoind.bitcoin
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 20
+        volumeMounts:
+        - name: config
+          mountPath: /RTL/RTL-Config.json
+          subPath: RTL-Config.json
+        - name: certs
+          mountPath: /mnt/data
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: rtl-config
+      - name: certs
+        persistentVolumeClaim:
+          claimName: certs

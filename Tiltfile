@@ -11,6 +11,9 @@ config.define_string('repo')
 config.define_string('version')
 # Deploy core node
 config.define_bool('useBitcoin')
+config.define_bool('useLnd1')
+config.define_bool('useLnd2')
+config.define_bool('useRtl')
 
 cfg         = config.parse()
 base_url    = cfg.get('baseUrl',   'dinsro.dev.kronkltd.net')
@@ -20,6 +23,7 @@ version     = cfg.get('baseUrl',   'latest')
 use_bitcoin = cfg.get('useBitcoin', True)
 use_lnd1    = cfg.get('useLnd1', True)
 use_lnd2    = cfg.get('useLnd2', True)
+use_rtl     = cfg.get('useRtl', True)
 
 load('ext://helm_remote', 'helm_remote')
 load('ext://local_output', 'local_output')
@@ -78,6 +82,34 @@ if use_bitcoin and use_lnd2:
     values = [ 'resources/tilt/lnd2_values.yaml' ]
   ))
 
+if use_bitcoin and use_rtl:
+  namespace_create(
+    'rtl',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
+
+  k8s_yaml(helm(
+    'resources/helm/rtl',
+    namespace = 'rtl',
+    set = [
+      'certDownloader.image.repository=%s/cert-downloader' % repo,
+    ],
+  ))
+
+k8s_yaml(helm(
+  'resources/helm/dinsro',
+  namespace = 'dinsro',
+  set = [
+    'devtools.ingress.enabled=true',
+    'devtools.ingress.hosts[0].host=devtools.' + base_url,
+    'devtools.ingress.hosts[0].paths[0].path=/',
+    'ingress.enabled=true',
+    'ingress.hosts[0].host=' + base_url,
+    'ingress.hosts[0].paths[0].path=/',
+  ]
+))
+
 custom_build(
   "%s/dinsro:dev-sources-%s" % (repo, version),
   "earthly --build-arg repo=%s +dev-image-sources" % repo,
@@ -94,19 +126,6 @@ custom_build(
   ]
 )
 
-k8s_yaml(helm(
-  'resources/helm/dinsro',
-  namespace = 'dinsro',
-  set = [
-    'devtools.ingress.enabled=true',
-    'devtools.ingress.hosts[0].host=devtools.' + base_url,
-    'devtools.ingress.hosts[0].paths[0].path=/',
-    'ingress.enabled=true',
-    'ingress.hosts[0].host=' + base_url,
-    'ingress.hosts[0].paths[0].path=/',
-  ]
-))
-
 if use_bitcoin and (use_lnd1 or use_lnd2):
   custom_build(
     "%s/lnd-fileserver:%s" % (repo, version),
@@ -118,25 +137,22 @@ if use_bitcoin and (use_lnd1 or use_lnd2):
     tag = version,
   )
 
+if use_bitcoin and use_rtl:
+  custom_build(
+    "%s/cert-downloader:%s" % (repo, version),
+    "earthly --build-arg repo=%s +cert-downloader" % repo,
+    [
+      'Earthfile',
+      'resources/cert-downloader',
+    ],
+    tag = version,
+  )
+
 if use_bitcoin:
   k8s_resource(
     workload = 'bitcoind',
     labels = [ 'bitcoin' ],
   )
-
-k8s_resource(
-  workload='chart-dinsro',
-  port_forwards = [
-    port_forward(3333, 3333, name='cljs nrepl'),
-    port_forward(3693, 3693, name='workspaces'),
-    port_forward(7000, 7000, name='nRepl'),
-    port_forward(9630, 9630, name='devtools')
-  ],
-  links = [
-    link(base_url, 'Dinsro'),
-  ],
-  labels = [ 'Dinsro' ],
-)
 
 if use_bitcoin and use_lnd1:
   k8s_resource(
@@ -155,6 +171,33 @@ if use_bitcoin and use_lnd2:
     ],
     labels = [ 'bitcoin' ],
   )
+
+if use_bitcoin and use_rtl:
+  k8s_resource(
+    workload='rtl',
+    links = [
+      link('http://rtl.localhost/', 'RTL')
+    ],
+    labels = [ 'bitcoin' ],
+  )
+  k8s_resource(
+    workload = 'cert-downloader',
+    labels = [ 'bitcoin' ],
+  )
+
+k8s_resource(
+  workload='chart-dinsro',
+  port_forwards = [
+    port_forward(3333, 3333, name='cljs nrepl'),
+    port_forward(3693, 3693, name='workspaces'),
+    port_forward(7000, 7000, name='nRepl'),
+    port_forward(9630, 9630, name='devtools')
+  ],
+  links = [
+    link(base_url, 'Dinsro'),
+  ],
+  labels = [ 'Dinsro' ],
+)
 
 local_resource(
   'check',

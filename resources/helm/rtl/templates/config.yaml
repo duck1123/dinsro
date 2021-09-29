@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rtl-config
+  labels:
+    app: {{ template "rtl.fullname" . }}-data
+# "multiPass": "leeloo dallas",
+data:
+  RTL-Config.json: |-
+{{ .Files.Get "config.json" | indent 4}}
