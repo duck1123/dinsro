@@ -10,7 +10,6 @@
    [dinsro.config :refer [secret]]
    [dinsro.env :refer [defaults]]
    [dinsro.layout :refer [error-page]]
-   [dinsro.resolvers :as dr]
    [mount.core :refer [defstate]]
    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
@@ -18,8 +17,6 @@
    [taoensso.timbre :as log]))
 
 (def pathom-endpoint "/pathom")
-
-(def my-resolvers [dr/resolvers])
 
 (defn wrap-internal-error [handler]
   (fn [req]
@@ -59,8 +56,7 @@
                  ::pc/mutation-join-globals [:tempids]
                  ::p/placeholder-prefixes   #{">"}}
     ::p/mutate  pc/mutate-async
-    ::p/plugins [(pc/connect-plugin {::pc/register my-resolvers})
-                 (p/post-process-parser-plugin p/elide-not-found)
+    ::p/plugins [(p/post-process-parser-plugin p/elide-not-found)
                  p/error-handler-plugin
                  ;; p/request-cache-plugin
                  p/trace-plugin]}))
