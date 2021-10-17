@@ -91,6 +91,10 @@
   :shadow-cljs
   {:main-opts ["-m" "shadow.cljs.devtools.cli"]}
 
+  :outdated
+  {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
+   :main-opts    ["-m" "depot.outdated.main"]}
+
   :uberdeps
   {:main-opts   ["-m" "uberdeps.uberjar"]
    :extra-paths ["classes"]
