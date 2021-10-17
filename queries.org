@@ -11,3 +11,16 @@
   [{:dinsro.model.currencies/all-currencies
     [:dinsro.model.currencies/name :dinsro.model.currencies/accounts]}]
 #+end_src
+
+** Rates by rate source
+#+begin_src clojure
+  [{:dinsro.model.rate-sources/all-rate-sources
+    [:dinsro.model.rate-sources/name
+     {:dinsro.model.rate-sources/rates
+      [:dinsro.model.rates/rate]}]}]
+#+end_src
+
+** Peers
+#+begin_src clojure
+   [{:dinsro.model.ln-nodes/all-nodes [:dinsro.model.ln-nodes/peers]}]
+#+end_src
