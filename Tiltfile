@@ -241,6 +241,8 @@ k8s_resource(
   ],
   links = [
     link(base_url, 'Dinsro'),
+    link('devtools.' + base_url, 'Devtools'),
+    link('workspaces.' + base_url, 'Workspaces'),
   ],
   labels = [ 'Dinsro' ],
 )

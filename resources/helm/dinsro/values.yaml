@@ -51,6 +51,17 @@ devtools:
       paths:
       - path: /
 
+workspaces:
+  service:
+    type: ClusterIP
+    port: 3693
+  ingress:
+    enabled: true
+    hosts:
+    - host: workspaces.dinsro.localhost
+      paths:
+      - path: /
+
 persistence:
   enabled: true
   size: 1G
