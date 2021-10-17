@@ -8,6 +8,8 @@
       docker-compose
       # earthly
       # helm
+      # kubectl
+      # kustomize
       nodejs
       openjdk
       nodejs
