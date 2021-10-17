@@ -35,10 +35,12 @@
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (config/config :nrepl-port)
-    (log/info "starting in core")
-    (start {:bind    (or (config/config :nrepl-bind) "0.0.0.0")
-            :handler (nrepl-handler)
-            :port    (config/config :nrepl-port)}))
+    (let [bind (or (config/config :nrepl-bind) "0.0.0.0")
+          port (config/config :nrepl-port)]
+      (log/infof "Starting nrepl server: %s:%s" bind port)
+      (start {:bind    bind
+              :handler (nrepl-handler)
+              :port    port})))
   :stop
   (when repl-server
     (stop repl-server)))
