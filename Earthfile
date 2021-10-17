@@ -44,6 +44,7 @@ IMPORT_JAR_DEPS:
 
 INSTALL_BABASHKA:
   COMMAND
+  # FIXME: This always downloads the latest version, enable pinning
   RUN curl -sLO https://raw.githubusercontent.com/babashka/babashka/master/install \
       && chmod +x install \
       && ./install \
