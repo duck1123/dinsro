@@ -9,16 +9,16 @@
 
 (defsc AdminCreateRateSourceForm
   [_this {::keys [name url currency submit-button]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::currency      {}
                    ::name          ""
                    ::submit-button {}
                    ::url           ""}
-   :query [{::currency      (comp/get-query u.inputs/CurrencySelector)}
-           ::name
-           {::submit-button (comp/get-query u.inputs/PrimaryButton)}
-           ::url]}
-  (dom/div
+   :query         [{::currency (comp/get-query u.inputs/CurrencySelector)}
+                   ::name
+                   {::submit-button (comp/get-query u.inputs/PrimaryButton)}
+                   ::url]}
+  (dom/div {}
     (u.inputs/ui-text-input
      {:label (tr [:name]) :value name})
     (u.inputs/ui-text-input

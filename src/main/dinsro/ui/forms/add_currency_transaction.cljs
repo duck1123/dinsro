@@ -10,14 +10,14 @@
 
 (defsc AddCurrencyTransactionForm
   [this {::keys [description name submit-button]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::description   ""
                    ::name          ""
                    ::submit-button {}}
-   :query [::description
-           ::name
-           ::submit-button]}
-  (dom/div
+   :query         [::description
+                   ::name
+                   ::submit-button]}
+  (dom/div {}
     (bulma/field
      (bulma/control
       (u.inputs/ui-text-input

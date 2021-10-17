@@ -9,13 +9,13 @@
 
 (defsc AddCategoryTransactionForm
   [_this {::keys [description value]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::description {}
                    ::input       {}
                    ::value       {}}
-   :query [{::description (comp/get-query u.inputs/TextInput)}
-           {::input (comp/get-query u.inputs/TextInput)}
-           {::value (comp/get-query u.inputs/TextInput)}]}
+   :query         [{::description (comp/get-query u.inputs/TextInput)}
+                   {::input (comp/get-query u.inputs/TextInput)}
+                   {::value (comp/get-query u.inputs/TextInput)}]}
   (bulma/box
    (bulma/field-group
     (bulma/field

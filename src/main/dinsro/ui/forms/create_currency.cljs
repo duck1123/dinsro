@@ -15,7 +15,7 @@
    :initial-state {::id   ""
                    ::name ""}
    :query         [::id ::name]}
-  (dom/div
+  (dom/div {}
     (u.inputs/ui-text-input
      {:label (tr [:id])
       :value id}

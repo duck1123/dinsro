@@ -11,10 +11,10 @@
 
 (defsc AddUserCategoryForm
   [this {::keys [name]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::name ""}
-   :query [::name]}
-  (dom/div
+   :query         [::name]}
+  (dom/div {}
     (u.inputs/ui-text-input
      {:label (tr [:name]) :value name}
      {:onChange #(fm/set-string! this ::name :event %)})

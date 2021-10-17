@@ -10,10 +10,10 @@
 
 (defsc CreateRateForm
   [this {::m.rates/keys [name]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::m.rates/name ""}
-   :query [::m.rates/name]}
-  (dom/div
+   :query         [::m.rates/name]}
+  (dom/div {}
     (u.inputs/ui-text-input
      {:label (tr [:name]) :value name}
      {:onChange #(fm/set-string! this ::m.rates/name :event %)})))

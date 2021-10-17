@@ -11,16 +11,16 @@
 
 (defsc CreateRateSourceForm
   [this {::keys [currency currency-id name url]}]
-  {:ident (fn [] [:component/id ::form])
-   :initial-state {::currency   {}
+  {:ident         (fn [] [:component/id ::form])
+   :initial-state {::currency    {}
                    ::currency-id 0
-                   ::name       ""
-                   ::url        ""}
-   :query [{::currency      (comp/get-query u.inputs/CurrencySelector)}
+                   ::name        ""
+                   ::url         ""}
+   :query         [{::currency (comp/get-query u.inputs/CurrencySelector)}
            ::currency-id
            ::name
            ::url]}
-  (dom/div
+  (dom/div {}
     (bulma/field
      (bulma/control
       (u.inputs/ui-text-input
@@ -42,9 +42,9 @@
        {}
        {:onClick
         (fn []
-          (let [data {:name name
+          (let [data {:name        name
                       :currency-id currency-id
-                      :url url}]
+                      :url         url}]
             (comp/transact! this [(mu.rate-sources/create! data)])))})))))
 
 (def ui-create-rate-source-form (comp/factory CreateRateSourceForm))

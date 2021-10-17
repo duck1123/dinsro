@@ -9,16 +9,16 @@
 
 (defsc AdminCreateAccountForm
   [this {::keys [currency initial-value name user]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::currency      {}
                    ::initial-value ""
                    ::name          ""
                    ::user          {}}
-   :query [{::currency     (comp/get-query u.inputs/CurrencySelector)}
-           ::initial-value
-           ::name
-           {::user         (comp/get-query u.inputs/UserSelector)}]}
-  (dom/div
+   :query         [{::currency (comp/get-query u.inputs/CurrencySelector)}
+                   ::initial-value
+                   ::name
+                   {::user (comp/get-query u.inputs/UserSelector)}]}
+  (dom/div {}
     (u.inputs/ui-text-input
      {:label (tr [:name]) :value name}
      {:onChange #(fm/set-string! this ::name :event %)})

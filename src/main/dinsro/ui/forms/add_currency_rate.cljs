@@ -7,9 +7,9 @@
 
 (defsc AddCurrencyRateForm
   [_this _props]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {}
-   :query [:component/id]}
+   :query         [:component/id]}
   (dom/div "Add Currency Rate"))
 
 (def ui-form (comp/factory AddCurrencyRateForm))

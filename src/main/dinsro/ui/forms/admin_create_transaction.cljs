@@ -8,11 +8,11 @@
 
 (defsc AdminCreateTransactionForm
   [_this {::keys [description value]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::description ""
                    ::value       ""}
-   :query [::description
-           ::value]}
+   :query         [::description
+                   ::value]}
   (bulma/field-group
    (bulma/field
     (bulma/column

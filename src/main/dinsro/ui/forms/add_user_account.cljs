@@ -23,7 +23,7 @@
                    ::initial-value
                    ::name
                    {::submit (comp/get-query u.inputs/PrimaryButton)}]}
-  (dom/div
+  (dom/div {}
     (bulma/field
      (bulma/control
       (u.inputs/ui-text-input

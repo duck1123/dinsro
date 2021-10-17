@@ -6,14 +6,14 @@
 
 (defsc AddUserTransactionForm
   [_this {::keys [account date value]}]
-  {:ident (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::form])
    :initial-state {::account {}
                    ::date    {}
                    ::value   ""}
-   :query [::account
-           ::date
-           ::value]}
-  (dom/div
+   :query         [::account
+                   ::date
+                   ::value]}
+  (dom/div {}
     (dom/p "value" (str value))
     (dom/p "account" (str account))
     (dom/p "date" (str date))

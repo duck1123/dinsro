@@ -17,7 +17,7 @@
                    ::name          "Foo"}
    :query         [::initial-value
                    ::name]}
-  (dom/div
+  (dom/div {}
     (bulma/field
      (bulma/control
       (u.inputs/ui-text-input
