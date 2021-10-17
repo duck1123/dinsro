@@ -24,7 +24,7 @@
       (let [category-id (new-uuid)
             user-id     (new-uuid)
             user        {::m.users/id   user-id
-                         ::m.users/name "admin"}
+                         ::m.users/name m.users/default-username}
             category    {::m.categories/id   category-id
                          ::m.categories/name "A"}]
         {::u.admin-index-categories/form

@@ -9,6 +9,9 @@
    #?(:clj [dinsro.components.database-queries :as queries])
    [taoensso.timbre :as log]))
 
+(def default-username "admin")
+(def default-password "hunter2")
+
 (s/def ::password string?)
 
 (s/def ::id uuid?)

@@ -12,11 +12,11 @@
    ::wsm/card-height 7
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root       u.index-users/IndexUsers
+   {::ct.fulcro3/root u.index-users/IndexUsers
     ::ct.fulcro3/initial-state
     (fn []
       {::u.index-users/items
-       [{::m.users/id "admin"
-         ::m.users/link [{::m.users/id "admin"}]}
+       [{::m.users/id   m.users/default-username
+         ::m.users/link [{::m.users/id m.users/default-username}]}
         {::m.users/id   "bob"
          ::m.users/link [{::m.users/id "bob"}]}]})}))

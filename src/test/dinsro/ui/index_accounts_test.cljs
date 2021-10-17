@@ -23,7 +23,7 @@
         (fn [account]
           (-> account
               (assoc ::m.accounts/user [{::m.users/name "foo"
-                                         ::m.users/id   "admin"}])
+                                         ::m.users/id   m.users/default-username}])
               (assoc ::m.accounts/currency [{::m.currencies/name "Sats"
                                              ::m.currencies/id   "sats"}])))
         (vals sample/account-map))})}))

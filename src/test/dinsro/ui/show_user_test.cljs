@@ -15,4 +15,4 @@
    {::ct.fulcro3/root u.show-user/ShowUser
     ::ct.fulcro3/initial-state
     (fn []
-      {::m.users/id "admin"})}))
+      {::m.users/id m.users/default-username})}))

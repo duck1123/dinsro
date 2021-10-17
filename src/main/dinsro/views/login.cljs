@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
+   [dinsro.model.users :as m.users]
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
@@ -17,9 +18,9 @@
   [this {:user/keys [message password username]
          :as        props}]
   {:ident               (fn [_] [:page/id ::page])
-   :initial-state       {:user/username "admin"
+   :initial-state       {:user/username m.users/default-username
                          :user/message  nil
-                         :user/password "hunter2"}
+                         :user/password m.users/default-password}
    ::auth/provider      :local
    ::auth/check-session `dinsro.mutations.session/check-session
    ::auth/logout        `dinsro.mutations.session/logout

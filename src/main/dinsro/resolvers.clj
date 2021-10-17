@@ -14,8 +14,8 @@
       {:user/ref [::m.users/id]}
       :user/valid?]}]}
   (log/spy :info props)
-  (let [username "admin"
-        user-id  (q.users/find-eid-by-name "admin")]
+  (let [username m.users/default-username
+        user-id  (q.users/find-eid-by-name m.users/default-username)]
     {:session/current-user
      {:user/username username
       :user/ref      {::m.users/id user-id}

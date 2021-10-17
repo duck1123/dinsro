@@ -19,10 +19,10 @@
     ::ct.fulcro3/initial-state
     (fn []
       (let [user-id (new-uuid)
-            user {::m.users/id user-id
-                  ::m.users/name   "admin"
-                  ::m.users/link {::m.users/id   user-id
-                                  ::m.users/name "admin"}}]
+            user    {::m.users/id   user-id
+                     ::m.users/name m.users/default-username
+                     ::m.users/link {::m.users/id   user-id
+                                     ::m.users/name m.users/default-username}}]
         {::u.admin-index-users/toggle-button {:form-button/id u.admin-index-users/form-toggle-sm}
 
          ::u.admin-index-users/users

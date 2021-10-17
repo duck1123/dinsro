@@ -26,7 +26,7 @@
                    (assoc ::m.accounts/currency [{::m.currencies/id   "sats"
                                                   ::m.currencies/name "Sats"}])
                    (assoc ::m.accounts/link [account])
-                   (assoc ::m.accounts/user [{::m.users/id "admin"}])))
+                   (assoc ::m.accounts/user [{::m.users/id m.users/default-username}])))
              (vals sample/account-map))
             ::uism/asm-id ::u.user-accounts/form-toggle})}))
 

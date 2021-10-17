@@ -61,7 +61,7 @@
      [session username password]
      [any? ::m.users/name ::m.users/password => ::login-response]
      (if-let [_user (q.users/find-eid-by-name username)]
-       (if (= password "hunter2")
+       (if (= password m.users/default-password)
          (let [response {:user/username username
                          :user/valid?   true}
                handler  (fn [ring-response]

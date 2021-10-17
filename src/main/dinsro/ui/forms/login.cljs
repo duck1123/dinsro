@@ -7,6 +7,7 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
+   [dinsro.model.users :as m.users]
    [dinsro.mutations]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
@@ -16,9 +17,9 @@
 (defsc LoginForm
   [this {:user/keys [message password username]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {:user/username "admin"
+   :initial-state {:user/username m.users/default-username
                    :user/message  nil
-                   :user/password "hunter2"}
+                   :user/password m.users/default-password}
    :query         [:user/username :user/password :user/message]}
   (ui-form {}
     (dom/div :.is-centered

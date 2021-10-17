@@ -6,6 +6,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.seed :as seed]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.mutations.categories :as mu.categories]
    [dinsro.mutations.currencies :as mu.currencies]
@@ -70,7 +71,7 @@
   [["a" 1.0]
    ["b" 2.0]])
 
-(def password "hunter2")
+(def password m.users/default-password)
 
 (defn seed-db!
   []

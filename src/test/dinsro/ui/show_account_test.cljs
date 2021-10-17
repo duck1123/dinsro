@@ -19,4 +19,4 @@
     (fn []
       {::m.accounts/name     "Savings"
        ::m.accounts/currency [{::m.currencies/id "sats" ::m.currencies/name "Sats"}]
-       ::m.accounts/user     [{::m.users/id "admin"}]})}))
+       ::m.accounts/user     [{::m.users/id m.users/default-username}]})}))

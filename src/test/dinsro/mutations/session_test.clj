@@ -37,7 +37,7 @@
 
 (deftest login
   (let [env      {:request {:session {}}}
-        data     #:user{:password "hunter2" :username "bob"}
+        data     #:user{:password m.users/default-password :username "bob"}
         response ((::pc/mutate mu.session/login) env data)]
     (assertions
      response => {::auth/provider :local

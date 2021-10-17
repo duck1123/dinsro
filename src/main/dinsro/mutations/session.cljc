@@ -50,7 +50,7 @@
      [session username password]
      [any? ::m.users/name ::m.users/password => ::login-response]
      (if-let [user-id (q.users/find-eid-by-name username)]
-       (if (= password "hunter2")
+       (if (= password m.users/default-password)
          (let [response {:user/username            username
                          :session/current-user-ref {::m.users/id user-id}
                          :user/valid?              true}

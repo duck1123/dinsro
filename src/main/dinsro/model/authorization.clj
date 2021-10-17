@@ -13,7 +13,7 @@
   (log/info "Attempt login for" username)
 
   (enc/if-let [{::m.users/keys [name id]} (queries/get-login-info env username)]
-    (if (= password "hunter2")
+    (if (= password m.users/default-password)
       (do
         (log/info "Login for" username name)
         (let [s {::auth/provider           :local

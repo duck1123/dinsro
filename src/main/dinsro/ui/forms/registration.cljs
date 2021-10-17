@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
+   [dinsro.model.users :as m.users]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
@@ -11,9 +12,9 @@
 (defsc RegistrationForm
   [this {::keys [confirm-password id password]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {::confirm-password "hunter2"
-                   ::id               "admin"
-                   ::password         "hunter2"}
+   :initial-state {::confirm-password m.users/default-password
+                   ::id               m.users/default-username
+                   ::password         m.users/default-password}
    :query         [::confirm-password
                    ::id
                    ::password]}

@@ -37,4 +37,4 @@
     ::ct.fulcro3/initial-state
     (fn []
       {::m.users/id   (new-uuid)
-       ::m.users/name "admin"})}))
+       ::m.users/name m.users/default-username})}))
