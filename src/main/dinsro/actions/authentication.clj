@@ -5,11 +5,14 @@
    [clj-time.core :as time]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]]
    [dinsro.actions.users :as a.users]
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
    [dinsro.model.users :as m.users]
    [taoensso.timbre :as log]))
+
+(s/def ::login-response (s/keys))
 
 (>defn authenticate
   [username password]
@@ -52,3 +55,29 @@
           (log/error ex "User exists")
           (throw "User already exists")))
       #_(throw "Invalid"))))
+
+(>defn do-register
+  [name password]
+  [::m.users/name ::m.users/password => (s/keys)]
+  (let [params #::m.users{:password password :name name}]
+    (try
+      (register params)
+      (catch Exception ex
+        {::error true
+         :ex     (str ex)}))))
+
+(>defn do-login
+  [session username password]
+  [any? ::m.users/name ::m.users/password => ::login-response]
+  (if-let [user-id (q.users/find-eid-by-name username)]
+    (if (= password m.users/default-password)
+      (let [response {:user/username            username
+                      :session/current-user-ref {::m.users/id user-id}
+                      :user/valid?              true}
+            handler  (fn [ring-response]
+                       (assoc ring-response :session (assoc session :identity username)))]
+        (augment-response response handler))
+      {:user/username nil
+       :user/valid?   false})
+    {:user/username nil
+     :user/valid?   false}))

@@ -7,6 +7,7 @@
    [dinsro.components.streams :as streams]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
    [dinsro.utils :as utils]
    [manifold.stream :as ms]
@@ -36,6 +37,15 @@
   [:db/id => ::m.rates/id]
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-id-by-eid-query eid))))
+
+(>defn find-ids-by-rate-source
+  [rate-source-id]
+  [::m.rate-sources/id => (s/coll-of ::m.rates/id)]
+  (let [db (c.crux/main-db)
+        query '{:find [?rate-id]
+                :in [?rate-source-id]
+                :where [[?rate-id ::m.rates/source ?rate-source-id]]}]
+    (map first (crux/q db query rate-source-id))))
 
 (>defn prepare-record
   [params]

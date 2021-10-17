@@ -61,6 +61,16 @@
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-id-by-eid-query eid))))
 
+(>defn find-id-by-user-and-name
+  [user-id name]
+  [::m.users/id ::m.currencies/name => (? ::m.currencies/id)]
+  (let [db (c.crux/main-db)
+        query '{:find  [?currency-id]
+                :in    [?user-id ?name]
+                :where [[?currency-id ::m.currencies/user ?user-id]
+                        [?currency-id ::m.currencies/name ?name]]}]
+    (ffirst (crux/q db query user-id name))))
+
 (>defn create-record
   [params]
   [::m.currencies/params => (? ::m.currencies/id)]
@@ -68,8 +78,7 @@
     (let [node   (c.crux/main-node)
           id     (new-uuid)
           params (assoc params :crux.db/id id)
-          params (assoc params ::m.currencies/id id)
-          params (dissoc params ::m.currencies/user)]
+          params (assoc params ::m.currencies/id id)]
       (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
       id)
     (catch Exception ex
@@ -87,10 +96,10 @@
 (>defn read-record
   [id]
   [:db/id => (? ::m.currencies/item)]
-  (let [db (c.crux/main-db)
+  (let [db     (c.crux/main-db)
         record (crux/pull db '[*] id)]
-    (when (get record ::m.currencies/name)
-      (dissoc record :db/id))))
+    (when (get record ::m.currencies/id)
+      (dissoc record :crux.db/id))))
 
 (>defn find-by-id
   [id]

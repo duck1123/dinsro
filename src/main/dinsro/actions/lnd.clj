@@ -27,10 +27,8 @@
 
 (def config1
   {:name          "lnd"
-   :host          "lnd-internal.lnd.svc.cluster.local"
+   :host          "lnd1-internal.lnd1.svc.cluster.local"
    :port          10009
-   :cert-path     (str wallet-base "tls-lnd.cert")
-   :macaroon-path (str wallet-base "admin-lnd.macaroon")
    :mnemonic      ["abandon" "horror"  "because" "buddy"
                    "jump"    "satisfy" "escape"  "flee"
                    "tape"    "pull"    "bacon"   "arm"
@@ -42,8 +40,6 @@
   {:name          "lnd2"
    :host          "lnd2-internal.lnd2.svc.cluster.local"
    :port          10009
-   :cert-path     (str wallet-base "tls-lnd2.cert")
-   :macaroon-path (str wallet-base "admin-lnd2.macaroon")
    :mnemonic      ["absorb" "impulse"  "slide"   "trumpet"
                    "garage" "happy"    "round"   "rely"
                    "rebel"  "flower"   "vessel"  "regular"
@@ -59,13 +55,20 @@
               out (io/output-stream file)]
     (io/copy in out)))
 
+(defn read-cert
+  []
+  nil)
+
+(defn download-cert
+  [{:keys [host name]}]
+  (download-file
+   (format "http://%s/tls.cert" host)
+   (io/file (format "tls-%s.cert" name))))
+
 (defn download-certs
   []
   (doseq [config configs]
-    (let [{:keys [host name]} config]
-      (download-file
-       (format "http://%s/tls.cert" host)
-       (io/file (format "tls-%s.cert" name))))))
+    (download-cert config)))
 
 (defn download-macaroon
   [config]

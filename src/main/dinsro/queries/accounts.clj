@@ -42,6 +42,16 @@
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-id-by-eid-query eid))))
 
+(>defn find-id-by-user-and-name
+  [user-id name]
+  [::m.accounts/user ::m.accounts/name => ::m.accounts/id]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?account-id]
+                :in    [?user-id ?name]
+                :where [[?account-id ::m.accounts/name ?name]
+                        [?account-id ::m.accounts/user ?user-id]]}]
+    (ffirst (crux/q db query user-id name))))
+
 (>defn find-by-currency
   [currency-id]
   [::m.currencies/id => (s/coll-of ::m.accounts/id)]

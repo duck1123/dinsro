@@ -24,6 +24,11 @@
     :in    $ ?id
     :where [?eid ::m.rate-sources/id ?id]])
 
+(def find-eid-by-name-query
+  '[:find  ?eid
+    :in    $ ?name
+    :where [?eid ::m.rate-sources/name ?name]])
+
 (def find-id-by-eid-query
   '[:find  ?id
     :in    $ ?eid
@@ -35,11 +40,27 @@
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-eid-by-id-query id))))
 
+(>defn find-eid-by-name
+  [name]
+  [::m.rate-sources/name => ::m.rate-sources/id]
+  (let [db (c.crux/main-db)]
+    (ffirst (crux/q db find-eid-by-name-query name))))
+
 (>defn find-id-by-eid
   [eid]
   [:db/id => ::m.rate-sources/id]
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-id-by-eid-query eid))))
+
+(>defn find-id-by-currency-and-name
+  [currency-id name]
+  [::m.rate-sources/currency ::m.rate-sources/name => (? ::m.rate-sources/id)]
+  (let [db (c.crux/main-db)
+        query '{:find  [?rate-source-id]
+                :in    [?currency-id ?name]
+                :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]
+                        [?rate-source-id ::m.rate-sources/name ?name]]}]
+    (ffirst (crux/q db query currency-id name))))
 
 (>defn create-record
   [params]
