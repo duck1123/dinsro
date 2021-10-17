@@ -1,7 +1,8 @@
 {:paths ["script"]
 
  :tasks
- {:requires ([dinsro.commands :refer :all])
+ {:requires ([clojure.string :as string]
+             [dinsro.commands :refer :all])
 
   _8
   {:doc  "Summons bot"
@@ -68,7 +69,11 @@
   compile-cljs
   {:doc     "Compile clojurescript source files"
    :depends [init]
-   :task    (clojure "-M:dev:shadow-cljs compile main")}
+   :task    (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
+                  data         {:devtools {:devtools-url devtools-url}}
+                  args         (format "-M:dev:shadow-cljs compile main --config-merge '%s'"
+                                       (pr-str data))]
+              (clojure args))}
 
   compile-production
   {:doc     "Compile all source files for production"
@@ -92,21 +97,32 @@
   dev-bootstrap
   {:doc "Start clojurescript watch and main server"
    :task
-   (let [user      "circleci"
-         group     "circleci"
-         data-path "/var/lib/dinsro"
-         sudo      (fn [cmd] (format "sudo -u %s %s" user cmd))]
-     (shell (format "chown -R %s:%s %s" user group data-path))
-     (shell (format "su %s" user))
-     (shell (sudo "bb dev-bootstrap-user")))}
+   (let [user          "circleci"
+         group         "circleci"
+         src-path      "/var/lib/dinsro"
+         sudo          (fn [cmd] (format "sudo -u %s %s" user cmd))
+         devtools-url  (or (System/getenv "DEVTOOLS_URL"))
+         envs          (->> [(when devtools-url (format "DEVTOOLS_URL=%s" devtools-url))]
+                            (filter identity)
+                            (string/join " "))
+         bootstrap-cmd (str envs " bb dev-bootstrap-user")]
+     (shell (sudo bootstrap-cmd)))}
 
   dev-bootstrap-user
   {:task
    (do
      (println "=========================================================================================")
-     (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\"")
-     (future (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb watch-cljs\""))
-     (shell "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""))}
+     (let [devtools-url (or (System/getenv "DEVTOOLS_URL"))
+           envs         (->> ["CONFIG_FILE=/etc/dinsro/config.edn"
+                              (when devtools-url (str "DEVTOOLS_URL=" devtools-url))]
+                             (filter identity)
+                             (clojure.string/join " "))
+           compile-cmd  "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\""
+           watch-cmd    (str "sh -c \"" envs " bb watch-cljs\"")
+           run-cmd      "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""]
+       (shell compile-cmd)
+       (future (shell watch-cmd))
+       (shell run-cmd)))}
 
   display-path
   {:doc  "Display dependency trees for each alias"
@@ -202,10 +218,20 @@
   test-integration
   {:task (shell "npx cypress run")}
 
-  watch {:depnds [watch-cljs]}
+  watch {:depends [watch-cljs]}
 
   watch-cljs
-  {:task (clojure "-M:test:dev:shadow-cljs watch main workspaces")}
+  {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
+               data         {:devtools {:devtools-url devtools-url}}
+               args         (format "-M:dev:shadow-cljs watch main workspaces --config-merge '%s'"
+                                    (pr-str data))]
+           (println (str "devtools: " devtools-url))
+           (clojure args))}
 
   workspaces
-  {:task (clojure "-M:test:dev:shadow-cljs watch workspaces")}}}
+  {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
+               data         {:devtools {:devtools-url devtools-url}}
+               args         (format "-M:dev:shadow-cljs watch workspaces --config-merge '%s'"
+                                    (pr-str data))]
+           (println (str "devtools: " devtools-url))
+           (clojure args))}}}
