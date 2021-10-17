@@ -1,5 +1,7 @@
 (ns dinsro.specs
+  (:refer-clojure :exclude [instance?])
   (:require
+   [clojure.core.async]
    [clojure.spec.alpha :as s]
    [clojure.test.check.generators]
    [clojure.spec.gen.alpha :as gen]
@@ -16,6 +18,10 @@
 (defn gen-key
   [key]
   (gen/generate (s/gen key)))
+
+(defn instance?
+  [c]
+  (partial clojure.core/instance? c))
 
 (def non-empty-string-alphanumeric
   "Generator for non-empty alphanumeric strings"
