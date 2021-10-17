@@ -14,7 +14,6 @@
    {::ct.fulcro3/root u.f.add-account-transaction/AddAccountTransactionForm
     ::ct.fulcro3/initial-state
     (fn []
-      {::u.f.add-account-transaction/datepicker    {}
-       ::u.f.add-account-transaction/description   ""
+      {::u.f.add-account-transaction/description   ""
        ::u.f.add-account-transaction/name          ""
        ::u.f.add-account-transaction/submit-button {}})}))

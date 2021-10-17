@@ -18,7 +18,6 @@
     "@js-joda/timezone": "^2.3.0",
     "big.js": "5.2.2",
     "bulma": "^0.9.1",
-    "bulma-calendar": "^6.0.9",
     "highlight.js": "^9.12.0",
     "intl-messageformat": "^9.3.11",
     "js-joda": "^1.11.0",
