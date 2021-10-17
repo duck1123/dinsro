@@ -1,6 +1,14 @@
 # Earthfile
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
-WORKDIR /usr/src/app
+ARG nixos_image=nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
+ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
+ARG clojure_version=1.10.1.727
+# https://github.com/clj-kondo/clj-kondo/releases
+ARG kondo_version=2021.08.06
+ARG node_version=14.15.3
+# https://www.npmjs.com/package/npm?activeTab=versions
+ARG npm_version=7.21.1
+
 ARG repo=duck1123
 ARG project=dinsro
 ARG version=latest
@@ -11,12 +19,7 @@ ARG data_dir=/var/lib/dinsro/data
 ARG uid=3434
 ARG gid=3434
 
-ARG clojure_version=1.10.1.727
-# https://github.com/clj-kondo/clj-kondo/releases
-ARG kondo_version=2021.08.06
-# https://www.npmjs.com/package/npm?activeTab=versions
-ARG npm_version=7.21.1
-ARG nixos_image=nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e3b3d4ea298c95c708
+WORKDIR /usr/src/app
 
 EXPOSE_DOCKER_PORTS:
   COMMAND
@@ -93,7 +96,7 @@ base-builder-nix:
   RUN nix-env -i curl-7.74.0
   RUN nix-env -i openjdk-11.0.9+11
   RUN nix-env -i clojure-${clojure_version}
-  RUN nix-env -i nodejs-14.15.3
+  RUN nix-env -i nodejs-${node_version}
   RUN nix-env -i xvfb-run
   RUN NIXPKGS_ALLOW_UNFREE=1 nix-env -i chromium
   ENV CHROME_BIN=chromium
@@ -113,7 +116,7 @@ base-builder-nix:
       && chown -R ${uid}:${gid} ${USER_HOME}
 
 base-builder:
-  FROM circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
+  FROM ${base_image}
   WORKDIR ${src_home}
   ENV USER_HOME=/home/${dev_user}
   USER root
