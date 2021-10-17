@@ -1,5 +1,8 @@
 .calva
 .clj-kondo/.cache
+.clj-kondo/com.fulcrologic/
+.clj-kondo/com.wsscode/
+.clj-kondo/rewrite-clj/
 .cpcache
 .eastwood
 .env
