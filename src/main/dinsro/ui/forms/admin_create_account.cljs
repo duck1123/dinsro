@@ -18,7 +18,7 @@
                    ::initial-value
                    ::name
                    {::user (comp/get-query u.inputs/UserSelector)}]}
-  (dom/div {}
+  (dom/form :.ui.form
     (u.inputs/ui-text-input
      {:label (tr [:name]) :value name}
      {:onChange #(fm/set-string! this ::name :event %)})
