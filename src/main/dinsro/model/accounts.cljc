@@ -7,7 +7,6 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.authorization :as auth]
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
@@ -74,15 +73,6 @@
 
 (s/def ::item (s/keys :req [::id ::name ::initial-value ::user]
                       :opt [::currency]))
-(defattr all-accounts ::all-accounts :ref
-  {ao/target    ::id
-   ao/pc-output [{::all-accounts [::id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     (comment env query-params)
-     {::all-accounts
-      #?(:clj  (queries/get-all-accounts env query-params)
-         :cljs [])})})
 
 (defattr link ::link :ref
   {ao/cardinality :one
@@ -98,6 +88,6 @@
    ao/pc-output  [{::account-transactions [::id]}]
    ao/pc-resolve (fn [_env params] {::account-transactions params})})
 
-(def attributes [account-transactions all-accounts currency id initial-value link name user])
+(def attributes [account-transactions currency id initial-value link name user])
 
 #?(:clj (def resolvers []))

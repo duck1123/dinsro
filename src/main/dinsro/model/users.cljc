@@ -6,7 +6,6 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.authorization :as auth]
-   #?(:clj [dinsro.components.database-queries :as queries])
    [taoensso.timbre :as log]))
 
 (def default-username "admin")
@@ -47,14 +46,6 @@
   [::item => ::ident]
   (ident id))
 
-(defattr all-users ::all-users :ref
-  {ao/target    ::id
-   ao/pc-output [{::all-users [::id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     #?(:clj  {::all-users (queries/get-all-users env query-params)}
-        :cljs (comment env query-params)))})
-
 (defattr link ::link :ref
   {ao/cardinality :one
    ao/target      ::id
@@ -84,8 +75,7 @@
    ao/pc-resolve  (fn [_env params] {::user-transactions params})})
 
 (def attributes
-  [all-users
-   id
+  [id
    link
    name
    password-hash
