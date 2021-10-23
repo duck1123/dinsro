@@ -11,6 +11,7 @@
 .helm
 .idea
 .lein-*
+.lsp
 *.class
 *.db
 *.log
