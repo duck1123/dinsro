@@ -71,30 +71,3 @@
 (def attributes [all-rates currency date id link rate])
 
 #?(:clj (def resolvers []))
-
-(def id-spec
-  {:db/ident       ::id
-   :db/valueType   :db.type/string
-   :db/cardinality :db.cardinality/one
-   :db/unique      :db.unique/identity})
-
-(def rate-spec
-  {:db/ident       ::rate
-   :db/valueType   :db.type/double
-   :db/cardinality :db.cardinality/one})
-
-(def currency-spec
-  {:db/ident       ::currency
-   :db/valueType   :db.type/ref
-   :db/cardinality :db.cardinality/one})
-
-(def date-spec
-  {:db/ident       ::date
-   :db/valueType   :db.type/instant
-   :db/cardinality :db.cardinality/one})
-
-(def schema
-  [currency-spec
-   date-spec
-   id-spec
-   rate-spec])
