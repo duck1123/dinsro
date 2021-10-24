@@ -32,6 +32,7 @@
    ro/columns          [m.rates/id
                         m.rates/rate
                         currency-link
+                        m.rates/source
                         m.rates/date]
    ro/route            "rates"
    ro/row-actions      []
