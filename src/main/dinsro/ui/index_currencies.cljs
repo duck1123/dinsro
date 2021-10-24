@@ -1,11 +1,14 @@
 (ns dinsro.ui.index-currencies
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.user-currencies :as u.user-currencies]
    [taoensso.timbre :as log]))
 
 (def form-toggle-sm ::form-toggle)
@@ -42,3 +45,21 @@
     (dom/div (tr [:no-currencies]))))
 
 (def ui-index-currencies (comp/factory IndexCurrencies))
+
+(defsc IndexCurrenciesPage
+  [_this {::keys [currencies]}]
+  {:componentDidMount
+   (fn [this]
+     (df/load! this ::m.currencies/all-currencies IndexCurrencyLine
+               {:target [:component/id
+                         ::UserCurrencies
+                         ::currencies
+                         ::currencies]}))
+   :ident         (fn [] [:page/id ::page])
+   :initial-state {::currencies {}}
+   :query         [{::currencies (comp/get-query u.user-currencies/UserCurrencies)}]
+   :route-segment ["currencies"]}
+  (bulma/page
+   (u.user-currencies/ui-user-currencies currencies)))
+
+(def ui-page (comp/factory IndexCurrenciesPage))

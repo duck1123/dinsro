@@ -1,10 +1,15 @@
 (ns dinsro.ui.index-rate-sources
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [dinsro.machines :as machines]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.forms.create-rate-source :as u.f.create-rate-source]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
@@ -51,3 +56,38 @@
     (dom/p "no items")))
 
 (def ui-index-rate-sources (comp/factory IndexRateSources))
+
+(def form-page-toggle-sm ::form-toggle)
+
+(defsc IndexRateSourcesPage
+  [this {::keys [toggle-button rate-sources form]}]
+  {:componentDidMount
+   (fn [this]
+     (uism/begin! this machines/hideable form-toggle-sm
+                  {:actor/navbar IndexRateSourcesPage})
+
+     (df/load! this ::m.rate-sources/all-rate-sources IndexRateSourceLine
+               {:target [:page/id
+                         ::page
+                         ::rate-sources
+                         :dinsro.ui.index-rate-sources/items]}))
+   :ident         (fn [] [:page/id ::page])
+   :initial-state {::form          {}
+                   ::rate-sources  {}
+                   ::toggle-button {:form-button/id form-page-toggle-sm}}
+   :route-segment ["rate-sources"]
+   :query         [{::form (comp/get-query u.f.create-rate-source/CreateRateSourceForm)}
+                   {::rate-sources (comp/get-query IndexRateSources)}
+                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
+                   [::uism/asm-id form-page-toggle-sm]]}
+  (let [shown? (= (uism/get-active-state this form-page-toggle-sm) :state/shown)]
+    (bulma/page
+     (bulma/box
+      (dom/h1
+       (tr [:index-rates "Index Rate Sources"])
+       (u.buttons/ui-show-form-button toggle-button))
+      (when shown? (u.f.create-rate-source/ui-create-rate-source-form form))
+      (dom/hr)
+      (ui-index-rate-sources rate-sources)))))
+
+(def ui-page (comp/factory IndexRateSourcesPage))

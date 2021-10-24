@@ -16,8 +16,8 @@
    [dinsro.routing :as d.routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
-   [dinsro.views.home :as v.home]
-   [dinsro.views.login :as v.login]
+   [dinsro.ui.home :as v.home]
+   [dinsro.ui.login :as v.login]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
 

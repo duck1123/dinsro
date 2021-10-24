@@ -69,3 +69,7 @@
            (map ui-admin-index-account-line accounts)))))))
 
 (def ui-section (comp/factory AdminIndexAccounts))
+
+(defsc AdminIndexAccountsPage
+  [_this _props]
+  (dom/div "admin index accounts page"))

@@ -15,7 +15,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.authenticator :as u.authenticator]
-   [dinsro.views.home :as v.home]
+   [dinsro.ui.home :as v.home]
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]
    [taoensso.timbre :as log]))
 
@@ -48,7 +48,7 @@
                    ::m.users/name ""}
    :query         [::m.users/id
                    ::m.users/name]}
-  (let [component (comp/registry-key->class :dinsro.views.show-user/ShowUserPage)]
+  (let [component (comp/registry-key->class :dinsro.ui.show-user/ShowUserPage)]
     (dom/a :.navbar-link
       {:onClick (fn [_e] (rroute/route-to! this component {::m.users/id id}))}
       name)))
@@ -61,7 +61,7 @@
    :query         []}
   (dom/a :.ui.item
     {:onClick (fn [evt]
-                (let [component (comp/registry-key->class :dinsro.views.login/LoginPage)]
+                (let [component (comp/registry-key->class :dinsro.ui.login/LoginPage)]
                   (rroute/route-to! this component {}))
                 (.preventDefault evt)
                 false)}

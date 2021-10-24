@@ -1,11 +1,11 @@
-(ns dinsro.views.home
+(ns dinsro.ui.home
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.routing :as rroute]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [dinsro.views.login :as v.login]
+   [dinsro.ui.login :as v.login]
    [taoensso.timbre :as log]))
 
 (defn path-for

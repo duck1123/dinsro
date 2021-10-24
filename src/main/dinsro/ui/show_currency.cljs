@@ -1,7 +1,10 @@
 (ns dinsro.ui.show-currency
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
@@ -50,3 +53,19 @@
     (dom/p "No currency")))
 
 (def ui-show-currency-full (comp/factory ShowCurrencyFull))
+
+(defsc ShowCurrencyPage
+  [_this {::keys [currency]}]
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::currency {}}
+   :query         [{::currency (comp/get-query ShowCurrencyFull)}]
+   :route-segment ["currencies" ::m.currencies/id]
+   :will-enter
+   (fn [app {::m.currencies/keys [id]}]
+     (when id
+       (df/load app [::m.currencies/id (new-uuid id)] ShowCurrencyFull
+                {:target [:page/id ::page ::currency]}))
+     (dr/route-immediate (comp/get-ident ShowCurrencyPage {})))}
+  (if (::m.currencies/id currency)
+    (ui-show-currency-full currency)
+    (dom/p "not loaded")))

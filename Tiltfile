@@ -4,7 +4,7 @@
 # Base Url for the dinsro instance
 config.define_string('baseUrl')
 # Rancher project id to assign namespaces to
-config.define_string('procjectId')
+config.define_string('projectId')
 # Repo for docker images
 config.define_string('repo')
 # Version for built images

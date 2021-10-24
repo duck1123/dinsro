@@ -26,3 +26,16 @@
    {::ct.fulcro3/root       u.index-rate-sources/IndexRateSources
     ::ct.fulcro3/initial-state
     (fn [] {::u.index-rate-sources/items rate-sources})}))
+
+(ws/defcard IndexRateSourcesPage
+  {::wsm/align       {:flex 1}
+   ::wsm/card-height 11
+   ::wsm/card-width  5}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root u.index-rate-sources/IndexRateSourcesPage
+    ::ct.fulcro3/initial-state
+    (fn []
+      {::u.index-rate-sources/form          {}
+       ::u.index-rate-sources/rate-sources
+       {::u.index-rate-sources/items (vals sample/rate-source-map)}
+       ::u.index-rate-sources/toggle-button {}})}))

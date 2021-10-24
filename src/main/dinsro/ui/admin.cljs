@@ -1,4 +1,4 @@
-(ns dinsro.views.admin
+(ns dinsro.ui.admin
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]

@@ -1,6 +1,6 @@
-(ns dinsro.views.registration-test
+(ns dinsro.ui.registration-test
   (:require
-   [dinsro.views.registration :as v.registration]
+   [dinsro.ui.registration :as u.registration]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
@@ -9,11 +9,11 @@
   {::wsm/card-height 14
    ::wsm/card-width  3}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root v.registration/RegistrationPage
+   {::ct.fulcro3/root u.registration/RegistrationPage
     ::ct.fulcro3/initial-state
     (fn []
-      {::v.registration/allow-registration true
-       ::v.registration/form
+      {::u.registration/allow-registration true
+       ::u.registration/form
        {:username         ""
         :password         ""
         :confirm-password ""}})}))

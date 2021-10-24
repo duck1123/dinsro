@@ -1,6 +1,7 @@
 (ns dinsro.ui.index-users
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
@@ -78,3 +79,24 @@
    (u.user-transactions/ui-user-transactions user-transactions)))
 
 (def ui-index-users-full (comp/factory IndexUsersFull))
+
+(defsc IndexUsersPage
+  [_this {::keys [users]}]
+  {:componentDidMount
+   (fn [this]
+     (df/load! this ::m.users/all-users IndexUserLine
+               {:target [:page/id
+                         ::page
+                         ::users
+                         :dinsro.ui.index-users/items]}))
+   :ident         (fn [] [:page/id ::page])
+   :initial-state {::users {}}
+   :query         [{::users (comp/get-query IndexUsers)}]
+   :route-segment ["users"]}
+  (bulma/page
+   (bulma/box
+    (dom/h1 (tr [:users-page "Users Page"]))
+    (dom/hr)
+    (ui-index-users users))))
+
+(def ui-page (comp/factory IndexUsersPage))

@@ -1,7 +1,10 @@
 (ns dinsro.ui.show-account
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.account-transactions :as u.account-transactions]
@@ -72,3 +75,20 @@
     (dom/p {} "no account")))
 
 (def ui-show-account-full (comp/factory ShowAccountFull))
+
+(defsc ShowAccountPage
+  [_this {::keys [account]}]
+  {:ident         (fn [] [:page/id ::page])
+   :initial-state {::account      {}
+                   ::transactions {}}
+   :query         [{::account (comp/get-query ShowAccountFull)}
+                   {::transactions (comp/get-query u.account-transactions/AccountTransactions)}]
+   :route-segment ["accounts" ::m.accounts/id]
+   :will-enter
+   (fn [app {::m.accounts/keys [id]}]
+     (df/load app [::m.accounts/id (new-uuid id)] ShowAccountFull
+              {:target [:page/id ::page ::account]})
+     (dr/route-immediate (comp/get-ident ShowAccountPage {})))}
+  (if (::m.accounts/id account)
+    (ui-show-account-full account)
+    (dom/p "not loaded")))

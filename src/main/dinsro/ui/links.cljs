@@ -21,7 +21,7 @@
                    ::m.accounts/name]}
   (dom/a {:onClick
           (fn [_e]
-            (let [component (comp/registry-key->class :dinsro.views.show-account/ShowAccountPage)]
+            (let [component (comp/registry-key->class :dinsro.ui.show-account/ShowAccountPage)]
               (rroute/route-to! this component  {::m.accounts/id id})))}
     name))
 
@@ -35,7 +35,7 @@
    :query         [::m.categories/id ::m.categories/name]}
   (dom/a {:onClick
           (fn [_e]
-            (let [component (comp/registry-key->class :dinsro.views.show-category/ShowCategoryPage)]
+            (let [component (comp/registry-key->class :dinsro.ui.show-category/ShowCategoryPage)]
               (rroute/route-to! this component  {::m.categories/id id})))}
     name))
 
@@ -52,7 +52,7 @@
                    ::m.currencies/id]}
   (dom/a {:onClick
           (fn [_e]
-            (let [component (comp/registry-key->class :dinsro.views.show-currency/ShowCurrencyPage)]
+            (let [component (comp/registry-key->class :dinsro.ui.show-currency/ShowCurrencyPage)]
               (rroute/route-to! this component  {::m.currencies/id id})))}
     name))
 
@@ -67,7 +67,7 @@
                    ::m.rate-sources/name]}
   (dom/a {:onClick
           (fn [_e]
-            (let [component (comp/registry-key->class :dinsro.views.show-rate-source/ShowRateSourcePage)]
+            (let [component (comp/registry-key->class :dinsro.ui.show-rate-source/ShowRateSourcePage)]
               (rroute/route-to! this component  {::m.rate-sources/id id})))}
     name))
 
@@ -82,7 +82,7 @@
                    ::m.transactions/description]}
   (dom/a {:onClick
           (fn [_e]
-            (let [component (comp/registry-key->class :dinsro.views.show-transaction/ShowTransactionPage)]
+            (let [component (comp/registry-key->class :dinsro.ui.show-transaction/ShowTransactionPage)]
               (rroute/route-to! this component  {::m.transactions/id id})))}
     description))
 
@@ -96,7 +96,7 @@
    :query         [::m.users/id ::m.users/name]}
   (dom/a {:onClick
           (fn [_e]
-            (let [component (comp/registry-key->class :dinsro.views.show-user/ShowUserPage)]
+            (let [component (comp/registry-key->class :dinsro.ui.show-user/ShowUserPage)]
               (rroute/route-to! this component  {::m.users/id id})))}
     name))
 

@@ -3,42 +3,42 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [dinsro.views.admin :as v.admin]
-   [dinsro.views.home :as v.home]
-   [dinsro.views.index-accounts :as v.index-accounts]
-   [dinsro.views.index-categories :as v.index-categories]
-   [dinsro.views.index-currencies :as v.index-currencies]
-   [dinsro.views.index-rates :as v.index-rates]
-   [dinsro.views.index-rate-sources :as v.index-rate-sources]
-   [dinsro.views.index-transactions :as v.index-transactions]
-   [dinsro.views.index-users :as v.index-users]
-   [dinsro.views.login :as v.login]
-   [dinsro.views.registration :as v.registration]
-   [dinsro.views.show-account :as v.show-account]
-   [dinsro.views.show-category :as v.show-category]
-   [dinsro.views.show-currency :as v.show-currency]
-   [dinsro.views.show-rate-source :as v.show-rate-source]
-   [dinsro.views.show-user :as v.show-user]
+   [dinsro.ui.admin :as u.admin]
+   [dinsro.ui.home :as u.home]
+   [dinsro.ui.index-accounts :as u.index-accounts]
+   [dinsro.ui.index-categories :as u.index-categories]
+   [dinsro.ui.index-currencies :as u.index-currencies]
+   [dinsro.ui.index-rates :as u.index-rates]
+   [dinsro.ui.index-rate-sources :as u.index-rate-sources]
+   [dinsro.ui.index-transactions :as u.index-transactions]
+   [dinsro.ui.index-users :as u.index-users]
+   [dinsro.ui.login :as u.login]
+   [dinsro.ui.registration :as u.registration]
+   [dinsro.ui.show-account :as u.show-account]
+   [dinsro.ui.show-category :as u.show-category]
+   [dinsro.ui.show-currency :as u.show-currency]
+   [dinsro.ui.show-rate-source :as u.show-rate-source]
+   [dinsro.ui.show-user :as u.show-user]
    [taoensso.timbre :as log]))
 
 (defrouter RootRouter
   [_this {:keys [current-state]}]
-  {:router-targets [v.admin/AdminPage
-                    v.home/HomePage
-                    v.index-accounts/IndexAccountsPage
-                    v.index-categories/IndexCategoriesPage
-                    v.index-currencies/IndexCurrenciesPage
-                    v.index-rates/IndexRatesPage
-                    v.index-rate-sources/IndexRateSourcesPage
-                    v.index-transactions/IndexTransactionsPage
-                    v.index-users/IndexUsersPage
-                    v.login/LoginPage
-                    v.registration/RegistrationPage
-                    v.show-account/ShowAccountPage
-                    v.show-category/ShowCategoryPage
-                    v.show-currency/ShowCurrencyPage
-                    v.show-rate-source/ShowRateSourcePage
-                    v.show-user/ShowUserPage]}
+  {:router-targets [u.admin/AdminPage
+                    u.home/HomePage
+                    u.index-accounts/IndexAccountsPage
+                    u.index-categories/IndexCategoriesPage
+                    u.index-currencies/IndexCurrenciesPage
+                    u.index-rates/IndexRatesPage
+                    u.index-rate-sources/IndexRateSourcesPage
+                    u.index-transactions/IndexTransactionsPage
+                    u.index-users/IndexUsersPage
+                    u.login/LoginPage
+                    u.registration/RegistrationPage
+                    u.show-account/ShowAccountPage
+                    u.show-category/ShowCategoryPage
+                    u.show-currency/ShowCurrencyPage
+                    u.show-rate-source/ShowRateSourcePage
+                    u.show-user/ShowUserPage]}
   (case current-state
     :pending (dom/div "Loading...")
     :failed  (dom/div "Failed!")

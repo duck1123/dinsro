@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.authorization :as auth]
-   [dinsro.views.login :refer [LoginPage]]))
+   [dinsro.ui.login :refer [LoginPage]]))
 
 (auth/defauthenticator Authenticator {:local LoginPage})
 

@@ -39,3 +39,9 @@
 
          ::u.admin-index-accounts/toggle-button
          (comp/get-initial-state u.buttons/ShowFormButton)}))}))
+
+(ws/defcard AdminIndexAccountsPage
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root          u.admin-index-accounts/AdminIndexAccountsPage
+    ::ct.fulcro3/initial-state (fn [] {})
+    ::ct.fulcro3/wrap-root?    false}))

@@ -1,9 +1,9 @@
-(ns dinsro.views-test
+(ns dinsro.ui-test
   (:require
    [clojure.test :refer [deftest]]
    [fulcro-spec.core :refer [assertions]]))
 
-(deftest views
+(deftest ui
   (assertions
    "placeholder"
    true => true))

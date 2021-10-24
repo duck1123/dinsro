@@ -1,4 +1,4 @@
-(ns dinsro.views.login
+(ns dinsro.ui.login
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
