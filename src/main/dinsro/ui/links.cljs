@@ -2,6 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.routing :as rroute]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -27,6 +29,11 @@
 
 (def ui-account-link (comp/factory AccountLink {:keyfn ::m.accounts/id}))
 
+(form/defsc-form AccountLinkForm
+  [_this _props]
+  {fo/id         m.accounts/id
+   fo/attributes [m.accounts/name]})
+
 (defsc CategoryLink
   [this {::m.categories/keys [id name]}]
   {:ident         ::m.categories/id
@@ -40,6 +47,11 @@
     name))
 
 (def ui-category-link (comp/factory CategoryLink {:keyfn ::m.categories/id}))
+
+(form/defsc-form CategoryLinkForm
+  [_this _props]
+  {fo/id         m.categories/id
+   fo/attributes [m.categories/name]})
 
 (defsc CurrencyLink
   [this {::m.currencies/keys [id name]}]
@@ -58,6 +70,15 @@
 
 (def ui-currency-link (comp/factory CurrencyLink {:keyfn ::m.currencies/name}))
 
+(form/defsc-form CurrencyLinkForm [this {::m.currencies/keys [id name]}]
+  {fo/id         m.currencies/id
+   fo/attributes [m.currencies/name]}
+  (dom/a {:onClick
+          (fn [_e]
+            (let [component (comp/registry-key->class :dinsro.ui.currencies/ShowCurrencyPage)]
+              (rroute/route-to! this component  {::m.currencies/id id})))}
+    name))
+
 (defsc RateSourceLink
   [this {::m.rate-sources/keys [id name]}]
   {:ident         ::m.rate-sources/id
@@ -72,6 +93,10 @@
     name))
 
 (def ui-rate-source-link (comp/factory RateSourceLink {:keyfn ::m.rate-sources/id}))
+
+(form/defsc-form RateSourceLinkForm [_this _props]
+  {fo/id         m.rate-sources/id
+   fo/attributes [m.rate-sources/name]})
 
 (defsc TransactionLink
   [this {::m.transactions/keys [id description]}]
@@ -88,6 +113,10 @@
 
 (def ui-transaction-link (comp/factory TransactionLink {:keyfn ::m.transactions/id}))
 
+(form/defsc-form TransactionLinkForm [_this _props]
+  {fo/id         m.transactions/id
+   fo/attributes [m.transactions/id]})
+
 (defsc UserLink
   [this {::m.users/keys [id name]}]
   {:ident         ::m.users/id
@@ -101,3 +130,7 @@
     name))
 
 (def ui-user-link (comp/factory UserLink {:keyfn ::m.users/id}))
+
+(form/defsc-form UserLinkForm [_this _props]
+  {fo/id         m.users/id
+   fo/attributes [m.users/name]})
