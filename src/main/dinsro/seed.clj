@@ -49,9 +49,9 @@
   (* btc (Math/pow 10 8)))
 
 (def links
-  [["accounts"        "Accounts"        "/accounts"        :dinsro.ui.index-accounts/IndexAccountsPage]
+  [["accounts"        "Accounts"        "/accounts"        :dinsro.ui.accounts/AccountsReport]
    ["admin"           "Admin"           "/admin"           :dinsro.ui.admin/AdminPage]
-   ["categories"      "Categories"      "/categories"      :dinsro.ui.index-categories/IndexCategoriesPage]
+   ["categories"      "Categories"      "/categories"      :dinsro.ui.categories/CategoriesReport]
    ["channels"        "Channels"        "/ln-channels"     :dinsro.ui.ln-channels/LNChannelsReport]
    ["core-nodes"      "Core Nodes"      "/core-nodes"      :dinsro.ui.core-nodes/CoreNodesReport]
    ["currencies"      "Currencies"      "/currencies"      :dinsro.ui.currencies/CurrenciesReport]
@@ -59,13 +59,13 @@
    ["lightning-nodes" "Lightning Nodes" "/ln-nodes"        :dinsro.ui.ln-nodes/LightningNodesReport]
    ["login"           "Login"           "/login"           :dinsro.ui.login/LoginPage]
    ["peers"           "Peers"           "/ln-peers"        :dinsro.ui.ln-peers/LNPeersReport]
-   ["rates"           "Rates"           "/rates"           :dinsro.ui.index-rates/IndexRatesPage]
-   ["rate-sources"    "Rate Sources"    "/rate-sources"    :dinsro.ui.index-rate-sources/IndexRateSourcesPage]
+   ["rates"           "Rates"           "/rates"           :dinsro.ui.rates/RatesReport]
+   ["rate-sources"    "Rate Sources"    "/rate-sources"    :dinsro.ui.rate-sources/RateSourcesReport]
    ["registration"    "Registration"    "/register"        :dinsro.ui.registration/RegistrationPage]
    ["settings"        "Settings"        "/settings"        :dinsro.ui.settings/SettingsPage]
-   ["transactions"    "Transactions"    "/transactions"    :dinsro.ui.index-transactions/IndexTransactionsPage]
+   ["transactions"    "Transactions"    "/transactions"    :dinsro.ui.transactions/TransactionsReport]
    ["tx"              "LN TXes"         "/ln-transactions" :dinsro.ui.ln-transactions/LNTransactionsReport]
-   ["users"           "User"            "/users"           :dinsro.ui.index-users/IndexUsersPage]])
+   ["users"           "User"            "/users"           :dinsro.ui.users/UsersReport]])
 
 (def category-names ["Category A" "Category B" "Category C"])
 

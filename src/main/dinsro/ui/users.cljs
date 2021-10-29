@@ -2,8 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.container :as container]
-   [com.fulcrologic.rad.container-options :as co]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -35,6 +33,7 @@
    ro/columns          [m.users/name]
    ro/source-attribute ::m.users/all-users
    ro/title            "Users"
+   ro/route            "users"
    ro/row-pk           m.users/id
    ro/run-on-mount?    true})
 
@@ -47,19 +46,3 @@
    ro/title            "Users"
    ro/row-pk           m.users/id
    ro/run-on-mount?    true})
-
-(def override-page true)
-
-(container/defsc-container IndexUsersPage
-  [this _props]
-  {co/children {::users UsersReport}
-   co/layout   [[{:id ::users :width 15}]]
-   co/route    "users"}
-  (if override-page
-    (container/render-layout this)
-    (dom/div {}
-      (dom/h1 (tr [:users-page "Users Page"]))
-      (dom/hr)
-      (container/render-layout this))))
-
-(def ui-page (comp/factory IndexUsersPage))
