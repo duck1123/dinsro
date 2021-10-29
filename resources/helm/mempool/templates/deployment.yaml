@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mempool
+spec:
+  selector:
+    matchLabels:
+      {{- include "mempool.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mempool.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: mempool
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: multiPass
+          value: hunter2
+        - name: BITCOIN_NODE_HOST
+          value: bitcoind.bitcoin
+        - name: BITCOIN_NODE_PORT
+          value: "18443"
+        - name: BITCOIN_NODE_USER
+          value: rpcuser
+        - name: BITCOIN_NODE_PASS
+          value: rpcpassword
+        - name: MEMPOOL_NETWORK
+          value: regtest
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 20
+        # volumeMounts:
+        # - name: certs
+        #   mountPath: /mnt/data
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # volumes:
+      # - name: config
+      #   configMap:
+      #     name: rtl-config
+      # - name: certs
+      #   persistentVolumeClaim:
+      #     claimName: certs
