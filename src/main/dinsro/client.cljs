@@ -16,6 +16,7 @@
    [dinsro.routing :as d.routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.home :as v.home]
    [dinsro.ui.login :as v.login]
    [taoensso.timbre :as log]
@@ -34,7 +35,8 @@
         (hist5/restore-route! app v.home/HomePage {})))))
 
 (defn setup-RAD [app]
-  (rad-app/install-ui-controls! app sui/all-controls)
+  (let [all-controls (u.controls/all-controls)]
+    (rad-app/install-ui-controls! app all-controls))
   (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
 
 (defn ^:export start
