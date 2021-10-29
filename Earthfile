@@ -245,7 +245,7 @@ dev-image:
   CMD ["bb", "dev-bootstrap"]
   SAVE IMAGE ${repo}/${project}:dev-${version}
 
-dev-image-sources:
+dev-image-sources-base:
   FROM +dev-sources
   RUN bb compile-cljs
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
@@ -255,7 +255,11 @@ dev-image-sources:
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   USER root
   CMD ["bb", "dev-bootstrap"]
-  SAVE IMAGE ${repo}/${project}:dev-sources-${version}
+
+dev-image-sources:
+  FROM +dev-image-sources-base
+  ARG expected_ref=${repo}/${project}:dev-sources-${version}
+  SAVE IMAGE ${expected_ref}
 
 dev-sources:
   FROM +deps-builder
