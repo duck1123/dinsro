@@ -4,6 +4,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [crux.api :as crux]
    [dinsro.components.crux :as c.crux]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
    [dinsro.utils :as utils]
@@ -51,6 +53,24 @@
   [:db/id => ::m.rate-sources/id]
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-id-by-eid-query eid))))
+
+(>defn index-ids-by-account
+  [account-id]
+  [::m.accounts/id => (s/coll-of ::m.rate-sources/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?rate-source-id]
+                :in    [?account-id]
+                :where [[?rate-source-id ::m.rate-sources/account ?account-id]]}]
+    (map first (crux/q db query account-id))))
+
+(>defn index-ids-by-currency
+  [currency-id]
+  [::m.currencies/id => (s/coll-of ::m.rate-sources/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?rate-source-id]
+                :in    [?currency-id]
+                :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]]}]
+    (map first (crux/q db query currency-id))))
 
 (>defn find-id-by-currency-and-name
   [currency-id name]

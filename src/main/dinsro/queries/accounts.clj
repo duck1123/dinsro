@@ -139,3 +139,9 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(comment
+
+  (index-records)
+
+  nil)

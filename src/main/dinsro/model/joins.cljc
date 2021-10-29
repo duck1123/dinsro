@@ -21,6 +21,7 @@
    #?(:clj [dinsro.queries.ln-transactions :as q.ln-tx])
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
+   #?(:clj [dinsro.queries.rate-sources :as q.rate-sources])
    #?(:clj [dinsro.queries.rates :as q.rates])
    [dinsro.specs]
    [taoensso.timbre :as log]))
@@ -97,6 +98,19 @@
                   {::m.currencies/accounts (map (fn [id] {::m.accounts/id id}) account-ids)})
                 {::m.currencies/accounts []})
         :cljs (comment id)))})
+
+(defattr currency-sources ::m.currencies/sources :ref
+  {ao/cardinality :many
+   ao/pc-input    #{::m.currencies/id}
+   ao/pc-output   [{::m.currencies/sources [::m.rate-sources/id]}]
+   ao/target      ::m.rate-sources/id
+   ao/pc-resolve
+   (fn [_env {::m.currencies/keys [id]}]
+     (if id
+       #?(:clj  (let [ids (q.rate-sources/index-ids-by-currency id)]
+                  {::m.currencies/sources (map (fn [id] {::m.rate-sources/id id}) ids)})
+          :cljs {::m.currencies/sources []})
+       {::m.currencies/sources []}))})
 
 (defattr currency-transactions ::m.currencies/transactions :ref
   {ao/cardinality :many
@@ -206,6 +220,7 @@
    all-users
    category-transactions
    currency-accounts
+   currency-sources
    currency-transactions
    ln-node-peers
    ln-node-transactions

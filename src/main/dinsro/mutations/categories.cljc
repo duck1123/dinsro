@@ -63,7 +63,4 @@
      (action [_env] true)
      (remote [_env] true)))
 
-#?(:clj
-   (def resolvers
-     [create!
-      delete!]))
+#?(:clj (def resolvers []))

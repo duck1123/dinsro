@@ -8,6 +8,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
@@ -78,6 +79,23 @@
             (let [component (comp/registry-key->class :dinsro.ui.currencies/ShowCurrencyPage)]
               (rroute/route-to! this component  {::m.currencies/id id})))}
     name))
+
+(defsc NodeLink
+  [this {::m.ln-nodes/keys [id name]}]
+  {:ident         ::m.ln-nodes/id
+   :initial-state (fn [_props]
+                    {::m.ln-nodes/id   nil
+                     ::m.ln-nodes/name ""})
+   :query         (fn [_props]
+                    [::m.ln-nodes/id ::m.ln-nodes/name])}
+  (dom/a {:onClick (fn [_e] (let [component (comp/registry-key->class :dinsro.ui.ln-nodes/LightningNodeForm)]
+                              (form/view! this component id)))} name))
+
+(def ui-node-link (comp/factory NodeLink {:keyfn ::m.ln-nodes/id}))
+
+(form/defsc-form NodeLinkForm [_this _props]
+  {fo/id         m.ln-nodes/id
+   fo/attributes [m.ln-nodes/name]})
 
 (defsc RateSourceLink
   [this {::m.rate-sources/keys [id name]}]

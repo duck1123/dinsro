@@ -55,13 +55,13 @@
 
 (>defn find-eid-by-id
   [id]
-  [::m.users/id => (? :db/id)]
+  [::m.users/id => (? ::m.users/id)]
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-eid-by-id-query id))))
 
 (>defn find-eid-by-name
   [name]
-  [::m.users/name => (? :db/id)]
+  [::m.users/name => (? ::m.users/id)]
   (let [db (c.crux/main-db)]
     (ffirst (crux/q db find-eid-by-name-query name))))
 
@@ -78,8 +78,9 @@
     (read-record eid)))
 
 (>defn create-record
+  "Create a user record"
   [params]
-  [::m.users/params => uuid?]
+  [::m.users/params => ::m.users/id]
   (if (nil? (find-eid-by-name (::m.users/name params)))
     (let [node   (c.crux/main-node)
           id     (new-uuid)
@@ -90,6 +91,7 @@
     (throw (RuntimeException. "User already exists"))))
 
 (>defn index-ids
+  "list all user ids"
   []
   [=> (s/coll-of ::m.users/id)]
   (let [db    (c.crux/main-db)
@@ -98,11 +100,13 @@
     (map first (crux/q db query))))
 
 (>defn index-records
+  "list all users"
   []
   [=> (s/coll-of ::m.users/item)]
   (read-records (index-ids)))
 
 (>defn delete-record
+  "delete user by id"
   [id]
   [:db/id => nil?]
   (let [node (c.crux/main-node)]
@@ -110,6 +114,7 @@
     nil))
 
 (>defn delete-all
+  "delete all users"
   []
   [=> nil?]
   (doseq [id (index-ids)]
