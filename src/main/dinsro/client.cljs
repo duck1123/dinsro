@@ -60,6 +60,7 @@
   (app/mount! da/app ui/Root "app")
   ;; As of Fulcro 3.3.0, this addition will help with stale queries when using dynamic routing:
   (comp/refresh-dynamic-queries! da/app)
+  (setup-RAD da/app)
   (js/console.log "Hot reload"))
 
 (defonce performance-stats (tufte/add-accumulating-handler! {}))
