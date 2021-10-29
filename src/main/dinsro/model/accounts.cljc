@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.authorization :as auth]
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [taoensso.timbre :as log]))
@@ -50,6 +51,14 @@
    ao/schema      :production
    ao/target      ::m.currencies/id})
 
+(s/def ::source ::m.rate-sources/id)
+(defattr source ::source :ref
+  {ao/cardinality :one
+   ao/required?   true
+   ao/identities  #{::id}
+   ao/schema      :production
+   ao/target      ::m.rate-sources/id})
+
 (s/def ::user ::m.users/id)
 (defattr user ::user :ref
   {ao/cardinality :one
@@ -65,14 +74,8 @@
 (def required-params
   "Required params for accounts"
   ::required-params)
-(s/def ::params
-  (s/keys :req [::name
-                ::initial-value]
-          :opt [::currency
-                ::user]))
-
-(s/def ::item (s/keys :req [::id ::name ::initial-value ::user]
-                      :opt [::currency]))
+(s/def ::params (s/keys :req [::currency ::initial-value ::name ::source ::user]))
+(s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::source ::user]))
 
 (defattr link ::link :ref
   {ao/cardinality :one
@@ -88,6 +91,6 @@
    ao/pc-output  [{::account-transactions [::id]}]
    ao/pc-resolve (fn [_env params] {::account-transactions params})})
 
-(def attributes [account-transactions currency id initial-value link name user])
+(def attributes [account-transactions currency id initial-value link name source user])
 
 #?(:clj (def resolvers []))

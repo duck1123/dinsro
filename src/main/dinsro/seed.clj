@@ -122,8 +122,9 @@
     :pingTime   7
     :inbound    false
     :satSent    1003}])
+
 (def lnd2-peers
-  [{:ref ["alice" "lnd1"]
+  [{:ref        ["alice" "lnd1"]
     :flapCount  2
     :bytesSent  141
     :bytesRecv  141
@@ -144,7 +145,7 @@
     :blockHash        ""
     :txHash           ""
     :timeStamp        0
-    :rawTxHex        ""
+    :rawTxHex         ""
     :label            "TX1"
     :destAddresses    [""]}
    {:description      "tx 2"
@@ -156,7 +157,7 @@
     :blockHash        ""
     :txHash           ""
     :timeStamp        3
-    :rawTxHex        ""
+    :rawTxHex         ""
     :label            "TX2"
     :destAddresses    [""]}])
 
@@ -170,7 +171,7 @@
     :blockHash        ""
     :txHash           ""
     :timeStamp        4
-    :rawTxHex        ""
+    :rawTxHex         ""
     :label            "TX3"
     :destAddresses    [""]}])
 
@@ -240,10 +241,10 @@
    {:name "BitPonzi"
     :url  "https://www.bitponzi.biz.localhost/cgi?id=3496709"
     :code "usd"}
-   {:name "DuckBitcoin"
-    :url  "https://www.duckbitcoin.localhost/api/current-rates"
-    :code "usd"
-    :rates    default-rates}
+   {:name  "DuckBitcoin"
+    :url   "https://www.duckbitcoin.localhost/api/current-rates"
+    :code  "usd"
+    :rates default-rates}
    {:name "Leviathan"
     :url  "https://www.leviathan.localhost/prices"
     :code "usd"}])
@@ -293,11 +294,11 @@
   [{:name          "Bank Account"
     :initial-value 0
     :source        "DuckBitcoin"
-    :transactions alice-usd-transactions}
+    :transactions  alice-usd-transactions}
    {:name          "Exchange USD"
     :initial-value 0
     :source        "DuckBitcoin"
-    :transactions alice-sat-transactions}
+    :transactions  alice-sat-transactions}
    {:name          "Cash"
     :source        "DuckBitcoin"
     :initial-value 0}
@@ -333,7 +334,7 @@
    ;; {:name          "Exchange Sats"
    ;;  :initial-value 0
    ;;  :source        "identity"}
-   {:name          "LND1 On-chain"
+   {:name          "LND2 On-chain"
     :initial-value 0
     :source        "identity"}
    ;; {:name          "hot wallet"
@@ -541,10 +542,11 @@
           (let [source      (q.rate-sources/read-record source-id)
                 currency-id (::m.rate-sources/currency source)]
             (q.accounts/create-record
-             {::m.accounts/name name
-              ::m.accounts/currency currency-id
-              ::m.accounts/user user-id
-              ::m.accounts/initial-value initial-value}))
+             {::m.accounts/name          name
+              ::m.accounts/currency      currency-id
+              ::m.accounts/user          user-id
+              ::m.accounts/initial-value initial-value
+              ::m.accounts/source        source-id}))
           (throw (RuntimeException. "failed to find source"))))
       (throw (RuntimeException. "Failed to find user")))))
 
