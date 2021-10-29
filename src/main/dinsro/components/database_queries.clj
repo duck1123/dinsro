@@ -12,12 +12,34 @@
        (crux/q db)
        (mapv (fn [[id]] {:dinsro.model.accounts/id id}))))
 
+(defn get-my-accounts-
+  [db user-id]
+  (let [query    '{:find  [?uuid]
+                   :in    [?user-id]
+                   :where [[?uuid :dinsro.model.accounts/user ?user-id]]}
+        response (crux/q db query user-id)]
+    (mapv (fn [[id]] {:dinsro.model.accounts/id id}) response)))
+
 (defn get-all-categories-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.categories/id]]}
        (crux/q db)
        (mapv (fn [[id]] {:dinsro.model.categories/id id}))))
+
+(defn get-all-core-nodes-
+  [db]
+  (->> '{:find  [?uuid]
+         :where [[?uuid :dinsro.model.core-nodes/id]]}
+       (crux/q db)
+       (mapv (fn [[id]] {:dinsro.model.core-nodes/id id}))))
+
+(defn get-all-lightning-nodes-
+  [db]
+  (->> '{:find  [?uuid]
+         :where [[?uuid :dinsro.model.ln-nodes/id]]}
+       (crux/q db)
+       (mapv (fn [[id]] {:dinsro.model.ln-nodes/id id}))))
 
 (defn get-all-currencies-
   [db]
@@ -32,6 +54,13 @@
          :where [[?uuid :dinsro.model.navlink/id ?id]]}
        (crux/q db)
        (mapv (fn [[id]] {:dinsro.model.navlink/id id}))))
+
+(defn get-all-ln-peers-
+  [db]
+  (->> '{:find  [?uuid]
+         :where [[?uuid :dinsro.model.ln-peers/id]]}
+       (crux/q db)
+       (mapv (fn [[id]] {:dinsro.model.ln-peers/id id}))))
 
 (defn get-all-rates-
   [db]
@@ -54,6 +83,13 @@
        (crux/q db)
        (mapv (fn [[id]] {:dinsro.model.transactions/id id}))))
 
+(defn get-all-ln-transactions-
+  [db]
+  (->> '{:find  [?uuid]
+         :where [[?uuid :dinsro.model.ln-transactions/id]]}
+       (crux/q db)
+       (mapv (fn [[id]] {:dinsro.model.ln-transactions/id id}))))
+
 (defn get-all-users-
   [db]
   (->> '{:find  [?uuid]
@@ -75,10 +111,28 @@
     (get-all-accounts- db)
     (log/error "No database atom for production schema!")))
 
+(defn get-my-accounts
+  [env user-id _params]
+  (if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (get-my-accounts- db user-id)
+    (log/error "No database atom for production schema!")))
+
 (defn get-all-categories
   [env _params]
   (if-let [db (some-> (get-in env [co/databases :production]) deref)]
     (get-all-categories- db)
+    (log/error "No database atom for production schema!")))
+
+(defn get-all-core-nodes
+  [env _params]
+  (if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (get-all-core-nodes- db)
+    (log/error "No database atom for production schema!")))
+
+(defn get-all-lightning-nodes
+  [env _params]
+  (if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (get-all-lightning-nodes- db)
     (log/error "No database atom for production schema!")))
 
 (defn get-all-currencies
@@ -109,6 +163,18 @@
   [env _params]
   (if-let [db (some-> (get-in env [co/databases :production]) deref)]
     (get-all-transactions- db)
+    (log/error "No database atom for production schema!")))
+
+(defn get-all-ln-transactions
+  [env _params]
+  (if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (get-all-ln-transactions- db)
+    (log/error "No database atom for production schema!")))
+
+(defn get-all-ln-peers
+  [env _params]
+  (if-let [db (some-> (get-in env [co/databases :production]) deref)]
+    (get-all-ln-peers- db)
     (log/error "No database atom for production schema!")))
 
 (defn get-all-users
