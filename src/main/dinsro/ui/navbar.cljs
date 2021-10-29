@@ -32,9 +32,11 @@
                    ::m.navlink/target]}
   (dom/a :.ui.item
     {:onClick (fn [_e]
-                (let [component (comp/registry-key->class target)]
-                  (uism/trigger! this ::navbarsm :event/hide {})
-                  (rroute/route-to! this component {})))}
+                (if-let [component (comp/registry-key->class target)]
+                  (do
+                    (uism/trigger! this ::navbarsm :event/hide {})
+                    (rroute/route-to! this component {}))
+                  (log/infof "Could note find target: %s" target)))}
     name))
 
 (def ui-nav-link (comp/factory NavLink {:keyfn ::m.navlink/id}))
