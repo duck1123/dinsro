@@ -16,8 +16,8 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
    [dinsro.ui.controls :as u.controls]
-   [dinsro.ui.home :as v.home]
-   [dinsro.ui.login :as v.login]
+   [dinsro.ui.home :as u.home]
+   [dinsro.ui.login :as u.login]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
 
@@ -30,8 +30,8 @@
   (action [{:keys [app]}]
     (let [logged-in (auth/verified-authorities app)]
       (if (empty? logged-in)
-        (routing/route-to! app v.home/HomePage {})
-        (hist5/restore-route! app v.home/HomePage {})))))
+        (routing/route-to! app u.login/LoginPage {})
+        (hist5/restore-route! app u.home/HomePage {})))))
 
 (defn setup-RAD [app]
   (let [all-controls (u.controls/all-controls)]
@@ -48,7 +48,7 @@
   (setup-RAD da/app)
   (dr/change-route! da/app [""])
   (history/install-route-history! da/app (html5-history))
-  (auth/start! da/app [v.login/LoginPage] {:after-session-check `fix-route})
+  (auth/start! da/app [u.login/LoginPage] {:after-session-check `fix-route})
   (app/mount! da/app ui/Root "app" {:initialize-state? false})
   (js/console.log "Loaded"))
 
