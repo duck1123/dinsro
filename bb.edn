@@ -40,6 +40,9 @@
   {:task (earthly :ci {:interactive true
                        :privileged  true})}
 
+  ci-local
+  {:depends [kondo check test]}
+
   clean
   {:doc  "Clean all the things"
    :task (do
