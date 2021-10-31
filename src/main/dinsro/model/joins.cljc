@@ -86,6 +86,16 @@
         :cljs
         (comment env query-params)))})
 
+(defattr all-ln-txes ::m.ln-tx/all-txes :ref
+  {ao/target    ::m.ln-tx/id
+   ao/pc-output [{::m.ln-tx/all-txes [::m.ln-tx/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.ln-tx/all-txes (queries/get-all-ln-transactions env query-params)}
+        :cljs
+        (comment env query-params)))})
+
 (defattr all-users ::m.users/all-users :ref
   {ao/target    ::m.users/id
    ao/pc-output [{::m.users/all-users [::m.users/id]}]
@@ -240,6 +250,7 @@
    all-core-nodes
    all-currencies
    all-ln-nodes
+   all-ln-txes
    all-users
    category-transactions
    currency-accounts
