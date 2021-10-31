@@ -7,6 +7,8 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.ln-nodes :as m.ln-nodes]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
@@ -18,14 +20,17 @@
   (let [{account-id  ::m.accounts/id
          category-id ::m.categories/id
          currency-id ::m.currencies/id
+         node-id     ::m.ln-nodes/id
+         source-id   ::m.rate-sources/id
          user-id     ::m.users/id} value]
-    (dom/div {}
-      (or
-       (when account-id (u.links/ui-account-link {::m.accounts/id account-id}))
-       (when category-id (u.links/ui-category-link {::m.categories/id category-id}))
-       (when currency-id (u.links/ui-currency-link {::m.currencies/id currency-id}))
-       (when user-id (u.links/ui-user-link {::m.users/id user-id}))
-       (dom/div (merge env {}) "link control")))))
+    (or
+     (when account-id (u.links/ui-account-link {::m.accounts/id account-id}))
+     (when category-id (u.links/ui-category-link {::m.categories/id category-id}))
+     (when currency-id (u.links/ui-currency-link {::m.currencies/id currency-id}))
+     (when node-id (u.links/ui-node-link {::m.ln-nodes/id node-id}))
+     (when source-id (u.links/ui-rate-source-link {::m.rate-sources/id source-id}))
+     (when user-id (u.links/ui-user-link {::m.users/id user-id}))
+     (dom/div (merge env {}) "link control"))))
 
 (def render-link-control (render-field-factory link-control))
 
