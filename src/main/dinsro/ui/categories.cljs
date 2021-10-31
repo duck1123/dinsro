@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
@@ -13,8 +12,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.users :as u.users]
-   [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
 
 (defattr user-link ::m.categories/user :ref
@@ -22,21 +19,6 @@
    ao/identities       #{::m.categories/id}
    ao/target           ::m.users/id
    ::report/column-EQL {::m.categories/user (comp/get-query u.links/UserLink)}})
-
-(defn- form-at-key [this k]
-  (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
-    (some (fn [{:keys [key component]}] (when (and component (= key k)) component))
-          children)))
-
-(defn edit! [this form-key id]
-  (let [Form (form-at-key this form-key)]
-    (uism/trigger!
-     this
-     (comp/get-ident this)
-     :event/edit-detail
-     {:id       id
-      :form     Form
-      :join-key form-key})))
 
 (def override-form true)
 

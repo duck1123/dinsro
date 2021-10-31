@@ -1,16 +1,25 @@
 (ns dinsro.ui.rates
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.links :as u.links]
    [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
+
+(defattr currency-link ::m.rates/currency :ref
+  {ao/cardinality      :one
+   ao/identities       #{::m.rates/id}
+   ao/target           ::m.currencies/id
+   ::report/column-EQL {::m.rates/currency (comp/get-query u.links/CurrencyLink)}})
 
 (defn- form-at-key [this k]
   (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
@@ -33,13 +42,11 @@
 
 (report/defsc-report RatesReport
   [_this _props]
-  {ro/column-formatters
-   {::m.rates/name
-    (fn [this name {::m.rates/keys [id]}]
-      (dom/a {:onClick #(form/edit! this RateForm id)} name))}
+  {ro/field-formatters
+   {::m.rates/currency (fn [_this props] (u.links/ui-currency-link props))}
    ro/columns          [m.rates/id
                         m.rates/rate
-                        m.rates/currency
+                        currency-link
                         m.rates/date]
    ro/route            "rates"
    ro/row-actions      []
