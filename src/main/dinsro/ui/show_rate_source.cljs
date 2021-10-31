@@ -11,8 +11,6 @@
    [dinsro.ui.rate-source-transactions :as u.rate-source-transactions]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc ShowRateSource
   [_this {::m.rate-sources/keys [id name]}]
   {:query         [::m.rate-sources/id ::m.rate-sources/name]

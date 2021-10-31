@@ -11,8 +11,6 @@
    [dinsro.ui.user-currencies :as u.user-currencies]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc IndexCurrencyLine
   [_this {::m.currencies/keys [code id link]}]
   {:ident         ::m.currencies/id

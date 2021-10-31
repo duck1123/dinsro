@@ -1,7 +1,6 @@
 (ns dinsro.ui.user-accounts-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
@@ -27,8 +26,7 @@
                                                   ::m.currencies/name "Sats"}])
                    (assoc ::m.accounts/link [account])
                    (assoc ::m.accounts/user [{::m.users/id m.users/default-username}])))
-             (vals sample/account-map))
-            ::uism/asm-id ::u.user-accounts/form-toggle})}))
+             (vals sample/account-map))})}))
 
 (ws/defcard UserAccounts
   {::wsm/align       {:flex 1}

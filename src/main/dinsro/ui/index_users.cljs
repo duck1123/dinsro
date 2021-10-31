@@ -13,8 +13,6 @@
    [dinsro.ui.user-transactions :as u.user-transactions :refer [UserTransactions]]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc IndexUserLine
   [_this {::m.users/keys [id link]}]
   {:ident         ::m.users/id

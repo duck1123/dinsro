@@ -1,7 +1,6 @@
 (ns dinsro.ui.rate-sources
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
@@ -14,13 +13,7 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
-
-(def form-toggle-sm ::form-toggle)
-
-(def default-name "sally")
-(def default-url "https://example.com/")
 
 (form/defsc-form RateSubform
   [_this _props]
@@ -37,19 +30,6 @@
                     m.joins/rate-source-rates]
    fo/route-prefix "rate-source"
    fo/title        "Rate Source"})
-
-(defn- form-at-key [this k]
-  (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
-    (some (fn [{:keys [key component]}] (when (and component (= key k)) component))
-          children)))
-
-(defn edit! [this form-key id]
-  (let [Form (form-at-key this form-key)]
-    (uism/trigger! this (comp/get-ident this)
-                   :event/edit-detail
-                   {:id       id
-                    :form     Form
-                    :join-key form-key})))
 
 (defattr source-currency-link ::m.rate-sources/currency :ref
   {ao/cardinality      :one

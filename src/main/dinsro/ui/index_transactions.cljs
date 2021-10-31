@@ -12,8 +12,6 @@
    [dinsro.ui.user-transactions :as u.user-transactions]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc IndexTransactionLine
   [_this {::m.transactions/keys [account date description id]}]
   {:css           [[:.card {:margin-bottom "5px"}]]

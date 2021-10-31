@@ -2,17 +2,12 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [dinsro.machines :as machines]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
-
-(def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value link user]}]
@@ -36,37 +31,26 @@
 (def ui-admin-index-account-line (comp/factory AdminIndexAccountLine {:keyfn ::m.accounts/id}))
 
 (defsc AdminIndexAccounts
-  [this {::keys [accounts form toggle-button]}]
-  {:componentDidMount
-   #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexAccounts})
-   :ident         (fn [_] [:component/id ::AdminIndexAccounts])
-   :initial-state {::accounts      []
-                   ::form          {:form-button/id form-toggle-sm}
-                   ::toggle-button {:form-button/id form-toggle-sm}}
-   :query         [{::accounts (comp/get-query AdminIndexAccountLine)}
-                   {::form (comp/get-query u.f.admin-create-account/AdminCreateAccountForm)}
-                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                   [::uism/asm-id form-toggle-sm]]}
-  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
-    (bulma/box
-     (dom/h2 :.title.is-2
-       (tr [:accounts])
-       (u.buttons/ui-show-form-button toggle-button))
-     (when shown?
-       (u.f.admin-create-account/ui-admin-create-account-form form))
-     (dom/hr)
-     (if (empty? accounts)
-       (dom/div (tr [:no-accounts]))
-       (dom/table :.table.ui
-         (dom/thead {}
-           (dom/tr {}
-             (dom/th (tr [:name]))
-             (dom/th (tr [:user-label]))
-             (dom/th (tr [:currency-label]))
-             (dom/th (tr [:initial-value-label]))
-             (dom/th (tr [:buttons]))))
-         (dom/tbody {}
-           (map ui-admin-index-account-line accounts)))))))
+  [_this {::keys [accounts]}]
+  {:ident         (fn [_] [:component/id ::AdminIndexAccounts])
+   :initial-state {::accounts      []}
+   :query         [{::accounts (comp/get-query AdminIndexAccountLine)}]}
+  (bulma/box
+   (dom/h2 :.title.is-2
+     (tr [:accounts]))
+   (dom/hr)
+   (if (empty? accounts)
+     (dom/div (tr [:no-accounts]))
+     (dom/table :.table.ui
+       (dom/thead {}
+         (dom/tr {}
+           (dom/th (tr [:name]))
+           (dom/th (tr [:user-label]))
+           (dom/th (tr [:currency-label]))
+           (dom/th (tr [:initial-value-label]))
+           (dom/th (tr [:buttons]))))
+       (dom/tbody {}
+         (map ui-admin-index-account-line accounts))))))
 
 (def ui-section (comp/factory AdminIndexAccounts))
 

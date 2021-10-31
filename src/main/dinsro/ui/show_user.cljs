@@ -14,8 +14,6 @@
    [dinsro.ui.user-transactions :as u.user-transactions]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc ShowUser
   [_this {::m.users/keys [id name]}]
   {:ident         ::m.users/id

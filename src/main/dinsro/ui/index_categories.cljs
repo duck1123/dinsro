@@ -11,8 +11,6 @@
    [dinsro.ui.user-categories :as u.user-categories]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc IndexCategoryLine
   [_this {::m.categories/keys [link user]}]
   {:ident         ::m.categories/id

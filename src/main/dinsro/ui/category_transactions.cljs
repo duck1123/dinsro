@@ -2,18 +2,13 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [dinsro.machines :as machines]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.add-category-transaction :as u.f.add-category-transaction]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
-
-(def form-toggle-sm ::form-toggle)
 
 (defsc IndexCategoryTransactionLine
   [_this {::m.transactions/keys [account date description id]}]
@@ -52,39 +47,20 @@
   (comp/factory IndexCategoryTransactions))
 
 (defsc CategoryTransactions
-  [this {::keys              [form toggle-button]
-         ::m.categories/keys [transactions]}]
-  {:componentDidMount
-   #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar
-                                                     (uism/with-actor-class [::m.categories/id :none]
-                                                       CategoryTransactions)})
-   :ident         ::m.categories/id
+  [_this {::m.categories/keys [transactions]}]
+  {:ident         ::m.categories/id
    :initial-state {::m.categories/id           nil
-                   ::form                      {}
-                   ::toggle-button             {:form-button/id form-toggle-sm}
                    ::m.categories/transactions {}}
-   :pre-merge     (fn [{:keys [current-normalized data-tree]}]
-                    (let [defaults    {::form          (comp/get-initial-state u.f.add-category-transaction/AddCategoryTransactionForm)
-                                       ::toggle-button {:form-button/id form-toggle-sm}}
-                          merged-data (merge current-normalized data-tree defaults)]
-                      merged-data))
    :query         [::m.categories/id
-                   {::form (comp/get-query u.f.add-category-transaction/AddCategoryTransactionForm)}
-                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                   {::m.categories/transactions (comp/get-query IndexCategoryTransactions)}
-                   [::uism/asm-id form-toggle-sm]]}
-  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
-    (bulma/box
-     (dom/h2 {}
-       "Transactions"
-       (when toggle-button (u.buttons/ui-show-form-button toggle-button)))
-     (when shown?
-       (when form (u.f.add-category-transaction/ui-form form)))
-     (when transactions
-       (if (seq transactions)
-         (dom/div {}
-           (map ui-index-category-transaction-line transactions))
-         (dom/p "no items"))))))
+                   {::m.categories/transactions (comp/get-query IndexCategoryTransactions)}]}
+  (bulma/box
+   (dom/h2 {}
+     "Transactions")
+   (when transactions
+     (if (seq transactions)
+       (dom/div {}
+         (map ui-index-category-transaction-line transactions))
+       (dom/p "no items")))))
 
 (def ui-category-transactions
   (comp/factory CategoryTransactions))

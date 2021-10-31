@@ -11,8 +11,6 @@
    [dinsro.ui.user-accounts :as u.user-accounts]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc IndexAccountLine
   [_this {::m.accounts/keys [currency id initial-value name user]}]
   {:initial-state {::m.accounts/currency      {}

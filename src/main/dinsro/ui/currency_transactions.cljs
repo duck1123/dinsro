@@ -2,19 +2,13 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [dinsro.machines :as machines]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.add-currency-transaction :as u.f.add-currency-transaction]
-   [dinsro.ui.forms.add-user-transaction :as u.f.add-user-transaction]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
-
-(def form-toggle-sm ::form-toggle)
 
 (defsc IndexTransactionLine
   [_this {::m.transactions/keys [id link]}]
@@ -48,28 +42,16 @@
 (def ui-index-transactions (comp/factory IndexTransactions))
 
 (defsc CurrencyTransactions
-  [this {::keys [form toggle-button transactions]}]
-  {:componentDidMount
-   (fn [this]
-     (uism/begin! this machines/hideable form-toggle-sm {:actor/navbar CurrencyTransactions}))
-   :ident         ::m.currencies/id
-   :initial-state {::form          {}
-                   ::toggle-button {:form-button/id form-toggle-sm}
-                   ::transactions  {}}
+  [_this {::keys [transactions]}]
+  {:ident         ::m.currencies/id
+   :initial-state {::transactions  {}}
    :query         [::m.currencies/id
-                   {::form (comp/get-query u.f.add-currency-transaction/AddCurrencyTransactionForm)}
-                   {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                   {::transactions (comp/get-query IndexTransactions)}
-                   [::uism/asm-id form-toggle-sm]]}
-  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
-    (bulma/box
-     (dom/h2 {}
-       (tr [:transactions])
-       (u.buttons/ui-show-form-button toggle-button))
-     (when shown?
-       (u.f.add-user-transaction/ui-form form))
-     (dom/hr {})
-     (ui-index-transactions transactions))))
+                   {::transactions (comp/get-query IndexTransactions)}]}
+  (bulma/box
+   (dom/h2 {}
+     (tr [:transactions]))
+   (dom/hr {})
+   (ui-index-transactions transactions)))
 
 (def ui-currency-transactions
   (comp/factory CurrencyTransactions))

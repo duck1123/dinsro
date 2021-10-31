@@ -1,11 +1,8 @@
 (ns dinsro.ui.admin-index-currencies-test
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-currencies :as u.admin-index-currencies]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.admin-create-currency :as u.f.admin-create-currency]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
@@ -23,13 +20,4 @@
        [{::m.currencies/id "sats"
          ::m.currencies/link
          [{::m.currencies/id   "sats"
-           ::m.currencies/name "Sats"}]}]
-
-       ::u.admin-index-currencies/form
-       (comp/get-initial-state
-        u.f.admin-create-currency/AdminCreateCurrencyForm)
-
-       ::u.admin-index-currencies/toggle-button
-       (comp/get-initial-state
-        u.buttons/ShowFormButton
-        {:form-button/id u.admin-index-currencies/form-toggle-sm})})}))
+           ::m.currencies/name "Sats"}]}]})}))

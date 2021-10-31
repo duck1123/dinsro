@@ -13,8 +13,6 @@
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc ShowCategory
   [_this {::m.categories/keys [id name user category-transactions]}]
   {:query         [::m.categories/id

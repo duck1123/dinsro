@@ -1,14 +1,11 @@
 (ns dinsro.ui.admin-index-accounts-test
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-accounts :as u.admin-index-accounts]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.admin-create-account :as u.f.admin-create-account]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
@@ -32,13 +29,7 @@
                                         ::m.accounts/name "Account Name"}]
            ::m.accounts/id            account-id
            ::m.accounts/initial-value 42
-           ::m.accounts/user          [{::m.users/id "userid"}]}]
-
-         ::u.admin-index-accounts/form
-         (comp/get-initial-state u.f.admin-create-account/AdminCreateAccountForm)
-
-         ::u.admin-index-accounts/toggle-button
-         (comp/get-initial-state u.buttons/ShowFormButton)}))}))
+           ::m.accounts/user          [{::m.users/id "userid"}]}]}))}))
 
 (ws/defcard AdminIndexAccountsPage
   (ct.fulcro3/fulcro-card

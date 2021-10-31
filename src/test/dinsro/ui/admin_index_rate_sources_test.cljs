@@ -1,13 +1,10 @@
 (ns dinsro.ui.admin-index-rate-sources-test
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.admin-index-rate-sources :as u.admin-index-rate-sources]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.admin-create-rate-source :as u.f.admin-create-rate-source]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]
@@ -24,15 +21,9 @@
       (let [currency-id (new-uuid)
             currency    {::m.currencies/name "xccx"
                          ::m.currencies/id   currency-id}]
-        {::u.f.admin-create-rate-source/form
-         (comp/get-initial-state u.f.admin-create-rate-source/AdminCreateRateSourceForm)
-
-         :component/id {}
+        {:component/id {}
          ::u.admin-index-rate-sources/rate-sources
          [{::m.rate-sources/id       (new-uuid)
            ::m.rate-sources/currency currency
            ::m.rate-sources/name     "cxcxd"
-           ::m.rate-sources/url      "sdzxczx"}]
-
-         ::u.admin-index-rate-sources/toggle-button
-         (comp/get-initial-state u.buttons/ShowFormButton)}))}))
+           ::m.rate-sources/url      "sdzxczx"}]}))}))

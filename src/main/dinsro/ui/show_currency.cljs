@@ -13,8 +13,6 @@
    [dinsro.ui.currency-transactions :as u.currency-transactions]
    [taoensso.timbre :as log]))
 
-(def form-toggle-sm ::form-toggle)
-
 (defsc ShowCurrency
   [_this {::m.currencies/keys [id name]}]
   {:query         [::m.currencies/id ::m.currencies/name]

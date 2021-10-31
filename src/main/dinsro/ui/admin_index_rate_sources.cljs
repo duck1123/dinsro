@@ -2,17 +2,12 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [dinsro.machines :as machines]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.forms.admin-create-rate-source :as u.f.admin-create-rate-source]
    [dinsro.ui.links :as u.links]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as log]))
-
-(def form-toggle-sm ::form-toggle)
 
 (defsc AdminIndexRateSourceLine
   [_this {::m.rate-sources/keys [currency id url]
@@ -38,35 +33,25 @@
   (comp/factory AdminIndexRateSourceLine {:keyfn ::m.rate-sources/id}))
 
 (defsc AdminIndexRateSources
-  [this {::keys [form rate-sources toggle-button]}]
-  {:componentDidMount #(uism/begin! % machines/hideable form-toggle-sm {:actor/navbar AdminIndexRateSources})
-   :ident             (fn [_] [:component/id ::AdminIndexRateSources])
-   :initial-state     {::form          {}
-                       ::rate-sources  []
-                       ::toggle-button {:form-button/id form-toggle-sm}}
+  [_this {::keys [rate-sources]}]
+  {:ident             (fn [_] [:component/id ::AdminIndexRateSources])
+   :initial-state     {::rate-sources  []}
    :query             [:component/id
-                       {::form (comp/get-query u.f.admin-create-rate-source/AdminCreateRateSourceForm)}
-                       {::rate-sources (comp/get-query AdminIndexRateSourceLine)}
-                       {::toggle-button (comp/get-query u.buttons/ShowFormButton)}
-                       [::uism/asm-id form-toggle-sm]]}
-  (let [shown? (= (uism/get-active-state this form-toggle-sm) :state/shown)]
-    (bulma/box
-     (dom/h2 :.title.is-2
-       (tr [:rate-sources])
-       (u.buttons/ui-show-form-button toggle-button))
-     (when shown?
-       (u.f.admin-create-rate-source/ui-admin-create-rate-source-form form))
-     (dom/hr)
-     (if (empty? rate-sources)
-       (dom/p (tr [:no-rate-sources]))
-       (dom/table :.table.is-fullwidth.ui
-         (dom/thead {}
-           (dom/tr {}
-             (dom/th "name")
-             (dom/th "url")
-             (dom/th "currency")
-             (dom/th "actions")))
-         (dom/tbody {}
-           (map ui-admin-index-rate-source-line rate-sources)))))))
+                       {::rate-sources (comp/get-query AdminIndexRateSourceLine)}]}
+  (bulma/box
+   (dom/h2 :.title.is-2
+     (tr [:rate-sources]))
+   (dom/hr)
+   (if (empty? rate-sources)
+     (dom/p (tr [:no-rate-sources]))
+     (dom/table :.table.is-fullwidth.ui
+       (dom/thead {}
+         (dom/tr {}
+           (dom/th "name")
+           (dom/th "url")
+           (dom/th "currency")
+           (dom/th "actions")))
+       (dom/tbody {}
+         (map ui-admin-index-rate-source-line rate-sources))))))
 
 (def ui-section (comp/factory AdminIndexRateSources))
