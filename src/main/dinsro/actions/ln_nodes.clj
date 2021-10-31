@@ -198,9 +198,9 @@
   (let [node (q.ln-nodes/read-record node-id)]
     (get-lnd-address node))
   #_(let [ch (async/chan)]
-    (with-open [client (get-client node)]
-      (.listPeers client true (ch-observer ch)))
-    ch))
+      (with-open [client (get-client node)]
+        (.listPeers client true (ch-observer ch)))
+      ch))
 
 (>defn generate!
   [node]
@@ -289,9 +289,9 @@
             (doseq [transaction transactions]
               (let [params (set/rename-keys transaction m.ln-tx/rename-map)]
                 (try
-                 (update-transaction! node params)
-                 (catch Exception ex
-                   (log/error "Failed to update" ex)))))))
+                  (update-transaction! node params)
+                  (catch Exception ex
+                    (log/error "Failed to update" ex)))))))
         ch)
       (do
         (log/error "channel error")

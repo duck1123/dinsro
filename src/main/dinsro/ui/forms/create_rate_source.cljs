@@ -17,9 +17,9 @@
                    ::name        ""
                    ::url         ""}
    :query         [{::currency (comp/get-query u.inputs/CurrencySelector)}
-           ::currency-id
-           ::name
-           ::url]}
+                   ::currency-id
+                   ::name
+                   ::url]}
   (dom/div {}
     (bulma/field
      (bulma/control
