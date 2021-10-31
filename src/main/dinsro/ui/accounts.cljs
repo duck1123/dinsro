@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
@@ -14,23 +13,21 @@
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
 
+(defattr currency-link ::m.accounts/currency :ref
+  {ao/cardinality                         :one
+   ao/identities                          #{::m.accounts/id}
+   ao/target                              ::m.currencies/id
+   ::report/column-EQL {::m.accounts/currency (comp/get-query u.links/CurrencyLink)}})
+
+(defattr user-link ::m.accounts/user :ref
+  {ao/cardinality                         :one
+   ao/identities                          #{::m.accounts/id}
+   ao/target                              ::m.users/id
+   ::report/column-EQL {::m.accounts/user (comp/get-query u.links/UserLink)}})
+
 (def override-form true)
-
-(defn- form-at-key [this k]
-  (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
-    (some (fn [{:keys [key component]}] (when (and component (= key k)) component))
-          children)))
-
-(defn edit! [this form-key id]
-  (let [Form (form-at-key this form-key)]
-    (uism/trigger! this (comp/get-ident this)
-                   :event/edit-detail
-                   {:id       id
-                    :form     Form
-                    :join-key form-key})))
 
 (form/defsc-form AccountForm
   [this {::m.accounts/keys [currency name initial-value user]
@@ -46,25 +43,12 @@
    fo/title          "Edit Account"}
   (if override-form
     (form/render-layout this props)
-    (dom/div :.ui.container
+    (dom/div
+      :.ui.container
       (dom/p {} (str "Account: " name))
       (dom/p {} (str "Initial Value: " initial-value))
       (dom/p {} (str "Currency: " currency))
       (dom/p {} (str "User: " user)))))
-
-(def ui-account-form (comp/factory AccountForm))
-
-(defattr currency-link ::m.accounts/currency :ref
-  {ao/cardinality                         :one
-   ao/identities                          #{::m.accounts/id}
-   ao/target                              ::m.currencies/id
-   ::report/column-EQL {::m.accounts/currency (comp/get-query u.links/CurrencyLink)}})
-
-(defattr user-link ::m.accounts/user :ref
-  {ao/cardinality                         :one
-   ao/identities                          #{::m.accounts/id}
-   ao/target                              ::m.users/id
-   ::report/column-EQL {::m.accounts/user (comp/get-query u.links/UserLink)}})
 
 (report/defsc-report AccountsReport
   [_this _props]

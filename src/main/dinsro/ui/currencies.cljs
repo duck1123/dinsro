@@ -1,8 +1,6 @@
 (ns dinsro.ui.currencies
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -10,21 +8,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.joins :as m.joins]
    [dinsro.translations :refer [tr]]
-   [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
-
-(defn- form-at-key [this k]
-  (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
-    (some (fn [{:keys [key component]}] (when (and component (= key k)) component))
-          children)))
-
-(defn edit! [this form-key id]
-  (let [Form (form-at-key this form-key)]
-    (uism/trigger! this (comp/get-ident this)
-                   :event/edit-detail
-                   {:id       id
-                    :form     Form
-                    :join-key form-key})))
 
 (form/defsc-form CurrencyForm [_this _props]
   {fo/id           m.currencies/id

@@ -1,6 +1,5 @@
 (ns dinsro.ui.transactions
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
@@ -44,6 +43,3 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.transactions/all-transactions
    ro/title            "Transaction Report"})
-
-(s/def ::form (s/keys))
-(s/def ::toggle-button (s/keys))

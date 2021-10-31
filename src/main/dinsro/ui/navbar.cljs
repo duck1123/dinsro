@@ -53,8 +53,6 @@
       {:onClick (fn [_e] (rroute/route-to! this component {::m.users/id id}))}
       name)))
 
-(def ui-navbar-auth-link (comp/factory NavbarAuthLink))
-
 (defsc NavbarLoginLink
   [this _]
   {:initial-state {}
@@ -80,31 +78,6 @@
     "Logout"))
 
 (def ui-navbar-logout-link (comp/factory NavbarLogoutLink))
-
-(defn toggle
-  []
-  `(toggle))
-
-(defn navbar-burger
-  [expanded? burger-clicked]
-  (dom/div :.navbar-burger.burger
-    {:role          :button
-     :aria-label    :menu
-     :aria-expanded false
-     :onClick       burger-clicked
-     :className     (when expanded? "is-active")}
-    (dom/span {:aria-hidden true})
-    (dom/span {:aria-hidden true})
-    (dom/span {:aria-hidden true})))
-
-(defn navbar-brand
-  [this expanded? burger-clicked]
-  (dom/div :.navbar-brand
-    (dom/a :.item
-      {:onClick #(rroute/route-to! this u.home/HomePage {})
-       :style   {:fontWeight :bold}}
-      "Dinsro")
-    (navbar-burger expanded? burger-clicked)))
 
 (defsc NavbarSidebar
   [this {:keys            [inverted]

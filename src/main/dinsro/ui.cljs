@@ -14,8 +14,10 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
+   [dinsro.ui.core-nodes :as u.core-nodes]
    [dinsro.ui.currencies :as u.currrencies]
    [dinsro.ui.home :as u.home]
+   [dinsro.ui.ln-nodes :as u.ln-nodes]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.media :as u.media]
    [dinsro.ui.navbar :as u.navbar]
@@ -33,10 +35,14 @@
                     u.admin/AdminPage
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
+                    u.core-nodes/CoreNodeForm
+                    u.core-nodes/CoreNodesReport
                     u.currrencies/CurrencyForm
                     u.currrencies/CurrenciesReport
                     u.home/HomePage
                     u.login/LoginPage
+                    u.ln-nodes/LightningNodeForm
+                    u.ln-nodes/LightningNodesReport
                     u.registration/RegistrationPage
                     u.rate-sources/RateSourceForm
                     u.rate-sources/RateSourcesReport

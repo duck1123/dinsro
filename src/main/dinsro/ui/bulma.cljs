@@ -6,10 +6,6 @@
   [& body]
   (apply dom/div :.box body))
 
-(defn column
-  [& body]
-  (apply dom/div :.column body))
-
 (defn container
   [& body]
   (apply dom/div :.container body))
@@ -21,10 +17,6 @@
 (defn control
   [& body]
   (apply dom/div :.control body))
-
-(defn field-group
-  [& body]
-  (apply dom/div :.field-group body))
 
 (defn field
   [& body]

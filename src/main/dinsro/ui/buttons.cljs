@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.mutations.accounts :as mutations.accounts]
    [dinsro.mutations.categories :as mutations.categories]
    [dinsro.mutations.currencies :as mutations.currencies]
@@ -12,20 +11,6 @@
    [dinsro.mutations.users :as mutations.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as log]))
-
-(defsc ShowFormButton
-  [this {:form-button/keys [id]}]
-  {:ident :form-button/id
-   :initial-state
-   (fn [{:form-button/keys [id]}]
-     {:form-button/id id})
-   :query [:form-button/id
-           :form-button/state]}
-  (dom/a :.is-pulled-right
-    {:onClick #(uism/trigger! this id :event/toggle {})}
-    (tr [:show-form "Show"])))
-
-(def ui-show-form-button (comp/factory ShowFormButton))
 
 (defsc DeleteAccountButton
   [this props]
@@ -79,7 +64,7 @@
     {:onClick #(comp/transact! this [(mutations.transactions/delete! props)])}
     "Delete Transaction"))
 
-(def ui-delete-transaction-button (comp/factory DeleteRateSourceButton))
+(def ui-delete-transaction-button (comp/factory DeleteTransactionButton))
 
 (defsc DeleteUserButton
   [this props]

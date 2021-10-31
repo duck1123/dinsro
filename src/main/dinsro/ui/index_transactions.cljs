@@ -1,15 +1,11 @@
 (ns dinsro.ui.index-transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.user-transactions :as u.user-transactions]
    [taoensso.timbre :as log]))
 
 (defsc IndexTransactionLine
@@ -52,23 +48,3 @@
 (def ui-index-transactions
   (comp/factory IndexTransactions))
 
-(defsc IndexTransactionsPage
-  [_this {::keys [transactions]}]
-  {:componentDidMount
-   (fn [this]
-     (df/load! this :session/current-user-ref
-               u.user-transactions/UserTransactions
-               {:target [:page/id
-                         ::page
-                         ::transactions]}))
-   :ident         (fn [] [:page/id ::page])
-   :initial-state {::transactions {}}
-   :query         [:page/id
-                   {::transactions (comp/get-query u.user-transactions/UserTransactions)}]
-   :route-segment ["transactions"]}
-  (bulma/page
-   {:className "index-transactions-page"}
-   (when (::m.users/id transactions)
-     (u.user-transactions/ui-user-transactions transactions))))
-
-(def ui-page (comp/factory IndexTransactionsPage))

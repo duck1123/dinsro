@@ -28,22 +28,6 @@
 
 (def ui-index-category-line (comp/factory IndexCategoryLine {:keyfn ::m.categories/id}))
 
-(defsc IndexUserCategories
-  [_this {::keys [categories]}]
-  {:initial-state {::categories []}
-   :query         [{::categories (comp/get-query IndexCategoryLine)}]}
-  (if (seq categories)
-    (dom/table :.table
-      (dom/thead {}
-        (dom/tr {}
-          (dom/th (tr [:name]))
-          (dom/th (tr [:actions]))))
-      (dom/tbody {}
-        (map ui-index-category-line categories)))
-    (dom/div (tr [:no-categories]))))
-
-(def ui-index-user-categories (comp/factory IndexUserCategories))
-
 (defsc UserCategories
   [_this {::m.users/keys [id categories]}]
   {:ident             ::m.users/id

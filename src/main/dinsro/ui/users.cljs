@@ -1,6 +1,5 @@
 (ns dinsro.ui.users
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
@@ -9,8 +8,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [taoensso.timbre :as log]))
-
-(def users-path "/admin/users")
 
 (def override-form true)
 
@@ -25,8 +22,6 @@
     (dom/div {}
       (dom/p {} name))))
 
-(def override-report true)
-
 (report/defsc-report UsersReport
   [_this _props]
   {ro/form-links       {::m.users/name UserForm}
@@ -36,8 +31,6 @@
    ro/route            "users"
    ro/row-pk           m.users/id
    ro/run-on-mount?    true})
-
-(def ui-user-report (comp/factory UsersReport))
 
 (report/defsc-report AdminIndexUsersReport
   [_this _props]

@@ -21,15 +21,9 @@
    [dinsro.mutations.ln-nodes :as mu.ln]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
 
 (declare LightningNodeForm)
-
-(defn action-button
-  [label mutation]
-  {:label  label
-   :action (fn [this {::m.ln-nodes/keys [id]}] (comp/transact! this [(mutation {::m.ln-nodes/id id})]))})
 
 (defn form-control
   [label mutation]
@@ -47,11 +41,6 @@
    :label  "Connect"
    :action (fn [this _] (form/create! this LightningNodeForm))})
 
-(def connect-button
-  {:label     "Connect"
-   :action    (fn [this props] (comp/transact! this [(mu.ln/connect! props)]))
-   :disabled? (fn [_ row-props] (:account/active? row-props))})
-
 (def update-info-button
   {:label  "Update Info"
    :type   :button
@@ -61,39 +50,11 @@
                  (comp/transact! this [(mu.ln/update-info! {::m.ln-nodes/id id})])
                  (log/error "no id"))))})
 
-(def update-info-action-button
-  {:label  "Update Info"
-   :type   :button
-   :action (fn [this props]
-             (let [{::m.ln-nodes/keys [id]} props]
-               (if id
-                 (comp/transact! this [(mu.ln/update-info! {::m.ln-nodes/id id})])
-                 (log/error "no id"))))})
-
-(def unlock-button
-  {:label     "Unlock"
-   :type      :button
-   :action    (fn [this {::m.ln-nodes/keys [id]}] (comp/transact! this [(mu.ln/unlock! {::m.ln-nodes/id id})]))
-   :disabled? (fn [_this _props] false)})
-
 (def new-node-button
   {:type   :button
    :local? true
    :label  "New Node"
    :action (fn [this _] (form/create! this LightningNodeForm))})
-
-(defn- form-at-key [this k]
-  (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
-    (some (fn [{:keys [key component]}] (when (and component (= key k)) component))
-          children)))
-
-(defn edit! [this form-key id]
-  (let [Form (form-at-key this form-key)]
-    (uism/trigger! this (comp/get-ident this)
-                   :event/edit-detail
-                   {:id       id
-                    :form     Form
-                    :join-key form-key})))
 
 (defn edit-detail
   [])
@@ -110,14 +71,6 @@
           (edit-detail))})))
 
 (def override-form false)
-
-(defsc ButtonControl
-  [this {:keys [label mutation id]}]
-  (dom/div {:style {:display "inline-block"}}
-    (dom/button :.ui.button.center
-      {:onClick #(comp/transact! this [(mutation {::m.ln-nodes/id id})])}
-      label)))
-(def ui-button-control (comp/factory ButtonControl {:keyfn :label}))
 
 (def button-info
   [["Fetch Peers" mu.ln/fetch-peers!]

@@ -32,13 +32,6 @@
 
 (def ui-index-account-line (comp/factory IndexAccountLine {:keyfn ::m.accounts/id}))
 
-(defsc IndexAccounts
-  [_this _]
-  {:initial-state {}
-   :query         []})
-
-(def ui-index-accounts (comp/factory IndexAccounts))
-
 (defsc UserAccounts
   [_this {::m.users/keys [accounts id]}]
   {:ident              ::m.users/id

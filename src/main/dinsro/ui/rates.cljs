@@ -1,7 +1,6 @@
 (ns dinsro.ui.rates
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
@@ -12,7 +11,6 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
 
 (defattr currency-link ::m.rates/currency :ref
@@ -20,19 +18,6 @@
    ao/identities       #{::m.rates/id}
    ao/target           ::m.currencies/id
    ::report/column-EQL {::m.rates/currency (comp/get-query u.links/CurrencyLink)}})
-
-(defn- form-at-key [this k]
-  (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
-    (some (fn [{:keys [key component]}] (when (and component (= key k)) component))
-          children)))
-
-(defn edit! [this form-key id]
-  (let [Form (form-at-key this form-key)]
-    (uism/trigger! this (comp/get-ident this)
-                   :event/edit-detail
-                   {:id       id
-                    :form     Form
-                    :join-key form-key})))
 
 (form/defsc-form RateForm [_this _props]
   {fo/id           m.rates/id
