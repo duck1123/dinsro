@@ -99,6 +99,4 @@
      (io/file (cert-path id))))
 
 (def attributes
-  [id name
-   user
-   host port mnemonic hasCert? hasMacaroon? unlocked? initialized?])
+  [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized?])

@@ -76,6 +76,16 @@
         :cljs
         (comment env query-params)))})
 
+(defattr all-ln-nodes ::m.ln-nodes/all-nodes :ref
+  {ao/target    ::m.ln-nodes/id
+   ao/pc-output [{::m.ln-nodes/all-nodes [::m.ln-nodes/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.ln-nodes/all-nodes (queries/get-all-lightning-nodes env query-params)}
+        :cljs
+        (comment env query-params)))})
+
 (defattr all-users ::m.users/all-users :ref
   {ao/target    ::m.users/id
    ao/pc-output [{::m.users/all-users [::m.users/id]}]
@@ -229,6 +239,7 @@
    all-accounts
    all-core-nodes
    all-currencies
+   all-ln-nodes
    all-users
    category-transactions
    currency-accounts
