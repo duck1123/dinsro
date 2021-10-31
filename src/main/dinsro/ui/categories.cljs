@@ -3,15 +3,25 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.links :as u.links]
    [dinsro.ui.users :as u.users]
    [edn-query-language.core :as eql]
    [taoensso.timbre :as log]))
+
+(defattr user-link ::m.categories/user :ref
+  {ao/cardinality      :one
+   ao/identities       #{::m.categories/id}
+   ao/target           ::m.users/id
+   ::report/column-EQL {::m.categories/user (comp/get-query u.links/UserLink)}})
 
 (defn- form-at-key [this k]
   (let [{:keys [children]} (eql/query->ast (comp/get-query this))]
@@ -43,25 +53,15 @@
 
 (report/defsc-report CategoriesReport
   [_this _props]
-  {ro/form-links       {::m.categories/name CategoryForm
-                        ::m.categories/user u.users/UserForm}
-   ro/columns          [m.categories/name
-                        m.categories/user]
+  {ro/field-formatters {::m.categories/user (fn [_this props] (u.links/ui-user-link props))}
+   ro/form-links       {::m.categories/name CategoryForm}
+   ro/columns          [m.categories/name user-link]
    ro/route            "categories"
    ro/row-actions      []
    ro/row-pk           m.categories/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.categories/all-categories
    ro/title            "Categories"})
-
-(report/defsc-report CategoryReport
-  [_this _props]
-  {ro/columns          [m.categories/name]
-   ro/source-attribute ::m.categories/all-categories
-   ro/title            "Categories"
-   ro/row-pk           m.categories/id
-   ro/run-on-mount?    true
-   ro/route            "categories"})
 
 (report/defsc-report AdminIndexCategoriesReport
   [_this _props]
