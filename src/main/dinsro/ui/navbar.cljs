@@ -15,7 +15,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.authenticator :as u.authenticator]
-   [dinsro.ui.home :as v.home]
+   [dinsro.ui.home :as u.home]
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]
    [taoensso.timbre :as log]))
 
@@ -101,7 +101,7 @@
   [this expanded? burger-clicked]
   (dom/div :.navbar-brand
     (dom/a :.item
-      {:onClick #(rroute/route-to! this v.home/HomePage {})
+      {:onClick #(rroute/route-to! this u.home/HomePage {})
        :style   {:fontWeight :bold}}
       "Dinsro")
     (navbar-burger expanded? burger-clicked)))
@@ -167,7 +167,7 @@
      {:inverted inverted
       :style    {:marginBottom "0"}}
      (ui-menu-item
-      {:onClick #(rroute/route-to! this v.home/HomePage {})
+      {:onClick #(rroute/route-to! this u.home/HomePage {})
        :style   {:fontWeight :bold}}
       "Dinsro")
      (if logged-in?
