@@ -25,31 +25,6 @@
 
 (declare LightningNodeForm)
 
-(defn form-control
-  [label mutation]
-  {:label  label
-   :type   :button
-   :local? true
-   :action (fn [this _keyword]
-             (let [{::m.ln-nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mutation {::m.ln-nodes/id id})])
-               (report/run-report! this)))})
-
-(def form-connect-button
-  {:type   :button
-   :local? true
-   :label  "Connect"
-   :action (fn [this _] (form/create! this LightningNodeForm))})
-
-(def update-info-button
-  {:label  "Update Info"
-   :type   :button
-   :action (fn [this _keyword]
-             (let [{::m.ln-nodes/keys [id]} (comp/props this)]
-               (if id
-                 (comp/transact! this [(mu.ln/update-info! {::m.ln-nodes/id id})])
-                 (log/error "no id"))))})
-
 (def new-node-button
   {:type   :button
    :local? true
@@ -70,19 +45,45 @@
           (log/info "editing detail")
           (edit-detail))})))
 
-(def override-form false)
-
 (def button-info
-  [["Fetch Peers" mu.ln/fetch-peers!]
-   ["Fetch Channels" mu.ln/fetch-channels!]
-   ["Fetch Transactions" mu.ln/fetch-transactions!]
-   ["Download Cert" mu.ln/download-cert!]
-   ["Download Macaroon" mu.ln/download-macaroon!]
-   ["initialize" mu.ln/initialize!]
-   ["unlock" mu.ln/unlock!]
-   ["update info" mu.ln/update-info!]
-   ["fetch address" mu.ln/fetch-address!]
-   ["generate" mu.ln/generate!]])
+  [{:label "Fetch Peers"
+    :action mu.ln/fetch-peers!
+    :requiresCert true
+    :requiresMacaroon true}
+   {:label "Fetch Channels"
+    :action mu.ln/fetch-channels!
+    :requiresCert true
+    :requiresMacaroon true}
+   {:label "Fetch Transactions"
+    :action mu.ln/fetch-transactions!
+    :requiresCert true
+    :requiresMacaroon true}
+   {:label "Download Cert"
+    :action mu.ln/download-cert!
+    :hideCert true
+    :requiresCert false
+    :requiresMacaroon false}
+   {:label "Download Macaroon"
+    :action mu.ln/download-macaroon!
+    :hideMacaroon true
+    :requiresCert true
+    :requiresMacaroon false}
+   {:label "Initialiaze"
+    :action mu.ln/initialize!
+    :requiresCert true
+    :requiresMacaroon false}
+   {:label "Unlock"
+    :action mu.ln/unlock!
+    :requiresCert true
+    :requiresMacaroon true}
+   {:label "Update Info"
+    :action mu.ln/update-info!
+    :requiresCert true
+    :requiresMacaroon true}
+   {:label "Generate"
+    :action mu.ln/generate!
+    :requiresCert true
+    :requiresMacaroon true}])
 
 (form/defsc-form PeerSubform
   [_this _props]
@@ -118,53 +119,62 @@
 (def ui-actions-menu-item (comp/factory ActionsMenuItem {:keyfn :label}))
 
 (defsc ActionsMenu
-  [_this {::m.ln-nodes/keys [id]}]
-  {:initial-state {::m.ln-nodes/id nil}
-   :query         [::m.ln-nodes/id]}
+  [_this {::m.ln-nodes/keys [id hasCert? hasMacaroon?]}]
+  {:initial-state {::m.ln-nodes/id nil
+                   ::m.ln-nodes/hasCert? false
+                   ::m.ln-nodes/hasMacaroon? false}
+   :query         [::m.ln-nodes/id ::m.ln-nodes/hasCert?
+                   ::m.ln-nodes/hasMacaroon?]}
   (ui-dropdown
    {:icon    "settings"
     :button  true
     :labeled false}
    (ui-dropdown-menu
     {}
-    (for [[label mutation] button-info]
-      (ui-actions-menu-item {:label label :mutation mutation :id id})))))
+    (for [{:keys [label action hideCert hideMacaroon requiresCert requiresMacaroon]} button-info]
+      (let [cert-hidden (and hasCert? hideCert)
+            macaroon-hidden (and hasMacaroon? hideMacaroon)
+            hidden (or cert-hidden macaroon-hidden)]
+        (when (not (or hidden
+                       (and requiresCert (not hasCert?))
+                       (and requiresMacaroon (not hasMacaroon?))))
+          (ui-actions-menu-item {:label label :mutation action :id id})))))))
 
 (def ui-actions-menu (comp/factory ActionsMenu))
 
+(def override-form false)
+
 (form/defsc-form LightningNodeForm
-  [this props]
+  [this {::m.ln-nodes/keys [id hasCert? hasMacaroon?] :as props}]
   {fo/id            m.ln-nodes/id
    fo/attributes    [m.ln-nodes/name
                      m.ln-info/alias-attr
+                     m.ln-nodes/hasCert?
+                     m.ln-nodes/hasMacaroon?
                      m.ln-info/identity-pubkey
                      m.joins/ln-node-transactions]
    fo/subforms      {::m.ln-nodes/peers        {fo/ui PeerSubform}
                      ::m.ln-nodes/transactions {fo/ui TxSubform}}
-   fo/layout-styles {::m.ln-nodes/transactions :tableh}
    fo/field-styles  {::m.ln-nodes/transactions :ln-tx-row}
-   fo/controls      (merge form/standard-controls
-                           {::connect            form-connect-button
-                            ::update-info        update-info-button
-                            ::init               (form-control "init"   mu.ln/initialize!)
-                            ::unlock-button      (form-control "unlock" mu.ln/unlock!)
-                            ::download-cert!     (form-control "->C"    mu.ln/download-cert!)
-                            ::download-macaroon! (form-control "->M"    mu.ln/download-macaroon!)})
    fo/cancel-route  ["ln-nodes"]
    fo/route-prefix  "ln-node"
    fo/title         "Lightning Node"}
-  (let [node-id (::m.ln-nodes/id props)]
-    (if override-form
-      (form/render-layout this props)
-      (dom/div :.ui.grid
-        (dom/div :.row
-          (dom/div :.sixteen.wide.column
-            (dom/div :.ui.container
-              (ui-actions-menu {::m.ln-nodes/id node-id}))))
-        (dom/div :.row
-          (dom/div :.sixteen.wide.column
-            (dom/div {}
-              (form/render-layout this props))))))))
+  (if override-form
+    (form/render-layout this props)
+    (dom/div :.ui.grid
+      (dom/div :.row
+        (dom/div :.sixteen.wide.column
+          (dom/div :.ui.container
+            (ui-actions-menu
+             {::m.ln-nodes/id id
+              ::m.ln-nodes/hasCert? hasCert?
+              ::m.ln-nodes/hasMacaroon? hasMacaroon?}))))
+      (dom/div
+        :.row
+        (dom/div
+          :.sixteen.wide.column
+          (dom/div {}
+            (form/render-layout this props)))))))
 
 (defattr node-user-link ::m.ln-nodes/user :ref
   {ao/cardinality      :one
@@ -179,9 +189,9 @@
                         m.ln-info/color
                         node-user-link]
    ro/control-layout   {:action-buttons [::new-node]}
+   ro/form-links       {::m.ln-nodes/name LightningNodeForm}
    ro/controls         {::new-node new-node-button}
-   ro/field-formatters
-   {::m.ln-nodes/user (fn [_this props] (u.links/ui-user-link props))}
+   ro/field-formatters {::m.ln-nodes/user (fn [_this props] (u.links/ui-user-link props))}
    ro/machine          lightning-node-report-machine
    ro/route            "ln-nodes"
    ro/row-pk           m.ln-nodes/id
