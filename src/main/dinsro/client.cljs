@@ -13,7 +13,6 @@
    [com.fulcrologic.rad.routing.history :as history]
    [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [html5-history]]
    [dinsro.app :as da]
-   [dinsro.routing :as d.routing]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
    [dinsro.ui.controls :as u.controls]
@@ -46,7 +45,6 @@
   (log/merge-config! {:output-fn prefix-output-fn
                       :appenders {:console (console-appender)}})
   (app/set-root! da/app ui/Root {:initialize-state? true})
-  (d.routing/start!)
   (setup-RAD da/app)
   (dr/change-route! da/app [""])
   (history/install-route-history! da/app (html5-history))

@@ -1,7 +1,6 @@
 (ns dinsro.model.authentication
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    #?(:clj [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]])
    #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
@@ -13,22 +12,9 @@
    #?(:clj [dinsro.model.authorization :as exauth])
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.users :as q.users])
-   #?(:cljs [dinsro.routing :as routing])
    [taoensso.timbre :as log]))
 
 (comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
-
-(defsc CurrentUser
-  [_this _props]
-  {:query [:user/username :user/valid?]})
-
-#?(:cljs
-   (fm/defmutation finish-login [_]
-     (action [{:keys [_app state]}]
-       (let [logged-in? (get-in @state [:session/current-user :user/valid?])]
-         (when-not logged-in?
-           (routing/route-to! "/login"))
-         (swap! state #(assoc % :root/ready? true))))))
 
 #?(:clj
    (>defn do-register

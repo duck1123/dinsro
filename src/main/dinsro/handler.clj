@@ -1,23 +1,16 @@
 (ns dinsro.handler
   (:require
-   [dinsro.env :refer [defaults]]
    [dinsro.layout :refer [error-page] :as layout]
    [dinsro.middleware :as middleware]
-   [dinsro.routes :as routes]
    [dinsro.seed :as seed]
    [mount.core :as mount]
    [reitit.coercion.spec]
    [reitit.ring :as ring]
    [taoensso.timbre :as log]))
 
-(mount/defstate init-app
-  :start ((or (:init defaults) (fn [])))
-  :stop  ((or (:stop defaults) (fn []))))
-
 (mount/defstate app-routes
   :start
   (ring/ring-handler
-   (ring/router routes/routes)
    (ring/routes
     (ring/create-resource-handler {:path "/"})
     (ring/create-default-handler
