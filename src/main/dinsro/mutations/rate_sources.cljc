@@ -1,11 +1,10 @@
 (ns dinsro.mutations.rate-sources
   (:require
    [clojure.spec.alpha :as s]
-   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
-   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
-   [com.wsscode.pathom.connect :as pc #?@(:clj [:refer [defmutation]])]
+   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
+   [com.wsscode.pathom.connect :as pc]
+   #?(:clj [dinsro.actions.rate-sources :as a.rate-sources])
    [dinsro.model.rate-sources :as m.rate-sources]
-   #?(:clj [dinsro.queries.rate-sources :as q.rate-sources])
    [taoensso.timbre :as log]))
 
 (comment ::pc/_)
@@ -16,42 +15,21 @@
                                  :opt-un [::item]))
 
 #?(:clj
-   (>defn do-create
-     [params]
-     [::m.rate-sources/params => ::create-response]
-     (if-let [record (q.rate-sources/create-record params)]
-       {:status :success
-        :item   [(m.rate-sources/ident record)]}
-       {:status :failure})))
-
-#?(:clj
-   (defn do-delete
+   (defn do-run!
      [id]
-     (q.rate-sources/delete-record id)
+     (a.rate-sources/run-query! id)
      {:status :success}))
 
 #?(:clj
-   (defmutation create!
-     [_env params]
-     {::pc/params #{:name :url :currency-id}
-      ::pc/output [:status {:item [::m.rate-sources/id]}]}
-     (do-create params))
-   :cljs
-
-   (defmutation create! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
-
-#?(:clj
-   (defmutation delete!
+   (pc/defmutation run-query!
      [_request {::m.rate-sources/keys [id]}]
      {::pc/params #{::m.rate-sources/id}
       ::pc/output [:status]}
-     (do-delete id))
+     (do-run! id))
    :cljs
-   (defmutation delete! [_props]
+   (fm/defmutation run-query! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
 #?(:clj
-   (def resolvers [create! delete!]))
+   (def resolvers [run-query!]))

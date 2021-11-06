@@ -11,6 +11,7 @@
    [dinsro.model.joins :as m.joins]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
+   [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
@@ -30,9 +31,22 @@
 (form/defsc-form RateSourceForm
   [_this _props]
   {fo/id           m.rate-sources/id
+   fo/action-buttons (concat [::run] form/standard-action-buttons)
+   fo/controls
+   (merge form/standard-controls
+          {::run
+           {:type :button
+            :local? true
+            :label "Run"
+            :action
+            (fn [this _key]
+              (let [{::m.rate-sources/keys [id]} (comp/props this)]
+                (comp/transact! this [(mu.rate-sources/run-query! {::m.rate-sources/id id})])))}})
    fo/subforms     {::m.rate-sources/rates {fo/ui RateSubform}}
    fo/attributes   [m.rate-sources/name
                     m.rate-sources/url
+                    m.rate-sources/active?
+                    m.rate-sources/path
                     m.joins/rate-source-rates]
    fo/cancel-route ["rate-sources"]
    fo/field-styles {::m.rate-sources/rates :rate-chart}
@@ -43,8 +57,9 @@
   [_this _props]
   {ro/columns          [m.rate-sources/name
                         m.rate-sources/url
+                        m.rate-sources/active?
                         source-currency-link]
-   ro/controls         {::new-rate-source {:label  "New Invoice"
+   ro/controls         {::new-rate-source {:label  "New Source"
                                            :type   :button
                                            :action (fn [this] (form/create! this RateSourceForm))}}
    ro/control-layout   {:action-buttons [::new-rate-source]}

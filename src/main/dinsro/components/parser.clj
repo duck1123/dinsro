@@ -14,6 +14,8 @@
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
    [dinsro.model :refer [all-attributes]]
+   [dinsro.mutations.ln-nodes :as mu.ln-nodes]
+   [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.mutations.session :as mu.session]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.crux :as crux]
@@ -50,5 +52,7 @@
      [automatic-resolvers
       form/resolvers
       (blob/resolvers all-attributes)
+      mu.ln-nodes/resolvers
+      mu.rate-sources/resolvers
       mu.session/resolvers
       index-explorer])))

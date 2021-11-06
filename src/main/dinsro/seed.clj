@@ -112,6 +112,10 @@
    {:rate 1539.
     :date (->inst "2021-11-10T18:07:37")}])
 
+(def sat-rates
+  [{:rate 1.
+    :date (->inst "2010-05-18T12:35:20")}])
+
 (def lnd1-mnemonic
   ["abandon" "horror"  "because" "buddy"  "jump"  "satisfy"
    "escape"  "flee"    "tape"    "pull"   "bacon" "arm"
@@ -248,22 +252,44 @@
     :code "usd"}])
 
 (def default-rate-sources
-  [{:name "identity"
-    :url  "identity"
-    :code "sats"}
-   {:name "CoinLott0"
-    :url  "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"
-    :code "usd"}
-   {:name "BitPonzi"
-    :url  "https://www.bitponzi.biz.localhost/cgi?id=3496709"
-    :code "usd"}
-   {:name  "DuckBitcoin"
-    :url   "https://www.duckbitcoin.localhost/api/current-rates"
-    :code  "usd"
-    :rates default-rates}
-   {:name "Leviathan"
-    :url  "https://www.leviathan.localhost/prices"
-    :code "usd"}])
+  [{:name       "identity"
+    :url        "identity"
+    :code       "sats"
+    :isActive   false
+    :isIdentity true
+    :rates      sat-rates
+    :path       "1"}
+   {:name       "CoinLott0"
+    :url        "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"
+    :isActive   false
+    :isIdentity false
+    :path ".rate"
+    :code       "usd"}
+   {:name       "Coinbase USD"
+    :code       "usd"
+    :url        "https://api.coinbase.com/v2/prices/spot?currency=USD"
+    :isActive   true
+    :isIdentity false
+    :path       "100000000 / (.data.amount | tonumber)"}
+   {:name       "BitPonzi"
+    :url        "https://www.bitponzi.biz.localhost/cgi?id=3496709"
+    :isActive   false
+    :isIdentity false
+    :path ".rate"
+    :code       "usd"}
+   {:name       "DuckBitcoin"
+    :url        "https://www.duckbitcoin.localhost/api/current-rates"
+    :code       "usd"
+    :isActive   false
+    :isIdentity false
+    :path ".rate"
+    :rates      default-rates}
+   {:name       "Leviathan"
+    :url        "https://www.leviathan.localhost/prices"
+    :isActive   false
+    :isIdentity false
+    :path ".rate"
+    :code       "usd"}])
 
 (def admin-categories
   [{:name "Admin Category A"}
@@ -464,11 +490,14 @@
 (defn seed-rate-sources!
   []
   (log/info "Seeding RateSources")
-  (doseq [{:keys [code name url]} default-rate-sources]
+  (doseq [{:keys [isActive isIdentity code name path url]} default-rate-sources]
     (when-let [currency-id (q.currencies/find-eid-by-code code)]
-      (let [rate-source {::m.rate-sources/name     name
-                         ::m.rate-sources/currency currency-id
-                         ::m.rate-sources/url      url}]
+      (let [rate-source {::m.rate-sources/name      name
+                         ::m.rate-sources/currency  currency-id
+                         ::m.rate-sources/url       url
+                         ::m.rate-sources/active?   isActive
+                         ::m.rate-sources/identity? isIdentity
+                         ::m.rate-sources/path      path}]
         (q.rate-sources/create-record (log/spy :info rate-source))))))
 
 (defn seed-rates!

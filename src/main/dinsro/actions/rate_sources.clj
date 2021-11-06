@@ -11,6 +11,7 @@
    [dinsro.specs :as ds]
    [dinsro.utils :as utils]
    [http.async.client :as http-client]
+   [jq.api :as jq]
    [manifold.time :as t]
    [mount.core :as mount]
    [ring.util.http-response :as http]
@@ -19,27 +20,44 @@
 
 (declare ^:dynamic *scheduler*)
 
+(defn run-query!
+  [id]
+  (log/infof "Running rate source: %s" id)
+  (let [query "100000000 / (.data.amount | tonumber)"
+        data "{\"data\":{\"base\":\"BTC\",\"currency\":\"USD\",\"amount\":\"61843.51\"}}"
+        processor-fn (jq/processor query)
+        rate (processor-fn data)
+        params {::m.rates/rate   (Double/parseDouble rate)
+                ::m.rates/source id
+                ::m.rates/date   (tick/instant)}]
+    (q.rates/create-record params)))
+
+(comment
+
+  (json/read-str (run-query! 1))
+
+  nil)
+
 ;; TODO: handle request failures and backoff
 (>defn fetch-rate
   [item]
   [::m.rate-sources/item => (? ::ds/valid-double)]
   (with-open [client (http-client/create-client)]
-    (let [url      (::m.rate-sources/url item)
+    (let [{::m.rate-sources/keys [url path]} item
           response (http-client/GET client url)
           body     (some-> response
                            http-client/await
-                           http-client/string
-                           (json/read-str :key-fn keyword))]
-      (when-let [price (some-> body :price utils/parse-double)]
-        (/ 100000000 price)))))
+                           http-client/string)]
+      (Double/parseDouble (jq/execute body path)))))
 
 (>defn fetch-source
-  [item]
+  [{::m.rate-sources/keys [id] :as source}]
   [::m.rate-sources/item => ::m.currencies/id]
-  (if-let [currency-id (some-> item ::m.rate-sources/currency ::m.currencies/id)]
+  (log/infof "Fetching source: %s" (::m.rate-sources/id source))
+  (if-let [currency-id (some-> source ::m.rate-sources/currency)]
     (if-let [currency (q.currencies/read-record currency-id)]
-      (if-let [rate (fetch-rate item)]
-        (let [rate-item {::m.rates/currency {::m.currencies/id currency-id}
+      (if-let [rate (fetch-rate source)]
+        (let [rate-item {::m.rates/source id
                          ::m.rates/rate     rate
                          ::m.rates/date     (tick/instant)}]
           (log/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)
@@ -62,8 +80,12 @@
 
 (defn check-rates
   []
+  (log/info "Checking rates")
   (doseq [item (q.rate-sources/index-records)]
-    (fetch-source item)))
+    (let [{::m.rate-sources/keys [active?]} item]
+      (if active?
+        (fetch-source item)
+        (log/warnf "not active: %s" (::m.rate-sources/name item))))))
 
 (defn stop-scheduler
   []
@@ -76,9 +98,18 @@
   (log/info "starting")
   (t/every
    (t/minutes 5)
-   (t/seconds 30)
+   #_(t/seconds 30)
    #'check-rates))
 
 (mount/defstate ^:dynamic *scheduler*
   :start (start-scheduler)
   :stop (stop-scheduler))
+
+(comment
+
+  *scheduler*
+
+  (start-scheduler)
+  (stop-scheduler)
+
+  nil)

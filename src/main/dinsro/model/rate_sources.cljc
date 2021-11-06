@@ -23,15 +23,30 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
+(s/def ::active? boolean?)
+(defattr active? ::active? :boolean
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(s/def ::identity? boolean?)
+(defattr identity? ::identity? :boolean
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(s/def ::path string?)
+(defattr path ::path :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (s/def ::currency ::m.currencies/id)
 (defattr currency ::currency :ref
   {ao/target     ::m.currencies/id
    ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::name ::url]))
-(s/def ::params (s/keys :req [::name ::url ::currency]))
-(s/def ::item (s/keys :req [::id ::name ::url ::currency]))
+(s/def ::required-params (s/keys :req [::name ::url ::active? ::path ::identity?]))
+(s/def ::params (s/keys :req [::name ::url ::currency ::active? ::path ::identity?]))
+(s/def ::item (s/keys :req [::id ::name ::url ::currency ::active? ::path ::identity?]))
 (s/def ::items (s/coll-of ::item))
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -45,6 +60,6 @@
   [::item => ::ident]
   (ident id))
 
-(def attributes [currency id name url])
+(def attributes [currency id name url active? path identity?])
 
 #?(:clj (def resolvers []))

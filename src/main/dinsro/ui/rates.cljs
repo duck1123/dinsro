@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
@@ -19,6 +20,12 @@
    ao/target           ::m.currencies/id
    ::report/column-EQL {::m.rates/currency (comp/get-query u.links/CurrencyLink)}})
 
+(defattr source-link ::m.rates/source :ref
+  {ao/cardinality      :one
+   ao/identities       #{::m.rates/id}
+   ao/target           ::m.rate-sources/id
+   ::report/column-EQL {::m.rates/source (comp/get-query u.links/RateSourceLink)}})
+
 (form/defsc-form RateForm [_this _props]
   {fo/id           m.rates/id
    fo/attributes   []
@@ -28,11 +35,10 @@
 (report/defsc-report RatesReport
   [_this _props]
   {ro/field-formatters
-   {::m.rates/currency (fn [_this props] (u.links/ui-currency-link props))}
-   ro/columns          [m.rates/id
-                        m.rates/rate
-                        currency-link
-                        m.rates/source
+   {::m.rates/currency (fn [_this props] (u.links/ui-currency-link props))
+    ::m.rates/source (fn [_this props] (u.links/ui-rate-source-link props))}
+   ro/columns          [m.rates/rate
+                        source-link
                         m.rates/date]
    ro/route            "rates"
    ro/row-actions      []
