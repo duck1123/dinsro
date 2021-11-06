@@ -137,7 +137,7 @@ if use_production:
 
   custom_build(
     "%s/dinsro:%s" % (repo, version),
-    "earthly --build-arg repo=%s +image" % repo,
+    "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +image" % repo,
     [
       'Earthfile',
       '.dockerignore',
@@ -145,7 +145,6 @@ if use_production:
       'deps.edn',
       'src'
     ],
-    tag = version,
   )
 
   k8s_resource(
@@ -158,7 +157,7 @@ if use_production:
 
 custom_build(
   "%s/dinsro:dev-sources-%s" % (repo, version),
-  "earthly --build-arg repo=%s +dev-image-sources" % repo,
+  "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +dev-image-sources" % repo,
   [
     'Earthfile',
     '.dockerignore',
@@ -166,7 +165,6 @@ custom_build(
     'deps.edn',
     'src'
   ],
-  tag = "dev-sources-%s" % version,
   live_update=[
     sync('src', '/usr/src/app/src')
   ]
@@ -186,12 +184,11 @@ if use_bitcoin and (use_lnd1 or use_lnd2):
 if use_bitcoin and use_rtl:
   custom_build(
     "%s/cert-downloader:%s" % (repo, version),
-    "earthly --build-arg repo=%s +cert-downloader" % repo,
+    "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +cert-downloader" % repo,
     [
       'Earthfile',
       'resources/cert-downloader',
     ],
-    tag = version,
   )
 
 if use_bitcoin:

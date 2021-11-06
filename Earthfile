@@ -258,8 +258,8 @@ dev-image-sources-base:
 
 dev-image-sources:
   FROM +dev-image-sources-base
-  ARG expected_ref=${repo}/${project}:dev-sources-${version}
-  SAVE IMAGE ${expected_ref}
+  ARG EXPECTED_REF=${repo}/${project}:dev-sources-${version}
+  SAVE IMAGE ${EXPECTED_REF}
 
 dev-sources:
   FROM +deps-builder
