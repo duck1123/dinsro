@@ -13,15 +13,15 @@
       "lnNode": "Node 1",
       "lnImplementation": "LND",
       "Authentication": {
-        "macaroonPath": "/mnt/data/lnd"
+        "macaroonPath": "/mnt/data/lnd1"
       },
       "Settings": {
         "userPersona": "MERCHANT",
         "themeMode": "NIGHT",
         "themeColor": "PURPLE",
-        "channelBackupPath": "/mnt/data/lnd/backups",
+        "channelBackupPath": "/mnt/data/lnd1/backups",
         "enableLogging": true,
-        "lnServerUrl": "https://lnd-internal.lnd.svc.cluster.local:8080",
+        "lnServerUrl": "https://lnd1-internal.lnd1.svc.cluster.local:8080",
         "fiatConversion": false
       }
     },
