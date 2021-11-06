@@ -245,7 +245,7 @@
    (fn [_env {::m.rate-sources/keys [id]}]
      (if id
        #?(:clj (let [rate-ids (q.rates/find-ids-by-rate-source id)]
-                 {::m.rate-sources/rates (map (fn [id] [::m.rates/id id]) rate-ids)})
+                 {::m.rate-sources/rates (map (fn [id] {::m.rates/id id}) rate-ids)})
           :cljs {::m.rate-sources/rates []})
        {:errors "no id"}))})
 
