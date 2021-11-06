@@ -8,14 +8,18 @@
 
 (def auth-link-names ["accounts"])
 (def dropdown-link-names
-  ["currencies"
-   "admin"
-   "rate-sources"
-   "rates"
+  ["users"
+   "currencies"
    "categories"
-   "users"
+   "rates"
+   "rate-sources"
+   "tx"
+   "peers"
+   "lightning-nodes"
+   "core-nodes"
    "transactions"
-   "accounts"])
+   "accounts"
+   "admin"])
 (def menu-link-names ["accounts" "transactions"])
 (def unauth-link-names ["login" "register"])
 
