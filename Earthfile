@@ -206,12 +206,13 @@ ci:
 
 cert-downloader:
   FROM +base-builder
+  ARG EXPECTED_REF=${repo}/cert-downloader:${version}
   USER root
   COPY resources/cert-downloader .
   RUN npm install
   ENTRYPOINT []
   CMD ["/bin/bash", "bootstrap.sh"]
-  SAVE IMAGE ${repo}/cert-downloader:${version}
+  SAVE IMAGE ${EXPECTED_REF}
 
 compile-frontend:
   FROM +src
@@ -238,12 +239,13 @@ deps-dind-builder:
 
 dev-image:
   FROM +deps-builder
+  ARG EXPECTED_REF=${repo}/${project}:dev-${version}
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   # HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   VOLUME ${data_dir}
   CMD ["bb", "dev-bootstrap"]
-  SAVE IMAGE ${repo}/${project}:dev-${version}
+  SAVE IMAGE ${EXPECTED_REF}
 
 dev-image-sources-base:
   FROM +dev-sources
@@ -317,6 +319,7 @@ e2e-dind:
 
 e2e-image:
   FROM cypress/browsers
+  ARG EXPECTED_REF=${repo}/${project}:e2e-${version}
   WORKDIR ${src_home}
   RUN apt update && apt install -y \
           openjdk-11-jdk \
@@ -329,7 +332,7 @@ e2e-image:
   COPY --dir bb.edn deps.edn script .
   ENTRYPOINT []
   CMD ["bb", "test-integration"]
-  SAVE IMAGE ${repo}/${project}:e2e-${version}
+  SAVE IMAGE ${EXPECTED_REF}
 
 eastwood:
   FROM +dev-sources
@@ -337,18 +340,20 @@ eastwood:
 
 fileserver:
   FROM babashka/babashka:latest
+  ARG EXPECTED_REF=${repo}/lnd-fileserver:${version}
   COPY resources/fileserver .
   RUN mkdir -p /mnt/lnd-data
   CMD ["bb", "watch.clj", "/mnt/lnd-data"]
-  SAVE IMAGE ${repo}/lnd-fileserver:${version}
+  SAVE IMAGE ${EXPECTED_REF}
 
 image:
   FROM openjdk:8-alpine
+  ARG EXPECTED_REF=${repo}/${project}:${version}
   VOLUME ${data_dir}
   COPY +jar/dinsro.jar dinsro.jar
   COPY resources/docker/config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]
-  SAVE IMAGE --push ${repo}/${project}:${version}
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 image-wait:
   FROM +image
