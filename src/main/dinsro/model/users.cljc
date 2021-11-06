@@ -46,41 +46,9 @@
   [::item => ::ident]
   (ident id))
 
-(defattr link ::link :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::link [::id]}]
-   ao/pc-resolve  (fn [_env params] {::link params})})
-
-(defattr user-accounts ::user-accounts :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::user-accounts [::id]}]
-   ao/pc-resolve  (fn [_env params] {::user-accounts params})})
-
-(defattr user-categories ::user-categories :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::user-categories [::id]}]
-   ao/pc-resolve  (fn [_env params] {::user-categories params})})
-
-(defattr user-transactions ::user-transactions :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::user-transactions [::id]}]
-   ao/pc-resolve  (fn [_env params] {::user-transactions params})})
-
 (def attributes
   [id
-   link
    name
-   password-hash
-   user-accounts
-   user-categories
-   user-transactions])
+   password-hash])
 
 #?(:clj (def resolvers []))
