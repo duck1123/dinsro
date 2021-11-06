@@ -196,11 +196,7 @@
   [node-id]
   [::m.ln-nodes/id => (ds/instance? ManyToManyChannel)]
   (let [node (q.ln-nodes/read-record node-id)]
-    (get-lnd-address node))
-  #_(let [ch (async/chan)]
-      (with-open [client (get-client node)]
-        (.listPeers client true (ch-observer ch)))
-      ch))
+    (get-lnd-address node)))
 
 (>defn generate!
   [node]
@@ -208,7 +204,7 @@
   (log/info "Generating to node")
   (let [{:keys [address]} (async/<!! (get-lnd-address node))
         cnode             (first (q.core-nodes/index-records))]
-    (a.bitcoind/generate-to-address! cnode (log/spy :info address))
+    (a.bitcoind/generate-to-address! cnode address)
     address))
 
 (>defn update-channel!
