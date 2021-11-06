@@ -1,6 +1,6 @@
 (ns dinsro.ui.ln-transactions
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
@@ -15,6 +15,17 @@
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
+(defsc LnTxRow
+  [_this {::m.ln-tx/keys [label time-stamp tx-hash] :as props}]
+  {}
+  (dom/tr {}
+    (comment (dom/td (str (keys props))))
+    (dom/td label)
+    (dom/td time-stamp)
+    (dom/td tx-hash)))
+
+(def ui-ln-tx-row (comp/factory LnTxRow {:keyfn ::m.ln-tx/id}))
+
 (defn ref-ln-tx-row
   [{:keys [value]} _attribute]
   (comp/fragment
@@ -26,12 +37,8 @@
          (dom/th {} "timestamp")
          (dom/th {} "tx-hash")))
      (dom/tbody {}
-       (for [{::m.ln-tx/keys [label time-stamp tx-hash] :as v} value]
-         (dom/tr {}
-           (comment (dom/td (str (keys v))))
-           (dom/td label)
-           (dom/td time-stamp)
-           (dom/td tx-hash)))))))
+       (for [tx value]
+         (ui-ln-tx-row tx))))))
 
 (def render-ref-ln-tx-row (render-field-factory ref-ln-tx-row))
 
