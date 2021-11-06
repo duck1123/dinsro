@@ -180,6 +180,22 @@
                           (mapv (fn [id] {::m.ln-tx/id id}) ids))]
        {::m.ln-nodes/transactions transactions}))})
 
+(defattr my-accounts ::m.accounts/my-accounts :ref
+  {ao/target    ::m.accounts/id
+   ao/pc-output [{::m.accounts/my-accounts [::m.accounts/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env
+         :ring/keys [request]} _]
+     (log/spy :info (keys env))
+     (log/spy :info request)
+     (let [[_ user-id] (get-in request [:session :session/current-user-ref])]
+       (if user-id
+         (do (comment env query-params)
+             {::m.accounts/my-accounts
+              #?(:clj  (queries/get-my-accounts env user-id query-params)
+                 :cljs [])})
+         {:errors "no user"})))})
+
 (defattr rate-source-rates ::m.rate-sources/rates :ref
   {ao/cardinality :many
    ao/target      ::m.rates/id
@@ -258,6 +274,7 @@
    currency-transactions
    ln-node-peers
    ln-node-transactions
+   my-accounts
    rate-source-rates
    user-accounts
    user-categories
