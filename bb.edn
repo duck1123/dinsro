@@ -103,12 +103,19 @@
    (let [user          "circleci"
          group         "circleci"
          src-path      "/var/lib/dinsro"
+         cert-path     "/mnt/certs"
          sudo          (fn [cmd] (format "sudo -u %s %s" user cmd))
          devtools-url  (or (System/getenv "DEVTOOLS_URL"))
+         chown-fn      (fn [data-path] (format "chown -R %s:%s %s" user group data-path))
+         chown-cmd1    (chown-fn src-path)
+         chown-cmd2    (chown-fn cert-path)
          envs          (->> [(when devtools-url (format "DEVTOOLS_URL=%s" devtools-url))]
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
+     (shell (str "mkdir -p " cert-path))
+     (shell chown-cmd1)
+     (shell chown-cmd2)
      (shell (sudo bootstrap-cmd)))}
 
   dev-bootstrap-user
