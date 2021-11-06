@@ -15,6 +15,12 @@
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
+(defattr source-currency-link ::m.rate-sources/currency :ref
+  {ao/cardinality      :one
+   ao/identities       #{::m.rate-sources/id}
+   ao/target           ::m.currencies/id
+   ::report/column-EQL {::m.rate-sources/currency (comp/get-query u.links/CurrencyLink)}})
+
 (form/defsc-form RateSubform
   [_this _props]
   {fo/id m.rates/id
@@ -31,12 +37,6 @@
    fo/route-prefix "rate-source"
    fo/title        "Rate Source"})
 
-(defattr source-currency-link ::m.rate-sources/currency :ref
-  {ao/cardinality      :one
-   ao/identities       #{::m.rate-sources/id}
-   ao/target           ::m.currencies/id
-   ::report/column-EQL {::m.rate-sources/currency (comp/get-query u.links/CurrencyLink)}})
-
 (report/defsc-report RateSourcesReport
   [_this _props]
   {ro/columns          [m.rate-sources/name
@@ -46,8 +46,9 @@
                                            :type   :button
                                            :action (fn [this] (form/create! this RateSourceForm))}}
    ro/control-layout   {:action-buttons [::new-rate-source]}
+   ro/form-links       {::m.rate-sources/name RateSourceForm}
    ro/field-formatters
-   {::m.rate-sources/currency     (fn [_this props] (u.links/ui-currency-link props))}
+   {::m.rate-sources/currency (fn [_this props] (u.links/ui-currency-link props))}
    ro/route            "rate-sources"
    ro/row-actions      []
    ro/row-pk           m.rate-sources/id
