@@ -47,9 +47,13 @@
   {:account.role/admin "Admin"
    :account.role/user  "User"})
 
+(def role-keys (set (keys account-roles)))
+
 (s/def ::role
-  (s/or :admin (constantly :account.role/admin)
-        :user  (constantly :account.role/user)))
+  (s/with-gen
+    (s/or :admin (constantly :account.role/admin)
+          :user  (constantly :account.role/user))
+    #(s/gen role-keys)))
 (defattr role ::role :enum
   {ao/enumerated-labels account-roles
    ao/enumerated-values (set (keys account-roles))
