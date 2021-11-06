@@ -1,9 +1,11 @@
 (ns dinsro.model.authorization
   (:require
    [com.fulcrologic.fulcro.server.api-middleware :as fmw]
+   [com.fulcrologic.rad.attributes :as attr]
    [com.fulcrologic.rad.authorization :as auth]
    [dinsro.components.database-queries :as queries]
    [dinsro.model.users :as m.users]
+   [dinsro.model.timezone :as timezone]
    [taoensso.encore :as enc]
    [taoensso.timbre :as log]))
 
@@ -12,13 +14,16 @@
   [env {:user/keys [username password]}]
   (log/info "Attempt login for" username)
 
-  (enc/if-let [{::m.users/keys [name id]} (queries/get-login-info env username)]
-    (if (= password m.users/default-password)
+  (enc/if-let [{::m.users/keys  [id name hashed-value salt iterations]
+                :time-zone/keys [zone-id]} (queries/get-login-info env username)
+               current-hashed-value (attr/encrypt password salt iterations)]
+    (if (= hashed-value current-hashed-value)
       (do
-        (log/info "Login for" username name)
+        (log/info "Login for" username)
         (let [s {::auth/provider           :local
                  ::auth/status             :success
                  :session/current-user-ref [::m.users/id id]
+                 :time-zone/zone-id        (-> zone-id :db/ident timezone/datomic-time-zones)
                  ::m.users/name            name}]
           (fmw/augment-response
            s

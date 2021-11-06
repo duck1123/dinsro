@@ -5,7 +5,6 @@
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.check :as _]
    [fulcro-spec.core :refer [assertions]]
@@ -15,13 +14,6 @@
   [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
-
-(deftest do-register-success
-  (let [password (ds/gen-key ::m.users/password)
-        username (ds/gen-key ::m.users/name)
-        response (mu.session/do-register username password)]
-    (assertions
-     (::m.users/name response) => username)))
 
 (deftest register-success
   (try

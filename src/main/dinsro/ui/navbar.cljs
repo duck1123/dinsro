@@ -82,7 +82,7 @@
 (defsc NavbarSidebar
   [this {:keys            [inverted]
          ::m.navlink/keys [dropdown-links]
-         :as props}]
+         :as              props}]
   {:ident         :navbar/id
    :query         [:navbar/id
                    {::m.navlink/dropdown-links (comp/get-query NavLink)}
@@ -97,7 +97,7 @@
                    :navbar/id                 :main
                    ::m.navlink/dropdown-links []}}
   (let [authorization (get props [::auth/authorization :local])
-        visible (= (uism/get-active-state this ::navbarsm) :state/shown)
+        visible       (= (uism/get-active-state this ::navbarsm) :state/shown)
         logged-in?    (= (::auth/status authorization) :success)]
     (ui-sidebar
      {:as        Menu
@@ -115,9 +115,7 @@
 (def ui-navbar-sidebar (comp/factory NavbarSidebar))
 
 (defsc Navbar
-  [this {::m.navlink/keys [unauth-links]
-         :session/keys    [current-user-ref]
-         :as              props}]
+  [this {::m.navlink/keys [unauth-links] :as props}]
   {:css           [[:.navbar {:background-color "red"}]]
    :ident         :navbar/id
    :initial-state {::expanded?               false
@@ -135,7 +133,10 @@
                    {::m.navlink/unauth-links (comp/get-query NavLink)}]}
   (let [authorization (get props [::auth/authorization :local])
         inverted      true
-        logged-in?    (= (::auth/status authorization) :success)]
+        logged-in?    (= (::auth/status authorization) :success)
+        user-ref      (:session/current-user-ref authorization)
+        user-id       (and user-ref (second user-ref))
+        name          (::m.users/name authorization)]
     (ui-menu
      {:inverted inverted
       :style    {:marginBottom "0"}}
@@ -144,7 +145,9 @@
        :style   {:fontWeight :bold}}
       "Dinsro")
      (if logged-in?
-       (dom/div :.ui.item (str (::m.users/name current-user-ref)))
+       (dom/div :.ui.item
+         (dom/a {:onClick (fn [_e] (log/infof "clicked: %s" (str user-id)))}
+           name))
        (map ui-nav-link unauth-links))
      (ui-menu-menu
       {:position "right"}

@@ -5,13 +5,11 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    #?(:clj [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]])
    #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
-   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
    [com.fulcrologic.rad.authorization :as auth]
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
-   #?(:clj [dinsro.model.authorization :as exauth])
+   #?(:clj [dinsro.model.authorization :as m.authorization])
    [dinsro.model.users :as m.users]
-   #?(:clj [dinsro.queries.users :as q.users])
    [taoensso.timbre :as log]))
 
 (comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
@@ -21,46 +19,15 @@
   {:query [:user/username :user/valid?]})
 
 #?(:clj
-   (>defn do-register
-     [name password]
-     [::m.users/name ::m.users/password => (s/keys)]
-     (let [params #::m.users{:password password :name name}]
-       (try
-         (a.authentication/register params)
-         (catch Exception ex
-           {::error true
-            :ex     (str ex)})))))
-
-#?(:clj
    (pc/defmutation register
      [_env {:user/keys [password username]}]
      {::pc/params #{:user/password :user/username}
       ::pc/output [:user/username :user/valid? :user/registered?]}
-     (log/info "register")
-     (do-register username password))
+     (a.authentication/do-register username password))
    :cljs
    (fm/defmutation register [_]
      (action [_env] (log/info "register"))
      (remote [_env] true)))
-
-(s/def ::login-response (s/keys))
-
-#?(:clj
-   (>defn do-login
-     [session username password]
-     [any? ::m.users/name ::m.users/password => ::login-response]
-     (if-let [user-id (q.users/find-eid-by-name username)]
-       (if (= password m.users/default-password)
-         (let [response {:user/username            username
-                         :session/current-user-ref {::m.users/id user-id}
-                         :user/valid?              true}
-               handler  (fn [ring-response]
-                          (assoc ring-response :session (assoc session :identity username)))]
-           (augment-response response handler))
-         {:user/username nil
-          :user/valid?   false})
-       {:user/username nil
-        :user/valid?   false})))
 
 #?(:clj
    (pc/defmutation login [env params]
@@ -69,7 +36,7 @@
                    ::auth/status
                    {:session/current-user-ref [::m.users/id]}
                    ::m.users/name]}
-     (exauth/login! env params))
+     (m.authorization/login! env params))
    :cljs
    (fm/defmutation login [_]
      (action [{:keys [state]}]
@@ -87,7 +54,6 @@
            (-> state
                (swap! #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
                                  "Can't log in"))))))
-
      (remote [env]
        (fm/returning env auth/Session))))
 
@@ -128,7 +94,7 @@
 #?(:clj
    (pc/defmutation check-session [env _]
      {}
-     (exauth/check-session! env))
+     (m.authorization/check-session! env))
    :cljs
    (fm/defmutation check-session [_]
      (ok-action [{:keys [state app result]}]
@@ -137,7 +103,8 @@
               ::auth/keys     [status]} (some-> state deref ::auth/authorization (get provider))]
          (when (= status :success)
            (when zone-id
-             (log/info "Setting UI time zone" zone-id)))
+             (log/info "Setting UI time zone" zone-id)
+             (comment (datetime/set-timezone! time-zone))))
          (uism/trigger! app auth/machine-id :event/session-checked {:provider provider})))
      (remote [env]
        (fm/returning env auth/Session))))

@@ -11,8 +11,6 @@
 (def default-username "admin")
 (def default-password "hunter2")
 
-(s/def ::password string?)
-
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
@@ -23,17 +21,45 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::password-hash string?)
-(defattr password-hash ::password-hash :string
-  {ao/required?       true
-   ao/identities      #{::id}
-   ::auth/permissions (fn [_] #{})
-   ao/schema          :production})
+(s/def ::password string?)
+(s/def ::hashed-value string?)
+(defattr password ::hashed-value :string
+  {ao/identities      #{:account/id}
+   ao/required?       true
+   ao/schema          :production
+   ::auth/permissions (fn [_] #{})})
+
+(s/def ::salt string?)
+(defattr password-salt ::salt :string
+  {ao/identities      #{::id}
+   ao/required?       true
+   ao/schema          :production
+   ::auth/permissions (fn [_] #{})})
+
+(s/def ::iterations int?)
+(defattr password-iterations ::iterations :int
+  {ao/identities      #{::id}
+   ao/required?       true
+   ao/schema          :production
+   ::auth/permissions (fn [_] #{})})
+
+(def account-roles
+  {:account.role/admin "Admin"
+   :account.role/user  "User"})
+
+(s/def ::role
+  (s/or :admin (constantly :account.role/admin)
+        :user  (constantly :account.role/user)))
+(defattr role ::role :enum
+  {ao/enumerated-labels account-roles
+   ao/enumerated-values (set (keys account-roles))
+   ao/identities        #{::id}
+   ao/schema            :production})
 
 (s/def ::input-params-valid (s/keys :req [::password ::id]))
 (s/def ::input-params (s/keys :opt [::password ::name]))
-(s/def ::params (s/keys :req [::password-hash ::name]))
-(s/def ::item (s/keys :req [::password-hash ::id ::name]))
+(s/def ::params (s/keys :req [::hashed-value ::name ::salt ::iterations ::role]))
+(s/def ::item (s/keys :req [::hashed-value ::id ::name  ::salt ::iterations ::role]))
 (s/def ::ident (s/tuple keyword? ::id))
 
 (>defn ident
@@ -49,6 +75,9 @@
 (def attributes
   [id
    name
-   password-hash])
+   password
+   password-salt
+   password-iterations
+   role])
 
 #?(:clj (def resolvers []))

@@ -6,11 +6,11 @@
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
+   [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.bulma :as bulma]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as log]))
 
@@ -32,31 +32,28 @@
    :route-segment       ["login"]}
   (let [authorization (get props [::auth/authorization :local])
         status        (::auth/status authorization)]
-    (bulma/page
-     (dom/h1 :.title "Login")
-     (bulma/container
-      (dom/p {} (str status))
-      (ui-form {}
-        (dom/div :.is-centered
-          (when message (dom/p :.notification.is-danger message))
-          (ui-form-field {}
-            (bulma/control
-             (u.inputs/ui-text-input
-              {:label "Username"
-               :value username}
-              {:onChange #(fm/set-string! this :user/username :event %)})))
-          (ui-form-field {}
-            (bulma/control
-             (u.inputs/ui-text-input
-              {:label "Password"
-               :value password}
-              {:onChange #(fm/set-string! this :user/password :event %)})))
-          (bulma/field
-           (bulma/control
-            (u.inputs/ui-primary-button
-             {:className "button"
-              :content   (tr [:login])}
-             {:onClick
-              (fn [_ev]
-                (let [data {:user/username username :user/password password}]
-                  (comp/transact! this [(mu.session/login data)])))})))))))))
+    (dom/div :.ui.middle.aligned.center.aligned.grid
+      (dom/div :.column
+        (dom/h1 :.ui.header (tr [:login]))
+        (dom/p {} (str status))
+        (when message (dom/p :.notification.is-danger message))
+        (ui-form {:className "large"}
+          (dom/div :.ui.stacked.segment
+            (ui-form-field {}
+              (ui-form-input
+               {:value    username
+                :onChange (fn [evt _] (fm/set-string! this :user/username :event evt))
+                :label    (tr [:username])}))
+            (ui-form-field {}
+              (ui-form-input
+               {:value    password
+                :onChange (fn [evt _] (fm/set-string! this :user/password :event evt))
+                :label    (tr [:password])}))
+            (ui-form-field {}
+              (u.inputs/ui-primary-button
+               {:className "ui fluid large submit button"
+                :content   (tr [:login])}
+               {:onClick
+                (fn [_ev]
+                  (let [data {:user/username username :user/password password}]
+                    (comp/transact! this [(mu.session/login data)])))}))))))))

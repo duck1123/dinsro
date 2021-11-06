@@ -191,9 +191,9 @@
                                 [:dinsro.model.users/id
                                  :dinsro.model.users/name
                                  {:time-zone/zone-id [:db/ident]}
-                                 :password/hashed-value
-                                 :password/salt
-                                 :password/iterations])]
+                                 :dinsro.model.users/hashed-value
+                                 :dinsro.model.users/salt
+                                 :dinsro.model.users/iterations])]
                   :in    [?username]
                   :where [[?user-id :dinsro.model.users/name ?username]]}]
       (ffirst (crux/q db query username)))))

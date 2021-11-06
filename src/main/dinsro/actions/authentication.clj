@@ -6,7 +6,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]]
-   [dinsro.actions.users :as a.users]
+   [com.fulcrologic.rad.attributes :as attr]
    [dinsro.config :refer [secret]]
    [dinsro.queries.users :as q.users]
    [dinsro.model.users :as m.users]
@@ -40,29 +40,36 @@
       nil)))
 
 (>defn register
+  "Register user with params"
   [params]
   [::m.users/input-params => (? ::m.users/item)]
-  (let [params (if-let [password (:password params)]
-                 (assoc params ::m.users/password password)
-                 params)
-        params (dissoc params :password)
-        params (a.users/prepare-record params)]
-    (when (s/valid? ::m.users/params params)
+  (let [salt         (attr/gen-salt)
+        iterations   100
+        password     (::m.users/password params)
+        hashed-value (attr/encrypt password salt iterations)
+        params       (-> params
+                         (dissoc ::m.users/password)
+                         (assoc ::m.users/salt salt)
+                         (assoc ::m.users/hashed-value hashed-value)
+                         (assoc ::m.users/iterations iterations)
+                         (assoc ::m.users/role :acount.role/user))]
+    (when (or true (s/valid? ::m.users/params params))
       (try
         (let [id (q.users/create-record params)]
           (q.users/read-record id))
         (catch RuntimeException ex
           (log/error ex "User exists")
-          (throw "User already exists")))
-      #_(throw "Invalid"))))
+          (throw "User already exists"))))))
 
 (>defn do-register
+  "Register user with given name and password"
   [name password]
   [::m.users/name ::m.users/password => (s/keys)]
   (let [params #::m.users{:password password :name name}]
     (try
       (register params)
       (catch Exception ex
+        (log/error "Failed to register" ex)
         {::error true
          :ex     (str ex)}))))
 

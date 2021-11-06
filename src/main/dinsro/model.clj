@@ -19,6 +19,7 @@
    [dinsro.model.timezone :as m.timezone]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
+   [dinsro.resolvers :as resolvers]
    [taoensso.timbre :as log]))
 
 (def schemata [])
@@ -42,6 +43,7 @@
         m.settings/attributes
         m.timezone/attributes
         m.transactions/attributes
-        m.users/attributes)))
+        m.users/attributes
+        resolvers/attributes)))
 
 (def all-attribute-validator (attr/make-attribute-validator all-attributes))

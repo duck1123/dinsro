@@ -1,39 +1,46 @@
 (ns dinsro.ui.forms.registration
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as fm]
-   [dinsro.model.users :as m.users]
+   [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
+   [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [dinsro.mutations.session :as mu.session]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as log]))
 
 (defsc RegistrationForm
-  [this {::keys [confirm-password id password]}]
+  [this {::keys [confirm-password password username]}]
   {:ident         (fn [] [:component/id ::form])
-   :initial-state {::confirm-password m.users/default-password
-                   ::id               m.users/default-username
-                   ::password         m.users/default-password}
-   :query         [::confirm-password
-                   ::id
-                   ::password]}
-  (dom/div {}
-    (u.inputs/ui-text-input
-     {:label "Username" :value id}
-     {:onChange #(fm/set-string! this ::id :event %)})
-    (u.inputs/ui-password-input
-     {:label "Password" :value password}
-     {:onChange #(fm/set-string! this ::password :event %)})
-    (u.inputs/ui-password-input
-     {:label "Confirm Password" :value confirm-password}
-     {:onChange #(fm/set-string! this ::confirm-password :event %)})
+   :initial-state {::confirm-password ""
+                   ::password         ""
+                   ::username         ""}
+   :query         [:component/id
+                   ::confirm-password
+                   ::password
+                   ::username]}
+  (ui-form {}
+    (ui-form-input
+     {:value    username
+      :onChange #(fm/set-string! this ::username :event %)
+      :label    "Username"
+      :error    false})
+    (ui-form-input
+     {:value    password
+      :onChange #(fm/set-string! this ::password :event %)
+      :label    "Password"
+      :error    false})
+    (ui-form-input
+     {:value    confirm-password
+      :onChange #(fm/set-string! this ::confirm-password :event %)
+      :label    "Confirm Password"
+      :error    false})
     (u.inputs/ui-primary-button
      {:content "Submit"}
      {:onClick
       (fn []
         (log/info "clicked")
-        (let [data {:user/username id
+        (let [data {:user/username username
                     :user/password password}]
           (comp/transact! this [(mu.session/register data)])))})))
 
