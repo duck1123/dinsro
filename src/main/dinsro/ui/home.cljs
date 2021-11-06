@@ -5,7 +5,7 @@
    [com.fulcrologic.rad.routing :as rroute]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.bulma :as bulma]
-   [dinsro.ui.login :as v.login]
+   [dinsro.ui.login :as u.login]
    [taoensso.timbre :as log]))
 
 (defn path-for
@@ -26,7 +26,7 @@
       (dom/p {}
         "Not Authenticated. "
         (dom/a :.login-link
-          {:onClick (fn [] (rroute/route-to! this v.login/LoginPage {}))}
+          {:onClick (fn [] (rroute/route-to! this u.login/LoginPage {}))}
           "login"))))))
 
 (def ui-page (comp/factory HomePage))
