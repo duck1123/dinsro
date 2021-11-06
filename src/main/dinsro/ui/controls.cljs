@@ -9,6 +9,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.rate-sources :as m.rate-sources]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
@@ -22,6 +23,7 @@
          currency-id ::m.currencies/id
          node-id     ::m.ln-nodes/id
          source-id   ::m.rate-sources/id
+         transaction-id   ::m.transactions/id
          user-id     ::m.users/id} value]
     (or
      (when account-id (u.links/ui-account-link {::m.accounts/id account-id}))
@@ -29,8 +31,9 @@
      (when currency-id (u.links/ui-currency-link {::m.currencies/id currency-id}))
      (when node-id (u.links/ui-node-link {::m.ln-nodes/id node-id}))
      (when source-id (u.links/ui-rate-source-link {::m.rate-sources/id source-id}))
+     (when transaction-id (u.links/ui-transaction-link {::m.transactions/id transaction-id}))
      (when user-id (u.links/ui-user-link {::m.users/id user-id}))
-     (dom/div (merge env {}) "link control"))))
+     (dom/div (merge env {}) (str "link control: " value)))))
 
 (def render-link-control (render-field-factory link-control))
 
