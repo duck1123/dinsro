@@ -6,6 +6,7 @@
  {buddy/buddy                            {:mvn/version "2.0.0"}
   cider/cider-nrepl                      {:mvn/version "0.27.2"}
   clj-time/clj-time                      {:mvn/version "0.15.2"}
+  com.google.javascript/closure-compiler-unshaded {:mvn/version "v20211006"}
   com.fulcrologic/fulcro                 {:mvn/version "3.5.7"}
   com.fulcrologic/fulcro-i18n            {:mvn/version "0.0.5-alpha"}
   com.fulcrologic/fulcro-rad             {:mvn/version "1.0.31"}
@@ -25,7 +26,7 @@
   nrepl/nrepl                            {:mvn/version "0.8.3"}
   org.bitcoinj/bitcoinj-core             {:mvn/version "0.15.10"}
   org.clojure/clojure                    {:mvn/version "1.10.3"}
-  org.clojure/clojurescript              {:mvn/version "1.10.879"}
+  org.clojure/clojurescript              {:mvn/version "1.10.891"}
   org.clojure/test.check                 {:mvn/version "1.1.0"}
   org.clojure/tools.cli                  {:mvn/version "1.0.206"}
   org.lightningj/lightningj              {:mvn/version "0.13.1-Beta"}
