@@ -151,4 +151,5 @@
 
 (form/defsc-form UserLinkForm [_this _props]
   {fo/id         m.users/id
-   fo/attributes [m.users/name]})
+   fo/attributes [m.users/name]
+   fo/title      "User"})

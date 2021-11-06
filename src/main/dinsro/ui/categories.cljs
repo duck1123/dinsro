@@ -26,7 +26,8 @@
   [this props]
   {fo/id           m.categories/id
    fo/attributes   [m.categories/name m.categories/user]
-   fo/field-styles {::m.categories/user :link}
+   fo/subforms     {::m.categories/user {fo/ui u.links/UserLinkForm}}
+   fo/cancel-route ["categories"]
    fo/route-prefix "category"
    fo/title        "Edit Category"}
   (if override-form
