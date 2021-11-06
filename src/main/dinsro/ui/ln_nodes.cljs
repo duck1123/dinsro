@@ -169,10 +169,8 @@
              {::m.ln-nodes/id id
               ::m.ln-nodes/hasCert? hasCert?
               ::m.ln-nodes/hasMacaroon? hasMacaroon?}))))
-      (dom/div
-        :.row
-        (dom/div
-          :.sixteen.wide.column
+      (dom/div :.row
+        (dom/div :.sixteen.wide.column
           (dom/div {}
             (form/render-layout this props)))))))
 
