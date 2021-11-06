@@ -65,17 +65,10 @@
         :cljs
         (comment env query-params)))})
 
-(defattr link ::link :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::link [::id]}]
-   ao/pc-resolve  (fn [_env params] {::link params})})
-
 (s/def ::rate-feed-item (s/cat :date ::date-ms
                                :rate ::rate))
 (s/def ::rate-feed (s/coll-of ::rate-feed-item))
 
-(def attributes [all-rates currency date id link rate source])
+(def attributes [all-rates currency date id rate source])
 
 #?(:clj (def resolvers []))

@@ -77,20 +77,6 @@
 (s/def ::params (s/keys :req [::currency ::initial-value ::name ::source ::user]))
 (s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::source ::user]))
 
-(defattr link ::link :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::link [::id]}]
-   ao/pc-resolve  (fn [_env params] {::link params})})
-
-(defattr account-transactions ::account-transactions :ref
-  {ao/cardinality :one
-   ao/target     ::id
-   ao/pc-input   #{::id}
-   ao/pc-output  [{::account-transactions [::id]}]
-   ao/pc-resolve (fn [_env params] {::account-transactions params})})
-
-(def attributes [account-transactions currency id initial-value link name source user])
+(def attributes [currency id initial-value name source user])
 
 #?(:clj (def resolvers []))

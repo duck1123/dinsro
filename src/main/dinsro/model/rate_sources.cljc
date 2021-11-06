@@ -56,13 +56,6 @@
         :cljs
         (comment env query-params)))})
 
-(defattr link ::link :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::link [::id]}]
-   ao/pc-resolve  (fn [_env params] {::link params})})
-
-(def attributes [all-rate-sources currency id link name url])
+(def attributes [all-rate-sources currency id name url])
 
 #?(:clj (def resolvers []))

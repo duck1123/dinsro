@@ -51,20 +51,6 @@
         :cljs
         (comment env query-params)))})
 
-(defattr link ::link :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::link [::id]}]
-   ao/pc-resolve  (fn [_env params] {::link params})})
-
-(defattr category-transactions ::category-transactions :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::category-transactions [::id]}]
-   ao/pc-resolve  (fn [_env params] {::category-transactions params})})
-
-(def attributes [all-categories id link name user category-transactions])
+(def attributes [all-categories id name user])
 
 #?(:clj (def resolvers []))
