@@ -15,7 +15,6 @@
    [dinsro.components.save-middleware :as save]
    [dinsro.model :refer [all-attributes]]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.resolvers :as resolvers]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.crux :as crux]
    [taoensso.timbre :as log]))
@@ -51,6 +50,5 @@
      [automatic-resolvers
       form/resolvers
       (blob/resolvers all-attributes)
-      resolvers/resolvers
       mu.session/resolvers
       index-explorer])))
