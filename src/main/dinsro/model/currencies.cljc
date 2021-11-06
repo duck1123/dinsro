@@ -37,19 +37,6 @@
   [::item => ::ident]
   (ident id))
 
-(defattr link ::link :ref
-  {ao/cardinality :one
-   ao/target      ::id
-   ao/pc-input    #{::id}
-   ao/pc-output   [{::link [::id]}]
-   ao/pc-resolve  (fn [_env params] {::link params})})
-
-(defattr currency-accounts ::currency-accounts :ref
-  {ao/target     ::id
-   ao/pc-input   #{::id}
-   ao/pc-output  [{::currency-accounts [::id]}]
-   ao/pc-resolve (fn [_env params] {::currency-accounts params})})
-
-(def attributes [code currency-accounts id link name])
+(def attributes [code id name])
 
 #?(:clj (def resolvers []))
