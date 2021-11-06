@@ -22,10 +22,10 @@
 (form/defsc-form TransactionForm [_this _props]
   {fo/id           m.transactions/id
    fo/attributes   [m.transactions/description
-                    ;; m.transactions/account
-                    transaction-account-link]
-   fo/field-styles {::m.transactions/account :link}
+                    m.transactions/account]
+   fo/cancel-route ["transactions"]
    fo/route-prefix "transaction"
+   fo/subforms {::m.transactions/account {fo/ui u.links/AccountLinkForm}}
    fo/title        "Transaction"})
 
 (report/defsc-report TransactionsReport
@@ -39,8 +39,7 @@
                                            :action (fn [this] (form/create! this TransactionForm))}}
    ro/control-layout   {:action-buttons [::new-transaction]}
    ro/form-links       {::m.transactions/description TransactionForm}
-   ro/field-formatters
-   {::m.transactions/account (fn [_this props] (u.links/ui-account-link props))}
+   ro/field-formatters {::m.transactions/account (fn [_this props] (u.links/ui-account-link props))}
    ro/route            "transactions"
    ro/row-actions      []
    ro/row-pk           m.transactions/id

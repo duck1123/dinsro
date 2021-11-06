@@ -31,6 +31,7 @@
                     m.core-nodes/tx-count
                     m.core-nodes/blocks
                     m.core-nodes/chain]
+   fo/cancel-route ["core-nodes"]
    fo/route-prefix "core-node"
    fo/title        "Core Node"})
 
