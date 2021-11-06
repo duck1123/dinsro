@@ -4,7 +4,6 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]))
 
@@ -49,16 +48,6 @@
   [::item => ::ident]
   (ident id))
 
-(defattr all-transactions ::all-transactions :ref
-  {ao/target    ::id
-   ao/pc-output [{::all-transactions [::id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     #?(:clj
-        {::all-transactions (queries/get-all-transactions env query-params)}
-        :cljs
-        (comment env query-params)))})
-
-(def attributes [account all-transactions date description id value])
+(def attributes [account date description id value])
 
 #?(:clj (def resolvers []))

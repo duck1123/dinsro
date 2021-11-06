@@ -5,7 +5,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   #?(:clj [dinsro.components.database-queries :as queries])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.specs]))
 
@@ -46,16 +45,6 @@
   [::item => ::ident]
   (ident id))
 
-(defattr all-rate-sources ::all-rate-sources :ref
-  {ao/target    ::id
-   ao/pc-output [{::all-rate-sources [::id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     #?(:clj
-        {::all-rate-sources (queries/get-all-rate-sources env query-params)}
-        :cljs
-        (comment env query-params)))})
-
-(def attributes [all-rate-sources currency id name url])
+(def attributes [currency id name url])
 
 #?(:clj (def resolvers []))

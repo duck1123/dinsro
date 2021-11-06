@@ -66,6 +66,16 @@
         :cljs
         (comment env query-params)))})
 
+(defattr all-categories ::m.categories/all-categories :ref
+  {ao/target    ::m.categories/id
+   ao/pc-output [{::m.categories/all-categories [::m.categories/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.categories/all-categories (queries/get-all-categories env query-params)}
+        :cljs
+        (comment env query-params)))})
+
 (defattr all-currencies ::m.currencies/all-currencies :ref
   {ao/target    ::m.currencies/id
    ao/pc-output [{::m.currencies/all-currencies [::m.currencies/id]}]
@@ -93,6 +103,36 @@
    (fn [{:keys [query-params] :as env} _]
      #?(:clj
         {::m.ln-tx/all-txes (queries/get-all-ln-transactions env query-params)}
+        :cljs
+        (comment env query-params)))})
+
+(defattr all-rates ::m.rates/all-rates :ref
+  {ao/target    ::m.rates/id
+   ao/pc-output [{::m.rates/all-rates [::m.rates/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.rates/all-rates (queries/get-all-rates env query-params)}
+        :cljs
+        (comment env query-params)))})
+
+(defattr all-rate-sources ::m.rate-sources/all-rate-sources :ref
+  {ao/target    ::m.rate-sources/id
+   ao/pc-output [{::m.rate-sources/all-rate-sources [::m.rate-sources/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.rate-sources/all-rate-sources (queries/get-all-rate-sources env query-params)}
+        :cljs
+        (comment env query-params)))})
+
+(defattr all-transactions ::m.transactions/all-transactions :ref
+  {ao/target    ::m.transactions/id
+   ao/pc-output [{::m.transactions/all-transactions [::m.transactions/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     #?(:clj
+        {::m.transactions/all-transactions (queries/get-all-transactions env query-params)}
         :cljs
         (comment env query-params)))})
 
@@ -263,10 +303,14 @@
 (def attributes
   [account-transactions
    all-accounts
+   all-categories
    all-core-nodes
    all-currencies
    all-ln-nodes
    all-ln-txes
+   all-rates
+   all-rate-sources
+   all-transactions
    all-users
    category-transactions
    currency-accounts
