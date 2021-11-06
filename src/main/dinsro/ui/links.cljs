@@ -21,7 +21,8 @@
                    ::m.accounts/name ""}
    :query         [::m.accounts/id
                    ::m.accounts/name]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.accounts/AccountForm)]
               (form/view! this component id)))}
@@ -40,7 +41,8 @@
    :initial-state {::m.categories/id   nil
                    ::m.categories/name ""}
    :query         [::m.categories/id ::m.categories/name]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.categories/CategoryForm)]
               (form/view! this component id)))}
@@ -62,7 +64,8 @@
    :query         [::m.currencies/name
                    ::m.currencies/code
                    ::m.currencies/id]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.currencies/CurrencyForm)]
               (form/view! this component id)))}
@@ -73,7 +76,8 @@
 (form/defsc-form CurrencyLinkForm [this {::m.currencies/keys [id name]}]
   {fo/id         m.currencies/id
    fo/attributes [m.currencies/name]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.currencies/CurrencyForm)]
               (form/view! this component id)))}
@@ -87,7 +91,8 @@
                      ::m.ln-nodes/name ""})
    :query         (fn [_props]
                     [::m.ln-nodes/id ::m.ln-nodes/name])}
-  (dom/a {:onClick (fn [_e] (let [component (comp/registry-key->class :dinsro.ui.ln-nodes/LightningNodeForm)]
+  (dom/a {:href "#"
+          :onClick (fn [_e] (let [component (comp/registry-key->class :dinsro.ui.ln-nodes/LightningNodeForm)]
                               (form/view! this component id)))} name))
 
 (def ui-node-link (comp/factory NodeLink {:keyfn ::m.ln-nodes/id}))
@@ -103,7 +108,8 @@
                    ::m.rate-sources/name ""}
    :query         [::m.rate-sources/id
                    ::m.rate-sources/name]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.rate-sources/RateSourceForm)]
               (form/view! this component id)))}
@@ -122,7 +128,8 @@
                    ::m.transactions/description ""}
    :query         [::m.transactions/id
                    ::m.transactions/description]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.transactions/TransactionForm)]
               (form/view! this component id)))}
@@ -140,7 +147,8 @@
    :initial-state {::m.users/id   nil
                    ::m.users/name ""}
    :query         [::m.users/id ::m.users/name]}
-  (dom/a {:onClick
+  (dom/a {:href "#"
+          :onClick
           (fn [_e]
             (let [component (comp/registry-key->class :dinsro.ui.users/UserForm)]
               (form/view! this component id)))}
