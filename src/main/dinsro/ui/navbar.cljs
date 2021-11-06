@@ -48,7 +48,7 @@
                    ::m.users/name ""}
    :query         [::m.users/id
                    ::m.users/name]}
-  (let [component (comp/registry-key->class :dinsro.ui.show-user/ShowUserPage)]
+  (let [component (comp/registry-key->class :dinsro.ui.users/ShowUserPage)]
     (dom/a :.navbar-link
       {:onClick (fn [_e] (rroute/route-to! this component {::m.users/id id}))}
       name)))

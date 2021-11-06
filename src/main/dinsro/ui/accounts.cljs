@@ -10,6 +10,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.joins :as m.joins]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
@@ -34,17 +35,21 @@
          :as               props}]
   {fo/id             m.accounts/id
    fo/subforms       {::m.accounts/user     {fo/ui u.links/UserLinkForm}
-                      ::m.accounts/currency {fo/ui u.links/CurrencyLinkForm}}
+                      ::m.accounts/currency {fo/ui u.links/CurrencyLinkForm}
+                      ::m.accounts/transactions {fo/ui u.links/TransactionLinkForm}}
+
+   fo/field-styles {::m.accounts/transactions :link}
    fo/attributes     [m.accounts/name
                       m.accounts/currency
                       m.accounts/user
-                      m.accounts/initial-value]
+                      m.accounts/initial-value
+                      m.joins/account-transactions]
+   fo/cancel-route ["accounts"]
    fo/route-prefix   "account"
    fo/title          "Edit Account"}
   (if override-form
     (form/render-layout this props)
-    (dom/div
-      :.ui.container
+    (dom/div :.ui.container
       (dom/p {} (str "Account: " name))
       (dom/p {} (str "Initial Value: " initial-value))
       (dom/p {} (str "Currency: " currency))

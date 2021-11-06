@@ -2,8 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
@@ -15,9 +15,12 @@
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.core-nodes :as u.core-nodes]
-   [dinsro.ui.currencies :as u.currrencies]
+   [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
+   [dinsro.ui.ln-channels :as u.ln-channels]
    [dinsro.ui.ln-nodes :as u.ln-nodes]
+   [dinsro.ui.ln-peers :as u.ln-peers]
+   [dinsro.ui.ln-transactions :as u.ln-tx]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.media :as u.media]
    [dinsro.ui.navbar :as u.navbar]
@@ -29,7 +32,7 @@
    [taoensso.timbre :as log]))
 
 (defrouter RootRouter
-  [_this {:keys [current-state]}]
+  [_this {:keys [current-state route-factory route-props]}]
   {:router-targets [u.accounts/AccountForm
                     u.accounts/AccountsReport
                     u.admin/AdminPage
@@ -37,17 +40,23 @@
                     u.categories/CategoriesReport
                     u.core-nodes/CoreNodeForm
                     u.core-nodes/CoreNodesReport
-                    u.currrencies/CurrencyForm
-                    u.currrencies/CurrenciesReport
+                    u.currencies/CurrencyForm
+                    u.currencies/CurrenciesReport
                     u.home/HomePage
-                    u.login/LoginPage
+                    u.ln-channels/LNChannelForm
+                    u.ln-channels/LNChannelsReport
                     u.ln-nodes/LightningNodeForm
                     u.ln-nodes/LightningNodesReport
-                    u.registration/RegistrationPage
+                    u.ln-peers/LNPeerForm
+                    u.ln-peers/LNPeersReport
+                    u.ln-tx/LNTransactionForm
+                    u.ln-tx/LNTransactionsReport
+                    u.login/LoginPage
                     u.rate-sources/RateSourceForm
                     u.rate-sources/RateSourcesReport
                     u.rates/RateForm
                     u.rates/RatesReport
+                    u.registration/RegistrationPage
                     u.transactions/TransactionForm
                     u.transactions/TransactionsReport
                     u.users/UserForm
@@ -56,7 +65,10 @@
     :pending (dom/div "Loading...")
     :failed  (dom/div "Failed!")
     ;; default will be used when the current state isn't yet set
-    (dom/div "No route selected.")))
+    (dom/div {:style "height: 100%"}
+      (dom/div "No route selected.")
+      (when route-factory
+        (route-factory route-props)))))
 
 (def ui-root-router (comp/factory RootRouter))
 
@@ -97,8 +109,7 @@
      (u.media/ui-media-styles)
      (u.media/ui-media-context-provider
       {}
-      (dom/div {:className "ui container"
-                :style     {:height "100%"}}
+      (dom/div {:style {:height "100%"}}
         (when navbar
           (u.navbar/ui-navbar navbar))
         (ui-sidebar-pushable
@@ -107,7 +118,7 @@
          (when sidebar
            (u.navbar/ui-navbar-sidebar sidebar))
          (ui-sidebar-pusher
-          {}
+          {:style {:paddingTop "12px"}}
           (if (= :initial top-router-state)
             (dom/div :.loading "Loading...")
             (ui-root-router router)))))))))
