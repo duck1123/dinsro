@@ -199,6 +199,7 @@
   {:name                "lnd1"
    :host                "lnd1-internal.lnd1.svc.cluster.local"
    :port                "10009"
+   :node                "main"
    :mnemonic            lnd1-mnemonic
    :identityPubkey      lnd1-key
    :alias               "Node One"
@@ -222,6 +223,7 @@
 
 (def lnd2
   {:name                "lnd2"
+   :node                "main"
    :host                "lnd2-internal.lnd2.svc.cluster.local"
    :port                "10009"
    :mnemonic            lnd2-mnemonic
@@ -534,15 +536,18 @@
   (log/info "seed ln-nodes")
   (doseq [{:keys [username ln-nodes]} users]
     (let [user-id (q.users/find-eid-by-name username)]
-      (doseq [{:keys [name host port mnemonic] :as info} ln-nodes]
-        (let [node    {::m.ln-nodes/name     name
-                       ::m.ln-nodes/host     host
-                       ::m.ln-nodes/port     port
-                       ::m.ln-nodes/user     user-id
-                       ::m.ln-nodes/mnemonic mnemonic}
-              node-id (q.ln-nodes/create-record (log/spy :info node))
-              info    (set/rename-keys info m.ln-info/rename-map)]
-          (a.ln-nodes/save-info! node-id (log/spy :info info)))))))
+      (doseq [{:keys [name host port mnemonic node] :as info} ln-nodes]
+        (if-let [core-id (q.core-nodes/find-id-by-name node)]
+          (let [ln-node {::m.ln-nodes/name     name
+                         ::m.ln-nodes/node core-id
+                         ::m.ln-nodes/host     host
+                         ::m.ln-nodes/port     port
+                         ::m.ln-nodes/user     user-id
+                         ::m.ln-nodes/mnemonic mnemonic}
+                node-id (q.ln-nodes/create-record (log/spy :info ln-node))
+                info    (set/rename-keys info m.ln-info/rename-map)]
+            (a.ln-nodes/save-info! node-id (log/spy :info info)))
+          (throw (RuntimeException. "Failed to find node")))))))
 
 (defn seed-ln-peers!
   [users]

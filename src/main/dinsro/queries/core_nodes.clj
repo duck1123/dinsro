@@ -41,6 +41,15 @@
   [=> (s/coll-of ::m.core-nodes/item)]
   (map read-record (index-ids)))
 
+(>defn find-id-by-name
+  [name]
+  [::m.core-nodes/name => (? ::m.core-nodes/id)]
+  (let [db    (c.crux/main-db)
+        query '{:find  [?node-id]
+                :in    [?name]
+                :where [[?node-id ::m.core-nodes/name ?name]]}]
+    (ffirst (crux/q db query name))))
+
 (defn update-blockchain-info
   [id props]
   (let [node   (c.crux/main-node)

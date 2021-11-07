@@ -148,11 +148,13 @@
   [this {::m.ln-nodes/keys [id hasCert? hasMacaroon?] :as props}]
   {fo/id            m.ln-nodes/id
    fo/attributes    [m.ln-nodes/name
+                     m.ln-nodes/node
                      m.ln-info/alias-attr
                      m.ln-nodes/hasCert?
                      m.ln-nodes/hasMacaroon?
                      m.ln-info/identity-pubkey
                      m.joins/ln-node-transactions]
+
    fo/subforms      {::m.ln-nodes/peers        {fo/ui PeerSubform}
                      ::m.ln-nodes/transactions {fo/ui TxSubform}}
    fo/field-styles  {::m.ln-nodes/transactions :ln-tx-row}
@@ -184,6 +186,7 @@
   [_this _props]
   {ro/columns          [m.ln-nodes/name
                         m.ln-info/alias-attr
+                        m.ln-nodes/node
                         m.ln-info/color
                         node-user-link]
    ro/control-layout   {:action-buttons [::new-node]}

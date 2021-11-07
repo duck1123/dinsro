@@ -6,6 +6,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]
    [taoensso.timbre :as log]))
 
@@ -28,6 +29,11 @@
 
 (s/def ::name string?)
 (defattr name ::name :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(s/def ::node ::m.core-nodes/id)
+(defattr node ::node :string
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -77,9 +83,9 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::name ::host ::port]))
-(s/def ::params  (s/keys :req [::name ::host ::port ::user]))
-(s/def ::item (s/keys :req [::id ::name ::host ::port ::user]))
+(s/def ::required-params (s/keys :req [::name ::host ::port ::node]))
+(s/def ::params  (s/keys :req [::name ::host ::port ::user ::node]))
+(s/def ::item (s/keys :req [::id ::name ::host ::port ::user ::node]))
 (s/def ::items (s/coll-of ::item))
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -99,4 +105,4 @@
      (io/file (cert-path id))))
 
 (def attributes
-  [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized?])
+  [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized? node])
