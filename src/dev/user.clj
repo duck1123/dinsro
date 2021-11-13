@@ -1,5 +1,6 @@
 (ns user
   (:require
+   [clojure.string :as string]
    [crux.api :as crux]
    [dinsro.components.crux :as c.crux]
    [dinsro.components.database-queries :as dq]
@@ -9,8 +10,8 @@
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.users :as q.users]
+   [nextjournal.clerk :as clerk]
    [shadow.cljs.devtools.api :as shadow]
-   ;; [shadow.cljs.devtools.server :as server]
    [shadow.cljs.devtools.server.runtime]
    [taoensso.timbre :as log]))
 
@@ -30,10 +31,17 @@
        (recur)))
    ((jit shadow.cljs.devtools.api/nrepl-select) build-id)))
 
+(defn start-clerk!
+  []
+  (clerk/serve!
+   {:watch-paths    ["notebooks" "src"]
+    :show-filter-fn #(string/starts-with? % "notebooks")}))
+
 (comment
   (mocks/mock-account)
 
   (:main c.crux/crux-nodes)
+  (start-clerk!)
 
   (def db (crux/db (:main c.crux/crux-nodes)))
 
