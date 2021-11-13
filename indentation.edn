@@ -9,6 +9,7 @@
  form             [[:inner 0]]
  h2               [[:inner 0]]
  input            [[:inner 0]]
+ li               [[:inner 0]]
  nav              [[:inner 0]]
  ok-action        [[:inner 0]]
  p                [[:inner 0]]
@@ -21,4 +22,5 @@
  tr               [[:inner 0]]
  ui-form          [[:inner 0]]
  ui-form-field    [[:inner 0]]
- ui-modal-content [[:inner 0]]}
+ ui-modal-content [[:inner 0]]
+ ul               [[:inner 0]]}
