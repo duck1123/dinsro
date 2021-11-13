@@ -10,6 +10,8 @@
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
    [dinsro.machines :as machines]
    [dinsro.model.navlink :as m.navlink]
+   [dinsro.model.settings :as m.settings]
+   [dinsro.mutations.settings :as mu.settings]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
@@ -17,6 +19,7 @@
    [dinsro.ui.core-nodes :as u.core-nodes]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
+   [dinsro.ui.initialize :as u.initialize]
    [dinsro.ui.ln-channels :as u.ln-channels]
    [dinsro.ui.ln-nodes :as u.ln-nodes]
    [dinsro.ui.ln-peers :as u.ln-peers]
@@ -81,14 +84,18 @@
                    ::navbar   {}
                    ::sidebar  {}}})
 
-(defsc Root [this {:root/keys [navbar sidebar]
-                   ::keys     [router]}]
+(defsc Root [this {:root/keys        [navbar sidebar]
+                   ::keys            [init-form router]
+                   :keys             [authenticator]
+                   ::m.settings/keys [site-config]}]
   {:componentDidMount
    (fn [this]
      (uism/begin! this machines/hideable ::u.navbar/navbarsm
                   {:actor/navbar (uism/with-actor-class [:navbar/id :main] u.navbar/Navbar)})
      (df/load! this ::m.navlink/current-navbar u.navbar/Navbar
                {:target [:root/navbar]})
+     (df/load! this ::m.settings/site-config mu.settings/Config)
+
      (df/load! this ::m.navlink/current-navbar u.navbar/NavbarSidebar
                {:target [:root/sidebar]}))
    :query
@@ -96,31 +103,44 @@
 
     {:root/navbar (comp/get-query u.navbar/Navbar)}
     {:root/sidebar (comp/get-query u.navbar/NavbarSidebar)}
+    {::init-form (comp/get-query u.initialize/InitForm)}
     {::router (comp/get-query RootRouter)}
-    ::auth/authorization]
-   :initial-state {:root/navbar   {}
-                   :root/sidebar  {}
-                   :authenticator {}
-                   ::router       {}}}
-  (let [inverted         true
-        visible          (= (uism/get-active-state this ::u.navbar/navbarsm) :state/shown)
-        top-router-state (or (uism/get-active-state this ::RootRouter) :initial)]
+    ::auth/authorization
+    {::m.settings/site-config (comp/get-query mu.settings/Config)}]
+   :initial-state {:root/navbar             {}
+                   :root/sidebar            {}
+                   :authenticator           {}
+                   ::init-form              {}
+                   ::router                 {}
+                   ::m.settings/site-config {}}}
+  (let [inverted                                   true
+        visible                                    (= (uism/get-active-state this ::u.navbar/navbarsm) :state/shown)
+        top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
+        {::m.settings/keys [loaded? initialized?]} (log/spy :info site-config)]
     (comp/fragment
      (u.media/ui-media-styles)
      (u.media/ui-media-context-provider
       {}
-      (dom/div {:style {:height "100%"}}
-        (when navbar
-          (u.navbar/ui-navbar navbar))
-        (ui-sidebar-pushable
-         {:inverted (str inverted)
-          :visible  (str visible)}
-         (when sidebar
-           (u.navbar/ui-navbar-sidebar sidebar))
-         (ui-sidebar-pusher
-          {:style {:paddingTop "12px"}}
-          (if (= :initial top-router-state)
-            (dom/div :.loading "Loading...")
-            (ui-root-router router)))))))))
+      (if loaded?
+        (if initialized?
+          (dom/div {:style {:height "100%"}}
+            (when navbar
+              (u.navbar/ui-navbar navbar))
+            (ui-sidebar-pushable
+             {:inverted (str inverted)
+              :visible  (str visible)}
+             (when sidebar
+               (u.navbar/ui-navbar-sidebar sidebar))
+             (ui-sidebar-pusher
+              {:style {:paddingTop "12px"}}
+              (if (= :initial top-router-state)
+                (dom/div :.loading "Loading...")
+                (comp/fragment
+                 (u.authenticator/ui-authenticator authenticator)
+                 (ui-root-router router))))))
+          (dom/div {}
+            (u.initialize/ui-init-form init-form)))
+        (dom/div {}
+          (dom/p "Not loaded")))))))
 
 (def ui-root (comp/factory Root))

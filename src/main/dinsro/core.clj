@@ -1,12 +1,8 @@
 (ns dinsro.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
-   [dinsro.components.config :as config]
    [dinsro.components.nrepl]
-   [dinsro.components.secrets :as secrets]
    [dinsro.components.server]
-   [dinsro.middleware :as middleware]
-   [dinsro.seed :as seed]
    [mount.core :as mount]
    [taoensso.timbre :as log])
   (:gen-class))
@@ -33,15 +29,8 @@
   (let [options (parse-opts args cli-options)]
     (doseq [component (-> options mount/start-with-args :started)]
       (log/debug component "started")))
-  (seed/seed-db!)
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main
   [& args]
-  (let [[config-file] args]
-    (-> (mount/only #{#'config/config})
-        (mount/with-args {:config config-file})
-        mount/start))
-  (mount/start #'secrets/secret)
-  (mount/start #'middleware/token-backend)
   (start-app args))

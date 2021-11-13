@@ -19,6 +19,7 @@
    [dinsro.mutations.ln-nodes :as mu.ln-nodes]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.mutations.session :as mu.session]
+   [dinsro.mutations.settings :as mu.settings]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [taoensso.timbre :as log]))
@@ -59,4 +60,5 @@
       mu.ln-nodes/resolvers
       mu.rate-sources/resolvers
       mu.session/resolvers
+      mu.settings/resolvers
       index-explorer])))

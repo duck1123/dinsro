@@ -622,7 +622,6 @@
   (seed-currencies!)
   (seed-rate-sources!)
   (seed-rates!)
-
   (seed-users! users)
   (seed-categories! users)
   (seed-accounts! users)
@@ -630,5 +629,6 @@
   (seed-ln-nodes! users)
   (seed-ln-peers! users)
   (seed-ln-txes! users)
+
   (log/info "Done seeding")
   (item-report))

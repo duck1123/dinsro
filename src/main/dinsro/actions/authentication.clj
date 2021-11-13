@@ -63,15 +63,18 @@
 
 (>defn do-register
   "Register user with given name and password"
-  [name password]
-  [::m.users/name ::m.users/password => (s/keys)]
-  (let [params #::m.users{:password password :name name}]
-    (try
-      (register params)
-      (catch Exception ex
-        (log/error "Failed to register" ex)
-        {::error true
-         :ex     (str ex)}))))
+  ([name password]
+   [::m.users/name ::m.users/password => (s/keys)]
+   (do-register name password false))
+  ([name password admin?]
+   [::m.users/name ::m.users/password boolean? => (s/keys)]
+   (let [params #::m.users{:password password :name name :admin? admin?}]
+     (try
+       (register params)
+       (catch Exception ex
+         (log/error "Failed to register" ex)
+         {::error true
+          :ex     (str ex)})))))
 
 (>defn do-login
   [session username password]
