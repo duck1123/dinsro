@@ -24,22 +24,48 @@
          node-id     ::m.ln-nodes/id
          source-id   ::m.rate-sources/id
          transaction-id   ::m.transactions/id
-         user-id     ::m.users/id} value]
+         user-id     ::m.users/id} (log/spy :info value)]
     (or
-     (when account-id (u.links/ui-account-link {::m.accounts/id account-id}))
-     (when category-id (u.links/ui-category-link {::m.categories/id category-id}))
-     (when currency-id (u.links/ui-currency-link {::m.currencies/id currency-id}))
-     (when node-id (u.links/ui-node-link {::m.ln-nodes/id node-id}))
-     (when source-id (u.links/ui-rate-source-link {::m.rate-sources/id source-id}))
-     (when transaction-id (u.links/ui-transaction-link {::m.transactions/id transaction-id}))
-     (when user-id (u.links/ui-user-link {::m.users/id user-id}))
+     (when account-id
+       (log/info "Account:" account-id)
+       (u.links/ui-account-link value))
+     (when category-id (u.links/ui-category-link value))
+     (when currency-id (u.links/ui-currency-link value))
+     (when node-id (u.links/ui-node-link value))
+     (when source-id (u.links/ui-rate-source-link value))
+     (when transaction-id (u.links/ui-transaction-link value))
+     (when user-id (u.links/ui-user-link value))
      (dom/div (merge env {}) (str "link control: " value)))))
 
 (def render-link-control (render-field-factory link-control))
 
+(defn link-list-control
+  [{:keys [value]} attribute]
+  (dom/div {}
+    (dom/div {} "link list control2: ")
+    (for [item value]
+      (dom/div {}
+        (dom/div {} (pr-str item))
+        (link-control {:value item} attribute)))))
+
+(def render-link-list-control (render-field-factory link-list-control))
+
+(defn link-subform-control
+  [{:keys [value]} attribute]
+  (dom/div {}
+    (dom/ul {}
+      (for [item value]
+        (dom/li {}
+          (link-control {:value item} attribute))))))
+
+(def render-link-subform-control (render-field-factory link-subform-control))
+
 (defn ref-control
-  [{:keys [value] :as env} _attribute]
-  (dom/div (merge env {}) (str "ref control" value)))
+  [{:keys [value]} _attribute]
+  (dom/div :.ui.container
+    (dom/div {} "default ref control: ")
+    (dom/pre {}
+             (dom/code {} (pr-str value)))))
 
 (def render-ref (render-field-factory ref-control))
 
@@ -64,6 +90,8 @@
   (-> sui/all-controls
       (control-type :ref  :default   render-ref)
       (control-type :ref  :link      render-link-control)
+      (control-type :ref  :link-list render-link-list-control)
+      (control-type :ref  :link-subform render-link-subform-control)
       (control-type :ref  :ln-tx-row u.ln-tx/render-ref-ln-tx-row)
       (control-type :uuid :default   render-uuid)
       (control-type :date :default   render-date)))

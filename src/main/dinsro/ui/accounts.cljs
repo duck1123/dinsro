@@ -37,7 +37,8 @@
    fo/subforms       {::m.accounts/user     {fo/ui u.links/UserLinkForm}
                       ::m.accounts/currency {fo/ui u.links/CurrencyLinkForm}
                       ::m.accounts/transactions {fo/ui u.links/TransactionLinkForm}}
-   fo/field-styles {::m.accounts/transactions :link}
+   fo/field-styles {::m.accounts/transactions :link-subform
+                    ::m.accounts/user :link}
    fo/attributes     [m.accounts/name
                       m.accounts/currency
                       m.accounts/user

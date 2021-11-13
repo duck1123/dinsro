@@ -34,6 +34,8 @@
    fo/attributes   [m.rate-sources/name
                     m.rate-sources/url
                     m.joins/rate-source-rates]
+   fo/cancel-route ["rate-sources"]
+   fo/field-styles {::m.rate-sources/rates :rate-chart}
    fo/route-prefix "rate-source"
    fo/title        "Rate Source"})
 
