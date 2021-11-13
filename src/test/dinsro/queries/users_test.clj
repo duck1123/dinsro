@@ -37,7 +37,7 @@
      (::m.users/name response) => name)))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key :db/id)]
+  (let [id (ds/gen-key :xt/id)]
     (assertions
      (q.users/read-record id) => nil)))
 

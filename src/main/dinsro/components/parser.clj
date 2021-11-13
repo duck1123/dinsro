@@ -10,7 +10,7 @@
    [dinsro.components.auto-resolvers :refer [automatic-resolvers]]
    [dinsro.components.blob-store :as bs]
    [dinsro.components.config :refer [config]]
-   [dinsro.components.crux :refer [crux-nodes]]
+   [dinsro.components.xtdb :refer [xtdb-nodes]]
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
    [dinsro.model :refer [all-attributes]]
@@ -19,7 +19,7 @@
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.mutations.session :as mu.session]
    [mount.core :refer [defstate]]
-   [roterski.fulcro.rad.database-adapters.crux :as crux]
+   [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [taoensso.timbre :as log]))
 
 (def default-timezone "America/Detroit")
@@ -39,7 +39,7 @@
      config
      [(attr/pathom-plugin all-attributes)
       (form/pathom-plugin save/middleware delete/middleware)
-      (crux/pathom-plugin (fn [_env] {:production (database-key crux-nodes)}))
+      (xt/pathom-plugin (fn [_env] {:production (database-key xtdb-nodes)}))
       (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
                                                    :avatar-images bs/image-blob-store})
       {::p/wrap-parser

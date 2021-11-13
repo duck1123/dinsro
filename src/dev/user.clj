@@ -1,8 +1,8 @@
 (ns user
   (:require
    [clojure.string :as string]
-   [crux.api :as crux]
-   [dinsro.components.crux :as c.crux]
+   [xtdb.api :as xt]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.components.database-queries :as dq]
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
@@ -40,10 +40,10 @@
 (comment
   (mocks/mock-account)
 
-  (:main c.crux/crux-nodes)
+  (:main c.xtdb/xtdb-nodes)
   (start-clerk!)
 
-  (def db (crux/db (:main c.crux/crux-nodes)))
+  (def db (xt/db (:main c.xtdb/xtdb-nodes)))
 
   (q.accounts/index-ids)
   (q.accounts/index-records)
@@ -52,23 +52,23 @@
 
   (q.users/index-records)
 
-  (crux/q db '{:find [?uuid] :where [[?uuid ::m.accounts/id ?id]]})
+  (xt/q db '{:find [?uuid] :where [[?uuid ::m.accounts/id ?id]]})
 
-  (crux/q
+  (xt/q
    db
    '{:find [?uuid ?name]
      :where [[?uuid ::m.navlink/id ?id]
              [?uuid ::m.navlink/name ?name]
              [?uuid ::m.navlink/href ?href]]})
 
-  (crux/q
+  (xt/q
    db
    '{:find  [(pull ?uuid [*])]
      :where [[?uuid ::m.navlink/id ?id]
              [?uuid ::m.navlink/name ?name]
              [?uuid ::m.navlink/href ?href]]})
 
-  (crux/q
+  (xt/q
    db
    '{:find  [(pull ?uuid [*])]
      :in [[?id ...]]
@@ -88,8 +88,8 @@
   (dq/get-all-navlinks- db)
   (dq/get-navlinks- db ["admin"])
 
-  (crux/submit-tx
-   (:main c.crux/crux-nodes)
-   [[:crux.tx/put {:crux.db/id      :a
-                   ::m.navlink/id   :a
-                   ::m.navlink/name "A"}]]))
+  (xt/submit-tx
+   (:main c.xtdb/xtdb-nodes)
+   [[::xt/put {:xt/id      :a
+               ::m.navlink/id   :a
+               ::m.navlink/name "A"}]]))

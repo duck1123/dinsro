@@ -3,11 +3,11 @@
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.type-support.date-time :as dt]
-   [crux.api :as crux]
+   [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.ln-nodes :as a.ln-nodes]
    [dinsro.actions.rates :as a.rates]
-   [dinsro.components.crux :as c.crux]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.categories :as m.categories]
@@ -445,7 +445,7 @@
 
 (defn create-navlinks!
   []
-  (let [node (:main c.crux/crux-nodes)
+  (let [node (:main c.xtdb/xtdb-nodes)
         add  (fnil conj [])
         data (reduce
               (fn [data link]
@@ -455,8 +455,8 @@
         txes (->> data
                   vals
                   flatten
-                  (mapv #(vector :crux.tx/put %)))]
-    (crux/submit-tx node txes)))
+                  (mapv #(vector ::xt/put %)))]
+    (xt/submit-tx node txes)))
 
 (>defn seed-rate!
   [_user-id currency-id source-id {:keys [date rate]}]

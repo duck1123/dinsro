@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [crux.api :as crux]
-   [dinsro.components.crux :as c.crux]
+   [xtdb.api :as xt]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -12,7 +12,7 @@
    [taoensso.timbre :as log]))
 
 (def attributes-list
-  '[:db/id
+  '[:xt/id
     ::m.rate-sources/id
     ::m.rate-sources/name])
 (def record-limit 1000)
@@ -38,74 +38,74 @@
 
 (>defn find-eid-by-id
   [id]
-  [::m.rate-sources/id => :db/id]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-eid-by-id-query id))))
+  [::m.rate-sources/id => :xt/id]
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-eid-by-id-query id))))
 
 (>defn find-eid-by-name
   [name]
   [::m.rate-sources/name => ::m.rate-sources/id]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-eid-by-name-query name))))
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-eid-by-name-query name))))
 
 (>defn find-id-by-eid
   [eid]
-  [:db/id => ::m.rate-sources/id]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-id-by-eid-query eid))))
+  [:xt/id => ::m.rate-sources/id]
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-id-by-eid-query eid))))
 
 (>defn index-ids-by-account
   [account-id]
   [::m.accounts/id => (s/coll-of ::m.rate-sources/id)]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?rate-source-id]
                 :in    [?account-id]
                 :where [[?rate-source-id ::m.rate-sources/account ?account-id]]}]
-    (map first (crux/q db query account-id))))
+    (map first (xt/q db query account-id))))
 
 (>defn index-ids-by-currency
   [currency-id]
   [::m.currencies/id => (s/coll-of ::m.rate-sources/id)]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?rate-source-id]
                 :in    [?currency-id]
                 :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]]}]
-    (map first (crux/q db query currency-id))))
+    (map first (xt/q db query currency-id))))
 
 (>defn find-id-by-currency-and-name
   [currency-id name]
   [::m.rate-sources/currency ::m.rate-sources/name => (? ::m.rate-sources/id)]
-  (let [db (c.crux/main-db)
+  (let [db (c.xtdb/main-db)
         query '{:find  [?rate-source-id]
                 :in    [?currency-id ?name]
                 :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]
                         [?rate-source-id ::m.rate-sources/name ?name]]}]
-    (ffirst (crux/q db query currency-id name))))
+    (ffirst (xt/q db query currency-id name))))
 
 (>defn create-record
   [params]
-  [::m.rate-sources/params => :db/id]
-  (let [node   (c.crux/main-node)
+  [::m.rate-sources/params => :xt/id]
+  (let [node   (c.xtdb/main-node)
         id     (utils/uuid)
         params (assoc params ::m.rate-sources/id id)
-        params (assoc params :crux.db/id id)]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
+        params (assoc params :xt/id id)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
     id))
 
 (>defn read-record
   [id]
-  [:db/id => (? ::m.rate-sources/item)]
-  (let [db     (c.crux/main-db)
-        record (crux/pull db '[*] id)]
+  [:xt/id => (? ::m.rate-sources/item)]
+  (let [db     (c.xtdb/main-db)
+        record (xt/pull db '[*] id)]
     (when (get record ::m.rate-sources/name)
       record)))
 
 (>defn index-ids
   []
-  [=> (s/coll-of :db/id)]
-  (let [db (c.crux/main-db)]
-    (map first (crux/q db '{:find  [?e]
-                            :where [[?e ::m.rate-sources/name _]]}))))
+  [=> (s/coll-of :xt/id)]
+  (let [db (c.xtdb/main-db)]
+    (map first (xt/q db '{:find  [?e]
+                          :where [[?e ::m.rate-sources/name _]]}))))
 
 (>defn index-records
   []
@@ -114,21 +114,21 @@
 
 (defn index-records-by-currency
   [currency-id]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?id ?currency-id]
-                :keys  [db/id name]
+                :keys  [xt/id name]
                 :in    [$ ?currency-id]
                 :where [[?id ::m.rate-sources/currency ?currency-id]]}]
-    (->> (crux/q db query currency-id)
-         (map :db/id)
+    (->> (xt/q db query currency-id)
+         (map :xt/id)
          (map read-record)
          (take record-limit))))
 
 (>defn delete-record
   [id]
-  [:db/id => any?]
-  (let [node (c.crux/main-node)]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]]))))
+  [:xt/id => any?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))))
 
 (>defn delete-all
   []

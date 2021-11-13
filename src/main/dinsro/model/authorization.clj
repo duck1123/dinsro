@@ -23,7 +23,7 @@
         (let [s {::auth/provider           :local
                  ::auth/status             :success
                  :session/current-user-ref [::m.users/id id]
-                 :time-zone/zone-id        (-> zone-id :db/ident timezone/datomic-time-zones)
+                 :time-zone/zone-id        (-> zone-id :xt/id timezone/datomic-time-zones)
                  ::m.users/name            name}]
           (fmw/augment-response
            s

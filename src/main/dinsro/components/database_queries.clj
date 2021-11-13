@@ -1,7 +1,7 @@
 (ns dinsro.components.database-queries
   (:require
-   [crux.api :as crux]
-   [roterski.fulcro.rad.database-adapters.crux-options :as co]
+   [xtdb.api :as xt]
+   [roterski.fulcro.rad.database-adapters.xtdb-options :as co]
    [taoensso.encore :as enc]
    [taoensso.timbre :as log]))
 
@@ -9,7 +9,7 @@
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.accounts/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.accounts/id id}))))
 
 (defn get-my-accounts-
@@ -17,84 +17,84 @@
   (let [query    '{:find  [?uuid]
                    :in    [?user-id]
                    :where [[?uuid :dinsro.model.accounts/user ?user-id]]}
-        response (crux/q db query user-id)]
+        response (xt/q db query user-id)]
     (mapv (fn [[id]] {:dinsro.model.accounts/id id}) response)))
 
 (defn get-all-categories-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.categories/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.categories/id id}))))
 
 (defn get-all-core-nodes-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.core-nodes/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.core-nodes/id id}))))
 
 (defn get-all-lightning-nodes-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.ln-nodes/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.ln-nodes/id id}))))
 
 (defn get-all-currencies-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.currencies/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.currencies/id id}))))
 
 (defn get-all-navlinks-
   [db]
   (->> '{:find  [?id]
          :where [[?uuid :dinsro.model.navlink/id ?id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.navlink/id id}))))
 
 (defn get-all-ln-peers-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.ln-peers/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.ln-peers/id id}))))
 
 (defn get-all-rates-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.rates/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.rates/id id}))))
 
 (defn get-all-rate-sources-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.rate-sources/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.rate-sources/id id}))))
 
 (defn get-all-transactions-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.transactions/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.transactions/id id}))))
 
 (defn get-all-ln-transactions-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.ln-transactions/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.ln-transactions/id id}))))
 
 (defn get-all-users-
   [db]
   (->> '{:find  [?uuid]
          :where [[?uuid :dinsro.model.users/id]]}
-       (crux/q db)
+       (xt/q db)
        (mapv (fn [[id]] {:dinsro.model.users/id id}))))
 
 (defn get-navlinks-
@@ -102,7 +102,7 @@
   (let [query    '{:find  [?id]
                    :in    [[?id ...]]
                    :where [[?uuid :dinsro.model.navlink/id ?id]]}
-        response (crux/q db query ids)]
+        response (xt/q db query ids)]
     (mapv (fn [[id]] {:dinsro.model.navlink/id id}) response)))
 
 (defn get-all-accounts
@@ -190,13 +190,13 @@
     (let [query '{:find  [(pull ?user-id
                                 [:dinsro.model.users/id
                                  :dinsro.model.users/name
-                                 {:time-zone/zone-id [:db/ident]}
+                                 {:time-zone/zone-id [:xt/id]}
                                  :dinsro.model.users/hashed-value
                                  :dinsro.model.users/salt
                                  :dinsro.model.users/iterations])]
                   :in    [?username]
                   :where [[?user-id :dinsro.model.users/name ?username]]}]
-      (ffirst (crux/q db query username)))))
+      (ffirst (xt/q db query username)))))
 
 (defn get-navlinks
   [env names]

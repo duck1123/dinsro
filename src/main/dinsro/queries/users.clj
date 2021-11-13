@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [crux.api :as crux]
-   [dinsro.components.crux :as c.crux]
+   [xtdb.api :as xt]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [taoensso.timbre :as log]))
@@ -29,47 +29,47 @@
 (>defn read-record
   [user-id]
   [uuid? => (? ::m.users/item)]
-  (let [db     (c.crux/main-db)
+  (let [db     (c.xtdb/main-db)
         query  '{:find  [(pull ?eid [*])]
                  :in    [?eid]
                  :where [[?eid ::m.users/id ?name]]}
-        result (crux/q db query user-id)
+        result (xt/q db query user-id)
         record (ffirst result)]
     (when (get record ::m.users/id)
-      (dissoc record :crux.db/id))))
+      (dissoc record :xt/id))))
 
 (>defn read-record-by-eid
   [user-dbid]
-  [:db/id => (? ::m.users/item)]
-  (let [db     (c.crux/main-db)
+  [:xt/id => (? ::m.users/item)]
+  (let [db     (c.xtdb/main-db)
         query  '{:find [(pull ?user [*])]
                  :in   [?user]}
-        record (ffirst (crux/q db query user-dbid))]
+        record (ffirst (xt/q db query user-dbid))]
     (when (get record ::m.users/id)
-      (dissoc record :db/id))))
+      (dissoc record :xt/id))))
 
 (>defn read-records
   [ids]
-  [(s/coll-of :db/id) => (s/coll-of ::m.users/item)]
+  [(s/coll-of :xt/id) => (s/coll-of ::m.users/item)]
   (map read-record-by-eid ids))
 
 (>defn find-eid-by-id
   [id]
   [::m.users/id => (? ::m.users/id)]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-eid-by-id-query id))))
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-eid-by-id-query id))))
 
 (>defn find-eid-by-name
   [name]
   [::m.users/name => (? ::m.users/id)]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-eid-by-name-query name))))
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-eid-by-name-query name))))
 
 (>defn find-id-by-eid
   [eid]
-  [:db/id => (? ::m.users/id)]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-id-by-eid-query eid))))
+  [:xt/id => (? ::m.users/id)]
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-id-by-eid-query eid))))
 
 (>defn find-by-id
   [id]
@@ -82,11 +82,11 @@
   [params]
   [::m.users/params => ::m.users/id]
   (if (nil? (find-eid-by-name (::m.users/name params)))
-    (let [node   (c.crux/main-node)
+    (let [node   (c.xtdb/main-node)
           id     (new-uuid)
-          params (assoc params :crux.db/id id)
+          params (assoc params :xt/id id)
           params (assoc params ::m.users/id id)]
-      (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
+      (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
     (throw (RuntimeException. "User already exists"))))
 
@@ -94,10 +94,10 @@
   "list all user ids"
   []
   [=> (s/coll-of ::m.users/id)]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?e]
                 :where [[?e ::m.users/id _]]}]
-    (map first (crux/q db query))))
+    (map first (xt/q db query))))
 
 (>defn index-records
   "list all users"
@@ -108,9 +108,9 @@
 (>defn delete-record
   "delete user by id"
   [id]
-  [:db/id => nil?]
-  (let [node (c.crux/main-node)]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]]))
+  [:xt/id => nil?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
 (>defn delete-all

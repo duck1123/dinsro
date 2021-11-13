@@ -3,8 +3,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [crux.api :as crux]
-   [dinsro.components.crux :as c.crux]
+   [xtdb.api :as xt]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
@@ -12,7 +12,7 @@
    [taoensso.timbre :as log]))
 
 (def attributes-list
-  '[:db/id
+  '[:xt/id
     ::m.categories/id
     ::m.categories/name])
 (def record-limit 1000)
@@ -29,15 +29,15 @@
 
 (>defn find-eid-by-id
   [id]
-  [::m.categories/id => (? :db/id)]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-eid-by-id-query id))))
+  [::m.categories/id => (? :xt/id)]
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-eid-by-id-query id))))
 
 (>defn find-id-by-eid
   [eid]
-  [:db/id => (? ::m.categories/id)]
-  (let [db (c.crux/main-db)]
-    (ffirst (crux/q db find-id-by-eid-query eid))))
+  [:xt/id => (? ::m.categories/id)]
+  (let [db (c.xtdb/main-db)]
+    (ffirst (xt/q db find-id-by-eid-query eid))))
 
 (>defn find-by-name-and-user
   [_name _user-id]
@@ -47,41 +47,41 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.categories/id)]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?category-eid]
                 :in    [?user-id]
                 :where [[?category-eid ::m.categories/user ?user-id]]}]
-    (map first (crux/q db query user-id))))
+    (map first (xt/q db query user-id))))
 
 (>defn create-record
   [params]
-  [::m.categories/params => :db/id]
-  (let [node   (c.crux/main-node)
+  [::m.categories/params => :xt/id]
+  (let [node   (c.xtdb/main-node)
         id     (new-uuid)
         params (assoc params ::m.categories/id id)
-        params (assoc params :crux.db/id id)]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))
+        params (assoc params :xt/id id)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
     id))
 
 (>defn read-record
   [id]
-  [:db/id => (? ::m.categories/item)]
-  (let [db     (c.crux/main-db)
-        record (crux/pull db '[*] id)]
+  [:xt/id => (? ::m.categories/item)]
+  (let [db     (c.xtdb/main-db)
+        record (xt/pull db '[*] id)]
     (when (get record ::m.categories/name)
-      (let [user-eid (get-in record [::m.categories/user :db/id])
+      (let [user-eid (get-in record [::m.categories/user :xt/id])
             user-id  (q.users/find-id-by-eid user-eid)]
         (-> record
-            (dissoc :db/id)
+            (dissoc :xt/id)
             (assoc ::m.categories/user {::m.users/id user-id}))))))
 
 (>defn index-ids
   []
-  [=> (s/coll-of :db/id)]
-  (let [db      (c.crux/main-db)
+  [=> (s/coll-of :xt/id)]
+  (let [db      (c.xtdb/main-db)
         query   '{:find  [?e]
                   :where [[?e ::m.categories/name _]]}
-        results (crux/q db query)]
+        results (xt/q db query)]
     (map first results)))
 
 (>defn index-records
@@ -91,9 +91,9 @@
 
 (>defn delete-record
   [id]
-  [:db/id => nil?]
-  (let [node (c.crux/main-node)]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/delete id]])))
+  [:xt/id => nil?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
   nil)
 
 (>defn delete-all

@@ -28,7 +28,7 @@
   (gen/such-that #(not= "" %) (gen/string-alphanumeric)))
 
 (s/def ::id uuid?)
-(s/def :db/id ::id)
+(s/def :xt/id ::id)
 (def id ::id)
 
 (s/def ::valid-double (s/and double? #(== % %)))

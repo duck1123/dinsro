@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [crux.api :as crux]
-   [dinsro.components.crux :as c.crux]
+   [xtdb.api :as xt]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln-channels :as m.ln-channels]
    [dinsro.specs]
    [dinsro.utils :as utils]
@@ -12,28 +12,28 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln-channels/id)]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?e]
                 :where [[?e ::m.ln-channels/id _]]}]
-    (map first (crux/q db query))))
+    (map first (xt/q db query))))
 
 (>defn read-record
   [id]
-  [:db/id => (? ::m.ln-channels/item)]
-  (let [db     (c.crux/main-db)
-        record (crux/pull db '[*] id)]
+  [:xt/id => (? ::m.ln-channels/item)]
+  (let [db     (c.xtdb/main-db)
+        record (xt/pull db '[*] id)]
     (when (get record ::m.ln-channels/id)
-      (dissoc record :crux.db/id))))
+      (dissoc record :xt/id))))
 
 (>defn create-record
   [params]
   [::m.ln-channels/params => ::m.ln-channels/id]
-  (let [node            (c.crux/main-node)
+  (let [node            (c.xtdb/main-node)
         id              (utils/uuid)
         prepared-params (-> params
                             (assoc ::m.ln-channels/id id)
-                            (assoc :crux.db/id id))]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put prepared-params]]))
+                            (assoc :xt/id id))]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
 (>defn index-records

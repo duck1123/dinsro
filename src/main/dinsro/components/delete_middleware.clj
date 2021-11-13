@@ -1,5 +1,5 @@
 (ns dinsro.components.delete-middleware
   (:require
-   [roterski.fulcro.rad.database-adapters.crux :as crux]))
+   [roterski.fulcro.rad.database-adapters.xtdb :as xt]))
 
-(def middleware (crux/wrap-crux-delete))
+(def middleware (xt/wrap-xtdb-delete))

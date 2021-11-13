@@ -58,7 +58,7 @@
      (q.accounts/index-records-by-user eid) => [record])))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key :db/id)]
+  (let [id (ds/gen-key :xt/id)]
     (is (nil? (q.accounts/read-record id)))))
 
 (deftest read-record-found

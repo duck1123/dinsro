@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [crux.api :as crux]
-   [dinsro.components.crux :as c.crux]
+   [xtdb.api :as xt]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.specs]
    [dinsro.utils :as utils]
@@ -11,30 +11,30 @@
 
 (>defn create-record
   [params]
-  [::m.core-nodes/params => :db/id]
-  (let [node            (c.crux/main-node)
+  [::m.core-nodes/params => :xt/id]
+  (let [node            (c.xtdb/main-node)
         id              (utils/uuid)
         prepared-params (-> params
                             (assoc ::m.core-nodes/id id)
-                            (assoc :crux.db/id id))]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put prepared-params]]))
+                            (assoc :xt/id id))]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
 (>defn read-record
   [id]
-  [:db/id => (? ::m.core-nodes/item)]
-  (let [db     (c.crux/main-db)
-        record (crux/pull db '[*] id)]
+  [:xt/id => (? ::m.core-nodes/item)]
+  (let [db     (c.xtdb/main-db)
+        record (xt/pull db '[*] id)]
     (when (get record ::m.core-nodes/name)
-      (dissoc record :db/id))))
+      (dissoc record :xt/id))))
 
 (>defn index-ids
   []
-  [=> (s/coll-of :db/id)]
-  (let [db    (c.crux/main-db)
+  [=> (s/coll-of :xt/id)]
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?e]
                 :where [[?e ::m.core-nodes/name _]]}]
-    (map first (crux/q db query))))
+    (map first (xt/q db query))))
 
 (>defn index-records
   []
@@ -44,28 +44,28 @@
 (>defn find-id-by-name
   [name]
   [::m.core-nodes/name => (? ::m.core-nodes/id)]
-  (let [db    (c.crux/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?node-id]
                 :in    [?name]
                 :where [[?node-id ::m.core-nodes/name ?name]]}]
-    (ffirst (crux/q db query name))))
+    (ffirst (xt/q db query name))))
 
 (defn update-blockchain-info
   [id props]
-  (let [node   (c.crux/main-node)
-        db     (c.crux/main-db)
-        old    (crux/pull db '[*] id)
+  (let [node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        old    (xt/pull db '[*] id)
         params (merge  old props)]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))))
+    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))))
 
 (defn update-wallet-info
   [{:keys               [balance tx-count]
     ::m.core-nodes/keys [id]}]
-  (let [node   (c.crux/main-node)
-        db     (c.crux/main-db)
-        old    (crux/pull db '[*] id)
+  (let [node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        old    (xt/pull db '[*] id)
         params (merge
                 old
                 {:wallet-info/balance  balance
                  :wallet-info/tx-count tx-count})]
-    (crux/await-tx node (crux/submit-tx node [[:crux.tx/put params]]))))
+    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))))

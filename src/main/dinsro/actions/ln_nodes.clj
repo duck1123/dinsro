@@ -7,10 +7,10 @@
    [clojure.java.io :as io]
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [crux.api :as crux]
+   [xtdb.api :as xt]
    [dinsro.actions.bitcoind :as a.bitcoind]
    [dinsro.actions.lnd :as a.lnd]
-   [dinsro.components.crux :as c.crux]
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln-channels :as m.ln-channels]
    [dinsro.model.ln-info :as m.ln-info]
    [dinsro.model.ln-nodes :as m.ln-nodes]
@@ -331,11 +331,11 @@
 (>defn save-info!
   [id data]
   [::m.ln-nodes/id ::m.ln-info/params => any?]
-  (let [node   (c.crux/main-node)
-        db     (c.crux/main-db)
-        entity (crux/entity db id)
-        tx     (crux/submit-tx node [[:crux.tx/put (merge entity data)]])]
-    (crux/await-tx node tx)))
+  (let [node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        entity (xt/entity db id)
+        tx     (xt/submit-tx node [[::xt/put (merge entity data)]])]
+    (xt/await-tx node tx)))
 
 (defn update-info!
   [{::m.ln-nodes/keys [id] :as node}]
@@ -349,11 +349,11 @@
   [id note]
   (let [data   (a.lnd/parse note)
         params (set/rename-keys data m.ln-info/rename-map)
-        node   (c.crux/main-node)
-        db     (c.crux/main-db)
-        entity (crux/entity db id)
-        tx     (crux/submit-tx node [[:crux.tx/put (merge entity params)]])]
-    (crux/await-tx node tx)))
+        node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        entity (xt/entity db id)
+        tx     (xt/submit-tx node [[::xt/put (merge entity params)]])]
+    (xt/await-tx node tx)))
 
 (defn update-transactions!
   [{::m.ln-nodes/keys [id] :as node}]

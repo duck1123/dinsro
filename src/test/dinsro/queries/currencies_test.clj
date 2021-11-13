@@ -25,7 +25,7 @@
      (q.currencies/read-record (q.currencies/find-eid-by-id id)) => item)))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key :db/id)]
+  (let [id (ds/gen-key :xt/id)]
     (assertions
      "should return nil"
      (q.currencies/read-record id) => nil)))
