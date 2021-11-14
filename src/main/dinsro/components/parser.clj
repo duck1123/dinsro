@@ -14,6 +14,7 @@
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
    [dinsro.model :refer [all-attributes]]
+   [dinsro.mutations.core-nodes :as mu.core-nodes]
    [dinsro.mutations.ln-nodes :as mu.ln-nodes]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.mutations.session :as mu.session]
@@ -52,6 +53,7 @@
      [automatic-resolvers
       form/resolvers
       (blob/resolvers all-attributes)
+      mu.core-nodes/resolvers
       mu.ln-nodes/resolvers
       mu.rate-sources/resolvers
       mu.session/resolvers

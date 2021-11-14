@@ -1,7 +1,6 @@
 (ns dinsro.mutations.core-nodes
   (:require
    [clojure.spec.alpha :as s]
-   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.bitcoind :as a.bitcoind])
@@ -30,22 +29,6 @@
        (let [body (get-in env [:result :body])]
          (get body `connect!)
          {}))))
-
-#?(:clj
-   (>defn do-create
-     [params]
-     [::m.core-nodes/params => ::m.core-nodes/id]
-     (q.core-nodes/create-record params)))
-
-#?(:cljs
-   (defmutation create! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
-
-#?(:cljs
-   (defmutation delete! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
 
 #?(:clj
    (def resolvers [connect!]))

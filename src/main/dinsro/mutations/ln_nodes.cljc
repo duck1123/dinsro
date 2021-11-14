@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln-nodes :as a.ln-nodes])
@@ -14,22 +13,6 @@
 (comment ::m.ln-info/_ ::m.ln-nodes/_ ::pc/_)
 
 (s/def ::creation-response (s/keys))
-
-#?(:clj
-   (>defn do-create
-     [params]
-     [::m.ln-nodes/params => ::m.ln-nodes/id]
-     (q.ln-nodes/create-record params)))
-
-#?(:cljs
-   (defmutation connect! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
-
-#?(:cljs
-   (defmutation create! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation create-peer!
@@ -44,11 +27,6 @@
        {:status :not-found}))
    :cljs
    (defmutation create-peer! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
-
-#?(:cljs
-   (defmutation delete! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
@@ -259,7 +237,8 @@
 
 #?(:clj
    (def resolvers
-     [download-cert!
+     [create-peer!
+      download-cert!
       download-macaroon!
       fetch-address!
       fetch-channels!
@@ -269,4 +248,5 @@
       initialize!
       make-peer!
       update-info!
+      update-transactions!
       unlock!]))
