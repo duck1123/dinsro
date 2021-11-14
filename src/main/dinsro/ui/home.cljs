@@ -8,10 +8,6 @@
    [dinsro.ui.login :as u.login]
    [taoensso.timbre :as log]))
 
-(defn path-for
-  [_p]
-  "/login")
-
 (defsc HomePage
   [this {:keys [auth-id]}]
   {:ident         (fn [] [:page/id ::page])
@@ -28,5 +24,3 @@
         (dom/a :.login-link
           {:onClick (fn [] (rroute/route-to! this u.login/LoginPage {}))}
           "login"))))))
-
-(def ui-page (comp/factory HomePage))
