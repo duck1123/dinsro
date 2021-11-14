@@ -14,6 +14,7 @@
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
    [dinsro.model :refer [all-attributes]]
+   [dinsro.model.navlink :as m.navlink]
    [dinsro.mutations.core-nodes :as mu.core-nodes]
    [dinsro.mutations.ln-nodes :as mu.ln-nodes]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
@@ -53,6 +54,7 @@
      [automatic-resolvers
       form/resolvers
       (blob/resolvers all-attributes)
+      m.navlink/resolvers
       mu.core-nodes/resolvers
       mu.ln-nodes/resolvers
       mu.rate-sources/resolvers
