@@ -95,11 +95,8 @@
 
 (defn start-scheduler
   []
-  (log/info "starting")
-  (t/every
-   (t/minutes 5)
-   #_(t/seconds 30)
-   #'check-rates))
+  (log/info "starting scheduler")
+  (t/every (t/minutes 5) #'check-rates))
 
 (mount/defstate ^:dynamic *scheduler*
   :start (start-scheduler)

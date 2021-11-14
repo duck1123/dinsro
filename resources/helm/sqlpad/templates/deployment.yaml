@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sqlpad.fullname" . }}
+  labels:
+{{- include "sqlpad.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+{{- include "sqlpad.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "sqlpad.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: sqlpad
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        env:
+        - name: SQLPAD_PORT
+          value: "3000"
+        - name: SQLPAD_AUTH_DISABLED
+          value: "true"
+        - name: SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE
+          value: "true"
+        - name: SQLPAD_CONNECTIONS__dinsro__name
+          value: "dinsro"
+        - name: SQLPAD_CONNECTIONS__dinsro__host
+          value: "db.dinsro"
+        - name: SQLPAD_CONNECTIONS__dinsro__port
+          value: "5432"
+        - name: SQLPAD_CONNECTIONS__dinsro__driver
+          value: "postgres"
+        - name: SQLPAD_CONNECTIONS__dinsro__username
+          value: "postgres"
+        - name: SQLPAD_CONNECTIONS__dinsro__password
+          value: "mysecretpassword"
+        - name: SQLPAD_CONNECTIONS__dinsro__database
+          value: "dinsro"
+        - name: SQLPAD_SEED_DATA_PATH
+          value: /mnt/seed-data
+        volumeMounts:
+        - name: seed-data
+          mountPath: /mnt/seed-data2
+        ports:
+        - name: http
+          containerPort: 3000
+      volumes:
+      - name: seed-data
+        persistentVolumeClaim:
+          claimName: seed-data

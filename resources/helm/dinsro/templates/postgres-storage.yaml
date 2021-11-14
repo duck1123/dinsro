@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.enabled .Values.database.enabled (not .Values.database.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-data
+  labels:
+    app: {{ template "dinsro.fullname" . }}-data
+    type: local
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.database.persistence.size | quote }}
+{{- if .Values.database.persistence.storageClass }}
+{{- if (eq "-" .Values.database.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.database.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

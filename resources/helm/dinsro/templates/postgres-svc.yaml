@@ -1,0 +1,21 @@
+{{- if .Values.database.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    app: {{ template "dinsro.fullname" . }}-data
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: db
+    port: {{ .Values.database.service.port }}
+    targetPort: db
+    {{- if .Values.database.service.nodePort }}
+    nodePort: {{ .Values.database.service.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "dinsro.fullname" . }}-data
+{{- end -}}

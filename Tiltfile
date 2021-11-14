@@ -328,3 +328,38 @@ local_resource(
   trigger_mode = TRIGGER_MODE_MANUAL,
   labels = [ 'test' ],
 )
+
+namespace_create(
+  'sqlpad',
+  annotations = [ 'field.cattle.io/projectId: local:%s' % project_id ],
+  labels = [ 'field.cattle.io/projectId: %s' % project_id ],
+)
+
+k8s_yaml(helm(
+  'resources/helm/sqlpad',
+  name = 'sqlpad',
+  namespace = 'sqlpad',
+  set = [
+    'image.repository=dinsro/sqlpad',
+    'ingress.enabled=true',
+    'ingress.hosts[0].host=sqlpad.localhost',
+    'ingress.hosts[0].paths[0].path=' + '/',
+  ],
+))
+
+custom_build(
+  'dinsro/sqlpad:6.7',
+  'earthly --build-arg EXPECTED_REF=$EXPECTED_REF +sqlpad',
+  [
+    'Earthfile',
+    'resources/tilt/sqlpad/seed-data'
+  ],
+)
+
+k8s_resource(
+  workload = 'sqlpad',
+  labels = [ 'database' ],
+  links = [
+    link('http://sqlpad.localhost', 'SQLPad'),
+  ],
+)

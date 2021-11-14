@@ -1,0 +1,58 @@
+{{- if .Values.database.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  labels:
+    app: {{ template "dinsro.fullname" . }}-data
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "dinsro.fullname" . }}-data
+  serviceName: {{ template "dinsro.fullname" . }}-data
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "dinsro.fullname" . }}-data
+    spec:
+      containers:
+      - name: db
+        image: postgres:12.1
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "800m"
+          requests:
+            memory: "300Mi"
+            cpu: "500m"
+        env:
+          - name: POSTGRES_DB
+            value: dinsro
+        readinessProbe:
+          exec:
+            command: ["psql", "-U", "postgres", "-c", "SELECT 1"]
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+        livenessProbe:
+          exec:
+            command: ["psql", "-U", "postgres",
+            "-d", "dinsro",
+            "-c", "SELECT 1"]
+          initialDelaySeconds: 45
+          timeoutSeconds: 2
+        ports:
+        - containerPort: 5432
+          name: db
+        volumeMounts:
+          - name: db-data
+            mountPath: /var/lib/postgresql/data
+            subPath: postgres
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: db-data
+{{- end -}}

@@ -68,6 +68,22 @@ persistence:
   storageClass: 'local-path'
   # existingClaim: ''
 
+database:
+  enabled: true
+  user: postges
+  password: mysecretpassword
+  service:
+    port: 5432
+    # nodePort: 1000
+  image:
+    repository: postgres
+    version: 12.1
+  persistence:
+    # existingClaim: -
+    size: 1G
+    storageClass: local-path
+  seed: false
+
 devtoolsIngress:
   enabled: false
   hosts:

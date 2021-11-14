@@ -1,14 +1,14 @@
-{:nrepl-bind "0.0.0.0"
- :nrepl-port 7000
-
- :org.httpkit.server/config
- {:port 3000
-  :ip   "0.0.0.0"}
-
- :data-path "data"
-
- :roterski.fulcro.rad.database-adapters.xtdb/databases
- {:main {}}
+{:roterski.fulcro.rad.database-adapters.xtdb/databases
+ {:main {:xtdb.jdbc/connection-pool
+         {:dialect #:xtdb{:module "xtdb.jdbc.psql/->dialect"}
+          :db-spec {:dbname   "dinsro"
+                    :host     "db"
+                    :user     "postgres"
+                    :password "mysecretpassword"}}
+         :xtdb/tx-log         {:xtdb/module     "xtdb.jdbc/->tx-log"
+                               :connection-pool :xtdb.jdbc/connection-pool}
+         :xtdb/document-store {:xtdb/module     "xtdb.jdbc/->document-store"
+                               :connection-pool :xtdb.jdbc/connection-pool}}}
 
  :ring.middleware/defaults-config
  {:params    {:keywordize true

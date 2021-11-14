@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: seed-data
+  labels:
+{{- include "sqlpad.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"

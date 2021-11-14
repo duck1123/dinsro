@@ -3,14 +3,23 @@
    [xtdb.api :as c.api]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [mount.core :refer [defstate]]
-   [dinsro.components.config :refer [config]]))
+   [dinsro.components.config :refer [config]]
+   [taoensso.timbre :as log]))
 
-(defstate ^{:on-reload :noop} xtdb-nodes
-  :start
-  (xt/start-databases (xt/symbolize-xtdb-modules config))
-  :stop
+(declare xtdb-nodes)
+
+(defn start-database!
+  []
+  (xt/start-databases (xt/symbolize-xtdb-modules config)))
+
+(defn stop-database!
+  []
   (for [node xtdb-nodes]
     (.close node)))
+
+(defstate ^{:on-reload :noop} xtdb-nodes
+  :start (start-database!)
+  :stop (stop-database!))
 
 (defn main-node
   []
