@@ -9,12 +9,14 @@
 
 (ds/gen-key ::m.accounts/item)
 
-;; (clerk/html "Hello")
+(comment
+  (clerk/html "Hello"))
 
-;; (v/plotly
-;;  {:data [{:z    [[1 2 3]
-;;                  [3 2 1]]
-;;           :type "surface"}]})
+(comment
+  (v/plotly
+   {:data [{:z    [[1 2 3]
+                   [3 2 1]]
+            :type "surface"}]}))
 
 ;; 7
 
