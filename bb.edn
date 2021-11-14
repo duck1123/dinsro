@@ -158,7 +158,9 @@
 
   init-bb
   {:doc  "Initialize babashka"
-   :task (clojure "-e" "(+ 1 1)")}
+   ;; While simple, this command has the side-effect of ensuring that all the
+   ;; libraries are ready to be loaded.
+   :task (clojure "-e" ":compiled")}
 
   install
   {:doc  "Install js dependencies"
