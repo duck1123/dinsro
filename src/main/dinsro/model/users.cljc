@@ -22,8 +22,12 @@
    ao/schema     :production})
 
 (s/def ::password string?)
+(defattr password ::password :string
+  {ao/identities      #{:account/id}
+   ::auth/permissions (fn [_] #{})})
+
 (s/def ::hashed-value string?)
-(defattr password ::hashed-value :string
+(defattr hashed-value ::hashed-value :string
   {ao/identities      #{:account/id}
    ao/required?       true
    ao/schema          :production
@@ -79,6 +83,7 @@
 (def attributes
   [id
    name
+   hashed-value
    password
    password-salt
    password-iterations

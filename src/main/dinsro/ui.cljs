@@ -39,10 +39,12 @@
   {:router-targets [u.accounts/AccountForm
                     u.accounts/AccountsReport
                     u.admin/AdminPage
+                    u.categories/AdminCategoryForm
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
                     u.core-nodes/CoreNodeForm
                     u.core-nodes/CoreNodesReport
+                    u.currencies/AdminCurrencyForm
                     u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport
                     u.home/HomePage
@@ -62,6 +64,7 @@
                     u.registration/RegistrationPage
                     u.transactions/TransactionForm
                     u.transactions/TransactionsReport
+                    u.users/AdminUserForm
                     u.users/UserForm
                     u.users/UsersReport]}
   (case current-state

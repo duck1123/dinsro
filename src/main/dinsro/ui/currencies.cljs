@@ -28,6 +28,14 @@
                     ::m.currencies/transactions {fo/ui u.links/TransactionLinkForm}}
    fo/title        "Currency"})
 
+(form/defsc-form AdminCurrencyForm [_this _props]
+  {fo/id           m.currencies/id
+   fo/attributes   [m.currencies/name
+                    m.currencies/code]
+   fo/cancel-route ["admin"]
+   fo/route-prefix "admin/currency"
+   fo/title        "Currency"})
+
 (report/defsc-report CurrenciesReport
   [_this _props]
   {ro/column-formatters
@@ -45,7 +53,10 @@
 
 (report/defsc-report AdminIndexCurrenciesReport
   [_this _props]
-  {ro/columns          [m.currencies/name]
+  {ro/columns          [m.currencies/name m.currencies/code]
+   ro/controls         {::new {:label  "New Currency"
+                               :type   :button
+                               :action #(form/create! % AdminCurrencyForm)}}
    ro/source-attribute ::m.currencies/all-currencies
    ro/title            "Currencies"
    ro/row-pk           m.currencies/id

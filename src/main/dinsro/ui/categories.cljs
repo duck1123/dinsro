@@ -34,6 +34,19 @@
     (form/render-layout this props)
     (dom/div {} (dom/p {} "Category"))))
 
+(form/defsc-form AdminCategoryForm
+  [this props]
+  {fo/id           m.categories/id
+   fo/attributes   [m.categories/name m.categories/user]
+   fo/subforms     {::m.categories/user {fo/ui u.links/UserLinkForm}}
+   fo/cancel-route ["admin"]
+   fo/route-prefix "admin/category"
+   fo/field-styles {::m.categories/user :user-selector}
+   fo/title        "Category"}
+  (if override-form
+    (form/render-layout this props)
+    (dom/div {} (dom/p {} "Category"))))
+
 (report/defsc-report CategoriesReport
   [_this _props]
   {ro/field-formatters {::m.categories/user (fn [_this props] (u.links/ui-user-link props))}
@@ -49,6 +62,10 @@
 (report/defsc-report AdminIndexCategoriesReport
   [_this _props]
   {ro/columns          [m.categories/name]
+   ro/controls         {::new {:label  "New Category"
+                               :type   :button
+                               :action #(form/create! % AdminCategoryForm)}}
+   ro/form-links {::m.categories/name CategoryForm}
    ro/source-attribute ::m.categories/all-categories
    ro/title            "Categories"
    ro/row-pk           m.categories/id

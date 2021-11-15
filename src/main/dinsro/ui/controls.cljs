@@ -91,6 +91,12 @@
 
 (def render-uuid (render-field-factory uuid-control))
 
+(defn user-selector-control
+  [{:keys [value]} _attribute]
+  (dom/div {} (str "user selector control" value)))
+
+(def render-user-selector (render-field-factory user-selector-control))
+
 (defn control-type
   [controls type style control]
   (assoc-in controls [::form/type->style->control type style] control))
@@ -102,22 +108,23 @@
     (ui-victory-chart
      {:domainPadding {:x 50}}
      (ui-victory-line
-      {:data value
-       :style (clj->js {:data {:stroke "#c43a31"}})
+      {:data   value
+       :style  (clj->js {:data {:stroke "#c43a31"}})
        :labels (fn [v] (comp/isoget-in v ["date" "rate"]))
-       :x "date"
-       :y "rate"}))))
+       :x      "date"
+       :y      "rate"}))))
 
 (def render-rate-chart-control (render-field-factory rate-chart-control))
 
 (defn all-controls
   []
   (-> sui/all-controls
-      (control-type :ref  :default   render-ref)
-      (control-type :ref  :link      render-link-control)
-      (control-type :ref  :link-list render-link-list-control)
-      (control-type :ref  :link-subform render-link-subform-control)
-      (control-type :ref  :ln-tx-row u.ln-tx/render-ref-ln-tx-row)
-      (control-type :ref  :rate-chart render-rate-chart-control)
-      (control-type :uuid :default   render-uuid)
-      (control-type :date :default   render-date)))
+      (control-type :ref  :default       render-ref)
+      (control-type :ref  :link          render-link-control)
+      (control-type :ref  :link-list     render-link-list-control)
+      (control-type :ref  :link-subform  render-link-subform-control)
+      (control-type :ref  :ln-tx-row     u.ln-tx/render-ref-ln-tx-row)
+      (control-type :ref  :rate-chart    render-rate-chart-control)
+      (control-type :ref  :user-selector render-user-selector)
+      (control-type :uuid :default       render-uuid)
+      (control-type :date :default       render-date)))

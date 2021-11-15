@@ -27,26 +27,35 @@
   [this {::m.users/keys [name] :as props}]
   {fo/id           m.users/id
    fo/attributes   [m.users/name
-                    ;; accounts-link
                     m.joins/user-accounts
                     m.joins/user-categories
                     m.joins/user-ln-nodes
                     m.joins/user-transactions]
    fo/cancel-route ["users"]
-   fo/field-styles {::m.users/accounts :link-subform
-                    ::m.users/categories :link-subform
-                    ::m.users/ln-nodes :link-subform
+   fo/field-styles {::m.users/accounts     :link-subform
+                    ::m.users/categories   :link-subform
+                    ::m.users/ln-nodes     :link-subform
                     ::m.users/transactions :link-subform}
    fo/route-prefix "user"
-   fo/subforms {::m.users/accounts {fo/ui u.links/AccountLinkForm}
-                ::m.users/categories {fo/ui u.links/CategoryLinkForm}
-                ::m.users/ln-nodes {fo/ui u.links/NodeLinkForm}
-                ::m.users/transactions {fo/ui u.links/TransactionLinkForm}}
+   fo/subforms     {::m.users/accounts     {fo/ui u.links/AccountLinkForm}
+                    ::m.users/categories   {fo/ui u.links/CategoryLinkForm}
+                    ::m.users/ln-nodes     {fo/ui u.links/NodeLinkForm}
+                    ::m.users/transactions {fo/ui u.links/TransactionLinkForm}}
    fo/title        "User"}
   (if override-form
     (form/render-layout this props)
     (dom/div {}
       (dom/p {} name))))
+
+(form/defsc-form AdminUserForm
+  [_this _props]
+  {fo/id           m.users/id
+   fo/attributes   [m.users/name
+                    m.users/role
+                    m.users/password]
+   fo/cancel-route ["admin"]
+   fo/route-prefix "admin/user"
+   fo/title        "User"})
 
 (report/defsc-report UsersReport
   [_this _props]
@@ -60,7 +69,11 @@
 
 (report/defsc-report AdminIndexUsersReport
   [_this _props]
-  {ro/columns          [m.users/name]
+  {ro/columns          [m.users/name m.users/role]
+   ro/controls         {::new-user {:label  "New User"
+                                    :type   :button
+                                    :action (fn [this] (form/create! this AdminUserForm))}}
+   ro/form-links       {::m.users/name AdminUserForm}
    ro/source-attribute ::m.users/all-users
    ro/title            "Users"
    ro/row-pk           m.users/id
