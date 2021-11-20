@@ -54,6 +54,9 @@ spec:
         - name: workspaces
           containerPort: 3693
           protocol: TCP
+        - name: notebook
+          containerPort: 7777
+          protocol: TCP
         livenessProbe:
           httpGet:
             path: /

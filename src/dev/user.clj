@@ -10,6 +10,7 @@
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.users :as q.users]
+   [mount.core :as mount]
    [nextjournal.clerk :as clerk]
    [shadow.cljs.devtools.api :as shadow]
    [shadow.cljs.devtools.server.runtime]
@@ -43,7 +44,11 @@
   (:main c.xtdb/xtdb-nodes)
   (start-clerk!)
 
+  (clerk/show! "notebooks/notebooks/test.clj")
+
   (def db (xt/db (:main c.xtdb/xtdb-nodes)))
+
+  (mount/running-states)
 
   (q.accounts/index-ids)
   (q.accounts/index-records)

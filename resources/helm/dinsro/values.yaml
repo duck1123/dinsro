@@ -62,6 +62,17 @@ workspaces:
       paths:
       - path: /
 
+notebook:
+  service:
+    type: ClusterIP
+    port: 3693
+  ingress:
+    enabled: true
+    hosts:
+    - host: notebook.dinsro.localhost
+      paths:
+      - path: /
+
 persistence:
   enabled: true
   size: 1G

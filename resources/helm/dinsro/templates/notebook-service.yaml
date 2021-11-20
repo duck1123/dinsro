@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dinsro.fullname" . }}-notebook
+  labels:
+    {{- include "dinsro.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.notebook.service.type }}
+  ports:
+  - port: {{ .Values.notebook.service.port }}
+    targetPort: notebook
+    protocol: TCP
+    name: notebook
+  selector:
+    {{- include "dinsro.selectorLabels" . | nindent 4 }}
