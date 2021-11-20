@@ -30,6 +30,7 @@ use_rtl        = cfg.get('useRtl',        True)
 load('ext://helm_remote', 'helm_remote')
 load('ext://local_output', 'local_output')
 load('ext://namespace', 'namespace_create')
+load('ext://uibutton', 'cmd_button')
 
 disable_snapshots()
 docker_prune_settings(
@@ -362,4 +363,12 @@ k8s_resource(
   links = [
     link('http://sqlpad.localhost', 'SQLPad'),
   ],
+)
+
+cmd_button(
+  'dinsro:restart',
+  argv = [ 'sh', '-c', 'bb restart' ],
+  icon_name = 'build_circle',
+  resource = 'dinsro',
+  text = 'Restart',
 )

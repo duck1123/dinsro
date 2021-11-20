@@ -187,6 +187,10 @@
 
   repl (clojure.main/repl)
 
+  restart
+  {:doc  "Send a restart signal over nrepl"
+   :task (clojure "-Mdispatch -m dinsro.components.dispatch")}
+
   run
   {:doc  "Run server in dev mode"
    :task (clojure "-M:dev:dev-main")}

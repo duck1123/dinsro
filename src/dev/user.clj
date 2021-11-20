@@ -1,7 +1,9 @@
 (ns user
   (:require
    [clojure.string :as string]
+   [clojure.tools.namespace.repl :as tools-ns :refer [set-refresh-dirs]]
    [xtdb.api :as xt]
+   [dinsro.components.nrepl :as c.nrepl]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.components.database-queries :as dq]
    [dinsro.mocks :as mocks]
@@ -12,9 +14,14 @@
    [dinsro.queries.users :as q.users]
    [mount.core :as mount]
    [nextjournal.clerk :as clerk]
+   [nrepl.core :as nrepl]
+   [nrepl.cmdline :as cmdline]
+   [nrepl.transport :as transport]
    [shadow.cljs.devtools.api :as shadow]
    [shadow.cljs.devtools.server.runtime]
    [taoensso.timbre :as log]))
+
+(set-refresh-dirs "src/main" "src/dev")
 
 (defmacro jit [sym]
   `(requiring-resolve '~sym))
@@ -37,6 +44,26 @@
   (clerk/serve!
    {:watch-paths    ["notebooks" "src"]
     :show-filter-fn #(string/starts-with? % "notebooks")}))
+
+(defn start []
+  (mount/start-with-args {:config "config/dev.edn"})
+  :ok)
+
+(defn stop
+  "Stop the server."
+  []
+  (mount/stop-except #'c.nrepl/repl-server))
+
+(def go start)
+
+(defn restart
+  "Stop, refresh, and restart the server."
+  []
+  (log/info "Restarting")
+  (stop)
+  (tools-ns/refresh :after 'user/start))
+
+(def reset #'restart)
 
 (comment
   (mocks/mock-account)
