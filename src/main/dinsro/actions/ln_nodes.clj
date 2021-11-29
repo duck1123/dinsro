@@ -41,7 +41,8 @@
    org.lightningj.lnd.wrapper.message.NewAddressRequest
    org.lightningj.lnd.wrapper.walletkit.message.AddrRequest
    org.lightningj.lnd.wrapper.walletunlocker.message.UnlockWalletRequest
-   org.lightningj.lnd.wrapper.walletunlocker.AsynchronousWalletUnlockerAPI))
+   org.lightningj.lnd.wrapper.walletunlocker.AsynchronousWalletUnlockerAPI
+   org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI))
 
 (>defn get-client
   [{::m.ln-nodes/keys [id name host port]}]
@@ -58,6 +59,16 @@
   [::m.ln-nodes/item => (ds/instance? AsynchronousWalletUnlockerAPI)]
   (let [{::m.ln-nodes/keys [host id port]} node]
     (AsynchronousWalletUnlockerAPI.
+     host
+     (Integer/parseInt port)
+     (io/file (m.ln-nodes/cert-path id))
+     nil)))
+
+(>defn get-sync-unlocker-client
+  [node]
+  [::m.ln-nodes/item => (ds/instance? SynchronousWalletUnlockerAPI)]
+  (let [{::m.ln-nodes/keys [host id port]} node]
+    (SynchronousWalletUnlockerAPI.
      host
      (Integer/parseInt port)
      (io/file (m.ln-nodes/cert-path id))
@@ -368,6 +379,12 @@
   (let [request (UnlockWalletRequest.)]
     (.setWalletPassword request (bcc/str->bytes "password12345678"))
     request))
+
+(defn unlock-sync!
+  [node]
+  (with-open [client (get-sync-unlocker-client node)]
+    (let [request (unlocker-request node)]
+      (.unlockWallet client request))))
 
 (defn unlock!
   [node f]
