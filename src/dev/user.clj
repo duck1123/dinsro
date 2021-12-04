@@ -39,12 +39,6 @@
        (recur)))
    ((jit shadow.cljs.devtools.api/nrepl-select) build-id)))
 
-(defn start-clerk!
-  []
-  (clerk/serve!
-   {:watch-paths    ["notebooks" "src"]
-    :show-filter-fn #(string/starts-with? % "notebooks")}))
-
 (defn start []
   (mount/start-with-args {:config "config/dev.edn"})
   :ok)
@@ -69,9 +63,6 @@
   (mocks/mock-account)
 
   (:main c.xtdb/xtdb-nodes)
-  (start-clerk!)
-
-  (clerk/show! "notebooks/notebooks/test.clj")
 
   (def db (xt/db (:main c.xtdb/xtdb-nodes)))
 

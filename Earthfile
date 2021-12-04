@@ -280,6 +280,7 @@ dev-sources-minimal:
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir src ${src_home}
+  COPY --dir notebooks ${src_home}/notebooks
   COPY shadow-cljs.edn .
   COPY --dir resources/main ${src_home}/resources/main
 

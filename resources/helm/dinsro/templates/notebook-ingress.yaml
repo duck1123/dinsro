@@ -1,4 +1,4 @@
-{{- if .Values.notebook.ingress.enabled -}}
+{{- if and .Values.notebook.enabled .Values.notebook.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
 {{- $svcPort := .Values.notebook.service.port -}}
 apiVersion: networking.k8s.io/v1

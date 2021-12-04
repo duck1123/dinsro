@@ -64,6 +64,7 @@ workspaces:
       - path: /
 
 notebook:
+  enabled: true
   service:
     type: ClusterIP
     port: 3693

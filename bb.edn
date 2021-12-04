@@ -108,7 +108,7 @@
          chown-fn      (fn [data-path] (format "chown -R %s:%s %s" user group data-path))
          chown-cmd1    (chown-fn src-path)
          chown-cmd2    (chown-fn cert-path)
-         envs          (->> (migrate-env ["DEVTOOLS_URL" "WATCH_SOURCES"])
+         envs          (->> (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK" "WATCH_SOURCES"])
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
@@ -122,7 +122,7 @@
    (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
      (println "=========================================================================================")
      (let [envs        (->> (concat
-                             (migrate-env ["DEVTOOLS_URL"])
+                             (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
                              ["CONFIG_FILE=/etc/dinsro/config.edn"])
                             (filter identity)
                             (clojure.string/join " "))

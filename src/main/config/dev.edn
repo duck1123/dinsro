@@ -1,1 +1,2 @@
-{:taoensso.timbre/logging-config {:min-level :info}}
+{:taoensso.timbre/logging-config {:min-level :info}
+ :use-notebook                   :env.edn/DINSRO_USE_NOTEBOOK}

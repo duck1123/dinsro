@@ -15,28 +15,40 @@ config.define_string('repo')
 # Version for built images
 config.define_string('version')
 config.define_bool('localDevtools')
+# If true, the notebook host will be based on the base url
+config.define_bool('notebookInheritHost')
+# If not inheriting, use this host for notebook
+config.define_string('notebookHost')
 # Deploy core node
 config.define_bool('useBitcoin')
 config.define_bool('useLinting')
 config.define_bool('useLnd1')
 config.define_bool('useLnd2')
+# Enable Notebook
+config.define_bool('useNotebook')
 config.define_bool('useProduction')
 config.define_bool('useTests')
 config.define_bool('useRtl')
 
-cfg            = config.parse()
-base_url       = cfg.get('baseUrl',       'dinsro.localhost')
-project_id     = cfg.get('projectId',     'p-vhkqf')
-repo           = cfg.get('repo',          'duck1123')
-version        = cfg.get('version',       'latest')
-local_devtools = cfg.get('localDevtools', True)
-use_bitcoin    = cfg.get('useBitcoin',    True)
-use_linting    = cfg.get('useLinting',    True)
-use_lnd1       = cfg.get('useLnd1',       True)
-use_lnd2       = cfg.get('useLnd2',       True)
-use_production = cfg.get('useProduction', False)
-use_rtl        = cfg.get('useRtl',        True)
-use_tests      = cfg.get('useTests',      True)
+cfg                   = config.parse()
+base_url              = cfg.get('baseUrl',             'dinsro.localhost')
+project_id            = cfg.get('projectId',           'p-vhkqf')
+repo                  = cfg.get('repo',                'duck1123')
+version               = cfg.get('version',             'latest')
+local_devtools        = cfg.get('localDevtools',       True)
+notebook_inherit_host = cfg.get('notebookInheritHost', False)
+notebook_host         = cfg.get('notebookHost',        "notebook.dinsro.localhost")
+use_bitcoin           = cfg.get('useBitcoin',          True)
+use_linting           = cfg.get('useLinting',          True)
+use_lnd1              = cfg.get('useLnd1',             True)
+use_lnd2              = cfg.get('useLnd2',             True)
+use_notebook          = cfg.get('useNotebook',         True)
+use_production        = cfg.get('useProduction',       False)
+use_rtl               = cfg.get('useRtl',              True)
+use_tests             = cfg.get('useTests',            True)
+
+def get_notebook_host():
+  return "notebook." + base_url if notebook_inherit_host else notebook_host
 
 disable_snapshots()
 docker_prune_settings(
@@ -120,6 +132,9 @@ k8s_yaml(helm(
     'ingress.enabled=true',
     'ingress.hosts[0].host=' + base_url,
     'ingress.hosts[0].paths[0].path=/',
+    "notebook.enabled=%s" % ('true' if use_notebook else 'false'),
+    "notebook.ingress.hosts[0].host=%s" % get_notebook_host(),
+    'notebook.ingress.hosts[0].paths[0].path=/',
   ]
 ))
 
@@ -179,11 +194,13 @@ custom_build(
     '.dockerignore',
     'bb.edn',
     'deps.edn',
+    'notebooks',
     'resources/docker',
     'resources/main/public',
     'src',
   ],
   live_update=[
+    sync('notebooks', '/usr/src/app/notebooks'),
     sync('src', '/usr/src/app/src'),
     sync('resources/main/public', '/usr/src/app/resources/main/public')
   ]
@@ -259,6 +276,7 @@ k8s_resource(
     link(base_url, 'Dinsro'),
     link('devtools.' + base_url, 'Devtools') if not local_devtools else None,
     link('workspaces.' + base_url, 'Workspaces') if not local_devtools else None,
+    link(get_notebook_host(), 'Notebook') if use_notebook else None,
   ] if x != None],
   labels = [ 'Dinsro' ],
 )

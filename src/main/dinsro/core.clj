@@ -1,6 +1,7 @@
 (ns dinsro.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
+   [dinsro.components.notebooks]
    [dinsro.components.nrepl]
    [dinsro.components.server]
    [mount.core :as mount]
