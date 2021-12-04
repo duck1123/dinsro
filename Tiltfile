@@ -1,6 +1,11 @@
 # -*- mode: python -*-
 # Tilt
 
+load('ext://helm_remote', 'helm_remote')
+load('ext://local_output', 'local_output')
+load('ext://namespace', 'namespace_create')
+load('ext://uibutton', 'cmd_button')
+
 # Base Url for the dinsro instance
 config.define_string('baseUrl')
 # Rancher project id to assign namespaces to
@@ -26,11 +31,6 @@ use_lnd1       = cfg.get('useLnd1',       True)
 use_lnd2       = cfg.get('useLnd2',       True)
 use_production = cfg.get('useProduction', False)
 use_rtl        = cfg.get('useRtl',        True)
-
-load('ext://helm_remote', 'helm_remote')
-load('ext://local_output', 'local_output')
-load('ext://namespace', 'namespace_create')
-load('ext://uibutton', 'cmd_button')
 
 disable_snapshots()
 docker_prune_settings(
