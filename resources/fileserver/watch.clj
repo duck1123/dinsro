@@ -52,12 +52,12 @@
       (catch NoSuchFileException _ex
         (println (format "no file %s" p))))))
 
-(copy-files!)
-
 (def chan (async/chan))
-(fw/watch watch-path (partial async/put! chan) {:delay-ms 0})
 
-(println (format "Watching %s" watch-path))
+(defn watch-files!
+  []
+  (fw/watch watch-path (partial async/put! chan) {:delay-ms 0})
+  (println (format "Watching %s" watch-path)))
 
 ;; A simple mime type utility from https://github.com/ring-clojure/ring/blob/master/ring-core/src/ring/util/mime_type.clj
 (def ^{:doc "A map of file extensions to mime-types."}
@@ -195,39 +195,51 @@
   {:headers {"Content-Type" (ext-mime-type (fs/file-name path))}
    :body    (fs/file path)})
 
-(server/run-server
- (fn [{:keys [:uri]}]
-   (let [f          (fs/path dir (str/replace-first (URLDecoder/decode uri) #"^/" ""))
-         index-file (fs/path f "index.html")]
-     (cond
-       (and (fs/directory? f) (fs/readable? index-file))
-       (body index-file)
+(defn start-server!
+  []
+  (server/run-server
+   (fn [{:keys [:uri]}]
+     (let [f          (fs/path dir (str/replace-first (URLDecoder/decode uri) #"^/" ""))
+           index-file (fs/path f "index.html")]
+       (cond
+         (and (fs/directory? f) (fs/readable? index-file))
+         (body index-file)
 
-       (fs/directory? f)
-       (index f)
+         (fs/directory? f)
+         (index f)
 
-       (fs/readable? f)
-       (body f)
+         (fs/readable? f)
+         (body f)
 
-       :else
-       {:status 404 :body (str "Not found `" f "` in " dir)})))
- {:port port})
+         :else
+         {:status 404 :body (str "Not found `" f "` in " dir)})))
+   {:port port}))
 
 (defn ->path
   [base]
   (.getCanonicalPath (.toFile (.toAbsolutePath (fs/path watch-path base)))))
 
-(loop []
-  (let [{:keys [type path]} (async/<!! chan)
-        matches             #{(->path "tls.cert")
-                              (->path "data/chain/bitcoin/regtest/admin.macaroon")}]
-    (comment (prn matches))
-    (if (#{:write} type)
-      (if (matches path)
-        (do
-          (comment (println (format "match %s" path)))
-          (copy-files!))
-        (comment (println (format "no match %s" path))))
-      (comment (println (str "other type: " type))))
-    (Thread/sleep 50)
-    (recur)))
+(defn -main
+  [& args]
+  (copy-files!)
+  (watch-files!)
+
+  (start-server!)
+  (let [matches #{(->path "tls.cert")
+                  (->path "data/chain/bitcoin/regtest/admin.macaroon")}]
+    (loop []
+      (let [change (async/<!! chan)]
+        (prn change)
+        (let [{:keys [type path]} change]
+          (comment (prn matches))
+          (if (#{:write :create} type)
+            (if (matches path)
+              (do
+                (comment (println (format "match %s" path)))
+                (copy-files!))
+              (comment (println (format "no match %s" path))))
+            (comment (println (str "other type: " type))))
+          (Thread/sleep 50)
+          (recur))))))
+
+(-main)
