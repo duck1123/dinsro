@@ -38,6 +38,10 @@ spec:
         - name: DEVTOOLS_URL
           value: "http://{{ .host }}"
         {{- end }}
+        {{- if .Values.devtools.enabled }}
+        - name: WATCH_SOURCES
+          value: "true"
+        {{- end }}
         ports:
         - name: http
           containerPort: 3000
@@ -45,6 +49,7 @@ spec:
         - name: nrepl
           containerPort: 3333
           protocol: TCP
+        {{- if .Values.devtools.enabled }}
         - name: devtools
           containerPort: 9630
           protocol: TCP
@@ -54,6 +59,7 @@ spec:
         - name: workspaces
           containerPort: 3693
           protocol: TCP
+        {{- end }}
         - name: notebook
           containerPort: 7777
           protocol: TCP

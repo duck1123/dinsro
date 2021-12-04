@@ -248,8 +248,13 @@ dev-image:
   SAVE IMAGE ${EXPECTED_REF}
 
 dev-image-sources-base:
-  FROM +dev-sources
-  RUN bb compile-cljs
+  ARG watch_sources=true
+  FROM +dev-sources-minimal
+  USER root
+  IF [ "$watch_sources" = "true" ]
+    USER $uid
+    RUN bb compile-cljs
+  END
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   WORKDIR ${src_home}
@@ -259,7 +264,8 @@ dev-image-sources-base:
   CMD ["bb", "dev-bootstrap"]
 
 dev-image-sources:
-  FROM +dev-image-sources-base
+  ARG watch_sources=true
+  FROM +dev-image-sources-base --build-arg watch_sources=$watch_sources
   ARG EXPECTED_REF=${repo}/${project}:dev-sources-${version}
   SAVE IMAGE ${EXPECTED_REF}
 
@@ -268,6 +274,14 @@ dev-sources:
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir . ${src_home}
+
+dev-sources-minimal:
+  FROM +deps-builder
+  COPY resources/docker/config.edn /etc/dinsro/config.edn
+  ENV CONFIG_FILE=/etc/dinsro/config.edn
+  COPY --dir src ${src_home}
+  COPY shadow-cljs.edn .
+  COPY --dir resources/main ${src_home}/resources/main
 
 e2e-base:
   FROM cypress/browsers

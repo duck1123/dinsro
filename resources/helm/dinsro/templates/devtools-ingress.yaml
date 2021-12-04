@@ -1,4 +1,4 @@
-{{- if .Values.devtools.ingress.enabled -}}
+{{- if and .Values.devtools.enabled .Values.devtools.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
 {{- $svcPort := .Values.devtools.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}

@@ -14,6 +14,7 @@ config.define_string('projectId')
 config.define_string('repo')
 # Version for built images
 config.define_string('version')
+config.define_bool('localDevtools')
 # Deploy core node
 config.define_bool('useBitcoin')
 config.define_bool('useLinting')
@@ -28,6 +29,7 @@ base_url       = cfg.get('baseUrl',       'dinsro.localhost')
 project_id     = cfg.get('projectId',     'p-vhkqf')
 repo           = cfg.get('repo',          'duck1123')
 version        = cfg.get('version',       'latest')
+local_devtools = cfg.get('localDevtools', True)
 use_bitcoin    = cfg.get('useBitcoin',    True)
 use_linting    = cfg.get('useLinting',    True)
 use_lnd1       = cfg.get('useLnd1',       True)
@@ -104,13 +106,16 @@ if use_bitcoin and use_rtl:
     ],
   ))
 
+devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
+
 k8s_yaml(helm(
   'resources/helm/dinsro',
   name = 'dinsro',
   namespace = 'dinsro',
   set = [
-    'devtools.ingress.enabled=true',
-    'devtools.ingress.hosts[0].host=devtools.' + base_url,
+    "devtools.enabled=%s" % ('false' if local_devtools else 'true'),
+    "devtools.ingress.enabled=%s" % ('false' if local_devtools else 'true'),
+    "devtools.ingress.hosts[0].host=%s" % devtools_host,
     'devtools.ingress.hosts[0].paths[0].path=/',
     'ingress.enabled=true',
     'ingress.hosts[0].host=' + base_url,
@@ -162,17 +167,25 @@ if use_production:
 
 custom_build(
   "%s/dinsro:dev-sources-%s" % (repo, version),
-  "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +dev-image-sources" % repo,
+  " ".join([
+    'earthly',
+    "--build-arg repo=%s" % repo,
+    "--build-arg watch_sources=%s" % ('false' if local_devtools else 'true'),
+    '--build-arg EXPECTED_REF=$EXPECTED_REF',
+    '+dev-image-sources',
+  ]),
   [
     'Earthfile',
     '.dockerignore',
     'bb.edn',
     'deps.edn',
     'resources/docker',
+    'resources/main/public',
     'src',
   ],
   live_update=[
-    sync('src', '/usr/src/app/src')
+    sync('src', '/usr/src/app/src'),
+    sync('resources/main/public', '/usr/src/app/resources/main/public')
   ]
 )
 
@@ -236,17 +249,17 @@ if use_bitcoin and use_rtl:
 
 k8s_resource(
   workload='dinsro',
-  port_forwards = [
-    port_forward(3333, 3333, name='cljs nrepl'),
-    port_forward(3693, 3693, name='workspaces'),
-    port_forward(7000, 7000, name='nRepl'),
-    port_forward(9630, 9630, name='devtools')
-  ],
-  links = [
+  port_forwards = [x for x in [
+    port_forward(3333, 3333, name='cljs nrepl port') if not local_devtools else None,
+    port_forward(3693, 3693, name='workspaces port') if not local_devtools else None,
+    port_forward(7000, 7000, name='nRepl port'),
+    port_forward(9630, 9630, name='devtools port') if not local_devtools else None,
+  ] if x != None],
+  links = [x for x in [
     link(base_url, 'Dinsro'),
-    link('devtools.' + base_url, 'Devtools'),
-    link('workspaces.' + base_url, 'Workspaces'),
-  ],
+    link('devtools.' + base_url, 'Devtools') if not local_devtools else None,
+    link('workspaces.' + base_url, 'Workspaces') if not local_devtools else None,
+  ] if x != None],
   labels = [ 'Dinsro' ],
 )
 
@@ -277,6 +290,20 @@ if use_tests:
     serve_cmd='npx cypress open',
     trigger_mode = TRIGGER_MODE_MANUAL,
     labels = [ 'test' ],
+  )
+
+if local_devtools:
+  local_resource(
+    'devtools',
+    allow_parallel = True,
+    serve_env = {
+      'DEVTOOLS_URL': 'http://localhost:9630',
+    },
+    serve_cmd='bb watch-cljs',
+    labels = [ 'Dinsro' ],
+    links = [
+      link('http://localhost:9630', 'Devtools'),
+    ],
   )
 
 if use_linting:

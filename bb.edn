@@ -105,11 +105,10 @@
          src-path      "/var/lib/dinsro"
          cert-path     "/mnt/certs"
          sudo          (fn [cmd] (format "sudo -u %s %s" user cmd))
-         devtools-url  (or (System/getenv "DEVTOOLS_URL"))
          chown-fn      (fn [data-path] (format "chown -R %s:%s %s" user group data-path))
          chown-cmd1    (chown-fn src-path)
          chown-cmd2    (chown-fn cert-path)
-         envs          (->> [(when devtools-url (format "DEVTOOLS_URL=%s" devtools-url))]
+         envs          (->> (migrate-env ["DEVTOOLS_URL" "WATCH_SOURCES"])
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
@@ -120,18 +119,20 @@
 
   dev-bootstrap-user
   {:task
-   (do
+   (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
      (println "=========================================================================================")
-     (let [devtools-url (or (System/getenv "DEVTOOLS_URL"))
-           envs         (->> ["CONFIG_FILE=/etc/dinsro/config.edn"
-                              (when devtools-url (str "DEVTOOLS_URL=" devtools-url))]
-                             (filter identity)
-                             (clojure.string/join " "))
-           compile-cmd  "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\""
-           watch-cmd    (str "sh -c \"" envs " bb watch-cljs\"")
-           run-cmd      "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""]
-       (shell compile-cmd)
-       (future (shell watch-cmd))
+     (let [envs        (->> (concat
+                             (migrate-env ["DEVTOOLS_URL"])
+                             ["CONFIG_FILE=/etc/dinsro/config.edn"])
+                            (filter identity)
+                            (clojure.string/join " "))
+           compile-cmd "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\""
+           watch-cmd   (str "sh -c \"" envs " bb watch-cljs\"")
+           run-cmd     "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""]
+       (when watch-sources
+         (println "watching sources")
+         (shell compile-cmd)
+         (future (shell watch-cmd)))
        (shell run-cmd)))}
 
   dispatch
@@ -193,7 +194,7 @@
   repl (clojure.main/repl)
 
   restart
-  {:doc  "Send a restart signal over nrepl"
+  {:doc "Send a restart signal over nrepl"
    :task
    (binding [*command-line-args* '("(restart)")]
      (run 'dispatch))}
