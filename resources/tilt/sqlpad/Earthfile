@@ -1,0 +1,5 @@
+sqlpad:
+  FROM sqlpad/sqlpad:6.7
+  COPY seed-data /mnt/seed-data
+  ARG EXPECTED_REF=idashboards/sqlpad:6.7
+  SAVE IMAGE ${EXPECTED_REF}

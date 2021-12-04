@@ -413,12 +413,6 @@ script-builder:
   COPY --dir +node-deps/node_modules node_modules
   COPY --dir bb.edn deps.edn script .
 
-sqlpad:
-  FROM sqlpad/sqlpad:6.7
-  COPY resources/tilt/sqlpad/seed-data /mnt/seed-data
-  ARG EXPECTED_REF=idashboards/sqlpad:6.7
-  SAVE IMAGE ${EXPECTED_REF}
-
 src:
   FROM +builder
   COPY --dir resources/main resources/

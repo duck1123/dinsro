@@ -350,9 +350,9 @@ k8s_yaml(helm(
 
 custom_build(
   'dinsro/sqlpad:6.7',
-  'earthly --build-arg EXPECTED_REF=$EXPECTED_REF +sqlpad',
+  'earthly --build-arg EXPECTED_REF=$EXPECTED_REF ./resources/tilt/sqlpad+sqlpad',
   [
-    'Earthfile',
+    'resources/tilt/sqlpad/Earthfile',
     'resources/tilt/sqlpad/seed-data'
   ],
 )
