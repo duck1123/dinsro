@@ -1,4 +1,4 @@
-{:paths ["script"]
+{:paths ["src/babashka"]
 
  :tasks
  {:requires ([clojure.string :as string]
