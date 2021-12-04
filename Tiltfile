@@ -168,7 +168,8 @@ custom_build(
     '.dockerignore',
     'bb.edn',
     'deps.edn',
-    'src'
+    'resources/docker',
+    'src',
   ],
   live_update=[
     sync('src', '/usr/src/app/src')
