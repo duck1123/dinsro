@@ -16,9 +16,11 @@ config.define_string('repo')
 config.define_string('version')
 # Deploy core node
 config.define_bool('useBitcoin')
+config.define_bool('useLinting')
 config.define_bool('useLnd1')
 config.define_bool('useLnd2')
 config.define_bool('useProduction')
+config.define_bool('useTests')
 config.define_bool('useRtl')
 
 cfg            = config.parse()
@@ -27,10 +29,12 @@ project_id     = cfg.get('projectId',     'p-vhkqf')
 repo           = cfg.get('repo',          'duck1123')
 version        = cfg.get('version',       'latest')
 use_bitcoin    = cfg.get('useBitcoin',    True)
+use_linting    = cfg.get('useLinting',    True)
 use_lnd1       = cfg.get('useLnd1',       True)
 use_lnd2       = cfg.get('useLnd2',       True)
 use_production = cfg.get('useProduction', False)
 use_rtl        = cfg.get('useRtl',        True)
+use_tests      = cfg.get('useTests',      True)
 
 disable_snapshots()
 docker_prune_settings(
@@ -245,90 +249,99 @@ k8s_resource(
   labels = [ 'Dinsro' ],
 )
 
-local_resource(
-  'check',
-  allow_parallel = True,
-  cmd='bb check',
-  deps = [ 'src' ],
-  labels = [ 'format' ],
-)
+if use_linting:
+  local_resource(
+    'check',
+    allow_parallel = True,
+    cmd='bb check',
+    deps = [ 'src' ],
+    labels = [ 'format' ],
+  )
 
-local_resource(
-  'format',
-  allow_parallel = True,
-  auto_init = False,
-  cmd='bb format',
-  trigger_mode = TRIGGER_MODE_MANUAL,
-  labels = [ 'format' ],
-)
+if use_linting:
+  local_resource(
+    'format',
+    allow_parallel = True,
+    auto_init = False,
+    cmd='bb format',
+    trigger_mode = TRIGGER_MODE_MANUAL,
+    labels = [ 'format' ],
+  )
 
-local_resource(
-  'cypress',
-  allow_parallel = True,
-  auto_init = False,
-  serve_cmd='npx cypress open',
-  trigger_mode = TRIGGER_MODE_MANUAL,
-  labels = [ 'test' ],
-)
+if use_tests:
+  local_resource(
+    'cypress',
+    allow_parallel = True,
+    auto_init = False,
+    serve_cmd='npx cypress open',
+    trigger_mode = TRIGGER_MODE_MANUAL,
+    labels = [ 'test' ],
+  )
 
-local_resource(
-  'eastwood',
-  allow_parallel = True,
-  auto_init = False,
-  cmd = 'bb eastwood',
-  deps = [ 'src' ],
-  trigger_mode = TRIGGER_MODE_MANUAL,
-  labels = [ 'lint' ],
-)
+if use_linting:
+  local_resource(
+    'eastwood',
+    allow_parallel = True,
+    auto_init = False,
+    cmd = 'bb eastwood',
+    deps = [ 'src' ],
+    trigger_mode = TRIGGER_MODE_MANUAL,
+    labels = [ 'lint' ],
+  )
 
-local_resource(
-  'karma',
-  allow_parallel = True,
-  auto_init = False,
-  serve_cmd = 'npx karma start',
-  trigger_mode = TRIGGER_MODE_MANUAL,
-  links = [
-    link('http://localhost:9876/debug.html', 'Debug'),
-  ],
-  labels = [ 'test' ],
-)
+if use_tests:
+  local_resource(
+    'karma',
+    allow_parallel = True,
+    auto_init = False,
+    serve_cmd = 'npx karma start',
+    trigger_mode = TRIGGER_MODE_MANUAL,
+    links = [
+      link('http://localhost:9876/debug.html', 'Debug'),
+    ],
+    labels = [ 'test' ],
+  )
 
-local_resource(
-  'kondo',
-  allow_parallel = True,
-  cmd='bb kondo',
-  deps = [
-    '.clj-kondo/config.edn',
-    'src',
-  ],
-  labels = [ 'lint' ],
-)
+if use_linting:
+  local_resource(
+    'kondo',
+    allow_parallel = True,
+    cmd='bb kondo',
+    deps = [
+      '.clj-kondo/config.edn',
+      'src',
+    ],
+    labels = [ 'lint' ],
+  )
 
-local_resource(
-  'test-clj',
-  allow_parallel = True,
-  cmd = 'bb test-clj',
-  deps = [ 'src/test' ],
-  labels = [ 'test' ],
-)
+if use_tests:
+  local_resource(
+    'test-clj',
+    allow_parallel = True,
+    cmd = 'bb test-clj',
+    deps = [ 'src/test' ],
+    labels = [ 'test' ],
+  )
 
-local_resource(
-  'test-cljs',
-  allow_parallel = True,
-  cmd = 'bb test-cljs',
-  deps = [ 'src/test' ],
-  labels = [ 'test' ],
-)
+if use_tests:
+  local_resource(
+    'test-cljs',
+    allow_parallel = True,
+    cmd = 'bb test-cljs',
+    deps = [ 'src/test' ],
+    labels = [ 'test' ],
+  )
 
-local_resource(
-  'test-integration',
-  allow_parallel = True,
-  auto_init = False,
-  cmd = 'npx cypress run',
-  deps = [ 'src/test' ],
-  trigger_mode = TRIGGER_MODE_MANUAL,
-  labels = [ 'test' ],
-)
+if use_tests:
+  local_resource(
+    'test-integration',
+    allow_parallel = True,
+    auto_init = False,
+    cmd = 'npx cypress run',
+    deps = [ 'src/test' ],
+    trigger_mode = TRIGGER_MODE_MANUAL,
+    labels = [ 'test' ],
+  )
 
 namespace_create(
   'sqlpad',
