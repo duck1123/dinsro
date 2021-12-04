@@ -31,6 +31,7 @@
            (tr 1)
            (ui-form 1)
            (ui-form-field 1)
+           (ui-modal 1)
            (ui-modal-content 1)
            (ul 1))))
       (clojure-align-forms-automatically t)
