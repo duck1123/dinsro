@@ -134,6 +134,11 @@
        (future (shell watch-cmd))
        (shell run-cmd)))}
 
+  dispatch
+  {:doc  "Send a signal over nrepl"
+   :task (clojure (str "-Mdispatch -m dinsro.components.dispatch "
+                       (string/join " " (map (fn [x] (str "\"" x "\"")) *command-line-args*))))}
+
   display-path
   {:doc  "Display dependency trees for each alias"
    :task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production"
@@ -189,7 +194,9 @@
 
   restart
   {:doc  "Send a restart signal over nrepl"
-   :task (clojure "-Mdispatch -m dinsro.components.dispatch")}
+   :task
+   (binding [*command-line-args* '("(restart)")]
+     (run 'dispatch))}
 
   run
   {:doc  "Run server in dev mode"
@@ -198,6 +205,12 @@
   run-production
   {:doc  "Run server from jar"
    :task (shell "java -jar target/dinsro.jar")}
+
+  seed
+  {:doc "Seed the database over nrepl"
+   :task
+   (binding [*command-line-args* '("(dinsro.seed/seed-db!)")]
+     (run 'dispatch))}
 
   server
   {:doc     "compile and run server in dev mode"
