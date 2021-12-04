@@ -45,3 +45,23 @@
   (:out (shell
     {:out :string}
     (format "docker inspect -f {{.State.Health.Status}} %s" container-name))))
+
+(defn chown
+  [user group path]
+  (shell (format "chown -R %s:%s %s" user group path)))
+
+(defn sudo
+  ([cmd]
+   (sudo "root" cmd))
+  ([user cmd]
+   (shell (format "sudo -u %s %s" user cmd))))
+
+(defn display-env
+  []
+  (shell "sh -c \"env | sort\""))
+
+(defn migrate-env
+  [names]
+  (->> names
+       (map (fn [name] (when-let [v (System/getenv name)] (str name "=" v))))
+       (filter identity)))
