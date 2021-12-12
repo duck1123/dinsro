@@ -4,7 +4,7 @@ ARG nixos_image=nixos/nix@sha256:a6bcef50c7ca82ca66965935a848c8c388beb78c9a5de3e
 ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
 ARG clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
-ARG kondo_version=2021.08.06
+ARG kondo_version=2021.12.16
 ARG node_version=14.15.3
 # https://www.npmjs.com/package/npm?activeTab=versions
 ARG npm_version=7.21.1
