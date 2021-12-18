@@ -1,7 +1,7 @@
 {:jvm-opts ["-Dclojure.spec.check-asserts=true"
             "-Dlogback.configurationFile=resources/logback.xml"]
 
- :paths ["lib" "src/main" "resources/main"]
+ :paths ["lib" "src/main" "src/shared" "resources/main"]
  :deps
  {buddy/buddy                            {:mvn/version "2.0.0"}
   cider/cider-nrepl                      {:mvn/version "0.27.2"}
