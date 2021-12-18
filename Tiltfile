@@ -267,10 +267,10 @@ if use_bitcoin and use_rtl:
 k8s_resource(
   workload='dinsro',
   port_forwards = [x for x in [
-    port_forward(3333, 3333, name='cljs nrepl port') if not local_devtools else None,
-    port_forward(3693, 3693, name='workspaces port') if not local_devtools else None,
-    port_forward(7000, 7000, name='nRepl port'),
-    port_forward(9630, 9630, name='devtools port') if not local_devtools else None,
+    port_forward(3333, 3333, name='cljs nrepl') if not local_devtools else None,
+    port_forward(3693, 3693, name='workspaces') if not local_devtools else None,
+    port_forward(7000, 7000, name='nRepl'),
+    port_forward(9630, 9630, name='devtools') if not local_devtools else None,
   ] if x != None],
   links = [x for x in [
     link(base_url, 'Dinsro'),
