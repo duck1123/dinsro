@@ -321,7 +321,13 @@ if local_devtools:
     labels = [ 'Dinsro' ],
     links = [
       link('http://localhost:9630', 'Devtools'),
+      link('http://localhost:3693', 'Workspaces')
     ],
+    readiness_probe = probe(
+      http_get = http_get_action(
+        port = 9630
+      )
+    ),
   )
 
 if use_linting:
