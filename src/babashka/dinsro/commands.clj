@@ -43,8 +43,8 @@
 (defn get-docker-status
   [container-name]
   (:out (shell
-    {:out :string}
-    (format "docker inspect -f {{.State.Health.Status}} %s" container-name))))
+         {:out :string}
+         (format "docker inspect -f {{.State.Health.Status}} %s" container-name))))
 
 (defn chown
   [user group path]
