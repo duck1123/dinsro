@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
+    "@poziworld/cypress-browser-extension-plugin": "^0.2.2",
     "cypress": "9.1.1",
     "cypress-clojurescript-preprocessor": "^0.2.0",
     "karma": "^6.3.7",

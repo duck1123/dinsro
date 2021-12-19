@@ -12,12 +12,20 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
+const extensionLoader = require("@poziworld/cypress-browser-extension-plugin/loader");
 const makeCljsPreprocessor = require("cypress-clojurescript-preprocessor");
 
 /**
  * @type {Cypress.PluginConfig}
  */
 module.exports = (on, config) => {
+  on(
+    "before:browser:launch",
+    extensionLoader.load({
+      source: "./cypress/plugins/Fulcro-Inspect.zip",
+      skipHooks: true,
+    })
+  );
   on("file:preprocessor", makeCljsPreprocessor(config));
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
