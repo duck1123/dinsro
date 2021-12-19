@@ -52,6 +52,9 @@ devtools:
       paths:
       - path: /
 
+nrepl:
+  enabled: true
+
 workspaces:
   service:
     type: ClusterIP

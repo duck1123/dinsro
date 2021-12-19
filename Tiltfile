@@ -43,6 +43,7 @@ use_linting           = cfg.get('useLinting',          True)
 use_lnd1              = cfg.get('useLnd1',             True)
 use_lnd2              = cfg.get('useLnd2',             True)
 use_notebook          = cfg.get('useNotebook',         True)
+use_nrepl             = cfg.get('useNrepl',            True)
 use_production        = cfg.get('useProduction',       False)
 use_rtl               = cfg.get('useRtl',              True)
 use_tests             = cfg.get('useTests',            True)
@@ -135,6 +136,7 @@ k8s_yaml(helm(
     "notebook.enabled=%s" % ('true' if use_notebook else 'false'),
     "notebook.ingress.hosts[0].host=%s" % get_notebook_host(),
     'notebook.ingress.hosts[0].paths[0].path=/',
+    "nrepl.enabled=%s" % ('true' if use_nrepl else 'false'),
   ]
 ))
 
@@ -269,7 +271,7 @@ k8s_resource(
   port_forwards = [x for x in [
     port_forward(3333, 3333, name='cljs nrepl') if not local_devtools else None,
     port_forward(3693, 3693, name='workspaces') if not local_devtools else None,
-    port_forward(7000, 7000, name='nRepl'),
+    port_forward(7000, 7000, name='nRepl') if use_nrepl else None,
     port_forward(9630, 9630, name='devtools') if not local_devtools else None,
   ] if x != None],
   links = [x for x in [
@@ -279,6 +281,11 @@ k8s_resource(
     link(get_notebook_host(), 'Notebook') if use_notebook else None,
   ] if x != None],
   labels = [ 'Dinsro' ],
+)
+
+k8s_resource(
+  workload = 'postgres',
+  labels = [ 'database' ],
 )
 
 if use_linting:
@@ -431,9 +438,26 @@ k8s_resource(
 )
 
 cmd_button(
-  'dinsro:restart',
-  argv = [ 'sh', '-c', 'bb restart' ],
+  'dinsro:format',
+  argv = [ 'sh', '-c', 'bb format' ],
   icon_name = 'build_circle',
   resource = 'dinsro',
-  text = 'Restart',
+  text = 'Format',
 )
+
+if use_nrepl:
+  cmd_button(
+    'dinsro:restart',
+    argv = [ 'sh', '-c', 'bb restart' ],
+    icon_name = 'build_circle',
+    resource = 'dinsro',
+    text = 'Restart',
+  )
+
+  cmd_button(
+    'dinsro:seed',
+    argv = [ 'sh', '-c', 'bb seed' ],
+    icon_name = 'build_circle',
+    resource = 'dinsro',
+    text = 'Seed',
+  )
