@@ -22,8 +22,8 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::port string?)
-(defattr port ::port :string
+(s/def ::port int?)
+(defattr port ::port :int
   {ao/identities #{::id}
    ao/schema     :production})
 
