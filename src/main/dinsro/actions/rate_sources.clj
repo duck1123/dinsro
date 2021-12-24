@@ -9,12 +9,10 @@
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
-   [dinsro.utils :as utils]
    [http.async.client :as http-client]
    [jq.api :as jq]
    [manifold.time :as t]
    [mount.core :as mount]
-   [ring.util.http-response :as http]
    [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
@@ -65,18 +63,6 @@
         (log/error "No rate"))
       (log/error "Couldn't find currency"))
     (log/error "No Currency id")))
-
-(defn run-handler
-  [request]
-  (let [id (some-> (get-in request [:path-params :id]) utils/try-parse-int)]
-    (if-let [item (q.rate-sources/read-record id)]
-      (try
-        (let [id   (fetch-source item)
-              rate (q.rates/read-record id)]
-          (http/ok {:status :ok :item rate}))
-        (catch NumberFormatException e
-          (http/internal-server-error {:status :error :message (.getMessage e)})))
-      (http/not-found {:status :not-found}))))
 
 (defn check-rates
   []

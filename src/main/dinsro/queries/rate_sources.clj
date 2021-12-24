@@ -2,14 +2,14 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [xtdb.api :as xt]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
-   [dinsro.utils :as utils]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [xtdb.api :as xt]))
 
 (def attributes-list
   '[:xt/id
@@ -86,7 +86,7 @@
   [params]
   [::m.rate-sources/params => :xt/id]
   (let [node   (c.xtdb/main-node)
-        id     (utils/uuid)
+        id     (new-uuid)
         params (assoc params ::m.rate-sources/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))

@@ -2,17 +2,17 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [xtdb.api :as xt]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.components.streams :as streams]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
-   [dinsro.utils :as utils]
    [manifold.stream :as ms]
    [taoensso.timbre :as log]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as tick]
+   [xtdb.api :as xt]))
 
 (def record-limit 75)
 
@@ -56,7 +56,7 @@
   [params]
   [::m.rates/params => :xt/id]
   (let [node            (c.xtdb/main-node)
-        id              (utils/uuid)
+        id              (new-uuid)
         prepared-params (-> (prepare-record params)
                             (assoc ::m.rates/id id)
                             (assoc :xt/id id)

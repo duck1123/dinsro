@@ -2,12 +2,12 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [xtdb.api :as xt]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core-address :as m.core-address]
    [dinsro.specs]
-   [dinsro.utils :as utils]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [xtdb.api :as xt]))
 
 (>defn index-ids
   []
@@ -29,7 +29,7 @@
   [params]
   [::m.core-address/params => ::m.core-address/id]
   (let [node            (c.xtdb/main-node)
-        id              (utils/uuid)
+        id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.core-address/id id)
                             (assoc :xt/id id))

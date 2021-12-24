@@ -2,14 +2,14 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [xtdb.api :as xt]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln-info :as m.ln-info]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-peers :as m.ln-peers]
    [dinsro.specs]
-   [dinsro.utils :as utils]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [xtdb.api :as xt]))
 
 (>defn index-ids
   []
@@ -31,7 +31,7 @@
   [params]
   [::m.ln-peers/params => ::m.ln-peers/id]
   (let [node (c.xtdb/main-node)
-        id   (utils/uuid)
+        id   (new-uuid)
         peer (-> params
                  (assoc ::m.ln-peers/id id)
                  (assoc :xt/id id))

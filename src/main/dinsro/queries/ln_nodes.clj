@@ -2,13 +2,13 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [xtdb.api :as xt]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [dinsro.utils :as utils]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [xtdb.api :as xt]))
 
 (>defn index-ids
   []
@@ -30,7 +30,7 @@
   [params]
   [::m.ln-nodes/params => ::m.ln-nodes/id]
   (let [node            (c.xtdb/main-node)
-        id              (utils/uuid)
+        id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.ln-nodes/id id)
                             (assoc :xt/id id))]
@@ -45,7 +45,7 @@
 (defn create-transaction
   [params]
   (let [node            (c.xtdb/main-node)
-        id              (utils/uuid)
+        id              (new-uuid)
         prepared-params (-> params
                             (assoc :m.ln-tx/id id)
                             (assoc :xt/id id))]

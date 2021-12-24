@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [xtdb.api :as xt]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -10,9 +10,9 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [dinsro.utils :as utils]
    [taoensso.timbre :as log]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as tick]
+   [xtdb.api :as xt]))
 
 (def record-limit 75)
 
@@ -81,7 +81,7 @@
   [params]
   [::m.transactions/params => :xt/id]
   (let [node            (c.xtdb/main-node)
-        id              (utils/uuid)
+        id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.transactions/id id)
                             (assoc :xt/id id)
