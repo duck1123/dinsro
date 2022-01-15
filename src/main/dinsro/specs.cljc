@@ -7,7 +7,10 @@
    [clojure.spec.gen.alpha :as gen]
    [ring.util.http-status :as status]
    [tick.alpha.api :as tick]
-   [time-specs.core :as ts]))
+   [time-specs.core :as ts])
+  #?(:clj
+     (:import
+      clojure.core.async.impl.channels.ManyToManyChannel)))
 
 (defn valid-jwt? [jwt]
   (re-matches #"^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$" jwt))
@@ -22,6 +25,11 @@
 (defn instance?
   [c]
   (partial clojure.core/instance? c))
+
+#?(:clj
+   (defn channel?
+     [c]
+     (clojure.core/instance? ManyToManyChannel c)))
 
 (def non-empty-string-alphanumeric
   "Generator for non-empty alphanumeric strings"
