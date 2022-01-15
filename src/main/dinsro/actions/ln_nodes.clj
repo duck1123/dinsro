@@ -115,22 +115,22 @@
 (defn balance-observer
   [next]
   (reify StreamObserver
-    (onNext [this note] (next note))
-    (onError [this err] (println err))
-    (onCompleted [this] (println "onCompleted server"))))
+    (onNext [_this note] (next note))
+    (onError [_this err] (println err))
+    (onCompleted [_this] (println "onCompleted server"))))
 
 (defn ch-observer
   [ch]
   (reify StreamObserver
-    (onNext [this message]
+    (onNext [_this message]
       (let [data (a.lnd/parse message)]
         (log/infof "next: %s" data)
         (>!! ch data)))
-    (onError [this err]
+    (onError [_this err]
       (log/infof "error: %s" err)
       (>!! ch {:error err})
       (async/close! ch))
-    (onCompleted [this]
+    (onCompleted [_this]
       (log/info "close")
       (async/close! ch))))
 

@@ -131,12 +131,12 @@
 (defn balance-observer
   []
   (reify StreamObserver
-    (onNext [this note]
+    (onNext [_this note]
       ;; there will be multiple .onNext here
       (println (parse note)))
-    (onError [this err]
+    (onError [_this err]
       (println err))
-    (onCompleted [this]
+    (onCompleted [_this]
       (println "onCompleted server")
       ;; there will be no .onNext here
       #_(.onCompleted res))))

@@ -10,7 +10,7 @@
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions]]
    [taoensso.timbre :as log]
-   [tick.core :as tick]))
+   [tick.api.core :as tick]))
 
 (def schemata [])
 

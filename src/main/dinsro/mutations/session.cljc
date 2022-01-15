@@ -39,10 +39,10 @@
      (m.authorization/login! env params))
    :cljs
    (fm/defmutation login [_]
-     (action [{:keys [state]}]
+     (action [_env]
        (log/info "busy"))
 
-     (error-action [{:keys [state]}]
+     (error-action [_env]
        (log/info "error action"))
 
      (ok-action [{:keys [state] :as env}]
@@ -76,13 +76,12 @@
         (assoc ring-response :session (assoc session :identity nil)))))
    :cljs
    (fm/defmutation logout [_]
-     (action [{:keys [state]}]
-       true)
+     (action [_env] true)
 
-     (error-action [{:keys [state]}]
+     (error-action [_env]
        (log/info "error action"))
 
-     (ok-action [{:keys [state result] :as env}]
+     (ok-action [{:keys [result] :as env}]
        (let [{::auth/keys [provider]}
              (get-in result [:body `logout])]
          (auth/logout! env provider)
@@ -103,8 +102,7 @@
               ::auth/keys     [status]} (some-> state deref ::auth/authorization (get provider))]
          (when (= status :success)
            (when zone-id
-             (log/info "Setting UI time zone" zone-id)
-             (comment (datetime/set-timezone! time-zone))))
+             (log/info "Setting UI time zone" zone-id)))
          (uism/trigger! app auth/machine-id :event/session-checked {:provider provider})))
      (remote [env]
        (fm/returning env auth/Session))))

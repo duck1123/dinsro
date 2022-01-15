@@ -30,6 +30,8 @@
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
 
+  :unresolved-var {:exclude [http.async.client/GET]}
+
   :unresolved-symbol
   {:exclude
    [(org.httpkit.server/with-channel [channel])

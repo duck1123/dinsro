@@ -4,5 +4,5 @@
    [taoensso.timbre :as log]))
 
 (defmutation submit [props]
-  (action [{:keys [state]}]
+  (action [_env]
     (log/infof "submitting: %s" props)))

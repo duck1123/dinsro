@@ -96,7 +96,7 @@
    :cljs
    (defmutation generate! [_props]
      (action [_env] true)
-     (remote [env] true)))
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation fetch-address!
@@ -108,7 +108,7 @@
    :cljs
    (defmutation fetch-address! [_props]
      (action [_env] true)
-     (remote [env] true)))
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation fetch-channels!
@@ -120,7 +120,7 @@
    :cljs
    (defmutation fetch-channels! [_props]
      (action [_env] true)
-     (remote [env] true)))
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation fetch-peers!
@@ -146,7 +146,7 @@
    :cljs
    (defmutation fetch-transactions! [_props]
      (action [_env] true)
-     (remote [env] true)))
+     (remote [_env] true)))
 
 #?(:clj
    (defn make-peer*

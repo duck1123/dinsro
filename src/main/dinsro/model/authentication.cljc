@@ -94,13 +94,13 @@
         (assoc ring-response :session (assoc session :identity nil)))))
    :cljs
    (fm/defmutation logout [_]
-     (action [{:keys [state]}]
+     (action [_env]
        (log/info "busy"))
 
-     (error-action [{:keys [state]}]
+     (error-action [_env]
        (log/info "error action"))
 
-     (ok-action [{:keys [state] :as env}]
+     (ok-action [_env]
        (log/infof "ok"))
 
      (remote [env]

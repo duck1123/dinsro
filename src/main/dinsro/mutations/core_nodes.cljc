@@ -25,7 +25,7 @@
    (defmutation connect! [_props]
      (action [_env] true)
      (remote [_env] true)
-     (ok-action [{:keys [state] :as env}]
+     (ok-action [env]
        (let [body (get-in env [:result :body])]
          (get body `connect!)
          {}))))

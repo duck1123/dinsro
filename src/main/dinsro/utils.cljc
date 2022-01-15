@@ -1,5 +1,5 @@
 (ns dinsro.utils
-  #?(:cljs (:refer-clojure :exclude [uuid]))
+  (:refer-clojure :exclude [parse-double uuid])
   (:require [com.fulcrologic.guardrails.core :refer [>defn =>]]
             [clojure.spec.alpha :as s]
             [taoensso.timbre :as log]))
