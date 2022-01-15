@@ -307,16 +307,6 @@ if use_linting:
     labels = [ 'format' ],
   )
 
-if use_tests:
-  local_resource(
-    'cypress',
-    allow_parallel = True,
-    auto_init = False,
-    serve_cmd='npx cypress open',
-    trigger_mode = TRIGGER_MODE_MANUAL,
-    labels = [ 'test' ],
-  )
-
 if local_devtools:
   local_resource(
     'devtools',
@@ -388,17 +378,6 @@ if use_tests:
     allow_parallel = True,
     cmd = 'bb test-cljs',
     deps = [ 'src/test' ],
-    labels = [ 'test' ],
-  )
-
-if use_tests:
-  local_resource(
-    'test-integration',
-    allow_parallel = True,
-    auto_init = False,
-    cmd = 'npx cypress run',
-    deps = [ 'src/test' ],
-    trigger_mode = TRIGGER_MODE_MANUAL,
     labels = [ 'test' ],
   )
 

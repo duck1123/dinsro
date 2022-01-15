@@ -77,44 +77,6 @@ INSTALL_NODE:
   # RUN npm install -g yarn
   RUN npm install -g karma-cli
 
-CREATE_USER_NIX:
-  COMMAND
-  RUN addgroup -g ${gid} -S ${dev_group} && adduser -S ${dev_user} -G ${dev_group} -u ${uid}
-  RUN chown -R ${uid}:${gid} ${src_home}
-
-CREATE_USER_UBUNTU:
-  COMMAND
-  RUN addgroup --gid ${gid} ${dev_group} && adduser --ingroup ${dev_group} --uid ${uid} ${dev_user}
-  RUN chown -R ${uid}:${gid} ${src_home}
-
-base-builder-nix:
-  FROM ${nixos_image}
-  ENV USER_HOME=/home/${dev_user}
-  WORKDIR /usr/src/app
-  RUN nix-env -i autoconf
-  RUN nix-env -i bash-5.1-p4
-  RUN nix-env -i curl-7.74.0
-  RUN nix-env -i openjdk-11.0.9+11
-  RUN nix-env -i clojure-${clojure_version}
-  RUN nix-env -i nodejs-${node_version}
-  RUN nix-env -i xvfb-run
-  RUN NIXPKGS_ALLOW_UNFREE=1 nix-env -i chromium
-  ENV CHROME_BIN=chromium
-  RUN mkdir -p /etc/fonts
-  ENV FONTCONFIG_PATH=/etc/fonts
-  DO +INSTALL_BABASHKA
-  RUN nix-env -i tree
-  DO +CREATE_USER_NIX
-  RUN addgroup -g ${gid} -S ${dev_group} && adduser -S ${dev_user} -G ${dev_group} -u ${uid}
-  RUN chown -R ${uid}:${gid} ${src_home}
-  RUN nix-env -i clj-kondo
-  # RUN nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-  # RUN nix-channel --update
-  USER ${uid}
-  RUN mkdir -p ${USER_HOME}/.cache/yarn \
-      && mkdir -p ${USER_HOME}/.m2 \
-      && chown -R ${uid}:${gid} ${USER_HOME}
-
 base-builder:
   FROM ${base_image}
   WORKDIR ${src_home}
@@ -129,56 +91,6 @@ base-builder:
           sudo \
           tree \
       && rm -rf /var/lib/apt/lists/*
-  USER ${uid}
-
-base-cypress-dind:
-  FROM earthly/dind:ubuntu
-  RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-          keyboard-configuration \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-          libgtk2.0-0 \
-          libgtk-3-0 \
-          libgbm-dev \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt-get install -y \
-          libnotify-dev \
-          libgconf-2-4 \
-          libnss3 \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt-get install -y \
-          libxss1 \
-          libasound2 \
-          libxtst6 \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt-get install -y \
-          xauth \
-          xvfb \
-      && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt install -y \
-          openjdk-11-jdk \
-      && rm -rf /var/lib/apt/lists/*
-  RUN curl -O https://download.clojure.org/install/linux-install-1.10.2.790.sh \
-      && chmod +x linux-install-1.10.2.790.sh \
-      && ./linux-install-1.10.2.790.sh
-  RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
-      && apt-get install -y nodejs \
-      && rm -rf /var/lib/apt/lists/*
-
-base-dind-builder:
-  FROM earthly/dind:alpine
-  WORKDIR ${src_home}
-  RUN apk add curl
-  RUN curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
-  && chmod +x /usr/local/bin/docker-compose
-
-base-dind-builder-nix:
-  RUN nix-env -i bash-5.0-p2
-  RUN nix-env -i clojure-1.10.0.411
-  RUN nix-env -i nodejs-10.15.0
-  RUN nix-env -i openjdk-11.0.2-b9
-  RUN addgroup -g ${gid} -S ${dev_group} && adduser -S ${dev_user} -G ${dev_group} -u ${uid}
-  RUN chown -R ${uid}:${gid} ${src_home}
   USER ${uid}
 
 builder:
@@ -229,14 +141,6 @@ deps-builder:
   FROM +script-builder
   DO +IMPORT_JAR_DEPS
 
-deps-dind-builder:
-  FROM +base-dind-builder
-  COPY package.json yarn.lock .
-  COPY --dir bb.edn deps.edn script .
-  DO +IMPORT_JAR_DEPS
-  RUN --mount=type=cache,target=${USER_HOME}/.m2 \
-      bb display-path || bb display-path
-
 dev-image:
   FROM +deps-builder
   ARG EXPECTED_REF=${repo}/${project}:dev-${version}
@@ -283,71 +187,6 @@ dev-sources-minimal:
   COPY --dir notebooks ${src_home}/notebooks
   COPY shadow-cljs.edn .
   COPY --dir resources/main ${src_home}/resources/main
-
-e2e-base:
-  FROM cypress/browsers
-  ENV USER_HOME=/root
-  RUN apt update && apt install -y \
-      openjdk-11-jdk \
-    && rm -rf /var/lib/apt/lists/*
-  RUN apt update && apt install -y \
-      docker.io \
-    && rm -rf /var/lib/apt/lists/*
-  RUN curl -O https://download.clojure.org/install/linux-install-1.10.2.790.sh \
-    && chmod +x linux-install-1.10.2.790.sh \
-    && ./linux-install-1.10.2.790.sh
-  DO +INSTALL_BABASHKA
-  COPY --dir +node-deps/node_modules node_modules
-  DO +IMPORT_JAR_DEPS
-  COPY cypress.json .
-  RUN npx cypress install
-
-e2e:
-  FROM +e2e-base
-  COPY . .
-  RUN bb init
-  RUN npx cypress install
-  WITH DOCKER \
-       --compose resources/cypress/docker-compose.yml \
-       --service dinsro \
-       --load ${repo}/${project}:dev-sources-${version}=+dev-image-sources
-       RUN docker ps -a \
-           && sh -c "docker logs -f cypress_dinsro_1" \
-           & env | sort \
-           && bb await-app \
-           && bb test-integration
-  END
-
-e2e-dind:
-  FROM +base-dind-builder
-  COPY resources/cypres/docker-compose.yml docker-compose.yml
-  COPY --dir bb.edn deps.edn script .
-  RUN bb init
-  WITH DOCKER \
-      --compose docker-compose.yml \
-      --service dinsro \
-      --load ${repo}/${project}:e2e-${version}=+e2e-image \
-      --load ${repo}/${project}:dev-sources-${version}=+dev-image-sources
-      RUN bb await-app \
-          && docker run --network=host ${repo}/${project}:e2e-${version}
-  END
-
-e2e-image:
-  FROM cypress/browsers
-  ARG EXPECTED_REF=${repo}/${project}:e2e-${version}
-  WORKDIR ${src_home}
-  RUN apt update && apt install -y \
-          openjdk-11-jdk \
-      && rm -rf /var/lib/apt/lists/*
-  COPY --dir +node-deps/node_modules node_modules
-  DO +IMPORT_JAR_DEPS
-  COPY cypress.json .
-  RUN npx cypress install
-  COPY --dir cypress .
-  COPY --dir bb.edn deps.edn script .
-  ENTRYPOINT []
-  CMD ["bb", "test-integration"]
-  SAVE IMAGE ${EXPECTED_REF}
 
 eastwood:
   FROM +dev-sources
