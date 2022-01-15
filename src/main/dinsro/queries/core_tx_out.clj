@@ -52,6 +52,34 @@
   [=> (s/coll-of ::m.core-tx-out/item)]
   (map read-record (index-ids)))
 
+(>defn delete!
+  [id]
+  [::m.core-tx-out/id => any?]
+  (let [node (c.xtdb/main-node)
+        tx   (xt/submit-tx node [[::xt/evict id]])]
+    (xt/await-tx node tx)))
+
+(>defn find-by-tx-and-index
+  [tx-id n]
+  [::m.core-tx-out/transaction ::m.core-tx-out/n => (? ::m.core-tx-out/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?tx-out-id]
+                :in    [[?tx-id ?n]]
+                :where [[?tx-out-id ::m.core-tx-out/transaction ?tx-id]
+                        [?tx-out-id ::m.core-tx-out/n ?n]]}]
+    (ffirst (xt/q db query [tx-id n]))))
+
+(>defn update!
+  [params]
+  [::m.core-tx-out/params => any?]
+  (let [id (::m.core-tx-out/id params)
+        node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        old    (xt/pull db '[*] id)
+        params (merge old params)
+        tx     (xt/submit-tx node [[::xt/put params]])]
+    (xt/await-tx node tx)))
+
 (comment
   (index-records)
 

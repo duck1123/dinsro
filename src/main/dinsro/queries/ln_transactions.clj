@@ -73,3 +73,21 @@
   [id _tx]
   [::m.ln-nodes/id ::m.ln-tx/params => ::m.ln-tx/item]
   (read-record id))
+
+(>defn delete!
+  [id]
+  [::m.ln-tx/id => nil?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
+  nil)
+
+(>defn update!
+  [params]
+  [::m.ln-tx/item => any?]
+  (let [id (::m.ln-nodes/id params)
+        node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        entity (xt/entity db id)
+        params (merge entity params)
+        tx     (xt/submit-tx node [[::xt/put params]])]
+    (xt/await-tx node tx)))

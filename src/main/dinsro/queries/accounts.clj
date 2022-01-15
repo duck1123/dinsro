@@ -11,36 +11,16 @@
    [dinsro.specs]
    [taoensso.timbre :as log]))
 
-(def attribute-list
-  '[:xt/id
-    ::m.accounts/currency
-    ::m.accounts/id
-    ::m.accounts/initial-value
-    ::m.accounts/name
-    ::m.accounts/user])
 (def record-limit 1000)
-
-(def find-eid-by-id-query
-  '{:find  [?eid]
-    :in    [?id]
-    :where [[?eid ::m.accounts/id ?id]]})
-
-(def find-id-by-eid-query
-  '{:find  [?id]
-    :in    [?eid]
-    :where [[?eid ::m.accounts/id ?id]]})
 
 (>defn find-eid-by-id
   [id]
   [::m.accounts/id => :xt/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-id-query id))))
-
-(>defn find-id-by-eid
-  [eid]
-  [:xt/id => ::m.accounts/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-id-by-eid-query eid))))
+  (let [db (c.xtdb/main-db)
+        query '{:find  [?eid]
+                :in    [?id]
+                :where [[?eid ::m.accounts/id ?id]]}]
+    (ffirst (xt/q db query id))))
 
 (>defn find-id-by-user-and-name
   [user-id name]
@@ -65,10 +45,10 @@
   [user-id]
   [::m.users/id => (s/coll-of ::m.accounts/id)]
   (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-eid]
-                :in    [?users-id]
-                :where [[?account-eid ::m.accounts/user ?user-id]]}]
-    (map first (xt/q db query user-id))))
+        query '{:find  [?account-id]
+                :in    [?user-id]
+                :where [[?account-id ::m.accounts/user ?user-id]]}]
+    (map first (xt/q db query (log/spy :info user-id)))))
 
 (>defn create-record
   [params]
@@ -115,15 +95,13 @@
 
 (>defn index-records-by-user
   [user-id]
-  [:xt/id => (s/coll-of ::m.accounts/item)]
+  [::m.users/id => (s/coll-of ::m.accounts/item)]
   (let [db    (c.xtdb/main-db)
-        query '{:find  [?id ?user-id]
-                :keys  [xt/id name]
-                :in    [?user-eid]
-                :where [[?id ::m.accounts/user ?user-id]
-                        [?user-eid ::m.users/id ?user-id]]}]
+        query '{:find  [?account-id]
+                :in    [?user-id]
+                :where [[?account-id ::m.accounts/user ?user-id]]}]
     (->> (xt/q db query user-id)
-         (map :xt/id)
+         (map first)
          (map read-record)
          (take record-limit))))
 

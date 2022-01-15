@@ -11,38 +11,14 @@
    [dinsro.specs]
    [taoensso.timbre :as log]))
 
-(def attributes-list
-  '[:xt/id
-    ::m.categories/id
-    ::m.categories/name])
-(def record-limit 1000)
-
-(def find-eid-by-id-query
-  '{:find  [?eid]
-    :in    [?id]
-    :where [[?eid ::m.categories/id ?id]]})
-
-(def find-id-by-eid-query
-  '{:find  [?id]
-    :in    [?eid]
-    :where [[?eid ::m.categories/id ?id]]})
-
 (>defn find-eid-by-id
   [id]
   [::m.categories/id => (? :xt/id)]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-id-query id))))
-
-(>defn find-id-by-eid
-  [eid]
-  [:xt/id => (? ::m.categories/id)]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-id-by-eid-query eid))))
-
-(>defn find-by-name-and-user
-  [_name _user-id]
-  [::m.categories/name ::m.categories/id => (? (s/keys))]
-  nil)
+  (let [db (c.xtdb/main-db)
+        query '{:find  [?eid]
+                :in    [?id]
+                :where [[?eid ::m.categories/id ?id]]}]
+    (ffirst (xt/q db query id))))
 
 (>defn find-by-user
   [user-id]
@@ -101,3 +77,10 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(comment
+  (index-records)
+
+  (delete-all)
+
+  nil)

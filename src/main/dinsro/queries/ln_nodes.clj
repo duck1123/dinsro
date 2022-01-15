@@ -4,6 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
@@ -52,7 +53,7 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
-(>defn find-ids-by-user
+(>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.ln-nodes/id)]
   (let [db    (c.xtdb/main-db)
@@ -70,3 +71,12 @@
                 :where [[?node-id ::m.ln-nodes/user ?user-id]
                         [?node-id ::m.ln-nodes/name ?name]]}]
     (ffirst (xt/q db query user-id name))))
+
+(>defn find-by-core-node
+  [core-node-id]
+  [::m.core-nodes/id => (s/coll-of ::m.ln-nodes/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?node-id]
+                :in    [?core-node-id]
+                :where [[?node-id ::m.ln-nodes/core-node ?core-node-id]]}]
+    (map first (xt/q db query core-node-id))))

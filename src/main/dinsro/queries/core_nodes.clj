@@ -4,7 +4,10 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.model.core-block :as m.core-block]
    [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core-tx :as m.core-tx]
+   [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.specs]
    [taoensso.timbre :as log]
    [xtdb.api :as xt]))
@@ -22,10 +25,10 @@
 
 (>defn read-record
   [id]
-  [:xt/id => (? ::m.core-nodes/item)]
+  [::m.core-nodes/id => (? ::m.core-nodes/item)]
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
-    (when (get record ::m.core-nodes/name)
+    (when (get record ::m.core-nodes/id)
       (dissoc record :xt/id))))
 
 (>defn index-ids
@@ -50,8 +53,37 @@
                 :where [[?node-id ::m.core-nodes/name ?name]]}]
     (ffirst (xt/q db query name))))
 
-(defn update-blockchain-info
+(>defn find-by-block
+  [block-id]
+  [::m.core-block/id => (? ::m.core-nodes/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?node-id]
+                :in    [?block-id]
+                :where [[?block-id ::m.core-block/node ?node-id]]}]
+    (ffirst (xt/q db query block-id))))
+
+(>defn find-by-ln-node
+  [ln-node-id]
+  [::m.ln-nodes/id => (? ::m.core-nodes/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?core-node-id]
+                :in    [?ln-node-id]
+                :where [[?ln-node-id ::m.ln-nodes/core-node ?core-node-id]]}]
+    (ffirst (xt/q db query ln-node-id))))
+
+(>defn find-by-tx
+  [tx-id]
+  [::m.core-tx/id => (? ::m.core-nodes/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?node-id]
+                :in    [?tx-id]
+                :where [[?block-id ::m.core-block/node ?node-id]
+                        [?tx-id ::m.core-tx/block ?block-id]]}]
+    (ffirst (xt/q db query tx-id))))
+
+(>defn update-blockchain-info
   [id props]
+  [::m.core-nodes/id ::m.core-nodes/item => any?]
   (let [node   (c.xtdb/main-node)
         db     (c.xtdb/main-db)
         old    (xt/pull db '[*] id)

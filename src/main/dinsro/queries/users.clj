@@ -5,21 +5,11 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [xtdb.api :as xt]
    [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [taoensso.timbre :as log]))
-
-(def identity-attribute ::m.users/id)
-
-(def find-eid-by-id-query
-  '{:find  [?eid]
-    :in    [?id]
-    :where [[?eid ::m.users/id ?id]]})
-
-(def find-eid-by-name-query
-  '{:find  [?eid]
-    :in    [?name]
-    :where [[?eid ::m.users/name ?name]]})
 
 (def find-id-by-eid-query
   '{:find  [?id]
@@ -56,20 +46,39 @@
 (>defn find-eid-by-id
   [id]
   [::m.users/id => (? ::m.users/id)]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-id-query id))))
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?eid]
+                :in    [?id]
+                :where [[?eid ::m.users/id ?id]]}]
+    (ffirst (xt/q db query id))))
 
 (>defn find-eid-by-name
   [name]
   [::m.users/name => (? ::m.users/id)]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-name-query name))))
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?eid]
+                :in    [?name]
+                :where [[?eid ::m.users/name ?name]]}]
+    (ffirst (xt/q db query name))))
+
+(>defn find-by-transaction
+  [transaction-id]
+  [::m.transactions/name => (? ::m.users/id)]
+  (let [db (c.xtdb/main-db)
+        query '{:find [?user-id]
+                :in [?transaction-id]
+                :where [[?transaction-id ::m.transactions/account ?account-id]
+                        [?account-id ::m.accounts/user ?user-id]]}]
+    (ffirst (xt/q db query transaction-id))))
 
 (>defn find-id-by-eid
   [eid]
   [:xt/id => (? ::m.users/id)]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-id-by-eid-query eid))))
+  (let [db (c.xtdb/main-db)
+        query '{:find  [?id]
+                :in    [?eid]
+                :where [[?eid ::m.users/id ?id]]}]
+    (ffirst (xt/q db query eid))))
 
 (>defn find-by-id
   [id]

@@ -283,7 +283,7 @@
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      {::m.users/ln-nodes
-      (let [ids #?(:clj (and id (q.ln-nodes/find-ids-by-user id))
+      (let [ids #?(:clj (and id (q.ln-nodes/find-by-user id))
                    :cljs (do (comment id) []))]
         (map (fn [id] {::m.ln-nodes/id id}) ids))})})
 

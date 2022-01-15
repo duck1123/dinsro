@@ -47,11 +47,12 @@
 (>defn find-peer
   [node-id pubkey]
   [::m.ln-nodes/id ::m.ln-info/identity-pubkey => (? ::m.ln-peers/id)]
+  (log/infof "find peer. node = %s, pubkey = %s" node-id pubkey)
   (let [db    (c.xtdb/main-db)
         query '{:find  [?peer-id]
                 :in    [[?node-id ?pubkey]]
                 :where [[?peer-id ::m.ln-peers/node ?node-id]
-                        [?node-id ::m.ln-nodes/pubkey ?pubkey]]}]
+                        [?peer-id ::m.ln-peers/pubkey ?pubkey]]}]
     (ffirst (xt/q db query [node-id pubkey]))))
 
 (>defn add-peer!
@@ -69,3 +70,20 @@
                 :in    [?node-id]
                 :where [[?peer-id ::m.ln-peers/node ?node-id]]}]
     (map first (xt/q db query node-id))))
+
+(>defn delete
+  [id]
+  [::m.ln-peers/id => any?]
+  (let [node (c.xtdb/main-node)
+        tx   (xt/submit-tx node [[::xt/evict id]])]
+    (xt/await-tx node tx)))
+
+(>defn update!
+  [params]
+  [::m.ln-peers/item => ::m.ln-peers/id]
+  (if-let [id (::m.ln-peers/id params)]
+    (let [node   (c.xtdb/main-node)
+          params (assoc params :xt/id id)]
+      (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
+      id)
+    (throw (RuntimeException. "Failed to find id"))))

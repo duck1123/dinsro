@@ -6,6 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.core-block :as m.core-block]
+   [dinsro.model.core-tx :as m.core-tx]
    [dinsro.specs]
    [taoensso.timbre :as log]
    [xtdb.api :as xt]))
@@ -25,7 +26,7 @@
         query '{:find  [?block-id]
                 :in    [?node-id]
                 :where [[?block-id ::m.core-block/node ?node-id]]}]
-    (map first (xt/q db query (log/spy :info node-id)))))
+    (map first (xt/q db query node-id))))
 
 (>defn fetch-by-node-and-height
   [node-id height]
@@ -62,32 +63,38 @@
   [=> (s/coll-of ::m.core-block/item)]
   (map read-record (index-ids)))
 
-(defn register-block
-  [node-id hash height]
-  (if-let [block-id (fetch-by-node-and-height node-id height)]
-    (do
-      (log/info "found")
-      block-id)
-    (do
-      (log/info "not found")
-      (let [params {::m.core-block/hash     hash
-                    ::m.core-block/height   height
-                    ::m.core-block/node     node-id
-                    ::m.core-block/fetched? false}]
-        (create-record params)))))
-
-(defn update-block
+(>defn update-block
   [id data]
+  [::m.core-block/id ::m.core-block/params => any?]
   (let [node   (c.xtdb/main-node)
         db     (c.xtdb/main-db)
         old    (xt/pull db '[*] id)
         params (merge old data)
         tx     (xt/submit-tx node [[::xt/put params]])]
+    (xt/await-tx node tx)
+    id))
+
+(>defn delete
+  [id]
+  [::m.core-block/id => any?]
+  (let [node   (c.xtdb/main-node)
+        tx     (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
+
+(>defn find-by-tx
+  [tx-id]
+  [::m.core-tx/id => (? ::m.core-block/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?block-id]
+                :in    [?tx-id]
+                :where [[?tx-id ::m.core-tx/block ?block-id]]}]
+    (ffirst (xt/q db query tx-id))))
 
 (comment
   2
   :the
   (first (index-records))
+
+  (map delete (index-ids))
 
   nil)

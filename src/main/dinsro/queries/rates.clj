@@ -47,6 +47,41 @@
                 :where [[?rate-id ::m.rates/source ?rate-source-id]]}]
     (map first (xt/q db query rate-source-id))))
 
+(>defn find-by-currency
+  [currency-id]
+  [::m.currencies/id => (s/coll-of ::m.rates/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?rate-id]
+                :in    [?currency-id]
+                :where [[?rate-id ::m.rates/source ?rate-source-id]
+                        [?rate-source-id ::m.rate-sources/currency ?currency-id]]}]
+    (map first (xt/q db query currency-id))))
+
+(>defn find-top-by-currency
+  [currency-id]
+  [::m.currencies/id => (? ::m.rates/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find     [?rate-id ?date]
+                :in       [?currency-id]
+                :where    [[?rate-id ::m.rates/source ?rate-source-id]
+                           [?rate-id ::m.rates/date ?date]
+                           [?rate-source-id ::m.rate-sources/currency ?currency-id]]
+                :order-by [[?date :desc]]
+                :limit    1}]
+    (ffirst (xt/q db query currency-id))))
+
+(>defn find-top-by-rate-source
+  [source-id]
+  [::m.rate-sources/id => (? ::m.rates/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find     [?rate-id ?date]
+                :in       [?source-id]
+                :where    [[?rate-id ::m.rates/source ?source-id]
+                           [?rate-id ::m.rates/date ?date]]
+                :order-by [[?date :desc]]
+                :limit    1}]
+    (ffirst (xt/q db query source-id))))
+
 (>defn prepare-record
   [params]
   [::m.rates/params => ::m.rates/params]
