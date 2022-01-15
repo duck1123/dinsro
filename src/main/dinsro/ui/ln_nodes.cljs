@@ -148,7 +148,7 @@
   [this {::m.ln-nodes/keys [id hasCert? hasMacaroon?] :as props}]
   {fo/id            m.ln-nodes/id
    fo/attributes    [m.ln-nodes/name
-                     m.ln-nodes/node
+                     m.ln-nodes/core-node
                      m.ln-info/alias-attr
                      m.ln-nodes/hasCert?
                      m.ln-nodes/hasMacaroon?
@@ -186,7 +186,7 @@
   [_this _props]
   {ro/columns          [m.ln-nodes/name
                         m.ln-info/alias-attr
-                        m.ln-nodes/node
+                        m.ln-nodes/core-node
                         m.ln-info/color
                         node-user-link]
    ro/control-layout   {:action-buttons [::new-node]}

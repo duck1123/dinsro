@@ -72,13 +72,17 @@
 
 (>defn ident
   [id]
-  [::id => ::ident]
-  [::id id])
+  [::id => any?]
+  {::id id})
 
 (>defn ident-item
   [{::keys [id]}]
-  [::item => ::ident]
+  [::item => any?]
   (ident id))
+
+(defn idents
+  [ids]
+  (mapv ident ids))
 
 (def attributes
   [id

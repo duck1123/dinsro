@@ -5,20 +5,25 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.report :as report]
    [dinsro.model.core-block :as m.core-block]
    [taoensso.timbre :as log]))
 
 (def rename-map
-  {:blockHash     ::block-hash
-   :blockTime     ::block-time
+  {:blockhash     ::block-hash
+   :blocktime     ::block-time
    :confirmations ::confirmations
    :hash          ::hash
    :hex           ::hex
-   :lockTime      ::lock-time
+   :locktime      ::lock-time
    :size          ::size
    :time          ::time
-   :txId          ::tx-id
-   :version       ::version})
+   :txid          ::tx-id
+   :vsize         ::vsize
+   :version       ::version
+   :vout          ::vout
+   :vin           ::vin
+   :weight        ::weight})
 
 (defn prepare-params
   [params]
@@ -42,8 +47,8 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::block-time inst?)
-(defattr block-time ::block-time :date
+(s/def ::block-time number?)
+(defattr block-time ::block-time :int
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -72,8 +77,8 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::time inst?)
-(defattr time ::time :date
+(s/def ::time number?)
+(defattr time ::time :int
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -86,13 +91,15 @@
 (defattr block ::block :ref
   {ao/identities #{::id}
    ao/target     ::m.core-block/id
-   ao/schema     :production})
+   ao/schema     :production
+   ::report/column-EQL {::block [::m.core-block/id ::m.core-block/height ::m.core-block/hash]}})
 
 (s/def ::fetched? boolean?)
 (defattr fetched? ::fetched? :boolean
   {ao/identities #{::id}
    ao/schema     :production})
 
+(s/def ::id-obj (s/keys :req [::id]))
 (s/def ::params
   (s/keys :req [::tx-id
                 ::block

@@ -29,14 +29,17 @@
 
 (>defn ident
   [id]
-  [::id => ::ident]
-  [::id id])
+  [::id => any?]
+  {::id id})
 
 (>defn ident-item
   [{::keys [id]}]
-  [::item => ::ident]
+  [::item => any?]
   (ident id))
 
-(def attributes [code id name])
+(>defn idents
+  [ids]
+  [(s/coll-of ::id) => any?]
+  (mapv ident ids))
 
-#?(:clj (def resolvers []))
+(def attributes [code id name])

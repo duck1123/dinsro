@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.authorization :as auth]
+   [com.fulcrologic.rad.report :as report]
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -45,11 +46,12 @@
 
 (s/def ::currency ::m.currencies/id)
 (defattr currency ::currency :ref
-  {ao/cardinality :one
-   ao/required?   true
-   ao/identities  #{::id}
-   ao/schema      :production
-   ao/target      ::m.currencies/id})
+  {ao/cardinality      :one
+   ao/required?        true
+   ao/identities       #{::id}
+   ao/schema           :production
+   ao/target           ::m.currencies/id
+   ::report/column-EQL {::currency [::m.currencies/id ::m.currencies/name]}})
 
 (s/def ::source ::m.rate-sources/id)
 (defattr source ::source :ref
@@ -61,11 +63,12 @@
 
 (s/def ::user ::m.users/id)
 (defattr user ::user :ref
-  {ao/cardinality :one
-   ao/required?   true
-   ao/identities  #{::id}
-   ao/schema      :production
-   ao/target      ::m.users/id})
+  {ao/cardinality      :one
+   ao/required?        true
+   ao/identities       #{::id}
+   ao/schema           :production
+   ao/target           ::m.users/id
+   ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
 (s/def ::required-params
   (s/keys :req [::name
@@ -76,6 +79,10 @@
   ::required-params)
 (s/def ::params (s/keys :req [::currency ::initial-value ::name ::source ::user]))
 (s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::source ::user]))
+
+(defn idents
+  [ids]
+  (mapv (fn [id] {::id id}) ids))
 
 (def attributes [currency id initial-value name source user])
 

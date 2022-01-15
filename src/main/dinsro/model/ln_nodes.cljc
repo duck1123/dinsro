@@ -6,6 +6,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.report :as report]
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]
    [taoensso.timbre :as log]))
@@ -32,10 +33,12 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::node ::m.core-nodes/id)
-(defattr node ::node :string
+(s/def ::core-node ::m.core-nodes/id)
+(defattr core-node ::core-node :ref
   {ao/identities #{::id}
-   ao/schema     :production})
+   ao/target     ::m.core-nodes/id
+   ao/schema     :production
+   ::report/column-EQL {::core-node [::m.core-nodes/id ::m.core-nodes/name]}})
 
 (s/def ::host string?)
 (defattr host ::host :string
@@ -55,7 +58,22 @@
 (defattr user ::user :ref
   {ao/identities #{::id}
    ao/target     ::m.users/id
-   ao/schema     :production})
+   ao/schema     :production
+   ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
+
+#?(:clj
+   (>defn has-cert?
+     [id]
+     [::id => boolean?]
+     (log/info "has cert")
+     (.exists (io/file (log/spy :info (cert-path id))))))
+
+#?(:clj
+   (>defn has-macaroon?
+     [id]
+     [::id => boolean?]
+     (log/info "has cert")
+     (.exists (io/file (log/spy :info (macaroon-path id))))))
 
 (defattr hasCert? ::hasCert? :boolean
   {ao/identities #{::id}
@@ -63,7 +81,7 @@
    ao/pc-output  [::hasCert?]
    ao/pc-resolve (fn [_env {::keys [id]}]
                    {::hasCert?
-                    #?(:clj (.exists (io/file (cert-path id)))
+                    #?(:clj (has-cert? id)
                        :cljs (do (comment id) false))})})
 
 (defattr hasMacaroon? ::hasMacaroon? :boolean
@@ -72,7 +90,7 @@
    ao/pc-output  [::hasMacaroon?]
    ao/pc-resolve (fn [_env {::keys [id]}]
                    {::hasMacaroon?
-                    #?(:clj (.exists (io/file (macaroon-path id)))
+                    #?(:clj (has-macaroon? id)
                        :cljs (do (comment id) false))})})
 
 (defattr unlocked? ::unlocked? :boolean
@@ -83,21 +101,26 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::name ::host ::port ::node]))
-(s/def ::params  (s/keys :req [::name ::host ::port ::user ::node]))
-(s/def ::item (s/keys :req [::id ::name ::host ::port ::user ::node]))
+(s/def ::required-params (s/keys :req [::name ::host ::port ::core-node]))
+(s/def ::params  (s/keys :req [::name ::host ::port ::user ::core-node]))
+(s/def ::item (s/keys :req [::id ::name ::host ::port ::user ::core-node]))
 (s/def ::items (s/coll-of ::item))
 (s/def ::ident (s/tuple keyword? ::id))
 
 (>defn ident
   [id]
-  [::id => ::ident]
-  [::id id])
+  [::id => any?]
+  {::id id})
 
 (>defn ident-item
   [{::keys [id]}]
-  [::item => ::ident]
+  [::item => any?]
   (ident id))
+
+(>defn idents
+  [ids]
+  [(s/coll-of ::id) => any?]
+  (mapv ident ids))
 
 #?(:clj
    (defn cert-file
@@ -105,4 +128,4 @@
      (io/file (cert-path id))))
 
 (def attributes
-  [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized? node])
+  [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized? core-node])

@@ -29,7 +29,6 @@
                     m.core-nodes/rpcpass
                     m.core-nodes/balance
                     m.core-nodes/tx-count
-                    m.core-nodes/blocks
                     m.core-nodes/chain]
    fo/cancel-route ["core-nodes"]
    fo/route-prefix "core-node"
@@ -42,8 +41,7 @@
    ro/columns           [m.core-nodes/name
                          m.core-nodes/balance
                          m.core-nodes/tx-count
-                         m.core-nodes/chain
-                         m.core-nodes/blocks]
+                         m.core-nodes/chain]
    ro/row-actions       [connect-button]
    ro/source-attribute  ::m.core-nodes/all-nodes
    ro/title             "Core Node Report"

@@ -1,15 +1,17 @@
 (ns dinsro.model.ln-transactions
   (:refer-clojure :exclude [name])
   (:require
+   [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.report :as report]
+   [dinsro.model.core-tx :as m.core-tx]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [taoensso.timbre :as log]))
 
 (def rename-map
-  {:numConfirmations ::num-confirmations
-   :amount           ::amount
+  {:amount           ::amount
    :blockHeight      ::block-height
    :blockHash        ::block-hash
    :txHash           ::tx-hash
@@ -20,15 +22,14 @@
    :destAddresses    ::dest-addresses
    :totalFees        ::total-fees})
 
+(defn prepare-params
+  [params]
+  (set/rename-keys params rename-map))
+
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
-
-(s/def ::num-confirmations int?)
-(defattr num-confirmations ::num-confirmations :int
-  {ao/identities #{::id}
-   ao/schema     :production})
 
 (s/def ::amount int?)
 (defattr amount ::amount :int
@@ -74,18 +75,36 @@
 (defattr node ::node :ref
   {ao/identities #{::id}
    ao/target     ::m.ln-nodes/id
-   ao/schema     :production})
+   ao/schema     :production
+   ::report/column-EQL {::node [::m.ln-nodes/id ::m.ln-nodes/name]}})
+
+(s/def ::core-tx uuid?)
+(defattr core-tx ::core-tx :ref
+  {ao/identities #{::id}
+   ao/target     ::m.core-tx/id
+   ao/schema     :production
+   ::report/column-EQL {::core-tx [::m.core-tx/id ::m.core-tx/tx-id]}})
 
 (s/def ::raw-params
-  (s/keys :req [::num-confirmations ::amount ::block-height ::block-hash ::tx-hash
+  (s/keys :req [::amount ::block-height ::block-hash ::tx-hash
                 ::time-stamp ::raw-tx-hex ::label ::dest-addresses]))
 (s/def ::params
-  (s/keys :req [::num-confirmations ::amount ::block-height ::block-hash ::tx-hash
-                ::time-stamp ::raw-tx-hex ::label ::dest-addresses ::node]))
+  (s/keys :req [::amount ::block-height ::block-hash ::tx-hash
+                ::time-stamp ::raw-tx-hex ::label ::dest-addresses ::node
+                ::core-tx]))
 (s/def ::item
-  (s/keys :req [::id ::num-confirmations ::amount ::block-height ::block-hash ::tx-hash
-                ::time-stamp ::raw-tx-hex ::label ::dest-addresses ::node]))
+  (s/keys :req [::id ::amount ::block-height ::block-hash ::tx-hash
+                ::time-stamp ::raw-tx-hex ::label ::dest-addresses ::node ::core-tx]))
+
+(defn idents
+  [ids]
+  (map (fn [id] {::id id}) ids))
 
 (def attributes
-  [id num-confirmations amount block-height block-hash tx-hash
-   time-stamp raw-tx-hex label dest-addresses node])
+  [id
+   amount block-height block-hash
+   tx-hash
+   time-stamp
+   raw-tx-hex
+   label
+   dest-addresses node core-tx])

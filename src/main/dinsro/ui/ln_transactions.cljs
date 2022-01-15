@@ -54,7 +54,6 @@
    fo/attributes   [m.ln-tx/id
                     m.ln-tx/amount
                     m.ln-tx/tx-hash
-                    m.ln-tx/num-confirmations
                     m.ln-tx/block-height
                     m.ln-tx/block-hash
                     m.ln-tx/time-stamp
