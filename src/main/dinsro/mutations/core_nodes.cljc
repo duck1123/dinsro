@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.bitcoind :as a.bitcoind])
+   #?(:clj [dinsro.actions.core-nodes :as a.core-nodes])
    [dinsro.model.core-nodes :as m.core-nodes]
    #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
    [taoensso.timbre :as log]))
@@ -18,8 +18,7 @@
      {::pc/params #{::m.core-nodes/id}
       ::pc/output [:status]}
      (let [node (q.core-nodes/read-record id)]
-       (a.bitcoind/update-info! node)
-       (a.bitcoind/update-blockchain-info! node)))
+       (a.core-nodes/fetch! node)))
 
    :cljs
    (defmutation connect! [_props]
