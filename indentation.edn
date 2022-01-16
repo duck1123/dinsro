@@ -22,5 +22,6 @@
  tr               [[:inner 0]]
  ui-form          [[:inner 0]]
  ui-form-field    [[:inner 0]]
+ ui-modal         [[:inner 0]]
  ui-modal-content [[:inner 0]]
  ul               [[:inner 0]]}
