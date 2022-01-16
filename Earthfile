@@ -113,17 +113,14 @@ ci:
   BUILD +check
   BUILD +lint
   BUILD +test
-  # BUILD +e2e
   BUILD +image
 
 cert-downloader:
-  FROM +base-builder
+  FROM babashka/babashka:latest
   ARG EXPECTED_REF=${repo}/cert-downloader:${version}
-  USER root
   COPY resources/cert-downloader .
-  RUN npm install
-  ENTRYPOINT []
-  CMD ["/bin/bash", "bootstrap.sh"]
+  ENTRYPOINT ["bb", "bootstrap.clj"]
+  CMD ["bb", "bootstrap.clj"]
   SAVE IMAGE ${EXPECTED_REF}
 
 compile-frontend:
