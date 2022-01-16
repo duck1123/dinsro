@@ -20,7 +20,6 @@ If building locally, not using docker, you will need:
 
 Recommended:
 
-* docker-compose
 * Tilt (https://docs.tilt.dev/install.html)
 * Helm (https://helm.sh/docs/intro/install/)
 * K3D (https://k3d.io/#install-script)

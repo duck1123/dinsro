@@ -458,20 +458,6 @@
   {:doc     "compile and run server in dev mode"
    :depends [compile run]}
 
-  start-dev
-  {:doc     "Start development"
-   :depends [start-lb start-web]}
-
-  start-lb
-  {:doc  "Run the load balancer"
-   :task (shell "docker-compose up -d frontend")}
-
-  start-web
-  {:doc  "Start the main server"
-   :task (do
-           (shell "mkdir -p data")
-           (shell "docker-compose up dinsro"))}
-
   test
   {:doc     "Run all tests"
    :depends [test-clj test-cljs]}
