@@ -266,7 +266,7 @@ script-builder:
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
   COPY --dir bb.edn deps.edn .
-  COPY --dir src/babashka src/babashka
+  COPY --dir src/babashka src/shared src
 
 src:
   FROM +builder

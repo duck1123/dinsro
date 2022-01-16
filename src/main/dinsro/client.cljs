@@ -5,11 +5,11 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.mutations :as m]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.application :as rad-app]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.rendering.semantic-ui.semantic-ui-controls :as sui]
    [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.routing :as routing]
    [com.fulcrologic.rad.routing.history :as history]
    [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [html5-history]]
    [dinsro.app :as da]
@@ -30,13 +30,30 @@
   (action [{:keys [app]}]
     (let [logged-in (auth/verified-authorities app)]
       (if (empty? logged-in)
-        (routing/route-to! app u.login/LoginPage {})
+        (hist5/restore-route! app u.home/HomePage {})
         (hist5/restore-route! app u.home/HomePage {})))))
 
 (defn setup-RAD [app]
   (let [all-controls (u.controls/all-controls)]
     (rad-app/install-ui-controls! app all-controls))
   (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
+
+(def my-auth-machine
+  (-> auth/auth-machine
+      (assoc-in
+       [::uism/states
+        :state/gathering-credentials
+        ::uism/events
+        :event/cancel]
+       {::uism/target-state :state/idle})
+      (assoc-in
+       [::uism/states
+        :state/idle
+        ::uism/events
+        :event/cancel]
+       {::uism/target-state :state/idle})))
+
+(uism/register-state-machine! `auth/auth-machine my-auth-machine)
 
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.

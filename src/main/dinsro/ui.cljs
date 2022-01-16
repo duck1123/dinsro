@@ -9,7 +9,7 @@
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
    [dinsro.machines :as machines]
-   [dinsro.model.navlink :as m.navlink]
+   [dinsro.model.navbar :as m.navbar]
    [dinsro.model.settings :as m.settings]
    [dinsro.mutations.settings :as mu.settings]
    [dinsro.ui.accounts :as u.accounts]
@@ -74,52 +74,42 @@
     (dom/div {:style "height: 100%"}
       (dom/div "No route selected.")
       (when route-factory
-        (route-factory route-props)))))
+        (comp/fragment
+         (route-factory route-props))))))
 
 (def ui-root-router (comp/factory RootRouter))
 
-(defsc NavbarUnion
-  [_this _props]
-  {:query         [:navbar/id
-                   {::navbar (comp/get-query u.navbar/Navbar)}
-                   {::sidebar (comp/get-query u.navbar/NavbarSidebar)}]
-   :initial-state {:navbar/id :main
-                   ::navbar   {}
-                   ::sidebar  {}}})
-
-(defsc Root [this {:root/keys        [navbar sidebar]
-                   ::keys            [init-form router]
-                   :keys             [authenticator]
-                   ::m.settings/keys [site-config]}]
+(defsc Root
+  [this {:root/keys        [authenticator init-form navbar router]
+         ::m.settings/keys [site-config]}]
   {:componentDidMount
    (fn [this]
-     (uism/begin! this machines/hideable ::u.navbar/navbarsm
-                  {:actor/navbar (uism/with-actor-class [:navbar/id :main] u.navbar/Navbar)})
-     (df/load! this ::m.navlink/current-navbar u.navbar/Navbar
-               {:target [:root/navbar]})
      (df/load! this ::m.settings/site-config mu.settings/Config)
 
-     (df/load! this ::m.navlink/current-navbar u.navbar/NavbarSidebar
-               {:target [:root/sidebar]}))
-   :query
-   [{:authenticator (comp/get-query u.authenticator/Authenticator)}
+     (df/load! this :root/navbar u.navbar/NavbarUnion)
 
+     (uism/begin! this machines/hideable ::u.navbar/navbarsm
+                  {:actor/navbar
+                   (uism/with-actor-class [::m.navbar/id :main]
+                     u.navbar/Navbar)}))
+   :query
+   [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
     {:root/navbar (comp/get-query u.navbar/Navbar)}
-    {:root/sidebar (comp/get-query u.navbar/NavbarSidebar)}
-    {::init-form (comp/get-query u.initialize/InitForm)}
-    {::router (comp/get-query RootRouter)}
+    {:root/init-form (comp/get-query u.initialize/InitForm)}
+    {:root/router (comp/get-query RootRouter)}
     ::auth/authorization
     {::m.settings/site-config (comp/get-query mu.settings/Config)}]
    :initial-state {:root/navbar             {}
-                   :root/sidebar            {}
-                   :authenticator           {}
-                   ::init-form              {}
-                   ::router                 {}
+                   :root/authenticator      {}
+                   :root/init-form          {}
+                   :root/router             {}
                    ::m.settings/site-config {}}}
   (let [inverted                                   true
         visible                                    (= (uism/get-active-state this ::u.navbar/navbarsm) :state/shown)
         top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
-        {::m.settings/keys [loaded? initialized?]} (log/spy :info site-config)]
+        {::m.settings/keys [loaded? initialized?]} site-config
+        root                                       (uism/get-active-state this ::auth/auth-machine)
+        gathering-credentials?                     (#{:state/gathering-credentials} root)]
     (comp/fragment
      (u.media/ui-media-styles)
      (u.media/ui-media-context-provider
@@ -132,18 +122,17 @@
             (ui-sidebar-pushable
              {:inverted (str inverted)
               :visible  (str visible)}
-             (when sidebar
-               (u.navbar/ui-navbar-sidebar sidebar))
+             (when navbar
+               (u.navbar/ui-navbar-sidebar navbar))
              (ui-sidebar-pusher
               {:style {:paddingTop "12px"}}
               (if (= :initial top-router-state)
                 (dom/div :.loading "Loading...")
                 (comp/fragment
                  (u.authenticator/ui-authenticator authenticator)
-                 (ui-root-router router))))))
-          (dom/div {}
-            (u.initialize/ui-init-form init-form)))
-        (dom/div {}
-          (dom/p "Not loaded")))))))
+                 (when-not gathering-credentials?
+                   (ui-root-router router)))))))
+          (u.initialize/ui-init-form init-form))
+        (dom/p "Not loaded"))))))
 
 (def ui-root (comp/factory Root))

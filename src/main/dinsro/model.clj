@@ -12,6 +12,7 @@
    [dinsro.model.ln-payments :as m.ln-payments]
    [dinsro.model.ln-peers :as m.ln-peers]
    [dinsro.model.ln-transactions :as m.ln-tx]
+   [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -36,6 +37,7 @@
         m.ln-payments/attributes
         m.ln-peers/attributes
         m.ln-tx/attributes
+        m.navbar/attributes
         m.navlink/attributes
         m.rates/attributes
         m.rate-sources/attributes
