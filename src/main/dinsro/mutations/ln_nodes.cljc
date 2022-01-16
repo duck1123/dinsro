@@ -5,7 +5,9 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln-channels :as a.ln-channels])
+   #?(:clj [dinsro.actions.ln-invoices :as a.ln-invoices])
    #?(:clj [dinsro.actions.ln-nodes :as a.ln-nodes])
+   #?(:clj [dinsro.actions.ln-payments :as a.ln-payments])
    #?(:clj [dinsro.actions.ln-peers :as a.ln-peers])
    #?(:clj [dinsro.actions.ln-transactions :as a.ln-tx])
    [dinsro.model.ln-info :as m.ln-info]
@@ -36,7 +38,8 @@
 (defsc NodeCert
   [_this _props]
   {:query [::m.ln-nodes/hasCert?
-           ::m.ln-nodes/id]
+           ::m.ln-nodes/id
+           :com.fulcrologic.fulcro.algorithms.form-state/config]
    :ident ::m.ln-nodes/id})
 
 (defsc NodeMacaroonResponse
@@ -50,7 +53,14 @@
    (pc/defmutation download-cert!
      [_env {::m.ln-nodes/keys [id]}]
      {::pc/params #{::m.ln-nodes/id}
-      ::pc/output [:status]}
+      ::pc/output [:status
+                   ::m.ln-nodes/id
+                   ::m.ln-nodes/hasCert?
+                   {:com.fulcrologic.fulcro.algorithms.form-state/config
+                    [{:com.fulcrologic.fulcro.algorithms.form-state/forms-by-ident
+                      [:row :table]}
+                     {:com.fulcrologic.fulcro.algorithms.form-state/pristine-state
+                      [::m.ln-nodes/hasCert?]}]}]}
      (if-let [node (q.ln-nodes/read-record id)]
        (do (a.ln-nodes/download-cert! node)
            {:status               :ok
@@ -58,7 +68,12 @@
             ::m.ln-nodes/hasCert? true})
        {:status               :fail
         ::m.ln-nodes/id       id
-        ::m.ln-nodes/hasCert? false}))
+        ::m.ln-nodes/hasCert? false
+        :com.fulcrologic.fulcro.algorithms.form-state/config
+        {:com.fulcrologic.fulcro.algorithms.form-state/forms-by-ident {:row   id
+                                                                       :table ::m.ln-nodes/id}
+         :com.fulcrologic.fulcro.algorithms.form-state/pristine-state
+         {::m.ln-nodes/hasCert? false}}}))
    :cljs
    (defmutation download-cert! [_props]
      (action [_env] true)
@@ -72,11 +87,11 @@
      (if-let [node (q.ln-nodes/read-record id)]
        (let [response (a.ln-nodes/download-macaroon! node)
              success  (not (nil? response))]
-         {::status                   (if success :ok :fail)
+         {::status                  (if success :ok :fail)
           ::m.ln-nodes/hasMacaroon? success
           ::m.ln-nodes/id           id})
-       {::status :not-found
-        ::m.ln-nodes/id           id}))
+       {::status        :not-found
+        ::m.ln-nodes/id id}))
    :cljs
    (defmutation download-macaroon! [_props]
      (action [_env] true)
@@ -122,6 +137,30 @@
      {:status :ok})
    :cljs
    (defmutation fetch-channels! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
+#?(:clj
+   (pc/defmutation fetch-invoices!
+     [_env {::m.ln-nodes/keys [id]}]
+     {::pc/params #{::m.ln-nodes/id}
+      ::pc/output [:status]}
+     (a.ln-invoices/update! id)
+     {:status :ok})
+   :cljs
+   (defmutation fetch-invoices! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
+#?(:clj
+   (pc/defmutation fetch-payments!
+     [_env {::m.ln-nodes/keys [id]}]
+     {::pc/params #{::m.ln-nodes/id}
+      ::pc/output [:status]}
+     (a.ln-payments/fetch! id)
+     {:status :ok})
+   :cljs
+   (defmutation fetch-payments! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
@@ -183,7 +222,7 @@
      {::pc/params #{::m.ln-nodes/id}
       ::pc/output [:status]}
      (if-let [node (q.ln-nodes/read-record id)]
-       (do (a.ln-nodes/initialize! node)
+       (do (a.ln-nodes/initialize!-sync node)
            {:status "ok"})
        (do
          (log/error "No node")
@@ -245,6 +284,8 @@
       download-macaroon!
       fetch-address!
       fetch-channels!
+      fetch-invoices!
+      fetch-payments!
       fetch-peers!
       fetch-transactions!
       generate!

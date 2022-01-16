@@ -18,7 +18,7 @@
      {::pc/params #{::m.core-nodes/id}
       ::pc/output [:status]}
      (let [node (q.core-nodes/read-record id)]
-       (a.core-nodes/fetch! node)))
+       (a.core-nodes/update-blockchain-info! node)))
 
    :cljs
    (defmutation connect! [_props]
@@ -30,4 +30,34 @@
          {}))))
 
 #?(:clj
-   (def resolvers [connect!]))
+   (pc/defmutation fetch!
+     [_env {::m.core-nodes/keys [id]}]
+     {::pc/params #{::m.core-nodes/id}
+      ::pc/output [:status]}
+     (let [node (q.core-nodes/read-record id)]
+       (a.core-nodes/fetch! node)))
+
+   :cljs
+   (defmutation fetch! [_props]
+     (action [_env] true)
+     (remote [_env] true)
+     (ok-action [env]
+       (let [body (get-in env [:result :body])]
+         (get body `fetch!)
+         {}))))
+
+#?(:clj
+   (pc/defmutation fetch-peers!
+     [_env {::m.core-nodes/keys [id]}]
+     {::pc/params #{::m.core-nodes/id}
+      ::pc/output [:status]}
+     (let [node (q.core-nodes/read-record id)]
+       (a.core-nodes/fetch-peers! node)))
+
+   :cljs
+   (defmutation fetch-peers! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
+#?(:clj
+   (def resolvers [connect! fetch! fetch-peers!]))
