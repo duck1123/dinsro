@@ -424,6 +424,9 @@
   lint
   {:depends [kondo eastwood kibit]}
 
+  outdated
+  {:task (clojure " -Moutdated")}
+
   package-jar
   {:doc  "Build production jar"
    :task (clojure "-M:uberdeps:production --main-class dinsro.core --aliases production")}
