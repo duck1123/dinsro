@@ -69,13 +69,13 @@
           chain       :regtest
           ingress     {}
           rpc         {}
-          tls         {}}}                                        options
+          tls         {}}}                             options
         {auto-unlock-password :password
          :or
-         {auto-unlock-password "password12345678"}}               auto-unlock
+         {auto-unlock-password "password12345678"}}    auto-unlock
         {ingress-host :host
          :or
-         {ingress-host (str "lnd-" name ".locahost")}}            ingress
+         {ingress-host (str "lnd-" name ".locahost")}} ingress
         {rpc-host     :host
          rpc-port     :port
          rpc-user     :user
@@ -87,23 +87,23 @@
           rpc-user       "rpcuser"
           rpc-password   "rpcpassword"
           zmqpubrawblock {}
-          zmqpubrawtx    {}}}                                     rpc
+          zmqpubrawtx    {}}}                          rpc
         {zmqpubrawblock-host :host
          zmqpubrawblock-port :port
          :or
          {zmqpubrawblock-host rpc-host
-          zmqpubrawblock-port 28332}}                             zmqpubrawblock
+          zmqpubrawblock-port 28332}}                  zmqpubrawblock
         {zmqpubrawtx-host :host
          zmqpubrawtx-port :port
          :or
          {zmqpubrawtx-host rpc-host
-          zmqpubrawtx-port 28333}}                                zmqpubrawtx
+          zmqpubrawtx-port 28333}}                     zmqpubrawtx
         {tls-domain :domain
          :or
          {tls-domain (str "lnd-" name
                           ".lnd-"
                           name
-                          ".svc.cluster.local")}} tls]
+                          ".svc.cluster.local")}}      tls]
     {:alias       alias
      :auto-unlock {:password auto-unlock-password}
      :chain       chain

@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+bitcoin:
+  host: bitcoind.bitcoin
+  password: hunter2
+
 replicaCount: 1
 
 image:
@@ -93,3 +97,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+configurationFile: "-"

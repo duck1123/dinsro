@@ -1,0 +1,39 @@
+{:roterski.fulcro.rad.database-adapters.xtdb/databases
+ {:main
+  {:xtdb.jdbc/connection-pool
+   {:dialect #:xtdb{:module "xtdb.jdbc.psql/->dialect"}
+    :db-spec {:dbname   "dinsro"
+              :host     "db"
+              :user     "postgres"
+              :password "mysecretpassword"}}
+   :xtdb/tx-log         {:xtdb/module     "xtdb.jdbc/->tx-log"
+                         :connection-pool :xtdb.jdbc/connection-pool}
+   :xtdb/document-store {:xtdb/module     "xtdb.jdbc/->document-store"
+                         :connection-pool :xtdb.jdbc/connection-pool}}}
+ :ring.middleware/defaults-config
+ {:params    {:keywordize true
+              :multipart  true
+              :nested     true
+              :urlencoded true}
+  :cookies   true
+  :responses {:absolute-redirects     true
+              :content-types          true
+              :default-charset        "utf-8"
+              :not-modified-responses true}
+  :session   {}
+  :static    {:resources "public"}
+  :security  {:anti-forgery   false
+              :hsts           true
+              :ssl-redirect   false
+              :frame-options  :sameorigin
+              :xss-protection {:enable? true
+                               :mode    :block}}}
+
+ :com.fulcrologic.rad.pathom/config
+ {:trace?         false
+  ;; TODO: Elide params and such in logging
+  :sensitive-keys #{:password :dinsro.model.account/password}
+  :log-requests?  true
+  :log-responses? true}
+ :taoensso.timbre/logging-config
+ {:min-level :info :level :info}}

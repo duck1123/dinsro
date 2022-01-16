@@ -1,23 +1,18 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: cert-downloader
 spec:
-  selector:
-    matchLabels:
-      {{- include "rtl.selectorLabels" . | nindent 6 }}
   template:
-    metadata:
-      labels:
-        {{- include "rtl.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: rtl
         image: "{{ .Values.certDownloader.image.repository }}:{{ .Values.certDownloader.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.certDownloader.image.pullPolicy }}
         volumeMounts:
         - name: certs
           mountPath: /mnt/data
+      restartPolicy: Never
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

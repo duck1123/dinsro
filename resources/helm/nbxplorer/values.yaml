@@ -7,6 +7,12 @@ replicaCount: 1
 config:
   rpcauth: ""
 
+nbxplorer:
+  network: mainnet
+  chain: btc
+  rpcurl: "http://bitcoind.bitcoin.svc.cluster.local:8332/"
+  nodeEndpoint: "bitcoind.bitcoin.svc.cluster.local:8333"
+
 image:
   repository: nicolasdorier/nbxplorer
   pullPolicy: IfNotPresent

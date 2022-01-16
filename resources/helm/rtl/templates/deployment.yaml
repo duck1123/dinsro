@@ -15,13 +15,13 @@ spec:
       - name: rtl
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        environment:
+        env:
         - name: RTL_SSO
-          value: 0
+          value: "0"
         - name: multiPass
-          value: hunter2
+          value: {{ .Values.bitcoin.password }}
         - name: BITCOIN_HOST
-          value: bitcoind.bitcoin
+          value: {{ .Values.bitcoin.host }}
         ports:
         - name: http
           containerPort: 3000

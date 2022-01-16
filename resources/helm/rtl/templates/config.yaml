@@ -7,4 +7,8 @@ metadata:
 # "multiPass": "leeloo dallas",
 data:
   RTL-Config.json: |-
+{{- if (eq "-" .Values.configurationFile) }}
 {{ .Files.Get "config.json" | indent 4}}
+{{- else }}
+{{ .Values.configurationFile | indent 4 }}
+{{- end }}

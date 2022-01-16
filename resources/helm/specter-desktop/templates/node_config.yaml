@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  wallet-config.edn: |-
+{{ .Values.walletConfig | indent 4 }}

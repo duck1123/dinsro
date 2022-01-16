@@ -1,8 +1,15 @@
-{:paths ["src/babashka"]
+{:paths ["src/babashka" "src/shared"]
 
  :tasks
- {:requires ([clojure.string :as string]
-             [dinsro.commands :refer :all])
+ {:requires
+  ([clojure.string :as string]
+   [clj-yaml.core :as yaml]
+   [dinsro.commands :refer :all]
+   [dinsro.helm.bitcoind :as h.bitcoind]
+   [dinsro.helm.lnd :as h.lnd]
+   [dinsro.helm.nbxplorer :as h.nbxplorer]
+   [dinsro.helm.rtl :as h.rtl]
+   [dinsro.helm.specter :as h.specter])
 
   _8
   {:doc  "Summons bot"
@@ -143,6 +150,254 @@
   format
   {:doc  "Format source files"
    :task (clojure "-M:cljfmt fix src deps.edn shadow-cljs.edn --indents indentation.edn")}
+
+  generate-bitcoind-values
+  {:doc "generate a bitcoind values file"
+   :task
+   (let [n       (or (first *command-line-args*) "3")
+         options {:name n}
+         yaml    (yaml/generate-string (h.bitcoind/->values options))]
+     (mkdir (format "conf/%s" n))
+     (spit (format "conf/%s/bitcoind_values.yaml" n) yaml))}
+
+  generate-lnd-values
+  {:doc "generate a lnd values file"
+   :task
+   (let [n       (or (first *command-line-args*) "3")
+         options {:alias   (str "Node " n)
+                  :name    n
+                  :ingress {:host (str "lnd-" n ".localhost")}
+                  :rpc     {:host (str "bitcoin.bitcoin-" n)}}
+         yaml    (yaml/generate-string (h.lnd/->values options))]
+     (mkdir (format "conf/%s" n))
+     (spit (format "conf/%s/lnd_values.yaml" n) yaml))}
+
+  generate-nbxplorer-values
+  {:doc "generate a nbxplorer values file"
+   :task
+   (let [n       (or (first *command-line-args*) "3")
+         options {:host         (format "nbxplorer-%s.localhost" n)
+                  :rpcurl       (format "http://bitcoin.bitcoin-%s:18443" n)
+                  :nodeEndpoint (format "bitcoin.bitcoin-%s:18444" n)}
+         yaml    (yaml/generate-string (h.nbxplorer/->values options))]
+     (mkdir (format "conf/%s" n))
+     (spit (format "conf/%s/nbxplorer_values.yaml" n) yaml))}
+
+  generate-rtl-values
+  {:doc "generate a rtl values file"
+   :task
+   (let [n       (or (first *command-line-args*) "3")
+         options {:name n}
+         yaml    (yaml/generate-string (h.rtl/->values options))]
+     (mkdir (format "conf/%s" n))
+     (spit (format "conf/%s/rtl_values.yaml" n) yaml))}
+
+  generate-specter-values
+  {:doc "generate a specter values file"
+   :task
+   (let [n       (or (first *command-line-args*) "3")
+         options {:name n}
+         yaml    (yaml/generate-string (h.specter/->values options))]
+     (mkdir (format "conf/%s" n))
+     (spit (format "conf/%s/specter_values.yaml" n) yaml))}
+
+  generate-values
+  {:doc "generate a lnd values file"
+   :task
+   (let [n (or (first *command-line-args*) "3")]
+     (mkdir (format "conf/%s" n))
+     (spit (format "lnd_%s_values.yaml" n)
+           (yaml/generate-string
+            (h.lnd/->values
+             {:alias       (format "Node %s" n)
+              :auto-unlock {:password "unlockpassword"}
+              :chain       :regtest
+              :ingress     {:host (format "lnd-%s.localhost" n)}
+              :tls         {:domain (format "lnd-%s-internal.lnd1.svc.cluster.local" n)}}))))}
+
+  helm-bitcoin
+  {:depends [generate-bitcoind-values]
+   :task
+   (let [n        (or (first *command-line-args*) "3")
+         path     "resources/helm/fold/charts/bitcoind/"
+         filename (format "conf/%s/bitcoind_values.yaml" n)
+         cmd      (string/join
+                   " "
+                   ["helm template "
+                    "--create-namespace"
+                    (str "--namespace " n)
+                    (str "--name-template=bitcoin")
+                    (str "--values " filename)
+                    path])]
+     (shell cmd))}
+
+  helm-bitcoin-apply
+  {:task
+   (let [n   (or (first *command-line-args*) "3")
+         cmd (format "bb helm-bitcoin %s | kubectl apply -n bitcoin-%s -f -" n n)]
+     (create-namespace (str "bitcoin-" n))
+     (shell (format "sh -c \"%s\"" cmd)))}
+
+  helm-bitcoin-remove
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (delete-namespace (str "bitcoin-" n)))}
+
+  helm-clean
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (try
+       (run 'helm-nbxplorer-remove)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-rtl-remove)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-specter-remove)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-lnd-remove)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-bitcoin-remove)
+       (catch Exception ex
+         (println "failed"))))}
+
+  helm-up
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (try
+       (run 'helm-bitcoin-apply)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-lnd-apply)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-specter-apply)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-rtl-apply)
+       (catch Exception ex
+         (println "failed")))
+     (try
+       (run 'helm-nbxplorer-apply)
+       (catch Exception ex
+         (println "failed"))))}
+
+  helm-lnd
+  {:depends [generate-lnd-values]
+   :task
+   (let [n        (or (first *command-line-args*) "3")
+         path     "resources/helm/fold/charts/lnd/"
+         filename (format "conf/%s/lnd_values.yaml" n)
+         cmd      (string/join
+                   " "
+                   ["helm template "
+                    (str "--name-template=lnd-" n)
+                    (str "--values " filename)
+                    path])]
+     (shell cmd))}
+
+  helm-lnd-apply
+  {:task
+   (let [n   (or (first *command-line-args*) "3")
+         cmd (format "bb helm-lnd %s | kubectl apply -n lnd-%s -f -" n n)]
+     (create-namespace (str "lnd-" n))
+     (shell (format "sh -c \"%s\"" cmd)))}
+
+  helm-lnd-remove
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (delete-namespace (str "lnd-" n)))}
+
+  helm-nbxplorer
+  {:depends [generate-nbxplorer-values]
+   :task
+   (let [n        (or (first *command-line-args*) "3")
+         options  {}
+         path     "resources/helm/nbxplorer"
+         filename (format "conf/%s/nbxplorer_values.yaml" n)
+         cmd      (string/join
+                   " "
+                   ["helm template"
+                    (str "--values " filename)
+                    (format "--namespace nbxplorer-%s" n)
+                    "--name-template=nbxplorer"
+                    path])]
+     (shell cmd))}
+
+  helm-nbxplorer-apply
+  {:task
+   (let [n   (or (first *command-line-args*) "3")
+         cmd (format "bb helm-nbxplorer %s | kubectl apply -n nbxplorer-%s -f -" n n)]
+     (create-namespace (str "nbxplorer-" n))
+     (shell (format "sh -c \"%s\"" cmd)))}
+
+  helm-nbxplorer-remove
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (delete-namespace (str "nbxplorer-" n)))}
+
+
+  helm-rtl
+  {:depends [generate-rtl-values]
+   :task
+   (let [n        (or (first *command-line-args*) "3")
+         path     "resources/helm/rtl/"
+         filename (format "conf/%s/rtl_values.yaml" n)
+         cmd      (string/join
+                   " "
+                   ["helm template "
+                    (str "--name-template=rtl-" n)
+                    (str "--values " filename)
+                    path])]
+     (shell cmd))}
+
+  helm-rtl-apply
+  {:task
+   (let [n   (or (first *command-line-args*) "3")
+         cmd (format "bb helm-rtl %s | kubectl apply -n rtl-%s -f -" n n)]
+     (create-namespace (str "rtl-" n))
+     (shell (format "sh -c \"%s\"" cmd)))}
+
+  helm-rtl-remove
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (delete-namespace (str "rtl-" n)))}
+
+
+  helm-specter
+  {:depends [generate-specter-values]
+   :task
+   (let [n        (or (first *command-line-args*) "3")
+         path     "resources/helm/specter-desktop/"
+         filename (format "conf/%s/specter_values.yaml" n)
+         cmd      (string/join
+                   " "
+                   ["helm template "
+                    (str "--name-template=specter-" n)
+                    (str "--values " filename)
+                    path])]
+     (shell cmd))}
+
+  helm-specter-apply
+  {:task
+   (let [n   (or (first *command-line-args*) "3")
+         cmd (format "bb helm-specter %s | kubectl apply -n specter-%s -f -" n n)]
+     (create-namespace (str "specter-" n))
+     (shell (format "sh -c \"%s\"" cmd)))}
+
+  helm-specter-remove
+  {:task
+   (let [n (or (first *command-line-args*) "3")]
+     (delete-namespace (str "specter-" n)))}
 
   init
   {:doc     "Initialize the system"

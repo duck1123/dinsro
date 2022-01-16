@@ -34,17 +34,19 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          # command: [ "/bin/bash", "-c", "sleep 3600" ]
           args:
             - "--datadir=/data"
             - "--bind=0.0.0.0:32838"
-            - "--network=mainnet"          
-            - "--chains=btc"
+            - "--network={{ .Values.nbxplorer.network }}"
+            - "--chains={{ .Values.nbxplorer.chain }}"
+            - "--regtest"
             - "--noauth"
-            - "--btcrpcurl=http://bitcoind.bitcoin.svc.cluster.local:8332/"
-            - "--btcnodeendpoint=bitcoind.bitcoin.svc.cluster.local:8333"            
+            - "--btcrpcurl={{ .Values.nbxplorer.rpcurl }}"
+            - "--btcnodeendpoint={{ .Values.nbxplorer.nodeEndpoint}}"
             - "--btcrpcauth={{ .Values.config.rpcauth }}"
-            - "--rmquser=rabbituser"
-            - "--rmqpass=test123"
+            - "--rmquser={{ .Values.rabbitmq.auth.username }}"
+            - "--rmqpass={{ .Values.rabbitmq.auth.password }}"
             - "--rmqhost=nbxplorer-rabbitmq"
             - "--rmqvirtual=/"
             - "--rmqtranex=NewTransaction"

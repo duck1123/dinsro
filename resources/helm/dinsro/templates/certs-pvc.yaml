@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.certs.enabled (not .Values.persistence.certs.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: certs
+  labels:
+    app: certs
+    type: local
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.certs.size | quote }}
+{{- if .Values.persistence.certs.storageClass }}
+{{- if (eq "-" .Values.persistence.certs.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.certs.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

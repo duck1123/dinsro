@@ -56,6 +56,10 @@
   ([user cmd]
    (shell (format "sudo -u %s %s" user cmd))))
 
+(defn mkdir
+  [path]
+  (shell (str "mkdir -p " path)))
+
 (defn display-env
   []
   (shell "sh -c \"env | sort\""))
@@ -65,3 +69,11 @@
   (->> names
        (map (fn [name] (when-let [v (System/getenv name)] (str name "=" v))))
        (filter identity)))
+
+(defn create-namespace
+  [name]
+  (shell (format "sh -c \"kubectl create namespace %s | true\"" name)))
+
+(defn delete-namespace
+  [name]
+  (shell (format "sh -c \"kubectl delete namespace %s | true\"" name)))

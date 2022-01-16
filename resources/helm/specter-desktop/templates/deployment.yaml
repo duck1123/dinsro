@@ -9,7 +9,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   strategy:
-    type: Recreate  
+    type: Recreate
   selector:
     matchLabels:
       {{- include "specter-desktop.selectorLabels" . | nindent 6 }}
@@ -38,26 +38,26 @@ spec:
           {{- if .Values.debug }}
           command: ['sleep']
           args: ['infinity']
-          {{- else }}            
-          args: 
+          {{- else }}
+          args:
             - '--host=0.0.0.0'
             #- '--hwibridge'
           {{- end }}
           volumeMounts:
           - mountPath: /data
-            name: specter          
+            name: specter
           ports:
-            - name: specter
-              containerPort: {{.Values.service.port}}
-              protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          - name: specter
+            containerPort: {{.Values.service.port}}
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: specter
+          readinessProbe:
+            httpGet:
+              path: /
+              port: specter
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -75,4 +75,4 @@ spec:
       volumes:
         - name: specter
           persistentVolumeClaim:
-            claimName: specter-desktop
+            claimName: {{ include "specter-desktop.fullname" . }}

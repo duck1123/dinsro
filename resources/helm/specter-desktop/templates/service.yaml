@@ -9,5 +9,5 @@ spec:
     - port: {{.Values.service.port}}
       targetPort: specter
       protocol: TCP
-      name: specter
+      name: {{ include "specter-desktop.fullname" . }}
   selector: {{- include "specter-desktop.selectorLabels" . | nindent 4}}

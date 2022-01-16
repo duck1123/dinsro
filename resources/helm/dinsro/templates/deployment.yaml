@@ -79,6 +79,12 @@ spec:
           failureThreshold: 20
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: certs
+          mountPath: /mnt/certs
+        - name: config
+          mountPath: /etc/dinsro
+          # subPath: config.edn
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -91,3 +97,10 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      - name: certs
+        persistentVolumeClaim:
+          claimName: certs
+      - name: config
+        configMap:
+          name: config

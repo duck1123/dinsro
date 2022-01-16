@@ -1,11 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -20,9 +16,9 @@ spec:
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
+      {{- range .hosts }}
+      - {{ . | quote }}
+      {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
@@ -41,4 +37,4 @@ spec:
               number: {{ $svcPort }}
       {{- end }}
   {{- end }}
-  {{- end }}
+{{- end }}
