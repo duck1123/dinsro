@@ -19,11 +19,7 @@ config.define_bool('localDevtools')
 config.define_bool('notebookInheritHost')
 # If not inheriting, use this host for notebook
 config.define_string('notebookHost')
-# Deploy core node
-config.define_bool('useBitcoin')
 config.define_bool('useLinting')
-config.define_bool('useLnd1')
-config.define_bool('useLnd2')
 # Enable Notebook
 config.define_bool('useNotebook')
 config.define_bool('useProduction')
@@ -64,60 +60,6 @@ namespace_create(
   annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
   labels = [ "field.cattle.io/projectId: %s" % project_id ],
 )
-
-if use_bitcoin:
-  namespace_create(
-    'bitcoin',
-    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
-    labels = [ "field.cattle.io/projectId: %s" % project_id ],
-  )
-  k8s_yaml(helm(
-    'resources/helm/fold/charts/bitcoind',
-    name = 'bitcoind',
-    namespace = 'bitcoin',
-    values = [ 'resources/tilt/bitcoin_values.yaml' ],
-  ))
-
-if use_bitcoin and use_lnd1:
-  namespace_create(
-    'lnd1',
-    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
-    labels = [ "field.cattle.io/projectId: %s" % project_id ],
-  )
-  k8s_yaml(helm(
-    'resources/helm/fold/charts/lnd',
-    name = 'lnd1',
-    namespace = 'lnd1',
-    values = [ 'resources/tilt/lnd1_values.yaml' ]
-  ))
-
-if use_bitcoin and use_lnd2:
-  namespace_create(
-    'lnd2',
-    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
-    labels = [ "field.cattle.io/projectId: %s" % project_id ],
-  )
-  k8s_yaml(helm(
-    'resources/helm/fold/charts/lnd',
-    name = 'lnd2',
-    namespace = 'lnd2',
-    values = [ 'resources/tilt/lnd2_values.yaml' ]
-  ))
-
-if use_bitcoin and use_rtl:
-  namespace_create(
-    'rtl',
-    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
-    labels = [ "field.cattle.io/projectId: %s" % project_id ],
-  )
-
-  k8s_yaml(helm(
-    'resources/helm/rtl',
-    namespace = 'rtl',
-    set = [
-      'certDownloader.image.repository=%s/cert-downloader' % repo,
-    ],
-  ))
 
 devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
 
@@ -207,64 +149,6 @@ custom_build(
     sync('resources/main/public', '/usr/src/app/resources/main/public')
   ]
 )
-
-if use_bitcoin and (use_lnd1 or use_lnd2):
-  custom_build(
-    "%s/lnd-fileserver:%s" % (repo, version),
-    "earthly --build-arg repo=%s +fileserver" % repo,
-    [
-      'Earthfile',
-      'resources/fileserver',
-    ],
-    tag = version,
-  )
-
-if use_bitcoin and use_rtl:
-  custom_build(
-    "%s/cert-downloader:%s" % (repo, version),
-    "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +cert-downloader" % repo,
-    [
-      'Earthfile',
-      'resources/cert-downloader',
-    ],
-  )
-
-if use_bitcoin:
-  k8s_resource(
-    workload = 'bitcoind',
-    labels = [ 'bitcoin' ],
-  )
-
-if use_bitcoin and use_lnd1:
-  k8s_resource(
-    workload='lnd1',
-    links = [
-      link('http://lnd1.localhost', 'lnd')
-    ],
-    labels = [ 'bitcoin' ],
-  )
-
-if use_bitcoin and use_lnd2:
-  k8s_resource(
-    workload='lnd2',
-    links = [
-      link('http://lnd2.localhost', 'lnd')
-    ],
-    labels = [ 'bitcoin' ],
-  )
-
-if use_bitcoin and use_rtl:
-  k8s_resource(
-    workload='rtl',
-    links = [
-      link('http://rtl.localhost/', 'RTL')
-    ],
-    labels = [ 'bitcoin' ],
-  )
-  k8s_resource(
-    workload = 'cert-downloader',
-    labels = [ 'bitcoin' ],
-  )
 
 k8s_resource(
   workload='dinsro',
