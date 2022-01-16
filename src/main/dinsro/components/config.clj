@@ -1,33 +1,63 @@
 (ns dinsro.components.config
   (:require
+   [buddy.core.nonce :refer [random-bytes]]
    [com.fulcrologic.fulcro.server.config :as fserver]
    [dinsro.lib.logging :as logging]
    [mount.core :refer [defstate args]]
+   [ring.util.codec :refer [base64-encode base64-decode]]
    [taoensso.timbre :as log])
-  (:import java.io.File))
+  (:import java.io.File
+           java.io.FileNotFoundException))
 
 (defn get-config-path
   []
-  (let [paths ["config/app.edn"
-               "config.edn"]
-        files (concat (map (fn [path]
-                             (when path
-                               (let [file (File. path)]
-                                 (when (.exists file)
-                                   (.getAbsolutePath file)))))
-                           paths)
-                      paths)
-        files (filter identity files)]
-    (first files)))
+  (let [paths    ["/etc/dinsro/config.edn"
+                  "config/app.edn"
+                  "config.edn"]
+        get-path (fn [path]
+                   (when path
+                     (let [file (File. (log/spy :info path))]
+                       (when (.exists file)
+                         (.getAbsolutePath file)))))
+        files    (concat (map get-path paths) paths)
+        files    (filter (fn [path] (when-let [file (and path (File. path))]
+                                      (.exists file))) files)]
+    (first (log/spy :info files))))
 
 (defstate config
   "The overrides option in args is for overriding
    configuration in tests."
   :start
-  (let [{:keys [config overrides]
-         :or   {config "config/dev.edn"}} (args)
-        loaded-config                     (merge (fserver/load-config!
-                                                  {:config-path (or config "config/dev.edn")}) overrides)]
-    (log/info "Loading config" config)
-    (logging/configure-logging! loaded-config)
-    loaded-config))
+  (let [{:keys [config overrides]} (args)
+        config-path (log/spy :info (or config (get-config-path) "config/prod.edn"))
+        loaded-config (fserver/load-config! {:config-path config-path})
+        merged-config (merge loaded-config overrides)]
+    (logging/configure-logging! merged-config)
+    (log/infof "Loading config: %s" config-path)
+    merged-config))
+
+(def default-secret-path ".secret")
+
+(defn generate-secret
+  []
+  (random-bytes 32))
+
+(defn write-secret
+  [secret-path]
+  (log/debug "Generating new secret")
+  (spit secret-path (base64-encode (generate-secret))))
+
+(defn read-secret
+  [secret-path]
+  (try (base64-decode (slurp secret-path))
+       (catch FileNotFoundException _ex
+         (log/warn "No secret found"))))
+
+(defstate secret
+  :start
+  (or (config :secret)
+      (let [secret-path (or (config ::secret-path) default-secret-path)]
+        (or (read-secret secret-path)
+            (do
+              (write-secret secret-path)
+              (read-secret secret-path))))))

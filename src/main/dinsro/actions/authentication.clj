@@ -8,7 +8,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.attributes :as attr]
    [com.fulcrologic.rad.authorization :as auth]
-   [dinsro.config :refer [secret]]
+   [dinsro.components.config :refer [secret]]
    [dinsro.components.database-queries :as queries]
    [dinsro.queries.users :as q.users]
    [dinsro.model.timezone :as timezone]

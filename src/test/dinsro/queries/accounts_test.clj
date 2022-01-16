@@ -4,6 +4,7 @@
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.users :as q.users]
@@ -21,22 +22,27 @@
         user-id        (::m.users/id user)
         currency       (mocks/mock-currency)
         currency-id    (::m.currencies/id currency)
+        source         (mocks/mock-rate-source currency-id)
+        source-id      (::m.rate-sources/id source)
         params         (ds/gen-key m.accounts/required-params)
         params         (-> params
-                           (assoc ::m.accounts/user user-id)
-                           (assoc ::m.accounts/currency currency-id))
+                           (assoc ::m.accounts/currency currency-id)
+                           (assoc ::m.accounts/source source-id)
+                           (assoc ::m.accounts/user user-id))
         id             (q.accounts/create-record params)
         created-record (q.accounts/read-record id)]
     (assertions
      (get params ::m.accounts/name) => (get created-record ::m.accounts/name))))
 
 (deftest find-by-currency
-  (let [user (mocks/mock-user)
-        user-id (::m.users/id user)
-        currency (mocks/mock-currency)
+  (let [user        (mocks/mock-user)
+        user-id     (::m.users/id user)
+        currency    (mocks/mock-currency)
         currency-id (::m.currencies/id currency)
-        account (mocks/mock-account user-id currency-id)
-        account-id (::m.accounts/id account)]
+        source      (mocks/mock-rate-source currency-id)
+        source-id   (::m.rate-sources/id source)
+        account     (mocks/mock-account user-id currency-id source-id)
+        account-id  (::m.accounts/id account)]
     (assertions
      "should retutrn the matching account id"
      (q.accounts/find-by-currency currency-id) => [account-id])))

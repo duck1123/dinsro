@@ -141,8 +141,6 @@ deps-builder:
 dev-image:
   FROM +deps-builder
   ARG EXPECTED_REF=${repo}/${project}:dev-${version}
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
-  # HEALTHCHECK CMD curl -f http://localhost:3000 || exit 1
   DO +EXPOSE_DOCKER_PORTS
   VOLUME ${data_dir}
   CMD ["bb", "dev-bootstrap"]
@@ -160,7 +158,6 @@ dev-image-sources-base:
   DO +EXPOSE_DOCKER_PORTS
   WORKDIR ${src_home}
   VOLUME ${data_dir}
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
   USER root
   CMD ["bb", "dev-bootstrap"]
 
@@ -173,13 +170,11 @@ dev-image-sources:
 dev-sources:
   FROM +deps-builder
   COPY resources/docker/config.edn /etc/dinsro/config.edn
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir . ${src_home}
 
 dev-sources-minimal:
   FROM +deps-builder
   COPY resources/docker/config.edn /etc/dinsro/config.edn
-  ENV CONFIG_FILE=/etc/dinsro/config.edn
   COPY --dir src ${src_home}
   COPY --dir notebooks ${src_home}/notebooks
   COPY shadow-cljs.edn .

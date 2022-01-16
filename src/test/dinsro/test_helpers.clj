@@ -1,7 +1,6 @@
 (ns dinsro.test-helpers
   (:require
-   [dinsro.config :refer [secret]]
-   [dinsro.components.config :as config]
+   [dinsro.components.config :as config  :refer [secret]]
    [dinsro.components.xtdb :as c.xtdb]
    [mount.core :as mount]
    [taoensso.timbre :as log]))

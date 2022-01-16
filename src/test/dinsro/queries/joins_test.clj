@@ -4,6 +4,7 @@
    [dinsro.mocks :as mocks]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.test-helpers :as th]
@@ -19,9 +20,11 @@
         user-id     (::m.users/id user)
         currency    (mocks/mock-currency)
         currency-id (::m.currencies/id currency)
-        account     (mocks/mock-account user-id currency-id)
+        rate-source (mocks/mock-rate-source)
+        source-id   (::m.rate-sources/id rate-source)
+        account     (mocks/mock-account user-id currency-id source-id)
         account-id  (::m.accounts/id account)
-        account2    (mocks/mock-account user-id currency-id)
+        account2    (mocks/mock-account user-id currency-id source-id)
         account-id2 (::m.accounts/id account2)]
 
     ;; non-matching account

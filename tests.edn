@@ -1,6 +1,7 @@
 #kaocha/v1
 {:tests    [{:id           :unit
-             :focus-meta [:focus]
-             :source-paths ["src/main"]
-             :test-paths   ["src/test"]}]
+             :focus-meta   [:focus]
+             :source-paths ["src/main" "src/shared"]
+             :test-paths   ["src/test"]
+             :ns-patterns  [".*"]}]
  :reporter [kaocha.report/documentation]}

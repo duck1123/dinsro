@@ -36,18 +36,36 @@
         id     (q.currencies/create-record params)]
     (q.currencies/read-record id)))
 
+(>defn mock-rate-source
+  ([]
+   [=> ::m.rate-sources/item]
+   (let [currency    (mock-currency)
+         currency-id (::m.currencies/id currency)]
+     (mock-rate-source currency-id)))
+  ([currency-id]
+   [::m.currencies/id => ::m.rate-sources/item]
+   (let [params (ds/gen-key ::m.rate-sources/params)
+         params (assoc params ::m.rate-sources/currency currency-id)
+         id     (q.rate-sources/create-record params)]
+     (q.rate-sources/read-record id))))
+
 (>defn mock-account
   ([]
    [=> ::m.accounts/item]
    (let [user        (mock-user)
          username    (::m.users/id user)
+         source (mock-rate-source)
+         source-id (::m.rate-sources/id source)
          currency    (mock-currency)
          currency-id (::m.currencies/id currency)]
-     (mock-account username currency-id)))
-  ([username currency-id]
-   [::m.users/id ::m.currencies/id => ::m.accounts/item]
+     (mock-account username currency-id source-id)))
+  ([username currency-id source-id]
+   [::m.users/id ::m.currencies/id ::m.rate-sources/id
+
+    => ::m.accounts/item]
    (let [params (ds/gen-key ::m.accounts/required-params)
          params (-> params
+                    (assoc ::m.accounts/source source-id)
                     (assoc ::m.accounts/user username)
                     (assoc ::m.accounts/currency currency-id))
          id     (q.accounts/create-record params)]
@@ -76,19 +94,6 @@
          params (assoc params ::m.rates/currency currency-id)
          id     (q.rates/create-record params)]
      (q.rates/read-record id))))
-
-(>defn mock-rate-source
-  ([]
-   [=> ::m.rate-sources/item]
-   (let [currency    (mock-currency)
-         currency-id (::m.currencies/id currency)]
-     (mock-rate-source currency-id)))
-  ([currency-id]
-   [::m.currencies/id => ::m.rate-sources/item]
-   (let [params (ds/gen-key ::m.rate-sources/params)
-         params (assoc params ::m.rate-sources/currency currency-id)
-         id     (q.rate-sources/create-record params)]
-     (q.rate-sources/read-record id))))
 
 (>defn mock-transaction
   ([]
