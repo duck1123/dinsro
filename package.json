@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
+    "clj-kondo": "^2022.1.15",
     "karma": "^6.3.7",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
