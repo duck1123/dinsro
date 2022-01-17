@@ -9,7 +9,10 @@
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.core-address :as m.core-address]
    [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core-tx :as m.core-tx]
+   [dinsro.model.core-tx-in :as m.core-tx-in]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln-info :as m.ln-info]
@@ -24,7 +27,10 @@
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
+   [dinsro.queries.core-address :as q.core-address]
    [dinsro.queries.core-nodes :as q.core-nodes]
+   [dinsro.queries.core-tx :as q.core-tx]
+   [dinsro.queries.core-tx-in :as q.core-tx-in]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.ln-nodes :as q.ln-nodes]
    [dinsro.queries.ln-peers :as q.ln-peers]
@@ -611,6 +617,57 @@
   (log/infof "Ln Peers: %s" (count (q.ln-peers/index-ids)))
   (log/infof "Ln txes: %s" (count (q.ln-tx/index-ids))))
 
+(defn mock-tx
+  [o]
+  (merge
+   {:node          "main"
+    :blockHash     "block hash"
+    :blockTime     (tick/instant)
+    :confirmations 1
+    :hash          "hash"
+    :hex           "hex"
+    :lockTime      0
+    :size          0
+    :time          (tick/instant)
+    :version       1
+    :vsize         1
+    :in            [{:scriptSig {}
+                     :sequence  0}]}
+   o))
+
+(def core-txes
+  [(mock-tx {})
+   (mock-tx {})])
+
+(defn seed-core-txes!
+  []
+  (doseq [{:as       tx
+           :keys     [in]
+           node-name :node} core-txes]
+    (if-let [node-id (q.core-nodes/find-id-by-name node-name)]
+      (let [tx    (assoc tx ::m.core-tx/node node-id)
+            tx-id (q.core-tx/create-record tx)]
+        (doseq [tx-in in]
+          (let [tx-in (assoc tx-in ::m.core-tx-in/transaction tx-id)]
+            (q.core-tx-in/create-record (log/spy :info tx-in)))))
+      (throw (RuntimeException. "Can't find node")))))
+
+(comment
+  (seed-core-txes!))
+
+(defn seed-wallets!
+  [users]
+  (doseq [user users]
+    (doseq [wallet (get user :wallets [])]
+      (log/spy :info wallet))))
+
+(def addresses [])
+
+(defn seed-addresses!
+  []
+  (doseq [address addresses]
+    (q.core-address/create-record {::m.core-address/address address})))
+
 (defn seed-db!
   []
   (create-navlinks!)
@@ -627,8 +684,10 @@
   (seed-accounts! users)
   (seed-transactions! users)
   (seed-ln-nodes! users)
-  (seed-ln-peers! users)
-  (seed-ln-txes! users)
+  (seed-wallets! users)
+  (seed-addresses!)
+  ;; (seed-ln-peers! users)
+  ;; (seed-ln-txes! users)
 
   (log/info "Done seeding")
   (item-report))

@@ -1,30 +1,61 @@
 (ns dinsro.ui.rates
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
-   [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
-(defattr currency-link ::m.rates/currency :ref
-  {ao/cardinality      :one
-   ao/identities       #{::m.rates/id}
-   ao/target           ::m.currencies/id
-   ::report/column-EQL {::m.rates/currency (comp/get-query u.links/CurrencyLink)}})
+(defsc RefRow
+  [_this {::m.rates/keys [rate] :as props}]
+  {:ident ::m.rates/id
+   :query [::m.rates/id
+           ::m.rates/name
+           ::m.rates/rate
+           ::m.rates/currency]}
+  (dom/tr {}
+    (dom/td (str rate))
+    (dom/td (u.links/ui-rate-link props))))
 
-(defattr source-link ::m.rates/source :ref
-  {ao/cardinality      :one
-   ao/identities       #{::m.rates/id}
-   ao/target           ::m.rate-sources/id
-   ::report/column-EQL {::m.rates/source (comp/get-query u.links/RateSourceLink)}})
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.rates/id}))
+
+(defn ref-table
+  [{:keys [value]} _attribute]
+  (comp/fragment
+   (dom/table :.ui.table
+     (dom/thead {}
+       (dom/tr {}
+         (dom/th {} "Name")))
+     (dom/tbody {}
+       (for [tx value]
+         (ui-ref-row tx))))))
+
+(def render-ref-table (render-field-factory ref-table))
+
+(def override-sub-form false)
+
+(form/defsc-form RateSubForm [this {::m.rates/keys [date rate source] :as props}]
+  {fo/id         m.rates/id
+   fo/attributes [m.rates/rate
+                  m.rates/source
+                  m.rates/date]
+   fo/subforms   {::m.rates/source {fo/ui u.links/RateSourceLinkForm}}
+   fo/title      "Rate"}
+  (if override-sub-form
+    (form/render-layout this props)
+    (dom/div {}
+      (dom/div {} (str "Rate: " rate))
+      (dom/div {}
+        "Fetched at "
+        (dom/span :.date (str date))
+        " from "
+        (u.links/ui-rate-source-link source)))))
 
 (form/defsc-form RateForm [_this _props]
   {fo/id           m.rates/id
@@ -36,13 +67,13 @@
   [_this _props]
   {ro/field-formatters
    {::m.rates/currency (fn [_this props] (u.links/ui-currency-link props))
-    ::m.rates/source (fn [_this props] (u.links/ui-rate-source-link props))}
+    ::m.rates/source   (fn [_this props] (u.links/ui-rate-source-link props))}
    ro/columns          [m.rates/rate
-                        source-link
+                        m.rates/source
                         m.rates/date]
    ro/route            "rates"
    ro/row-actions      []
    ro/row-pk           m.rates/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.rates/all-rates
+   ro/source-attribute ::m.rates/index
    ro/title            "Rates Report"})

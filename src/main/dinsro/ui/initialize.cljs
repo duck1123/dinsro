@@ -16,7 +16,7 @@
                    ::username]
    :initial-state {::password ""
                    ::username "admin"}}
-  (dom/div :.ui.container
+  (dom/div :.ui
     (dom/h1 {} "You must create an administrator account in order to continue")
     (ui-form {}
       (ui-form-input

@@ -60,10 +60,12 @@
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
 
 (defsc NavbarLoginLink
-  [this _]
+  [this _ _ {:keys [red]}]
   {:initial-state {}
-   :query         []}
-  (dom/a {:classes [:.ui.item]
+   :query         []
+   :css           [[:.red {:color    "red"
+                           :fontSize "large"}]]}
+  (dom/a {:classes [:.ui.item red]
           :onClick (fn [evt]
                      (.preventDefault evt)
                      (auth/authenticate! this :local nil)

@@ -7,7 +7,7 @@
 
 (defsc RegistrationPage
   [_this {::keys [allow-registration form]}]
-  {:ident         (fn [_] [:page/id ::page])
+  {:ident         (fn [_] [:component/id ::RegistrationPage])
    :initial-state {::allow-registration true
                    ::form               {}}
    :query         [::allow-registration

@@ -95,14 +95,14 @@
 (def ui-currency-selector-option (comp/factory CurrencySelectorOption {:keyfn ::m.currencies/id}))
 
 (defsc CurrencySelector
-  [_this {:keys [all-currencies]} {:keys [onChange]}]
+  [_this {:keys [index]} {:keys [onChange]}]
   {:componentDidMount
-   (fn [this] (df/load! this :all-currencies CurrencySelectorOption))
-   :initial-state {:all-currencies []}
-   :query         [{[:all-currencies '_] (comp/get-query CurrencySelectorOption)}]}
+   (fn [this] (df/load! this :index CurrencySelectorOption))
+   :initial-state {:index []}
+   :query         [{[:index '_] (comp/get-query CurrencySelectorOption)}]}
   (dom/div :.select
     (dom/select {:onChange onChange}
-      (map ui-currency-selector-option all-currencies))))
+      (map ui-currency-selector-option index))))
 
 (def ui-currency-selector (comp/computed-factory CurrencySelector))
 

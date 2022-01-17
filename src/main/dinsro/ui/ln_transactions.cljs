@@ -2,27 +2,25 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
-   [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-transactions :as m.ln-tx]
    [dinsro.translations :refer [tr]]
+   [dinsro.ui.core-tx :as u.core-tx]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
 (defsc LnTxRow
-  [_this {::m.ln-tx/keys [label time-stamp tx-hash] :as props}]
+  [_this {::m.ln-tx/keys [amount core-tx time-stamp tx-hash]}]
   {}
   (dom/tr {}
-    (comment (dom/td (str (keys props))))
-    (dom/td label)
-    (dom/td time-stamp)
-    (dom/td tx-hash)))
+    (dom/td (str amount))
+    (dom/td (u.links/ui-core-tx-link core-tx))
+    (dom/td (str time-stamp))
+    (dom/td (str tx-hash))))
 
 (def ui-ln-tx-row (comp/factory LnTxRow {:keyfn ::m.ln-tx/id}))
 
@@ -32,8 +30,8 @@
    (dom/table :.ui.table
      (dom/thead {}
        (dom/tr {}
-         (comment (dom/th {} "keys"))
-         (dom/th {} "label")
+         (dom/th {} "amount")
+         (dom/th {} "core-tx")
          (dom/th {} "timestamp")
          (dom/th {} "tx-hash")))
      (dom/tbody {}
@@ -42,43 +40,53 @@
 
 (def render-ref-ln-tx-row (render-field-factory ref-ln-tx-row))
 
-(defattr transaction-node-link ::m.ln-tx/node :ref
-  {ao/cardinality      :one
-   ao/identities       #{::m.ln-tx/id}
-   ao/target           ::m.ln-nodes/id
-   ::report/column-EQL {::m.ln-tx/node (comp/get-query u.links/NodeLink)}})
+(def override-tx-subform true)
+
+(form/defsc-form TxSubform
+  [this {::m.ln-tx/keys [id amount]
+         :as            props}]
+  {fo/id           m.ln-tx/id
+   fo/route-prefix "ln-tx"
+   fo/title        "Transactions"
+   fo/field-styles {::m.ln-tx/core-tx :link}
+   fo/attributes   [m.ln-tx/amount
+                    m.ln-tx/core-tx]
+   fo/subforms     {::m.ln-tx/core-tx {fo/ui u.core-tx/CoreTxSubForm}}}
+  (if override-tx-subform
+    (form/render-layout this props)
+    (dom/div :.ui
+      (dom/p {} "Tx: " (str id))
+      (dom/p {} "Amount: " amount))))
 
 (form/defsc-form LNTransactionForm
   [_this _props]
-  {fo/id           m.ln-tx/id
-   fo/attributes   [m.ln-tx/id
-                    m.ln-tx/amount
-                    m.ln-tx/tx-hash
-                    m.ln-tx/block-height
-                    m.ln-tx/block-hash
-                    m.ln-tx/time-stamp
-                    m.ln-tx/raw-tx-hex
-                    m.ln-tx/label]
+  {fo/id            m.ln-tx/id
+   fo/attributes    [m.ln-tx/node
+                     m.ln-tx/core-tx
+                     m.ln-tx/tx-hash
+                     m.ln-tx/amount
+                     m.ln-tx/block-height
+                     m.ln-tx/block-hash
+                     m.ln-tx/time-stamp
+                     m.ln-tx/raw-tx-hex
+                     m.ln-tx/label]
    fo/layout-styles {:ref-container :tablef}
-   fo/route-prefix "ln-tx"
-   fo/title        "Lightning Node"})
+   fo/subforms      {::m.ln-tx/core-tx {fo/ui u.links/CoreTxLinkForm}
+                     ::m.ln-tx/node    {fo/ui u.links/NodeLinkForm}}
+   fo/route-prefix  "ln-tx"
+   fo/title         "Lightning TX"})
 
 (report/defsc-report LNTransactionsReport
   [_this _props]
-  {ro/columns          [m.ln-tx/id
+  {ro/columns          [m.ln-tx/core-tx
                         m.ln-tx/amount
-                        m.ln-tx/tx-hash
-                        transaction-node-link
-                        ;; m.ln-tx/node
-                        ]
+                        m.ln-tx/node]
    ro/field-formatters
-   {::m.ln-tx/node     (fn [_this props] (u.links/ui-node-link props))}
-   ro/links            {::m.ln-tx/id (fn [this props]
-                                       (let [{::m.ln-tx/keys [id]} props]
-                                         (form/view! this LNTransactionForm id)))}
+   {::m.ln-tx/node    (fn [_this props] (u.links/ui-node-link props))
+    ::m.ln-tx/core-tx (fn [_this props] (u.links/ui-core-tx-link props))}
    ro/route            "ln-transactions"
    ro/row-actions      []
    ro/row-pk           m.ln-tx/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln-tx/all-txes
+   ro/source-attribute ::m.ln-tx/index
    ro/title            "Lightning Transactions"})

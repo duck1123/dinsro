@@ -11,7 +11,7 @@
 
 (defsc RegistrationForm
   [this {::keys [confirm-password password username]}]
-  {:ident         (fn [] [:component/id ::form])
+  {:ident         (fn [] [:component/id ::RegistrationForm])
    :initial-state {::confirm-password ""
                    ::password         ""
                    ::username         ""}
