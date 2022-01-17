@@ -7,19 +7,15 @@
    [com.fulcrologic.rad.type-support.date-time :as dt]
    [com.wsscode.pathom.connect :as pc]
    [com.wsscode.pathom.core :as p]
+   [dinsro.actions.authentication :as a.authentication]
    [dinsro.components.auto-resolvers :refer [automatic-resolvers]]
    [dinsro.components.blob-store :as bs]
    [dinsro.components.config :refer [config]]
    [dinsro.components.xtdb :refer [xtdb-nodes]]
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
-   [dinsro.model :refer [all-attributes]]
-   [dinsro.model.navlink :as m.navlink]
-   [dinsro.mutations.core-nodes :as mu.core-nodes]
-   [dinsro.mutations.ln-nodes :as mu.ln-nodes]
-   [dinsro.mutations.rate-sources :as mu.rate-sources]
-   [dinsro.mutations.session :as mu.session]
-   [dinsro.mutations.settings :as mu.settings]
+   [dinsro.model :refer [all-attributes all-resolvers]]
+   [dinsro.model.users :as m.users]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [taoensso.timbre :as log]))
@@ -36,29 +32,34 @@
 
 (defstate parser
   :start
-  (let [database-key :main]
-    (pathom/new-parser
-     config
-     [(attr/pathom-plugin all-attributes)
-      (form/pathom-plugin save/middleware delete/middleware)
-      (xt/pathom-plugin (fn [_env] {:production (database-key xtdb-nodes)}))
-      (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
-                                                   :avatar-images bs/image-blob-store})
-      {::p/wrap-parser
-       (fn transform-parser-out-plugin-external [wrapped-parser]
-         (fn transform-parser-out-plugin-internal [env tx]
+  (pathom/new-parser
+   config
+   [(attr/pathom-plugin all-attributes)
+    (form/pathom-plugin save/middleware delete/middleware)
+    (xt/pathom-plugin (fn [_env] {:production (:main xtdb-nodes)}))
+    (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
+                                                 :avatar-images bs/image-blob-store})
+    {::p/wrap-parser
+     (fn transform-parser-out-plugin-external [wrapped-parser]
+       (fn transform-parser-out-plugin-internal [env tx]
+         (log/info "date parser")
            ;; TASK: This should be taken from account-based setting
-           (dt/with-timezone default-timezone
-             (if (and (map? env) (seq tx))
-               (wrapped-parser env tx)
-               {}))))}]
-     [automatic-resolvers
-      form/resolvers
-      (blob/resolvers all-attributes)
-      m.navlink/resolvers
-      mu.core-nodes/resolvers
-      mu.ln-nodes/resolvers
-      mu.rate-sources/resolvers
-      mu.session/resolvers
-      mu.settings/resolvers
-      index-explorer])))
+         (dt/with-timezone default-timezone
+           (if (and (map? env) (seq tx))
+             (wrapped-parser env tx)
+             {}))))}
+    {::p/wrap-parser
+     (fn transform-parser-out-plugin-external [wrapped-parser]
+       (log/info "running auth processor plugin")
+       (fn transform-parser-out-plugin-internal [env tx]
+         (log/info "user parser")
+         (if (and (map? env) (seq tx))
+           (let [user-id (a.authentication/get-user-id env)
+                 env (assoc env ::m.users/id user-id)]
+             (wrapped-parser env tx))
+           {})))}]
+   [automatic-resolvers
+    form/resolvers
+    (blob/resolvers all-attributes)
+    all-resolvers
+    index-explorer]))
