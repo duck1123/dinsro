@@ -1,6 +1,6 @@
 (ns dinsro.ui.wallet-addresses
   (:require
-   #?(:cljs [com.fulcrologic.fulcro.components :as comp])
+   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   #?(:cljs [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])
+   [dinsro.mutations.wallet-addresses :as mu.wallet-addresses]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
