@@ -4,4 +4,36 @@ metadata:
   name: config
 data:
   config.edn: |-
+{{ if not (eq .Values.dinsroConfig "-") }}
 {{ .Values.dinsroConfig | indent 4 }}
+{{- else }}
+    {:use-notebook {{ .Values.notebook.enabled }}
+     {{ if .Values.persistence.enabled }}
+     :roterski.fulcro.rad.database-adapters.xtdb/databases
+      {:main
+        {:xtdb.jdbc/connection-pool
+         {:dialect #:xtdb{:module "xtdb.jdbc.psql/->dialect"}
+          :db-spec {:dbname   "dinsro"
+                    :host     "db"
+                    :user     "postgres"
+                    :password "mysecretpassword"}}
+         :xtdb/tx-log         {:xtdb/module     "xtdb.jdbc/->tx-log"
+                               :connection-pool :xtdb.jdbc/connection-pool}
+         :xtdb/document-store {:xtdb/module     "xtdb.jdbc/->document-store"
+                               :connection-pool :xtdb.jdbc/connection-pool}}}
+     {{- end }}
+     :com.fulcrologic.rad.pathom/config
+       {:trace?         false
+        :log-requests?  false
+        :log-responses? false}
+
+     :dinsro.config/secret-path "/mnt/certs/secret"
+
+     :taoensso.timbre/logging-config
+     {:min-level
+     [[#{"_rad.resolvers"
+         "roterski.fulcro.rad.database-adapters.xtdb.generate-resolvers"} :fatal]
+      [#{"dinsro.*"} :debug]
+      [#{"*"} :info]]}
+    }
+{{- end}}

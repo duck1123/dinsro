@@ -1,8 +1,6 @@
 # -*- mode: python -*-
 # Tilt
 
-load('ext://helm_remote', 'helm_remote')
-load('ext://local_output', 'local_output')
 load('ext://namespace', 'namespace_create')
 load('ext://uibutton', 'cmd_button')
 
@@ -22,9 +20,10 @@ config.define_string('notebookHost')
 config.define_bool('useLinting')
 # Enable Notebook
 config.define_bool('useNotebook')
+config.define_bool('useNrepl')
+config.define_bool('usePersistence')
 config.define_bool('useProduction')
 config.define_bool('useTests')
-config.define_bool('useRtl')
 
 cfg                   = config.parse()
 base_url              = cfg.get('baseUrl',             'dinsro.localhost')
@@ -34,14 +33,11 @@ version               = cfg.get('version',             'latest')
 local_devtools        = cfg.get('localDevtools',       True)
 notebook_inherit_host = cfg.get('notebookInheritHost', False)
 notebook_host         = cfg.get('notebookHost',        "notebook.dinsro.localhost")
-use_bitcoin           = cfg.get('useBitcoin',          True)
 use_linting           = cfg.get('useLinting',          True)
-use_lnd1              = cfg.get('useLnd1',             True)
-use_lnd2              = cfg.get('useLnd2',             True)
 use_notebook          = cfg.get('useNotebook',         True)
 use_nrepl             = cfg.get('useNrepl',            True)
+use_persistence       = cfg.get('usePersistence',      False)
 use_production        = cfg.get('useProduction',       False)
-use_rtl               = cfg.get('useRtl',              True)
 use_tests             = cfg.get('useTests',            True)
 
 def get_notebook_host():
@@ -68,10 +64,12 @@ k8s_yaml(helm(
   name = 'dinsro',
   namespace = 'dinsro',
   set = [
+    "database.enabled=%s" % ('true' if use_persistence else 'false'),
     "devtools.enabled=%s" % ('false' if local_devtools else 'true'),
     "devtools.ingress.enabled=%s" % ('false' if local_devtools else 'true'),
     "devtools.ingress.hosts[0].host=%s" % devtools_host,
     'devtools.ingress.hosts[0].paths[0].path=/',
+    "image.tag=%s" % ('latest' if use_production else 'dev-sources-latest'),
     'ingress.enabled=true',
     'ingress.hosts[0].host=' + base_url,
     'ingress.hosts[0].paths[0].path=/',
@@ -79,31 +77,11 @@ k8s_yaml(helm(
     "notebook.ingress.hosts[0].host=%s" % get_notebook_host(),
     'notebook.ingress.hosts[0].paths[0].path=/',
     "nrepl.enabled=%s" % ('true' if use_nrepl else 'false'),
+    "persistence.enabled=%s" % ('true' if use_persistence else 'false'),
   ]
 ))
 
 if use_production:
-  namespace_create(
-    'dinsro-production',
-    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
-    labels = [ "field.cattle.io/projectId: %s" % project_id ],
-  )
-
-  k8s_yaml(helm(
-    'resources/helm/dinsro',
-    name = 'dinsro-production',
-    namespace = 'dinsro-production',
-    set = [
-      'devtools.ingress.enabled=true',
-      'devtools.ingress.hosts[0].host=devtools.' + 'dinsro-production.localhost',
-      'devtools.ingress.hosts[0].paths[0].path=/',
-      'ingress.enabled=true',
-      'ingress.hosts[0].host=' + 'dinsro-production.localhost',
-      'ingress.hosts[0].paths[0].path=/',
-      'image.tag=' + version,
-    ]
-  ))
-
   custom_build(
     "%s/dinsro:%s" % (repo, version),
     "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +image" % repo,
@@ -116,61 +94,59 @@ if use_production:
     ],
   )
 
-  k8s_resource(
-    workload='dinsro-production',
-    links = [
-      link('dinsro-production.localhost', 'Dinsro'),
+if not use_production:
+  custom_build(
+    "%s/dinsro:dev-sources-%s" % (repo, version),
+    " ".join([
+      'earthly',
+      "--build-arg repo=%s" % repo,
+      "--build-arg watch_sources=%s" % ('false' if local_devtools else 'true'),
+      '--build-arg EXPECTED_REF=$EXPECTED_REF',
+      '+dev-image-sources',
+    ]),
+    [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      'deps.edn',
+      'notebooks',
+      'resources/docker',
+      'resources/main/public',
+      'src',
+      "tilt_config.json",
     ],
-    labels = [ 'Dinsro' ],
+    live_update=[
+      sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
+      sync('notebooks', '/usr/src/app/notebooks'),
+      sync('src', '/usr/src/app/src'),
+      sync('resources/main/public', '/usr/src/app/resources/main/public'),
+    ]
   )
 
-custom_build(
-  "%s/dinsro:dev-sources-%s" % (repo, version),
-  " ".join([
-    'earthly',
-    "--build-arg repo=%s" % repo,
-    "--build-arg watch_sources=%s" % ('false' if local_devtools else 'true'),
-    '--build-arg EXPECTED_REF=$EXPECTED_REF',
-    '+dev-image-sources',
-  ]),
-  [
-    'Earthfile',
-    '.dockerignore',
-    'bb.edn',
-    'deps.edn',
-    'notebooks',
-    'resources/docker',
-    'resources/main/public',
-    'src',
-  ],
-  live_update=[
-    sync('notebooks', '/usr/src/app/notebooks'),
-    sync('src', '/usr/src/app/src'),
-    sync('resources/main/public', '/usr/src/app/resources/main/public')
-  ]
-)
+has_devtools = not (local_devtools or use_production)
 
 k8s_resource(
   workload='dinsro',
   port_forwards = [x for x in [
-    port_forward(3333, 3333, name='cljs nrepl') if not local_devtools else None,
-    port_forward(3693, 3693, name='workspaces') if not local_devtools else None,
+    port_forward(3333, 3333, name='cljs nrepl') if has_devtools else None,
+    port_forward(3693, 3693, name='workspaces') if has_devtools else None,
     port_forward(7000, 7000, name='nRepl') if use_nrepl else None,
-    port_forward(9630, 9630, name='devtools') if not local_devtools else None,
+    port_forward(9630, 9630, name='devtools') if has_devtools else None,
   ] if x != None],
   links = [x for x in [
     link(base_url, 'Dinsro'),
-    link('devtools.' + base_url, 'Devtools') if not local_devtools else None,
-    link('workspaces.' + base_url, 'Workspaces') if not local_devtools else None,
+    link('devtools.' + base_url, 'Devtools') if has_devtools else None,
+    link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
     link(get_notebook_host(), 'Notebook') if use_notebook else None,
   ] if x != None],
   labels = [ 'Dinsro' ],
 )
 
-k8s_resource(
-  workload = 'postgres',
-  labels = [ 'database' ],
-)
+if use_persistence:
+  k8s_resource(
+    workload = 'postgres',
+    labels = [ 'database' ],
+  )
 
 if use_linting:
   local_resource(
@@ -265,40 +241,44 @@ if use_tests:
     labels = [ 'test' ],
   )
 
-namespace_create(
-  'sqlpad',
-  annotations = [ 'field.cattle.io/projectId: local:%s' % project_id ],
-  labels = [ 'field.cattle.io/projectId: %s' % project_id ],
-)
+if use_persistence:
+  namespace_create(
+    'sqlpad',
+    annotations = [ 'field.cattle.io/projectId: local:%s' % project_id ],
+    labels = [ 'field.cattle.io/projectId: %s' % project_id ],
+  )
 
-k8s_yaml(helm(
-  'resources/helm/sqlpad',
-  name = 'sqlpad',
-  namespace = 'sqlpad',
-  set = [
-    'image.repository=dinsro/sqlpad',
-    'ingress.enabled=true',
-    'ingress.hosts[0].host=sqlpad.localhost',
-    'ingress.hosts[0].paths[0].path=' + '/',
-  ],
-))
+if use_persistence:
+  k8s_yaml(helm(
+    'resources/helm/sqlpad',
+    name = 'sqlpad',
+    namespace = 'sqlpad',
+    set = [
+      'image.repository=dinsro/sqlpad',
+      'ingress.enabled=true',
+      'ingress.hosts[0].host=sqlpad.localhost',
+      'ingress.hosts[0].paths[0].path=' + '/',
+    ],
+  ))
 
-custom_build(
-  'dinsro/sqlpad:6.7',
-  'earthly --build-arg EXPECTED_REF=$EXPECTED_REF ./resources/tilt/sqlpad+sqlpad',
-  [
-    'resources/tilt/sqlpad/Earthfile',
-    'resources/tilt/sqlpad/seed-data'
-  ],
-)
+if use_persistence:
+  custom_build(
+    'dinsro/sqlpad:6.7',
+    'earthly --build-arg EXPECTED_REF=$EXPECTED_REF ./resources/tilt/sqlpad+sqlpad',
+    [
+      'resources/tilt/sqlpad/Earthfile',
+      'resources/tilt/sqlpad/seed-data'
+    ],
+  )
 
-k8s_resource(
-  workload = 'sqlpad',
-  labels = [ 'database' ],
-  links = [
-    link('http://sqlpad.localhost', 'SQLPad'),
-  ],
-)
+if use_persistence:
+  k8s_resource(
+    workload = 'sqlpad',
+    labels = [ 'database' ],
+    links = [
+      link('http://sqlpad.localhost', 'SQLPad'),
+    ],
+  )
 
 cmd_button(
   'dinsro:format',

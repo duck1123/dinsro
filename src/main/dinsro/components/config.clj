@@ -16,13 +16,13 @@
                   "config.edn"]
         get-path (fn [path]
                    (when path
-                     (let [file (File. (log/spy :info path))]
+                     (let [file (File. path)]
                        (when (.exists file)
                          (.getAbsolutePath file)))))
         files    (concat (map get-path paths) paths)
-        files    (filter (fn [path] (when-let [file (and path (File. path))]
-                                      (.exists file))) files)]
-    (first (log/spy :info files))))
+        files    (vec (filter (fn [path] (when-let [file (and path (File. path))]
+                                           (.exists file))) files))]
+    (first files)))
 
 (defstate config
   "The overrides option in args is for overriding
