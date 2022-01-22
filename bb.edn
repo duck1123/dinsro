@@ -485,14 +485,14 @@
 
   watch-cljs
   {:task (let [guardrails   {:enabled nil}
-               devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
+               devtools-url (or (System/getenv "DEVTOOLS_URL") "http://localhost:9630")
                data         {:devtools {:devtools-url devtools-url}}
                args         (format "-M:dev:guardrails:shadow-cljs watch main workspaces --config-merge '%s'"
                                     (pr-str data))]
            (clojure args))}
 
   workspaces
-  {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
+  {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://localhost:9630")
                data         {:devtools {:devtools-url devtools-url}}
                args         (format "-M:dev:guardrails:shadow-cljs watch workspaces --config-merge '%s'"
                                     (pr-str data))]

@@ -15,12 +15,11 @@
   {:asset-path "/js"
    :dev        {:compiler-options {:closure-defines {'goog.DEBUG true}
                                    :external-config {:guardrails {}}}}
-   :devtools   {:after-load   dinsro.client/refresh
-                :http-port    3691
-                :devtools-url "http://devtools.dinsro.localhost"
-                :preloads     [com.fulcrologic.fulcro.inspect.preload
-                               com.fulcrologic.fulcro.inspect.dom-picker-preload
-                               com.fulcrologic.fulcro.inspect.websocket-preload]}
+   :devtools   {:after-load dinsro.client/refresh
+                :http-port  3691
+                :preloads   [com.fulcrologic.fulcro.inspect.preload
+                             com.fulcrologic.fulcro.inspect.dom-picker-preload
+                             com.fulcrologic.fulcro.inspect.websocket-preload]}
    :modules    {:main {:init-fn dinsro.client/start}}
    :output-dir "resources/main/public/js"
    :release    {}
@@ -36,11 +35,11 @@
 
   :workspaces
   {:asset-path "/js"
-   :devtools   {:http-root          "resources/workspaces/public"
+   :devtools   {:http-root
+                "resources/workspaces/public"
                 :http-host          "0.0.0.0"
                 :http-port          3693
                 :http-resource-root "."
-                :devtools-url       "http://devtools.dinsro.localhost"
                 :preloads           [com.fulcrologic.fulcro.inspect.preload
                                      com.fulcrologic.fulcro.inspect.dom-picker-preload
                                      com.fulcrologic.fulcro.inspect.websocket-preload]}

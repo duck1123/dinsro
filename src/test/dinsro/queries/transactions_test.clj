@@ -56,3 +56,13 @@
 
      "the record shouldn't exist after"
      (q.transactions/read-record eid) => nil)))
+
+(comment
+
+  (mocks/mock-account)
+  (q.transactions/index-records)
+  (q.transactions/index-ids)
+
+  (q.transactions/delete-record   (first (q.transactions/index-ids)))
+
+  nil)

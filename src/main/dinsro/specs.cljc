@@ -6,8 +6,7 @@
    [clojure.test.check.generators]
    [clojure.spec.gen.alpha :as gen]
    [ring.util.http-status :as status]
-   [tick.alpha.api :as tick]
-   [time-specs.core :as ts])
+   [tick.alpha.api :as tick])
   #?(:clj
      (:import
       clojure.core.async.impl.channels.ManyToManyChannel)))
@@ -52,7 +51,7 @@
 (s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
 (def date-string ::date-string)
 
-(s/def ::date (s/with-gen ts/instant? #(gen/fmap tick/instant (s/gen ::date-string))))
+(s/def ::date (s/with-gen any? #(gen/fmap tick/instant (s/gen ::date-string))))
 (def date ::date)
 
 (s/def ::id-string (s/with-gen (s/and string? #(re-matches #"\d+" %))

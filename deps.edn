@@ -48,8 +48,7 @@
   thheller/shadow-cljs                   {:mvn/version "2.15.12"}
   tick/tick                              {:mvn/version "0.4.32"
                                           :exclusions  [cljsjs/js-joda-timezone
-                                                        cljsjs/js-joda-timezone-en-us]}
-  time-specs/time-specs                  {:mvn/version "0.1.0-SNAPSHOT"}}
+                                                        cljsjs/js-joda-timezone-en-us]}}
 
  :aliases
  {:build
@@ -61,15 +60,12 @@
    {cljfmt/cljfmt {:mvn/version "0.6.7"}}
    :main-opts ["-m" "cljfmt.main"]}
 
-  ;; :clerk
-  ;; {:main-opts ["-m" "dinsro.clerk"]}
-
   :dev
   {:extra-paths ["src/dev" "src/notebooks" "src/test"]
    :extra-deps
-   {binaryage/devtools          {:mvn/version "1.0.2"}
-    com.github.awkay/workspaces {:mvn/version "1.0.3"}
-    fulcrologic/fulcro-spec     {:mvn/version "3.1.12"}}}
+   {binaryage/devtools      {:mvn/version "1.0.2"}
+    nubank/workspaces       {:mvn/version "1.1.2"}
+    fulcrologic/fulcro-spec {:mvn/version "3.1.12"}}}
 
   :dev-main
   {:main-opts ["-m" "dinsro.core"]}
