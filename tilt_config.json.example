@@ -8,5 +8,5 @@
   "useLinting": true,
   "useNotebook": true,
   "useProduction": false,
-  "useTests": true,
+  "useTests": true
 }
