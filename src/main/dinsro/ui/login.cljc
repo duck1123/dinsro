@@ -15,7 +15,8 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.options.navlinks :as o.navlinks]))
+   [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.translations :refer [tr]]))
 
 (def index-page-id :login)
 (def parent-router-id :root)
