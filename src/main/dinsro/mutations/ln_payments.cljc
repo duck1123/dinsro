@@ -2,5 +2,4 @@
   (:require
    [taoensso.timbre :as log]))
 
-#?(:clj
-   (def resolvers []))
+#?(:clj (def resolvers []))
