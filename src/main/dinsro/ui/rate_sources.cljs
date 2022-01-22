@@ -15,10 +15,10 @@
 
 (form/defsc-form RateSubform
   [_this _props]
-  {fo/id m.rates/id
+  {fo/id           m.rates/id
    fo/route-prefix "rate-source-rate"
-   fo/attributes [m.rates/rate
-                  m.rates/date]})
+   fo/attributes   [m.rates/rate
+                    m.rates/date]})
 
 (def run-button
   {:type   :button
