@@ -45,4 +45,6 @@
 (comment
   2
   :the
-  (first (index-records)))
+  (first (index-records))
+
+  nil)
