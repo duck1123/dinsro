@@ -16,18 +16,19 @@
 #?(:clj
    (defn get-site-config
      []
+     ;; TODO: has user with admin role
      (let [has-admin? (boolean (q.users/find-eid-by-name "admin"))]
-       {::site-config
-        {::id           :main
-         ::initialized? has-admin?
-         ::loaded?      true}})))
+       {::id           :main
+        ::initialized? has-admin?
+        ::loaded?      true})))
 
 (defattr site-config ::site-config :ref
   {ao/pc-output [{::site-config [::id ::initialized? ::loaded?]}]
+   ao/target ::id
    ao/pc-resolve
    (fn [_env _props]
-     #?(:cljs {}
-        :clj (get-site-config)))})
+     {::site-config #?(:cljs {}
+                       :clj (get-site-config))})})
 
 (def attributes [site-config])
 
