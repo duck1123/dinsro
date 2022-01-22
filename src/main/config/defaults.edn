@@ -12,23 +12,7 @@
  {:main {}}
 
  :ring.middleware/defaults-config
- {:params    {:keywordize true
-              :multipart  true
-              :nested     true
-              :urlencoded true}
-  :cookies   true
-  :responses {:absolute-redirects     true
-              :content-types          true
-              :default-charset        "utf-8"
-              :not-modified-responses true}
-  :session   {}
-  :static    {:resources "public"}
-  :security  {:anti-forgery   false
-              :hsts           true
-              :ssl-redirect   false
-              :frame-options  :sameorigin
-              :xss-protection {:enable? true
-                               :mode    :block}}}
+ {:static {:resources "public"}}
 
  :com.fulcrologic.rad.pathom/config
  {:trace?         false
