@@ -26,6 +26,10 @@
 (defmacro jit [sym]
   `(requiring-resolve '~sym))
 
+(defn seed!
+  []
+  (seed/seed-db!))
+
 (defn cljs-repl
   ([]
    (cljs-repl :main))
