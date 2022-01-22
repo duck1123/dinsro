@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.type-support.date-time :as dt]
    [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
+   [dinsro.actions.core-tx :as a.core-tx]
    [dinsro.actions.ln-nodes :as a.ln-nodes]
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.xtdb :as c.xtdb]
@@ -55,14 +56,31 @@
   [btc]
   (* btc (Math/pow 10 8)))
 
+(def addresses
+  ["bcrt1qv5rv0g0py86zqmwcz05qf50qr34ckshawylvfq"])
+
 (def category-names ["Category A" "Category B" "Category C"])
 
 (def core-node1
-  {::m.core-nodes/name    "main"
-   ::m.core-nodes/host    "bitcoind.bitcoin"
-   ::m.core-nodes/port    "18443"
-   ::m.core-nodes/rpcuser "rpcuser"
-   ::m.core-nodes/rpcpass "rpcpassword"})
+  {::m.core-nodes/name        "bitcoin-alice"
+   ::m.core-nodes/host        "bitcoin.bitcoin-alice"
+   ::m.core-nodes/port        18443
+   ::m.core-nodes/rpcuser     "rpcuser"
+   ::m.core-nodes/rpcpass     "rpcpassword"
+   ::m.core-nodes/wallet-name ""})
+
+(def core-node2
+  {::m.core-nodes/name        "bitcoin-bob"
+   ::m.core-nodes/host        "bitcoin.bitcoin-bob"
+   ::m.core-nodes/port        18443
+   ::m.core-nodes/rpcuser     "rpcuser"
+   ::m.core-nodes/rpcpass     "rpcpassword"
+   ::m.core-nodes/wallet-name ""})
+
+(def wallet-1
+  {:label "a"
+   :blockheight 0
+   :descriptor "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"})
 
 (def default-rates
   [{:rate 1813.
@@ -120,7 +138,7 @@
 (def lnd2-key "020e78000d4d907877ab352cd53c0dd382071c224b500c1fa05fb6f7902f5fa544")
 
 (def lnd1-peers
-  [{:ref        ["bob" "lnd2"]
+  [{:ref        ["bob" "lnd-bob"]
     :flapCount  1
     :bytesSent  141
     :bytesRecv  141
@@ -132,7 +150,7 @@
     :satSent    1003}])
 
 (def lnd2-peers
-  [{:ref        ["alice" "lnd1"]
+  [{:ref        ["alice" "lnd-alice"]
     :flapCount  2
     :bytesSent  141
     :bytesRecv  141
@@ -147,7 +165,6 @@
   [{:description      "tx 1"
     ;; :account          "a"
     ;; :value            "1"
-    :numConfirmations 0
     :amount           1
     :blockHeight      1
     :blockHash        ""
@@ -159,7 +176,6 @@
    {:description      "tx 2"
     ;; :account          "b"
     ;; :value            "2"
-    :numConfirmations 0
     :amount           2
     :blockHeight      2
     :blockHash        ""
@@ -173,7 +189,6 @@
   [{:description      "tx 3"
     ;; :account          "c"
     ;; :value            "1"
-    :numConfirmations 3
     :amount           3
     :blockHeight      3
     :blockHash        ""
@@ -184,13 +199,13 @@
     :destAddresses    [""]}])
 
 (def lnd1
-  {:name                "lnd1"
-   :host                "lnd1-internal.lnd1.svc.cluster.local"
+  {:name                "lnd-alice"
+   :host                "lnd-alice.lnd-alice.svc.cluster.local"
    :port                "10009"
-   :node                "main"
+   :node                "bitcoin-alice"
    :mnemonic            lnd1-mnemonic
    :identityPubkey      lnd1-key
-   :alias               "Node One"
+   :alias               "Node Alice"
    :blockHeight         7
    :syncedToChain       false
    :syncedToGraph       false
@@ -210,13 +225,13 @@
    :txes                lnd1-txes})
 
 (def lnd2
-  {:name                "lnd2"
-   :node                "main"
-   :host                "lnd2-internal.lnd2.svc.cluster.local"
+  {:name                "lnd-bob"
+   :node                "bitcoin-bob"
+   :host                "lnd-bob.lnd-bob.svc.cluster.local"
    :port                "10009"
    :mnemonic            lnd2-mnemonic
    :identityPubkey      lnd2-key
-   :alias               "Node Two"
+   :alias               "Node Bob"
    :blockHeight         8
    :syncedToChain       false
    :syncedToGraph       false
@@ -253,7 +268,7 @@
     :url        "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"
     :isActive   false
     :isIdentity false
-    :path ".rate"
+    :path       ".rate"
     :code       "usd"}
    {:name       "Coinbase USD"
     :code       "usd"
@@ -265,20 +280,20 @@
     :url        "https://www.bitponzi.biz.localhost/cgi?id=3496709"
     :isActive   false
     :isIdentity false
-    :path ".rate"
+    :path       ".rate"
     :code       "usd"}
    {:name       "DuckBitcoin"
     :url        "https://www.duckbitcoin.localhost/api/current-rates"
     :code       "usd"
     :isActive   false
     :isIdentity false
-    :path ".rate"
+    :path       ".rate"
     :rates      default-rates}
    {:name       "Leviathan"
     :url        "https://www.leviathan.localhost/prices"
     :isActive   false
     :isIdentity false
-    :path ".rate"
+    :path       ".rate"
     :code       "usd"}])
 
 (def admin-categories
@@ -391,7 +406,8 @@
    :password   m.users/default-password
    :accounts   alice-accounts
    :categories alice-categories
-   :ln-nodes   [lnd1]})
+   :ln-nodes   [lnd1]
+   :wallets [wallet-1]})
 
 (def bob-data
   {:username   "bob"
@@ -429,7 +445,7 @@
    alice-data
    bob-data])
 
-(def core-node-data [core-node1])
+(def core-node-data [core-node1 core-node2])
 
 (defn create-navlinks!
   []
@@ -524,18 +540,19 @@
   (log/info "seed ln-nodes")
   (doseq [{:keys [username ln-nodes]} users]
     (let [user-id (q.users/find-eid-by-name username)]
-      (doseq [{:keys [name host port mnemonic node] :as info} ln-nodes]
-        (if-let [core-id (q.core-nodes/find-id-by-name node)]
-          (let [ln-node {::m.ln-nodes/name     name
-                         ::m.ln-nodes/node core-id
-                         ::m.ln-nodes/host     host
-                         ::m.ln-nodes/port     port
-                         ::m.ln-nodes/user     user-id
-                         ::m.ln-nodes/mnemonic mnemonic}
+      (doseq [{:keys [name host port mnemonic] :as info
+               node-name :node} ln-nodes]
+        (if-let [core-id (q.core-nodes/find-id-by-name node-name)]
+          (let [ln-node {::m.ln-nodes/name      name
+                         ::m.ln-nodes/core-node core-id
+                         ::m.ln-nodes/host      host
+                         ::m.ln-nodes/port      port
+                         ::m.ln-nodes/user      user-id
+                         ::m.ln-nodes/mnemonic  mnemonic}
                 node-id (q.ln-nodes/create-record (log/spy :info ln-node))
                 info    (set/rename-keys info m.ln-info/rename-map)]
             (a.ln-nodes/save-info! node-id (log/spy :info info)))
-          (throw (RuntimeException. "Failed to find node")))))))
+          (throw (RuntimeException. (str "Failed to find node: " node-name))))))))
 
 (defn seed-ln-peers!
   [users]
@@ -563,11 +580,21 @@
   (doseq [{:keys [ln-nodes username]} users]
     (if-let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys [name txes]} ln-nodes]
-        (if-let [node-id (q.ln-nodes/find-id-by-user-and-name user-id name)]
-          (doseq [tx txes]
-            (let [tx (assoc (set/rename-keys tx m.ln-tx/rename-map) ::m.ln-tx/node node-id)]
-              (q.ln-tx/add-tx node-id (log/spy :info tx))))
-          (throw (RuntimeException. "Failed to find node"))))
+        (if-let [ln-node-id (q.ln-nodes/find-id-by-user-and-name user-id name)]
+          (if-let [ln-node (log/spy :info (q.ln-nodes/read-record ln-node-id))]
+            (if-let [core-node-id (::m.ln-nodes/core-node ln-node)]
+              (doseq [tx txes]
+                (let [tx           (set/rename-keys tx m.ln-tx/rename-map)
+                      tx           (assoc tx ::m.ln-tx/node ln-node-id)
+                      tx-hash      (::m.ln-tx/tx-hash tx)
+                      block-hash   (::m.ln-tx/block-hash tx)
+                      block-height (::m.ln-tx/block-height tx)
+                      core-tx-id   (a.core-tx/register-tx core-node-id block-hash block-height tx-hash)
+                      tx           (assoc tx ::m.ln-tx/core-tx core-tx-id)]
+                  (q.ln-tx/add-tx ln-node-id (log/spy :info tx))))
+              (throw (RuntimeException. "Node does not contain a core node id")))
+            (throw (RuntimeException. "Failed to read ln node")))
+          (throw (RuntimeException. "Failed to find ln node"))))
       (throw (RuntimeException. "Failed to find ln tx")))))
 
 (defn seed-accounts!
@@ -661,10 +688,8 @@
     (doseq [wallet (get user :wallets [])]
       (log/spy :info wallet))))
 
-(def addresses [])
-
 (defn seed-addresses!
-  []
+  [addresses]
   (doseq [address addresses]
     (q.core-address/create-record {::m.core-address/address address})))
 
@@ -675,6 +700,7 @@
 
   (doseq [data core-node-data]
     (q.core-nodes/create-record data))
+  #_(seed-core-txes!)
 
   (seed-currencies!)
   (seed-rate-sources!)
@@ -685,7 +711,7 @@
   (seed-transactions! users)
   (seed-ln-nodes! users)
   (seed-wallets! users)
-  (seed-addresses!)
+  (seed-addresses! [])
   ;; (seed-ln-peers! users)
   ;; (seed-ln-txes! users)
 
