@@ -24,7 +24,7 @@
              :rel  "stylesheet"}]
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-    [:body {:style "overflow: hidden"}
+    [:body {:style "overflow: hidden; padding-bottom: 32px;"}
      [:div#app {:style "height: 100%"}]
      [:script {:src "/js/main.js"}]]]))
 
