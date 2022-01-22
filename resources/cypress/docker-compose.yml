@@ -1,7 +1,0 @@
-version: '3.3'
-
-services:
-  dinsro:
-    image: duck1123/dinsro:dev-sources-latest
-    ports:
-    - 3000:3000
