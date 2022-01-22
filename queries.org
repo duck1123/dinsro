@@ -1,26 +1,42 @@
 * Currency accounts
+
 ** accounts for all currencies
+
 #+BEGIN_SRC clojure
-  [{:dinsro.model.currencies/all-currencies
+  [{:dinsro.model.currencies/index
     [:dinsro.model.currencies/name
      {:dinsro.model.currencies/accounts [:dinsro.model.accounts/name]}]}]
 #+END_SRC
 
 ** just ids
 #+begin_src clojure
-  [{:dinsro.model.currencies/all-currencies
+  [{:dinsro.model.currencies/index
     [:dinsro.model.currencies/name :dinsro.model.currencies/accounts]}]
 #+end_src
 
 ** Rates by rate source
+
 #+begin_src clojure
-  [{:dinsro.model.rate-sources/all-rate-sources
+  [{:dinsro.model.rate-sources/index
     [:dinsro.model.rate-sources/name
      {:dinsro.model.rate-sources/rates
       [:dinsro.model.rates/rate]}]}]
 #+end_src
 
 ** Peers
+
 #+begin_src clojure
-   [{:dinsro.model.ln-nodes/all-nodes [:dinsro.model.ln-nodes/peers]}]
+   [{:dinsro.model.ln-nodes/index [:dinsro.model.ln-nodes/peers]}]
+#+end_src
+
+** Currencies with rate info
+
+#+begin_src clojure
+[{:dinsro.model.currencies/index
+  [:dinsro.model.currencies/name
+   {:dinsro.model.currencies/current-rate
+    [:dinsro.model.rates/rate
+     :dinsro.model.rates/date
+     {:dinsro.model.rates/source
+      [:dinsro.model.rate-sources/name]}]}]}]
 #+end_src
