@@ -14,19 +14,25 @@
    :rates
    :rate-sources
    :core-nodes
+   :core-blocks
+   :core-txes
+   :core-addresses
+   :wallets
    :lightning-nodes
+   :ln-remote-nodes
    :peers
    :channels
+   :invoices
    :tx
+   :payreqs
+   :payments
    :admin])
 (def menu-link-names [:accounts :transactions])
 (def unauth-link-names [:login :registration])
 
 (defattr id ::id :symbol
   {ao/identity?  true
-   ao/pc-resolve (fn [_env props]
-                   (log/spy :info props)
-                   {::id :main})})
+   ao/pc-resolve (fn [_env _props] {::id :main})})
 
 (defattr auth-links ::auth-links :ref
   {ao/target     ::m.navlink/id
