@@ -61,7 +61,7 @@
   ;; {:main-opts ["-m" "dinsro.clerk"]}
 
   :dev
-  {:extra-paths ["src/dev" "src/test"]
+  {:extra-paths ["src/dev" "src/notebooks" "src/test"]
    :extra-deps
    {binaryage/devtools          {:mvn/version "1.0.2"}
     com.github.awkay/workspaces {:mvn/version "1.0.3"}

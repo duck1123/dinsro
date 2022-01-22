@@ -12,9 +12,9 @@
   (when (config/config :use-notebook)
     (log/info "Starting clerk")
     (clerk/serve!
-     {:watch-paths    ["notebooks" "src"]
-      :show-filter-fn #(string/starts-with? % "notebooks")})
-    (clerk/show! "notebooks/notebooks/test.clj")))
+     {:watch-paths    ["src/main" "src/notebooks" "src/shared"]
+      :show-filter-fn #(string/starts-with? % "dinsro.notebook")})
+    (clerk/show! "src/notebooks/dinsro/notebook.clj")))
 
 (defn stop!
   [_clerk]
@@ -26,5 +26,7 @@
 
 (comment
   (start!)
+
+  (clerk/show! "notebooks/dinsro/notebook.clj")
 
   nil)

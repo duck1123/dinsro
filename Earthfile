@@ -168,7 +168,6 @@ dev-sources-minimal:
   FROM +deps-builder
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   COPY --dir src ${src_home}
-  COPY --dir notebooks ${src_home}/notebooks
   COPY shadow-cljs.edn .
   COPY --dir resources/main ${src_home}/resources/main
 
@@ -188,6 +187,7 @@ image:
   FROM openjdk:8-alpine
   ARG EXPECTED_REF=${repo}/${project}:${version}
   VOLUME ${data_dir}
+  RUN mkdir -p src
   COPY +jar/dinsro.jar dinsro.jar
   COPY resources/docker/config.edn config.edn
   CMD ["java", "-jar", "dinsro.jar"]

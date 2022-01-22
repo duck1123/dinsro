@@ -109,7 +109,6 @@ if not use_production:
       '.dockerignore',
       'bb.edn',
       'deps.edn',
-      'notebooks',
       'resources/docker',
       'resources/main/public',
       'src',
@@ -117,7 +116,6 @@ if not use_production:
     ],
     live_update=[
       sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
-      sync('notebooks', '/usr/src/app/notebooks'),
       sync('src', '/usr/src/app/src'),
       sync('resources/main/public', '/usr/src/app/resources/main/public'),
     ]

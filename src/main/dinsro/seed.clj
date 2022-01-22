@@ -691,3 +691,9 @@
 
   (log/info "Done seeding")
   (item-report))
+
+(comment
+
+  (seed-db!)
+
+  nil)

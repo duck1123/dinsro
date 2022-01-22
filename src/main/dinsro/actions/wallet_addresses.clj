@@ -24,7 +24,7 @@
 
 (comment
 
-  (q.wallets/index-ids)
+  (tap> (q.wallets/index-ids))
 
   (q.wallet-addresses/find-by-wallet (first (q.wallets/index-ids)))
 

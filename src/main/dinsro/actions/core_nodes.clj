@@ -63,7 +63,7 @@
         (q.core-tx/create-record params)))))
 
 (comment
-  (q.core-nodes/index-records)
+  (tap> (q.core-nodes/index-records))
 
   (def node-alice (q.core-nodes/read-record (q.core-nodes/find-id-by-name "bitcoin-alice")))
   (def node-bob (q.core-nodes/read-record (q.core-nodes/find-id-by-name "bitcoin-bob")))
