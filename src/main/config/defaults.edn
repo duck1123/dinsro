@@ -21,7 +21,7 @@
               :content-types          true
               :default-charset        "utf-8"
               :not-modified-responses true}
-  :session   true
+  :session   {}
   :static    {:resources "public"}
   :security  {:anti-forgery   false
               :hsts           true

@@ -1,8 +1,9 @@
 (ns dinsro.components.ring-middleware
   (:require
+   [buddy.core.bytes :as b]
    [clojure.string :as str]
    [dinsro.components.blob-store :as bs]
-   [dinsro.components.config :as config]
+   [dinsro.components.config :as config :refer [secret]]
    [dinsro.components.parser :as parser]
    [com.fulcrologic.fulcro.networking.file-upload :as file-upload]
    [com.fulcrologic.fulcro.server.api-middleware :as server]
@@ -10,6 +11,7 @@
    [hiccup.page :refer [html5]]
    [mount.core :refer [defstate]]
    [ring.middleware.defaults :refer [wrap-defaults]]
+   [ring.middleware.session.cookie :refer [cookie-store]]
    [ring.util.response :as resp]
    [taoensso.timbre :as log]))
 
@@ -55,7 +57,8 @@
 
 (defstate middleware
   :start
-  (let [defaults-config (:ring.middleware/defaults-config config/config)]
+  (let [defaults-config (:ring.middleware/defaults-config config/config {})
+        session-store   (cookie-store {:key (b/slice secret 0 16)})]
     (-> not-found-handler
         (wrap-api "/api")
         (file-upload/wrap-mutation-file-uploads {})
@@ -64,4 +67,5 @@
         (server/wrap-transit-params {})
         (server/wrap-transit-response {})
         (wrap-html-routes)
-        (wrap-defaults defaults-config))))
+        (wrap-defaults
+         (assoc-in defaults-config [:session :store] session-store)))))

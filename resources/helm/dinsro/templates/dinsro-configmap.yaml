@@ -27,7 +27,7 @@ data:
         :log-requests?  false
         :log-responses? false}
 
-     :dinsro.config/secret-path "/mnt/certs/secret"
+     :dinsro.components.config/secret-path "/mnt/certs/secret"
 
      :taoensso.timbre/logging-config
      {:min-level
