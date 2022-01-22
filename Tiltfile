@@ -78,6 +78,7 @@ k8s_yaml(helm(
     'notebook.ingress.hosts[0].paths[0].path=/',
     "nrepl.enabled=%s" % ('true' if use_nrepl else 'false'),
     "persistence.enabled=%s" % ('true' if use_persistence else 'false'),
+    "workspaces.enabled=%s" % ('false' if local_devtools else 'true'),
   ]
 ))
 

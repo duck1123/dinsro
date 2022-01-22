@@ -170,6 +170,7 @@ dev-sources-minimal:
   COPY --dir src ${src_home}
   COPY shadow-cljs.edn .
   COPY --dir resources/main ${src_home}/resources/main
+  COPY --dir resources/workspaces ${src_home}/resources/workspaces
 
 eastwood:
   FROM +dev-sources
