@@ -13,6 +13,7 @@
    [com.fulcrologic.rad.routing.history :as history]
    [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [html5-history]]
    [dinsro.app :as da]
+   [dinsro.formatters.date-time :as fmt.date-time]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
    [dinsro.ui.controls :as u.controls]
@@ -36,6 +37,7 @@
 (defn setup-RAD [app]
   (let [all-controls (u.controls/all-controls)]
     (rad-app/install-ui-controls! app all-controls))
+  (report/install-formatter! app :inst :default fmt.date-time/date-formatter)
   (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
 
 (def my-auth-machine
