@@ -119,6 +119,53 @@
   (let [config-string (->tilt-config)]
     (spit "target/tilt_config.json" config-string)))
 
+(defn ->dinsro-config
+  []
+  (let [site-config                             (get-site-config)
+        {base-url               :baseUrl
+         local-devtools         :localDevtools
+         notebook-host          :notebookHost
+         notebook-inherit-host? :notebookInheritHost
+         portal-host            :portalHost
+         seed?                  :seedDatabase
+         notebook?              :useNotebook
+         nrepl?                 :useNrepl
+         persistence?           :usePersistence
+         portal?                :usePortal
+         production?            :useProduction} site-config
+        devtools-host                           (if local-devtools "localhost:9630" (str "devtools.base-url"))
+        notebook-url                            (if notebook-inherit-host? (str "notebook." base-url) notebook-host)
+        image-tag                               (if production? "latest" "dev-sources-latest")]
+    (yaml/generate-string
+     {:replicaCount 1
+      :database     {:enabled persistence?}
+      :devtools     {:enabled (not local-devtools)
+                     :ingress {:enabled (not local-devtools)
+                               :hosts   [{:host  devtools-host
+                                          :paths [{:path "/"}]}]}}
+      :image        {:tag image-tag}
+      :ingress      {:hosts [{:host  base-url
+                              :paths [{:path "/"}]}]
+                     :tls   [{:secretName "dinsro-tls"
+                              :hosts      [base-url]}]}
+      :notebook     {:enabled notebook?
+                     :ingress {:enabled true
+                               :hosts   [{:host  notebook-url
+                                          :paths [{:path "/"}]}]}}
+
+      :nrepl       {:enabled nrepl?}
+      :persistence {:enabled persistence?
+                    :seed    seed?}
+      :workspaces  {:enabled (not local-devtools)
+                    :ingress {:hosts [{:host  "workspaces.dinsro.localhost"
+                                       :paths [{:path "/"}]}]}}
+
+      :portal {:enabled portal?
+               :service {:type "ClusterIP" :port 5678}
+               :ingress {:enabled portal?
+                         :hosts   [{:host  portal-host
+                                    :paths [{:path "/"}]}]}}})))
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tap
   [data]
