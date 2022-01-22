@@ -53,13 +53,6 @@ INSTALL_BABASHKA:
       && ./install \
       && rm -f install
 
-INSTALL_CHROMIUM:
-  COMMAND
-  RUN apt update && apt install -y \
-          chromium \
-      && rm -rf /var/lib/apt/lists/*
-  ENV CHROME_BIN=chromium
-
 INSTALL_KONDO:
   COMMAND
   RUN curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo \
@@ -83,7 +76,6 @@ base-builder:
   ENV USER_HOME=/home/${dev_user}
   USER root
   DO +INSTALL_NODE
-  DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
   DO +INSTALL_KONDO
   RUN chown -R ${uid}:${gid} ${src_home}
