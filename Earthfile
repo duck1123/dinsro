@@ -241,7 +241,6 @@ lint:
 
 node-deps:
   FROM +base-builder
-  RUN pwd
   COPY package.json yarn.lock .
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
