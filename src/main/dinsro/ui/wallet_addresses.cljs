@@ -39,11 +39,9 @@
    :local? true
    :label  "Generate"
    :action (fn [this _]
-             (comment this)
-             #?(:cljs
-                (let [props                            (comp/props this)
-                      {::m.wallet-addresses/keys [id]} props]
-                  (comp/transact! this [(mu.wallet-addresses/generate! {::m.wallet-addresses/id id})]))))})
+             (let [props                            (comp/props this)
+                   {::m.wallet-addresses/keys [id]} props]
+               (comp/transact! this [(mu.wallet-addresses/generate! {::m.wallet-addresses/id id})])))})
 
 (form/defsc-form WalletAddressForm
   [_this _props]

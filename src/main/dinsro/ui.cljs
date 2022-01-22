@@ -16,12 +16,18 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
+   [dinsro.ui.core-address :as u.core-address]
+   [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.core-nodes :as u.core-nodes]
+   [dinsro.ui.core-tx :as u.core-tx]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
    [dinsro.ui.ln-channels :as u.ln-channels]
+   [dinsro.ui.ln-invoices :as u.ln-invoices]
    [dinsro.ui.ln-nodes :as u.ln-nodes]
+   [dinsro.ui.ln-payments :as u.ln-payments]
+   [dinsro.ui.ln-payreqs :as u.ln-payreqs]
    [dinsro.ui.ln-peers :as u.ln-peers]
    [dinsro.ui.ln-transactions :as u.ln-tx]
    [dinsro.ui.login :as u.login]
@@ -31,6 +37,8 @@
    [dinsro.ui.rate-sources :as u.rate-sources]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.transactions :as u.transactions]
+   [dinsro.ui.wallets :as u.wallets]
+   [dinsro.ui.wallet-addresses :as u.wallet-addresses]
    [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]))
 
@@ -38,20 +46,37 @@
   [_this {:keys [current-state route-factory route-props]}]
   {:router-targets [u.accounts/AccountForm
                     u.accounts/AccountsReport
+                    u.accounts/NewAccountForm
                     u.admin/AdminPage
                     u.categories/AdminCategoryForm
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
+                    u.core-address/CoreAddressForm
+                    u.core-address/CoreAddressReport
+                    u.core-block/CoreBlockForm
+                    u.core-block/CoreBlockReport
+                    u.core-nodes/NewCoreNodeForm
                     u.core-nodes/CoreNodeForm
                     u.core-nodes/CoreNodesReport
+                    u.core-tx/CoreTxForm
+                    u.core-tx/CoreTxReport
                     u.currencies/AdminCurrencyForm
                     u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport
                     u.home/HomePage
                     u.ln-channels/LNChannelForm
                     u.ln-channels/LNChannelsReport
+                    u.ln-invoices/LNInvoiceForm
+                    u.ln-invoices/LNInvoicesReport
+                    u.ln-invoices/NewInvoiceForm
                     u.ln-nodes/LightningNodeForm
                     u.ln-nodes/LightningNodesReport
+                    u.ln-payments/LNPaymentForm
+                    u.ln-payments/LNPaymentsReport
+                    u.ln-payreqs/NewPaymentForm
+                    u.ln-payreqs/LNPaymentForm
+                    u.ln-payreqs/LNPayreqsReport
+                    u.ln-payreqs/NewPaymentForm
                     u.ln-peers/LNPeerForm
                     u.ln-peers/LNPeersReport
                     u.ln-tx/LNTransactionForm
@@ -66,7 +91,11 @@
                     u.transactions/TransactionsReport
                     u.users/AdminUserForm
                     u.users/UserForm
-                    u.users/UsersReport]}
+                    u.users/UsersReport
+                    u.wallets/NewWalletForm
+                    u.wallets/WalletForm
+                    u.wallets/WalletReport
+                    u.wallet-addresses/WalletAddressesReport]}
   (case current-state
     :pending (dom/div "Loading...")
     :failed  (dom/div "Failed!")
