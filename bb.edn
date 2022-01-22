@@ -27,7 +27,7 @@
    :task (earthly :image {:interactive true})}
 
   build-production
-  {:depends [compile-production package-jar]}
+  {:depends [compile-production-cljs package-jar]}
 
   ci
   {:task (earthly :ci {:interactive true
@@ -67,7 +67,7 @@
    :depends [init]
    :task    (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
                   data         {:devtools {:devtools-url devtools-url}}
-                  args         (format "-M:dev:shadow-cljs compile main --config-merge '%s'"
+                  args         (format "-M:dev:guardrails:shadow-cljs compile main --config-merge '%s'"
                                        (pr-str data))]
               (clojure args))}
 
@@ -78,7 +78,6 @@
   compile-production-clj
   {:doc  "Compile clojure source files for production"
    :task (do
-           (shell "mkdir -p classes")
            (clojure "-M:production -e " "(compile 'dinsro.core)"))}
 
   compile-production-cljs
@@ -123,7 +122,6 @@
            watch-cmd   (str "sh -c \"" envs " bb watch-cljs\"")
            run-cmd     "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""]
        (when watch-sources
-         (println "watching sources")
          (shell compile-cmd)
          (future (shell watch-cmd)))
        (shell run-cmd)))}
@@ -136,7 +134,7 @@
   display-path
   {:doc  "Display dependency trees for each alias"
    :task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production"
-                        "shadow-cljs" "test" "uberdeps"]]
+                        "shadow-cljs" "test"]]
            (shell (str "clojure -A:" alias " -Stree")))}
 
   e2e
@@ -429,7 +427,7 @@
 
   package-jar
   {:doc  "Build production jar"
-   :task (clojure "-M:uberdeps:production --main-class dinsro.core --aliases production")}
+   :task (clojure "-T:build uber")}
 
   prepare-test-dirs
   {:doc  "Build test data directory"
@@ -445,11 +443,11 @@
 
   run
   {:doc  "Run server in dev mode"
-   :task (clojure "-M:dev:dev-main")}
+   :task (clojure "-M:dev:guardrails:dev-main")}
 
   run-production
   {:doc  "Run server from jar"
-   :task (shell "java -jar target/dinsro.jar")}
+   :task (shell "clojure -T:build run")}
 
   seed
   {:doc "Seed the database over nrepl"
@@ -460,6 +458,14 @@
   server
   {:doc     "compile and run server in dev mode"
    :depends [compile run]}
+
+  start-dev
+  {:doc     "Start development"
+   :task (shell "tilt up")}
+
+  start-production
+  {:doc  "Start development"
+   :depends [build-production run-production]}
 
   test
   {:doc     "Run all tests"
@@ -478,15 +484,16 @@
   watch {:depends [watch-cljs]}
 
   watch-cljs
-  {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
+  {:task (let [guardrails   {:enabled nil}
+               devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
                data         {:devtools {:devtools-url devtools-url}}
-               args         (format "-M:dev:shadow-cljs watch main workspaces --config-merge '%s'"
+               args         (format "-M:dev:guardrails:shadow-cljs watch main workspaces --config-merge '%s'"
                                     (pr-str data))]
            (clojure args))}
 
   workspaces
   {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://devtools.dinsro.localhost")
                data         {:devtools {:devtools-url devtools-url}}
-               args         (format "-M:dev:shadow-cljs watch workspaces --config-merge '%s'"
+               args         (format "-M:dev:guardrails:shadow-cljs watch workspaces --config-merge '%s'"
                                     (pr-str data))]
            (clojure args))}}}

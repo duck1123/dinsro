@@ -52,7 +52,11 @@
   time-specs/time-specs                  {:mvn/version "0.1.0-SNAPSHOT"}}
 
  :aliases
- {:cljfmt
+ {:build
+  {:deps       {io.github.seancorfield/build-clj {:git/tag "v0.6.5" :git/sha "972031a"}}
+   :ns-default build}
+
+  :cljfmt
   {:extra-deps
    {cljfmt/cljfmt {:mvn/version "0.6.7"}}
    :main-opts ["-m" "cljfmt.main"]}
@@ -65,13 +69,13 @@
    :extra-deps
    {binaryage/devtools          {:mvn/version "1.0.2"}
     com.github.awkay/workspaces {:mvn/version "1.0.3"}
-    fulcrologic/fulcro-spec     {:mvn/version "3.1.12"}
-    lambdaisland/kaocha         {:mvn/version "1.0.829"}
-    thheller/shadow-cljs        {:mvn/version "2.15.10"}}
-   :jvm-opts    ["-Dguardrails.enabled=true"]}
+    fulcrologic/fulcro-spec     {:mvn/version "3.1.12"}}}
 
   :dev-main
   {:main-opts ["-m" "dinsro.core"]}
+
+  :guardrails
+  {:jvm-opts ["-Dguardrails.enabled=true"]}
 
   :dispatch
   {:replace-deps
@@ -106,11 +110,4 @@
   :test
   {:extra-deps
    {lambdaisland/kaocha {:mvn/version "1.60.977"}}
-   :main-opts ["-m" "kaocha.runner"]}
-
-  :uberdeps
-  {:main-opts   ["-m" "uberdeps.uberjar"]
-   :extra-paths ["classes"]
-   :replace-deps
-   {ch.qos.logback/logback-classic {:mvn/version "1.2.3"}
-    uberdeps/uberdeps              {:mvn/version "1.0.2"}}}}}
+   :main-opts ["-m" "kaocha.runner"]}}}

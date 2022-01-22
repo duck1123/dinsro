@@ -1,7 +1,7 @@
 # Earthfile
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
-ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
-# ARG base_image=circleci/clojure:openjdk-17-tools-deps-1.10.3.1040-bullseye-node-browsers-legacy
+# ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
+ARG base_image=cimg/clojure:1.10-node
 ARG clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
 ARG kondo_version=2021.12.16
@@ -185,7 +185,7 @@ fileserver:
   SAVE IMAGE ${EXPECTED_REF}
 
 image:
-  FROM openjdk:8-alpine
+  FROM openjdk:17-alpine
   ARG EXPECTED_REF=${repo}/${project}:${version}
   VOLUME ${data_dir}
   RUN mkdir -p src
@@ -202,7 +202,7 @@ jar:
   COPY --dir +compile-production/classes .
   RUN bb compile-production-cljs
   RUN bb package-jar
-  SAVE ARTIFACT target/app.jar /dinsro.jar AS LOCAL target/dinsro.jar
+  SAVE ARTIFACT target/dinsro-4.0.null.jar /dinsro.jar AS LOCAL target/dinsro.jar
 
 jar-deps:
   FROM +script-builder
@@ -250,7 +250,7 @@ script-builder:
   FROM +base-builder
   COPY package.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
-  COPY --dir bb.edn deps.edn .
+  COPY --dir bb.edn build.clj deps.edn .
   COPY --dir src/babashka src/shared src
 
 src:
