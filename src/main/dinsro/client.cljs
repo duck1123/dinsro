@@ -17,9 +17,11 @@
    [dinsro.formatters.date-time :as fmt.date-time]
    [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
+   [dinsro.ui.admin :as u.admin]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.login :as u.login]
+   [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
 
@@ -41,7 +43,8 @@
   (let [{:keys [route params]} (hist5/url->route)
         target0                (dr/resolve-target app route)
         target                 (condp = target0
-                                 nil u.home/HomePage
+                                 nil               u.home/HomePage
+                                 u.admin/AdminPage u.users/AdminIndexUsersReport
                                  target0)]
     (routing/route-to! app target (or params {}))))
 
