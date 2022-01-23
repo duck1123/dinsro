@@ -10,12 +10,13 @@
 
 (def links
   {:accounts          ["Accounts"          "/accounts"         :dinsro.ui.accounts/AccountsReport]
-   :admin             ["Admin"             "/admin"            :dinsro.ui.admin/AdminPage]
+   :admin             ["Admin"             "/admin/users"      :dinsro.ui.admin/AdminPage]
    :categories        ["Categories"        "/categories"       :dinsro.ui.categories/CategoriesReport]
    :channels          ["Channels"          "/ln-channels"      :dinsro.ui.ln-channels/LNChannelsReport]
    :core-addresses    ["Core Address"      "/core-addresses"   :dinsro.ui.core-address/CoreAddressReport]
    :core-blocks       ["Core Blocks"       "/core-blocks"      :dinsro.ui.core-block/CoreBlockReport]
    :core-nodes        ["Core Nodes"        "/core-nodes"       :dinsro.ui.core-nodes/CoreNodesReport]
+   :core-peers        ["Core Peers"        "/core-peers"       :dinsro.ui.core-peers/CorePeersReport]
    :core-txes         ["Core Transactions" "/core-txes"        :dinsro.ui.core-tx/CoreTxReport]
    :currencies        ["Currencies"        "/currencies"       :dinsro.ui.currencies/CurrenciesReport]
    :home              ["Home"              "/"                 :dinsro.ui.home/HomePage2]

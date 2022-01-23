@@ -15,9 +15,11 @@
    :rate-sources
    :core-nodes
    :core-blocks
+   :core-peers
    :core-txes
    :core-addresses
    :wallets
+   :wallet-addresses
    :lightning-nodes
    :ln-remote-nodes
    :peers
