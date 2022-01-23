@@ -96,34 +96,33 @@
          group         "circleci"
          src-path      "/var/lib/dinsro"
          cert-path     "/mnt/certs"
-         sudo          (fn [cmd] (format "sudo -u %s %s" user cmd))
-         chown-fn      (fn [data-path] (format "chown -R %s:%s %s" user group data-path))
-         chown-cmd1    (chown-fn src-path)
-         chown-cmd2    (chown-fn cert-path)
          envs          (->> (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK" "WATCH_SOURCES"])
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
+     (display-env)
      (shell (str "mkdir -p " cert-path))
-     (shell chown-cmd1)
-     (shell chown-cmd2)
-     (shell (sudo bootstrap-cmd)))}
+     (chown user group src-path)
+     (chown user group cert-path)
+     (sudo bootstrap-cmd))}
 
   dev-bootstrap-user
   {:task
-   (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
+   (do
      (println "=========================================================================================")
-     (let [envs        (->> (concat
-                             (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
-                             ["CONFIG_FILE=/etc/dinsro/config.edn"])
-                            (filter identity)
-                            (clojure.string/join " "))
-           compile-cmd "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb compile-cljs\""
-           watch-cmd   (str "sh -c \"" envs " bb watch-cljs\"")
-           run-cmd     "sh -c \"CONFIG_FILE=/etc/dinsro/config.edn bb run\""]
-       (when watch-sources
-         (shell compile-cmd)
-         (future (shell watch-cmd)))
+     (let [config-file "/etc/dinsro/config.edn"
+           devtools-url (or (System/getenv "DEVTOOLS_URL"))
+           envs         (->> (concat
+                              (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
+                              [(str "CONFIG_FILE=/etc/dinsro/config.edn" config-file)])
+                             (filter identity)
+                             (clojure.string/join " "))
+           compile-cmd  (format "sh -c \"CONFIG_FILE=%s bb compile-cljs\"" config-file)
+           watch-cmd    (str "sh -c \"" envs " bb watch-cljs\"")
+           run-cmd      (format "sh -c \"CONFIG_FILE=%s bb run\"" config-file)]
+       (display-env)
+       (shell compile-cmd)
+       (future (shell watch-cmd))
        (shell run-cmd)))}
 
   dispatch
