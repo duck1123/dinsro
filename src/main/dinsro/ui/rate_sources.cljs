@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
@@ -40,7 +41,8 @@
    fo/attributes     [m.rate-sources/name
                       m.rate-sources/url
                       m.rate-sources/active?
-                      m.rate-sources/path]
+                      m.rate-sources/path
+                      j.rate-sources/rates]
    fo/cancel-route   ["rate-sources"]
    fo/field-styles   {::m.rate-sources/rates :rate-chart}
    fo/route-prefix   "rate-source"
