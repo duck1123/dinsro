@@ -186,6 +186,17 @@ if local_devtools:
     ),
   )
 
+if local_devtools:
+  local_resource(
+    'rollup',
+    allow_parallel = True,
+    serve_env = {
+      'DEVTOOLS_URL': 'http://localhost:9630',
+    },
+    serve_cmd='bb watch-styles',
+    labels = [ 'compile' ],
+  )
+
 if use_linting:
   local_resource(
     'eastwood',

@@ -42,7 +42,8 @@
    [dinsro.ui.wallets :as u.wallets]
    [dinsro.ui.wallet-addresses :as u.wallet-addresses]
    [dinsro.ui.users :as u.users]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   ["fomantic-ui"]))
 
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]

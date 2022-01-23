@@ -38,9 +38,12 @@ test-results/
 /out
 /pom.xml
 /public/js/
+/resources/main/public/css
 /resources/main/public/js
+/resources/main/public/themes
 /resources/workspaces/public/js
 /routes/
+/semantic
 /target
 /tilt_config.json
 /tmp

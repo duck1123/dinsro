@@ -241,15 +241,16 @@ lint:
 
 node-deps:
   FROM +base-builder
-  COPY package.json yarn.lock .
+  COPY package.json semantic.json yarn.lock .
+  # RUN npx yarn add fomantic-ui --ignore-scripts
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
 
 script-builder:
   FROM +base-builder
-  COPY package.json yarn.lock .
+  COPY package.json semantic.json yarn.lock .
   COPY --dir +node-deps/node_modules node_modules
-  COPY --dir bb.edn build.clj deps.edn .
+  COPY --dir bb.edn build.clj deps.edn rollup.config.js .
   COPY --dir src/babashka src/shared src
 
 src:

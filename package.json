@@ -3,12 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
+    "@p233/stylelint-config-scss": "^3.1.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "autoprefixer": "^10.4.2",
     "clj-kondo": "^2022.1.15",
+    "css-loader-minify-class": "^1.3.0",
     "karma": "^6.3.7",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
     "karma-cljs-test": "^0.1.0",
-    "shadow-cljs": "^2.15.12"
+    "lint-staged": "^12.1.7",
+    "postcss": "^8.4.5",
+    "rollup": "^2.64.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.48.0",
+    "shadow-cljs": "^2.15.12",
+    "stylelint": "^14.2.0"
   },
   "dependencies": {
     "@artsy/fresnel": "^1.9.0",
@@ -16,6 +26,8 @@
     "@js-joda/locale_en-us": "3.1.1",
     "@js-joda/timezone": "2.8.0",
     "big.js": "6.1.1",
+    "fomantic-ui": "^2.8.8",
+    "fomantic-ui-less": "^2.8.8",
     "highlight.js": "^9.12.0",
     "markdown-it": "^12.3.2",
     "markdown-it-block-image": "0.0.3",
@@ -30,7 +42,28 @@
     "react-icons": "^2.2.7",
     "react-qr-scanner": "^1.0.0-alpha.7",
     "reakit": "^0.11.1",
-    "semantic-ui-react": "^2.0.3",
+    "rollup-plugin-less": "^1.1.3",
+    "semantic-ui-react": "^2.0.4",
     "victory": "^34.3.6"
+  },
+  "scripts": {
+    "watch:sass": "rollup -c -w",
+    "build:sass": "rollup -c",
+    "lint:sass": "stylelint --fix src/styles"
+  },
+  "lint-staged": {
+    "*.{cljs,edn}": [
+      "clj-kondo --lint",
+      "clojure -Sdeps '{:deps {cljfmt {:mvn/version \"0.8.0\"}}}' -m cljfmt.main fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --fix"
+    ]
+  },
+  "dependenciesMeta": {
+    "fomantic-ui": {
+      "built": false
+    }
   }
 }

@@ -1,0 +1,12 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+body {
+  background-color: @secondaryColor;
+}
+
+#app {
+  height: 100%;
+  overflow: hidden;
+}

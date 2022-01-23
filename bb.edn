@@ -50,6 +50,9 @@
   {:doc  "Cleans the database"
    :task (shell "rm -rf data")}
 
+  clean-semantic
+  {:task (println "todo")}
+
   check
   {:doc  "Check sources are formatted correctly"
    :task (cljfmt ["src" "deps.edn" "shadow-cljs.edn"])}
@@ -64,12 +67,18 @@
 
   compile-cljs
   {:doc     "Compile clojurescript source files"
-   :depends [init]
+   :depends [init
+             ;; install-style-dependencies
+             ;; compile-styles
+             ]
    :task    (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
                   data         {:devtools {:devtools-url devtools-url}}
                   args         (format "-M:dev:guardrails:shadow-cljs compile main --config-merge '%s'"
                                        (pr-str data))]
               (clojure args))}
+
+  compile-styles
+  {:task (shell "npm run build:sass")}
 
   compile-production
   {:doc     "Compile all source files for production"
@@ -90,7 +99,7 @@
    :depends [build-dev-image start-dev]}
 
   dev-bootstrap
-  {:doc "Start clojurescript watch and main server"
+  {:doc "DOCKER-ONLY: Start clojurescript watch and main server"
    :task
    (let [user          "circleci"
          group         "circleci"
@@ -100,29 +109,26 @@
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
-     (display-env)
      (shell (str "mkdir -p " cert-path))
      (chown user group src-path)
      (chown user group cert-path)
      (sudo bootstrap-cmd))}
 
   dev-bootstrap-user
-  {:task
-   (do
+  {:doc "DOCKER-ONLY: Start clojurescript watch and main server as user"
+   :task
+   (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
      (println "=========================================================================================")
-     (let [config-file "/etc/dinsro/config.edn"
-           devtools-url (or (System/getenv "DEVTOOLS_URL"))
-           envs         (->> (concat
-                              (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
-                              [(str "CONFIG_FILE=/etc/dinsro/config.edn" config-file)])
+     (let [devtools-url (or (System/getenv "DEVTOOLS_URL"))
+           envs         (->> (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
                              (filter identity)
                              (clojure.string/join " "))
-           compile-cmd  (format "sh -c \"CONFIG_FILE=%s bb compile-cljs\"" config-file)
+           compile-cmd  "bb compile-cljs"
            watch-cmd    (str "sh -c \"" envs " bb watch-cljs\"")
-           run-cmd      (format "sh -c \"CONFIG_FILE=%s bb run\"" config-file)]
-       (display-env)
-       (shell compile-cmd)
-       (future (shell watch-cmd))
+           run-cmd      "bb run"]
+       (when watch-sources
+         (shell compile-cmd)
+         (future (shell watch-cmd)))
        (shell run-cmd)))}
 
   dispatch
@@ -410,6 +416,9 @@
   {:doc  "Install js dependencies"
    :task (shell "yarn install --frozen-lockfile")}
 
+  install-style-dependencies
+  {:task (shell "yarn --cwd node_modules/fomantic-ui run install")}
+
   kibit
   {:doc  "Lint source code with kibit"
    :task (clojure "-M:dev:kibit --paths src/main,src/test")}
@@ -481,6 +490,9 @@
            (shell "npx karma start --single-run --check=\"ci.js\""))}
 
   watch {:depends [watch-cljs]}
+
+  watch-styles
+  {:task (shell "npm run watch:sass")}
 
   watch-cljs
   {:task (let [guardrails   {:enabled nil}
