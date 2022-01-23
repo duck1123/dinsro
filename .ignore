@@ -9,5 +9,6 @@ public/js
 log
 out
 target
-resources/public/js
+resources/main/public/css
+resources/main/public/js
 yarn.lock
