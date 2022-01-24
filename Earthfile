@@ -235,8 +235,8 @@ kondo:
   RUN bb kondo
 
 lint:
-  BUILD +eastwood
-  BUILD +kibit
+  # BUILD +eastwood
+  # BUILD +kibit
   BUILD +kondo
 
 node-deps:
