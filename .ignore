@@ -11,4 +11,5 @@ out
 target
 resources/main/public/css
 resources/main/public/js
+semantic
 yarn.lock
