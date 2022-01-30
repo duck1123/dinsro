@@ -53,7 +53,8 @@
    ao/target           ::m.currencies/id
    ::report/column-EQL {::currency [::m.currencies/id ::m.currencies/name]}})
 
-(s/def ::source ::m.rate-sources/id)
+(s/def ::source (s/or :id ::m.rate-sources/id
+                      :nil nil?))
 (defattr source ::source :ref
   {ao/cardinality :one
    ao/required?   true
@@ -77,8 +78,10 @@
 (def required-params
   "Required params for accounts"
   ::required-params)
-(s/def ::params (s/keys :req [::currency ::initial-value ::name ::source ::user]))
-(s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::source ::user]))
+(s/def ::params (s/keys :req [::currency ::initial-value ::name ::user]
+                        :opt [::source]))
+(s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::user]
+                      :opt [::source]))
 
 (defn idents
   [ids]
