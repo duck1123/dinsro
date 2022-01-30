@@ -32,17 +32,17 @@
      [:script {:src "/css/main.min.js"}]
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-    [:body {:style "overflow: hidden; padding-bottom: 32px;"}
-     [:div#app {:style "height: 100%"}]
+    [:body {}
+     [:div#app {}]
      [:script {:src "/js/main.js"}]]]))
 
 (defn wrap-api [handler uri]
   (fn [request]
     (if (= uri (:uri request))
-      (server/handle-api-request (:transit-params request)
-                                 (fn [query]
-                                   (parser/parser {:ring/request request}
-                                                  query)))
+      (server/handle-api-request
+       (:transit-params request)
+       (fn [query]
+         (parser/parser {:ring/request request} query)))
       (handler request))))
 
 (def not-found-handler
