@@ -78,9 +78,9 @@
    ::m.core-nodes/wallet-name ""})
 
 (def wallet-1
-  {:label "a"
+  {:label       "a"
    :blockheight 0
-   :descriptor "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"})
+   :descriptor  "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"})
 
 (def default-rates
   [{:rate 1813.
@@ -162,41 +162,41 @@
     :satSent    42069}])
 
 (def lnd1-txes
-  [{:description      "tx 1"
+  [{:description   "tx 1"
     ;; :account          "a"
     ;; :value            "1"
-    :amount           1
-    :blockHeight      1
-    :blockHash        ""
-    :txHash           ""
-    :timeStamp        0
-    :rawTxHex         ""
-    :label            "TX1"
-    :destAddresses    [""]}
-   {:description      "tx 2"
+    :amount        1
+    :blockHeight   1
+    :blockHash     ""
+    :txHash        ""
+    :timeStamp     0
+    :rawTxHex      ""
+    :label         "TX1"
+    :destAddresses [""]}
+   {:description   "tx 2"
     ;; :account          "b"
     ;; :value            "2"
-    :amount           2
-    :blockHeight      2
-    :blockHash        ""
-    :txHash           ""
-    :timeStamp        3
-    :rawTxHex         ""
-    :label            "TX2"
-    :destAddresses    [""]}])
+    :amount        2
+    :blockHeight   2
+    :blockHash     ""
+    :txHash        ""
+    :timeStamp     3
+    :rawTxHex      ""
+    :label         "TX2"
+    :destAddresses [""]}])
 
 (def lnd2-txes
-  [{:description      "tx 3"
+  [{:description   "tx 3"
     ;; :account          "c"
     ;; :value            "1"
-    :amount           3
-    :blockHeight      3
-    :blockHash        ""
-    :txHash           ""
-    :timeStamp        4
-    :rawTxHex         ""
-    :label            "TX3"
-    :destAddresses    [""]}])
+    :amount        3
+    :blockHeight   3
+    :blockHash     ""
+    :txHash        ""
+    :timeStamp     4
+    :rawTxHex      ""
+    :label         "TX3"
+    :destAddresses [""]}])
 
 (def lnd1
   {:name                "lnd-alice"
@@ -407,7 +407,7 @@
    :accounts   alice-accounts
    :categories alice-categories
    :ln-nodes   [lnd1]
-   :wallets [wallet-1]})
+   :wallets    [wallet-1]})
 
 (def bob-data
   {:username   "bob"
@@ -540,7 +540,7 @@
   (log/info "seed ln-nodes")
   (doseq [{:keys [username ln-nodes]} users]
     (let [user-id (q.users/find-eid-by-name username)]
-      (doseq [{:keys [name host port mnemonic] :as info
+      (doseq [{:keys     [name host port mnemonic] :as info
                node-name :node} ln-nodes]
         (if-let [core-id (q.core-nodes/find-id-by-name node-name)]
           (let [ln-node {::m.ln-nodes/name      name
