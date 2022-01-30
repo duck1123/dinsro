@@ -55,18 +55,18 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.mutations.core-address :as mu.core-address]
-   [dinsro.mutations.core-blocks :as mu.core-blocks]
-   [dinsro.mutations.core-nodes :as mu.core-nodes]
-   [dinsro.mutations.core-tx :as mu.core-tx]
-   [dinsro.mutations.ln-invoices :as mu.ln-invoices]
-   [dinsro.mutations.ln-nodes :as mu.ln-nodes]
-   [dinsro.mutations.ln-payreqs :as mu.ln-payreqs]
-   [dinsro.mutations.rate-sources :as mu.rate-sources]
-   [dinsro.mutations.session :as mu.session]
-   [dinsro.mutations.settings :as mu.settings]
-   [dinsro.mutations.wallets :as mu.wallets]
-   [dinsro.mutations.wallet-addresses :as mu.wallet-addresses]
+   #?(:clj [dinsro.mutations.core-address :as mu.core-address])
+   #?(:clj [dinsro.mutations.core-blocks :as mu.core-blocks])
+   #?(:clj [dinsro.mutations.core-nodes :as mu.core-nodes])
+   #?(:clj [dinsro.mutations.core-tx :as mu.core-tx])
+   #?(:clj [dinsro.mutations.ln-invoices :as mu.ln-invoices])
+   #?(:clj [dinsro.mutations.ln-nodes :as mu.ln-nodes])
+   #?(:clj [dinsro.mutations.ln-payreqs :as mu.ln-payreqs])
+   #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
+   #?(:clj [dinsro.mutations.session :as mu.session])
+   #?(:clj [dinsro.mutations.settings :as mu.settings])
+   #?(:clj [dinsro.mutations.wallets :as mu.wallets])
+   #?(:clj [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])
    [taoensso.timbre :as log]))
 
 (def schemata [])
@@ -128,22 +128,21 @@
         m.wallets/attributes
         m.wallet-addresses/attributes)))
 
-(log/infof "all attributes: " all-attributes)
-
 (def all-attribute-validator (attr/make-attribute-validator all-attributes))
 
-(def all-resolvers
-  (vec (concat
-        m.navlink/resolvers
-        mu.core-address/resolvers
-        mu.core-blocks/resolvers
-        mu.core-nodes/resolvers
-        mu.core-tx/resolvers
-        mu.ln-invoices/resolvers
-        mu.ln-payreqs/resolvers
-        mu.ln-nodes/resolvers
-        mu.rate-sources/resolvers
-        mu.session/resolvers
-        mu.settings/resolvers
-        mu.wallets/resolvers
-        mu.wallet-addresses/resolvers)))
+#?(:clj
+   (def all-resolvers
+     (vec (concat
+           m.navlink/resolvers
+           mu.core-address/resolvers
+           mu.core-blocks/resolvers
+           mu.core-nodes/resolvers
+           mu.core-tx/resolvers
+           mu.ln-invoices/resolvers
+           mu.ln-payreqs/resolvers
+           mu.ln-nodes/resolvers
+           mu.rate-sources/resolvers
+           mu.session/resolvers
+           mu.settings/resolvers
+           mu.wallets/resolvers
+           mu.wallet-addresses/resolvers))))
