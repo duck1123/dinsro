@@ -42,7 +42,6 @@
     {::p/wrap-parser
      (fn transform-parser-out-plugin-external [wrapped-parser]
        (fn transform-parser-out-plugin-internal [env tx]
-         (log/info "date parser")
            ;; TASK: This should be taken from account-based setting
          (dt/with-timezone default-timezone
            (if (and (map? env) (seq tx))
@@ -52,7 +51,6 @@
      (fn transform-parser-out-plugin-external [wrapped-parser]
        (log/info "running auth processor plugin")
        (fn transform-parser-out-plugin-internal [env tx]
-         (log/info "user parser")
          (if (and (map? env) (seq tx))
            (let [user-id (a.authentication/get-user-id env)
                  env (assoc env ::m.users/id user-id)]
