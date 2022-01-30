@@ -5,20 +5,6 @@
    [taoensso.encore :as enc]
    [taoensso.timbre :as log]))
 
-(defn get-my-accounts-
-  [db user-id]
-  (let [query    '{:find  [?uuid]
-                   :in    [?user-id]
-                   :where [[?uuid :dinsro.model.accounts/user ?user-id]]}
-        response (xt/q db query user-id)]
-    (mapv (fn [[id]] {:dinsro.model.accounts/id id}) response)))
-
-(defn get-my-accounts
-  [env user-id _params]
-  (if-let [db (some-> (get-in env [co/databases :production]) deref)]
-    (get-my-accounts- db user-id)
-    (log/error "No database atom for production schema!")))
-
 (defn get-login-info
   "Get the account name, time zone, and password info via a username (email)."
   [env username]
