@@ -82,25 +82,13 @@
                       ::fetch-peers
                       ::new-wallet]
    fo/attributes     [m.core-nodes/name
-                      m.core-nodes/host
-                      m.core-nodes/port
-                      m.core-nodes/rpcuser
-                      m.core-nodes/rpcpass
                       m.core-nodes/chain
-                      m.core-nodes/pruned?
-                      m.core-nodes/difficulty
-                      m.core-nodes/size-on-disk
-                      m.core-nodes/initial-block-download?
-                      m.core-nodes/best-block-hash
-                      m.core-nodes/verification-progress
-                      m.core-nodes/warnings
-                      m.core-nodes/headers
-                      m.core-nodes/chainwork
                       m.core-nodes/block-count
                       j.core-nodes/blocks
                       j.core-nodes/transactions
                       j.core-nodes/ln-nodes
-                      j.core-nodes/wallets]
+                      j.core-nodes/wallets
+                      j.core-nodes/peers]
    fo/cancel-route   ["core-nodes"]
    fo/controls       {::fetch       fetch-button
                       ::fetch-peers fetch-peers-button
@@ -108,7 +96,8 @@
    fo/field-styles   {::m.core-nodes/blocks       :core-block-table
                       ::m.core-nodes/transactions :link-list
                       ::m.core-nodes/ln-nodes     :link-list
-                      ::m.core-nodes/wallets      :link-list}
+                      ::m.core-nodes/wallets      :link-list
+                      ::m.core-nodes/peers        :link-list}
    fo/route-prefix   "core-node"
    fo/subforms       {::m.core-nodes/transactions {fo/ui CoreNodeTxSubform}
                       ::m.core-nodes/blocks       {fo/ui u.core-block/CoreBlockSubForm}
@@ -117,7 +106,9 @@
    fo/title          "Core Node"}
   (if override-form
     (form/render-layout this props)
-    (dom/div {} "Core Node")))
+    (dom/div :.ui.container
+      (dom/h1 {} "Core Node")
+      (form/render-layout this props))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.core-nodes/id
@@ -144,14 +135,14 @@
 
 (report/defsc-report CoreNodesReport
   [_this _props]
-  {ro/columns          [m.core-nodes/name
-                        m.core-nodes/chain]
-   ro/control-layout   {:action-buttons [::new]}
-   ro/controls         {::new new-button}
-   ro/form-links       {::m.core-nodes/name CoreNodeForm}
-   ro/row-actions      [fetch-action-button]
-   ro/source-attribute ::m.core-nodes/index
-   ro/title            "Core Node Report"
-   ro/row-pk           m.core-nodes/id
-   ro/run-on-mount?    true
-   ro/route            "core-nodes"})
+  {ro/columns           [m.core-nodes/name
+                         m.core-nodes/chain]
+   ro/column-formatters {::m.core-nodes/name #(u.links/ui-core-node-link %3)}
+   ro/control-layout    {:action-buttons [::new]}
+   ro/controls          {::new new-button}
+   ro/row-actions       [fetch-action-button]
+   ro/source-attribute  ::m.core-nodes/index
+   ro/title             "Core Node Report"
+   ro/row-pk            m.core-nodes/id
+   ro/run-on-mount?     true
+   ro/route             "core-nodes"})

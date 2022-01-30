@@ -30,16 +30,18 @@
   (let [{::m.core-nodes/keys [id]} node
         params                     (get-blockchain-info node)
         params                     (merge node params)
-        params                     (m.core-nodes/prepare-params params)]
-    (q.core-nodes/update-blockchain-info id params)))
+        params                     (m.core-nodes/prepare-params params)
+        response                   (q.core-nodes/update-blockchain-info id params)]
+    {:status   :ok
+     :response response}))
 
 (>defn fetch!
-  [node]
-  [::m.core-nodes/item => any?]
+  [{::m.core-nodes/keys [id] :as node}]
+  [::m.core-nodes/item => ::m.core-nodes/item]
   (log/debug "Fetching from core node")
   (update-blockchain-info! node)
   (a.core-block/fetch-blocks node)
-  {:status "ok"})
+  (q.core-nodes/read-record id))
 
 (defn fetch-peers!
   [node]

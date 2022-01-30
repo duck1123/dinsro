@@ -85,6 +85,7 @@
                     u.currencies/AdminCurrencyForm
                     u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport
+                    u.currencies/NewCurrencyForm
                     u.home/HomePage
                     u.ln-channels/LNChannelForm
                     u.ln-channels/LNChannelsReport
@@ -181,7 +182,6 @@
           (dom/div {:classes [top]}
             (ui-sidebar-pushable
              {:className (string/join " " [pushable])}
-
              (u.navbar/ui-navbar-sidebar navbar)
              (ui-sidebar-pusher
               {:className (string/join " " [pusher])}
