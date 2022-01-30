@@ -13,12 +13,13 @@
    :query         [::allow-registration
                    {::form (comp/get-query u.f.registration/RegistrationForm)}]
    :route-segment ["register"]}
-  (dom/div {}
-    (if allow-registration
-      (dom/div {}
-        (dom/h1 {} "Registration Page")
-        (u.f.registration/ui-registration-form form))
-      (dom/div {}
-        (dom/p {} "Registrations are not enabled")))))
+  (if allow-registration
+    (dom/div :.ui.container.center.aligned
+      (dom/h4 :.ui.center.aligned.top.attached.header "Register")
+      (dom/div :.ui.center.aligned.attached.segment
+        (u.f.registration/ui-registration-form form)))
+
+    (dom/div {}
+      (dom/p {} "Registrations are not enabled"))))
 
 (def ui-page (comp/factory RegistrationPage))
