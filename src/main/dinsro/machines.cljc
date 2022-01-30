@@ -15,13 +15,17 @@
       {::uism/target-state :state/hidden}}}
     :state/shown
     {::uism/events
-     {:event/toggle
+     {:event/hide
       {::uism/target-state :state/hidden}
-      :event/hide
+      :event/show
+      {::uism/target-state :state/shown}
+      :event/toggle
       {::uism/target-state :state/hidden}}}
     :state/hidden
     {::uism/events
-     {:event/show
+     {:event/hide
+      {::uism/target-state :state/hidden}
+      :event/show
       {::uism/target-state :state/shown}
       :event/toggle
       {::uism/target-state :state/shown}}}}})
