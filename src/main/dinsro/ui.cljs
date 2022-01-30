@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.fulcro-css.css-injection :as inj]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
@@ -162,6 +163,7 @@
                  (when-not gathering-credentials?
                    (ui-root-router router)))))))
           (u.initialize/ui-init-form init-form))
-        (dom/p "Not loaded"))))))
+        (dom/p "Not loaded")))
+     (inj/style-element {:component Root}))))
 
 (def ui-root (comp/factory Root))
