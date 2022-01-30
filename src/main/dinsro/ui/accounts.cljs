@@ -137,6 +137,27 @@
    ro/source-attribute ::m.accounts/index
    ro/title            "Accounts"})
 
+(report/defsc-report AdminIndexAccountsReport
+  [_this _props]
+  {ro/form-links       {::m.accounts/name AccountForm}
+   ro/field-formatters
+   {::m.accounts/currency (fn [_this props] (u.links/ui-currency-link props))
+    ::m.accounts/user     (fn [_this props] (u.links/ui-user-link props))}
+   ro/columns          [m.accounts/name
+                        m.accounts/currency
+                        m.accounts/user
+                        m.accounts/initial-value]
+   ro/control-layout   {:action-buttons [::new]}
+   ro/controls         {::new new-button}
+   ro/route            "accounts"
+   ro/row-actions      []
+   ro/row-pk           m.accounts/id
+   ro/run-on-mount?    true
+   ro/source-attribute ::m.accounts/admin-index
+   ro/title            "Accounts"})
+
+(def ui-admin-index-accounts (comp/factory AdminIndexAccountsReport))
+
 (report/defsc-report AccountsSubReport
   [_this _props]
   {ro/form-links       {::m.accounts/name AccountForm}

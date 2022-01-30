@@ -4,11 +4,24 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.ln-nodes :as u.ln-nodes]
+   [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]))
+
+(defsc AdminAccounts
+  [_this {::keys [report]}]
+  {:query             [{::report (comp/get-query u.accounts/AdminIndexAccountsReport)}]
+   :initial-state     {::report {}}
+   :ident             (fn [] [:component/id ::AdminAccounts])
+   :route-segment     ["accounts"]
+   :componentDidMount (fn [this] (report/run-report! this))}
+  (dom/div {}
+    (dom/p "Admin Accounts")
+    (u.accounts/ui-admin-index-accounts report)))
 
 (defsc AdminUsers
   [_this {::keys [report]}]
@@ -34,8 +47,9 @@
   [_this {:keys [current-state]}]
   {:router-targets [u.users/AdminIndexUsersReport
                     u.categories/AdminIndexCategoriesReport
-                    u.ln-nodes/AdminLNNodesReport]}
-  (dom/div {}
+                    u.ln-nodes/AdminLNNodesReport
+                    u.accounts/AdminIndexAccountsReport]}
+  (dom/div :.admin-router
     (dom/h2 {} "Admin Router")
     (case current-state
       :pending (dom/div {} "Loading...")
@@ -52,15 +66,24 @@
    :initial-state {:admin-router {}}
    :ident         (fn [] [:component/id ::AdminPage])
    :route-segment ["admin"]}
-  (dom/div {}
+  (dom/div :.admin-page
     (dom/h1 "Admin Page")
     (ui-menu
-     {:items [{:key "users" :name "users" :route :users}
-              {:key "categories" :name "Categories" :route :categories}
-              {:key "ln-nodes" :name "LN Nodes" :route :ln-nodes}]
+     {:items [{:key   "users"
+               :name  "users"
+               :route u.users/AdminIndexUsersReport}
+              {:key   "categories"
+               :name  "Categories"
+               :route u.categories/AdminIndexCategoriesReport}
+              {:key   "ln-nodes"
+               :name  "LN Nodes"
+               :route u.ln-nodes/AdminLNNodesReport}
+              {:key   "accounts"
+               :name  "Accounts"
+               :route u.accounts/AdminIndexAccountsReport}]
       :onItemClick
       (fn [_e d]
         (let [route (get (js->clj d) "route")]
           (log/info "route" route)
-          (dr/change-route! this ["admin" route])))})
+          (rroute/route-to! this route {})))})
     (ui-admin-router admin-router)))
