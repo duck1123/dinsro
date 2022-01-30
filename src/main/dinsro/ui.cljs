@@ -9,11 +9,13 @@
    [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro-css.css-injection :as inj]
    [com.fulcrologic.rad.authorization :as auth]
+   [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
    [dinsro.machines :as machines]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.settings :as m.settings]
+   [dinsro.mutations.ui :as mu.ui]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.mutations.settings :as mu.settings]
    [dinsro.ui.accounts :as u.accounts]
@@ -46,6 +48,18 @@
    [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]
    ["fomantic-ui"]))
+
+(defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
+  {:query         [[:ui/global-error '_]]
+   :ident         (fn [] [:component/id :GlobalErrorDisplay])
+   :initial-state {}}
+  (when global-error
+    (ui-message
+     {:content   (str "Something went wrong: " global-error)
+      :error     true
+      :onDismiss #(comp/transact!! this [(mu.ui/reset-global-error {})])})))
+
+(def ui-global-error-display (comp/factory GlobalErrorDisplay))
 
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]
@@ -121,7 +135,7 @@
 (def ui-root-router (comp/factory RootRouter))
 
 (defsc Root
-  [this {:root/keys        [authenticator init-form navbar router]
+  [this {:root/keys        [authenticator global-error init-form navbar router]
          ::m.settings/keys [site-config]}]
   {:componentDidMount
    (fn [this]
@@ -133,10 +147,17 @@
                   {:actor/navbar
                    (uism/with-actor-class [::m.navbar/id :main]
                      u.navbar/Navbar)}))
+   :css           [[:.pushable {:border "1px solid blue"}]
+                   [:.pusher {:border   "1px solid green"
+                              :height   "100%"
+                              :overflow "auto !important"}]
+                   [:.top {:height     "100%"
+                           :margin-top "32px"}]]
    :query
    [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
     {:root/navbar (comp/get-query u.navbar/Navbar)}
     {:root/init-form (comp/get-query u.initialize/InitForm)}
+    {:root/global-error (comp/get-query GlobalErrorDisplay)}
     {:root/router (comp/get-query RootRouter)}
     ::auth/authorization
     {::m.settings/site-config (comp/get-query mu.settings/Config)}]
@@ -144,6 +165,7 @@
                    :root/authenticator      {}
                    :root/init-form          {}
                    :root/router             {}
+                   :root/global-error       {}
                    ::m.settings/site-config {}}}
   (let [{:keys [pushable pusher top]} (css/get-classnames Root)
         top-router-state              (or (uism/get-active-state this ::RootRouter) :initial)
@@ -166,6 +188,7 @@
               (if (= :initial top-router-state)
                 (dom/div :.loading "Loading...")
                 (comp/fragment
+                 (ui-global-error-display global-error)
                  (u.authenticator/ui-authenticator authenticator)
                  (when-not gathering-credentials?
                    (ui-root-router router))))))))

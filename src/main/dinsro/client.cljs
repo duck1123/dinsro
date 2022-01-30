@@ -1,5 +1,6 @@
 (ns dinsro.client
   (:require
+   [clojure.string :as string]
    [com.fulcrologic.fulcro.algorithms.timbre-support :refer [console-appender prefix-output-fn]]
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
@@ -8,6 +9,7 @@
    [com.fulcrologic.fulcro.react.error-boundaries :as eb]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.rad.application :as rad-app]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.report :as report]
@@ -24,6 +26,95 @@
    [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
+
+(defonce stats-accumulator
+  (tufte/add-accumulating-handler! {:ns-pattern "*"}))
+
+(defn target-component-requests-errors [query path]
+  (some->> (when (vector? path) (butlast path)) ; path can be a single keyword -> ignore
+           (get-in query)
+           meta
+           :component
+           (comp/get-query)
+           (some #{:com.wsscode.pathom.core/errors})))
+
+(defn extract-query-from-transaction
+  "Extract the component query from a `result`.
+  Ex. tx.: `[({:all-organizations [:orgnr ...]} params) ::p/errors]`,
+  `[{:people [:orgnr ...]} ::p/errors]`"
+  [original-transaction]
+  (let [query (first original-transaction)]
+    (cond-> query
+      ;; A parametrized query is wrapped in (..) but we need the raw data query itself
+      (list? query) (first))))
+
+(defn unhandled-errors
+  "Returns Pathom errors (if any) that are not handled by the target component
+
+  The argument is the same one as supplied to Fulcro's `remote-error?`"
+  [result]
+  ;; TODO Handle RAD reports - their query is `{:some/global-resolver ..}` and it lacks any metadata
+  (let [load-errs (:com.wsscode.pathom.core/errors (:body result))
+        query (extract-query-from-transaction (:original-transaction result))
+        mutation-sym (as-> (-> query keys first) x
+                       (when (sequential? x) (first x))
+                       (when (symbol? x) x)) ; join query => keyword
+        mutation-errs (when mutation-sym
+                        (get-in result [:body mutation-sym :com.fulcrologic.rad.pathom/errors]))]
+    (cond
+      (seq load-errs)
+      (reduce
+       (fn [unhandled-errs [path :as entry]]
+         (if (target-component-requests-errors query path)
+           (do
+             (log/info "unhandled-errors: Ignoring error for" (last path) ", handled by the requesting component")
+             unhandled-errs)
+           (conj unhandled-errs entry)))
+       {}
+        ;; errors is a map of `path` to error details
+       load-errs)
+
+      mutation-errs
+      mutation-errs
+
+      :else
+      nil)))
+
+(defn contains-error? [result]
+  (seq (unhandled-errors result)))
+
+(defn component-handles-mutation-errors? [component]
+  (boolean (some-> component comp/get-query set ::m/mutation-error)))
+
+(defn global-error-action
+  "Run when app's :remote-error? returns true"
+  [{:keys [component state], {:keys [body status-code error-text]} :result}]
+  (when-not (component-handles-mutation-errors? component)
+    (let [msg (first
+               (map
+                (fn [body]
+                  (let [pathom-errs (:com.fulcrologic.rad.pathom/errors body)]
+                    (cond
+                      (and (string? error-text) status-code (> status-code 299))
+                      (cond-> error-text
+                        (and status-code (> status-code 299))
+                        (str " - " body))
+
+                      pathom-errs
+                      (->> pathom-errs
+                           (map (fn [[query {{:keys [message data]} :com.fulcrologic.rad.pathom/errors :as val}]]
+                                  (str query
+                                       " failed with "
+                                       (or (and message
+                                                (str message (when (seq data)
+                                                               (str ", extra data: " data))))
+                                           val))))
+                           (string/join " | "))
+
+                      :else
+                      (str body))))
+                (vals body)))]
+      (swap! state assoc :ui/global-error msg))))
 
 (m/defmutation ui-ready
   "Mutation. Called at the end of [[init]], after `dr/initialize!` and thus 'executed' after all relevant routers have been started"
@@ -50,14 +141,17 @@
 
 (defonce app
   (rad-app/fulcro-rad-app
-   {:client-did-mount
+   {:props-middleware (comp/wrap-update-extra-props
+                       (fn [cls extra-props]
+                         (merge extra-props (css/get-classnames cls))))
+    :remote-error?       (fn [result]
+                           (or
+                            (app/default-remote-error? result)
+                            (contains-error? result)))
+    :global-error-action global-error-action
+    :client-did-mount
     (fn [app]
-      (log/merge-config! {:output-fn prefix-output-fn
-                          :appenders {:console (console-appender)}})
       (restore-route-ensuring-leaf! app))}))
-
-(defonce stats-accumulator
-  (tufte/add-accumulating-handler! {:ns-pattern "*"}))
 
 (m/defmutation fix-route
   "Mutation. Called after auth startup. Looks at the session. If the user is not logged in, it triggers authentication"
@@ -95,6 +189,8 @@
   "Shadow-cljs sets this up to be our entry-point function.
   See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
+  (log/merge-config! {:output-fn prefix-output-fn
+                      :appenders {:console (console-appender)}})
   (app/set-root! app ui/Root {:initialize-state? true})
   (dr/change-route! app [""])
   (history/install-route-history! app (html5-history))
