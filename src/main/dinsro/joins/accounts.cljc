@@ -23,6 +23,14 @@
                 {::m.accounts/transactions []})
         :cljs (comment id)))})
 
+(defattr admin-index ::m.accounts/admin-index :ref
+  {ao/target    ::m.accounts/id
+   ao/pc-output [{::m.accounts/admin-index [::m.accounts/id]}]
+   ao/pc-resolve
+   (fn [{user-id ::m.users/id} _]
+     (let [ids (if user-id #?(:clj (q.accounts/index-ids) :cljs []) [])]
+       {::m.accounts/admin-index (m.accounts/idents ids)}))})
+
 (defattr index ::m.accounts/index :ref
   {ao/target    ::m.accounts/id
    ao/pc-output [{::m.accounts/index [::m.accounts/id]}]
@@ -33,4 +41,5 @@
 
 (def attributes
   [transactions
-   index])
+   index
+   admin-index])
