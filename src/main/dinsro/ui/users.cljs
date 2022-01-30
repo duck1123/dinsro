@@ -47,7 +47,7 @@
                     m.users/password]
    fo/cancel-route ["admin"]
    fo/route-prefix "admin-user"
-   fo/title        "User"})
+   fo/title        "Admin User"})
 
 (report/defsc-report UsersReport
   [_this _props]
@@ -70,7 +70,7 @@
                                     :action (fn [this] (control/run! this))}}
    ro/form-links       {::m.users/name AdminUserForm}
    ro/source-attribute ::m.users/index
-   ro/title            "Users"
+   ro/title            "Admin Users"
    ro/row-pk           m.users/id
    ro/route            "users"
    ro/run-on-mount?    true})

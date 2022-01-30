@@ -12,6 +12,14 @@
    [dinsro.ui.rates :as u.rates]
    [taoensso.timbre :as log]))
 
+(form/defsc-form NewCurrencyForm [_this _props]
+  {fo/id           m.currencies/id
+   fo/attributes   [m.currencies/name
+                    m.currencies/code]
+   ;; fo/cancel-route ["admin"]
+   fo/route-prefix "new-currency"
+   fo/title        "New Currency"})
+
 (form/defsc-form CurrencyForm [_this _props]
   {fo/id           m.currencies/id
    fo/attributes   [m.currencies/name
@@ -38,6 +46,11 @@
    fo/route-prefix "admin/currency"
    fo/title        "Currency"})
 
+(def new-button
+  {:label  "New"
+   :type   :button
+   :action #(form/create! % NewCurrencyForm)})
+
 (report/defsc-report CurrenciesReport
   [_this _props]
   {ro/column-formatters
@@ -46,6 +59,7 @@
       (dom/a {:onClick #(form/edit! this CurrencyForm id)} name))}
    ro/columns          [m.currencies/name
                         m.currencies/code]
+   ro/controls         {::new new-button}
    ro/route            "currencies"
    ro/row-actions      []
    ro/row-pk           m.currencies/id

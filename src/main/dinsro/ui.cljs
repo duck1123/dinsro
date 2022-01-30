@@ -57,6 +57,7 @@
                     u.categories/AdminCategoryForm
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
+                    u.categories/NewCategoryForm
                     u.core-address/CoreAddressForm
                     u.core-address/CoreAddressReport
                     u.core-block/CoreBlockForm
@@ -76,6 +77,7 @@
                     u.ln-invoices/LNInvoiceForm
                     u.ln-invoices/LNInvoicesReport
                     u.ln-invoices/NewInvoiceForm
+                    u.ln-nodes/CreateLightningNodeForm
                     u.ln-nodes/LightningNodeForm
                     u.ln-nodes/LightningNodesReport
                     u.ln-payments/LNPaymentForm

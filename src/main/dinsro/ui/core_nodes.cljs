@@ -1,6 +1,7 @@
 (ns dinsro.ui.core-nodes
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -73,7 +74,9 @@
                    options                         {:initial-state state}]
                (form/create! this component options)))})
 
-(form/defsc-form CoreNodeForm [_this _props]
+(def override-form true)
+
+(form/defsc-form CoreNodeForm [this props]
   {fo/id             m.core-nodes/id
    fo/action-buttons [::fetch
                       ::fetch-peers
@@ -111,7 +114,10 @@
                       ::m.core-nodes/blocks       {fo/ui u.core-block/CoreBlockSubForm}
                       ::m.core-nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
                       ::m.core-nodes/wallets      {fo/ui u.links/WalletLinkForm}}
-   fo/title          "Core Node"})
+   fo/title          "Core Node"}
+  (if override-form
+    (form/render-layout this props)
+    (dom/div {} "Core Node")))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.core-nodes/id

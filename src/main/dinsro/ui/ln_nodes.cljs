@@ -5,17 +5,20 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [dinsro.joins.ln-nodes :as j.ln-nodes]
+   [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.ln-invoices :as m.ln-invoices]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-info :as m.ln-info]
    [dinsro.model.ln-payreqs :as m.ln-payreqs]
    [dinsro.model.ln-transactions :as m.ln-tx]
+   [dinsro.model.users :as m.users]
    [dinsro.mutations.ln-nodes :as mu.ln]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.ln-channels :as u.ln-channels]
@@ -27,13 +30,13 @@
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
-(declare LightningNodeForm)
+(declare CreateLightningNodeForm)
 
 (def new-node-button
   {:type   :button
    :local? true
    :label  "New Node"
-   :action (fn [this _] (form/create! this LightningNodeForm))})
+   :action (fn [this _] (form/create! this CreateLightningNodeForm))})
 
 (def new-invoice-button
   {:type   :button
@@ -167,6 +170,49 @@
           (ui-actions-menu-item {:label label :mutation action :id id})))))))
 
 (def ui-actions-menu (comp/factory ActionsMenu))
+
+(def override-create-form false)
+
+(form/defsc-form CreateLightningNodeForm
+  [this props]
+  {fo/id            m.ln-nodes/id
+   fo/attributes    [m.ln-nodes/name
+                     m.ln-nodes/host
+                     m.ln-nodes/port
+                     m.ln-nodes/core-node
+                     m.ln-nodes/user]
+   fo/field-options {::m.ln-nodes/core-node
+                     {::picker-options/query-key       ::m.core-nodes/index
+                      ::picker-options/query-component u.links/CoreNodeLinkForm
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.core-nodes/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.core-nodes/id id]})
+                         (sort-by ::m.core-nodes/name options)))}
+                     ::m.ln-nodes/user
+                     {::picker-options/query-key       ::m.users/index
+                      ::picker-options/query-component u.links/UserLinkForm
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.users/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.users/id id]})
+                         (sort-by ::m.users/name options)))}}
+   fo/field-styles  {::m.ln-nodes/core-node :pick-one
+                     ::m.ln-nodes/user      :pick-one}
+   fo/cancel-route  ["ln-nodes"]
+   fo/route-prefix  "create-ln-node"
+   fo/title         "Create Lightning Node"}
+  (if override-create-form
+    (form/render-layout this props)
+    (dom/div :.ui.grid
+      (dom/div :.row
+        (dom/div :.sixteen.wide.column
+          (dom/div {}
+            (form/render-layout this props)))))))
 
 (def override-form false)
 
