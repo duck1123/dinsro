@@ -55,6 +55,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
+   #?(:clj [dinsro.mutations.accounts :as mu.accounts])
    #?(:clj [dinsro.mutations.core-address :as mu.core-address])
    #?(:clj [dinsro.mutations.core-blocks :as mu.core-blocks])
    #?(:clj [dinsro.mutations.core-nodes :as mu.core-nodes])
@@ -134,6 +135,7 @@
    (def all-resolvers
      (vec (concat
            m.navlink/resolvers
+           mu.accounts/resolvers
            mu.core-address/resolvers
            mu.core-blocks/resolvers
            mu.core-nodes/resolvers

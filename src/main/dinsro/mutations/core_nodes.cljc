@@ -8,45 +8,37 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core-nodes :as a.core-nodes])
    [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
    [taoensso.timbre :as log]))
 
 (comment ::m.core-nodes/_ ::pc/_)
 
-(s/def ::status #{:ok :initial :fail})
 (s/def ::item ::m.core-nodes/item)
-(s/def ::message string?)
-(s/def ::data map?)
-(s/def ::errors (s/keys :req-un [::message ::data]))
 (s/def ::creation-response
-  (s/keys :req [::status ::errors ::m.core-nodes/item]))
+  (s/keys :req [::mu/status ::mu/errors ::m.core-nodes/item]))
 
 (s/def ::fetch!-request (s/keys :req [::m.core-nodes/id]))
-(s/def ::fetch!-response (s/keys :req [::status]
-                                 :opt [::errors]))
-
-(defsc ErrorData
-  [_ _]
-  {:query         [:message :data]
-   :initial-state {:message :data}})
+(s/def ::fetch!-response (s/keys :req [::mu/status]
+                                 :opt [::mu/errors]))
 
 (defsc ConnectResponse
   [_ _]
   {:initial-state {::m.core-nodes/item nil
-                   ::status            :initial
-                   ::errors            {}}
-   :query         [{::errors (comp/get-query ErrorData)}
-                   ::status
+                   ::mu/status            :initial
+                   ::mu/errors            {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status
                    ::m.core-nodes/item]})
 
 #?(:clj
    (pc/defmutation connect!
      [_env {::m.core-nodes/keys [id]}]
      {::pc/params #{::m.core-nodes/id}
-      ::pc/output [::status ::m.core-nodes/item]}
+      ::pc/output [::mu/status ::m.core-nodes/item]}
      (let [node     (q.core-nodes/read-record id)
            response (a.core-nodes/update-blockchain-info! node)]
-       {::status            :ok
+       {::mu/status         :ok
         :response           response
         ::m.core-nodes/item nil}))
 
@@ -63,13 +55,13 @@
      (let [node (q.core-nodes/read-record id)]
        (try
          (let [response (a.core-nodes/fetch! node)]
-           {::status            :ok
+           {::mu/status            :ok
             ::m.core-nodes/item response})
          (catch Exception ex
            (log/error "Failed to fetch" ex)
-           {::status :error
-            ::errors {:message (str ex)
-                      :data    {}}}
+           {::mu/status :error
+            ::mu/errors {:message (str ex)
+                         :data    {}}}
            (throw ex))))))
 
 #?(:clj

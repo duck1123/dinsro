@@ -25,6 +25,10 @@
   [report-instance {::m.core-nodes/keys [id]}]
   (comp/transact! report-instance [(mu.core-nodes/fetch! {::m.core-nodes/id id})]))
 
+(defn delete-action
+  [report-instance {::m.core-nodes/keys [id]}]
+  (form/delete! report-instance ::m.core-nodes/id id))
+
 (def connect-button
   {:label     "Connect"
    :action    connect-action
@@ -127,6 +131,14 @@
    :action    fetch-action
    :disabled? (fn [_ row-props] (:account/active? row-props))})
 
+(def delete-action-button
+  {:label  "Delete"
+   :action delete-action
+   :style :delete-button
+   :class  (fn []
+             (log/info "calculating class")
+             "red")})
+
 (def new-button
   {:type   :button
    :local? true
@@ -140,7 +152,7 @@
    ro/column-formatters {::m.core-nodes/name #(u.links/ui-core-node-link %3)}
    ro/control-layout    {:action-buttons [::new]}
    ro/controls          {::new new-button}
-   ro/row-actions       [fetch-action-button]
+   ro/row-actions       [fetch-action-button delete-action-button]
    ro/source-attribute  ::m.core-nodes/index
    ro/title             "Core Node Report"
    ro/row-pk            m.core-nodes/id

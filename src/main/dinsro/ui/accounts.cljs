@@ -131,7 +131,11 @@
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
    ro/route            "accounts"
-   ro/row-actions      []
+   ro/row-actions      [{:action
+                         (fn [report-instance row-props]
+                           (let [{::m.accounts/keys [id]} row-props]
+                             (form/delete! report-instance ::m.accounts/id id)))
+                         :label "delete"}]
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.accounts/index
@@ -150,7 +154,11 @@
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
    ro/route            "accounts"
-   ro/row-actions      []
+   ro/row-actions      [{:action
+                         (fn [report-instance row-props]
+                           (let [{::m.accounts/keys [id]} row-props]
+                             (form/delete! report-instance ::m.accounts/id id)))
+                         :label "delete"}]
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.accounts/admin-index
@@ -167,7 +175,6 @@
    ro/columns          [m.accounts/name
                         m.accounts/currency
                         m.accounts/initial-value]
-   ro/row-actions      []
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.accounts/index

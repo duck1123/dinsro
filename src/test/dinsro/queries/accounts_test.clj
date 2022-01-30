@@ -75,7 +75,7 @@
      "Should return mocked account"
      (q.accounts/read-record eid) => record)))
 
-(deftest delete-record-success
+(deftest delete!-success
   (let [account (mocks/mock-account)
         id      (::m.accounts/id account)
         eid     (q.accounts/find-eid-by-id id)]
@@ -84,7 +84,7 @@
      (q.accounts/read-record eid) => account
 
      "should return nil"
-     (q.accounts/delete-record eid) => nil
+     (q.accounts/delete! eid) => nil
 
      "record should note exist"
      (q.accounts/read-record eid) => nil)))

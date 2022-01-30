@@ -105,9 +105,9 @@
          (map read-record)
          (take record-limit))))
 
-(>defn delete-record
+(>defn delete!
   [id]
-  [:xt/id => nil?]
+  [::m.accounts/id => nil?]
   (let [node (c.xtdb/main-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
@@ -116,7 +116,7 @@
   []
   [=> nil?]
   (doseq [id (index-ids)]
-    (delete-record id)))
+    (delete! id)))
 
 (comment
 
