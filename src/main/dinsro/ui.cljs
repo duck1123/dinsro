@@ -1,10 +1,12 @@
 (ns dinsro.ui
   (:require
+   [clojure.string :as string]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro-css.css-injection :as inj]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
@@ -12,6 +14,7 @@
    [dinsro.machines :as machines]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.settings :as m.settings]
+   [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.mutations.settings :as mu.settings]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.admin :as u.admin]
@@ -33,7 +36,6 @@
    [dinsro.ui.ln-peers :as u.ln-peers]
    [dinsro.ui.ln-transactions :as u.ln-tx]
    [dinsro.ui.login :as u.login]
-   [dinsro.ui.media :as u.media]
    [dinsro.ui.navbar :as u.navbar]
    [dinsro.ui.rates :as u.rates]
    [dinsro.ui.rate-sources :as u.rate-sources]
@@ -47,7 +49,8 @@
 
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]
-  {:router-targets [u.accounts/AccountForm
+  {:css            [[:.rootrouter {:height "100%"}]]
+   :router-targets [u.accounts/AccountForm
                     u.accounts/AccountsReport
                     u.accounts/NewAccountForm
                     u.admin/AdminPage
@@ -99,16 +102,19 @@
                     u.wallets/NewWalletForm
                     u.wallets/WalletForm
                     u.wallets/WalletReport
+                    u.wallet-addresses/NewWalletAddressForm
+                    u.wallet-addresses/WalletAddressForm
                     u.wallet-addresses/WalletAddressesReport]}
-  (case current-state
-    :pending (dom/div "Loading...")
-    :failed  (dom/div "Failed!")
-    ;; default will be used when the current state isn't yet set
-    (dom/div {:style "height: 100%"}
-      (dom/div "No route selected.")
-      (when route-factory
-        (comp/fragment
-         (route-factory route-props))))))
+  (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
+    (case current-state
+      :pending (dom/div "Loading...")
+      :failed  (dom/div "Failed!")
+      ;; default will be used when the current state isn't yet set
+      (dom/div {:classes [rootrouter]}
+        (dom/div "No route selected.")
+        (when route-factory
+          (comp/fragment
+           (route-factory route-props)))))))
 
 (def ui-root-router (comp/factory RootRouter))
 
@@ -121,7 +127,7 @@
 
      (df/load! this :root/navbar u.navbar/NavbarUnion)
 
-     (uism/begin! this machines/hideable ::u.navbar/navbarsm
+     (uism/begin! this machines/hideable ::mu.navbar/navbarsm
                   {:actor/navbar
                    (uism/with-actor-class [::m.navbar/id :main]
                      u.navbar/Navbar)}))
@@ -137,36 +143,33 @@
                    :root/init-form          {}
                    :root/router             {}
                    ::m.settings/site-config {}}}
-  (let [inverted                                   true
-        visible                                    (= (uism/get-active-state this ::u.navbar/navbarsm) :state/shown)
-        top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
-        {::m.settings/keys [loaded? initialized?]} site-config
-        root                                       (uism/get-active-state this ::auth/auth-machine)
-        gathering-credentials?                     (#{:state/gathering-credentials} root)]
+  (let [{:keys [pushable pusher top]} (css/get-classnames Root)
+        top-router-state              (or (uism/get-active-state this ::RootRouter) :initial)
+        {::m.settings/keys
+         [loaded? initialized?]}      site-config
+        root                          (uism/get-active-state this ::auth/auth-machine)
+        gathering-credentials?        (#{:state/gathering-credentials} root)]
     (comp/fragment
-     (u.media/ui-media-styles)
-     (u.media/ui-media-context-provider
-      {}
-      (if loaded?
-        (if initialized?
-          (dom/div {:style {:height "100%"}}
-            (when navbar
-              (u.navbar/ui-navbar navbar))
+     (if loaded?
+       (if initialized?
+         (comp/fragment
+          (u.navbar/ui-navbar navbar)
+          (dom/div {:classes [top]}
             (ui-sidebar-pushable
-             {:inverted (str inverted)
-              :visible  (str visible)}
-             (when navbar
-               (u.navbar/ui-navbar-sidebar navbar))
+             {:className (string/join " " [pushable])}
+
+             (u.navbar/ui-navbar-sidebar navbar)
              (ui-sidebar-pusher
-              {:style {:paddingTop "12px"}}
+              {:className (string/join " " [pusher])}
               (if (= :initial top-router-state)
                 (dom/div :.loading "Loading...")
                 (comp/fragment
                  (u.authenticator/ui-authenticator authenticator)
                  (when-not gathering-credentials?
-                   (ui-root-router router)))))))
-          (u.initialize/ui-init-form init-form))
-        (dom/p "Not loaded")))
+                   (ui-root-router router))))))))
+         (u.initialize/ui-init-form init-form))
+       (dom/div {}
+         (dom/p "Not loaded")))
      (inj/style-element {:component Root}))))
 
 (def ui-root (comp/factory Root))

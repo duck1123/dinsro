@@ -22,12 +22,14 @@
   (some-> env :ring/request :session :identity))
 
 (defn get-auth-data
-  [id zone-id]
+  [user-id zone-id]
   (log/info "get auth data")
-  {:identity             id
+  {:identity             user-id
    ::auth/provider       :local
    ::auth/status         :success
-   :session/current-user (when id (m.users/ident id))
+   :session/current-user (when user-id
+                           (let [{::m.users/keys [name]} (q.users/read-record user-id)]
+                             (assoc (m.users/ident user-id) ::m.users/name name)))
    :time-zone/zone-id    (-> zone-id :xt/id timezone/datomic-time-zones)})
 
 (defn associate-session!

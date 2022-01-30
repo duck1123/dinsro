@@ -13,23 +13,8 @@
    :categories
    :rates
    :rate-sources
-   :core-nodes
-   :core-blocks
-   :core-peers
-   :core-txes
-   :core-addresses
-   :wallets
-   :wallet-addresses
-   :lightning-nodes
-   :ln-remote-nodes
-   :peers
-   :channels
-   :invoices
-   :tx
-   :payreqs
-   :payments
    :admin])
-(def menu-link-names [:accounts :transactions])
+(def menu-link-names [:accounts :transactions :core-menu :ln-menu])
 (def unauth-link-names [:login :registration])
 
 (defattr id ::id :symbol
