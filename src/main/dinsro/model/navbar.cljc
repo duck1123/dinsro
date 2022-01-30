@@ -69,15 +69,9 @@
    ao/pc-output  [{:root/navbar [::id]}]
    ao/pc-resolve (fn [_ _] {:root/navbar {::id :main}})})
 
-(defattr current-sidebar :root/sidebar :ref
-  {ao/target     ::id
-   ao/pc-output  [{:root/sidebar [::id]}]
-   ao/pc-resolve (fn [_ _] {:root/sidebar {::id :main}})})
-
 (def attributes
   [id
    dropdown-links
    menu-links
    unauth-links
-   current-navbar
-   current-sidebar])
+   current-navbar])
