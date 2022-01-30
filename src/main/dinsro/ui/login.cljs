@@ -31,31 +31,32 @@
                          :user/message]
    :route-segment       ["login"]}
   (when visible?
-    (ui-form {:className "large"}
-      (when message (dom/p :.notification.is-danger message))
-      (ui-form-field {}
-        (ui-form-input
-         {:value    username
-          :onChange (fn [evt _] (fm/set-string! this :user/username :event evt))
-          :label    (tr [:username])}))
-      (ui-form-field {}
-        (ui-form-input
-         {:value    password
-          :onChange (fn [evt _] (fm/set-string! this :user/password :event evt))
-          :type     "password"
-          :label    (tr [:password])}))
-      (ui-form-field {}
-        (ui-button
-         {:className "ui fluid large submit button"
-          :content   (tr [:login])
-          :onClick
-          (fn [_ev]
-            (let [data {:user/username username :user/password password}]
-              (comp/transact! this [(mu.session/login data)])))}))
-      (ui-form-field {}
-        (ui-button
-         {:className "ui fluid large button"
-          :content   "Cancel"
-          :onClick
-          (fn [_ev]
-            (uism/trigger! this ::auth/auth-machine :event/cancel))})))))
+    (dom/div :.ui.container
+      (ui-form {:className "large"}
+        (when message (dom/p :.notification.is-danger message))
+        (ui-form-field {}
+          (ui-form-input
+           {:value    username
+            :onChange (fn [evt _] (fm/set-string! this :user/username :event evt))
+            :label    (tr [:username])}))
+        (ui-form-field {}
+          (ui-form-input
+           {:value    password
+            :onChange (fn [evt _] (fm/set-string! this :user/password :event evt))
+            :type     "password"
+            :label    (tr [:password])}))
+        (ui-form-field {}
+          (ui-button
+           {:className "ui fluid large submit button green"
+            :content   (tr [:login])
+            :onClick
+            (fn [_ev]
+              (let [data {:user/username username :user/password password}]
+                (comp/transact! this [(mu.session/login data)])))}))
+        (ui-form-field {}
+          (ui-button
+           {:className "ui fluid large button orange"
+            :content   "Cancel"
+            :onClick
+            (fn [_ev]
+              (uism/trigger! this ::auth/auth-machine :event/cancel))}))))))
