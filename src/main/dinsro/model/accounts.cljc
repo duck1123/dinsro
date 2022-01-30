@@ -38,7 +38,9 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::initial-value (s/or :double double? :zero zero?))
+(s/def ::initial-value (s/or :double double?
+                             :zero zero?
+                             :number number?))
 
 (defattr initial-value ::initial-value :double
   {ao/identities #{::id}
