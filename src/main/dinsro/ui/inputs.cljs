@@ -119,9 +119,11 @@
 (def ui-user-selector (comp/factory UserSelector))
 
 (defsc PrimaryButton
-  [_this _props {:keys [onClick]}]
+  [_this _props {:keys [classes onClick]}]
   {:initial-state {}
    :query         []}
-  (dom/button :.ui.button.is-primary {:onClick onClick} "submit"))
+  (dom/button :.ui.button.primary.submit.fluid
+    {:classes classes
+     :onClick onClick} "submit"))
 
 (def ui-primary-button (comp/computed-factory PrimaryButton))
