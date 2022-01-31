@@ -1,6 +1,8 @@
 (ns dinsro.ui.currencies
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
@@ -16,6 +18,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.currencies.accounts :as u.c.accounts]
    [dinsro.ui.currencies.rate-sources :as u.c.rate-sources]
@@ -29,6 +32,7 @@
 ;; [[../actions/currencies.clj]]
 ;; [[../joins/currencies.cljc]]
 ;; [[../model/currencies.cljc]]
+;; [[../ui/forms/currencies.cljc]]
 
 (def index-page-id :currencies)
 (def model-key ::m.currencies/id)
@@ -38,6 +42,39 @@
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.currencies/delete!))
+
+(def override-form false)
+
+(defsc ShowCurrency
+  [_this {::m.currencies/keys [name]}]
+  {}
+  (dom/div {}
+    (dom/p {} "Name: " name)))
+
+(defsc ShowCurrencyPage
+  [_this {::m.currencies/keys [id] :as props}]
+  {:ident         (fn [] [::m.currencies/id id])
+   :query         [::m.currencies/id
+                   ::m.currencies/name]
+   :initial-state {::m.currencies/id   nil
+                   ::m.currencies/name ""}
+   :route-segment ["currencies" :id]
+   :will-enter
+   (fn [app {id :id}]
+     (let [ident [::m.currencies/id id]]
+       (if (-> (app/current-state app) (get-in ident) ::m.currencies/name)
+         (dr/route-immediate ident)
+         (dr/route-deferred
+          [::m.currencies/id id]
+          #(df/load app [::m.currencies/id id] ShowCurrencyPage
+                    {:post-mutation `dr/target-ready
+                     :post-mutation-params
+                     {:target [::m.currencies/id id]}})))))}
+  (dom/div {}
+    (dom/h1 {} "Show Currency")
+    props))
+
+(def ui-show-currency (comp/factory ShowCurrency))
 
 (def new-button
   (u.buttons/form-create-button "New" u.f.currencies/NewForm))
