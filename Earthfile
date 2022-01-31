@@ -56,7 +56,7 @@ INSTALL_BABASHKA:
 INSTALL_CHROMIUM:
   COMMAND
   RUN apt update && apt install -y \
-          chromium \
+          chromium-browser \
       && rm -rf /var/lib/apt/lists/*
   ENV CHROME_BIN=chromium
 
