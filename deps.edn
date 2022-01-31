@@ -7,6 +7,7 @@
   cider/cider-nrepl                      {:mvn/version "0.28.0"}
   clj-time/clj-time                      {:mvn/version "0.15.2"}
   com.fulcrologic/fulcro                 {:mvn/version "3.5.12"}
+  com.fulcrologic/fulcro-garden-css      {:mvn/version "3.0.6"}
   com.fulcrologic/fulcro-rad             {:mvn/version "1.1.4"}
   com.fulcrologic/fulcro-rad-semantic-ui {:mvn/version "1.2.4"}
   com.fzakaria/slf4j-timbre              {:mvn/version "0.3.21"}
@@ -31,6 +32,7 @@
   org.bitcoin-s/bitcoin-s-core_2.13      {:mvn/version "1.8.0"}
   org.clojure/clojure                    {:mvn/version "1.10.3"}
   org.clojure/clojurescript              {:mvn/version "1.10.879"}
+  org.clojure/spec.alpha                 {:mvn/version "0.3.214"}
   org.clojure/test.check                 {:mvn/version "1.1.1"}
   org.clojure/tools.cli                  {:mvn/version "1.0.206"}
   org.lightningj/lightningj              {:mvn/version "0.14.1-Beta"}
