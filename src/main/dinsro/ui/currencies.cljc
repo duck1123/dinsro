@@ -6,8 +6,9 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-  ;;  [com.fulcrologic.rad.form :as form]
-  ;;  [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.control :as control]
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -46,14 +47,15 @@
 (def override-form false)
 
 (defsc ShowCurrency
-  [_this {::m.currencies/keys [name]}]
+  [_this {::m.currencies/keys [code name] :as _props}]
   {}
   (dom/div {}
-    (dom/p {} "Name: " name)))
+    (dom/p {} "Name: " name)
+    (dom/p {} "Code: " code)))
 
 (defsc ShowCurrencyPage
-  [_this {::m.currencies/keys [id] :as props}]
-  {:ident         (fn [] [::m.currencies/id id])
+  [_this {::m.currencies/keys [id name]}]
+  {:ident         (fn [] [::m.currencies/id (new-uuid id)])
    :query         [::m.currencies/id
                    ::m.currencies/name]
    :initial-state {::m.currencies/id   nil
@@ -61,18 +63,16 @@
    :route-segment ["currencies" :id]
    :will-enter
    (fn [app {id :id}]
-     (let [ident [::m.currencies/id id]]
+     (let [ident [::m.currencies/id (new-uuid id)]]
        (if (-> (app/current-state app) (get-in ident) ::m.currencies/name)
          (dr/route-immediate ident)
-         (dr/route-deferred
-          [::m.currencies/id id]
-          #(df/load app [::m.currencies/id id] ShowCurrencyPage
-                    {:post-mutation `dr/target-ready
-                     :post-mutation-params
-                     {:target [::m.currencies/id id]}})))))}
+         (let [options  {:post-mutation        `dr/target-ready
+                         :post-mutation-params {:target ident}}
+               callback #(df/load app ident ShowCurrencyPage options)]
+           (dr/route-deferred ident callback)))))}
   (dom/div {}
     (dom/h1 {} "Show Currency")
-    props))
+    (dom/p {} (str "Name: " name))))
 
 (def ui-show-currency (comp/factory ShowCurrency))
 
@@ -102,6 +102,7 @@
    ro/columns           [m.currencies/name
                          m.currencies/code
                          j.currencies/source-count
+                         j.currencies/transaction-count
                          j.currencies/rate-count]
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
