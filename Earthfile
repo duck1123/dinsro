@@ -40,10 +40,13 @@ EXPOSE_DOCKER_PORTS:
 
 IMPORT_JAR_DEPS:
   COMMAND
-  COPY --dir +jar-deps/.clojure ${USER_HOME}
-  COPY --dir +jar-deps/.deps.clj ${USER_HOME}
-  COPY --dir +jar-deps/.m2 ${USER_HOME}
-  COPY --dir +jar-deps/.cpcache .
+  COPY --dir --chown=circleci +jar-deps/.clojure ${USER_HOME}
+  COPY --dir --chown=root +jar-deps/.clojure /root
+  COPY --dir --chown=circleci +jar-deps/.cpcache .
+  COPY --dir --chown=circleci +jar-deps/.deps.clj ${USER_HOME}
+  COPY --dir --chown=root +jar-deps/.deps.clj /root
+  COPY --dir --chown=circleci +jar-deps/.m2 ${USER_HOME}
+  COPY --dir --chown=root +jar-deps/.m2 /root
 
 INSTALL_BABASHKA:
   COMMAND
@@ -224,10 +227,6 @@ jar-deps:
       && cp -r /root/.clojure ${USER_HOME}/ \
       && cp -r /root/.deps.clj ${USER_HOME}/ \
       && cp -r /root/.m2 ${USER_HOME}/
-  RUN chown -R ${uid} .cpcache
-  RUN chown -R ${uid} ${USER_HOME}/.clojure
-  RUN chown -R ${uid} ${USER_HOME}/.deps.clj
-  RUN chown -R ${uid} ${USER_HOME}/.m2
   USER ${uid}
   SAVE ARTIFACT ${USER_HOME}/.clojure
   SAVE ARTIFACT ${USER_HOME}/.deps.clj
