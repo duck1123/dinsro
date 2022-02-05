@@ -12,8 +12,7 @@
   taoensso.encore/if-let                        cljs.core/let}
 
  :linters
- {:unused-namespace {:exclude [dinsro.translations
-                               taoensso.timbre]}
+ {:unused-namespace {:exclude [dinsro.translations]}
 
   :unused-referred-var {:exclude {dinsro.translations [tr]}}
 

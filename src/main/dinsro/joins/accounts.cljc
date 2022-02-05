@@ -7,8 +7,7 @@
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr transactions ::m.accounts/transactions :ref
   {ao/cardinality :many

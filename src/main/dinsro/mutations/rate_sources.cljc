@@ -4,8 +4,7 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.rate-sources :as a.rate-sources])
-   [dinsro.model.rate-sources :as m.rate-sources]
-   [taoensso.timbre :as log]))
+   [dinsro.model.rate-sources :as m.rate-sources]))
 
 (comment ::pc/_)
 

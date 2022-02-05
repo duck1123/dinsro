@@ -3,8 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   [taoensso.timbre :as log]))
+   [dinsro.model.core-tx-in :as m.core-tx-in]))
 
 (defsc RefRow
   [_this {::m.core-tx-in/keys [coinbase

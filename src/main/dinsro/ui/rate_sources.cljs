@@ -11,8 +11,7 @@
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.rates :as u.rates]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.rates :as u.rates]))
 
 (form/defsc-form RateSubform
   [_this _props]

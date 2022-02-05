@@ -8,7 +8,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

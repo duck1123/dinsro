@@ -9,7 +9,7 @@
    #?(:cljs [com.fulcrologic.rad.authorization :as auth])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.navlink :as m.navlink]
-   [taoensso.timbre :as log]))
+   #?(:cljs [taoensso.timbre :as log])))
 
 (comment ::m.navlink/_ ::pc/_ ::dr/_ ::fs/_ ::uism/_)
 

@@ -3,8 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.rates :as m.rates]
-   #?(:clj [dinsro.queries.rates :as q.rates])
-   [taoensso.timbre :as log]))
+   #?(:clj [dinsro.queries.rates :as q.rates])))
 
 (defattr index ::m.rates/index :ref
   {ao/target    ::m.rates/id

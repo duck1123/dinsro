@@ -13,8 +13,7 @@
    [mount.core :refer [defstate]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.session.cookie :refer [cookie-store]]
-   [ring.util.response :as resp]
-   [taoensso.timbre :as log]))
+   [ring.util.response :as resp]))
 
 (def minimal false)
 

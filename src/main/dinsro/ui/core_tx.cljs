@@ -15,8 +15,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.core-tx-out :as u.core-tx-out]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (form/defsc-form CoreTxInSubForm
   [_this _props]

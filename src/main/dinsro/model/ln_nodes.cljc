@@ -9,7 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]
-   [taoensso.timbre :as log]))
+   #?(:clj [taoensso.timbre :as log])))
 
 (def cert-base "/mnt/certs/")
 

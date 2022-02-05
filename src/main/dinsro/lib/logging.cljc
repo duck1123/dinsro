@@ -5,7 +5,7 @@
    #?@(:clj [[clojure.pprint :refer [pprint]]
              [clojure.string :as str]
              [taoensso.encore :as enc]])
-   [taoensso.timbre :as log]))
+   #?(:clj [taoensso.timbre :as log])))
 
 #?(:clj
    (defmacro p

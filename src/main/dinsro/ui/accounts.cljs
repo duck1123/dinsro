@@ -13,8 +13,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defsc RefRow
   [_this props]

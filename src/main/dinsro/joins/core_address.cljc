@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.core-address :as m.core-address]
    #?(:clj [dinsro.queries.core-address :as q.core-address])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.core-address/index :ref
   {ao/target    ::m.core-address/id

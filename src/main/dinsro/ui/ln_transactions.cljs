@@ -10,8 +10,7 @@
    [dinsro.model.ln-transactions :as m.ln-tx]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.core-tx :as u.core-tx]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defsc LnTxRow
   [_this {::m.ln-tx/keys [amount core-tx time-stamp tx-hash]}]

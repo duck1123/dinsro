@@ -9,8 +9,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewCategoryForm
   [_this _props]

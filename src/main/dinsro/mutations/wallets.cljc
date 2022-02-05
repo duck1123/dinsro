@@ -7,7 +7,7 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    #?(:clj [dinsro.actions.wallets :as a.wallets])
    [dinsro.model.wallets :as m.wallets]
-   [taoensso.timbre :as log]))
+   #?(:cljs [taoensso.timbre :as log])))
 
 (comment ::pc/_ ::m.wallets/_)
 

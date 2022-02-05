@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
    #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.wallet-addresses/index :ref
   {ao/target    ::m.wallet-addresses/id

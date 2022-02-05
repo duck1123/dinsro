@@ -12,8 +12,7 @@
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.mutations.core-blocks :as mu.core-blocks]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defsc RefRow
   [_this {::m.core-block/keys [fetched? height] :as props}]

@@ -9,8 +9,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.ln-nodes :as u.ln-nodes]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.ln-nodes :as u.ln-nodes]))
 
 (defsc-container HomePage2
   [_this _props]

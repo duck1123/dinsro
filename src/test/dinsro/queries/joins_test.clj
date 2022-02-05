@@ -8,8 +8,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.test-helpers :as th]
-   [fulcro-spec.core :refer [assertions]]
-   [taoensso.timbre :as log]))
+   [fulcro-spec.core :refer [assertions]]))
 
 (def schemata [])
 

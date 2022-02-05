@@ -2,8 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.navlink :as m.navlink]
-   [taoensso.timbre :as log]))
+   [dinsro.model.navlink :as m.navlink]))
 
 (def auth-link-names [:accounts])
 (def dropdown-link-names

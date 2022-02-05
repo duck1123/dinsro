@@ -10,8 +10,7 @@
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-peers :as m.ln-peers]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defsc LnPeerRow
   [_this {::m.ln-peers/keys [address pubkey inbound sat-sent]}]

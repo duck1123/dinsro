@@ -4,8 +4,7 @@
    [clojure.test :refer [deftest]]
    [clojure.test.check.generators]
    [dinsro.specs :as ds]
-   [fulcro-spec.core :refer [assertions]]
-   [taoensso.timbre :as log]))
+   [fulcro-spec.core :refer [assertions]]))
 
 (deftest id-string
   (assertions

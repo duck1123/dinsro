@@ -14,8 +14,7 @@
    #?(:clj [dinsro.queries.core-tx :as q.core-tx])
    #?(:clj [dinsro.queries.ln-nodes :as q.ln-nodes])
    #?(:clj [dinsro.queries.wallets :as q.wallets])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.core-nodes/index :ref
   {ao/cardinality :many

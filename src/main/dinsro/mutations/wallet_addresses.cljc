@@ -4,8 +4,7 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.wallet-addresses :as a.wallet-addresses])
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])
-   [taoensso.timbre :as log]))
+   #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])))
 
 (comment ::m.wallet-addresses/_ ::pc/_)
 

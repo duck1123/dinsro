@@ -9,7 +9,6 @@
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn create-record

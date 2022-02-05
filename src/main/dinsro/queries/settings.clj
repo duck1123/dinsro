@@ -2,8 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
-   [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as log]))
+   [dinsro.queries.users :as q.users]))
 
 (>def ::settings (s/keys))
 

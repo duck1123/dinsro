@@ -6,8 +6,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.users :as m.users]
-   [taoensso.timbre :as log]))
+   [dinsro.model.users :as m.users]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

@@ -7,7 +7,6 @@
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-transactions :as m.ln-tx]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

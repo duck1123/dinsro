@@ -37,7 +37,6 @@
    [dinsro.ui.ln-peers :as u.ln-peers]
    [dinsro.ui.ln-transactions :as u.ln-tx]
    [dinsro.ui.rates :as u.rates]
-   [taoensso.timbre :as log]
    ["victory" :as victory]))
 
 (def ui-victory-bar (interop/react-factory victory/VictoryBar))

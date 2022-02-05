@@ -8,7 +8,6 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (def attributes-list

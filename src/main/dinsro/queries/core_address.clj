@@ -6,7 +6,6 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core-address :as m.core-address]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

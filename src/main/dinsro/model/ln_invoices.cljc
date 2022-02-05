@@ -6,7 +6,6 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.ln-nodes :as m.ln-nodes]
-   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (def rename-map

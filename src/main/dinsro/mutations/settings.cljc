@@ -7,7 +7,7 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.settings :as m.settings]
    [dinsro.model.users :as m.users]
-   [taoensso.timbre :as log]))
+   #?(:clj [taoensso.timbre :as log])))
 
 (comment ::pc/_ ::m.users/_)
 

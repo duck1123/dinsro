@@ -46,7 +46,6 @@
    [dinsro.ui.wallets :as u.wallets]
    [dinsro.ui.wallet-addresses :as u.wallet-addresses]
    [dinsro.ui.users :as u.users]
-   [taoensso.timbre :as log]
    ["fomantic-ui"]))
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]

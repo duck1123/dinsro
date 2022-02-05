@@ -7,8 +7,7 @@
    [dinsro.ui.navbar :as u.navbar]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
-   [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as log]))
+   [nubank.workspaces.model :as wsm]))
 
 (defn navlink-idents
   [kws]

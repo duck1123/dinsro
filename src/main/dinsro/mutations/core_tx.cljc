@@ -4,8 +4,7 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core-tx :as a.core-tx])
    [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-tx :as m.core-tx]
-   [taoensso.timbre :as log]))
+   [dinsro.model.core-tx :as m.core-tx]))
 
 (comment ::pc/_ ::m.core-block/_ ::m.core-tx/_)
 

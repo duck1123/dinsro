@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.ln-invoices :as m.ln-invoices]
    #?(:clj [dinsro.queries.ln-invoices :as q.ln-invoices])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.ln-invoices/index :ref
   {ao/target    ::m.ln-invoices/id

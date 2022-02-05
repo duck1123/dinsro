@@ -6,8 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core-peers :as m.core-peers]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (form/defsc-form CorePeerForm
   [_this _props]

@@ -2,8 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
-   [com.fulcrologic.rad.attributes-options :as ao]
-   [taoensso.timbre :as log]))
+   [com.fulcrologic.rad.attributes-options :as ao]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

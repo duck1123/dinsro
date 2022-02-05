@@ -7,8 +7,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core-address :as m.core-address]
    [dinsro.mutations.core-address :as mu.core-address]
-   [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as log]))
+   [dinsro.translations :refer [tr]]))
 
 (form/defsc-form CoreAddressForm
   [_this _props]

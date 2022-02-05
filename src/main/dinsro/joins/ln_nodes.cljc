@@ -18,8 +18,7 @@
    #?(:clj [dinsro.queries.ln-payreqs :as q.ln-payreqs])
    #?(:clj [dinsro.queries.ln-peers :as q.ln-peers])
    #?(:clj [dinsro.queries.ln-transactions :as q.ln-tx])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.ln-nodes/index :ref
   {ao/target    ::m.ln-nodes/id

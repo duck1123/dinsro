@@ -7,7 +7,6 @@
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

@@ -7,7 +7,6 @@
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.core-peers :as m.core-peers]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

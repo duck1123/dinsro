@@ -4,8 +4,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   [taoensso.timbre :as log]))
+   [dinsro.model.core-tx-in :as m.core-tx-in]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

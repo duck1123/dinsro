@@ -8,8 +8,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (def find-id-by-eid-query
   '{:find  [?id]

@@ -8,8 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [taoensso.timbre :as log]))
+   [dinsro.model.core-nodes :as m.core-nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

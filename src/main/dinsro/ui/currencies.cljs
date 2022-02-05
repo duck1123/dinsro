@@ -9,8 +9,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.rates :as u.rates]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.rates :as u.rates]))
 
 (form/defsc-form NewCurrencyForm [_this _props]
   {fo/id           m.currencies/id

@@ -4,8 +4,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.queries.currencies :as q.currencies]
-   [dinsro.queries.rates :as q.rates]
-   [taoensso.timbre :as log]))
+   [dinsro.queries.rates :as q.rates]))
 
 (>defn add-rate
   [source-id rate]

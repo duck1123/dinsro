@@ -2,8 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [dinsro.ui.forms.registration :as u.f.registration]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.forms.registration :as u.f.registration]))
 
 (defsc RegistrationPage
   [_this {::keys [allow-registration form]}]

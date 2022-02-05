@@ -2,8 +2,7 @@
   (:require
    [dinsro.components.config :as config  :refer [secret]]
    [dinsro.components.xtdb :as c.xtdb]
-   [mount.core :as mount]
-   [taoensso.timbre :as log]))
+   [mount.core :as mount]))
 
 (defn start-db
   [f _schemata]

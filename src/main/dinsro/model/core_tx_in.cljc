@@ -5,8 +5,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-tx :as m.core-tx]
-   [taoensso.timbre :as log]))
+   [dinsro.model.core-tx :as m.core-tx]))
 
 (def rename-map
   {:coinbase    ::coinbase

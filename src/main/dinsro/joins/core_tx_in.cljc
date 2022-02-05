@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.core-tx-in :as m.core-tx-in]
    #?(:clj [dinsro.queries.core-tx-in :as q.core-tx-in])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.core-tx-in/index :ref
   {ao/target    ::m.core-tx-in/id

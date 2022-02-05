@@ -18,7 +18,6 @@
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.translations :refer [tr]]
    [dinsro.ui.home :as u.home]
-   [taoensso.timbre :as log]
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]))
 
 (s/def ::expanded? boolean?)

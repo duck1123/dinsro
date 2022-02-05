@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.core-peers :as m.core-peers]
    #?(:clj [dinsro.queries.core-peers :as q.core-peers])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.core-peers/index :ref
   {ao/target    ::m.core-peers/id

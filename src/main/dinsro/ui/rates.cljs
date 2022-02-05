@@ -9,8 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.rates :as m.rates]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defsc RefRow
   [_this {::m.rates/keys [rate] :as props}]

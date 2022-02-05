@@ -19,8 +19,7 @@
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
-   [dinsro.specs :as ds]
-   [taoensso.timbre :as log]))
+   [dinsro.specs :as ds]))
 
 (>defn mock-user
   []

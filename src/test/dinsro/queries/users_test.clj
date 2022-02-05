@@ -6,8 +6,7 @@
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [fulcro-spec.core :refer [assertions]]
-   [taoensso.timbre :as log]))
+   [fulcro-spec.core :refer [assertions]]))
 
 (def schemata
   [])

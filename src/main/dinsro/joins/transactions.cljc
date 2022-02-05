@@ -8,8 +8,7 @@
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    #?(:clj [dinsro.queries.users :as q.users])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.transactions/index :ref
   {ao/target    ::m.transactions/id

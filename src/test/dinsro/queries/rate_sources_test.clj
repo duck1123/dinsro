@@ -7,8 +7,7 @@
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [fulcro-spec.core :refer [assertions]]
-   [taoensso.timbre :as log]))
+   [fulcro-spec.core :refer [assertions]]))
 
 (def schemata [])
 

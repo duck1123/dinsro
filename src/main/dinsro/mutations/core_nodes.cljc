@@ -10,7 +10,7 @@
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
-   [taoensso.timbre :as log]))
+   #?(:clj [taoensso.timbre :as log])))
 
 (comment ::m.core-nodes/_ ::pc/_)
 

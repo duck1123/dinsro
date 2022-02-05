@@ -1,8 +1,7 @@
 (ns dinsro.actions.nbxplorer
   (:require
    [clojure.data.json :as json]
-   [http.async.client :as http-client]
-   [taoensso.timbre :as log]))
+   [http.async.client :as http-client]))
 
 (defn get-utxos
   [derivation-scheme]

@@ -7,8 +7,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [taoensso.timbre :as log]))
+   [dinsro.model.ln-nodes :as m.ln-nodes]))
 
 (def rename-map
   {:amount           ::amount

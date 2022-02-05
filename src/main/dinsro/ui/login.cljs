@@ -12,8 +12,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as log]))
+   [dinsro.translations :refer [tr]]))
 
 (defsc LoginPage
   [this {:user/keys [message password username]} {:keys [visible?]}]

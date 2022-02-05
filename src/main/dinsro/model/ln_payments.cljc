@@ -5,8 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [taoensso.timbre :as log]))
+   [dinsro.model.ln-nodes :as m.ln-nodes]))
 
 (def rename-map
   {:paymentPreimage ::payment-preimage

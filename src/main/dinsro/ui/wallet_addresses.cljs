@@ -10,8 +10,7 @@
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
    [dinsro.mutations.wallet-addresses :as mu.wallet-addresses]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewWalletAddressForm
   [_this _props]

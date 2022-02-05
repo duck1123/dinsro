@@ -10,7 +10,6 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]
    [xtdb.api :as xt]))
 

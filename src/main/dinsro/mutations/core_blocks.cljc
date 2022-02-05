@@ -6,7 +6,7 @@
    [dinsro.model.core-block :as m.core-block]
    #?(:clj [dinsro.queries.core-block :as q.core-block])
    #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
-   [taoensso.timbre :as log]))
+   #?(:clj [taoensso.timbre :as log])))
 
 (comment ::pc/_ ::m.core-block/_)
 

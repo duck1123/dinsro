@@ -3,8 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-nodes :as m.ln]
-   [taoensso.timbre :as log]))
+   [dinsro.model.ln-nodes :as m.ln]))
 
 (def rename-map
   {:blockHeight         ::block-height

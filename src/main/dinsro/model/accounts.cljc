@@ -11,8 +11,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (comment ::auth/_ ::pc/_)
 

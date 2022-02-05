@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
-   [taoensso.timbre :as log]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.attributes :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]

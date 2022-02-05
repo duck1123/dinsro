@@ -8,7 +8,6 @@
    [dinsro.model.core-block :as m.core-block]
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

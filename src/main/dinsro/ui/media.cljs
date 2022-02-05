@@ -3,8 +3,7 @@
    ["@artsy/fresnel" :rename {createMedia create-media}]
    [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
-   [taoensso.timbre :as log]))
+   [com.fulcrologic.fulcro.dom :as dom]))
 
 (def breakpoints
   {:mobile      320,

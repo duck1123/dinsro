@@ -7,7 +7,6 @@
    [dinsro.model.ln-payreqs :as m.ln-payreqs]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.specs]
-   [taoensso.timbre :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids

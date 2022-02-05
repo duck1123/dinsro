@@ -5,8 +5,7 @@
    [dinsro.ui.forms.registration :as u.f.registration]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
-   [nubank.workspaces.model :as wsm]
-   [taoensso.timbre :as log]))
+   [nubank.workspaces.model :as wsm]))
 
 (ws/defcard RegistrationForm
   {::wsm/card-width  3

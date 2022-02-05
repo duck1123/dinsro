@@ -12,8 +12,7 @@
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    #?(:clj [dinsro.queries.rate-sources :as q.rate-sources])
    #?(:clj [dinsro.queries.rates :as q.rates])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr current-rate ::m.currencies/current-rate :ref
   {ao/cardinality :one

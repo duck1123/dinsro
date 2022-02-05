@@ -67,8 +67,7 @@
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
    #?(:clj [dinsro.mutations.wallets :as mu.wallets])
-   #?(:clj [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])
-   [taoensso.timbre :as log]))
+   #?(:clj [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])))
 
 (def schemata [])
 

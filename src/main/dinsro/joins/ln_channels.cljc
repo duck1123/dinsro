@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.ln-channels :as m.ln-channels]
    #?(:clj [dinsro.queries.ln-channels :as q.ln-channels])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.ln-channels/index :ref
   {ao/target    ::m.ln-channels/id

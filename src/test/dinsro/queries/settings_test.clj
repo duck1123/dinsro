@@ -2,8 +2,7 @@
   (:require
    [clojure.test :refer [deftest is use-fixtures]]
    [dinsro.queries.settings :as q.settings]
-   [dinsro.test-helpers :as th]
-   [taoensso.timbre :as log]))
+   [dinsro.test-helpers :as th]))
 
 (def schemata
   [])

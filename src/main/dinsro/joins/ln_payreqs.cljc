@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.ln-payreqs :as m.ln-payreqs]
    #?(:clj [dinsro.queries.ln-payreqs :as q.ln-payreqs])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.ln-payreqs/index :ref
   {ao/target    ::m.ln-payreqs/id

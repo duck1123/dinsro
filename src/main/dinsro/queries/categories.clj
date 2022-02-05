@@ -8,8 +8,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (>defn find-eid-by-id
   [id]

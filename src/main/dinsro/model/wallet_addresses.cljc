@@ -5,8 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.wallets :as m.wallets]
-   [taoensso.timbre :as log]))
+   [dinsro.model.wallets :as m.wallets]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

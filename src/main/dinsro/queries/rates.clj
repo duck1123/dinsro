@@ -10,7 +10,6 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
    [manifold.stream :as ms]
-   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]
    [xtdb.api :as xt]))
 

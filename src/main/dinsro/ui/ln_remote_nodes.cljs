@@ -6,8 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln-remote-nodes :as m.ln-remote-nodes]
    [dinsro.model.ln-transactions :as m.ln-tx]
-   [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as log]))
+   [dinsro.translations :refer [tr]]))
 
 (form/defsc-form RemoteNodeForm
   [_this _props]

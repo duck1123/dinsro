@@ -1,5 +1,3 @@
-(ns dinsro.mutations.ln-payments
-  (:require
-   [taoensso.timbre :as log]))
+(ns dinsro.mutations.ln-payments)
 
 #?(:clj (def resolvers []))

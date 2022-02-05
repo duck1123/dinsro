@@ -6,8 +6,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
-   [dinsro.translations :refer [tr]]
-   [taoensso.timbre :as log]))
+   [dinsro.translations :refer [tr]]))
 
 (defsc TextInput
   [_this {:keys [label value]} {:keys [onChange]}]

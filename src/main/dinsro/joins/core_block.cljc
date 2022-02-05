@@ -6,8 +6,7 @@
    [dinsro.model.core-tx :as m.core-tx]
    #?(:clj [dinsro.queries.core-block :as q.core-block])
    #?(:clj [dinsro.queries.core-tx :as q.core-tx])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.core-block/index :ref
   {ao/target    ::m.core-block/id

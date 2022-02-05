@@ -4,8 +4,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [com.wsscode.pathom.connect :as pc]
-   [taoensso.timbre :as log]))
+   [com.wsscode.pathom.connect :as pc]))
 
 (comment ::pc/_)
 

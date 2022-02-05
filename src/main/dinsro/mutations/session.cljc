@@ -9,7 +9,7 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.users :as m.users]
-   [taoensso.timbre :as log]))
+   #?(:cljs [taoensso.timbre :as log])))
 
 (comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
 

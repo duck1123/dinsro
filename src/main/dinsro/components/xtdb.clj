@@ -3,8 +3,7 @@
    [xtdb.api :as c.api]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [mount.core :refer [defstate]]
-   [dinsro.components.config :refer [config]]
-   [taoensso.timbre :as log]))
+   [dinsro.components.config :refer [config]]))
 
 (declare xtdb-nodes)
 

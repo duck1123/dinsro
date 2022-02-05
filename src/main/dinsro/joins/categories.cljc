@@ -7,8 +7,7 @@
    [dinsro.model.transactions :as m.transactions]
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr admin-index ::m.categories/admin-index :ref
   {ao/target    ::m.categories/id

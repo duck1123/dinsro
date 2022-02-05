@@ -10,8 +10,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defsc AccountQuery
   [_this _props]

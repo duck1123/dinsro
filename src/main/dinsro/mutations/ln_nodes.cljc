@@ -13,7 +13,7 @@
    [dinsro.model.ln-info :as m.ln-info]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    #?(:clj [dinsro.queries.ln-nodes :as q.ln-nodes])
-   [taoensso.timbre :as log]))
+   #?(:clj [taoensso.timbre :as log])))
 
 (comment ::m.ln-info/_ ::m.ln-nodes/_ ::pc/_)
 

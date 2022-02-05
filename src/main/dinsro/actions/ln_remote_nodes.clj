@@ -4,8 +4,7 @@
    [dinsro.actions.ln-nodes :as a.ln-nodes]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.queries.ln-nodes :as q.ln-nodes]
-   [dinsro.queries.users :as q.users]
-   [taoensso.timbre :as log]))
+   [dinsro.queries.users :as q.users]))
 
 (defn get-node-info
   [node pubkey]

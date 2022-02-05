@@ -5,8 +5,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
-   [dinsro.model.core-tx-out :as m.core-tx-out]
-   [taoensso.timbre :as log]))
+   [dinsro.model.core-tx-out :as m.core-tx-out]))
 
 (defsc RefRow
   [_this {::m.core-tx-out/keys [n

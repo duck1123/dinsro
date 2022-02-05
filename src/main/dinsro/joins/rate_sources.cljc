@@ -6,8 +6,7 @@
    [dinsro.model.rates :as m.rates]
    #?(:clj [dinsro.queries.rates :as q.rates])
    #?(:clj [dinsro.queries.rate-sources :as q.rate-sources])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr current-rate ::m.rate-sources/current-rate :ref
   {ao/cardinality :one

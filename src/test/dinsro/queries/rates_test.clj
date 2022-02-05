@@ -9,7 +9,6 @@
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions]]
-   [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
 
 (def schemata [])

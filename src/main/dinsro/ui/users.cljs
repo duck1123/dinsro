@@ -10,8 +10,7 @@
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
    [dinsro.translations :refer [tr]]
-   [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (def override-form true)
 

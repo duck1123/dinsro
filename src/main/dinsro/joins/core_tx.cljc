@@ -11,8 +11,7 @@
    #?(:clj [dinsro.queries.core-tx :as q.core-tx])
    #?(:clj [dinsro.queries.core-tx-in :as q.core-tx-in])
    #?(:clj [dinsro.queries.core-tx-out :as q.core-tx-out])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [dinsro.specs]))
 
 (defattr index ::m.core-tx/index :ref
   {ao/target    ::m.core-tx/id

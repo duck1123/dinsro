@@ -5,8 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [com.fulcrologic.rad.authorization :as auth]
-   [taoensso.timbre :as log]))
+   [com.fulcrologic.rad.authorization :as auth]))
 
 (def default-username "admin")
 (def default-password "hunter2")
