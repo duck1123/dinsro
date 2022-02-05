@@ -468,11 +468,11 @@
    :depends [compile run]}
 
   start-dev
-  {:doc     "Start development"
+  {:doc  "Start development"
    :task (shell "tilt up")}
 
   start-production
-  {:doc  "Start development"
+  {:doc     "Start development"
    :depends [build-production run-production]}
 
   test
