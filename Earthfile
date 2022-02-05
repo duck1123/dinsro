@@ -119,6 +119,9 @@ check:
   RUN bb check
 
 ci:
+  BUILD +cert-downloader
+  BUILD +fileserver
+  BUILD +portal
   BUILD +check
   BUILD +lint
   BUILD +test
