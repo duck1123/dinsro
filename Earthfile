@@ -267,7 +267,6 @@ src:
 
 test:
   BUILD +test-clj
-  BUILD +test-cljs
 
 test-clj:
   FROM +test-sources
