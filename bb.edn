@@ -431,6 +431,12 @@
   {:doc  "Lint source code with clj-kondo"
    :task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
 
+  leave-telepresence
+  {:task (shell "telepresence leave dinsro-portal-dinsro")}
+
+  join-telepresence
+  {:task (shell "telepresence intercept -n dinsro -p 5678 dinsro-portal --service dinsro-portal")}
+
   lint
   {:depends [kondo eastwood kibit]}
 
@@ -446,6 +452,9 @@
    :task (shell "mkdir -p /tmp/dinsro/data/test")}
 
   repl (clojure.main/repl)
+
+  portal-jack-in
+  {:task (c/dispatch ["(dinsro.components.portal/connect! \"dinsro-portal\" 5678)"])}
 
   restart
   {:doc "Send a restart signal over nrepl"
@@ -463,7 +472,7 @@
 
   seed
   {:doc  "Seed the database over nrepl"
-   :task (dispatch ["(dinsro.seed/seed-db!)"])}
+   :task (c/dispatch ["(dinsro.seed/seed-db!)"])}
 
   server
   {:doc     "compile and run server in dev mode"
@@ -476,6 +485,13 @@
   start-production
   {:doc     "Start development"
    :depends [build-production run-production]}
+
+  tap
+  {:task
+   (do
+     (prn *command-line-args*)
+     (let [data (or (first *command-line-args*) :true)]
+      (c/dispatch [(str "(tap> " (pr-str data) ")")])))}
 
   test
   {:doc     "Run all tests"

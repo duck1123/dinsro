@@ -96,6 +96,12 @@ base-builder:
       && rm -rf /var/lib/apt/lists/*
   USER ${uid}
 
+babashka-base:
+  FROM ${base_image}
+  WORKDIR ${src_home}
+  USER root
+  DO +INSTALL_BABASHKA
+
 builder:
   FROM +deps-builder
   RUN mkdir -p classes data target
@@ -252,6 +258,16 @@ node-deps:
   # RUN npx yarn add fomantic-ui --ignore-scripts
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
+
+portal:
+  FROM +babashka-base
+  ARG EXPECTED_REF=${repo}/portal:${version}
+  # RUN apk add java
+  COPY resources/portal .
+  ENTRYPOINT ["bb", "portal.clj"]
+  CMD ["bb", "portal.clj"]
+  RUN bb portal.clj --dry-run
+  SAVE IMAGE ${EXPECTED_REF}
 
 script-builder:
   FROM +base-builder

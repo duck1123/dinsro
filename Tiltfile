@@ -27,6 +27,8 @@ use_persistence       = config_get('usePersistence')
 use_production        = config_get('useProduction')
 use_tests             = config_get('useTests')
 
+portal_url = 'http://' + config_get('portalHost')
+
 def get_notebook_host():
   return "notebook." + base_url if config_get('notebookInheritHost') else notebook_host
 
@@ -66,6 +68,8 @@ k8s_yaml(helm(
     "nrepl.enabled=%s" % ('true' if use_nrepl else 'false'),
     "persistence.enabled=%s" % ('true' if use_persistence else 'false'),
     "workspaces.enabled=%s" % ('false' if local_devtools else 'true'),
+    "portal.ingress.hosts[0].host=" + config_get('portalHost'),
+    'portal.ingress.hosts[0].paths[0].path=/',
   ]
 ))
 
@@ -81,6 +85,18 @@ if use_production:
       'src'
     ],
   )
+
+custom_build(
+  "%s/portal:%s" % (repo, version),
+  "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +portal" % repo,
+  [
+    'Earthfile',
+    '.dockerignore',
+    'bb.edn',
+    "resources/portal",
+    'deps.edn',
+  ],
+)
 
 if not use_production:
   custom_build(
@@ -290,6 +306,14 @@ if use_persistence:
       link('http://sqlpad.localhost', 'SQLPad'),
     ],
   )
+
+k8s_resource(
+  workload = 'dinsro-portal',
+  labels = [ 'inspect' ],
+  links = [
+    link(portal_url, 'Portal'),
+  ],
+)
 
 cmd_button(
   'dinsro:format',

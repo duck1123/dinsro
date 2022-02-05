@@ -79,6 +79,18 @@ notebook:
       paths:
       - path: /
 
+portal:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 5678
+  ingress:
+    enabled: true
+    hosts:
+    - host: portal.dinsro.localhost
+      paths:
+      - path: /
+
 persistence:
   enabled: true
   size: 1G

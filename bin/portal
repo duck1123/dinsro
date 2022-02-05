@@ -1,0 +1,12 @@
+#!/usr/bin/env bb
+#_" -*- mode: clojure; -*-"
+
+(require '[babashka.deps :as deps])
+
+(deps/add-deps '{:deps {djblue/portal {:mvn/version "0.20.1"}}})
+
+(println "portal")
+(require '[portal.api :as p])
+(prn (p/open {:port 5678}))
+
+@(promise)

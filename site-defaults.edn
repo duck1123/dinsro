@@ -20,6 +20,8 @@
  ;; Host for notebook ingress if not inheriting host
  :notebookHost        "notebook.dinsro.localhost"
 
+ :portalHost          "portal.dinsro.localhost"
+
  ;; If true, devtools will be run on the host, otherwise the dev image will launch
  ;; a devtools watcher on startup and will pre-compile the js resources
  :localDevtools       true
