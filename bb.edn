@@ -143,6 +143,9 @@
                         "shadow-cljs" "test"]]
            (shell (str "clojure -A:" alias " -Stree")))}
 
+  docs
+  {:task (clojure "-X:codox")}
+
   e2e
   {:doc  "Run end to end testing"
    :task (earthly :e2e {:privileged true})}

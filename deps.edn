@@ -2,6 +2,7 @@
             "-Dlogback.configurationFile=resources/logback.xml"]
 
  :paths ["lib" "src/main" "src/shared" "resources/main"]
+
  :deps
  {buddy/buddy                            {:mvn/version "2.0.0"}
   cider/cider-nrepl                      {:mvn/version "0.28.0"}
@@ -61,6 +62,18 @@
   {:extra-deps
    {cljfmt/cljfmt {:mvn/version "0.6.7"}}
    :main-opts ["-m" "cljfmt.main"]}
+
+  :codox
+  {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
+   :exec-fn    codox.main/generate-docs
+   :exec-args  {:source-paths ["src/main"]}}
+
+  :codox-cljs
+  {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
+   :exec-fn    codox.main/generate-docs
+   :exec-args  {:source-paths ["src/main"]
+                :language     :clojurescript
+                :output-path  "target/docs-cljs"}}
 
   :dev
   {:extra-paths ["src/dev" "src/notebooks" "src/test"]
