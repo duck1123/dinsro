@@ -93,7 +93,8 @@
    {cider/cider-nrepl   {:mvn/version "0.27.2"}
     com.taoensso/timbre {:mvn/version "5.1.2"}
     nrepl/nrepl         {:mvn/version "0.9.0-beta4"}}
-   :extra-paths ["src/dispatch"]}
+   :extra-paths ["src/dispatch"]
+   :main-opts ["-m" "dinsro.components.dispatch"]}
 
   :eastwood
   {:extra-deps

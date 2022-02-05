@@ -462,10 +462,8 @@
    :task (shell "clojure -T:build run")}
 
   seed
-  {:doc "Seed the database over nrepl"
-   :task
-   (binding [*command-line-args* '("(dinsro.seed/seed-db!)")]
-     (run 'dispatch))}
+  {:doc  "Seed the database over nrepl"
+   :task (dispatch ["(dinsro.seed/seed-db!)"])}
 
   server
   {:doc     "compile and run server in dev mode"

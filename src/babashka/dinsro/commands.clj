@@ -81,16 +81,24 @@
   [name]
   (shell (format "sh -c \"kubectl delete namespace %s | true\"" name)))
 
+(defn dispatch
+  [cmds]
+  (let [cmd (->> cmds
+                 (map #(str "\"" (string/replace % #"\"" "\\\\\"") "\""))
+                 (string/join " "))
+        full-command (str "-Mdispatch " cmd)]
+    (clojure full-command)))
+
 (defn load-edn
   "Load edn from an io/reader source (filename or io/resource)."
   [source]
   (try
     (with-open [r (io/reader source)]
       (edn/read (java.io.PushbackReader. r)))
-    (catch java.io.IOException e
+    (catch java.io.IOException _e
       #_(printf "Couldn't open '%s': %s\n" source (.getMessage e))
       nil)
-    (catch RuntimeException e
+    (catch RuntimeException _e
       #_(printf "Error parsing edn file '%s': %s\n" source (.getMessage e))
       nil)))
 
