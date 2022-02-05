@@ -1,12 +1,15 @@
 (ns dinsro.commands
   (:require [babashka.tasks :refer [clojure shell]]
-            [clojure.string :as str]))
+            [cheshire.core :as json]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.string :as string]))
 
 (defn cljfmt
   [paths]
   (clojure
    (format "-M:cljfmt check %s --indents indentation.edn"
-           (str/join " " paths))))
+           (string/join " " paths))))
 
 (defn earthly
   ([cmd]
@@ -16,7 +19,7 @@
    (let [flags (->> [(when (:interactive opts) "-i")
                      (when (:privileged opts) "-P")]
                     (filter identity)
-                    (str/join " "))]
+                    (string/join " "))]
      (println flags)
      (shell
       (format "earthly %s +%s" flags (name cmd))))))
@@ -26,7 +29,7 @@
   (shell
    (format
     "echo \"%s\""
-    (str/join
+    (string/join
      "\n"
      ;; From: https://codepen.io/andrewarchi/pen/eJZjej
      ["    _-=-_    "
@@ -77,3 +80,23 @@
 (defn delete-namespace
   [name]
   (shell (format "sh -c \"kubectl delete namespace %s | true\"" name)))
+
+(defn load-edn
+  "Load edn from an io/reader source (filename or io/resource)."
+  [source]
+  (try
+    (with-open [r (io/reader source)]
+      (edn/read (java.io.PushbackReader. r)))
+    (catch java.io.IOException e
+      #_(printf "Couldn't open '%s': %s\n" source (.getMessage e))
+      nil)
+    (catch RuntimeException e
+      #_(printf "Error parsing edn file '%s': %s\n" source (.getMessage e))
+      nil)))
+
+(defn ->tilt-config
+  []
+  (let [defaults (load-edn "site-defaults.edn")
+        overrides (load-edn "site.edn")
+        data (merge defaults overrides)]
+    (println (json/generate-string data))))

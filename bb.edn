@@ -4,7 +4,8 @@
  {:requires
   ([clojure.string :as string]
    [clj-yaml.core :as yaml]
-   [dinsro.commands :refer :all]
+   [cheshire.core :as json]
+   [dinsro.commands :as c :refer :all]
    [dinsro.helm.bitcoind :as h.bitcoind]
    [dinsro.helm.lnd :as h.lnd]
    [dinsro.helm.nbxplorer :as h.nbxplorer]
@@ -488,6 +489,10 @@
    :task (do
            (clojure "-M:dev:test:shadow-cljs compile ci")
            (shell "npx karma start --single-run --check=\"ci.js\""))}
+
+  tilt-config
+  {:doc  "generates a config file for Tilt"
+   :task (c/->tilt-config)}
 
   watch {:depends [watch-cljs]}
 

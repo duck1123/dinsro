@@ -1,0 +1,41 @@
+{
+ ;; The host that dinsro is served at
+ :baseUrl "dinsro.localhost"
+
+ ;; repo for images
+ :repo      "duck1123"
+
+ ;; tag for dinsro image
+ :version   "latest"
+
+ ;; If Rancher is being used, all namespaces will be applied to this project
+ :projectId "p-vhkqf"
+
+ ;; Should the notebook be started?
+ :useNotebook         true
+
+ ;; If true, the notebook will use whatever the baseUrl is as it's base
+ :notebookInheritHost false
+
+ ;; Host for notebook ingress if not inheriting host
+ :notebookHost        "notebook.dinsro.localhost"
+
+ ;; If true, devtools will be run on the host, otherwise the dev image will launch
+ ;; a devtools watcher on startup and will pre-compile the js resources
+ :localDevtools       true
+
+ ;; Enable linting watchers
+ :useLinting          true
+
+ ;; Should a nrepl connection be started?
+ :useNrepl            false
+
+ ;; If true, a database will be launched and set as the db backend
+ :usePersistence      false
+
+ ;; If true, production image will be deployed
+ :useProduction       false
+
+ ;; Should testing resources be run?
+ :useTests            false
+ }

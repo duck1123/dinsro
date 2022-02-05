@@ -1,47 +1,34 @@
 # -*- mode: python -*-
 # Tilt
 
+load('ext://local_output', 'local_output')
 load('ext://namespace', 'namespace_create')
 load('ext://uibutton', 'cmd_button')
 
-# Base Url for the dinsro instance
-config.define_string('baseUrl')
-# Rancher project id to assign namespaces to
-config.define_string('projectId')
-# Repo for docker images
-config.define_string('repo')
-# Version for built images
-config.define_string('version')
-config.define_bool('localDevtools')
-# If true, the notebook host will be based on the base url
-config.define_bool('notebookInheritHost')
-# If not inheriting, use this host for notebook
-config.define_string('notebookHost')
-config.define_bool('useLinting')
-# Enable Notebook
-config.define_bool('useNotebook')
-config.define_bool('useNrepl')
-config.define_bool('usePersistence')
-config.define_bool('useProduction')
-config.define_bool('useTests')
+config_data = decode_json(local_output('bb tilt-config'))
 
-cfg                   = config.parse()
-base_url              = cfg.get('baseUrl',             'dinsro.localhost')
-project_id            = cfg.get('projectId',           'p-vhkqf')
-repo                  = cfg.get('repo',                'duck1123')
-version               = cfg.get('version',             'latest')
-local_devtools        = cfg.get('localDevtools',       True)
-notebook_inherit_host = cfg.get('notebookInheritHost', False)
-notebook_host         = cfg.get('notebookHost',        "notebook.dinsro.localhost")
-use_linting           = cfg.get('useLinting',          True)
-use_notebook          = cfg.get('useNotebook',         True)
-use_nrepl             = cfg.get('useNrepl',            True)
-use_persistence       = cfg.get('usePersistence',      False)
-use_production        = cfg.get('useProduction',       False)
-use_tests             = cfg.get('useTests',            True)
+def config_get(key):
+  v = config_data.get(key)
+  if (not v == None):
+    return v
+  else:
+    return config_data[key]
+
+base_url              = config_get('baseUrl')
+project_id            = config_get('projectId')
+repo                  = config_get('repo')
+version               = config_get('version')
+local_devtools        = config_get('localDevtools')
+notebook_host         = config_get('notebookHost')
+use_linting           = config_get('useLinting')
+use_notebook          = config_get('useNotebook')
+use_nrepl             = config_get('useNrepl')
+use_persistence       = config_get('usePersistence')
+use_production        = config_get('useProduction')
+use_tests             = config_get('useTests')
 
 def get_notebook_host():
-  return "notebook." + base_url if notebook_inherit_host else notebook_host
+  return "notebook." + base_url if config_get('notebookInheritHost') else notebook_host
 
 disable_snapshots()
 docker_prune_settings(
@@ -165,6 +152,20 @@ if use_linting:
     trigger_mode = TRIGGER_MODE_MANUAL,
     labels = [ 'format' ],
   )
+
+local_resource(
+  'config-watcher',
+  allow_parallel = True,
+  cmd='tilt trigger "(Tiltfile)"',
+  deps = [
+    'bb.edn',
+    'site.edn',
+    'site-defaults.edn',
+    'src/babashka',
+  ],
+  labels = [ 'config' ],
+)
+
 
 if local_devtools:
   local_resource(

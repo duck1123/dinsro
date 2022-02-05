@@ -49,27 +49,13 @@ k3d cluster create \
 ```
 Consult my babashka script [here](https://github.com/duck1123/dotfiles/blob/master/bb.edn) for the latest settings.
 
-### Configure Tilt
+### Configure Build
 
-``` shell
-cp tilt_config.json.example tilt_config.json
-```
+Create a file named `site.edn` and set with any desired customizations.
 
-| key                 | description |
-| ------------------- | ----------- |
-| baseUrl             | The url the ingress will be listening for. There should be a wildcard dns entry for this domain pointing to your cluster |
-| projectId           | If using Rancher, any created namespaces will be applied to this projectId |
-| repo                | If using images in a nonstandard namespace |
-| version             | allows the version number to be overridden |
-| localDevtools       | If true, the devtools watcher will run locally |
-| notebookInheritHost | Should the notebook domain be based off the baseUrl |
-| notebookHost        | Host for notebooks if not inheriting from base |
-| useLinting          | Should tilt run linting tasks |
-| useNotebook         | Should a notebook be deployed |
-| useNrepl            | expose nRepl servers |
-| usePersistence      | Should a database backend be deployed |
-| useProduction       | run with production build |
-| useTests            | Should tilt run testing tasks |
+Refer to `site-defaults.edn` for options.
+
+### Running Dev Build
 
 To start tilt, run:
 

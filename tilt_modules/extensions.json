@@ -29,6 +29,11 @@
       "Name": "uibutton",
       "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
       "TimeFetched": "2021-11-20T15:31:31.341156427-05:00"
+    },
+    {
+      "Name": "local_output",
+      "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
+      "TimeFetched": "2022-02-05T09:20:20.497917314-05:00"
     }
   ]
 }
