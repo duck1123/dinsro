@@ -13,6 +13,7 @@
   com.fulcrologic/fulcro-rad-semantic-ui {:mvn/version "1.2.4"}
   com.fzakaria/slf4j-timbre              {:mvn/version "0.3.21"}
   com.github.igrishaev/farseer-client    {:mvn/version "0.1.1"}
+  com.lambdaisland/glogi                 {:mvn/version "1.1.144"}
   com.taoensso/timbre                    {:mvn/version "5.1.2"}
   com.taoensso/tempura                   {:mvn/version "1.2.1"}
   com.taoensso/tufte                     {:mvn/version "2.2.0"}
@@ -25,6 +26,7 @@
   http.async.client/http.async.client    {:mvn/version "1.3.1"}
   io.github.nextjournal/clerk            {:mvn/version "0.4.316"}
   io.github.John-Smith-Dav/BIP39         {:mvn/version "0.1.9"}
+  io.pedestal/pedestal.log               {:mvn/version "0.5.9"}
   lt.jocas/clj-jq                        {:mvn/version "1.1.4"}
   manifold/manifold                      {:mvn/version "0.2.3"}
   metosin/reitit                         {:mvn/version "0.5.15"}
