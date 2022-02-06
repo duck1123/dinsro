@@ -407,6 +407,11 @@ lint:
   BUILD +eastwood
   # BUILD +kibit
 
+mempool:
+  FROM mempool/mempool:v1.0
+  # RUN apk add curl
+  SAVE IMAGE ${repo}/${project}:mempool-${version}
+
 node-deps:
   FROM +base-builder
   COPY package.json semantic.json yarn.lock .
