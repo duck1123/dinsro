@@ -16,12 +16,13 @@
    [dinsro.queries.ln-peers :as q.ln-peers]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log])
   (:import
    clojure.core.async.impl.channels.ManyToManyChannel
    io.grpc.stub.StreamObserver
    java.io.File
    java.io.FileNotFoundException
+   java.net.UnknownHostException
    org.lightningj.lnd.wrapper.invoices.AsynchronousInvoicesAPI
    org.lightningj.lnd.wrapper.message.AddressType
    org.lightningj.lnd.wrapper.AsynchronousLndAPI
@@ -31,7 +32,7 @@
 (>defn get-client
   [{::m.ln-nodes/keys [id name host port]}]
   [::m.ln-nodes/item => (ds/instance? AsynchronousLndAPI)]
-  (log/infof "Getting Client - %s" name)
+  (log/info :client/creating {:id id :name name})
   (c.lnd/get-client
    host
    (Integer/parseInt port)
@@ -66,25 +67,29 @@
      nil)))
 
 (>defn download-file
+  "Download a file from a remote uri"
   [uri file]
-  [string? (partial instance? File) => nil?]
-  (with-open [in  (io/input-stream uri)
-              out (io/output-stream file)]
-    (io/copy in out)))
+  [string? (partial instance? File) => boolean?]
+  (try
+    (with-open [in  (io/input-stream uri)
+                out (io/output-stream file)]
+      (io/copy in out))
+    true
+    (catch UnknownHostException _ex
+      (log/warn :download/unknown-host {:uri uri :file file})
+      false)))
 
 (>defn has-cert?
-  [node]
+  [{::m.ln-nodes/keys [id]}]
   [::m.ln-nodes/item => nil?]
-  (log/info "has cert")
-  (let [{::m.ln-nodes/keys [id]} node]
-    (m.ln-nodes/has-cert? id)))
+  (log/info :cert/checking {:node-id id})
+  (m.ln-nodes/has-cert? id))
 
 (>defn has-macaroon?
-  [node]
+  [{::m.ln-nodes/keys [id]}]
   [::m.ln-nodes/item => nil?]
-  (log/info "has cert")
-  (let [{::m.ln-nodes/keys [id]} node]
-    (m.ln-nodes/has-macaroon? id)))
+  (log/info :macaroon/checking {:node-id id})
+  (m.ln-nodes/has-macaroon? id))
 
 (>defn delete-cert
   [{::m.ln-nodes/keys [id]}]
@@ -102,9 +107,9 @@
 
 (>defn download-cert!
   [node]
-  [::m.ln-nodes/item => nil?]
+  [::m.ln-nodes/item => boolean?]
   (let [{::m.ln-nodes/keys [host id]} node]
-    (log/infof "Downloading2 cert for %s" id)
+    (log/info :cert/downloading {:id id})
     (.mkdirs (io/file (str m.ln-nodes/cert-base id)))
     (let [url       (format "http://%s/tls.cert" host)
           cert-file (m.ln-nodes/cert-file id)]
@@ -115,13 +120,16 @@
   [::m.ln-nodes/item => (? (ds/instance? File))]
   (let [url  (format "http://%s/admin.macaroon" host)
         file (io/file (m.ln-nodes/macaroon-path id))]
-    (log/infof "Downloading macaroon for %s" id)
+    (log/info :macaroon/downloading {:id id})
     (.mkdirs (io/file (str m.ln-nodes/cert-base id)))
     (try
-      (download-file url file)
-      file
+      (if (download-file url file)
+        file
+        (do
+          (log/error :macaroon-download/failed {:node-id id :host host})
+          nil))
       (catch FileNotFoundException ex
-        (log/error ex "Failed to download")
+        (log/error :macaroon/download-failed {:exception ex})
         nil))))
 
 (defn balance-observer
@@ -156,7 +164,7 @@
 (>defn generate!
   [node]
   [::m.ln-nodes/item => any?]
-  (log/info "Generating to node")
+  (log/info :node/generating-blocks {:node-id (::m.ln-nodes/id node)})
   (let [{:keys [address]} (async/<!! (get-lnd-address node))
         cnode             (first (q.core-nodes/index-records))]
     (a.core-nodes/generate-to-address! cnode address)
@@ -168,7 +176,7 @@
   (with-open [client (get-unlocker-client node)]
     (let [request (c.lnd/->init-wallet-request mnemonic "password12345678")
           ch      (async/chan)]
-      (log/info "Initializing Wallet")
+      (log/info :wallet/initializing {})
       (.initWallet client request (c.lnd/ch-observer ch))
       ch)))
 
@@ -177,7 +185,7 @@
   [::m.ln-nodes/item => any?]
   (with-open [client (get-sync-unlocker-client node)]
     (let [request (c.lnd/->init-wallet-request mnemonic  "password12345678")]
-      (log/info "Initializing Wallet")
+      (log/info :wallet/initializing-sync {})
       (.initWallet client request))))
 
 (>defn save-info!
@@ -201,7 +209,7 @@
 (>defn unlock-sync!
   [node]
   [::m.ln-nodes/item => any?]
-  (log/info "unlocking node")
+  (log/info :node/unlocking {:node-id (::m.ln-nodes/id node)})
   (with-open [client (get-sync-unlocker-client node)]
     (let [request (c.lnd/->unlock-wallet-request "password12345678")]
       (.unlockWallet client request))))

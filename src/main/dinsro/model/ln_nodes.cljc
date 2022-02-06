@@ -8,8 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.users :as m.users]
-   #?(:clj [taoensso.timbre :as log])))
+   [dinsro.model.users :as m.users]))
 
 (def cert-base "/mnt/certs/")
 
@@ -65,15 +64,13 @@
    (>defn has-cert?
      [id]
      [::id => boolean?]
-     (log/info "has cert")
-     (.exists (io/file (log/spy :info (cert-path id))))))
+     (.exists (io/file (cert-path id)))))
 
 #?(:clj
    (>defn has-macaroon?
      [id]
      [::id => boolean?]
-     (log/info "has cert")
-     (.exists (io/file (log/spy :info (macaroon-path id))))))
+     (.exists (io/file (macaroon-path id)))))
 
 (defattr hasCert? ::hasCert? :boolean
   {ao/identities #{::id}

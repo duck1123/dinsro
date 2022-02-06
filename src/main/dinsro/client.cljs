@@ -192,6 +192,7 @@
   []
   (glogi-console/install!)
   (timbre/merge-config! {:level :debug
+                         :min-level :debug
                          :output-fn prefix-output-fn
                          :appenders {:console (console-appender)}})
   (app/set-root! app ui/Root {:initialize-state? true})
