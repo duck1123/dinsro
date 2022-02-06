@@ -24,8 +24,7 @@
 
   :main
   {:asset-path "/js"
-   :dev        {:compiler-options {:closure-defines {'goog.DEBUG true}
-                                   :external-config {:guardrails {}}}}
+   :dev        {:compiler-options {:closure-defines {'goog.DEBUG true}}}
    :devtools   {:after-load dinsro.client/refresh
                 :http-port  3691
                 :preloads   [com.fulcrologic.fulcro.inspect.preload
