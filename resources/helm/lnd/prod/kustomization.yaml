@@ -1,0 +1,3 @@
+namePrefix:  prod-
+resources:
+- ../base
