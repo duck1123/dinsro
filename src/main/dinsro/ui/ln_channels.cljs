@@ -14,6 +14,7 @@
   [_this {::m.ln-channels/keys [capacity commit-fee local-balance remote-balance] :as props}]
   {:ident ::m.ln-channels/id
    :query [::m.ln-channels/id
+           ::m.ln-channels/channel-point
            ::m.ln-channels/capacity
            ::m.ln-channels/commit-fee
            ::m.ln-channels/local-balance
