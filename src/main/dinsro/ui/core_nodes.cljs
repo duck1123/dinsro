@@ -78,13 +78,26 @@
                    options                         {:initial-state state}]
                (form/create! this component options)))})
 
+(def new-peer-button
+  {:type   :button
+   :local? true
+   :label  "New Peer"
+   :action (fn [this _]
+             (let [{::m.core-nodes/keys [id name]} (comp/props this)
+                   component                       (comp/registry-key->class :dinsro.ui.core-peers/NewCorePeerForm)
+                   state                           {::m.core-nodes/node {::m.core-nodes/id   id
+                                                                         ::m.core-nodes/name name}}
+                   options                         {:initial-state state}]
+               (form/create! this component options)))})
+
 (def override-form true)
 
 (form/defsc-form CoreNodeForm [this props]
   {fo/id             m.core-nodes/id
    fo/action-buttons [::fetch
                       ::fetch-peers
-                      ::new-wallet]
+                      ::new-wallet
+                      ::new-peer]
    fo/attributes     [m.core-nodes/name
                       m.core-nodes/chain
                       m.core-nodes/block-count
@@ -96,7 +109,8 @@
    fo/cancel-route   ["core-nodes"]
    fo/controls       {::fetch       fetch-button
                       ::fetch-peers fetch-peers-button
-                      ::new-wallet  new-wallet-button}
+                      ::new-wallet  new-wallet-button
+                      ::new-peer new-peer-button}
    fo/field-styles   {::m.core-nodes/blocks       :core-block-table
                       ::m.core-nodes/transactions :link-list
                       ::m.core-nodes/ln-nodes     :link-list

@@ -79,6 +79,7 @@
                     u.core-nodes/CoreNodeForm
                     u.core-nodes/CoreNodesReport
                     u.core-peers/CorePeersReport
+                    u.core-peers/NewCorePeerForm
                     u.core-tx/CoreTxForm
                     u.core-tx/CoreTxReport
                     u.currencies/AdminCurrencyForm

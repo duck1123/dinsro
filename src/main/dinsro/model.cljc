@@ -59,6 +59,7 @@
    #?(:clj [dinsro.mutations.core-address :as mu.core-address])
    #?(:clj [dinsro.mutations.core-blocks :as mu.core-blocks])
    #?(:clj [dinsro.mutations.core-nodes :as mu.core-nodes])
+   #?(:clj [dinsro.mutations.core-peers :as mu.core-peers])
    #?(:clj [dinsro.mutations.core-tx :as mu.core-tx])
    #?(:clj [dinsro.mutations.ln-invoices :as mu.ln-invoices])
    #?(:clj [dinsro.mutations.ln-nodes :as mu.ln-nodes])
@@ -138,6 +139,7 @@
            mu.core-address/resolvers
            mu.core-blocks/resolvers
            mu.core-nodes/resolvers
+           mu.core-peers/resolvers
            mu.core-tx/resolvers
            mu.ln-invoices/resolvers
            mu.ln-payreqs/resolvers
