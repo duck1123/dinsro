@@ -1,14 +1,13 @@
 {:nrepl-bind   "0.0.0.0"
  :nrepl-port   7000
- :use-notebook false
+ :dinsro.component.notebooks/config {:enabled true}
 
+ ;; The base path where lnd certs are stored
  :dinsro.model.ln-nodes/cert-base "/mnt/certs"
 
  :org.httpkit.server/config
  {:port 3000
   :ip   "0.0.0.0"}
-
- :data-path "data"
 
  :roterski.fulcro.rad.database-adapters.xtdb/databases
  {:main {}}

@@ -7,7 +7,7 @@ data:
 {{ if not (eq .Values.dinsroConfig "-") }}
 {{ .Values.dinsroConfig | indent 4 }}
 {{- else }}
-    {:use-notebook {{ .Values.notebook.enabled }}
+    {:dinsro.component.notebooks/config {:enabled {{ .Values.notebook.enabled }}}
      {{ if .Values.persistence.enabled }}
      :roterski.fulcro.rad.database-adapters.xtdb/databases
       {:main

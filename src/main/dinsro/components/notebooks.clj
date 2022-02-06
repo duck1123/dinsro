@@ -9,7 +9,7 @@
 
 (defn start!
   []
-  (when (config/config :use-notebook)
+  (when (get-in config/config [::config :enabled])
     (log/info "Starting clerk")
     (clerk/serve!
      {:watch-paths    ["src/main" "src/notebooks" "src/shared"]

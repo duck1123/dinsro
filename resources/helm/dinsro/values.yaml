@@ -162,7 +162,7 @@ tolerations: []
 affinity: {}
 
 # dinsroConfig: |-
-#     {:use-notebook true
+#     {:dinsro.component.notebooks/config {:enabled true}
 #      :roterski.fulcro.rad.database-adapters.xtdb/databases
 #       {:main
 #         {:xtdb.jdbc/connection-pool
