@@ -10,7 +10,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.notebook-utils :refer [display]]
    [dinsro.queries.accounts :as q.accounts]
-   [dinsro.queries.core-nodes :as q.core-nodes]
    [dinsro.queries.core-tx :as q.core-tx]
    [dinsro.queries.core-tx-in :as q.core-tx-in]
    [dinsro.queries.core-tx-out :as q.core-tx-out]
@@ -18,23 +17,7 @@
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [nextjournal.clerk :as clerk]
-   [nextjournal.clerk.viewer :as v]
-   [taoensso.timbre :as log]))
-
-(defonce !taps (atom ()))
-
-^::clerk/no-cache
-(clerk/code @!taps)
-
-(defn tapped [x]
-  (binding [*ns* (find-ns 'user)]
-    (swap! !taps conj x)
-    (clerk/show! "src/notebooks/dinsro/notebook.clj")))
-
-(defonce setup
-  (add-tap #'tapped))
-
-#_(clerk/table (q.core-nodes/index-records))
+   [nextjournal.clerk.viewer :as v]))
 
 (when-let [user-id (q.users/find-eid-by-name "bob")]
   (count (q.accounts/find-by-user user-id)))
@@ -44,8 +27,6 @@
   ::q.ln-nodes/_
   ::h.bitcoind/_
   ::s/_
-
-  (reset! !taps ())
 
   (clerk/show! "src/notebooks/dinsro/notebook.clj")
   ;; (clerk/code (sort (map str (keys (s/registry)))))
