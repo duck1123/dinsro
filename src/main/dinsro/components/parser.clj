@@ -30,6 +30,8 @@
     (remove (comp #{::pc/resolve ::pc/mutate} key))
     indexes)})
 
+(def use-taps false)
+
 (defstate parser
   :start
   (pathom/new-parser
@@ -55,7 +57,12 @@
            (let [user-id (a.authentication/get-user-id env)
                  env (assoc env ::m.users/id user-id)]
              (wrapped-parser env tx))
-           {})))}]
+           {})))}
+    {::p/wrap-parser
+     (fn tap-parser-out-plugin-external [wrapped-parser]
+       (fn tap-parser-out-plugin-internal [env tx]
+         (when use-taps (tap> tx))
+         (wrapped-parser env tx)))}]
    [automatic-resolvers
     form/resolvers
     (blob/resolvers all-attributes)
