@@ -9,7 +9,6 @@
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.core-peers :as m.core-peers]
    [dinsro.mutations.core-peers :as mu.core-peers]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (declare CorePeerForm)

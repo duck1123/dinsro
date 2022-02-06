@@ -11,7 +11,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.mutations.wallets :as mu.wallets]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (def create-button

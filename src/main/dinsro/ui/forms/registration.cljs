@@ -5,7 +5,6 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.inputs :as u.inputs]
    [taoensso.timbre :as log]))
 

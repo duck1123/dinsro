@@ -12,11 +12,7 @@
   taoensso.encore/if-let                        cljs.core/let}
 
  :linters
- {:unused-namespace {:exclude [dinsro.translations]}
-
-  :unused-referred-var {:exclude {dinsro.translations [tr]}}
-
-  :unresolved-var {:exclude [http.async.client/GET http.async.client/POST]}
+ {:unresolved-var {:exclude [http.async.client/GET http.async.client/POST]}
 
   ;; ignore the arrow symbols
   :unresolved-symbol {:exclude [(fulcro-spec.core/assertions)]}}}

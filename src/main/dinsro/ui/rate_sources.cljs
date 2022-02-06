@@ -9,7 +9,6 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.rates :as u.rates]))
 

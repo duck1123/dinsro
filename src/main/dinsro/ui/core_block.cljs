@@ -11,7 +11,6 @@
    [dinsro.model.core-block :as m.core-block]
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.mutations.core-blocks :as mu.core-blocks]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow

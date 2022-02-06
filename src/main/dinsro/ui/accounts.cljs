@@ -12,7 +12,6 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow

@@ -8,7 +8,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln-transactions :as m.ln-tx]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.core-tx :as u.core-tx]
    [dinsro.ui.links :as u.links]))
 

@@ -23,7 +23,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.translations :refer [tr]]
    [taoensso.timbre :as log]))
 
 (defn form-link

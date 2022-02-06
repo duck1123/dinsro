@@ -7,7 +7,6 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.rates :as u.rates]))
 

@@ -9,7 +9,6 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln-nodes :as m.ln-nodes]
    [dinsro.model.ln-peers :as m.ln-peers]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (defsc LnPeerRow

@@ -6,7 +6,6 @@
    [com.fulcrologic.rad.control-options :as copt]
    [com.fulcrologic.rad.container :as container :refer [defsc-container]]
    [com.fulcrologic.rad.container-options :as co]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.ln-nodes :as u.ln-nodes]))

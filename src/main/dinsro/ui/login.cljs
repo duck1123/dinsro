@@ -11,8 +11,7 @@
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
-   [dinsro.mutations.session :as mu.session]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.mutations.session :as mu.session]))
 
 (defsc LoginPage
   [this {:user/keys [message password username]} {:keys [visible?]}]
@@ -37,17 +36,17 @@
           (ui-form-input
            {:value    username
             :onChange (fn [evt _] (fm/set-string! this :user/username :event evt))
-            :label    (tr [:username])}))
+            :label    "Username"}))
         (ui-form-field {}
           (ui-form-input
            {:value    password
             :onChange (fn [evt _] (fm/set-string! this :user/password :event evt))
             :type     "password"
-            :label    (tr [:password])}))
+            :label    "Password"}))
         (ui-form-field {}
           (ui-button
            {:className "ui fluid large submit button green"
-            :content   (tr [:login])
+            :content   "Login"
             :onClick
             (fn [_ev]
               (let [data {:user/username username :user/password password}]

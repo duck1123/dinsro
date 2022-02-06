@@ -9,7 +9,6 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln-invoices :as m.ln-invoices]
    [dinsro.mutations.ln-invoices :as mu.ln-invoices]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.scanner :as u.scanner]
    [taoensso.timbre :as log]))

@@ -20,7 +20,6 @@
    [dinsro.model.ln-transactions :as m.ln-tx]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln-nodes :as mu.ln]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.ln-channels :as u.ln-channels]
    [dinsro.ui.ln-payreqs :as u.ln-payreqs]
    [dinsro.ui.ln-peers :as u.ln-peers]

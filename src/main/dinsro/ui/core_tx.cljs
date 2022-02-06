@@ -12,7 +12,6 @@
    [dinsro.model.core-tx-in :as m.core-tx-in]
    [dinsro.model.core-tx-out :as m.core-tx-out]
    [dinsro.mutations.core-tx :as mu.core-tx]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.core-tx-out :as u.core-tx-out]
    [dinsro.ui.links :as u.links]))

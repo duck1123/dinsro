@@ -9,7 +9,6 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln-payreqs :as m.ln-payreqs]
    [dinsro.mutations.ln-payreqs :as mu.ln-payreqs]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 

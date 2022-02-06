@@ -8,7 +8,6 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewCategoryForm

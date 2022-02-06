@@ -8,7 +8,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln-payments :as m.ln-payments]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow

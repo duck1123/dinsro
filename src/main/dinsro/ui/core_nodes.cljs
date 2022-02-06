@@ -12,7 +12,6 @@
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.mutations.core-nodes :as mu.core-nodes]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log2]))

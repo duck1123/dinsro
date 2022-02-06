@@ -17,7 +17,6 @@
    [com.fulcrologic.rad.routing.history :as history]
    [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [html5-history]]
    [dinsro.formatters.date-time :as fmt.date-time]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui :as ui]
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.controls :as u.controls]

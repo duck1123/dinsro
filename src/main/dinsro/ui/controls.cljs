@@ -24,7 +24,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.core-tx-in :as u.core-tx-in]

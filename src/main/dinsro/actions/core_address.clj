@@ -6,7 +6,6 @@
    [dinsro.model.core-address :as m.core-address]
    [dinsro.queries.core-address :as q.core-address]
    [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.translations :refer [tr]]
    [taoensso.timbre :as log]))
 
 (>defn fetch!

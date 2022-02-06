@@ -5,8 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.users :as m.users]
-   [dinsro.translations :refer [tr]]))
+   [dinsro.model.users :as m.users]))
 
 (defsc TextInput
   [_this {:keys [label value]} {:keys [onChange]}]

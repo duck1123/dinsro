@@ -16,7 +16,6 @@
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.navbar :as mu.navbar]
-   [dinsro.translations :refer [tr]]
    [dinsro.ui.home :as u.home]
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]))
 
