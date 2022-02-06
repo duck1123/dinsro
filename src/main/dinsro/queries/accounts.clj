@@ -9,7 +9,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def record-limit 1000)
 
@@ -44,11 +44,12 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.accounts/id)]
+  (log/debug :accounts/find-by-user {:user-id user-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?account-id]
                 :in    [?user-id]
                 :where [[?account-id ::m.accounts/user ?user-id]]}]
-    (map first (xt/q db query (log/spy :info user-id)))))
+    (map first (xt/q db query user-id))))
 
 (>defn create-record
   [params]

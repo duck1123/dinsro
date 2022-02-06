@@ -15,7 +15,7 @@
    [dinsro.translations :refer [tr]]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogi :as log2]))
 
 (defn connect-action
   [report-instance {::m.core-nodes/keys [id]}]
@@ -136,7 +136,7 @@
    :action delete-action
    :style :delete-button
    :class  (fn []
-             (log/info "calculating class")
+             (log2/info :class/calculating {})
              "red")})
 
 (def new-button

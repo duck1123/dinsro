@@ -9,7 +9,7 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.users :as m.users]
-   #?(:cljs [taoensso.timbre :as log])))
+   #?(:cljs [lambdaisland.glogc :as log])))
 
 (comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
 
@@ -39,7 +39,7 @@
      (a.authentication/do-register username password))
    :cljs
    (fm/defmutation register [_]
-     (action [_env] (log/info "register"))
+     (action [_env] (log/info :registration/starting {}))
      (remote [_env] true)))
 
 #?(:clj
@@ -54,7 +54,7 @@
    :cljs
    (fm/defmutation login [_]
      (action [_env]
-       (log/info "busy"))
+       (log/info :login/starting {:message "busy"}))
 
      (error-action [{:keys [app]}]
        (auth/failed! app :local))
@@ -94,13 +94,13 @@
      (action [_env] true)
 
      (error-action [_env]
-       (log/info "error action"))
+       (log/error :logout/error {}))
 
      (ok-action [{:keys [result] :as env}]
        (let [{::auth/keys [provider]}
              (get-in result [:body `logout])]
          (auth/logout! env provider)
-         (log/infof "ok")))
+         (log/info :logout/ok {})))
 
      (remote [env]
        (fm/returning env Session))))

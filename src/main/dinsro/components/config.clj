@@ -29,9 +29,9 @@
    configuration in tests."
   :start
   (let [{:keys [config overrides]} (args)
-        config-path (log/spy :info (or config (get-config-path) "config/prod.edn"))
-        loaded-config (fserver/load-config! {:config-path config-path})
-        merged-config (merge loaded-config overrides)]
+        config-path                (or config (get-config-path) "config/prod.edn")
+        loaded-config              (fserver/load-config! {:config-path config-path})
+        merged-config              (merge loaded-config overrides)]
     (logging/configure-logging! merged-config)
     (log/infof "Loading config: %s" config-path)
     merged-config))

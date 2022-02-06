@@ -13,8 +13,8 @@
    [dinsro.queries.users :as q.users]
    [dinsro.model.timezone :as timezone]
    [dinsro.model.users :as m.users]
-   [taoensso.encore :as enc]
-   [taoensso.timbre :as log]))
+   [io.pedestal.log :as log]
+   [taoensso.encore :as enc]))
 
 (>defn get-user-id
   [env]
@@ -23,7 +23,7 @@
 
 (defn get-auth-data
   [user-id zone-id]
-  (log/info "get auth data")
+  (log/info :auth/get {:user-id user-id :zone-id zone-id})
   {:identity             user-id
    ::auth/provider       :local
    ::auth/status         :success
@@ -44,21 +44,21 @@
 (defn login!
   "Implementation of login. This is database-specific and is not further generalized for the demo."
   [env {:user/keys [username password]}]
-  (log/info "Attempt login for" username)
+  (log/info :login/begin {:username username})
 
   (enc/if-let [{::m.users/keys  [id #_name hashed-value salt iterations]
                 :time-zone/keys [zone-id]} (queries/get-login-info env username)
                current-hashed-value (attr/encrypt password salt iterations)]
     (if (= hashed-value current-hashed-value)
       (do
-        (log/info "Login for" username)
+        (log/info :login/success {:username username})
         (associate-session! env id zone-id nil))
       (do
-        (log/error "Login failure for" username)
+        (log/error :login/failure {:username username})
         {::auth/provider :local
          ::auth/status   :failed}))
     (do
-      (log/fatal "Login cannot find user" username)
+      (log/error :login/user-not-found {:username username})
       {::auth/provider :local
        ::auth/status   :failed})))
 
@@ -68,7 +68,7 @@
   (fmw/augment-response {} (fn [resp] (assoc resp :session {}))))
 
 (defn check-session! [env]
-  (log/info "Checking for existing session")
+  (log/info :session/checking {})
   (or
    (some-> env :ring/request :session)
    {::auth/provider :local
@@ -89,16 +89,16 @@
            :token    (jwt/sign claims secret)})
         ;; Password does not match
         (do
-          (log/info "password not matched")
+          (log/info :password/not-matched {})
           nil))
       (do
         ;; No password, invalid user
-        (log/info "no password")
+        (log/info :password/missing {})
         nil))
 
     (do
       ;; User not found
-      (log/info "user not found")
+      (log/info :user/not-found {})
       nil)))
 
 (>defn register
@@ -121,7 +121,7 @@
         (let [id (q.users/create-record params)]
           (q.users/read-record id))
         (catch RuntimeException ex
-          (log/error ex "User exists")
+          (log/error :user/already-exists {:exception ex})
           (throw "User already exists"))))))
 
 (>defn do-register
@@ -138,6 +138,6 @@
      (try
        (register params)
        (catch Exception ex
-         (log/error "Failed to register" ex)
+         (log/error :registration/failed {:message "Failed to register" :exception ex})
          {::error true
           :ex     (str ex)})))))

@@ -15,4 +15,10 @@
               :ssl-redirect   false
               :frame-options  :sameorigin
               :xss-protection {:enable? true
-                               :mode    :block}}}}
+                               :mode    :block}}}
+ :taoensso.timbre/logging-config
+ {:level     :info
+  :min-level [[#{"com.fulcrologic.rad.resolvers"
+                 "com.fulcrologic.rad.pathom"
+                 "roterski.fulcro.rad.database-adapters.xtdb.generate-resolvers"} :fatal]
+              [#{"*"} :info]]}}

@@ -1,11 +1,12 @@
 (ns dinsro.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
+   [dinsro.components.config :as c.config]
    [dinsro.components.notebooks]
    [dinsro.components.nrepl]
    [dinsro.components.server]
-   [mount.core :as mount]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log]
+   [mount.core :as mount])
   (:gen-class))
 
 ;; log uncaught exceptions in threads
@@ -22,14 +23,15 @@
 
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
-    (log/info component "stopped"))
+    (log/info :component/stopped {:component component}))
   (shutdown-agents))
 
 (defn start-app [args]
-  (log/info "starting app")
+  (log/info :app/starting {:args args})
+  (mount/start #'c.config/config)
   (let [options (parse-opts args cli-options)]
     (doseq [component (-> options mount/start-with-args :started)]
-      (log/debug component "started")))
+      (log/debug :component/started {:component component})))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main

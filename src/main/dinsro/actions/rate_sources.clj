@@ -13,14 +13,14 @@
    [jq.api :as jq]
    [manifold.time :as t]
    [mount.core :as mount]
-   [taoensso.timbre :as log]
+   [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]))
 
 (declare ^:dynamic *scheduler*)
 
 (defn run-query!
   [id]
-  (log/infof "Running rate source: %s" id)
+  (log/info :source/running {:id id})
   (let [query "100000000 / (.data.amount | tonumber)"
         data "{\"data\":{\"base\":\"BTC\",\"currency\":\"USD\",\"amount\":\"61843.51\"}}"
         processor-fn (jq/processor query)
@@ -51,37 +51,37 @@
 (>defn fetch-source
   [{::m.rate-sources/keys [id] :as source}]
   [::m.rate-sources/item => ::m.currencies/id]
-  (log/infof "Fetching source: %s" (::m.rate-sources/id source))
+  (log/info :source/fetching {:source source})
   (if-let [currency-id (some-> source ::m.rate-sources/currency)]
     (if-let [currency (q.currencies/read-record currency-id)]
       (if-let [rate (fetch-rate source)]
         (let [rate-item {::m.rates/source id
                          ::m.rates/rate     rate
                          ::m.rates/date     (tick/instant)}]
-          (log/infof "Updating rate for currency %s => %s" (::m.currencies/name currency) rate)
+          (log/info :rate/updating {:currency currency :rate rate})
           (q.rates/create-record rate-item))
-        (log/error "No rate"))
-      (log/error "Couldn't find currency"))
-    (log/error "No Currency id")))
+        (log/error :rate/not-found {:source source}))
+      (log/error :currency/not-found {:currency-id currency-id}))
+    (log/error :currency/missing-id {})))
 
 (defn check-rates
   []
-  (log/info "Checking rates")
+  (log/info :rates/checking {})
   (doseq [item (q.rate-sources/index-records)]
     (let [{::m.rate-sources/keys [active?]} item]
       (if active?
         (fetch-source item)
-        (log/warnf "not active: %s" (::m.rate-sources/name item))))))
+        (log/warn :rate/not-active {:item item})))))
 
 (defn stop-scheduler
   []
-  (log/info "stopping")
+  (log/info :scheduler/stopping {})
   (*scheduler*)
   nil)
 
 (defn start-scheduler
   []
-  (log/info "starting scheduler")
+  (log/info :scheduler/starting {})
   (t/every (t/minutes 5) #'check-rates))
 
 (mount/defstate ^:dynamic *scheduler*

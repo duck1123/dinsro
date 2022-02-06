@@ -24,7 +24,9 @@
    [dinsro.ui.home :as u.home]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.users :as u.users]
-   [taoensso.timbre :as log]
+   [lambdaisland.glogi :as log]
+   [lambdaisland.glogi.console :as glogi-console]
+   [taoensso.timbre :as timbre]
    [taoensso.tufte :as tufte]))
 
 (defonce stats-accumulator
@@ -189,8 +191,9 @@
   "Shadow-cljs sets this up to be our entry-point function.
   See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
-  (log/merge-config! {:output-fn prefix-output-fn
-                      :appenders {:console (console-appender)}})
+  (glogi-console/install!)
+  (timbre/merge-config! {:output-fn prefix-output-fn
+                         :appenders {:console (console-appender)}})
   (app/set-root! app ui/Root {:initialize-state? true})
   (dr/change-route! app [""])
   (history/install-route-history! app (html5-history))
@@ -203,18 +206,18 @@
 
   (auth/start! app [u.login/LoginPage] {:after-session-check `fix-route})
   (app/mount! app ui/Root "app" {:initialize-state? false})
-  (js/console.log "Loaded"))
+  (log/info :client/loaded {}))
 
 (defn ^:export refresh
   "During development, shadow-cljs will call this on every hot reload of source. See shadow-cljs.edn"
   []
-  (log/info "refresh")
+  (log/info :client/refreshing {})
   ;; re-mounting will cause forced UI refresh, update internals, etc.
   (app/mount! app ui/Root "app")
   ;; As of Fulcro 3.3.0, this addition will help with stale queries when using dynamic routing:
   (comp/refresh-dynamic-queries! app)
   (setup-RAD app)
-  (js/console.log "Hot reload"))
+  (log/debug :client/refreshed {}))
 
 (defonce performance-stats (tufte/add-accumulating-handler! {}))
 

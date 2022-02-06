@@ -38,18 +38,20 @@
      "Derived from Timbre's default output function. Used server-side."
      ([data] (custom-output-fn nil data))
      ([opts data]
+      ;; (prn data)
       (let [{:keys [no-stacktrace?]}                                 opts
-            {:keys [level ?err msg_ ?ns-str ?file timestamp_ ?line]} data]
-        (format "%1.1S %s %40s:-%3s - %s%s"
-                (name level)
-                (force timestamp_)
-                (str/replace-first (or ?ns-str ?file "?") "com.fulcrologic." "_")
-                (or ?line "?")
-                (force msg_)
-                (enc/if-let [_   (not no-stacktrace?)
-                             err ?err]
-                  (str "\n" (log/stacktrace err opts))
-                  ""))))))
+            {:keys [level ?err msg_ ?ns-str ?file timestamp_ context]} data]
+        (format
+         "%1.1S %s %30s - %s%s%s"
+         (name level)
+         (force timestamp_)
+         (str/replace-first (or ?ns-str ?file "?") "com.fulcrologic." "_")
+         (force msg_)
+         (if context (str " - " context) "")
+         (enc/if-let [_   (not no-stacktrace?)
+                      err ?err]
+           (str "\n" (log/stacktrace err opts))
+           ""))))))
 
 #?(:clj
    (defn configure-logging!
@@ -57,6 +59,7 @@
      `:taoensso.timbre/logging-config` as a key."
      [config]
      (let [{::log/keys [logging-config]} config]
+       (log/debug "Configured Timbre with " (p logging-config))
        (log/merge-config! (assoc logging-config
                                  :middleware [(pretty-middleware #(with-out-str (pprint %)))]
                                  :output-fn custom-output-fn))

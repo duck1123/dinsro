@@ -10,7 +10,8 @@
   :start
   (let [cfg     (get config :org.httpkit.server/config)
         stop-fn (run-server middleware cfg)]
-    (log/info "Starting webserver with config " cfg)
+    (log/with-context+ {:cfg cfg}
+      (log/info "Starting webserver with config"))
     {:stop stop-fn})
   :stop
   (let [{:keys [stop]} http-server]

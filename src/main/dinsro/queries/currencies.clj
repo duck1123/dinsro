@@ -9,7 +9,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [taoensso.timbre :as log]))
+   [io.pedestal.log :as log]))
 
 (def attribute-list
   '[:xt/id
@@ -82,7 +82,7 @@
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
     (catch Exception ex
-      (log/error ex "Error creating")
+      (log/error :create/failed {:exception ex})
       nil)))
 
 (>defn index-ids
