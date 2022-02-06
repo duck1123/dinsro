@@ -91,6 +91,11 @@
   :guardrails
   {:jvm-opts ["-Dguardrails.enabled=true"]}
 
+  :reveal
+  {:extra-deps {vlaaad/reveal {:mvn/version "1.3.250"}}
+   :ns-default vlaaad.reveal
+   :exec-fn    repl}
+
   :dispatch
   {:replace-deps
    {cider/cider-nrepl   {:mvn/version "0.27.2"}
