@@ -7,20 +7,27 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   #?(:clj [dinsro.components.config :refer [config]])
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]))
 
-(def cert-base "/mnt/certs/")
+#?(:clj
+   (defn cert-base
+     []
+     (or (config ::cert-base)
+         (throw (RuntimeException. "Cert base not defined")))))
 
-(>defn cert-path
-  [id]
-  [uuid? => string?]
-  (str cert-base id "/tls.cert"))
+#?(:clj
+   (>defn cert-path
+     [id]
+     [uuid? => string?]
+     (str (cert-base) id "/tls.cert")))
 
-(>defn macaroon-path
-  [id]
-  [uuid? => string?]
-  (str cert-base id "/admin.macaroon"))
+#?(:clj
+   (>defn macaroon-path
+     [id]
+     [uuid? => string?]
+     (str (cert-base) id "/admin.macaroon")))
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

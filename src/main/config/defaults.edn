@@ -2,6 +2,8 @@
  :nrepl-port   7000
  :use-notebook false
 
+ :dinsro.model.ln-nodes/cert-base "/mnt/certs"
+
  :org.httpkit.server/config
  {:port 3000
   :ip   "0.0.0.0"}
