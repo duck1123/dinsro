@@ -15,9 +15,9 @@ Use at your own risk!
 
 ## Prerequisites
 
-* docker (https://docs.docker.com/get-docker/)
-* earthly (https://earthly.dev/get-earthly)
-* babashka (https://github.com/babashka/babashka#installation)
+* docker ([install](https://docs.docker.com/get-docker/))
+* earthly ([install](https://earthly.dev/get-earthly))
+* babashka ([install](https://github.com/babashka/babashka#installation))
 
 If building locally, not using docker, you will need:
 
@@ -27,9 +27,9 @@ If building locally, not using docker, you will need:
 
 Recommended:
 
-* Tilt (https://docs.tilt.dev/install.html)
-* Helm (https://helm.sh/docs/intro/install/)
-* K3D (https://k3d.io/#install-script)
+* Tilt ([install](https://docs.tilt.dev/install.html))
+* Helm ([install](https://helm.sh/docs/intro/install/))
+* K3D ([install](https://k3d.io/#install-script))
 
 
 ## Tilt-based development
