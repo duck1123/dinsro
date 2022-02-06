@@ -93,6 +93,17 @@
   (handle-request client :addnode [node-uri "add"]))
 
 (>defn get-peer-info
+  "Returns data about each connected network node as a json array of objects.
+
+see: https://developer.bitcoin.org/reference/rpc/getpeerinfo.html"
   [client]
   [::s.client/config => any?]
   (handle-request client :getpeerinfo))
+
+(>defn disconnect-node
+  "Immediately disconnects from the specified peer node.
+
+see: https://developer.bitcoin.org/reference/rpc/disconnectnode.html"
+  [client address]
+  [::s.client/config string? => nil?]
+  (handle-request client :disconnectnode [address]))

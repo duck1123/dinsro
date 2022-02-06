@@ -7,6 +7,7 @@
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.core-peers :as m.core-peers]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
@@ -57,3 +58,16 @@
                 :in    [?node-id]
                 :where [[?peer-id ::m.core-peers/node ?node-id]]}]
     (map first (xt/q db query node-id))))
+
+(defn find-by-node-and-peer-id
+  [node-id peer-id]
+  [::m.core-peers/node ::m.core-peers/peer-id => (? ::m.core-peers/id)]
+  (log/debug :find-by-node-and-peer-id/starting {:node-id node-id :peer-id peer-id})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?id]
+                :in    [[?node-id ?peer-id]]
+                :where [[?id ::m.core-peers/node ?node-id]
+                        [?id ::m.core-peers/peer-id ?peer-id]]}
+        result (ffirst (xt/q db query [node-id peer-id]))]
+    (log/debug :find-by-node-and-peer-id/finished {:result result})
+    result))

@@ -4,14 +4,15 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core-peers :as a.core-peers])
    [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-tx :as m.core-tx]))
+   [dinsro.model.core-peers :as m.core-peers]
+   #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.core-block/_ ::m.core-tx/_)
+(comment ::pc/_ ::m.core-block/_ ::m.core-peers/_)
 
 #?(:clj
    (pc/defmutation create!
      [_env props]
-     {::pc/params #{::m.core-tx/id}
+     {::pc/params #{::m.core-peers/id}
       ::pc/output [:status]}
      (a.core-peers/create! props))
 
@@ -20,4 +21,17 @@
      (action [_env] true)
      (remote [_env] true)))
 
-#?(:clj (def resolvers [create!]))
+#?(:clj
+   (pc/defmutation delete!
+     [_env props]
+     {::pc/params #{::m.core-peers/id}
+      ::pc/output [:status]}
+     (log/debug :delete/starting {:props props})
+     (a.core-peers/delete! props))
+
+   :cljs
+   (defmutation delete! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
+#?(:clj (def resolvers [create! delete!]))
