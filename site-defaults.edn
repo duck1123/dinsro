@@ -26,6 +26,8 @@
  ;; a devtools watcher on startup and will pre-compile the js resources
  :localDevtools       true
 
+ :useGuardrails true
+
  ;; Enable linting watchers
  :useLinting          true
 

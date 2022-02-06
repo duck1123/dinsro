@@ -32,7 +32,7 @@
 
   ci
   {:task (c/earthly :ci {:interactive true
-                       :privileged  true})}
+                         :privileged  true})}
 
   ci-local
   {:depends [kondo check test]}
@@ -352,7 +352,6 @@
    (let [n (or (first *command-line-args*) "3")]
      (delete-namespace (str "nbxplorer-" n)))}
 
-
   helm-rtl
   {:depends [generate-rtl-values]
    :task
@@ -363,28 +362,19 @@
   {:task
    (let [n   (or (first *command-line-args*) "3")
          cmd (format "bb helm-rtl %s | kubectl apply -n rtl-%s -f -" n n)]
-     (create-namespace (str "rtl-" n))
+     (c/create-namespace (str "rtl-" n))
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-rtl-remove
   {:task
    (let [n (or (first *command-line-args*) "3")]
-     (delete-namespace (str "rtl-" n)))}
-
+     (c/delete-namespace (str "rtl-" n)))}
 
   helm-specter
   {:depends [generate-specter-values]
    :task
-   (let [n        (or (first *command-line-args*) "3")
-         path     "resources/helm/specter-desktop/"
-         filename (format "conf/%s/specter_values.yaml" n)
-         cmd      (string/join
-                   " "
-                   ["helm template "
-                    (str "--name-template=specter-" n)
-                    (str "--values " filename)
-                    path])]
-     (shell cmd))}
+   (let [n (or (first *command-line-args*) "3")]
+     (c/helm-specter n))}
 
   helm-specter-apply
   {:task
@@ -479,11 +469,7 @@
    :depends [build-production run-production]}
 
   tap
-  {:task
-   (do
-     (prn *command-line-args*)
-     (let [data (or (first *command-line-args*) :true)]
-      (c/dispatch [(str "(tap> " (pr-str data) ")")])))}
+  {:task (c/tap (first *command-line-args*))}
 
   test
   {:doc     "Run all tests"
@@ -503,22 +489,15 @@
   {:doc  "generates a config file for Tilt"
    :task (c/->tilt-config)}
 
-  watch {:depends [watch-cljs]}
+  watch
+  {:depends [watch-cljs]}
 
   watch-styles
   {:task (shell "npm run watch:sass")}
 
   watch-cljs
-  {:task (let [guardrails   {:enabled nil}
-               devtools-url (or (System/getenv "DEVTOOLS_URL") "http://localhost:9630")
-               data         {:devtools {:devtools-url devtools-url}}
-               args         (format "-M:dev:guardrails:shadow-cljs watch main workspaces --config-merge '%s'"
-                                    (pr-str data))]
-           (clojure args))}
+  {:task (c/watch-cljs)}
 
   workspaces
-  {:task (let [devtools-url (or (System/getenv "DEVTOOLS_URL") "http://localhost:9630")
-               data         {:devtools {:devtools-url devtools-url}}
-               args         (format "-M:dev:guardrails:shadow-cljs watch workspaces --config-merge '%s'"
-                                    (pr-str data))]
-           (clojure args))}}}
+  {:doc  "Starts and watches for workspaces"
+   :task (c/workspaces)}}}

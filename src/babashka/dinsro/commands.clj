@@ -1,9 +1,12 @@
 (ns dinsro.commands
-  (:require [babashka.tasks :refer [clojure shell]]
-            [cheshire.core :as json]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.string :as string]))
+  (:require
+   [babashka.tasks :refer [clojure shell]]
+   [cheshire.core :as json]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.string :as string]
+   [clj-yaml.core :as yaml]
+   [dinsro.helm.rtl :as h.rtl]))
 
 (defn cljfmt
   [paths]
@@ -83,9 +86,9 @@
 
 (defn dispatch
   [cmds]
-  (let [cmd (->> cmds
-                 (map #(str "\"" (string/replace % #"\"" "\\\\\"") "\""))
-                 (string/join " "))
+  (let [cmd          (->> cmds
+                          (map #(str "\"" (string/replace % #"\"" "\\\\\"") "\""))
+                          (string/join " "))
         full-command (str "-Mdispatch " cmd)]
     (clojure full-command)))
 
@@ -116,7 +119,75 @@
 
 (defn ->tilt-config
   []
-  (let [defaults (load-edn "site-defaults.edn")
+  (let [defaults  (load-edn "site-defaults.edn")
         overrides (load-edn "site.edn")
-        data (merge defaults overrides)]
+        data      (merge defaults overrides)]
     (println (json/generate-string data))))
+
+(defn tap
+  [data]
+  (let [data (or data :true)]
+    (dispatch [(str "(tap> " (pr-str data) ")")])))
+
+(defn generate-dinsro-values
+  []
+  (let [{:keys [devtools-host ingress-host portal-host]} {}]
+    {:database    {:enabled true}
+     :devtools
+     {:enabled true
+      :ingress
+      {:enabled true
+       :hosts   [{:host  devtools-host
+                  :paths [{:path "/"}]}]}}
+     :notebook
+     {:enabled true
+      :ingress
+      {:hosts [{:host  ingress-host
+                :paths [{:path "/"}]}]}}
+     :nrepl       {:enabled true}
+     :persistence {:enabled true}
+     :workspaces  {:enabled true}
+     :portal
+     {:ingress
+      {:hosts
+       [{:host  portal-host
+         :paths [{:path "/"}]}]}}}))
+
+(defn generate-rtl-values
+  [n]
+  (let [options {:name n}
+        yaml    (yaml/generate-string (h.rtl/->values options))]
+    (mkdir (format "conf/%s" n))
+    (spit (format "conf/%s/rtl_values.yaml" n) yaml)))
+
+(defn watch-cljs
+  ([]
+   (watch-cljs ["main" "workspaces"]))
+  ([targets]
+   (let [devtools-url    (or (System/getenv "DEVTOOLS_URL") "http://localhost:9630")
+         use-guardrails? (or (System/getenv "USE_GUARDRAILS") false)
+         data            {:devtools {:devtools-url devtools-url}}
+         aliases         (filter identity ["dev" (when use-guardrails? "guardrails") "shadow-cljs"])
+         alias-str       (str "-M:" (string/join ":" aliases))
+         config-str      (str "--config-merge '" (pr-str data) "'")
+         target-str      (string/join " " targets)
+         args            (string/join " " [alias-str "watch" target-str config-str])]
+     (println args)
+     (clojure args))))
+
+(defn workspaces
+  "Starts and watches for workspaces"
+  []
+  (watch-cljs "workspaces"))
+
+(defn helm-specter
+  [n]
+  (let [path     "resources/helm/specter-desktop/"
+        filename (format "conf/%s/specter_values.yaml" n)
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "--name-template=specter-" n)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
