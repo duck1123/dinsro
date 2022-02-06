@@ -7,6 +7,6 @@
 
 (println "portal")
 (require '[portal.api :as p])
-(prn (p/open {:port 5678}))
+(p/open {:port 5678})
 
 @(promise)
