@@ -21,6 +21,13 @@ certDownloader:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
 
+certDownloader:
+  image:
+    repository: duck1123/cert-downloader
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
