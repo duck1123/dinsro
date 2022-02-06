@@ -69,7 +69,7 @@
        (fn [unhandled-errs [path :as entry]]
          (if (target-component-requests-errors query path)
            (do
-             (log/info "unhandled-errors: Ignoring error for" (last path) ", handled by the requesting component")
+             (log/info :message "unhandled-errors: Ignoring error for" (last path) ", handled by the requesting component")
              unhandled-errs)
            (conj unhandled-errs entry)))
        {}
@@ -123,7 +123,7 @@
   [_]
   (action [{:keys [state]}]
     (swap! state assoc :ui/ready? true)
-    (log/info "UI ready!")))
+    (log/info :ui/ready {})))
 
 (defn restore-route-ensuring-leaf!
   "Attempt to restore the route given in the URL. If that fails, simply route to the default given (a class and map).

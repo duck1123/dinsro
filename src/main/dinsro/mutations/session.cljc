@@ -65,7 +65,7 @@
          (if (= status :success)
            (auth/logged-in! app :local)
            (do
-             (log/info "login failed")
+             (log/info :login/failed {})
              (auth/failed! app :local)
              (-> state
                  (swap! #(assoc-in % [:component/id :dinsro.ui.forms.login/form :user/message]
