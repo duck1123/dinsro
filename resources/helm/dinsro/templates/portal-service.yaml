@@ -1,17 +1,17 @@
-{{- if .Values.notebook.enabled -}}
+{{- if .Values.portal.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "dinsro.fullname" . }}-portal
+  name: portal
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
   - port: 5678
-    targetPort: ws
+    targetPort: web
     protocol: TCP
-    name: ws
+    name: web
   selector:
     {{- include "dinsro.portalSelectorLabels" . | nindent 4 }}
 {{- end }}

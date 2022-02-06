@@ -318,8 +318,8 @@ if use_persistence:
   )
 
 k8s_resource(
-  workload = 'dinsro-portal',
-  labels = [ 'inspect' ],
+  workload = 'portal',
+  labels = [ 'dinsro' ],
   links = [
     link(portal_url, 'Portal'),
   ],

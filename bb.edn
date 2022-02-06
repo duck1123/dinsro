@@ -436,7 +436,7 @@
   repl (clojure.main/repl)
 
   portal-jack-in
-  {:task (c/dispatch ["(dinsro.components.portal/connect! \"dinsro-portal\" 5678)"])}
+  {:task (c/dispatch ["(dinsro.components.portal/connect! \"portal\" 5678)"])}
 
   restart
   {:doc "Send a restart signal over nrepl"

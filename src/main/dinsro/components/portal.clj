@@ -10,7 +10,7 @@
 
 (comment
 
-  (connect! "dinsro-portal" 5678)
+  (connect! "portal" 5678)
 
   (tap> "1123")
 

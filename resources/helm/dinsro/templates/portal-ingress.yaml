@@ -32,7 +32,7 @@ spec:
         pathType: "ImplementationSpecific"
         backend:
           service:
-            name: {{ $fullName }}-portal
+            name: portal
             port:
               number: {{ $svcPort }}
       {{- end }}
