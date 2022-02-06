@@ -3,7 +3,7 @@
   (:require
    #?(:clj [clojure.java.io :as io])
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -22,29 +22,29 @@
   [uuid? => string?]
   (str cert-base id "/admin.macaroon"))
 
-(s/def ::id uuid?)
+(>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
 
-(s/def ::name string?)
+(>def ::name string?)
 (defattr name ::name :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::core-node ::m.core-nodes/id)
+(>def ::core-node ::m.core-nodes/id)
 (defattr core-node ::core-node :ref
   {ao/identities #{::id}
    ao/target     ::m.core-nodes/id
    ao/schema     :production
    ::report/column-EQL {::core-node [::m.core-nodes/id ::m.core-nodes/name]}})
 
-(s/def ::host string?)
+(>def ::host string?)
 (defattr host ::host :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::port string?)
+(>def ::port string?)
 (defattr port ::port :string
   {ao/identities #{::id}
    ao/schema     :production})
@@ -53,7 +53,7 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::user ::m.users/id)
+(>def ::user ::m.users/id)
 (defattr user ::user :ref
   {ao/identities #{::id}
    ao/target     ::m.users/id
@@ -98,11 +98,11 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::name ::host ::port ::core-node]))
-(s/def ::params  (s/keys :req [::name ::host ::port ::user ::core-node]))
-(s/def ::item (s/keys :req [::id ::name ::host ::port ::user ::core-node]))
-(s/def ::items (s/coll-of ::item))
-(s/def ::ident (s/tuple keyword? ::id))
+(>def ::required-params (s/keys :req [::name ::host ::port ::core-node]))
+(>def ::params  (s/keys :req [::name ::host ::port ::user ::core-node]))
+(>def ::item (s/keys :req [::id ::name ::host ::port ::user ::core-node]))
+(>def ::items (s/coll-of ::item))
+(>def ::ident (s/tuple keyword? ::id))
 
 (>defn ident
   [id]
