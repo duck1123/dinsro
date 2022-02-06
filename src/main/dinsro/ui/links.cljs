@@ -8,6 +8,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core-block :as m.core-block]
    [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core-peers :as m.core-peers]
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln-channels :as m.ln-channels]
@@ -23,17 +24,18 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defn form-link
   [this id name form-kw]
+  (log/debug :form-link/creating {:id id :name name :form-kw form-kw})
   (dom/a {:href "#"
           :onClick
           (fn [e]
             (.preventDefault e)
             (if-let [component (comp/registry-key->class form-kw)]
               (form/view! this component id)
-              (log/error (str "No Component: " form-kw))))}
+              (log/error :form-link/no-component {:form-kw form-kw})))}
     name))
 
 (form/defsc-form AccountLinkForm
@@ -82,6 +84,16 @@
   (form-link this id name :dinsro.ui.core-nodes/CoreNodeForm))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.core-nodes/id}))
+
+(form/defsc-form CorePeerLinkForm
+  [this {::m.core-peers/keys [id addr]}]
+  {fo/id           m.core-peers/id
+   fo/route-prefix "core-peer-link"
+   fo/title        "Peers"
+   fo/attributes   [m.core-peers/id m.core-peers/addr]}
+  (form-link this id addr :dinsro.ui.core-peers/CorePeerForm))
+
+(def ui-core-peer-link (comp/factory CorePeerLinkForm {:keyfn ::m.core-peers/id}))
 
 (form/defsc-form CoreTxLinkForm
   [this {::m.core-tx/keys [id tx-id]}]

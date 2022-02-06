@@ -3,24 +3,30 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [farseer.client :as client]
    [farseer.spec.client :as s.client]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defn get-client
+  "Create a farseer client to a node"
   [config]
   (client/make-client config))
 
 (>defn handle-request
+  "Invoke an RPC method on the client and return the results"
   ([client method]
    [::s.client/config keyword? => any?]
    (handle-request client method []))
   ([client method args]
    [::s.client/config keyword? vector? => any?]
-   (let [{:keys [error result]} (client/call client method args)]
-     (if error
-       (throw (RuntimeException. (pr-str error)))
-       result))))
+   (do
+     (log/debug :request/starting {:method method :args args})
+     (let [{:keys [error result]} (client/call client method args)]
+       (log/debug :request/finished {:error error :result result})
+       (if error
+         (throw (RuntimeException. (pr-str error)))
+         result)))))
 
 (>defn get-transaction
+  "Fetch a tx specified by its txid"
   [client tx-id]
   [::s.client/config string? => any?]
   (handle-request client :gettransaction [tx-id true]))
@@ -55,9 +61,9 @@
 (>defn generate-to-address
   [client address]
   [::s.client/config string? => any?]
-  (log/infof "generate to address: %s" address)
+  (log/info :blocks/generating-to-address {:address address})
   (let [n 100]
-    (log/spy :info (handle-request client :generatetoaddress [n address]))))
+    (log/spy (handle-request client :generatetoaddress [n address]))))
 
 (>defn fetch-block-by-hash
   [client hash]
@@ -81,6 +87,7 @@
   (handle-request client :getrawtransaction [tx-id true]))
 
 (>defn add-node
+  "Add a peer connection to a given uri"
   [client node-uri]
   [::s.client/config string? => any?]
   (handle-request client :addnode [node-uri "add"]))

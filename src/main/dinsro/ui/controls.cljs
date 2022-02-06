@@ -10,6 +10,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core-block :as m.core-block]
    [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core-peers :as m.core-peers]
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln-channels :as m.ln-channels]
@@ -36,6 +37,7 @@
    [dinsro.ui.ln-peers :as u.ln-peers]
    [dinsro.ui.ln-transactions :as u.ln-tx]
    [dinsro.ui.rates :as u.rates]
+   [lambdaisland.glogc :as log]
    ["victory" :as victory]))
 
 (def ui-victory-bar (interop/react-factory victory/VictoryBar))
@@ -44,10 +46,20 @@
 (def ui-victory-axis  (interop/react-factory victory/VictoryAxis))
 (def ui-victory-tooltip  (interop/react-factory victory/VictoryTooltip))
 
+(def matchers
+  {::m.accounts/id   u.links/ui-account-link
+   ::m.core-peers/id u.links/ui-core-peer-link})
+
+(defn get-matcher
+  [value]
+  (->> matchers
+       (map (fn [[kw f]] (when (get value kw) f)))
+       (filter identity)
+       first))
+
 (defn link-control
   [{:keys [value] :as env} _attribute]
-  (let [{account-id     ::m.accounts/id
-         address-id     ::m.wallet-addresses/id
+  (let [{address-id     ::m.wallet-addresses/id
          category-id    ::m.categories/id
          block-id       ::m.core-block/id
          core-node-id   ::m.core-nodes/id
@@ -63,9 +75,11 @@
          source-id      ::m.rate-sources/id
          transaction-id ::m.transactions/id
          user-id        ::m.users/id
-         wallet-id ::m.wallets/id} value]
+         wallet-id      ::m.wallets/id} value]
     (or
-     (when account-id (u.links/ui-account-link value))
+     (when-let [matcher (get-matcher value)]
+       (log/debug :link-control/matched {:matcher matcher :value value})
+       (matcher value))
      (when block-id (u.links/ui-block-link value))
      (when core-tx-id (u.links/ui-core-tx-link value))
      (when category-id (u.links/ui-category-link value))

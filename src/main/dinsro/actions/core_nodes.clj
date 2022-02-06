@@ -9,14 +9,16 @@
    [dinsro.queries.core-nodes :as q.core-nodes]
    [dinsro.queries.core-peers :as q.core-peers]
    [dinsro.queries.core-tx :as q.core-tx]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defn generate-to-address!
+  "Generate regtest blocks paying to address"
   [node address]
   (let [client (m.core-nodes/get-client node)]
     (c.bitcoin/generate-to-address client address)))
 
 (>defn get-blockchain-info
+  "Fetch blockchain info for node"
   [node]
   [::m.core-nodes/item => any?]
   (let [client (m.core-nodes/get-client node)
@@ -24,9 +26,10 @@
     info))
 
 (>defn update-blockchain-info!
+  "Update node's blockchain info"
   [node]
   [::m.core-nodes/item => any?]
-  (log/debug "Update blockchain info")
+  (log/debug :blockchain-info/updating {:node-id (::m.core-nodes/id node)})
   (let [{::m.core-nodes/keys [id]} node
         params                     (get-blockchain-info node)
         params                     (merge node params)
@@ -36,30 +39,22 @@
      :response response}))
 
 (>defn fetch!
+  "Fetch all updates for node"
   [{::m.core-nodes/keys [id] :as node}]
   [::m.core-nodes/item => ::m.core-nodes/item]
-  (log/debug "Fetching from core node")
+  (log/debug :node/fetching {:node-id id})
   (update-blockchain-info! node)
   (a.core-block/fetch-blocks node)
   (q.core-nodes/read-record id))
 
-(defn fetch-peers!
-  [node]
-  (log/info "fetching peers")
-  (let [node-id (::m.core-nodes/id node)
-        client  (m.core-nodes/get-client node)]
-    (doseq [peer (c.bitcoin/get-peer-info client)]
-      (let [params (assoc peer ::m.core-peers/node node-id)
-            params (m.core-peers/prepare-params params)]
-        (q.core-peers/create-record params)))))
-
 (>defn fetch-transactions!
-  [node]
+  "Fetch transactions for a node's wallet"
+  [{node-id ::m.core-nodes/id :as node}]
   [::m.core-nodes/item => any?]
-  (log/info "fetching transactions")
-  (let [node-id (::m.core-nodes/id node)
-        client  (m.core-nodes/get-client node)]
-    (doseq [txes (log/spy :info (c.bitcoin/list-transactions client))]
+  (log/info :transactions/fetching {:node-id node-id})
+  (let [client  (m.core-nodes/get-client node)]
+    (doseq [txes (c.bitcoin/list-transactions client)]
+      (log/debug :transactions/processing-fetched {:txes txes})
       (let [params (assoc txes ::m.core-peers/node node-id)
             params (m.core-tx/prepare-params params)]
         (q.core-tx/create-record params)))))
@@ -87,7 +82,6 @@
 
   (fetch-transactions! node)
 
-  (fetch-peers! node)
   (q.core-peers/index-ids)
 
   (add-tap {:foo "foo"})

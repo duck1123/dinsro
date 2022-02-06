@@ -191,7 +191,8 @@
   See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
   (glogi-console/install!)
-  (timbre/merge-config! {:output-fn prefix-output-fn
+  (timbre/merge-config! {:level :debug
+                         :output-fn prefix-output-fn
                          :appenders {:console (console-appender)}})
   (app/set-root! app ui/Root {:initialize-state? true})
   (dr/change-route! app [""])

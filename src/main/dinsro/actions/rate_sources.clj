@@ -30,12 +30,6 @@
                 ::m.rates/date   (tick/instant)}]
     (q.rates/create-record params)))
 
-(comment
-
-  (json/read-str (run-query! 1))
-
-  nil)
-
 ;; TODO: handle request failures and backoff
 (>defn fetch-rate
   [item]
@@ -51,7 +45,7 @@
 (>defn fetch-source
   [{::m.rate-sources/keys [id] :as source}]
   [::m.rate-sources/item => ::m.currencies/id]
-  (log/info :source/fetching {:source source})
+  (log/info :source/fetching {:source-id id})
   (if-let [currency-id (some-> source ::m.rate-sources/currency)]
     (if-let [currency (q.currencies/read-record currency-id)]
       (if-let [rate (fetch-rate source)]
@@ -66,12 +60,12 @@
 
 (defn check-rates
   []
-  (log/info :rates/checking {})
+  (log/info :rate-checking/started {})
   (doseq [item (q.rate-sources/index-records)]
     (let [{::m.rate-sources/keys [active?]} item]
       (if active?
         (fetch-source item)
-        (log/warn :rate/not-active {:item item})))))
+        (log/warn :rate/not-active {:source-id (::m.rate-sources/id item)})))))
 
 (defn stop-scheduler
   []
@@ -81,8 +75,10 @@
 
 (defn start-scheduler
   []
-  (log/info :scheduler/starting {})
-  (t/every (t/minutes 5) #'check-rates))
+  (let [enabled false]
+    (log/info :scheduler/starting {:enabled enabled})
+    (when enabled
+      (t/every (t/minutes 5) #'check-rates))))
 
 (mount/defstate ^:dynamic *scheduler*
   :start (start-scheduler)
@@ -90,9 +86,12 @@
 
 (comment
 
+  (json/read-str (run-query! 1))
+
   *scheduler*
 
   (start-scheduler)
   (stop-scheduler)
+  (check-rates)
 
   nil)

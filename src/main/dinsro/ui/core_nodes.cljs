@@ -109,7 +109,7 @@
    fo/controls       {::fetch       fetch-button
                       ::fetch-peers fetch-peers-button
                       ::new-wallet  new-wallet-button
-                      ::new-peer new-peer-button}
+                      ::new-peer    new-peer-button}
    fo/field-styles   {::m.core-nodes/blocks       :core-block-table
                       ::m.core-nodes/transactions :link-list
                       ::m.core-nodes/ln-nodes     :link-list
@@ -119,7 +119,8 @@
    fo/subforms       {::m.core-nodes/transactions {fo/ui CoreNodeTxSubform}
                       ::m.core-nodes/blocks       {fo/ui u.core-block/CoreBlockSubForm}
                       ::m.core-nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
-                      ::m.core-nodes/wallets      {fo/ui u.links/WalletLinkForm}}
+                      ::m.core-nodes/wallets      {fo/ui u.links/WalletLinkForm}
+                      ::m.core-nodes/peers        {fo/ui u.links/CorePeerLinkForm}}
    fo/title          "Core Node"}
   (if override-form
     (form/render-layout this props)
@@ -147,7 +148,7 @@
 (def delete-action-button
   {:label  "Delete"
    :action delete-action
-   :style :delete-button
+   :style  :delete-button
    :class  (fn []
              (log2/info :class/calculating {})
              "red")})

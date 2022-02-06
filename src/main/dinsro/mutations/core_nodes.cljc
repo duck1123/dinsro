@@ -7,6 +7,7 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core-nodes :as a.core-nodes])
+   #?(:clj [dinsro.actions.core-peers :as a.core-peers])
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
@@ -95,7 +96,7 @@
      {::pc/params #{::m.core-nodes/id}
       ::pc/output [:status]}
      (let [node (q.core-nodes/read-record id)]
-       (a.core-nodes/fetch-peers! node)))
+       (a.core-peers/fetch-peers! node)))
 
    :cljs
    (defmutation fetch-peers! [_props]

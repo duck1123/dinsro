@@ -26,31 +26,42 @@
 
 (form/defsc-form NewCorePeerForm
   [_this _props]
-  {fo/id           m.core-peers/id
+  {fo/id             m.core-peers/id
    fo/action-buttons [::submit]
-   fo/attributes   [m.core-peers/addr
-                    m.core-peers/node]
-   fo/controls {::submit submit-button}
-   fo/field-options {::m.core-peers/node
-                     {::picker-options/query-key       ::m.core-nodes/index
-                      ::picker-options/query-component u.links/CoreNodeLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.core-nodes/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.core-nodes/id id]})
-                         (sort-by ::m.core-nodes/name options)))}}
-   fo/field-styles {::m.core-peers/node :pick-one}
-   fo/route-prefix "new-core-peer"
-   fo/title        "New Core Peer"})
+   fo/attributes     [m.core-peers/addr
+                      m.core-peers/node]
+   fo/controls       {::submit submit-button}
+   fo/field-options  {::m.core-peers/node
+                      {::picker-options/query-key       ::m.core-nodes/index
+                       ::picker-options/query-component u.links/CoreNodeLinkForm
+                       ::picker-options/options-xform
+                       (fn [_ options]
+                         (mapv
+                          (fn [{::m.core-nodes/keys [id name]}]
+                            {:text  (str name)
+                             :value [::m.core-nodes/id id]})
+                          (sort-by ::m.core-nodes/name options)))}}
+   fo/field-styles   {::m.core-peers/node :pick-one}
+   fo/route-prefix   "new-core-peer"
+   fo/title          "New Core Peer"})
 
 (form/defsc-form CorePeerForm
   [_this _props]
   {fo/id           m.core-peers/id
-   fo/attributes   []
+   fo/attributes   [m.core-peers/addr
+                    m.core-peers/node
+                    m.core-peers/subver
+                    m.core-peers/peer-id]
+   fo/field-styles {::m.core-peers/node :link}
    fo/route-prefix "core-peer"
+   fo/subforms     {::m.core-peers/node {fo/ui u.links/CoreNodeLinkForm}}
    fo/title        "Core Peer"})
+
+(def delete-action-button
+  {:type   :button
+   :local? true
+   :label  "Delete"
+   :action (fn [this {::m.core-peers/keys [id]}] (form/delete! this ::m.core-peers/id id))})
 
 (report/defsc-report CorePeersReport
   [_this _props]
@@ -62,6 +73,7 @@
    ro/field-formatters {::m.core-peers/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.core-peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.core-peers/peers-id CorePeerForm}
+   ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.core-peers/index
    ro/title            "Core Peers"
    ro/row-pk           m.core-peers/id

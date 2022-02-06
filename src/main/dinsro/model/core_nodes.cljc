@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    #?(:clj [dinsro.client.bitcoin :as c.bitcoin])
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -148,7 +148,8 @@
   [params]
   [any? => ::params]
   (let [params (set/rename-keys params rename-map)]
-    (log/spy :info "prepared params" params)))
+    (log/debug :params/prepared {:params params})
+    params))
 
 (def link-query [::id ::name])
 

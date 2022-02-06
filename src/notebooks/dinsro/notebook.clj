@@ -22,6 +22,19 @@
 (when-let [user-id (q.users/find-eid-by-name "bob")]
   (count (q.accounts/find-by-user user-id)))
 
+(def matchers {:a 'a
+               :b 'b
+               :c 'c})
+
+(defn get-matcher
+  [value]
+  (->> matchers
+       (map (fn [[kw f]] (when (get value kw) f)))
+       (filter identity)
+       first))
+
+(get-matcher {:a 1})
+
 (comment
   ::io/_
   ::q.ln-nodes/_

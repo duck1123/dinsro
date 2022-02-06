@@ -78,6 +78,7 @@
                     u.core-nodes/NewCoreNodeForm
                     u.core-nodes/CoreNodeForm
                     u.core-nodes/CoreNodesReport
+                    u.core-peers/CorePeerForm
                     u.core-peers/CorePeersReport
                     u.core-peers/NewCorePeerForm
                     u.core-tx/CoreTxForm
