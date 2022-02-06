@@ -5,7 +5,7 @@
   ([clojure.string :as string]
    [clj-yaml.core :as yaml]
    [cheshire.core :as json]
-   [dinsro.commands :as c :refer :all]
+   [dinsro.commands :as c]
    [dinsro.helm.bitcoind :as h.bitcoind]
    [dinsro.helm.lnd :as h.lnd]
    [dinsro.helm.nbxplorer :as h.nbxplorer]
@@ -21,17 +21,17 @@
 
   build-dev-image
   {:doc  "Build dev image"
-   :task (earthly :dev-image)}
+   :task (c/earthly :dev-image)}
 
   build-image
   {:doc  "Build production image"
-   :task (earthly :image {:interactive true})}
+   :task (c/earthly :image {:interactive true})}
 
   build-production
   {:depends [compile-production-cljs package-jar]}
 
   ci
-  {:task (earthly :ci {:interactive true
+  {:task (c/earthly :ci {:interactive true
                        :privileged  true})}
 
   ci-local
@@ -56,7 +56,7 @@
 
   check
   {:doc  "Check sources are formatted correctly"
-   :task (cljfmt ["src" "deps.edn" "shadow-cljs.edn"])}
+   :task (c/cljfmt ["src" "deps.edn" "shadow-cljs.edn"])}
 
   compile
   {:doc     "Compile all source files"
@@ -106,14 +106,14 @@
          group         "circleci"
          src-path      "/var/lib/dinsro"
          cert-path     "/mnt/certs"
-         envs          (->> (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK" "WATCH_SOURCES"])
+         envs          (->> (c/migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK" "WATCH_SOURCES"])
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
      (shell (str "mkdir -p " cert-path))
-     (chown user group src-path)
-     (chown user group cert-path)
-     (sudo bootstrap-cmd))}
+     (c/chown user group src-path)
+     (c/chown user group cert-path)
+     (c/sudo bootstrap-cmd))}
 
   dev-bootstrap-user
   {:doc "DOCKER-ONLY: Start clojurescript watch and main server as user"
@@ -121,7 +121,7 @@
    (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
      (println "=========================================================================================")
      (let [devtools-url (or (System/getenv "DEVTOOLS_URL"))
-           envs         (->> (migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
+           envs         (->> (c/migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
                              (filter identity)
                              (clojure.string/join " "))
            compile-cmd  "bb compile-cljs"
@@ -356,16 +356,8 @@
   helm-rtl
   {:depends [generate-rtl-values]
    :task
-   (let [n        (or (first *command-line-args*) "3")
-         path     "resources/helm/rtl/"
-         filename (format "conf/%s/rtl_values.yaml" n)
-         cmd      (string/join
-                   " "
-                   ["helm template "
-                    (str "--name-template=rtl-" n)
-                    (str "--values " filename)
-                    path])]
-     (shell cmd))}
+   (let [n (or (first *command-line-args*) "3")]
+     (c/helm-rtl n))}
 
   helm-rtl-apply
   {:task

@@ -89,6 +89,18 @@
         full-command (str "-Mdispatch " cmd)]
     (clojure full-command)))
 
+(defn helm-rtl
+  [n]
+  (let [path     "resources/helm/rtl/"
+        filename (format "conf/%s/rtl_values.yaml" n)
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "--name-template=rtl-" n)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
 (defn load-edn
   "Load edn from an io/reader source (filename or io/resource)."
   [source]
