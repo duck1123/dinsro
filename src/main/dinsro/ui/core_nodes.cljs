@@ -64,6 +64,14 @@
              (let [{::m.core-nodes/keys [id]} (comp/props this)]
                (comp/transact! this [(mu.core-nodes/fetch-peers! {::m.core-nodes/id id})])))})
 
+(def generate-button
+  {:type   :button
+   :local? true
+   :label  "Generate"
+   :action (fn [this _]
+             (let [{::m.core-nodes/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.core-nodes/generate! {::m.core-nodes/id id})])))})
+
 (def new-wallet-button
   {:type   :button
    :local? true
@@ -94,7 +102,8 @@
 (form/defsc-form CoreNodeForm [this props]
   {fo/id             m.core-nodes/id
    fo/action-buttons [::fetch
-                      ::fetch-peers
+                      ::fetch-peer
+                      ::generate
                       ::new-wallet
                       ::new-peer]
    fo/attributes     [m.core-nodes/name
@@ -108,6 +117,7 @@
    fo/cancel-route   ["core-nodes"]
    fo/controls       {::fetch       fetch-button
                       ::fetch-peers fetch-peers-button
+                      ::generate generate-button
                       ::new-wallet  new-wallet-button
                       ::new-peer    new-peer-button}
    fo/field-styles   {::m.core-nodes/blocks       :core-block-table

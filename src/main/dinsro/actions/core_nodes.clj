@@ -11,6 +11,8 @@
    [dinsro.queries.core-tx :as q.core-tx]
    [lambdaisland.glogc :as log]))
 
+(def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
+
 (defn generate-to-address!
   "Generate regtest blocks paying to address"
   [node address]
@@ -52,12 +54,25 @@
   [{node-id ::m.core-nodes/id :as node}]
   [::m.core-nodes/item => any?]
   (log/info :transactions/fetching {:node-id node-id})
-  (let [client  (m.core-nodes/get-client node)]
+  (let [client (m.core-nodes/get-client node)]
     (doseq [txes (c.bitcoin/list-transactions client)]
       (log/debug :transactions/processing-fetched {:txes txes})
       (let [params (assoc txes ::m.core-peers/node node-id)
             params (m.core-tx/prepare-params params)]
         (q.core-tx/create-record params)))))
+
+(>defn generate!
+  "Generate a block for the node"
+  [node-id]
+  [::m.core-nodes/id => any?]
+  (log/info :generate/started {:node-id node-id})
+  (if-let [node (q.core-nodes/read-record node-id)]
+    (let [client  (m.core-nodes/get-client node)
+          address sample-address]
+      (c.bitcoin/generate-to-address client address))
+    (do
+      (log/error :generate/node-not-found {:node-id node-id})
+      nil)))
 
 (comment
   (tap> (q.core-nodes/index-records))
