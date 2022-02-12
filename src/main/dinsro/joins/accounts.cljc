@@ -23,6 +23,7 @@
         :cljs (comment id)))})
 
 (defattr admin-index ::m.accounts/admin-index :ref
+  ;; "All accounts regardless of user"
   {ao/target    ::m.accounts/id
    ao/pc-output [{::m.accounts/admin-index [::m.accounts/id]}]
    ao/pc-resolve
@@ -31,6 +32,7 @@
        {::m.accounts/admin-index (m.accounts/idents ids)}))})
 
 (defattr index ::m.accounts/index :ref
+  ;; "All accounts belonging to authenticated user"
   {ao/target    ::m.accounts/id
    ao/pc-output [{::m.accounts/index [::m.accounts/id]}]
    ao/pc-resolve

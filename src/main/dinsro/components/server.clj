@@ -7,6 +7,7 @@
    [dinsro.components.ring-middleware :refer [middleware]]))
 
 (defstate http-server
+  "The main web server for the application"
   :start
   (let [cfg     (get config :org.httpkit.server/config)
         stop-fn (run-server middleware cfg)]

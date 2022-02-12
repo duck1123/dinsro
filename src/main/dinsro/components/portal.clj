@@ -3,6 +3,7 @@
    [portal.client.jvm :as p]))
 
 (defn connect!
+  "Connect to a remote portal client"
   [host port]
   (println "Connecting")
   (add-tap (partial p/submit {:host host :port port})))
