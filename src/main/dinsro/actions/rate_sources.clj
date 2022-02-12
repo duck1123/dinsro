@@ -70,7 +70,7 @@
 (defn stop-scheduler
   []
   (log/info :scheduler/stopping {})
-  (*scheduler*)
+  (when *scheduler* (*scheduler*))
   nil)
 
 (defn start-scheduler
