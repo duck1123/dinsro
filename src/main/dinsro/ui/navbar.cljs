@@ -208,7 +208,7 @@
          :onClick (fn []
                     (uism/trigger! this auth/machine-id :event/cancel {})
                     (rroute/route-to! this u.home/HomePage {}))}
-        "Dinsro")
+        "dinsro")
       (if logged-in?
         (comp/fragment
          (ui-navbar-auth-link current-user)

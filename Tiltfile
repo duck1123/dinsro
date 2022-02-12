@@ -136,12 +136,12 @@ k8s_resource(
     port_forward(9630, 9630, name='devtools') if has_devtools else None,
   ] if x != None],
   links = [x for x in [
-    link(base_url, 'Dinsro'),
+    link(base_url, 'dinsro'),
     link('devtools.' + base_url, 'Devtools') if has_devtools else None,
     link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
     link(get_notebook_host(), 'Notebook') if use_notebook else None,
   ] if x != None],
-  labels = [ 'Dinsro' ],
+  labels = [ 'dinsro' ],
 )
 
 if use_persistence:
@@ -201,7 +201,7 @@ if local_devtools:
       'DEVTOOLS_URL': 'http://localhost:9630',
     },
     serve_cmd='bb watch-cljs',
-    labels = [ 'Dinsro' ],
+    labels = [ 'dinsro' ],
     links = [
       link('http://localhost:9630', 'Devtools'),
       link('http://localhost:3693', 'Workspaces')

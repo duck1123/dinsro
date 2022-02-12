@@ -1,5 +1,5 @@
 (ns build
-  "Dinsro build script"
+  "dinsro build script"
   (:require [clojure.tools.build.api :as b]
             [org.corfield.build :as bb]))
 

@@ -22,7 +22,7 @@
   (dom/div {}
     (dom/div :.ui.inverted.vertical.masthead.center.aligned.segment
       (dom/div :.ui.text.container
-        (dom/h1 :.ui.inverted.header "Dinsro")))
+        (dom/h1 :.ui.inverted.header "dinsro")))
     (dom/div {:classes [:.ui.container container]}
       (dom/h1 {:classes [:.ui :.header :.center  :.aligned  header]}
               "You must create an administrator account in order to continue")
