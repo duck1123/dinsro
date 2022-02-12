@@ -182,6 +182,16 @@ local_resource(
   labels = [ 'config' ],
 )
 
+local_resource(
+  'docs',
+  allow_parallel = True,
+  cmd='bb docs',
+  deps = [
+    'src/babashka',
+    'src/main',
+  ],
+  labels = [ 'compile' ],
+)
 
 if local_devtools:
   local_resource(
