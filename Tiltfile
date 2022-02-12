@@ -156,7 +156,7 @@ if use_linting:
     allow_parallel = True,
     cmd='bb check',
     deps = [ 'src' ],
-    labels = [ 'format' ],
+    labels = [ 'lint' ],
   )
 
 if use_linting:
@@ -166,7 +166,7 @@ if use_linting:
     auto_init = False,
     cmd='bb format',
     trigger_mode = TRIGGER_MODE_MANUAL,
-    labels = [ 'format' ],
+    labels = [ 'lint' ],
   )
 
 local_resource(
@@ -179,7 +179,7 @@ local_resource(
     'site-defaults.edn',
     'src/babashka',
   ],
-  labels = [ 'config' ],
+  labels = [ 'compile' ],
 )
 
 local_resource(
