@@ -1,15 +1,15 @@
 {
  ;; The host that dinsro is served at
- :baseUrl "dinsro.localhost"
+ :baseUrl             "dinsro.localhost"
 
  ;; repo for images
- :repo      "duck1123"
+ :repo                "duck1123"
 
  ;; tag for dinsro image
- :version   "latest"
+ :version             "latest"
 
  ;; If Rancher is being used, all namespaces will be applied to this project
- :projectId "p-vhkqf"
+ :projectId           "p-vhkqf"
 
  ;; Should the notebook be started?
  :useNotebook         true
@@ -26,7 +26,7 @@
  ;; a devtools watcher on startup and will pre-compile the js resources
  :localDevtools       true
 
- :useGuardrails true
+ :useGuardrails       true
 
  ;; Enable linting watchers
  :useLinting          true
@@ -42,4 +42,4 @@
 
  ;; Should testing resources be run?
  :useTests            false
- }
+}
