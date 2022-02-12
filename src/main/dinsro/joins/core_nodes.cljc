@@ -79,5 +79,6 @@
   [index
    blocks
    ln-nodes
+   peers
    transactions
    wallets])
