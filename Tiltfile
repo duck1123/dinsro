@@ -5,6 +5,12 @@ load('ext://local_output', 'local_output')
 load('ext://namespace', 'namespace_create')
 load('ext://uibutton', 'cmd_button')
 
+# Files used to generate config
+watch_file('bb.edn')
+watch_file('site.edn')
+watch_file('site-defaults.edn')
+watch_file('src/babashka')
+
 config_data = decode_json(local_output('bb tilt-config'))
 
 def config_get(key):
@@ -168,19 +174,6 @@ if use_linting:
     trigger_mode = TRIGGER_MODE_MANUAL,
     labels = [ 'lint' ],
   )
-
-local_resource(
-  'config-watcher',
-  allow_parallel = True,
-  cmd='tilt trigger "(Tiltfile)"',
-  deps = [
-    'bb.edn',
-    'site.edn',
-    'site-defaults.edn',
-    'src/babashka',
-  ],
-  labels = [ 'compile' ],
-)
 
 local_resource(
   'docs',
