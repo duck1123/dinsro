@@ -30,7 +30,7 @@
     (remove (comp #{::pc/resolve ::pc/mutate} key))
     indexes)})
 
-(def use-taps true)
+(def use-taps false)
 
 (defstate parser
   :start

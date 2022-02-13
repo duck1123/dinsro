@@ -68,7 +68,6 @@
 
 (def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.categories/id}))
 
-
 (form/defsc-form CategoryLinkForm
   [this {::m.categories/keys [id name]}]
   {fo/id           m.categories/id

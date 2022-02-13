@@ -31,6 +31,11 @@
   [::s.client/config string? => any?]
   (handle-request client :gettransaction [tx-id true]))
 
+(>defn get-raw-transaction
+  [client tx-id]
+  [::s.client/config string? => any?]
+  (handle-request client :getrawtransaction [tx-id true]))
+
 (>defn get-wallet-info
   [client]
   [::s.client/config => any?]

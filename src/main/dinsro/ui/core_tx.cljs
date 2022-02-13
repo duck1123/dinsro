@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
@@ -184,18 +185,58 @@
 
 (report/defsc-report CoreTxReport
   [_this _props]
-  {ro/columns          [m.core-tx/tx-id
-                        j.core-tx/node
-                        m.core-tx/fetched?
-                        m.core-tx/block]
+  {ro/columns [m.core-tx/tx-id
+               j.core-tx/node
+               m.core-tx/fetched?
+               m.core-tx/block]
+   ro/controls
+   {::search
+    {:type  :button
+     :label "Search"
+     :action
+     (fn [this]
+       (let [props                     (comp/props this)
+             {:ui/keys [controls
+                        current-rows]} props
+             [current-row]             current-rows
+             values                    (map (fn [control]
+                                              (let [control-id (::control/id control)]
+                                                (log/debug :mapping {:control-id control-id})
+                                                (when (= control-id ::tx-id)
+                                                  (::control/value control))))
+                                            controls)
+             txid-value                (first (filter identity values))
+             block-id                  nil]
+         (log/info :tx/searching {:props       props
+                                  :current-row current-row
+                                  :txid-value  txid-value
+                                  :values      values})
+         (comp/transact! this
+                         [(mu.core-tx/search!
+                           {::m.core-tx/block block-id
+                            ::m.core-tx/tx-id txid-value})])
+         (control/run! this)))}
+
+    ::refresh
+    {:type   :button
+     :label  "Refresh"
+     :action (fn [this] (control/run! this))}
+    ::tx-id
+    {:type          :string
+     :style         :search
+     :default-value ""
+     :label         "Transaction Id"
+     :onChange      (fn [this _] (control/run! this))}}
+   ro/control-layout   {:inputs         [[::tx-id ::search]]
+                        :action-buttons [::refresh]}
    ro/field-formatters {::m.core-tx/block (fn [_this props]
-                                            (log/info :formatting {:props props})
+                                            (log/debug :formatting {:props props})
                                             (u.links/ui-block-height-link props))
                         ::m.core-tx/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.core-tx/tx-id CoreTxForm}
    ro/source-attribute ::m.core-tx/index
    ro/title            "Core Transactions"
-   ro/row-actions [fetch-action-button delete-action-button]
+   ro/row-actions      [fetch-action-button delete-action-button]
    ro/row-pk           m.core-tx/id
    ro/run-on-mount?    true
    ro/route            "core-txes"})

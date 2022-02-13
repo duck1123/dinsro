@@ -34,6 +34,7 @@ data:
      [[#{"_rad.resolvers"
          "roterski.fulcro.rad.database-adapters.xtdb.generate-resolvers"} :fatal]
       [#{"dinsro.*"} :debug]
-      [#{"*"} :info]]}
+      [#{"*"} :info]]
+      :level :debug}
     }
 {{- end}}
