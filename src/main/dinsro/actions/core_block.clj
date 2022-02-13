@@ -9,8 +9,7 @@
    [dinsro.queries.core-nodes :as q.core-nodes]
    [dinsro.queries.core-tx :as q.core-tx]
    [dinsro.specs]
-   [lambdaisland.glogc :as log]
-   [taoensso.timbre :as log2]))
+   [lambdaisland.glogc :as log]))
 
 (>defn register-block
   [node-id hash height]
@@ -60,7 +59,6 @@
                                           id     (q.core-block/create-record params)]
                                       [id params]))]
             (doseq [tx-id (::m.core-block/tx params)]
-              (log2/spy :info tx-id)
               (if-let [existing-id (q.core-tx/fetch-by-txid tx-id)]
                 (log/info :tx/exists {:tx-id existing-id})
                 (let [params {::m.core-tx/block    block-id

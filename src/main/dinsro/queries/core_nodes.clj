@@ -100,3 +100,10 @@
                 {:wallet-info/balance  balance
                  :wallet-info/tx-count tx-count})]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))))
+
+(>defn delete!
+  [id]
+  [::m.core-nodes/id => any?]
+  (let [node (c.xtdb/main-node)
+        tx   (xt/submit-tx node [[::xt/evict id]])]
+    (xt/await-tx node tx)))

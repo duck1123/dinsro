@@ -121,13 +121,15 @@ if not use_production:
       'deps.edn',
       'resources/docker',
       'resources/main/public',
+      'site.edn',
       'src',
       "tilt_config.json",
     ],
     live_update=[
-      sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
-      sync('src', '/usr/src/app/src'),
       sync('resources/main/public', '/usr/src/app/resources/main/public'),
+      sync('site.edn', '/usr/src/app/site.edn'),
+      sync('src', '/usr/src/app/src'),
+      sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
     ]
   )
 
