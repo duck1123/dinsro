@@ -101,7 +101,7 @@
                       m.core-block/version
                       j.core-block/transactions]
    fo/cancel-route   ["core-blocks"]
-   fo/field-styles   {::m.core-block/transactions   :link-list
+   fo/field-styles   {::m.core-block/transactions   :core-tx-table
                       ::m.core-block/node           :link
                       ::m.core-block/previous-block :link
                       ::m.core-block/next-block     :link}

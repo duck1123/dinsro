@@ -27,6 +27,7 @@
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.core-block :as u.core-block]
+   [dinsro.ui.core-tx :as u.core-tx]
    [dinsro.ui.core-tx-in :as u.core-tx-in]
    [dinsro.ui.core-tx-out :as u.core-tx-out]
    [dinsro.ui.links :as u.links]
@@ -188,6 +189,7 @@
       (control-type :ref  :link-list        render-link-list-control)
       (control-type :ref  :link-subform     render-link-subform-control)
       (control-type :ref  :core-block-table u.core-block/render-ref-row)
+      (control-type :ref  :core-tx-table    u.core-tx/render-ref-row)
       (control-type :ref  :ln-tx-row        u.ln-tx/render-ref-ln-tx-row)
       (control-type :ref  :ln-channels-row  u.ln-channels/render-ref-row)
       (control-type :ref  :ln-payments-row  u.ln-payments/render-ref-row)

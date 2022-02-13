@@ -1,9 +1,10 @@
 (ns dinsro.ui.core-tx
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core-tx :as j.core-tx]
@@ -14,7 +15,47 @@
    [dinsro.mutations.core-tx :as mu.core-tx]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.core-tx-out :as u.core-tx-out]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [lambdaisland.glogc :as log]))
+
+(defsc RefRow
+  [this {::m.core-tx/keys [fetched? id]
+         :as props}]
+  {:ident ::m.core-tx/id
+   :query [::m.core-tx/id
+           ::m.core-tx/fetched?]
+   :initial-state {::m.core-tx/id nil
+                   ::m.core-tx/fetched? false}}
+
+  (dom/tr {}
+    (dom/td {} (u.links/ui-core-tx-link props))
+    (dom/td {} (str fetched?))
+    (dom/td {} (dom/button {:classes [:.ui.button]
+                            :onClick (fn [event]
+                                       (log/info :fetch-button/clicked {:event event})
+                                       (comp/transact! this [(mu.core-tx/fetch! {::m.core-tx/id id})]))}
+                 "Fetch"))))
+
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-tx/id}))
+
+(defn ref-row
+  [{:keys [value]} _attribute]
+  (comp/fragment
+   (dom/table :.ui.table
+     (dom/thead {}
+       (dom/tr {}
+         (dom/th {} "txid")
+         (dom/th {} "fetched")
+         (dom/th {} "Actions")
+         ;; (dom/th {} "Hash")
+         ;; (dom/th {} "Height")
+         ))
+
+     (dom/tbody {}
+       (for [tx value]
+         (ui-ref-row tx))))))
+
+(def render-ref-row (render-field-factory ref-row))
 
 (form/defsc-form CoreTxInSubForm
   [_this _props]
@@ -123,17 +164,38 @@
       (dom/p {} "foo")
       (form/render-layout this props))))
 
+(defn fetch-action
+  [report-instance {::m.core-tx/keys [id]}]
+  (comp/transact! report-instance [(mu.core-tx/fetch! {::m.core-tx/id id})]))
+
+(defn delete-action
+  [report-instance {::m.core-tx/keys [id]}]
+  (form/delete! report-instance ::m.core-tx/id id))
+
+(def fetch-action-button
+  {:label     "Fetch"
+   :action    fetch-action
+   :disabled? (fn [_ row-props] (:account/active? row-props))})
+
+(def delete-action-button
+  {:label  "Delete"
+   :action delete-action
+   :style  :delete-button})
+
 (report/defsc-report CoreTxReport
   [_this _props]
   {ro/columns          [m.core-tx/tx-id
                         j.core-tx/node
                         m.core-tx/fetched?
                         m.core-tx/block]
-   ro/field-formatters {::m.core-tx/block (fn [_this props] (u.links/ui-block-link props))
+   ro/field-formatters {::m.core-tx/block (fn [_this props]
+                                            (log/info :formatting {:props props})
+                                            (u.links/ui-block-height-link props))
                         ::m.core-tx/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.core-tx/tx-id CoreTxForm}
    ro/source-attribute ::m.core-tx/index
    ro/title            "Core Transactions"
+   ro/row-actions [fetch-action-button delete-action-button]
    ro/row-pk           m.core-tx/id
    ro/run-on-mount?    true
    ro/route            "core-txes"})

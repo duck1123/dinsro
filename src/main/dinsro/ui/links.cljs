@@ -58,6 +58,17 @@
 
 (def ui-block-link (comp/factory BlockLinkForm {:keyfn ::m.categories/id}))
 
+(form/defsc-form BlockHeightLinkForm
+  [this {::m.core-block/keys [id height]}]
+  {fo/id           m.core-block/id
+   fo/route-prefix "block-height-link"
+   fo/title        "Blocks"
+   fo/attributes   [m.core-block/height]}
+  (form-link this id height :dinsro.ui.core-block/CoreBlockForm))
+
+(def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.categories/id}))
+
+
 (form/defsc-form CategoryLinkForm
   [this {::m.categories/keys [id name]}]
   {fo/id           m.categories/id
