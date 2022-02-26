@@ -24,6 +24,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.words :as m.words]
    [lambdaisland.glogc :as log]))
 
 (defn form-link
@@ -227,3 +228,12 @@
   (form-link this id name :dinsro.ui.wallets/WalletForm))
 
 (def ui-wallet-link (comp/factory WalletLinkForm {:keyfn ::m.wallets/id}))
+
+(form/defsc-form WordLinkForm [this {::m.words/keys [id word]}]
+  {fo/id           m.words/id
+   fo/route-prefix "wordss-link"
+   fo/attributes   [m.words/word]
+   fo/title        "Word"}
+  (form-link this id word :dinsro.ui.words/WordForm))
+
+(def ui-word-link (comp/factory WordLinkForm {:keyfn ::m.words/id}))

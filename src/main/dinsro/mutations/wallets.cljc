@@ -7,6 +7,7 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    #?(:clj [dinsro.actions.wallets :as a.wallets])
    [dinsro.model.wallets :as m.wallets]
+   [dinsro.model.words :as m.words]
    #?(:cljs [taoensso.timbre :as log])))
 
 (comment ::pc/_ ::m.wallets/_)
@@ -40,4 +41,43 @@
            (form/view! app target-component id))
          {}))))
 
-#?(:clj (def resolvers [create!]))
+(defsc RollWord
+  [_this _props]
+  {:query [::m.words/word ::m.words/position ::m.words/id]
+   :ident ::m.words/id})
+
+(defsc RollWallet
+  [_this _props]
+  {:query [::m.wallets/id
+           ::m.wallets/key
+           {::m.wallets/words (comp/get-query RollWord)}]
+   :ident ::m.wallets/id})
+
+(defsc RollResponse
+  [_this _props]
+  {:query [:status
+           {:wallet (comp/get-query RollWallet)}]})
+
+#?(:clj
+   (defn do-roll!
+     [props]
+     (let [{::m.wallets/keys [id]} props
+           response                (a.wallets/roll! props)]
+       {:status :ok
+        :wallet response})))
+
+#?(:clj
+   (pc/defmutation roll!
+     [env props]
+     {::pc/params #{::m.wallets/id}
+      ::pc/output [:status :wallet]}
+     (let [user-id (a.authentication/get-user-id env)
+           props   (assoc props ::m.wallets/user user-id)]
+       (do-roll! props)))
+
+   :cljs
+   (fm/defmutation roll! [_props]
+     (action [_env] true)
+     (remote [env] (fm/returning env RollResponse))))
+
+#?(:clj (def resolvers [create! roll!]))

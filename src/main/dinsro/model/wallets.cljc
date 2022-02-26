@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [key name])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -28,6 +29,11 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
+(s/def ::seed (s/coll-of string?))
+(defattr seed ::seed :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (s/def ::node uuid?)
 (defattr node ::node :ref
   {ao/identities #{::id}
@@ -47,9 +53,16 @@
 (s/def ::item (s/keys :req [::id ::name]))
 (s/def ::items (s/coll-of ::item))
 (s/def ::ident (s/tuple keyword? ::id))
+(s/def ::ident-map (s/keys :req [::id]))
 
-(defn idents
+(>defn ident
+  [id]
+  [::id => ::ident-map]
+  {::id id})
+
+(>defn idents
   [ids]
-  (map (fn [id] {::id id}) ids))
+  [(s/coll-of ::id) => (s/coll-of ::ident-map)]
+  (mapv ident ids))
 
-(def attributes [id name derivation key node user])
+(def attributes [id name derivation key node user seed])

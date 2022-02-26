@@ -5,10 +5,11 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.words :as m.words]
    #?(:clj [dinsro.queries.wallets :as q.wallets])
    #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])
-   [dinsro.specs]
-   [taoensso.timbre :as log]))
+   #?(:clj [dinsro.queries.words :as q.words])
+   [dinsro.specs]))
 
 (defattr index ::m.wallets/index :ref
   {ao/target    ::m.wallets/id
@@ -23,10 +24,21 @@
    ao/pc-input         #{::m.wallets/id}
    ao/pc-output        [{::m.wallets/addresses [::m.wallet-addresses/id]}]
    ao/pc-resolve
-   (fn [_env {::m.wallets/keys [id] :as props}]
-     (log/spy :info props)
-     (let [ids (if id #?(:clj (q.wallet-addresses/find-by-wallet (log/spy :info id)) :cljs []) [])]
-       {::m.wallets/addresses (m.wallet-addresses/idents (log/spy :info ids))}))
+   (fn [_env {::m.wallets/keys [id]}]
+     (let [ids (if id #?(:clj (q.wallet-addresses/find-by-wallet id) :cljs []) [])]
+       {::m.wallets/addresses (m.wallet-addresses/idents ids)}))
    ::report/column-EQL {::m.wallets/addresses [::m.wallet-addresses/id ::m.wallet-addresses/address]}})
 
-(def attributes [index addresses])
+(defattr words ::m.wallets/words :ref
+  {ao/target           ::m.words/id
+   ao/pc-input         #{::m.wallets/id}
+   ao/pc-output        [{::m.wallets/words [::m.words/id]}]
+   ao/pc-resolve
+   (fn [_env {::m.wallets/keys [id]}]
+     (let [ids (if id #?(:clj (q.words/find-by-wallet id) :cljs []) [])]
+       {::m.wallets/words (m.words/idents ids)}))
+   ::report/column-EQL {::m.wallets/words [::m.words/id ::m.words/word
+                                           ;; ::m.words/position
+                                           ]}})
+
+(def attributes [index addresses words])

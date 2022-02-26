@@ -43,9 +43,10 @@
    [dinsro.ui.rate-sources :as u.rate-sources]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.transactions :as u.transactions]
+   [dinsro.ui.users :as u.users]
    [dinsro.ui.wallets :as u.wallets]
    [dinsro.ui.wallet-addresses :as u.wallet-addresses]
-   [dinsro.ui.users :as u.users]
+   [dinsro.ui.words :as u.words]
    ["fomantic-ui"]))
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
@@ -122,7 +123,8 @@
                     u.wallets/WalletReport
                     u.wallet-addresses/NewWalletAddressForm
                     u.wallet-addresses/WalletAddressForm
-                    u.wallet-addresses/WalletAddressesReport]}
+                    u.wallet-addresses/WalletAddressesReport
+                    u.words/WordReport]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
       :pending (dom/div "Loading...")

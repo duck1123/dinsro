@@ -20,18 +20,19 @@ def config_get(key):
   else:
     return config_data[key]
 
-base_url              = config_get('baseUrl')
-project_id            = config_get('projectId')
-repo                  = config_get('repo')
-version               = config_get('version')
-local_devtools        = config_get('localDevtools')
-notebook_host         = config_get('notebookHost')
-use_linting           = config_get('useLinting')
-use_notebook          = config_get('useNotebook')
-use_nrepl             = config_get('useNrepl')
-use_persistence       = config_get('usePersistence')
-use_production        = config_get('useProduction')
-use_tests             = config_get('useTests')
+base_url        = config_get('baseUrl')
+project_id      = config_get('projectId')
+repo            = config_get('repo')
+version         = config_get('version')
+local_devtools  = config_get('localDevtools')
+notebook_host   = config_get('notebookHost')
+use_linting     = config_get('useLinting')
+use_notebook    = config_get('useNotebook')
+use_nrepl       = config_get('useNrepl')
+use_persistence = config_get('usePersistence')
+use_production  = config_get('useProduction')
+use_tests       = config_get('useTests')
+use_docs        = false
 
 portal_url = 'http://' + config_get('portalHost')
 
@@ -177,16 +178,17 @@ if use_linting:
     labels = [ 'lint' ],
   )
 
-local_resource(
-  'docs',
-  allow_parallel = True,
-  cmd='bb docs',
-  deps = [
-    'src/babashka',
-    'src/main',
-  ],
-  labels = [ 'compile' ],
-)
+if use_docs:
+  local_resource(
+    'docs',
+    allow_parallel = True,
+    cmd='bb docs',
+    deps = [
+      'src/babashka',
+      'src/main',
+    ],
+    labels = [ 'compile' ],
+  )
 
 if local_devtools:
   local_resource(

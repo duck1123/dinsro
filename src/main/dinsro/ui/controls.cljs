@@ -25,6 +25,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.words :as m.words]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.core-block :as u.core-block]
    [dinsro.ui.core-tx :as u.core-tx]
@@ -49,7 +50,8 @@
 
 (def matchers
   {::m.accounts/id   u.links/ui-account-link
-   ::m.core-peers/id u.links/ui-core-peer-link})
+   ::m.core-peers/id u.links/ui-core-peer-link
+   ::m.words/id u.links/ui-word-link})
 
 (defn get-matcher
   [value]

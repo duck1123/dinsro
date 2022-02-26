@@ -11,10 +11,11 @@
    [dinsro.model.core-block :as m.core-block]
    [dinsro.model.core-tx :as m.core-tx]
    [dinsro.mutations.core-blocks :as mu.core-blocks]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [lambdaisland.glogc :as log]))
 
 (defsc RefRow
-  [_this {::m.core-block/keys [fetched? height] :as props}]
+  [this {::m.core-block/keys [fetched? height id] :as props}]
   {:ident ::m.core-block/id
    :query [::m.core-block/id
            ::m.core-block/fetched?
@@ -23,7 +24,14 @@
   (dom/tr {}
     (dom/td (str fetched?))
     (dom/td (u.links/ui-block-link props))
-    (dom/td (str height))))
+    (dom/td (str height))
+    (dom/td {}
+            (dom/button
+              {:classes [:.ui.button]
+               :onClick (fn [event]
+                          (log/info :fetch-button/clicked {:event event})
+                          (comp/transact! this [(mu.core-blocks/fetch! {::m.core-block/id id})]))}
+              "Fetch"))))
 
 (def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-block/id}))
 

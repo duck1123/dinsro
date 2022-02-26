@@ -29,6 +29,7 @@
    fo/attributes     [m.wallets/name
                       m.wallets/node
                       m.wallets/user]
+
    fo/controls       (merge form/standard-controls {::create create-button})
    fo/field-styles   {::m.wallets/node :pick-one
                       ::m.wallets/user :pick-one}
@@ -56,17 +57,34 @@
    fo/route-prefix   "new-wallet"
    fo/title          "New Wallet"})
 
+(def roll-button
+  {:type   :button
+   :local? true
+   :label  "Roll"
+   :action (fn [this _key]
+             (let [{::m.wallets/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.wallets/roll! {::m.wallets/id id})])
+               #_(form/view! this CoreBlockForm id)))})
+
 (form/defsc-form WalletForm [_this _props]
-  {fo/id           m.wallets/id
-   fo/attributes   [m.wallets/id
-                    m.wallets/name
-                    m.wallets/node
-                    j.wallets/addresses]
-   fo/field-styles {::m.wallets/addresses :link-list}
-   fo/route-prefix "wallet"
-   fo/subforms     {::m.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
-                    ::m.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}}
-   fo/title        "Wallet"})
+  {fo/id             m.wallets/id
+   fo/action-buttons (concat [::roll] form/standard-action-buttons)
+   fo/attributes     [m.wallets/id
+                      m.wallets/name
+                      m.wallets/node
+                      m.wallets/derivation
+                      m.wallets/key
+                      ;; m.wallets/seed
+                      ;; j.wallets/addresses
+                      j.wallets/words]
+   fo/controls       (merge form/standard-controls {::roll roll-button})
+   fo/field-styles   {::m.wallets/addresses :link-list
+                      ::m.wallets/words :link-list}
+   fo/route-prefix   "wallet"
+   fo/subforms       {::m.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
+                      ::m.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
+                      ::m.wallets/words {fo/ui u.links/WordLinkForm}}
+   fo/title          "Wallet"})
 
 (def delete-action-button
   {:type   :button

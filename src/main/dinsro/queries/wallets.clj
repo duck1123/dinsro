@@ -8,6 +8,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
@@ -34,7 +35,9 @@
         prepared-params (-> params
                             (assoc ::m.wallets/id id)
                             (assoc :xt/id id))]
+    (log/debug :wallet/create {:params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
+    (log/debug :wallet/created {:id id})
     id))
 
 (>defn index-records
@@ -59,3 +62,15 @@
                 :in    [?node-id]
                 :where [[?wallet-id ::m.wallets/node ?node-id]]}]
     (map first (xt/q db query node-id))))
+
+(defn update!
+  [wallet-id new-props]
+  (log/info :wallet/updating {:wallet-id wallet-id :new-props new-props})
+  (let [node          (c.xtdb/main-node)
+        wallet        (read-record wallet-id)
+        updated-props (merge wallet
+                             {:xt/id wallet-id}
+                             new-props)
+        tx            (xt/submit-tx node [[::xt/put updated-props]])]
+    (xt/await-tx node tx)
+    wallet-id))

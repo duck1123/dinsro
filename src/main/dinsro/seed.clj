@@ -26,6 +26,8 @@
    [dinsro.model.seed :as seed]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
+   [dinsro.model.wallets :as m.wallets]
+   [dinsro.model.words :as m.words]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.core-address :as q.core-address]
@@ -40,6 +42,8 @@
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
+   [dinsro.queries.wallets :as q.wallets]
+   [dinsro.queries.words :as q.words]
    [reitit.coercion.spec]
    [taoensso.timbre :as log]
    [tick.alpha.api :as tick]))
@@ -80,7 +84,13 @@
 (def wallet-1
   {:label       "a"
    :blockheight 0
-   :descriptor  "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"})
+   :name        "Wallet A"
+   :descriptor  "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"
+   :seed        ["universe" "loud" "stable" "patrol" "artwork" "chimney" "acoustic" "chief" "one"
+                 "use" "object" "gossip" "enter" "green" "scout" "brother" "worry" "fancy" "olive"
+                 "salmon" "chef" "repair" "hospital" "milk"]
+   :node        "bitcoin-alice"
+   :path        "m/84'/0'/0'"})
 
 (def default-rates
   [{:rate 1813.
@@ -399,6 +409,7 @@
   {:username   "admin"
    :password   m.users/default-password
    :accounts   []
+   :wallets    [wallet-1]
    :categories admin-categories})
 
 (def alice-data
@@ -407,7 +418,7 @@
    :accounts   alice-accounts
    :categories alice-categories
    :ln-nodes   [lnd1]
-   :wallets    [wallet-1]})
+   :wallets    []})
 
 (def bob-data
   {:username   "bob"
@@ -684,9 +695,25 @@
 
 (defn seed-wallets!
   [users]
-  (doseq [user users]
-    (doseq [wallet (get user :wallets [])]
-      (log/spy :info wallet))))
+  (doseq [user-info users]
+    (let [{:keys [username]} user-info
+          user-id            (q.users/find-eid-by-name username)]
+      (log/info :seed/wallet {:user-info user-info :user-id user-id})
+      (doseq [wallet (get user-info :wallets [])]
+        (let [{:keys     [name seed path]
+               node-name :node} wallet
+              node-id           (q.core-nodes/find-id-by-name node-name)
+              wallet-id         (q.wallets/create-record
+                                 {::m.wallets/name       name
+                                  ::m.wallets/derivation path
+                                  ::m.wallets/node       node-id
+                                  ::m.wallets/user       user-id})]
+          (doseq [[i word] (map-indexed vector seed)]
+            (let [props {::m.words/wallet   wallet-id
+                         ::m.words/word     word
+                         ::m.words/position (inc i)}]
+              (q.words/create-record props))))
+        wallet))))
 
 (defn seed-addresses!
   [addresses]

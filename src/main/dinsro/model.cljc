@@ -24,6 +24,7 @@
    [dinsro.joins.users :as j.users]
    [dinsro.joins.wallet-addresses :as j.wallet-addresses]
    [dinsro.joins.wallets :as j.wallets]
+   [dinsro.joins.words :as j.words]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core-address :as m.core-address]
@@ -55,6 +56,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.model.wallets :as m.wallets]
    [dinsro.model.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.words :as m.words]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
    #?(:clj [dinsro.mutations.core-address :as mu.core-address])
    #?(:clj [dinsro.mutations.core-blocks :as mu.core-blocks])
@@ -68,7 +70,8 @@
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
    #?(:clj [dinsro.mutations.wallets :as mu.wallets])
-   #?(:clj [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])))
+   #?(:clj [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])
+   #?(:clj [dinsro.mutations.words :as mu.words])))
 
 (def schemata [])
 
@@ -97,6 +100,7 @@
         j.users/attributes
         j.wallet-addresses/attributes
         j.wallets/attributes
+        j.words/attributes
         m.accounts/attributes
         m.categories/attributes
         m.core-address/attributes
@@ -127,7 +131,8 @@
         m.transactions/attributes
         m.users/attributes
         m.wallets/attributes
-        m.wallet-addresses/attributes)))
+        m.wallet-addresses/attributes
+        m.words/attributes)))
 
 (def all-attribute-validator (attr/make-attribute-validator all-attributes))
 
@@ -148,4 +153,5 @@
            mu.session/resolvers
            mu.settings/resolvers
            mu.wallets/resolvers
-           mu.wallet-addresses/resolvers))))
+           mu.wallet-addresses/resolvers
+           mu.words/resolvers))))
