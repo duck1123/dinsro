@@ -79,11 +79,11 @@
                       j.wallets/words]
    fo/controls       (merge form/standard-controls {::roll roll-button})
    fo/field-styles   {::m.wallets/addresses :link-list
-                      ::m.wallets/words :link-list}
+                      ::m.wallets/words     :link-list}
    fo/route-prefix   "wallet"
    fo/subforms       {::m.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
                       ::m.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
-                      ::m.wallets/words {fo/ui u.links/WordLinkForm}}
+                      ::m.wallets/words     {fo/ui u.links/WordLinkForm}}
    fo/title          "Wallet"})
 
 (def delete-action-button

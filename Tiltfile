@@ -32,7 +32,7 @@ use_nrepl       = config_get('useNrepl')
 use_persistence = config_get('usePersistence')
 use_production  = config_get('useProduction')
 use_tests       = config_get('useTests')
-use_docs        = false
+use_docs        = False
 
 portal_url = 'http://' + config_get('portalHost')
 

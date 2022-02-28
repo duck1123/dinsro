@@ -183,6 +183,34 @@
    :action delete-action
    :style  :delete-button})
 
+(defn search-control-action
+  [this]
+  (let [props                              (comp/props this)
+        {:ui/keys [controls current-rows]} props
+        [current-row]                      current-rows
+        values                             (map (fn [control]
+                                                  (let [control-id (::control/id control)]
+                                                    (log/debug :mapping {:control-id control-id})
+                                                    (when (= control-id ::tx-id)
+                                                      (::control/value control))))
+                                                controls)
+        txid-value                         (first (filter identity values))
+        block-id                           nil]
+    (log/info :tx/searching {:props       props
+                             :current-row current-row
+                             :txid-value  txid-value
+                             :values      values})
+    (comp/transact! this
+                    [(mu.core-tx/search!
+                      {::m.core-tx/block block-id
+                       ::m.core-tx/tx-id txid-value})])
+    (control/run! this)))
+
+(def search-control
+  {:type   :button
+   :label  "Search"
+   :action search-control-action})
+
 (report/defsc-report CoreTxReport
   [_this _props]
   {ro/columns [m.core-tx/tx-id
@@ -190,33 +218,7 @@
                m.core-tx/fetched?
                m.core-tx/block]
    ro/controls
-   {::search
-    {:type  :button
-     :label "Search"
-     :action
-     (fn [this]
-       (let [props                     (comp/props this)
-             {:ui/keys [controls
-                        current-rows]} props
-             [current-row]             current-rows
-             values                    (map (fn [control]
-                                              (let [control-id (::control/id control)]
-                                                (log/debug :mapping {:control-id control-id})
-                                                (when (= control-id ::tx-id)
-                                                  (::control/value control))))
-                                            controls)
-             txid-value                (first (filter identity values))
-             block-id                  nil]
-         (log/info :tx/searching {:props       props
-                                  :current-row current-row
-                                  :txid-value  txid-value
-                                  :values      values})
-         (comp/transact! this
-                         [(mu.core-tx/search!
-                           {::m.core-tx/block block-id
-                            ::m.core-tx/tx-id txid-value})])
-         (control/run! this)))}
-
+   {::search search-control
     ::refresh
     {:type   :button
      :label  "Refresh"

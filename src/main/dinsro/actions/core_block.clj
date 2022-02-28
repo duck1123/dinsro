@@ -32,9 +32,24 @@
   (let [client (m.core-nodes/get-client node)]
     (c.bitcoin/fetch-block-by-height client height)))
 
+(defn update-block!
+  [core-node-id height block]
+  (if-let [existing-block-id (q.core-block/fetch-by-node-and-height core-node-id height)]
+    (if (q.core-block/read-record existing-block-id)
+      (let [params (m.core-block/prepare-params block)
+            params (assoc params ::m.core-block/node core-node-id)
+            id     (q.core-block/update-block existing-block-id params)]
+        [id params])
+      (throw (RuntimeException. "cannot find existing block")))
+    (let [params (m.core-block/prepare-params block)
+          params (assoc params ::m.core-block/fetched? true)
+          params (assoc params ::m.core-block/node core-node-id)
+          id     (q.core-block/create-record params)]
+      [id params])))
+
 (>defn update-block-by-height
   [node height]
-  [::m.core-nodes/item ::m.core-block/height => any?]
+  [::m.core-nodes/item ::m.core-block/height => ::m.core-block/id]
   (log/info :block/updating {:height height})
   (if-let [core-node-id (::m.core-nodes/id node)]
     (let [client (m.core-nodes/get-client node)]
@@ -46,18 +61,7 @@
           (log/info :block/parsing-neighbors {:previous previous-hash :next next-hash})
           (let [block             (assoc block ::m.core-block/next-block next-id)
                 block             (assoc block ::m.core-block/previous-block prev-id)
-                [block-id params] (if-let [existing-block-id (q.core-block/fetch-by-node-and-height core-node-id height)]
-                                    (if (q.core-block/read-record existing-block-id)
-                                      (let [params (m.core-block/prepare-params block)
-                                            params (assoc params ::m.core-block/node core-node-id)
-                                            id     (q.core-block/update-block existing-block-id params)]
-                                        [id params])
-                                      (throw (RuntimeException. "cannot find existing block")))
-                                    (let [params (m.core-block/prepare-params block)
-                                          params (assoc params ::m.core-block/fetched? true)
-                                          params (assoc params ::m.core-block/node core-node-id)
-                                          id     (q.core-block/create-record params)]
-                                      [id params]))]
+                [block-id params] (update-block! core-node-id height block)]
             (doseq [tx-id (::m.core-block/tx params)]
               (if-let [existing-id (q.core-tx/fetch-by-txid tx-id)]
                 (log/info :tx/exists {:tx-id existing-id})
@@ -67,7 +71,6 @@
                   (log/debug :tx/creating {:params params})
                   (q.core-tx/create-record params))))
             block-id))
-
         (throw (RuntimeException. "no block"))))
     (throw (RuntimeException. "no node id"))))
 
@@ -92,6 +95,10 @@
           (let [params (m.core-tx/prepare-params tx)]
             (q.core-tx/create-record params))))
       (throw (RuntimeException. "Failed to find node")))))
+
+(defn search!
+  [_props]
+  nil)
 
 (comment
   (def node-alice (q.core-nodes/read-record (q.core-nodes/find-id-by-name "bitcoin-alice")))
