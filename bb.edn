@@ -52,7 +52,28 @@
    :task (shell "rm -rf data")}
 
   clean-semantic
-  {:task (println "todo")}
+  {:task
+   (do
+     (shell "rm -rf semantic/dist")
+     (shell "rm -rf semantic/gulpfile.js")
+     (shell "rm -rf semantic/src/definitions")
+     (shell "rm -rf semantic/src/semantic.less")
+     (shell "rm -rf semantic/src/site/collections")
+     (shell "rm -rf semantic/src/site/elements")
+     (shell "rm -rf semantic/src/site/globals/reset.overrides")
+     (shell "rm -rf semantic/src/site/globals/reset.variables")
+     (shell "rm -rf semantic/src/site/globals/site.variables")
+     (shell "rm -rf semantic/src/site/modules")
+     (shell "rm -rf semantic/src/site/views")
+     (shell "rm -rf semantic/src/theme.less")
+     (shell "rm -rf semantic/src/themes")
+     (shell "rm -rf semantic/tasks"))}
+
+  clean-kondo-cache
+  {:tasks (shell "rm -rf .clj-kondo/.cache")}
+
+  clean-styles
+  {:tasks (shell "rm -rf resources/main/public/themes")}
 
   check
   {:doc  "Check sources are formatted correctly"

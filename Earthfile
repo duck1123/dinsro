@@ -143,8 +143,19 @@ compile-frontend:
 compile-production:
   FROM +src
   COPY --dir src/prod src/prod
+  COPY +compile-styles/* resources/main/public/
   RUN bb compile-production
   SAVE ARTIFACT classes
+
+compile-styles:
+  FROM +deps-builder
+  COPY --dir src/styles src/styles
+  COPY semantic/src/theme.config semantic/src/theme.config
+  COPY semantic/src/site/globals/site.overrides semantic/src/site/globals/site.overrides
+  RUN bb install-style-dependencies
+  RUN bb compile-styles
+  SAVE ARTIFACT resources/main/public/css/ css/
+  SAVE ARTIFACT resources/main/public/themes/ themes/
 
 deps-builder:
   FROM +script-builder
@@ -189,7 +200,6 @@ dev-sources-minimal:
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   COPY --dir src ${src_home}
   COPY shadow-cljs.edn site.edn .
-  COPY --dir resources/main ${src_home}/resources/main
   COPY --dir resources/workspaces ${src_home}/resources/workspaces
 
 eastwood:
@@ -221,6 +231,7 @@ image-wait:
 jar:
   FROM +src
   COPY --dir +compile-production/classes .
+  COPY +compile-styles/* resources/main/public/
   RUN bb compile-production-cljs
   RUN bb package-jar
   SAVE ARTIFACT target/dinsro-4.0.null.jar /dinsro.jar AS LOCAL target/dinsro.jar
@@ -282,7 +293,6 @@ script-builder:
 
 src:
   FROM +builder
-  COPY --dir resources/main resources/
 
 test:
   BUILD +test-clj
