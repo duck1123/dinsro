@@ -153,6 +153,10 @@
          (future (shell watch-cmd)))
        (shell run-cmd)))}
 
+  dinsro-values
+  {:task
+   (do (c/->dinsro-config))}
+
   dispatch
   {:doc  "Send a signal over nrepl"
    :task (clojure (str "-Mdispatch -m dinsro.components.dispatch "
@@ -187,6 +191,12 @@
          yaml    (yaml/generate-string (h.bitcoind/->values options))]
      (mkdir (format "conf/%s" n))
      (spit (format "conf/%s/bitcoind_values.yaml" n) yaml))}
+
+  generate-dinsro-values
+  {:task
+   (do
+     (c/mkdir "target")
+     (spit (str "target/dinsro_values.yaml") (c/->dinsro-config)))}
 
   generate-lnd-values
   {:doc "generate a lnd values file"

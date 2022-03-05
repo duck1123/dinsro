@@ -26,6 +26,8 @@
  ;; a devtools watcher on startup and will pre-compile the js resources
  :localDevtools       true
 
+ :seedDatabase        false
+
  :useGuardrails       true
 
  ;; Enable linting watchers
@@ -36,6 +38,8 @@
 
  ;; If true, a database will be launched and set as the db backend
  :usePersistence      false
+
+ :usePortal true
 
  ;; If true, production image will be deployed
  :useProduction       false

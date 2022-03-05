@@ -117,12 +117,81 @@
       #_(printf "Error parsing edn file '%s': %s\n" source (.getMessage e))
       nil)))
 
-(defn ->tilt-config
+(defn get-site-config
   []
   (let [defaults  (load-edn "site-defaults.edn")
-        overrides (load-edn "site.edn")
-        data      (merge defaults overrides)]
+        overrides (load-edn "site.edn")]
+    (merge defaults overrides)))
+
+(defn ->tilt-config
+  []
+  (let [data      (get-site-config)]
     (println (json/generate-string data))))
+
+(defn ->dinsro-config
+  []
+  (let [site-config  (get-site-config)
+        {base-url               :baseUrl
+         local-devtools         :localDevtools
+         notebook-host          :notebookHost
+         notebook-inherit-host? :notebookInheritHost
+         portal-host            :portalHost
+         notebook?              :useNotebook
+         nrepl?                 :useNrepl
+         persistence?           :usePersistence
+         portal? :usePortal
+         production?            :useProduction}           site-config
+        devtools-host (if local-devtools "localhost:9630" (str "devtools.base-url"))
+        notebook-url (if notebook-inherit-host? (str "notebook." base-url) notebook-host)
+        image-tag    (if production? "latest" "dev-sources-latest")]
+    (yaml/generate-string
+     {:replicaCount 1
+      :database    {:enabled persistence?}
+      :devtools    {:enabled (not local-devtools)
+                    ;; :service {:type "ClusterIP"
+                    ;;           :port 9630
+                    ;;           }
+                    :ingress {:enabled (not local-devtools)
+                              :hosts   [{:host  devtools-host
+                                         :paths [{:path "/"}]}]}}
+      :image       {:tag image-tag
+                    ;; :repository "duck1123/dinsro"
+                    ;; :pullPolicy "IfNotPresent"
+                    }
+      ;; :imagePullSecrets []
+      ;; :nameOverride ""
+      ;; :fullnameOverride ""
+      ;; :serviceAccount {
+      ;;                  :create true
+      ;;                  :annotations {}
+      ;;                  :name ""
+      ;;                  }
+      ;; :podAnnotations {}
+      ;; :podSecurityContext {}
+      ;; :securityContext {}
+      ;; :service {:type "ClusterIP" :port 3000}
+      :ingress     {;; :enabled true
+                    :hosts   [{:host  base-url
+                               :paths [{:path "/"}]}]}
+      :notebook    {:enabled notebook?
+                    ;; :service {:type "ClusterIP" :port 3693}
+                    :ingress {:enabled true
+                              :hosts [{:host  notebook-url
+                                       :paths [{:path "/"}]}]}}
+
+      :nrepl       {:enabled nrepl?}
+      :persistence {:enabled persistence?}
+      :workspaces  {:enabled (not local-devtools)
+                    ;; :service {:type "ClusterIP" :port 3693}
+                    :ingress {;; :enabled true
+                              :hosts [{:host "workspaces.dinsro.localhost"
+                                       :paths [{:path "/"}]}]}}
+
+      :portal      {:enabled portal?
+                    :service {:type "ClusterIP" :port 5678}
+                    :ingress {:enabled portal?
+                              :hosts [{:host  portal-host
+                                       :paths [{:path "/"}]}]}}})))
 
 (defn tap
   [data]

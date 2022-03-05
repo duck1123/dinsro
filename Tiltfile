@@ -12,6 +12,7 @@ watch_file('site-defaults.edn')
 watch_file('src/babashka')
 
 config_data = decode_json(local_output('bb tilt-config'))
+# dinsro_values = local_output('bb generate-dinsro-values')
 
 def config_get(key):
   v = config_data.get(key)
@@ -55,29 +56,19 @@ namespace_create(
 
 devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
 
+local_resource(
+  'dinsro-values',
+  allow_parallel = True,
+  cmd='bb generate-dinsro-values',
+  deps = [ 'site.edn' ],
+  labels = [ 'compile' ],
+)
+
 k8s_yaml(helm(
   'resources/helm/dinsro',
   name = 'dinsro',
   namespace = 'dinsro',
-  set = [
-    "database.enabled=%s" % ('true' if use_persistence else 'false'),
-    "devtools.enabled=%s" % ('false' if local_devtools else 'true'),
-    "devtools.ingress.enabled=%s" % ('false' if local_devtools else 'true'),
-    "devtools.ingress.hosts[0].host=%s" % devtools_host,
-    'devtools.ingress.hosts[0].paths[0].path=/',
-    "image.tag=%s" % ('latest' if use_production else 'dev-sources-latest'),
-    'ingress.enabled=true',
-    'ingress.hosts[0].host=' + base_url,
-    'ingress.hosts[0].paths[0].path=/',
-    "notebook.enabled=%s" % ('true' if use_notebook else 'false'),
-    "notebook.ingress.hosts[0].host=%s" % get_notebook_host(),
-    'notebook.ingress.hosts[0].paths[0].path=/',
-    "nrepl.enabled=%s" % ('true' if use_nrepl else 'false'),
-    "persistence.enabled=%s" % ('true' if use_persistence else 'false'),
-    "workspaces.enabled=%s" % ('false' if local_devtools else 'true'),
-    "portal.ingress.hosts[0].host=" + config_get('portalHost'),
-    'portal.ingress.hosts[0].paths[0].path=/',
-  ]
+  values=["./target/dinsro_values.yaml"],
 ))
 
 if use_production:
