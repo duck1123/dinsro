@@ -192,6 +192,9 @@ dev-image-sources-base:
   ARG watch_sources=true
   FROM +dev-sources-minimal
   USER root
+  RUN mkdir -p resources/main/public/css \
+      && mkdir -p resources/main/public/js \
+      && mkdir -p resources/main/public/themes
   IF [ "$watch_sources" = "true" ]
     USER $uid
     RUN bb compile-cljs
@@ -207,6 +210,7 @@ dev-image-sources:
   ARG watch_sources=true
   FROM +dev-image-sources-base --build-arg watch_sources=$watch_sources
   ARG EXPECTED_REF=${repo}/${project}:dev-sources-${version}
+  COPY --dir resources/main ${src_home}/resources
   SAVE IMAGE ${EXPECTED_REF}
 
 dev-sources:
