@@ -469,6 +469,18 @@
   {:doc  "Run server in dev mode"
    :task (clojure "-M:dev:guardrails:dev-main")}
 
+  run-dev-image
+  {:task
+   (do
+     (c/earthly :image-dev)
+     (shell "docker run -p 3000:3000 -p 9630:9630 -e WATCH_SOURCES=true duck1123/dinsro:dev-latest"))}
+
+  bash-dev-image
+  {:task
+   (do
+     (c/earthly :image-dev)
+     (shell "docker run -it -p 3000:3000 duck1123/dinsro:dev-latest bash"))}
+
   run-production
   {:doc  "Run server from jar"
    :task (shell "clojure -T:build run")}

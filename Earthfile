@@ -167,10 +167,25 @@ deps-builder:
 
 dev-image:
   FROM +deps-builder
-  ARG EXPECTED_REF=${repo}/${project}:dev-${version}
+  COPY --dir \
+       src \
+       site.edn \
+       site-defaults.edn \
+       semantic \
+       package.json \
+       karma.conf.js \
+       shadow-cljs.edn \
+       .
+
+  COPY --dir resources/main resources/main
   DO +EXPOSE_DOCKER_PORTS
   VOLUME ${data_dir}
+  USER root
   CMD ["bb", "dev-bootstrap"]
+
+image-dev:
+  FROM +dev-image
+  ARG EXPECTED_REF=${repo}/${project}:dev-${version}
   SAVE IMAGE ${EXPECTED_REF}
 
 dev-image-sources-base:
