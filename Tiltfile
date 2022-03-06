@@ -217,7 +217,7 @@ if local_devtools:
     serve_env = {
       'DEVTOOLS_URL': 'http://localhost:9630',
     },
-    serve_cmd='bb watch-styles',
+    serve_cmd='bb install-style-dependencies && bb watch-styles',
     labels = [ 'compile' ],
   )
 
