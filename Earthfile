@@ -40,13 +40,17 @@ EXPOSE_DOCKER_PORTS:
 
 IMPORT_JAR_DEPS:
   COMMAND
-  COPY --dir --chown=circleci +jar-deps/.clojure ${USER_HOME}
-  COPY --dir --chown=root +jar-deps/.clojure /root
+  COPY --dir --chown=circleci \
+       +jar-deps/.clojure \
+       +jar-deps/.deps.clj \
+       +jar-deps/.m2 \
+       ${USER_HOME}
+  COPY --dir --chown=root \
+       +jar-deps/.clojure \
+       +jar-deps/.deps.clj \
+       +jar-deps/.m2 \
+       /root
   COPY --dir --chown=circleci +jar-deps/.cpcache .
-  COPY --dir --chown=circleci +jar-deps/.deps.clj ${USER_HOME}
-  COPY --dir --chown=root +jar-deps/.deps.clj /root
-  COPY --dir --chown=circleci +jar-deps/.m2 ${USER_HOME}
-  COPY --dir --chown=root +jar-deps/.m2 /root
 
 INSTALL_BABASHKA:
   COMMAND
