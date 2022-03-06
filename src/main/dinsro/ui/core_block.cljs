@@ -171,6 +171,15 @@
    :label  "Search"
    :action search-control-action})
 
+(defn delete-action
+  [report-instance {::m.core-nodes/keys [id]}]
+  (form/delete! report-instance ::m.core-block/id id))
+
+(def delete-action-button
+  {:label  "Delete"
+   :action delete-action
+   :style  :delete-button})
+
 (report/defsc-report CoreBlockReport
   [_this _props]
   {ro/columns  [m.core-block/hash
@@ -221,6 +230,7 @@
    ro/form-links       {::m.core-block/hash CoreBlockForm}
    ro/source-attribute ::m.core-block/index
    ro/title            "Core Blocks"
+   ro/row-actions [delete-action-button]
    ro/row-pk           m.core-block/id
    ro/run-on-mount?    true
    ro/route            "core-blocks"})
