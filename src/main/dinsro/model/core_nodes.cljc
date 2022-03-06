@@ -19,12 +19,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::wallet-name (s/or :string string?
-                           :nil nil?))
-(defattr wallet-name ::wallet-name :string
-  {ao/identities #{::id}
-   ao/schema     :production})
-
 (s/def ::host string?)
 (defattr host ::host :string
   {ao/identities #{::id}
@@ -120,12 +114,12 @@
 
 (s/def ::params
   (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass]
-          :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?  ::wallet-name
+          :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
                 ::best-block-hash ::verification-progress ::warnings ::headers
                 ::chainwork ::chain ::block-count]))
 (s/def ::item
   (s/keys :req [::id ::name ::host ::port ::rpcuser ::rpcpass]
-          :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?  ::wallet-name
+          :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
                 ::best-block-hash ::verification-progress ::warnings ::headers
                 ::chainwork ::chain ::block-count]))
 (s/def ::items (s/coll-of ::item))
@@ -177,4 +171,4 @@
         :http/basic-auth [rpcuser rpcpass]}))))
 
 (def attributes
-  [id name host port rpcuser rpcpass balance tx-count chain wallet-name pruned? difficulty size-on-disk initial-block-download? best-block-hash verification-progress warnings headers chainwork block-count])
+  [id name host port rpcuser rpcpass balance tx-count chain pruned? difficulty size-on-disk initial-block-download? best-block-hash verification-progress warnings headers chainwork block-count])

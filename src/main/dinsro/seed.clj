@@ -70,16 +70,14 @@
    ::m.core-nodes/host        "bitcoin.bitcoin-alice"
    ::m.core-nodes/port        18443
    ::m.core-nodes/rpcuser     "rpcuser"
-   ::m.core-nodes/rpcpass     "rpcpassword"
-   ::m.core-nodes/wallet-name ""})
+   ::m.core-nodes/rpcpass     "rpcpassword"})
 
 (def core-node2
   {::m.core-nodes/name        "bitcoin-bob"
    ::m.core-nodes/host        "bitcoin.bitcoin-bob"
    ::m.core-nodes/port        18443
    ::m.core-nodes/rpcuser     "rpcuser"
-   ::m.core-nodes/rpcpass     "rpcpassword"
-   ::m.core-nodes/wallet-name ""})
+   ::m.core-nodes/rpcpass     "rpcpassword"})
 
 (def wallet-1
   {:label       "a"
