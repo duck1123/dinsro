@@ -131,7 +131,7 @@
                             (filter identity)
                             (string/join " "))
          bootstrap-cmd (str envs " bb dev-bootstrap-user")]
-     (shell (str "mkdir -p " cert-path))
+     (c/mkdir cert-path)
      (c/chown user group src-path)
      (c/chown user group cert-path)
      (c/sudo bootstrap-cmd))}
@@ -189,7 +189,7 @@
    (let [n       (or (first *command-line-args*) "3")
          options {:name n}
          yaml    (yaml/generate-string (h.bitcoind/->values options))]
-     (mkdir (format "conf/%s" n))
+     (c/mkdir (format "conf/%s" n))
      (spit (format "conf/%s/bitcoind_values.yaml" n) yaml))}
 
   generate-dinsro-values
@@ -207,7 +207,7 @@
                   :ingress {:host (str "lnd-" n ".localhost")}
                   :rpc     {:host (str "bitcoin.bitcoin-" n)}}
          yaml    (yaml/generate-string (h.lnd/->values options))]
-     (mkdir (format "conf/%s" n))
+     (c/mkdir (format "conf/%s" n))
      (spit (format "conf/%s/lnd_values.yaml" n) yaml))}
 
   generate-nbxplorer-values
@@ -218,7 +218,7 @@
                   :rpcurl       (format "http://bitcoin.bitcoin-%s:18443" n)
                   :nodeEndpoint (format "bitcoin.bitcoin-%s:18444" n)}
          yaml    (yaml/generate-string (h.nbxplorer/->values options))]
-     (mkdir (format "conf/%s" n))
+     (c/mkdir (format "conf/%s" n))
      (spit (format "conf/%s/nbxplorer_values.yaml" n) yaml))}
 
   generate-rtl-values
@@ -227,7 +227,7 @@
    (let [n       (or (first *command-line-args*) "3")
          options {:name n}
          yaml    (yaml/generate-string (h.rtl/->values options))]
-     (mkdir (format "conf/%s" n))
+     (c/mkdir (format "conf/%s" n))
      (spit (format "conf/%s/rtl_values.yaml" n) yaml))}
 
   generate-specter-values
@@ -236,14 +236,14 @@
    (let [n       (or (first *command-line-args*) "3")
          options {:name n}
          yaml    (yaml/generate-string (h.specter/->values options))]
-     (mkdir (format "conf/%s" n))
+     (c/mkdir (format "conf/%s" n))
      (spit (format "conf/%s/specter_values.yaml" n) yaml))}
 
   generate-values
   {:doc "generate a lnd values file"
    :task
    (let [n (or (first *command-line-args*) "3")]
-     (mkdir (format "conf/%s" n))
+     (c/mkdir (format "conf/%s" n))
      (spit (format "lnd_%s_values.yaml" n)
            (yaml/generate-string
             (h.lnd/->values
@@ -462,7 +462,7 @@
 
   prepare-test-dirs
   {:doc  "Build test data directory"
-   :task (shell "mkdir -p /tmp/dinsro/data/test")}
+   :task (c/mkdir "/tmp/dinsro/data/test")}
 
   repl (clojure.main/repl)
 
