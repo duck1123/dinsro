@@ -123,13 +123,13 @@ check:
   RUN bb check
 
 ci:
-  BUILD +cert-downloader
-  BUILD +fileserver
-  BUILD +portal
+  BUILD --push +cert-downloader
+  BUILD --push +fileserver
+  BUILD --pish +portal
   BUILD +check
   BUILD +lint
   BUILD +test
-  BUILD +image
+  BUILD --push +image
 
 cert-downloader:
   FROM babashka/babashka:latest
