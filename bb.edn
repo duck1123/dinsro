@@ -187,7 +187,8 @@
   {:doc "generate a bitcoind values file"
    :task
    (let [n       (or (first *command-line-args*) "3")
-         options {:name n}
+         options {:name n
+                  :network :regtest}
          yaml    (yaml/generate-string (h.bitcoind/->values options))]
      (c/mkdir (format "conf/%s" n))
      (spit (format "conf/%s/bitcoind_values.yaml" n) yaml))}
@@ -273,13 +274,13 @@
   {:task
    (let [n   (or (first *command-line-args*) "3")
          cmd (format "bb helm-bitcoin %s | kubectl apply -n bitcoin-%s -f -" n n)]
-     (create-namespace (str "bitcoin-" n))
+     (c/create-namespace (str "bitcoin-" n))
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-bitcoin-remove
   {:task
    (let [n (or (first *command-line-args*) "3")]
-     (delete-namespace (str "bitcoin-" n)))}
+     (c/delete-namespace (str "bitcoin-" n)))}
 
   helm-clean
   {:task
@@ -347,13 +348,13 @@
   {:task
    (let [n   (or (first *command-line-args*) "3")
          cmd (format "bb helm-lnd %s | kubectl apply -n lnd-%s -f -" n n)]
-     (create-namespace (str "lnd-" n))
+     (c/create-namespace (str "lnd-" n))
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-lnd-remove
   {:task
    (let [n (or (first *command-line-args*) "3")]
-     (delete-namespace (str "lnd-" n)))}
+     (c/delete-namespace (str "lnd-" n)))}
 
   helm-nbxplorer
   {:depends [generate-nbxplorer-values]
@@ -375,13 +376,13 @@
   {:task
    (let [n   (or (first *command-line-args*) "3")
          cmd (format "bb helm-nbxplorer %s | kubectl apply -n nbxplorer-%s -f -" n n)]
-     (create-namespace (str "nbxplorer-" n))
+     (c/create-namespace (str "nbxplorer-" n))
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-nbxplorer-remove
   {:task
    (let [n (or (first *command-line-args*) "3")]
-     (delete-namespace (str "nbxplorer-" n)))}
+     (c/delete-namespace (str "nbxplorer-" n)))}
 
   helm-rtl
   {:depends [generate-rtl-values]
@@ -411,13 +412,13 @@
   {:task
    (let [n   (or (first *command-line-args*) "3")
          cmd (format "bb helm-specter %s | kubectl apply -n specter-%s -f -" n n)]
-     (create-namespace (str "specter-" n))
+     (c/create-namespace (str "specter-" n))
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-specter-remove
   {:task
    (let [n (or (first *command-line-args*) "3")]
-     (delete-namespace (str "specter-" n)))}
+     (c/delete-namespace (str "specter-" n)))}
 
   init
   {:doc     "Initialize the system"

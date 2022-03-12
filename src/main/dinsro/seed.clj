@@ -38,6 +38,13 @@
    ::m.core-nodes/rpcuser     "rpcuser"
    ::m.core-nodes/rpcpass     "rpcpassword"})
 
+(def core-node3
+  {::m.core-nodes/name    "bitcoin-larry"
+   ::m.core-nodes/host    "bitcoin.bitcoin-larry"
+   ::m.core-nodes/port    18332
+   ::m.core-nodes/rpcuser "rpcuser"
+   ::m.core-nodes/rpcpass "rpcpassword"})
+
 (def wallet-1
   {:label       "a"
    :blockheight 0
@@ -413,7 +420,7 @@
    alice-data
    bob-data])
 
-(def core-node-data [core-node1 core-node2])
+(def core-node-data [core-node1 core-node2 core-node3])
 
 (defn seed-db!
   []

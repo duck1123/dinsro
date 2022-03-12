@@ -8,6 +8,7 @@
 (defn get-client
   "Create a farseer client to a node"
   [config]
+  (log/debug :client/creating {:config config})
   (client/make-client config))
 
 (>defn handle-request
@@ -18,9 +19,9 @@
   ([client method args]
    [::s.client/config keyword? vector? => any?]
    (do
-     (log/debug :request/starting {:method method :args args})
+     (log/debug :request/starting {:method method :args args :client client})
      (let [{:keys [error result]} (client/call client method args)]
-       (log/debug :request/finished {:error error :result result})
+       (log/debug :request/finished {:error error :result result :client client})
        (if error
          (throw (RuntimeException. (pr-str error)))
          result)))))
