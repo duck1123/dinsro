@@ -123,13 +123,13 @@ check:
   RUN bb check
 
 ci:
-  BUILD --push +cert-downloader
-  BUILD --push +fileserver
-  BUILD --pish +portal
+  BUILD +cert-downloader
+  BUILD +fileserver
+  BUILD +portal
   BUILD +check
   BUILD +lint
   BUILD +test
-  BUILD --push +image
+  BUILD +image
 
 cert-downloader:
   FROM babashka/babashka:latest
@@ -137,7 +137,7 @@ cert-downloader:
   COPY resources/cert-downloader .
   ENTRYPOINT ["bb", "bootstrap.clj"]
   CMD ["bb", "bootstrap.clj"]
-  SAVE IMAGE ${EXPECTED_REF}
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 compile-frontend:
   FROM +src
@@ -235,7 +235,7 @@ fileserver:
   COPY resources/fileserver .
   RUN mkdir -p /mnt/lnd-data
   CMD ["bb", "watch.clj", "/mnt/lnd-data"]
-  SAVE IMAGE ${EXPECTED_REF}
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 image:
   FROM openjdk:17-alpine
@@ -305,7 +305,7 @@ portal:
   ENTRYPOINT ["bb", "portal.clj"]
   CMD ["bb", "portal.clj"]
   RUN bb portal.clj --dry-run
-  SAVE IMAGE ${EXPECTED_REF}
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 script-builder:
   FROM +base-builder
