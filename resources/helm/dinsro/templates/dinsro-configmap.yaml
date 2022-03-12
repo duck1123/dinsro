@@ -7,7 +7,15 @@ data:
 {{ if not (eq .Values.dinsroConfig "-") }}
 {{ .Values.dinsroConfig | indent 4 }}
 {{- else }}
-    {:dinsro.component.notebooks/config {:enabled {{ .Values.notebook.enabled }}}
+    {:com.fulcrologic.rad.pathom/config
+       {:trace?         false
+        :log-requests?  false
+        :log-responses? false}
+
+     :dinsro.components.config/secret-path "/mnt/certs/secret"
+     :dinsro.components.notebooks/config {:enabled {{ .Values.notebook.enabled }}}
+     :dinsro.components.seed/enabled {{ .Values.persistence.seed }}
+
      {{ if .Values.persistence.enabled }}
      :roterski.fulcro.rad.database-adapters.xtdb/databases
       {:main
@@ -22,12 +30,6 @@ data:
          :xtdb/document-store {:xtdb/module     "xtdb.jdbc/->document-store"
                                :connection-pool :xtdb.jdbc/connection-pool}}}
      {{- end }}
-     :com.fulcrologic.rad.pathom/config
-       {:trace?         false
-        :log-requests?  false
-        :log-responses? false}
-
-     :dinsro.components.config/secret-path "/mnt/certs/secret"
 
      :taoensso.timbre/logging-config
      {:min-level

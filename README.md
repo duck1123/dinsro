@@ -111,7 +111,7 @@ bb seed
 or, from a repl:
 
 ``` clojure
-(dinsro.seed/seed-db!)
+(dinsro.components.seed/seed-db!)
 ```
 
 ## Bitcoin Resources

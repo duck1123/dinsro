@@ -1,6 +1,7 @@
-{:nrepl-bind   "0.0.0.0"
- :nrepl-port   7000
+{:nrepl-bind                        "0.0.0.0"
+ :nrepl-port                        7000
  :dinsro.component.notebooks/config {:enabled true}
+ :dinsro.components.seed/enabled    false
 
  ;; The base path where lnd certs are stored
  :dinsro.model.ln-nodes/cert-base "/mnt/certs"

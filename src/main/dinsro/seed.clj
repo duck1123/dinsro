@@ -1,9 +1,8 @@
 (ns dinsro.seed
   (:require
-   [dinsro.components.seed :as c.seed]
+   ;; [dinsro.components.seed :as c.seed]
    [dinsro.model.core-nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]
-   [lambdaisland.glogc :as log]
    [reitit.coercion.spec]
    [tick.alpha.api :as tick]))
 
@@ -422,20 +421,14 @@
 
 (def core-node-data [core-node1 core-node2 core-node3])
 
-(defn seed-db!
+(defn get-seed-data
   []
-  (log/info :seed/started {})
-  (let [seed-data {:default-currencies   default-currencies
-                   :default-rate-sources default-rate-sources
-                   :default-timezone     default-timezone
-                   :core-node-data       core-node-data
-                   :users                users}
-        response (c.seed/seed-db! seed-data)]
-    (log/info :seed/finished {:response response})
-    response))
+  {:default-currencies   default-currencies
+   :default-rate-sources default-rate-sources
+   :default-timezone     default-timezone
+   :core-node-data       core-node-data
+   :users                users})
 
 (comment
-
-  (seed-db!)
 
   nil)

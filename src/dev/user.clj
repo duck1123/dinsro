@@ -2,6 +2,7 @@
   (:require
    [clojure.tools.namespace.repl :as tools-ns :refer [set-refresh-dirs]]
    [dinsro.components.nrepl :as c.nrepl]
+   [dinsro.components.seed :as c.seed]
    [dinsro.seed :as seed]
    [mount.core :as mount]
    [shadow.cljs.devtools.api :as shadow]
@@ -15,7 +16,7 @@
 
 (defn seed!
   []
-  (seed/seed-db!))
+  (c.seed/seed-db! (seed/get-seed-data)))
 
 (defn cljs-repl
   ([]

@@ -96,6 +96,7 @@ persistence:
   size: 1G
   storageClass: 'local-path'
   # existingClaim: ''
+  seed: false
   certs:
     enabled: true
     storageClass: 'local-path'

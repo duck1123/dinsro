@@ -498,7 +498,7 @@
 
   seed
   {:doc  "Seed the database over nrepl"
-   :task (c/dispatch ["(dinsro.seed/seed-db!)"])}
+   :task (c/dispatch ["(dinsro.components.seed/seed-db!)"])}
 
   server
   {:doc     "compile and run server in dev mode"

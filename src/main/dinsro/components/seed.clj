@@ -9,6 +9,7 @@
    [dinsro.actions.core-tx :as a.core-tx]
    [dinsro.actions.ln-nodes :as a.ln-nodes]
    [dinsro.actions.rates :as a.rates]
+   [dinsro.components.config :as config]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core-address :as m.core-address]
@@ -41,12 +42,15 @@
    [dinsro.queries.ln-transactions :as q.ln-tx]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
+   [dinsro.queries.settings :as q.settings]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
    [dinsro.queries.wallets :as q.wallets]
    [dinsro.queries.words :as q.words]
+   [dinsro.seed :as seeds]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
+   [mount.core :as mount]
    [reitit.coercion.spec]
    [tick.alpha.api :as tick]))
 
@@ -395,3 +399,36 @@
 
     (log/info :seed/finished {})
     (item-report)))
+
+(defn get-seed-data
+  []
+  {}
+  (seeds/get-seed-data))
+
+(defn start!
+  []
+  (log/info :seed/starting {})
+  (if (get-in config/config [::enabled])
+    (do (log/info :seed/enabled {})
+        (if (q.settings/get-setting ::seeded)
+          (do
+            (log/info :seed/seeded {})
+            nil)
+          (do
+            (log/info :seed/not-seeded {})
+            (let [seed-data (get-seed-data)]
+              (seed-db! seed-data)
+              (q.settings/set-setting ::sedded true)
+              nil)))
+        nil)
+    (do
+      (log/info :seed/not-enabled {})
+      nil)))
+
+(defn stop!
+  [_]
+  (log/info :seed/stopping {}))
+
+(mount/defstate ^{:on-reload :noop} seed-process
+  :start (start!)
+  :stop (stop! seed-process))
