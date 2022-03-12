@@ -5,6 +5,7 @@
    [dinsro.components.notebooks]
    [dinsro.components.nrepl]
    [dinsro.components.portal]
+   [dinsro.components.seed]
    [dinsro.components.server]
    [lambdaisland.glogc :as log]
    [mount.core :as mount])
