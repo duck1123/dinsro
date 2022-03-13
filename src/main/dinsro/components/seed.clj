@@ -9,7 +9,6 @@
    [dinsro.actions.core-tx :as a.core-tx]
    [dinsro.actions.ln-nodes :as a.ln-nodes]
    [dinsro.actions.rates :as a.rates]
-   [dinsro.components.config :as config]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core-address :as m.core-address]
@@ -50,7 +49,6 @@
    [dinsro.seed :as seeds]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
-   [mount.core :as mount]
    [reitit.coercion.spec]
    [tick.alpha.api :as tick]))
 
@@ -405,30 +403,24 @@
   {}
   (seeds/get-seed-data))
 
-(defn start!
+(def seeded-key ::seeded)
+
+(defn seed!
   []
-  (log/info :seed/starting {})
-  (if (get-in config/config [::enabled])
-    (do (log/info :seed/enabled {})
-        (if (q.settings/get-setting ::seeded)
-          (do
-            (log/info :seed/seeded {})
-            nil)
-          (do
-            (log/info :seed/not-seeded {})
-            (let [seed-data (get-seed-data)]
-              (seed-db! seed-data)
-              (q.settings/set-setting ::sedded true)
-              nil)))
-        nil)
+  (if (q.settings/get-setting seeded-key)
+    (log/info :seed/seeded {})
     (do
-      (log/info :seed/not-enabled {})
-      nil)))
+      (log/info :seed/not-seeded {})
+      (let [seed-data (get-seed-data)]
+        (try
+          (seed-db! seed-data)
+          (catch Exception ex
+            (log/error :seed/failed {:ex ex})))
+        (q.settings/set-setting seeded-key true)))))
 
-(defn stop!
-  [_]
-  (log/info :seed/stopping {}))
+(comment
 
-(mount/defstate ^{:on-reload :noop} seed-process
-  :start (start!)
-  :stop (stop! seed-process))
+  (q.settings/set-setting seeded-key :foo)
+  (q.settings/get-setting seeded-key)
+
+  nil)

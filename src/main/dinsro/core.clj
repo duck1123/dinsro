@@ -5,8 +5,9 @@
    [dinsro.components.notebooks]
    [dinsro.components.nrepl]
    [dinsro.components.portal]
-   [dinsro.components.seed]
+   [dinsro.components.seed :as c.seed]
    [dinsro.components.server]
+   [dinsro.components.xtdb]
    [lambdaisland.glogc :as log]
    [mount.core :as mount])
   (:gen-class))
@@ -38,4 +39,5 @@
 
 (defn -main
   [& args]
-  (start-app args))
+  (start-app args)
+  (c.seed/seed!))
