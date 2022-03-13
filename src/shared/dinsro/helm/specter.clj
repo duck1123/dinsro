@@ -24,7 +24,7 @@
           rpcuser     "rpcuser"
           rpcpassword "rpcpassword"
           port        18443
-          host        "lnd-foo.lnd-foo"}} options]
+          host        (str "lnd." name)}} options]
 
     {:name        name
      :alias       alias
@@ -37,7 +37,7 @@
   [{:keys [name] :as options}]
   (let [options (merge-defaults options)]
     {:image        {:tag "v1.7.2"}
-     :ingress      {:hosts [{:host  (str "specter-" name ".localhost")
+     :ingress      {:hosts [{:host  (str "specter." name ".localhost")
                              :paths [{:path "/"}]}]}
      :persistence  {:storageClassName "local-path"}
      :walletConfig (prn-str (->node-config options))}))

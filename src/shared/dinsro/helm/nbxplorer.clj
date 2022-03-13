@@ -1,4 +1,5 @@
-(ns dinsro.helm.nbxplorer)
+(ns dinsro.helm.nbxplorer
+  (:require [clojure.string :as str]))
 
 (defn merge-defaults
   [options]
@@ -23,3 +24,9 @@
      {:network      "regtest"
       :rpcurl       rpcurl
       :nodeEndpoint nodeEndpoint}}))
+
+(defn ->value-options
+  [{:keys [name]}]
+  {:host (str "nbxplorer." name ".localhost")
+   :rpcurl (str "http://bitcoin." name ":18443")
+   :nodeEndpoint (str "bitcoin." name ":18444")})

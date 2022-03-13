@@ -25,21 +25,21 @@
 
 (def core-node1
   {::m.core-nodes/name        "bitcoin-alice"
-   ::m.core-nodes/host        "bitcoin.bitcoin-alice"
+   ::m.core-nodes/host        "bitcoin.alice"
    ::m.core-nodes/port        18443
    ::m.core-nodes/rpcuser     "rpcuser"
    ::m.core-nodes/rpcpass     "rpcpassword"})
 
 (def core-node2
   {::m.core-nodes/name        "bitcoin-bob"
-   ::m.core-nodes/host        "bitcoin.bitcoin-bob"
+   ::m.core-nodes/host        "bitcoin.bob"
    ::m.core-nodes/port        18443
    ::m.core-nodes/rpcuser     "rpcuser"
    ::m.core-nodes/rpcpass     "rpcpassword"})
 
 (def core-node3
   {::m.core-nodes/name    "bitcoin-larry"
-   ::m.core-nodes/host    "bitcoin.bitcoin-larry"
+   ::m.core-nodes/host    "bitcoin.larry"
    ::m.core-nodes/port    18332
    ::m.core-nodes/rpcuser "rpcuser"
    ::m.core-nodes/rpcpass "rpcpassword"})
@@ -173,7 +173,7 @@
 
 (def lnd1
   {:name                "lnd-alice"
-   :host                "lnd-alice.lnd-alice.svc.cluster.local"
+   :host                "lnd.alice.svc.cluster.local"
    :port                "10009"
    :node                "bitcoin-alice"
    :mnemonic            lnd1-mnemonic
@@ -200,7 +200,7 @@
 (def lnd2
   {:name                "lnd-bob"
    :node                "bitcoin-bob"
-   :host                "lnd-bob.lnd-bob.svc.cluster.local"
+   :host                "lnd.bob.svc.cluster.local"
    :port                "10009"
    :mnemonic            lnd2-mnemonic
    :identityPubkey      lnd2-key

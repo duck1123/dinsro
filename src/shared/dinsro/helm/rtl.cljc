@@ -7,7 +7,7 @@
         node-name     (str "Node " name)
         macaroon-path (str "/mnt/data/lnd-" name)
         backup-path   (str "/mnt/data/lnd-" name "/backups")
-        server-url    (str "https://lnd-" name ".lnd-" name ".svc.cluster.local:8080")]
+        server-url    (str "https://lnd." name ".svc.cluster.local:8080")]
     {:index            1
      :lnNode           node-name
      :lnImplementation "LND"
@@ -48,10 +48,10 @@
         {name :name} options]
     {:certDownloader    {:image {:repository "duck1123/cert-downloader"
                                  :pullPolicy "Always"}}
-     :ingress           {:hosts [{:host  (str "rtl-" name ".localhost")
+     :ingress           {:hosts [{:host  (str "rtl." name ".localhost")
                                   :paths [{:path "/"}]}]}
      :configurationFile #?(:clj (json2/encode config) :cljs (do (comment config) ""))
-     :bitcoin           {:host (str "bitcoin.bitcoin-" name)}}))
+     :bitcoin           {:host (str "bitcoin." name)}}))
 
 (comment
   (->values {})

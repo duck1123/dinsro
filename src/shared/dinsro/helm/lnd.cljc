@@ -128,7 +128,6 @@
          :or
          {auto-unlock-password "password12345678"}} auto-unlock
         conf                                        (->lnd-config options)]
-    ;; (prn options)
     {:configurationFile  {:lnd.conf conf}
      :loop               {:enable false}
      :pool               {:enable false}
@@ -137,6 +136,21 @@
      :autoUnlockPassword auto-unlock-password
      :network            (name chain)
      :ingress            {:host ingress-host}}))
+
+(defn ->value-options
+  [{:keys [name]}]
+  (let [alias           (str "Node " name)
+        external-host   (str "lnd." name ".localhost")
+        internal-host   (str "lnd-internal." name ".svc.cluster.localhost")
+        bitcoin-host    (str "bitcoin." name)
+        unlock-password "unlockpassword"]
+    {:alias       alias
+     :auto-unlock {:password unlock-password}
+     :chain       :regtest
+     :ingress     {:host external-host}
+     :name        name
+     :rpc         {:host bitcoin-host}
+     :tls         {:domain internal-host}}))
 
 ;; (defn ->values
 ;;   [options]

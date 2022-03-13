@@ -186,12 +186,11 @@
   generate-bitcoind-values
   {:doc "generate a bitcoind values file"
    :task
-   (let [n       (or (first *command-line-args*) "3")
-         options {:name n
-                  :network :regtest}
+   (let [name    (or (first *command-line-args*) "3")
+         options (h.bitcoind/->value-options {:name name})
          yaml    (yaml/generate-string (h.bitcoind/->values options))]
-     (c/mkdir (format "conf/%s" n))
-     (spit (format "conf/%s/bitcoind_values.yaml" n) yaml))}
+     (c/mkdir (format "conf/%s" name))
+     (spit (format "conf/%s/bitcoind_values.yaml" name) yaml))}
 
   generate-dinsro-values
   {:task
@@ -202,57 +201,47 @@
   generate-lnd-values
   {:doc "generate a lnd values file"
    :task
-   (let [n       (or (first *command-line-args*) "3")
-         options {:alias   (str "Node " n)
-                  :name    n
-                  :ingress {:host (str "lnd-" n ".localhost")}
-                  :rpc     {:host (str "bitcoin.bitcoin-" n)}}
+   (let [name    (or (first *command-line-args*) "3")
+         options (h.lnd/->value-options {:name name})
          yaml    (yaml/generate-string (h.lnd/->values options))]
-     (c/mkdir (format "conf/%s" n))
-     (spit (format "conf/%s/lnd_values.yaml" n) yaml))}
+     (c/mkdir (format "conf/%s" name))
+     (spit (format "conf/%s/lnd_values.yaml" name) yaml))}
 
   generate-nbxplorer-values
   {:doc "generate a nbxplorer values file"
    :task
-   (let [n       (or (first *command-line-args*) "3")
-         options {:host         (format "nbxplorer-%s.localhost" n)
-                  :rpcurl       (format "http://bitcoin.bitcoin-%s:18443" n)
-                  :nodeEndpoint (format "bitcoin.bitcoin-%s:18444" n)}
+   (let [name    (or (first *command-line-args*) "3")
+         options (h.nbxplorer/->value-options {:name name})
          yaml    (yaml/generate-string (h.nbxplorer/->values options))]
-     (c/mkdir (format "conf/%s" n))
-     (spit (format "conf/%s/nbxplorer_values.yaml" n) yaml))}
+     (c/mkdir (format "conf/%s" name))
+     (spit (format "conf/%s/nbxplorer_values.yaml" name) yaml))}
 
   generate-rtl-values
   {:doc "generate a rtl values file"
    :task
-   (let [n       (or (first *command-line-args*) "3")
-         options {:name n}
+   (let [name    (or (first *command-line-args*) "3")
+         options {:name name}
          yaml    (yaml/generate-string (h.rtl/->values options))]
-     (c/mkdir (format "conf/%s" n))
-     (spit (format "conf/%s/rtl_values.yaml" n) yaml))}
+     (c/mkdir (format "conf/%s" name))
+     (spit (format "conf/%s/rtl_values.yaml" name) yaml))}
 
   generate-specter-values
   {:doc "generate a specter values file"
    :task
-   (let [n       (or (first *command-line-args*) "3")
-         options {:name n}
+   (let [name    (or (first *command-line-args*) "3")
+         options {:name name}
          yaml    (yaml/generate-string (h.specter/->values options))]
-     (c/mkdir (format "conf/%s" n))
-     (spit (format "conf/%s/specter_values.yaml" n) yaml))}
+     (c/mkdir (format "conf/%s" name))
+     (spit (format "conf/%s/specter_values.yaml" name) yaml))}
 
   generate-values
   {:doc "generate a lnd values file"
    :task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/mkdir (format "conf/%s" n))
-     (spit (format "lnd_%s_values.yaml" n)
-           (yaml/generate-string
-            (h.lnd/->values
-             {:alias       (format "Node %s" n)
-              :auto-unlock {:password "unlockpassword"}
-              :chain       :regtest
-              :ingress     {:host (format "lnd-%s.localhost" n)}
-              :tls         {:domain (format "lnd-%s-internal.lnd1.svc.cluster.local" n)}}))))}
+   (let [name (or (first *command-line-args*) "3")]
+     (c/mkdir (format "conf/%s" name))
+     (let [value-options (h.lnd/->value-options {:name name})
+           data          (yaml/generate-string (h.lnd/->values value-options))]
+       (spit (format "conf/%s/lnd_values.yaml" name) data)))}
 
   helm-bitcoin
   {:depends [generate-bitcoind-values]
@@ -272,19 +261,19 @@
 
   helm-bitcoin-apply
   {:task
-   (let [n   (or (first *command-line-args*) "3")
-         cmd (format "bb helm-bitcoin %s | kubectl apply -n bitcoin-%s -f -" n n)]
-     (c/create-namespace (str "bitcoin-" n))
+   (let [name (or (first *command-line-args*) "3")
+         cmd  (format "bb helm-bitcoin %s | kubectl apply -n %s -f -" name name)]
+     (c/create-namespace name)
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-bitcoin-remove
   {:task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/delete-namespace (str "bitcoin-" n)))}
+   (let [name (or (first *command-line-args*) "3")]
+     (c/delete-namespace name))}
 
   helm-clean
   {:task
-   (let [n (or (first *command-line-args*) "3")]
+   (let [name (or (first *command-line-args*) "3")]
      (try
        (run 'helm-nbxplorer-remove)
        (catch Exception ex
@@ -308,7 +297,7 @@
 
   helm-up
   {:task
-   (let [n (or (first *command-line-args*) "3")]
+   (let [name (or (first *command-line-args*) "3")]
      (try
        (run 'helm-bitcoin-apply)
        (catch Exception ex
@@ -333,22 +322,22 @@
   helm-lnd
   {:depends [generate-lnd-values]
    :task
-   (let [n        (or (first *command-line-args*) "3")
+   (let [name     (or (first *command-line-args*) "3")
          path     "resources/helm/fold/charts/lnd/"
-         filename (format "conf/%s/lnd_values.yaml" n)
+         filename (format "conf/%s/lnd_values.yaml" name)
          cmd      (string/join
                    " "
                    ["helm template "
-                    (str "--name-template=lnd-" n)
+                    (str "--name-template=" name)
                     (str "--values " filename)
                     path])]
      (shell cmd))}
 
   helm-lnd-apply
   {:task
-   (let [n   (or (first *command-line-args*) "3")
-         cmd (format "bb helm-lnd %s | kubectl apply -n lnd-%s -f -" n n)]
-     (c/create-namespace (str "lnd-" n))
+   (let [name (or (first *command-line-args*) "3")
+         cmd  (format "bb helm-lnd %s | kubectl apply -n %s -f -" name name)]
+     (c/create-namespace  name)
      (shell (format "sh -c \"%s\"" cmd)))}
 
   helm-lnd-remove
