@@ -9,6 +9,7 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [manifold.stream :as ms]
    [tick.alpha.api :as tick]
    [xtdb.api :as xt]))
@@ -95,7 +96,9 @@
                             (assoc ::m.rates/id id)
                             (assoc :xt/id id)
                             (update ::m.rates/date tick/inst))]
+    (log/debug :record/create {:prepared-params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
+    (log/debug :record/created {:id id})
     (comment (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]]))
     id))
 
