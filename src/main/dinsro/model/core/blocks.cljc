@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]))
 
 (def rename-map
@@ -137,13 +138,18 @@
    ao/schema     :production})
 
 (defn prepare-params
-  [block]
-  (let [{:keys [time fetched?]} block]
-    (-> block
-        (set/rename-keys rename-map)
-        (assoc ::time (tick/instant (* time 1000)))
-        (assoc ::fetched? (boolean fetched?))
-        (dissoc ::confirmations))))
+  [params]
+  (log/debug :prepare-params/preparing {:params params})
+  (let [params                   (set/rename-keys params rename-map)
+        {::keys [time fetched?]} params
+        time-ms                  (* time 1000)
+        time-inst                (tick/instant time-ms)
+        updated-params           (-> params
+                                     (assoc ::time time-inst)
+                                     (assoc ::fetched? (boolean fetched?))
+                                     (dissoc ::confirmations))]
+    (log/info :prepare-params/prepared {:params params :updated-params updated-params})
+    updated-params))
 
 (s/def ::params
   (s/keys :req [::hash ::height ::node ::fetched?]

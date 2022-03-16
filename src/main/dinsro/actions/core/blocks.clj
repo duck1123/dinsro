@@ -1,5 +1,6 @@
 (ns dinsro.actions.core.blocks
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -37,7 +38,7 @@
 (>defn update-block!
   "Fetch and update a block from the node"
   [core-node-id height params]
-  [::m.c.nodes/id ::m.c.blocks/height ::m.c.blocks/params => any?]
+  [::m.c.nodes/id ::m.c.blocks/height any? => (s/tuple ::m.c.blocks/id ::m.c.blocks/params)]
   (if-let [existing-block-id (q.c.blocks/fetch-by-node-and-height core-node-id height)]
     (if (q.c.blocks/read-record existing-block-id)
       (let [params (m.c.blocks/prepare-params params)
@@ -64,9 +65,14 @@
               prev-id       (when previous-hash (register-block core-node-id previous-hash (dec height)))
               next-id       (when next-hash (register-block core-node-id next-hash (inc height)))]
           (log/info :block/parsing-neighbors {:previous previous-hash :next next-hash})
-          (let [block             (assoc block ::m.c.blocks/next-block next-id)
-                block             (assoc block ::m.c.blocks/previous-block prev-id)
-                [block-id params] (update-block! core-node-id height block)]
+          (let [params            block
+                params            (assoc params ::m.c.blocks/fetched? true)
+                params            (assoc params ::m.c.blocks/hash (:hash block))
+                params            (assoc params ::m.c.blocks/height height)
+                params            (assoc params ::m.c.blocks/node core-node-id)
+                params            (assoc params ::m.c.blocks/next-block next-id)
+                params            (assoc params ::m.c.blocks/previous-block prev-id)
+                [block-id params] (update-block! core-node-id height params)]
             (doseq [tx-id (::m.c.blocks/tx params)]
               (if-let [existing-id (q.c.tx/fetch-by-txid tx-id)]
                 (log/info :tx/exists {:tx-id existing-id})
