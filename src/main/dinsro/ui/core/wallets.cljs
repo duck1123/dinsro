@@ -1,9 +1,11 @@
 (ns dinsro.ui.core.wallets
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
+   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.wallets :as j.c.wallets]
@@ -12,6 +14,29 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.links :as u.links]))
+
+(defsc RefRow
+  [_this {::m.wallets/keys [name] :as props}]
+  {:ident ::m.wallets/id
+   :query [::m.wallets/id
+           ::m.wallets/name]}
+  (dom/tr {}
+    (dom/td (u.links/ui-rate-link props))))
+
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.wallets/id}))
+
+(defn ref-table
+  [{:keys [value]} _attribute]
+  (comp/fragment
+   (dom/table :.ui.table
+     (dom/thead {}
+       (dom/tr {}
+         (dom/th {} "Name")))
+     (dom/tbody {}
+       (for [ref value]
+         (ui-ref-row ref))))))
+
+(def render-ref-table (render-field-factory ref-table))
 
 (def create-button
   {:type   :button
@@ -79,7 +104,7 @@
                       j.c.wallets/words]
    fo/controls       (merge form/standard-controls {::roll roll-button})
    fo/field-styles   {::m.c.wallets/addresses :link-list
-                      ::m.c.wallets/words     :link-list}
+                      ::m.c.wallets/words     :word-list}
    fo/route-prefix   "wallet"
    fo/subforms       {::m.c.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
                       ::m.c.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
