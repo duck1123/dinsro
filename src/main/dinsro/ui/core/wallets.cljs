@@ -16,14 +16,14 @@
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow
-  [_this {::m.wallets/keys [name] :as props}]
-  {:ident ::m.wallets/id
-   :query [::m.wallets/id
-           ::m.wallets/name]}
+  [_this props]
+  {:ident ::m.c.wallets/id
+   :query [::m.c.wallets/id
+           ::m.c.wallets/name]}
   (dom/tr {}
     (dom/td (u.links/ui-rate-link props))))
 
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.wallets/id}))
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.wallets/id}))
 
 (defn ref-table
   [{:keys [value]} _attribute]

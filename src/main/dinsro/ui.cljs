@@ -22,11 +22,12 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.core.addresses :as u.c.addresses]
-   [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.address :as u.c.addresses]
+   [dinsro.ui.core.block :as u.c.blocks]
+   [dinsro.ui.core.connections :as u.c.connections]
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.peers :as u.c.peers]
-   [dinsro.ui.core.tx :as u.c.tx]
+   [dinsro.ui.core-tx :as u.c.tx]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
@@ -76,6 +77,7 @@
                     u.c.addresses/CoreAddressReport
                     u.c.blocks/CoreBlockForm
                     u.c.blocks/CoreBlockReport
+                    u.c.connections/CoreNodeConnectionsReport
                     u.c.nodes/NewCoreNodeForm
                     u.c.nodes/CoreNodeForm
                     u.c.nodes/CoreNodesReport

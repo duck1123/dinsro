@@ -39,7 +39,6 @@
    [dinsro.ui.ln.peers :as u.ln.peers]
    [dinsro.ui.ln.transactions :as u.ln.tx]
    [dinsro.ui.rates :as u.rates]
-   [dinsro.ui.wallets :as u.wallets]
    [lambdaisland.glogc :as log]
    ["victory" :as victory]))
 

@@ -5,6 +5,7 @@
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.joins.core.blocks :as j.c.blocks]
+   [dinsro.joins.core.connections :as j.c.connections]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.joins.core.tx :as j.c.tx]
@@ -29,9 +30,10 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.connections :as m.c.connections]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.script-sigs :as m.c.script-sig]
+   [dinsro.model.core.script-sigs :as m.c.script-sigs]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
@@ -81,6 +83,7 @@
         j.categories/attributes
         j.c.addresses/attributes
         j.c.blocks/attributes
+        j.c.connections/attributes
         j.c.nodes/attributes
         j.c.peers/attributes
         j.c.tx/attributes
@@ -105,9 +108,10 @@
         m.categories/attributes
         m.c.addresses/attributes
         m.c.blocks/attributes
+        m.c.connections/attributes
         m.c.nodes/attributes
         m.c.peers/attributes
-        m.c.script-sig/attributes
+        m.c.script-sigs/attributes
         m.c.tx/attributes
         m.c.tx-in/attributes
         m.c.tx-out/attributes
