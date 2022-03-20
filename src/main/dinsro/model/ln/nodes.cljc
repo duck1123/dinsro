@@ -39,7 +39,7 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::core-node ::m.c.nodes/id)
+(>def ::c.node ::m.c.nodes/id)
 (defattr core-node ::core-node :ref
   {ao/identities #{::id}
    ao/target     ::m.c.nodes/id

@@ -11,14 +11,14 @@
   [_this _props]
   {fo/id            m.ln.tx/id
    fo/attributes    [m.ln.remote-nodes/pubkey]
-   fo/route-prefix  "ln-remote-node"
+   fo/route-prefix  "remote-node"
    fo/title         "Remote Node"})
 
 (report/defsc-report RemoteNodesReport
   [_this _props]
   {ro/columns          [m.ln.remote-nodes/pubkey
                         m.ln.remote-nodes/alias]
-   ro/route            "ln-remote-nodes"
+   ro/route            "remote-nodes"
    ro/row-actions      []
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true

@@ -48,7 +48,7 @@
 (form/defsc-form CoreTxOutput
   [this props]
   {fo/id           m.c.tx-out/id
-   fo/route-prefix "core-tx-in"
+   fo/route-prefix "c.tx-in"
    fo/attributes   [m.c.tx-out/n
                     m.c.tx-out/value
                     m.c.tx-out/asm

@@ -89,7 +89,7 @@
   {fo/id           m.c.tx/id
    fo/title        "Core Block Transactions"
    fo/attributes   [m.c.tx/tx-id m.c.tx/fetched?]
-   fo/route-prefix "core-node-tx"})
+   fo/route-prefix "node-tx"})
 
 (def override-form false)
 
@@ -123,7 +123,7 @@
    fo/controls       (merge form/standard-controls
                             {::fetch fetch-button
                              ::fetch-transactions fetch-transactions-button})
-   fo/route-prefix   "core-block"
+   fo/route-prefix   "block"
    fo/title          "Core Block"}
   (if override-form
     (form/render-layout this props)
@@ -233,4 +233,4 @@
    ro/row-actions [delete-action-button]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/route            "core-blocks"})
+   ro/route            "blocks"})

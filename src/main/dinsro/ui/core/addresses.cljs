@@ -13,7 +13,7 @@
   {fo/id           m.c.addresses/id
    fo/title        "Address"
    fo/attributes   [m.c.addresses/address]
-   fo/route-prefix "core-address"})
+   fo/route-prefix "address"})
 
 (def new-button
   {:type   :button
@@ -40,4 +40,4 @@
    ro/row-actions      [fetch-button]
    ro/row-pk           m.c.addresses/id
    ro/run-on-mount?    true
-   ro/route            "core-addresses"})
+   ro/route            "addresses"})

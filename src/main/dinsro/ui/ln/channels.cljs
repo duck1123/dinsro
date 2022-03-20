@@ -48,7 +48,7 @@
 (form/defsc-form ChannelSubform
   [_this _props]
   {fo/id           m.ln.channels/id
-   fo/route-prefix "ln-ch"
+   fo/route-prefix "ch"
    fo/title        "Channels"
    fo/attributes   [m.ln.channels/id
                     m.ln.channels/active
@@ -75,7 +75,7 @@
                   m.ln.channels/commit-fee
                   m.ln.channels/node]
    fo/subforms     {::m.ln.channels/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix "ln-channel"
+   fo/route-prefix "channel"
    fo/title        "Lightning Channels"})
 
 (report/defsc-report LNChannelsReport
@@ -87,7 +87,7 @@
                                              (let [{::m.ln.channels/keys [id]} props]
                                                (form/view! this LNChannelForm id)))}
    ro/field-formatters {::m.ln.channels/node (fn [_this props] (u.links/ui-node-link props))}
-   ro/route            "ln-channels"
+   ro/route            "channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.channels/index

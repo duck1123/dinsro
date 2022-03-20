@@ -72,7 +72,7 @@
    fo/action-buttons [::pay]
    fo/controls       {::pay pay-button}
    fo/subforms       {::m.ln.payreqs/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix   "ln-payreq"
+   fo/route-prefix   "payreq"
    fo/title          "Lightning Payreqs"})
 
 (def decode-button

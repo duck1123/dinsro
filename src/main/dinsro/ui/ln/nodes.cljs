@@ -132,7 +132,7 @@
 (form/defsc-form CoreTxForm
   [_this _props]
   {fo/id           m.ln.tx/tx-hash
-   fo/route-prefix "ln-nodes-tx"
+   fo/route-prefix "nodes-tx"
    fo/title        "Transactions"
    fo/attributes   [m.ln.tx/tx-hash]})
 
@@ -202,8 +202,8 @@
                          (sort-by ::m.users/name options)))}}
    fo/field-styles  {::m.ln.nodes/core-node :pick-one
                      ::m.ln.nodes/user      :pick-one}
-   fo/cancel-route  ["ln-nodes"]
-   fo/route-prefix  "create-ln-node"
+   fo/cancel-route  ["nodes"]
+   fo/route-prefix  "create-node"
    fo/title         "Create Lightning Node"}
   (if override-create-form
     (form/render-layout this props)
@@ -247,8 +247,8 @@
                       ::m.ln.nodes/peers        :ln-peer-row
                       ::m.ln.nodes/transactions :ln-tx-row
                       ::m.ln.nodes/invoices     :ln-invoice-row}
-   fo/cancel-route   ["ln-nodes"]
-   fo/route-prefix   "ln-node"
+   fo/cancel-route   ["nodes"]
+   fo/route-prefix   "node"
    fo/title          "Lightning Node"}
   (if override-form
     (form/render-layout this props)
@@ -278,7 +278,7 @@
    ro/field-formatters {::m.ln.nodes/user      (fn [_this props] (u.links/ui-user-link props))
                         ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
    ro/machine          lightning-node-report-machine
-   ro/route            "ln-nodes"
+   ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.nodes/index
@@ -314,7 +314,7 @@
    ro/field-formatters {::m.ln.nodes/user      (fn [_this props] (u.links/ui-user-link props))
                         ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
    ro/machine          lightning-node-report-machine
-   ro/route            "ln-nodes"
+   ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.nodes/admin-index

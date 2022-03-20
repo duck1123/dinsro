@@ -47,7 +47,7 @@
                             :value [::m.c.nodes/id id]})
                          (sort-by ::m.c.nodes/name options)))}}
    fo/field-styles {::m.c.peers/node :pick-one}
-   fo/route-prefix "new-core-peer"
+   fo/route-prefix "new-peer"
    fo/title        "New Core Peer"})
 
 (def delete-button
@@ -68,7 +68,7 @@
                       m.c.peers/peer-id]
    fo/controls       {::delete delete-button}
    fo/field-styles   {::m.c.peers/node :link}
-   fo/route-prefix   "core-peer"
+   fo/route-prefix   "peer"
    fo/subforms       {::m.c.peers/node {fo/ui u.links/CoreNodeLinkForm}}
    fo/title          "Core Peer"})
 
@@ -96,4 +96,4 @@
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
-   ro/route            "core-peers"})
+   ro/route            "peers"})

@@ -22,22 +22,11 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.core.address :as u.c.addresses]
-   [dinsro.ui.core.block :as u.c.blocks]
-   [dinsro.ui.core.connections :as u.c.connections]
-   [dinsro.ui.core.nodes :as u.c.nodes]
-   [dinsro.ui.core.peers :as u.c.peers]
-   [dinsro.ui.core-tx :as u.c.tx]
+   [dinsro.ui.core :as u.core]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
-   [dinsro.ui.ln.channels :as u.ln.channels]
-   [dinsro.ui.ln.invoices :as u.ln.invoices]
-   [dinsro.ui.ln.nodes :as u.ln.nodes]
-   [dinsro.ui.ln.payments :as u.ln.payments]
-   [dinsro.ui.ln.payreqs :as u.ln.payreqs]
-   [dinsro.ui.ln.peers :as u.ln.peers]
-   [dinsro.ui.ln.transactions :as u.ln.tx]
+   [dinsro.ui.ln :as u.ln]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.navbar :as u.navbar]
    [dinsro.ui.rates :as u.rates]
@@ -45,9 +34,6 @@
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.transactions :as u.transactions]
    [dinsro.ui.users :as u.users]
-   [dinsro.ui.core.wallets :as u.c.wallets]
-   [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
-   [dinsro.ui.core.words :as u.c.words]
    ["fomantic-ui"]))
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
@@ -73,43 +59,14 @@
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
                     u.categories/NewCategoryForm
-                    u.c.addresses/CoreAddressForm
-                    u.c.addresses/CoreAddressReport
-                    u.c.blocks/CoreBlockForm
-                    u.c.blocks/CoreBlockReport
-                    u.c.connections/CoreNodeConnectionsReport
-                    u.c.nodes/NewCoreNodeForm
-                    u.c.nodes/CoreNodeForm
-                    u.c.nodes/CoreNodesReport
-                    u.c.peers/CorePeerForm
-                    u.c.peers/CorePeersReport
-                    u.c.peers/NewCorePeerForm
-                    u.c.tx/CoreTxForm
-                    u.c.tx/CoreTxReport
+                    u.core/CorePage
                     u.currencies/AdminCurrencyForm
                     u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport
                     u.currencies/NewCurrencyForm
                     u.home/HomePage
-                    u.ln.channels/LNChannelForm
-                    u.ln.channels/LNChannelsReport
-                    u.ln.invoices/LNInvoiceForm
-                    u.ln.invoices/LNInvoicesReport
-                    u.ln.invoices/NewInvoiceForm
-                    u.ln.nodes/CreateLightningNodeForm
-                    u.ln.nodes/LightningNodeForm
-                    u.ln.nodes/LightningNodesReport
-                    u.ln.payments/LNPaymentForm
-                    u.ln.payments/LNPaymentsReport
-                    u.ln.payreqs/NewPaymentForm
-                    u.ln.payreqs/LNPaymentForm
-                    u.ln.payreqs/LNPayreqsReport
-                    u.ln.payreqs/NewPaymentForm
-                    u.ln.peers/LNPeerForm
-                    u.ln.peers/LNPeersReport
-                    u.ln.tx/LNTransactionForm
-                    u.ln.tx/LNTransactionsReport
                     u.login/LoginPage
+                    u.ln/LnPage
                     u.rate-sources/RateSourceForm
                     u.rate-sources/RateSourcesReport
                     u.rates/RateForm
@@ -119,14 +76,7 @@
                     u.transactions/TransactionsReport
                     u.users/AdminUserForm
                     u.users/UserForm
-                    u.users/UsersReport
-                    u.c.wallets/NewWalletForm
-                    u.c.wallets/WalletForm
-                    u.c.wallets/WalletReport
-                    u.c.wallet-addresses/NewWalletAddressForm
-                    u.c.wallet-addresses/WalletAddressForm
-                    u.c.wallet-addresses/WalletAddressesReport
-                    u.c.words/WordReport]}
+                    u.users/UsersReport]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
       :pending (dom/div "Loading...")
