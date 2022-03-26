@@ -17,6 +17,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.home :as u.home]
+   [lambdaisland.glogc :as log]
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]))
 
 (s/def ::expanded? boolean?)
@@ -37,7 +38,7 @@
    :initial-state {::dr/current-route {}}})
 
 (defsc NavLink
-  [this {::m.navlink/keys [name]}]
+  [this {::m.navlink/keys [name] :as props}]
   {:ident         ::m.navlink/id
    :initial-state {::m.navlink/id         nil
                    ::m.navlink/name       ""
@@ -52,6 +53,7 @@
                    ::m.navlink/name
                    ::m.navlink/target
                    {[:root/router '_] (comp/get-query RouteQuery)}]}
+  (log/info :navlink/rendering {:props props})
   (dom/a :.item
     {:onClick (fn [e]
                 (.preventDefault e)

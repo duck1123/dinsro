@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.sample :as sample]
+   [dinsro.specs :as ds]
    [dinsro.ui.navbar :as u.navbar]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
@@ -16,6 +17,16 @@
 (defn map-links
   [links]
   (map #(comp/get-initial-state u.navbar/NavLink (sample/navlink-map %)) links))
+
+(ws/defcard NavLink
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root u.navbar/NavLink
+    ::ct.fulcro3/initial-state
+    (fn [] {::m.navlink/id         "foo"
+            ::m.navlink/name       (ds/gen-key ::m.navlink/name)
+            ::m.navlink/auth-link? false
+            ::m.navlink/target     nil
+            :root/router           {}})}))
 
 (ws/defcard Navbar
   {::wsm/align       {:flex 1}
