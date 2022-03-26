@@ -81,6 +81,7 @@
                    ::m.navlink/target
                    {::m.navlink/children (comp/get-query NavLink)}
                    {[:root/router '_] (comp/get-query RouteQuery)}]}
+  (log/info :top-nav-link/rendered {:props props})
   (if (seq children)
     (dom/div :.ui.simple.dropdown.item
       name
@@ -198,12 +199,16 @@
                    {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
                    ::expanded?
                    [::uism/asm-id ::mu.navbar/navbarsm]]}
+  (log/info :navbar/rendering {:props props})
   (let [{:keys [site-button]} (css/get-classnames Navbar)
         authorization         (get props [::auth/authorization :local])
         current-user          (:session/current-user authorization)
         inverted              true
         logged-in?            (= (::auth/status authorization) :success)]
-
+    (log/info :navbar/rendering {:authorization authorization
+                                 :current-user  current-user
+                                 :inverted      inverted
+                                 :logged-in?    logged-in?})
     (dom/div {:classes [:.ui.top.fixed.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]
@@ -218,9 +223,8 @@
         (map ui-top-nav-link unauth-links))
       (ui-menu-menu
        {:position "right"}
-       (dom/div
-         {:classes [:.item]
-          :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
+       (dom/div {:classes [:.item]
+                 :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
          (dom/i :.icon.sidebar))))))
 
 (def ui-navbar (comp/factory Navbar))

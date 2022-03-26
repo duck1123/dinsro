@@ -1,9 +1,11 @@
 (ns dinsro.ui.navbar-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.sample :as sample]
    [dinsro.specs :as ds]
+   dinsro.machines
    [dinsro.ui.navbar :as u.navbar]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
@@ -28,22 +30,33 @@
             ::m.navlink/target     nil
             :root/router           {}})}))
 
+(def unauth-links [])
+
+(def menu-links [])
+
+(def nav-state
+  {:com.fulcrologic.fulcro.ui-state-machines/asm-id           :dinsro.mutations.navbar/navbarsm,
+   :com.fulcrologic.fulcro.ui-state-machines/state-machine-id dinsro.machines/hideable,
+   :com.fulcrologic.fulcro.ui-state-machines/active-state     :state/hidden,
+   :com.fulcrologic.fulcro.ui-state-machines/ident->actor     {:actor/navbar {}}
+   :com.fulcrologic.fulcro.ui-state-machines/actor->ident     {:actor/navbar {}}})
+
 (ws/defcard Navbar
   {::wsm/align       {:flex 1}
    ::wsm/card-height 5
-   ::wsm/card-width  6}
+   ::wsm/card-width  6
+   ::wsm/node-props  {:style
+                      {:position  "absolute"
+                       :width     "100%"
+                       :transform "translate(0px, 350%)"
+                       :height    "40px"}}}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.navbar/Navbar
     ::ct.fulcro3/initial-state
     (fn []
-      {::m.navlink/id                sample/navlink-map
-       :auth/id                      1
-       :navbar/expanded?             true
-       :navbar/auth-data             {:link {::m.navlink/id   "user"
-                                             ::m.navlink/name "User"
-                                             ::m.navlink/href "/users"}}
-       :navbar/navbar-brand          {}
-       :navbar/menu-links            (map sample/navlink-map ["foo" "bar"])
-       :navbar/top-level-links       (map sample/navlink-map ["accounts" "transactions"])
-       :navbar/unauthenticated-links (map-links ["login" "register"])
-       :navbar/dropdown-menu-links   (map sample/navlink-map ["foo" "bar" "baz"])})}))
+      {::m.navbar/id                                                                        :main
+       :dinsro.ui.navbar/expanded?                                                          false
+       ::m.navbar/menu-links                                                                menu-links
+       ::m.navbar/unauth-links                                                              unauth-links
+       [:com.fulcrologic.fulcro.ui-state-machines/asm-id :dinsro.mutations.navbar/navbarsm] nav-state
+       ::m.navlink/id                                                                       sample/navlink-map})}))
