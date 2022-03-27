@@ -55,7 +55,7 @@
    fo/route-prefix "block-link"
    fo/title        "Blocks"
    fo/attributes   [m.c.blocks/hash]}
-  (form-link this id hash :dinsro.ui.c.blocks/CoreBlockForm))
+  (form-link this id hash :dinsro.ui.core.blocks/CoreBlockForm))
 
 (def ui-block-link (comp/factory BlockLinkForm {:keyfn ::m.categories/id}))
 
@@ -65,7 +65,7 @@
    fo/route-prefix "block-height-link"
    fo/title        "Blocks"
    fo/attributes   [m.c.blocks/height]}
-  (form-link this id height :dinsro.ui.c.blocks/CoreBlockForm))
+  (form-link this id height :dinsro.ui.core.blocks/CoreBlockForm))
 
 (def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.categories/id}))
 
@@ -92,7 +92,7 @@
   {fo/id           m.c.nodes/id
    fo/route-prefix "core-node-link"
    fo/attributes   [m.c.nodes/id m.c.nodes/name]}
-  (form-link this id name :dinsro.ui.c.nodes/CoreNodeForm))
+  (form-link this id name :dinsro.ui.core.nodes/CoreNodeForm))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
@@ -102,7 +102,7 @@
    fo/route-prefix "core-peer-link"
    fo/title        "Peers"
    fo/attributes   [m.c.peers/id m.c.peers/addr]}
-  (form-link this id addr :dinsro.ui.c.peers/CorePeerForm))
+  (form-link this id addr :dinsro.ui.core.peers/CorePeerForm))
 
 (def ui-core-peer-link (comp/factory CorePeerLinkForm {:keyfn ::m.c.peers/id}))
 
@@ -112,7 +112,7 @@
    fo/route-prefix "core-tx-link"
    fo/title        "Transaction"
    fo/attributes   [m.c.tx/id m.c.tx/tx-id]}
-  (form-link this id tx-id :dinsro.ui.c.tx/CoreTxForm))
+  (form-link this id tx-id :dinsro.ui.core.tx/CoreTxForm))
 
 (def ui-core-tx-link (comp/factory CoreTxLinkForm {:keyfn ::m.c.tx/id}))
 
@@ -216,7 +216,7 @@
    fo/route-prefix "wallet-addresses-link"
    fo/attributes   [m.c.wallet-addresses/address]
    fo/title        "Wallet Addresses"}
-  (form-link this id address :dinsro.ui.c.wallet-addresses/WalletAddressForm))
+  (form-link this id address :dinsro.ui.core.wallet-addresses/WalletAddressForm))
 
 (def ui-wallet-address-link (comp/factory WalletAddressLinkForm {:keyfn ::m.c.wallet-addresses/id}))
 
@@ -225,7 +225,7 @@
    fo/route-prefix "wallets-link"
    fo/attributes   [m.c.wallets/name]
    fo/title        "Wallet"}
-  (form-link this id name :dinsro.ui.c.wallets/WalletForm))
+  (form-link this id name :dinsro.ui.core.wallets/WalletForm))
 
 (def ui-wallet-link (comp/factory WalletLinkForm {:keyfn ::m.c.wallets/id}))
 

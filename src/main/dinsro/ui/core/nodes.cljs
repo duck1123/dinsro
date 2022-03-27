@@ -91,7 +91,7 @@
    :label  "New Peer"
    :action (fn [this _]
              (let [{::m.c.nodes/keys [id name]} (comp/props this)
-                   component                       (comp/registry-key->class :dinsro.ui.c.peers/NewCorePeerForm)
+                   component                       (comp/registry-key->class :dinsro.ui.core.peers/NewCorePeerForm)
                    state                           {::m.c.nodes/node {::m.c.nodes/id   id
                                                                       ::m.c.nodes/name name}}
                    options                         {:initial-state state}]
