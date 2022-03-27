@@ -6,13 +6,13 @@
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.peers :as m.core-peers]
    [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.core.wallets :as m.wallets]
    #?(:clj [dinsro.queries.core.blocks :as q.core-blocks])
    #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
    #?(:clj [dinsro.queries.core.peers :as q.core-peers])
    #?(:clj [dinsro.queries.core.tx :as q.core-tx])
-   #?(:clj [dinsro.queries.ln.nodes :as q.ln-nodes])
+   #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
    #?(:clj [dinsro.queries.core.wallets :as q.wallets])
    [dinsro.specs]))
 
@@ -38,12 +38,12 @@
 (defattr ln-nodes ::m.core-nodes/ln-nodes :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.core-nodes/id}
-   ao/pc-output   [{::m.core-nodes/ln-nodes [::m.ln-nodes/id]}]
-   ao/target      ::m.ln-nodes/id
+   ao/pc-output   [{::m.core-nodes/ln-nodes [::m.ln.nodes/id]}]
+   ao/target      ::m.ln.nodes/id
    ao/pc-resolve
    (fn [_env {::m.core-nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln-nodes/find-by-core-node id) :cljs []) [])]
-       {::m.core-nodes/ln-nodes (m.ln-nodes/idents ids)}))})
+     (let [ids (if id #?(:clj (q.ln.nodes/find-by-core-node id) :cljs []) [])]
+       {::m.core-nodes/ln-nodes (m.ln.nodes/idents ids)}))})
 
 (defattr peers ::m.core-nodes/peers :ref
   {ao/cardinality :many

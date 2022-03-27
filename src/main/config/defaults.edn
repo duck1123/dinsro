@@ -4,7 +4,7 @@
  :dinsro.components.seed/enabled    false
 
  ;; The base path where lnd certs are stored
- :dinsro.model.ln-nodes/cert-base "/mnt/certs"
+ :dinsro.model.ln.nodes/cert-base "/mnt/certs"
 
  :org.httpkit.server/config
  {:port 3000

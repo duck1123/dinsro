@@ -13,13 +13,13 @@
    [dinsro.model.core.peers :as m.core-peers]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.ln.channels :as m.ln-channels]
-   [dinsro.model.ln.invoices :as m.ln-invoices]
-   [dinsro.model.ln.payments :as m.ln-payments]
-   [dinsro.model.ln.payreqs :as m.ln-payreqs]
-   [dinsro.model.ln.peers :as m.ln-peers]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
-   [dinsro.model.ln.transactions :as m.ln-tx]
+   [dinsro.model.ln.channels :as m.ln.channels]
+   [dinsro.model.ln.invoices :as m.ln.invoices]
+   [dinsro.model.ln.payments :as m.ln.payments]
+   [dinsro.model.ln.payreqs :as m.ln.payreqs]
+   [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
@@ -32,12 +32,12 @@
    [dinsro.ui.core.tx-in :as u.core-tx-in]
    [dinsro.ui.core.tx-out :as u.core-tx-out]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.ln.channels :as u.ln-channels]
-   [dinsro.ui.ln.invoices :as u.ln-invoices]
-   [dinsro.ui.ln.payments :as u.ln-payments]
-   [dinsro.ui.ln.payreqs :as u.ln-payreqs]
-   [dinsro.ui.ln.peers :as u.ln-peers]
-   [dinsro.ui.ln.transactions :as u.ln-tx]
+   [dinsro.ui.ln.channels :as u.ln.channels]
+   [dinsro.ui.ln.invoices :as u.ln.invoices]
+   [dinsro.ui.ln.payments :as u.ln.payments]
+   [dinsro.ui.ln.payreqs :as u.ln.payreqs]
+   [dinsro.ui.ln.peers :as u.ln.peers]
+   [dinsro.ui.ln.transactions :as u.ln.tx]
    [dinsro.ui.rates :as u.rates]
    [lambdaisland.glogc :as log]
    ["victory" :as victory]))
@@ -68,13 +68,13 @@
          core-node-id   ::m.core-nodes/id
          core-tx-id     ::m.core-tx/id
          currency-id    ::m.currencies/id
-         channel-id     ::m.ln-channels/id
-         invoice-id     ::m.ln-invoices/id
-         ln-tx-id       ::m.ln-tx/id
-         payreq-id      ::m.ln-payreqs/id
-         payment-id     ::m.ln-payments/id
-         peer-id        ::m.ln-peers/id
-         node-id        ::m.ln-nodes/id
+         channel-id     ::m.ln.channels/id
+         invoice-id     ::m.ln.invoices/id
+         ln-tx-id       ::m.ln.tx/id
+         payreq-id      ::m.ln.payreqs/id
+         payment-id     ::m.ln.payments/id
+         peer-id        ::m.ln.peers/id
+         node-id        ::m.ln.nodes/id
          source-id      ::m.rate-sources/id
          transaction-id ::m.transactions/id
          user-id        ::m.users/id
@@ -192,12 +192,12 @@
       (control-type :ref  :link-subform     render-link-subform-control)
       (control-type :ref  :core-block-table u.core-blocks/render-ref-row)
       (control-type :ref  :core-tx-table    u.core-tx/render-ref-row)
-      (control-type :ref  :ln-tx-row        u.ln-tx/render-ref-ln-tx-row)
-      (control-type :ref  :ln-channels-row  u.ln-channels/render-ref-row)
-      (control-type :ref  :ln-payments-row  u.ln-payments/render-ref-row)
-      (control-type :ref  :ln-payreqs-row   u.ln-payreqs/render-ref-ln-payreq-row)
-      (control-type :ref  :ln-peer-row      u.ln-peers/render-ref-ln-peer-row)
-      (control-type :ref  :ln-invoice-row   u.ln-invoices/render-ref-ln-invoice-row)
+      (control-type :ref  :ln-tx-row        u.ln.tx/render-ref-ln-tx-row)
+      (control-type :ref  :ln-channels-row  u.ln.channels/render-ref-row)
+      (control-type :ref  :ln-payments-row  u.ln.payments/render-ref-row)
+      (control-type :ref  :ln-payreqs-row   u.ln.payreqs/render-ref-ln-payreq-row)
+      (control-type :ref  :ln-peer-row      u.ln.peers/render-ref-ln-peer-row)
+      (control-type :ref  :ln-invoice-row   u.ln.invoices/render-ref-ln-invoice-row)
       (control-type :ref  :tx-in-table      u.core-tx-in/render-ref-row)
       (control-type :ref  :tx-out-table     u.core-tx-out/render-ref-row)
       (control-type :ref  :rate-chart       render-rate-chart-control)

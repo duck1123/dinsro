@@ -11,7 +11,7 @@
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.ln.nodes :as u.ln-nodes]
+   [dinsro.ui.ln.nodes :as u.ln.nodes]
    [lambdaisland.glogc :as log]))
 
 (defsc-container HomePage2
@@ -22,7 +22,7 @@
    :route-segment [""]
    co/children    {:categories u.categories/CategoriesSubReport
                    :accounts   u.accounts/AccountsSubReport
-                   :ln-nodes   u.ln-nodes/LNNodesSubReport}
+                   :ln-nodes   u.ln.nodes/LNNodesSubReport}
    co/route       ""
    co/title       "Home Page"
    co/layout      [[{:id :categories :width 8} {:id :accounts :width 8}]

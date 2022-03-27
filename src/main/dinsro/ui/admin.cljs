@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.ln.nodes :as u.ln-nodes]
+   [dinsro.ui.ln.nodes :as u.ln.nodes]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]))
@@ -47,7 +47,7 @@
   [_this {:keys [current-state]}]
   {:router-targets [u.users/AdminIndexUsersReport
                     u.categories/AdminIndexCategoriesReport
-                    u.ln-nodes/AdminLNNodesReport
+                    u.ln.nodes/AdminLNNodesReport
                     u.accounts/AdminIndexAccountsReport]}
   (dom/div :.admin-router
     (dom/h2 {} "Admin Router")
@@ -77,7 +77,7 @@
                :route u.categories/AdminIndexCategoriesReport}
               {:key   "ln-nodes"
                :name  "LN Nodes"
-               :route u.ln-nodes/AdminLNNodesReport}
+               :route u.ln.nodes/AdminLNNodesReport}
               {:key   "accounts"
                :name  "Accounts"
                :route u.accounts/AdminIndexAccountsReport}]

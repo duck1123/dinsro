@@ -30,13 +30,13 @@
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
-   [dinsro.ui.ln.channels :as u.ln-channels]
-   [dinsro.ui.ln.invoices :as u.ln-invoices]
-   [dinsro.ui.ln.nodes :as u.ln-nodes]
-   [dinsro.ui.ln.payments :as u.ln-payments]
-   [dinsro.ui.ln.payreqs :as u.ln-payreqs]
-   [dinsro.ui.ln.peers :as u.ln-peers]
-   [dinsro.ui.ln.transactions :as u.ln-tx]
+   [dinsro.ui.ln.channels :as u.ln.channels]
+   [dinsro.ui.ln.invoices :as u.ln.invoices]
+   [dinsro.ui.ln.nodes :as u.ln.nodes]
+   [dinsro.ui.ln.payments :as u.ln.payments]
+   [dinsro.ui.ln.payreqs :as u.ln.payreqs]
+   [dinsro.ui.ln.peers :as u.ln.peers]
+   [dinsro.ui.ln.transactions :as u.ln.tx]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.navbar :as u.navbar]
    [dinsro.ui.rates :as u.rates]
@@ -89,24 +89,24 @@
                     u.currencies/CurrenciesReport
                     u.currencies/NewCurrencyForm
                     u.home/HomePage
-                    u.ln-channels/LNChannelForm
-                    u.ln-channels/LNChannelsReport
-                    u.ln-invoices/LNInvoiceForm
-                    u.ln-invoices/LNInvoicesReport
-                    u.ln-invoices/NewInvoiceForm
-                    u.ln-nodes/CreateLightningNodeForm
-                    u.ln-nodes/LightningNodeForm
-                    u.ln-nodes/LightningNodesReport
-                    u.ln-payments/LNPaymentForm
-                    u.ln-payments/LNPaymentsReport
-                    u.ln-payreqs/NewPaymentForm
-                    u.ln-payreqs/LNPaymentForm
-                    u.ln-payreqs/LNPayreqsReport
-                    u.ln-payreqs/NewPaymentForm
-                    u.ln-peers/LNPeerForm
-                    u.ln-peers/LNPeersReport
-                    u.ln-tx/LNTransactionForm
-                    u.ln-tx/LNTransactionsReport
+                    u.ln.channels/LNChannelForm
+                    u.ln.channels/LNChannelsReport
+                    u.ln.invoices/LNInvoiceForm
+                    u.ln.invoices/LNInvoicesReport
+                    u.ln.invoices/NewInvoiceForm
+                    u.ln.nodes/CreateLightningNodeForm
+                    u.ln.nodes/LightningNodeForm
+                    u.ln.nodes/LightningNodesReport
+                    u.ln.payments/LNPaymentForm
+                    u.ln.payments/LNPaymentsReport
+                    u.ln.payreqs/NewPaymentForm
+                    u.ln.payreqs/LNPaymentForm
+                    u.ln.payreqs/LNPayreqsReport
+                    u.ln.payreqs/NewPaymentForm
+                    u.ln.peers/LNPeerForm
+                    u.ln.peers/LNPeersReport
+                    u.ln.tx/LNTransactionForm
+                    u.ln.tx/LNTransactionsReport
                     u.login/LoginPage
                     u.rate-sources/RateSourceForm
                     u.rate-sources/RateSourcesReport

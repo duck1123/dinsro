@@ -7,7 +7,7 @@
    [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [xtdb.api :as xt]))
 
@@ -63,11 +63,11 @@
 
 (>defn find-by-ln-node
   [ln-node-id]
-  [::m.ln-nodes/id => (? ::m.core-nodes/id)]
+  [::m.ln.nodes/id => (? ::m.core-nodes/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?core-node-id]
                 :in    [?ln-node-id]
-                :where [[?ln-node-id ::m.ln-nodes/core-node ?core-node-id]]}]
+                :where [[?ln-node-id ::m.ln.nodes/core-node ?core-node-id]]}]
     (ffirst (xt/q db query ln-node-id))))
 
 (>defn find-by-tx

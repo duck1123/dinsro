@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.model.ln.nodes :as m.ln-nodes]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (def rename-map
   {:amount           ::amount
@@ -73,9 +73,9 @@
 (s/def ::node uuid?)
 (defattr node ::node :ref
   {ao/identities #{::id}
-   ao/target     ::m.ln-nodes/id
+   ao/target     ::m.ln.nodes/id
    ao/schema     :production
-   ::report/column-EQL {::node [::m.ln-nodes/id ::m.ln-nodes/name]}})
+   ::report/column-EQL {::node [::m.ln.nodes/id ::m.ln.nodes/name]}})
 
 (s/def ::core-tx uuid?)
 (defattr core-tx ::core-tx :ref

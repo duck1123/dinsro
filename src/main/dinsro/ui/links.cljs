@@ -11,13 +11,13 @@
    [dinsro.model.core.peers :as m.core-peers]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.ln.channels :as m.ln-channels]
-   [dinsro.model.ln.invoices :as m.ln-invoices]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
-   [dinsro.model.ln.payments :as m.ln-payments]
-   [dinsro.model.ln.payreqs :as m.ln-payreqs]
-   [dinsro.model.ln.peers :as m.ln-peers]
-   [dinsro.model.ln.transactions :as m.ln-tx]
+   [dinsro.model.ln.channels :as m.ln.channels]
+   [dinsro.model.ln.invoices :as m.ln.invoices]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.payments :as m.ln.payments]
+   [dinsro.model.ln.payreqs :as m.ln.payreqs]
+   [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -78,14 +78,14 @@
 
 (def ui-category-link (comp/factory CategoryLinkForm {:keyfn ::m.categories/id}))
 
-(form/defsc-form ChannelLinkForm [this {::m.ln-channels/keys [id channel-point]}]
-  {fo/id           m.ln-channels/id
+(form/defsc-form ChannelLinkForm [this {::m.ln.channels/keys [id channel-point]}]
+  {fo/id           m.ln.channels/id
    fo/route-prefix "channel-link"
    fo/title        "Channels"
-   fo/attributes   [m.ln-channels/channel-point]}
-  (form-link this id channel-point :dinsro.ui.ln-channels/LNChannelForm))
+   fo/attributes   [m.ln.channels/channel-point]}
+  (form-link this id channel-point :dinsro.ui.ln.channels/LNChannelForm))
 
-(def ui-channel-link (comp/factory ChannelLinkForm {:keyfn ::m.ln-channels/id}))
+(def ui-channel-link (comp/factory ChannelLinkForm {:keyfn ::m.ln.channels/id}))
 
 (form/defsc-form CoreNodeLinkForm
   [this {::m.core-nodes/keys [id name]}]
@@ -125,57 +125,57 @@
 
 (def ui-currency-link (comp/factory CurrencyLinkForm {:keyfn ::m.currencies/name}))
 
-(form/defsc-form InvoiceLinkForm [this {::m.ln-invoices/keys [id r-preimage]}]
-  {fo/id           m.ln-invoices/id
+(form/defsc-form InvoiceLinkForm [this {::m.ln.invoices/keys [id r-preimage]}]
+  {fo/id           m.ln.invoices/id
    fo/route-prefix "node-link"
-   fo/attributes   [m.ln-invoices/r-preimage]}
-  (form-link this id r-preimage :dinsro.ui.ln-invoices/LNInvoiceForm))
+   fo/attributes   [m.ln.invoices/r-preimage]}
+  (form-link this id r-preimage :dinsro.ui.ln.invoices/LNInvoiceForm))
 
-(def ui-invoice-link (comp/factory InvoiceLinkForm {:keyfn ::m.ln-invoices/id}))
+(def ui-invoice-link (comp/factory InvoiceLinkForm {:keyfn ::m.ln.invoices/id}))
 
-(form/defsc-form LNPeerLinkForm [this {::m.ln-peers/keys [id pubkey]}]
-  {fo/id           m.ln-peers/id
+(form/defsc-form LNPeerLinkForm [this {::m.ln.peers/keys [id pubkey]}]
+  {fo/id           m.ln.peers/id
    fo/route-prefix "ln-peer-link"
    fo/title        "Peers"
-   fo/attributes   [m.ln-peers/pubkey]}
-  (form-link this id pubkey :dinsro.ui.ln-peers/LNPeerForm))
+   fo/attributes   [m.ln.peers/pubkey]}
+  (form-link this id pubkey :dinsro.ui.ln.peers/LNPeerForm))
 
-(def ui-ln-peer-link (comp/factory LNPeerLinkForm {:keyfn ::m.ln-peers/id}))
+(def ui-ln-peer-link (comp/factory LNPeerLinkForm {:keyfn ::m.ln.peers/id}))
 
-(form/defsc-form LNTxLinkForm [this {::m.ln-tx/keys [id tx-hash]}]
-  {fo/id           m.ln-tx/id
+(form/defsc-form LNTxLinkForm [this {::m.ln.tx/keys [id tx-hash]}]
+  {fo/id           m.ln.tx/id
    fo/route-prefix "ln-tx-link"
-   fo/attributes   [m.ln-tx/tx-hash]}
-  (form-link this id tx-hash :dinsro.ui.ln-transactions/LNTransactionForm))
+   fo/attributes   [m.ln.tx/tx-hash]}
+  (form-link this id tx-hash :dinsro.ui.ln.transactions/LNTransactionForm))
 
-(def ui-ln-tx-link (comp/factory LNTxLinkForm {:keyfn ::m.ln-tx/id}))
+(def ui-ln-tx-link (comp/factory LNTxLinkForm {:keyfn ::m.ln.tx/id}))
 
-(form/defsc-form NodeLinkForm [this {::m.ln-nodes/keys [id name]}]
-  {fo/id           m.ln-nodes/id
+(form/defsc-form NodeLinkForm [this {::m.ln.nodes/keys [id name]}]
+  {fo/id           m.ln.nodes/id
    fo/route-prefix "node-link"
    fo/title        "LN Node"
-   fo/attributes   [m.ln-nodes/name]}
-  (form-link this id name :dinsro.ui.ln-nodes/LightningNodeForm))
+   fo/attributes   [m.ln.nodes/name]}
+  (form-link this id name :dinsro.ui.ln.nodes/LightningNodeForm))
 
-(def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln-nodes/id}))
+(def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
 
-(form/defsc-form PaymentsLinkForm [this {::m.ln-payments/keys [id payment-hash]}]
-  {fo/id           m.ln-payments/id
+(form/defsc-form PaymentsLinkForm [this {::m.ln.payments/keys [id payment-hash]}]
+  {fo/id           m.ln.payments/id
    fo/route-prefix "payment-link"
    fo/title        "Payments"
-   fo/attributes   [m.ln-payments/payment-hash]}
-  (form-link this id payment-hash :dinsro.ui.ln-payments/LNPaymentForm))
+   fo/attributes   [m.ln.payments/payment-hash]}
+  (form-link this id payment-hash :dinsro.ui.ln.payments/LNPaymentForm))
 
-(def ui-payment-link (comp/factory PaymentsLinkForm {:keyfn ::m.ln-payments/id}))
+(def ui-payment-link (comp/factory PaymentsLinkForm {:keyfn ::m.ln.payments/id}))
 
-(form/defsc-form PayReqLinkForm [this {::m.ln-payreqs/keys [id description]}]
-  {fo/id           m.ln-payreqs/id
+(form/defsc-form PayReqLinkForm [this {::m.ln.payreqs/keys [id description]}]
+  {fo/id           m.ln.payreqs/id
    fo/route-prefix "payreq-link"
    fo/title        "Payment Requests"
-   fo/attributes   [m.ln-payreqs/description]}
-  (form-link this id description :dinsro.ui.ln-payreqs/LNPaymentForm))
+   fo/attributes   [m.ln.payreqs/description]}
+  (form-link this id description :dinsro.ui.ln.payreqs/LNPaymentForm))
 
-(def ui-payreq-link (comp/factory PayReqLinkForm {:keyfn ::m.ln-payreqs/id}))
+(def ui-payreq-link (comp/factory PayReqLinkForm {:keyfn ::m.ln.payreqs/id}))
 
 (form/defsc-form RateLinkForm [this {::m.rates/keys [id date]}]
   {fo/id           m.rates/id

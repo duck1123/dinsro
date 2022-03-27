@@ -5,7 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln.nodes :as m.ln-nodes]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -35,9 +35,9 @@
 (s/def ::node uuid?)
 (defattr node ::node :ref
   {ao/identities       #{::id}
-   ao/target           ::m.ln-nodes/id
+   ao/target           ::m.ln.nodes/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.ln-nodes/id ::m.ln-nodes/name]}})
+   ::report/column-EQL {::node [::m.ln.nodes/id ::m.ln.nodes/name]}})
 
 (s/def ::params
   (s/keys :req [::pubkey ::node]

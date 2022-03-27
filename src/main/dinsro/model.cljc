@@ -11,13 +11,13 @@
    [dinsro.joins.core.tx-in :as j.core-tx-in]
    [dinsro.joins.core.tx-out :as j.core-tx-out]
    [dinsro.joins.currencies :as j.currencies]
-   [dinsro.joins.ln.channels :as j.ln-channels]
-   [dinsro.joins.ln.invoices :as j.ln-invoices]
-   [dinsro.joins.ln.nodes :as j.ln-nodes]
-   [dinsro.joins.ln.payments :as j.ln-payments]
-   [dinsro.joins.ln.payreqs :as j.ln-payreqs]
-   [dinsro.joins.ln.peers :as j.ln-peers]
-   [dinsro.joins.ln.tx :as j.ln-tx]
+   [dinsro.joins.ln.channels :as j.ln.channels]
+   [dinsro.joins.ln.invoices :as j.ln.invoices]
+   [dinsro.joins.ln.nodes :as j.ln.nodes]
+   [dinsro.joins.ln.payments :as j.ln.payments]
+   [dinsro.joins.ln.payreqs :as j.ln.payreqs]
+   [dinsro.joins.ln.peers :as j.ln.peers]
+   [dinsro.joins.ln.tx :as j.ln.tx]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.transactions :as j.transactions]
@@ -36,16 +36,16 @@
    [dinsro.model.core.tx-in :as m.core-tx-in]
    [dinsro.model.core.tx-out :as m.core-tx-out]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.ln.chains :as m.ln-chain]
-   [dinsro.model.ln.channels :as m.ln-channels]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
-   [dinsro.model.ln.info :as m.ln-info]
-   [dinsro.model.ln.invoices :as m.ln-invoices]
-   [dinsro.model.ln.payments :as m.ln-payments]
-   [dinsro.model.ln.payreqs :as m.ln-payreqs]
-   [dinsro.model.ln.peers :as m.ln-peers]
-   [dinsro.model.ln.remote-nodes :as m.ln-remote-nodes]
-   [dinsro.model.ln.transactions :as m.ln-tx]
+   [dinsro.model.ln.chains :as m.ln.chain]
+   [dinsro.model.ln.channels :as m.ln.channels]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.info :as m.ln.info]
+   [dinsro.model.ln.invoices :as m.ln.invoices]
+   [dinsro.model.ln.payments :as m.ln.payments]
+   [dinsro.model.ln.payreqs :as m.ln.payreqs]
+   [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rates :as m.rates]
@@ -63,9 +63,9 @@
    #?(:clj [dinsro.mutations.core.nodes :as mu.core-nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.core-peers])
    #?(:clj [dinsro.mutations.core.tx :as mu.core-tx])
-   #?(:clj [dinsro.mutations.ln.invoices :as mu.ln-invoices])
-   #?(:clj [dinsro.mutations.ln.nodes :as mu.ln-nodes])
-   #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln-payreqs])
+   #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
+   #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
+   #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
@@ -87,13 +87,13 @@
         j.core-tx-in/attributes
         j.core-tx-out/attributes
         j.currencies/attributes
-        j.ln-channels/attributes
-        j.ln-invoices/attributes
-        j.ln-nodes/attributes
-        j.ln-payments/attributes
-        j.ln-payreqs/attributes
-        j.ln-peers/attributes
-        j.ln-tx/attributes
+        j.ln.channels/attributes
+        j.ln.invoices/attributes
+        j.ln.nodes/attributes
+        j.ln.payments/attributes
+        j.ln.payreqs/attributes
+        j.ln.peers/attributes
+        j.ln.tx/attributes
         j.rates/attributes
         j.rate-sources/attributes
         j.transactions/attributes
@@ -112,16 +112,16 @@
         m.core-tx-in/attributes
         m.core-tx-out/attributes
         m.currencies/attributes
-        m.ln-chain/attributes
-        m.ln-channels/attributes
-        m.ln-info/attributes
-        m.ln-invoices/attributes
-        m.ln-nodes/attributes
-        m.ln-payments/attributes
-        m.ln-payreqs/attributes
-        m.ln-peers/attributes
-        m.ln-remote-nodes/attributes
-        m.ln-tx/attributes
+        m.ln.chain/attributes
+        m.ln.channels/attributes
+        m.ln.info/attributes
+        m.ln.invoices/attributes
+        m.ln.nodes/attributes
+        m.ln.payments/attributes
+        m.ln.payreqs/attributes
+        m.ln.peers/attributes
+        m.ln.remote-nodes/attributes
+        m.ln.tx/attributes
         m.navbar/attributes
         m.navlink/attributes
         m.rates/attributes
@@ -146,9 +146,9 @@
            mu.core-nodes/resolvers
            mu.core-peers/resolvers
            mu.core-tx/resolvers
-           mu.ln-invoices/resolvers
-           mu.ln-payreqs/resolvers
-           mu.ln-nodes/resolvers
+           mu.ln.invoices/resolvers
+           mu.ln.payreqs/resolvers
+           mu.ln.nodes/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers

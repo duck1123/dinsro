@@ -13,7 +13,7 @@
    [dinsro.queries.core.tx :as q.core-tx]
    [dinsro.queries.core.tx-in :as q.core-tx-in]
    [dinsro.queries.core.tx-out :as q.core-tx-out]
-   [dinsro.queries.ln.nodes :as q.ln-nodes]
+   [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [nextjournal.clerk :as clerk]
@@ -37,7 +37,7 @@
 
 (comment
   ::io/_
-  ::q.ln-nodes/_
+  ::q.ln.nodes/_
   ::h.bitcoind/_
   ::s/_
 
@@ -62,7 +62,7 @@
 
   (tap> (rand-int 1000000))
 
-  (q.ln-nodes/index-records)
+  (q.ln.nodes/index-records)
 
   ^:nextjournal.clerk/no-cache
   (display (slurp "lnd_notebook.yaml"))

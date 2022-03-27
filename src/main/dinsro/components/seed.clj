@@ -7,7 +7,7 @@
    [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.core.tx :as a.core-tx]
-   [dinsro.actions.ln.nodes :as a.ln-nodes]
+   [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
@@ -17,10 +17,10 @@
    [dinsro.model.core.tx-in :as m.core-tx-in]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.ln.info :as m.ln-info]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
-   [dinsro.model.ln.peers :as m.ln-peers]
-   [dinsro.model.ln.transactions :as m.ln-tx]
+   [dinsro.model.ln.info :as m.ln.info]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -36,9 +36,9 @@
    [dinsro.queries.core.tx :as q.core-tx]
    [dinsro.queries.core.tx-in :as q.core-tx-in]
    [dinsro.queries.currencies :as q.currencies]
-   [dinsro.queries.ln.nodes :as q.ln-nodes]
-   [dinsro.queries.ln.peers :as q.ln-peers]
-   [dinsro.queries.ln.transactions :as q.ln-tx]
+   [dinsro.queries.ln.nodes :as q.ln.nodes]
+   [dinsro.queries.ln.peers :as q.ln.peers]
+   [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.settings :as q.settings]
@@ -116,13 +116,13 @@
   [node-id {:keys [ref] :as peer}]
   (let [[target-username target-node] ref]
     (if-let [target-user-id (q.users/find-eid-by-name target-username)]
-      (if-let [target-id (q.ln-nodes/find-id-by-user-and-name target-user-id target-node)]
-        (let [{:keys [host identity-pubkey]} (q.ln-nodes/read-record target-id)
+      (if-let [target-id (q.ln.nodes/find-id-by-user-and-name target-user-id target-node)]
+        (let [{:keys [host identity-pubkey]} (q.ln.nodes/read-record target-id)
               params                         (-> peer
-                                                 (assoc ::m.ln-peers/address host)
-                                                 (assoc ::m.ln-peers/pubkey identity-pubkey)
-                                                 (set/rename-keys m.ln-peers/rename-map))]
-          (q.ln-peers/add-peer! node-id params))
+                                                 (assoc ::m.ln.peers/address host)
+                                                 (assoc ::m.ln.peers/pubkey identity-pubkey)
+                                                 (set/rename-keys m.ln.peers/rename-map))]
+          (q.ln.peers/add-peer! node-id params))
         (throw (RuntimeException. (str "no ref: " ref))))
       (throw (RuntimeException. "no user")))))
 
@@ -184,15 +184,15 @@
       (doseq [{:keys     [name host port mnemonic] :as info
                node-name :node} ln-nodes]
         (if-let [core-id (q.core-nodes/find-id-by-name node-name)]
-          (let [ln-node {::m.ln-nodes/name      name
-                         ::m.ln-nodes/core-node core-id
-                         ::m.ln-nodes/host      host
-                         ::m.ln-nodes/port      port
-                         ::m.ln-nodes/user      user-id
-                         ::m.ln-nodes/mnemonic  mnemonic}
-                node-id (q.ln-nodes/create-record ln-node)
-                info    (set/rename-keys info m.ln-info/rename-map)]
-            (a.ln-nodes/save-info! node-id info))
+          (let [ln-node {::m.ln.nodes/name      name
+                         ::m.ln.nodes/core-node core-id
+                         ::m.ln.nodes/host      host
+                         ::m.ln.nodes/port      port
+                         ::m.ln.nodes/user      user-id
+                         ::m.ln.nodes/mnemonic  mnemonic}
+                node-id (q.ln.nodes/create-record ln-node)
+                info    (set/rename-keys info m.ln.info/rename-map)]
+            (a.ln.nodes/save-info! node-id info))
           (throw (RuntimeException. (str "Failed to find node: " node-name))))))))
 
 (defn seed-ln-peers!
@@ -201,38 +201,38 @@
   (doseq [{:keys [username ln-nodes]} users]
     (let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys [name peers]} ln-nodes]
-        (if-let [node-id (q.ln-nodes/find-id-by-user-and-name user-id name)]
+        (if-let [node-id (q.ln.nodes/find-id-by-user-and-name user-id name)]
           (doseq [{[target-username target-node] :ref :as peer} peers]
             (if-let [target-user-id (q.users/find-eid-by-name target-username)]
-              (if-let [target-id (q.ln-nodes/find-id-by-user-and-name target-user-id target-node)]
-                (let [{:keys [host identity-pubkey]} (q.ln-nodes/read-record target-id)
+              (if-let [target-id (q.ln.nodes/find-id-by-user-and-name target-user-id target-node)]
+                (let [{:keys [host identity-pubkey]} (q.ln.nodes/read-record target-id)
                       peer                           (-> peer
-                                                         (assoc ::m.ln-peers/address host)
-                                                         (assoc ::m.ln-peers/pubkey identity-pubkey)
-                                                         (set/rename-keys m.ln-peers/rename-map))]
-                  (q.ln-peers/add-peer! node-id peer))
+                                                         (assoc ::m.ln.peers/address host)
+                                                         (assoc ::m.ln.peers/pubkey identity-pubkey)
+                                                         (set/rename-keys m.ln.peers/rename-map))]
+                  (q.ln.peers/add-peer! node-id peer))
                 (throw (RuntimeException. (str "no target: " target-node))))
               (throw (RuntimeException. "no user"))))
           (throw (RuntimeException. "no node")))))))
 
 (defn seed-ln-txes!
   [users]
-  (log/info :seed/ln-txes {})
+  (log/info :seed/ln.txes {})
   (doseq [{:keys [ln-nodes username]} users]
     (if-let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys [name txes]} ln-nodes]
-        (if-let [ln-node-id (q.ln-nodes/find-id-by-user-and-name user-id name)]
-          (if-let [ln-node (q.ln-nodes/read-record ln-node-id)]
-            (if-let [core-node-id (::m.ln-nodes/core-node ln-node)]
+        (if-let [ln-node-id (q.ln.nodes/find-id-by-user-and-name user-id name)]
+          (if-let [ln-node (q.ln.nodes/read-record ln-node-id)]
+            (if-let [core-node-id (::m.ln.nodes/core-node ln-node)]
               (doseq [tx txes]
-                (let [tx           (set/rename-keys tx m.ln-tx/rename-map)
-                      tx           (assoc tx ::m.ln-tx/node ln-node-id)
-                      tx-hash      (::m.ln-tx/tx-hash tx)
-                      block-hash   (::m.ln-tx/block-hash tx)
-                      block-height (::m.ln-tx/block-height tx)
+                (let [tx           (set/rename-keys tx m.ln.tx/rename-map)
+                      tx           (assoc tx ::m.ln.tx/node ln-node-id)
+                      tx-hash      (::m.ln.tx/tx-hash tx)
+                      block-hash   (::m.ln.tx/block-hash tx)
+                      block-height (::m.ln.tx/block-height tx)
                       core-tx-id   (a.core-tx/register-tx core-node-id block-hash block-height tx-hash)
-                      tx           (assoc tx ::m.ln-tx/core-tx core-tx-id)]
-                  (q.ln-tx/add-tx ln-node-id tx)))
+                      tx           (assoc tx ::m.ln.tx/core-tx core-tx-id)]
+                  (q.ln.tx/add-tx ln-node-id tx)))
               (throw (RuntimeException. "Node does not contain a core node id")))
             (throw (RuntimeException. "Failed to read ln node")))
           (throw (RuntimeException. "Failed to find ln node"))))
@@ -281,9 +281,9 @@
         rates        (count (q.rates/index-ids))
         accounts     (count (q.accounts/index-ids))
         transactions (count (q.transactions/index-ids))
-        ln-nodes     (count (q.ln-nodes/index-ids))
-        ln-peers     (count (q.ln-peers/index-ids))
-        ln-txes      (count (q.ln-tx/index-ids))]
+        ln-nodes     (count (q.ln.nodes/index-ids))
+        ln-peers     (count (q.ln.peers/index-ids))
+        ln-txes      (count (q.ln.tx/index-ids))]
     (log/info :report
               {:users        users
                :categories   categories

@@ -2,16 +2,16 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln.payreqs :as m.ln-payreqs]
-   #?(:clj [dinsro.queries.ln.payreqs :as q.ln-payreqs])
+   [dinsro.model.ln.payreqs :as m.ln.payreqs]
+   #?(:clj [dinsro.queries.ln.payreqs :as q.ln.payreqs])
    [dinsro.specs]))
 
-(defattr index ::m.ln-payreqs/index :ref
-  {ao/target    ::m.ln-payreqs/id
-   ao/pc-output [{::m.ln-payreqs/index [::m.ln-payreqs/id]}]
+(defattr index ::m.ln.payreqs/index :ref
+  {ao/target    ::m.ln.payreqs/id
+   ao/pc-output [{::m.ln.payreqs/index [::m.ln.payreqs/id]}]
    ao/pc-resolve
    (fn [_env _]
-     (let [ids #?(:clj (q.ln-payreqs/index-ids) :cljs [])]
-       {::m.ln-payreqs/index (m.ln-payreqs/idents ids)}))})
+     (let [ids #?(:clj (q.ln.payreqs/index-ids) :cljs [])]
+       {::m.ln.payreqs/index (m.ln.payreqs/idents ids)}))})
 
 (def attributes [index])

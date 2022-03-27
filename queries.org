@@ -26,7 +26,7 @@
 ** Peers
 
 #+begin_src clojure
-   [{:dinsro.model.ln-nodes/index [:dinsro.model.ln-nodes/peers]}]
+   [{:dinsro.model.ln.nodes/index [:dinsro.model.ln.nodes/peers]}]
 #+end_src
 
 ** Currencies with rate info

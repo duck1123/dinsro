@@ -4,12 +4,12 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.model.core.wallets :as m.wallets]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
-   #?(:clj [dinsro.queries.ln.nodes :as q.ln-nodes])
+   #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    #?(:clj [dinsro.queries.core.wallets :as q.wallets])
@@ -54,14 +54,14 @@
 (defattr ln-nodes ::m.users/ln-nodes :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/ln-nodes [::m.ln-nodes/id]}]
-   ao/target      ::m.ln-nodes/id
+   ao/pc-output   [{::m.users/ln-nodes [::m.ln.nodes/id]}]
+   ao/target      ::m.ln.nodes/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      {::m.users/ln-nodes
-      (let [ids #?(:clj (and id (q.ln-nodes/find-by-user id))
+      (let [ids #?(:clj (and id (q.ln.nodes/find-by-user id))
                    :cljs (do (comment id) []))]
-        (map (fn [id] {::m.ln-nodes/id id}) ids))})})
+        (map (fn [id] {::m.ln.nodes/id id}) ids))})})
 
 (defattr transactions ::m.users/transactions :ref
   {ao/cardinality :many
