@@ -11,7 +11,7 @@
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.core.addresses :as m.core-address]
+   [dinsro.model.core.addresses :as m.core-addresses]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.core.tx-in :as m.core-tx-in]
@@ -31,7 +31,7 @@
    [dinsro.model.core.words :as m.words]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
-   [dinsro.queries.core.addresses :as q.core-address]
+   [dinsro.queries.core.addresses :as q.core-addresses]
    [dinsro.queries.core.nodes :as q.core-nodes]
    [dinsro.queries.core.tx :as q.core-tx]
    [dinsro.queries.core.tx-in :as q.core-tx-in]
@@ -359,7 +359,7 @@
 (defn seed-addresses!
   [addresses]
   (doseq [address addresses]
-    (q.core-address/create-record {::m.core-address/address address})))
+    (q.core-addresses/create-record {::m.core-addresses/address address})))
 
 (comment
 

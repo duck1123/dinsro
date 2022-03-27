@@ -3,7 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.categories :as j.categories]
-   [dinsro.joins.core.addresses :as j.core-address]
+   [dinsro.joins.core.addresses :as j.core-addresses]
    [dinsro.joins.core.blocks :as j.core-blocks]
    [dinsro.joins.core.nodes :as j.core-nodes]
    [dinsro.joins.core.peers :as j.core-peers]
@@ -27,7 +27,7 @@
    [dinsro.joins.core.words :as j.words]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.core.addresses :as m.core-address]
+   [dinsro.model.core.addresses :as m.core-addresses]
    [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.peers :as m.core-peers]
@@ -58,7 +58,7 @@
    [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
    [dinsro.model.core.words :as m.words]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
-   #?(:clj [dinsro.mutations.core.addresses :as mu.core-address])
+   #?(:clj [dinsro.mutations.core.addresses :as mu.core-addresses])
    #?(:clj [dinsro.mutations.core.blocks :as mu.core-blocks])
    #?(:clj [dinsro.mutations.core.nodes :as mu.core-nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.core-peers])
@@ -79,7 +79,7 @@
   (vec (concat
         j.accounts/attributes
         j.categories/attributes
-        j.core-address/attributes
+        j.core-addresses/attributes
         j.core-blocks/attributes
         j.core-nodes/attributes
         j.core-peers/attributes
@@ -103,7 +103,7 @@
         j.words/attributes
         m.accounts/attributes
         m.categories/attributes
-        m.core-address/attributes
+        m.core-addresses/attributes
         m.core-blocks/attributes
         m.core-nodes/attributes
         m.core-peers/attributes
@@ -141,7 +141,7 @@
      (vec (concat
            m.navlink/resolvers
            mu.accounts/resolvers
-           mu.core-address/resolvers
+           mu.core-addresses/resolvers
            mu.core-blocks/resolvers
            mu.core-nodes/resolvers
            mu.core-peers/resolvers

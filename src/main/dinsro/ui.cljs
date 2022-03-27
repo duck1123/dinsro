@@ -22,7 +22,7 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.core.address :as u.core-address]
+   [dinsro.ui.core.addresses :as u.core-addresses]
    [dinsro.ui.core.blocks :as u.core-blocks]
    [dinsro.ui.core.nodes :as u.core-nodes]
    [dinsro.ui.core.peers :as u.core-peers]
@@ -72,8 +72,8 @@
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
                     u.categories/NewCategoryForm
-                    u.core-address/CoreAddressForm
-                    u.core-address/CoreAddressReport
+                    u.core-addresses/CoreAddressForm
+                    u.core-addresses/CoreAddressReport
                     u.core-blocks/CoreBlockForm
                     u.core-blocks/CoreBlockReport
                     u.core-nodes/NewCoreNodeForm

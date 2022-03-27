@@ -13,7 +13,7 @@
    :admin            ["Admin"             "/admin/users"      :dinsro.ui.admin/AdminPage]
    :categories       ["Categories"        "/categories"       :dinsro.ui.categories/CategoriesReport]
    :channels         ["Channels"          "/ln-channels"      :dinsro.ui.ln-channels/LNChannelsReport]
-   :core-addresses   ["Core Address"      "/core-addresses"   :dinsro.ui.core-address/CoreAddressReport]
+   :core-addresses   ["Core Address"      "/core-addresses"   :dinsro.ui.core-addresses/CoreAddressReport]
    :core-blocks      ["Core Blocks"       "/core-blocks"      :dinsro.ui.core-blocks/CoreBlockReport]
    :core-menu        ["Core" "/core" nil
                       [:core-nodes
