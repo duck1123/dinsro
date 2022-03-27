@@ -40,6 +40,47 @@ portal_url = 'http://' + config_get('portalHost')
 def get_notebook_host():
   return "notebook." + base_url if config_get('notebookInheritHost') else notebook_host
 
+def earthly_build(
+    ref,
+    target,
+    build_args={},
+    ci=False,
+    deps=[],
+    disable_push=False,
+    pass_expected_ref=True,
+    push=False,
+    live_update=[],
+    skips_local_docker=False,
+    use_cache=True
+):
+  cmd = ["earthly"]
+
+  for arg, value in build_args.items():
+    cmd += ['--build-arg', arg + '=' + value]
+
+  if pass_expected_ref:
+    cmd += ['--build-arg', 'EXPECTED_REF=$EXPECTED_REF']
+
+  if push:
+    cmd += ['--push']
+
+  if ci:
+    cmd += ['--ci']
+
+  if not use_cache:
+    cmd += ['--no-cache']
+
+  cmd += [target];
+  command = ' '.join(cmd)
+  custom_build(
+    ref=ref,
+    command=command,
+    deps=deps,
+    live_update=live_update,
+    disable_push=disable_push,
+    skips_local_docker=skips_local_docker,
+  )
+
 disable_snapshots()
 docker_prune_settings(
   disable = False,
