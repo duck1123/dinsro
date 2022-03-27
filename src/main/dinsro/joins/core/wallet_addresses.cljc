@@ -1,9 +1,9 @@
-(ns dinsro.joins.wallet-addresses
+(ns dinsro.joins.core.wallet-addresses
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])
+   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   #?(:clj [dinsro.queries.core.wallet-addresses :as q.wallet-addresses])
    [dinsro.specs]))
 
 (defattr index ::m.wallet-addresses/index :ref

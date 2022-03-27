@@ -1,13 +1,13 @@
-(ns dinsro.mutations.wallets
+(ns dinsro.mutations.core.wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    #?(:cljs [com.fulcrologic.rad.form :as form])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
-   #?(:clj [dinsro.actions.wallets :as a.wallets])
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.words :as m.words]
+   #?(:clj [dinsro.actions.core.wallets :as a.wallets])
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.words :as m.words]
    #?(:cljs [taoensso.timbre :as log])))
 
 (comment ::pc/_ ::m.wallets/_)

@@ -1,11 +1,11 @@
-(ns dinsro.actions.core-address
+(ns dinsro.actions.core.addresses
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.core-tx :as a.core-tx]
+   [dinsro.actions.core.tx :as a.core-tx]
    [dinsro.actions.nbxplorer :as a.nbxplorer]
-   [dinsro.model.core-address :as m.core-address]
-   [dinsro.queries.core-address :as q.core-address]
-   [dinsro.queries.core-nodes :as q.core-nodes]
+   [dinsro.model.core.addresses :as m.core-address]
+   [dinsro.queries.core.addresses :as q.core-address]
+   [dinsro.queries.core.nodes :as q.core-nodes]
    [taoensso.timbre :as log]))
 
 (>defn fetch!

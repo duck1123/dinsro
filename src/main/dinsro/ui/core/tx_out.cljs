@@ -1,11 +1,11 @@
-(ns dinsro.ui.core-tx-out
+(ns dinsro.ui.core.tx-out
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
-   [dinsro.model.core-tx-out :as m.core-tx-out]))
+   [dinsro.model.core.tx-out :as m.core-tx-out]))
 
 (defsc RefRow
   [_this {::m.core-tx-out/keys [n

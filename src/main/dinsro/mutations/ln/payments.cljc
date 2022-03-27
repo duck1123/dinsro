@@ -1,3 +1,3 @@
-(ns dinsro.mutations.ln-payments)
+(ns dinsro.mutations.ln.payments)
 
 #?(:clj (def resolvers []))

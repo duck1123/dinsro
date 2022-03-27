@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln-invoices
+(ns dinsro.ui.ln.invoices
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -7,8 +7,8 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-invoices :as m.ln-invoices]
-   [dinsro.mutations.ln-invoices :as mu.ln-invoices]
+   [dinsro.model.ln.invoices :as m.ln-invoices]
+   [dinsro.mutations.ln.invoices :as mu.ln-invoices]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.scanner :as u.scanner]
    [taoensso.timbre :as log]))

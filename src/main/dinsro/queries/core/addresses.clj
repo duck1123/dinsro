@@ -1,10 +1,10 @@
-(ns dinsro.queries.core-address
+(ns dinsro.queries.core.addresses
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core-address :as m.core-address]
+   [dinsro.model.core.addresses :as m.core-address]
    [dinsro.specs]
    [xtdb.api :as xt]))
 

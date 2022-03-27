@@ -1,4 +1,4 @@
-(ns dinsro.ui.core-nodes
+(ns dinsro.ui.core.nodes
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -6,13 +6,13 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core-nodes :as j.core-nodes]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.mutations.core-nodes :as mu.core-nodes]
-   [dinsro.ui.core-block :as u.core-block]
+   [dinsro.joins.core.nodes :as j.core-nodes]
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.mutations.core.nodes :as mu.core-nodes]
+   [dinsro.ui.core.blocks :as u.core-block]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log2]))
 

@@ -3,10 +3,10 @@
    [clojure.java.io :as io]
    [clojure.edn :as edn]
    [clojure.string :as string]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.core-block :as q.core-block]
-   [dinsro.queries.core-tx :as q.core-tx]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.tx :as q.core-tx]
    [ring.util.codec :as codec]))
 
 (defn load-edn

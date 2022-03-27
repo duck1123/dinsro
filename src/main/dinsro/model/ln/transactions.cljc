@@ -1,4 +1,4 @@
-(ns dinsro.model.ln-transactions
+(ns dinsro.model.ln.transactions
   (:refer-clojure :exclude [name])
   (:require
    [clojure.set :as set]
@@ -6,8 +6,8 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.ln-nodes :as m.ln-nodes]))
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.ln.nodes :as m.ln-nodes]))
 
 (def rename-map
   {:amount           ::amount

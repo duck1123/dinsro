@@ -1,4 +1,4 @@
-(ns dinsro.model.ln-chain
+(ns dinsro.model.ln.chains
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]

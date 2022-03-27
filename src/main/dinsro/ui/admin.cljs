@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.ln-nodes :as u.ln-nodes]
+   [dinsro.ui.ln.nodes :as u.ln-nodes]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.users :as u.users]
    [taoensso.timbre :as log]))

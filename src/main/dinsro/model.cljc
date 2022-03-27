@@ -3,49 +3,49 @@
    [com.fulcrologic.rad.attributes :as attr]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.categories :as j.categories]
-   [dinsro.joins.core-address :as j.core-address]
-   [dinsro.joins.core-block :as j.core-block]
-   [dinsro.joins.core-nodes :as j.core-nodes]
-   [dinsro.joins.core-peers :as j.core-peers]
-   [dinsro.joins.core-tx :as j.core-tx]
-   [dinsro.joins.core-tx-in :as j.core-tx-in]
-   [dinsro.joins.core-tx-out :as j.core-tx-out]
+   [dinsro.joins.core.addresses :as j.core-address]
+   [dinsro.joins.core.blocks :as j.core-block]
+   [dinsro.joins.core.nodes :as j.core-nodes]
+   [dinsro.joins.core.peers :as j.core-peers]
+   [dinsro.joins.core.tx :as j.core-tx]
+   [dinsro.joins.core.tx-in :as j.core-tx-in]
+   [dinsro.joins.core.tx-out :as j.core-tx-out]
    [dinsro.joins.currencies :as j.currencies]
-   [dinsro.joins.ln-channels :as j.ln-channels]
-   [dinsro.joins.ln-invoices :as j.ln-invoices]
-   [dinsro.joins.ln-nodes :as j.ln-nodes]
-   [dinsro.joins.ln-payments :as j.ln-payments]
-   [dinsro.joins.ln-payreqs :as j.ln-payreqs]
-   [dinsro.joins.ln-peers :as j.ln-peers]
-   [dinsro.joins.ln-tx :as j.ln-tx]
+   [dinsro.joins.ln.channels :as j.ln-channels]
+   [dinsro.joins.ln.invoices :as j.ln-invoices]
+   [dinsro.joins.ln.nodes :as j.ln-nodes]
+   [dinsro.joins.ln.payments :as j.ln-payments]
+   [dinsro.joins.ln.payreqs :as j.ln-payreqs]
+   [dinsro.joins.ln.peers :as j.ln-peers]
+   [dinsro.joins.ln.tx :as j.ln-tx]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.joins.users :as j.users]
-   [dinsro.joins.wallet-addresses :as j.wallet-addresses]
-   [dinsro.joins.wallets :as j.wallets]
-   [dinsro.joins.words :as j.words]
+   [dinsro.joins.core.wallet-addresses :as j.wallet-addresses]
+   [dinsro.joins.core.wallets :as j.wallets]
+   [dinsro.joins.core.words :as j.words]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.core-address :as m.core-address]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-peers :as m.core-peers]
-   [dinsro.model.core-script-sig :as m.core-script-sig]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   [dinsro.model.core-tx-out :as m.core-tx-out]
+   [dinsro.model.core.addresses :as m.core-address]
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.peers :as m.core-peers]
+   [dinsro.model.core.script-sigs :as m.core-script-sig]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.tx-in :as m.core-tx-in]
+   [dinsro.model.core.tx-out :as m.core-tx-out]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.ln-chain :as m.ln-chain]
-   [dinsro.model.ln-channels :as m.ln-channels]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.model.ln-info :as m.ln-info]
-   [dinsro.model.ln-invoices :as m.ln-invoices]
-   [dinsro.model.ln-payments :as m.ln-payments]
-   [dinsro.model.ln-payreqs :as m.ln-payreqs]
-   [dinsro.model.ln-peers :as m.ln-peers]
-   [dinsro.model.ln-remote-nodes :as m.ln-remote-nodes]
-   [dinsro.model.ln-transactions :as m.ln-tx]
+   [dinsro.model.ln.chains :as m.ln-chain]
+   [dinsro.model.ln.channels :as m.ln-channels]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.info :as m.ln-info]
+   [dinsro.model.ln.invoices :as m.ln-invoices]
+   [dinsro.model.ln.payments :as m.ln-payments]
+   [dinsro.model.ln.payreqs :as m.ln-payreqs]
+   [dinsro.model.ln.peers :as m.ln-peers]
+   [dinsro.model.ln.remote-nodes :as m.ln-remote-nodes]
+   [dinsro.model.ln.transactions :as m.ln-tx]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rates :as m.rates]
@@ -54,24 +54,24 @@
    [dinsro.model.timezone :as m.timezone]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.model.words :as m.words]
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.core.words :as m.words]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
-   #?(:clj [dinsro.mutations.core-address :as mu.core-address])
-   #?(:clj [dinsro.mutations.core-blocks :as mu.core-blocks])
-   #?(:clj [dinsro.mutations.core-nodes :as mu.core-nodes])
-   #?(:clj [dinsro.mutations.core-peers :as mu.core-peers])
-   #?(:clj [dinsro.mutations.core-tx :as mu.core-tx])
-   #?(:clj [dinsro.mutations.ln-invoices :as mu.ln-invoices])
-   #?(:clj [dinsro.mutations.ln-nodes :as mu.ln-nodes])
-   #?(:clj [dinsro.mutations.ln-payreqs :as mu.ln-payreqs])
+   #?(:clj [dinsro.mutations.core.addresses :as mu.core-address])
+   #?(:clj [dinsro.mutations.core.blocks :as mu.core-blocks])
+   #?(:clj [dinsro.mutations.core.nodes :as mu.core-nodes])
+   #?(:clj [dinsro.mutations.core.peers :as mu.core-peers])
+   #?(:clj [dinsro.mutations.core.tx :as mu.core-tx])
+   #?(:clj [dinsro.mutations.ln.invoices :as mu.ln-invoices])
+   #?(:clj [dinsro.mutations.ln.nodes :as mu.ln-nodes])
+   #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln-payreqs])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
-   #?(:clj [dinsro.mutations.wallets :as mu.wallets])
-   #?(:clj [dinsro.mutations.wallet-addresses :as mu.wallet-addresses])
-   #?(:clj [dinsro.mutations.words :as mu.words])))
+   #?(:clj [dinsro.mutations.core.wallets :as mu.wallets])
+   #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.wallet-addresses])
+   #?(:clj [dinsro.mutations.core.words :as mu.words])))
 
 (def schemata [])
 

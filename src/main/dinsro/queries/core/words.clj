@@ -1,11 +1,11 @@
-(ns dinsro.queries.words
+(ns dinsro.queries.core.words
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.words :as m.words]
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.words :as m.words]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))

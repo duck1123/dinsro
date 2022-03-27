@@ -1,4 +1,4 @@
-(ns dinsro.model.ln-htlc)
+(ns dinsro.model.ln.htlcs)
 
 (def example-hop
   {:fee              0,

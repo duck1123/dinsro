@@ -1,14 +1,14 @@
-(ns dinsro.actions.core-nodes
+(ns dinsro.actions.core.nodes
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.core-block :as a.core-block]
+   [dinsro.actions.core.blocks :as a.core-block]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-peers :as m.core-peers]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.core-peers :as q.core-peers]
-   [dinsro.queries.core-tx :as q.core-tx]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.peers :as m.core-peers]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.peers :as q.core-peers]
+   [dinsro.queries.core.tx :as q.core-tx]
    [lambdaisland.glogc :as log]))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")

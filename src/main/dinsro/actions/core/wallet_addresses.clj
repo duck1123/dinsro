@@ -1,13 +1,13 @@
-(ns dinsro.actions.wallet-addresses
+(ns dinsro.actions.core.wallet-addresses
   (:require
    [dinsro.actions.nbxplorer :as a.nbxplorer]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.wallets :as q.wallets]
-   [dinsro.queries.wallet-addresses :as q.wallet-addresses]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.wallets :as q.wallets]
+   [dinsro.queries.core.wallet-addresses :as q.wallet-addresses]
    [taoensso.timbre :as log]))
 
 (defn generate!

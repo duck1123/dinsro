@@ -1,4 +1,4 @@
-(ns dinsro.model.core-nodes
+(ns dinsro.model.core.nodes
   (:refer-clojure :exclude [name])
   (:require
    [clojure.set :as set]

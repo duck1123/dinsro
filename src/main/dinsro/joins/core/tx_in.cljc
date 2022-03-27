@@ -1,9 +1,9 @@
-(ns dinsro.joins.core-tx-in
+(ns dinsro.joins.core.tx-in
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   #?(:clj [dinsro.queries.core-tx-in :as q.core-tx-in])
+   [dinsro.model.core.tx-in :as m.core-tx-in]
+   #?(:clj [dinsro.queries.core.tx-in :as q.core-tx-in])
    [dinsro.specs]))
 
 (defattr index ::m.core-tx-in/index :ref

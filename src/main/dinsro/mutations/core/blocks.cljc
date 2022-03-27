@@ -1,12 +1,12 @@
-(ns dinsro.mutations.core-blocks
+(ns dinsro.mutations.core.blocks
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core-block :as a.core-block])
-   [dinsro.model.core-block :as m.core-block]
-   #?(:clj [dinsro.queries.core-block :as q.core-block])
-   #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
+   #?(:clj [dinsro.actions.core.blocks :as a.core-block])
+   [dinsro.model.core.blocks :as m.core-block]
+   #?(:clj [dinsro.queries.core.blocks :as q.core-block])
+   #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
    [lambdaisland.glogc :as log]))
 
 (comment ::pc/_ ::m.core-block/_)

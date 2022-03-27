@@ -4,15 +4,15 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.wallets]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
-   #?(:clj [dinsro.queries.ln-nodes :as q.ln-nodes])
+   #?(:clj [dinsro.queries.ln.nodes :as q.ln-nodes])
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
-   #?(:clj [dinsro.queries.wallets :as q.wallets])
+   #?(:clj [dinsro.queries.core.wallets :as q.wallets])
    #?(:clj [dinsro.queries.users :as q.users])
    [dinsro.specs]))
 

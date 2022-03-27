@@ -1,11 +1,11 @@
-(ns dinsro.queries.ln-payreqs
+(ns dinsro.queries.ln.payreqs
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.ln-payreqs :as m.ln-payreqs]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
+   [dinsro.model.ln.payreqs :as m.ln-payreqs]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
    [dinsro.specs]
    [xtdb.api :as xt]))
 

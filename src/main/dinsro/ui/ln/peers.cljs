@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln-peers
+(ns dinsro.ui.ln.peers
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -7,8 +7,8 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.model.ln-peers :as m.ln-peers]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.peers :as m.ln-peers]
    [dinsro.ui.links :as u.links]))
 
 (defsc LnPeerRow

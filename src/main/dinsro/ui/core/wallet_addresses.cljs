@@ -1,4 +1,4 @@
-(ns dinsro.ui.wallet-addresses
+(ns dinsro.ui.core.wallet-addresses
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.form :as form]
@@ -6,9 +6,9 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.mutations.wallet-addresses :as mu.wallet-addresses]
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.mutations.core.wallet-addresses :as mu.wallet-addresses]
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewWalletAddressForm

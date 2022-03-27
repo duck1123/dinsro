@@ -1,11 +1,11 @@
-(ns dinsro.model.ln-remote-nodes
+(ns dinsro.model.ln.remote-nodes
   (:refer-clojure :exclude [alias])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln-nodes :as m.ln-nodes]))
+   [dinsro.model.ln.nodes :as m.ln-nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

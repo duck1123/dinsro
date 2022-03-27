@@ -1,9 +1,9 @@
-(ns dinsro.joins.ln-peers
+(ns dinsro.joins.ln.peers
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-peers :as m.ln-peers]
-   #?(:clj [dinsro.queries.ln-peers :as q.ln-peers])
+   [dinsro.model.ln.peers :as m.ln-peers]
+   #?(:clj [dinsro.queries.ln.peers :as q.ln-peers])
    [dinsro.specs]))
 
 (defattr index ::m.ln-peers/index :ref

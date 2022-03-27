@@ -1,12 +1,12 @@
-(ns dinsro.ui.core-address
+(ns dinsro.ui.core.addresses
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.core-address :as m.core-address]
-   [dinsro.mutations.core-address :as mu.core-address]))
+   [dinsro.model.core.addresses :as m.core-address]
+   [dinsro.mutations.core.addresses :as mu.core-address]))
 
 (form/defsc-form CoreAddressForm
   [_this _props]

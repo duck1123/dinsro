@@ -1,11 +1,11 @@
-(ns dinsro.queries.core-peers
+(ns dinsro.queries.core.peers
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-peers :as m.core-peers]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.peers :as m.core-peers]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))

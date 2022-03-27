@@ -1,16 +1,16 @@
-(ns dinsro.actions.ln-peers
+(ns dinsro.actions.ln.peers
   (:refer-clojure :exclude [next])
   (:require
    [clojure.core.async :as async]
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.ln-nodes :as a.ln-nodes]
+   [dinsro.actions.ln.nodes :as a.ln-nodes]
    [dinsro.client.lnd :as c.lnd]
-   [dinsro.model.ln-info :as m.ln-info]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.model.ln-peers :as m.ln-peers]
-   [dinsro.queries.ln-nodes :as q.ln-nodes]
-   [dinsro.queries.ln-peers :as q.ln-peers]
+   [dinsro.model.ln.info :as m.ln-info]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.peers :as m.ln-peers]
+   [dinsro.queries.ln.nodes :as q.ln-nodes]
+   [dinsro.queries.ln.peers :as q.ln-peers]
    [dinsro.specs :as ds]
    [taoensso.timbre :as log])
   (:import

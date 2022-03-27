@@ -1,11 +1,11 @@
-(ns dinsro.joins.core-block
+(ns dinsro.joins.core.blocks
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-tx :as m.core-tx]
-   #?(:clj [dinsro.queries.core-block :as q.core-block])
-   #?(:clj [dinsro.queries.core-tx :as q.core-tx])
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.tx :as m.core-tx]
+   #?(:clj [dinsro.queries.core.blocks :as q.core-block])
+   #?(:clj [dinsro.queries.core.tx :as q.core-tx])
    [dinsro.specs]))
 
 (defattr index ::m.core-block/index :ref

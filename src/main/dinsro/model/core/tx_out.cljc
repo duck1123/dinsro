@@ -1,11 +1,11 @@
-(ns dinsro.model.core-tx-out
+(ns dinsro.model.core.tx-out
   (:refer-clojure :exclude [hash sequence time type])
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-tx :as m.core-tx]))
+   [dinsro.model.core.tx :as m.core-tx]))
 
 (def rename-map
   {:value ::value

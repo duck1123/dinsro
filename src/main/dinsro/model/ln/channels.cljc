@@ -1,4 +1,4 @@
-(ns dinsro.model.ln-channels
+(ns dinsro.model.ln.channels
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
    [taoensso.timbre :as log]))
 
 (def rename-map

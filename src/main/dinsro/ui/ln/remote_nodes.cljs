@@ -1,11 +1,11 @@
-(ns dinsro.ui.ln-remote-nodes
+(ns dinsro.ui.ln.remote-nodes
   (:require
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-remote-nodes :as m.ln-remote-nodes]
-   [dinsro.model.ln-transactions :as m.ln-tx]))
+   [dinsro.model.ln.remote-nodes :as m.ln-remote-nodes]
+   [dinsro.model.ln.transactions :as m.ln-tx]))
 
 (form/defsc-form RemoteNodeForm
   [_this _props]

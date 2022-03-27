@@ -1,7 +1,7 @@
 (ns dinsro.seed
   (:require
    ;; [dinsro.components.seed :as c.seed]
-   [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]
    [reitit.coercion.spec]
    [tick.alpha.api :as tick]))

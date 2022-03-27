@@ -11,7 +11,7 @@
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.ln-nodes :as u.ln-nodes]
+   [dinsro.ui.ln.nodes :as u.ln-nodes]
    [lambdaisland.glogc :as log]))
 
 (defsc-container HomePage2

@@ -1,13 +1,13 @@
-(ns dinsro.actions.core-block
+(ns dinsro.actions.core.blocks
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.queries.core-block :as q.core-block]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.core-tx :as q.core-tx]
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.tx :as q.core-tx]
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 

@@ -1,4 +1,4 @@
-(ns dinsro.model.core-address
+(ns dinsro.model.core.addresses
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]

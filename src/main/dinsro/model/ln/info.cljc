@@ -1,9 +1,9 @@
-(ns dinsro.model.ln-info
+(ns dinsro.model.ln.info
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-nodes :as m.ln]))
+   [dinsro.model.ln.nodes :as m.ln]))
 
 (def rename-map
   {:blockHeight         ::block-height

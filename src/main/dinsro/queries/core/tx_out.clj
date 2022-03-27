@@ -1,11 +1,11 @@
-(ns dinsro.queries.core-tx-out
+(ns dinsro.queries.core.tx-out
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.core-tx-out :as m.core-tx-out]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.tx-out :as m.core-tx-out]
    [dinsro.specs]
    [xtdb.api :as xt]))
 

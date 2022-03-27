@@ -1,14 +1,14 @@
-(ns dinsro.joins.wallets
+(ns dinsro.joins.core.wallets
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   [dinsro.model.words :as m.words]
-   #?(:clj [dinsro.queries.wallets :as q.wallets])
-   #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])
-   #?(:clj [dinsro.queries.words :as q.words])
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.core.words :as m.words]
+   #?(:clj [dinsro.queries.core.wallets :as q.wallets])
+   #?(:clj [dinsro.queries.core.wallet-addresses :as q.wallet-addresses])
+   #?(:clj [dinsro.queries.core.words :as q.words])
    [dinsro.specs]))
 
 (defattr index ::m.wallets/index :ref

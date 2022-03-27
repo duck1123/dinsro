@@ -1,4 +1,4 @@
-(ns dinsro.model.ln-nodes
+(ns dinsro.model.ln.nodes
   (:refer-clojure :exclude [name])
   (:require
    #?(:clj [clojure.java.io :as io])
@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    #?(:clj [dinsro.components.config :refer [config]])
-   [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]))
 
 #?(:clj

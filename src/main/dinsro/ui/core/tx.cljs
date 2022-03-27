@@ -1,4 +1,4 @@
-(ns dinsro.ui.core-tx
+(ns dinsro.ui.core.tx
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -8,14 +8,14 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core-tx :as j.core-tx]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   [dinsro.model.core-tx-out :as m.core-tx-out]
-   [dinsro.mutations.core-tx :as mu.core-tx]
-   [dinsro.ui.core-block :as u.core-block]
-   [dinsro.ui.core-tx-out :as u.core-tx-out]
+   [dinsro.joins.core.tx :as j.core-tx]
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.tx-in :as m.core-tx-in]
+   [dinsro.model.core.tx-out :as m.core-tx-out]
+   [dinsro.mutations.core.tx :as mu.core-tx]
+   [dinsro.ui.core.blocks :as u.core-block]
+   [dinsro.ui.core.tx-out :as u.core-tx-out]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 

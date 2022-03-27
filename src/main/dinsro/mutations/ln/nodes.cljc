@@ -1,18 +1,18 @@
-(ns dinsro.mutations.ln-nodes
+(ns dinsro.mutations.ln.nodes
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.ln-channels :as a.ln-channels])
-   #?(:clj [dinsro.actions.ln-invoices :as a.ln-invoices])
-   #?(:clj [dinsro.actions.ln-nodes :as a.ln-nodes])
-   #?(:clj [dinsro.actions.ln-payments :as a.ln-payments])
-   #?(:clj [dinsro.actions.ln-peers :as a.ln-peers])
-   #?(:clj [dinsro.actions.ln-transactions :as a.ln-tx])
-   [dinsro.model.ln-info :as m.ln-info]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   #?(:clj [dinsro.queries.ln-nodes :as q.ln-nodes])
+   #?(:clj [dinsro.actions.ln.channels :as a.ln-channels])
+   #?(:clj [dinsro.actions.ln.invoices :as a.ln-invoices])
+   #?(:clj [dinsro.actions.ln.nodes :as a.ln-nodes])
+   #?(:clj [dinsro.actions.ln.payments :as a.ln-payments])
+   #?(:clj [dinsro.actions.ln.peers :as a.ln-peers])
+   #?(:clj [dinsro.actions.ln.transactions :as a.ln-tx])
+   [dinsro.model.ln.info :as m.ln-info]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   #?(:clj [dinsro.queries.ln.nodes :as q.ln-nodes])
    #?(:clj [taoensso.timbre :as log])))
 
 (comment ::m.ln-info/_ ::m.ln-nodes/_ ::pc/_)

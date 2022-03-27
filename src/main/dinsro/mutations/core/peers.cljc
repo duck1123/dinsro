@@ -1,10 +1,10 @@
-(ns dinsro.mutations.core-peers
+(ns dinsro.mutations.core.peers
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core-peers :as a.core-peers])
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-peers :as m.core-peers]
+   #?(:clj [dinsro.actions.core.peers :as a.core-peers])
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.peers :as m.core-peers]
    #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::pc/_ ::m.core-block/_ ::m.core-peers/_)

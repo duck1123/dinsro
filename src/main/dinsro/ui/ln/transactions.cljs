@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln-transactions
+(ns dinsro.ui.ln.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -7,8 +7,8 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-transactions :as m.ln-tx]
-   [dinsro.ui.core-tx :as u.core-tx]
+   [dinsro.model.ln.transactions :as m.ln-tx]
+   [dinsro.ui.core.tx :as u.core-tx]
    [dinsro.ui.links :as u.links]))
 
 (defsc LnTxRow

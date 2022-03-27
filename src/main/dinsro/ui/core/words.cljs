@@ -1,8 +1,8 @@
-(ns dinsro.ui.words
+(ns dinsro.ui.core.words
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.words :as m.words]))
+   [dinsro.model.core.words :as m.words]))
 
 (report/defsc-report WordReport
   [_this _props]

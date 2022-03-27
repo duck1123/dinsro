@@ -1,12 +1,12 @@
-(ns dinsro.queries.wallets
+(ns dinsro.queries.core.wallets
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.users :as m.users]
-   [dinsro.model.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.wallets]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))

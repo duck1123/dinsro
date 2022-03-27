@@ -1,9 +1,9 @@
-(ns dinsro.joins.ln-tx
+(ns dinsro.joins.ln.tx
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-transactions :as m.ln-tx]
-   #?(:clj [dinsro.queries.ln-transactions :as q.ln-tx])
+   [dinsro.model.ln.transactions :as m.ln-tx]
+   #?(:clj [dinsro.queries.ln.transactions :as q.ln-tx])
    [dinsro.specs]))
 
 (defattr index ::m.ln-tx/index :ref

@@ -1,9 +1,9 @@
-(ns dinsro.joins.ln-invoices
+(ns dinsro.joins.ln.invoices
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-invoices :as m.ln-invoices]
-   #?(:clj [dinsro.queries.ln-invoices :as q.ln-invoices])
+   [dinsro.model.ln.invoices :as m.ln-invoices]
+   #?(:clj [dinsro.queries.ln.invoices :as q.ln-invoices])
    [dinsro.specs]))
 
 (defattr index ::m.ln-invoices/index :ref

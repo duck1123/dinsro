@@ -1,9 +1,9 @@
-(ns dinsro.mutations.ln-payreqs
+(ns dinsro.mutations.ln.payreqs
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.ln-payreqs :as a.ln-payreqs])
-   [dinsro.model.ln-invoices :as m.ln-invoices]))
+   #?(:clj [dinsro.actions.ln.payreqs :as a.ln-payreqs])
+   [dinsro.model.ln.invoices :as m.ln-invoices]))
 
 (comment ::m.ln-invoices/_ ::pc/_)
 

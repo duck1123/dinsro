@@ -1,4 +1,4 @@
-(ns dinsro.model.core-tx
+(ns dinsro.model.core.tx
   (:refer-clojure :exclude [hash sequence time])
   (:require
    [clojure.set :as set]
@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core-block :as m.core-block]))
+   [dinsro.model.core.blocks :as m.core-block]))
 
 (def rename-map
   {:blockhash     ::block-hash

@@ -1,4 +1,4 @@
-(ns dinsro.ui.wallets
+(ns dinsro.ui.core.wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.form :as form]
@@ -6,11 +6,11 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.wallets :as j.wallets]
-   [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.joins.core.wallets :as j.wallets]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.wallets :as m.wallets]
    [dinsro.model.users :as m.users]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.mutations.wallets :as mu.wallets]
+   [dinsro.mutations.core.wallets :as mu.wallets]
    [dinsro.ui.links :as u.links]))
 
 (def create-button

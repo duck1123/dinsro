@@ -1,13 +1,13 @@
-(ns dinsro.actions.ln-invoices
+(ns dinsro.actions.ln.invoices
   (:require
    [clojure.core.async :as async :refer [<!!]]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.ln-nodes :as a.ln-nodes]
+   [dinsro.actions.ln.nodes :as a.ln-nodes]
    [dinsro.client.lnd :as c.lnd]
-   [dinsro.model.ln-invoices :as m.ln-invoices]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.queries.ln-invoices :as q.ln-invoices]
-   [dinsro.queries.ln-nodes :as q.ln-nodes]
+   [dinsro.model.ln.invoices :as m.ln-invoices]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.queries.ln.invoices :as q.ln-invoices]
+   [dinsro.queries.ln.nodes :as q.ln-nodes]
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as log]))
 

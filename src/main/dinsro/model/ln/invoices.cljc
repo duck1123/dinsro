@@ -1,11 +1,11 @@
-(ns dinsro.model.ln-invoices
+(ns dinsro.model.ln.invoices
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
    [tick.alpha.api :as tick]))
 
 (def rename-map

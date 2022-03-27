@@ -1,4 +1,4 @@
-(ns dinsro.model.core-block
+(ns dinsro.model.core.blocks
   (:refer-clojure :exclude [hash time])
   (:require
    [clojure.set :as set]
@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core-nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.core-nodes]
    [tick.alpha.api :as tick]))
 
 (def rename-map

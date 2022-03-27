@@ -1,4 +1,4 @@
-(ns dinsro.ui.core-peers
+(ns dinsro.ui.core.peers
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.form :as form]
@@ -6,9 +6,9 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-peers :as m.core-peers]
-   [dinsro.mutations.core-peers :as mu.core-peers]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.peers :as m.core-peers]
+   [dinsro.mutations.core.peers :as mu.core-peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 

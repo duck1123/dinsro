@@ -1,13 +1,13 @@
-(ns dinsro.actions.ln-payreqs
+(ns dinsro.actions.ln.payreqs
   (:require
    [clojure.core.async :as async :refer [<!!]]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.ln-nodes :as a.ln-nodes]
+   [dinsro.actions.ln.nodes :as a.ln-nodes]
    [dinsro.client.lnd :as c.lnd]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.model.ln-payreqs :as m.ln-payreqs]
-   [dinsro.queries.ln-nodes :as q.ln-nodes]
-   [dinsro.queries.ln-payreqs :as q.ln-payreqs]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.ln.payreqs :as m.ln-payreqs]
+   [dinsro.queries.ln.nodes :as q.ln-nodes]
+   [dinsro.queries.ln.payreqs :as q.ln-payreqs]
    [dinsro.queries.users :as q.users]
    [taoensso.timbre :as log])
   (:import

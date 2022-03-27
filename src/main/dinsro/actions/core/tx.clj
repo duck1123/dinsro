@@ -1,19 +1,19 @@
-(ns dinsro.actions.core-tx
+(ns dinsro.actions.core.tx
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.core-block :as a.core-block]
+   [dinsro.actions.core.blocks :as a.core-block]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   [dinsro.model.core-tx-out :as m.core-tx-out]
-   [dinsro.queries.core-block :as q.core-block]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.core-tx :as q.core-tx]
-   [dinsro.queries.core-tx-in :as q.core-tx-in]
-   [dinsro.queries.core-tx-out :as q.core-tx-out]
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.tx-in :as m.core-tx-in]
+   [dinsro.model.core.tx-out :as m.core-tx-out]
+   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.tx :as q.core-tx]
+   [dinsro.queries.core.tx-in :as q.core-tx-in]
+   [dinsro.queries.core.tx-out :as q.core-tx-out]
    [lambdaisland.glogc :as log]))
 
 (>defn fetch-tx

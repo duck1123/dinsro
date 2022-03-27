@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln-channels
+(ns dinsro.ui.ln.channels
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-channels :as m.ln-channels]
+   [dinsro.model.ln.channels :as m.ln-channels]
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow

@@ -1,16 +1,8 @@
-(ns dinsro.actions.words
+(ns dinsro.actions.core.words
   (:require
-   ;; [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   ;; [dinsro.client.bitcoin :as c.bitcoin]
-   ;; [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   ;; [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.wallets :as m.wallets]
-   ;; [dinsro.queries.core-block :as q.core-block]
-   ;; [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.wallets :as q.wallets]
-   [dinsro.queries.words :as q.words]
-   ;; [lambdaisland.glogc :as log]
-   ))
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.queries.core.wallets :as q.wallets]
+   [dinsro.queries.core.words :as q.words]))
 
 (defn get-word-list
   [_wallet])

@@ -1,16 +1,16 @@
-(ns dinsro.joins.core-tx
+(ns dinsro.joins.core.tx
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.core-tx-in :as m.core-tx-in]
-   [dinsro.model.core-tx-out :as m.core-tx-out]
-   #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
-   #?(:clj [dinsro.queries.core-tx :as q.core-tx])
-   #?(:clj [dinsro.queries.core-tx-in :as q.core-tx-in])
-   #?(:clj [dinsro.queries.core-tx-out :as q.core-tx-out])
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.tx-in :as m.core-tx-in]
+   [dinsro.model.core.tx-out :as m.core-tx-out]
+   #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
+   #?(:clj [dinsro.queries.core.tx :as q.core-tx])
+   #?(:clj [dinsro.queries.core.tx-in :as q.core-tx-in])
+   #?(:clj [dinsro.queries.core.tx-out :as q.core-tx-out])
    [dinsro.specs]))
 
 (defattr index ::m.core-tx/index :ref

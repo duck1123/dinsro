@@ -1,9 +1,9 @@
-(ns dinsro.joins.ln-payreqs
+(ns dinsro.joins.ln.payreqs
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-payreqs :as m.ln-payreqs]
-   #?(:clj [dinsro.queries.ln-payreqs :as q.ln-payreqs])
+   [dinsro.model.ln.payreqs :as m.ln-payreqs]
+   #?(:clj [dinsro.queries.ln.payreqs :as q.ln-payreqs])
    [dinsro.specs]))
 
 (defattr index ::m.ln-payreqs/index :ref

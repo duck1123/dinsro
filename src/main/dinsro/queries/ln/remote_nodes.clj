@@ -1,1 +1,1 @@
-(ns dinsro.queries.ln-remote-nodes)
+(ns dinsro.queries.ln.remote-nodes)

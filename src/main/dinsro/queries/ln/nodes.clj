@@ -1,11 +1,11 @@
-(ns dinsro.queries.ln-nodes
+(ns dinsro.queries.ln.nodes
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [xtdb.api :as xt]))

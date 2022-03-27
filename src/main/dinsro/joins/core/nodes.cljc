@@ -1,19 +1,19 @@
-(ns dinsro.joins.core-nodes
+(ns dinsro.joins.core.nodes
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-block :as m.core-block]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-peers :as m.core-peers]
-   [dinsro.model.core-tx :as m.core-tx]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.model.wallets :as m.wallets]
-   #?(:clj [dinsro.queries.core-block :as q.core-block])
-   #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
-   #?(:clj [dinsro.queries.core-peers :as q.core-peers])
-   #?(:clj [dinsro.queries.core-tx :as q.core-tx])
-   #?(:clj [dinsro.queries.ln-nodes :as q.ln-nodes])
-   #?(:clj [dinsro.queries.wallets :as q.wallets])
+   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.peers :as m.core-peers]
+   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.model.core.wallets :as m.wallets]
+   #?(:clj [dinsro.queries.core.blocks :as q.core-block])
+   #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
+   #?(:clj [dinsro.queries.core.peers :as q.core-peers])
+   #?(:clj [dinsro.queries.core.tx :as q.core-tx])
+   #?(:clj [dinsro.queries.ln.nodes :as q.ln-nodes])
+   #?(:clj [dinsro.queries.core.wallets :as q.wallets])
    [dinsro.specs]))
 
 (defattr index ::m.core-nodes/index :ref

@@ -1,9 +1,9 @@
-(ns dinsro.joins.core-address
+(ns dinsro.joins.core.addresses
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core-address :as m.core-address]
-   #?(:clj [dinsro.queries.core-address :as q.core-address])
+   [dinsro.model.core.addresses :as m.core-address]
+   #?(:clj [dinsro.queries.core.addresses :as q.core-address])
    [dinsro.specs]))
 
 (defattr index ::m.core-address/index :ref

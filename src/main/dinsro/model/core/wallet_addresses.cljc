@@ -1,11 +1,11 @@
-(ns dinsro.model.wallet-addresses
+(ns dinsro.model.core.wallet-addresses
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.wallets :as m.wallets]))
+   [dinsro.model.core.wallets :as m.wallets]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

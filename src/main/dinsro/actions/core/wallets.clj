@@ -1,15 +1,15 @@
-(ns dinsro.actions.wallets
+(ns dinsro.actions.core.wallets
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.wallets :as m.wallets]
-   [dinsro.model.words :as m.words]
-   [dinsro.queries.core-block :as q.core-block]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.wallets :as q.wallets]
-   [dinsro.queries.words :as q.words]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.words :as m.words]
+   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.wallets :as q.wallets]
+   [dinsro.queries.core.words :as q.words]
    [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.core.hd.BIP32Path

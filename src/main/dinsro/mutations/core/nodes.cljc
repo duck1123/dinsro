@@ -1,4 +1,4 @@
-(ns dinsro.mutations.core-nodes
+(ns dinsro.mutations.core.nodes
   (:require
    [clojure.spec.alpha :as s]
    #?(:cljs [com.fulcrologic.fulcro.algorithms.merge :as merge])
@@ -6,11 +6,11 @@
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def >defn =>] :cljs [>def])]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core-nodes :as a.core-nodes])
-   #?(:clj [dinsro.actions.core-peers :as a.core-peers])
-   [dinsro.model.core-nodes :as m.core-nodes]
+   #?(:clj [dinsro.actions.core.nodes :as a.core-nodes])
+   #?(:clj [dinsro.actions.core.peers :as a.core-peers])
+   [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.mutations :as mu]
-   #?(:clj [dinsro.queries.core-nodes :as q.core-nodes])
+   #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
    #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::m.core-nodes/_ ::pc/_)

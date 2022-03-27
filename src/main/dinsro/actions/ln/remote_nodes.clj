@@ -1,9 +1,9 @@
-(ns dinsro.actions.ln-remote-nodes
+(ns dinsro.actions.ln.remote-nodes
   (:require
    [clojure.core.async :as async :refer [<!!]]
-   [dinsro.actions.ln-nodes :as a.ln-nodes]
+   [dinsro.actions.ln.nodes :as a.ln-nodes]
    [dinsro.client.lnd :as c.lnd]
-   [dinsro.queries.ln-nodes :as q.ln-nodes]
+   [dinsro.queries.ln.nodes :as q.ln-nodes]
    [dinsro.queries.users :as q.users]))
 
 (defn get-node-info

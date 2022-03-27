@@ -1,9 +1,9 @@
-(ns dinsro.mutations.core-address
+(ns dinsro.mutations.core.addresses
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core-address :as a.core-address])
-   [dinsro.model.core-address :as m.core-address]))
+   #?(:clj [dinsro.actions.core.addresses :as a.core-address])
+   [dinsro.model.core.addresses :as m.core-address]))
 
 (comment ::pc/_ ::m.core-address/_)
 

@@ -1,4 +1,4 @@
-(ns dinsro.model.core-peers
+(ns dinsro.model.core.peers
   (:refer-clojure :exclude [name])
   (:require
    [clojure.set :as set]
@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core-nodes :as m.core-nodes]))
+   [dinsro.model.core.nodes :as m.core-nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

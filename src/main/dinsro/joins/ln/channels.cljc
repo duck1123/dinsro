@@ -1,9 +1,9 @@
-(ns dinsro.joins.ln-channels
+(ns dinsro.joins.ln.channels
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln-channels :as m.ln-channels]
-   #?(:clj [dinsro.queries.ln-channels :as q.ln-channels])
+   [dinsro.model.ln.channels :as m.ln-channels]
+   #?(:clj [dinsro.queries.ln.channels :as q.ln-channels])
    [dinsro.specs]))
 
 (defattr index ::m.ln-channels/index :ref

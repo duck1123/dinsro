@@ -1,13 +1,13 @@
-(ns dinsro.actions.ln-channels
+(ns dinsro.actions.ln.channels
   (:require
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.ln-nodes :as a.ln-nodes]
+   [dinsro.actions.ln.nodes :as a.ln-nodes]
    [dinsro.client.lnd :as c.lnd]
-   [dinsro.model.ln-channels :as m.ln-channels]
-   [dinsro.model.ln-nodes :as m.ln-nodes]
-   [dinsro.queries.ln-channels :as q.ln-channels]
-   [dinsro.queries.ln-nodes :as q.ln-nodes]
+   [dinsro.model.ln.channels :as m.ln-channels]
+   [dinsro.model.ln.nodes :as m.ln-nodes]
+   [dinsro.queries.ln.channels :as q.ln-channels]
+   [dinsro.queries.ln.nodes :as q.ln-nodes]
    [dinsro.specs :as ds]
    [taoensso.timbre :as log]))
 

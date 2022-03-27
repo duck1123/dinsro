@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln-payments
+(ns dinsro.ui.ln.payments
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln-payments :as m.ln-payments]
+   [dinsro.model.ln.payments :as m.ln-payments]
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow

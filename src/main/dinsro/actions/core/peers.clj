@@ -1,11 +1,11 @@
-(ns dinsro.actions.core-peers
+(ns dinsro.actions.core.peers
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core-nodes :as m.core-nodes]
-   [dinsro.model.core-peers :as m.core-peers]
-   [dinsro.queries.core-nodes :as q.core-nodes]
-   [dinsro.queries.core-peers :as q.core-peers]
+   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.peers :as m.core-peers]
+   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.peers :as q.core-peers]
    [lambdaisland.glogc :as log]))
 
 (>defn get-peer-info

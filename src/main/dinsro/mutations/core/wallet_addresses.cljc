@@ -1,10 +1,10 @@
-(ns dinsro.mutations.wallet-addresses
+(ns dinsro.mutations.core.wallet-addresses
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.wallet-addresses :as a.wallet-addresses])
-   [dinsro.model.wallet-addresses :as m.wallet-addresses]
-   #?(:clj [dinsro.queries.wallet-addresses :as q.wallet-addresses])))
+   #?(:clj [dinsro.actions.core.wallet-addresses :as a.wallet-addresses])
+   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   #?(:clj [dinsro.queries.core.wallet-addresses :as q.wallet-addresses])))
 
 (comment ::m.wallet-addresses/_ ::pc/_)
 
