@@ -5,11 +5,11 @@
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.core.words :as m.words]
+   [dinsro.model.core.words :as m.c.words]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallets :as q.c.wallets]
-   [dinsro.queries.core.words :as q.words]
+   [dinsro.queries.core.words :as q.c.words]
    [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.core.hd.BIP32Path
@@ -58,29 +58,29 @@
 
 (defn get-word-list
   [wallet-id]
-  (let [ids (q.words/find-by-wallet wallet-id)]
+  (let [ids (q.c.words/find-by-wallet wallet-id)]
     (->> ids
-         (map q.words/read-record)
-         (sort-by ::m.words/position)
+         (map q.c.words/read-record)
+         (sort-by ::m.c.words/position)
          (mapv
           (fn [word]
             (log/info :word-list/item {:word word})
-            (::m.words/word word))))))
+            (::m.c.words/word word))))))
 
 (defn update-words!
   [wallet-id words]
   (log/info :words/updating {:wallet-id wallet-id :words words})
-  (let [old-ids (q.words/find-by-wallet wallet-id)]
+  (let [old-ids (q.c.words/find-by-wallet wallet-id)]
     (doseq [id old-ids]
-      (q.words/delete! id))
+      (q.c.words/delete! id))
     (let [response (doall
                     (map-indexed
                      (fn [i word]
-                       (let [props {::m.words/word     word
-                                    ::m.words/position (inc i)
-                                    ::m.words/wallet   wallet-id}
-                             word-id (q.words/create-record props)]
-                         (q.words/read-record word-id)))
+                       (let [props {::m.c.words/word     word
+                                    ::m.c.words/position (inc i)
+                                    ::m.c.words/wallet   wallet-id}
+                             word-id (q.c.words/create-record props)]
+                         (q.c.words/read-record word-id)))
                      words))]
       (log/info :words/update-finished {:response response})
       response)))

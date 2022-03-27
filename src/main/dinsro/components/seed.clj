@@ -28,7 +28,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.core.words :as m.words]
+   [dinsro.model.core.words :as m.c.words]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.core.addresses :as q.c.addresses]
@@ -45,7 +45,7 @@
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
    [dinsro.queries.core.wallets :as q.c.wallets]
-   [dinsro.queries.core.words :as q.words]
+   [dinsro.queries.core.words :as q.c.words]
    [dinsro.seed :as seeds]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
@@ -350,10 +350,10 @@
                                   ::m.c.wallets/node       node-id
                                   ::m.c.wallets/user       user-id})]
           (doseq [[i word] (map-indexed vector seed)]
-            (let [props {::m.words/wallet   wallet-id
-                         ::m.words/word     word
-                         ::m.words/position (inc i)}]
-              (q.words/create-record props))))
+            (let [props {::m.c.words/wallet   wallet-id
+                         ::m.c.words/word     word
+                         ::m.c.words/position (inc i)}]
+              (q.c.words/create-record props))))
         wallet))))
 
 (defn seed-addresses!

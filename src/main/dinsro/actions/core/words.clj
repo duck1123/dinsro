@@ -2,7 +2,7 @@
   (:require
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.queries.core.wallets :as q.c.wallets]
-   [dinsro.queries.core.words :as q.words]))
+   [dinsro.queries.core.words :as q.c.words]))
 
 (defn get-word-list
   [_wallet])
@@ -12,6 +12,6 @@
   wallet
   (def wallet-id (::m.c.wallets/id wallet))
 
-  (q.words/find-by-wallet wallet-id)
+  (q.c.words/find-by-wallet wallet-id)
 
   nil)

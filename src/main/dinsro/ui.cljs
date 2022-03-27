@@ -46,7 +46,7 @@
    [dinsro.ui.users :as u.users]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
-   [dinsro.ui.core.words :as u.words]
+   [dinsro.ui.core.words :as u.c.words]
    ["fomantic-ui"]))
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
@@ -124,7 +124,7 @@
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
                     u.c.wallet-addresses/WalletAddressesReport
-                    u.words/WordReport]}
+                    u.c.words/WordReport]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
       :pending (dom/div "Loading...")

@@ -7,7 +7,7 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.core.words :as m.words]
+   [dinsro.model.core.words :as m.c.words]
    #?(:cljs [taoensso.timbre :as log])))
 
 (comment ::pc/_ ::m.c.wallets/_)
@@ -43,8 +43,8 @@
 
 (defsc RollWord
   [_this _props]
-  {:query [::m.words/word ::m.words/position ::m.words/id]
-   :ident ::m.words/id})
+  {:query [::m.c.words/word ::m.c.words/position ::m.c.words/id]
+   :ident ::m.c.words/id})
 
 (defsc RollWallet
   [_this _props]
