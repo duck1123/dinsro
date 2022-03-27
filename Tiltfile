@@ -95,6 +95,7 @@ namespace_create(
   labels = [ "field.cattle.io/projectId: %s" % project_id ],
 )
 
+dinsro_dev_image = "%s/dinsro:dev-sources-%s" % (repo, version)
 devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
 
 local_resource(
@@ -113,41 +114,46 @@ k8s_yaml(helm(
 ))
 
 if use_production:
-  custom_build(
+  earthly_build(
     "%s/dinsro:%s" % (repo, version),
-    "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +image" % repo,
-    [
+    '+image',
+    deps = [
       'Earthfile',
       '.dockerignore',
       'bb.edn',
       'deps.edn',
       'src'
     ],
+    build_args = {
+      'REPO': repo,
+    },
   )
 
-custom_build(
+earthly_build(
   "%s/portal:%s" % (repo, version),
-  "earthly --build-arg repo=%s --build-arg EXPECTED_REF=$EXPECTED_REF +portal" % repo,
-  [
+  '+portal',
+  deps = [
     'Earthfile',
     '.dockerignore',
     'bb.edn',
     "resources/portal",
     'deps.edn',
   ],
+  build_args = {
+    'REPO': repo,
+  }
 )
 
 if not use_production:
-  custom_build(
-    "%s/dinsro:dev-sources-%s" % (repo, version),
-    " ".join([
-      'earthly',
-      "--build-arg repo=%s" % repo,
-      "--build-arg watch_sources=%s" % ('false' if local_devtools else 'true'),
-      '--build-arg EXPECTED_REF=$EXPECTED_REF',
-      '+dev-image-sources',
-    ]),
-    [
+
+  earthly_build(
+    dinsro_dev_image,
+    '+dev-image-sources',
+    build_args = {
+      'repo': repo,
+      'watch_sources': ('false' if local_devtools else 'true'),
+    },
+    deps =  [
       'Earthfile',
       '.dockerignore',
       'bb.edn',
@@ -328,10 +334,10 @@ if use_persistence:
   ))
 
 if use_persistence:
-  custom_build(
+  earthly_build(
     'dinsro/sqlpad:6.7',
-    'earthly --build-arg EXPECTED_REF=$EXPECTED_REF ./resources/tilt/sqlpad+sqlpad',
-    [
+    './resources/tilt/sqlpad+sqlpad',
+    deps = [
       'resources/tilt/sqlpad/Earthfile',
       'resources/tilt/sqlpad/seed-data'
     ],
