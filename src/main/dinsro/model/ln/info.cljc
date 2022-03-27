@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln.nodes :as m.ln]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (def rename-map
   {:blockHeight         ::block-height
@@ -27,72 +27,72 @@
 
 (s/def ::alias string?)
 (defattr alias-attr ::alias :string
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (s/def ::identity-pubkey string?)
 (defattr identity-pubkey ::identity-pubkey :string
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr version ::version :string
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr block-hash ::block-hash :string
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr color ::color :string
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr commit-hash ::commit-hash :string
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr testnet ::testnet :boolean
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr synced-to-graph ::synced-to-graph :boolean
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr num-inactive-channels ::num-inactive-channels :int
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr block-height ::block-height :int
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr num-active-channels ::num-active-channels :int
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr num-pending-channels ::num-pending-channels :int
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr num-peers ::num-peers :int
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr uris ::uris :list
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr features ::features :list
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr best-header-timestamp ::best-header-timestamp :int
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (defattr synced-to-chain ::synced-to-chain :boolean
-  {ao/identities #{::m.ln/id}
+  {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
 (s/def ::params
