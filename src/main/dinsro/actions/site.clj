@@ -3,10 +3,10 @@
    [clojure.java.io :as io]
    [clojure.edn :as edn]
    [clojure.string :as string]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.queries.core.nodes :as q.core-nodes]
-   [dinsro.queries.core.blocks :as q.core-blocks]
-   [dinsro.queries.core.tx :as q.core-tx]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.queries.core.blocks :as q.c.blocks]
+   [dinsro.queries.core.tx :as q.c.tx]
    [ring.util.codec :as codec]))
 
 (defn load-edn
@@ -40,12 +40,12 @@
 (defn create-core-nodes
   [site-config]
   (let [{:keys [name host port rpcuser rpcpass]} (get-node-config site-config)]
-    (q.core-nodes/create-record
-     {::m.core-nodes/name    name
-      ::m.core-nodes/host    host
-      ::m.core-nodes/port    port
-      ::m.core-nodes/rpcuser rpcuser
-      ::m.core-nodes/rpcpass rpcpass})))
+    (q.c.nodes/create-record
+     {::m.c.nodes/name    name
+      ::m.c.nodes/host    host
+      ::m.c.nodes/port    port
+      ::m.c.nodes/rpcuser rpcuser
+      ::m.c.nodes/rpcpass rpcpass})))
 
 (comment
   (edn/read-string (slurp (io/file "site.edn")))
@@ -62,16 +62,16 @@
 
   (first (get-in (load-edn "site.edn") [:seeds :core-nodes :nodes]))
 
-  (q.core-nodes/index-records)
+  (q.c.nodes/index-records)
 
-  (doseq [id (q.core-nodes/index-ids)]
-    (q.core-nodes/delete! id))
+  (doseq [id (q.c.nodes/index-ids)]
+    (q.c.nodes/delete! id))
 
-  (doseq [id (q.core-blocks/index-ids)]
-    (q.core-blocks/delete id))
+  (doseq [id (q.c.blocks/index-ids)]
+    (q.c.blocks/delete id))
 
-  (doseq [id (q.core-tx/index-ids)]
-    (q.core-tx/delete id))
+  (doseq [id (q.c.tx/index-ids)]
+    (q.c.tx/delete id))
 
   (create-core-nodes (load-edn "site.edn"))
 

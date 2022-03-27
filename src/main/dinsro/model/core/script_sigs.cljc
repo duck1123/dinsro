@@ -4,7 +4,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core.tx-in :as m.core-tx-in]))
+   [dinsro.model.core.tx-in :as m.c.tx-in]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -24,7 +24,7 @@
 (s/def ::tx-in uuid?)
 (defattr tx-in ::tx-in :ref
   {ao/identities #{::id}
-   ao/target     ::m.core-tx-in/id
+   ao/target     ::m.c.tx-in/id
    ao/schema     :production})
 
 (def attributes [id key value])

@@ -4,43 +4,43 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.model.core.tx-out :as m.core-tx-out]
+   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.specs]
    [xtdb.api :as xt]))
 
 (>defn index-ids
   []
-  [=> (s/coll-of ::m.core-tx-out/id)]
+  [=> (s/coll-of ::m.c.tx-out/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?e]
-                :where [[?e ::m.core-tx-out/id _]]}]
+                :where [[?e ::m.c.tx-out/id _]]}]
     (map first (xt/q db query))))
 
 (>defn find-by-tx
   [tx-id]
-  [::m.core-tx/id => (s/coll-of ::m.core-tx-out/id)]
+  [::m.c.tx/id => (s/coll-of ::m.c.tx-out/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-in-id]
                 :in [?tx-id]
-                :where [[?tx-in-id ::m.core-tx-out/transaction ?tx-id]]}]
+                :where [[?tx-in-id ::m.c.tx-out/transaction ?tx-id]]}]
     (map first (xt/q db query tx-id))))
 
 (>defn read-record
   [id]
-  [::m.core-tx-out/id => (? ::m.core-tx-out/item)]
+  [::m.c.tx-out/id => (? ::m.c.tx-out/item)]
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
-    (when (get record ::m.core-tx-out/id)
+    (when (get record ::m.c.tx-out/id)
       (dissoc record :xt/id))))
 
 (>defn create-record
   [params]
-  [::m.core-tx-out/params => ::m.core-tx-out/id]
+  [::m.c.tx-out/params => ::m.c.tx-out/id]
   (let [node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (-> params
-                            (assoc ::m.core-tx-out/id id)
+                            (assoc ::m.c.tx-out/id id)
                             (assoc :xt/id id))
         resp            (xt/submit-tx node [[::xt/put prepared-params]])]
     (xt/await-tx node resp)
@@ -48,30 +48,30 @@
 
 (>defn index-records
   []
-  [=> (s/coll-of ::m.core-tx-out/item)]
+  [=> (s/coll-of ::m.c.tx-out/item)]
   (map read-record (index-ids)))
 
 (>defn delete!
   [id]
-  [::m.core-tx-out/id => any?]
+  [::m.c.tx-out/id => any?]
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
 
 (>defn find-by-tx-and-index
   [tx-id n]
-  [::m.core-tx-out/transaction ::m.core-tx-out/n => (? ::m.core-tx-out/id)]
+  [::m.c.tx-out/transaction ::m.c.tx-out/n => (? ::m.c.tx-out/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-out-id]
                 :in    [[?tx-id ?n]]
-                :where [[?tx-out-id ::m.core-tx-out/transaction ?tx-id]
-                        [?tx-out-id ::m.core-tx-out/n ?n]]}]
+                :where [[?tx-out-id ::m.c.tx-out/transaction ?tx-id]
+                        [?tx-out-id ::m.c.tx-out/n ?n]]}]
     (ffirst (xt/q db query [tx-id n]))))
 
 (>defn update!
   [params]
-  [::m.core-tx-out/params => any?]
-  (let [id (::m.core-tx-out/id params)
+  [::m.c.tx-out/params => any?]
+  (let [id (::m.c.tx-out/id params)
         node   (c.xtdb/main-node)
         db     (c.xtdb/main-db)
         old    (xt/pull db '[*] id)

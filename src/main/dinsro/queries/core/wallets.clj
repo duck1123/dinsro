@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]
    [dinsro.model.core.wallets :as m.wallets]
    [dinsro.specs]
@@ -56,7 +56,7 @@
 
 (>defn find-by-core-node
   [node-id]
-  [::m.core-nodes/id => (s/coll-of ::m.wallets/id)]
+  [::m.c.nodes/id => (s/coll-of ::m.wallets/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?wallet-id]
                 :in    [?node-id]

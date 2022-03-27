@@ -1,14 +1,14 @@
 (ns dinsro.actions.core.nodes
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.core.blocks :as a.core-blocks]
+   [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.model.core.peers :as m.core-peers]
-   [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.queries.core.nodes :as q.core-nodes]
-   [dinsro.queries.core.peers :as q.core-peers]
-   [dinsro.queries.core.tx :as q.core-tx]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.queries.core.peers :as q.c.peers]
+   [dinsro.queries.core.tx :as q.c.tx]
    [lambdaisland.glogc :as log]))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
@@ -16,58 +16,58 @@
 (defn generate-to-address!
   "Generate regtest blocks paying to address"
   [node address]
-  (let [client (m.core-nodes/get-client node)]
+  (let [client (m.c.nodes/get-client node)]
     (c.bitcoin/generate-to-address client address)))
 
 (>defn get-blockchain-info
   "Fetch blockchain info for node"
   [node]
-  [::m.core-nodes/item => any?]
-  (let [client (m.core-nodes/get-client node)
+  [::m.c.nodes/item => any?]
+  (let [client (m.c.nodes/get-client node)
         info   (c.bitcoin/get-blockchain-info client)]
     info))
 
 (>defn update-blockchain-info!
   "Update node's blockchain info"
   [node]
-  [::m.core-nodes/item => any?]
-  (log/debug :blockchain-info/updating {:node-id (::m.core-nodes/id node)})
-  (let [{::m.core-nodes/keys [id]} node
+  [::m.c.nodes/item => any?]
+  (log/debug :blockchain-info/updating {:node-id (::m.c.nodes/id node)})
+  (let [{::m.c.nodes/keys [id]} node
         params                     (get-blockchain-info node)
         params                     (merge node params)
-        params                     (m.core-nodes/prepare-params params)
-        response                   (q.core-nodes/update-blockchain-info id params)]
+        params                     (m.c.nodes/prepare-params params)
+        response                   (q.c.nodes/update-blockchain-info id params)]
     {:status   :ok
      :response response}))
 
 (>defn fetch!
   "Fetch all updates for node"
-  [{::m.core-nodes/keys [id] :as node}]
-  [::m.core-nodes/item => ::m.core-nodes/item]
+  [{::m.c.nodes/keys [id] :as node}]
+  [::m.c.nodes/item => ::m.c.nodes/item]
   (log/debug :node/fetching {:node-id id})
   (update-blockchain-info! node)
-  (a.core-blocks/fetch-blocks node)
-  (q.core-nodes/read-record id))
+  (a.c.blocks/fetch-blocks node)
+  (q.c.nodes/read-record id))
 
 (>defn fetch-transactions!
   "Fetch transactions for a node's wallet"
-  [{node-id ::m.core-nodes/id :as node}]
-  [::m.core-nodes/item => any?]
+  [{node-id ::m.c.nodes/id :as node}]
+  [::m.c.nodes/item => any?]
   (log/info :transactions/fetching {:node-id node-id})
-  (let [client (m.core-nodes/get-client node)]
+  (let [client (m.c.nodes/get-client node)]
     (doseq [txes (c.bitcoin/list-transactions client)]
       (log/debug :transactions/processing-fetched {:txes txes})
-      (let [params (assoc txes ::m.core-peers/node node-id)
-            params (m.core-tx/prepare-params params)]
-        (q.core-tx/create-record params)))))
+      (let [params (assoc txes ::m.c.peers/node node-id)
+            params (m.c.tx/prepare-params params)]
+        (q.c.tx/create-record params)))))
 
 (>defn generate!
   "Generate a block for the node"
   [node-id]
-  [::m.core-nodes/id => any?]
+  [::m.c.nodes/id => any?]
   (log/info :generate/started {:node-id node-id})
-  (if-let [node (q.core-nodes/read-record node-id)]
-    (let [client  (m.core-nodes/get-client node)
+  (if-let [node (q.c.nodes/read-record node-id)]
+    (let [client  (m.c.nodes/get-client node)
           address sample-address]
       (c.bitcoin/generate-to-address client address))
     (do
@@ -75,13 +75,13 @@
       nil)))
 
 (comment
-  (tap> (q.core-nodes/index-records))
+  (tap> (q.c.nodes/index-records))
 
-  (def node-alice (q.core-nodes/read-record (q.core-nodes/find-id-by-name "bitcoin-alice")))
-  (def node-bob (q.core-nodes/read-record (q.core-nodes/find-id-by-name "bitcoin-bob")))
+  (def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
+  (def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
   (def node node-alice)
-  (def node-id (::m.core-nodes/id node))
-  (def client (m.core-nodes/get-client node))
+  (def node-id (::m.c.nodes/id node))
+  (def client (m.c.nodes/get-client node))
   (c.bitcoin/get-peer-info client)
 
   (tap> node)
@@ -97,7 +97,7 @@
 
   (fetch-transactions! node)
 
-  (q.core-peers/index-ids)
+  (q.c.peers/index-ids)
 
   (add-tap {:foo "foo"})
 

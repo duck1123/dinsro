@@ -6,15 +6,15 @@
    [com.fulcrologic.rad.type-support.date-time :as dt]
    [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
-   [dinsro.actions.core.tx :as a.core-tx]
+   [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.core.addresses :as m.core-addresses]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.model.core.tx-in :as m.core-tx-in]
+   [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.info :as m.ln.info]
@@ -31,10 +31,10 @@
    [dinsro.model.core.words :as m.words]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
-   [dinsro.queries.core.addresses :as q.core-addresses]
-   [dinsro.queries.core.nodes :as q.core-nodes]
-   [dinsro.queries.core.tx :as q.core-tx]
-   [dinsro.queries.core.tx-in :as q.core-tx-in]
+   [dinsro.queries.core.addresses :as q.c.addresses]
+   [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
@@ -79,10 +79,10 @@
 (s/def ::wallets (s/coll-of ::wallet))
 (s/def ::user-data (s/keys :req-un [::username ::password ::categories ::accounts]))
 (s/def ::users (s/coll-of ::user-data))
-(s/def ::core-node-data-item (s/keys :req [::m.core-nodes/name ::m.core-nodes/host
-                                           ::m.core-nodes/port
-                                           ::m.core-nodes/rpcuser
-                                           ::m.core-nodes/rpcpass]))
+(s/def ::core-node-data-item (s/keys :req [::m.c.nodes/name ::m.c.nodes/host
+                                           ::m.c.nodes/port
+                                           ::m.c.nodes/rpcuser
+                                           ::m.c.nodes/rpcpass]))
 (s/def ::core-node-data (s/coll-of ::core-node-data-item))
 (s/def ::default-timezone string?)
 (s/def ::seed-data (s/keys :req-un [::default-timezone ::core-node-data ::users ::default-currencies
@@ -183,7 +183,7 @@
     (let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys     [name host port mnemonic] :as info
                node-name :node} ln-nodes]
-        (if-let [core-id (q.core-nodes/find-id-by-name node-name)]
+        (if-let [core-id (q.c.nodes/find-id-by-name node-name)]
           (let [ln-node {::m.ln.nodes/name      name
                          ::m.ln.nodes/core-node core-id
                          ::m.ln.nodes/host      host
@@ -230,7 +230,7 @@
                       tx-hash      (::m.ln.tx/tx-hash tx)
                       block-hash   (::m.ln.tx/block-hash tx)
                       block-height (::m.ln.tx/block-height tx)
-                      core-tx-id   (a.core-tx/register-tx core-node-id block-hash block-height tx-hash)
+                      core-tx-id   (a.c.tx/register-tx core-node-id block-hash block-height tx-hash)
                       tx           (assoc tx ::m.ln.tx/core-tx core-tx-id)]
                   (q.ln.tx/add-tx ln-node-id tx)))
               (throw (RuntimeException. "Node does not contain a core node id")))
@@ -323,12 +323,12 @@
   (doseq [{:as       tx
            :keys     [in]
            node-name :node} core-txes]
-    (if-let [node-id (q.core-nodes/find-id-by-name node-name)]
-      (let [tx    (assoc tx ::m.core-tx/node node-id)
-            tx-id (q.core-tx/create-record tx)]
+    (if-let [node-id (q.c.nodes/find-id-by-name node-name)]
+      (let [tx    (assoc tx ::m.c.tx/node node-id)
+            tx-id (q.c.tx/create-record tx)]
         (doseq [tx-in in]
-          (let [tx-in (assoc tx-in ::m.core-tx-in/transaction tx-id)]
-            (q.core-tx-in/create-record tx-in))))
+          (let [tx-in (assoc tx-in ::m.c.tx-in/transaction tx-id)]
+            (q.c.tx-in/create-record tx-in))))
       (throw (RuntimeException. "Can't find node")))))
 
 (comment
@@ -343,7 +343,7 @@
       (doseq [wallet (get user-info :wallets [])]
         (let [{:keys     [name seed path]
                node-name :node} wallet
-              node-id           (q.core-nodes/find-id-by-name node-name)
+              node-id           (q.c.nodes/find-id-by-name node-name)
               wallet-id         (q.wallets/create-record
                                  {::m.wallets/name       name
                                   ::m.wallets/derivation path
@@ -359,7 +359,7 @@
 (defn seed-addresses!
   [addresses]
   (doseq [address addresses]
-    (q.core-addresses/create-record {::m.core-addresses/address address})))
+    (q.c.addresses/create-record {::m.c.addresses/address address})))
 
 (comment
 
@@ -379,7 +379,7 @@
     (dt/set-timezone! default-timezone)
 
     (doseq [data core-node-data]
-      (q.core-nodes/create-record data))
+      (q.c.nodes/create-record data))
     #_(seed-core-txes!)
 
     (seed-currencies! default-currencies)

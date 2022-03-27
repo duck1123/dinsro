@@ -3,17 +3,17 @@
   (:require
    [clojure.core.async :as async :refer [<!]]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.core.tx :as a.core-tx]
+   [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.client.lnd :as c.lnd]
-   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.transactions :as m.ln.tx]
-   [dinsro.queries.core.blocks :as q.core-blocks]
-   [dinsro.queries.core.nodes :as q.core-nodes]
-   [dinsro.queries.core.tx :as q.core-tx]
-   [dinsro.queries.core.tx-in :as q.core-tx-in]
-   [dinsro.queries.core.tx-out :as q.core-tx-out]
+   [dinsro.queries.core.blocks :as q.c.blocks]
+   [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.tx-in :as q.c.tx-in]
+   [dinsro.queries.core.tx-out :as q.c.tx-out]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.queries.users :as q.users]
@@ -29,7 +29,7 @@
 (>defn save-transactions!
   [ln-node-id tx-id params]
   [::m.ln.nodes/id
-   ::m.core-tx/id any? => any?]
+   ::m.c.tx/id any? => any?]
   (let [params (assoc params ::m.ln.tx/core-tx tx-id)
         params (assoc params ::m.ln.tx/node ln-node-id)
         params (m.ln.tx/prepare-params params)]
@@ -45,9 +45,9 @@
         (do
           (log/infof "has tx: %s" tx-id)
           tx-id)
-        (if-let [core-node-id (q.core-nodes/find-by-ln-node ln-node-id)]
+        (if-let [core-node-id (q.c.nodes/find-by-ln-node ln-node-id)]
           (do (log/error "no tx")
-              (let [core-tx-id (a.core-tx/register-tx core-node-id block-hash block-height tx-hash)]
+              (let [core-tx-id (a.c.tx/register-tx core-node-id block-hash block-height tx-hash)]
                 (save-transactions! ln-node-id core-tx-id data)))
           (throw (RuntimeException. (str "failed to find core node: " node))))))
     (throw (RuntimeException. "failed to find node id"))))
@@ -105,15 +105,15 @@
           (handle-get-transactions-response id transaction))))))
 
 (comment
-  (q.core-blocks/index-ids)
-  (q.core-tx/index-ids)
+  (q.c.blocks/index-ids)
+  (q.c.tx/index-ids)
   (q.ln.tx/index-records)
   (q.ln.tx/index-ids)
 
-  (map q.core-blocks/delete (q.core-blocks/index-ids))
-  (map q.core-tx/delete (q.core-tx/index-ids))
-  (map q.core-tx-out/delete! (q.core-tx-out/index-ids))
-  (map q.core-tx-in/delete! (q.core-tx-in/index-ids))
+  (map q.c.blocks/delete (q.c.blocks/index-ids))
+  (map q.c.tx/delete (q.c.tx/index-ids))
+  (map q.c.tx-out/delete! (q.c.tx-out/index-ids))
+  (map q.c.tx-in/delete! (q.c.tx-in/index-ids))
   (map q.ln.tx/delete! (q.ln.tx/index-ids))
 
   (def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "alice") "lnd-alice")))
@@ -125,7 +125,7 @@
 
   (def node-id (::m.ln.nodes/id node-alice))
   node-id
-  (q.core-nodes/find-by-ln-node node-id)
+  (q.c.nodes/find-by-ln-node node-id)
 
   (get-transactions node)
 

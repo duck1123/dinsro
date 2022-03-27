@@ -2,17 +2,17 @@
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core.addresses :as a.core-addresses])
-   [dinsro.model.core.addresses :as m.core-addresses]))
+   #?(:clj [dinsro.actions.core.addresses :as a.c.addresses])
+   [dinsro.model.core.addresses :as m.c.addresses]))
 
-(comment ::pc/_ ::m.core-addresses/_)
+(comment ::pc/_ ::m.c.addresses/_)
 
 #?(:clj
    (pc/defmutation fetch!
-     [_env {::m.core-addresses/keys [id]}]
-     {::pc/params #{::m.core-addresses/id}
+     [_env {::m.c.addresses/keys [id]}]
+     {::pc/params #{::m.c.addresses/id}
       ::pc/output [:status]}
-     (a.core-addresses/fetch! id))
+     (a.c.addresses/fetch! id))
 
    :cljs
    (defmutation fetch! [_props]

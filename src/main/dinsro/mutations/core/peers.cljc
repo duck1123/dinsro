@@ -2,19 +2,19 @@
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core.peers :as a.core-peers])
-   [dinsro.model.core.blocks :as m.core-blocks]
-   [dinsro.model.core.peers :as m.core-peers]
+   #?(:clj [dinsro.actions.core.peers :as a.c.peers])
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.peers :as m.c.peers]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.core-blocks/_ ::m.core-peers/_)
+(comment ::pc/_ ::m.c.blocks/_ ::m.c.peers/_)
 
 #?(:clj
    (pc/defmutation create!
      [_env props]
-     {::pc/params #{::m.core-peers/id}
+     {::pc/params #{::m.c.peers/id}
       ::pc/output [:status]}
-     (a.core-peers/create! props))
+     (a.c.peers/create! props))
 
    :cljs
    (defmutation create! [_props]
@@ -24,10 +24,10 @@
 #?(:clj
    (pc/defmutation delete!
      [_env props]
-     {::pc/params #{::m.core-peers/id}
+     {::pc/params #{::m.c.peers/id}
       ::pc/output [:status]}
      (log/debug :delete/starting {:props props})
-     (a.core-peers/delete! props))
+     (a.c.peers/delete! props))
 
    :cljs
    (defmutation delete! [_props]

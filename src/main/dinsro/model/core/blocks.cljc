@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [tick.alpha.api :as tick]))
 
 (def rename-map
@@ -127,9 +127,9 @@
 (s/def ::node uuid?)
 (defattr node ::node :ref
   {ao/identities       #{::id}
-   ao/target           ::m.core-nodes/id
+   ao/target           ::m.c.nodes/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.core-nodes/id ::m.core-nodes/name]}})
+   ::report/column-EQL {::node [::m.c.nodes/id ::m.c.nodes/name]}})
 
 (s/def ::fetched? boolean?)
 (defattr fetched? ::fetched? :boolean

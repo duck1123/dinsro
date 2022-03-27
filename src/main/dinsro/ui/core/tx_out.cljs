@@ -5,15 +5,15 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
-   [dinsro.model.core.tx-out :as m.core-tx-out]))
+   [dinsro.model.core.tx-out :as m.c.tx-out]))
 
 (defsc RefRow
-  [_this {::m.core-tx-out/keys [n
-                                value
-                                asm
-                                address
-                                hex
-                                type]}]
+  [_this {::m.c.tx-out/keys [n
+                             value
+                             asm
+                             address
+                             hex
+                             type]}]
   {}
   (dom/tr {}
     (dom/td (str n))
@@ -23,7 +23,7 @@
     (dom/td (str hex))
     (dom/td (str type))))
 
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-tx-out/id}))
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.tx-out/id}))
 
 (defn ref-row
   [{:keys [value]} _attribute]
@@ -47,18 +47,18 @@
 
 (form/defsc-form CoreTxOutput
   [this props]
-  {fo/id           m.core-tx-out/id
+  {fo/id           m.c.tx-out/id
    fo/route-prefix "core-tx-in"
-   fo/attributes   [m.core-tx-out/n
-                    m.core-tx-out/value
-                    m.core-tx-out/asm
-                    m.core-tx-out/address
-                    m.core-tx-out/hex
-                    m.core-tx-out/type]
+   fo/attributes   [m.c.tx-out/n
+                    m.c.tx-out/value
+                    m.c.tx-out/asm
+                    m.c.tx-out/address
+                    m.c.tx-out/hex
+                    m.c.tx-out/type]
    fo/title        "Output"}
   (if override-tx-out
     (form/render-layout this props)
-    (let [{::m.core-tx-out/keys [n value]} props]
+    (let [{::m.c.tx-out/keys [n value]} props]
       (dom/ul {}
         (dom/li {} "N " (str n))
         (dom/li {} "value " (str value))))))

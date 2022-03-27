@@ -3,11 +3,11 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.wallets]
    [dinsro.model.core.words :as m.words]
-   [dinsro.queries.core.blocks :as q.core-blocks]
-   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.blocks :as q.c.blocks]
+   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallets :as q.wallets]
    [dinsro.queries.core.words :as q.words]
    [lambdaisland.glogc :as log])
@@ -32,7 +32,7 @@
 
 (defn create!
   [{::m.wallets/keys      [name user]
-    {node ::m.core-nodes/id} ::m.wallets/node}]
+    {node ::m.c.nodes/id} ::m.wallets/node}]
   (let [props {::m.wallets/name name
                ::m.wallets/user user
                ::m.wallets/node node}]
@@ -123,13 +123,13 @@
    :keypath     "0/*"
    :checksum    "8phlkw5l"}
 
-  (q.core-nodes/index-records)
-  (q.core-blocks/index-records)
+  (q.c.nodes/index-records)
+  (q.c.blocks/index-records)
   (def node-name "bitcoin-alice")
-  (def node (q.core-nodes/read-record (q.core-nodes/find-id-by-name node-name)))
+  (def node (q.c.nodes/read-record (q.c.nodes/find-id-by-name node-name)))
   node
 
-  (def client (m.core-nodes/get-client node ""))
+  (def client (m.c.nodes/get-client node ""))
   client
 
   (c.bitcoin/add-node client "bitcoin.bitcoin-bob")

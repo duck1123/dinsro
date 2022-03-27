@@ -10,9 +10,9 @@
    [dinsro.model.users :as m.users]
    [dinsro.notebook-utils :refer [display]]
    [dinsro.queries.accounts :as q.accounts]
-   [dinsro.queries.core.tx :as q.core-tx]
-   [dinsro.queries.core.tx-in :as q.core-tx-in]
-   [dinsro.queries.core.tx-out :as q.core-tx-out]
+   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.tx-in :as q.c.tx-in]
+   [dinsro.queries.core.tx-out :as q.c.tx-out]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
@@ -75,9 +75,9 @@
   (ds/gen-key :xt/id)
   (ds/gen-key ::m.accounts/item)
 
-  (q.core-tx/index-ids)
-  (q.core-tx-in/index-ids)
-  (q.core-tx-out/index-ids)
+  (q.c.tx/index-ids)
+  (q.c.tx-in/index-ids)
+  (q.c.tx-out/index-ids)
 
   (q.accounts/index-records)
   (count (q.accounts/index-ids))

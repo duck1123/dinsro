@@ -3,19 +3,19 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
-   [dinsro.model.core.tx-in :as m.core-tx-in]))
+   [dinsro.model.core.tx-in :as m.c.tx-in]))
 
 (defsc RefRow
-  [_this {::m.core-tx-in/keys [coinbase
-                               txinwitness
-                               sequence]}]
+  [_this {::m.c.tx-in/keys [coinbase
+                            txinwitness
+                            sequence]}]
   {}
   (dom/tr {}
     (dom/td (str coinbase))
     (dom/td (str txinwitness))
     (dom/td (str sequence))))
 
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-tx-in/id}))
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.tx-in/id}))
 
 (defn ref-row
   [{:keys [value]} _attribute]

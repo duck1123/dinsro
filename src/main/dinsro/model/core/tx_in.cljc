@@ -5,7 +5,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core.tx :as m.core-tx]))
+   [dinsro.model.core.tx :as m.c.tx]))
 
 (def rename-map
   {:coinbase    ::coinbase
@@ -44,7 +44,7 @@
 (s/def ::transaction uuid?)
 (defattr transaction ::transaction :ref
   {ao/identities #{::id}
-   ao/target     ::m.core-tx/id
+   ao/target     ::m.c.tx/id
    ao/schema     :production})
 
 (s/def ::txid (s/or :string string? :nil nil?))

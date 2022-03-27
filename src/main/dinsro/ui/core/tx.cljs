@@ -8,25 +8,25 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.tx :as j.core-tx]
-   [dinsro.model.core.blocks :as m.core-blocks]
-   [dinsro.model.core.tx :as m.core-tx]
-   [dinsro.model.core.tx-in :as m.core-tx-in]
-   [dinsro.model.core.tx-out :as m.core-tx-out]
-   [dinsro.mutations.core.tx :as mu.core-tx]
-   [dinsro.ui.core.blocks :as u.core-blocks]
-   [dinsro.ui.core.tx-out :as u.core-tx-out]
+   [dinsro.joins.core.tx :as j.c.tx]
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.tx-in :as m.c.tx-in]
+   [dinsro.model.core.tx-out :as m.c.tx-out]
+   [dinsro.mutations.core.tx :as mu.c.tx]
+   [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.tx-out :as u.c.tx-out]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
-  [this {::m.core-tx/keys [fetched? id]
+  [this {::m.c.tx/keys [fetched? id]
          :as props}]
-  {:ident ::m.core-tx/id
-   :query [::m.core-tx/id
-           ::m.core-tx/fetched?]
-   :initial-state {::m.core-tx/id nil
-                   ::m.core-tx/fetched? false}}
+  {:ident ::m.c.tx/id
+   :query [::m.c.tx/id
+           ::m.c.tx/fetched?]
+   :initial-state {::m.c.tx/id nil
+                   ::m.c.tx/fetched? false}}
 
   (dom/tr {}
     (dom/td {} (u.links/ui-core-tx-link props))
@@ -34,10 +34,10 @@
     (dom/td {} (dom/button {:classes [:.ui.button]
                             :onClick (fn [event]
                                        (log/info :fetch-button/clicked {:event event})
-                                       (comp/transact! this [(mu.core-tx/fetch! {::m.core-tx/id id})]))}
+                                       (comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})]))}
                  "Fetch"))))
 
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-tx/id}))
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.tx/id}))
 
 (defn ref-row
   [{:keys [value]} _attribute]
@@ -60,59 +60,59 @@
 
 (form/defsc-form CoreTxInSubForm
   [_this _props]
-  {fo/id           m.core-tx-in/id
+  {fo/id           m.c.tx-in/id
    fo/route-prefix "ln-nodes-tx"
    fo/title        "Inputs"
-   fo/attributes   [m.core-tx-in/txid]})
+   fo/attributes   [m.c.tx-in/txid]})
 
 (form/defsc-form CoreTxOutSubForm
   [_this _props]
-  {fo/id           m.core-tx-out/id
+  {fo/id           m.c.tx-out/id
    fo/route-prefix "node-tx-core-tx-out"
    fo/title        "Outputs"
-   fo/attributes   [m.core-tx-out/value
-                    m.core-tx-out/n
-                    m.core-tx-out/asm
-                    m.core-tx-out/hex
-                    m.core-tx-out/type]})
+   fo/attributes   [m.c.tx-out/value
+                    m.c.tx-out/n
+                    m.c.tx-out/asm
+                    m.c.tx-out/hex
+                    m.c.tx-out/type]})
 
 (form/defsc-form CoreTxSubForm
   [_this _props]
-  {fo/id           m.core-tx/id
+  {fo/id           m.c.tx/id
    fo/route-prefix "ln-core-tx"
    fo/title        "Core Transaction"
-   fo/attributes   [m.core-tx/fetched?
-                    m.core-tx/tx-id
-                    m.core-tx/block
-                    j.core-tx/ins
-                    j.core-tx/outs]
-   fo/field-styles {::m.core-tx/block :link}
-   fo/subforms     {::m.core-tx/block {fo/ui u.core-blocks/CoreBlockSubForm}
-                    ::m.core-tx/ins   {fo/ui CoreTxInSubForm}
-                    ::m.core-tx/outs  {fo/ui CoreTxOutSubForm}}})
+   fo/attributes   [m.c.tx/fetched?
+                    m.c.tx/tx-id
+                    m.c.tx/block
+                    j.c.tx/ins
+                    j.c.tx/outs]
+   fo/field-styles {::m.c.tx/block :link}
+   fo/subforms     {::m.c.tx/block {fo/ui u.c.blocks/CoreBlockSubForm}
+                    ::m.c.tx/ins   {fo/ui CoreTxInSubForm}
+                    ::m.c.tx/outs  {fo/ui CoreTxOutSubForm}}})
 
 (def fetch-button
   {:type   :button
    :local? true
    :label  "Fetch"
    :action (fn [this _key]
-             (let [{::m.core-tx/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.core-tx/fetch! {::m.core-tx/id id})])))})
+             (let [{::m.c.tx/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})])))})
 
 (def override-input true)
 
 (form/defsc-form CoreTxInput
   [this props]
-  {fo/id           m.core-tx-in/id
+  {fo/id           m.c.tx-in/id
    fo/route-prefix "core-tx-in"
-   fo/attributes   [m.core-tx-in/coinbase
-                    m.core-tx-in/txinwitness
-                    m.core-tx-in/sequence
-                    m.core-tx-in/txid]
+   fo/attributes   [m.c.tx-in/coinbase
+                    m.c.tx-in/txinwitness
+                    m.c.tx-in/sequence
+                    m.c.tx-in/txid]
    fo/title        "Input"}
   (if override-input
     (form/render-layout this props)
-    (let [{::m.core-tx-in/keys [sequence txid vout script-pub-key]} props]
+    (let [{::m.c.tx-in/keys [sequence txid vout script-pub-key]} props]
       (dom/div {}
         (when sequence
           (dom/p "sequence " sequence))
@@ -125,39 +125,39 @@
 
 (form/defsc-form CoreTxBlock
   [_this _props]
-  {fo/id           m.core-blocks/id
+  {fo/id           m.c.blocks/id
    fo/route-prefix "core-tx-block"
-   fo/attributes   [m.core-blocks/height m.core-blocks/hash]
+   fo/attributes   [m.c.blocks/height m.c.blocks/hash]
    fo/title        "Block"})
 
 (def override-form false)
 
 (form/defsc-form CoreTxForm
   [this props]
-  {fo/id             m.core-tx/id
+  {fo/id             m.c.tx/id
    fo/action-buttons (concat [::fetch] form/standard-action-buttons)
-   fo/attributes     [m.core-tx/tx-id
-                      m.core-tx/fetched?
-                      m.core-tx/block
-                      m.core-tx/hash
-                      m.core-tx/hex
-                      m.core-tx/lock-time
-                      m.core-tx/size
-                      m.core-tx/time
-                      m.core-tx/version
-                      j.core-tx/ins
-                      j.core-tx/outs
-                      j.core-tx/node]
+   fo/attributes     [m.c.tx/tx-id
+                      m.c.tx/fetched?
+                      m.c.tx/block
+                      m.c.tx/hash
+                      m.c.tx/hex
+                      m.c.tx/lock-time
+                      m.c.tx/size
+                      m.c.tx/time
+                      m.c.tx/version
+                      j.c.tx/ins
+                      j.c.tx/outs
+                      j.c.tx/node]
    fo/cancel-route   ["core-txes"]
    fo/controls       (merge form/standard-controls {::fetch fetch-button})
-   fo/field-styles   {::m.core-tx/block :link
-                      ::m.core-tx/outs  :tx-out-table
-                      ::m.core-tx/ins   :tx-in-table}
+   fo/field-styles   {::m.c.tx/block :link
+                      ::m.c.tx/outs  :tx-out-table
+                      ::m.c.tx/ins   :tx-in-table}
    fo/route-prefix   "core-tx"
-   fo/subforms       {::m.core-tx/block {fo/ui CoreTxBlock}
-                      ::m.core-tx/ins   {fo/ui CoreTxInput}
-                      ::m.core-tx/outs  {fo/ui u.core-tx-out/CoreTxOutput}
-                      ::m.core-tx/node  {fo/ui u.links/CoreNodeLinkForm}}
+   fo/subforms       {::m.c.tx/block {fo/ui CoreTxBlock}
+                      ::m.c.tx/ins   {fo/ui CoreTxInput}
+                      ::m.c.tx/outs  {fo/ui u.c.tx-out/CoreTxOutput}
+                      ::m.c.tx/node  {fo/ui u.links/CoreNodeLinkForm}}
    fo/title          "Core Transaction"}
   (if override-form
     (form/render-layout this props)
@@ -166,12 +166,12 @@
       (form/render-layout this props))))
 
 (defn fetch-action
-  [report-instance {::m.core-tx/keys [id]}]
-  (comp/transact! report-instance [(mu.core-tx/fetch! {::m.core-tx/id id})]))
+  [report-instance {::m.c.tx/keys [id]}]
+  (comp/transact! report-instance [(mu.c.tx/fetch! {::m.c.tx/id id})]))
 
 (defn delete-action
-  [report-instance {::m.core-tx/keys [id]}]
-  (form/delete! report-instance ::m.core-tx/id id))
+  [report-instance {::m.c.tx/keys [id]}]
+  (form/delete! report-instance ::m.c.tx/id id))
 
 (def fetch-action-button
   {:label     "Fetch"
@@ -201,9 +201,9 @@
                              :txid-value  txid-value
                              :values      values})
     (comp/transact! this
-                    [(mu.core-tx/search!
-                      {::m.core-tx/block block-id
-                       ::m.core-tx/tx-id txid-value})])
+                    [(mu.c.tx/search!
+                      {::m.c.tx/block block-id
+                       ::m.c.tx/tx-id txid-value})])
     (control/run! this)))
 
 (def search-control
@@ -213,10 +213,10 @@
 
 (report/defsc-report CoreTxReport
   [_this _props]
-  {ro/columns [m.core-tx/tx-id
-               j.core-tx/node
-               m.core-tx/fetched?
-               m.core-tx/block]
+  {ro/columns [m.c.tx/tx-id
+               j.c.tx/node
+               m.c.tx/fetched?
+               m.c.tx/block]
    ro/controls
    {::search search-control
     ::refresh
@@ -231,14 +231,14 @@
      :onChange      (fn [this _] (control/run! this))}}
    ro/control-layout   {:inputs         [[::tx-id ::search]]
                         :action-buttons [::refresh]}
-   ro/field-formatters {::m.core-tx/block (fn [_this props]
-                                            (log/debug :formatting {:props props})
-                                            (u.links/ui-block-height-link props))
-                        ::m.core-tx/node  (fn [_this props] (u.links/ui-core-node-link props))}
-   ro/form-links       {::m.core-tx/tx-id CoreTxForm}
-   ro/source-attribute ::m.core-tx/index
+   ro/field-formatters {::m.c.tx/block (fn [_this props]
+                                         (log/debug :formatting {:props props})
+                                         (u.links/ui-block-height-link props))
+                        ::m.c.tx/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/form-links       {::m.c.tx/tx-id CoreTxForm}
+   ro/source-attribute ::m.c.tx/index
    ro/title            "Core Transactions"
    ro/row-actions      [fetch-action-button delete-action-button]
-   ro/row-pk           m.core-tx/id
+   ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true
    ro/route            "core-txes"})

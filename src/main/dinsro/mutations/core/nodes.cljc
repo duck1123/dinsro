@@ -6,43 +6,43 @@
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def >defn =>] :cljs [>def])]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core.nodes :as a.core-nodes])
-   #?(:clj [dinsro.actions.core.peers :as a.core-peers])
-   [dinsro.model.core.nodes :as m.core-nodes]
+   #?(:clj [dinsro.actions.core.nodes :as a.c.nodes])
+   #?(:clj [dinsro.actions.core.peers :as a.c.peers])
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations :as mu]
-   #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
+   #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::m.core-nodes/_ ::pc/_)
+(comment ::m.c.nodes/_ ::pc/_)
 
-(>def ::item ::m.core-nodes/item)
-(>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.core-nodes/item]))
+(>def ::item ::m.c.nodes/item)
+(>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.c.nodes/item]))
 
-(>def ::fetch!-request (s/keys :req [::m.core-nodes/id]))
+(>def ::fetch!-request (s/keys :req [::m.c.nodes/id]))
 (>def ::fetch!-response (s/keys :req [::mu/status] :opt [::mu/errors]))
 
-(>def ::generate!-request (s/keys :req [::m.core-nodes/id]))
+(>def ::generate!-request (s/keys :req [::m.c.nodes/id]))
 (>def ::generate!-response (s/keys :req [::mu/status] :opt [::mu/errors]))
 
 (defsc ConnectResponse
   [_ _]
-  {:initial-state {::m.core-nodes/item nil
+  {:initial-state {::m.c.nodes/item nil
                    ::mu/status         :initial
                    ::mu/errors         {}}
    :query         [{::mu/errors (comp/get-query mu/ErrorData)}
                    ::mu/status
-                   ::m.core-nodes/item]})
+                   ::m.c.nodes/item]})
 
 #?(:clj
    (pc/defmutation connect!
-     [_env {::m.core-nodes/keys [id]}]
-     {::pc/params #{::m.core-nodes/id}
-      ::pc/output [::mu/status ::m.core-nodes/item]}
-     (let [node     (q.core-nodes/read-record id)
-           response (a.core-nodes/update-blockchain-info! node)]
+     [_env {::m.c.nodes/keys [id]}]
+     {::pc/params #{::m.c.nodes/id}
+      ::pc/output [::mu/status ::m.c.nodes/item]}
+     (let [node     (q.c.nodes/read-record id)
+           response (a.c.nodes/update-blockchain-info! node)]
        {::mu/status         :ok
         :response           response
-        ::m.core-nodes/item nil}))
+        ::m.c.nodes/item nil}))
 
    :cljs
    (defmutation connect! [_props]
@@ -52,13 +52,13 @@
 
 #?(:clj
    (>defn do-fetch!
-     [{::m.core-nodes/keys [id]}]
+     [{::m.c.nodes/keys [id]}]
      [::fetch!-request => ::fetch!-response]
-     (let [node (q.core-nodes/read-record id)]
+     (let [node (q.c.nodes/read-record id)]
        (try
-         (let [response (a.core-nodes/fetch! node)]
+         (let [response (a.c.nodes/fetch! node)]
            {::mu/status         :ok
-            ::m.core-nodes/item response})
+            ::m.c.nodes/item response})
          (catch Exception ex
            (log/error :fetch/failed {:exception ex})
            {::mu/status :error
@@ -68,13 +68,13 @@
 
 #?(:clj
    (>defn do-generate!
-     [{::m.core-nodes/keys [id]}]
+     [{::m.c.nodes/keys [id]}]
      [::generate!-request => ::generate!-response]
      (try
-       (let [response (a.core-nodes/generate! id)]
+       (let [response (a.c.nodes/generate! id)]
          (log/debug :do-generate/response {:node-id id :response response})
          {::mu/status         :ok
-          ::m.core-nodes/item (q.core-nodes/read-record id)})
+          ::m.c.nodes/item (q.c.nodes/read-record id)})
        (catch Exception ex
          (log/error :generate/failed {:exception ex})
          {::mu/status :error
@@ -85,10 +85,10 @@
 #?(:clj
    (pc/defmutation fetch!
      [_env props]
-     {::pc/params #{::m.core-nodes/id}
+     {::pc/params #{::m.c.nodes/id}
       ::pc/output [::status
                    ::errors
-                   ::m.core-nodes/item]}
+                   ::m.c.nodes/item]}
      (do-fetch! props))
 
    :cljs
@@ -102,16 +102,16 @@
              {:com.fulcrologic.rad.pathom/keys [errors]} response]
          (if errors
            {}
-           (let [{::m.core-nodes/keys [item]} response
-                 {::m.core-nodes/keys [id]}   item]
-             (swap! state #(merge/merge-ident % [::m.core-nodes/id id] item))
+           (let [{::m.c.nodes/keys [item]} response
+                 {::m.c.nodes/keys [id]}   item]
+             (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
              {}))))))
 
 #?(:clj
    (pc/defmutation generate!
      [_env props]
-     {::pc/params #{::m.core-nodes/id}
-      ::pc/output [::status ::errors ::m.core-nodes/item]}
+     {::pc/params #{::m.c.nodes/id}
+      ::pc/output [::status ::errors ::m.c.nodes/item]}
      (do-generate! props))
 
    :cljs
@@ -121,11 +121,11 @@
 
 #?(:clj
    (pc/defmutation fetch-peers!
-     [_env {::m.core-nodes/keys [id]}]
-     {::pc/params #{::m.core-nodes/id}
+     [_env {::m.c.nodes/keys [id]}]
+     {::pc/params #{::m.c.nodes/id}
       ::pc/output [:status]}
-     (let [node (q.core-nodes/read-record id)]
-       (a.core-peers/fetch-peers! node)))
+     (let [node (q.c.nodes/read-record id)]
+       (a.c.peers/fetch-peers! node)))
 
    :cljs
    (defmutation fetch-peers! [_props]

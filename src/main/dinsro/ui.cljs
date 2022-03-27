@@ -22,11 +22,11 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
-   [dinsro.ui.core.addresses :as u.core-addresses]
-   [dinsro.ui.core.blocks :as u.core-blocks]
-   [dinsro.ui.core.nodes :as u.core-nodes]
-   [dinsro.ui.core.peers :as u.core-peers]
-   [dinsro.ui.core.tx :as u.core-tx]
+   [dinsro.ui.core.addresses :as u.c.addresses]
+   [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.nodes :as u.c.nodes]
+   [dinsro.ui.core.peers :as u.c.peers]
+   [dinsro.ui.core.tx :as u.c.tx]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
@@ -72,18 +72,18 @@
                     u.categories/CategoryForm
                     u.categories/CategoriesReport
                     u.categories/NewCategoryForm
-                    u.core-addresses/CoreAddressForm
-                    u.core-addresses/CoreAddressReport
-                    u.core-blocks/CoreBlockForm
-                    u.core-blocks/CoreBlockReport
-                    u.core-nodes/NewCoreNodeForm
-                    u.core-nodes/CoreNodeForm
-                    u.core-nodes/CoreNodesReport
-                    u.core-peers/CorePeerForm
-                    u.core-peers/CorePeersReport
-                    u.core-peers/NewCorePeerForm
-                    u.core-tx/CoreTxForm
-                    u.core-tx/CoreTxReport
+                    u.c.addresses/CoreAddressForm
+                    u.c.addresses/CoreAddressReport
+                    u.c.blocks/CoreBlockForm
+                    u.c.blocks/CoreBlockReport
+                    u.c.nodes/NewCoreNodeForm
+                    u.c.nodes/CoreNodeForm
+                    u.c.nodes/CoreNodesReport
+                    u.c.peers/CorePeerForm
+                    u.c.peers/CorePeersReport
+                    u.c.peers/NewCorePeerForm
+                    u.c.tx/CoreTxForm
+                    u.c.tx/CoreTxReport
                     u.currencies/AdminCurrencyForm
                     u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport

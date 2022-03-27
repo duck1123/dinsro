@@ -6,27 +6,27 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.nodes :as j.core-nodes]
-   [dinsro.model.core.blocks :as m.core-blocks]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.joins.core.nodes :as j.c.nodes]
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.wallets :as m.wallets]
-   [dinsro.mutations.core.nodes :as mu.core-nodes]
-   [dinsro.ui.core.blocks :as u.core-blocks]
+   [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log2]))
 
 (defn connect-action
-  [report-instance {::m.core-nodes/keys [id]}]
-  (comp/transact! report-instance [(mu.core-nodes/connect! {::m.core-nodes/id id})]))
+  [report-instance {::m.c.nodes/keys [id]}]
+  (comp/transact! report-instance [(mu.c.nodes/connect! {::m.c.nodes/id id})]))
 
 (defn fetch-action
-  [report-instance {::m.core-nodes/keys [id]}]
-  (comp/transact! report-instance [(mu.core-nodes/fetch! {::m.core-nodes/id id})]))
+  [report-instance {::m.c.nodes/keys [id]}]
+  (comp/transact! report-instance [(mu.c.nodes/fetch! {::m.c.nodes/id id})]))
 
 (defn delete-action
-  [report-instance {::m.core-nodes/keys [id]}]
-  (form/delete! report-instance ::m.core-nodes/id id))
+  [report-instance {::m.c.nodes/keys [id]}]
+  (form/delete! report-instance ::m.c.nodes/id id))
 
 (def connect-button
   {:label     "Connect"
@@ -35,53 +35,53 @@
 
 (form/defsc-form CoreNodeBlockSubform
   [_this _props]
-  {fo/id           m.core-blocks/id
+  {fo/id           m.c.blocks/id
    fo/title        "Blocks"
    fo/route-prefix "core-node-block"
-   fo/attributes   [m.core-blocks/hash m.core-blocks/height]})
+   fo/attributes   [m.c.blocks/hash m.c.blocks/height]})
 
 (form/defsc-form CoreNodeTxSubform
   [_this _props]
-  {fo/id           m.core-tx/id
+  {fo/id           m.c.tx/id
    fo/title        "Core Node Transactions"
-   fo/attributes   [m.core-tx/hex m.core-tx/version m.core-tx/block]
+   fo/attributes   [m.c.tx/hex m.c.tx/version m.c.tx/block]
    fo/route-prefix "core-node-tx"
-   fo/subforms     {::m.core-tx/block {fo/ui CoreNodeBlockSubform}}})
+   fo/subforms     {::m.c.tx/block {fo/ui CoreNodeBlockSubform}}})
 
 (def fetch-button
   {:type   :button
    :local? true
    :label  "Fetch"
    :action (fn [this _]
-             (let [{::m.core-nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.core-nodes/fetch! {::m.core-nodes/id id})])))})
+             (let [{::m.c.nodes/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.c.nodes/fetch! {::m.c.nodes/id id})])))})
 
 (def fetch-peers-button
   {:type   :button
    :local? true
    :label  "Fetch Peers"
    :action (fn [this _]
-             (let [{::m.core-nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.core-nodes/fetch-peers! {::m.core-nodes/id id})])))})
+             (let [{::m.c.nodes/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.c.nodes/fetch-peers! {::m.c.nodes/id id})])))})
 
 (def generate-button
   {:type   :button
    :local? true
    :label  "Generate"
    :action (fn [this _]
-             (let [{::m.core-nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.core-nodes/generate! {::m.core-nodes/id id})])))})
+             (let [{::m.c.nodes/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.c.nodes/generate! {::m.c.nodes/id id})])))})
 
 (def new-wallet-button
   {:type   :button
    :local? true
    :label  "New Wallet"
    :action (fn [this _]
-             (let [{::m.core-nodes/keys [id name]} (comp/props this)
+             (let [{::m.c.nodes/keys [id name]} (comp/props this)
                    component                       (comp/registry-key->class :dinsro.ui.wallets/NewWalletForm)
                    state                           {::m.wallets/name "new wallet"
-                                                    ::m.wallets/node {::m.core-nodes/id   id
-                                                                      ::m.core-nodes/name name}}
+                                                    ::m.wallets/node {::m.c.nodes/id   id
+                                                                      ::m.c.nodes/name name}}
                    options                         {:initial-state state}]
                (form/create! this component options)))})
 
@@ -90,47 +90,47 @@
    :local? true
    :label  "New Peer"
    :action (fn [this _]
-             (let [{::m.core-nodes/keys [id name]} (comp/props this)
-                   component                       (comp/registry-key->class :dinsro.ui.core-peers/NewCorePeerForm)
-                   state                           {::m.core-nodes/node {::m.core-nodes/id   id
-                                                                         ::m.core-nodes/name name}}
+             (let [{::m.c.nodes/keys [id name]} (comp/props this)
+                   component                       (comp/registry-key->class :dinsro.ui.c.peers/NewCorePeerForm)
+                   state                           {::m.c.nodes/node {::m.c.nodes/id   id
+                                                                      ::m.c.nodes/name name}}
                    options                         {:initial-state state}]
                (form/create! this component options)))})
 
 (def override-form true)
 
 (form/defsc-form CoreNodeForm [this props]
-  {fo/id             m.core-nodes/id
+  {fo/id             m.c.nodes/id
    fo/action-buttons [::fetch
                       ::fetch-peer
                       ::generate
                       ::new-wallet
                       ::new-peer]
-   fo/attributes     [m.core-nodes/name
-                      m.core-nodes/chain
-                      m.core-nodes/block-count
-                      j.core-nodes/blocks
-                      j.core-nodes/transactions
-                      j.core-nodes/ln-nodes
-                      j.core-nodes/wallets
-                      j.core-nodes/peers]
+   fo/attributes     [m.c.nodes/name
+                      m.c.nodes/chain
+                      m.c.nodes/block-count
+                      j.c.nodes/blocks
+                      j.c.nodes/transactions
+                      j.c.nodes/ln-nodes
+                      j.c.nodes/wallets
+                      j.c.nodes/peers]
    fo/cancel-route   ["core-nodes"]
    fo/controls       {::fetch       fetch-button
                       ::fetch-peers fetch-peers-button
                       ::generate generate-button
                       ::new-wallet  new-wallet-button
                       ::new-peer    new-peer-button}
-   fo/field-styles   {::m.core-nodes/blocks       :core-block-table
-                      ::m.core-nodes/transactions :link-list
-                      ::m.core-nodes/ln-nodes     :link-list
-                      ::m.core-nodes/wallets      :link-list
-                      ::m.core-nodes/peers        :link-list}
+   fo/field-styles   {::m.c.nodes/blocks       :core-block-table
+                      ::m.c.nodes/transactions :link-list
+                      ::m.c.nodes/ln-nodes     :link-list
+                      ::m.c.nodes/wallets      :link-list
+                      ::m.c.nodes/peers        :link-list}
    fo/route-prefix   "core-node"
-   fo/subforms       {::m.core-nodes/transactions {fo/ui CoreNodeTxSubform}
-                      ::m.core-nodes/blocks       {fo/ui u.core-blocks/CoreBlockSubForm}
-                      ::m.core-nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
-                      ::m.core-nodes/wallets      {fo/ui u.links/WalletLinkForm}
-                      ::m.core-nodes/peers        {fo/ui u.links/CorePeerLinkForm}}
+   fo/subforms       {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}
+                      ::m.c.nodes/blocks       {fo/ui u.c.blocks/CoreBlockSubForm}
+                      ::m.c.nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
+                      ::m.c.nodes/wallets      {fo/ui u.links/WalletLinkForm}
+                      ::m.c.nodes/peers        {fo/ui u.links/CorePeerLinkForm}}
    fo/title          "Core Node"}
   (if override-form
     (form/render-layout this props)
@@ -139,15 +139,15 @@
       (form/render-layout this props))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
-  {fo/id           m.core-nodes/id
-   fo/attributes   [m.core-nodes/name
-                    m.core-nodes/host
-                    m.core-nodes/port
-                    m.core-nodes/rpcuser
-                    m.core-nodes/rpcpass]
+  {fo/id           m.c.nodes/id
+   fo/attributes   [m.c.nodes/name
+                    m.c.nodes/host
+                    m.c.nodes/port
+                    m.c.nodes/rpcuser
+                    m.c.nodes/rpcpass]
    fo/cancel-route ["core-nodes"]
    fo/route-prefix "core-node2"
-   fo/subforms     {::m.core-nodes/transactions {fo/ui CoreNodeTxSubform}}
+   fo/subforms     {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}}
    fo/title        "Core Node"})
 
 (def fetch-action-button
@@ -171,14 +171,14 @@
 
 (report/defsc-report CoreNodesReport
   [_this _props]
-  {ro/columns           [m.core-nodes/name
-                         m.core-nodes/chain]
-   ro/column-formatters {::m.core-nodes/name #(u.links/ui-core-node-link %3)}
+  {ro/columns           [m.c.nodes/name
+                         m.c.nodes/chain]
+   ro/column-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
    ro/control-layout    {:action-buttons [::new]}
    ro/controls          {::new new-button}
    ro/row-actions       [fetch-action-button delete-action-button]
-   ro/source-attribute  ::m.core-nodes/index
+   ro/source-attribute  ::m.c.nodes/index
    ro/title             "Core Node Report"
-   ro/row-pk            m.core-nodes/id
+   ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/route             "core-nodes"})

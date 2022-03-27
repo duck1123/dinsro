@@ -12,7 +12,7 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.info :as m.ln.info]
@@ -181,15 +181,15 @@
                      m.ln.nodes/core-node
                      m.ln.nodes/user]
    fo/field-options {::m.ln.nodes/core-node
-                     {::picker-options/query-key       ::m.core-nodes/index
+                     {::picker-options/query-key       ::m.c.nodes/index
                       ::picker-options/query-component u.links/CoreNodeLinkForm
                       ::picker-options/options-xform
                       (fn [_ options]
                         (mapv
-                         (fn [{::m.core-nodes/keys [id name]}]
+                         (fn [{::m.c.nodes/keys [id name]}]
                            {:text  (str name)
-                            :value [::m.core-nodes/id id]})
-                         (sort-by ::m.core-nodes/name options)))}
+                            :value [::m.c.nodes/id id]})
+                         (sort-by ::m.c.nodes/name options)))}
                      ::m.ln.nodes/user
                      {::picker-options/query-key       ::m.users/index
                       ::picker-options/query-component u.links/UserLinkForm

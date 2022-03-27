@@ -5,14 +5,14 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.core.addresses :as m.core-addresses]
-   [dinsro.mutations.core.addresses :as mu.core-addresses]))
+   [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.mutations.core.addresses :as mu.c.addresses]))
 
 (form/defsc-form CoreAddressForm
   [_this _props]
-  {fo/id           m.core-addresses/id
+  {fo/id           m.c.addresses/id
    fo/title        "Address"
-   fo/attributes   [m.core-addresses/address]
+   fo/attributes   [m.c.addresses/address]
    fo/route-prefix "core-address"})
 
 (def new-button
@@ -22,8 +22,8 @@
    :action (fn [this _] (form/create! this CoreAddressForm))})
 
 (defn fetch-action
-  [report-instance {::m.core-addresses/keys [id]}]
-  (comp/transact! report-instance [(mu.core-addresses/fetch! {::m.core-addresses/id id})]))
+  [report-instance {::m.c.addresses/keys [id]}]
+  (comp/transact! report-instance [(mu.c.addresses/fetch! {::m.c.addresses/id id})]))
 
 (def fetch-button
   {:label     "Fetch"
@@ -32,12 +32,12 @@
 
 (report/defsc-report CoreAddressReport
   [_this _props]
-  {ro/columns          [m.core-addresses/address]
+  {ro/columns          [m.c.addresses/address]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
-   ro/source-attribute ::m.core-addresses/index
+   ro/source-attribute ::m.c.addresses/index
    ro/title            "Core Addresses"
    ro/row-actions      [fetch-button]
-   ro/row-pk           m.core-addresses/id
+   ro/row-pk           m.c.addresses/id
    ro/run-on-mount?    true
    ro/route            "core-addresses"})

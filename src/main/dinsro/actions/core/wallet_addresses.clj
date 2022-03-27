@@ -2,10 +2,10 @@
   (:require
    [dinsro.actions.nbxplorer :as a.nbxplorer]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.wallets]
    [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
-   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallets :as q.wallets]
    [dinsro.queries.core.wallet-addresses :as q.wallet-addresses]
    [taoensso.timbre :as log]))
@@ -16,8 +16,8 @@
   (log/infof "generate: %s" address)
   (if-let [wallet (q.wallets/read-record wallet-id)]
     (let [node-id (::m.wallets/node wallet)]
-      (if-let [node (q.core-nodes/read-record node-id)]
-        (let [client (m.core-nodes/get-client node)]
+      (if-let [node (q.c.nodes/read-record node-id)]
+        (let [client (m.c.nodes/get-client node)]
           (c.bitcoin/generate-to-address client address))
         (throw (RuntimeException. "Failed to find node"))))
     (throw (RuntimeException. "Failed to find wallet"))))

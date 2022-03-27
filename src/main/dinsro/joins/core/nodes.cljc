@@ -2,78 +2,78 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core.blocks :as m.core-blocks]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.model.core.peers :as m.core-peers]
-   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.core.wallets :as m.wallets]
-   #?(:clj [dinsro.queries.core.blocks :as q.core-blocks])
-   #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
-   #?(:clj [dinsro.queries.core.peers :as q.core-peers])
-   #?(:clj [dinsro.queries.core.tx :as q.core-tx])
+   #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])
+   #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
+   #?(:clj [dinsro.queries.core.peers :as q.c.peers])
+   #?(:clj [dinsro.queries.core.tx :as q.c.tx])
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
    #?(:clj [dinsro.queries.core.wallets :as q.wallets])
    [dinsro.specs]))
 
-(defattr index ::m.core-nodes/index :ref
+(defattr index ::m.c.nodes/index :ref
   {ao/cardinality :many
-   ao/target      ::m.core-nodes/id
-   ao/pc-output   [{::m.core-nodes/index [::m.core-nodes/id]}]
+   ao/target      ::m.c.nodes/id
+   ao/pc-output   [{::m.c.nodes/index [::m.c.nodes/id]}]
    ao/pc-resolve
    (fn [_env _]
-     (let [ids #?(:clj (q.core-nodes/index-ids) :cljs [])]
-       {::m.core-nodes/index (m.core-nodes/idents ids)}))})
+     (let [ids #?(:clj (q.c.nodes/index-ids) :cljs [])]
+       {::m.c.nodes/index (m.c.nodes/idents ids)}))})
 
-(defattr blocks ::m.core-nodes/blocks :ref
+(defattr blocks ::m.c.nodes/blocks :ref
   {ao/cardinality :many
-   ao/pc-input    #{::m.core-nodes/id}
-   ao/pc-output   [{::m.core-nodes/blocks [::m.core-blocks/id]}]
-   ao/target      ::m.core-blocks/id
+   ao/pc-input    #{::m.c.nodes/id}
+   ao/pc-output   [{::m.c.nodes/blocks [::m.c.blocks/id]}]
+   ao/target      ::m.c.blocks/id
    ao/pc-resolve
-   (fn [_env {::m.core-nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.core-blocks/find-by-node id) :cljs []) [])]
-       {::m.core-nodes/blocks (m.core-blocks/idents ids)}))})
+   (fn [_env {::m.c.nodes/keys [id]}]
+     (let [ids (if id #?(:clj (q.c.blocks/find-by-node id) :cljs []) [])]
+       {::m.c.nodes/blocks (m.c.blocks/idents ids)}))})
 
-(defattr ln-nodes ::m.core-nodes/ln-nodes :ref
+(defattr ln-nodes ::m.c.nodes/ln-nodes :ref
   {ao/cardinality :many
-   ao/pc-input    #{::m.core-nodes/id}
-   ao/pc-output   [{::m.core-nodes/ln-nodes [::m.ln.nodes/id]}]
+   ao/pc-input    #{::m.c.nodes/id}
+   ao/pc-output   [{::m.c.nodes/ln-nodes [::m.ln.nodes/id]}]
    ao/target      ::m.ln.nodes/id
    ao/pc-resolve
-   (fn [_env {::m.core-nodes/keys [id]}]
+   (fn [_env {::m.c.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.nodes/find-by-core-node id) :cljs []) [])]
-       {::m.core-nodes/ln-nodes (m.ln.nodes/idents ids)}))})
+       {::m.c.nodes/ln-nodes (m.ln.nodes/idents ids)}))})
 
-(defattr peers ::m.core-nodes/peers :ref
+(defattr peers ::m.c.nodes/peers :ref
   {ao/cardinality :many
-   ao/pc-input    #{::m.core-nodes/id}
-   ao/pc-output   [{::m.core-nodes/peers [::m.core-peers/id]}]
-   ao/target      ::m.core-peers/id
+   ao/pc-input    #{::m.c.nodes/id}
+   ao/pc-output   [{::m.c.nodes/peers [::m.c.peers/id]}]
+   ao/target      ::m.c.peers/id
    ao/pc-resolve
-   (fn [_env {::m.core-nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.core-peers/find-by-core-node id) :cljs []) [])]
-       {::m.core-nodes/peers (m.core-peers/idents ids)}))})
+   (fn [_env {::m.c.nodes/keys [id]}]
+     (let [ids (if id #?(:clj (q.c.peers/find-by-core-node id) :cljs []) [])]
+       {::m.c.nodes/peers (m.c.peers/idents ids)}))})
 
-(defattr transactions ::m.core-nodes/transactions :ref
+(defattr transactions ::m.c.nodes/transactions :ref
   {ao/cardinality :many
-   ao/pc-input    #{::m.core-nodes/id}
-   ao/pc-output   [{::m.core-nodes/transactions [::m.core-tx/id]}]
-   ao/target      ::m.core-tx/id
+   ao/pc-input    #{::m.c.nodes/id}
+   ao/pc-output   [{::m.c.nodes/transactions [::m.c.tx/id]}]
+   ao/target      ::m.c.tx/id
    ao/pc-resolve
-   (fn [_env {::m.core-nodes/keys [id]}]
-     (let [ids (if id  #?(:clj (q.core-tx/find-by-node id) :cljs []) [])]
-       {::m.core-nodes/transactions (m.core-tx/idents ids)}))})
+   (fn [_env {::m.c.nodes/keys [id]}]
+     (let [ids (if id  #?(:clj (q.c.tx/find-by-node id) :cljs []) [])]
+       {::m.c.nodes/transactions (m.c.tx/idents ids)}))})
 
-(defattr wallets ::m.core-nodes/wallets :ref
+(defattr wallets ::m.c.nodes/wallets :ref
   {ao/cardinality :many
-   ao/pc-input    #{::m.core-nodes/id}
-   ao/pc-output   [{::m.core-nodes/wallets [::m.wallets/id]}]
+   ao/pc-input    #{::m.c.nodes/id}
+   ao/pc-output   [{::m.c.nodes/wallets [::m.wallets/id]}]
    ao/target      ::m.wallets/id
    ao/pc-resolve
-   (fn [_env {::m.core-nodes/keys [id]}]
+   (fn [_env {::m.c.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.wallets/find-by-core-node id) :cljs []) [])]
-       {::m.core-nodes/wallets (m.wallets/idents ids)}))})
+       {::m.c.nodes/wallets (m.wallets/idents ids)}))})
 
 (def attributes
   [index

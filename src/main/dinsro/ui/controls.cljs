@@ -8,10 +8,10 @@
    [com.fulcrologic.rad.rendering.semantic-ui.semantic-ui-controls :as sui]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.core.blocks :as m.core-blocks]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.model.core.peers :as m.core-peers]
-   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
@@ -27,10 +27,10 @@
    [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
    [dinsro.model.core.words :as m.words]
    [dinsro.ui.accounts :as u.accounts]
-   [dinsro.ui.core.blocks :as u.core-blocks]
-   [dinsro.ui.core.tx :as u.core-tx]
-   [dinsro.ui.core.tx-in :as u.core-tx-in]
-   [dinsro.ui.core.tx-out :as u.core-tx-out]
+   [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.tx :as u.c.tx]
+   [dinsro.ui.core.tx-in :as u.c.tx-in]
+   [dinsro.ui.core.tx-out :as u.c.tx-out]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
@@ -50,7 +50,7 @@
 
 (def matchers
   {::m.accounts/id   u.links/ui-account-link
-   ::m.core-peers/id u.links/ui-core-peer-link
+   ::m.c.peers/id u.links/ui-core-peer-link
    ::m.words/id u.links/ui-word-link})
 
 (defn get-matcher
@@ -64,9 +64,9 @@
   [{:keys [value] :as env} _attribute]
   (let [{address-id     ::m.wallet-addresses/id
          category-id    ::m.categories/id
-         block-id       ::m.core-blocks/id
-         core-node-id   ::m.core-nodes/id
-         core-tx-id     ::m.core-tx/id
+         block-id       ::m.c.blocks/id
+         core-node-id   ::m.c.nodes/id
+         core-tx-id     ::m.c.tx/id
          currency-id    ::m.currencies/id
          channel-id     ::m.ln.channels/id
          invoice-id     ::m.ln.invoices/id
@@ -190,16 +190,16 @@
       (control-type :ref  :link             render-link-control)
       (control-type :ref  :link-list        render-link-list-control)
       (control-type :ref  :link-subform     render-link-subform-control)
-      (control-type :ref  :core-block-table u.core-blocks/render-ref-row)
-      (control-type :ref  :core-tx-table    u.core-tx/render-ref-row)
+      (control-type :ref  :core-block-table u.c.blocks/render-ref-row)
+      (control-type :ref  :core-tx-table    u.c.tx/render-ref-row)
       (control-type :ref  :ln-tx-row        u.ln.tx/render-ref-ln-tx-row)
       (control-type :ref  :ln-channels-row  u.ln.channels/render-ref-row)
       (control-type :ref  :ln-payments-row  u.ln.payments/render-ref-row)
       (control-type :ref  :ln-payreqs-row   u.ln.payreqs/render-ref-ln-payreq-row)
       (control-type :ref  :ln-peer-row      u.ln.peers/render-ref-ln-peer-row)
       (control-type :ref  :ln-invoice-row   u.ln.invoices/render-ref-ln-invoice-row)
-      (control-type :ref  :tx-in-table      u.core-tx-in/render-ref-row)
-      (control-type :ref  :tx-out-table     u.core-tx-out/render-ref-row)
+      (control-type :ref  :tx-in-table      u.c.tx-in/render-ref-row)
+      (control-type :ref  :tx-out-table     u.c.tx-out/render-ref-row)
       (control-type :ref  :rate-chart       render-rate-chart-control)
       (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)

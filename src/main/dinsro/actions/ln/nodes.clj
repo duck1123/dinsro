@@ -6,12 +6,12 @@
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [xtdb.api :as xt]
-   [dinsro.actions.core.nodes :as a.core-nodes]
+   [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.queries.core.nodes :as q.core-nodes]
+   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
    [dinsro.queries.users :as q.users]
@@ -166,8 +166,8 @@
   [::m.ln.nodes/item => any?]
   (log/info :node/generating-blocks {:node-id (::m.ln.nodes/id node)})
   (let [{:keys [address]} (async/<!! (get-lnd-address node))
-        cnode             (first (q.core-nodes/index-records))]
-    (a.core-nodes/generate-to-address! cnode address)
+        cnode             (first (q.c.nodes/index-records))]
+    (a.c.nodes/generate-to-address! cnode address)
     address))
 
 (>defn initialize!

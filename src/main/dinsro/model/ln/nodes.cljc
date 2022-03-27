@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    #?(:clj [dinsro.components.config :refer [config]])
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]))
 
 #?(:clj
@@ -39,12 +39,12 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::core-node ::m.core-nodes/id)
+(>def ::core-node ::m.c.nodes/id)
 (defattr core-node ::core-node :ref
   {ao/identities #{::id}
-   ao/target     ::m.core-nodes/id
+   ao/target     ::m.c.nodes/id
    ao/schema     :production
-   ::report/column-EQL {::core-node [::m.core-nodes/id ::m.core-nodes/name]}})
+   ::report/column-EQL {::core-node [::m.c.nodes/id ::m.c.nodes/name]}})
 
 (>def ::host string?)
 (defattr host ::host :string

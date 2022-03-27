@@ -1,7 +1,7 @@
 (ns dinsro.seed
   (:require
    ;; [dinsro.components.seed :as c.seed]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]
    [reitit.coercion.spec]
    [tick.alpha.api :as tick]))
@@ -24,25 +24,25 @@
 (def category-names ["Category A" "Category B" "Category C"])
 
 (def core-node1
-  {::m.core-nodes/name        "bitcoin-alice"
-   ::m.core-nodes/host        "bitcoin.alice"
-   ::m.core-nodes/port        18443
-   ::m.core-nodes/rpcuser     "rpcuser"
-   ::m.core-nodes/rpcpass     "rpcpassword"})
+  {::m.c.nodes/name        "bitcoin-alice"
+   ::m.c.nodes/host        "bitcoin.alice"
+   ::m.c.nodes/port        18443
+   ::m.c.nodes/rpcuser     "rpcuser"
+   ::m.c.nodes/rpcpass     "rpcpassword"})
 
 (def core-node2
-  {::m.core-nodes/name        "bitcoin-bob"
-   ::m.core-nodes/host        "bitcoin.bob"
-   ::m.core-nodes/port        18443
-   ::m.core-nodes/rpcuser     "rpcuser"
-   ::m.core-nodes/rpcpass     "rpcpassword"})
+  {::m.c.nodes/name        "bitcoin-bob"
+   ::m.c.nodes/host        "bitcoin.bob"
+   ::m.c.nodes/port        18443
+   ::m.c.nodes/rpcuser     "rpcuser"
+   ::m.c.nodes/rpcpass     "rpcpassword"})
 
 (def core-node3
-  {::m.core-nodes/name    "bitcoin-larry"
-   ::m.core-nodes/host    "bitcoin.larry"
-   ::m.core-nodes/port    18332
-   ::m.core-nodes/rpcuser "rpcuser"
-   ::m.core-nodes/rpcpass "rpcpassword"})
+  {::m.c.nodes/name    "bitcoin-larry"
+   ::m.c.nodes/host    "bitcoin.larry"
+   ::m.c.nodes/port    18332
+   ::m.c.nodes/rpcuser "rpcuser"
+   ::m.c.nodes/rpcpass "rpcpassword"})
 
 (def wallet-1
   {:label       "a"

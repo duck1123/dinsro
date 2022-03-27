@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.wallets :as j.wallets]
-   [dinsro.model.core.nodes :as m.core-nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.wallets]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.wallets]
@@ -35,15 +35,15 @@
                       ::m.wallets/user :pick-one}
    fo/field-options
    {::m.wallets/node
-    {::picker-options/query-key       ::m.core-nodes/index
+    {::picker-options/query-key       ::m.c.nodes/index
      ::picker-options/query-component u.links/CoreNodeLinkForm
      ::picker-options/options-xform
      (fn [_ options]
        (mapv
-        (fn [{::m.core-nodes/keys [id name]}]
+        (fn [{::m.c.nodes/keys [id name]}]
           {:text  (str name)
-           :value [::m.core-nodes/id id]})
-        (sort-by ::m.core-nodes/name options)))}
+           :value [::m.c.nodes/id id]})
+        (sort-by ::m.c.nodes/name options)))}
     ::m.wallets/user
     {::picker-options/query-key       ::m.users/index
      ::picker-options/query-component u.links/UserLinkForm

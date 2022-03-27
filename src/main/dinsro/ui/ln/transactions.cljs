@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.transactions :as m.ln.tx]
-   [dinsro.ui.core.tx :as u.core-tx]
+   [dinsro.ui.core.tx :as u.c.tx]
    [dinsro.ui.links :as u.links]))
 
 (defsc LnTxRow
@@ -49,7 +49,7 @@
    fo/field-styles {::m.ln.tx/core-tx :link}
    fo/attributes   [m.ln.tx/amount
                     m.ln.tx/core-tx]
-   fo/subforms     {::m.ln.tx/core-tx {fo/ui u.core-tx/CoreTxSubForm}}}
+   fo/subforms     {::m.ln.tx/core-tx {fo/ui u.c.tx/CoreTxSubForm}}}
   (if override-tx-subform
     (form/render-layout this props)
     (dom/div :.ui

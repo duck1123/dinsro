@@ -6,10 +6,10 @@
    [com.fulcrologic.rad.form-options :as fo]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.core.blocks :as m.core-blocks]
-   [dinsro.model.core.nodes :as m.core-nodes]
-   [dinsro.model.core.peers :as m.core-peers]
-   [dinsro.model.core.tx :as m.core-tx]
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
@@ -50,22 +50,22 @@
 (def ui-account-link (comp/factory AccountLinkForm {:keyfn ::m.accounts/id}))
 
 (form/defsc-form BlockLinkForm
-  [this {::m.core-blocks/keys [id hash]}]
-  {fo/id           m.core-blocks/id
+  [this {::m.c.blocks/keys [id hash]}]
+  {fo/id           m.c.blocks/id
    fo/route-prefix "block-link"
    fo/title        "Blocks"
-   fo/attributes   [m.core-blocks/hash]}
-  (form-link this id hash :dinsro.ui.core-blocks/CoreBlockForm))
+   fo/attributes   [m.c.blocks/hash]}
+  (form-link this id hash :dinsro.ui.c.blocks/CoreBlockForm))
 
 (def ui-block-link (comp/factory BlockLinkForm {:keyfn ::m.categories/id}))
 
 (form/defsc-form BlockHeightLinkForm
-  [this {::m.core-blocks/keys [id height]}]
-  {fo/id           m.core-blocks/id
+  [this {::m.c.blocks/keys [id height]}]
+  {fo/id           m.c.blocks/id
    fo/route-prefix "block-height-link"
    fo/title        "Blocks"
-   fo/attributes   [m.core-blocks/height]}
-  (form-link this id height :dinsro.ui.core-blocks/CoreBlockForm))
+   fo/attributes   [m.c.blocks/height]}
+  (form-link this id height :dinsro.ui.c.blocks/CoreBlockForm))
 
 (def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.categories/id}))
 
@@ -88,33 +88,33 @@
 (def ui-channel-link (comp/factory ChannelLinkForm {:keyfn ::m.ln.channels/id}))
 
 (form/defsc-form CoreNodeLinkForm
-  [this {::m.core-nodes/keys [id name]}]
-  {fo/id           m.core-nodes/id
+  [this {::m.c.nodes/keys [id name]}]
+  {fo/id           m.c.nodes/id
    fo/route-prefix "core-node-link"
-   fo/attributes   [m.core-nodes/id m.core-nodes/name]}
-  (form-link this id name :dinsro.ui.core-nodes/CoreNodeForm))
+   fo/attributes   [m.c.nodes/id m.c.nodes/name]}
+  (form-link this id name :dinsro.ui.c.nodes/CoreNodeForm))
 
-(def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.core-nodes/id}))
+(def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
 (form/defsc-form CorePeerLinkForm
-  [this {::m.core-peers/keys [id addr]}]
-  {fo/id           m.core-peers/id
+  [this {::m.c.peers/keys [id addr]}]
+  {fo/id           m.c.peers/id
    fo/route-prefix "core-peer-link"
    fo/title        "Peers"
-   fo/attributes   [m.core-peers/id m.core-peers/addr]}
-  (form-link this id addr :dinsro.ui.core-peers/CorePeerForm))
+   fo/attributes   [m.c.peers/id m.c.peers/addr]}
+  (form-link this id addr :dinsro.ui.c.peers/CorePeerForm))
 
-(def ui-core-peer-link (comp/factory CorePeerLinkForm {:keyfn ::m.core-peers/id}))
+(def ui-core-peer-link (comp/factory CorePeerLinkForm {:keyfn ::m.c.peers/id}))
 
 (form/defsc-form CoreTxLinkForm
-  [this {::m.core-tx/keys [id tx-id]}]
-  {fo/id           m.core-tx/id
+  [this {::m.c.tx/keys [id tx-id]}]
+  {fo/id           m.c.tx/id
    fo/route-prefix "core-tx-link"
    fo/title        "Transaction"
-   fo/attributes   [m.core-tx/id m.core-tx/tx-id]}
-  (form-link this id tx-id :dinsro.ui.core-tx/CoreTxForm))
+   fo/attributes   [m.c.tx/id m.c.tx/tx-id]}
+  (form-link this id tx-id :dinsro.ui.c.tx/CoreTxForm))
 
-(def ui-core-tx-link (comp/factory CoreTxLinkForm {:keyfn ::m.core-tx/id}))
+(def ui-core-tx-link (comp/factory CoreTxLinkForm {:keyfn ::m.c.tx/id}))
 
 (form/defsc-form CurrencyLinkForm [this {::m.currencies/keys [id name]}]
   {fo/id           m.currencies/id

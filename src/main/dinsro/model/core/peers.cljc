@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core.nodes :as m.core-nodes]))
+   [dinsro.model.core.nodes :as m.c.nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -43,9 +43,9 @@
 (s/def ::node uuid?)
 (defattr node ::node :ref
   {ao/identities       #{::id}
-   ao/target           ::m.core-nodes/id
+   ao/target           ::m.c.nodes/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.core-nodes/id ::m.core-nodes/name]}})
+   ::report/column-EQL {::node [::m.c.nodes/id ::m.c.nodes/name]}})
 
 (s/def ::params
   (s/keys :req [::address-bind

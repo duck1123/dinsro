@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core.blocks :as m.core-blocks]))
+   [dinsro.model.core.blocks :as m.c.blocks]))
 
 (def rename-map
   {:blockhash     ::block-hash
@@ -89,9 +89,9 @@
 (s/def ::block uuid?)
 (defattr block ::block :ref
   {ao/identities #{::id}
-   ao/target     ::m.core-blocks/id
+   ao/target     ::m.c.blocks/id
    ao/schema     :production
-   ::report/column-EQL {::block [::m.core-blocks/id ::m.core-blocks/height ::m.core-blocks/hash]}})
+   ::report/column-EQL {::block [::m.c.blocks/id ::m.c.blocks/height ::m.c.blocks/hash]}})
 
 (s/def ::fetched? boolean?)
 (defattr fetched? ::fetched? :boolean
