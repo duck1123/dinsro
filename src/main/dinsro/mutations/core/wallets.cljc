@@ -5,12 +5,12 @@
    #?(:cljs [com.fulcrologic.rad.form :as form])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
-   #?(:clj [dinsro.actions.core.wallets :as a.wallets])
-   [dinsro.model.core.wallets :as m.wallets]
+   #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.words]
    #?(:cljs [taoensso.timbre :as log])))
 
-(comment ::pc/_ ::m.wallets/_)
+(comment ::pc/_ ::m.c.wallets/_)
 
 (defsc CreationResponse
   [_this _props]
@@ -19,11 +19,11 @@
 #?(:clj
    (pc/defmutation create!
      [env props]
-     {::pc/params #{::m.wallets/id}
+     {::pc/params #{::m.c.wallets/id}
       ::pc/output [:status]}
      (let [user-id (a.authentication/get-user-id env)
-           props   (assoc props ::m.wallets/user user-id)
-           id      (a.wallets/create! props)]
+           props   (assoc props ::m.c.wallets/user user-id)
+           id      (a.c.wallets/create! props)]
        {:status :ok
         :id     id}))
 
@@ -36,7 +36,7 @@
              response (get body `create!)]
          (log/spy :info response)
          (let [{:keys [id]}     response
-               target-component (comp/registry-key->class :dinsro.ui.wallets/WalletForm)]
+               target-component (comp/registry-key->class :dinsro.ui.core.wallets/WalletForm)]
            (form/mark-all-complete! component)
            (form/view! app target-component id))
          {}))))
@@ -48,10 +48,10 @@
 
 (defsc RollWallet
   [_this _props]
-  {:query [::m.wallets/id
-           ::m.wallets/key
-           {::m.wallets/words (comp/get-query RollWord)}]
-   :ident ::m.wallets/id})
+  {:query [::m.c.wallets/id
+           ::m.c.wallets/key
+           {::m.c.wallets/words (comp/get-query RollWord)}]
+   :ident ::m.c.wallets/id})
 
 (defsc RollResponse
   [_this _props]
@@ -61,8 +61,8 @@
 #?(:clj
    (defn do-roll!
      [props]
-     (let [{::m.wallets/keys [id]} props
-           response                (a.wallets/roll! props)]
+     (let [{::m.c.wallets/keys [id]} props
+           response                (a.c.wallets/roll! props)]
        (comment id)
        {:status :ok
         :wallet response})))
@@ -70,10 +70,10 @@
 #?(:clj
    (pc/defmutation roll!
      [env props]
-     {::pc/params #{::m.wallets/id}
+     {::pc/params #{::m.c.wallets/id}
       ::pc/output [:status :wallet]}
      (let [user-id (a.authentication/get-user-id env)
-           props   (assoc props ::m.wallets/user user-id)]
+           props   (assoc props ::m.c.wallets/user user-id)]
        (do-roll! props)))
 
    :cljs

@@ -44,8 +44,8 @@
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.transactions :as u.transactions]
    [dinsro.ui.users :as u.users]
-   [dinsro.ui.core.wallets :as u.wallets]
-   [dinsro.ui.core.wallet-addresses :as u.wallet-addresses]
+   [dinsro.ui.core.wallets :as u.c.wallets]
+   [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
    [dinsro.ui.core.words :as u.words]
    ["fomantic-ui"]))
 
@@ -118,12 +118,12 @@
                     u.users/AdminUserForm
                     u.users/UserForm
                     u.users/UsersReport
-                    u.wallets/NewWalletForm
-                    u.wallets/WalletForm
-                    u.wallets/WalletReport
-                    u.wallet-addresses/NewWalletAddressForm
-                    u.wallet-addresses/WalletAddressForm
-                    u.wallet-addresses/WalletAddressesReport
+                    u.c.wallets/NewWalletForm
+                    u.c.wallets/WalletForm
+                    u.c.wallets/WalletReport
+                    u.c.wallet-addresses/NewWalletAddressForm
+                    u.c.wallet-addresses/WalletAddressForm
+                    u.c.wallet-addresses/WalletAddressesReport
                     u.words/WordReport]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state

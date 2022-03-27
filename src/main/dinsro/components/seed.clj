@@ -27,7 +27,7 @@
    [dinsro.model.seed :as seed]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.words]
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
@@ -44,7 +44,7 @@
    [dinsro.queries.settings :as q.settings]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
-   [dinsro.queries.core.wallets :as q.wallets]
+   [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.words :as q.words]
    [dinsro.seed :as seeds]
    [dinsro.specs :as ds]
@@ -344,11 +344,11 @@
         (let [{:keys     [name seed path]
                node-name :node} wallet
               node-id           (q.c.nodes/find-id-by-name node-name)
-              wallet-id         (q.wallets/create-record
-                                 {::m.wallets/name       name
-                                  ::m.wallets/derivation path
-                                  ::m.wallets/node       node-id
-                                  ::m.wallets/user       user-id})]
+              wallet-id         (q.c.wallets/create-record
+                                 {::m.c.wallets/name       name
+                                  ::m.c.wallets/derivation path
+                                  ::m.c.wallets/node       node-id
+                                  ::m.c.wallets/user       user-id})]
           (doseq [[i word] (map-indexed vector seed)]
             (let [props {::m.words/wallet   wallet-id
                          ::m.words/word     word

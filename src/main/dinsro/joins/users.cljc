@@ -7,12 +7,12 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.c.wallets]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
-   #?(:clj [dinsro.queries.core.wallets :as q.wallets])
+   #?(:clj [dinsro.queries.core.wallets :as q.c.wallets])
    #?(:clj [dinsro.queries.users :as q.users])
    [dinsro.specs]))
 
@@ -79,14 +79,14 @@
 (defattr wallets ::m.users/wallets :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/walllets [::m.wallets/id]}]
-   ao/target      ::m.wallets/id
+   ao/pc-output   [{::m.users/walllets [::m.c.wallets/id]}]
+   ao/target      ::m.c.wallets/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      (let [ids (if id
-                 #?(:clj (q.wallets/find-ids-by-user id) :cljs [])
+                 #?(:clj (q.c.wallets/find-ids-by-user id) :cljs [])
                  [])]
-       {::m.users/wallets (m.wallets/idents ids)}))})
+       {::m.users/wallets (m.c.wallets/idents ids)}))})
 
 (def attributes
   [index

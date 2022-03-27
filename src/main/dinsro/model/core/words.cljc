@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core.wallets :as m.wallets]))
+   [dinsro.model.core.wallets :as m.c.wallets]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -14,7 +14,7 @@
 (s/def ::wallet uuid?)
 (defattr wallet ::wallet :ref
   {ao/identities       #{::id}
-   ao/target           ::m.wallets/id
+   ao/target           ::m.c.wallets/id
    ao/schema           :production
    ;; ::report/column-EQL {::node [::m.core-nodes/id ::m.core-nodes/name]}
    })

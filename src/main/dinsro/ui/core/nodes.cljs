@@ -10,7 +10,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
-   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.links :as u.links]
@@ -78,10 +78,10 @@
    :label  "New Wallet"
    :action (fn [this _]
              (let [{::m.c.nodes/keys [id name]} (comp/props this)
-                   component                       (comp/registry-key->class :dinsro.ui.wallets/NewWalletForm)
-                   state                           {::m.wallets/name "new wallet"
-                                                    ::m.wallets/node {::m.c.nodes/id   id
-                                                                      ::m.c.nodes/name name}}
+                   component                       (comp/registry-key->class :dinsro.ui.core.wallets/NewWalletForm)
+                   state                           {::m.c.wallets/name "new wallet"
+                                                    ::m.c.wallets/node {::m.c.nodes/id   id
+                                                                        ::m.c.nodes/name name}}
                    options                         {:initial-state state}]
                (form/create! this component options)))})
 

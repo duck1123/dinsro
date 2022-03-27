@@ -23,8 +23,8 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.wallets]
-   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.words :as m.words]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.core.blocks :as u.c.blocks]
@@ -62,7 +62,7 @@
 
 (defn link-control
   [{:keys [value] :as env} _attribute]
-  (let [{address-id     ::m.wallet-addresses/id
+  (let [{address-id     ::m.c.wallet-addresses/id
          category-id    ::m.categories/id
          block-id       ::m.c.blocks/id
          core-node-id   ::m.c.nodes/id
@@ -78,7 +78,7 @@
          source-id      ::m.rate-sources/id
          transaction-id ::m.transactions/id
          user-id        ::m.users/id
-         wallet-id      ::m.wallets/id} value]
+         wallet-id      ::m.c.wallets/id} value]
     (or
      (when-let [matcher (get-matcher value)]
        (log/debug :link-control/matched {:matcher matcher :value value})

@@ -4,11 +4,11 @@
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.words]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.wallets :as q.wallets]
+   [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.words :as q.words]
    [lambdaisland.glogc :as log])
   (:import
@@ -31,18 +31,18 @@
        :checksum    (.group matcher "checksum")})))
 
 (defn create!
-  [{::m.wallets/keys      [name user]
-    {node ::m.c.nodes/id} ::m.wallets/node}]
-  (let [props {::m.wallets/name name
-               ::m.wallets/user user
-               ::m.wallets/node node}]
+  [{::m.c.wallets/keys      [name user]
+    {node ::m.c.nodes/id} ::m.c.wallets/node}]
+  (let [props {::m.c.wallets/name name
+               ::m.c.wallets/user user
+               ::m.c.wallets/node node}]
     (log/info :wallet/create {:props props})
-    (q.wallets/create-record props)))
+    (q.c.wallets/create-record props)))
 
 (>defn calculate-derivation
   [wallet]
-  [::m.wallets/item => any?]
-  (let [{::m.wallets/keys [seed]} wallet]
+  [::m.c.wallets/item => any?]
+  (let [{::m.c.wallets/keys [seed]} wallet]
     (MnemonicCode/fromWords (c.bitcoin-s/create-vector seed))))
 
 (defn ->bip39-seed
@@ -91,7 +91,7 @@
 
 (defn get-xpriv
   [wallet-id]
-  (let [;; wallet (q.wallets/read-record wallet-id)
+  (let [;; wallet (q.c.wallets/read-record wallet-id)
         mnemonic (get-mnemonic wallet-id)]
     (c.bitcoin-s/get-xpriv (BIP39Seed/fromMnemonic mnemonic (BIP39Seed/EMPTY_PASSWORD)) 84 "regtest")))
 
@@ -102,16 +102,16 @@
 (defn roll!
   [props]
   (log/info :roll/started {:props props})
-  (let [wallet-id (::m.wallets/id props)
+  (let [wallet-id (::m.c.wallets/id props)
         words     (c.bitcoin-s/create-mnemonic-words)
         response  (update-words! wallet-id words)
         wif (get-wif wallet-id)
-        wallet (q.wallets/read-record wallet-id)
-        ;; props (assoc wallet ::m.wallets/key wif)
-        props {::m.wallets/key wif}]
-    (q.wallets/update! wallet-id props)
+        wallet (q.c.wallets/read-record wallet-id)
+        ;; props (assoc wallet ::m.c.wallets/key wif)
+        props {::m.c.wallets/key wif}]
+    (q.c.wallets/update! wallet-id props)
     (log/info :roll/finished {:response response})
-    (merge wallet {::m.wallets/words response})))
+    (merge wallet {::m.c.wallets/words response})))
 
 (comment
   (def descriptor "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l")
@@ -140,13 +140,13 @@
 
   (roll! {})
 
-  (q.wallets/index-ids)
-  (tap> (q.wallets/index-records))
-  (q.wallets/index-records)
-  (def wallet (first (q.wallets/index-records)))
-  (def wallet-id (::m.wallets/id wallet))
+  (q.c.wallets/index-ids)
+  (tap> (q.c.wallets/index-records))
+  (q.c.wallets/index-records)
+  (def wallet (first (q.c.wallets/index-records)))
+  (def wallet-id (::m.c.wallets/id wallet))
 
-  (roll! {::m.wallets/id wallet-id})
+  (roll! {::m.c.wallets/id wallet-id})
 
   (c.bitcoin-s/->wif (.key (get-xpriv wallet-id)))
   (get-wif wallet-id)
@@ -162,15 +162,15 @@
 
   (->bip39-seed wallet)
 
-  (.words (calculate-derivation (first (q.wallets/index-records))))
+  (.words (calculate-derivation (first (q.c.wallets/index-records))))
 
-  (tap> (seq (.getDeclaredMethods (.getClass (calculate-derivation (first (q.wallets/index-records)))))))
+  (tap> (seq (.getDeclaredMethods (.getClass (calculate-derivation (first (q.c.wallets/index-records)))))))
 
   (tap> (seq (.getDeclaredMethods BIP39Seed)))
 
   (def xpriv (c.bitcoin-s/get-xpriv
               (BIP39Seed/fromMnemonic
-               (calculate-derivation (first (q.wallets/index-records)))
+               (calculate-derivation (first (q.c.wallets/index-records)))
                (BIP39Seed/EMPTY_PASSWORD))
               84 "regtest"))
 

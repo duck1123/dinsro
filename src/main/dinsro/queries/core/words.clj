@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.words]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
@@ -41,12 +41,12 @@
 
 (>defn index-records
   []
-  [=> (s/coll-of ::m.wallets/item)]
+  [=> (s/coll-of ::m.c.wallets/item)]
   (map read-record (index-ids)))
 
 (>defn find-by-wallet
   [wallet-id]
-  [::m.wallets/id => (s/coll-of ::m.words/id)]
+  [::m.c.wallets/id => (s/coll-of ::m.words/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?word-id]
                 :in    [?wallet-id]

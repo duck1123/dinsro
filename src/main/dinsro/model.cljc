@@ -22,8 +22,8 @@
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.joins.users :as j.users]
-   [dinsro.joins.core.wallet-addresses :as j.wallet-addresses]
-   [dinsro.joins.core.wallets :as j.wallets]
+   [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
+   [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.joins.core.words :as j.words]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -54,8 +54,8 @@
    [dinsro.model.timezone :as m.timezone]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.wallets]
-   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.words :as m.words]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
    #?(:clj [dinsro.mutations.core.addresses :as mu.c.addresses])
@@ -69,8 +69,8 @@
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
-   #?(:clj [dinsro.mutations.core.wallets :as mu.wallets])
-   #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.wallet-addresses])
+   #?(:clj [dinsro.mutations.core.wallets :as mu.c.wallets])
+   #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
    #?(:clj [dinsro.mutations.core.words :as mu.words])))
 
 (def schemata [])
@@ -98,8 +98,8 @@
         j.rate-sources/attributes
         j.transactions/attributes
         j.users/attributes
-        j.wallet-addresses/attributes
-        j.wallets/attributes
+        j.c.wallet-addresses/attributes
+        j.c.wallets/attributes
         j.words/attributes
         m.accounts/attributes
         m.categories/attributes
@@ -130,8 +130,8 @@
         m.timezone/attributes
         m.transactions/attributes
         m.users/attributes
-        m.wallets/attributes
-        m.wallet-addresses/attributes
+        m.c.wallets/attributes
+        m.c.wallet-addresses/attributes
         m.words/attributes)))
 
 (def all-attribute-validator (attr/make-attribute-validator all-attributes))
@@ -152,6 +152,6 @@
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers
-           mu.wallets/resolvers
-           mu.wallet-addresses/resolvers
+           mu.c.wallets/resolvers
+           mu.c.wallet-addresses/resolvers
            mu.words/resolvers))))

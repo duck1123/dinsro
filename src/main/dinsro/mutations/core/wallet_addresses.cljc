@@ -2,19 +2,19 @@
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core.wallet-addresses :as a.wallet-addresses])
-   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
-   #?(:clj [dinsro.queries.core.wallet-addresses :as q.wallet-addresses])))
+   #?(:clj [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses])
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])))
 
-(comment ::m.wallet-addresses/_ ::pc/_)
+(comment ::m.c.wallet-addresses/_ ::pc/_)
 
 #?(:clj
    (pc/defmutation generate!
-     [_env {::m.wallet-addresses/keys [id]}]
-     {::pc/params #{::m.wallet-addresses/id}
+     [_env {::m.c.wallet-addresses/keys [id]}]
+     {::pc/params #{::m.c.wallet-addresses/id}
       ::pc/output [:status]}
-     (let [node (q.wallet-addresses/read-record id)]
-       (a.wallet-addresses/generate! node)
+     (let [node (q.c.wallet-addresses/read-record id)]
+       (a.c.wallet-addresses/generate! node)
        {:status :ok}))
 
    :cljs

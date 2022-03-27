@@ -6,11 +6,11 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.wallets :as j.wallets]
+   [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.wallets :as m.wallets]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
-   [dinsro.mutations.core.wallets :as mu.wallets]
+   [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.links :as u.links]))
 
 (def create-button
@@ -19,22 +19,22 @@
    :label  "Create"
    :action (fn [this _]
              (let [props (comp/props this)]
-               (comp/transact! this [(mu.wallets/create! props)])))})
+               (comp/transact! this [(mu.c.wallets/create! props)])))})
 
 (def override-new-wallet-form false)
 
 (form/defsc-form NewWalletForm [_this _props]
-  {fo/id             m.wallets/id
+  {fo/id             m.c.wallets/id
    fo/action-buttons (concat [::create] form/standard-action-buttons)
-   fo/attributes     [m.wallets/name
-                      m.wallets/node
-                      m.wallets/user]
+   fo/attributes     [m.c.wallets/name
+                      m.c.wallets/node
+                      m.c.wallets/user]
 
    fo/controls       (merge form/standard-controls {::create create-button})
-   fo/field-styles   {::m.wallets/node :pick-one
-                      ::m.wallets/user :pick-one}
+   fo/field-styles   {::m.c.wallets/node :pick-one
+                      ::m.c.wallets/user :pick-one}
    fo/field-options
-   {::m.wallets/node
+   {::m.c.wallets/node
     {::picker-options/query-key       ::m.c.nodes/index
      ::picker-options/query-component u.links/CoreNodeLinkForm
      ::picker-options/options-xform
@@ -44,7 +44,7 @@
           {:text  (str name)
            :value [::m.c.nodes/id id]})
         (sort-by ::m.c.nodes/name options)))}
-    ::m.wallets/user
+    ::m.c.wallets/user
     {::picker-options/query-key       ::m.users/index
      ::picker-options/query-component u.links/UserLinkForm
      ::picker-options/options-xform
@@ -62,36 +62,36 @@
    :local? true
    :label  "Roll"
    :action (fn [this _key]
-             (let [{::m.wallets/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.wallets/roll! {::m.wallets/id id})])
+             (let [{::m.c.wallets/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.c.wallets/roll! {::m.c.wallets/id id})])
                #_(form/view! this CoreBlockForm id)))})
 
 (form/defsc-form WalletForm [_this _props]
-  {fo/id             m.wallets/id
+  {fo/id             m.c.wallets/id
    fo/action-buttons (concat [::roll] form/standard-action-buttons)
-   fo/attributes     [m.wallets/id
-                      m.wallets/name
-                      m.wallets/node
-                      m.wallets/derivation
-                      m.wallets/key
-                      ;; m.wallets/seed
-                      ;; j.wallets/addresses
-                      j.wallets/words]
+   fo/attributes     [m.c.wallets/id
+                      m.c.wallets/name
+                      m.c.wallets/node
+                      m.c.wallets/derivation
+                      m.c.wallets/key
+                      ;; m.c.wallets/seed
+                      ;; j.c.wallets/addresses
+                      j.c.wallets/words]
    fo/controls       (merge form/standard-controls {::roll roll-button})
-   fo/field-styles   {::m.wallets/addresses :link-list
-                      ::m.wallets/words     :link-list}
+   fo/field-styles   {::m.c.wallets/addresses :link-list
+                      ::m.c.wallets/words     :link-list}
    fo/route-prefix   "wallet"
-   fo/subforms       {::m.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
-                      ::m.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
-                      ::m.wallets/words     {fo/ui u.links/WordLinkForm}}
+   fo/subforms       {::m.c.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
+                      ::m.c.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
+                      ::m.c.wallets/words     {fo/ui u.links/WordLinkForm}}
    fo/title          "Wallet"})
 
 (def delete-action-button
   {:type   :button
    :local? true
    :label  "Delete"
-   :action (fn [this {::m.wallets/keys [id]}]
-             (form/delete! this ::m.wallets/id id))})
+   :action (fn [this {::m.c.wallets/keys [id]}]
+             (form/delete! this ::m.c.wallets/id id))})
 
 (def new-action-button
   {:type   :button
@@ -101,17 +101,17 @@
 
 (report/defsc-report WalletReport
   [_this _props]
-  {ro/columns          [m.wallets/name
-                        m.wallets/node
-                        m.wallets/user]
+  {ro/columns          [m.c.wallets/name
+                        m.c.wallets/node
+                        m.c.wallets/user]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-action-button}
-   ro/field-formatters {::m.wallets/node #(u.links/ui-core-node-link %2)
-                        ::m.wallets/user #(u.links/ui-user-link %2)}
-   ro/form-links       {::m.wallets/name WalletForm}
+   ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
+                        ::m.c.wallets/user #(u.links/ui-user-link %2)}
+   ro/form-links       {::m.c.wallets/name WalletForm}
    ro/route            "wallets"
    ro/row-actions      [delete-action-button]
-   ro/row-pk           m.wallets/id
+   ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.wallets/index
+   ro/source-attribute ::m.c.wallets/index
    ro/title            "Wallet Report"})

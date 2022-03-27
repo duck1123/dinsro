@@ -22,8 +22,8 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.wallets]
-   [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.words :as m.words]
    [lambdaisland.glogc :as log]))
 
@@ -211,23 +211,23 @@
 
 (def ui-user-link (comp/factory UserLinkForm {:keyfn ::m.users/id}))
 
-(form/defsc-form WalletAddressLinkForm [this {::m.wallet-addresses/keys [id address]}]
-  {fo/id           m.wallet-addresses/id
+(form/defsc-form WalletAddressLinkForm [this {::m.c.wallet-addresses/keys [id address]}]
+  {fo/id           m.c.wallet-addresses/id
    fo/route-prefix "wallet-addresses-link"
-   fo/attributes   [m.wallet-addresses/address]
+   fo/attributes   [m.c.wallet-addresses/address]
    fo/title        "Wallet Addresses"}
-  (form-link this id address :dinsro.ui.wallet-addresses/WalletAddressForm))
+  (form-link this id address :dinsro.ui.c.wallet-addresses/WalletAddressForm))
 
-(def ui-wallet-address-link (comp/factory WalletAddressLinkForm {:keyfn ::m.wallet-addresses/id}))
+(def ui-wallet-address-link (comp/factory WalletAddressLinkForm {:keyfn ::m.c.wallet-addresses/id}))
 
-(form/defsc-form WalletLinkForm [this {::m.wallets/keys [id name]}]
-  {fo/id           m.wallets/id
+(form/defsc-form WalletLinkForm [this {::m.c.wallets/keys [id name]}]
+  {fo/id           m.c.wallets/id
    fo/route-prefix "wallets-link"
-   fo/attributes   [m.wallets/name]
+   fo/attributes   [m.c.wallets/name]
    fo/title        "Wallet"}
-  (form-link this id name :dinsro.ui.wallets/WalletForm))
+  (form-link this id name :dinsro.ui.c.wallets/WalletForm))
 
-(def ui-wallet-link (comp/factory WalletLinkForm {:keyfn ::m.wallets/id}))
+(def ui-wallet-link (comp/factory WalletLinkForm {:keyfn ::m.c.wallets/id}))
 
 (form/defsc-form WordLinkForm [this {::m.words/keys [id word]}]
   {fo/id           m.words/id
