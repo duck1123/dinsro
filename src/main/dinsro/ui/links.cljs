@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.peers :as m.core-peers]
    [dinsro.model.core.tx :as m.core-tx]
@@ -50,22 +50,22 @@
 (def ui-account-link (comp/factory AccountLinkForm {:keyfn ::m.accounts/id}))
 
 (form/defsc-form BlockLinkForm
-  [this {::m.core-block/keys [id hash]}]
-  {fo/id           m.core-block/id
+  [this {::m.core-blocks/keys [id hash]}]
+  {fo/id           m.core-blocks/id
    fo/route-prefix "block-link"
    fo/title        "Blocks"
-   fo/attributes   [m.core-block/hash]}
-  (form-link this id hash :dinsro.ui.core-block/CoreBlockForm))
+   fo/attributes   [m.core-blocks/hash]}
+  (form-link this id hash :dinsro.ui.core-blocks/CoreBlockForm))
 
 (def ui-block-link (comp/factory BlockLinkForm {:keyfn ::m.categories/id}))
 
 (form/defsc-form BlockHeightLinkForm
-  [this {::m.core-block/keys [id height]}]
-  {fo/id           m.core-block/id
+  [this {::m.core-blocks/keys [id height]}]
+  {fo/id           m.core-blocks/id
    fo/route-prefix "block-height-link"
    fo/title        "Blocks"
-   fo/attributes   [m.core-block/height]}
-  (form-link this id height :dinsro.ui.core-block/CoreBlockForm))
+   fo/attributes   [m.core-blocks/height]}
+  (form-link this id height :dinsro.ui.core-blocks/CoreBlockForm))
 
 (def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.categories/id}))
 

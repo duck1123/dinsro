@@ -9,12 +9,12 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx :as j.core-tx]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.core.tx-in :as m.core-tx-in]
    [dinsro.model.core.tx-out :as m.core-tx-out]
    [dinsro.mutations.core.tx :as mu.core-tx]
-   [dinsro.ui.core.blocks :as u.core-block]
+   [dinsro.ui.core.blocks :as u.core-blocks]
    [dinsro.ui.core.tx-out :as u.core-tx-out]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
@@ -87,7 +87,7 @@
                     j.core-tx/ins
                     j.core-tx/outs]
    fo/field-styles {::m.core-tx/block :link}
-   fo/subforms     {::m.core-tx/block {fo/ui u.core-block/CoreBlockSubForm}
+   fo/subforms     {::m.core-tx/block {fo/ui u.core-blocks/CoreBlockSubForm}
                     ::m.core-tx/ins   {fo/ui CoreTxInSubForm}
                     ::m.core-tx/outs  {fo/ui CoreTxOutSubForm}}})
 
@@ -125,9 +125,9 @@
 
 (form/defsc-form CoreTxBlock
   [_this _props]
-  {fo/id           m.core-block/id
+  {fo/id           m.core-blocks/id
    fo/route-prefix "core-tx-block"
-   fo/attributes   [m.core-block/height m.core-block/hash]
+   fo/attributes   [m.core-blocks/height m.core-blocks/hash]
    fo/title        "Block"})
 
 (def override-form false)

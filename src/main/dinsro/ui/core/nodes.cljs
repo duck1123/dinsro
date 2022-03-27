@@ -7,12 +7,12 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.nodes :as j.core-nodes]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.core.wallets :as m.wallets]
    [dinsro.mutations.core.nodes :as mu.core-nodes]
-   [dinsro.ui.core.blocks :as u.core-block]
+   [dinsro.ui.core.blocks :as u.core-blocks]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log2]))
 
@@ -35,10 +35,10 @@
 
 (form/defsc-form CoreNodeBlockSubform
   [_this _props]
-  {fo/id           m.core-block/id
+  {fo/id           m.core-blocks/id
    fo/title        "Blocks"
    fo/route-prefix "core-node-block"
-   fo/attributes   [m.core-block/hash m.core-block/height]})
+   fo/attributes   [m.core-blocks/hash m.core-blocks/height]})
 
 (form/defsc-form CoreNodeTxSubform
   [_this _props]
@@ -127,7 +127,7 @@
                       ::m.core-nodes/peers        :link-list}
    fo/route-prefix   "core-node"
    fo/subforms       {::m.core-nodes/transactions {fo/ui CoreNodeTxSubform}
-                      ::m.core-nodes/blocks       {fo/ui u.core-block/CoreBlockSubForm}
+                      ::m.core-nodes/blocks       {fo/ui u.core-blocks/CoreBlockSubForm}
                       ::m.core-nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
                       ::m.core-nodes/wallets      {fo/ui u.links/WalletLinkForm}
                       ::m.core-nodes/peers        {fo/ui u.links/CorePeerLinkForm}}

@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.ln.nodes :as m.ln-nodes]
@@ -54,11 +54,11 @@
 
 (>defn find-by-block
   [block-id]
-  [::m.core-block/id => (? ::m.core-nodes/id)]
+  [::m.core-blocks/id => (? ::m.core-nodes/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?node-id]
                 :in    [?block-id]
-                :where [[?block-id ::m.core-block/node ?node-id]]}]
+                :where [[?block-id ::m.core-blocks/node ?node-id]]}]
     (ffirst (xt/q db query block-id))))
 
 (>defn find-by-ln-node
@@ -76,7 +76,7 @@
   (let [db    (c.xtdb/main-db)
         query '{:find  [?node-id]
                 :in    [?tx-id]
-                :where [[?block-id ::m.core-block/node ?node-id]
+                :where [[?block-id ::m.core-blocks/node ?node-id]
                         [?tx-id ::m.core-tx/block ?block-id]]}]
     (ffirst (xt/q db query tx-id))))
 

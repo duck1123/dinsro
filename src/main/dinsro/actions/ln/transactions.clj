@@ -9,7 +9,7 @@
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.ln.nodes :as m.ln-nodes]
    [dinsro.model.ln.transactions :as m.ln-tx]
-   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.blocks :as q.core-blocks]
    [dinsro.queries.core.nodes :as q.core-nodes]
    [dinsro.queries.core.tx :as q.core-tx]
    [dinsro.queries.core.tx-in :as q.core-tx-in]
@@ -105,12 +105,12 @@
           (handle-get-transactions-response id transaction))))))
 
 (comment
-  (q.core-block/index-ids)
+  (q.core-blocks/index-ids)
   (q.core-tx/index-ids)
   (q.ln-tx/index-records)
   (q.ln-tx/index-ids)
 
-  (map q.core-block/delete (q.core-block/index-ids))
+  (map q.core-blocks/delete (q.core-blocks/index-ids))
   (map q.core-tx/delete (q.core-tx/index-ids))
   (map q.core-tx-out/delete! (q.core-tx-out/index-ids))
   (map q.core-tx-in/delete! (q.core-tx-in/index-ids))

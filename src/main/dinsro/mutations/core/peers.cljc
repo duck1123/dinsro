@@ -3,11 +3,11 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.peers :as a.core-peers])
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.peers :as m.core-peers]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.core-block/_ ::m.core-peers/_)
+(comment ::pc/_ ::m.core-blocks/_ ::m.core-peers/_)
 
 #?(:clj
    (pc/defmutation create!

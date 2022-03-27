@@ -8,7 +8,7 @@
    [com.fulcrologic.rad.rendering.semantic-ui.semantic-ui-controls :as sui]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.peers :as m.core-peers]
    [dinsro.model.core.tx :as m.core-tx]
@@ -27,7 +27,7 @@
    [dinsro.model.core.wallet-addresses :as m.wallet-addresses]
    [dinsro.model.core.words :as m.words]
    [dinsro.ui.accounts :as u.accounts]
-   [dinsro.ui.core.blocks :as u.core-block]
+   [dinsro.ui.core.blocks :as u.core-blocks]
    [dinsro.ui.core.tx :as u.core-tx]
    [dinsro.ui.core.tx-in :as u.core-tx-in]
    [dinsro.ui.core.tx-out :as u.core-tx-out]
@@ -64,7 +64,7 @@
   [{:keys [value] :as env} _attribute]
   (let [{address-id     ::m.wallet-addresses/id
          category-id    ::m.categories/id
-         block-id       ::m.core-block/id
+         block-id       ::m.core-blocks/id
          core-node-id   ::m.core-nodes/id
          core-tx-id     ::m.core-tx/id
          currency-id    ::m.currencies/id
@@ -190,7 +190,7 @@
       (control-type :ref  :link             render-link-control)
       (control-type :ref  :link-list        render-link-list-control)
       (control-type :ref  :link-subform     render-link-subform-control)
-      (control-type :ref  :core-block-table u.core-block/render-ref-row)
+      (control-type :ref  :core-block-table u.core-blocks/render-ref-row)
       (control-type :ref  :core-tx-table    u.core-tx/render-ref-row)
       (control-type :ref  :ln-tx-row        u.ln-tx/render-ref-ln-tx-row)
       (control-type :ref  :ln-channels-row  u.ln-channels/render-ref-row)

@@ -9,8 +9,8 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.blocks :as j.core-block]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.joins.core.blocks :as j.core-blocks]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.mutations.core.blocks :as mu.core-blocks]
@@ -18,12 +18,12 @@
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
-  [this {::m.core-block/keys [fetched? height id] :as props}]
-  {:ident ::m.core-block/id
-   :query [::m.core-block/id
-           ::m.core-block/fetched?
-           ::m.core-block/hash
-           ::m.core-block/height]}
+  [this {::m.core-blocks/keys [fetched? height id] :as props}]
+  {:ident ::m.core-blocks/id
+   :query [::m.core-blocks/id
+           ::m.core-blocks/fetched?
+           ::m.core-blocks/hash
+           ::m.core-blocks/height]}
   (dom/tr {}
     (dom/td (str fetched?))
     (dom/td (u.links/ui-block-link props))
@@ -33,10 +33,10 @@
               {:classes [:.ui.button]
                :onClick (fn [event]
                           (log/info :fetch-button/clicked {:event event})
-                          (comp/transact! this [(mu.core-blocks/fetch! {::m.core-block/id id})]))}
+                          (comp/transact! this [(mu.core-blocks/fetch! {::m.core-blocks/id id})]))}
               "Fetch"))))
 
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-block/id}))
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.core-blocks/id}))
 
 (defn ref-row
   [{:keys [value]} _attribute]
@@ -55,12 +55,12 @@
 
 (form/defsc-form CoreBlockSubForm
   [_this _props]
-  {fo/id           m.core-block/id
+  {fo/id           m.core-blocks/id
    fo/route-prefix "ln-core-block"
    fo/title        "Block"
-   fo/attributes   [m.core-block/fetched?
-                    m.core-block/hash
-                    m.core-block/height]})
+   fo/attributes   [m.core-blocks/fetched?
+                    m.core-blocks/hash
+                    m.core-blocks/height]})
 
 (declare CoreBlockForm)
 
@@ -69,8 +69,8 @@
    :local? true
    :label  "Fetch"
    :action (fn [this _key]
-             (let [{::m.core-block/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.core-blocks/fetch! {::m.core-block/id id})])
+             (let [{::m.core-blocks/keys [id]} (comp/props this)]
+               (comp/transact! this [(mu.core-blocks/fetch! {::m.core-blocks/id id})])
                (form/view! this CoreBlockForm id)))})
 
 (def fetch-transactions-button
@@ -78,10 +78,10 @@
    :local? true
    :label  "Fetch Transactions"
    :action (fn [this _key]
-             (let [{::m.core-block/keys [id]} (comp/props this)]
+             (let [{::m.core-blocks/keys [id]} (comp/props this)]
                (comp/transact!
                 this
-                [(mu.core-blocks/fetch-transactions! {::m.core-block/id id})])
+                [(mu.core-blocks/fetch-transactions! {::m.core-blocks/id id})])
                (form/view! this CoreBlockForm id)))})
 
 (form/defsc-form CoreBlockTxSubform
@@ -95,31 +95,31 @@
 
 (form/defsc-form CoreBlockForm
   [this props]
-  {fo/id             m.core-block/id
+  {fo/id             m.core-blocks/id
    fo/action-buttons (concat [::fetch ::fetch-transactions] form/standard-action-buttons)
-   fo/attributes     [m.core-block/hash
-                      m.core-block/previous-block
-                      m.core-block/next-block
-                      m.core-block/fetched?
-                      m.core-block/height
-                      m.core-block/bits
-                      m.core-block/chainwork
-                      m.core-block/node
-                      m.core-block/difficulty
-                      m.core-block/merkle-root
-                      m.core-block/nonce
-                      m.core-block/size
-                      m.core-block/version
-                      j.core-block/transactions]
+   fo/attributes     [m.core-blocks/hash
+                      m.core-blocks/previous-block
+                      m.core-blocks/next-block
+                      m.core-blocks/fetched?
+                      m.core-blocks/height
+                      m.core-blocks/bits
+                      m.core-blocks/chainwork
+                      m.core-blocks/node
+                      m.core-blocks/difficulty
+                      m.core-blocks/merkle-root
+                      m.core-blocks/nonce
+                      m.core-blocks/size
+                      m.core-blocks/version
+                      j.core-blocks/transactions]
    fo/cancel-route   ["core-blocks"]
-   fo/field-styles   {::m.core-block/transactions   :core-tx-table
-                      ::m.core-block/node           :link
-                      ::m.core-block/previous-block :link
-                      ::m.core-block/next-block     :link}
-   fo/subforms       {::m.core-block/node           {fo/ui u.links/CoreNodeLinkForm}
-                      ::m.core-block/transactions   {fo/ui CoreBlockTxSubform}
-                      ::m.core-block/previous-block {fo/ui u.links/BlockLinkForm}
-                      ::m.core-block/next-block     {fo/ui u.links/BlockLinkForm}}
+   fo/field-styles   {::m.core-blocks/transactions   :core-tx-table
+                      ::m.core-blocks/node           :link
+                      ::m.core-blocks/previous-block :link
+                      ::m.core-blocks/next-block     :link}
+   fo/subforms       {::m.core-blocks/node           {fo/ui u.links/CoreNodeLinkForm}
+                      ::m.core-blocks/transactions   {fo/ui CoreBlockTxSubform}
+                      ::m.core-blocks/previous-block {fo/ui u.links/BlockLinkForm}
+                      ::m.core-blocks/next-block     {fo/ui u.links/BlockLinkForm}}
    fo/controls       (merge form/standard-controls
                             {::fetch fetch-button
                              ::fetch-transactions fetch-transactions-button})
@@ -162,8 +162,8 @@
                              :values      values})
     (comp/transact! this
                     [(mu.core-blocks/search!
-                      {::m.core-block/block block-id
-                       ::m.core-block/node  node-id})])
+                      {::m.core-blocks/block block-id
+                       ::m.core-blocks/node  node-id})])
     (control/run! this)))
 
 (def search-control
@@ -173,7 +173,7 @@
 
 (defn delete-action
   [report-instance {::m.core-nodes/keys [id]}]
-  (form/delete! report-instance ::m.core-block/id id))
+  (form/delete! report-instance ::m.core-blocks/id id))
 
 (def delete-action-button
   {:label  "Delete"
@@ -182,10 +182,10 @@
 
 (report/defsc-report CoreBlockReport
   [_this _props]
-  {ro/columns  [m.core-block/hash
-                m.core-block/height
-                m.core-block/fetched?
-                m.core-block/node]
+  {ro/columns  [m.core-blocks/hash
+                m.core-blocks/height
+                m.core-blocks/fetched?
+                m.core-blocks/node]
    ro/controls {::search  search-control
                 ::refresh {:type   :button
                            :label  "Refresh"
@@ -211,7 +211,7 @@
                             :onChange      (fn [this _] (control/run! this))}}
    ro/control-layout   {:inputs         [[::block-id ::node-id ::search]]
                         :action-buttons [::refresh]}
-   ro/field-formatters {::m.core-block/node (fn [_ props] (u.links/ui-core-node-link props))}
+   ro/field-formatters {::m.core-blocks/node (fn [_ props] (u.links/ui-core-node-link props))}
    ;; fo/field-options
    ;; {::node-id
    ;;  {
@@ -227,10 +227,10 @@
    ;;      (sort-by ::m.core-nodes/name options)))
 
    ;;   }}
-   ro/form-links       {::m.core-block/hash CoreBlockForm}
-   ro/source-attribute ::m.core-block/index
+   ro/form-links       {::m.core-blocks/hash CoreBlockForm}
+   ro/source-attribute ::m.core-blocks/index
    ro/title            "Core Blocks"
    ro/row-actions [delete-action-button]
-   ro/row-pk           m.core-block/id
+   ro/row-pk           m.core-blocks/id
    ro/run-on-mount?    true
    ro/route            "core-blocks"})

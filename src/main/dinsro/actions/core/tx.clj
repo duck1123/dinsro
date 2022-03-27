@@ -2,14 +2,14 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.core.blocks :as a.core-block]
+   [dinsro.actions.core.blocks :as a.core-blocks]
    [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.model.core.tx-in :as m.core-tx-in]
    [dinsro.model.core.tx-out :as m.core-tx-out]
-   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.blocks :as q.core-blocks]
    [dinsro.queries.core.nodes :as q.core-nodes]
    [dinsro.queries.core.tx :as q.core-tx]
    [dinsro.queries.core.tx-in :as q.core-tx-in]
@@ -27,7 +27,7 @@
 
 (>defn register-tx
   [core-node-id block-hash block-height tx-id]
-  [::m.core-nodes/id ::m.core-block/hash ::m.core-block/height ::m.core-tx/tx-id => ::m.core-tx/id]
+  [::m.core-nodes/id ::m.core-blocks/hash ::m.core-blocks/height ::m.core-tx/tx-id => ::m.core-tx/id]
   (log/info :tx/register {:block-hash   block-hash
                           :block-height block-height
                           :core-node-id core-node-id
@@ -38,7 +38,7 @@
       id)
     (do
       (log/info :tx/not-found {})
-      (let [block-id (a.core-block/register-block core-node-id block-hash block-height)
+      (let [block-id (a.core-blocks/register-block core-node-id block-hash block-height)
             params   {::m.core-tx/block    block-id
                       ::m.core-tx/tx-id    tx-id
                       ::m.core-tx/fetched? false}]
@@ -104,8 +104,8 @@
   [::m.core-tx/id-obj => (s/keys)]
   (let [{::m.core-tx/keys [tx-id]
          block-id         ::m.core-tx/block} (q.core-tx/read-record id)]
-    (if-let [block (q.core-block/read-record block-id)]
-      (let [{::m.core-block/keys [node]} block
+    (if-let [block (q.core-blocks/read-record block-id)]
+      (let [{::m.core-blocks/keys [node]} block
             returned-id                  (update-tx node tx-id)]
         {:status          :passed
          ::m.core-tx/item (q.core-tx/read-record returned-id)
@@ -147,7 +147,7 @@
   (def id (first (q.core-tx/index-ids)))
   (def tx (q.core-tx/read-record id))
   (def block-id (::m.core-tx/block tx))
-  (q.core-block/read-record block-id)
+  (q.core-blocks/read-record block-id)
   (q.core-nodes/find-by-tx id)
 
   (q.core-tx/index-ids)
@@ -164,9 +164,9 @@
   (map q.core-tx-out/delete! (q.core-tx-out/index-ids))
   (map q.core-tx-in/delete! (q.core-tx-in/index-ids))
   (map q.core-tx/delete (q.core-tx/index-ids))
-  (map q.core-block/delete (q.core-block/index-ids))
+  (map q.core-blocks/delete (q.core-blocks/index-ids))
 
-  (q.core-block/index-ids)
+  (q.core-blocks/index-ids)
 
   (update-tx node-id tx-id)
 

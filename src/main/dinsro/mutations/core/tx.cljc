@@ -4,7 +4,7 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.tx :as a.core-tx])
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    #?(:clj [dinsro.queries.core.nodes :as q.core-nodes])
@@ -12,7 +12,7 @@
    [lambdaisland.glogc :as log]))
 
 (comment
-  ::m.core-block/_
+  ::m.core-blocks/_
   ::m.core-nodes/_
   ::m.core-tx/_
   ::pc/_)

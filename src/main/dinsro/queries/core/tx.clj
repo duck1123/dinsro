@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.tx :as m.core-tx]
    [dinsro.specs]
@@ -29,7 +29,7 @@
 
 (>defn find-by-block
   [block-id]
-  [::m.core-block/id => (s/coll-of ::m.core-tx/id)]
+  [::m.core-blocks/id => (s/coll-of ::m.core-tx/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-id]
                 :in    [?block-id]

@@ -4,7 +4,7 @@
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.core.addresses :as j.core-address]
-   [dinsro.joins.core.blocks :as j.core-block]
+   [dinsro.joins.core.blocks :as j.core-blocks]
    [dinsro.joins.core.nodes :as j.core-nodes]
    [dinsro.joins.core.peers :as j.core-peers]
    [dinsro.joins.core.tx :as j.core-tx]
@@ -28,7 +28,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.addresses :as m.core-address]
-   [dinsro.model.core.blocks :as m.core-block]
+   [dinsro.model.core.blocks :as m.core-blocks]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.peers :as m.core-peers]
    [dinsro.model.core.script-sigs :as m.core-script-sig]
@@ -80,7 +80,7 @@
         j.accounts/attributes
         j.categories/attributes
         j.core-address/attributes
-        j.core-block/attributes
+        j.core-blocks/attributes
         j.core-nodes/attributes
         j.core-peers/attributes
         j.core-tx/attributes
@@ -104,7 +104,7 @@
         m.accounts/attributes
         m.categories/attributes
         m.core-address/attributes
-        m.core-block/attributes
+        m.core-blocks/attributes
         m.core-nodes/attributes
         m.core-peers/attributes
         m.core-script-sig/attributes

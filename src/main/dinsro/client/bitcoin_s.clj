@@ -1,17 +1,6 @@
 (ns dinsro.client.bitcoin-s
   (:require
    [lambdaisland.glogc :as log])
-  ;; (:require
-
-  ;;  [dinsro.client.bitcoin :as c.bitcoin]
-  ;;  [dinsro.model.core-nodes :as m.core-nodes]
-  ;;  [dinsro.model.wallets :as m.wallets]
-  ;;  [dinsro.queries.core-block :as q.core-block]
-  ;;  [dinsro.queries.core-nodes :as q.core-nodes]
-  ;;  [dinsro.queries.wallets :as q.wallets]
-  ;;  [taoensso.timbre :as log]
-
-  ;;  )
   (:import
    org.bitcoins.core.hd.BIP32Path
    org.bitcoins.core.hd.SegWitHDPath

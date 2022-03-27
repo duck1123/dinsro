@@ -6,7 +6,7 @@
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.wallets :as m.wallets]
    [dinsro.model.core.words :as m.words]
-   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.blocks :as q.core-blocks]
    [dinsro.queries.core.nodes :as q.core-nodes]
    [dinsro.queries.core.wallets :as q.wallets]
    [dinsro.queries.core.words :as q.words]
@@ -124,7 +124,7 @@
    :checksum    "8phlkw5l"}
 
   (q.core-nodes/index-records)
-  (q.core-block/index-records)
+  (q.core-blocks/index-records)
   (def node-name "bitcoin-alice")
   (def node (q.core-nodes/read-record (q.core-nodes/find-id-by-name node-name)))
   node

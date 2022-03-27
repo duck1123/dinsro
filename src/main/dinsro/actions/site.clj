@@ -5,7 +5,7 @@
    [clojure.string :as string]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.queries.core.nodes :as q.core-nodes]
-   [dinsro.queries.core.blocks :as q.core-block]
+   [dinsro.queries.core.blocks :as q.core-blocks]
    [dinsro.queries.core.tx :as q.core-tx]
    [ring.util.codec :as codec]))
 
@@ -67,8 +67,8 @@
   (doseq [id (q.core-nodes/index-ids)]
     (q.core-nodes/delete! id))
 
-  (doseq [id (q.core-block/index-ids)]
-    (q.core-block/delete id))
+  (doseq [id (q.core-blocks/index-ids)]
+    (q.core-blocks/delete id))
 
   (doseq [id (q.core-tx/index-ids)]
     (q.core-tx/delete id))

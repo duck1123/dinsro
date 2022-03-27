@@ -1,7 +1,7 @@
 (ns dinsro.actions.core.nodes
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.core.blocks :as a.core-block]
+   [dinsro.actions.core.blocks :as a.core-blocks]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.model.core.nodes :as m.core-nodes]
    [dinsro.model.core.peers :as m.core-peers]
@@ -46,7 +46,7 @@
   [::m.core-nodes/item => ::m.core-nodes/item]
   (log/debug :node/fetching {:node-id id})
   (update-blockchain-info! node)
-  (a.core-block/fetch-blocks node)
+  (a.core-blocks/fetch-blocks node)
   (q.core-nodes/read-record id))
 
 (>defn fetch-transactions!
