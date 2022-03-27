@@ -1,11 +1,13 @@
 (ns dinsro.ui.navbar-test
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.sample :as sample]
    [dinsro.specs :as ds]
    dinsro.machines
+   [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.navbar :as u.navbar]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
@@ -30,16 +32,42 @@
             ::m.navlink/target     nil
             :root/router           {}})}))
 
-(def unauth-links [])
+(def unauth-links
+  [#_{::m.navlink/id         :foo
+      ::m.navlink/name       (ds/gen-key ::m.navlink/name)
+      ::m.navlink/auth-link? false
+      ::m.navlink/target     nil
+      :root/router           {}}])
 
-(def menu-links [])
+(def menu-links
+  [#_{::m.navlink/id         :foo
+      ::m.navlink/name       (ds/gen-key ::m.navlink/name)
+      ::m.navlink/auth-link? false
+      ::m.navlink/target     nil
+      :root/router           {}}])
 
-(def nav-state
-  {:com.fulcrologic.fulcro.ui-state-machines/asm-id           :dinsro.mutations.navbar/navbarsm,
-   :com.fulcrologic.fulcro.ui-state-machines/state-machine-id dinsro.machines/hideable,
-   :com.fulcrologic.fulcro.ui-state-machines/active-state     :state/hidden,
-   :com.fulcrologic.fulcro.ui-state-machines/ident->actor     {:actor/navbar {}}
-   :com.fulcrologic.fulcro.ui-state-machines/actor->ident     {:actor/navbar {}}})
+(def nav-state {::uism/asm-id           :dinsro.mutations.navbar/navbarsm,
+                ::uism/state-machine-id dinsro.machines/hideable,
+                ::uism/active-state     :state/hidden,
+                :com.fulcrologic.fulcro.ui-state-machines/ident->actor     {:actor/navbar {}}
+                :com.fulcrologic.fulcro.ui-state-machines/actor->ident     {:actor/navbar {}}})
+
+(ws/defcard NavbarLogoutLink
+  {}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root u.navbar/NavbarLogoutLink
+    ::ct.fulcro3/wrap-root? true
+    ::ct.fulcro3/initial-state
+    (fn [] {})}))
+
+(ws/defcard NavbarSidebar
+  {}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root       u.navbar/NavbarLogoutLink
+    ::ct.fulcro3/initial-state
+    (fn [] {::m.navbar/id :main
+            ::m.navbar/dropdown-links []
+            :inverted true})}))
 
 (ws/defcard Navbar
   {::wsm/align       {:flex 1}
@@ -51,12 +79,13 @@
                        :transform "translate(0px, 350%)"
                        :height    "40px"}}}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.navbar/Navbar
+   {::ct.fulcro3/root       u.navbar/Navbar
+    ::ct.fulcro3/wrap-root? true
     ::ct.fulcro3/initial-state
     (fn []
-      {::m.navbar/id                                                                        :main
-       :dinsro.ui.navbar/expanded?                                                          false
-       ::m.navbar/menu-links                                                                menu-links
-       ::m.navbar/unauth-links                                                              unauth-links
-       [:com.fulcrologic.fulcro.ui-state-machines/asm-id :dinsro.mutations.navbar/navbarsm] nav-state
-       ::m.navlink/id                                                                       sample/navlink-map})}))
+      {::m.navbar/id                        :main
+       :dinsro.ui.navbar/expanded?          false
+       ::m.navbar/menu-links                menu-links
+       ::m.navbar/unauth-links              unauth-links
+       [::uism/asm-id ::mu.navbar/navbarsm] nav-state
+       ::m.navlink/id                       sample/navlink-map})}))

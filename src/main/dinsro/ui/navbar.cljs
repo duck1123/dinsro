@@ -123,9 +123,10 @@
 (def ui-navbar-login-link (comp/factory NavbarLoginLink))
 
 (defsc NavbarLogoutLink
-  [this _]
+  [this props]
   {:initial-state {}
    :query         []}
+  (log/info :logout-link/rendering {:props props})
   (dom/a :.ui.item
     {:onClick (fn [_evt]
                 (uism/trigger! this ::mu.navbar/navbarsm :event/hide {})
@@ -148,6 +149,7 @@
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
                     (let [defaults    {:inverted true}
                           merged-data (merge current-normalized data-tree defaults)]
+                      (log/info :sidebar/merged {:defaults defaults :merged-data merged-data})
                       merged-data))
    :initial-state {:inverted                 true
                    ::m.navbar/id             :main
@@ -155,6 +157,7 @@
   (let [authorization (get props [::auth/authorization :local])
         visible       (= (uism/get-active-state this ::mu.navbar/navbarsm) :state/shown)
         logged-in?    (= (::auth/status authorization) :success)]
+    (log/info :sidebar/rendering {:props props :visible visible})
     (ui-sidebar
      {:direction "right"
       :as        Menu
