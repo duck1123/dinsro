@@ -36,6 +36,6 @@
    {::ct.fulcro3/root u.c.blocks/CoreBlockReport
     ::ct.fulcro3/initial-state
     (fn [] {::m.c.blocks/id       :foo
-            ::m.c.blocks/fetched? true
+            ::m.c.blocks/fetched? false
             ::m.c.blocks/height   6
-            ::m.c.blocks/hash     "yes"})}))
+            ::m.c.blocks/hash     "yesum"})}))
