@@ -32,6 +32,9 @@
             ::m.c.blocks/height   6
             ::m.c.blocks/hash     "yes"})}))
 
+(key-card ::u.c.blocks/row)
+(key-card ::u.c.blocks/row-keywords)
+(key-card ::u.c.blocks/row2)
 (key-card ::u.c.blocks/rows)
 
 (defn CoreBlockReport-data
