@@ -14,13 +14,19 @@
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
-  [_this _props]
+  [_this {::m.c.peers/keys [connection-type peer-id addr]}]
   {:ident         ::m.c.peers/id
    :query         [::m.c.peers/id
+                   ::m.c.peers/peer-id
+                   ::m.c.peers/connection-type
                    ::m.c.peers/addr]
-   :initial-state {::m.c.peers/addr "127.0.0.1"}}
+   :initial-state {::m.c.peers/addr            "127.0.0.1"
+                   ::m.c.peers/peer-id         0
+                   ::m.c.peers/connection-type ""}}
   (dom/tr {}
-    (dom/td {} "row")))
+    (dom/td {} (str peer-id))
+    (dom/td {} (str connection-type))
+    (dom/td {} (str addr))))
 
 (def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.peers/id}))
 
@@ -31,9 +37,9 @@
   (dom/table :.ui.table
     (dom/thead {}
       (dom/tr {}
-        (dom/th {} "Fetched")
-        (dom/th {} "Hash")
-        (dom/th {} "Height")))
+        (dom/th {} "Peer Id")
+        (dom/th {} "Connection Type")
+        (dom/th {} "Address")))
     (dom/tbody {}
       (for [tx rows]
         (ui-ref-row tx)))))
