@@ -103,12 +103,10 @@
                   {:actor/navbar
                    (uism/with-actor-class [::m.navbar/id :main]
                      u.navbar/Navbar)}))
-   :css           [[:.pushable {:border "1px solid blue"}]
-                   [:.pusher {:border   "1px solid green"
-                              :height   "100%"
+   :css           [[:.container {:height "100%"}]
+                   [:.pusher {:height   "100%"
                               :overflow "auto !important"}]
-                   [:.top {:height     "100%"
-                           :margin-top "32px"}]]
+                   [:.top {:height "100%"}]]
    :query
    [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
     {:root/navbar (comp/get-query u.navbar/Navbar)}
@@ -123,33 +121,33 @@
                    :root/router             {}
                    :root/global-error       {}
                    ::m.settings/site-config {}}}
-  (let [{:keys [pushable pusher top]} (css/get-classnames Root)
-        top-router-state              (or (uism/get-active-state this ::RootRouter) :initial)
+  (let [{:keys [container pushable pusher top]} (css/get-classnames Root)
+        top-router-state                        (or (uism/get-active-state this ::RootRouter) :initial)
         {::m.settings/keys
-         [loaded? initialized?]}      site-config
-        root                          (uism/get-active-state this ::auth/auth-machine)
-        gathering-credentials?        (#{:state/gathering-credentials} root)]
-    (comp/fragment
-     (if loaded?
-       (if initialized?
-         (comp/fragment
-          (u.navbar/ui-navbar navbar)
-          (dom/div {:classes [top]}
-            (ui-sidebar-pushable
-             {:className (string/join " " [pushable])}
-             (u.navbar/ui-navbar-sidebar navbar)
-             (ui-sidebar-pusher
-              {:className (string/join " " [pusher])}
-              (if (= :initial top-router-state)
-                (dom/div :.loading "Loading...")
-                (comp/fragment
-                 (ui-global-error-display global-error)
-                 (u.authenticator/ui-authenticator authenticator)
-                 (when-not gathering-credentials?
-                   (ui-root-router router))))))))
-         (u.initialize/ui-init-form init-form))
-       (dom/div {}
-         (dom/p "Not loaded")))
-     (inj/style-element {:component Root}))))
+         [loaded? initialized?]}                site-config
+        root                                    (uism/get-active-state this ::auth/auth-machine)
+        gathering-credentials?                  (#{:state/gathering-credentials} root)]
+    (dom/div {:classes [:.ui.container container]}
+      (if loaded?
+        (if initialized?
+          (comp/fragment
+           (u.navbar/ui-navbar navbar)
+           (dom/div {:classes [top]}
+             (ui-sidebar-pushable
+              {:className (string/join " " [pushable])}
+              (u.navbar/ui-navbar-sidebar navbar)
+              (ui-sidebar-pusher
+               {:className (string/join " " [pusher])}
+               (if (= :initial top-router-state)
+                 (dom/div :.loading "Loading...")
+                 (comp/fragment
+                  (ui-global-error-display global-error)
+                  (u.authenticator/ui-authenticator authenticator)
+                  (when-not gathering-credentials?
+                    (ui-root-router router))))))))
+          (u.initialize/ui-init-form init-form))
+        (dom/div {}
+          (dom/p "Not loaded")))
+      (inj/style-element {:component Root}))))
 
 (def ui-root (comp/factory Root))

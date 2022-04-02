@@ -102,7 +102,7 @@
 (form/defsc-form CoreNodeForm [this props]
   {fo/id             m.c.nodes/id
    fo/action-buttons [::fetch
-                      ::fetch-peer
+                      ::fetch-peers
                       ::generate
                       ::new-wallet
                       ::new-peer]

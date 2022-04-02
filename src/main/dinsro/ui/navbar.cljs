@@ -212,7 +212,7 @@
                                  :current-user  current-user
                                  :inverted      inverted
                                  :logged-in?    logged-in?})
-    (dom/div {:classes [:.ui.top.fixed.menu (when inverted :.inverted)]}
+    (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]
          :onClick (fn []
