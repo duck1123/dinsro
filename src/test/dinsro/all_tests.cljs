@@ -5,6 +5,7 @@
    dinsro.ui-test
    dinsro.ui.core.blocks-test
    dinsro.ui.core.nodes-test
+   dinsro.ui.core.peers-test
    dinsro.ui.forms.registration-test
    dinsro.ui.ln.nodes-test
    dinsro.ui.navbar-test
