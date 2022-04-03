@@ -1,9 +1,13 @@
 (ns dinsro.ui.core.nodes
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.nodes :as j.c.nodes]
@@ -15,7 +19,7 @@
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log2]))
+   [lambdaisland.glogi :as log]))
 
 (defn connect-action
   [report-instance {::m.c.nodes/keys [id]}]
@@ -141,10 +145,32 @@
       (u.c.peers/ui-peers-report {}))))
 
 (defsc ShowNode
-  [_this _props]
-  {}
+  [_this {::m.c.nodes/keys [id name]}]
+  {:route-segment ["node" :id]
+   :query         [::m.c.nodes/id
+                   ::m.c.nodes/name]
+   :initial-state {::m.c.nodes/id   nil
+                   ::m.c.nodes/name ""}
+   :ident         ::m.c.nodes/id
+   :will-enter
+   (fn [app {id :id}]
+     (log/info :node/show {})
+     (let [id      (new-uuid id)
+           ident   [::m.c.nodes/id id]
+           invoice (-> (app/current-state app) (get-in ident) :organization/latest-invoice)]
+       (if invoice
+         (dr/route-immediate ident)
+         (dr/route-deferred
+          ident
+          #(df/load!
+            app ident ShowNode
+            {:marker               :ui/selected-node
+             :target               [:ui/selected-node]
+             :post-mutation        `dr/target-ready
+             :post-mutation-params {:target ident}})))))}
   (dom/div {}
-    (dom/h1 {} "Show Node")))
+    (dom/h1 {} (str id))
+    (dom/p {} "name" (str name))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
@@ -168,7 +194,7 @@
    :action delete-action
    :style  :delete-button
    :class  (fn []
-             (log2/info :class/calculating {})
+             (log/info :class/calculating {})
              "red")})
 
 (def new-button
