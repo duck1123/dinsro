@@ -145,12 +145,17 @@
       (u.c.peers/ui-peers-report {}))))
 
 (defsc ShowNode
-  [_this {::m.c.nodes/keys [id name]}]
+  [_this {::m.c.nodes/keys [id name]
+          :keys            [report]
+          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
-                   ::m.c.nodes/name]
+                   ::m.c.nodes/name
+                   {:report (comp/get-query u.c.peers/CorePeersReport)}
+                   [df/marker-table '_]]
    :initial-state {::m.c.nodes/id   nil
-                   ::m.c.nodes/name ""}
+                   ::m.c.nodes/name ""
+                   :report          {}}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
@@ -162,15 +167,24 @@
          (dr/route-immediate ident)
          (dr/route-deferred
           ident
-          #(df/load!
-            app ident ShowNode
-            {:marker               :ui/selected-node
-             :target               [:ui/selected-node]
-             :post-mutation        `dr/target-ready
-             :post-mutation-params {:target ident}})))))}
+          (fn []
+            (df/load!
+             app ident ShowNode
+             {:marker               :ui/selected-node
+              :target               [:ui/selected-node]
+              :post-mutation        `dr/target-ready
+              :post-mutation-params {:target ident}}))))))
+   :pre-merge
+   (fn [{:keys [data-tree state-map]}]
+     (let [initial      (comp/get-initial-state u.c.peers/CorePeersReport)
+           report-data  (get-in state-map (comp/get-ident u.c.peers/CorePeersReport {}))
+           updated-data (merge initial report-data)]
+       (assoc data-tree :report updated-data)))}
+  (log/info :nodes/show {:props props})
   (dom/div {}
     (dom/h1 {} (str id))
-    (dom/p {} "name" (str name))))
+    (dom/p {} "name" (str name))
+    (u.c.peers/ui-peers-report report)))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
