@@ -149,9 +149,9 @@
       (u.c.peers/ui-peers-report {}))))
 
 (defsc ShowNode
-  [_this {::m.c.nodes/keys [id name]
-          :keys            [report]
-          :as              props}]
+  [this {::m.c.nodes/keys [id name]
+         :keys            [report]
+         :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
@@ -163,7 +163,7 @@
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
-     (log/info :node/show {})
+     (log/info :node/will-show {:app app :id id})
      (let [id      (new-uuid id)
            ident   [::m.c.nodes/id id]
            invoice (-> (app/current-state app) (get-in ident) :organization/latest-invoice)]
@@ -172,6 +172,7 @@
          (dr/route-deferred
           ident
           (fn []
+            (report/start-report! app u.c.peers/CorePeersReport {})
             (df/load!
              app ident ShowNode
              {:marker               :ui/selected-node
@@ -184,11 +185,15 @@
            report-data  (get-in state-map (comp/get-ident u.c.peers/CorePeersReport {}))
            updated-data (merge initial report-data)]
        (assoc data-tree :report updated-data)))}
-  (log/info :nodes/show {:props props})
+  (log/info :nodes/show {:props props :this this})
   (dom/div {}
     (dom/h1 {} (str id))
     (dom/p {} "name" (str name))
-    (u.c.peers/ui-peers-report report)))
+    (when id
+      (log/info :params/merging {:id id :report report})
+      (let [report-data (assoc-in report [:ui/parameters ::m.c.nodes/id] id)]
+        (log/info :report/running {:report-data report-data})
+        (u.c.peers/ui-peers-report report-data)))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
@@ -237,11 +242,10 @@
 
 (defsc-container NodeContainer
   [_this _props]
-  {co/children {:node  ShowNode
-                :nodes CoreNodesReport}
-   co/layout   [[{:id :nodes :width 16}]
-                [{:id :node :width 16}]]
-
+  {co/children         {:node  ShowNode
+                        :nodes CoreNodesReport}
+   co/layout           [[{:id :nodes :width 16}]
+                        [{:id :node :width 16}]]
    co/route            "node-container"
    co/title            "Node"
    copt/controls       {::refresh {:type   :button

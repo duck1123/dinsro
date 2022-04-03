@@ -28,6 +28,7 @@
                     u.c.nodes/NodeContainer
                     u.c.peers/CorePeerForm
                     u.c.peers/CorePeersReport
+                    u.c.peers/CorePeers2Report
                     u.c.peers/NewCorePeerForm
                     u.c.tx/CoreTxForm
                     u.c.tx/CoreTxReport

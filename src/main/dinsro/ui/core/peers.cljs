@@ -15,13 +15,13 @@
 
 (defsc RefRow
   [_this {::m.c.peers/keys [connection-type peer-id addr]}]
-  {:ident         ::m.c.peers/id
-   :query         [::m.c.peers/id
-                   ::m.c.peers/peer-id
-                   ::m.c.peers/connection-type
-                   ::m.c.peers/addr]
-   :initial-state {::m.c.peers/addr            "127.0.0.1"
-                   ::m.c.peers/peer-id         0
+  {:ident ::m.c.peers/id
+   :query [::m.c.peers/id
+           ::m.c.peers/peer-id
+           ::m.c.peers/connection-type
+           ::m.c.peers/addr]
+   :initial-state {::m.c.peers/addr "127.0.0.1"
+                   ::m.c.peers/peer-id 0
                    ::m.c.peers/connection-type ""}}
 
   (dom/tr {}
@@ -34,7 +34,7 @@
 (defsc RefTable
   [_this {:keys [rows]}]
   {:initial-state {:rows []}
-   :query         [{:rows (comp/get-query RefRow)}]}
+   :query [{:rows (comp/get-query RefRow)}]}
   (dom/table :.ui.table
     (dom/thead {}
       (dom/tr {}
@@ -55,11 +55,11 @@
    :label  "Submit"
    :action (fn [this _key]
              (let [{::m.c.peers/keys [addr id]
-                    node             ::m.c.peers/node} (comp/props this)
-                   {node-id ::m.c.nodes/id}            node
-                   props                               {::m.c.peers/id   id
-                                                        ::m.c.peers/addr addr
-                                                        ::m.c.peers/node node-id}]
+                    node                ::m.c.peers/node} (comp/props this)
+                   {node-id ::m.c.nodes/id}               node
+                   props                                     {::m.c.peers/id   id
+                                                              ::m.c.peers/addr addr
+                                                              ::m.c.peers/node node-id}]
                (log/info :submit-action/clicked props)
                (comp/transact! this [(mu.c.peers/create! props)])
                (form/view! this CorePeerForm id)))})
@@ -123,6 +123,9 @@
                         m.c.peers/subver
                         m.c.peers/peer-id
                         m.c.peers/node]
+   ro/controls         {::m.c.nodes/id {:type   :string
+                                        ;; :local? true
+                                        :label  "Nodes"}}
    ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.c.peers/peers-id CorePeerForm}
@@ -131,6 +134,24 @@
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
+   ;; ro/run-on-attribute-change? true
    ro/route            "peers"})
+
+(report/defsc-report CorePeers2Report
+  [_this _props]
+  {ro/columns          [m.c.peers/addr
+                        m.c.peers/address-bind
+                        m.c.peers/subver
+                        m.c.peers/peer-id
+                        m.c.peers/node]
+   ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
+                        ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/form-links       {::m.c.peers/peers-id CorePeerForm}
+   ro/row-actions      [delete-action-button]
+   ro/source-attribute ::m.c.peers/index
+   ro/title            "Core Peers 2"
+   ro/row-pk           m.c.peers/id
+   ro/run-on-mount?    true
+   ro/route            "peers2"})
 
 (def ui-peers-report (comp/factory CorePeersReport))

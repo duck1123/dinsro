@@ -26,7 +26,7 @@
                             :wallet-addresses]]
    :core-node-connections ["Connections"       "/core/connections" :dinsro.ui.core.connections/CoreNodeConnectionsReport]
    :core-nodes            ["Nodes"             "/core/nodes"       :dinsro.ui.core.nodes/CoreNodesReport]
-   :core-peers            ["Peers"             "/core/peers"       :dinsro.ui.core.peers/CorePeersReport]
+   :core-peers            ["Peers"             "/core/peers"       :dinsro.ui.core.peers/CorePeers2Report]
    :core-txes             ["Transactions"      "/core/txes"        :dinsro.ui.core.tx/CoreTxReport]
    :currencies            ["Currencies"        "/currencies"       :dinsro.ui.currencies/CurrenciesReport]
    :home                  ["Home"              "/"                 :dinsro.ui.home/HomePage2]
