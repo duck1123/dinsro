@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -15,13 +16,13 @@
 
 (defsc RefRow
   [_this {::m.c.peers/keys [connection-type peer-id addr]}]
-  {:ident ::m.c.peers/id
-   :query [::m.c.peers/id
-           ::m.c.peers/peer-id
-           ::m.c.peers/connection-type
-           ::m.c.peers/addr]
-   :initial-state {::m.c.peers/addr "127.0.0.1"
-                   ::m.c.peers/peer-id 0
+  {:ident         ::m.c.peers/id
+   :query         [::m.c.peers/id
+                   ::m.c.peers/peer-id
+                   ::m.c.peers/connection-type
+                   ::m.c.peers/addr]
+   :initial-state {::m.c.peers/addr            "127.0.0.1"
+                   ::m.c.peers/peer-id         0
                    ::m.c.peers/connection-type ""}}
 
   (dom/tr {}
@@ -34,7 +35,7 @@
 (defsc RefTable
   [_this {:keys [rows]}]
   {:initial-state {:rows []}
-   :query [{:rows (comp/get-query RefRow)}]}
+   :query         [{:rows (comp/get-query RefRow)}]}
   (dom/table :.ui.table
     (dom/thead {}
       (dom/tr {}
@@ -55,11 +56,11 @@
    :label  "Submit"
    :action (fn [this _key]
              (let [{::m.c.peers/keys [addr id]
-                    node                ::m.c.peers/node} (comp/props this)
-                   {node-id ::m.c.nodes/id}               node
-                   props                                     {::m.c.peers/id   id
-                                                              ::m.c.peers/addr addr
-                                                              ::m.c.peers/node node-id}]
+                    node             ::m.c.peers/node} (comp/props this)
+                   {node-id ::m.c.nodes/id}            node
+                   props                               {::m.c.peers/id   id
+                                                        ::m.c.peers/addr addr
+                                                        ::m.c.peers/node node-id}]
                (log/info :submit-action/clicked props)
                (comp/transact! this [(mu.c.peers/create! props)])
                (form/view! this CorePeerForm id)))})
@@ -123,9 +124,11 @@
                         m.c.peers/subver
                         m.c.peers/peer-id
                         m.c.peers/node]
-   ro/controls         {::m.c.nodes/id {:type   :string
-                                        ;; :local? true
-                                        :label  "Nodes"}}
+   ro/controls         {::m.c.nodes/id {:type  :uuid
+                                        :label "Nodes"}
+                        ::refresh      {:type   :button ;; TODO Add "force" option so that refresh actually makes sense
+                                        :label  "Refresh"
+                                        :action (fn [this] (control/run! this))}}
    ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.c.peers/peers-id CorePeerForm}
@@ -134,7 +137,6 @@
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
-   ;; ro/run-on-attribute-change? true
    ro/route            "peers"})
 
 (report/defsc-report CorePeers2Report

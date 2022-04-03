@@ -166,13 +166,20 @@
      (log/info :node/will-show {:app app :id id})
      (let [id      (new-uuid id)
            ident   [::m.c.nodes/id id]
-           invoice (-> (app/current-state app) (get-in ident) :organization/latest-invoice)]
+           state   (-> (app/current-state app) (get-in ident))
+           invoice (-> state :organization/latest-invoice)]
        (if invoice
          (dr/route-immediate ident)
          (dr/route-deferred
           ident
           (fn []
-            (report/start-report! app u.c.peers/CorePeersReport {})
+            (log/info :nodes/will-enter {:id       id
+                                         :state    state
+                                         :controls (control/component-controls app)})
+            (report/start-report! app u.c.peers/CorePeersReport {::m.c.nodes/id id})
+            (log/info :nodes/will-enter2 {:id       id
+                                          :state    state
+                                          :controls (control/component-controls app)})
             (df/load!
              app ident ShowNode
              {:marker               :ui/selected-node
