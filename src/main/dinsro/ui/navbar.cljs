@@ -208,10 +208,12 @@
         current-user          (:session/current-user authorization)
         inverted              true
         logged-in?            (= (::auth/status authorization) :success)]
+
     (log/debug :navbar/rendering {:authorization authorization
-                                 :current-user  current-user
-                                 :inverted      inverted
-                                 :logged-in?    logged-in?})
+                                  :current-user  current-user
+                                  :inverted      inverted
+                                  :logged-in?    logged-in?})
+
     (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]

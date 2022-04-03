@@ -2,9 +2,13 @@
   (:require
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.rad.control-options :as copt]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.rad.container :as container :refer [defsc-container]]
+   [com.fulcrologic.rad.container-options :as co]
+   [com.fulcrologic.rad.control :as control]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
@@ -230,3 +234,17 @@
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/route             "nodes"})
+
+(defsc-container NodeContainer
+  [_this _props]
+  {co/children {:node  ShowNode
+                :nodes CoreNodesReport}
+   co/layout   [[{:id :nodes :width 16}]
+                [{:id :node :width 16}]]
+
+   co/route            "node-container"
+   co/title            "Node"
+   copt/controls       {::refresh {:type   :button
+                                   :label  "Refresh"
+                                   :action (fn [container] (control/run! container))}}
+   copt/control-layout {:action-buttons [::refresh]}})

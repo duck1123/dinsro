@@ -92,7 +92,7 @@
   {fo/id           m.c.nodes/id
    fo/route-prefix "core-node-link"
    fo/attributes   [m.c.nodes/id m.c.nodes/name]}
-  (form-link this id name :dinsro.ui.core.nodes/CoreNodeForm))
+  (form-link this id name :dinsro.ui.core.nodes/ShowNode))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 

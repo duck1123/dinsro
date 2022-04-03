@@ -25,6 +25,7 @@
                     u.c.nodes/CoreNodeForm
                     u.c.nodes/CoreNodesReport
                     u.c.nodes/ShowNode
+                    u.c.nodes/NodeContainer
                     u.c.peers/CorePeerForm
                     u.c.peers/CorePeersReport
                     u.c.peers/NewCorePeerForm
