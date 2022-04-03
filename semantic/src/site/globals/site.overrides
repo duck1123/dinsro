@@ -8,5 +8,6 @@ body {
 
 #app {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
+  margin-bottom: 22px;
 }

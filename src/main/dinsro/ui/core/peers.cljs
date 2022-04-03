@@ -23,6 +23,7 @@
    :initial-state {::m.c.peers/addr            "127.0.0.1"
                    ::m.c.peers/peer-id         0
                    ::m.c.peers/connection-type ""}}
+
   (dom/tr {}
     (dom/td {} (str peer-id))
     (dom/td {} (str connection-type))
@@ -131,3 +132,5 @@
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
    ro/route            "peers"})
+
+(def ui-peers-report (comp/factory CorePeersReport))

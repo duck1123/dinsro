@@ -1,6 +1,6 @@
 (ns dinsro.ui.core.nodes
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
@@ -13,6 +13,7 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log2]))
 
@@ -97,7 +98,7 @@
                    options                      {:initial-state state}]
                (form/create! this component options)))})
 
-(def override-form true)
+(def override-form false)
 
 (form/defsc-form CoreNodeForm [this props]
   {fo/id             m.c.nodes/id
@@ -125,7 +126,7 @@
                       ::m.c.nodes/ln-nodes     :link-list
                       ::m.c.nodes/wallets      :link-list
                       ::m.c.nodes/peers        :link-list}
-   fo/route-prefix   "node"
+   fo/route-prefix   "node3"
    fo/subforms       {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}
                       ::m.c.nodes/blocks       {fo/ui u.c.blocks/CoreBlockSubForm}
                       ::m.c.nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
@@ -136,7 +137,14 @@
     (form/render-layout this props)
     (dom/div :.ui.container
       (dom/h1 {} "Core Node")
-      (form/render-layout this props))))
+      (form/render-layout this props)
+      (u.c.peers/ui-peers-report {}))))
+
+(defsc ShowNode
+  [_this _props]
+  {}
+  (dom/div {}
+    (dom/h1 {} "Show Node")))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
