@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.rendering.semantic-ui.semantic-ui-controls :as sui]
@@ -205,4 +206,12 @@
       (control-type :ref  :user-selector    render-user-selector)
       ;; (control-type :ref  :word-list     u.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)
-      (control-type :date :default          render-date)))
+      (control-type :date :default          render-date)
+      (assoc-in [::control/type->style->control :uuid :default]
+                (fn [x]
+                  (let [{:keys [instance]} x]
+                    (dom/div {}
+                      "uuid control render"
+                      (dom/div {} (str x))
+                      (log/info :uuid/render {:instance instance})
+                      (dom/div {} (str instance))))))))

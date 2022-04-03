@@ -165,6 +165,7 @@
 
 (defn setup-RAD [app]
   (let [all-controls (u.controls/all-controls)]
+    (log/info :controls/installing {:all-controls all-controls})
     (rad-app/install-ui-controls! app all-controls))
   (report/install-formatter! app :inst :default fmt.date-time/date-formatter)
   (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
@@ -186,15 +187,20 @@
 
 (uism/register-state-machine! `auth/auth-machine my-auth-machine)
 
+(defn install-logging!
+  []
+  (glogi-console/install!)
+  (timbre/merge-config! {:level     :debug
+                         :min-level :debug
+                         :output-fn prefix-output-fn
+                         :appenders {:console (console-appender)}}))
+
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.
   See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
-  (glogi-console/install!)
-  (timbre/merge-config! {:level :debug
-                         :min-level :debug
-                         :output-fn prefix-output-fn
-                         :appenders {:console (console-appender)}})
+  (install-logging!)
+  (log/info :app/starting {})
   (app/set-root! app ui/Root {:initialize-state? true})
   (dr/change-route! app [""])
   (history/install-route-history! app (html5-history))
