@@ -166,23 +166,24 @@
      (log/info :node/will-show {:app app :id id})
      (let [id      (new-uuid id)
            ident   [::m.c.nodes/id id]
-           state   (-> (app/current-state app) (get-in ident))
+           state (-> (app/current-state app) (get-in ident))
            invoice (-> state :organization/latest-invoice)]
        (if invoice
          (dr/route-immediate ident)
          (dr/route-deferred
           ident
           (fn []
-            (log/info :nodes/will-enter {:id       id
-                                         :state    state
+            (log/info :nodes/will-enter {:id id
+                                         :state state
                                          :controls (control/component-controls app)})
-            (report/start-report! app u.c.peers/CorePeersReport {::m.c.nodes/id id})
+            (report/start-report! app u.c.peers/CorePeersReport {:route-params {::m.c.nodes/id id}})
             (log/info :nodes/will-enter2 {:id       id
                                           :state    state
                                           :controls (control/component-controls app)})
             (df/load!
              app ident ShowNode
-             {:marker               :ui/selected-node
+             {;; :without              #{:invoice/employees :invoice/invoice-parts-too-long}
+              :marker               :ui/selected-node
               :target               [:ui/selected-node]
               :post-mutation        `dr/target-ready
               :post-mutation-params {:target ident}}))))))
@@ -258,4 +259,7 @@
    copt/controls       {::refresh {:type   :button
                                    :label  "Refresh"
                                    :action (fn [container] (control/run! container))}}
-   copt/control-layout {:action-buttons [::refresh]}})
+   copt/control-layout {:action-buttons [::refresh]
+                        ;; these inputs are pulled up from nested reports (any control that is not marked local will be)
+                        ;; :inputs         [[:start-date :end-date]]
+                        }})
