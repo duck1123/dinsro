@@ -14,6 +14,9 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
+   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
+   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -108,6 +111,14 @@
 
 (def override-form false)
 
+(def button-info
+  [{:label  "fetch"
+    :action mu.c.nodes/fetch!}
+   {:label  "fetch peers"
+    :action mu.c.nodes/fetch-peers!}
+   {:label "generate"
+    :action mu.c.nodes/generate!}])
+
 (form/defsc-form CoreNodeForm [this props]
   {fo/id             m.c.nodes/id
    fo/action-buttons [::fetch
@@ -148,6 +159,29 @@
       (form/render-layout this props)
       (u.c.peers/ui-peers-report {}))))
 
+(defsc ActionsMenuItem
+  [this {:keys [label mutation id]}]
+  (ui-dropdown-item
+   {:text    label
+    :onClick #(comp/transact! this [(mutation {::m.c.nodes/id id})])}))
+
+(def ui-actions-menu-item (comp/factory ActionsMenuItem {:keyfn :label}))
+
+(defsc ActionsMenu
+  [_this {::m.c.nodes/keys [id]}]
+  {:initial-state {::m.c.nodes/id nil}
+   :query         [::m.c.nodes/id]}
+  (ui-dropdown
+   {:icon    "settings"
+    :button  true
+    :labeled false}
+   (ui-dropdown-menu
+    {}
+    (for [{:keys [label action]} button-info]
+      (ui-actions-menu-item {:label label :mutation action :id id})))))
+
+(def ui-actions-menu (comp/factory ActionsMenu))
+
 (defsc ShowNode
   [this {::m.c.nodes/keys [id name]
          :keys            [report]
@@ -166,15 +200,15 @@
      (log/info :node/will-show {:app app :id id})
      (let [id      (new-uuid id)
            ident   [::m.c.nodes/id id]
-           state (-> (app/current-state app) (get-in ident))
+           state   (-> (app/current-state app) (get-in ident))
            invoice (-> state :organization/latest-invoice)]
        (if invoice
          (dr/route-immediate ident)
          (dr/route-deferred
           ident
           (fn []
-            (log/info :nodes/will-enter {:id id
-                                         :state state
+            (log/info :nodes/will-enter {:id       id
+                                         :state    state
                                          :controls (control/component-controls app)})
             (report/start-report! app u.c.peers/CorePeersReport {:route-params {::m.c.nodes/id id}})
             (log/info :nodes/will-enter2 {:id       id
@@ -195,8 +229,10 @@
        (assoc data-tree :report updated-data)))}
   (log/info :nodes/show {:props props :this this})
   (dom/div {}
+    (ui-actions-menu {::m.c.nodes/id id})
     (dom/h1 {} (str id))
     (dom/p {} "name" (str name))
+
     (when id
       (log/info :params/merging {:id id :report report})
       (let [report-data (assoc-in report [:ui/parameters ::m.c.nodes/id] id)]
