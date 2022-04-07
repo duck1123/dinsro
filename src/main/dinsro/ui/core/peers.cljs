@@ -66,7 +66,7 @@
                (form/view! this CorePeerForm id)))})
 
 (form/defsc-form NewCorePeerForm
-  [_this _props]
+  [this props]
   {fo/id             m.c.peers/id
    fo/action-buttons [::submit]
    fo/attributes     [m.c.peers/addr
@@ -84,7 +84,8 @@
                           (sort-by ::m.c.nodes/name options)))}}
    fo/field-styles   {::m.c.peers/node :pick-one}
    fo/route-prefix   "new-peer"
-   fo/title          "New Core Peer"})
+   fo/title          "New Core Peer"}
+  (form/render-layout this props))
 
 (def delete-button
   {:type   :button
