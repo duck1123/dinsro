@@ -9,6 +9,8 @@
  :lint-as
  {com.fulcrologic.rad.container/defsc-container cljs.core/defn
   mount.core/defstate                           cljs.core/def
+  nextjournal.devcards/defcard                  cljs.core/def
+  nubank.workspaces.core/defcard                cljs.core/def
   taoensso.encore/if-let                        cljs.core/let}
 
  :linters
