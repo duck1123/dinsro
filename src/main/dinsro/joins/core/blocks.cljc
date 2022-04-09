@@ -3,18 +3,43 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])
    #?(:clj [dinsro.queries.core.tx :as q.c.tx])
-   [dinsro.specs]))
+   [dinsro.specs]
+   [lambdaisland.glogc :as log]))
+
+(comment ::m.c.nodes/_ ::log/_)
+
+#?(:clj
+   (defn do-index
+     [_env props]
+     (let [{:keys [query-params]} props]
+       (log/info :index/starting
+                 {:props        props
+                  :query-params query-params})
+       (let [{node-id ::m.c.nodes/id} query-params
+             ids (if node-id
+                   (q.c.blocks/find-by-node node-id)
+                   (q.c.blocks/index-ids))
+             idents (m.c.blocks/idents ids)]
+         (log/info :index/results {:idents idents})
+         {::m.c.blocks/index idents}))))
 
 (defattr index ::m.c.blocks/index :ref
   {ao/target    ::m.c.blocks/id
    ao/pc-output [{::m.c.blocks/index [::m.c.blocks/id]}]
    ao/pc-resolve
-   (fn [_env _props]
-     (let [ids #?(:clj (q.c.blocks/index-ids) :cljs [])]
-       {::m.c.blocks/index (m.c.blocks/idents ids)}))})
+   (fn [env props]
+     #?(:clj  (do-index env props)
+        :cljs (let [_ [env props]] {::m.c.blocks/index []})))})
+
+(comment
+
+  index
+
+  nil)
 
 (defattr transactions ::m.c.blocks/transactions :ref
   {ao/cardinality :many

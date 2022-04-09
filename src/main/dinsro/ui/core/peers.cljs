@@ -147,13 +147,15 @@
                                                 (when (= id ::m.c.nodes/id)
                                                   c)))
                                             controls)
-                     node-id               (::control/value id-control)]
+                     node-id (::control/value id-control)]
                  (log/info :peers/creating {:props      props
                                             :controls   controls
                                             :id-control id-control
                                             :node-id    node-id})
                  (form/create! this NewCorePeerForm
-                               {:initial-state {::m.c.peers/addr "foo"}})))}}
+                               {:initial-state {;; ::m.c.peers/node node-id
+                                                ::m.c.peers/addr "foo"}})))}}
+
    ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.c.peers/peers-id CorePeerForm}

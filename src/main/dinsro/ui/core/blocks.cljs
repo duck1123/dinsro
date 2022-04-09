@@ -239,3 +239,5 @@
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
    ro/route            "blocks"})
+
+(def ui-blocks-report (comp/factory CoreBlockReport))
