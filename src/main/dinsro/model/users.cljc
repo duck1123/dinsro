@@ -67,7 +67,8 @@
 (s/def ::input-params (s/keys :opt [::password ::name]))
 (s/def ::params (s/keys :req [::hashed-value ::name ::salt ::iterations ::role]))
 (s/def ::item (s/keys :req [::hashed-value ::id ::name  ::salt ::iterations ::role]))
-(s/def ::ident (s/tuple keyword? ::id))
+(s/def ::id-key (s/with-gen keyword? #(s/gen #{::id})))
+(s/def ::ident (s/tuple ::id-key ::id))
 
 (>defn ident
   [id]

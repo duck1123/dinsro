@@ -104,7 +104,7 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::stripped-sized number?)
+(s/def ::stripped-size number?)
 (defattr stripped-size ::stripped-size :int
   {ao/identities #{::id}
    ao/schema     :production})
@@ -147,12 +147,12 @@
 
 (s/def ::params
   (s/keys :req [::hash ::height ::node ::fetched?]
-          :opt [::bits ::chainwork ::difficlty ::merkle-root ::nonce ::size ::time
+          :opt [::bits ::chainwork ::difficulty ::merkle-root ::nonce ::size ::time
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version ::next-block ::previous-block]))
 (s/def ::item
   (s/keys :req [::id ::hash ::height ::node ::fetched?]
-          :opt [::bits ::chainwork ::difficlty ::merkle-root ::nonce ::size ::time
+          :opt [::bits ::chainwork ::difficulty ::merkle-root ::nonce ::size ::time
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version  ::next-block ::previous-block]))
 
