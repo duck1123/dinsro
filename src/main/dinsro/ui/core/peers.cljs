@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -14,13 +15,20 @@
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
-  [_this _props]
+  [_this {::m.c.peers/keys [connection-type peer-id addr]}]
   {:ident         ::m.c.peers/id
    :query         [::m.c.peers/id
+                   ::m.c.peers/peer-id
+                   ::m.c.peers/connection-type
                    ::m.c.peers/addr]
-   :initial-state {::m.c.peers/addr "127.0.0.1"}}
+   :initial-state {::m.c.peers/addr            "127.0.0.1"
+                   ::m.c.peers/peer-id         0
+                   ::m.c.peers/connection-type ""}}
+
   (dom/tr {}
-    (dom/td {} "row")))
+    (dom/td {} (str peer-id))
+    (dom/td {} (str connection-type))
+    (dom/td {} (str addr))))
 
 (def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.peers/id}))
 
@@ -31,9 +39,9 @@
   (dom/table :.ui.table
     (dom/thead {}
       (dom/tr {}
-        (dom/th {} "Fetched")
-        (dom/th {} "Hash")
-        (dom/th {} "Height")))
+        (dom/th {} "Peer Id")
+        (dom/th {} "Connection Type")
+        (dom/th {} "Address")))
     (dom/tbody {}
       (for [tx rows]
         (ui-ref-row tx)))))
@@ -58,7 +66,7 @@
                (form/view! this CorePeerForm id)))})
 
 (form/defsc-form NewCorePeerForm
-  [_this _props]
+  [this props]
   {fo/id             m.c.peers/id
    fo/action-buttons [::submit]
    fo/attributes     [m.c.peers/addr
@@ -76,7 +84,8 @@
                           (sort-by ::m.c.nodes/name options)))}}
    fo/field-styles   {::m.c.peers/node :pick-one}
    fo/route-prefix   "new-peer"
-   fo/title          "New Core Peer"})
+   fo/title          "New Core Peer"}
+  (form/render-layout this props))
 
 (def delete-button
   {:type   :button
@@ -111,6 +120,54 @@
 
 (report/defsc-report CorePeersReport
   [_this _props]
+  {ro/columns [m.c.peers/addr
+               m.c.peers/address-bind
+               m.c.peers/subver
+               m.c.peers/peer-id
+               m.c.peers/node]
+   ro/controls
+   {::m.c.nodes/id
+    {:type  :uuid
+     :label "Nodes"}
+
+    ::refresh
+    {:type   :button
+     :label  "Refresh"
+     :action (fn [this] (control/run! this))}
+
+    ::new-peer
+    {:type   :button
+     :label  "New Peer"
+     :action (fn [this]
+               (let [props                 (comp/props this)
+                     {:ui/keys [controls]} props
+                     id-control            (some
+                                            (fn [c]
+                                              (let [{::control/keys [id]} c]
+                                                (when (= id ::m.c.nodes/id)
+                                                  c)))
+                                            controls)
+                     node-id (::control/value id-control)]
+                 (log/info :peers/creating {:props      props
+                                            :controls   controls
+                                            :id-control id-control
+                                            :node-id    node-id})
+                 (form/create! this NewCorePeerForm
+                               {:initial-state {;; ::m.c.peers/node node-id
+                                                ::m.c.peers/addr "foo"}})))}}
+
+   ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
+                        ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/form-links       {::m.c.peers/peers-id CorePeerForm}
+   ro/row-actions      [delete-action-button]
+   ro/source-attribute ::m.c.peers/index
+   ro/title            "Core Peers"
+   ro/row-pk           m.c.peers/id
+   ro/run-on-mount?    true
+   ro/route            "peers"})
+
+(report/defsc-report CorePeers2Report
+  [_this _props]
   {ro/columns          [m.c.peers/addr
                         m.c.peers/address-bind
                         m.c.peers/subver
@@ -121,7 +178,9 @@
    ro/form-links       {::m.c.peers/peers-id CorePeerForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.c.peers/index
-   ro/title            "Core Peers"
+   ro/title            "Core Peers 2"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
-   ro/route            "peers"})
+   ro/route            "peers2"})
+
+(def ui-peers-report (comp/factory CorePeersReport))

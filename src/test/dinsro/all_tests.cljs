@@ -1,5 +1,6 @@
 (ns dinsro.all-tests
   (:require
+   dinsro.joins.core.blocks-test
    dinsro.model.accounts-test
    dinsro.model.users-test
    dinsro.ui-test
