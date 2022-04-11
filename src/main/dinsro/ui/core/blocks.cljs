@@ -213,7 +213,7 @@
     {:type   :button
      :label  "Refresh"
      :action (fn [this] (control/run! this))}
-    :dinsro.ui.core.blocks/node
+    ::m.c.blocks/node
     {:type                            :picker
      :style                           :default
      :default-value                   ""
@@ -233,7 +233,7 @@
      :default-value ""
      :label         "Block ID"
      :onChange      (fn [this _] (control/run! this))}}
-   ro/control-layout   {:inputs         [[::block-id ::node-id ::search]]
+   ro/control-layout   {:inputs         [[::block-id ::m.c.blocks/node ::search]]
                         :action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/node (fn [_ props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.c.blocks/hash CoreBlockForm}

@@ -213,7 +213,7 @@
                                          :state    state
                                          :controls (control/component-controls app)})
             (report/start-report! app u.c.peers/CorePeersReport {:route-params {::m.c.nodes/id id}})
-            (report/start-report! app u.c.blocks/CoreBlockReport {:route-params {::u.c.blocks/node id}})
+            (report/start-report! app u.c.blocks/CoreBlockReport {:route-params {::m.c.blocks/node id}})
             (log/info :nodes/will-enter2 {:id       id
                                           :state    state
                                           :controls (control/component-controls app)})
@@ -246,7 +246,7 @@
        (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
          (log/info :peer-report/running {:peer-data peer-data})
          (u.c.peers/ui-peers-report peer-data))
-       (let [blocks-data (assoc-in blocks [:ui/parameters ::u.c.blocks/node] id)]
+       (let [blocks-data (assoc-in blocks [:ui/parameters ::m.c.blocks/node] id)]
          (log/info :block-report/running {:blocks-data blocks-data})
          (u.c.blocks/ui-blocks-report blocks-data))))))
 
