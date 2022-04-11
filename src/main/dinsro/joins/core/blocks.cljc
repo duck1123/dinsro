@@ -14,8 +14,8 @@
 
 #?(:clj
    (defn do-index
-     [_env props]
-     (let [{:keys [query-params]} props]
+     [env props]
+     (let [{:keys [query-params]} env]
        (log/info :index/starting
                  {:props        props
                   :query-params query-params})

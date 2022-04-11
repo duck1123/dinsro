@@ -207,28 +207,31 @@
                         m.c.blocks/height
                         m.c.blocks/fetched?
                         m.c.blocks/node]
-   ro/controls         {::search   search-control
-                        ::refresh  {:type   :button
-                                    :label  "Refresh"
-                                    :action (fn [this] (control/run! this))}
-                        ::node-id  {:type                            :picker
-                                    :style                           :default
-                                    :default-value                   ""
-                                    :label                           "Node ID"
-                                    ::picker-options/query-key       ::m.c.nodes/index
-                                    ::picker-options/query-component u.links/CoreNodeLinkForm
-                                    ::picker-options/options-xform
-                                    (fn [_ options]
-                                      (mapv
-                                       (fn [{::m.c.nodes/keys [id name]}]
-                                         {:text  (str name)
-                                          :value [::m.c.nodes/id id]})
-                                       (sort-by ::m.c.nodes/name options)))}
-                        ::block-id {:type          :string
-                                    :style         :search
-                                    :default-value ""
-                                    :label         "Block ID"
-                                    :onChange      (fn [this _] (control/run! this))}}
+   ro/controls         {::search search-control
+                        ::refresh
+                        {:type   :button
+                         :label  "Refresh"
+                         :action (fn [this] (control/run! this))}
+                        :dinsro.ui.core.blocks/node
+                        {:type                            :picker
+                         :style                           :default
+                         :default-value                   ""
+                         :label                           "Node ID"
+                         ::picker-options/query-key       ::m.c.nodes/index
+                         ::picker-options/query-component u.links/CoreNodeLinkForm
+                         ::picker-options/options-xform
+                         (fn [_ options]
+                           (mapv
+                            (fn [{::m.c.nodes/keys [id name]}]
+                              {:text  (str name)
+                               :value [::m.c.nodes/id id]})
+                            (sort-by ::m.c.nodes/name options)))}
+                        ::block-id
+                        {:type          :string
+                         :style         :search
+                         :default-value ""
+                         :label         "Block ID"
+                         :onChange      (fn [this _] (control/run! this))}}
    ro/control-layout   {:inputs         [[::block-id ::node-id ::search]]
                         :action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/node (fn [_ props] (u.links/ui-core-node-link props))}
