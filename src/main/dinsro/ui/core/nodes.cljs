@@ -25,6 +25,7 @@
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.peers :as u.c.peers]
+   [dinsro.ui.core.tx :as u.c.tx]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
@@ -180,9 +181,12 @@
     (for [{:keys [label action]} button-info]
       (ui-actions-menu-item {:label label :mutation action :id id})))))
 
-(def ui-actions-menu (comp/factory ActionsMenu))
+(def ui-actions-menu
+  "node actions menu"
+  (comp/factory ActionsMenu))
 
 (defsc ShowNode
+  "Show a core node"
   [this {::m.c.nodes/keys [id name]
          :keys            [blocks peers]
          :as              props}]
@@ -237,18 +241,21 @@
            (assoc :blocks updated-block-data))))}
   (log/info :nodes/show {:props props :this this})
   (dom/div {}
-    (ui-actions-menu {::m.c.nodes/id id})
-    (dom/h1 {} (str id))
-    (dom/p {} "name" (str name))
-    (when id
-      (log/info :params/merging {:id id :peers peers})
-      (comp/fragment
-       (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
-         (log/info :peer-report/running {:peer-data peer-data})
-         (u.c.peers/ui-peers-report peer-data))
-       (let [blocks-data (assoc-in blocks [:ui/parameters ::m.c.blocks/node] id)]
-         (log/info :block-report/running {:blocks-data blocks-data})
-         (u.c.blocks/ui-blocks-report blocks-data))))))
+           (ui-actions-menu {::m.c.nodes/id id})
+           (dom/h1 {} (str id))
+           (dom/p {} "name" (str name))
+           (when id
+             (log/info :params/merging {:id id :peers peers})
+             (comp/fragment
+              (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
+                (log/info :peer-report/running {:peer-data peer-data})
+                (u.c.peers/ui-peers-report peer-data))
+              (let [blocks-data (assoc-in blocks [:ui/parameters ::m.c.blocks/node] id)]
+                (log/info :block-report/running {:blocks-data blocks-data})
+                (u.c.blocks/ui-blocks-report blocks-data))
+              (let [transactions-data (assoc-in blocks [:ui/parameters ::m.c.tx/node] id)]
+                (log/info :block-report/running {:transactions-data transactions-data})
+                (u.c.tx/ui-tx-report transactions-data))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id

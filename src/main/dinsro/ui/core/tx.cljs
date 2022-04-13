@@ -242,3 +242,5 @@
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true
    ro/route            "transactions"})
+
+(def ui-tx-report (comp/factory CoreTxReport))

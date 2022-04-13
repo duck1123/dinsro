@@ -3,14 +3,23 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.client :as client]
-   dinsro.machines
+   [dinsro.specs :as ds]
    [dinsro.ui.core.nodes :as u.c.nodes]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(comment ::ct.fulcro3/_ ::m.c.nodes/_ ::m.c.blocks/_ ::wsm/_)
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
+(ws/defcard ActionsMenu
+  {::wsm/card-width 2 ::wsm/card-height 9}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root u.c.nodes/ActionsMenu
+    ::ct.fulcro3/app  {:client-will-mount client/setup-RAD}
+    ::ct.fulcro3/initial-state
+    (fn []
+      {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)})}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowNode
   {::wsm/card-width 7 ::wsm/card-height 14}
   (ct.fulcro3/fulcro-card
@@ -31,6 +40,7 @@
          ::m.c.blocks/hash     "foo"
          ::m.c.blocks/height   69}]})}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard CoreNodeForm
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.c.nodes/CoreNodeForm
