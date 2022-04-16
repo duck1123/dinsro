@@ -165,7 +165,7 @@
 
 (defn setup-RAD [app]
   (let [all-controls (u.controls/all-controls)]
-    (log/info :controls/installing {:all-controls all-controls})
+    (log/fine :controls/installing {:all-controls all-controls})
     (rad-app/install-ui-controls! app all-controls))
   (report/install-formatter! app :inst :default fmt.date-time/date-formatter)
   (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))

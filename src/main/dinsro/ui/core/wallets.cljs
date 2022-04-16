@@ -13,7 +13,8 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [lambdaisland.glogc :as log]))
 
 (defsc RefRow
   [_this props]
@@ -124,8 +125,8 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewWalletForm))})
 
-(report/defsc-report WalletReport
-  [_this _props]
+(report/defsc-report WalletsReport
+  [this props]
   {ro/columns          [m.c.wallets/name
                         m.c.wallets/node
                         m.c.wallets/user]
@@ -139,6 +140,8 @@
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index
-   ro/title            "Wallet Report"})
+   ro/title            "Wallet Report"}
+  (log/info :WalletsReport/creating {:props props})
+  (report/render-layout this))
 
-(def ui-wallet-report (comp/factory WalletReport))
+(def ui-wallets-report (comp/factory WalletsReport))

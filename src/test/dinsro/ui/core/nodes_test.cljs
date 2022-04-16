@@ -2,13 +2,28 @@
   (:require
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.peers :as m.c.peers]
    [dinsro.client :as client]
    [dinsro.specs :as ds]
+   [dinsro.ui.core.node-peers-test :as u.c.node-peers-test]
    [dinsro.ui.core.nodes :as u.c.nodes]
+   [dinsro.ui.core.node-peers :as u.c.node-peers]
+   [lambdaisland.glogc :as log]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
+
+(defn ShowNode-data
+  []
+  (let [data {::m.c.nodes/id          (ds/gen-key ::m.c.nodes/id)
+              ::m.c.nodes/chain       "regtest"
+              ::m.c.nodes/block-count 73
+              ::m.c.nodes/name        "main node"
+              ::m.c.nodes/fetched?    true
+              ::m.c.nodes/height      6
+              ::m.c.nodes/hash        "yes"
+              :peers                  (u.c.node-peers-test/NodePeersSubPage-data)}]
+    (log/info :ShowNode-data/response {:data data})
+    data))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ActionsMenu
@@ -20,15 +35,13 @@
     (fn []
       {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)})}))
 
-(defn ShowNode-data
-  []
-  {::m.c.nodes/id          (ds/gen-key ::m.c.nodes/id)
-   ::m.c.nodes/chain       "regtest"
-   ::m.c.nodes/block-count 73
-   ::m.c.nodes/name        "main node"
-   ::m.c.nodes/fetched?    true
-   ::m.c.nodes/height      6
-   ::m.c.nodes/hash        "yes"})
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
+(ws/defcard NodePeersSubPage
+  {::wsm/card-width 7 ::wsm/card-height 20}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root          u.c.node-peers/NodePeersSubPage
+    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
+    ::ct.fulcro3/initial-state u.c.node-peers-test/NodePeersSubPage-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowNode

@@ -34,7 +34,7 @@
                     u.c.tx/CoreTxReport
                     u.c.wallets/NewWalletForm
                     u.c.wallets/WalletForm
-                    u.c.wallets/WalletReport
+                    u.c.wallets/WalletsReport
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
                     u.c.wallet-addresses/WalletAddressesReport

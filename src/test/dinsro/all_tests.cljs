@@ -5,6 +5,8 @@
    dinsro.model.users-test
    dinsro.ui-test
    dinsro.ui.core.blocks-test
+   dinsro.ui.core.node-peers-test
+   dinsro.ui.core.node-wallets-test
    dinsro.ui.core.nodes-test
    dinsro.ui.core.peers-test
    dinsro.ui.forms.registration-test
