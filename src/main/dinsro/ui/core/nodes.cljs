@@ -186,6 +186,19 @@
   "node actions menu"
   (comp/factory ActionsMenu))
 
+(defsc NodePeersSubPage
+  [_this {:keys [report]}]
+  {:query         [::m.c.nodes/id
+                   {:report (comp/get-query u.c.peers/CorePeersReport)}]
+   :initial-state {::m.c.nodes/id nil
+                   :report        {}}
+   :ident         ::m.c.nodes/id}
+  (let [peer-data report]
+    (dom/div {}
+      (dom/p {} "Node peers sub page")
+      (dom/p {} "Report: " (pr-str report))
+      (u.c.peers/ui-peers-report peer-data))))
+
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]

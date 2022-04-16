@@ -183,6 +183,15 @@
 
 (def render-rate-chart-control (render-field-factory rate-chart-control))
 
+(defn uuid-control-render
+  [x]
+  (let [{:keys [instance]} x]
+    (log/info :uuid/render {:instance instance})
+    (dom/div {}
+      (dom/div {} "uuid control render")
+      (dom/div {} (str x))
+      (dom/div {} (pr-str instance)))))
+
 (defn all-controls
   []
   (-> sui/all-controls
@@ -207,11 +216,4 @@
       ;; (control-type :ref  :word-list     u.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)
       (control-type :date :default          render-date)
-      (assoc-in [::control/type->style->control :uuid :default]
-                (fn [x]
-                  (let [{:keys [instance]} x]
-                    (dom/div {}
-                      "uuid control render"
-                      (dom/div {} (str x))
-                      (log/info :uuid/render {:instance instance})
-                      (dom/div {} (str instance))))))))
+      (assoc-in [::control/type->style->control :uuid :default] uuid-control-render)))
