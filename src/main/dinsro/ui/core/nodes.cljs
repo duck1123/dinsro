@@ -188,18 +188,20 @@
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
-         :keys            [blocks peers]
+         :keys            [blocks peers tx]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {:peers (comp/get-query u.c.peers/CorePeersReport)}
                    {:blocks (comp/get-query u.c.blocks/CoreBlockReport)}
+                   {:tx (comp/get-query u.c.tx/CoreTxReport)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id   nil
                    ::m.c.nodes/name ""
-                   :peers          {}
-                   :blocks          {}}
+                   :peers           {}
+                   :blocks          {}
+                   :tx {}}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
@@ -218,6 +220,7 @@
                                          :controls (control/component-controls app)})
             (report/start-report! app u.c.peers/CorePeersReport {:route-params {::m.c.nodes/id id}})
             (report/start-report! app u.c.blocks/CoreBlockReport {:route-params {::m.c.blocks/node id}})
+            (report/start-report! app u.c.tx/CoreTxReport {:route-params {::m.c.tx/node id}})
             (log/info :nodes/will-enter2 {:id       id
                                           :state    state
                                           :controls (control/component-controls app)})
@@ -235,27 +238,31 @@
            updated-data       (merge initial report-data)
            initial-block-data (comp/get-initial-state u.c.blocks/CoreBlockReport)
            block-data         (get-in state-map (comp/get-ident u.c.blocks/CoreBlockReport {}))
-           updated-block-data (merge initial-block-data block-data)]
+           updated-block-data (merge initial-block-data block-data)
+           initial-tx-data    (comp/get-initial-state u.c.tx/CoreTxReport)
+           transaction-data   (get-in state-map (comp/get-ident u.c.tx/CoreTxReport {}))
+           updated-tx-data    (merge initial-tx-data transaction-data)]
        (-> data-tree
            (assoc :peers updated-data)
-           (assoc :blocks updated-block-data))))}
+           (assoc :blocks updated-block-data)
+           (assoc :tx updated-tx-data))))}
   (log/info :nodes/show {:props props :this this})
   (dom/div {}
-           (ui-actions-menu {::m.c.nodes/id id})
-           (dom/h1 {} (str id))
-           (dom/p {} "name" (str name))
-           (when id
-             (log/info :params/merging {:id id :peers peers})
-             (comp/fragment
-              (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
-                (log/info :peer-report/running {:peer-data peer-data})
-                (u.c.peers/ui-peers-report peer-data))
-              (let [blocks-data (assoc-in blocks [:ui/parameters ::m.c.blocks/node] id)]
-                (log/info :block-report/running {:blocks-data blocks-data})
-                (u.c.blocks/ui-blocks-report blocks-data))
-              (let [transactions-data (assoc-in blocks [:ui/parameters ::m.c.tx/node] id)]
-                (log/info :block-report/running {:transactions-data transactions-data})
-                (u.c.tx/ui-tx-report transactions-data))))))
+    (ui-actions-menu {::m.c.nodes/id id})
+    (dom/h1 {} (str id))
+    (dom/p {} "name" (str name))
+    (when id
+      (log/info :params/merging {:id id :peers peers})
+      (comp/fragment
+       (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
+         (log/info :peer-report/running {:peer-data peer-data})
+         (u.c.peers/ui-peers-report peer-data))
+       (let [blocks-data (assoc-in blocks [:ui/parameters ::m.c.blocks/node] id)]
+         (log/info :block-report/running {:blocks-data blocks-data})
+         (u.c.blocks/ui-blocks-report blocks-data))
+       (let [transactions-data (assoc-in tx [:ui/parameters ::m.c.tx/node] id)]
+         (log/info :block-report/running {:transactions-data transactions-data})
+         (u.c.tx/ui-tx-report transactions-data))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
