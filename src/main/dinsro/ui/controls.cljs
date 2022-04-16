@@ -184,15 +184,12 @@
 (def render-rate-chart-control (render-field-factory rate-chart-control))
 
 (defn uuid-control-render
-  [x]
-  (let [{:keys [instance]} x
-        props              (comp/props instance)
-        state              (comp/get-state instance)]
-    (log/info :uuid/render {:instance instance :x x :props props :state state})
+  [{:keys [control-key instance]}]
+  (let [props (comp/props instance)
+        id    (get-in props [:ui/parameters control-key])]
+    (log/info :uuid/render {:id id :control-key control-key})
     (dom/div {}
-      (dom/div {} "uuid control render")
-      (dom/div {} (str x))
-      (dom/div {} (pr-str instance)))))
+      "uuid control render: " (pr-str id))))
 
 (defn all-controls
   []
@@ -215,8 +212,6 @@
       (control-type :ref  :rate-chart       render-rate-chart-control)
       (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)
-      #_
-      (control-type :ref  :word-list     u.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)
       (control-type :date :default          render-date)
       (assoc-in [::control/type->style->control :uuid :default] uuid-control-render)))

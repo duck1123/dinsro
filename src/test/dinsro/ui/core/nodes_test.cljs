@@ -2,6 +2,7 @@
   (:require
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.peers :as m.c.peers]
    [dinsro.client :as client]
    [dinsro.specs :as ds]
    [dinsro.ui.core.nodes :as u.c.nodes]
