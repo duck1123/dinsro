@@ -187,15 +187,29 @@
   (comp/factory ActionsMenu))
 
 (defsc NodePeersSubPage
-  [_this {:keys [report]}]
+  [_this {:keys   [report] :as props
+          node-id ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
                    {:report (comp/get-query u.c.peers/CorePeersReport)}]
+   :pre-merge
+   (fn [{:keys [data-tree state-map]}]
+     (log/info :node-peers-sub-page/pre-merge {})
+     (let [initial             (comp/get-initial-state u.c.peers/CorePeersReport)
+           report-data         (get-in state-map (comp/get-ident u.c.peers/CorePeersReport {}))
+           updated-report-data (merge initial report-data)
+           updated-data        (-> data-tree
+                                   (assoc :peers updated-report-data))]
+       (log/info :node-peers-sub-page/merged {:updated-data updated-data})
+       updated-data
+       #_
+       data-tree))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
    :ident         ::m.c.nodes/id}
+  (log/info :node-peers-sub-page/creating {:props props})
   (let [peer-data report]
     (dom/div {}
-      (dom/p {} "Node peers sub page")
+      (dom/p {} "Node peers sub page: " (str node-id))
       (dom/p {} "Report: " (pr-str report))
       (u.c.peers/ui-peers-report peer-data))))
 
