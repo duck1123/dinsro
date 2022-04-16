@@ -50,9 +50,9 @@
 (def ui-victory-tooltip  (interop/react-factory victory/VictoryTooltip))
 
 (def matchers
-  {::m.accounts/id   u.links/ui-account-link
-   ::m.c.peers/id u.links/ui-core-peer-link
-   ::m.c.words/id u.links/ui-word-link})
+  {::m.accounts/id u.links/ui-account-link
+   ::m.c.peers/id  u.links/ui-core-peer-link
+   ::m.c.words/id  u.links/ui-word-link})
 
 (defn get-matcher
   [value]
@@ -185,8 +185,10 @@
 
 (defn uuid-control-render
   [x]
-  (let [{:keys [instance]} x]
-    (log/info :uuid/render {:instance instance})
+  (let [{:keys [instance]} x
+        props              (comp/props instance)
+        state              (comp/get-state instance)]
+    (log/info :uuid/render {:instance instance :x x :props props :state state})
     (dom/div {}
       (dom/div {} "uuid control render")
       (dom/div {} (str x))
@@ -213,7 +215,8 @@
       (control-type :ref  :rate-chart       render-rate-chart-control)
       (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)
-      ;; (control-type :ref  :word-list     u.wallets/render-word-list)
+      #_
+      (control-type :ref  :word-list     u.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)
       (control-type :date :default          render-date)
       (assoc-in [::control/type->style->control :uuid :default] uuid-control-render)))
