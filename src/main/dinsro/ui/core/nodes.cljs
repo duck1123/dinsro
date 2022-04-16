@@ -118,7 +118,7 @@
     :action mu.c.nodes/fetch!}
    {:label  "fetch peers"
     :action mu.c.nodes/fetch-peers!}
-   {:label "generate"
+   {:label  "generate"
     :action mu.c.nodes/generate!}])
 
 (form/defsc-form CoreNodeForm [this props]
@@ -216,23 +216,13 @@
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
-         :keys            [blocks peers tx
-                           wallets]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
-                   {:peers (comp/get-query u.c.peers/CorePeersReport)}
-                   {:blocks (comp/get-query u.c.blocks/CoreBlockReport)}
-                   {:tx (comp/get-query u.c.tx/CoreTxReport)}
-                   {:wallets (comp/get-query u.c.wallets/WalletReport)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id   nil
-                   ::m.c.nodes/name ""
-                   :peers           {}
-                   :blocks          {}
-                   :tx              {}
-                   :wallets         {}}
+                   ::m.c.nodes/name ""}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
@@ -249,10 +239,6 @@
             (log/info :nodes/will-enter {:id       id
                                          :state    state
                                          :controls (control/component-controls app)})
-            (report/start-report! app u.c.peers/CorePeersReport {:route-params {::m.c.nodes/id id}})
-            (report/start-report! app u.c.blocks/CoreBlockReport {:route-params {::m.c.blocks/node id}})
-            (report/start-report! app u.c.tx/CoreTxReport {:route-params {::m.c.tx/node id}})
-            (report/start-report! app u.c.wallets/WalletReport {:route-params {::m.c.wallets/node id}})
             (log/info :nodes/will-enter2 {:id       id
                                           :state    state
                                           :controls (control/component-controls app)})
@@ -288,22 +274,7 @@
   (dom/div {}
     (ui-actions-menu {::m.c.nodes/id id})
     (dom/h1 {} (str id))
-    (dom/p {} "name" (str name))
-    (when id
-      (log/info :params/merging {:id id :peers peers})
-      (comp/fragment
-       (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
-         (log/info :peer-report/running {:peer-data peer-data})
-         (u.c.peers/ui-peers-report peer-data))
-       (let [blocks-data (assoc-in blocks [:ui/parameters ::m.c.blocks/node] id)]
-         (log/info :block-report/running {:blocks-data blocks-data})
-         (u.c.blocks/ui-blocks-report blocks-data))
-       (let [transactions-data (assoc-in tx [:ui/parameters ::m.c.tx/node] id)]
-         (log/info :block-report/running {:transactions-data transactions-data})
-         (u.c.tx/ui-tx-report transactions-data))
-       (let [wallet-data (assoc-in wallets [:ui/parameters ::m.c.wallets/node] id)]
-         (log/info :wallet-report/running {:wallet-data wallet-data})
-         (u.c.wallets/ui-wallet-report wallet-data))))))
+    (dom/p {} "name" (str name))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
@@ -361,7 +332,4 @@
    copt/controls       {::refresh {:type   :button
                                    :label  "Refresh"
                                    :action (fn [container] (control/run! container))}}
-   copt/control-layout {:action-buttons [::refresh]
-                        ;; these inputs are pulled up from nested reports (any control that is not marked local will be)
-                        ;; :inputs         [[:start-date :end-date]]
-                        }})
+   copt/control-layout {:action-buttons [::refresh]}})

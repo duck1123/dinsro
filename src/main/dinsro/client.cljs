@@ -193,7 +193,8 @@
   (timbre/merge-config! {:level     :debug
                          :min-level :debug
                          :output-fn prefix-output-fn
-                         :appenders {:console (console-appender)}}))
+                         :appenders {:console (console-appender)}})
+  (log/debug :logging/initialized {}))
 
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.

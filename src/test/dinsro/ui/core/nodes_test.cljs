@@ -29,19 +29,6 @@
    ::m.c.nodes/height      6
    ::m.c.nodes/hash        "yes"})
 
-(defn NodePeersSubPage-data
-  []
-  (let [initial-report-data (comp/get-initial-state u.c.nodes/NodePeersSubPage)
-        report-data (merge initial-report-data {:foo "bar"})]
-    {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)
-     :report        report-data}))
-
-(ws/defcard NodePeersSubPage
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.nodes/NodePeersSubPage
-    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state NodePeersSubPage-data}))
-
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowNode
   {::wsm/card-width 7 ::wsm/card-height 14}
