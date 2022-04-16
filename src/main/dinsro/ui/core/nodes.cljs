@@ -25,8 +25,6 @@
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.peers :as u.c.peers]
-   [dinsro.ui.core.tx :as u.c.tx]
-   [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
@@ -216,13 +214,16 @@
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
+         :keys            [peers]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
+                   {:peers (comp/get-query u.c.peers/CorePeersReport)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id   nil
-                   ::m.c.nodes/name ""}
+                   ::m.c.nodes/name ""
+                   :peers           {}}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
@@ -247,34 +248,19 @@
              {:marker               :ui/selected-node
               :target               [:ui/selected-node]
               :post-mutation        `dr/target-ready
-              :post-mutation-params {:target ident}}))))))
-   :pre-merge
-   (fn [{:keys [data-tree state-map]}]
-     (log/info :node/pre-merge {})
-     (let [initial             (comp/get-initial-state u.c.peers/CorePeersReport)
-           report-data         (get-in state-map (comp/get-ident u.c.peers/CorePeersReport {}))
-           updated-report-data (merge initial report-data)
-           initial-block-data  (comp/get-initial-state u.c.blocks/CoreBlockReport)
-           block-data          (get-in state-map (comp/get-ident u.c.blocks/CoreBlockReport {}))
-           updated-block-data  (merge initial-block-data block-data)
-           initial-tx-data     (comp/get-initial-state u.c.tx/CoreTxReport)
-           transaction-data    (get-in state-map (comp/get-ident u.c.tx/CoreTxReport {}))
-           updated-tx-data     (merge initial-tx-data transaction-data)
-           initial-wallet-data (comp/get-initial-state u.c.wallets/WalletReport)
-           wallet-data         (get-in state-map (comp/get-ident u.c.wallets/WalletReport))
-           updated-wallet-data (merge initial-wallet-data wallet-data)
-           updated-data        (-> data-tree
-                                   (assoc :peers updated-report-data)
-                                   (assoc :blocks updated-block-data)
-                                   (assoc :tx updated-tx-data)
-                                   (assoc :wallets updated-wallet-data))]
-       (log/info :node/merged {:updated-data updated-data})
-       updated-data))}
+              :post-mutation-params {:target ident}}))))))}
   (log/info :nodes/show {:props props :this this})
   (dom/div {}
     (ui-actions-menu {::m.c.nodes/id id})
-    (dom/h1 {} (str id))
-    (dom/p {} "name" (str name))))
+    (dom/div {}
+      (dom/p {} (str "Id: " id))
+      (dom/p {}  (str "Name: " name)))
+    (when id
+      (log/info :params/merging {:id id :peers peers})
+      (dom/div {}
+        (let [peer-data (assoc-in peers [:ui/parameters ::m.c.nodes/id] id)]
+          (log/info :peer-report/running {:peer-data peer-data})
+          (u.c.peers/ui-peers-report peer-data))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
