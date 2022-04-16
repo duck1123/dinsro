@@ -140,3 +140,5 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index
    ro/title            "Wallet Report"})
+
+(def ui-wallet-report (comp/factory WalletReport))
