@@ -27,6 +27,7 @@
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.node-blocks :as u.c.node-blocks]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
+   [dinsro.ui.core.node-transactions :as u.c.node-transactions]
    [dinsro.ui.core.node-wallets :as u.c.node-wallets]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
@@ -195,14 +196,22 @@
                                  :current-noramlized current-normalized})
   (let [node-id (::m.c.nodes/id data-tree)]
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [initial             (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
-          report-data         (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
-          updated-report-data (merge
-                               initial
-                               report-data
-                               {::m.c.nodes/id node-id})
-          updated-data        (-> data-tree
-                                  (assoc :peers updated-report-data))]
+    (let [peers-data   (merge
+                        (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
+                        (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
+                        {::m.c.nodes/id node-id})
+          wallets-data (merge
+                        (comp/get-initial-state u.c.node-wallets/NodeWalletsSubPage)
+                        (get-in state-map (comp/get-ident u.c.node-wallets/NodeWalletsSubPage {}))
+                        {::m.c.nodes/id node-id})
+          blocks-data  (merge
+                        (comp/get-initial-state u.c.node-blocks/NodeBlocksSubPage)
+                        (get-in state-map (comp/get-ident u.c.node-blocks/NodeBlocksSubPage {}))
+                        {::m.c.nodes/id node-id})
+          updated-data (-> data-tree
+                           (assoc :peers peers-data)
+                           (assoc :blocks blocks-data)
+                           (assoc :wallets wallets-data))]
 
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree
@@ -213,19 +222,21 @@
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
-         :keys            [blocks peers wallets]
+         :keys            [blocks peers transactions wallets]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {:peers (comp/get-query u.c.node-peers/NodePeersSubPage)}
-                   {:blocks (comp/get-query u.c.blocks/CoreBlockReport)}
+                   {:blocks (comp/get-query u.c.node-blocks/NodeBlocksSubPage)}
+                   {:transactions (comp/get-query u.c.node-transactions/NodeTransactionsSubPage)}
                    {:wallets (comp/get-query u.c.node-wallets/NodeWalletsSubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id   nil
                    ::m.c.nodes/name ""
                    :peers           {}
                    :blocks          {}
+                   :transactions    {}
                    :wallets         {}}
    :ident         ::m.c.nodes/id
    :will-enter
@@ -264,7 +275,8 @@
         (dom/div {:classes [sub]}
           (u.c.node-peers/ui-node-peers-sub-page peers)
           (u.c.node-wallets/ui-node-wallets-sub-page wallets)
-          (u.c.node-blocks/ui-node-blocks-sub-page blocks))))))
+          (u.c.node-blocks/ui-node-blocks-sub-page blocks)
+          (u.c.node-transactions/ui-node-transactions-sub-page transactions))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
