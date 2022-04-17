@@ -2,13 +2,14 @@
   (:require
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.rad.control-options :as copt]
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.container :as container :refer [defsc-container]]
    [com.fulcrologic.rad.container-options :as co]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.rad.control-options :as copt]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
@@ -210,8 +211,7 @@
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
-         :keys
-         [peers]
+         :keys            [peers]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
@@ -243,18 +243,20 @@
               :target               [:ui/selected-node]
               :post-mutation        `dr/target-ready
               :post-mutation-params {:target ident}}))))))
+   :pre-merge     ShowNode-pre-merge
+   :css           [[:.main {:border "1px solid red"}]
+                   [:.sub {:border "1px solid blue"}]]}
 
-   :pre-merge ShowNode-pre-merge}
-
-  (log/info :ShowNode/creating {:id id :props props :this this :peers peers})
-  (dom/div {}
-    (ui-actions-menu {::m.c.nodes/id id})
-    (dom/div {}
-      (dom/p {} (str "Id: " id))
-      (dom/p {}  (str "Name: " name)))
-    (when id
-      (dom/div :.ui.segment
-        (u.c.node-peers/ui-node-peers-sub-page peers)))))
+  (let [{:keys [main sub]} (css/get-classnames ShowNode)]
+    (log/info :ShowNode/creating {:id id :props props :this this :peers peers})
+    (dom/div {:classes [main]}
+      (ui-actions-menu {::m.c.nodes/id id})
+      (dom/div {}
+        (dom/p {} (str "Id: " id))
+        (dom/p {}  (str "Name: " name)))
+      (when id
+        (dom/div {:classes [sub]}
+          (u.c.node-peers/ui-node-peers-sub-page peers))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id
