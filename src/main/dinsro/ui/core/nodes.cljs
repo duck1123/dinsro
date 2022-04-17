@@ -200,18 +200,8 @@
                         (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
                         (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
                         {::m.c.nodes/id node-id})
-          wallets-data (merge
-                        (comp/get-initial-state u.c.node-wallets/NodeWalletsSubPage)
-                        (get-in state-map (comp/get-ident u.c.node-wallets/NodeWalletsSubPage {}))
-                        {::m.c.nodes/id node-id})
-          blocks-data  (merge
-                        (comp/get-initial-state u.c.node-blocks/NodeBlocksSubPage)
-                        (get-in state-map (comp/get-ident u.c.node-blocks/NodeBlocksSubPage {}))
-                        {::m.c.nodes/id node-id})
           updated-data (-> data-tree
-                           (assoc :peers peers-data)
-                           (assoc :blocks blocks-data)
-                           (assoc :wallets wallets-data))]
+                           (assoc :peers peers-data))]
 
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree
@@ -269,13 +259,13 @@
    :css           [[:.main {:border "1px solid red"}]
                    [:.sub {:border "1px solid blue"}]]}
 
+  (log/info :ShowNode/creating {:id id :props props :this this})
   (let [{:keys [main sub]} (css/get-classnames ShowNode)]
-    (log/info :ShowNode/creating {:id id :props props :this this :peers peers})
     (dom/div {:classes [main]}
       (ui-actions-menu {::m.c.nodes/id id})
       (dom/div {}
         (dom/p {} (str "Id: " id))
-        (dom/p {}  (str "Name: " name)))
+        (dom/p {} (str "Name: " name)))
       (when id
         (dom/div {:classes [sub]}
           (when show-peers (u.c.node-peers/ui-node-peers-sub-page peers))
