@@ -185,10 +185,33 @@
   "node actions menu"
   (comp/factory ActionsMenu))
 
+(defn ShowNode-pre-merge
+  [{:keys [data-tree state-map current-normalized]}]
+  (log/info :ShowNode/pre-merge {:data-tree          data-tree
+                                 :state-map          state-map
+                                 :current-noramlized current-normalized})
+  (let [node-id (::m.c.nodes/id data-tree)]
+    (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
+    (let [initial             (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
+          report-data         (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
+          updated-report-data (merge
+                               initial
+                               report-data
+                               {::m.c.nodes/id node-id})
+          updated-data        (-> data-tree
+                                  (assoc :peers updated-report-data))]
+
+      (log/info :ShowNode/merged {:updated-data       updated-data
+                                  :data-tree          data-tree
+                                  :state-map          state-map
+                                  :current-noramlized current-normalized})
+      updated-data)))
+
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
-         :keys            [peers]
+         :keys
+         [peers]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
@@ -221,28 +244,7 @@
               :post-mutation        `dr/target-ready
               :post-mutation-params {:target ident}}))))))
 
-   :pre-merge
-   (fn [{:keys [data-tree state-map current-normalized]}]
-     (log/info :ShowNode/pre-merge {:data-tree          data-tree
-                                    :state-map          state-map
-                                    :current-noramlized current-normalized})
-     (let [node-id (::m.c.nodes/id data-tree)]
-       (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-       (let [initial             (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
-             report-data         (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
-             updated-report-data (merge
-                                  initial
-                                  report-data
-                                  {::m.c.nodes/id node-id})
-
-             updated-data (-> data-tree
-                              (assoc :peers updated-report-data))]
-
-         (log/info :ShowNode/merged {:updated-data       updated-data
-                                     :data-tree          data-tree
-                                     :state-map          state-map
-                                     :current-noramlized current-normalized})
-         updated-data)))}
+   :pre-merge ShowNode-pre-merge}
 
   (log/info :ShowNode/creating {:id id :props props :this this :peers peers})
   (dom/div {}

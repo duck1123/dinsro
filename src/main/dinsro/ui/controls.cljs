@@ -183,13 +183,15 @@
 
 (def render-rate-chart-control (render-field-factory rate-chart-control))
 
-(defn uuid-control-render
-  [{:keys [control-key instance]}]
+(defsc UUIDControl
+  [_this {:keys [control-key instance]}]
   (let [props (comp/props instance)
         id    (get-in props [:ui/parameters control-key])]
     (log/info :uuid/render {:id id :control-key control-key})
     (dom/div {}
       "uuid control render: " (pr-str id))))
+
+(def uuid-control-render (comp/factory UUIDControl {:keyfn :control-key}))
 
 (defn all-controls
   []

@@ -27,6 +27,8 @@
   (log/info :NodePeersSubPage/creating {:props props})
   (let [peer-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
-      (u.c.peers/ui-peers-report peer-data))))
+      (if node-id
+        (u.c.peers/ui-peers-report peer-data)
+        (dom/div {} "No node id")))))
 
 (def ui-node-peers-sub-page (comp/factory NodePeersSubPage))
