@@ -25,7 +25,9 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.node-blocks :as u.c.node-blocks]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
+   [dinsro.ui.core.node-wallets :as u.c.node-wallets]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
@@ -211,24 +213,28 @@
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
-         :keys            [peers]
+         :keys            [blocks peers wallets]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {:peers (comp/get-query u.c.node-peers/NodePeersSubPage)}
+                   {:blocks (comp/get-query u.c.blocks/CoreBlockReport)}
+                   {:wallets (comp/get-query u.c.node-wallets/NodeWalletsSubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id   nil
                    ::m.c.nodes/name ""
-                   :peers           {}}
+                   :peers           {}
+                   :blocks          {}
+                   :wallets         {}}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
-     (log/info :ShowNode/will-enter {:app app :id id})
      (let [id      (new-uuid id)
            ident   [::m.c.nodes/id id]
            state   (-> (app/current-state app) (get-in ident))
            invoice (-> state :organization/latest-invoice)]
+       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
        (if invoice
          (dr/route-immediate ident)
          (dr/route-deferred
@@ -256,7 +262,9 @@
         (dom/p {}  (str "Name: " name)))
       (when id
         (dom/div {:classes [sub]}
-          (u.c.node-peers/ui-node-peers-sub-page peers))))))
+          (u.c.node-peers/ui-node-peers-sub-page peers)
+          (u.c.node-wallets/ui-node-wallets-sub-page wallets)
+          (u.c.node-blocks/ui-node-blocks-sub-page blocks))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id

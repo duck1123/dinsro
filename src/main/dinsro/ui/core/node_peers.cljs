@@ -18,7 +18,7 @@
            report-data         (get-in state-map (comp/get-ident u.c.peers/CorePeersReport {}))
            updated-report-data (merge initial report-data)
            updated-data        (-> data-tree
-                                   (assoc :peers updated-report-data))]
+                                   (assoc :report updated-report-data))]
        (log/info :NodePeersSubPage/merged {:updated-data updated-data :data-tree data-tree})
        updated-data))
    :initial-state {::m.c.nodes/id nil

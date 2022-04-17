@@ -28,3 +28,5 @@
   (let [wallet-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
       (u.c.wallets/ui-wallets-report wallet-data))))
+
+(def ui-node-wallets-sub-page (comp/factory NodeWalletsSubPage))
