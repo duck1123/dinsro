@@ -2,15 +2,82 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
+
+(report/defsc-report NodeBlocksReport
+  [_this _props]
+  {ro/columns
+   [m.c.blocks/hash
+    m.c.blocks/height
+    m.c.blocks/fetched?
+    m.c.blocks/node]
+
+   ro/controls
+   {::search u.c.blocks/search-control
+
+    ::refresh
+    {:type   :button
+     :label  "Refresh"
+     :action (fn [this] (control/run! this))}
+
+    ::m.c.nodes/id
+    {:type  :uuid
+     :label "Nodes"}
+
+    #_#_
+    ::m.c.blocks/node
+    {:type                            :picker
+     :style                           :default
+     :default-value                   ""
+     :label                           "Node ID"
+     ::picker-options/query-key       ::m.c.nodes/index
+     ::picker-options/query-component u.links/CoreNodeLinkForm
+     ::picker-options/options-xform
+     (fn [_ options]
+       (mapv
+        (fn [{::m.c.nodes/keys [id name]}]
+          {:text  (str name)
+           :value [::m.c.nodes/id id]})
+        (sort-by ::m.c.nodes/name options)))}
+
+    #_#_
+    ::block-id
+    {:type          :string
+     :style         :search
+     :default-value ""
+     :label         "Block ID"
+     :onChange      (fn [this _] (control/run! this))}}
+
+   ro/control-layout   {:inputs         [[::block-id ::m.c.blocks/node ::search]]
+                        :action-buttons [::refresh]}
+   ro/field-formatters {::m.c.blocks/node (fn [_ props] (u.links/ui-core-node-link props))}
+   ro/form-links       {::m.c.blocks/hash u.c.blocks/CoreBlockForm}
+   ro/source-attribute ::m.c.blocks/index
+   ro/title            "Core Blocks"
+   ro/row-actions      [u.c.blocks/delete-action-button]
+   ro/row-pk           m.c.blocks/id
+   ro/run-on-mount?    true
+   ro/route            "blocks"})
+
+(def ui-blocks-report (comp/factory NodeBlocksReport))
 
 (defsc NodeBlocksSubPage
   [_this {:keys   [report] :as props
           node-id ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
                    {:report (comp/get-query u.c.blocks/CoreBlockReport)}]
+   :componentDidMount
+   (fn [this]
+     (let [props (comp/props this)]
+       (log/info :NodePeersSubPage/did-mount {:props props :this this})
+       (report/start-report! this NodeBlocksReport)))
    :pre-merge
    (fn [{:keys [data-tree state-map]}]
      (log/info :NodeBlocksSubPage/pre-merge {:data-tree data-tree})
@@ -25,10 +92,17 @@
                    :report        {}}
    :ident         (fn [] [:component/id ::NodeBlocksSubPage])}
   (log/info :NodeBlocksSubPage/creating {:props props})
-  (let [block-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
+  (let [block-data (assoc-in report [:ui/parameters
+                                     ::m.c.blocks/node
+                                     #_
+                                     ::m.c.nodes/id]
+                             {::m.c.nodes/id node-id})]
+
     (dom/div :.ui.segment
       (if node-id
-        (u.c.blocks/ui-blocks-report block-data)
+        (do
+          (log/info :NodeBlocksSubPage/report-renderin {:block-data block-data})
+          (u.c.blocks/ui-blocks-report block-data))
         (dom/p {} "Node ID not set")))))
 
 (def ui-node-blocks-sub-page (comp/factory NodeBlocksSubPage))

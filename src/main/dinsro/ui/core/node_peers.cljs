@@ -13,11 +13,13 @@
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report NodePeersReport
-  [_this _props]
-  {ro/columns [m.c.peers/addr
-               m.c.peers/address-bind
-               m.c.peers/subver
-               m.c.peers/peer-id]
+  [this props]
+  {ro/columns
+   [m.c.peers/addr
+    m.c.peers/address-bind
+    m.c.peers/subver
+    m.c.peers/peer-id]
+
    ro/controls
    {::m.c.nodes/id
     {:type  :uuid
@@ -57,7 +59,9 @@
    ro/title            "Node Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
-   ro/route            "node-peers"})
+   ro/route            "node-peers"}
+  (log/info :NodePeersReport/creating {:props props})
+  (report/render-layout this))
 
 (defsc NodePeersSubPage
   [_this {:keys   [report] :as props
