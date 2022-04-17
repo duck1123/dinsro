@@ -52,7 +52,7 @@
        updated-data))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
-   :ident         ::m.c.nodes/id}
+   :ident         (fn [] [:component/id ::NodeWalletsSubPage])}
   (log/info :NodeWalletsSubPage/creating {:props props})
   (let [wallet-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment

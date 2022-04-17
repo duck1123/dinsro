@@ -196,12 +196,28 @@
                                  :current-noramlized current-normalized})
   (let [node-id (::m.c.nodes/id data-tree)]
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data   (merge
-                        (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
-                        (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
-                        {::m.c.nodes/id node-id})
-          updated-data (-> data-tree
-                           (assoc :peers peers-data))]
+    (let [peers-data (merge
+                      (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
+                      (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
+                      {::m.c.nodes/id node-id})
+
+          wallets-data      (merge
+                             (comp/get-initial-state u.c.node-wallets/NodeWalletsSubPage)
+                             (get-in state-map (comp/get-ident u.c.node-wallets/NodeWalletsSubPage {}))
+                             {::m.c.nodes/id node-id})
+          blocks-data       (merge
+                             (comp/get-initial-state u.c.node-blocks/NodeBlocksSubPage)
+                             (get-in state-map (comp/get-ident u.c.node-blocks/NodeBlocksSubPage {}))
+                             {::m.c.nodes/id node-id})
+          transactions-data (merge
+                             (comp/get-initial-state u.c.node-transactions/NodeTransactionsSubPage)
+                             (get-in state-map (comp/get-ident u.c.node-transactions/NodeTransactionsSubPage {}))
+                             {::m.c.nodes/id node-id})
+          updated-data      (-> data-tree
+                                (assoc :peers peers-data)
+                                (assoc :blocks blocks-data)
+                                (assoc :transactions transactions-data)
+                                (assoc :wallets wallets-data))]
 
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree

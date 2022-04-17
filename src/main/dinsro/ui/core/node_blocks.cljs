@@ -23,7 +23,7 @@
        updated-data))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
-   :ident         ::m.c.nodes/id}
+   :ident         (fn [] [:component/id ::NodeBlocksSubPage])}
   (log/info :NodeBlocksSubPage/creating {:props props})
   (let [block-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment

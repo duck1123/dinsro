@@ -62,7 +62,7 @@
        updated-data))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
-   :ident         ::m.c.nodes/id}
+   :ident         (fn [] [:component/id ::NodeTransactionsSubPage])}
   (log/info :NodeTransactionsSubPage/creating {:props props})
   (let [transaction-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
