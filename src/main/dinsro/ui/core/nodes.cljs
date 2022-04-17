@@ -219,6 +219,11 @@
                                   :current-noramlized current-normalized})
       updated-data)))
 
+(def show-peers true)
+(def show-wallets true)
+(def show-blocks true)
+(def show-transactions true)
+
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name]
@@ -273,10 +278,10 @@
         (dom/p {}  (str "Name: " name)))
       (when id
         (dom/div {:classes [sub]}
-          (u.c.node-peers/ui-node-peers-sub-page peers)
-          (u.c.node-wallets/ui-node-wallets-sub-page wallets)
-          (u.c.node-blocks/ui-node-blocks-sub-page blocks)
-          (u.c.node-transactions/ui-node-transactions-sub-page transactions))))))
+          (when show-peers (u.c.node-peers/ui-node-peers-sub-page peers))
+          (when show-wallets (u.c.node-wallets/ui-node-wallets-sub-page wallets))
+          (when show-blocks (u.c.node-blocks/ui-node-blocks-sub-page blocks))
+          (when show-transactions (u.c.node-transactions/ui-node-transactions-sub-page transactions)))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id

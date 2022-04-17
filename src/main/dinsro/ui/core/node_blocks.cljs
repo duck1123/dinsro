@@ -27,6 +27,8 @@
   (log/info :NodeBlocksSubPage/creating {:props props})
   (let [block-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
-      (u.c.blocks/ui-blocks-report block-data))))
+      (if node-id
+        (u.c.blocks/ui-blocks-report block-data)
+        (dom/p {} "Node ID not set")))))
 
 (def ui-node-blocks-sub-page (comp/factory NodeBlocksSubPage))

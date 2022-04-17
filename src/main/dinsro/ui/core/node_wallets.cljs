@@ -12,14 +12,15 @@
 
 (report/defsc-report NodeWalletsReport
   [this props]
-  {ro/columns          [m.c.wallets/name
-                        m.c.wallets/node
-                        m.c.wallets/user]
-   ro/control-layout   {:action-buttons [::new]}
-   ro/controls         {::new u.c.wallets/new-action-button
-                        ::m.c.nodes/id
-                        {:type  :uuid
-                         :label "Nodes"}}
+  {ro/columns        [m.c.wallets/name
+                      m.c.wallets/node
+                      m.c.wallets/user]
+   ro/control-layout {:action-buttons [::new]}
+   ro/controls       {::new u.c.wallets/new-action-button
+                      ::m.c.nodes/id
+                      {:type  :uuid
+                       :label "Nodes"}}
+
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/form-links       {::m.c.wallets/name u.c.wallets/WalletForm}
@@ -55,6 +56,8 @@
   (log/info :NodeWalletsSubPage/creating {:props props})
   (let [wallet-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
-      (ui-node-wallets-report wallet-data))))
+      (if node-id
+        (ui-node-wallets-report wallet-data)
+        (dom/p {} "Node ID not set")))))
 
 (def ui-node-wallets-sub-page (comp/factory NodeWalletsSubPage))

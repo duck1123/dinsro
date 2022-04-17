@@ -29,6 +29,6 @@
     (dom/div :.ui.segment
       (if node-id
         (u.c.peers/ui-peers-report peer-data)
-        (dom/div {} "No node id")))))
+        (dom/div {} "Node ID not set")))))
 
 (def ui-node-peers-sub-page (comp/factory NodePeersSubPage))
