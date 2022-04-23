@@ -53,7 +53,7 @@
    :transactions          ["Transactions"      "/transactions"     :dinsro.ui.transactions/TransactionsReport]
    :tx                    ["LN TXes"           "/ln/transactions"  :dinsro.ui.ln.transactions/LNTransactionsReport]
    :users                 ["Users"             "/users"            :dinsro.ui.users/UsersReport]
-   :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/WalletReport]
+   :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/WalletsReport]
    :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/WalletAddressesReport]})
 
 #?(:clj

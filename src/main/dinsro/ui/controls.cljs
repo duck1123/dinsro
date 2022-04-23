@@ -32,6 +32,7 @@
    [dinsro.ui.core.tx :as u.c.tx]
    [dinsro.ui.core.tx-in :as u.c.tx-in]
    [dinsro.ui.core.tx-out :as u.c.tx-out]
+   [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
@@ -214,6 +215,7 @@
       (control-type :ref  :rate-chart       render-rate-chart-control)
       (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)
+      (control-type :ref  :word-list        u.c.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)
       (control-type :date :default          render-date)
       (assoc-in [::control/type->style->control :uuid :default] uuid-control-render)))

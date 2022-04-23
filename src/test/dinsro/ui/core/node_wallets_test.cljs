@@ -11,25 +11,46 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(defn NodeWalletsSubPage-row
+(defn NodeWalletsSubPage-row-node
   []
-  {::m.c.wallets/id   (ds/gen-key ::m.c.wallets/id)
-   ::m.c.wallets/name (ds/gen-key ::m.c.wallets/name)
-   ::m.c.wallets/user {::m.users/id   (ds/gen-key ::m.users/id)
-                       ::m.users/name (ds/gen-key ::m.users/name)}
-   ::m.c.wallets/node {::m.c.nodes/id   (ds/gen-key ::m.c.nodes/id)
-                       ::m.c.nodes/name (ds/gen-key ::m.c.nodes/name)}})
+  {::m.c.nodes/id   (ds/gen-key ::m.c.nodes/id)
+   ::m.c.nodes/name (ds/gen-key ::m.c.nodes/name)})
+
+(defn NodeWalletsSubPage-row-user
+  []
+  {::m.users/id   (ds/gen-key ::m.users/id)
+   ::m.users/name (ds/gen-key ::m.users/name)})
+
+(defn NodeWalletsSubPage-row
+  ([]
+   (NodeWalletsSubPage-row
+    {:node (NodeWalletsSubPage-row-node)
+     :user (NodeWalletsSubPage-row-user)}))
+  ([{:keys [node user]
+     :or
+     {node (NodeWalletsSubPage-row-node)
+      user (NodeWalletsSubPage-row-user)}}]
+   {::m.c.wallets/id         (ds/gen-key ::m.c.wallets/id)
+    ::m.c.wallets/name       (ds/gen-key ::m.c.wallets/name)
+    ::m.c.wallets/derivation (ds/gen-key ::m.c.wallets/derivation)
+    ::m.c.wallets/key        (ds/gen-key ::m.c.wallets/key)
+    ::m.c.wallets/user       user
+    ::m.c.wallets/node       node}))
 
 (defn NodeWalletsSubPage-report-data
   []
-  {:foo             "bar"
-   :ui/controls     []
-   :ui/current-rows (map (fn [_] (NodeWalletsSubPage-row)) (range 3))
-   :ui/busy?        false
-   :ui/parameters   {}
-   :ui/page-count   1
-   :ui/current-page 1
-   :ui/cache        {}})
+  (let [node (NodeWalletsSubPage-row-node)
+        user (NodeWalletsSubPage-row-user)]
+    {:foo             "bar"
+     :ui/controls     []
+     :ui/current-rows (map
+                       (fn [_] (NodeWalletsSubPage-row {:node node :user user}))
+                       (range 3))
+     :ui/busy?        false
+     :ui/parameters   {}
+     :ui/page-count   1
+     :ui/current-page 1
+     :ui/cache        {}}))
 
 (defn NodeWalletsSubPage-data
   []

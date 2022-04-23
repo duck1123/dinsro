@@ -13,8 +13,8 @@
 (report/defsc-report NodeWalletsReport
   [this props]
   {ro/columns        [m.c.wallets/name
-                      m.c.wallets/node
-                      m.c.wallets/user]
+                      m.c.wallets/derivation
+                      m.c.wallets/key]
    ro/control-layout {:action-buttons [::new]}
    ro/controls       {::new u.c.wallets/new-action-button
                       ::m.c.nodes/id
@@ -29,7 +29,7 @@
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index
-   ro/title            "Node Wallet Report"}
+   ro/title            "Node Wallets"}
   (log/info :NodeWalletsReport/creating {:props props})
   (report/render-layout this))
 
@@ -40,16 +40,11 @@
           node-id ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
                    {:report (comp/get-query NodeWalletsReport)}]
-   :pre-merge
-   (fn [{:keys [data-tree state-map]}]
-     (log/info :NodeWalletsSubPage/pre-merge {:data-tree data-tree})
-     (let [initial             (comp/get-initial-state NodeWalletsReport)
-           report-data         (get-in state-map (comp/get-ident NodeWalletsReport {}))
-           updated-report-data (merge initial report-data)
-           updated-data        (-> data-tree
-                                   (assoc :wallets updated-report-data))]
-       (log/info :NodeWalletsSubPage/merged {:updated-data updated-data :data-tree data-tree})
-       updated-data))
+   :componentDidMount
+   (fn [this]
+     (let [props (comp/props this)]
+       (log/info :NodeWalletsSubPage/did-mount {:props props :this this})
+       (report/start-report! this NodeWalletsReport)))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
    :ident         (fn [] [:component/id ::NodeWalletsSubPage])}

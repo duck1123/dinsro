@@ -29,31 +29,7 @@
 
     ::m.c.nodes/id
     {:type  :uuid
-     :label "Nodes"}
-
-    #_#_
-    ::m.c.blocks/node
-    {:type                            :picker
-     :style                           :default
-     :default-value                   ""
-     :label                           "Node ID"
-     ::picker-options/query-key       ::m.c.nodes/index
-     ::picker-options/query-component u.links/CoreNodeLinkForm
-     ::picker-options/options-xform
-     (fn [_ options]
-       (mapv
-        (fn [{::m.c.nodes/keys [id name]}]
-          {:text  (str name)
-           :value [::m.c.nodes/id id]})
-        (sort-by ::m.c.nodes/name options)))}
-
-    #_#_
-    ::block-id
-    {:type          :string
-     :style         :search
-     :default-value ""
-     :label         "Block ID"
-     :onChange      (fn [this _] (control/run! this))}}
+     :label "Nodes"}}
 
    ro/control-layout   {:inputs         [[::block-id ::m.c.blocks/node ::search]]
                         :action-buttons [::refresh]}
@@ -92,16 +68,11 @@
                    :report        {}}
    :ident         (fn [] [:component/id ::NodeBlocksSubPage])}
   (log/info :NodeBlocksSubPage/creating {:props props})
-  (let [block-data (assoc-in report [:ui/parameters
-                                     ::m.c.blocks/node
-                                     #_
-                                     ::m.c.nodes/id]
-                             {::m.c.nodes/id node-id})]
-
+  (let [block-data (assoc-in report [:ui/parameters ::m.c.blocks/node] {::m.c.nodes/id node-id})]
     (dom/div :.ui.segment
       (if node-id
         (do
-          (log/info :NodeBlocksSubPage/report-renderin {:block-data block-data})
+          (log/info :NodeBlocksSubPage/report-rendering {:block-data block-data})
           (u.c.blocks/ui-blocks-report block-data))
         (dom/p {} "Node ID not set")))))
 

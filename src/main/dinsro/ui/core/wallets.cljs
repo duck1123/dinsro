@@ -49,7 +49,7 @@
 
 (def override-new-wallet-form false)
 
-(form/defsc-form NewWalletForm [_this _props]
+(form/defsc-form NewWalletForm [this props]
   {fo/id             m.c.wallets/id
    fo/action-buttons (concat [::create] form/standard-action-buttons)
    fo/attributes     [m.c.wallets/name
@@ -81,7 +81,15 @@
            :value [::m.users/id id]})
         (sort-by ::m.users/name options)))}}
    fo/route-prefix   "new-wallet"
-   fo/title          "New Wallet"})
+   fo/title          "New Wallet"}
+  (log/info :NewWalletForm/creating {:props props})
+  (form/render-layout this props))
+
+(defn render-word-list
+  [_this props]
+  (log/info :render-word-list/creating {:props props})
+  (dom/div {}
+    "word list"))
 
 (def roll-button
   {:type   :button
@@ -89,10 +97,10 @@
    :label  "Roll"
    :action (fn [this _key]
              (let [{::m.c.wallets/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.wallets/roll! {::m.c.wallets/id id})])
-               #_(form/view! this CoreBlockForm id)))})
+               (comp/transact! this [(mu.c.wallets/roll! {::m.c.wallets/id id})])))})
 
-(form/defsc-form WalletForm [_this _props]
+(form/defsc-form WalletForm
+  [this props]
   {fo/id             m.c.wallets/id
    fo/action-buttons (concat [::roll] form/standard-action-buttons)
    fo/attributes     [m.c.wallets/id
@@ -100,8 +108,6 @@
                       m.c.wallets/node
                       m.c.wallets/derivation
                       m.c.wallets/key
-                      ;; m.c.wallets/seed
-                      ;; j.c.wallets/addresses
                       j.c.wallets/words]
    fo/controls       (merge form/standard-controls {::roll roll-button})
    fo/field-styles   {::m.c.wallets/addresses :link-list
@@ -110,7 +116,9 @@
    fo/subforms       {::m.c.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
                       ::m.c.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
                       ::m.c.wallets/words     {fo/ui u.links/WordLinkForm}}
-   fo/title          "Wallet"})
+   fo/title          "Wallet"}
+  (log/info :WalletForm/creating {:props props})
+  (form/render-layout this props))
 
 (def delete-action-button
   {:type   :button

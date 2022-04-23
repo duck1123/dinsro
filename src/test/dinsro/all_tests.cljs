@@ -10,6 +10,8 @@
    dinsro.ui.core.node-wallets-test
    dinsro.ui.core.nodes-test
    dinsro.ui.core.peers-test
+   dinsro.ui.core.wallets-test
+   dinsro.ui.core.words-test
    dinsro.ui.forms.registration-test
    dinsro.ui.ln.nodes-test
    dinsro.ui.navbar-test

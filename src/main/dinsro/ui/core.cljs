@@ -38,7 +38,7 @@
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
                     u.c.wallet-addresses/WalletAddressesReport
-                    u.c.words/WordReport]}
+                    u.c.words/WordsReport]}
   (dom/div {} "Core router"))
 
 (def ui-core-router (comp/factory CoreRouter))
