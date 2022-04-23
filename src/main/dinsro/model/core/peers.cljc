@@ -88,7 +88,7 @@
   [::item => (s/keys)]
   (ident id))
 
-(defn idents
+(>defn idents
   [ids]
   [(s/coll-of ::id) => (s/coll-of (s/keys))]
   (mapv ident ids))

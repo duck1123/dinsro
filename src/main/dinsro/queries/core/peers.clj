@@ -59,7 +59,7 @@
                 :where [[?peer-id ::m.c.peers/node ?node-id]]}]
     (map first (xt/q db query node-id))))
 
-(defn find-by-node-and-peer-id
+(>defn find-by-node-and-peer-id
   [node-id peer-id]
   [::m.c.peers/node ::m.c.peers/peer-id => (? ::m.c.peers/id)]
   (log/debug :find-by-node-and-peer-id/starting {:node-id node-id :peer-id peer-id})

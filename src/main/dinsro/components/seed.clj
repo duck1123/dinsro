@@ -353,8 +353,7 @@
             (let [props {::m.c.words/wallet   wallet-id
                          ::m.c.words/word     word
                          ::m.c.words/position (inc i)}]
-              (q.c.words/create-record props))))
-        wallet))))
+              (q.c.words/create-record props))))))))
 
 (defn seed-addresses!
   [addresses]

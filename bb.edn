@@ -95,7 +95,7 @@
              ]
    :task    (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
                   data         {:devtools {:devtools-url devtools-url}}
-                  args         (format "-M:dev:guardrails:shadow-cljs compile main --config-merge '%s'"
+                  args         (format "-M:dev:notebooks:guardrails:shadow-cljs compile main --config-merge '%s'"
                                        (pr-str data))]
               (clojure args))}
 
@@ -164,7 +164,7 @@
 
   display-path
   {:doc  "Display dependency trees for each alias"
-   :task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production"
+   :task (doseq [alias ["cljfmt" "dev" "eastwood" "kibit" "production" "notebooks"
                         "shadow-cljs" "test"]]
            (shell (str "clojure -A:" alias " -Stree")))}
 
@@ -428,7 +428,7 @@
 
   kibit
   {:doc  "Lint source code with kibit"
-   :task (clojure "-M:dev:kibit --paths src/main,src/test")}
+   :task (clojure "-M:dev:notebooks:kibit --paths src/main,src/test")}
 
   kondo
   {:doc  "Lint source code with clj-kondo"
@@ -467,7 +467,7 @@
 
   run
   {:doc  "Run server in dev mode"
-   :task (clojure "-M:dev:guardrails:dev-main")}
+   :task (clojure "-M:dev:notebooks:guardrails:dev-main")}
 
   run-dev-image
   {:task
@@ -515,7 +515,7 @@
   test-cljs
   {:doc  "Run clojurescript tests"
    :task (do
-           (clojure "-M:dev:test:shadow-cljs compile ci")
+           (clojure "-M:dev:test:notebooks:shadow-cljs compile ci")
            (shell "npx karma start --single-run --check=\"ci.js\""))}
 
   tilt-config

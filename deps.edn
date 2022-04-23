@@ -77,7 +77,7 @@
                 :output-path  "target/docs-cljs"}}
 
   :dev
-  {:extra-paths ["src/dev" "src/notebooks" "src/test"]
+  {:extra-paths ["src/dev" "src/test"]
    :extra-deps
    {binaryage/devtools      {:mvn/version "1.0.2"}
     nubank/workspaces       {:mvn/version "1.1.2"}
@@ -106,12 +106,15 @@
   :eastwood
   {:extra-deps
    {jonase/eastwood {:mvn/version "1.2.3"}}
-   :main-opts ["-m" "eastwood.lint"]}
+   :main-opts ["-m" "eastwood.lint" {:exclude-linters [:reflection]}]}
 
   :kibit
   {:extra-deps
    {tvaughan/kibit-runner {:mvn/version "1.0.1"}}
    :main-opts ["-m" "kibit-runner.cmdline"]}
+
+  :notebooks
+  {:extra-paths ["src/notebooks"]}
 
   :outdated
   {:replace-deps {olical/depot {:mvn/version "2.3.0"}}

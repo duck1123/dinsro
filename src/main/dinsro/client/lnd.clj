@@ -148,7 +148,7 @@
   (let [request (ListInvoiceRequest.)]
     request))
 
-(defn ->list-payment-request
+(>defn ->list-payment-request
   []
   [=> (ds/instance? ListPaymentsRequest)]
   (let [request (ListPaymentsRequest.)]

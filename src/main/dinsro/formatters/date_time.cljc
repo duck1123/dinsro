@@ -23,7 +23,7 @@
                      (.withZone UTC))
             :cljs (DateTimeFormat. "MMM d")))
 
-#?(:clj (defn ->local-date ^LocalDateTime [date]
+#?(:clj (defn ->local-date ^LocalDateTime [^Date date]
           (condp instance? date
             Date          (->local-date (.toInstant date))
             Instant       (LocalDateTime/ofInstant date UTC)
@@ -34,7 +34,7 @@
             Date    (.toInstant date)
             Instant date)))
 
-(defn format-date [instant]
+(defn format-date [^Instant instant]
   (if instant
     (let [date #?(:clj (->local-date instant)
                   :cljs instant)

@@ -73,12 +73,13 @@
   (when *scheduler* (*scheduler*))
   nil)
 
+(def scheduler-enabled false)
+
 (defn start-scheduler
   []
-  (let [enabled false]
-    (log/info :scheduler/starting {:enabled enabled})
-    (when enabled
-      (t/every (t/minutes 5) #'check-rates))))
+  (log/info :scheduler/starting {:enabled scheduler-enabled})
+  (when scheduler-enabled
+    (t/every (t/minutes 5) #'check-rates)))
 
 (mount/defstate ^:dynamic *scheduler*
   :start (start-scheduler)

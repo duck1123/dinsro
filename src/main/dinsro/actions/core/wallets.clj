@@ -47,7 +47,7 @@
 
 (defn ->bip39-seed
   [wallet]
-  (let [code (calculate-derivation wallet)
+  (let [^MnemonicCode code (calculate-derivation wallet)
         password (BIP39Seed/EMPTY_PASSWORD)]
     (BIP39Seed/fromMnemonic code password)))
 
@@ -85,7 +85,7 @@
       (log/info :words/update-finished {:response response})
       response)))
 
-(defn get-mnemonic
+(defn ^MnemonicCode get-mnemonic
   [wallet-id]
   (c.bitcoin-s/words->mnemonic (get-word-list wallet-id)))
 
@@ -97,7 +97,9 @@
 
 (defn get-wif
   [wallet-id]
-  (c.bitcoin-s/->wif (.key (get-xpriv wallet-id))))
+  (let [xpriv (get-xpriv wallet-id)
+        key   (.key xpriv)]
+    (c.bitcoin-s/->wif key)))
 
 (defn roll!
   [props]
