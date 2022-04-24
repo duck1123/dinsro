@@ -50,18 +50,18 @@
       ::m.navlink/target     nil
       :root/router           {}}])
 
-(def nav-state {::uism/asm-id           :dinsro.mutations.navbar/navbarsm,
-                ::uism/state-machine-id dinsro.machines/hideable,
-                ::uism/active-state     :state/hidden,
-                :com.fulcrologic.fulcro.ui-state-machines/ident->actor     {:actor/navbar {}}
-                :com.fulcrologic.fulcro.ui-state-machines/actor->ident     {:actor/navbar {}}})
+(def nav-state {::uism/asm-id                                          :dinsro.mutations.navbar/navbarsm,
+                ::uism/state-machine-id                                dinsro.machines/hideable,
+                ::uism/active-state                                    :state/hidden,
+                :com.fulcrologic.fulcro.ui-state-machines/ident->actor {:actor/navbar {}}
+                :com.fulcrologic.fulcro.ui-state-machines/actor->ident {:actor/navbar {}}})
 
 (dc/defcard nav-state-card [] [inspect nav-state])
 
 (ws/defcard NavbarLogoutLink
   {}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.navbar/NavbarLogoutLink
+   {::ct.fulcro3/root       u.navbar/NavbarLogoutLink
     ::ct.fulcro3/wrap-root? true
     ::ct.fulcro3/initial-state
     (fn [] {})}))
@@ -69,11 +69,11 @@
 (ws/defcard NavbarSidebar
   {}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root       u.navbar/NavbarLogoutLink
+   {::ct.fulcro3/root u.navbar/NavbarLogoutLink
     ::ct.fulcro3/initial-state
-    (fn [] {::m.navbar/id :main
+    (fn [] {::m.navbar/id             :main
             ::m.navbar/dropdown-links []
-            :inverted true})}))
+            :inverted                 true})}))
 
 (ws/defcard Navbar
   {::wsm/align       {:flex 1}
