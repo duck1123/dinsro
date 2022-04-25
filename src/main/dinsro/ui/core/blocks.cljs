@@ -1,5 +1,6 @@
 (ns dinsro.ui.core.blocks
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
@@ -179,6 +180,15 @@
   {:label  "Delete"
    :action delete-action
    :style  :delete-button})
+
+(s/def ::row
+  (s/keys
+   :req [::m.c.blocks/id
+         ::m.c.blocks/hash
+         ::m.c.blocks/height
+         ::m.c.blocks/fetched?
+         ::m.c.blocks/node]))
+(s/def ::rows (s/coll-of ::row))
 
 (report/defsc-report CoreBlockReport
   [_this _props]
