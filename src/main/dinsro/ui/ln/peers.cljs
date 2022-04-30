@@ -94,7 +94,7 @@
    fo/controls {::submit submit-button}
    fo/field-options  {::m.ln.peers/node
                       {::picker-options/query-key       ::m.ln.nodes/index
-                       ::picker-options/query-component u.links/CoreNodeLinkForm
+                       ::picker-options/query-component u.links/NodeLinkForm
                        ::picker-options/options-xform
                        (fn [_ options]
                          (mapv

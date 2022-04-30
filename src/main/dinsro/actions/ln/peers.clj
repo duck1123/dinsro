@@ -12,7 +12,8 @@
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log])
+
   (:import
    org.lightningj.lnd.wrapper.message.ConnectPeerRequest))
 
@@ -26,7 +27,7 @@
 
 (defn create-peer-record!
   [data]
-  (log/infof "create peer record: %s" data)
+  (log/info :create-peer-record!/starting {:data data})
   (q.ln.peers/create-record data))
 
 (>defn update-peer!
@@ -38,10 +39,9 @@
     (if-let [peer-id (q.ln.peers/find-peer id pubkey)]
       (if-let [peer (q.ln.peers/read-record peer-id)]
         (do
-          (log/infof "has peer: %s" peer)
-          (log/spy :info data)
+          (log/info :update-peer!/starting {:peer peer :data data})
           (let [params (merge peer params)]
-            (q.ln.peers/update! (log/spy :info params)))
+            (q.ln.peers/update! params))
           nil)
         (throw (RuntimeException. "Can't find peer")))
       (do
@@ -59,7 +59,7 @@
 (>defn fetch-peers!
   [id]
   [::m.ln.nodes/id => (? any?)]
-  (log/infof "Fetching Peers - %s" id)
+  (log/info :fetch-peers!/starting {:id id})
   (if-let [node (q.ln.nodes/read-record id)]
     (if-let [ch (fetch-peers node)]
       (let [data            (async/<!! ch)
@@ -68,10 +68,10 @@
           (handle-fetched-peer node peer))
         ch)
       (do
-        (log/error "peer error")
+        (log/error :fetch-peers!/no-peer)
         nil))
     (do
-      (log/error "No Node")
+      (log/error :fetch-peers!/no-node)
       nil)))
 
 (>defn ->connect-peer-request
@@ -83,7 +83,7 @@
 (>defn create-peer!
   [node host pubkey]
   [::m.ln.nodes/item string? string? => any?]
-  (log/infof "Creating peer: %s@%s" pubkey host)
+  (log/info :create-peer!/starting {:pubkey pubkey :host host})
   (with-open [client (a.ln.nodes/get-client node)]
     (c.lnd/connect-peer client host pubkey)))
 

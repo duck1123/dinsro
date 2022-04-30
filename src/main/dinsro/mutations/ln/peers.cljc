@@ -14,6 +14,7 @@
      [_env props]
      {::pc/params #{::m.ln.peers/id}
       ::pc/output [:status]}
+     (log/info :create!/starting {:props props})
      (a.ln.peers/create! props))
 
    :cljs
@@ -26,7 +27,7 @@
      [_env props]
      {::pc/params #{::m.ln.peers/id}
       ::pc/output [:status]}
-     (log/debug :delete/starting {:props props})
+     (log/debug :delete!/starting {:props props})
      (a.ln.peers/delete! props))
 
    :cljs
