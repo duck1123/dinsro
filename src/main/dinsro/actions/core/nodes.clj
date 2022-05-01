@@ -5,6 +5,7 @@
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
+   [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
@@ -121,7 +122,7 @@
 
 (defn get-auth-credentials
   [{::m.c.nodes/keys [rpcuser rpcpass]}]
-  (BitcoindAuthCredentials$PasswordBased. rpcuser rpcpass))
+  (c.bitcoin-s/get-auth-credentials rpcuser rpcpass))
 
 (defn get-remote-instance
   [node]
@@ -133,16 +134,6 @@
    (get-zmq-config)
    (Option/empty)
    (ActorSystem/apply)))
-
-(defn await-future
-  [^Future f]
-  (.onComplete
-   f
-   (reify Function1
-     (apply [this a]
-       (log/info :pf/apply {:a (.get a)})))
-
-   (ExecutionContext/global)))
 
 (comment
   (tap> (q.c.nodes/index-records))
@@ -184,9 +175,9 @@
 
   (def pf (.ping client-s))
 
-  (await-future pf)
+  (cs/await-future pf)
 
-  (await-future (.getPeerInfo client-s))
+  (cs/await-future (.getPeerInfo client-s))
 
   (.value pf)
 

@@ -21,9 +21,15 @@
    org.bitcoins.core.protocol.script.WitnessScriptPubKey
    org.bitcoins.core.config.BitcoinNetworks
    org.bitcoins.core.util.HDUtil
+   org.bitcoins.rpc.config.BitcoindAuthCredentials
+   org.bitcoins.rpc.config.BitcoindAuthCredentials$PasswordBased
    org.bitcoins.rpc.config.BitcoindInstanceRemote
    scodec.bits.BitVector
    scodec.bits.ByteVector))
+
+(defn get-auth-credentials
+  ^BitcoindAuthCredentials$PasswordBased [^String rpcuser ^String rpcpass]
+  (BitcoindAuthCredentials$PasswordBased. rpcuser rpcpass))
 
 (defn get-entropy
   "Generate 256 bits of entropy"
