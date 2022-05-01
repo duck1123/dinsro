@@ -69,6 +69,7 @@
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
    #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
+   #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
@@ -154,6 +155,7 @@
            mu.c.tx/resolvers
            mu.ln.invoices/resolvers
            mu.ln.payreqs/resolvers
+           mu.ln.peers/resolvers
            mu.ln.nodes/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers

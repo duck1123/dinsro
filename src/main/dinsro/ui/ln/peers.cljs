@@ -75,11 +75,11 @@
    :local? true
    :label  "Submit"
    :action (fn [this _key]
-             (let [{::m.ln.peers/keys [addr id]
+             (let [{::m.ln.peers/keys [address id]
                     node             ::m.ln.peers/node} (comp/props this)
                    {node-id ::m.ln.nodes/id}            node
                    props                               {::m.ln.peers/id   id
-                                                        ::m.ln.peers/addr addr
+                                                        ::m.ln.peers/address address
                                                         ::m.ln.peers/node node-id}]
                (log/info :submit-action/clicked props)
                (comp/transact! this [(mu.ln.peers/create! props)])

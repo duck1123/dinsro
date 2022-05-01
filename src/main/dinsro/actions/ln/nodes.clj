@@ -105,6 +105,10 @@
         f    (io/file path)]
     (.delete f)))
 
+(defn get-macaroon-text
+  [node]
+  (slurp (download-macaroon! node)))
+
 (>defn download-cert!
   [node]
   [::m.ln.nodes/item => boolean?]
@@ -254,7 +258,10 @@
 
   (delete-macaroon node)
   (has-macaroon? node)
-  (download-macaroon! node)
+
+  (prn (slurp (download-macaroon! node)))
+
+  (println (get-macaroon-text node))
 
   (<!! (initialize! node))
 

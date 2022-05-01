@@ -2,12 +2,11 @@
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core.peers :as a.ln.peers])
-   [dinsro.model.core.blocks :as m.ln.blocks]
-   [dinsro.model.core.peers :as m.ln.peers]
+   #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
+   [dinsro.model.ln.peers :as m.ln.peers]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.ln.blocks/_ ::m.ln.peers/_)
+(comment ::pc/_ ::m.ln.peers/_)
 
 #?(:clj
    (pc/defmutation create!

@@ -15,7 +15,9 @@
    [lambdaisland.glogc :as log])
 
   (:import
-   org.lightningj.lnd.wrapper.message.ConnectPeerRequest))
+   java.net.URI
+   org.lightningj.lnd.wrapper.message.ConnectPeerRequest
+   org.bitcoins.lnd.rpc.config.LndInstanceRemote))
 
 (>defn fetch-peers
   [node]
@@ -45,7 +47,7 @@
           nil)
         (throw (RuntimeException. "Can't find peer")))
       (do
-        (log/error "no peer")
+        (log/error :update-peer!/no-peer {})
         (create-peer-record! params)))))
 
 (defn handle-fetched-peer
@@ -68,10 +70,10 @@
           (handle-fetched-peer node peer))
         ch)
       (do
-        (log/error :fetch-peers!/no-peer)
+        (log/error :fetch-peers!/no-peer {})
         nil))
     (do
-      (log/error :fetch-peers!/no-node)
+      (log/error :fetch-peers!/no-node {})
       nil)))
 
 (>defn ->connect-peer-request
@@ -87,6 +89,20 @@
   (with-open [client (a.ln.nodes/get-client node)]
     (c.lnd/connect-peer client host pubkey)))
 
+(defn create!
+  "Handler for new peer submit button"
+  [{::m.ln.peers/keys [address]
+    node-id           ::m.ln.peers/node
+    :as               props}]
+  (let [node   (q.ln.nodes/read-record node-id)
+        host   address
+        pubkey nil]
+    (create-peer!
+     node host pubkey)))
+
+(defn delete!
+  [props])
+
 (comment
   (q.ln.peers/index-ids)
   (q.ln.peers/index-records)
@@ -101,6 +117,14 @@
   node
   (def pubkey (::m.ln.info/identity-pubkey node))
   pubkey
+
+  (first (q.ln.nodes/index-records))
+
+  (let [url (URI. "http://lnd.bob/")
+        macaroon ""
+        cert-file (scala.Option/empty)
+        cert-opt (scala.Option/empty)]
+    (LndInstanceRemote. url macaroon cert-file cert-opt))
 
   (q.ln.peers/find-peer node-id pubkey)
 
