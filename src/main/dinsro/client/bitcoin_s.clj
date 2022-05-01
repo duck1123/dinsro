@@ -1,5 +1,6 @@
 (ns dinsro.client.bitcoin-s
   (:require
+   [dinsro.client.scala :as cs]
    [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.core.hd.BIP32Path
@@ -8,45 +9,33 @@
    org.bitcoins.core.hd.SegWitHDPath
    org.bitcoins.crypto.ECPrivateKey
    org.bitcoins.crypto.ECPrivateKeyBytes
-   org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
-   org.bitcoins.core.protocol.Bech32Address
-
    org.bitcoins.core.crypto.ECPrivateKeyUtil
    org.bitcoins.core.crypto.MnemonicCode
    org.bitcoins.core.crypto.BIP39Seed
    org.bitcoins.core.crypto.ExtPrivateKey
    org.bitcoins.core.crypto.ExtKeyVersion$SegWitMainNetPriv$
    org.bitcoins.core.crypto.ExtKeyPrivVersion
-
-   org.bitcoins.rpc.config.BitcoindInstanceRemote
-
-   org.bitcoins.core.util.HDUtil
+   org.bitcoins.core.config.NetworkParameters
+   org.bitcoins.core.protocol.Bech32Address
+   org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
+   org.bitcoins.core.protocol.script.WitnessScriptPubKey
    org.bitcoins.core.config.BitcoinNetworks
-   scala.collection.immutable.Vector
+   org.bitcoins.core.util.HDUtil
+   org.bitcoins.rpc.config.BitcoindInstanceRemote
+   scodec.bits.BitVector
    scodec.bits.ByteVector))
 
-(defn vector->vec
-  "Convert a Scala Vector to a Clojure vector"
-  [^Vector v]
-  (vec (.vectorSlice v 0)))
-
-(defn create-vector
-  "Convert a Clojure seq into a Scala Vector"
-  [s]
-  (let [builder (Vector/newBuilder)]
-    (doseq [si s]
-      (.addOne builder si))
-    (.result builder)))
-
 (defn get-entropy
-  []
+  "Generate 256 bits of entropy"
+  ^BitVector []
   (MnemonicCode/getEntropy256Bits))
 
 (defn create-mnemonic
-  ([]
-   (let [entropy        (MnemonicCode/getEntropy256Bits)]
+  "Create a Mnemonic code"
+  (^MnemonicCode []
+   (let [entropy (get-entropy)]
      (create-mnemonic entropy)))
-  ([entropy]
+  (^MnemonicCode [entropy]
    (log/info :mnemonic/create {:entropy entropy})
    (MnemonicCode/fromEntropy entropy)))
 
@@ -54,16 +43,16 @@
   ([]
    (create-mnemonic-words (create-mnemonic)))
   ([mnemonic]
-   (vector->vec (.words mnemonic))))
+   (cs/vector->vec (.words mnemonic))))
 
 (defn words->mnemonic
   [words]
-  (let [word-vector (create-vector words)]
+  (let [word-vector (cs/create-vector words)]
     (MnemonicCode/fromWords word-vector)))
 
 (defn get-words
-  [mc]
-  (vector->vec (.words mc)))
+  [^MnemonicCode mc]
+  (cs/vector->vec (.words mc)))
 
 (defn create-seed
   [passphrase]
@@ -87,7 +76,8 @@
    (BitcoinNetworks/fromString network)))
 
 (defn get-address
-  [script-pub-key network]
+  [^WitnessScriptPubKey script-pub-key
+   ^NetworkParameters network]
   (.value (Bech32Address/apply script-pub-key (BitcoinNetworks/fromString network))))
 
 (defn get-ext-pubkey
@@ -125,7 +115,7 @@
     (ECPrivateKeyUtil/toWIF pk-bytes network)))
 
 (comment
-  (vector->vec (.words (create-mnemonic)))
+  (cs/vector->vec (.words (create-mnemonic)))
   (prn (create-mnemonic-words))
 
   (create-seed "")

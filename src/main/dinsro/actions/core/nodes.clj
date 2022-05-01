@@ -140,7 +140,7 @@
    f
    (reify Function1
      (apply [this a]
-       (log/info :pf/apply {:a a})))
+       (log/info :pf/apply {:a (.get a)})))
 
    (ExecutionContext/global)))
 
