@@ -27,7 +27,14 @@
    org.lightningj.lnd.wrapper.message.AddressType
    org.lightningj.lnd.wrapper.AsynchronousLndAPI
    org.lightningj.lnd.wrapper.walletunlocker.AsynchronousWalletUnlockerAPI
-   org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI))
+   org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI
+
+   java.net.URI
+   org.lightningj.lnd.wrapper.message.ConnectPeerRequest
+   org.bitcoins.lnd.rpc.config.LndInstanceRemote
+   org.bitcoins.lnd.rpc.LndRpcClient
+   org.bitcoins.lnd.rpc.config.LndInstance
+   scala.Option))
 
 (>defn get-client
   [{::m.ln.nodes/keys [id name host port]}]
@@ -224,6 +231,19 @@
   (with-open [client (get-client node)]
     (.newAddress client AddressType/WITNESS_PUBKEY_HASH "" (balance-observer f))))
 
+(defn get-remote-instance
+  [{::m.ln.nodes/keys [host port]
+    :as node}]
+  (let [url       (URI. (str "http://" host ":" port "/"))
+        macaroon  (get-macaroon-text node)
+        cert-file (scala.Option/empty)
+        cert-opt  (scala.Option/empty)]
+    (LndInstanceRemote. url macaroon cert-file cert-opt)))
+
+(defn get-remote-client
+  [^LndInstance i]
+  (LndRpcClient/apply i (Option/empty)))
+
 (comment
   (download-cert! (first (q.ln.nodes/index-ids)))
 
@@ -262,6 +282,33 @@
   (prn (slurp (download-macaroon! node)))
 
   (println (get-macaroon-text node))
+  (get-remote-instance node)
+
+  (def remote-client (get-remote-client (get-remote-instance node)))
+
+  remote-client
+
+  (def f (.listPeers remote-client))
+
+  (.andThen
+   f
+   (reify scala.Function1
+     (apply [this params])
+     (toString [this])
+     (andThen [this]))
+
+   (fn [p] (log/info :peers/completed {:p p})))
+
+  (def f1 (reify scala.Function1
+            (apply [this params] (log/info :fn/params {:params params}))
+            (toString [this])
+            #_(andThen [this])))
+
+  f1
+
+  (satisfies? scala.Function f1)
+
+  (.apply f1 :bar)
 
   (<!! (initialize! node))
 
