@@ -17,6 +17,9 @@
    org.bitcoins.core.crypto.ExtPrivateKey
    org.bitcoins.core.crypto.ExtKeyVersion$SegWitMainNetPriv$
    org.bitcoins.core.crypto.ExtKeyPrivVersion
+
+   org.bitcoins.rpc.config.BitcoindInstanceRemote
+
    org.bitcoins.core.util.HDUtil
    org.bitcoins.core.config.BitcoinNetworks
    scala.collection.immutable.Vector
@@ -166,5 +169,9 @@
 
   (def public-key (.publicKey private-key))
   public-key
+
+  (BitcoindInstanceRemote/apply
+   (regtest-network)
+   (URI. ""))
 
   nil)

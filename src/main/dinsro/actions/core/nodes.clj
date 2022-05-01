@@ -4,13 +4,27 @@
    [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.client.bitcoin :as c.bitcoin]
+   [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.peers :as q.c.peers]
    [dinsro.queries.core.tx :as q.c.tx]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log])
+  (:import
+   org.bitcoins.rpc.config.BitcoindAuthCredentials
+   org.bitcoins.rpc.config.BitcoindAuthCredentials$PasswordBased
+   org.bitcoins.rpc.config.BitcoindInstanceRemote
+   org.bitcoins.rpc.config.ZmqConfig
+   org.bitcoins.rpc.client.v22.BitcoindV22RpcClient
+   java.net.URI
+   akka.actor.ActorSystem
+   scala.Option
+   scala.PartialFunction
+   scala.Function1
+   scala.concurrent.ExecutionContext
+   scala.concurrent.Future))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
 
@@ -82,6 +96,54 @@
       (log/error :generate/node-not-found {:node-id node-id})
       nil)))
 
+(defn get-remote-uri
+  [node]
+  (URI.
+   (str
+    "http://"
+    (::m.c.nodes/host node)
+    ":"
+
+    "18444"
+
+    #_(::m.c.nodes/port node))))
+
+(defn get-rpc-uri
+  [node]
+  (URI.
+   (str "http://" (::m.c.nodes/host node)
+        ":"
+        (::m.c.nodes/port node))))
+
+(defn get-zmq-config
+  []
+  (ZmqConfig/empty))
+
+(defn get-auth-credentials
+  [{::m.c.nodes/keys [rpcuser rpcpass]}]
+  (BitcoindAuthCredentials$PasswordBased. rpcuser rpcpass))
+
+(defn get-remote-instance
+  [node]
+  (BitcoindInstanceRemote/apply
+   (c.bitcoin-s/regtest-network)
+   (get-remote-uri node)
+   (get-rpc-uri node)
+   (get-auth-credentials node)
+   (get-zmq-config)
+   (Option/empty)
+   (ActorSystem/apply)))
+
+(defn await-future
+  [^Future f]
+  (.onComplete
+   f
+   (reify Function1
+     (apply [this a]
+       (log/info :pf/apply {:a a})))
+
+   (ExecutionContext/global)))
+
 (comment
   (tap> (q.c.nodes/index-records))
 
@@ -93,6 +155,8 @@
   (c.bitcoin/get-peer-info client)
 
   (tap> node)
+  node
+
   (tap> (c.bitcoin/get-blockchain-info client))
   (c.bitcoin/add-node client "bitcoin.bitcoin-bob")
 
@@ -107,8 +171,46 @@
 
   (q.c.peers/index-ids)
 
-  (add-tap {:foo "foo"})
+  (get-auth-credentials node)
 
-  (tap> "foo")
+  (get-rpc-uri node)
+  (get-remote-uri node)
+
+  (c.bitcoin-s/regtest-network)
+
+  (get-remote-instance node)
+
+  (def client-s (BitcoindV22RpcClient/apply (get-remote-instance node)))
+
+  (def pf (.ping client-s))
+
+  (await-future pf)
+
+  (await-future (.getPeerInfo client-s))
+
+  (.value pf)
+
+  (.foreach pf (fn [a] (log/info :ping/response {:a a})))
+
+  (.andThen pf
+            (reify PartialFunction
+              (apply [this a]
+                (log/info :pf/apply {:a a}))))
+
+  (.onComplete
+   pf
+   (reify Function1
+     (apply [this a]
+       (log/info :pf/apply {:a a})))
+
+   (ExecutionContext/global))
+
+  (ExecutionContext/global)
+
+  (prn (vec (seq (.getMethods (class pf)))))
+
+  (class pf)
+
+  (.getParameters (first (seq (.getMethods BitcoindInstanceRemote))))
 
   nil)
