@@ -112,10 +112,6 @@
         f    (io/file path)]
     (.delete f)))
 
-(defn get-macaroon-text
-  [node]
-  (slurp (download-macaroon! node)))
-
 (>defn download-cert!
   [node]
   [::m.ln.nodes/item => boolean?]
@@ -142,6 +138,10 @@
       (catch FileNotFoundException ex
         (log/error :macaroon/download-failed {:exception ex})
         nil))))
+
+(defn get-macaroon-text
+  [node]
+  (slurp (download-macaroon! node)))
 
 (defn balance-observer
   [next]
