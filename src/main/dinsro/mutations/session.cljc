@@ -81,7 +81,7 @@
                    :identity
                    :time-zone/zone-id
                    {:session/current-user [::m.users/id]}]}
-     (log/info :logout/begin {:env env :session session})
+     (log/info :logout/begin {:session session})
      (a.authentication/logout! env))
    :cljs
    (fm/defmutation logout [_]

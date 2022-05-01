@@ -1,5 +1,6 @@
 (ns dinsro.actions.core.nodes
   (:require
+   [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.peers :as a.c.peers]
@@ -113,6 +114,11 @@
    (Option/empty)
    (ActorSystem/apply)))
 
+(defn get-client
+  [node]
+  (let [instance (get-remote-instance node)]
+    (BitcoindV22RpcClient/apply instance)))
+
 (comment
   (tap> (q.c.nodes/index-records))
 
@@ -149,9 +155,18 @@
 
   (get-remote-instance node)
 
-  (def client-s (BitcoindV22RpcClient/apply (get-remote-instance node)))
+  (def executor (cs/get-executor))
+  (def context (cs/get-execution-context executor))
 
-  (cs/await-future (.getPeerInfo client-s))
+  (def client-s (get-client node))
+  client-s
+
+  (c.bitcoin-s/get-peer-info client-s)
+
+  (cs/await-future (.getBlockCount client-s) context)
+
+  (def ch (cs/await-future (.getPeerInfo client-s)))
+  (async/<!! (cs/await-future (.getPeerInfo client-s) context))
 
   (.getParameters (first (seq (.getMethods BitcoindInstanceRemote))))
 

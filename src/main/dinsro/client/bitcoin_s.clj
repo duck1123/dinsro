@@ -1,5 +1,6 @@
 (ns dinsro.client.bitcoin-s
   (:require
+   [clojure.core.async :as async]
    [dinsro.client.scala :as cs]
    [lambdaisland.glogc :as log])
   (:import
@@ -123,6 +124,16 @@
 (defn get-zmq-config
   []
   (ZmqConfig/empty))
+
+(defn get-peer-info
+  [client]
+  (let [fut      (.getPeerInfo client)
+        response (async/<!! (cs/await-future fut))]
+    (log/info :get-peer-info/response {:response response})
+    (let [{:keys [passed result]} response]
+      (if passed
+        (cs/vector->vec result)
+        (throw "Did not pass")))))
 
 (comment
   (cs/vector->vec (.words (create-mnemonic)))

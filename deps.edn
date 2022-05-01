@@ -33,6 +33,7 @@
   nrepl/nrepl                            {:mvn/version "0.9.0"}
   org.bitcoin-s/bitcoin-s-core_2.13      {:mvn/version "1.9.0"}
   org.bitcoin-s/bitcoin-s-lnd-rpc_2.13   {:mvn/version "1.9.0"}
+  org.clj-commons/byte-streams           {:mvn/version "0.3.0"}
   org.clojure/clojure                    {:mvn/version "1.10.3"}
   org.clojure/clojurescript              {:mvn/version "1.10.879"}
   org.clojure/spec.alpha                 {:mvn/version "0.3.214"}

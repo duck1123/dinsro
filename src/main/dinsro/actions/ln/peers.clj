@@ -123,12 +123,6 @@
 
   (first (q.ln.nodes/index-records))
 
-  (let [url (URI. "http://lnd.bob/")
-        macaroon ""
-        cert-file (scala.Option/empty)
-        cert-opt (scala.Option/empty)]
-    (LndInstanceRemote. url macaroon cert-file cert-opt))
-
   (q.ln.peers/find-peer node-id pubkey)
 
   (map q.ln.peers/delete (q.ln.peers/index-ids))

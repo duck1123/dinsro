@@ -9,7 +9,14 @@
    [com.fulcrologic.rad.report :as report]
    #?(:clj [dinsro.components.config :refer [config]])
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.users :as m.users]))
+   [dinsro.model.users :as m.users]
+   #?(:clj [dinsro.specs :as ds]))
+  #?(:clj (:import java.io.File)))
+
+(>def ::id uuid?)
+(defattr id ::id :uuid
+  {ao/identity? true
+   ao/schema    :production})
 
 #?(:clj
    (defn cert-base
@@ -18,21 +25,22 @@
          (throw (RuntimeException. "Cert base not defined")))))
 
 #?(:clj
+   (>defn data-path
+     [id]
+     [::id => string?]
+     (str (cert-base) "/" id)))
+
+#?(:clj
    (>defn cert-path
      [id]
-     [uuid? => string?]
-     (str (cert-base) id "/tls.cert")))
+     [::id => string?]
+     (str (data-path id) "/tls.cert")))
 
 #?(:clj
    (>defn macaroon-path
      [id]
-     [uuid? => string?]
-     (str (cert-base) id "/admin.macaroon")))
-
-(>def ::id uuid?)
-(defattr id ::id :uuid
-  {ao/identity? true
-   ao/schema    :production})
+     [::id => string?]
+     (str (data-path id) "/admin.macaroon")))
 
 (>def ::name string?)
 (defattr name ::name :string
@@ -127,9 +135,16 @@
   (mapv ident ids))
 
 #?(:clj
-   (defn cert-file
+   (>defn cert-file
      [id]
+     [::id => (ds/instance? File)]
      (io/file (cert-path id))))
+
+#?(:clj
+   (>defn macaroon-file
+     [id]
+     [::id => (ds/instance? File)]
+     (io/file (macaroon-path id))))
 
 (def attributes
   [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized? core-node])

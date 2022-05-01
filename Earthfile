@@ -97,6 +97,7 @@ base-builder:
   RUN chown -R ${uid}:${gid} ${src_home}
   RUN apt update && apt install -y \
           sudo \
+          nmap \
           tree \
       && rm -rf /var/lib/apt/lists/*
   USER ${uid}

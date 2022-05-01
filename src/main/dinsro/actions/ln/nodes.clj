@@ -1,6 +1,8 @@
 (ns dinsro.actions.ln.nodes
   (:refer-clojure :exclude [next])
   (:require
+   [buddy.core.codecs :refer [bytes->hex]]
+   [clj-commons.byte-streams :as bs]
    [clojure.core.async :as async :refer [<!!]]
    [clojure.java.io :as io]
    [clojure.set :as set]
@@ -8,6 +10,7 @@
    [xtdb.api :as xt]
    [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.client.lnd :as c.lnd]
+   [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -23,16 +26,23 @@
    java.io.File
    java.io.FileNotFoundException
    java.net.UnknownHostException
+   java.net.URI
    org.lightningj.lnd.wrapper.invoices.AsynchronousInvoicesAPI
    org.lightningj.lnd.wrapper.message.AddressType
    org.lightningj.lnd.wrapper.AsynchronousLndAPI
    org.lightningj.lnd.wrapper.walletunlocker.AsynchronousWalletUnlockerAPI
    org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI
-   java.net.URI
-   org.bitcoins.lnd.rpc.config.LndInstanceRemote
-   org.bitcoins.lnd.rpc.LndRpcClient
    org.bitcoins.lnd.rpc.config.LndInstance
    scala.Option))
+
+(defn get-cert-text
+  [node]
+  (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node))))
+
+(defn get-macaroon-hex
+  [node]
+  (let [f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node))]
+    (bytes->hex (bs/to-byte-array f))))
 
 (>defn get-client
   [{::m.ln.nodes/keys [id name host port]}]
@@ -43,6 +53,18 @@
    (Integer/parseInt port)
    (m.ln.nodes/cert-file id)
    (io/file (m.ln.nodes/macaroon-path id))))
+
+
+(defn get-client-s
+  "Get a bitcoin-s client"
+  [{::m.ln.nodes/keys [id name host port] :as node}]
+  (log/info :client/creating {:id id :name name})
+  (let [url       (URI. (str "https://" host ":" port "/"))
+        cert-file (Option/apply (get-cert-text node))
+        macaroon  (get-macaroon-hex node)
+        instance  (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
+    (log/info :get-client-s/creating {:url url :cert-file cert-file :macaroon macaroon})
+    (c.lnd-s/get-remote-client instance)))
 
 (>defn get-invoices-client
   [node]
@@ -86,13 +108,13 @@
 
 (>defn has-cert?
   [{::m.ln.nodes/keys [id]}]
-  [::m.ln.nodes/item => nil?]
+  [::m.ln.nodes/item => boolean?]
   (log/info :cert/checking {:node-id id})
   (m.ln.nodes/has-cert? id))
 
 (>defn has-macaroon?
   [{::m.ln.nodes/keys [id]}]
-  [::m.ln.nodes/item => nil?]
+  [::m.ln.nodes/item => boolean?]
   (log/info :macaroon/checking {:node-id id})
   (m.ln.nodes/has-macaroon? id))
 
@@ -230,17 +252,11 @@
     (.newAddress client AddressType/WITNESS_PUBKEY_HASH "" (balance-observer f))))
 
 (defn get-remote-instance
-  [{::m.ln.nodes/keys [host port]
-    :as node}]
+  "Create a Bitcoin-s lnd remote instance for node"
+  ^LndInstance [{::m.ln.nodes/keys [host port] :as node}]
   (let [url       (URI. (str "http://" host ":" port "/"))
-        macaroon  (get-macaroon-text node)
-        cert-file (scala.Option/empty)
-        cert-opt  (scala.Option/empty)]
-    (LndInstanceRemote. url macaroon cert-file cert-opt)))
-
-(defn get-remote-client
-  [^LndInstance i]
-  (LndRpcClient/apply i (Option/empty)))
+        macaroon  (get-macaroon-text node)]
+    (c.lnd-s/get-remote-instance url macaroon)))
 
 (comment
   (download-cert! (first (q.ln.nodes/index-ids)))
@@ -257,6 +273,9 @@
   node-alice
   node-bob
   node
+
+
+  (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node)))
 
   (def client (get-client node))
   client
@@ -282,11 +301,11 @@
   (println (get-macaroon-text node))
   (get-remote-instance node)
 
-  (def remote-client (get-remote-client (get-remote-instance node)))
+  (def remote-client (c.lnd-s/get-remote-client (get-remote-instance node)))
 
   remote-client
 
-  (def f (.listPeers remote-client))
+  (def fu (.listPeers remote-client))
 
   (<!! (initialize! node))
 
@@ -295,5 +314,23 @@
   (new-address node (fn [response] response))
 
   (get-client node)
+  (get-macaroon-hex node)
 
+  (m.ln.nodes/cert-file node)
+  (get-cert-text node)
+  (def f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node)))
+
+  (bs/convert f )
+
+  (.exists f)
+
+  (def client (get-client-s node))
+  client
+
+  (def response (c.lnd-s/get-info client))
+
+  (c.lnd-s/->record response)
+  (.alias response)
+
+  (bytes->hex (bs/to-byte-array f))
   nil)
