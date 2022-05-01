@@ -5,6 +5,7 @@
   (:import
    scala.collection.immutable.Vector
    scala.concurrent.ExecutionContext
+   scala.Function1
    scala.concurrent.Future))
 
 (defn vector->vec
@@ -25,7 +26,6 @@
   (.onComplete
    f
    (reify Function1
-     (apply [this a]
+     (apply [_this a]
        (log/info :pf/apply {:a (.get a)})))
-
    (ExecutionContext/global)))

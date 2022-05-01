@@ -21,9 +21,9 @@
    org.bitcoins.core.protocol.script.WitnessScriptPubKey
    org.bitcoins.core.config.BitcoinNetworks
    org.bitcoins.core.util.HDUtil
-   org.bitcoins.rpc.config.BitcoindAuthCredentials
    org.bitcoins.rpc.config.BitcoindAuthCredentials$PasswordBased
    org.bitcoins.rpc.config.BitcoindInstanceRemote
+   org.bitcoins.rpc.config.ZmqConfig
    scodec.bits.BitVector
    scodec.bits.ByteVector))
 
@@ -119,6 +119,10 @@
         pk-bytes (ECPrivateKeyBytes. pk-bv false)
         network (regtest-network)]
     (ECPrivateKeyUtil/toWIF pk-bytes network)))
+
+(defn get-zmq-config
+  []
+  (ZmqConfig/empty))
 
 (comment
   (cs/vector->vec (.words (create-mnemonic)))

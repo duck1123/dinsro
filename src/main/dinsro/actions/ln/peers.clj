@@ -94,6 +94,7 @@
   [{::m.ln.peers/keys [address]
     node-id           ::m.ln.peers/node
     :as               props}]
+  (log/info :create!/starting {:props props})
   (let [node   (q.ln.nodes/read-record node-id)
         host   address
         pubkey nil]
@@ -101,7 +102,9 @@
      node host pubkey)))
 
 (defn delete!
-  [props])
+  "Handler for delete peer mutation"
+  [props]
+  (log/info :delete!/starting {:props props}))
 
 (comment
   (q.ln.peers/index-ids)

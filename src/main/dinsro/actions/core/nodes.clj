@@ -14,18 +14,11 @@
    [dinsro.queries.core.tx :as q.c.tx]
    [lambdaisland.glogc :as log])
   (:import
-   org.bitcoins.rpc.config.BitcoindAuthCredentials
-   org.bitcoins.rpc.config.BitcoindAuthCredentials$PasswordBased
    org.bitcoins.rpc.config.BitcoindInstanceRemote
-   org.bitcoins.rpc.config.ZmqConfig
    org.bitcoins.rpc.client.v22.BitcoindV22RpcClient
    java.net.URI
    akka.actor.ActorSystem
-   scala.Option
-   scala.PartialFunction
-   scala.Function1
-   scala.concurrent.ExecutionContext
-   scala.concurrent.Future))
+   scala.Option))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
 
@@ -98,27 +91,12 @@
       nil)))
 
 (defn get-remote-uri
-  [node]
-  (URI.
-   (str
-    "http://"
-    (::m.c.nodes/host node)
-    ":"
-
-    "18444"
-
-    #_(::m.c.nodes/port node))))
+  [{::m.c.nodes/keys [host]}]
+  (URI. (str "http://" host ":" "18444")))
 
 (defn get-rpc-uri
-  [node]
-  (URI.
-   (str "http://" (::m.c.nodes/host node)
-        ":"
-        (::m.c.nodes/port node))))
-
-(defn get-zmq-config
-  []
-  (ZmqConfig/empty))
+  [{::m.c.nodes/keys [host port]}]
+  (URI. (str "http://" host ":" port)))
 
 (defn get-auth-credentials
   [{::m.c.nodes/keys [rpcuser rpcpass]}]
@@ -131,7 +109,7 @@
    (get-remote-uri node)
    (get-rpc-uri node)
    (get-auth-credentials node)
-   (get-zmq-config)
+   (c.bitcoin-s/get-zmq-config)
    (Option/empty)
    (ActorSystem/apply)))
 
@@ -173,34 +151,7 @@
 
   (def client-s (BitcoindV22RpcClient/apply (get-remote-instance node)))
 
-  (def pf (.ping client-s))
-
-  (cs/await-future pf)
-
   (cs/await-future (.getPeerInfo client-s))
-
-  (.value pf)
-
-  (.foreach pf (fn [a] (log/info :ping/response {:a a})))
-
-  (.andThen pf
-            (reify PartialFunction
-              (apply [this a]
-                (log/info :pf/apply {:a a}))))
-
-  (.onComplete
-   pf
-   (reify Function1
-     (apply [this a]
-       (log/info :pf/apply {:a a})))
-
-   (ExecutionContext/global))
-
-  (ExecutionContext/global)
-
-  (prn (vec (seq (.getMethods (class pf)))))
-
-  (class pf)
 
   (.getParameters (first (seq (.getMethods BitcoindInstanceRemote))))
 

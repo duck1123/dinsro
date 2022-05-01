@@ -3,6 +3,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
+   [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -43,7 +44,7 @@
   [wallet]
   [::m.c.wallets/item => any?]
   (let [{::m.c.wallets/keys [seed]} wallet]
-    (MnemonicCode/fromWords (c.bitcoin-s/create-vector seed))))
+    (MnemonicCode/fromWords (cs/create-vector seed))))
 
 (defn ->bip39-seed
   [wallet]
