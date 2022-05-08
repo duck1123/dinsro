@@ -1,5 +1,6 @@
 (ns dinsro.ui.ln.nodes
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
@@ -11,6 +12,10 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.rad.control :as control]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.invoices :as m.ln.invoices]
@@ -319,3 +324,35 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.nodes/admin-index
    ro/title            "Lightning Node Report"})
+
+(defsc ShowNode
+  "Show a ln node"
+  [this {:keys [peers]
+         :as props}]
+  {:route-segment ["node" :id]
+   :query []
+   :initial-state {}
+   :ident ::m.ln.nodes/id
+   :will-enter
+   (fn [app {id :id}]
+     (let [id      (new-uuid id)
+           ident   [::m.c.nodes/id id]
+           state   (-> (app/current-state app) (get-in ident))]
+       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
+       (dr/route-immediate ident)
+       (dr/route-deferred
+        ident
+        (fn []
+          (log/info :ShowNode/will-enter2 {:id       id
+                                           :state    state
+                                           :controls (control/component-controls app)})
+          (df/load!
+           app ident ShowNode
+           {:marker               :ui/selected-node
+            :target               [:ui/selected-node]
+            :post-mutation        `dr/target-ready
+            :post-mutation-params {:target ident}})))))}
+
+  (dom/div {}
+    (dom/div {} "node")
+    (u.ln.node-peers/ui-node-peers-sub-page peers)))

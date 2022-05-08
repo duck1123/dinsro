@@ -54,7 +54,6 @@
    (m.ln.nodes/cert-file id)
    (io/file (m.ln.nodes/macaroon-path id))))
 
-
 (defn get-client-s
   "Get a bitcoin-s client"
   [{::m.ln.nodes/keys [id name host port] :as node}]
@@ -274,7 +273,6 @@
   node-bob
   node
 
-
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node)))
 
   (def client (get-client node))
@@ -320,7 +318,7 @@
   (get-cert-text node)
   (def f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node)))
 
-  (bs/convert f )
+  (bs/convert f)
 
   (.exists f)
 

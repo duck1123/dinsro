@@ -51,7 +51,7 @@ ZEw+de+2IU8TFQ4JWo9Y
    (let [host "lnd.bob.svc.cluster.local"
          port 10009
          url  (URI. (str "https://" host ":" port "/"))]
-     (get-remote-instance url )))
+     (get-remote-instance url)))
   ([url]
    (let [macaroon (bytes->hex (base64-decode bob-macaroon))]
      (get-remote-instance url macaroon)))
