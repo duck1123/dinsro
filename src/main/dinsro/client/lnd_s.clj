@@ -13,7 +13,10 @@
    org.bitcoins.lnd.rpc.LndRpcClient
    scala.Option
    lnrpc.Chain
-   lnrpc.GetInfoResponse))
+   lnrpc.ConnectPeerRequest
+   lnrpc.GetInfoResponse
+   lnrpc.LightningAddress
+   scalapb.UnknownFieldSet))
 
 (def bob-cert
   "-----BEGIN CERTIFICATE-----
@@ -95,16 +98,35 @@ ZEw+de+2IU8TFQ4JWo9Y
 ;;   (:result (async/<!! (cs/await-future (.getInfo client))))
 ;;   )
 
+(defn ->lightning-address
+  [host]
+  (let [pubkey         ""
+        ;; host           nil
+        unknown-fields (UnknownFieldSet/empty)]
+    (LightningAddress. pubkey host unknown-fields)))
+
+(defn ->connect-peer-request
+  [host]
+  (let [addr           (Option/apply (->lightning-address host))
+        perm           false
+        timeout        0
+        unknown-fields (UnknownFieldSet/empty)]
+    (ConnectPeerRequest. addr perm timeout unknown-fields)))
+
 (defn connect-peer
   [client])
 
 (comment
+
+  (->lightning-address "lnd.bob:9735")
+  (->connect-peer-request "lnd.bob:9735")
 
   (def instance (get-remote-instance))
 
   (LndRpcClient. instance (Option/empty))
 
   (def client (get-remote-client instance))
+  (async/<!! (cs/await-future (.connectPeer client (->connect-peer-request "lnd.bob:9735"))))
 
   (async/<!! (cs/await-future (.getInfo client)))
 
