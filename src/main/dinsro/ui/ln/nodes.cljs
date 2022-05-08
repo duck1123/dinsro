@@ -26,6 +26,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.ln.channels :as u.ln.channels]
+   [dinsro.ui.ln.node-peers :as u.ln.node-peers]
    [dinsro.ui.ln.payreqs :as u.ln.payreqs]
    [dinsro.ui.ln.peers :as u.ln.peers]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
@@ -270,6 +271,40 @@
           (dom/div {}
             (form/render-layout this props)))))))
 
+(defsc ShowNode
+  "Show a ln node"
+  [this {:keys [peers]
+         :as props}]
+  {:route-segment ["node" :id]
+   :query [{:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
+           ::m.ln.nodes/id]
+   :initial-state {:peers {}
+                   ::m.ln.nodes/id nil}
+   :ident ::m.ln.nodes/id
+   :will-enter
+   (fn [app {id :id}]
+     (let [id      (new-uuid id)
+           ident   [::m.c.nodes/id id]
+           state   (-> (app/current-state app) (get-in ident))]
+       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
+       (dr/route-immediate ident)
+       (dr/route-deferred
+        ident
+        (fn []
+          (log/info :ShowNode/will-enter2 {:id       id
+                                           :state    state
+                                           :controls (control/component-controls app)})
+          (df/load!
+           app ident ShowNode
+           {:marker               :ui/selected-node
+            :target               [:ui/selected-node]
+            :post-mutation        `dr/target-ready
+            :post-mutation-params {:target ident}})))))}
+
+  (dom/div {}
+    (dom/div {} "node")
+    (u.ln.node-peers/ui-node-peers-sub-page peers)))
+
 (report/defsc-report LightningNodesReport
   [_this _props]
   {ro/columns          [m.ln.nodes/name
@@ -324,35 +359,3 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.nodes/admin-index
    ro/title            "Lightning Node Report"})
-
-(defsc ShowNode
-  "Show a ln node"
-  [this {:keys [peers]
-         :as props}]
-  {:route-segment ["node" :id]
-   :query []
-   :initial-state {}
-   :ident ::m.ln.nodes/id
-   :will-enter
-   (fn [app {id :id}]
-     (let [id      (new-uuid id)
-           ident   [::m.c.nodes/id id]
-           state   (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
-       (dr/route-immediate ident)
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/info :ShowNode/will-enter2 {:id       id
-                                           :state    state
-                                           :controls (control/component-controls app)})
-          (df/load!
-           app ident ShowNode
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))}
-
-  (dom/div {}
-    (dom/div {} "node")
-    (u.ln.node-peers/ui-node-peers-sub-page peers)))

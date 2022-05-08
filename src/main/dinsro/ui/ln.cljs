@@ -21,6 +21,7 @@
                     u.ln.nodes/CreateLightningNodeForm
                     u.ln.nodes/LightningNodeForm
                     u.ln.nodes/LightningNodesReport
+                    u.ln.nodes/ShowNode
                     u.ln.payments/LNPaymentForm
                     u.ln.payments/LNPaymentsReport
                     u.ln.payreqs/NewPaymentForm
