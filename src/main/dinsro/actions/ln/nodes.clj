@@ -27,20 +27,23 @@
    java.io.FileNotFoundException
    java.net.UnknownHostException
    java.net.URI
+   org.bitcoins.lnd.rpc.config.LndInstance
+   org.bitcoins.lnd.rpc.LndRpcClient
+   org.lightningj.lnd.wrapper.AsynchronousLndAPI
    org.lightningj.lnd.wrapper.invoices.AsynchronousInvoicesAPI
    org.lightningj.lnd.wrapper.message.AddressType
-   org.lightningj.lnd.wrapper.AsynchronousLndAPI
    org.lightningj.lnd.wrapper.walletunlocker.AsynchronousWalletUnlockerAPI
    org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI
-   org.bitcoins.lnd.rpc.config.LndInstance
    scala.Option))
 
-(defn get-cert-text
+(>defn get-cert-text
   [node]
+  [::m.ln.nodes/item => string?]
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node))))
 
-(defn get-macaroon-hex
+(>defn get-macaroon-hex
   [node]
+  [::m.ln.nodes/item => string?]
   (let [f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node))]
     (bytes->hex (bs/to-byte-array f))))
 
@@ -56,7 +59,7 @@
 
 (defn get-client-s
   "Get a bitcoin-s client"
-  [{::m.ln.nodes/keys [id name host port] :as node}]
+  ^LndRpcClient [{::m.ln.nodes/keys [id name host port] :as node}]
   (log/info :client/creating {:id id :name name})
   (let [url       (URI. (str "https://" host ":" port "/"))
         cert-file (Option/apply (get-cert-text node))
@@ -83,7 +86,7 @@
      (io/file (m.ln.nodes/cert-path id)))))
 
 (>defn get-sync-unlocker-client
-  [node]
+  ^SynchronousWalletUnlockerAPI [node]
   [::m.ln.nodes/item => (ds/instance? SynchronousWalletUnlockerAPI)]
   (let [{::m.ln.nodes/keys [host id port]} node]
     (SynchronousWalletUnlockerAPI.
