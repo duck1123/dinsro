@@ -334,7 +334,6 @@
 
   (.exists f)
 
-
   (def response (c.lnd-s/get-info client))
 
   (c.lnd-s/->record response)

@@ -65,14 +65,22 @@
   "Returns a channel representing a scala future"
   ([^Future f] (await-future f (get-execution-context)))
   ([^Future f context]
-   (let [ch      (async/chan)
-         handler (reify Function1
-                   (apply [_this a]
-                     (log/info :await-futurs/applied {:a (.get a)})
-                     (let [data (if (instance? Success a)
-                                  {:passed true :result (.get a)}
-                                  {:passed false :result a})]
-                       (>!! ch data))))]
+   (let [ch (async/chan)
+         handler
+         (reify Function1
+           (apply [_this a]
+             (log/info :await-future/applied {:a a})
+             (let [b (.get a)]
+               (log/info :await-future/got {:b b})
+               (let [data
+                     (if (instance? Success b)
+                       (do
+                         (log/info :await-future/success {})
+                         {:passed true :result b})
+                       (do
+                         (log/info :await-future/failure {})
+                         {:passed false :result a}))]
+                 (>!! ch data)))))]
      (log/info :await-future/awaiting {:f f})
      (.onComplete f handler context)
      ch)))

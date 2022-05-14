@@ -4,7 +4,6 @@
    [dinsro.components.config :as config]
    [mount.core :as mount]
    [nextjournal.clerk :as clerk]
-   [shadow.cljs.devtools.server.runtime]
    [taoensso.timbre :as log]))
 
 (defn start!
