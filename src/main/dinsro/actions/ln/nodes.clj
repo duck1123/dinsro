@@ -230,10 +230,19 @@
 (>defn update-info!
   [{::m.ln.nodes/keys [id] :as node}]
   [::m.ln.nodes/item => any?]
+  (log/info :update-info!/starting {:id id})
   (with-open [client (get-client node)]
     (let [ch (async/chan)]
       (.getInfo client (c.lnd/ch-observer ch))
-      (async/go (save-info! id (set/rename-keys (async/<! ch) m.ln.info/rename-map)))
+      (async/go
+        (let [response (async/<! ch)
+              params   (set/rename-keys response m.ln.info/rename-map)]
+          (log/info
+           :update-info!/saving
+           {:id       id
+            :response response
+            :params   params})
+          (save-info! id params)))
       ch)))
 
 (>defn unlock-sync!
@@ -302,6 +311,8 @@
   (def remote-client (c.lnd-s/get-remote-client (get-remote-instance node)))
 
   remote-client
+
+  (c.lnd-s/get-info remote-client)
 
   (def fu (.listPeers remote-client))
 

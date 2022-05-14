@@ -90,8 +90,12 @@ ZEw+de+2IU8TFQ4JWo9Y
   (LndRpcClient/apply i (Option/empty)))
 
 (defn get-info
-  ^GetInfoResponse [client]
-  (:result (async/<!! (cs/await-future (.getInfo client)))))
+  ^GetInfoResponse [^LndRpcClient client]
+  (log/info :get-info/starting {})
+  (let [response    (.getInfo client)
+        result-data (async/<!! (cs/await-future response))]
+    (log/info :get-info/results {:result-data result-data})
+    (:result result-data)))
 
 ;; (defn list-payments
 ;;   [client]
