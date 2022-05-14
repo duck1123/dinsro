@@ -90,12 +90,16 @@ ZEw+de+2IU8TFQ4JWo9Y
   (LndRpcClient/apply i (Option/empty)))
 
 (defn get-info
+  "Fetch node info from the remote node"
   ^GetInfoResponse [^LndRpcClient client]
   (log/info :get-info/starting {})
-  (let [response    (.getInfo client)
-        result-data (async/<!! (cs/await-future response))]
-    (log/info :get-info/results {:result-data result-data})
-    (:result result-data)))
+  (let [response (.getInfo client)]
+    (log/info :get-info/response {:response response})
+    (let [f (cs/await-future response)]
+      (log/info :get-info/awaited {:f f})
+      (let [result-data (async/<!! f)]
+        (log/info :get-info/results {:result-data result-data})
+        (:result result-data)))))
 
 ;; (defn list-payments
 ;;   [client]

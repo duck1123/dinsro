@@ -287,11 +287,11 @@
 
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node)))
 
-  (def client (get-client node))
-  client
+  (def client1 (get-client node))
+  client1
 
   (with-open [client (get-client node)] (c.lnd/list-invoices client))
-  (c.lnd/list-payments client)
+  (c.lnd/list-payments client1)
 
   (q.ln.nodes/index-ids)
 
@@ -302,6 +302,7 @@
   (delete-cert node)
   (has-cert? node)
   (download-cert! node)
+  (download-macaroon! node)
 
   (delete-macaroon node)
   (has-macaroon? node)
@@ -311,13 +312,10 @@
   (println (get-macaroon-text node))
   (get-remote-instance node)
 
-  (def remote-client (c.lnd-s/get-remote-client (get-remote-instance node)))
+  (def client (get-client-s node))
+  client
 
-  remote-client
-
-  (c.lnd-s/get-info remote-client)
-
-  (def fu (.listPeers remote-client))
+  (c.lnd-s/get-info client)
 
   (<!! (initialize! node))
 
@@ -336,8 +334,6 @@
 
   (.exists f)
 
-  (def client (get-client-s node))
-  client
 
   (def response (c.lnd-s/get-info client))
 
