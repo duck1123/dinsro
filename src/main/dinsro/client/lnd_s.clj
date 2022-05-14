@@ -99,7 +99,13 @@ ZEw+de+2IU8TFQ4JWo9Y
       (log/info :get-info/awaited {:f f})
       (let [result-data (async/<!! f)]
         (log/info :get-info/results {:result-data result-data})
-        (:result result-data)))))
+        (if (instance? Throwable result-data)
+          (do
+            (log/info :get-info/throwable {:result-data result-data})
+            (throw result-data))
+          (let [{:keys [passed result]} result-data]
+            (if passed result (throw result))
+            #_(:result result-data)))))))
 
 ;; (defn list-payments
 ;;   [client]

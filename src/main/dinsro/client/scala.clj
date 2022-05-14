@@ -70,7 +70,7 @@
          (reify Function1
            (apply [_this a]
              (log/info :await-future/applied {:a a})
-             (let [b (.get a)]
+             (let [b (try (.get a) (catch Exception ex ex))]
                (log/info :await-future/got {:b b})
                (let [data
                      (if (instance? Success b)
@@ -79,7 +79,7 @@
                          {:passed true :result b})
                        (do
                          (log/info :await-future/failure {})
-                         {:passed false :result a}))]
+                         {:passed false :result b}))]
                  (>!! ch data)))))]
      (log/info :await-future/awaiting {:f f})
      (.onComplete f handler context)
