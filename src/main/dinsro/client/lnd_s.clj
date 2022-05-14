@@ -104,7 +104,13 @@ ZEw+de+2IU8TFQ4JWo9Y
             (log/info :get-info/throwable {:result-data result-data})
             (throw result-data))
           (let [{:keys [passed result]} result-data]
-            (if passed result (throw result))
+            (if passed
+              (do
+                (log/info :get-info/passed {})
+                result)
+              (do
+                (log/info :get-info/failed {})
+                (throw result)))
             #_(:result result-data)))))))
 
 ;; (defn list-payments

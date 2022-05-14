@@ -269,6 +269,11 @@
         macaroon  (get-macaroon-text node)]
     (c.lnd-s/get-remote-instance url macaroon)))
 
+(defn get-info
+  [node]
+  (let [client (get-client-s node)]
+    (c.lnd-s/->record (c.lnd-s/get-info client))))
+
 (comment
   (download-cert! (first (q.ln.nodes/index-ids)))
 
@@ -294,6 +299,7 @@
   (c.lnd/list-payments client1)
 
   (q.ln.nodes/index-ids)
+  (initialize! node)
 
   (generate! node-alice)
 
@@ -315,7 +321,10 @@
   (def client (get-client-s node))
   client
 
+  (.unlockWallet client "password12345678")
+
   (c.lnd-s/get-info client)
+  (get-info node)
 
   (<!! (initialize! node))
 

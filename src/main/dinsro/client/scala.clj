@@ -68,19 +68,17 @@
    (let [ch (async/chan)
          handler
          (reify Function1
-           (apply [_this a]
-             (log/info :await-future/applied {:a a})
-             (let [b (try (.get a) (catch Exception ex ex))]
-               (log/info :await-future/got {:b b})
-               (let [data
-                     (if (instance? Success b)
-                       (do
-                         (log/info :await-future/success {})
-                         {:passed true :result b})
-                       (do
-                         (log/info :await-future/failure {})
-                         {:passed false :result b}))]
+           (apply [_this try-obj]
+             (log/info :await-future/applied {:try-obj try-obj})
+             (if (instance? Success try-obj)
+               (let [response (try (.get try-obj) (catch Exception ex ex))]
+                 (log/info :await-future/got {:response response})
+                 (let [data {:passed true :result response}]
+                   (>!! ch data)))
+               (let [data {:passed false :result try-obj}]
+                 (log/info :await-future/not-success {:data data})
                  (>!! ch data)))))]
+
      (log/info :await-future/awaiting {:f f})
      (.onComplete f handler context)
      ch)))
