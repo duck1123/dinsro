@@ -271,20 +271,40 @@
           (dom/div {}
             (form/render-layout this props)))))))
 
+(defn ShowNode-pre-merge
+  [{:keys [data-tree state-map current-normalized]}]
+  (log/info :ShowNode/pre-merge {:data-tree          data-tree
+                                 :state-map          state-map
+                                 :current-noramlized current-normalized})
+  (let [node-id (::m.c.nodes/id data-tree)]
+    (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
+    (let [peers-data   (merge
+                        (comp/get-initial-state u.ln.node-peers/NodePeersSubPage)
+                        (get-in state-map (comp/get-ident u.ln.node-peers/NodePeersSubPage {}))
+                        {::m.ln.nodes/id node-id})
+          updated-data (-> data-tree (assoc :peers peers-data))]
+      (log/info :ShowNode/merged {:updated-data       updated-data
+                                  :data-tree          data-tree
+                                  :state-map          state-map
+                                  :current-noramlized current-normalized})
+      updated-data)))
+
 (defsc ShowNode
   "Show a ln node"
-  [this {:keys [peers]
-         :as props}]
-  {:route-segment ["show-node" :id]
+  [_this {:keys [peers]
+          ::m.ln.nodes/keys [id]
+          :as props}]
+  {:route-segment ["show-node" ::m.ln.nodes/id]
    :query [{:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
            ::m.ln.nodes/id]
    :initial-state {:peers {}
                    ::m.ln.nodes/id nil}
    :ident ::m.ln.nodes/id
+   :pre-merge ShowNode-pre-merge
    :will-enter
    (fn [app {id :id}]
      (let [id      (new-uuid id)
-           ident   [::m.c.nodes/id id]
+           ident   [::m.ln.nodes/id id]
            state   (-> (app/current-state app) (get-in ident))]
        (log/info :ShowNode/will-enter {:app app :id id :ident ident})
        (dr/route-immediate ident)
@@ -302,26 +322,19 @@
             :post-mutation-params {:target ident}})))))}
 
   (dom/div {}
-    (dom/div {} "node")
+    (dom/div :.ui.segment
+      (dom/p {} (pr-str props))
+      (dom/p {} (pr-str id)))
     (u.ln.node-peers/ui-node-peers-sub-page peers)))
 
 (report/defsc-report LightningNodesReport
   [this props]
   {ro/columns
-   [m.ln.nodes/name
-    ;; m.ln.nodes/id
+   [m.ln.nodes/id
     m.ln.info/alias-attr
     m.ln.nodes/core-node
     m.ln.info/color
     m.ln.nodes/user]
-
-   ro/column-formatters
-   {::m.ln.nodes/name
-    (fn [this props a]
-      (log/info :LightningNodesReport/formatting-name2 {:this this :props props :a a})
-      "Foo")}
-
-   ro/form-links       {::m.ln.nodes/id ShowNode}
 
    ro/control-layout
    {:action-buttons [::new-node ::refresh]}
@@ -334,16 +347,31 @@
      :action (fn [this] (control/run! this))}}
 
    ro/field-formatters
-   {::m.ln.nodes/name      (fn [this props]
-                             (let [props2 (comp/props this)]
-                               (log/info :LightningNodesReport/formatting-name {:props props :props2 props2})
-                               (u.links/ui-node-link props)))
-    ::m.ln.nodes/user      (fn [_this props]
-                             (log/info :LightningNodesReport/formatting-user {:props props})
-                             (u.links/ui-user-link props))
-    ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
+   {::m.ln.nodes/id
+    (fn [this id]
+      (let [props2 (comp/props this)]
+        (log/info :LightningNodesReport/formatting-name {:id id :props2 props2})
+        (let [{:ui/keys [current-rows]} props2
+              row                       (first (filter
+                                                (fn [r]
+                                                  (= (::m.ln.nodes/id r) id))
+                                                current-rows))]
+          (if row
+            (do
+              (log/info :LightningNodesReport/row {:row row})
+              (let [name (::m.ln.info/alias row)]
+                (u.links/ui-node-link
+                 {::m.ln.nodes/id   id
+                  ::m.ln.nodes/name name})))
+            (dom/p {} "not found")))))
 
-   ;; ro/machine          lightning-node-report-machine
+    ::m.ln.nodes/user
+    (fn [_this props]
+      (log/info :LightningNodesReport/formatting-user {:props props})
+      (u.links/ui-user-link props))
+
+    ::m.ln.nodes/core-node
+    (fn [_this props] (u.links/ui-core-node-link props))}
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
