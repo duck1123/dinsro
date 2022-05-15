@@ -323,7 +323,6 @@
 
   (.unlockWallet client "password12345678")
 
-  (c.lnd-s/get-info client)
   (get-info node)
 
   (<!! (initialize! node))

@@ -275,7 +275,7 @@
   "Show a ln node"
   [this {:keys [peers]
          :as props}]
-  {:route-segment ["node" :id]
+  {:route-segment ["show-node" :id]
    :query [{:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
            ::m.ln.nodes/id]
    :initial-state {:peers {}
@@ -306,23 +306,52 @@
     (u.ln.node-peers/ui-node-peers-sub-page peers)))
 
 (report/defsc-report LightningNodesReport
-  [_this _props]
-  {ro/columns          [m.ln.nodes/name
-                        m.ln.info/alias-attr
-                        m.ln.nodes/core-node
-                        m.ln.info/color
-                        m.ln.nodes/user]
-   ro/control-layout   {:action-buttons [::new-node]}
-   ro/form-links       {::m.ln.nodes/name LightningNodeForm}
-   ro/controls         {::new-node new-node-button}
-   ro/field-formatters {::m.ln.nodes/user      (fn [_this props] (u.links/ui-user-link props))
-                        ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
-   ro/machine          lightning-node-report-machine
+  [this props]
+  {ro/columns
+   [m.ln.nodes/name
+    ;; m.ln.nodes/id
+    m.ln.info/alias-attr
+    m.ln.nodes/core-node
+    m.ln.info/color
+    m.ln.nodes/user]
+
+   ro/column-formatters
+   {::m.ln.nodes/name
+    (fn [this props a]
+      (log/info :LightningNodesReport/formatting-name2 {:this this :props props :a a})
+      "Foo")}
+
+   ro/form-links       {::m.ln.nodes/id ShowNode}
+
+   ro/control-layout
+   {:action-buttons [::new-node ::refresh]}
+
+   ro/controls
+   {::new-node new-node-button
+    ::refresh
+    {:type   :button
+     :label  "Refresh"
+     :action (fn [this] (control/run! this))}}
+
+   ro/field-formatters
+   {::m.ln.nodes/name      (fn [this props]
+                             (let [props2 (comp/props this)]
+                               (log/info :LightningNodesReport/formatting-name {:props props :props2 props2})
+                               (u.links/ui-node-link props)))
+    ::m.ln.nodes/user      (fn [_this props]
+                             (log/info :LightningNodesReport/formatting-user {:props props})
+                             (u.links/ui-user-link props))
+    ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
+
+   ;; ro/machine          lightning-node-report-machine
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.nodes/index
-   ro/title            "Lightning Node Report"})
+   ro/title            "Lightning Node Report"}
+  (do
+    (log/info :LightningNodesReport/starting {:props props})
+    (report/render-layout this)))
 
 (report/defsc-report LNNodesSubReport
   [_this _props]

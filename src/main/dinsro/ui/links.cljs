@@ -155,7 +155,7 @@
    fo/route-prefix "node-link"
    fo/title        "LN Node"
    fo/attributes   [m.ln.nodes/name]}
-  (form-link this id name :dinsro.ui.ln.nodes/LightningNodeForm))
+  (form-link this id name :dinsro.ui.ln.nodes/ShowNode))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
 
