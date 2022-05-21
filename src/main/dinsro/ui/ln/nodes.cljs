@@ -26,7 +26,9 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.ln.channels :as u.ln.channels]
+   [dinsro.ui.ln.node-channels :as u.ln.node-channels]
    [dinsro.ui.ln.node-peers :as u.ln.node-peers]
+   [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
    [dinsro.ui.ln.payreqs :as u.ln.payreqs]
    [dinsro.ui.ln.peers :as u.ln.peers]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
@@ -276,13 +278,25 @@
   (log/info :ShowNode/pre-merge {:data-tree          data-tree
                                  :state-map          state-map
                                  :current-noramlized current-normalized})
-  (let [node-id (::m.c.nodes/id data-tree)]
+  (let [node-id (::m.ln.nodes/id data-tree)]
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data   (merge
-                        (comp/get-initial-state u.ln.node-peers/NodePeersSubPage)
-                        (get-in state-map (comp/get-ident u.ln.node-peers/NodePeersSubPage {}))
-                        {::m.ln.nodes/id node-id})
-          updated-data (-> data-tree (assoc :peers peers-data))]
+    (let [peers-data        (merge
+                             (comp/get-initial-state u.ln.node-peers/NodePeersSubPage)
+                             (get-in state-map (comp/get-ident u.ln.node-peers/NodePeersSubPage {}))
+                             {::m.ln.nodes/id node-id})
+          channels-data     (merge
+                             (comp/get-initial-state u.ln.node-channels/NodeChannelsSubPage)
+                             (get-in state-map (comp/get-ident u.ln.node-channels/NodeChannelsSubPage {}))
+                             {::m.ln.nodes/id node-id})
+          transactions-data (merge
+                             (comp/get-initial-state u.ln.node-transactions/NodeTransactionsSubPage)
+                             (get-in state-map (comp/get-ident u.ln.node-transactions/NodeTransactionsSubPage {}))
+                             {::m.ln.nodes/id node-id})
+          updated-data      (-> data-tree
+                                (assoc :peers peers-data)
+                                (assoc :channels channels-data)
+                                (assoc :transactions transactions-data))]
+
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree
                                   :state-map          state-map
@@ -291,21 +305,30 @@
 
 (defsc ShowNode
   "Show a ln node"
-  [_this {:keys [peers]
-          ::m.ln.nodes/keys [id]
-          :as props}]
-  {:route-segment ["show-node" ::m.ln.nodes/id]
-   :query [{:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
-           ::m.ln.nodes/id]
-   :initial-state {:peers {}
-                   ::m.ln.nodes/id nil}
-   :ident ::m.ln.nodes/id
-   :pre-merge ShowNode-pre-merge
+  [_this {:keys             [peers channels transactions]
+          ::m.ln.nodes/keys [id user core-node]
+          :as               props}]
+  {:route-segment ["show-node" :id]
+   :query         [{:channels (comp/get-query u.ln.node-channels/NodeChannelsSubPage)}
+                   {:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
+                   {:transactions (comp/get-query u.ln.node-transactions/NodeTransactionsSubPage)}
+                   ::m.ln.nodes/id
+                   {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
+                   {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
+
+   :initial-state {:channels       {}
+                   :peers          {}
+                   :transactions   {}
+                   ::m.ln.nodes/id nil
+                   ::m.ln.nodes/user {}
+                   ::m.ln.nodes/core-node {}}
+   :ident         ::m.ln.nodes/id
+   :pre-merge     ShowNode-pre-merge
    :will-enter
    (fn [app {id :id}]
-     (let [id      (new-uuid id)
-           ident   [::m.ln.nodes/id id]
-           state   (-> (app/current-state app) (get-in ident))]
+     (let [id    (new-uuid id)
+           ident [::m.ln.nodes/id id]
+           state (-> (app/current-state app) (get-in ident))]
        (log/info :ShowNode/will-enter {:app app :id id :ident ident})
        (dr/route-immediate ident)
        (dr/route-deferred
@@ -323,9 +346,12 @@
 
   (dom/div {}
     (dom/div :.ui.segment
-      (dom/p {} (pr-str props))
+      (dom/p {} "User: " (u.links/ui-user-link user))
+      (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
       (dom/p {} (pr-str id)))
-    (u.ln.node-peers/ui-node-peers-sub-page peers)))
+    (u.ln.node-peers/ui-node-peers-sub-page peers)
+    (u.ln.node-channels/ui-node-channels-sub-page channels)
+    (u.ln.node-transactions/ui-node-transactions-sub-page transactions)))
 
 (report/defsc-report LightningNodesReport
   [this props]

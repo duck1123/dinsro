@@ -64,6 +64,10 @@
       (log/error "No Node")
       nil)))
 
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id}))
+
 (comment
   (q.ln.channels/index-ids)
   (first (q.ln.channels/index-records))

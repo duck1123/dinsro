@@ -13,11 +13,8 @@
    [dinsro.queries.ln.peers :as q.ln.peers]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
-
   (:import
-   java.net.URI
-   org.lightningj.lnd.wrapper.message.ConnectPeerRequest
-   org.bitcoins.lnd.rpc.config.LndInstanceRemote))
+   org.lightningj.lnd.wrapper.message.ConnectPeerRequest))
 
 (>defn fetch-peers
   [node]

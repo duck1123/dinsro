@@ -5,7 +5,7 @@
    [clojure.core.async :as async]
    [dinsro.client.scala :as cs]
    [lambdaisland.glogc :as log]
-   [ring.util.codec :refer [base64-encode base64-decode]])
+   [ring.util.codec :refer [base64-decode]])
   (:import
    java.net.URI
    org.bitcoins.lnd.rpc.config.LndInstanceRemote
@@ -134,7 +134,8 @@ ZEw+de+2IU8TFQ4JWo9Y
     (ConnectPeerRequest. addr perm timeout unknown-fields)))
 
 (defn connect-peer
-  [client])
+  [client]
+  (log/info :connect-peer/starting {:client client}))
 
 (comment
 

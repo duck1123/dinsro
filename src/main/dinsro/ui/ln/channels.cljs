@@ -63,6 +63,21 @@
                     m.ln.channels/node]
    fo/subforms     {::m.ln.channels/node {fo/ui u.links/NodeLinkForm}}})
 
+(form/defsc-form NewChannelForm [_this _props]
+  {fo/id           m.ln.channels/id
+   fo/attributes   [m.ln.channels/id
+                    m.ln.channels/active
+                    m.ln.channels/capacity
+                    m.ln.channels/chan-id
+                    m.ln.channels/channel-point
+                    m.ln.channels/chan-status-flags
+                    m.ln.channels/close-address
+                    m.ln.channels/commit-fee
+                    m.ln.channels/node]
+   fo/subforms     {::m.ln.channels/node {fo/ui u.links/NodeLinkForm}}
+   fo/route-prefix "new-channel"
+   fo/title        "New Lightning Channels"})
+
 (form/defsc-form LNChannelForm [_this _props]
   {fo/id         m.ln.channels/id
    fo/attributes [m.ln.channels/id
