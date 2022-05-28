@@ -338,8 +338,6 @@
   (get-cert-text node)
   (def f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node)))
 
-  (bs/convert f)
-
   (.exists f)
 
   (def response (c.lnd-s/get-info client))

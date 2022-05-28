@@ -299,9 +299,9 @@
            {::m.ln.nodes/id node-id})
 
           updated-data (-> data-tree
-                                (assoc :peers peers-data)
-                                (assoc :channels channels-data)
-                                (assoc :transactions transactions-data))]
+                           (assoc :peers peers-data)
+                           (assoc :channels channels-data)
+                           (assoc :transactions transactions-data))]
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree
                                   :state-map          state-map
@@ -311,8 +311,7 @@
 (defsc ShowNode
   "Show a ln node"
   [this {:keys             [peers channels transactions]
-          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]
-          :as               props}]
+         ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]}]
   {:route-segment ["nodes" :id]
    :query         [{:channels (comp/get-query u.ln.node-channels/NodeChannelsSubPage)}
                    {:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
@@ -324,18 +323,16 @@
                    ::m.ln.nodes/hasMacaroon?
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
-
-   :initial-state {:channels       {}
-                   :peers          {}
-                   :transactions   {}
-                   ::m.ln.nodes/id nil
-                   ::m.ln.nodes/user {}
-                   ::m.ln.nodes/core-node {}
-                   ::m.ln.nodes/host ""
-                   ::m.ln.nodes/port 0
-                   ::m.ln.nodes/hasCert? false
+   :initial-state {:channels                 {}
+                   :peers                    {}
+                   :transactions             {}
+                   ::m.ln.nodes/id           nil
+                   ::m.ln.nodes/user         {}
+                   ::m.ln.nodes/core-node    {}
+                   ::m.ln.nodes/host         ""
+                   ::m.ln.nodes/port         0
+                   ::m.ln.nodes/hasCert?     false
                    ::m.ln.nodes/hasMacaroon? false}
-
    :ident         ::m.ln.nodes/id
    :pre-merge     ShowNode-pre-merge
    :will-enter
@@ -360,6 +357,10 @@
 
   (dom/div {}
     (dom/div :.ui.segment
+      (ui-actions-menu
+       {::m.ln.nodes/id           id
+        ::m.ln.nodes/hasCert?     hasCert?
+        ::m.ln.nodes/hasMacaroon? hasMacaroon?})
       #_(dom/p {} (pr-str props))
       (dom/p {} "User: " (u.links/ui-user-link user))
       (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
