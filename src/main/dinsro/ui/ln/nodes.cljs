@@ -280,23 +280,28 @@
                                  :current-noramlized current-normalized})
   (let [node-id (::m.ln.nodes/id data-tree)]
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data        (merge
-                             (comp/get-initial-state u.ln.node-peers/NodePeersSubPage)
-                             (get-in state-map (comp/get-ident u.ln.node-peers/NodePeersSubPage {}))
-                             {::m.ln.nodes/id node-id})
-          channels-data     (merge
-                             (comp/get-initial-state u.ln.node-channels/NodeChannelsSubPage)
-                             (get-in state-map (comp/get-ident u.ln.node-channels/NodeChannelsSubPage {}))
-                             {::m.ln.nodes/id node-id})
-          transactions-data (merge
-                             (comp/get-initial-state u.ln.node-transactions/NodeTransactionsSubPage)
-                             (get-in state-map (comp/get-ident u.ln.node-transactions/NodeTransactionsSubPage {}))
-                             {::m.ln.nodes/id node-id})
-          updated-data      (-> data-tree
+    (let [peers-data
+          (merge
+           (comp/get-initial-state u.ln.node-peers/NodePeersSubPage)
+           (get-in state-map (comp/get-ident u.ln.node-peers/NodePeersSubPage {}))
+           {::m.ln.nodes/id node-id})
+
+          channels-data
+          (merge
+           (comp/get-initial-state u.ln.node-channels/NodeChannelsSubPage)
+           (get-in state-map (comp/get-ident u.ln.node-channels/NodeChannelsSubPage {}))
+           {::m.ln.nodes/id node-id})
+
+          transactions-data
+          (merge
+           (comp/get-initial-state u.ln.node-transactions/NodeTransactionsSubPage)
+           (get-in state-map (comp/get-ident u.ln.node-transactions/NodeTransactionsSubPage {}))
+           {::m.ln.nodes/id node-id})
+
+          updated-data (-> data-tree
                                 (assoc :peers peers-data)
                                 (assoc :channels channels-data)
                                 (assoc :transactions transactions-data))]
-
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree
                                   :state-map          state-map
@@ -305,14 +310,18 @@
 
 (defsc ShowNode
   "Show a ln node"
-  [_this {:keys             [peers channels transactions]
-          ::m.ln.nodes/keys [id user core-node]
+  [this {:keys             [peers channels transactions]
+          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]
           :as               props}]
-  {:route-segment ["show-node" :id]
+  {:route-segment ["nodes" :id]
    :query         [{:channels (comp/get-query u.ln.node-channels/NodeChannelsSubPage)}
                    {:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
                    {:transactions (comp/get-query u.ln.node-transactions/NodeTransactionsSubPage)}
                    ::m.ln.nodes/id
+                   ::m.ln.nodes/host
+                   ::m.ln.nodes/port
+                   ::m.ln.nodes/hasCert?
+                   ::m.ln.nodes/hasMacaroon?
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
 
@@ -321,7 +330,12 @@
                    :transactions   {}
                    ::m.ln.nodes/id nil
                    ::m.ln.nodes/user {}
-                   ::m.ln.nodes/core-node {}}
+                   ::m.ln.nodes/core-node {}
+                   ::m.ln.nodes/host ""
+                   ::m.ln.nodes/port 0
+                   ::m.ln.nodes/hasCert? false
+                   ::m.ln.nodes/hasMacaroon? false}
+
    :ident         ::m.ln.nodes/id
    :pre-merge     ShowNode-pre-merge
    :will-enter
@@ -346,8 +360,28 @@
 
   (dom/div {}
     (dom/div :.ui.segment
+      #_(dom/p {} (pr-str props))
       (dom/p {} "User: " (u.links/ui-user-link user))
       (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
+      (dom/p {} "Address: " host ":" (str port))
+      (when-not hasCert?
+        (comp/fragment
+         (dom/p {} "Cert not found")
+         (dom/button
+           {:classes [:.ui.button]
+            :onClick
+            (fn []
+              (log/info :show-node/click {})
+              (comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})]))}
+
+           "Fetch")))
+      (dom/p {} "Has Cert: " (str hasCert?))
+      (dom/p {}
+        "Has Macaroon: "
+        (if hasMacaroon?
+          (str hasMacaroon?)
+          (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
+            (str hasMacaroon?))))
       (dom/p {} (pr-str id)))
     (u.ln.node-peers/ui-node-peers-sub-page peers)
     (u.ln.node-channels/ui-node-channels-sub-page channels)

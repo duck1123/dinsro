@@ -104,7 +104,7 @@
   (log/info :NodeChannelsSubPage/creating {:props props})
   (let [peer-data (assoc-in report [:ui/parameters ::m.ln.nodes/id] node-id)]
     (dom/div :.ui.segment
-      (dom/code {} (dom/pre {} (pr-str props)))
+      #_(dom/code {} (dom/pre {} (pr-str props)))
       (if node-id
         (ui-node-channels-report peer-data)
         (dom/div {} "Node ID not set")))))
