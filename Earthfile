@@ -1,4 +1,5 @@
 # Earthfile
+VERSION 0.6
 FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
 # ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
 ARG base_image=cimg/clojure:1.10-node
