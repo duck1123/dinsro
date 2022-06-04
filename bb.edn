@@ -88,7 +88,10 @@
 
   compile-production-clj
   {:doc  "Compile clojure source files for production"
-   :task (clojure "-M:production -e " "(compile 'dinsro.core)")}
+   :task
+   (do
+     (c/mkdir "classes")
+     (clojure "-M:production -e " "(compile 'dinsro.core)"))}
 
   compile-production-cljs
   {:doc     "Compile clojurescript source files for production"
