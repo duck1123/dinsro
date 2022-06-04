@@ -1,5 +1,6 @@
 (ns dinsro.ui.core.blocks
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
@@ -89,7 +90,7 @@
   {fo/id           m.c.tx/id
    fo/title        "Core Block Transactions"
    fo/attributes   [m.c.tx/tx-id m.c.tx/fetched?]
-   fo/route-prefix "core-node-tx"})
+   fo/route-prefix "node-tx"})
 
 (def override-form false)
 
@@ -121,9 +122,9 @@
                       ::m.c.blocks/previous-block {fo/ui u.links/BlockLinkForm}
                       ::m.c.blocks/next-block     {fo/ui u.links/BlockLinkForm}}
    fo/controls       (merge form/standard-controls
-                            {::fetch fetch-button
+                            {::fetch              fetch-button
                              ::fetch-transactions fetch-transactions-button})
-   fo/route-prefix   "core-block"
+   fo/route-prefix   "block"
    fo/title          "Core Block"}
   (if override-form
     (form/render-layout this props)
@@ -147,15 +148,15 @@
         {:ui/keys [controls current-rows]} props
         [current-row]                      current-rows
 
-        values                             (map (fn [control]
-                                                  (let [control-id (::control/id control)]
-                                                    (log/debug :mapping {:control-id control-id})
-                                                    (when (= control-id ::tx-id)
-                                                      (::control/value control))))
-                                                controls)
-        txid-value                         (first (filter identity values))
-        block-id                           (::control/value (find-control controls ::block-id))
-        node-id                            (second (::control/value (find-control controls ::node-id)))]
+        values     (map (fn [control]
+                          (let [control-id (::control/id control)]
+                            (log/debug :mapping {:control-id control-id})
+                            (when (= control-id ::tx-id)
+                              (::control/value control))))
+                        controls)
+        txid-value (first (filter identity values))
+        block-id   (::control/value (find-control controls ::block-id))
+        node-id    (second (::control/value (find-control controls ::node-id)))]
     (log/info :tx/searching {:props       props
                              :current-row current-row
                              :txid-value  txid-value
@@ -180,57 +181,61 @@
    :action delete-action
    :style  :delete-button})
 
+(s/def ::row
+  (s/keys
+   :req [::m.c.blocks/id
+         ::m.c.blocks/hash
+         ::m.c.blocks/height
+         ::m.c.blocks/fetched?
+         ::m.c.blocks/node]))
+(s/def ::row-keywords #{::m.c.blocks/id
+                        ::m.c.blocks/hash
+                        ::m.c.blocks/height
+                        ::m.c.blocks/fetched?
+                        ::m.c.blocks/node})
+(s/def ::row2
+  (s/and
+   (s/every-kv
+    ::row-keywords ::m.c.blocks/id)
+   (s/every (fn [[k v]] (= (:id v) k)))))
+
+(s/def ::rows (s/coll-of ::row))
+
 (report/defsc-report CoreBlockReport
   [_this _props]
-  {ro/columns  [m.c.blocks/hash
-                m.c.blocks/height
-                m.c.blocks/fetched?
-                m.c.blocks/node]
-   ro/controls {::search  search-control
-                ::refresh {:type   :button
-                           :label  "Refresh"
-                           :action (fn [this] (control/run! this))}
-                ::node-id {:type          :picker
-                           :style         :default
-                           :default-value ""
-                           :label         "Node ID"
-                           ::picker-options/query-key       ::m.c.nodes/index
-                           ::picker-options/query-component u.links/CoreNodeLinkForm
-                           ::picker-options/options-xform
-                           (fn [_ options]
-                             (mapv
-                              (fn [{::m.c.nodes/keys [id name]}]
-                                {:text  (str name)
-                                 :value [::m.c.nodes/id id]})
-                              (sort-by ::m.c.nodes/name options)))}
-
-                ::block-id {:type          :string
-                            :style         :search
-                            :default-value ""
-                            :label         "Block ID"
-                            :onChange      (fn [this _] (control/run! this))}}
+  {ro/columns          [m.c.blocks/hash
+                        m.c.blocks/height
+                        m.c.blocks/fetched?
+                        m.c.blocks/node]
+   ro/controls         {::search   search-control
+                        ::refresh  {:type   :button
+                                    :label  "Refresh"
+                                    :action (fn [this] (control/run! this))}
+                        ::node-id  {:type                            :picker
+                                    :style                           :default
+                                    :default-value                   ""
+                                    :label                           "Node ID"
+                                    ::picker-options/query-key       ::m.c.nodes/index
+                                    ::picker-options/query-component u.links/CoreNodeLinkForm
+                                    ::picker-options/options-xform
+                                    (fn [_ options]
+                                      (mapv
+                                       (fn [{::m.c.nodes/keys [id name]}]
+                                         {:text  (str name)
+                                          :value [::m.c.nodes/id id]})
+                                       (sort-by ::m.c.nodes/name options)))}
+                        ::block-id {:type          :string
+                                    :style         :search
+                                    :default-value ""
+                                    :label         "Block ID"
+                                    :onChange      (fn [this _] (control/run! this))}}
    ro/control-layout   {:inputs         [[::block-id ::node-id ::search]]
                         :action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/node (fn [_ props] (u.links/ui-core-node-link props))}
-   ;; fo/field-options
-   ;; {::node-id
-   ;;  {
-
-   ;;   ::picker-options/query-key       ::m.c.nodes/index
-   ;;   ::picker-options/query-component u.links/CoreNodeLinkForm
-   ;;   ::picker-options/options-xform
-   ;;   (fn [_ options]
-   ;;     (mapv
-   ;;      (fn [{::m.c.nodes/keys [id name]}]
-   ;;        {:text  (str name)
-   ;;         :value [::m.c.nodes/id id]})
-   ;;      (sort-by ::m.c.nodes/name options)))
-
-   ;;   }}
    ro/form-links       {::m.c.blocks/hash CoreBlockForm}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Core Blocks"
-   ro/row-actions [delete-action-button]
+   ro/row-actions      [delete-action-button]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/route            "core-blocks"})
+   ro/route            "blocks"})

@@ -18,3 +18,12 @@
   [_ _]
   {:query         [:message :data]
    :initial-state {:message :data}})
+
+(defn error-response
+  [message]
+  {::status :error
+   ::errors {:message message :data {}}})
+
+(defn exception-response
+  [^Throwable ex]
+  (error-response (str ex)))

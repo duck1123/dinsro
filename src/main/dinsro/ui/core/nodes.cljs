@@ -37,7 +37,7 @@
   [_this _props]
   {fo/id           m.c.blocks/id
    fo/title        "Blocks"
-   fo/route-prefix "core-node-block"
+   fo/route-prefix "node-block"
    fo/attributes   [m.c.blocks/hash m.c.blocks/height]})
 
 (form/defsc-form CoreNodeTxSubform
@@ -45,7 +45,7 @@
   {fo/id           m.c.tx/id
    fo/title        "Core Node Transactions"
    fo/attributes   [m.c.tx/hex m.c.tx/version m.c.tx/block]
-   fo/route-prefix "core-node-tx"
+   fo/route-prefix "node-tx"
    fo/subforms     {::m.c.tx/block {fo/ui CoreNodeBlockSubform}}})
 
 (def fetch-button
@@ -78,11 +78,11 @@
    :label  "New Wallet"
    :action (fn [this _]
              (let [{::m.c.nodes/keys [id name]} (comp/props this)
-                   component                       (comp/registry-key->class :dinsro.ui.core.wallets/NewWalletForm)
-                   state                           {::m.c.wallets/name "new wallet"
-                                                    ::m.c.wallets/node {::m.c.nodes/id   id
-                                                                        ::m.c.nodes/name name}}
-                   options                         {:initial-state state}]
+                   component                    (comp/registry-key->class :dinsro.ui.core.wallets/NewWalletForm)
+                   state                        {::m.c.wallets/name "new wallet"
+                                                 ::m.c.wallets/node {::m.c.nodes/id   id
+                                                                     ::m.c.nodes/name name}}
+                   options                      {:initial-state state}]
                (form/create! this component options)))})
 
 (def new-peer-button
@@ -91,10 +91,10 @@
    :label  "New Peer"
    :action (fn [this _]
              (let [{::m.c.nodes/keys [id name]} (comp/props this)
-                   component                       (comp/registry-key->class :dinsro.ui.core.peers/NewCorePeerForm)
-                   state                           {::m.c.nodes/node {::m.c.nodes/id   id
-                                                                      ::m.c.nodes/name name}}
-                   options                         {:initial-state state}]
+                   component                    (comp/registry-key->class :dinsro.ui.core.peers/NewCorePeerForm)
+                   state                        {::m.c.nodes/node {::m.c.nodes/id   id
+                                                                   ::m.c.nodes/name name}}
+                   options                      {:initial-state state}]
                (form/create! this component options)))})
 
 (def override-form true)
@@ -102,7 +102,7 @@
 (form/defsc-form CoreNodeForm [this props]
   {fo/id             m.c.nodes/id
    fo/action-buttons [::fetch
-                      ::fetch-peer
+                      ::fetch-peers
                       ::generate
                       ::new-wallet
                       ::new-peer]
@@ -114,10 +114,10 @@
                       j.c.nodes/ln-nodes
                       j.c.nodes/wallets
                       j.c.nodes/peers]
-   fo/cancel-route   ["core-nodes"]
+   fo/cancel-route   ["nodes"]
    fo/controls       {::fetch       fetch-button
                       ::fetch-peers fetch-peers-button
-                      ::generate generate-button
+                      ::generate    generate-button
                       ::new-wallet  new-wallet-button
                       ::new-peer    new-peer-button}
    fo/field-styles   {::m.c.nodes/blocks       :core-block-table
@@ -125,7 +125,7 @@
                       ::m.c.nodes/ln-nodes     :link-list
                       ::m.c.nodes/wallets      :link-list
                       ::m.c.nodes/peers        :link-list}
-   fo/route-prefix   "core-node"
+   fo/route-prefix   "node"
    fo/subforms       {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}
                       ::m.c.nodes/blocks       {fo/ui u.c.blocks/CoreBlockSubForm}
                       ::m.c.nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
@@ -145,8 +145,8 @@
                     m.c.nodes/port
                     m.c.nodes/rpcuser
                     m.c.nodes/rpcpass]
-   fo/cancel-route ["core-nodes"]
-   fo/route-prefix "core-node2"
+   fo/cancel-route ["nodes"]
+   fo/route-prefix "node2"
    fo/subforms     {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}}
    fo/title        "Core Node"})
 
@@ -181,4 +181,4 @@
    ro/title             "Core Node Report"
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
-   ro/route             "core-nodes"})
+   ro/route             "nodes"})

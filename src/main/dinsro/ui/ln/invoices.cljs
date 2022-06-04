@@ -101,7 +101,7 @@
                     m.ln.invoices/memo
                     m.ln.invoices/node]
    fo/subforms     {::m.ln.invoices/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix "ln-invoice"
+   fo/route-prefix "invoice"
    fo/title        "Lightning Invoices"})
 
 (def submit-button
@@ -144,7 +144,7 @@
    ro/links            {::m.ln.invoices/id (fn [this {::m.ln.invoices/keys [id]}]
                                              (form/view! this LNInvoiceForm id))}
    ro/field-formatters {::m.ln.invoices/node (fn [_this props] (u.links/ui-node-link props))}
-   ro/route            "ln-invoices"
+   ro/route            "invoices"
    ro/row-pk           m.ln.invoices/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.invoices/index

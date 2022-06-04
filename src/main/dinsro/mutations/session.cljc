@@ -3,13 +3,12 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
-   #?(:clj [com.fulcrologic.fulcro.server.api-middleware :refer [augment-response]])
    #?(:cljs [com.fulcrologic.fulcro.ui-state-machines :as uism])
    [com.fulcrologic.rad.authorization :as auth]
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.users :as m.users]
-   #?(:cljs [lambdaisland.glogc :as log])))
+   [lambdaisland.glogc :as log]))
 
 (comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
 
@@ -75,20 +74,15 @@
 
 #?(:clj
    (pc/defmutation logout
-     [{{:keys [session]} :request} _]
+     [{{:keys [session]} :ring/request :as env} _]
      {::pc/params #{}
       ::pc/output [::auth/provider
                    ::auth/status
                    :identity
                    :time-zone/zone-id
                    {:session/current-user [::m.users/id]}]}
-     (augment-response
-      {::auth/provider       :local
-       :session/current-user nil
-       :identity             nil
-       ::auth/status         :not-logged-in}
-      (fn [ring-response]
-        (assoc ring-response :session (assoc session :identity nil)))))
+     (log/info :logout/begin {:env env :session session})
+     (a.authentication/logout! env))
    :cljs
    (fm/defmutation logout [_]
      (action [_env] true)
@@ -116,7 +110,7 @@
    :cljs
    (fm/defmutation check-session [_]
      (ok-action [{:keys [app result]}]
-       (let [{::auth/keys [provider]}    (get-in result [:body `check-session])]
+       (let [{::auth/keys [provider]} (get-in result [:body `check-session])]
          (uism/trigger! app auth/machine-id :event/session-checked {:provider provider})))
      (remote [env]
        (fm/returning env Session))))

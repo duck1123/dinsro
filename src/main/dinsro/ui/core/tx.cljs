@@ -68,7 +68,7 @@
 (form/defsc-form CoreTxOutSubForm
   [_this _props]
   {fo/id           m.c.tx-out/id
-   fo/route-prefix "node-tx-core-tx-out"
+   fo/route-prefix "node-tx-out"
    fo/title        "Outputs"
    fo/attributes   [m.c.tx-out/value
                     m.c.tx-out/n
@@ -79,7 +79,7 @@
 (form/defsc-form CoreTxSubForm
   [_this _props]
   {fo/id           m.c.tx/id
-   fo/route-prefix "ln-core-tx"
+   fo/route-prefix "tx-sub"
    fo/title        "Core Transaction"
    fo/attributes   [m.c.tx/fetched?
                     m.c.tx/tx-id
@@ -104,7 +104,7 @@
 (form/defsc-form CoreTxInput
   [this props]
   {fo/id           m.c.tx-in/id
-   fo/route-prefix "core-tx-in"
+   fo/route-prefix "tx-in"
    fo/attributes   [m.c.tx-in/coinbase
                     m.c.tx-in/txinwitness
                     m.c.tx-in/sequence
@@ -126,7 +126,7 @@
 (form/defsc-form CoreTxBlock
   [_this _props]
   {fo/id           m.c.blocks/id
-   fo/route-prefix "core-tx-block"
+   fo/route-prefix "tx-block"
    fo/attributes   [m.c.blocks/height m.c.blocks/hash]
    fo/title        "Block"})
 
@@ -148,12 +148,12 @@
                       j.c.tx/ins
                       j.c.tx/outs
                       j.c.tx/node]
-   fo/cancel-route   ["core-txes"]
+   fo/cancel-route   ["transactions"]
    fo/controls       (merge form/standard-controls {::fetch fetch-button})
    fo/field-styles   {::m.c.tx/block :link
                       ::m.c.tx/outs  :tx-out-table
                       ::m.c.tx/ins   :tx-in-table}
-   fo/route-prefix   "core-tx"
+   fo/route-prefix   "tx"
    fo/subforms       {::m.c.tx/block {fo/ui CoreTxBlock}
                       ::m.c.tx/ins   {fo/ui CoreTxInput}
                       ::m.c.tx/outs  {fo/ui u.c.tx-out/CoreTxOutput}
@@ -241,4 +241,4 @@
    ro/row-actions      [fetch-action-button delete-action-button]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true
-   ro/route            "core-txes"})
+   ro/route            "transactions"})

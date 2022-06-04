@@ -71,7 +71,7 @@
    fo/layout-styles {:ref-container :tablef}
    fo/subforms      {::m.ln.tx/core-tx {fo/ui u.links/CoreTxLinkForm}
                      ::m.ln.tx/node    {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix  "ln-tx"
+   fo/route-prefix  "tx"
    fo/title         "Lightning TX"})
 
 (report/defsc-report LNTransactionsReport
@@ -82,7 +82,7 @@
    ro/field-formatters
    {::m.ln.tx/node    (fn [_this props] (u.links/ui-node-link props))
     ::m.ln.tx/core-tx (fn [_this props] (u.links/ui-core-tx-link props))}
-   ro/route            "ln-transactions"
+   ro/route            "transactions"
    ro/row-actions      []
    ro/row-pk           m.ln.tx/id
    ro/run-on-mount?    true

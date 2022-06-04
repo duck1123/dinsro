@@ -6,8 +6,8 @@
    [nubank.workspaces.model :as wsm]))
 
 (ws/defcard RegistrationPage
-  {::wsm/card-height 14
-   ::wsm/card-width  3}
+  {::wsm/card-height 12
+   ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.registration/RegistrationPage
     ::ct.fulcro3/initial-state

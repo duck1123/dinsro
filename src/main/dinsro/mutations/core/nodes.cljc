@@ -11,18 +11,14 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
-   #?(:clj [lambdaisland.glogc :as log])))
+   [lambdaisland.glogc :as log]))
 
 (comment ::m.c.nodes/_ ::pc/_)
 
 (>def ::item ::m.c.nodes/item)
 (>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.c.nodes/item]))
 
-(>def ::fetch!-request (s/keys :req [::m.c.nodes/id]))
-(>def ::fetch!-response (s/keys :req [::mu/status] :opt [::mu/errors]))
-
-(>def ::generate!-request (s/keys :req [::m.c.nodes/id]))
-(>def ::generate!-response (s/keys :req [::mu/status] :opt [::mu/errors]))
+;; Connect
 
 (defsc ConnectResponse
   [_ _]
@@ -47,40 +43,57 @@
    :cljs
    (defmutation connect! [_props]
      (action [_env] true)
-     (remote [env]
-       (fm/returning env ConnectResponse))))
+     (remote [env]  (fm/returning env ConnectResponse))))
+
+;; Fetch
+
+(>def ::fetch!-request
+      (s/keys :req [::m.c.nodes/id]))
+(>def ::fetch!-response
+      (s/keys :req [::mu/status ::m.c.nodes/item]
+              :opt [::mu/errors]))
+
+(defsc FetchResponse
+  [_ _]
+  {:initial-state {::m.c.nodes/item nil
+                   ::mu/status         :initial
+                   ::mu/errors         {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status
+                   ::m.c.nodes/item]})
 
 #?(:clj
    (>defn do-fetch!
      [{::m.c.nodes/keys [id]}]
      [::fetch!-request => ::fetch!-response]
+     (log/info :do-fetch!/started {:id id})
      (let [node (q.c.nodes/read-record id)]
        (try
-         (let [response (a.c.nodes/fetch! node)]
+         (log/info :fetch/starting {:id id})
+         (let [updated-node (a.c.nodes/fetch! node)]
+           (log/info :fetch/finished {:id id :updated-node updated-node})
            {::mu/status         :ok
-            ::m.c.nodes/item response})
+            ::m.c.nodes/item updated-node})
          (catch Exception ex
            (log/error :fetch/failed {:exception ex})
-           {::mu/status :error
-            ::mu/errors {:message (str ex)
-                         :data    {}}}
-           (throw ex))))))
+           (mu/exception-response ex))))))
 
-#?(:clj
-   (>defn do-generate!
-     [{::m.c.nodes/keys [id]}]
-     [::generate!-request => ::generate!-response]
-     (try
-       (let [response (a.c.nodes/generate! id)]
-         (log/debug :do-generate/response {:node-id id :response response})
-         {::mu/status         :ok
-          ::m.c.nodes/item (q.c.nodes/read-record id)})
-       (catch Exception ex
-         (log/error :generate/failed {:exception ex})
-         {::mu/status :error
-          ::mu/errors {:message (str ex)
-                       :data    {}}}
-         (throw ex)))))
+#?(:cljs
+   (defn handle-fetch
+     [{:keys [state] :as env}]
+     (let [body                                        (get-in env [:result :body])
+           response                                    (get body `fetch!)
+           {:com.fulcrologic.rad.pathom/keys [errors]} response]
+       (if errors
+         (do
+           (log/error :fetch/errored {:errors errors})
+           {})
+         (do
+           (log/info :fetch/completed {:response response})
+           (let [{::m.c.nodes/keys [item]} response
+                 {::m.c.nodes/keys [id]}   item]
+             (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
+             {}))))))
 
 #?(:clj
    (pc/defmutation fetch!
@@ -93,19 +106,27 @@
 
    :cljs
    (defmutation fetch! [_props]
-     (action [_env] true)
-     (remote [env]
-       (fm/returning env ConnectResponse))
-     (ok-action [{:keys [state] :as env}]
-       (let [body                                        (get-in env [:result :body])
-             response                                    (get body `fetch!)
-             {:com.fulcrologic.rad.pathom/keys [errors]} response]
-         (if errors
-           {}
-           (let [{::m.c.nodes/keys [item]} response
-                 {::m.c.nodes/keys [id]}   item]
-             (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
-             {}))))))
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env FetchResponse))
+     (ok-action [env]  (handle-fetch env))))
+
+;; Generate
+
+(>def ::generate!-request (s/keys :req [::m.c.nodes/id]))
+(>def ::generate!-response (s/keys :req [::mu/status] :opt [::mu/errors]))
+
+#?(:clj
+   (>defn do-generate!
+     [{::m.c.nodes/keys [id]}]
+     [::generate!-request => ::generate!-response]
+     (try
+       (let [response (a.c.nodes/generate! id)]
+         (log/debug :do-generate/response {:node-id id :response response})
+         {::mu/status         :ok
+          ::m.c.nodes/item (q.c.nodes/read-record id)})
+       (catch Exception ex
+         (log/error :generate/failed {:exception ex})
+         (mu/exception-response ex)))))
 
 #?(:clj
    (pc/defmutation generate!
@@ -119,13 +140,20 @@
      (action [_env] true)
      (remote [_env] true)))
 
+;; Fetch Peers
+
+#?(:clj
+   (defn do-fetch-peers!
+     [{::m.c.nodes/keys [id]}]
+     (let [node (q.c.nodes/read-record id)]
+       (a.c.peers/fetch-peers! node))))
+
 #?(:clj
    (pc/defmutation fetch-peers!
-     [_env {::m.c.nodes/keys [id]}]
+     [_env params]
      {::pc/params #{::m.c.nodes/id}
       ::pc/output [:status]}
-     (let [node (q.c.nodes/read-record id)]
-       (a.c.peers/fetch-peers! node)))
+     (do-fetch-peers! params))
 
    :cljs
    (defmutation fetch-peers! [_props]

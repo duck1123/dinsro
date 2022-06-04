@@ -54,10 +54,13 @@
 
 (s/def ::default-rate-source (s/keys))
 (s/def ::default-rate-sources (s/coll-of ::default-rate-source))
-(s/def ::default-currency (s/keys))
-(s/def ::default-currencies (s/coll-of ::default-currency))
 
 (s/def ::name string?)
+(s/def ::code string?)
+
+(s/def ::default-currency (s/keys :req-un [::name ::code]))
+(s/def ::default-currencies (s/coll-of ::default-currency))
+
 (s/def ::category (s/keys :req-un [::name]))
 (s/def ::username string?)
 (s/def ::password string?)
@@ -85,8 +88,12 @@
                                            ::m.c.nodes/rpcpass]))
 (s/def ::core-node-data (s/coll-of ::core-node-data-item))
 (s/def ::default-timezone string?)
-(s/def ::seed-data (s/keys :req-un [::default-timezone ::core-node-data ::users ::default-currencies
-                                    ::default-rate-sources]))
+(s/def ::seed-data
+  (s/keys :req-un [::default-timezone
+                   ::core-node-data
+                   ::users
+                   ::default-currencies
+                   ::default-rate-sources]))
 
 (defn create-navlinks!
   []
@@ -101,16 +108,17 @@
                   vals
                   flatten
                   (mapv #(vector ::xt/put %)))]
+    (log/info :navlink/create {:txes txes})
     (xt/submit-tx node txes)))
 
 (>defn seed-rate!
   [_user-id currency-id source-id {:keys [date rate]}]
   [::m.users/id ::m.currencies/id ::m.rate-sources/id any? => any?]
-  (a.rates/add-rate
-   source-id
-   {::m.rates/currency currency-id
-    ::m.rates/date     date
-    ::m.rates/rate     rate}))
+  (let [params {::m.rates/currency currency-id
+                ::m.rates/date     date
+                ::m.rates/rate     rate}]
+    (log/info :rate/create {:params params})
+    (a.rates/add-rate source-id params)))
 
 (defn seed-peer!
   [node-id {:keys [ref] :as peer}]
@@ -122,21 +130,29 @@
                                                  (assoc ::m.ln.peers/address host)
                                                  (assoc ::m.ln.peers/pubkey identity-pubkey)
                                                  (set/rename-keys m.ln.peers/rename-map))]
+          (log/info :peer/create {:params params})
           (q.ln.peers/add-peer! node-id params))
         (throw (RuntimeException. (str "no ref: " ref))))
       (throw (RuntimeException. "no user")))))
 
-(defn seed-currencies!
+(>defn seed-currencies!
   [default-currencies]
-  (log/info :seed/currencies {})
+  [::default-currencies => any?]
+  (log/info :seed/currencies {:default-currencies default-currencies})
   (doseq [{:keys [code name]} default-currencies]
     (let [currency {::m.currencies/code code
                     ::m.currencies/name name}]
       (q.currencies/create-record currency))))
 
+(comment
+
+  (ds/gen-key ::default-currencies)
+
+  nil)
+
 (defn seed-rate-sources!
   [default-rate-sources]
-  (log/info :seed/rate-sources {})
+  (log/info :seed/rate-sources {:default-rate-sources default-rate-sources})
   (doseq [{:keys [isActive isIdentity code name path url]} default-rate-sources]
     (when-let [currency-id (q.currencies/find-eid-by-code code)]
       (let [rate-source {::m.rate-sources/name      name

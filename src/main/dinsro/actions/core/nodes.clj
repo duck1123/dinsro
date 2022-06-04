@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
+   [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -46,8 +47,15 @@
   [::m.c.nodes/item => ::m.c.nodes/item]
   (log/debug :node/fetching {:node-id id})
   (update-blockchain-info! node)
-  (a.c.blocks/fetch-blocks node)
-  (q.c.nodes/read-record id))
+  (let [block-response (a.c.blocks/fetch-blocks node)
+        peer-response  (a.c.peers/fetch-peers! node)
+        updated-node   (q.c.nodes/read-record id)]
+    (log/debug
+     :node/fetching-finished
+     {:block-response     block-response
+      :peer-response      peer-response
+      :update-node updated-node})
+    updated-node))
 
 (>defn fetch-transactions!
   "Fetch transactions for a node's wallet"

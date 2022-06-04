@@ -506,7 +506,7 @@
 
   test
   {:doc     "Run all tests"
-   :depends [test-clj test-cljs]}
+   :depends [test-clj]}
 
   test-clj
   {:doc  "Run clojure tests"

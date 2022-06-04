@@ -53,7 +53,7 @@
                     m.ln.payments/payment-index
                     m.ln.payments/failure-reason
                     m.ln.payments/creation-date]
-   fo/route-prefix "ln-payment"
+   fo/route-prefix "payment"
    fo/title        "Lightning Payments"})
 
 (form/defsc-form LNPaymentForm [_this _props]
@@ -69,7 +69,7 @@
                     m.ln.payments/creation-date
                     m.ln.payments/node]
    fo/subforms     {::m.ln.payments/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix "ln-payment"
+   fo/route-prefix "payment"
    fo/title        "Lightning Payments"})
 
 (report/defsc-report LNPaymentsReport

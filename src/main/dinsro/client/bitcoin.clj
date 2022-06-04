@@ -1,6 +1,9 @@
 (ns dinsro.client.bitcoin
   (:require
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   [dinsro.specs :as ds]
+   [expound.alpha :as expound]
    [farseer.client :as client]
    [farseer.spec.client :as s.client]
    [lambdaisland.glogc :as log]))
@@ -18,10 +21,11 @@
    (handle-request client method []))
   ([client method args]
    [::s.client/config keyword? vector? => any?]
-   (do
-     (log/debug :request/starting {:method method :args args :client client})
+   (let [client-info {:url (:http/url client)}
+         log-data    {:method method :args args :client-info client-info}]
+     (log/debug :handle-request/starting log-data)
      (let [{:keys [error result]} (client/call client method args)]
-       (log/debug :request/finished {:error error :result result :client client})
+       (log/debug :handle-request/finished (merge {:error error :result result} log-data))
        (if error
          (throw (RuntimeException. (pr-str error)))
          result)))))
@@ -54,9 +58,43 @@
   [client wallet-name]
   (handle-request client :createwallet [wallet-name]))
 
+(>def ::difficulty number?)
+(>def ::pruned boolean?)
+(>def ::size_on_disk number?)
+(>def ::initialblockdownload boolean?)
+(>def ::bestblockhash string?)
+(>def ::verificationprogress number?)
+(>def ::warnings string?)
+(>def ::headers number?)
+(>def ::softforks (s/keys))
+(>def ::chainwork string?)
+(>def ::chain string?)
+(>def ::blocks number?)
+(>def ::mediantime number?)
+(>def ::blockchain-info
+      (s/keys
+       :req-un [::pruned ::difficulty
+                ::size_on_disk
+                ::initialblockdownload
+                ::bestblockhash
+                ::verificationprogress
+                ::warnings
+                ::headers
+                ::softforks
+                ::chainwork
+                ::chain
+                ::blocks
+                ::mediantime]))
+
+(comment
+
+  (ds/gen-key ::blockchain-info)
+
+  nil)
+
 (>defn get-blockchain-info
   [client]
-  [::s.client/config => any?]
+  [::s.client/config => ::blockchain-info]
   (handle-request client :getblockchaininfo))
 
 (>defn verify-message
@@ -71,9 +109,65 @@
   (let [n 100]
     (log/spy (handle-request client :generatetoaddress [n address]))))
 
+(>def ::strippedsize number?)
+(>def ::hash string?)
+(>def ::versionHex string?)
+(>def ::time number?)
+(>def ::bits string?)
+(>def ::tx-item string?)
+(>def ::merkleroot string?)
+(>def ::size number?)
+(>def ::confirmations number?)
+(>def ::tx (s/coll-of ::tx-item))
+(>def ::weight number?)
+(>def ::nTx number?)
+(>def ::version number?)
+(>def ::block-data
+      (s/keys :req-un [::strippedsize
+                       ::hash
+                       ::versionHex
+                       ::difficulty
+                       ::time
+                       ::merkleroot
+                       ::bits
+                       ::size
+                       ::confirmations
+                       ::tx
+                       ::weight
+                       ::chainwork
+                       ::nTx
+                       ::version]))
+
+(comment
+
+  (def example-block
+    {:strippedsize  285,
+     :hash          "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+     :versionHex    "00000001",
+     :difficulty    4.656542373906925E-10,
+     :time          1296688602,
+     :merkleroot    "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+     :bits          "207fffff",
+     :size          285,
+     :confirmations 1,
+     :tx            ["4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"],
+     :weight        1140,
+     :chainwork     "0000000000000000000000000000000000000000000000000000000000000002",
+     :nTx           1,
+     :version       1,
+     :nonce         2,
+     :height        0,
+     :mediantime    1296688602})
+
+  (expound/expound ::block-data example-block)
+
+  (ds/gen-key ::block-data)
+
+  nil)
+
 (>defn fetch-block-by-hash
   [client hash]
-  [::s.client/config string? => any?]
+  [::s.client/config string? => ::block-data]
   (handle-request client :getblock [hash]))
 
 (>defn get-block-hash

@@ -35,11 +35,15 @@
 (defn associate-session!
   [env id zone-id response]
   (let [s (get-auth-data id zone-id)]
+    (log/info :session/associate {:s s})
     (fmw/augment-response
      (or response s)
      (fn [resp]
-       (let [current-session (-> env :ring/request :session)]
-         (assoc resp :session (merge current-session s)))))))
+       (let [current-session (-> env :ring/request :session)
+             merged (merge current-session s)]
+         (log/info :session/merging {:current-session current-session
+                                     :merged merged})
+         (assoc resp :session merged))))))
 
 (defn login!
   "Implementation of login. This is database-specific and is not further generalized for the demo."
@@ -65,9 +69,21 @@
 (defn logout!
   "Implementation of logout."
   [_env]
-  (fmw/augment-response {} (fn [resp] (assoc resp :session {}))))
+  (log/info :logout/started {})
+  (fmw/augment-response
+   {::auth/provider       :local
+    :session/current-user nil
+    :identity             nil
+    ::auth/status         :not-logged-in}
+   (fn [resp]
+     (let [merged (-> resp
+                      (assoc-in [:session :session/current-user] nil)
+                      (assoc-in [:session :identity] nil))]
+       (log/info :logout/merging {:session (:session resp) :merged merged})))))
 
-(defn check-session! [env]
+(defn check-session!
+  "get session from env"
+  [env]
   (log/info :session/checking {})
   (or
    (some-> env :ring/request :session)
@@ -77,6 +93,7 @@
 (s/def ::login-response (s/keys))
 
 (>defn authenticate
+  "Check user authentication"
   [username password]
   [string? string? => (? (s/keys))]
   (if-let [user (q.users/find-by-id username)]

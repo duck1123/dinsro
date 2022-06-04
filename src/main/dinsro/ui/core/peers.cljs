@@ -1,6 +1,7 @@
 (ns dinsro.ui.core.peers
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -12,6 +13,33 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+(defsc RefRow
+  [_this _props]
+  {:ident         ::m.c.peers/id
+   :query         [::m.c.peers/id
+                   ::m.c.peers/addr]
+   :initial-state {::m.c.peers/addr "127.0.0.1"}}
+  (dom/tr {}
+    (dom/td {} "row")))
+
+(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.peers/id}))
+
+(defsc RefTable
+  [_this {:keys [rows]}]
+  {:initial-state {:rows []}
+   :query         [{:rows (comp/get-query RefRow)}]}
+  (dom/table :.ui.table
+    (dom/thead {}
+      (dom/tr {}
+        (dom/th {} "Fetched")
+        (dom/th {} "Hash")
+        (dom/th {} "Height")))
+    (dom/tbody {}
+      (for [tx rows]
+        (ui-ref-row tx)))))
+
+(def ui-ref-table (comp/factory RefTable))
+
 (declare CorePeerForm)
 
 (def submit-button
@@ -20,35 +48,35 @@
    :label  "Submit"
    :action (fn [this _key]
              (let [{::m.c.peers/keys [addr id]
-                    node                ::m.c.peers/node} (comp/props this)
-                   {node-id ::m.c.nodes/id}               node
-                   props                                     {::m.c.peers/id   id
-                                                              ::m.c.peers/addr addr
-                                                              ::m.c.peers/node node-id}]
+                    node             ::m.c.peers/node} (comp/props this)
+                   {node-id ::m.c.nodes/id}            node
+                   props                               {::m.c.peers/id   id
+                                                        ::m.c.peers/addr addr
+                                                        ::m.c.peers/node node-id}]
                (log/info :submit-action/clicked props)
                (comp/transact! this [(mu.c.peers/create! props)])
                (form/view! this CorePeerForm id)))})
 
 (form/defsc-form NewCorePeerForm
   [_this _props]
-  {fo/id           m.c.peers/id
+  {fo/id             m.c.peers/id
    fo/action-buttons [::submit]
-   fo/attributes   [m.c.peers/addr
-                    m.c.peers/node]
-   fo/controls {::submit submit-button}
-   fo/field-options {::m.c.peers/node
-                     {::picker-options/query-key       ::m.c.nodes/index
-                      ::picker-options/query-component u.links/CoreNodeLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.c.nodes/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.c.nodes/id id]})
-                         (sort-by ::m.c.nodes/name options)))}}
-   fo/field-styles {::m.c.peers/node :pick-one}
-   fo/route-prefix "new-core-peer"
-   fo/title        "New Core Peer"})
+   fo/attributes     [m.c.peers/addr
+                      m.c.peers/node]
+   fo/controls       {::submit submit-button}
+   fo/field-options  {::m.c.peers/node
+                      {::picker-options/query-key       ::m.c.nodes/index
+                       ::picker-options/query-component u.links/CoreNodeLinkForm
+                       ::picker-options/options-xform
+                       (fn [_ options]
+                         (mapv
+                          (fn [{::m.c.nodes/keys [id name]}]
+                            {:text  (str name)
+                             :value [::m.c.nodes/id id]})
+                          (sort-by ::m.c.nodes/name options)))}}
+   fo/field-styles   {::m.c.peers/node :pick-one}
+   fo/route-prefix   "new-peer"
+   fo/title          "New Core Peer"})
 
 (def delete-button
   {:type   :button
@@ -68,7 +96,7 @@
                       m.c.peers/peer-id]
    fo/controls       {::delete delete-button}
    fo/field-styles   {::m.c.peers/node :link}
-   fo/route-prefix   "core-peer"
+   fo/route-prefix   "peer"
    fo/subforms       {::m.c.peers/node {fo/ui u.links/CoreNodeLinkForm}}
    fo/title          "Core Peer"})
 
@@ -96,4 +124,4 @@
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
-   ro/route            "core-peers"})
+   ro/route            "peers"})

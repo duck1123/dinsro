@@ -1,5 +1,6 @@
 (ns dinsro.actions.core.blocks
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -12,6 +13,7 @@
    [lambdaisland.glogc :as log]))
 
 (>defn register-block
+  "Create a block reference"
   [node-id hash height]
   [::m.c.blocks/node ::m.c.blocks/hash ::m.c.blocks/height => ::m.c.blocks/id]
   (if-let [block-id (q.c.blocks/fetch-by-node-and-height node-id height)]
@@ -27,27 +29,31 @@
         (q.c.blocks/create-record params)))))
 
 (>defn fetch-block-by-height
+  "Fetch a block from the node"
   [node height]
   [::m.c.nodes/item number? => any?]
   (let [client (m.c.nodes/get-client node)]
     (c.bitcoin/fetch-block-by-height client height)))
 
-(defn update-block!
-  [core-node-id height block]
+(>defn update-block!
+  "Fetch and update a block from the node"
+  [core-node-id height params]
+  [::m.c.nodes/id ::m.c.blocks/height any? => (s/tuple ::m.c.blocks/id ::m.c.blocks/params)]
   (if-let [existing-block-id (q.c.blocks/fetch-by-node-and-height core-node-id height)]
     (if (q.c.blocks/read-record existing-block-id)
-      (let [params (m.c.blocks/prepare-params block)
+      (let [params (m.c.blocks/prepare-params params)
             params (assoc params ::m.c.blocks/node core-node-id)
             id     (q.c.blocks/update-block existing-block-id params)]
         [id params])
       (throw (RuntimeException. "cannot find existing block")))
-    (let [params (m.c.blocks/prepare-params block)
+    (let [params (m.c.blocks/prepare-params params)
           params (assoc params ::m.c.blocks/fetched? true)
           params (assoc params ::m.c.blocks/node core-node-id)
           id     (q.c.blocks/create-record params)]
       [id params])))
 
 (>defn update-block-by-height
+  "Fetch and update the block by height"
   [node height]
   [::m.c.nodes/item ::m.c.blocks/height => ::m.c.blocks/id]
   (log/info :block/updating {:height height})
@@ -59,9 +65,14 @@
               prev-id       (when previous-hash (register-block core-node-id previous-hash (dec height)))
               next-id       (when next-hash (register-block core-node-id next-hash (inc height)))]
           (log/info :block/parsing-neighbors {:previous previous-hash :next next-hash})
-          (let [block             (assoc block ::m.c.blocks/next-block next-id)
-                block             (assoc block ::m.c.blocks/previous-block prev-id)
-                [block-id params] (update-block! core-node-id height block)]
+          (let [params            block
+                params            (assoc params ::m.c.blocks/fetched? true)
+                params            (assoc params ::m.c.blocks/hash (:hash block))
+                params            (assoc params ::m.c.blocks/height height)
+                params            (assoc params ::m.c.blocks/node core-node-id)
+                params            (assoc params ::m.c.blocks/next-block next-id)
+                params            (assoc params ::m.c.blocks/previous-block prev-id)
+                [block-id params] (update-block! core-node-id height params)]
             (doseq [tx-id (::m.c.blocks/tx params)]
               (if-let [existing-id (q.c.tx/fetch-by-txid tx-id)]
                 (log/info :tx/exists {:tx-id existing-id})
@@ -75,17 +86,21 @@
     (throw (RuntimeException. "no node id"))))
 
 (>defn fetch-blocks
+  "Fetch the latest block for a node"
   [node]
   [::m.c.nodes/item => any?]
-  (log/debug :blocks/fetching {})
+  (log/debug :blocks/fetching {:node node})
   (let [client (m.c.nodes/get-client node)
         info   (c.bitcoin/get-blockchain-info client)
         tip    (:blocks info)]
+    (log/info :blocks/fetched {:info info})
     (update-block-by-height node tip)
     tip))
 
-(defn fetch-transactions!
+(>defn fetch-transactions!
+  "Fetch all transactions for a block"
   [block]
+  [::m.c.blocks/item => any?]
   (log/info :tx/fetching {:block block})
   (let [block-id (::m.c.blocks/id block)
         node-id  (q.c.nodes/find-by-block block-id)]
@@ -96,8 +111,11 @@
             (q.c.tx/create-record params))))
       (throw (RuntimeException. "Failed to find node")))))
 
-(defn search!
-  [_props]
+(>defn search!
+  "Find a block. (not implemented)"
+  [props]
+  [any? => any?]
+  (log/info :block/searching {:props props})
   nil)
 
 (comment

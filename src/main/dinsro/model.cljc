@@ -5,6 +5,7 @@
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.joins.core.blocks :as j.c.blocks]
+   [dinsro.joins.core.connections :as j.c.connections]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.joins.core.tx :as j.c.tx]
@@ -29,14 +30,15 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.connections :as m.c.connections]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.script-sigs :as m.c.script-sig]
+   [dinsro.model.core.script-sigs :as m.c.script-sigs]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.ln.chains :as m.ln.chain]
+   [dinsro.model.ln.chains :as m.ln.chains]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.info :as m.ln.info]
@@ -60,6 +62,7 @@
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
    #?(:clj [dinsro.mutations.core.addresses :as mu.c.addresses])
    #?(:clj [dinsro.mutations.core.blocks :as mu.c.blocks])
+   #?(:clj [dinsro.mutations.core.connections :as mu.c.connections])
    #?(:clj [dinsro.mutations.core.nodes :as mu.c.nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.c.peers])
    #?(:clj [dinsro.mutations.core.tx :as mu.c.tx])
@@ -81,6 +84,7 @@
         j.categories/attributes
         j.c.addresses/attributes
         j.c.blocks/attributes
+        j.c.connections/attributes
         j.c.nodes/attributes
         j.c.peers/attributes
         j.c.tx/attributes
@@ -105,14 +109,15 @@
         m.categories/attributes
         m.c.addresses/attributes
         m.c.blocks/attributes
+        m.c.connections/attributes
         m.c.nodes/attributes
         m.c.peers/attributes
-        m.c.script-sig/attributes
+        m.c.script-sigs/attributes
         m.c.tx/attributes
         m.c.tx-in/attributes
         m.c.tx-out/attributes
         m.currencies/attributes
-        m.ln.chain/attributes
+        m.ln.chains/attributes
         m.ln.channels/attributes
         m.ln.info/attributes
         m.ln.invoices/attributes
@@ -142,6 +147,7 @@
            m.navlink/resolvers
            mu.accounts/resolvers
            mu.c.addresses/resolvers
+           mu.c.connections/resolvers
            mu.c.blocks/resolvers
            mu.c.nodes/resolvers
            mu.c.peers/resolvers

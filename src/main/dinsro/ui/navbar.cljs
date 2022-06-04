@@ -17,6 +17,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.home :as u.home]
+   [lambdaisland.glogc :as log]
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]))
 
 (s/def ::expanded? boolean?)
@@ -37,7 +38,7 @@
    :initial-state {::dr/current-route {}}})
 
 (defsc NavLink
-  [this {::m.navlink/keys [name]}]
+  [this {::m.navlink/keys [name] :as props}]
   {:ident         ::m.navlink/id
    :initial-state {::m.navlink/id         nil
                    ::m.navlink/name       ""
@@ -52,6 +53,7 @@
                    ::m.navlink/name
                    ::m.navlink/target
                    {[:root/router '_] (comp/get-query RouteQuery)}]}
+  (log/info :navlink/rendering {:props props})
   (dom/a :.item
     {:onClick (fn [e]
                 (.preventDefault e)
@@ -79,6 +81,7 @@
                    ::m.navlink/target
                    {::m.navlink/children (comp/get-query NavLink)}
                    {[:root/router '_] (comp/get-query RouteQuery)}]}
+  (log/info :top-nav-link/rendered {:props props})
   (if (seq children)
     (dom/div :.ui.simple.dropdown.item
       name
@@ -120,9 +123,10 @@
 (def ui-navbar-login-link (comp/factory NavbarLoginLink))
 
 (defsc NavbarLogoutLink
-  [this _]
+  [this props]
   {:initial-state {}
    :query         []}
+  (log/info :logout-link/rendering {:props props})
   (dom/a :.ui.item
     {:onClick (fn [_evt]
                 (uism/trigger! this ::mu.navbar/navbarsm :event/hide {})
@@ -145,6 +149,7 @@
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
                     (let [defaults    {:inverted true}
                           merged-data (merge current-normalized data-tree defaults)]
+                      (log/info :sidebar/merged {:defaults defaults :merged-data merged-data})
                       merged-data))
    :initial-state {:inverted                 true
                    ::m.navbar/id             :main
@@ -152,6 +157,7 @@
   (let [authorization (get props [::auth/authorization :local])
         visible       (= (uism/get-active-state this ::mu.navbar/navbarsm) :state/shown)
         logged-in?    (= (::auth/status authorization) :success)]
+    (log/info :sidebar/rendering {:props props :visible visible})
     (ui-sidebar
      {:direction "right"
       :as        Menu
@@ -196,13 +202,17 @@
                    {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
                    ::expanded?
                    [::uism/asm-id ::mu.navbar/navbarsm]]}
+  (log/info :navbar/rendering {:props props})
   (let [{:keys [site-button]} (css/get-classnames Navbar)
         authorization         (get props [::auth/authorization :local])
         current-user          (:session/current-user authorization)
         inverted              true
         logged-in?            (= (::auth/status authorization) :success)]
-
-    (dom/div {:classes [:.ui.top.fixed.menu (when inverted :.inverted)]}
+    (log/info :navbar/rendering {:authorization authorization
+                                 :current-user  current-user
+                                 :inverted      inverted
+                                 :logged-in?    logged-in?})
+    (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]
          :onClick (fn []
@@ -216,9 +226,8 @@
         (map ui-top-nav-link unauth-links))
       (ui-menu-menu
        {:position "right"}
-       (dom/div
-         {:classes [:.item]
-          :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
+       (dom/div {:classes [:.item]
+                 :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
          (dom/i :.icon.sidebar))))))
 
 (def ui-navbar (comp/factory Navbar))

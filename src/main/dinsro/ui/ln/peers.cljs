@@ -41,7 +41,7 @@
 (form/defsc-form PeerSubform
   [_this _props]
   {fo/id           m.ln.peers/id
-   fo/route-prefix "ln-nodes-peers"
+   fo/route-prefix "nodes-peers"
    fo/title        "Peers"
    fo/attributes   [m.ln.peers/address
                     m.ln.peers/pubkey
@@ -50,7 +50,7 @@
 
 (form/defsc-form NodeLink [_this _props]
   {fo/id           m.ln.nodes/id
-   fo/route-prefix "ln-peers-node"
+   fo/route-prefix "peers-node"
    fo/attributes   [m.ln.nodes/name]})
 
 (form/defsc-form LNPeerForm [_this _props]
@@ -64,7 +64,7 @@
                     ::m.ln.nodes/id   {::form/ui NodeLink}}
    fo/field-styles {::m.ln.peers/node :link
                     ::m.ln.peers/id   :link}
-   fo/route-prefix "ln-peer"
+   fo/route-prefix "peer"
    fo/title        "Lightning Peer"})
 
 (def override-report true)
@@ -76,7 +76,7 @@
                         m.ln.peers/node]
    ro/field-formatters {::m.ln.peers/node (fn [_this props] (u.links/ui-node-link props))}
    ro/form-links       {::m.ln.peers/pubkey LNPeerForm}
-   ro/route            "ln-peers"
+   ro/route            "peers"
    ro/row-actions      []
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true

@@ -203,5 +203,6 @@
       (control-type :ref  :rate-chart       render-rate-chart-control)
       (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)
+      ;; (control-type :ref  :word-list     u.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)
       (control-type :date :default          render-date)))
