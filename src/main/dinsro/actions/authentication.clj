@@ -2,7 +2,6 @@
   (:require
    [buddy.hashers :as hashers]
    [buddy.sign.jwt :as jwt]
-   [clj-time.core :as time]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.server.api-middleware :as fmw]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
@@ -14,7 +13,8 @@
    [dinsro.model.timezone :as timezone]
    [dinsro.model.users :as m.users]
    [io.pedestal.log :as log]
-   [taoensso.encore :as enc]))
+   [taoensso.encore :as enc]
+   [tick.core :as t]))
 
 (>defn get-user-id
   [env]
@@ -101,7 +101,7 @@
       (if (hashers/check password password-hash)
         (let [username (::m.users/id user)
               claims   {:user username
-                        :exp  (time/plus (time/now) (time/minutes 3600))}]
+                        :exp  (t/>> (t/now) (t/new-duration 1 :days))}]
           {:identity username
            :token    (jwt/sign claims secret)})
         ;; Password does not match
