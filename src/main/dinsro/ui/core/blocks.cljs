@@ -30,11 +30,10 @@
     (dom/td (u.links/ui-block-link props))
     (dom/td (str height))
     (dom/td {}
-            (dom/button
-              {:classes [:.ui.button]
-               :onClick (fn [event]
-                          (log/info :fetch-button/clicked {:event event})
-                          (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+            (dom/button {:classes [:.ui.button]
+                         :onClick (fn [event]
+                                    (log/info :fetch-button/clicked {:event event})
+                                    (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
               "Fetch"))))
 
 (def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.blocks/id}))
