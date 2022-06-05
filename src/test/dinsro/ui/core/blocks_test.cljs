@@ -5,9 +5,6 @@
    [dinsro.client :as client]
    dinsro.machines
    [dinsro.ui.core.blocks :as u.c.blocks]
-   [dinsro.test-helpers :refer [key-card]]
-   [nextjournal.devcards :as dc]
-   [nextjournal.viewer :refer [inspect]]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
@@ -32,11 +29,6 @@
             ::m.c.blocks/height   6
             ::m.c.blocks/hash     "yes"})}))
 
-(key-card ::u.c.blocks/row)
-(key-card ::u.c.blocks/row-keywords)
-(key-card ::u.c.blocks/row2)
-(key-card ::u.c.blocks/rows)
-
 (defn CoreBlockReport-data
   []
   {:ui/busy?        false
@@ -47,10 +39,6 @@
    :ui/loaded-data  []
    :ui/page-count   1
    :ui/parameters   {}})
-
-(dc/defcard CoreBlockReport-data-card
-  []
-  [inspect (CoreBlockReport-data)])
 
 (ws/defcard CoreBlockReport
   {::wsm/card-width 7 ::wsm/card-height 12}

@@ -4,7 +4,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}-workspaces
+  name: workspaces
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -32,9 +32,9 @@ spec:
         pathType: "ImplementationSpecific"
         backend:
           service:
-            name: {{ $fullName }}-workspaces
+            name: workspaces
             port:
-              number: {{ $svcPort }}
+              name: workspaces
       {{- end }}
   {{- end }}
 {{- end }}

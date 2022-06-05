@@ -36,9 +36,9 @@ spec:
         pathType: "ImplementationSpecific"
         backend:
           service:
-            name: {{ $fullName }}-devtools
+            name: devtools
             port:
-              number: {{ $svcPort }}
+              name: devtools
       {{- end }}
   {{- end }}
   {{- end }}

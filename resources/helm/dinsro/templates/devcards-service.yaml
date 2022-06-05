@@ -1,0 +1,17 @@
+{{- if .Values.devcards.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: devcards
+  labels:
+    {{- include "dinsro.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.devcards.service.type }}
+  ports:
+  - port: {{ .Values.devcards.service.port }}
+    targetPort: devcards
+    protocol: TCP
+    name: devcards
+  selector:
+    {{- include "dinsro.devcardsSelectorLabels" . | nindent 4 }}
+{{- end }}

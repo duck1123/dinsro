@@ -79,7 +79,7 @@
                 :output-path  "target/docs-cljs"}}
 
   :dev
-  {:extra-paths ["src/dev" "src/test"]
+  {:extra-paths ["src/dev" "src/test" "src/shared-test"]
    :extra-deps
    {binaryage/devtools      {:mvn/version "1.0.2"}
     nubank/workspaces       {:mvn/version "1.1.2"}

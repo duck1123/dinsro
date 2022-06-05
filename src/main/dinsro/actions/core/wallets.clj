@@ -86,8 +86,8 @@
       (log/info :words/update-finished {:response response})
       response)))
 
-(defn ^MnemonicCode get-mnemonic
-  [wallet-id]
+(defn get-mnemonic
+  ^MnemonicCode [wallet-id]
   (c.bitcoin-s/words->mnemonic (get-word-list wallet-id)))
 
 (defn get-xpriv

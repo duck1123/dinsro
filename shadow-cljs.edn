@@ -11,6 +11,21 @@
    :output-to "target/ci.js",
    :target    :karma}
 
+  :devcards
+  {:target     :browser
+   :output-to  "public/js/viewer.js"
+   :output-dir "public/js"
+   :devtools   {:http-port          7778
+                :http-root          "public"
+                :http-resource-root "public"}
+   :modules    {:viewer {:entries [dinsro.client
+                                   dinsro.all-tests
+                                   dinsro.all-shared-tests
+                                   nextjournal.devcards.main]}}
+   :dev        {:modules {:viewer {:entries [devtools]}}}
+   :release    {:output-dir "build/"}
+   :js-options {:output-feature-set :es8}}
+
   :main
   {:asset-path "/js"
    :dev        {:compiler-options {:closure-defines {'goog.DEBUG true}
@@ -43,7 +58,7 @@
                 :preloads           [com.fulcrologic.fulcro.inspect.preload
                                      com.fulcrologic.fulcro.inspect.dom-picker-preload
                                      com.fulcrologic.fulcro.inspect.websocket-preload]}
-   :modules    {:main {:entries [dinsro.devcards]}}
+   :modules    {:main {:entries [dinsro.workspace-core]}}
    :ns-regexp  "-test$"
    :output-dir "resources/workspaces/public/js"
-   :target     nubank.workspaces.shadow-cljs.target}}}
+   :target     :browser}}}

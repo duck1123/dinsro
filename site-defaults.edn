@@ -1,49 +1,82 @@
 {
  ;; The host that dinsro is served at
- :baseUrl             "dinsro.localhost"
+ :baseUrl "dinsro.localhost"
 
  ;; repo for images
- :repo                "duck1123"
+ :repo "duck1123"
 
  ;; tag for dinsro image
- :version             "latest"
+ :version "latest"
 
  ;; If Rancher is being used, all namespaces will be applied to this project
- :projectId           "p-vhkqf"
+ :projectId "p-vhkqf"
+
+ :devcards
+ {:enabled     false
+  :embedded    false
+  :inheritHost true
+  :host        "devcards.dinsro.localhost"}
+
+ :devtools
+ {:enabled     true
+  :embedded    false
+  :inheritHost true
+  :host        "devtools.dinsro.localhost"}
+
+ :docs
+ {:enabled     true
+  :inheritHost true
+  :host        "docs.dinsro.localhost"}
+
+ :notebook
+ {:enabled     false
+  :embedded    false
+  :inheritHost true
+  :host        "notebook.dinsro.localhost"}
+
+ :workspaces
+ {:enabled     false
+  :embedded    false
+  :inheritHost true
+  :host        "workspaces.dinsro.localhost"}
+
+ :useDocs true
 
  ;; Should the notebook be started?
- :useNotebook         true
+ :useNotebook true
 
  ;; If true, the notebook will use whatever the baseUrl is as it's base
  :notebookInheritHost false
 
  ;; Host for notebook ingress if not inheriting host
- :notebookHost        "notebook.dinsro.localhost"
+ :notebookHost "notebook.dinsro.localhost"
 
- :portalHost          "portal.dinsro.localhost"
+ :portalHost "portal.dinsro.localhost"
 
  ;; If true, devtools will be run on the host, otherwise the dev image will launch
  ;; a devtools watcher on startup and will pre-compile the js resources
- :localDevtools       true
+ :localDevtools true
 
- :seedDatabase        false
+ :useCards true
 
- :useGuardrails       true
+ :seedDatabase false
+
+ :useGuardrails true
 
  ;; Enable linting watchers
- :useLinting          true
+ :useLinting true
 
  ;; Should a nrepl connection be started?
- :useNrepl            false
+ :useNrepl false
 
  ;; If true, a database will be launched and set as the db backend
- :usePersistence      false
+ :usePersistence false
 
  :usePortal true
 
  ;; If true, production image will be deployed
- :useProduction       false
+ :useProduction false
 
  ;; Should testing resources be run?
- :useTests            false
-}
+ :useTests false
+ }

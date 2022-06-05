@@ -9,8 +9,6 @@
    dinsro.machines
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.navbar :as u.navbar]
-   [nextjournal.devcards :as dc]
-   [nextjournal.viewer :refer [inspect]]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
@@ -41,8 +39,6 @@
     ::m.navlink/target     nil
     :root/router           {}}])
 
-(dc/defcard unauth-links-card [] [inspect unauth-links])
-
 (def menu-links
   [#_{::m.navlink/id         :foo
       ::m.navlink/name       (ds/gen-key ::m.navlink/name)
@@ -55,8 +51,6 @@
                 ::uism/active-state                                    :state/hidden,
                 :com.fulcrologic.fulcro.ui-state-machines/ident->actor {:actor/navbar {}}
                 :com.fulcrologic.fulcro.ui-state-machines/actor->ident {:actor/navbar {}}})
-
-(dc/defcard nav-state-card [] [inspect nav-state])
 
 (ws/defcard NavbarLogoutLink
   {}

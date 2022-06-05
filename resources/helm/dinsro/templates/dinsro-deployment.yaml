@@ -34,9 +34,14 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        {{- if .Values.devtools.webtoolsUrl }}
+        - name: DEVTOOLS_URL
+          value: "http://{{ .Values.devtools.webtoolsUrl }}"
+        {{- else -}}
         {{- with (first .Values.devtools.ingress.hosts) }}
         - name: DEVTOOLS_URL
           value: "http://{{ .host }}"
+        {{- end }}
         {{- end }}
         {{- if .Values.devtools.enabled }}
         - name: WATCH_SOURCES

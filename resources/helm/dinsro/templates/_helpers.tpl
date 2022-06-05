@@ -50,6 +50,24 @@ app.kubernetes.io/name: {{ include "dinsro.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/* Devcards Selector labels */}}
+{{- define "dinsro.devcardsSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "dinsro.name" . }}-devcards
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/* Devtools Selector labels */}}
+{{- define "dinsro.devtoolsSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "dinsro.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/* Docs Selector labels */}}
+{{- define "dinsro.docsSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "dinsro.name" . }}-docs
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 {{/*
 Portal Selector labels
 */}}

@@ -1,8 +1,8 @@
-{{- if .Values.portal.enabled }}
+{{- if .Values.docs.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portal
+  name: docs
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
 spec:
@@ -11,7 +11,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "dinsro.portalSelectorLabels" . | nindent 6 }}
+      {{- include "dinsro.docsSelectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "dinsro.portalSelectorLabels" . | nindent 8 }}
+        {{- include "dinsro.docsSelectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -29,19 +29,14 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      - name: "portal"
+      - name: "docs"
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        image: "duck1123/portal:latest"
+        image: "duck1123/dinsro:docs-latest"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args:
-        {{- range .Values.portal.ingress.hosts }}
-        - "--host"
-        - {{ .host }}
-        {{- end }}
         ports:
-        - name: web
-          containerPort: 5678
+        - name: docs
+          containerPort: 3000
           protocol: TCP
         resources:
           {{- toYaml .Values.resources | nindent 12 }}

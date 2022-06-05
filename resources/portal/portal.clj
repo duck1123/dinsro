@@ -3,7 +3,7 @@
 
 (require '[babashka.deps :as deps])
 (require '[clojure.tools.cli :refer [parse-opts]])
-(deps/add-deps '{:deps {djblue/portal {:mvn/version "0.20.1"}}})
+(deps/add-deps '{:deps {djblue/portal {:mvn/version "0.22.1"}}})
 (require '[portal.api :as p])
 
 (def cli-options

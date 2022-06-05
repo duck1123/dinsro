@@ -4,7 +4,8 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [com.wsscode.pathom.connect :as pc]))
+   [com.wsscode.pathom.connect :as pc]
+   [clojure.spec.alpha :as s]))
 
 (comment ::pc/_)
 
@@ -62,6 +63,7 @@
      {ao/pc-output  [::id]
       ao/pc-resolve (fn [_env _props] {})}))
 
+(s/def ::name string?)
 (defattr name ::name :string
   {ao/identities #{::id}
    ao/pc-input   #{::id}

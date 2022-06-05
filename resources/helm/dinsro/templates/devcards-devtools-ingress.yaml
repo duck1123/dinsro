@@ -1,10 +1,10 @@
-{{- if and .Values.portal.enabled .Values.portal.ingress.enabled -}}
+{{- if and .Values.devcards.enabled .Values.devcards.devtools.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
-{{- $svcPort := .Values.portal.service.port -}}
+{{- $svcPort := .Values.devcards.devtools.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: portal
+  name: devcards-devtools
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -12,18 +12,18 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.portal.ingress.tls }}
+  {{- if .Values.devcards.devtools.ingress.tls }}
   tls:
-    {{- range .Values.portal.ingress.tls }}
+    {{- range .Values.devcards.devtools.ingress.tls }}
     - hosts:
-      {{- range .hosts }}
-      - {{ . | quote }}
-      {{- end }}
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
   rules:
-  {{- range .Values.portal.ingress.hosts }}
+  {{- range .Values.devcards.devtools.ingress.hosts }}
   - host: {{ .host | quote }}
     http:
       paths:
@@ -32,9 +32,9 @@ spec:
         pathType: "ImplementationSpecific"
         backend:
           service:
-            name: portal
+            name: devcards-devtools
             port:
-              number: {{ $svcPort }}
+              name: devtools
       {{- end }}
   {{- end }}
 {{- end }}

@@ -2,7 +2,6 @@
   (:require
    [clojure.tools.cli :refer [parse-opts]]
    [dinsro.components.config :as c.config]
-   [dinsro.components.notebooks]
    [dinsro.components.nrepl]
    [dinsro.components.portal]
    [dinsro.components.seed :as c.seed]

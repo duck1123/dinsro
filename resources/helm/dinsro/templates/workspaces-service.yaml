@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "dinsro.fullname" . }}-workspaces
+  name: workspaces
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
 spec:

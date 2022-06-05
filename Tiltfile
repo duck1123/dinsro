@@ -21,21 +21,26 @@ def config_get(key):
   else:
     return config_data[key]
 
-base_url        = config_get('baseUrl')
-project_id      = config_get('projectId')
-repo            = config_get('repo')
-version         = config_get('version')
-local_devtools  = config_get('localDevtools')
-notebook_host   = config_get('notebookHost')
-use_linting     = config_get('useLinting')
-use_notebook    = config_get('useNotebook')
-use_nrepl       = config_get('useNrepl')
-use_persistence = config_get('usePersistence')
-use_production  = config_get('useProduction')
-use_tests       = config_get('useTests')
-use_docs        = False
-
-portal_url = 'http://' + config_get('portalHost')
+base_url         = config_get('baseUrl')
+project_id       = config_get('projectId')
+repo             = config_get('repo')
+version          = config_get('version')
+devcards         = config_get('devcards')
+docs_enabled     = config_get('docs-enabled')
+local_devtools   = config_get('localDevtools')
+notebook_host    = config_get('notebookHost')
+portal_enabled   = config_get('portal-enabled')
+use_linting      = config_get('useLinting')
+use_notebook     = config_get('useNotebook')
+use_nrepl        = config_get('useNrepl')
+use_persistence  = config_get('usePersistence')
+use_production   = config_get('useProduction')
+use_tests        = config_get('useTests')
+use_docs         = config_get('useDocs')
+use_devcards     = devcards.get('enabled')
+devcards_enabled = config_get('devcards-enabled')
+portal_url       = 'http://' + config_get('portalHost')
+devcards_url     = 'http://devcards.dinsro.localhost'
 
 def get_notebook_host():
   return "notebook." + base_url if config_get('notebookInheritHost') else notebook_host
@@ -102,7 +107,11 @@ local_resource(
   'dinsro-values',
   allow_parallel = True,
   cmd='bb generate-dinsro-values',
-  deps = [ 'site.edn' ],
+  deps = [
+    'site.edn',
+    'src/shared',
+    'src/babashka',
+  ],
   labels = [ 'compile' ],
 )
 
@@ -129,23 +138,71 @@ if use_production:
     },
   )
 
-earthly_build(
-  "%s/portal:%s" % (repo, version),
-  '+portal',
-  deps = [
-    'Earthfile',
-    '.dockerignore',
-    'bb.edn',
-    "resources/portal",
-    'deps.edn',
-  ],
-  build_args = {
-    'REPO': repo,
-  }
-)
+if portal_enabled:
+  earthly_build(
+    "%s/portal:%s" % (repo, version),
+    '+portal',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      "resources/portal",
+      'deps.edn',
+    ],
+    build_args = {
+      'REPO': repo,
+    }
+  )
+
+if devcards_enabled:
+  earthly_build(
+    "%s/dinsro:devcards-%s" % (repo, version),
+    '+devcards-image',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      "resources/devcards",
+      'src',
+      'deps.edn',
+      'site.edn',
+      'site-defaults.edn',
+    ],
+    build_args = {
+      'REPO': repo,
+    },
+    live_update=[
+      sync('resources/devcards', '/usr/src/app/resources/devcards'),
+      sync('site.edn', '/usr/src/app/site.edn'),
+      sync('src', '/usr/src/app/src'),
+      # sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
+    ],
+  )
+
+if docs_enabled:
+  earthly_build(
+    "%s/dinsro:docs-%s" % (repo, version),
+    '+docs-image',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      'deps.edn',
+      'site.edn',
+      'site-defaults.edn',
+      'src',
+      'target/doc',
+    ],
+    build_args = {
+      'REPO': repo,
+    },
+    live_update=[
+      sync('site.edn', '/usr/src/app/site.edn'),
+      sync('src', '/usr/src/app/src'),
+    ],
+  )
 
 if not use_production:
-
   earthly_build(
     dinsro_dev_image,
     '+dev-image-sources',
@@ -186,6 +243,7 @@ k8s_resource(
     link(base_url, 'dinsro'),
     link('devtools.' + base_url, 'Devtools') if has_devtools else None,
     link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
+    link(devcards.get('host') or "devcards.dinsro.localhost", 'Cards') if devcards_enabled else None,
     link(get_notebook_host(), 'Notebook') if use_notebook else None,
   ] if x != None],
   labels = [ 'dinsro' ],
@@ -216,9 +274,9 @@ if use_linting:
     labels = [ 'lint' ],
   )
 
-if use_docs:
+if docs_enabled:
   local_resource(
-    'docs',
+    'compile-docs',
     allow_parallel = True,
     cmd='bb docs',
     deps = [
@@ -352,13 +410,34 @@ if use_persistence:
     ],
   )
 
-k8s_resource(
-  workload = 'portal',
-  labels = [ 'dinsro' ],
-  links = [
-    link(portal_url, 'Portal'),
-  ],
-)
+if portal_enabled:
+  k8s_resource(
+    workload = 'portal',
+    labels = [ 'dinsro' ],
+    links = [
+      link(portal_url, 'Portal'),
+    ],
+  )
+
+docs_url = 'docs.dinsro.localhost'
+
+if docs_enabled:
+  k8s_resource(
+    workload = 'docs',
+    labels = [ 'dinsro' ],
+    links = [
+      link(docs_url, 'docs'),
+    ],
+  )
+
+if devcards_enabled:
+  k8s_resource(
+    workload = 'devcards',
+    labels = [ 'dinsro' ],
+    links = [
+      link(devcards_url, 'devcards'),
+    ],
+  )
 
 cmd_button(
   'dinsro:format',

@@ -6,6 +6,8 @@
    [nextjournal.clerk :as clerk]
    [taoensso.timbre :as log]))
 
+(def initial-page "src/notebooks/dinsro/notebook.clj")
+
 (defn start!
   []
   (when (get-in config/config [::config :enabled])
@@ -13,7 +15,7 @@
     (clerk/serve!
      {:watch-paths    ["src/main" "src/notebooks" "src/shared"]
       :show-filter-fn #(string/starts-with? % "dinsro.notebook")})
-    (clerk/show! "src/notebooks/dinsro/notebook.clj")))
+    (clerk/show! initial-page)))
 
 (defn stop!
   [_clerk]
@@ -26,6 +28,6 @@
 (comment
   (start!)
 
-  (clerk/show! "notebooks/dinsro/notebook.clj")
+  (clerk/show! initial-page)
 
   nil)

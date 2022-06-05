@@ -6,7 +6,9 @@
    [clj-yaml.core :as yaml]
    [cheshire.core :as json]
    [dinsro.commands :as c]
+   [dinsro.site :as site]
    [dinsro.helm.bitcoind :as h.bitcoind]
+   [dinsro.helm.dinsro :as h.dinsro]
    [dinsro.helm.lnd :as h.lnd]
    [dinsro.helm.nbxplorer :as h.nbxplorer]
    [dinsro.helm.rtl :as h.rtl]
@@ -89,10 +91,7 @@
 
   compile-cljs
   {:doc     "Compile clojurescript source files"
-   :depends [init
-             ;; install-style-dependencies
-             ;; compile-styles
-             ]
+   :depends [init]
    :task    (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
                   data         {:devtools {:devtools-url devtools-url}}
                   args         (format "-M:dev:notebooks:guardrails:shadow-cljs compile main --config-merge '%s'"
@@ -119,6 +118,10 @@
   dev
   {:doc     "Build and start development server via docker"
    :depends [build-dev-image start-dev]}
+
+  dev2
+  {:depends [generate-dinsro-values]
+   :task    (shell "tilt up --legacy=true")}
 
   dev-bootstrap
   {:doc "DOCKER-ONLY: Start clojurescript watch and main server"
@@ -153,9 +156,11 @@
          (future (shell watch-cmd)))
        (shell run-cmd)))}
 
+  devcards-server
+  {:task (shell "bb watch-devcards")}
+
   dinsro-values
-  {:task
-   (do (c/->dinsro-config))}
+  {:task (do (h.dinsro/->dinsro-config (site/get-site-config)))}
 
   dispatch
   {:doc  "Send a signal over nrepl"
@@ -196,7 +201,8 @@
   {:task
    (do
      (c/mkdir "target")
-     (spit (str "target/dinsro_values.yaml") (c/->dinsro-config)))}
+     (spit (str "target/dinsro_values.yaml") (yaml/generate-string
+                                              (h.dinsro/->dinsro-config (site/get-site-config)))))}
 
   generate-lnd-values
   {:doc "generate a lnd values file"
@@ -475,6 +481,12 @@
      (c/earthly :image-dev)
      (shell "docker run -p 3000:3000 -p 9630:9630 -e WATCH_SOURCES=true duck1123/dinsro:dev-latest"))}
 
+  run-docs
+  {:task
+   (do
+     (c/earthly :docs-image)
+     (shell "docker run -p 3000:3000 duck1123/dinsro:docs-latest"))}
+
   bash-dev-image
   {:task
    (do
@@ -525,11 +537,16 @@
   watch
   {:depends [watch-cljs]}
 
+  watch-devcards
+  {:task (c/watch-cljs ["devcards"])}
+
   watch-styles
-  {:task (shell "npm run watch:sass")}
+  {:doc  "watch and compile css styles"
+   :task (shell "npm run watch:sass")}
 
   watch-cljs
-  {:task (c/watch-cljs)}
+  {:do   "watch and compile css"
+   :task (c/watch-cljs ["main" "workspaces" "devcards"])}
 
   workspaces
   {:doc  "Starts and watches for workspaces"

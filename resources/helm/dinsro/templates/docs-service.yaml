@@ -1,0 +1,17 @@
+{{- if .Values.docs.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: docs
+  labels:
+    {{- include "dinsro.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.docs.service.type }}
+  ports:
+  - port: {{ .Values.docs.service.port }}
+    targetPort: docs
+    protocol: TCP
+    name: docs
+  selector:
+    {{- include "dinsro.docsSelectorLabels" . | nindent 4 }}
+{{- end }}

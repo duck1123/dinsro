@@ -1,6 +1,5 @@
 (ns dinsro.ui.core.nodes-test
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.client :as client]
@@ -9,8 +8,6 @@
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
    [lambdaisland.glogc :as log]
-   [nextjournal.devcards :as dc]
-   [nextjournal.viewer :refer [inspect]]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
@@ -45,9 +42,6 @@
    {::ct.fulcro3/root          u.c.node-peers/NodePeersSubPage
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state u.c.node-peers-test/NodePeersSubPage-data}))
-
-(dc/defcard ShowNode-initial-state [] [inspect (comp/get-initial-state u.c.nodes/ShowNode)])
-(dc/defcard ShowNode-query [] [inspect (comp/get-query u.c.nodes/ShowNode)])
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowNode

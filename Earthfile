@@ -190,15 +190,25 @@ image-dev:
   ARG EXPECTED_REF=${repo}/${project}:dev-${version}
   SAVE IMAGE ${EXPECTED_REF}
 
+devcards-image:
+  FROM +dev-sources-minimal
+  ARG EXPECTED_REF=${repo}/${project}:devcards-${version}
+  COPY --dir resources/tilt resources
+  COPY --dir public .
+  CMD ["bb", "devcards-server"]
+  SAVE IMAGE ${EXPECTED_REF}
+
 dev-image-sources-base:
   ARG watch_sources=true
   FROM +dev-sources-minimal
   USER root
   RUN mkdir -p resources/main/public/css \
       && mkdir -p resources/main/public/js \
-      && mkdir -p resources/main/public/themes
+      && mkdir -p resources/main/public/themes \
+      && chown -R $uid resources/main
   IF [ "$watch_sources" = "true" ]
     USER $uid
+    RUN --no-cache ls -al resources
     RUN bb compile-cljs
   END
   HEALTHCHECK --start-period=600s CMD curl -f http://localhost:3000 || exit 1
@@ -226,6 +236,21 @@ dev-sources-minimal:
   COPY --dir src ${src_home}
   COPY shadow-cljs.edn site.edn .
   COPY --dir resources/workspaces ${src_home}/resources/workspaces
+
+docs:
+  FROM +dev-sources-minimal
+  RUN bb docs
+  SAVE ARTIFACT target/doc docs
+
+docs-image:
+  FROM babashka/babashka:latest
+  ARG EXPECTED_REF=${repo}/dinsro:docs-${version}
+  WORKDIR /usr/src/app
+  COPY resources/docs-server .
+  COPY --dir +docs/docs .
+  RUN ls -al
+  CMD ["bb", "serve.clj"]
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 eastwood:
   FROM +dev-sources
