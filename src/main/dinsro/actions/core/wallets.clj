@@ -3,7 +3,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -13,10 +12,12 @@
    [dinsro.queries.core.words :as q.c.words]
    [lambdaisland.glogc :as log])
   (:import
-   org.bitcoins.core.hd.BIP32Path
    org.bitcoins.core.hd.HDPurpose
-   org.bitcoins.core.crypto.MnemonicCode
    org.bitcoins.core.crypto.BIP39Seed
+   org.bitcoins.core.crypto.MnemonicCode
+   org.bitcoins.core.crypto.ExtPrivateKey
+   org.bitcoins.core.protocol.Bech32Address
+   org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
    scala.collection.immutable.Vector))
 
 (defn parse-descriptor
@@ -32,30 +33,13 @@
        :checksum    (.group matcher "checksum")})))
 
 (defn create!
-  [{::m.c.wallets/keys      [name user]
+  [{::m.c.wallets/keys    [name user]
     {node ::m.c.nodes/id} ::m.c.wallets/node}]
   (let [props {::m.c.wallets/name name
                ::m.c.wallets/user user
                ::m.c.wallets/node node}]
     (log/info :wallet/create {:props props})
     (q.c.wallets/create-record props)))
-
-(>defn calculate-derivation
-  [wallet]
-  [::m.c.wallets/item => any?]
-  (let [{::m.c.wallets/keys [seed]} wallet]
-    (MnemonicCode/fromWords (cs/create-vector seed))))
-
-(defn ->bip39-seed
-  [wallet]
-  (let [^MnemonicCode code (calculate-derivation wallet)
-        password (BIP39Seed/EMPTY_PASSWORD)]
-    (BIP39Seed/fromMnemonic code password)))
-
-(defn ->priv-key
-  [wallet]
-  (let [seed (->bip39-seed wallet)]
-    (c.bitcoin-s/get-xpriv seed 84 "regtest")))
 
 (defn get-word-list
   [wallet-id]
@@ -68,6 +52,25 @@
             (log/info :word-list/item {:word word})
             (::m.c.words/word word))))))
 
+(>defn calculate-derivation
+  [wallet]
+  [::m.c.wallets/item => any?]
+  (log/info :calculate-derivation/starting {:wallet wallet})
+  (let [{::m.c.wallets/keys [id]} wallet
+        words                     (get-word-list id)]
+    (c.bitcoin-s/words->mnemonic words)))
+
+(defn ->bip39-seed
+  ^BIP39Seed [wallet]
+  (let [^MnemonicCode code (calculate-derivation wallet)
+        password           (BIP39Seed/EMPTY_PASSWORD)]
+    (BIP39Seed/fromMnemonic code password)))
+
+(defn ->priv-key
+  ^ExtPrivateKey [wallet]
+  (let [seed (->bip39-seed wallet)]
+    (c.bitcoin-s/get-xpriv seed 84 "regtest")))
+
 (defn update-words!
   [wallet-id words]
   (log/info :words/updating {:wallet-id wallet-id :words words})
@@ -77,9 +80,9 @@
     (let [response (doall
                     (map-indexed
                      (fn [i word]
-                       (let [props {::m.c.words/word     word
-                                    ::m.c.words/position (inc i)
-                                    ::m.c.words/wallet   wallet-id}
+                       (let [props   {::m.c.words/word     word
+                                      ::m.c.words/position (inc i)
+                                      ::m.c.words/wallet   wallet-id}
                              word-id (q.c.words/create-record props)]
                          (q.c.words/read-record word-id)))
                      words))]
@@ -91,10 +94,21 @@
   (c.bitcoin-s/words->mnemonic (get-word-list wallet-id)))
 
 (defn get-xpriv
-  [wallet-id]
+  ^ExtPrivateKey [wallet-id]
+  (log/info :get-xpriv/starting {:wallet-id wallet-id})
   (let [;; wallet (q.c.wallets/read-record wallet-id)
-        mnemonic (get-mnemonic wallet-id)]
-    (c.bitcoin-s/get-xpriv (BIP39Seed/fromMnemonic mnemonic (BIP39Seed/EMPTY_PASSWORD)) 84 "regtest")))
+        mnemonic     (get-mnemonic wallet-id)
+        network-name "regtest"
+        bip39-seed   (BIP39Seed/fromMnemonic mnemonic (BIP39Seed/EMPTY_PASSWORD))
+        purpose      84]
+    (c.bitcoin-s/get-xpriv bip39-seed purpose network-name)))
+
+(defn get-bip39-seed
+  [wallet]
+  (log/info :get-bip39-seed/starting {:wallet wallet})
+  (let [{::m.c.wallets/keys [key]} wallet
+        private-key-bytes          (c.bitcoin-s/wif->pk key)]
+    private-key-bytes))
 
 (defn get-wif
   [wallet-id]
@@ -108,13 +122,40 @@
   (let [wallet-id (::m.c.wallets/id props)
         words     (c.bitcoin-s/create-mnemonic-words)
         response  (update-words! wallet-id words)
-        wif (get-wif wallet-id)
-        wallet (q.c.wallets/read-record wallet-id)
-        ;; props (assoc wallet ::m.c.wallets/key wif)
-        props {::m.c.wallets/key wif}]
+        wif       (get-wif wallet-id)
+        wallet    (q.c.wallets/read-record wallet-id)
+        props     {::m.c.wallets/key wif}]
     (q.c.wallets/update! wallet-id props)
     (log/info :roll/finished {:response response})
     (merge wallet {::m.c.wallets/words response})))
+
+(defn get-ext-pub-key
+  [wallet index]
+  (log/info :get-address/starting {:wallet wallet :index index})
+  (let [wallet-id          (::m.c.wallets/id wallet)
+        xpriv              (get-xpriv wallet-id)
+        account-path       (c.bitcoin-s/->bip32-path "m/84'/0'/0'")
+        first-address-path (c.bitcoin-s/->segwit-path "m/84'/0'/0'/0/0")
+        diffsome           (.diff account-path first-address-path)
+        account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
+        ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))]
+    ext-pub-key))
+
+(defn get-address
+  [wallet index]
+  (log/info :get-address/starting {:wallet wallet :index index})
+  (let [wallet-id          (::m.c.wallets/id wallet)
+        xpriv              (get-xpriv wallet-id)
+        account-path       (c.bitcoin-s/->bip32-path "m/84'/0'/0'")
+        first-address-path (c.bitcoin-s/->segwit-path (str "m/84'/0'/0'/0/" index))
+        diffsome           (.diff account-path first-address-path)
+        account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
+        ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))
+        pubkey             (.key ext-pub-key)
+        script-pub-key     (P2WPKHWitnessSPKV0/apply pubkey)
+        network            (c.bitcoin-s/regtest-network)
+        address            (Bech32Address/apply script-pub-key network)]
+    (.value address)))
 
 (comment
   (def descriptor "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l")
@@ -141,13 +182,22 @@
 
   (c.bitcoin-s/create-mnemonic-words)
 
-  (roll! {})
-
   (q.c.wallets/index-ids)
   (tap> (q.c.wallets/index-records))
   (q.c.wallets/index-records)
   (def wallet (first (q.c.wallets/index-records)))
+  wallet
   (def wallet-id (::m.c.wallets/id wallet))
+
+  (get-bip39-seed wallet)
+  (get-address wallet 2)
+
+  (map
+   #(get-address wallet %)
+   (range 20))
+
+  (.key (get-ext-pub-key wallet 0))
+  (def xpriv (get-xpriv wallet-id))
 
   (roll! {::m.c.wallets/id wallet-id})
 
@@ -165,26 +215,27 @@
 
   (->bip39-seed wallet)
 
+  (calculate-derivation wallet)
   (.words (calculate-derivation (first (q.c.wallets/index-records))))
 
   (tap> (seq (.getDeclaredMethods (.getClass (calculate-derivation (first (q.c.wallets/index-records)))))))
 
   (tap> (seq (.getDeclaredMethods BIP39Seed)))
 
-  (def xpriv (c.bitcoin-s/get-xpriv
-              (BIP39Seed/fromMnemonic
-               (calculate-derivation (first (q.c.wallets/index-records)))
-               (BIP39Seed/EMPTY_PASSWORD))
-              84 "regtest"))
-
-  (tap> (map
-         (fn [m]
-           {:str (str m)
-            :name (.getName m)
-            ;; :return (str (.getReturnTypes m))
-            })
-         (vec (.getDeclaredMethods (class xpriv)))))
   xpriv
+
+  (def account-path (c.bitcoin-s/->bip32-path "m/84'/0'/0'"))
+  account-path
+  (def account-xpub (.extPublicKey (.deriveChildPrivKey xpriv account-path)))
+  account-xpub
+
+  (def first-address-path (c.bitcoin-s/->segwit-path "m/84'/0'/0'/0/0"))
+
+  (def diffsome (.diff account-path first-address-path))
+  diffsome
+  (.get diffsome)
+
+  (.get (.deriveChildPubKey account-xpub (.get diffsome)))
 
   (.key xpriv)
   (.hex (.chainCode xpriv))
@@ -196,9 +247,6 @@
   (parse-descriptor descriptor)
 
   (MnemonicCode.)
-
-  (def account-path (BIP32Path/fromString "m/84'/0'/0'"))
-  account-path
 
   (def purpose (HDPurpose. 84))
   purpose

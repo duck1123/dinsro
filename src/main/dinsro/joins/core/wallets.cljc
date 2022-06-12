@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.words :as m.c.words]
@@ -15,8 +16,16 @@
   {ao/target    ::m.c.wallets/id
    ao/pc-output [{::m.c.wallets/index [::m.c.wallets/id]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.c.wallets/index-ids) :cljs [])]
+   (fn [{:keys [query-params]} _]
+     (let [{node-id ::m.c.nodes/id} query-params
+           ids                      #?(:clj
+                                       (if node-id
+                                         (q.c.wallets/find-by-core-node node-id)
+                                         (q.c.wallets/index-ids))
+                                       :cljs
+                                       (do
+                                         (comment node-id)
+                                         []))]
        {::m.c.wallets/index (m.c.wallets/idents ids)}))})
 
 (defattr addresses ::m.c.wallets/addresses :ref
@@ -37,8 +46,6 @@
    (fn [_env {::m.c.wallets/keys [id]}]
      (let [ids (if id #?(:clj (q.c.words/find-by-wallet id) :cljs []) [])]
        {::m.c.wallets/words (m.c.words/idents ids)}))
-   ::report/column-EQL {::m.c.wallets/words [::m.c.words/id ::m.c.words/word
-                                           ;; ::m.c.words/position
-                                             ]}})
+   ::report/column-EQL {::m.c.wallets/words [::m.c.words/id ::m.c.words/word]}})
 
 (def attributes [index addresses words])

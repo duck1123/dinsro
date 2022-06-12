@@ -17,6 +17,7 @@
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -55,9 +56,10 @@
    fo/route-prefix "block-link"
    fo/title        "Blocks"
    fo/attributes   [m.c.blocks/hash]}
-  (form-link this id hash :dinsro.ui.core.blocks/CoreBlockForm))
+  (log/info :BlockLinkForm/starting {:id id :hash hash})
+  (form-link this id hash :dinsro.ui.core.blocks/ShowBlock))
 
-(def ui-block-link (comp/factory BlockLinkForm {:keyfn ::m.categories/id}))
+(def ui-block-link (comp/factory BlockLinkForm {:keyfn ::m.c.blocks/id}))
 
 (form/defsc-form BlockHeightLinkForm
   [this {::m.c.blocks/keys [id height]}]
@@ -65,9 +67,9 @@
    fo/route-prefix "block-height-link"
    fo/title        "Blocks"
    fo/attributes   [m.c.blocks/height]}
-  (form-link this id height :dinsro.ui.core.blocks/CoreBlockForm))
+  (form-link this id height :dinsro.ui.core.blocks/ShowBlock))
 
-(def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.categories/id}))
+(def ui-block-height-link (comp/factory BlockHeightLinkForm {:keyfn ::m.c.blocks/id}))
 
 (form/defsc-form CategoryLinkForm
   [this {::m.categories/keys [id name]}]
@@ -112,7 +114,7 @@
    fo/route-prefix "core-tx-link"
    fo/title        "Transaction"
    fo/attributes   [m.c.tx/id m.c.tx/tx-id]}
-  (form-link this id tx-id :dinsro.ui.core.tx/CoreTxForm))
+  (form-link this id tx-id :dinsro.ui.core.tx/ShowTransaction))
 
 (def ui-core-tx-link (comp/factory CoreTxLinkForm {:keyfn ::m.c.tx/id}))
 
@@ -158,6 +160,16 @@
   (form-link this id name :dinsro.ui.ln.nodes/ShowNode))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
+
+(form/defsc-form RemoteNodeLinkForm [this {::m.ln.remote-nodes/keys [id pubkey]}]
+  {fo/id           m.ln.remote-nodes/id
+   fo/route-prefix "remote-node-link"
+   fo/title        "Remote Node"
+   fo/attributes   [m.ln.remote-nodes/pubkey]}
+  (log/info :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
+  (form-link this id pubkey :dinsro.ui.ln.remote-nodes/ShowRemoteNode))
+
+(def ui-remote-node-link (comp/factory RemoteNodeLinkForm {:keyfn ::m.ln.remote-nodes/id}))
 
 (form/defsc-form PaymentsLinkForm [this {::m.ln.payments/keys [id payment-hash]}]
   {fo/id           m.ln.payments/id
@@ -225,7 +237,7 @@
    fo/route-prefix "wallets-link"
    fo/attributes   [m.c.wallets/name]
    fo/title        "Wallet"}
-  (form-link this id name :dinsro.ui.core.wallets/WalletForm))
+  (form-link this id name :dinsro.ui.core.wallets/ShowWallet))
 
 (def ui-wallet-link (comp/factory WalletLinkForm {:keyfn ::m.c.wallets/id}))
 
@@ -237,3 +249,11 @@
   (form-link this id word :dinsro.ui.core.words/WordForm))
 
 (def ui-word-link (comp/factory WordLinkForm {:keyfn ::m.c.words/id}))
+
+(defn report-link
+  [key-fn link-fn]
+  (fn [this value]
+    (let [{:ui/keys [current-rows]} (comp/props this)]
+      (if-let [row (first (filter #(= (key-fn %) value) current-rows))]
+        (link-fn row)
+        (dom/p {} "not found")))))

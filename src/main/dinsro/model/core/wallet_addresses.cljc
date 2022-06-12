@@ -12,6 +12,11 @@
   {ao/identity? true
    ao/schema    :production})
 
+(s/def ::path-index number?)
+(defattr path-index ::path-index :int
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (s/def ::address string?)
 (defattr address ::address :string
   {ao/identities #{::id}
@@ -24,8 +29,8 @@
    ao/schema           :production
    ::report/column-EQL {::wallet [::m.c.wallets/id ::m.c.wallets/name]}})
 
-(s/def ::params  (s/keys :req [::address ::wallet]))
-(s/def ::item (s/keys :req [::id ::address ::wallet]))
+(s/def ::params  (s/keys :req [::address ::wallet ::path-index]))
+(s/def ::item (s/keys :req [::id ::address ::wallet ::path-index]))
 
 (defn ident
   [id]
@@ -36,4 +41,4 @@
   (mapv ident ids))
 
 (def attributes
-  [id address wallet])
+  [id address wallet path-index])

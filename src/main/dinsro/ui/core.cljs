@@ -5,7 +5,9 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.ui.core.addresses :as u.c.addresses]
    [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.chains :as u.c.chains]
    [dinsro.ui.core.connections :as u.c.connections]
+   [dinsro.ui.core.networks :as u.c.networks]
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.core.tx :as u.c.tx]
@@ -17,10 +19,15 @@
   [_this _props]
   {:router-targets [u.c.addresses/CoreAddressForm
                     u.c.addresses/CoreAddressReport
+                    u.c.blocks/ShowBlock
                     u.c.blocks/CoreBlockForm
                     u.c.blocks/CoreBlockReport
+                    u.c.chains/CoreChainForm
+                    u.c.chains/CoreChainsReport
                     u.c.connections/CoreNodeConnectionsReport
                     u.c.connections/NewConnectionForm
+                    u.c.networks/CoreNetworkForm
+                    u.c.networks/CoreNetworksReport
                     u.c.nodes/NewCoreNodeForm
                     u.c.nodes/CoreNodeForm
                     u.c.nodes/CoreNodesReport
@@ -32,7 +39,9 @@
                     u.c.peers/NewCorePeerForm
                     u.c.tx/CoreTxForm
                     u.c.tx/CoreTxReport
+                    u.c.tx/ShowTransaction
                     u.c.wallets/NewWalletForm
+                    u.c.wallets/ShowWallet
                     u.c.wallets/WalletForm
                     u.c.wallets/WalletsReport
                     u.c.wallet-addresses/NewWalletAddressForm

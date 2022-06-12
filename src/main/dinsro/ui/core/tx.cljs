@@ -1,10 +1,14 @@
 (ns dinsro.ui.core.tx
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -14,18 +18,19 @@
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.mutations.core.tx :as mu.c.tx]
-   [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.core.transaction-inputs :as u.c.transaction-inputs]
+   [dinsro.ui.core.transaction-outputs :as u.c.transaction-outputs]
    [dinsro.ui.core.tx-out :as u.c.tx-out]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
   [this {::m.c.tx/keys [fetched? id]
-         :as props}]
-  {:ident ::m.c.tx/id
-   :query [::m.c.tx/id
-           ::m.c.tx/fetched?]
-   :initial-state {::m.c.tx/id nil
+         :as           props}]
+  {:ident         ::m.c.tx/id
+   :query         [::m.c.tx/id
+                   ::m.c.tx/fetched?]
+   :initial-state {::m.c.tx/id       nil
                    ::m.c.tx/fetched? false}}
 
   (dom/tr {}
@@ -47,11 +52,7 @@
        (dom/tr {}
          (dom/th {} "txid")
          (dom/th {} "fetched")
-         (dom/th {} "Actions")
-         ;; (dom/th {} "Hash")
-         ;; (dom/th {} "Height")
-         ))
-
+         (dom/th {} "Actions")))
      (dom/tbody {}
        (for [tx value]
          (ui-ref-row tx))))))
@@ -87,9 +88,8 @@
                     j.c.tx/ins
                     j.c.tx/outs]
    fo/field-styles {::m.c.tx/block :link}
-   fo/subforms     {::m.c.tx/block {fo/ui u.c.blocks/CoreBlockSubForm}
-                    ::m.c.tx/ins   {fo/ui CoreTxInSubForm}
-                    ::m.c.tx/outs  {fo/ui CoreTxOutSubForm}}})
+   fo/subforms     {::m.c.tx/ins  {fo/ui CoreTxInSubForm}
+                    ::m.c.tx/outs {fo/ui CoreTxOutSubForm}}})
 
 (def fetch-button
   {:type   :button
@@ -153,7 +153,7 @@
    fo/field-styles   {::m.c.tx/block :link
                       ::m.c.tx/outs  :tx-out-table
                       ::m.c.tx/ins   :tx-in-table}
-   fo/route-prefix   "tx"
+   fo/route-prefix   "tx-form"
    fo/subforms       {::m.c.tx/block {fo/ui CoreTxBlock}
                       ::m.c.tx/ins   {fo/ui CoreTxInput}
                       ::m.c.tx/outs  {fo/ui u.c.tx-out/CoreTxOutput}
@@ -211,12 +211,104 @@
    :label  "Search"
    :action search-control-action})
 
+(defn ShowTransaction-pre-merge
+  [{:keys [data-tree state-map current-normalized]}]
+  (log/finer :ShowTransaction-pre-merge/starting
+             {:data-tree          data-tree
+              :state-map          state-map
+              :current-noramlized current-normalized})
+  (let [id (::m.c.tx/id data-tree)]
+    (log/info :ShowTransaction-pre-merge/parsed {:id id})
+    (let [inputs-data
+          (let [initial (comp/get-initial-state u.c.transaction-inputs/TransactionInputsSubPage)
+                state   (get-in state-map (comp/get-ident u.c.transaction-inputs/TransactionInputsSubPage {}))
+                merged  (merge initial state {::m.c.blocks/id id})]
+            (log/info :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            merged)
+
+          outputs-data
+          (let [initial (comp/get-initial-state u.c.transaction-outputs/TransactionOutputsSubPage)
+                state   (get-in state-map (comp/get-ident u.c.transaction-outputs/TransactionOutputsSubPage {}))
+                merged  (merge initial state {::m.c.blocks/id id})]
+            (log/info :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            merged)
+
+          updated-data (-> data-tree
+                           (assoc :ui/inputs inputs-data)
+                           (assoc :ui/outputs outputs-data))]
+      (log/info :ShowBlock-pre-merge/merged
+                {:updated-data       updated-data
+                 :data-tree          data-tree
+                 :state-map          state-map
+                 :current-noramlized current-normalized})
+      updated-data)))
+
+(defsc ShowTransaction
+  "Show a core tx"
+  [this {::m.c.tx/keys [id tx-id hash fetched? block size]
+         :ui/keys      [inputs outputs]
+         :as           props}]
+  {:route-segment ["tx" :id]
+   :query         [::m.c.tx/id
+                   ::m.c.tx/tx-id
+                   ::m.c.tx/hash
+                   ::m.c.tx/size
+                   ::m.c.tx/fetched?
+                   {:ui/inputs (comp/get-query u.c.transaction-inputs/TransactionInputsSubPage)}
+                   {:ui/outputs (comp/get-query u.c.transaction-outputs/TransactionOutputsSubPage)}
+                   {::m.c.tx/block (comp/get-query u.links/BlockHeightLinkForm)}
+                   [df/marker-table '_]]
+   :initial-state {::m.c.tx/id       nil
+                   ::m.c.tx/tx-id    nil
+                   ::m.c.tx/hash     ""
+                   ::m.c.tx/block    {}
+                   ::m.c.tx/size     0
+                   :ui/inputs        {}
+                   :ui/outputs       {}
+                   ::m.c.tx/fetched? false}
+   :ident         ::m.c.tx/id
+   :will-enter
+   (fn [app {id :id}]
+     (let [id    (new-uuid id)
+           ident [::m.c.tx/id id]
+           state (-> (app/current-state app) (get-in ident))]
+       (log/info :ShowTransaction/will-enter {:id id :app app})
+       (dr/route-deferred
+        ident
+        (fn []
+          (log/info :ShowTransaction/will-enter2 {:id id :state state})
+          (df/load!
+           app ident ShowTransaction
+           {:marker               :ui/selected-node
+            :target               [:ui/selected-node]
+            :post-mutation        `dr/target-ready
+            :post-mutation-params {:target ident}})))))
+   :pre-merge     ShowTransaction-pre-merge}
+  (log/info :ShowTransaction/creating {:id id :props props :this this})
+  (dom/div {}
+    (dom/div :.ui.segment
+      (dom/h1 {} "Transaction")
+      (dom/p :.ui.segment "TX id: " (str tx-id))
+      (dom/p :.ui.segment "Hash: " (str hash))
+      (dom/p :.ui.segment "Block: " (u.links/ui-block-height-link block))
+      (dom/p :.ui.segment
+        "Fetched: "
+        (dom/a {:onClick #(comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})])
+                :href    "#"}
+          (str fetched?)))
+      (dom/p :.ui.segment "Size: " (str size)))
+    (if id
+      (comp/fragment
+       (when inputs (u.c.transaction-inputs/ui-transaction-inputs-sub-page inputs))
+       (when outputs (u.c.transaction-outputs/ui-transaction-outputs-sub-page outputs)))
+      (dom/p {} "id not set"))))
+
 (report/defsc-report CoreTxReport
   [_this _props]
-  {ro/columns [m.c.tx/tx-id
-               j.c.tx/node
-               m.c.tx/fetched?
-               m.c.tx/block]
+  {ro/columns          [m.c.tx/tx-id
+                        j.c.tx/node
+                        m.c.tx/fetched?
+                        m.c.tx/block]
    ro/controls
    {::search search-control
     ::refresh
@@ -231,13 +323,11 @@
      :onChange      (fn [this _] (control/run! this))}}
    ro/control-layout   {:inputs         [[::tx-id ::search]]
                         :action-buttons [::refresh]}
-   ro/field-formatters {::m.c.tx/block (fn [_this props]
-                                         (log/debug :formatting {:props props})
-                                         (u.links/ui-block-height-link props))
-                        ::m.c.tx/node  (fn [_this props] (u.links/ui-core-node-link props))}
-   ro/form-links       {::m.c.tx/tx-id CoreTxForm}
+   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
+                        ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)
+                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
    ro/source-attribute ::m.c.tx/index
-   ro/title            "Core Transactions"
+   ro/title            "Transactions"
    ro/row-actions      [fetch-action-button delete-action-button]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true

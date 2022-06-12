@@ -5,12 +5,15 @@
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
+   [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
+   [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
@@ -34,7 +37,7 @@
   [::m.ln.nodes/item ::m.ln.peers/params => any?]
   (let [{::m.ln.nodes/keys [id]}     node
         {::m.ln.peers/keys [pubkey]} data
-        params (assoc data ::m.ln.peers/node id)]
+        params                       (assoc data ::m.ln.peers/node id)]
     (if-let [peer-id (q.ln.peers/find-peer id pubkey)]
       (if-let [peer (q.ln.peers/read-record peer-id)]
         (do
@@ -43,9 +46,11 @@
             (q.ln.peers/update! params))
           nil)
         (throw (RuntimeException. "Can't find peer")))
-      (do
-        (log/error :update-peer!/no-peer {})
-        (create-peer-record! params)))))
+      (let [network-id (q.c.networks/find-by-chain-and-network "bitcoin" "regtest")]
+        (log/error :update-peer!/no-peer {:network-id network-id :params params})
+        (let [remote-node-id (a.ln.remote-nodes/register-node! network-id pubkey)
+              params         (assoc params ::m.ln.peers/remote-node remote-node-id)]
+          (create-peer-record! params))))))
 
 (defn handle-fetched-peer
   [node peer]
@@ -101,7 +106,9 @@
 (defn delete!
   "Handler for delete peer mutation"
   [props]
-  (log/info :delete!/starting {:props props}))
+  (log/info :delete!/starting {:props props})
+  (let [{peer-id ::m.ln.peers/id} props]
+    (q.ln.peers/delete peer-id)))
 
 (comment
   (q.ln.peers/index-ids)
@@ -109,7 +116,46 @@
 
   (map ::m.ln.info/identity-pubkey (q.ln.nodes/index-records))
 
+  (def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "alice") "lnd-alice")))
+  (def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
+
+  (tap> node-alice)
+  (tap> node-bob)
+
+  (def address
+    (str
+     (::m.ln.info/identity-pubkey node-bob)
+     "@"
+     (::m.ln.nodes/host node-bob)
+     ":"
+     (::m.ln.nodes/port node-bob)))
+
+  address
+
+  (a.ln.nodes/download-cert! node-alice)
+  (a.ln.nodes/download-macaroon! node-alice)
+
+  (a.ln.nodes/download-cert! node-bob)
+  (a.ln.nodes/download-macaroon! node-bob)
+
+  (create-peer!
+   node-alice
+   (str
+    (::m.ln.nodes/host node-bob)
+    ":"
+    (::m.ln.nodes/port node-bob))
+   (::m.ln.info/identity-pubkey node-bob))
+
+  (create-peer!
+   node-bob
+   (str
+    (::m.ln.nodes/host node-alice)
+    ":9735")
+
+   (::m.ln.info/identity-pubkey node-alice))
+
   (def peer (first (q.ln.peers/index-records)))
+  (tap> peer)
   (def node-id (::m.ln.peers/node peer))
   node-id
 

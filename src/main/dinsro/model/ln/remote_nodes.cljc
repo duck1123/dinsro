@@ -5,7 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln.nodes :as m.ln.nodes]))
+   [dinsro.model.core.networks :as m.c.networks]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -32,18 +32,18 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::node uuid?)
-(defattr node ::node :ref
+(s/def ::network uuid?)
+(defattr network ::network :ref
   {ao/identities       #{::id}
-   ao/target           ::m.ln.nodes/id
+   ao/target           ::m.c.networks/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.ln.nodes/id ::m.ln.nodes/name]}})
+   ::report/column-EQL {::network [::m.c.networks/id ::m.c.networks/name]}})
 
 (s/def ::params
-  (s/keys :req [::pubkey ::node]
+  (s/keys :req [::pubkey ::network]
           :opt [::color ::alias ::num-channels]))
 (s/def ::item
-  (s/keys :req [::id ::pubkey ::node]
+  (s/keys :req [::id ::pubkey ::network]
           :opt [::color ::alias ::num-channels]))
 
 (defn idents
@@ -51,4 +51,4 @@
   (mapv (fn [id] {::id id}) ids))
 
 (def attributes
-  [id pubkey color alias num-channels node])
+  [id pubkey color alias num-channels network])

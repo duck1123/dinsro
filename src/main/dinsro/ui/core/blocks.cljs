@@ -2,11 +2,14 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.fulcro.application :as app]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -15,6 +18,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
+   [dinsro.ui.core.block-transactions :as u.c.block-transactions]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
@@ -123,7 +127,7 @@
    fo/controls       (merge form/standard-controls
                             {::fetch              fetch-button
                              ::fetch-transactions fetch-transactions-button})
-   fo/route-prefix   "block"
+   fo/route-prefix   "block-form"
    fo/title          "Core Block"}
   (if override-form
     (form/render-layout this props)
@@ -175,10 +179,19 @@
   [report-instance {::m.c.nodes/keys [id]}]
   (form/delete! report-instance ::m.c.blocks/id id))
 
+(defn fetch-action
+  [report-instance {::m.c.nodes/keys [id]}]
+  (comp/transact! report-instance [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))
+
 (def delete-action-button
   {:label  "Delete"
    :action delete-action
    :style  :delete-button})
+
+(def fetch-action-button
+  {:label  "Fetch"
+   :action delete-action
+   :style  :fetch-button})
 
 (s/def ::row
   (s/keys
@@ -200,6 +213,92 @@
 
 (s/def ::rows (s/coll-of ::row))
 
+(defn ShowBlock-pre-merge
+  [{:keys [data-tree state-map current-normalized]}]
+  (log/finer :ShowBlock-pre-merge/starting
+             {:data-tree          data-tree
+              :state-map          state-map
+              :current-noramlized current-normalized})
+  (let [block-id (::m.c.blocks/id data-tree)]
+    (log/info :ShowBlock-pre-merge/parsed {:block-id block-id})
+    (let [transactions-data
+          (let [initial (comp/get-initial-state u.c.block-transactions/BlockTransactionsSubPage)
+                state   (get-in state-map (comp/get-ident u.c.block-transactions/BlockTransactionsSubPage {}))
+                merged  (merge initial state {::m.c.blocks/id block-id})]
+            (log/info :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            merged)
+          updated-data (-> data-tree
+                           (assoc :ui/transactions transactions-data))]
+      (log/info :ShowBlock-pre-merge/merged
+                {:updated-data       updated-data
+                 :data-tree          data-tree
+                 :state-map          state-map
+                 :current-noramlized current-normalized})
+      updated-data)))
+
+(defsc ShowBlock
+  "Show a core block"
+  [this {::m.c.blocks/keys [id height hash previous-block next-block fetched?]
+         :ui/keys          [transactions]
+         :as               props}]
+  {:route-segment ["blocks" :id]
+   :query         [::m.c.blocks/id
+                   ::m.c.blocks/height
+                   ::m.c.blocks/hash
+                   ::m.c.blocks/fetched?
+                   {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
+                   {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
+                   {:ui/transactions (comp/get-query u.c.block-transactions/BlockTransactionsSubPage)}
+                   [df/marker-table '_]]
+   :initial-state {::m.c.blocks/id             nil
+                   ::m.c.blocks/height         ""
+                   ::m.c.blocks/hash           ""
+                   ::m.c.blocks/previous-block {}
+                   ::m.c.blocks/next-block     {}
+                   ::m.c.blocks/fetched?       false
+                   :ui/transactions            {}}
+   :ident         ::m.c.blocks/id
+   :will-enter
+   (fn [app {id :id}]
+     (let [id    (new-uuid id)
+           ident [::m.c.blocks/id id]
+           state (-> (app/current-state app) (get-in ident))]
+       (log/info :ShowBlock/will-enter {:id id :app app})
+       (dr/route-deferred
+        ident
+        (fn []
+          (log/info :ShowBlock/will-enter2
+                    {:id       id
+                     :state    state
+                     :controls (control/component-controls app)})
+          (df/load!
+           app ident ShowBlock
+           {:marker               :ui/selected-node
+            :target               [:ui/selected-node]
+            :post-mutation        `dr/target-ready
+            :post-mutation-params {:target ident}})))))
+   :pre-merge     ShowBlock-pre-merge}
+  (log/info :ShowBlock/creating {:id id :props props :this this})
+  (dom/div {}
+    (dom/div :.ui.segment
+      (dom/h1 {}
+              "Block " height
+              (when-not fetched?
+                (comp/fragment
+                 " ("
+                 (dom/a {:href    "#"
+                         :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
+                   "unfetched")
+                 ")")))
+      (dom/p {}  (str "Hash: " hash))
+      (when previous-block (dom/p {} "Previous: " (u.links/ui-block-height-link previous-block)))
+      (when next-block (dom/p {} "Next: " (u.links/ui-block-link next-block))))
+    (if id
+      (dom/div {}
+        (u.c.block-transactions/ui-block-transactions-sub-page transactions))
+      (dom/div {}
+        (dom/p {} "No id")))))
+
 (report/defsc-report CoreBlockReport
   [_this _props]
   {ro/columns          [m.c.blocks/hash
@@ -207,35 +306,13 @@
                         m.c.blocks/fetched?
                         m.c.blocks/node]
    ro/controls
-   {::search search-control
-    ::refresh
+   {::refresh
     {:type   :button
      :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-    ::m.c.blocks/node
-    {:type                            :picker
-     :style                           :default
-     :default-value                   ""
-     :label                           "Node ID"
-     ::picker-options/query-key       ::m.c.nodes/index
-     ::picker-options/query-component u.links/CoreNodeLinkForm
-     ::picker-options/options-xform
-     (fn [_ options]
-       (mapv
-        (fn [{::m.c.nodes/keys [id name]}]
-          {:text  (str name)
-           :value [::m.c.nodes/id id]})
-        (sort-by ::m.c.nodes/name options)))}
-    ::block-id
-    {:type          :string
-     :style         :search
-     :default-value ""
-     :label         "Block ID"
-     :onChange      (fn [this _] (control/run! this))}}
-   ro/control-layout   {:inputs         [[::block-id ::m.c.blocks/node ::search]]
-                        :action-buttons [::refresh]}
-   ro/field-formatters {::m.c.blocks/node (fn [_ props] (u.links/ui-core-node-link props))}
-   ro/form-links       {::m.c.blocks/hash CoreBlockForm}
+     :action (fn [this] (control/run! this))}}
+   ro/control-layout   {:action-buttons [::refresh]}
+   ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)
+                        ::m.c.blocks/node #(u.links/ui-core-node-link %2)}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Core Blocks"
    ro/row-actions      [delete-action-button]

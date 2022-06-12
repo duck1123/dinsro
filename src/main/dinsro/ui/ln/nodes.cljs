@@ -233,7 +233,6 @@
                       m.ln.nodes/hasMacaroon?
                       m.ln.info/identity-pubkey
                       j.ln.nodes/peers
-                      ;; j.ln.nodes/transactions
                       j.ln.nodes/channels
                       j.ln.nodes/invoices
                       j.ln.nodes/payreqs
@@ -311,6 +310,7 @@
 (defsc ShowNode
   "Show a ln node"
   [this {:keys             [peers channels transactions]
+         ::m.ln.info/keys  [chains]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]}]
   {:route-segment ["nodes" :id]
    :query         [{:channels (comp/get-query u.ln.node-channels/NodeChannelsSubPage)}
@@ -321,11 +321,13 @@
                    ::m.ln.nodes/port
                    ::m.ln.nodes/hasCert?
                    ::m.ln.nodes/hasMacaroon?
+                   ::m.ln.info/chains
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
    :initial-state {:channels                 {}
                    :peers                    {}
                    :transactions             {}
+                   ::m.ln.info/chains        []
                    ::m.ln.nodes/id           nil
                    ::m.ln.nodes/user         {}
                    ::m.ln.nodes/core-node    {}
@@ -361,20 +363,15 @@
        {::m.ln.nodes/id           id
         ::m.ln.nodes/hasCert?     hasCert?
         ::m.ln.nodes/hasMacaroon? hasMacaroon?})
-      #_(dom/p {} (pr-str props))
       (dom/p {} "User: " (u.links/ui-user-link user))
       (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
       (dom/p {} "Address: " host ":" (str port))
+      (dom/p {} "Chains: " (pr-str chains))
       (when-not hasCert?
         (comp/fragment
          (dom/p {} "Cert not found")
-         (dom/button
-           {:classes [:.ui.button]
-            :onClick
-            (fn []
-              (log/info :show-node/click {})
-              (comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})]))}
-
+         (dom/button {:classes [:.ui.button]
+                      :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
            "Fetch")))
       (dom/p {} "Has Cert: " (str hasCert?))
       (dom/p {}

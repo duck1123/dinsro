@@ -6,12 +6,16 @@
    [com.fulcrologic.rad.type-support.date-time :as dt]
    [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
+   [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
+   [dinsro.actions.ln.peers :as a.ln.peers]
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.model.core.chains :as m.c.chains]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
@@ -32,6 +36,8 @@
    [dinsro.queries.accounts :as q.accounts]
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.core.addresses :as q.c.addresses]
+   [dinsro.queries.core.chains :as q.c.chains]
+   [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.tx :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
@@ -186,6 +192,7 @@
 
 (defn seed-categories!
   [users]
+  (log/info :seed-categories!/starting {})
   (doseq [{:keys [categories username]} users]
     (let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys [name]} categories]
@@ -194,7 +201,7 @@
 
 (defn seed-ln-nodes!
   [users]
-  (log/info :seed/ln-nodes {})
+  (log/info :seed-ln-nodes!/starting {:users users})
   (doseq [{:keys [username ln-nodes]} users]
     (let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys     [name host port mnemonic] :as info
@@ -208,12 +215,20 @@
                          ::m.ln.nodes/mnemonic  mnemonic}
                 node-id (q.ln.nodes/create-record ln-node)
                 info    (set/rename-keys info m.ln.info/rename-map)]
-            (a.ln.nodes/save-info! node-id info))
+            (a.ln.nodes/save-info! node-id info)
+            (try
+              (let [node (q.ln.nodes/read-record node-id)]
+                (a.ln.nodes/download-cert! node)
+                (a.ln.nodes/download-macaroon! node)
+                (a.ln.nodes/update-info! node)
+                (a.ln.peers/fetch-peers! node-id))
+              (catch Exception ex
+                (log/error :seed-ln-nodes!/init-node-failed {:ex ex}))))
           (throw (RuntimeException. (str "Failed to find node: " node-name))))))))
 
 (defn seed-ln-peers!
   [users]
-  (log/info :seed/ln-peers {})
+  (log/info :seed-ln-peers!/starting {})
   (doseq [{:keys [username ln-nodes]} users]
     (let [user-id (q.users/find-eid-by-name username)]
       (doseq [{:keys [name peers]} ln-nodes]
@@ -382,19 +397,56 @@
 
   nil)
 
+(defn seed-chains!
+  [chains]
+  (log/info :seed-chains!/starting {:chains chains})
+  (doseq [chain chains]
+    (q.c.chains/create-record {::m.c.chains/name chain})))
+
+(defn seed-networks!
+  [networks]
+  (log/info :seed-networks!/starting {:networks networks})
+  (doseq [[chain-name network-names] networks]
+    (if-let [chain-id (q.c.chains/find-id-by-name chain-name)]
+      (do
+        (log/info :seed-networks!/found {:chain-id chain-id :chain-name chain-name})
+        (doseq [network-name network-names]
+          (log/info :seed-networks!/processing-network {:network-name network-name})
+          (q.c.networks/create-record
+           {::m.c.networks/name network-name
+            ::m.c.networks/chain chain-id})))
+
+      (do
+        (log/info :seed-networks!/not-foind {:chain-name chain-name})
+        nil))))
+
+(defn seed-core-nodes!
+  [core-node-data]
+  (doseq [data core-node-data]
+    (let [node-id (q.c.nodes/create-record data)
+          node (q.c.nodes/read-record node-id)]
+      (try
+        (a.c.nodes/fetch! node)
+        (catch Exception ex
+          (log/error :seed-core-nodes!/failed {:ex ex}))))))
+
 (>defn seed-db!
   [seed-data]
   [::seed-data => any?]
   (let [{:keys [default-timezone
                 core-node-data
                 users
+                default-chains
                 default-currencies
+                default-networks
                 default-rate-sources]} seed-data]
     (create-navlinks!)
     (dt/set-timezone! default-timezone)
 
-    (doseq [data core-node-data]
-      (q.c.nodes/create-record data))
+    (seed-chains! default-chains)
+    (seed-networks! default-networks)
+    (seed-core-nodes! core-node-data)
+
     #_(seed-core-txes!)
 
     (seed-currencies! default-currencies)

@@ -421,9 +421,17 @@
 
 (def core-node-data [core-node1 core-node2 core-node3])
 
+(def default-chains ["bitcoin" "fakecoin"])
+
+(def default-networks
+  {"bitcoin" ["mainnet" "testnet" "regtest"]
+   "fakecoin" ["mainnet"]})
+
 (defn get-seed-data
   []
-  {:default-currencies   default-currencies
+  {:default-chains       default-chains
+   :default-currencies   default-currencies
+   :default-networks     default-networks
    :default-rate-sources default-rate-sources
    :default-timezone     default-timezone
    :core-node-data       core-node-data

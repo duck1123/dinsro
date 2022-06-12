@@ -35,13 +35,13 @@
    :ui/cache        {}
    :ui/controls     []
    :ui/current-page 1
-   :ui/current-rows (ds/gen-key ::u.c.blocks/rows)
+   :ui/current-rows (map (fn [_] (ds/gen-key ::u.c.blocks/row)) (range 3))
    :ui/loaded-data  []
    :ui/page-count   1
    :ui/parameters   {}})
 
 (ws/defcard CoreBlockReport
-  {::wsm/card-width 7 ::wsm/card-height 12}
+  {::wsm/card-width 6 ::wsm/card-height 13}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.c.blocks/CoreBlockReport
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}

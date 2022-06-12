@@ -36,6 +36,8 @@
    org.lightningj.lnd.wrapper.walletunlocker.SynchronousWalletUnlockerAPI
    scala.Option))
 
+(def default-passphrase "password12345678")
+
 (>defn get-cert-text
   [node]
   [::m.ln.nodes/item => string?]
@@ -48,6 +50,7 @@
     (bytes->hex (bs/to-byte-array f))))
 
 (>defn get-client
+  "Get a lightningj client"
   [{::m.ln.nodes/keys [id name host port]}]
   [::m.ln.nodes/item => (ds/instance? AsynchronousLndAPI)]
   (log/info :client/creating {:id id :name name})
@@ -69,6 +72,7 @@
     (c.lnd-s/get-remote-client instance)))
 
 (>defn get-invoices-client
+  "Get a lightningj invoices client"
   [node]
   [::m.ln.nodes/item => (ds/instance? AsynchronousInvoicesAPI)]
   (let [{::m.ln.nodes/keys [host id port]} node]
@@ -78,14 +82,17 @@
      (io/file (m.ln.nodes/macaroon-path id)))))
 
 (>defn get-unlocker-client
+  "Get a lightningj unlocker client"
   [node]
   [::m.ln.nodes/item => (ds/instance? AsynchronousWalletUnlockerAPI)]
-  (let [{::m.ln.nodes/keys [host id port]} node]
-    (c.lnd/get-unlocker-client
-     host (Integer/parseInt port)
-     (io/file (m.ln.nodes/cert-path id)))))
+  (let [{::m.ln.nodes/keys [host id port]} node
+        port-num                           (Integer/parseInt port)
+        file                               (io/file (m.ln.nodes/cert-path id))]
+    (log/info :get-unlocker-client/starting {:host host :port-num port-num :id id :file file})
+    (c.lnd/get-unlocker-client host port-num file)))
 
 (>defn get-sync-unlocker-client
+  "Get a lightningj unlocker client"
   ^SynchronousWalletUnlockerAPI [node]
   [::m.ln.nodes/item => (ds/instance? SynchronousWalletUnlockerAPI)]
   (let [{::m.ln.nodes/keys [host id port]} node]
@@ -137,28 +144,38 @@
 (>defn download-cert!
   [node]
   [::m.ln.nodes/item => boolean?]
-  (let [{::m.ln.nodes/keys [host id]} node]
-    (log/info :cert/downloading {:id id})
-    (.mkdirs (io/file (str m.ln.nodes/cert-base id)))
-    (let [url       (format "http://%s/tls.cert" host)
-          cert-file (m.ln.nodes/cert-file id)]
+  (let [{::m.ln.nodes/keys [host id]} node
+        dir-path                      (m.ln.nodes/data-path id)
+        dir-file                      (io/file dir-path)
+        url                           (format "http://%s/tls.cert" host)]
+    (log/info
+     :download-cert!/downloading
+     {:id       id
+      :dir-path dir-path
+      :dir-file dir-file
+      :url      url})
+    (.mkdirs dir-file)
+    (let [cert-file (m.ln.nodes/cert-file id)]
       (download-file url cert-file))))
 
 (>defn download-macaroon!
   [{::m.ln.nodes/keys [id host]}]
   [::m.ln.nodes/item => (? (ds/instance? File))]
-  (let [url  (format "http://%s/admin.macaroon" host)
-        file (io/file (m.ln.nodes/macaroon-path id))]
-    (log/info :macaroon/downloading {:id id})
-    (.mkdirs (io/file (str m.ln.nodes/cert-base id)))
+  (let [url      (format "http://%s/admin.macaroon" host)
+        dir-path (m.ln.nodes/data-path id)
+        file     (io/file (m.ln.nodes/macaroon-path id))]
+    (log/info
+     :download-macaroon!/starting
+     {:id id :file file :url url :dir-path dir-path})
+    (.mkdirs (io/file dir-path))
     (try
       (if (download-file url file)
         file
         (do
-          (log/error :macaroon-download/failed {:node-id id :host host})
+          (log/error :download-macaroon!/failed {:node-id id :host host})
           nil))
       (catch FileNotFoundException ex
-        (log/error :macaroon/download-failed {:exception ex})
+        (log/error :download-macaroon!/download-failed {:exception ex})
         nil))))
 
 (defn get-macaroon-text
@@ -209,7 +226,7 @@
   (with-open [client (get-unlocker-client node)]
     (let [request (c.lnd/->init-wallet-request mnemonic "password12345678")
           ch      (async/chan)]
-      (log/info :wallet/initializing {})
+      (log/info :initialize!/starting {:request request :client client})
       (.initWallet client request (c.lnd/ch-observer ch))
       ch)))
 
@@ -218,7 +235,7 @@
   [::m.ln.nodes/item => any?]
   (with-open [client (get-sync-unlocker-client node)]
     (let [request (c.lnd/->init-wallet-request mnemonic  "password12345678")]
-      (log/info :wallet/initializing-sync {})
+      (log/info :initialize-sync!/starting {:request request})
       (.initWallet client request))))
 
 (>defn save-info!
@@ -251,10 +268,11 @@
 (>defn unlock-sync!
   [node]
   [::m.ln.nodes/item => any?]
-  (log/info :node/unlocking {:node-id (::m.ln.nodes/id node)})
-  (with-open [client (get-sync-unlocker-client node)]
-    (let [request (c.lnd/->unlock-wallet-request "password12345678")]
-      (.unlockWallet client request))))
+  (log/info :unlock-sync!/starting {:node-id (::m.ln.nodes/id node)})
+  (let [wallet-passphrase default-passphrase]
+    (with-open [client (get-sync-unlocker-client node)]
+      (let [request (c.lnd/->unlock-wallet-request wallet-passphrase)]
+        (.unlockWallet client request)))))
 
 (>defn new-address
   [node f]
@@ -274,6 +292,23 @@
   (let [client (get-client-s node)]
     (c.lnd-s/->record (c.lnd-s/get-info client))))
 
+(>defn new-address-s
+  [node]
+  [::m.ln.nodes/item => any?]
+  (let [client (get-client-s node)]
+    (c.lnd-s/get-new-address client)))
+
+(defn new-address-str
+  [node]
+  (.value (new-address-s node)))
+
+(defn unlock-sync!-s
+  [node]
+  (log/info :unlock-sync!-s/starting {:node-id (::m.ln.nodes/id node)})
+  (let [client     (get-client-s node)
+        passphrase default-passphrase]
+    (c.lnd-s/unlock-wallet client passphrase)))
+
 (comment
   (download-cert! (first (q.ln.nodes/index-ids)))
 
@@ -289,6 +324,18 @@
   node-alice
   node-bob
   node
+
+  (def core-node-alice (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-alice))))
+  (def core-node-bob (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-bob))))
+
+  core-node-alice
+
+  (def a (new-address-s node))
+  a
+  (.value a)
+  (new-address-str node)
+
+  (unlock-sync!-s node)
 
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node)))
 
@@ -321,9 +368,11 @@
   (def client (get-client-s node))
   client
 
-  (.unlockWallet client "password12345678")
+  (.unlockWallet client default-passphrase)
 
   (get-info node)
+
+  (a.c.nodes/generate-to-address! core-node-alice (new-address-str node-alice))
 
   (<!! (initialize! node))
 

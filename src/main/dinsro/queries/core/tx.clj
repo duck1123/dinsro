@@ -8,6 +8,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
@@ -30,11 +31,14 @@
 (>defn find-by-block
   [block-id]
   [::m.c.blocks/id => (s/coll-of ::m.c.tx/id)]
+  (log/finer :find-by-block/starting {:block-id block-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-id]
                 :in    [?block-id]
-                :where [[?tx-id ::m.c.tx/block ?block-id]]}]
-    (map first (xt/q db query block-id))))
+                :where [[?tx-id ::m.c.tx/block ?block-id]]}
+        ids   (map first (xt/q db query block-id))]
+    (log/fine :find-by-block/finished {:block-id block-id :ids ids})
+    ids))
 
 (>defn fetch-by-txid
   [tx-id]

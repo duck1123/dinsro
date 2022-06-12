@@ -6,6 +6,7 @@
  :deps
  {buddy/buddy                            {:mvn/version "2.0.0"}
   cider/cider-nrepl                      {:mvn/version "0.28.0"}
+  clj-commons/clj-yaml                   {:mvn/version "0.7.108"}
   clj-time/clj-time                      {:mvn/version "0.15.2"}
   com.fulcrologic/fulcro                 {:mvn/version "3.5.12"}
   com.fulcrologic/fulcro-garden-css      {:mvn/version "3.0.6"}

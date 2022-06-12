@@ -14,17 +14,17 @@
 
 #?(:clj
    (defn do-index
-     [env props]
-     (let [{:keys [query-params]} env]
-       (log/info :index/starting
-                 {:props        props
-                  :query-params query-params})
-       (let [{node-id ::m.c.nodes/id} query-params
-             ids (if node-id
-                   (q.c.blocks/find-by-node node-id)
-                   (q.c.blocks/index-ids))
+     [{:keys [query-params]} props]
+     (log/info :do-index/starting
+               {:props        props
+                :query-params query-params})
+     (let [{node-id ::m.c.nodes/id} query-params]
+       (log/info :do-index/params-parsed {:node-id node-id})
+       (let [ids    (if node-id
+                      (q.c.blocks/find-by-node node-id)
+                      (q.c.blocks/index-ids))
              idents (m.c.blocks/idents ids)]
-         (log/info :index/results {:idents idents})
+         (log/info :do-index/results {:idents idents})
          {::m.c.blocks/index idents}))))
 
 (defattr index ::m.c.blocks/index :ref
@@ -34,12 +34,6 @@
    (fn [env props]
      #?(:clj  (do-index env props)
         :cljs (let [_ [env props]] {::m.c.blocks/index []})))})
-
-(comment
-
-  index
-
-  nil)
 
 (defattr transactions ::m.c.blocks/transactions :ref
   {ao/cardinality :many

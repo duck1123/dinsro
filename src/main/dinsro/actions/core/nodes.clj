@@ -41,39 +41,39 @@
   "Update node's blockchain info"
   [node]
   [::m.c.nodes/item => any?]
-  (log/debug :blockchain-info/updating {:node-id (::m.c.nodes/id node)})
-  (let [{::m.c.nodes/keys [id]} node
-        params                     (get-blockchain-info node)
-        params                     (merge node params)
-        params                     (m.c.nodes/prepare-params params)
-        response                   (q.c.nodes/update-blockchain-info id params)]
-    {:status   :ok
-     :response response}))
+  (let [{::m.c.nodes/keys [id]} node]
+    (log/debug :update-blockchain-info!/starting {:id id})
+    (let [params   (get-blockchain-info node)
+          params   (merge node params)
+          params   (m.c.nodes/prepare-params params)
+          response (q.c.nodes/update-blockchain-info id params)]
+      {:status   :ok
+       :response response})))
 
 (>defn fetch!
   "Fetch all updates for node"
   [{::m.c.nodes/keys [id] :as node}]
   [::m.c.nodes/item => ::m.c.nodes/item]
-  (log/debug :node/fetching {:node-id id})
+  (log/debug :fetch!/starting {:id id})
   (update-blockchain-info! node)
   (let [block-response (a.c.blocks/fetch-blocks node)
         peer-response  (a.c.peers/fetch-peers! node)
         updated-node   (q.c.nodes/read-record id)]
-    (log/debug
-     :node/fetching-finished
-     {:block-response     block-response
-      :peer-response      peer-response
-      :update-node updated-node})
+    (log/finer
+     :fetch!/finished
+     {:block-response block-response
+      :peer-response  peer-response
+      :updated-node   updated-node})
     updated-node))
 
 (>defn fetch-transactions!
   "Fetch transactions for a node's wallet"
   [{node-id ::m.c.nodes/id :as node}]
   [::m.c.nodes/item => any?]
-  (log/info :transactions/fetching {:node-id node-id})
+  (log/info :fetch-transactions!/starting {:node-id node-id})
   (let [client (m.c.nodes/get-client node)]
     (doseq [txes (c.bitcoin/list-transactions client)]
-      (log/debug :transactions/processing-fetched {:txes txes})
+      (log/debug :fetch-transactions!/processing {:txes txes})
       (let [params (assoc txes ::m.c.peers/node node-id)
             params (m.c.tx/prepare-params params)]
         (q.c.tx/create-record params)))))
@@ -82,13 +82,13 @@
   "Generate a block for the node"
   [node-id]
   [::m.c.nodes/id => any?]
-  (log/info :generate/started {:node-id node-id})
+  (log/info :generate!/starting {:node-id node-id})
   (if-let [node (q.c.nodes/read-record node-id)]
     (let [client  (m.c.nodes/get-client node)
           address sample-address]
       (c.bitcoin/generate-to-address client address))
     (do
-      (log/error :generate/node-not-found {:node-id node-id})
+      (log/error :generate!/node-not-found {:node-id node-id})
       nil)))
 
 (defn get-remote-uri

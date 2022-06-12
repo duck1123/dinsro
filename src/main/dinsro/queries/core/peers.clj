@@ -41,13 +41,13 @@
 (>defn index-records
   []
   [=> (s/coll-of ::m.c.peers/item)]
-  (log/info :peers/indexing {})
+  (log/info :index-records/starting {})
   (map read-record (index-ids)))
 
 (>defn delete!
   [id]
   [::m.c.peers/id => any?]
-  (log/info :peers/deleting {:id id})
+  (log/info :delete!/starting {:id id})
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
@@ -55,15 +55,15 @@
 (>defn find-by-core-node
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.peers/id)]
-  (log/info :peers/find-by-node {:node-id node-id})
+  (log/info :find-by-core-node/starting {:node-id node-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?peer-id]
                 :in    [?node-id]
                 :where [[?peer-id ::m.c.peers/node ?node-id]]}
         raw (xt/q db query node-id)]
-    (log/info :peers/find-by-node-raw {:raw raw})
+    (log/info :find-by-core-node/raw {:raw raw})
     (let [ids (map first raw)]
-      (log/info :peers/find-by-node-results {:ids ids})
+      (log/info :find-by-core-node/finished {:ids ids})
       ids)))
 
 (>defn find-by-node-and-peer-id

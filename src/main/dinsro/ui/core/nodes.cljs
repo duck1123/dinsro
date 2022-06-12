@@ -196,11 +196,10 @@
                                  :current-noramlized current-normalized})
   (let [node-id (::m.c.nodes/id data-tree)]
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data (merge
-                      (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
-                      (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
-                      {::m.c.nodes/id node-id})
-
+    (let [peers-data        (merge
+                             (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
+                             (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
+                             {::m.c.nodes/id node-id})
           wallets-data      (merge
                              (comp/get-initial-state u.c.node-wallets/NodeWalletsSubPage)
                              (get-in state-map (comp/get-ident u.c.node-wallets/NodeWalletsSubPage {}))
@@ -214,11 +213,10 @@
                              (get-in state-map (comp/get-ident u.c.node-transactions/NodeTransactionsSubPage {}))
                              {::m.c.nodes/id node-id})
           updated-data      (-> data-tree
-                                (assoc :peers peers-data)
-                                (assoc :blocks blocks-data)
-                                (assoc :transactions transactions-data)
-                                (assoc :wallets wallets-data))]
-
+                                (assoc :ui/peers peers-data)
+                                (assoc :ui/blocks blocks-data)
+                                (assoc :ui/transactions transactions-data)
+                                (assoc :ui/wallets wallets-data))]
       (log/info :ShowNode/merged {:updated-data       updated-data
                                   :data-tree          data-tree
                                   :state-map          state-map
@@ -232,56 +230,54 @@
 
 (defsc ShowNode
   "Show a core node"
-  [this {::m.c.nodes/keys [id name]
-         :keys            [blocks peers transactions wallets]
+  [this {::m.c.nodes/keys [id name chain]
+         :ui/keys         [blocks peers transactions wallets]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
-                   {:peers (comp/get-query u.c.node-peers/NodePeersSubPage)}
-                   {:blocks (comp/get-query u.c.node-blocks/NodeBlocksSubPage)}
-                   {:transactions (comp/get-query u.c.node-transactions/NodeTransactionsSubPage)}
-                   {:wallets (comp/get-query u.c.node-wallets/NodeWalletsSubPage)}
+                   ::m.c.nodes/chain
+                   {:ui/peers (comp/get-query u.c.node-peers/NodePeersSubPage)}
+                   {:ui/blocks (comp/get-query u.c.node-blocks/NodeBlocksSubPage)}
+                   {:ui/transactions (comp/get-query u.c.node-transactions/NodeTransactionsSubPage)}
+                   {:ui/wallets (comp/get-query u.c.node-wallets/NodeWalletsSubPage)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.nodes/id   nil
-                   ::m.c.nodes/name ""
-                   :peers           {}
-                   :blocks          {}
-                   :transactions    {}
-                   :wallets         {}}
+   :initial-state {::m.c.nodes/id    nil
+                   ::m.c.nodes/name  ""
+                   ::m.c.nodes/chain ""
+                   :ui/peers         {}
+                   :ui/blocks        {}
+                   :ui/transactions  {}
+                   :ui/wallets       {}}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
-     (let [id      (new-uuid id)
-           ident   [::m.c.nodes/id id]
-           state   (-> (app/current-state app) (get-in ident))
-           invoice (-> state :organization/latest-invoice)]
+     (let [id    (new-uuid id)
+           ident [::m.c.nodes/id id]
+           state (-> (app/current-state app) (get-in ident))]
        (log/info :ShowNode/will-enter {:app app :id id :ident ident})
-       (if invoice
-         (dr/route-immediate ident)
-         (dr/route-deferred
-          ident
-          (fn []
-            (log/info :ShowNode/will-enter2 {:id       id
-                                             :state    state
-                                             :controls (control/component-controls app)})
-            (df/load!
-             app ident ShowNode
-             {:marker               :ui/selected-node
-              :target               [:ui/selected-node]
-              :post-mutation        `dr/target-ready
-              :post-mutation-params {:target ident}}))))))
-   :pre-merge     ShowNode-pre-merge
-   :css           [[:.main {:border "1px solid red"}]
-                   [:.sub {:border "1px solid blue"}]]}
-
+       (dr/route-deferred
+        ident
+        (fn []
+          (log/info :ShowNode/will-enter2
+                    {:id       id
+                     :state    state
+                     :controls (control/component-controls app)})
+          (df/load!
+           app ident ShowNode
+           {:marker               :ui/selected-node
+            :target               [:ui/selected-node]
+            :post-mutation        `dr/target-ready
+            :post-mutation-params {:target ident}})))))
+   :pre-merge     ShowNode-pre-merge}
   (log/info :ShowNode/creating {:id id :props props :this this})
   (let [{:keys [main sub]} (css/get-classnames ShowNode)]
     (dom/div {:classes [main]}
       (ui-actions-menu {::m.c.nodes/id id})
-      (dom/div {}
-        (dom/p {} (str "Id: " id))
-        (dom/p {} (str "Name: " name)))
+      (dom/div :.ui.segment
+        (dom/p {}  (str "Name: " name))
+        (dom/p {}  (str "Chain: " chain)))
+
       (when id
         (dom/div {:classes [sub]}
           (when show-peers (u.c.node-peers/ui-node-peers-sub-page peers))
@@ -323,10 +319,15 @@
 (report/defsc-report CoreNodesReport
   [_this _props]
   {ro/columns           [m.c.nodes/name
-                         m.c.nodes/chain]
+                         m.c.nodes/chain
+                         m.c.nodes/block-count]
    ro/column-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
-   ro/control-layout    {:action-buttons [::new]}
-   ro/controls          {::new new-button}
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new new-button
+                         ::refresh
+                         {:type   :button
+                          :label  "Refresh"
+                          :action (fn [this] (control/run! this))}}
    ro/row-actions       [fetch-action-button delete-action-button]
    ro/source-attribute  ::m.c.nodes/index
    ro/title             "Core Node Report"

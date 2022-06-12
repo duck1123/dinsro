@@ -5,7 +5,8 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln.nodes :as m.ln.nodes]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]))
 
 (def rename-map
   {:address    ::address
@@ -31,6 +32,13 @@
    ao/identities       #{::id}
    ao/schema           :production
    ::report/column-EQL {::node [::m.ln.nodes/id ::m.ln.nodes/name]}})
+
+(s/def ::remote-node uuid?)
+(defattr remote-node ::remote-node :ref
+  {ao/target           ::m.ln.remote-nodes/id
+   ao/identities       #{::id}
+   ao/schema           :production
+   ::report/column-EQL {::remote-node [::m.ln.remote-nodes/id ::m.ln.remote-nodes/pubkey]}})
 
 (s/def ::address string?)
 (defattr address ::address :string
@@ -59,12 +67,12 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::params (s/keys :req [::address ::pubkey ::inbound ::sat-sent ::sat-recv]))
-(s/def ::item (s/keys :req [::id ::address ::pubkey ::inbound ::sat-sent ::sat-recv ::node]))
+(s/def ::params (s/keys :req [::address ::pubkey ::inbound ::sat-sent ::sat-recv ::remote-node]))
+(s/def ::item (s/keys :req [::id ::address ::pubkey ::inbound ::sat-sent ::sat-recv ::node ::remote-node]))
 
 (>defn idents
   [ids]
   [(s/coll-of ::id) => (s/coll-of (s/keys))]
   (map (fn [id] {::id id}) ids))
 
-(def attributes [id address pubkey inbound sat-sent node])
+(def attributes [id address pubkey inbound sat-sent node remote-node])

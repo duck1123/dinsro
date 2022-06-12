@@ -14,6 +14,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.wallets/id)]
+  (log/info :index-ids/starting {})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?e]
                 :where [[?e ::m.c.wallets/name _]]}]
@@ -57,6 +58,7 @@
 (>defn find-by-core-node
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.wallets/id)]
+  (log/info :find-by-core-node/starting {:node-id node-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?wallet-id]
                 :in    [?node-id]

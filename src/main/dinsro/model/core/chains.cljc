@@ -1,4 +1,5 @@
 (ns dinsro.model.core.chains
+  (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
@@ -9,9 +10,27 @@
   {ao/identity? true
    ao/schema    :production})
 
-(s/def ::chain string?)
-(defattr chain ::chain :string
+(s/def ::name string?)
+(defattr name ::name :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(def attributes [id chain])
+(s/def ::params (s/keys :req [::name]))
+(s/def ::item (s/keys :req [::id ::name]))
+(s/def ::items (s/coll-of ::item))
+
+(def link-query [::id ::name])
+
+(defn ident
+  [id]
+  {::id id})
+
+(defn ident-item
+  [{::keys [id]}]
+  (ident id))
+
+(defn idents
+  [ids]
+  (mapv ident ids))
+
+(def attributes [id name])

@@ -34,10 +34,10 @@
   [this props]
   {ro/columns
    [m.ln.peers/address
-    ;; m.ln.peers/address-bind
-    ;; m.ln.peers/subver
-    ;; m.ln.peers/peer-id
-    m.ln.peers/node]
+    m.ln.peers/remote-node
+    m.ln.peers/sat-recv
+    m.ln.peers/sat-sent
+    m.ln.peers/inbound]
 
    ro/control-layout {:action-buttons [::new ::refresh]
                       :inputs         [[::m.ln.nodes/id]]}
@@ -72,8 +72,10 @@
                  (form/create! this u.ln.peers/NewPeerForm
                                {:initial-state {::m.ln.peers/address "foo"}})))}}
 
-   ro/field-formatters {::m.ln.peers/block (fn [_this props] (u.links/ui-block-link props))
-                        ::m.ln.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/field-formatters
+   {::m.ln.peers/block (fn [_this props] (u.links/ui-block-link props))
+    ::m.ln.peers/node  (fn [_this props] (u.links/ui-core-node-link props))
+    ::m.ln.peers/remote-node  (fn [_this props] (u.links/ui-remote-node-link props))}
    ro/form-links       {::m.ln.peers/peers-id u.ln.peers/LNPeerForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.ln.peers/index

@@ -1,9 +1,13 @@
 (ns dinsro.ui.core.wallets
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
@@ -14,6 +18,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
@@ -56,9 +61,9 @@
                       m.c.wallets/node
                       m.c.wallets/user]
 
-   fo/controls       (merge form/standard-controls {::create create-button})
-   fo/field-styles   {::m.c.wallets/node :pick-one
-                      ::m.c.wallets/user :pick-one}
+   fo/controls     (merge form/standard-controls {::create create-button})
+   fo/field-styles {::m.c.wallets/node :pick-one
+                    ::m.c.wallets/user :pick-one}
    fo/field-options
    {::m.c.wallets/node
     {::picker-options/query-key       ::m.c.nodes/index
@@ -80,8 +85,8 @@
           {:text  (str name)
            :value [::m.users/id id]})
         (sort-by ::m.users/name options)))}}
-   fo/route-prefix   "new-wallet"
-   fo/title          "New Wallet"}
+   fo/route-prefix "new-wallet"
+   fo/title        "New Wallet"}
   (log/info :NewWalletForm/creating {:props props})
   (form/render-layout this props))
 
@@ -133,6 +138,78 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewWalletForm))})
 
+(defn ShowWallet-pre-merge
+  [{:keys [data-tree state-map current-normalized]}]
+  (log/finer :ShowTransaction-pre-merge/starting
+             {:data-tree          data-tree
+              :state-map          state-map
+              :current-noramlized current-normalized})
+  (let [id (::m.c.wallets/id data-tree)]
+    (log/info :ShowTransaction-pre-merge/parsed {:id id})
+    (let [addresses-data
+          (let [initial (comp/get-initial-state u.c.wallet-addresses/WalletAddressesSubPage)
+                state   (get-in state-map (comp/get-ident u.c.wallet-addresses/WalletAddressesSubPage {}))
+                merged  (merge initial state {::m.c.wallets/id id})]
+            (log/info :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            merged)
+          updated-data (-> data-tree (assoc :ui/addresses addresses-data))]
+      (log/info :ShowBlock-pre-merge/merged
+                {:updated-data       updated-data
+                 :data-tree          data-tree
+                 :state-map          state-map
+                 :current-noramlized current-normalized})
+      updated-data)))
+
+(defsc ShowWallet
+  "Show a wallet"
+  [this {::m.c.wallets/keys [id name derivation key node]
+         :ui/keys           [addresses]
+         :as                props}]
+  {:route-segment ["wallets" :id]
+   :query         [::m.c.wallets/id
+                   ::m.c.wallets/name
+                   ::m.c.wallets/derivation
+                   {::m.c.wallets/node (comp/get-query u.links/CoreNodeLinkForm)}
+                   ::m.c.wallets/key
+                   {:ui/addresses (comp/get-query u.c.wallet-addresses/WalletAddressesSubPage)}
+                   [df/marker-table '_]]
+   :initial-state {::m.c.wallets/id         nil
+                   ::m.c.wallets/name       ""
+                   ::m.c.wallets/derivation ""
+                   ::m.c.wallets/key        ""
+                   ::m.c.wallets/node       {}
+                   :ui/addresses            {}}
+   :ident         ::m.c.wallets/id
+   :will-enter
+   (fn [app {id :id}]
+     (let [id    (new-uuid id)
+           ident [::m.c.wallets/id id]
+           state (-> (app/current-state app) (get-in ident))]
+       (log/info :ShowWallet/will-enter {:id id :app app})
+       (dr/route-deferred
+        ident
+        (fn []
+          (log/info :ShowTransaction/will-enter2 {:id id :state state})
+          (df/load!
+           app ident ShowWallet
+           {:marker               :ui/selected-node
+            :target               [:ui/selected-node]
+            :post-mutation        `dr/target-ready
+            :post-mutation-params {:target ident}})))))
+   :pre-merge     ShowWallet-pre-merge}
+  (log/info :ShowTransaction/creating {:id id :props props :this this})
+  (dom/div {}
+    (dom/div :.ui.segment
+      (dom/h1 {} "Wallet")
+      (dom/p :.ui.segment "Name: " (str name))
+      (dom/p :.ui.segment "Derivation: " (str derivation))
+      (dom/p :.ui.segment "Key: " (str key))
+      (dom/p :.ui.segment "Node: " (u.links/ui-core-node-link node)))
+    (if id
+      (dom/div :.ui.segment
+        (u.c.wallet-addresses/ui-wallet-addresses-sub-page addresses))
+      (dom/p {} "id not set"))))
+
 (report/defsc-report WalletsReport
   [this props]
   {ro/columns          [m.c.wallets/name
@@ -141,8 +218,8 @@
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-action-button}
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
+                        ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ro/form-links       {::m.c.wallets/name WalletForm}
    ro/route            "wallets"
    ro/row-actions      [delete-action-button]
    ro/row-pk           m.c.wallets/id

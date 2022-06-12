@@ -1,6 +1,8 @@
 (ns dinsro.helm.lnd
   (:require
-   [clojure.string :as string]))
+   #?(:clj [clj-yaml.core :as yaml])
+   [clojure.string :as string]
+   #?(:cljs [dinsro.yaml :as yaml])))
 
 (defn bitcoin-section
   [options]
@@ -69,13 +71,13 @@
           chain       :regtest
           ingress     {}
           rpc         {}
-          tls         {}}}                             options
+          tls         {}}}                                    options
         {auto-unlock-password :password
          :or
-         {auto-unlock-password "password12345678"}}    auto-unlock
+         {auto-unlock-password "password12345678"}}           auto-unlock
         {ingress-host :host
          :or
-         {ingress-host (str "lnd-" name ".locahost")}} ingress
+         {ingress-host (str "lnd." name ".locahost")}}        ingress
         {rpc-host     :host
          rpc-port     :port
          rpc-user     :user
@@ -87,23 +89,20 @@
           rpc-user       "rpcuser"
           rpc-password   "rpcpassword"
           zmqpubrawblock {}
-          zmqpubrawtx    {}}}                          rpc
+          zmqpubrawtx    {}}}                                 rpc
         {zmqpubrawblock-host :host
          zmqpubrawblock-port :port
          :or
          {zmqpubrawblock-host rpc-host
-          zmqpubrawblock-port 28332}}                  zmqpubrawblock
+          zmqpubrawblock-port 28332}}                         zmqpubrawblock
         {zmqpubrawtx-host :host
          zmqpubrawtx-port :port
          :or
          {zmqpubrawtx-host rpc-host
-          zmqpubrawtx-port 28333}}                     zmqpubrawtx
+          zmqpubrawtx-port 28333}}                            zmqpubrawtx
         {tls-domain :domain
          :or
-         {tls-domain (str "lnd-" name
-                          ".lnd-"
-                          name
-                          ".svc.cluster.local")}}      tls]
+         {tls-domain (str "lnd." name ".svc.cluster.local")}} tls]
     {:alias       alias
      :auto-unlock {:password auto-unlock-password}
      :chain       chain
@@ -141,7 +140,7 @@
   [{:keys [name]}]
   (let [alias           (str "Node " name)
         external-host   (str "lnd." name ".localhost")
-        internal-host   (str "lnd-internal." name ".svc.cluster.localhost")
+        internal-host   (str "lnd." name ".svc.cluster.local")
         bitcoin-host    (str "bitcoin." name)
         unlock-password "unlockpassword"]
     {:alias       alias
@@ -165,3 +164,7 @@
 ;;      :network "regtest"
 ;;      :ingress {:host "lnd1.localhost"}
 ;;      }))
+
+(defn ->values-yaml
+  [options]
+  (yaml/generate-string (->values (->value-options options))))

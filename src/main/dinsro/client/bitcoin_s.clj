@@ -77,10 +77,12 @@
    (BitcoinNetworks/fromString network)))
 
 (defn get-xpriv-version
-  [purpose network]
-  (HDUtil/getXprivVersion
-   (HDPurpose. purpose)
-   (BitcoinNetworks/fromString network)))
+  "See: https://bitcoin-s.org/api/org/bitcoins/core/util/HDUtil$.html#getXprivVersion(hdPurpose:org.bitcoins.core.hd.HDPurpose,network:org.bitcoins.core.config.NetworkParameters):org.bitcoins.core.crypto.ExtKeyPrivVersion"
+  ^ExtKeyPrivVersion
+  [purpose network-name]
+  (let [hd-purpose (HDPurpose. purpose)
+        network    (BitcoinNetworks/fromString network-name)]
+    (HDUtil/getXprivVersion hd-purpose network)))
 
 (defn get-address
   [^WitnessScriptPubKey script-pub-key
@@ -110,7 +112,7 @@
     (P2WPKHWitnessSPKV0/apply pub-key)))
 
 (defn get-xpriv
-  [bip39-seed purpose network]
+  ^ExtPrivateKey [^BIP39Seed bip39-seed purpose network]
   (let [priv-version (get-xpriv-version purpose network)]
     (.toExtPrivateKey bip39-seed priv-version)))
 
@@ -120,6 +122,10 @@
         pk-bytes (ECPrivateKeyBytes. pk-bv false)
         network (regtest-network)]
     (ECPrivateKeyUtil/toWIF pk-bytes network)))
+
+(defn wif->pk
+  ^ECPrivateKeyBytes [wif]
+  (ECPrivateKeyUtil/fromWIFToPrivateKey wif))
 
 (defn get-zmq-config
   []
@@ -134,6 +140,14 @@
       (if passed
         (cs/vector->vec result)
         (throw "Did not pass")))))
+
+(defn ->segwit-path
+  [path]
+  (SegWitHDPath/fromString path))
+
+(defn ->bip32-path
+  [path]
+  (BIP32Path/fromString path))
 
 (comment
   (cs/vector->vec (.words (create-mnemonic)))
@@ -152,7 +166,8 @@
 
   (ExtKeyPrivVersion)
 
-  (def segwit-path (SegWitHDPath/fromString "m/84'/0'/0'/0/0"))
+  (def segwit-path (->segwit-path "m/84'/0'/0'/0/0"))
+  segwit-path
 
   (def passphrase "secret-passphrase")
   (def wallet-path "m/84'/0'/0'")

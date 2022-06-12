@@ -11,5 +11,6 @@
    dinsro.ui.core.words-test
    dinsro.ui.forms.registration-test
    dinsro.ui.ln.nodes-test
+   dinsro.ui.ln.peers-test
    dinsro.ui.navbar-test
    dinsro.ui.registration-test))

@@ -17,13 +17,14 @@
 
 (defn update-peer!
   [node-id peer]
+  (log/info :update-peer!/starting {:node-id node-id :peer peer})
   (let [{peer-index ::m.c.peers/peer-id} peer]
     (if-let [existing-peer (q.c.peers/find-by-node-and-peer-id node-id peer-index)]
       (let [peer-id (::m.c.peers/id existing-peer)]
-        (log/info :peer-update/record-exists {:node-id node-id :peer-index peer-index})
+        (log/info :update-peer!/record-exists {:node-id node-id :peer-index peer-index})
         peer-id)
       (do
-        (log/info :peer-update/record-exists {:node-id node-id :peer-index peer-index})
+        (log/info :update-peer!/record-exists {:node-id node-id :peer-index peer-index})
         (let [params (assoc peer ::m.c.peers/node node-id)
               params (m.c.peers/prepare-params params)]
           (q.c.peers/create-record params))))))
@@ -32,16 +33,16 @@
   "Fetch and update peers for node"
   [node]
   [::m.c.nodes/item => any?]
-  (log/info :peers/fetching {})
-  (let [node-id (::m.c.nodes/id node)
-        client  (m.c.nodes/get-client node)]
-    (doseq [peer (c.bitcoin/get-peer-info client)]
-      (update-peer! node-id peer))))
+  (let [node-id (::m.c.nodes/id node)]
+    (log/info :fetch-peers!/starting {:node-id node-id})
+    (let [client  (m.c.nodes/get-client node)]
+      (doseq [peer (c.bitcoin/get-peer-info client)]
+        (update-peer! node-id peer)))))
 
 (>defn add-peer!
   [node address]
   [::m.c.nodes/item string? => any?]
-  (log/info :peer/adding {:node-id (::m.c.nodes/id node) :address address})
+  (log/info :add-peer!/starting {:node-id (::m.c.nodes/id node) :address address})
   (let [client (m.c.nodes/get-client node)]
     (c.bitcoin/add-node client address)))
 
@@ -49,7 +50,7 @@
   "Create a new peer connection for this node"
   [{addr    ::m.c.peers/addr
     node-id ::m.c.peers/node}]
-  (log/info :peer/creating {:node-id node-id :addr addr})
+  (log/info :create!/starting {:node-id node-id :addr addr})
   (if-let [node (q.c.nodes/read-record node-id)]
     (do
       (add-peer! node addr)
@@ -62,16 +63,16 @@
   (if-let [peer (q.c.peers/read-record peer-id)]
     (let [{node-id ::m.c.peers/node
            addr    ::m.c.peers/addr} peer]
-      (log/info :peer/deleting {:node-id node-id :peer-id peer-id})
+      (log/info :delete!/starting {:node-id node-id :peer-id peer-id})
       (if-let [node (q.c.nodes/read-record node-id)]
         (let [client (m.c.nodes/get-client node)]
           (c.bitcoin/disconnect-node client addr)
           (q.c.peers/delete! peer-id))
         (do
-          (log/warn :peer/delete-node-not-found {:peer-id peer-id :node-id :node-id})
+          (log/warn :delete!/node-not-found {:peer-id peer-id :node-id :node-id})
           nil)))
     (do
-      (log/warn :peer/delete-not-found {:peer-id peer-id})
+      (log/warn :delete!/peer-not-found {:peer-id peer-id})
       nil)))
 
 (comment

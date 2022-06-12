@@ -52,7 +52,7 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::txid (s/or :int number? :nil nil?))
+(s/def ::vout (s/or :int number? :nil nil?))
 (defattr vout ::vout :int
   {ao/identities #{::id}
    ao/schema     :production})

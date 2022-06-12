@@ -5,7 +5,9 @@
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.joins.core.blocks :as j.c.blocks]
+   [dinsro.joins.core.chains :as j.c.chains]
    [dinsro.joins.core.connections :as j.c.connections]
+   [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.joins.core.tx :as j.c.tx]
@@ -18,6 +20,7 @@
    [dinsro.joins.ln.payments :as j.ln.payments]
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
+   [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.joins.ln.tx :as j.ln.tx]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.rate-sources :as j.rate-sources]
@@ -30,7 +33,9 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.connections :as m.c.connections]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.script-sigs :as m.c.script-sigs]
@@ -70,6 +75,7 @@
    #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
+   #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
@@ -85,7 +91,9 @@
         j.categories/attributes
         j.c.addresses/attributes
         j.c.blocks/attributes
+        j.c.chains/attributes
         j.c.connections/attributes
+        j.c.networks/attributes
         j.c.nodes/attributes
         j.c.peers/attributes
         j.c.tx/attributes
@@ -98,6 +106,7 @@
         j.ln.payments/attributes
         j.ln.payreqs/attributes
         j.ln.peers/attributes
+        j.ln.remote-nodes/attributes
         j.ln.tx/attributes
         j.rates/attributes
         j.rate-sources/attributes
@@ -110,7 +119,9 @@
         m.categories/attributes
         m.c.addresses/attributes
         m.c.blocks/attributes
+        m.c.chains/attributes
         m.c.connections/attributes
+        m.c.networks/attributes
         m.c.nodes/attributes
         m.c.peers/attributes
         m.c.script-sigs/attributes
@@ -157,6 +168,7 @@
            mu.ln.payreqs/resolvers
            mu.ln.peers/resolvers
            mu.ln.nodes/resolvers
+           mu.ln.remote-nodes/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers

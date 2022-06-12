@@ -100,8 +100,8 @@
       :com.fulcrologic.fulcro.algorithms.form-state/fields    #{::m.c.wallets/name}
       :com.fulcrologic.fulcro.algorithms.form-state/complete? #{::m.c.wallets/name}
       :com.fulcrologic.fulcro.algorithms.form-state/subforms
-      {::m.c.wallets/node {}
-       ::m.c.wallets/user {}}
+      {:dinsro.model.core.wallets/node {}
+       :dinsro.model.core.wallets/user {}}
 
       :com.fulcrologic.fulcro.algorithms.form-state/pristine-state {}}}))
 

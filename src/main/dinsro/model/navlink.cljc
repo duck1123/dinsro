@@ -16,26 +16,30 @@
    :channels              ["Channels"          "/ln/channels"      :dinsro.ui.ln.channels/LNChannelsReport]
    :core-addresses        ["Core Address"      "/core/addresses"   :dinsro.ui.core.addresses/CoreAddressReport]
    :core-blocks           ["Core Blocks"       "/core/blocks"      :dinsro.ui.core.blocks/CoreBlockReport]
+   :core-chains           ["Chains"            "/core/chains"      :dinsro.ui.core.chains/CoreChainsReport]
    :core-menu             ["Core"              "/core"             nil
                            [:core-nodes
                             :core-node-connections
                             :core-peers
                             :core-blocks
-                            :core-txes
+                            :core-transactions
                             :core-addresses
+                            :core-chains
+                            :core-networks
                             :wallets
                             :wallet-addresses]]
-   :core-node-connections ["Connections"       "/core/connections" :dinsro.ui.core.connections/CoreNodeConnectionsReport]
-   :core-nodes            ["Nodes"             "/core/nodes"       :dinsro.ui.core.nodes/CoreNodesReport]
-   :core-peers            ["Peers"             "/core/peers"       :dinsro.ui.core.peers/CorePeers2Report]
-   :core-txes             ["Transactions"      "/core/txes"        :dinsro.ui.core.tx/CoreTxReport]
-   :currencies            ["Currencies"        "/currencies"       :dinsro.ui.currencies/CurrenciesReport]
-   :home                  ["Home"              "/"                 :dinsro.ui.home/HomePage2]
-   :invoices              ["Invoices"          "/ln/invoices"      :dinsro.ui.ln.invoices/LNInvoicesReport]
-   :lightning-nodes       ["Lightning Nodes"   "/ln/nodes"         :dinsro.ui.ln.nodes/LightningNodesReport]
-   :ln-menu               ["LN"                "/ln"               nil
+   :core-node-connections ["Connections"       "/core/connections"  :dinsro.ui.core.connections/CoreNodeConnectionsReport]
+   :core-networks         ["Networks"          "/core/networks"     :dinsro.ui.core.networks/CoreNetworksReport]
+   :core-nodes            ["Nodes"             "/core/nodes"        :dinsro.ui.core.nodes/CoreNodesReport]
+   :core-peers            ["Peers"             "/core/peers"        :dinsro.ui.core.peers/CorePeers2Report]
+   :core-transactions     ["Transactions"      "/core/transactions" :dinsro.ui.core.tx/CoreTxReport]
+   :currencies            ["Currencies"        "/currencies"        :dinsro.ui.currencies/CurrenciesReport]
+   :home                  ["Home"              "/"                  :dinsro.ui.home/HomePage2]
+   :invoices              ["Invoices"          "/ln/invoices"       :dinsro.ui.ln.invoices/LNInvoicesReport]
+   :lightning-nodes       ["Lightning Nodes"   "/ln/nodes"          :dinsro.ui.ln.nodes/LightningNodesReport]
+   :ln-menu               ["LN"                "/ln"                nil
                            [:lightning-nodes
-                            ;; :ln-remote-nodes
+                            :ln-remote-nodes
                             :peers
                             :channels
                             :invoices

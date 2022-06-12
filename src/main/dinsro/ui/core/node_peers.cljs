@@ -2,24 +2,26 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.ui.core.peers :as u.c.peers]
-   [lambdaisland.glogi :as log]
-   [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.core.peers :as m.c.peers]
    [com.fulcrologic.rad.control :as control]
-   [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.form :as form]
-   [dinsro.ui.links :as u.links]))
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.ui.core.peers :as u.c.peers]
+   [dinsro.ui.links :as u.links]
+   [lambdaisland.glogi :as log]))
 
 (report/defsc-report NodePeersReport
   [this props]
   {ro/columns
-   [m.c.peers/addr
-    m.c.peers/address-bind
+   [m.c.peers/peer-id
+    m.c.peers/addr
     m.c.peers/subver
-    m.c.peers/peer-id]
-
+    m.c.peers/connection-type]
+   ro/control-layout {:action-buttons [::new ::fetch ::refresh]
+                      :inputs         [[::m.c.nodes/id]]}
    ro/controls
    {::m.c.nodes/id
     {:type  :uuid
@@ -30,9 +32,24 @@
      :label  "Refresh"
      :action (fn [this] (control/run! this))}
 
-    ::new-peer
+    ::fetch
     {:type   :button
-     :label  "New Peer"
+     :label  "Fetch"
+     :action (fn [this]
+               (let [props                 (comp/props this)
+                     {:ui/keys [controls]} props
+                     id-control            (some
+                                            (fn [c]
+                                              (let [{::control/keys [id]} c]
+                                                (when (= id ::m.c.nodes/id)
+                                                  c)))
+                                            controls)
+                     node-id               (::control/value id-control)]
+                 (comp/transact! this [(mu.c.nodes/fetch! {::m.c.nodes/id node-id})])))}
+
+    ::new
+    {:type   :button
+     :label  "New"
      :action (fn [this]
                (let [props                 (comp/props this)
                      {:ui/keys [controls]} props
@@ -49,7 +66,7 @@
                                             :id-control id-control
                                             :node-id    node-id})
                  (form/create! this u.c.peers/NewCorePeerForm
-                               {:initial-state {::m.c.peers/addr ""}})))}}
+                               {:initial-state {::m.c.peers/addr "foo"}})))}}
 
    ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
@@ -63,24 +80,25 @@
   (log/info :NodePeersReport/creating {:props props})
   (report/render-layout this))
 
+(def ui-node-peers-report (comp/factory NodePeersReport))
+
 (defsc NodePeersSubPage
-  [_this {:keys   [report] :as props
-          node-id ::m.c.nodes/id}]
+  [_this {:ui/keys [report] :as props
+          node-id  ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
-                   {:report (comp/get-query u.c.peers/CorePeersReport)}]
+                   {:ui/report (comp/get-query NodePeersReport)}]
    :componentDidMount
    (fn [this]
-     (let [props (comp/props this)]
-       (log/info :NodePeersSubPage/did-mount {:props props :this this})
-       (report/start-report! this NodePeersReport)))
+     (let [{::m.c.nodes/keys [id] :as props} (comp/props this)]
+       (log/info :NodePeersSubPage/did-mount {:id id :props props :this this})
+       (report/start-report! this NodePeersReport {:route-params {::m.c.nodes/id id}})))
    :initial-state {::m.c.nodes/id nil
-                   :report        {}}
+                   :ui/report     {}}
    :ident         (fn [] [:component/id ::NodePeersSubPage])}
   (log/info :NodePeersSubPage/creating {:props props})
-  (let [peer-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
-    (dom/div :.ui.segment
-      (if node-id
-        (u.c.peers/ui-peers-report peer-data)
-        (dom/div {} "Node ID not set")))))
+  (dom/div :.ui.segment
+    (if node-id
+      (ui-node-peers-report report)
+      (dom/div {} "Node ID not set"))))
 
 (def ui-node-peers-sub-page (comp/factory NodePeersSubPage))

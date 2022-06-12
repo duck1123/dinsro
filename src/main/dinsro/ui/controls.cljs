@@ -188,9 +188,8 @@
   [_this {:keys [control-key instance]}]
   (let [props (comp/props instance)
         id    (get-in props [:ui/parameters control-key])]
-    (log/info :uuid/render {:id id :control-key control-key})
-    (dom/div {}
-      "uuid control render: " (pr-str id))))
+    (log/fine :uuid/render {:id id :control-key control-key})
+    (dom/div {})))
 
 (def uuid-control-render (comp/factory UUIDControl {:keyfn :control-key}))
 

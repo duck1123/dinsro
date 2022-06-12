@@ -54,22 +54,7 @@
    :task (shell "rm -rf data")}
 
   clean-semantic
-  {:task
-   (do
-     (shell "rm -rf semantic/dist")
-     (shell "rm -rf semantic/gulpfile.js")
-     (shell "rm -rf semantic/src/definitions")
-     (shell "rm -rf semantic/src/semantic.less")
-     (shell "rm -rf semantic/src/site/collections")
-     (shell "rm -rf semantic/src/site/elements")
-     (shell "rm -rf semantic/src/site/globals/reset.overrides")
-     (shell "rm -rf semantic/src/site/globals/reset.variables")
-     (shell "rm -rf semantic/src/site/globals/site.variables")
-     (shell "rm -rf semantic/src/site/modules")
-     (shell "rm -rf semantic/src/site/views")
-     (shell "rm -rf semantic/src/theme.less")
-     (shell "rm -rf semantic/src/themes")
-     (shell "rm -rf semantic/tasks"))}
+  {:task (c/clean-semantic)}
 
   clean-kondo-cache
   {:tasks (shell "rm -rf .clj-kondo/.cache")}
@@ -92,11 +77,7 @@
   compile-cljs
   {:doc     "Compile clojurescript source files"
    :depends [init]
-   :task    (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
-                  data         {:devtools {:devtools-url devtools-url}}
-                  args         (format "-M:dev:notebooks:guardrails:shadow-cljs compile main --config-merge '%s'"
-                                       (pr-str data))]
-              (clojure args))}
+   :task    (c/compile-cljs)}
 
   compile-styles
   {:task (shell "npm run build:sass")}
@@ -107,8 +88,7 @@
 
   compile-production-clj
   {:doc  "Compile clojure source files for production"
-   :task (do
-           (clojure "-M:production -e " "(compile 'dinsro.core)"))}
+   :task (clojure "-M:production -e " "(compile 'dinsro.core)")}
 
   compile-production-cljs
   {:doc     "Compile clojurescript source files for production"
@@ -125,36 +105,11 @@
 
   dev-bootstrap
   {:doc "DOCKER-ONLY: Start clojurescript watch and main server"
-   :task
-   (let [user          "circleci"
-         group         "circleci"
-         src-path      "/var/lib/dinsro"
-         cert-path     "/mnt/certs"
-         envs          (->> (c/migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK" "WATCH_SOURCES"])
-                            (filter identity)
-                            (string/join " "))
-         bootstrap-cmd (str envs " bb dev-bootstrap-user")]
-     (c/mkdir cert-path)
-     (c/chown user group src-path)
-     (c/chown user group cert-path)
-     (c/sudo bootstrap-cmd))}
+   :task (c/dev-bootstrap)}
 
   dev-bootstrap-user
   {:doc "DOCKER-ONLY: Start clojurescript watch and main server as user"
-   :task
-   (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
-     (println "=========================================================================================")
-     (let [devtools-url (or (System/getenv "DEVTOOLS_URL"))
-           envs         (->> (c/migrate-env ["DEVTOOLS_URL" "DINSRO_USE_NOTEBOOK"])
-                             (filter identity)
-                             (clojure.string/join " "))
-           compile-cmd  "bb compile-cljs"
-           watch-cmd    (str "sh -c \"" envs " bb watch-cljs\"")
-           run-cmd      "bb run"]
-       (when watch-sources
-         (shell compile-cmd)
-         (future (shell watch-cmd)))
-       (shell run-cmd)))}
+   :task (c/dev-bootstrap-user)}
 
   devcards-server
   {:task (shell "bb watch-devcards")}
@@ -174,7 +129,7 @@
            (shell (str "clojure -A:" alias " -Stree")))}
 
   docs
-  {:task (clojure "-X:codox")}
+  {:task (clojure "-X:codox:notebooks")}
 
   e2e
   {:doc  "Run end to end testing"
@@ -205,13 +160,8 @@
                                               (h.dinsro/->dinsro-config (site/get-site-config)))))}
 
   generate-lnd-values
-  {:doc "generate a lnd values file"
-   :task
-   (let [name    (or (first *command-line-args*) "3")
-         options (h.lnd/->value-options {:name name})
-         yaml    (yaml/generate-string (h.lnd/->values options))]
-     (c/mkdir (format "conf/%s" name))
-     (spit (format "conf/%s/lnd_values.yaml" name) yaml))}
+  {:doc  "generate a lnd values file"
+   :task (c/generate-lnd-values)}
 
   generate-nbxplorer-values
   {:doc "generate a nbxplorer values file"
@@ -546,7 +496,7 @@
 
   watch-cljs
   {:do   "watch and compile css"
-   :task (c/watch-cljs ["main" "workspaces" "devcards"])}
+   :task (c/watch-cljs ["main" "workspaces" "notebooks" "devcards"])}
 
   workspaces
   {:doc  "Starts and watches for workspaces"

@@ -4,10 +4,9 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
-   [dinsro.client :as client]
    [dinsro.specs :as ds]
+   [dinsro.test-helpers :as th]
    [dinsro.ui.core.node-wallets :as u.c.node-wallets]
-   [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
@@ -30,12 +29,12 @@
      :or
      {node (NodeWalletsSubPage-row-node)
       user (NodeWalletsSubPage-row-user)}}]
-   {::m.c.wallets/id         (ds/gen-key ::m.c.wallets/id)
-    ::m.c.wallets/name       (ds/gen-key ::m.c.wallets/name)
-    ::m.c.wallets/derivation (ds/gen-key ::m.c.wallets/derivation)
-    ::m.c.wallets/key        (ds/gen-key ::m.c.wallets/key)
-    ::m.c.wallets/user       user
-    ::m.c.wallets/node       node}))
+   {::m.c.wallets/id           (ds/gen-key ::m.c.wallets/id)
+    ::m.c.wallets/name         (ds/gen-key ::m.c.wallets/name)
+    ::m.c.wallets/derivation   (ds/gen-key ::m.c.wallets/derivation)
+    ::m.c.wallets/key          (ds/gen-key ::m.c.wallets/key)
+    ::m.c.wallets/user         user
+    ::m.c.wallets/node node}))
 
 (defn NodeWalletsSubPage-report-data
   []
@@ -62,8 +61,4 @@
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard NodeWalletsSubPage
   {::wsm/card-width 6 ::wsm/card-height 12}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.c.node-wallets/NodeWalletsSubPage
-    ::ct.fulcro3/app  {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state
-    (fn [] (NodeWalletsSubPage-data))}))
+  (th/fulcro-card u.c.node-wallets/NodeWalletsSubPage NodeWalletsSubPage-data {}))

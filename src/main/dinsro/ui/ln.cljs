@@ -9,6 +9,7 @@
    [dinsro.ui.ln.payments :as u.ln.payments]
    [dinsro.ui.ln.payreqs :as u.ln.payreqs]
    [dinsro.ui.ln.peers :as u.ln.peers]
+   [dinsro.ui.ln.remote-nodes :as u.ln.remote-nodes]
    [dinsro.ui.ln.transactions :as u.ln.tx]))
 
 (defrouter LnRouter
@@ -30,6 +31,10 @@
                     u.ln.payreqs/NewPaymentForm
                     u.ln.peers/LNPeerForm
                     u.ln.peers/LNPeersReport
+                    u.ln.peers/NewPeerForm
+                    u.ln.remote-nodes/ShowRemoteNode
+                    u.ln.remote-nodes/RemoteNodeForm
+                    u.ln.remote-nodes/RemoteNodesReport
                     u.ln.tx/LNTransactionForm
                     u.ln.tx/LNTransactionsReport]}
 

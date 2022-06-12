@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
@@ -11,14 +12,24 @@
    #?(:clj [dinsro.queries.core.tx :as q.c.tx])
    #?(:clj [dinsro.queries.core.tx-in :as q.c.tx-in])
    #?(:clj [dinsro.queries.core.tx-out :as q.c.tx-out])
-   [dinsro.specs]))
+   [dinsro.specs]
+   [lambdaisland.glogc :as log]))
+
+(comment ::m.c.blocks/_)
 
 (defattr index ::m.c.tx/index :ref
   {ao/target    ::m.c.tx/id
    ao/pc-output [{::m.c.tx/index [::m.c.tx/id]}]
    ao/pc-resolve
-   (fn [_env _props]
-     (let [ids #?(:clj (q.c.tx/index-ids) :cljs [])]
+   (fn [{:keys [query-params]} props]
+     (log/info :index/starting {:query-params query-params :props props})
+     (let [ids
+           #?(:clj
+              (let [{block-id ::m.c.blocks/id} query-params]
+                (if block-id
+                  (q.c.tx/find-by-block block-id)
+                  (q.c.tx/index-ids)))
+              :cljs [])]
        {::m.c.tx/index (map (fn [id] {::m.c.tx/id id}) ids)}))})
 
 (defattr node ::m.c.tx/node :ref

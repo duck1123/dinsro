@@ -19,19 +19,11 @@
                         m.c.tx/fetched?
                         m.c.tx/block]
    ro/controls
-   {::search u.c.tx/search-control
-    ::refresh
+   {::refresh
     {:type   :button
      :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-    ::tx-id
-    {:type          :string
-     :style         :search
-     :default-value ""
-     :label         "Transaction Id"
-     :onChange      (fn [this _] (control/run! this))}}
-   ro/control-layout   {:inputs         [[::tx-id ::search]]
-                        :action-buttons [::refresh]}
+     :action (fn [this] (control/run! this))}}
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.tx/block (fn [_this props]
                                          (log/debug :formatting {:props props})
                                          (u.links/ui-block-height-link props))

@@ -8,7 +8,7 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.specs]
-   [taoensso.timbre :as log]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
@@ -47,7 +47,7 @@
 (>defn find-peer
   [node-id pubkey]
   [::m.ln.nodes/id ::m.ln.info/identity-pubkey => (? ::m.ln.peers/id)]
-  (log/infof "find peer. node = %s, pubkey = %s" node-id pubkey)
+  (log/info :find-peer/starting {:node-id node-id :pubkey pubkey})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?peer-id]
                 :in    [[?node-id ?pubkey]]
@@ -58,7 +58,7 @@
 (>defn add-peer!
   [node-id peer]
   [::m.ln.nodes/id ::m.ln.peers/params => ::m.ln.peers/item]
-  (log/debugf "Adding Peer: %s" node-id)
+  (log/debug :add-peer!/starting {:node-id node-id})
   (let [peer-id (create-record (merge peer {::m.ln.peers/node node-id}))]
     (read-record peer-id)))
 
@@ -71,9 +71,19 @@
                 :where [[?peer-id ::m.ln.peers/node ?node-id]]}]
     (map first (xt/q db query node-id))))
 
+(>defn find-ids-by-remote-node
+  [remote-node-id]
+  [::m.ln.peers/remote-node => (s/coll-of ::m.ln.peers/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?peer-id]
+                :in    [?remote-node-id]
+                :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]]}]
+    (map first (xt/q db query remote-node-id))))
+
 (>defn delete
   [id]
   [::m.ln.peers/id => any?]
+  (log/info :delete/starting {:id id})
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))

@@ -90,6 +90,13 @@
 (defn global-error-action
   "Run when app's :remote-error? returns true"
   [{:keys [component state], {:keys [body status-code error-text]} :result}]
+  (log/error
+   :global-error-action/starting
+   {:component   component
+    :state       state
+    :body        body
+    :status-code status-code
+    :error-text  error-text})
   (when-not (component-handles-mutation-errors? component)
     (let [msg (first
                (map

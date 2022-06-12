@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -12,47 +13,53 @@
 
 (report/defsc-report NodeWalletsReport
   [this props]
-  {ro/columns        [m.c.wallets/name
-                      m.c.wallets/derivation
-                      m.c.wallets/key]
-   ro/control-layout {:action-buttons [::new]}
-   ro/controls       {::new u.c.wallets/new-action-button
-                      ::m.c.nodes/id
-                      {:type  :uuid
-                       :label "Nodes"}}
-
+  {ro/columns          [m.c.wallets/name
+                        m.c.wallets/derivation
+                        m.c.wallets/key
+                        m.c.wallets/user
+                        m.c.wallets/node]
+   ro/control-layout   {:inputs         [[::m.c.nodes/id]]
+                        :action-buttons [::new ::refresh]}
+   ro/controls         {::new u.c.wallets/new-action-button
+                        ::m.c.nodes/id
+                        {:type  :uuid
+                         :label "Nodes"}
+                        ::refresh
+                        {:type   :button
+                         :label  "Refresh"
+                         :action (fn [this] (control/run! this))}}
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
+                        ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ro/form-links       {::m.c.wallets/name u.c.wallets/WalletForm}
+   ;; ro/form-links       {::m.c.wallets/name u.c.wallets/WalletForm}
    ro/route            "wallets"
    ro/row-actions      [u.c.wallets/delete-action-button]
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index
-   ro/title            "Node Wallets"}
+   ro/title            "Wallets"}
   (log/info :NodeWalletsReport/creating {:props props})
   (report/render-layout this))
 
 (def ui-node-wallets-report (comp/factory NodeWalletsReport))
 
 (defsc NodeWalletsSubPage
-  [_this {:keys   [report] :as props
-          node-id ::m.c.nodes/id}]
+  [_this {:ui/keys [report] :as props
+          node-id  ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
-                   {:report (comp/get-query NodeWalletsReport)}]
+                   {:ui/report (comp/get-query NodeWalletsReport)}]
    :componentDidMount
    (fn [this]
-     (let [props (comp/props this)]
+     (let [{::m.c.nodes/keys [id] :as props} (comp/props this)]
        (log/info :NodeWalletsSubPage/did-mount {:props props :this this})
-       (report/start-report! this NodeWalletsReport)))
+       (report/start-report! this NodeWalletsReport {:route-params {::m.c.nodes/id id}})))
    :initial-state {::m.c.nodes/id nil
-                   :report        {}}
+                   :ui/report     {}}
    :ident         (fn [] [:component/id ::NodeWalletsSubPage])}
   (log/info :NodeWalletsSubPage/creating {:props props})
-  (let [wallet-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
-    (dom/div :.ui.segment
-      (if node-id
-        (ui-node-wallets-report wallet-data)
-        (dom/p {} "Node ID not set")))))
+  (dom/div :.ui.segment
+    (if node-id
+      (ui-node-wallets-report report)
+      (dom/p {} "Node ID not set"))))
 
 (def ui-node-wallets-sub-page (comp/factory NodeWalletsSubPage))

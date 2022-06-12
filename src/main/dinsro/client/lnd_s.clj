@@ -137,6 +137,27 @@ ZEw+de+2IU8TFQ4JWo9Y
   [client]
   (log/info :connect-peer/starting {:client client}))
 
+(defn await-throwable
+  [response]
+  (let [f           (cs/await-future response)
+        result-data (async/<!! f)]
+    (if (instance? Throwable result-data)
+      (throw result-data)
+      (let [{:keys [passed result]} result-data]
+        (if passed
+          result (throw result))))))
+
+(defn get-new-address
+  "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#getNewAddress:scala.concurrent.Future[org.bitcoins.core.protocol.BitcoinAddress]"
+  [^LndRpcClient client]
+  (await-throwable (.getNewAddress client)))
+
+(defn unlock-wallet
+  "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#unlockWallet(password:String):scala.concurrent.Future[Unit]"
+  [^LndRpcClient client ^String passphrase]
+  (log/info :unlock-wallet/starting {:client client :passphrase passphrase})
+  (await-throwable (.unlockWallet client passphrase)))
+
 (comment
 
   (->lightning-address "lnd.bob:9735")
