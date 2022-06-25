@@ -1,17 +1,17 @@
-{{- if .Values.notebook.enabled -}}
+{{- if .Values.notebooks.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "dinsro.fullname" . }}-notebook
+  name: {{ include "dinsro.fullname" . }}-notebooks
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.notebook.service.type }}
+  type: {{ .Values.notebooks.service.type }}
   ports:
-  - port: {{ .Values.notebook.service.port }}
-    targetPort: notebook
+  - port: {{ .Values.notebooks.service.port }}
+    targetPort: notebooks
     protocol: TCP
-    name: notebook
+    name: notebooks
   selector:
     {{- include "dinsro.selectorLabels" . | nindent 4 }}
 {{- end }}

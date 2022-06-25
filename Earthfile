@@ -195,11 +195,13 @@ devcards-image:
   ARG EXPECTED_REF=${repo}/${project}:devcards-${version}
   COPY --dir resources/tilt resources
   COPY --dir public .
+  RUN tree src
   CMD ["bb", "devcards-server"]
   SAVE IMAGE ${EXPECTED_REF}
 
 dev-image-sources-base:
   ARG watch_sources=true
+  ARG use_notebooks=false
   FROM +dev-sources-minimal
   USER root
   RUN mkdir -p resources/main/public/css \
@@ -219,8 +221,11 @@ dev-image-sources-base:
   CMD ["bb", "dev-bootstrap"]
 
 dev-image-sources:
+  ARG use_notebooks=false
   ARG watch_sources=true
-  FROM +dev-image-sources-base --build-arg watch_sources=$watch_sources
+  FROM +dev-image-sources-base \
+       --build-arg watch_sources=$watch_sources \
+       --build-arg use_notebooks=$use_notebooks
   ARG EXPECTED_REF=${repo}/${project}:dev-sources-${version}
   COPY --dir resources/main ${src_home}/resources
   SAVE IMAGE ${EXPECTED_REF}

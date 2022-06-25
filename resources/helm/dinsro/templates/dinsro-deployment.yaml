@@ -47,8 +47,8 @@ spec:
         - name: WATCH_SOURCES
           value: "true"
         {{- end }}
-        - name: DINSRO_USE_NOTEBOOK
-          value: {{ .Values.notebook.enabled | quote }}
+        - name: DINSRO_USE_NOTEBOOKS
+          value: {{ .Values.notebooks.enabled | quote }}
         ports:
         - name: http
           containerPort: 3000
@@ -67,8 +67,8 @@ spec:
           containerPort: 3693
           protocol: TCP
         {{- end }}
-        {{- if .Values.notebook.enabled }}
-        - name: notebook
+        {{- if .Values.notebooks.enabled }}
+        - name: notebooks
           containerPort: 7777
           protocol: TCP
         {{- end }}

@@ -31,7 +31,6 @@
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
                         ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ;; ro/form-links       {::m.c.wallets/name u.c.wallets/WalletForm}
    ro/route            "wallets"
    ro/row-actions      [u.c.wallets/delete-action-button]
    ro/row-pk           m.c.wallets/id

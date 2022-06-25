@@ -1,10 +1,10 @@
-{{- if and .Values.notebook.enabled .Values.notebook.ingress.enabled -}}
+{{- if and .Values.notebooks.enabled .Values.notebooks.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
-{{- $svcPort := .Values.notebook.service.port -}}
+{{- $svcPort := .Values.notebooks.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: notebook
+  name: notebooks
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -12,9 +12,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.notebook.ingress.tls }}
+  {{- if .Values.notebooks.ingress.tls }}
   tls:
-    {{- range .Values.notebook.ingress.tls }}
+    {{- range .Values.notebooks.ingress.tls }}
     - hosts:
       {{- range .hosts }}
       - {{ . | quote }}
@@ -23,7 +23,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- range .Values.notebook.ingress.hosts }}
+  {{- range .Values.notebooks.ingress.hosts }}
   - host: {{ .host | quote }}
     http:
       paths:
@@ -32,7 +32,7 @@ spec:
         pathType: "ImplementationSpecific"
         backend:
           service:
-            name: {{ $fullName }}-notebook
+            name: {{ $fullName }}-notebooks
             port:
               number: {{ $svcPort }}
       {{- end }}

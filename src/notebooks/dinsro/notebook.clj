@@ -1,4 +1,4 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
-(ns dinsro.notebook)
+(ns dinsro.notebooks)
 
-;; # Dinsro Notebook
+;; # Dinsro Notebooks

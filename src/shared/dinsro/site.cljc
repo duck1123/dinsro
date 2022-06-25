@@ -7,7 +7,6 @@
 
 ;; #?(:cljs (def fs (js/require "fs")))
 
-
 (defn load-edn
   "Load edn from an io/reader source (filename or io/resource)."
   [source]
@@ -35,5 +34,7 @@
 (defn get-site-config
   []
   (let [defaults  (load-edn "site-defaults.edn")
-        overrides (load-edn "site.edn")]
-    (merge defaults overrides)))
+        overrides (load-edn "site.edn")
+        notebooks (merge (:notebooks defaults)
+                         (:notebooks overrides))]
+    (merge defaults overrides {:notebooks notebooks})))

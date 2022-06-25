@@ -5,7 +5,7 @@
 (defn merge-defaults
   [options]
   (let [local-devtools        false
-        {:keys       [devcards devtools docs notebook portal workspaces]
+        {:keys       [devcards devtools docs notebooks portal workspaces]
          base-url    :baseUrl
          production? :useProduction
          :or
@@ -33,14 +33,14 @@
          :or
          {docs-enabled? false}} docs
 
-        ;; notebook
-        {notebook-enabled?      :enabled
-         notebook-inherit-host  :inheritHost
-         notebook-declared-host :host
+        ;; notebooks
+        {notebooks-enabled?      :enabled
+         notebooks-inherit-host  :inheritHost
+         notebooks-declared-host :host
          :or
-         {notebook-enabled?      true
-          notebook-inherit-host  true
-          notebook-declared-host (str "notebook." base-url)}} notebook
+         {notebooks-enabled?      true
+          notebooks-inherit-host  true
+          notebooks-declared-host (str "notebooks." base-url)}} notebooks
 
         ;; portal
         {portal-enabled :enabled
@@ -56,10 +56,10 @@
 
         devcards-host          (if devcards-inherit-host (str "devcards." base-url) devcards-declared-host)
         devcards-devtools-host (if devcards-inherit-host (str "devtools." devcards-host) devcards-devtools-declared-host)
-        notebook-host          (if notebook-inherit-host (str "notebook." base-url) notebook-declared-host)
+        notebooks-host         (if notebooks-inherit-host (str "notebooks." base-url) notebooks-declared-host)
         devtools-host          (if local-devtools "localhost:9630" (str "devtools." base-url))
         image-tag              (if production? "latest" "dev-sources-latest")
-        notebook-url           (if notebook-inherit-host (str "notebook." base-url) notebook-host)
+        notebooks-url          (if notebooks-inherit-host (str "notebooks." base-url) notebooks-host)
         webtools-url           "localhost:9630"]
     (merge
      options
@@ -71,9 +71,9 @@
       :devtools-host          devtools-host
       :docs-enabled           docs-enabled?
       :image-tag              image-tag
-      :notebook-enabled       notebook-enabled?
-      :notebook-inherit-host  notebook-inherit-host
-      :notebook-host          notebook-url
+      :notebooks-enabled      notebooks-enabled?
+      :notebooks-inherit-host notebooks-inherit-host
+      :notebooks-host         notebooks-url
       :portal-enabled         portal-enabled
       :production             production?
       :webtools-url           webtools-url
@@ -91,11 +91,11 @@
           devtools-host
           docs-enabled
           image-tag
-          notebook-host
+          notebooks-enabled
+          notebooks-host
           portal-enabled
           webtools-url
           workspaces-enabled
-          notebook-enabled
           workspaces-host]
          local-devtools :localDevtools
          portal-host    :portalHost
@@ -138,12 +138,12 @@
      {:hosts [{:host  base-url
                :paths [{:path "/"}]}]}
 
-     :notebook
-     {:enabled notebook-enabled
+     :notebooks
+     {:enabled notebooks-enabled
       :ingress
       {:enabled true
        :hosts
-       [{:host notebook-host :paths [{:path "/"}]}]}}
+       [{:host notebooks-host :paths [{:path "/"}]}]}}
 
      :nrepl
      {:enabled nrepl}

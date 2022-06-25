@@ -13,7 +13,7 @@ data:
         :log-responses? false}
 
      :dinsro.components.config/secret-path "/mnt/certs/secret"
-     :dinsro.components.notebooks/config {:enabled {{ .Values.notebook.enabled }}}
+     :dinsro.components.notebooks/config {:enabled {{ .Values.notebooks.enabled }}}
      :dinsro.components.seed/enabled {{ .Values.persistence.seed }}
 
      {{ if .Values.persistence.enabled }}
@@ -30,6 +30,10 @@ data:
          :xtdb/document-store {:xtdb/module     "xtdb.jdbc/->document-store"
                                :connection-pool :xtdb.jdbc/connection-pool}}}
      {{- end }}
+
+     :dinsro.core/modules [
+       {{ if .Values.notebooks.enabled }}"dinsro.components.notebooks"{{- end }}
+     ]
 
      :taoensso.timbre/logging-config
      {:min-level

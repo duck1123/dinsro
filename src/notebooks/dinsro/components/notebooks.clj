@@ -2,32 +2,32 @@
   (:require
    [clojure.string :as string]
    [dinsro.components.config :as config]
+   [lambdaisland.glogc :as log]
    [mount.core :as mount]
-   [nextjournal.clerk :as clerk]
-   [taoensso.timbre :as log]))
+   [nextjournal.clerk :as clerk]))
 
 (def initial-page "src/notebooks/dinsro/notebook.clj")
 
 (defn start!
   []
-  (when (get-in config/config [::config :enabled])
-    (log/info "Starting clerk")
-    (clerk/serve!
-     {:watch-paths    ["src/main" "src/notebooks" "src/shared"]
-      :show-filter-fn #(string/starts-with? % "dinsro.notebook")})
-    (clerk/show! initial-page)))
+  (if (get-in config/config [::config :enabled])
+    (do
+      (log/info :start!/enabled {})
+      (clerk/serve!
+       {:watch-paths    ["src/main" "src/notebooks" "src/shared"]
+        :show-filter-fn #(string/starts-with? % "dinsro.notebooks")})
+      (clerk/show! initial-page))
+    (log/info :start!/not-enabled {})))
 
 (defn stop!
   [_clerk]
-  (log/warn "can't stop clerk"))
+  (log/warn :stop!/cannot-stop {}))
 
-(mount/defstate ^{:on-reload :noop} notebook-server
+(mount/defstate ^{:on-reload :noop} notebooks-server
   :start (start!)
-  :stop (stop! notebook-server))
+  :stop (stop! notebooks-server))
 
 (comment
   (start!)
-
-  (clerk/show! initial-page)
 
   nil)

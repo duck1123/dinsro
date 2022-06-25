@@ -116,7 +116,7 @@ workspaces:
       paths:
       - path: /
 
-notebook:
+notebooks:
   enabled: true
   service:
     type: ClusterIP
@@ -124,7 +124,7 @@ notebook:
   ingress:
     enabled: true
     hosts:
-    - host: notebook.dinsro.localhost
+    - host: notebooks.dinsro.localhost
       paths:
       - path: /
 

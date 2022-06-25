@@ -3,7 +3,7 @@
                   :roots ["resources/main/public"]}}
  :http     {:host "0.0.0.0" :port 9630}
  :nrepl    {:host "0.0.0.0" :port 3333}
- :deps     {:aliases [:dev]}
+ :deps     {:aliases [:dev :clerk]}
 
  :builds
  {:ci
@@ -20,6 +20,7 @@
                 :http-resource-root "public"}
    :modules    {:viewer {:entries [dinsro.client
                                    dinsro.all-tests
+                                   dinsro.all-shared-cards
                                    dinsro.all-shared-tests
                                    nextjournal.devcards.main]}}
    :dev        {:modules {:viewer {:entries [devtools]}}}

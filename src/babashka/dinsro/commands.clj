@@ -125,7 +125,7 @@
       {:enabled true
        :hosts   [{:host  devtools-host
                   :paths [{:path "/"}]}]}}
-     :notebook
+     :notebooks
      {:enabled true
       :ingress
       {:hosts [{:host  ingress-host
@@ -216,7 +216,10 @@
    (let [devtools-url    (or (System/getenv "DEVTOOLS_URL") "http://localhost:9630")
          use-guardrails? (or (System/getenv "USE_GUARDRAILS") false)
          data            {:devtools {:devtools-url devtools-url}}
-         aliases         (filter identity ["dev" (when use-guardrails? "guardrails") "shadow-cljs"])
+         aliases         (filter identity ["dev"
+                                           (when use-guardrails? "guardrails")
+                                           "devcards"
+                                           "shadow-cljs"])
          alias-str       (str "-M:" (string/join ":" aliases))
          config-str      (str "--config-merge '" (pr-str data) "'")
          target-str      (string/join " " targets)

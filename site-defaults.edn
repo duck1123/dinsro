@@ -28,11 +28,13 @@
   :inheritHost true
   :host        "docs.dinsro.localhost"}
 
- :notebook
- {:enabled     false
+ :notebooks
+ {
+  ;; Should the notebooks be started?
+  :enabled     false
   :embedded    false
   :inheritHost true
-  :host        "notebook.dinsro.localhost"}
+  :host        "notebooks.dinsro.localhost"}
 
  :workspaces
  {:enabled     false
@@ -41,15 +43,6 @@
   :host        "workspaces.dinsro.localhost"}
 
  :useDocs true
-
- ;; Should the notebook be started?
- :useNotebook true
-
- ;; If true, the notebook will use whatever the baseUrl is as it's base
- :notebookInheritHost false
-
- ;; Host for notebook ingress if not inheriting host
- :notebookHost "notebook.dinsro.localhost"
 
  :portalHost "portal.dinsro.localhost"
 

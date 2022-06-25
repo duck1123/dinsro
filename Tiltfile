@@ -26,12 +26,13 @@ project_id       = config_get('projectId')
 repo             = config_get('repo')
 version          = config_get('version')
 devcards         = config_get('devcards')
+notebooks        = config_get('notebooks')
 docs_enabled     = config_get('docs-enabled')
 local_devtools   = config_get('localDevtools')
-notebook_host    = config_get('notebookHost')
+notebooks_host   = notebooks.get('host')
 portal_enabled   = config_get('portal-enabled')
 use_linting      = config_get('useLinting')
-use_notebook     = config_get('useNotebook')
+use_notebooks    = notebooks.get('enabled')
 use_nrepl        = config_get('useNrepl')
 use_persistence  = config_get('usePersistence')
 use_production   = config_get('useProduction')
@@ -42,8 +43,8 @@ devcards_enabled = config_get('devcards-enabled')
 portal_url       = 'http://' + config_get('portalHost')
 devcards_url     = 'http://devcards.dinsro.localhost'
 
-def get_notebook_host():
-  return "notebook." + base_url if config_get('notebookInheritHost') else notebook_host
+def get_notebooks_host():
+  return "notebooks." + base_url if notebooks.get('inheritHost') else notebooks_host
 
 def earthly_build(
     ref,
@@ -208,6 +209,7 @@ if not use_production:
     '+dev-image-sources',
     build_args = {
       'repo': repo,
+      'use_notebooks': ('true' if use_notebooks else 'false'),
       'watch_sources': ('false' if local_devtools else 'true'),
     },
     deps =  [
@@ -244,7 +246,7 @@ k8s_resource(
     link('devtools.' + base_url, 'Devtools') if has_devtools else None,
     link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
     link(devcards.get('host') or "devcards.dinsro.localhost", 'Cards') if devcards_enabled else None,
-    link(get_notebook_host(), 'Notebook') if use_notebook else None,
+    link(get_notebooks_host(), 'Notebooks') if use_notebooks else None,
   ] if x != None],
   labels = [ 'dinsro' ],
 )
@@ -362,14 +364,14 @@ if use_tests:
     labels = [ 'test' ],
   )
 
-if use_tests:
-  local_resource(
-    'test-cljs',
-    allow_parallel = True,
-    cmd = 'bb test-cljs',
-    deps = [ 'src/test' ],
-    labels = [ 'test' ],
-  )
+# if use_tests:
+#   local_resource(
+#     'test-cljs',
+#     allow_parallel = True,
+#     cmd = 'bb test-cljs',
+#     deps = [ 'src/test' ],
+#     labels = [ 'test' ],
+#   )
 
 if use_persistence:
   namespace_create(
