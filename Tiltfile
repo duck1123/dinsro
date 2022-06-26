@@ -42,6 +42,7 @@ use_devcards     = devcards.get('enabled')
 devcards_enabled = config_get('devcards-enabled')
 portal_url       = 'http://' + config_get('portalHost')
 devcards_url     = 'http://devcards.dinsro.localhost'
+devcards_devtools_url     = 'http://devtools.devcards.dinsro.localhost'
 
 def get_notebooks_host():
   return "notebooks." + base_url if notebooks.get('inheritHost') else notebooks_host
@@ -438,6 +439,7 @@ if devcards_enabled:
     labels = [ 'dinsro' ],
     links = [
       link(devcards_url, 'devcards'),
+      link(devcards_devtools_url, 'devcards devtools'),
     ],
   )
 

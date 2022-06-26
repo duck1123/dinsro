@@ -37,7 +37,7 @@ spec:
         env:
         {{- with (index .Values.devcards.devtools.ingress.hosts 0) }}
         - name: DEVTOOLS_URL
-          value: {{ .host | quote }}
+          value: "http://{{ .host }}"
         {{- end }}
         ports:
         - name: devcards
