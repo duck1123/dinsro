@@ -35,7 +35,7 @@
   org.bitcoin-s/bitcoin-s-lnd-rpc_2.13   {:mvn/version "1.9.0"}
   org.clj-commons/byte-streams           {:mvn/version "0.3.0"}
   org.clojure/clojure                    {:mvn/version "1.10.3"}
-  org.clojure/clojurescript              {:mvn/version "1.10.891"}
+  org.clojure/clojurescript              {:mvn/version "1.10.879"}
   org.clojure/spec.alpha                 {:mvn/version "0.3.214"}
   org.clojure/test.check                 {:mvn/version "1.1.1"}
   org.clojure/tools.cli                  {:mvn/version "1.0.206"}
@@ -51,7 +51,7 @@
   ring/ring-mock                         {:mvn/version "0.4.0"}
   net.clojars.roterski/fulcro-rad-xtdb   {:mvn/version "0.0.1-alpha-7"}
   selmer/selmer                          {:mvn/version "1.12.49"}
-  thheller/shadow-cljs                   {:mvn/version "2.16.7"}
+  thheller/shadow-cljs                   {:mvn/version "2.15.12"}
   tick/tick                              {:mvn/version "0.4.32"
                                           :exclusions  [cljsjs/js-joda-timezone
                                                         cljsjs/js-joda-timezone-en-us]}}
@@ -81,7 +81,7 @@
   :dev
   {:extra-paths ["src/dev" "src/test" "src/shared-test"]
    :extra-deps
-   {binaryage/devtools      {:mvn/version "1.0.3"}
+   {binaryage/devtools      {:mvn/version "1.0.2"}
     nubank/workspaces       {:mvn/version "1.1.2"}
     fulcrologic/fulcro-spec {:mvn/version "3.1.12"}
     thheller/shadow-cljs    {:mvn/version "2.15.12"}}}

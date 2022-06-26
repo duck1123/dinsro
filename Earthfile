@@ -195,7 +195,6 @@ devcards-image:
   ARG EXPECTED_REF=${repo}/${project}:devcards-${version}
   COPY --dir resources/tilt resources
   COPY --dir public .
-  RUN tree src
   CMD ["bb", "devcards-server"]
   SAVE IMAGE ${EXPECTED_REF}
 
