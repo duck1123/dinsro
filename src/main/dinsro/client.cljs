@@ -25,11 +25,7 @@
    [dinsro.ui.users :as u.users]
    [lambdaisland.glogi :as log]
    [lambdaisland.glogi.console :as glogi-console]
-   [taoensso.timbre :as timbre]
-   [taoensso.tufte :as tufte]))
-
-(defonce stats-accumulator
-  (tufte/add-accumulating-handler! {:ns-pattern "*"}))
+   [taoensso.timbre :as timbre]))
 
 (defn target-component-requests-errors [query path]
   (some->> (when (vector? path) (butlast path)) ; path can be a single keyword -> ignore
@@ -233,11 +229,3 @@
   (comp/refresh-dynamic-queries! app)
   (setup-RAD app)
   (log/debug :client/refreshed {}))
-
-(defonce performance-stats (tufte/add-accumulating-handler! {}))
-
-(defn pperf
-  "Dump the currently-collected performance stats"
-  []
-  (let [stats (not-empty @performance-stats)]
-    (println (tufte/format-grouped-pstats stats))))
