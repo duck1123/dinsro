@@ -42,7 +42,6 @@
   org.slf4j/log4j-over-slf4j             {:mvn/version "1.7.33"}
   org.slf4j/jul-to-slf4j                 {:mvn/version "1.7.33"}
   org.slf4j/jcl-over-slf4j               {:mvn/version "1.7.33"}
-  prone/prone                            {:mvn/version "2021-04-23"}
   ring/ring-core                         {:mvn/version "1.9.5"}
   ring/ring-defaults                     {:mvn/version "0.3.3"}
   ring/ring-devel                        {:mvn/version "1.9.5"}
