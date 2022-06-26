@@ -50,7 +50,7 @@
   ring/ring-mock                         {:mvn/version "0.4.0"}
   net.clojars.roterski/fulcro-rad-xtdb   {:mvn/version "0.0.1-alpha-7"}
   selmer/selmer                          {:mvn/version "1.12.49"}
-  thheller/shadow-cljs                   {:mvn/version "2.15.12"}
+  thheller/shadow-cljs                   {:mvn/version "2.19.5"}
   tick/tick                              {:mvn/version "0.4.32"
                                           :exclusions  [cljsjs/js-joda-timezone
                                                         cljsjs/js-joda-timezone-en-us]}}
