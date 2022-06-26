@@ -3,7 +3,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.peers :as a.c.peers]
-   [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -54,8 +53,9 @@
   "Fetch blockchain info for node"
   [node]
   [::m.c.nodes/item => any?]
-  (let [client (m.c.nodes/get-client node)
-        info   (c.bitcoin/get-blockchain-info client)]
+  (log/info :get-blockchain-info/starting {:node node})
+  (let [client (get-client node)
+        info   (c.bitcoin-s/get-blockchain-info client)]
     info))
 
 (>defn update-blockchain-info!
@@ -92,8 +92,8 @@
   [{node-id ::m.c.nodes/id :as node}]
   [::m.c.nodes/item => any?]
   (log/info :fetch-transactions!/starting {:node-id node-id})
-  (let [client (m.c.nodes/get-client node)]
-    (doseq [txes (c.bitcoin/list-transactions client)]
+  (let [client (get-client node)]
+    (doseq [txes (c.bitcoin-s/list-transactions client)]
       (log/debug :fetch-transactions!/processing {:txes txes})
       (let [params (assoc txes ::m.c.peers/node node-id)
             params (m.c.tx/prepare-params params)]
@@ -105,9 +105,9 @@
   [::m.c.nodes/id => any?]
   (log/info :generate!/starting {:node-id node-id})
   (if-let [node (q.c.nodes/read-record node-id)]
-    (let [client  (m.c.nodes/get-client node)
+    (let [client  (get-client node)
           address sample-address]
-      (c.bitcoin/generate-to-address client address))
+      (c.bitcoin-s/generate-to-address! client address))
     (do
       (log/error :generate!/node-not-found {:node-id node-id})
       nil)))
