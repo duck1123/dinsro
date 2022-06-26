@@ -2,7 +2,6 @@
   (:require
    [dinsro.client :as client]
    [lambdaisland.glogc :as log]
-   nextjournal.viewer
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3])
   (:require-macros [dinsro.test-helpers]))
 
