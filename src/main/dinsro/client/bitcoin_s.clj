@@ -238,3 +238,7 @@
   [client tx-id]
   (log/info :get-raw-transaction/starting {:client client :tx-id tx-id})
   (.getRawTransaction client tx-id))
+
+(defn fetch-block-by-height
+  [client height]
+  (log/info :fetch-block-by-height/starting {:height height :client client}))

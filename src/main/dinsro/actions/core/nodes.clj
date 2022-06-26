@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
+   [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -9,44 +10,15 @@
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.tx :as q.c.tx]
-   [lambdaisland.glogc :as log])
-  (:import
-   org.bitcoins.rpc.client.v22.BitcoindV22RpcClient
-   java.net.URI))
+   [lambdaisland.glogc :as log]))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
-
-(defn get-remote-uri
-  [{::m.c.nodes/keys [host]}]
-  (URI. (str "http://" host ":" "18444")))
-
-(defn get-rpc-uri
-  [{::m.c.nodes/keys [host port]}]
-  (URI. (str "http://" host ":" port)))
-
-(defn get-auth-credentials
-  [{::m.c.nodes/keys [rpcuser rpcpass]}]
-  (c.bitcoin-s/get-auth-credentials rpcuser rpcpass))
-
-(defn get-remote-instance
-  [node]
-  (c.bitcoin-s/get-remote-instance
-   (c.bitcoin-s/regtest-network)
-   (get-remote-uri node)
-   (get-rpc-uri node)
-   (get-auth-credentials node)
-   (c.bitcoin-s/get-zmq-config)))
-
-(defn get-client
-  [node]
-  (let [instance (get-remote-instance node)]
-    (BitcoindV22RpcClient/apply instance)))
 
 (defn generate-to-address!
   "Generate regtest blocks paying to address"
   [node address]
   (log/info :generate-to-address!/starting {:node node :address address})
-  (let [client (get-client node)]
+  (let [client (a.c.node-base/get-client node)]
     (c.bitcoin-s/generate-to-address! client address)))
 
 (>defn get-blockchain-info
@@ -54,7 +26,7 @@
   [node]
   [::m.c.nodes/item => any?]
   (log/info :get-blockchain-info/starting {:node node})
-  (let [client (get-client node)
+  (let [client (a.c.node-base/get-client node)
         info   (c.bitcoin-s/get-blockchain-info client)]
     info))
 
@@ -92,7 +64,7 @@
   [{node-id ::m.c.nodes/id :as node}]
   [::m.c.nodes/item => any?]
   (log/info :fetch-transactions!/starting {:node-id node-id})
-  (let [client (get-client node)]
+  (let [client (a.c.node-base/get-client node)]
     (doseq [txes (c.bitcoin-s/list-transactions client)]
       (log/debug :fetch-transactions!/processing {:txes txes})
       (let [params (assoc txes ::m.c.peers/node node-id)
@@ -105,7 +77,7 @@
   [::m.c.nodes/id => any?]
   (log/info :generate!/starting {:node-id node-id})
   (if-let [node (q.c.nodes/read-record node-id)]
-    (let [client  (get-client node)
+    (let [client  (a.c.node-base/get-client node)
           address sample-address]
       (c.bitcoin-s/generate-to-address! client address))
     (do
