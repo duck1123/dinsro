@@ -5,6 +5,7 @@
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
+   [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
@@ -59,13 +60,18 @@
       :updated-node   updated-node})
     updated-node))
 
+(>defn list-transactions
+  [client]
+  [::a.c.node-base/client => any?]
+  (cs/->record (c.bitcoin-s/list-transactions client)))
+
 (>defn fetch-transactions!
   "Fetch transactions for a node's wallet"
   [{node-id ::m.c.nodes/id :as node}]
   [::m.c.nodes/item => any?]
   (log/info :fetch-transactions!/starting {:node-id node-id})
   (let [client (a.c.node-base/get-client node)]
-    (doseq [txes (c.bitcoin-s/list-transactions client)]
+    (doseq [txes (list-transactions client)]
       (log/debug :fetch-transactions!/processing {:txes txes})
       (let [params (assoc txes ::m.c.peers/node node-id)
             params (m.c.tx/prepare-params params)]

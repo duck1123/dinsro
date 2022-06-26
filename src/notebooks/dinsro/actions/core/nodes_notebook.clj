@@ -59,6 +59,8 @@
 
   (a.c.nodes/fetch! node)
 
+  (c.bitcoin-s/list-transactions client)
+
   (a.c.nodes/fetch-transactions! node)
 
   (q.c.peers/index-ids)
