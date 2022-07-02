@@ -16,7 +16,7 @@
 (nu/display-file-links)
 
 (def get-block-result
-  (let [hash                nil
+  (let [hash                (cs/double-sha256-digest-be "0a5d6b67612efcd122956820cb8ab6e660f14e4da6ea15c55f4fbee7b733d46f")
         confirmations       (int 0)
         stripped-size       (int 0)
         size                (int 0)
@@ -24,12 +24,12 @@
         height              (int 0)
         version             (int 2)
         version-hex         (cs/int32 0)
-        merkle-root         nil
+        merkle-root         (cs/double-sha256-digest-be "0a5d6b67612efcd122956820cb8ab6e660f14e4da6ea15c55f4fbee7b733d46f")
         tx                  nil
         time                nil
-        median-time         nil
+        median-time         (cs/uint32 0)
         nonce               (cs/uint32 0)
-        bits                nil
+        bits                (cs/uint32 0)
         difficulty          (cs/big-decimal 1)
         chainwork           "000000000"
         previous-block-hash nil
