@@ -2,6 +2,8 @@
   "Scala interop helpers"
   (:require
    [clojure.core.async :as async :refer [>!!]]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
    java.util.concurrent.ArrayBlockingQueue
@@ -9,10 +11,14 @@
    java.util.concurrent.TimeUnit
    java.util.concurrent.Executor
    java.util.concurrent.ThreadPoolExecutor
+   org.bitcoins.core.number.Int32
+   org.bitcoins.core.number.UInt32
+   org.bitcoins.crypto.DoubleSha256DigestBE
    scala.collection.immutable.Vector
    scala.concurrent.ExecutionContext
    scala.Function1
    scala.concurrent.Future
+   scala.Option
    scala.util.Success))
 
 (defn vector->vec
@@ -27,6 +33,33 @@
     (doseq [si s]
       (.addOne builder si))
     (.result builder)))
+
+(defn big-decimal
+  [v]
+  (scala.math.BigDecimal. (BigDecimal. v)))
+
+(defn int32
+  [v]
+  (Int32/fromNativeNumber (int v)))
+
+(defn uint32
+  [v]
+  (UInt32/fromNativeNumber (int v)))
+
+;; https://bitcoin-s.org/api/org/bitcoins/crypto/DoubleSha256DigestBE.html
+
+
+(>defn double-sha256-digest-be
+  "creates a double sha256 digest from hex"
+  [v]
+  [string? => (ds/instance? DoubleSha256DigestBE)]
+  (DoubleSha256DigestBE/fromHex v))
+
+;; https://www.scala-lang.org/api/2.13.8/scala/Option.html#scala.Option
+
+(defn option
+  [v]
+  (Option/apply v))
 
 (defn get-work-queue
   []
@@ -46,12 +79,12 @@
     keep-alive-time
     ^TimeUnit unit
     ^BlockingQueue work-queue]
-   (log/info :get-executor/starting
-             {:pool-size       pool-size
-              :max-pool-size   max-pool-size
-              :keep-alive-time keep-alive-time
-              :unit            unit
-              :work-queue      work-queue})
+   (log/finer :get-executor/starting
+              {:pool-size       pool-size
+               :max-pool-size   max-pool-size
+               :keep-alive-time keep-alive-time
+               :unit            unit
+               :work-queue      work-queue})
    (ThreadPoolExecutor. pool-size max-pool-size keep-alive-time unit work-queue)))
 
 (defn get-execution-context
@@ -69,19 +102,22 @@
          handler
          (reify Function1
            (apply [_this try-obj]
-             (log/info :await-future/applied {:try-obj try-obj})
+             (log/finer :await-future/applied {:try-obj try-obj})
              (if (instance? Success try-obj)
                (let [response (try (.get try-obj) (catch Exception ex ex))]
-                 (log/info :await-future/got {:response response})
+                 (log/finer :await-future/got {:response response})
                  (let [data {:passed true :result response}]
                    (>!! ch data)))
                (let [data {:passed false :result try-obj}]
-                 (log/info :await-future/not-success {:data data})
+                 (log/finer :await-future/not-success {:data data})
                  (>!! ch data)))))]
 
-     (log/info :await-future/awaiting {:f f})
+     (log/finer :await-future/awaiting {:f f})
      (.onComplete f handler context)
      ch)))
+
+(defprotocol Recordable
+  (->record [this]))
 
 (comment
 

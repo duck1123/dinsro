@@ -11,6 +11,7 @@
    [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.client.lnd-s :as c.lnd-s]
+   [dinsro.client.scala :as cs]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -290,7 +291,7 @@
 (defn get-info
   [node]
   (let [client (get-client-s node)]
-    (c.lnd-s/->record (c.lnd-s/get-info client))))
+    (cs/->record (c.lnd-s/get-info client))))
 
 (>defn new-address-s
   [node]
@@ -391,7 +392,7 @@
 
   (def response (c.lnd-s/get-info client))
 
-  (c.lnd-s/->record response)
+  (cs/->record response)
   (.alias response)
 
   (bytes->hex (bs/to-byte-array f))

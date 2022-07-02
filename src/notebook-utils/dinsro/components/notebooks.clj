@@ -14,8 +14,13 @@
     (do
       (log/info :start!/enabled {})
       (clerk/serve!
-       {:watch-paths    ["src/main" "src/notebooks" "src/shared"]
-        :show-filter-fn #(string/starts-with? % "dinsro.notebooks")})
+       {:watch-paths ["src/main" "src/notebooks" "src/shared"]
+        :show-filter-fn
+        (fn [path]
+          (log/info :show-filter-fn/starting {:path path})
+          (let [matched (string/starts-with? path "src/notebooks")]
+            (log/info :show-filter-fn/starting {:path path :matched matched})
+            matched))})
       (clerk/show! initial-page))
     (log/info :start!/not-enabled {})))
 
@@ -29,5 +34,6 @@
 
 (comment
   (start!)
+  (stop! notebooks-server)
 
   nil)

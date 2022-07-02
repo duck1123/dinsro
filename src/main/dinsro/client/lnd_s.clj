@@ -3,7 +3,7 @@
   (:require
    [buddy.core.codecs :refer [bytes->hex]]
    [clojure.core.async :as async]
-   [dinsro.client.scala :as cs]
+   [dinsro.client.scala :as cs :refer [Recordable]]
    [lambdaisland.glogc :as log]
    [ring.util.codec :refer [base64-decode]])
   (:import
@@ -64,9 +64,6 @@ ZEw+de+2IU8TFQ4JWo9Y
              {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
    (LndInstanceRemote. url macaroon cert-file cert-opt)))
 
-(defprotocol Recordable
-  (->record [this]))
-
 (extend-type Chain
   Recordable
   (->record [this]
@@ -81,7 +78,7 @@ ZEw+de+2IU8TFQ4JWo9Y
     {:alias        (.alias this)
      :block-hash   (.blockHash this)
      :block-height (.blockHeight this)
-     :chains       (map ->record (cs/vector->vec (.chains this)))
+     :chains       (map cs/->record (cs/vector->vec (.chains this)))
      :version      (.version this)
      :commit-hash  (.commitHash this)}))
 

@@ -275,7 +275,7 @@ image:
   RUN mkdir -p src
   COPY +jar/dinsro.jar dinsro.jar
   COPY resources/docker/config.edn /etc/dinsro/config.edn
-  COPY --dir src/main src/notebooks src/shared src
+  COPY --dir src/main src/notebooks src/notebook-utils src/shared src
   CMD ["java", "-jar", "dinsro.jar"]
   SAVE IMAGE --push ${EXPECTED_REF}
 
