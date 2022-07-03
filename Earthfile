@@ -171,7 +171,6 @@ dev-image:
   FROM +deps-builder
   COPY --dir \
        src \
-       site.edn \
        site-defaults.edn \
        semantic \
        package.json \
@@ -238,7 +237,7 @@ dev-sources-minimal:
   FROM +deps-builder
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   COPY --dir src ${src_home}
-  COPY shadow-cljs.edn site.edn .
+  COPY shadow-cljs.edn .
   COPY --dir resources/workspaces ${src_home}/resources/workspaces
 
 docs:
