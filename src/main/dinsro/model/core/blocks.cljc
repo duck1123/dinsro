@@ -36,8 +36,8 @@
   {ao/identity? true
    ao/schema    :production})
 
-(s/def ::bits string?)
-(defattr bits ::bits :string
+(s/def ::bits number?)
+(defattr bits ::bits :long
   {ao/identities #{::id}
    ao/schema     :production})
 

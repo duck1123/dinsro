@@ -24,3 +24,19 @@
 ;; ## Option
 
 (cs/option "foo")
+
+(cs/none)
+
+(comment
+
+  (.get (cs/none))
+
+  (.isEmpty (cs/none))
+  (.orNull (cs/none))
+  (.getOrElse (cs/none) true)
+
+  (cs/get-or-nil (cs/none))
+
+  (cs/get-or-nil (cs/option "foo"))
+
+  nil)

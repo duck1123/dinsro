@@ -49,9 +49,16 @@
 
 (>def ::fetch!-request
       (s/keys :req [::m.c.nodes/id]))
+
+(>def ::fetch!-response-success
+      (s/keys :req [::mu/status ::m.c.nodes/item]))
+
+(>def ::fetch!-response-error
+      (s/keys :req [::mu/status ::mu/errors]))
+
 (>def ::fetch!-response
-      (s/keys :req [::mu/status ::m.c.nodes/item]
-              :opt [::mu/errors]))
+      (s/or :success ::fetch!-response-success
+            :error ::fetch!-response-error))
 
 (defsc FetchResponse
   [_ _]
@@ -69,13 +76,13 @@
      (log/info :do-fetch!/started {:id id})
      (let [node (q.c.nodes/read-record id)]
        (try
-         (log/info :fetch/starting {:id id})
+         (log/info :do-fetch!/starting {:id id})
          (let [updated-node (a.c.nodes/fetch! node)]
-           (log/info :fetch/finished {:id id :updated-node updated-node})
+           (log/info :do-fetch!/finished {:id id :updated-node updated-node})
            {::mu/status         :ok
             ::m.c.nodes/item updated-node})
          (catch Exception ex
-           (log/error :fetch/failed {:exception ex})
+           (log/error :do-fetch!/failed {:exception ex})
            (mu/exception-response ex))))))
 
 #?(:cljs
@@ -121,11 +128,11 @@
      [::generate!-request => ::generate!-response]
      (try
        (let [response (a.c.nodes/generate! id)]
-         (log/debug :do-generate/response {:node-id id :response response})
+         (log/debug :do-generate!/response {:node-id id :response response})
          {::mu/status         :ok
           ::m.c.nodes/item (q.c.nodes/read-record id)})
        (catch Exception ex
-         (log/error :generate/failed {:exception ex})
+         (log/error :do-generate!/failed {:exception ex})
          (mu/exception-response ex)))))
 
 #?(:clj

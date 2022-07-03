@@ -32,23 +32,23 @@
 (>defn GetBlockResult->record
   [^GetBlockResult this]
   [(ds/instance? GetBlockResult) => ::record]
-  {:bits                (some-> this .bits .toInt)
+  {:bits                (some-> this .bits .toLong)
    :chainwork           (.chainwork this)
    :confirmations       (.confirmations this)
    :difficulty          (.difficulty this)
    :hash                (some-> this .hash .hex)
    :height              (.height this)
-   :median-time         (some-> this .mediantime .toInt)
-   :merkle-root         (.merkleroot this)
-   :next-block-hash     (some-> this .nextblockhash .orNull)
+   :median-time         (some-> this .mediantime .toLong)
+   :merkle-root         (some-> this .merkleroot .hex)
+   :next-block-hash     (some-> this .nextblockhash cs/get-or-nil)
    :nonce               (some-> this .nonce .toInt)
-   :previous-block-hash (some-> this .nextblockhash .orNull)
+   :previous-block-hash (some-> this .previousblockhash cs/get-or-nil)
    :size                (.size this)
    :stripped-size       (.strippedsize this)
-   :time                (some-> this .time .toInt)
+   :time                (some-> this .time .toLong)
    :tx                  (some-> this .tx cs/vector->vec)
    :version             (.version this)
-   :version-hex         (some-> this .versionHex .toInt)
+   :version-hex         (some-> this .versionHex .toLong)
    :weight              (.weight this)})
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockResult.html

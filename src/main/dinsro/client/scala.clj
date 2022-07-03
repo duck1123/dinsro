@@ -61,6 +61,14 @@
   [v]
   (Option/apply v))
 
+(defn none
+  []
+  (Option/empty))
+
+(defn get-or-nil
+  [^Option o]
+  (when-not (.isEmpty o) (.get o)))
+
 (defn get-work-queue
   []
   (ArrayBlockingQueue. 5))

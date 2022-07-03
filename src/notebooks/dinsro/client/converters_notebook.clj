@@ -19,7 +19,4 @@
 (ds/gen-key ::c.converters/chainwork)
 (ds/gen-key ::c.converters/difficulty)
 
-^{::clerk/viewer clerk/code}
-(ds/gen-key ::c.converters/get-blockchain-info-result)
-
 (ds/gen-key ::c.converters/fetch-block-by-height-result)

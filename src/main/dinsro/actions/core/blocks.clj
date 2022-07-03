@@ -18,10 +18,10 @@
   [::m.c.blocks/node ::m.c.blocks/hash ::m.c.blocks/height => ::m.c.blocks/id]
   (if-let [block-id (q.c.blocks/fetch-by-node-and-height node-id height)]
     (do
-      (log/info :block/found {:node-id node-id :hash hash :height height})
+      (log/info :register-block/found {:node-id node-id :hash hash :height height})
       block-id)
     (do
-      (log/info :block/not-found {:node-id node-id :hash hash :height height})
+      (log/info :register-block/not-found {:node-id node-id :hash hash :height height})
       (let [params {::m.c.blocks/hash     hash
                     ::m.c.blocks/height   height
                     ::m.c.blocks/node     node-id
@@ -56,7 +56,7 @@
   "Fetch and update the block by height"
   [node height]
   [::m.c.nodes/item ::m.c.blocks/height => ::m.c.blocks/id]
-  (log/info :block/updating {:height height})
+  (log/info :update-block-by-height/updating {:height height})
   (if-let [core-node-id (::m.c.nodes/id node)]
     (let [client (m.c.nodes/get-client node)]
       (if-let [block (c.bitcoin/fetch-block-by-height client height)]
@@ -64,7 +64,7 @@
               next-hash     (:nextblockhash block)
               prev-id       (when previous-hash (register-block core-node-id previous-hash (dec height)))
               next-id       (when next-hash (register-block core-node-id next-hash (inc height)))]
-          (log/info :block/parsing-neighbors {:previous previous-hash :next next-hash})
+          (log/info :update-block-by-height/parsing-neighbors {:previous previous-hash :next next-hash})
           (let [params            block
                 params            (assoc params ::m.c.blocks/fetched? true)
                 params            (assoc params ::m.c.blocks/hash (:hash block))
@@ -75,11 +75,11 @@
                 [block-id params] (update-block! core-node-id height params)]
             (doseq [tx-id (::m.c.blocks/tx params)]
               (if-let [existing-id (q.c.tx/fetch-by-txid tx-id)]
-                (log/info :tx/exists {:tx-id existing-id})
+                (log/info :update-block-by-height/tx-exists {:tx-id existing-id})
                 (let [params {::m.c.tx/block    block-id
                               ::m.c.tx/tx-id    tx-id
                               ::m.c.tx/fetched? false}]
-                  (log/debug :tx/creating {:params params})
+                  (log/debug :update-block-by-height/tx-creating {:params params})
                   (q.c.tx/create-record params))))
             block-id))
         (throw (RuntimeException. "no block"))))
@@ -89,11 +89,11 @@
   "Fetch the latest block for a node"
   [node]
   [::m.c.nodes/item => any?]
-  (log/debug :blocks/fetching {:node node})
+  (log/debug :fetch-blocks/fetching {:node node})
   (let [client (m.c.nodes/get-client node)
         info   (c.bitcoin/get-blockchain-info client)
         tip    (:blocks info)]
-    (log/info :blocks/fetched {:info info})
+    (log/info :fetch-blocks/fetched {:info info})
     (update-block-by-height node tip)
     tip))
 
@@ -101,7 +101,7 @@
   "Fetch all transactions for a block"
   [block]
   [::m.c.blocks/item => any?]
-  (log/info :tx/fetching {:block block})
+  (log/info :fetch-transactions!/fetching {:block block})
   (let [block-id (::m.c.blocks/id block)
         node-id  (q.c.nodes/find-by-block block-id)]
     (if-let [node (q.c.nodes/read-record node-id)]
@@ -115,22 +115,5 @@
   "Find a block. (not implemented)"
   [props]
   [any? => any?]
-  (log/info :block/searching {:props props})
-  nil)
-
-(comment
-  (def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
-  (def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
-  (def node node-alice)
-
-  (tap> (q.c.blocks/index-records))
-
-  (q.c.blocks/index-records)
-  (map
-   q.c.blocks/read-record
-   (q.c.blocks/find-by-node (::m.c.nodes/id node-alice)))
-  (q.c.blocks/find-by-node (::m.c.nodes/id node-bob))
-
-  (q.c.blocks/fetch-by-node-and-height (::m.c.nodes/id node-alice) 97)
-
+  (log/info :search!/searching {:props props})
   nil)

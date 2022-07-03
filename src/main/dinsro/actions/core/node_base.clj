@@ -32,6 +32,6 @@
 
 (defn get-client
   [node]
-  (log/info :get-client/starting {:node node})
+  (log/finer :get-client/starting {:node node})
   (let [instance (get-remote-instance node)]
     (BitcoindV22RpcClient/apply instance)))

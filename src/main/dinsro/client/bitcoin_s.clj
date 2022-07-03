@@ -12,13 +12,11 @@
    org.bitcoins.core.hd.SegWitHDPath
    org.bitcoins.core.hd.HDPurpose
    org.bitcoins.core.hd.SegWitHDPath
-   org.bitcoins.crypto.ECPrivateKey
    org.bitcoins.crypto.ECPrivateKeyBytes
    org.bitcoins.core.crypto.ECPrivateKeyUtil
    org.bitcoins.core.crypto.MnemonicCode
    org.bitcoins.core.crypto.BIP39Seed
    org.bitcoins.core.crypto.ExtPrivateKey
-   org.bitcoins.core.crypto.ExtKeyVersion$SegWitMainNetPriv$
    org.bitcoins.core.crypto.ExtKeyPrivVersion
    org.bitcoins.core.config.NetworkParameters
    org.bitcoins.core.protocol.Bech32Address
@@ -31,8 +29,7 @@
    org.bitcoins.rpc.config.BitcoindInstanceRemote
    org.bitcoins.rpc.config.ZmqConfig
    scala.Option
-   scodec.bits.BitVector
-   scodec.bits.ByteVector))
+   scodec.bits.BitVector))
 
 (>def ::client (ds/instance? BitcoindV22RpcClient))
 
@@ -241,56 +238,3 @@
   [client tx-id]
   (log/info :get-raw-transaction/starting {:client client :tx-id tx-id})
   (.getRawTransaction client tx-id))
-
-(comment
-  (cs/vector->vec (.words (create-mnemonic)))
-  (prn (create-mnemonic-words))
-
-  (create-seed "")
-
-  (def mn (create-mnemonic))
-  mn
-  (get-words mn)
-
-  (regtest-network)
-
-  (get-xpub-version 84 "regtest")
-  (def priv-version (get-xpriv-version 84 "regtest"))
-
-  (ExtKeyPrivVersion)
-
-  (def segwit-path (->segwit-path "m/84'/0'/0'/0/0"))
-  segwit-path
-
-  (def passphrase "secret-passphrase")
-  (def wallet-path "m/84'/0'/0'")
-  (def address-path (str wallet-path "/0/0"))
-  (def bip39-seed (create-seed passphrase))
-
-  ;; (def extpub (get-child-key xpriv wallet-path address-path))
-  ;; extpub
-
-  (-> bip39-seed
-      (get-xpriv 84 "regtest")
-      (get-child-key wallet-path address-path)
-      (get-script-pub-key)
-      (get-address "regtest"))
-
-  (def priv-key-s "xprv9s21ZrQH143K4LCRq4tUZUt3fiTNZr6QTiep3HGzMxtSwfxKAhBmNJJnsmoyWuYZCPC4DNsiVwToHJbxZtq4iEkozBhMzWNTiCH4tzJNjPi")
-  (parse-ext-priv-key priv-key-s)
-
-  (ExtPrivateKey/freshRootKey ExtKeyVersion$SegWitMainNetPriv$)
-
-  (.fromValidHex ByteVector "70ea14ac30939a972b5a67cab952d6d7d474727b05fe7f9283abc1e505919e83")
-
-  (def private-key (ECPrivateKey/freshPrivateKey))
-  private-key
-
-  (def public-key (.publicKey private-key))
-  public-key
-
-  (BitcoindInstanceRemote/apply
-   (regtest-network)
-   (URI. ""))
-
-  nil)
