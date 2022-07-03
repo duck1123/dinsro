@@ -12,7 +12,7 @@
 (s/def ::message string?)
 (s/def ::data map?)
 (s/def ::errors (s/keys :req-un [::message ::data]))
-(s/def ::status #{:ok :initial :fail})
+(s/def ::status #{:error :ok :initial :fail})
 
 (defsc ErrorData
   [_ _]

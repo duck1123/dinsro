@@ -71,6 +71,7 @@
 
 #?(:clj
    (>defn do-fetch!
+     "Handler for fetch! mutation"
      [{::m.c.nodes/keys [id]}]
      [::fetch!-request => ::fetch!-response]
      (log/info :do-fetch!/started {:id id})
@@ -93,14 +94,19 @@
            {:com.fulcrologic.rad.pathom/keys [errors]} response]
        (if errors
          (do
-           (log/error :fetch/errored {:errors errors})
+           (log/error :handle-fetch/errored {:errors errors})
            {})
-         (do
-           (log/info :fetch/completed {:response response})
-           (let [{::m.c.nodes/keys [item]} response
-                 {::m.c.nodes/keys [id]}   item]
-             (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
-             {}))))))
+         (let [status (:dinsro.mutations/status response)]
+           (if (= status :error)
+             (let [errors (:dinsro.mutations/errors response)]
+               (log/info :handle-fetch/errored {:response response :errors errors})
+               {})
+             (do
+               (log/info :handle-fetch/completed {:response response})
+               (let [{::m.c.nodes/keys [item]} response
+                     {::m.c.nodes/keys [id]}   item]
+                 (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
+                 {}))))))))
 
 #?(:clj
    (pc/defmutation fetch!
