@@ -215,16 +215,14 @@
 (>defn fetch-block-by-height
   [client height]
   [::client number? => ::c.converters/fetch-block-by-height-result]
-  (log/info :fetch-block-by-height/starting {:height height :client client})
+  (log/finer :fetch-block-by-height/starting {:height height :client client})
   (let [hash (:result (async/<!! (get-block-hash client height)))]
-    (log/info :fetch-block-by-height/located {:hash hash})
-    (let [response  (.getBlock client hash)
-          response2 (cs/await-future response)
-          response3 (:result (async/<!! response2))]
-      (log/info :fetch-block-by-height/read {:response3 response3})
-      (let [response4 (cs/->record response3)]
-        (log/info :fetch-block-by-height/converted {:response4 response4})
-        response4))))
+    (log/fine :fetch-block-by-height/located {:hash hash})
+    (let [response (:result (async/<!! (cs/await-future (.getBlock client hash))))]
+      (log/finer :fetch-block-by-height/read {:response response})
+      (let [converted-response (cs/->record response)]
+        (log/info :fetch-block-by-height/converted {:converted-response converted-response})
+        converted-response))))
 
 (defn add-node
   [client address]
@@ -238,7 +236,3 @@
   [client tx-id]
   (log/info :get-raw-transaction/starting {:client client :tx-id tx-id})
   (.getRawTransaction client tx-id))
-
-(defn fetch-block-by-height
-  [client height]
-  (log/info :fetch-block-by-height/starting {:height height :client client}))

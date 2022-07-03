@@ -8,6 +8,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
@@ -30,12 +31,15 @@
 (>defn fetch-by-node-and-height
   [node-id height]
   [::m.c.blocks/node ::m.c.blocks/height => (? ::m.c.blocks/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [?node-id ?height]
-                :where [[?id ::m.c.blocks/node ?node-id]
-                        [?id ::m.c.blocks/height ?height]]}]
-    (ffirst (xt/q db query node-id height))))
+  (log/finer :fetch-by-node-and-height/starting {:node-id node-id :height height})
+  (let [db       (c.xtdb/main-db)
+        query    '{:find  [?id]
+                   :in    [?node-id ?height]
+                   :where [[?id ::m.c.blocks/node ?node-id]
+                           [?id ::m.c.blocks/height ?height]]}
+        response (ffirst (xt/q db query node-id height))]
+    (log/info :fetch-by-node-and-height/finished {:node-id node-id :height height :response response})
+    response))
 
 (>defn read-record
   [id]

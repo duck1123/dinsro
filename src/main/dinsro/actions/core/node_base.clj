@@ -1,6 +1,6 @@
 (ns dinsro.actions.core.node-base
   (:require
-   [com.fulcrologic.guardrails.core :refer [>def =>]]
+   [com.fulcrologic.guardrails.core :refer [>def]]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.specs :as ds]
