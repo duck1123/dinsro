@@ -1,6 +1,8 @@
 {:port                               3000
  ;; when :nrepl-port is set the application starts the nREPL server on load
  :nrepl-port                         7000
+ :dinsro.components.notebooks/config {:enabled true}
+ :dinsro.components.seed/enabled     false
  :taoensso.timbre/logging-config
  {:level :info
   :min-level
