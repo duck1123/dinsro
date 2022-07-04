@@ -1,4 +1,7 @@
-{:ring.middleware/defaults-config
+{:dinsro.components.notebooks/config {:enabled true}
+ :dinsro.components.seed/enabled     false
+ :dinsro.core/modules                [ "dinsro.components.notebooks" ]
+ :ring.middleware/defaults-config
  {:params    {:keywordize true
               :multipart  true
               :nested     true
