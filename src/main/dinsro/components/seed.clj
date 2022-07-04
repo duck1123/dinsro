@@ -477,15 +477,15 @@
   []
   (if (config/config ::enabled)
     (if (q.settings/get-setting seeded-key)
-     (log/info :seed/seeded {})
-     (do
-       (log/info :seed/not-seeded {})
-       (let [seed-data (get-seed-data)]
-         (try
-           (seed-db! seed-data)
-           (catch Exception ex
-             (log/error :seed/failed {:ex ex})))
-         (q.settings/set-setting seeded-key true))))
+      (log/info :seed/seeded {})
+      (do
+        (log/info :seed/not-seeded {})
+        (let [seed-data (get-seed-data)]
+          (try
+            (seed-db! seed-data)
+            (catch Exception ex
+              (log/error :seed/failed {:ex ex})))
+          (q.settings/set-setting seeded-key true))))
     (log/info :seed!/not-enabled {})))
 
 (comment
