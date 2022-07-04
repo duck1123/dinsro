@@ -11,6 +11,7 @@
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.ln.peers :as a.ln.peers]
    [dinsro.actions.rates :as a.rates]
+   [dinsro.components.config :as config]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.addresses :as m.c.addresses]
@@ -474,16 +475,18 @@
 
 (defn seed!
   []
-  (if (q.settings/get-setting seeded-key)
-    (log/info :seed/seeded {})
-    (do
-      (log/info :seed/not-seeded {})
-      (let [seed-data (get-seed-data)]
-        (try
-          (seed-db! seed-data)
-          (catch Exception ex
-            (log/error :seed/failed {:ex ex})))
-        (q.settings/set-setting seeded-key true)))))
+  (if (config/config ::enabled)
+    (if (q.settings/get-setting seeded-key)
+     (log/info :seed/seeded {})
+     (do
+       (log/info :seed/not-seeded {})
+       (let [seed-data (get-seed-data)]
+         (try
+           (seed-db! seed-data)
+           (catch Exception ex
+             (log/error :seed/failed {:ex ex})))
+         (q.settings/set-setting seeded-key true))))
+    (log/info :seed!/not-enabled {})))
 
 (comment
 
