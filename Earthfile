@@ -111,7 +111,7 @@ babashka-base:
 builder:
   FROM +deps-builder
   RUN mkdir -p classes data target
-  COPY --dir src/main src/main
+  COPY --dir src/main src/notebooks src/notebook-utils src
   USER root
   RUN mkdir -p /var/lib/dinsro/data && chown -R ${uid}:${gid} /var/lib/dinsro/data
   USER ${uid}
@@ -270,6 +270,7 @@ fileserver:
 image:
   FROM openjdk:17-alpine
   ARG EXPECTED_REF=${repo}/${project}:${version}
+  WORKDIR ${src_home}
   VOLUME ${data_dir}
   RUN mkdir -p src
   COPY +jar/dinsro.jar dinsro.jar

@@ -56,7 +56,7 @@
 
  :aliases
  {:build
-  {:deps       {io.github.seancorfield/build-clj {:git/tag "v0.6.5" :git/sha "972031a"}}
+  {:deps       {io.github.seancorfield/build-clj {:git/tag "v0.8.3" :git/sha "7ac1f8d"}}
    :ns-default build}
 
   :cljfmt

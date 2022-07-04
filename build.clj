@@ -6,7 +6,7 @@
 (def lib 'duck1123/dinsro)
 (def version (format "4.0.%s" (b/git-count-revs nil)))
 (def class-dir "target/classes")
-(def basis (b/create-basis {:user :standard}))
+(def basis (b/create-basis {:aliases [:notebooks]}))
 (def jar-file (bb/default-jar-file lib version))
 
 (def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
@@ -36,43 +36,18 @@
 (defn clean [_]
   (b/delete {:path "target"}))
 
-(defn jar [_]
-  (b/write-pom
-   {:class-dir class-dir
-    :lib       lib
-    :version   version
-    :basis     basis
-    :src-dirs  ["src/main"]})
-  (b/copy-dir
-   {:src-dirs   ["src/main" "resources"]
-    :target-dir class-dir})
-  (b/jar
-   {:class-dir class-dir
-    :jar-file  jar-file}))
-
 (defn eastwood "Run Eastwood." [opts]
   (-> opts (bb/run-task [:eastwood])))
 
 (defn uber [opts]
+  (b/copy-dir
+   {:src-dirs   ["src/notebooks"]
+    :target-dir (str class-dir "/src/notebooks")})
   (-> opts
       (merge {:lib           lib
               :version       version
               :main          'dinsro.core
-              :src-dirs      ["src/main" "resources/main"]
+              :src-dirs      ["src/main" "src/notebooks" "src/notebook-utils"]
+              :basis         basis
               :resource-dirs ["resources/main"]})
       (bb/uber)))
-
-(defn uber2 [_opts]
-  (clean nil)
-  (b/copy-dir
-   {:src-dirs   ["src/main" "resources/main"]
-    :target-dir class-dir})
-  (b/compile-clj
-   {:basis     basis
-    :src-dirs  ["src/main"]
-    :class-dir class-dir})
-  (b/uber
-   {:class-dir class-dir
-    :uber-file uber-file
-    :basis     basis
-    :main      'dinsro.core}))

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
-(ns dinsro.notebooks
+(ns dinsro.notebook
   (:require
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
