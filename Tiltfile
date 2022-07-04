@@ -117,6 +117,45 @@ local_resource(
   labels = [ 'compile' ],
 )
 
+local_resource(
+  'alice-values',
+  allow_parallel = True,
+  cmd='bb generate-lnd-values alice',
+  deps = [
+    'site.edn',
+    'src/shared',
+    'src/babashka',
+  ],
+  labels = [ 'compile' ],
+)
+
+local_resource(
+  'bob-values',
+  allow_parallel = True,
+  cmd='bb generate-lnd-values bob',
+  deps = [
+    'site.edn',
+    'src/shared',
+    'src/babashka',
+  ],
+  labels = [ 'compile' ],
+)
+
+k8s_yaml(helm(
+  'resources/helm/fold/charts/lnd',
+  name = 'alice',
+  namespace = 'alice',
+  values = [ "./conf/alice/lnd_values.yaml" ]
+))
+
+k8s_yaml(helm(
+  'resources/helm/fold/charts/lnd',
+  name = 'bob',
+  namespace = 'bob',
+  values = [ "./conf/bob/lnd_values.yaml" ]
+))
+
+
 k8s_yaml(helm(
   'resources/helm/dinsro',
   name = 'dinsro',
