@@ -57,20 +57,20 @@ devcards:
       - host: devtools.devcards.dinsro.localhost
         paths:
         - path: /
-      tls:
-      - hosts:
-        - devtools.devcards.dinsro.localhost
-        secretName: dinsro-devcards-devtools-tls
+      # tls:
+      # - hosts:
+      #   - devtools.devcards.dinsro.localhost
+      #   secretName: dinsro-devcards-devtools-tls
   ingress:
     enabled: true
     hosts:
     - host: cards.dinsro.localhost
       paths:
       - path: /
-    tls:
-    - hosts:
-      - cards.dinsro.localhost
-      secretName: cards-tls
+    # tls:
+    # - hosts:
+    #   - cards.dinsro.localhost
+    #   secretName: cards-tls
   service:
     type: ClusterIP
     port: 7778
@@ -88,10 +88,10 @@ devtools:
     - host: devtools.dinsro.localhost
       paths:
       - path: /
-    tls:
-    - hosts:
-      - devtools.dinsro.localhost
-      secretName: dinsro-devtools-tls
+    # tls: []
+    # - hosts:
+    #   - devtools.dinsro.localhost
+    #   secretName: dinsro-devtools-tls
 
 docs:
   # -- Deploy docs server
@@ -105,10 +105,10 @@ docs:
     - host: docs.dinsro.localhost
       paths:
       - path: /
-    tls:
-    - hosts:
-      - docs.dinsro.localhost
-      secretName: docs-tls
+    # tls:
+    # - hosts:
+    #   - docs.dinsro.localhost
+    #   secretName: docs-tls
 
 nrepl:
   # -- enable nRepl connection
@@ -127,10 +127,10 @@ workspaces:
     - host: workspaces.dinsro.localhost
       paths:
       - path: /
-    tls:
-    - hosts:
-      - workspaces.dinsro.localhost
-      secretName: dinsro-workspaces-tls
+    # tls:
+    # - hosts:
+    #   - workspaces.dinsro.localhost
+    #   secretName: dinsro-workspaces-tls
 
 notebooks:
   # -- deploy notebooks
@@ -145,10 +145,10 @@ notebooks:
     - host: notebooks.dinsro.localhost
       paths:
       - path: /
-    tls:
-    - hosts:
-      - notebooks.dinsro.localhost
-      secretName: dinsro-notebooks-tls
+    # tls:
+    # - hosts:
+    #   - notebooks.dinsro.localhost
+    #   secretName: dinsro-notebooks-tls
 
 portal:
   # -- Deploy Portal
@@ -163,10 +163,10 @@ portal:
     - host: portal.dinsro.localhost
       paths:
       - path: /
-    tls:
-    - hosts:
-      - portal.dinsro.localhost
-      secretName: dinsro-portal-tls
+    # tls:
+    # - hosts:
+    #   - portal.dinsro.localhost
+    #   secretName: dinsro-portal-tls
 
 persistence:
   enabled: false
@@ -207,10 +207,10 @@ ingress:
   - host: dinsro.localhost
     paths:
     - path: "/"
-  tls:
-  - hosts:
-    - dinsro.localhost
-    secretName: dinsro-tls
+  # tls:
+  # - hosts:
+  #   - dinsro.localhost
+  #   secretName: dinsro-tls
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
