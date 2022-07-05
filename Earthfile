@@ -286,6 +286,7 @@ jar:
   FROM +src
   COPY --dir +compile-production/classes .
   COPY +compile-styles/* resources/main/public/
+  COPY resources/main/*.conf resources/main
   RUN bb compile-production-cljs
   RUN bb package-jar
   SAVE ARTIFACT target/dinsro-4.0.null.jar /dinsro.jar AS LOCAL target/dinsro.jar
