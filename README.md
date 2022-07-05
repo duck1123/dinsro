@@ -156,6 +156,11 @@ bb helm-${SERVICE}-remove ${USERNAME}
 bb test
 ```
 
+## Live Demo
+
+- [server](https://demo.dinsro.com/)
+- [Docs](https://docs.dinsro.com/)
+- [Notebooks](https://notebooks.demo.dinsro.com/)
 
 ## License
 
