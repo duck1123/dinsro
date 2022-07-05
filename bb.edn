@@ -2,7 +2,8 @@
 
  :tasks
  {:requires
-  ([clojure.string :as string]
+  ([babashka.fs :as fs]
+   [clojure.string :as string]
    [clj-yaml.core :as yaml]
    [cheshire.core :as json]
    [dinsro.commands :as c]
@@ -483,6 +484,17 @@
   tilt-config
   {:doc  "generates a config file for Tilt"
    :task (c/->tilt-config)}
+
+  update-chart
+  {:doc "Copy dinsro chart files to chart.kronkltd.net repository"
+   :task
+   (do
+     (shell "helm-docs -c resources/helm/dinsro")
+     (if (fs/exists? "../chart.kronkltd.net/stable/dinsro")
+       (do
+         (fs/delete-tree "../chart.kronkltd.net/stable/dinsro")
+         (fs/copy-tree "./resources/helm/dinsro" "../chart.kronkltd.net/stable/dinsro"))
+       (println "Target directory does not exist. Do you have a copy of the chart.kronkltd.net repo checked out next to this repo?")))}
 
   watch
   {:depends [watch-cljs]}

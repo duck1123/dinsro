@@ -34,7 +34,7 @@ spec:
           service:
             name: {{ $fullName }}-notebooks
             port:
-              number: {{ $svcPort }}
+              name: notebooks
       {{- end }}
   {{- end }}
 {{- end }}

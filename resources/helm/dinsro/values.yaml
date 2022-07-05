@@ -7,19 +7,19 @@ replicaCount: 1
 image:
   repository: duck1123/dinsro
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "dev-sources-latest"
+  # -- Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
+  # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
@@ -41,24 +41,26 @@ service:
   port: 3000
 
 devcards:
+  # -- deploy devcards
   enabled: true
   devtools:
+    # -- deploy devtools for devcards
     enabled: true
     service:
       type: ClusterIP
+      # -- Port for devcards devtools ws
       port: 9630
     ingress:
+      # -- Enable ingress for devcards devtools
       enabled: true
       hosts:
       - host: devtools.devcards.dinsro.localhost
         paths:
         - path: /
-      # tls: []
-        # hosts: []
-        # secretName: devcards-devtools-tls
-  service:
-    type: ClusterIP
-    port: 7778
+      tls:
+      - hosts:
+        - devtools.devcards.dinsro.localhost
+        secretName: dinsro-devcards-devtools-tls
   ingress:
     enabled: true
     hosts:
@@ -66,25 +68,33 @@ devcards:
       paths:
       - path: /
     tls:
-      enabled: false
-      entries:
-        hosts:
-        - cards.dinsro.localhost
-        secretName: cards-tls
+    - hosts:
+      - cards.dinsro.localhost
+      secretName: cards-tls
+  service:
+    type: ClusterIP
+    port: 7778
 
 devtools:
-  enabled: true
+  # -- Deploy Devtools
+  enabled: false
   service:
     type: ClusterIP
     port: 9630
   ingress:
+    # -- Deploy Devtools ingress
     enabled: true
     hosts:
     - host: devtools.dinsro.localhost
       paths:
       - path: /
+    tls:
+    - hosts:
+      - devtools.dinsro.localhost
+      secretName: dinsro-devtools-tls
 
 docs:
+  # -- Deploy docs server
   enabled: false
   service:
     type: ClusterIP
@@ -96,52 +106,70 @@ docs:
       paths:
       - path: /
     tls:
-      enabled: false
-      entries:
-      - hosts: []
-        secretName: docs-tls
+    - hosts:
+      - docs.dinsro.localhost
+      secretName: docs-tls
 
 nrepl:
-  enabled: true
+  # -- enable nRepl connection
+  enabled: false
 
 workspaces:
+  # -- deploy workspaces
   enabled: false
   service:
     type: ClusterIP
     port: 3693
   ingress:
+    # -- deploy workspaces ingress
     enabled: true
     hosts:
     - host: workspaces.dinsro.localhost
       paths:
       - path: /
+    tls:
+    - hosts:
+      - workspaces.dinsro.localhost
+      secretName: dinsro-workspaces-tls
 
 notebooks:
-  enabled: true
+  # -- deploy notebooks
+  enabled: false
   service:
     type: ClusterIP
     port: 3693
   ingress:
+    # -- deploy notebooks ingress
     enabled: true
     hosts:
     - host: notebooks.dinsro.localhost
       paths:
       - path: /
+    tls:
+    - hosts:
+      - notebooks.dinsro.localhost
+      secretName: dinsro-notebooks-tls
 
 portal:
-  enabled: true
+  # -- Deploy Portal
+  enabled: false
   service:
     type: ClusterIP
     port: 5678
   ingress:
+    # -- Deploy Portal ingress
     enabled: true
     hosts:
     - host: portal.dinsro.localhost
       paths:
       - path: /
+    tls:
+    - hosts:
+      - portal.dinsro.localhost
+      secretName: dinsro-portal-tls
 
 persistence:
-  enabled: true
+  enabled: false
   size: 1G
   storageClass: 'local-path'
   # existingClaim: ''
@@ -152,8 +180,11 @@ persistence:
     size: 1G
 
 database:
-  enabled: true
+  # -- Deploy postgres backend
+  enabled: false
+  # -- postgres username
   user: postges
+  # -- postgres password
   password: mysecretpassword
   service:
     port: 5432
@@ -167,11 +198,6 @@ database:
     storageClass: local-path
   seed: false
 
-devtoolsIngress:
-  enabled: false
-  hosts:
-  - host: devtools.dinsro.localhost
-
 ingress:
   enabled: true
   annotations: {}
@@ -181,10 +207,10 @@ ingress:
   - host: dinsro.localhost
     paths:
     - path: "/"
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+  - hosts:
+    - dinsro.localhost
+    secretName: dinsro-tls
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

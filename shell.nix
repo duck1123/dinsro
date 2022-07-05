@@ -6,6 +6,7 @@
       docker
       # earthly
       # helm
+      helm-docs
       # kubectl
       # kustomize
       nodejs
