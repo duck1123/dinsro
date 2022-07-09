@@ -1,7 +1,7 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.client.bitcoin-s-notebook
   (:require
-   [clojure.core.async :as async]
+   ;; [clojure.core.async :as async]
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.client.scala :as cs]
@@ -77,4 +77,4 @@ get-blockchain-info-result
 ^:nextjournal.clerk/no-cache
 (nu/display2 (cs/->record get-blockchain-info-result))
 
-(:result (async/<!! (c.bitcoin-s/get-block-hash client 0)))
+;; (:result (async/<!! (c.bitcoin-s/get-block-hash client 0)))
