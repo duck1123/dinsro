@@ -31,13 +31,13 @@
      1
      ch
      (map (fn [z] z))
-     (a.ln.payments/fetch-payments node)
+     (a.ln.payments/fetch-payments n.lnd/node)
      true
      (fn [error] (println "ahhh: " (.getMessage error)))))
 
-  (<!! (a.ln.payments/fetch-payments node))
+  (<!! (a.ln.payments/fetch-payments n.lnd/node))
 
-  (let [chan (a.ln.payments/fetch-payments node)]
+  (let [chan (a.ln.payments/fetch-payments n.lnd/node)]
     (async/go-loop []
       (let [a (<! chan)] (when a a (recur)))))
 
