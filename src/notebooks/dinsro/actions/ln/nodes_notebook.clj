@@ -41,7 +41,6 @@
 (comment
   (a.ln.nodes/download-cert! (first (q.ln.nodes/index-ids)))
 
-
   user-alice
   user-bob
 

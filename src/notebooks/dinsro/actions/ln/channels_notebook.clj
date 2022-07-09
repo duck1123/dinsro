@@ -11,12 +11,18 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
+;; ## delete!
+
+(comment
+
+  (map q.ln.channels/delete! (q.ln.channels/index-ids))
+
+  nil)
+
 (comment
   (q.ln.channels/index-ids)
   (first (q.ln.channels/index-records))
 
   (q.ln.channels/index-records)
-
-  (map q.ln.channels/delete! (q.ln.channels/index-ids))
 
   nil)

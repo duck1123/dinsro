@@ -2,6 +2,7 @@
 (ns dinsro.actions.ln.transactions-notebook
   (:refer-clojure :exclude [next])
   (:require
+   [dinsro.actions.ln.nodes-notebook :as n.a.ln.nodes]
    [dinsro.actions.ln.transactions :as a.ln.transactions]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.core.blocks :as q.c.blocks]
@@ -9,9 +10,7 @@
    [dinsro.queries.core.tx :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.tx-out :as q.c.tx-out]
-   [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.transactions :as q.ln.tx]
-   [dinsro.queries.users :as q.users]
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
@@ -33,17 +32,10 @@
   (map q.c.tx-in/delete! (q.c.tx-in/index-ids))
   (map q.ln.tx/delete! (q.ln.tx/index-ids))
 
-  (def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "alice") "lnd-alice")))
-  (def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
-  (def node node-alice)
-  node-alice
-  node-bob
-  node
-
-  (def node-id (::m.ln.nodes/id node-alice))
+  (def node-id (::m.ln.nodes/id n.a.ln.nodes/node-alice))
   node-id
   (q.c.nodes/find-by-ln-node node-id)
 
-  (a.ln.transactions/get-transactions node)
+  (a.ln.transactions/get-transactions n.a.ln.nodes/node)
 
   nil)

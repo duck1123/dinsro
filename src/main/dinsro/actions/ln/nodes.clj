@@ -239,10 +239,7 @@
 
 (defn initialize!-s
   [node]
-  (log/info :initialize!-s/starting {:node node})
-
-  )
-
+  (log/info :initialize!-s/starting {:node node}))
 
 (>defn save-info!
   [id data]

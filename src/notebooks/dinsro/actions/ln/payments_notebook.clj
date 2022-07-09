@@ -2,10 +2,9 @@
 (ns dinsro.actions.ln.payments-notebook
   (:require
    [clojure.core.async :as async :refer [<! <!!]]
+   [dinsro.actions.ln.nodes-notebook :as n.a.ln.nodes]
    [dinsro.actions.ln.payments :as a.ln.payments]
-   [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.payments :as q.ln.payments]
-   [dinsro.queries.users :as q.users]
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
@@ -16,16 +15,10 @@
 (nu/display-file-links)
 
 (comment
-  (def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "alice") "lnd-alice")))
-  (def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
-  (def node node-alice)
-  node-alice
-  node-bob
-  node
 
-  (a.ln.payments/update-payments node)
+  (a.ln.payments/update-payments n.a.ln.nodes/node)
 
-  (a.ln.payments/fetch-payments node)
+  (a.ln.payments/fetch-payments n.a.ln.nodes/node)
 
   (q.ln.payments/index-records)
   (q.ln.payments/index-ids)
