@@ -243,12 +243,12 @@
     :isIdentity false
     :path       ".rate"
     :code       "usd"}
-   {:name       "Coinbase USD"
-    :code       "usd"
-    :url        "https://api.coinbase.com/v2/prices/spot?currency=USD"
-    :isActive   true
-    :isIdentity false
-    :path       "100000000 / (.data.amount | tonumber)"}
+   #_{:name       "Coinbase USD"
+      :code       "usd"
+      :url        "https://api.coinbase.com/v2/prices/spot?currency=USD"
+      :isActive   true
+      :isIdentity false
+      :path       "100000000 / (.data.amount | tonumber)"}
    {:name       "BitPonzi"
     :url        "https://www.bitponzi.biz.localhost/cgi?id=3496709"
     :isActive   false
