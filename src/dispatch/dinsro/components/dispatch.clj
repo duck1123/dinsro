@@ -2,8 +2,7 @@
   (:require
    [nrepl.core :as nrepl]
    [nrepl.misc :refer [noisy-future]]
-   [nrepl.transport :as transport]
-   [taoensso.timbre :as log]))
+   [nrepl.transport :as transport]))
 
 (def repl-host "127.0.0.1")
 (def repl-port 7000)

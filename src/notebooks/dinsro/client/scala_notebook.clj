@@ -3,12 +3,10 @@
   (:require
    [dinsro.client.scala :as cs]
    [dinsro.notebook-utils :as nu]
-   [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
 ;; # Scala Helpers
-
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)

@@ -1,17 +1,14 @@
 (ns dinsro.actions.core.nodes
   (:require
-   [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.peers :as q.c.peers]
    [dinsro.queries.core.tx :as q.c.tx]
    [lambdaisland.glogc :as log])
   (:import
@@ -118,56 +115,3 @@
   [node]
   (let [instance (get-remote-instance node)]
     (BitcoindV22RpcClient/apply instance)))
-
-(comment
-  (tap> (q.c.nodes/index-records))
-
-  (def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
-  (def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
-  (def node node-alice)
-  (def node-id (::m.c.nodes/id node))
-  (def client (m.c.nodes/get-client node))
-  (c.bitcoin/get-peer-info client)
-
-  (tap> node)
-  node
-
-  (tap> (c.bitcoin/get-blockchain-info client))
-  (c.bitcoin/add-node client "bitcoin.bitcoin-bob")
-
-  (generate-to-address! node "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
-
-  (c.bitcoin/get-new-address client)
-  (c.bitcoin/create-wallet client "foo")
-
-  (c.bitcoin/get-wallet-info client)
-
-  (fetch-transactions! node)
-
-  (q.c.peers/index-ids)
-
-  (get-auth-credentials node)
-
-  (get-rpc-uri node)
-  (get-remote-uri node)
-
-  (c.bitcoin-s/regtest-network)
-
-  (get-remote-instance node)
-
-  (def executor (cs/get-executor))
-  (def context (cs/get-execution-context executor))
-
-  (def client-s (get-client node))
-  client-s
-
-  (c.bitcoin-s/get-peer-info client-s)
-
-  (cs/await-future (.getBlockCount client-s) context)
-
-  (def ch (cs/await-future (.getPeerInfo client-s)))
-  (async/<!! (cs/await-future (.getPeerInfo client-s) context))
-
-  (.getParameters (first (seq (.getMethods BitcoindInstanceRemote))))
-
-  nil)

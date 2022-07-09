@@ -67,13 +67,3 @@
 (defn delete!
   [id]
   (log/info :delete!/starting {:id id}))
-
-(comment
-  (q.ln.channels/index-ids)
-  (first (q.ln.channels/index-records))
-
-  (q.ln.channels/index-records)
-
-  (map q.ln.channels/delete! (q.ln.channels/index-ids))
-
-  nil)

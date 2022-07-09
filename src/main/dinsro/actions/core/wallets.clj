@@ -1,24 +1,19 @@
 (ns dinsro.actions.core.wallets
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
-   [dinsro.queries.core.blocks :as q.c.blocks]
-   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.words :as q.c.words]
    [lambdaisland.glogc :as log])
   (:import
-   org.bitcoins.core.hd.HDPurpose
    org.bitcoins.core.crypto.BIP39Seed
    org.bitcoins.core.crypto.MnemonicCode
    org.bitcoins.core.crypto.ExtPrivateKey
    org.bitcoins.core.protocol.Bech32Address
-   org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
-   scala.collection.immutable.Vector))
+   org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0))
 
 (defn parse-descriptor
   [descriptor]
@@ -156,111 +151,3 @@
         network            (c.bitcoin-s/regtest-network)
         address            (Bech32Address/apply script-pub-key network)]
     (.value address)))
-
-(comment
-  (def descriptor "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l")
-
-  {:type        "wpkh"
-   :fingerprint "7c6cf2c1"
-   :path        "84h/1h/0h"
-   :key         "tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc"
-   :keypath     "0/*"
-   :checksum    "8phlkw5l"}
-
-  (q.c.nodes/index-records)
-  (q.c.blocks/index-records)
-  (def node-name "bitcoin-alice")
-  (def node (q.c.nodes/read-record (q.c.nodes/find-id-by-name node-name)))
-  node
-
-  (def client (m.c.nodes/get-client node ""))
-  client
-
-  (c.bitcoin/add-node client "bitcoin.bitcoin-bob")
-  (c.bitcoin/get-peer-info client)
-  (c.bitcoin/generate-to-address client "bcrt1q69zq0gn5cuflasuu8redktssdqxyxg8h6mh53j")
-
-  (c.bitcoin-s/create-mnemonic-words)
-
-  (q.c.wallets/index-ids)
-  (tap> (q.c.wallets/index-records))
-  (q.c.wallets/index-records)
-  (def wallet (first (q.c.wallets/index-records)))
-  wallet
-  (def wallet-id (::m.c.wallets/id wallet))
-
-  (get-bip39-seed wallet)
-  (get-address wallet 2)
-
-  (map
-   #(get-address wallet %)
-   (range 20))
-
-  (.key (get-ext-pub-key wallet 0))
-  (def xpriv (get-xpriv wallet-id))
-
-  (roll! {::m.c.wallets/id wallet-id})
-
-  (c.bitcoin-s/->wif (.key (get-xpriv wallet-id)))
-  (get-wif wallet-id)
-
-  (get-word-list wallet-id)
-
-  (c.bitcoin-s/words->mnemonic (get-word-list wallet-id))
-
-  (get-mnemonic wallet-id)
-
-  (update-words! wallet-id (c.bitcoin-s/create-mnemonic-words))
-  (->priv-key wallet)
-
-  (->bip39-seed wallet)
-
-  (calculate-derivation wallet)
-  (.words (calculate-derivation (first (q.c.wallets/index-records))))
-
-  (tap> (seq (.getDeclaredMethods (.getClass (calculate-derivation (first (q.c.wallets/index-records)))))))
-
-  (tap> (seq (.getDeclaredMethods BIP39Seed)))
-
-  xpriv
-
-  (def account-path (c.bitcoin-s/->bip32-path "m/84'/0'/0'"))
-  account-path
-  (def account-xpub (.extPublicKey (.deriveChildPrivKey xpriv account-path)))
-  account-xpub
-
-  (def first-address-path (c.bitcoin-s/->segwit-path "m/84'/0'/0'/0/0"))
-
-  (def diffsome (.diff account-path first-address-path))
-  diffsome
-  (.get diffsome)
-
-  (.get (.deriveChildPubKey account-xpub (.get diffsome)))
-
-  (.key xpriv)
-  (.hex (.chainCode xpriv))
-
-  (.fingerprint xpriv)
-
-  (BIP39Seed/EMPTY_PASSWORD)
-
-  (parse-descriptor descriptor)
-
-  (MnemonicCode.)
-
-  (def purpose (HDPurpose. 84))
-  purpose
-
-  (vec (.getDeclaredMethods (class purpose)))
-
-  (let [builder (Vector/newBuilder)]
-    (.addOne builder 1)
-    (.addOne builder 2)
-    (.addOne builder 3)
-    (.result builder))
-
-  (tap> (seq (.getDeclaredMethods (.getClass (Vector/newBuilder)))))
-
-  (Vector/fill 1 2 3 4 5)
-
-  nil)

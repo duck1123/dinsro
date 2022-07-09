@@ -389,7 +389,7 @@
 
   kondo
   {:doc  "Lint source code with clj-kondo"
-   :task (shell "npx clj-kondo --parallel --lint \"src/main:src/test\"")}
+   :task (shell "npx clj-kondo --parallel --lint \"src/main:src/test:src/babashka:src/cards:src/dev:src/dispatch:src/notebooks:src/notebook-utils:src/shared\"")}
 
   leave-telepresence
   {:task (shell "telepresence leave dinsro-portal-dinsro")}

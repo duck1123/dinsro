@@ -3,7 +3,7 @@
   (:require
    [buddy.core.codecs :refer [bytes->hex]]
    [clj-commons.byte-streams :as bs]
-   [clojure.core.async :as async :refer [<!!]]
+   [clojure.core.async :as async]
    [clojure.java.io :as io]
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
@@ -17,8 +17,6 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
-   [dinsro.queries.ln.peers :as q.ln.peers]
-   [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
@@ -309,91 +307,3 @@
   (let [client     (get-client-s node)
         passphrase default-passphrase]
     (c.lnd-s/unlock-wallet client passphrase)))
-
-(comment
-  (download-cert! (first (q.ln.nodes/index-ids)))
-
-  (def user-alice (q.users/find-eid-by-name "alice"))
-  (def user-bob (q.users/find-eid-by-name "bob"))
-
-  user-alice
-  user-bob
-
-  (def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "alice") "lnd-alice")))
-  (def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
-  (def node node-alice)
-  node-alice
-  node-bob
-  node
-
-  (def core-node-alice (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-alice))))
-  (def core-node-bob (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-bob))))
-
-  core-node-alice
-
-  (def a (new-address-s node))
-  a
-  (.value a)
-  (new-address-str node)
-
-  (unlock-sync!-s node)
-
-  (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node)))
-
-  (def client1 (get-client node))
-  client1
-
-  (with-open [client (get-client node)] (c.lnd/list-invoices client))
-  (c.lnd/list-payments client1)
-
-  (q.ln.nodes/index-ids)
-  (initialize! node)
-
-  (generate! node-alice)
-
-  (update-info! node)
-
-  (delete-cert node)
-  (has-cert? node)
-  (download-cert! node)
-  (download-macaroon! node)
-
-  (delete-macaroon node)
-  (has-macaroon? node)
-
-  (prn (slurp (download-macaroon! node)))
-
-  (println (get-macaroon-text node))
-  (get-remote-instance node)
-
-  (def client (get-client-s node))
-  client
-
-  (.unlockWallet client default-passphrase)
-
-  (get-info node)
-
-  (a.c.nodes/generate-to-address! core-node-alice (new-address-str node-alice))
-
-  (<!! (initialize! node))
-
-  (q.ln.peers/index-records)
-
-  (new-address node (fn [response] response))
-
-  (get-client node)
-  (get-macaroon-hex node)
-
-  (m.ln.nodes/cert-file node)
-  (get-cert-text node)
-  (def f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node)))
-
-  (.exists f)
-
-  (def response (c.lnd-s/get-info client))
-
-  (cs/->record response)
-  (.alias response)
-
-  (bytes->hex (bs/to-byte-array f))
-  nil)

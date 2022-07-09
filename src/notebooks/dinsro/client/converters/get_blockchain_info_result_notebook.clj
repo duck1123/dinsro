@@ -11,7 +11,7 @@
   (:import
    org.bitcoins.commons.jsonmodels.bitcoind.GetBlockChainInfoResultPostV19))
 
-;; Get Block Chain Info Result [link](https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockChainInfoResultPostV19.html)
+;; # Get Block Chain Info Result [link](https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockChainInfoResultPostV19.html)
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)

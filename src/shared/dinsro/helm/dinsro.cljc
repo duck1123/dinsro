@@ -101,8 +101,7 @@
          portal-host    :portalHost
          seed           :seedDatabase
          nrepl          :useNrepl
-         persistence    :usePersistence
-         portal         :usePortal} (merge-defaults site-config)]
+         persistence    :usePersistence} (merge-defaults site-config)]
     {:replicaCount 1
 
      :database

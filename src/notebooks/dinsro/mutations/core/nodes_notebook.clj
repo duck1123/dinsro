@@ -1,7 +1,6 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.mutations.core.nodes-notebook
   (:require
-   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.notebook-utils :as nu]
    [dinsro.specs :as ds]

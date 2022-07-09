@@ -21,15 +21,11 @@
          #_(printf "Error parsing edn file '%s': %s\n" source (.getMessage e))
          nil))
      :cljs
-     (do
-       (println "fs: ")
-       (println fs)
-
-       (.readFile fs source "utf8"
-                  (fn [_err data]
-                    (let [response (reader/read-string data)]
-                      (println response)
-                      response))))))
+     (.readFile fs source "utf8"
+                (fn [_err data]
+                  (let [response (reader/read-string data)]
+                    (println response)
+                    response)))))
 
 (defn get-site-config
   []

@@ -14,7 +14,8 @@
   taoensso.encore/if-let                        cljs.core/let}
 
  :linters
- {:unresolved-var {:exclude [http.async.client/GET http.async.client/POST]}
+ {:unresolved-var {:exclude [http.async.client/GET http.async.client/POST
+                             nextjournal.clerk.viewer/clerk-eval]}
 
   ;; ignore the arrow symbols
   :unresolved-symbol {:exclude [(fulcro-spec.core/assertions)]}}}

@@ -11,7 +11,7 @@
              n (:nextjournal/value (second (:nextjournal/value (first (filter #(= (:nextjournal/value (first (:nextjournal/value %))) :n) value)))))]
          [:li {:style {:border "1px green solid"}}
           [:a {:on-click
-               (fn [e]
+               (fn []
                  (js/console.log (str "Click: " f))
                  (v/clerk-eval `(do
                                   (log/info :clicked {})

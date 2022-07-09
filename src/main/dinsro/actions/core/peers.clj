@@ -74,28 +74,3 @@
     (do
       (log/warn :delete!/peer-not-found {:peer-id peer-id})
       nil)))
-
-(comment
-
-  (def node1 (first (q.c.nodes/index-ids)))
-  (def node2 (second (q.c.nodes/index-ids)))
-  (map q.c.peers/find-by-core-node (q.c.nodes/index-ids))
-  (q.c.nodes/read-record node1)
-
-  (get-peer-info (q.c.nodes/read-record node1))
-
-  (::m.c.nodes/host (q.c.nodes/read-record node2))
-
-  (add-peer!
-   (q.c.nodes/read-record node1)
-   (::m.c.nodes/host (q.c.nodes/read-record node2)))
-
-  (def peer (first (q.c.peers/index-records)))
-  (delete! peer)
-  (tap> peer)
-
-  (tap> (q.c.peers/index-records))
-
-  node2
-
-  nil)

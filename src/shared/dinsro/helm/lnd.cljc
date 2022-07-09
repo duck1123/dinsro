@@ -121,9 +121,7 @@
   "Produce a lnd helm values file"
   [options]
   (let [options                                     (merge-defaults options)
-        {:keys     [auto-unlock chain ingress]
-         full-name :name
-         :or       {full-name "alice-default"}}         options
+        {:keys [auto-unlock chain ingress]}         options
         {ingress-host :host}                        ingress
         {auto-unlock-password :password
          :or
