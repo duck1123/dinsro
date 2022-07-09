@@ -39,25 +39,28 @@
 
 (>defn get-cert-text
   [node]
-  [::m.ln.nodes/item => string?]
-  (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node))))
+  [::m.ln.nodes/item => (? string?)]
+  (try
+    (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id node)))
+    (catch FileNotFoundException _ nil)))
 
 (>defn get-macaroon-hex
   [node]
-  [::m.ln.nodes/item => string?]
-  (let [f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node))]
-    (bytes->hex (bs/to-byte-array f))))
+  [::m.ln.nodes/item => (? string?)]
+  (try
+    (let [f (m.ln.nodes/macaroon-file (::m.ln.nodes/id node))]
+      (bytes->hex (bs/to-byte-array f)))
+    (catch FileNotFoundException _ nil)))
 
 (>defn get-client
   "Get a lightningj client"
   [{::m.ln.nodes/keys [id name host port]}]
   [::m.ln.nodes/item => (ds/instance? AsynchronousLndAPI)]
   (log/info :client/creating {:id id :name name})
-  (c.lnd/get-client
-   host
-   (Integer/parseInt port)
-   (m.ln.nodes/cert-file id)
-   (io/file (m.ln.nodes/macaroon-path id))))
+  (let [port-num (Integer/parseInt port)
+        cert-file (m.ln.nodes/cert-file id)
+        macaroon-file (io/file (m.ln.nodes/macaroon-path id))]
+    (c.lnd/get-client host port-num cert-file macaroon-file)))
 
 (defn get-client-s
   "Get a bitcoin-s client"
@@ -239,7 +242,9 @@
 
 (defn initialize!-s
   [node]
-  (log/info :initialize!-s/starting {:node node}))
+  (log/info :initialize!-s/starting {:node node})
+  (let [client (get-client-s node)]
+    (c.lnd-s/initialize! client "password12345678")))
 
 (>defn save-info!
   [id data]

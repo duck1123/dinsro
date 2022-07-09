@@ -25,6 +25,8 @@
 
 (cs/none)
 
+(cs/uint64 0)
+
 (comment
 
   (.get (cs/none))

@@ -4,8 +4,8 @@
    [clojure.core.async :as async :refer [<!!]]
    [dinsro.actions.ln.invoices :as a.ln.invoices]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.actions.ln.nodes-notebook :as n.a.ln.nodes]
    [dinsro.client.lnd :as c.lnd]
+   [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.invoices :as q.ln.invoices]
    [dinsro.notebook-utils :as nu]
@@ -17,10 +17,10 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-(def node-alice2 n.a.ln.nodes/node-alice)
+(def node-alice2 n.lnd/node-alice)
 
 (comment
-  (def client (a.ln.nodes/get-client n.a.ln.nodes/node))
+  (def client (a.ln.nodes/get-client n.lnd/node))
 
   nil)
 
@@ -28,16 +28,16 @@
 (def inv2 "lnbcrt50u1psu56pkpp5y8strxe68vm99j37f63dxmuap76f980xqs052t0eh6ztfsctvumsdqh235xjueqd9ejqcfqd4jk6mccqzpgxqyz5vqsp5aagvk9yveakxv7af38eajtq44c5f8xlnzgranava8cq5daknknns9qyyssqyhkjl6q4xts2yw8gjm2u8a028pdyy3043efkmn5cmq0kz4re64jjglkdgpqwftwwlax8gh6nn3qwxscheg5rxkdtvfvnwv8y76qu7wqqn4ugvy")
 
 (comment
-  (c.lnd/list-invoices (a.ln.nodes/get-client n.a.ln.nodes/node))
+  (c.lnd/list-invoices (a.ln.nodes/get-client n.lnd/node))
 
   (<!! (c.lnd/decode-pay-req client inv))
 
   (<!! (c.lnd/lookup-invoice client inv))
 
-  (let [client (a.ln.nodes/get-invoices-client n.a.ln.nodes/node)]
+  (let [client (a.ln.nodes/get-invoices-client n.lnd/node)]
     (<!! (c.lnd/lookup-invoice client inv)))
 
-  (let [client (a.ln.nodes/get-client n.a.ln.nodes/node-alice)]
+  (let [client (a.ln.nodes/get-client n.lnd/node-alice)]
     (<!! (c.lnd/send-payment-sync client inv2)))
 
   (q.ln.invoices/index-ids)
@@ -45,9 +45,9 @@
 
   (map q.ln.invoices/delete!  (q.ln.invoices/index-ids))
 
-  (a.ln.invoices/fetch n.a.ln.nodes/node)
-  (a.ln.invoices/update! (::m.ln.nodes/id n.a.ln.nodes/node))
-  (def iresponse (async/<!! (a.ln.invoices/fetch n.a.ln.nodes/node)))
+  (a.ln.invoices/fetch n.lnd/node)
+  (a.ln.invoices/update! (::m.ln.nodes/id n.lnd/node))
+  (def iresponse (async/<!! (a.ln.invoices/fetch n.lnd/node)))
   (first (:invoices iresponse))
 
   nil)

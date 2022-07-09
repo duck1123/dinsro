@@ -13,6 +13,7 @@
    java.util.concurrent.ThreadPoolExecutor
    org.bitcoins.core.number.Int32
    org.bitcoins.core.number.UInt32
+   org.bitcoins.core.number.UInt64
    org.bitcoins.crypto.DoubleSha256DigestBE
    scala.collection.immutable.Vector
    scala.concurrent.ExecutionContext
@@ -45,6 +46,10 @@
 (defn uint32
   [v]
   (UInt32/fromNativeNumber (int v)))
+
+(defn uint64
+  [v]
+  (UInt64/fromNativeNumber (int v)))
 
 ;; https://bitcoin-s.org/api/org/bitcoins/crypto/DoubleSha256DigestBE.html
 

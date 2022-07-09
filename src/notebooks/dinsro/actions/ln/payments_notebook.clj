@@ -2,8 +2,8 @@
 (ns dinsro.actions.ln.payments-notebook
   (:require
    [clojure.core.async :as async :refer [<! <!!]]
-   [dinsro.actions.ln.nodes-notebook :as n.a.ln.nodes]
    [dinsro.actions.ln.payments :as a.ln.payments]
+   [dinsro.lnd-notebook :as n.lnd]
    [dinsro.queries.ln.payments :as q.ln.payments]
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
@@ -16,9 +16,9 @@
 
 (comment
 
-  (a.ln.payments/update-payments n.a.ln.nodes/node)
+  (a.ln.payments/update-payments n.lnd/node)
 
-  (a.ln.payments/fetch-payments n.a.ln.nodes/node)
+  (a.ln.payments/fetch-payments n.lnd/node)
 
   (q.ln.payments/index-records)
   (q.ln.payments/index-ids)

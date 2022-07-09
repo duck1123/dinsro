@@ -1,13 +1,10 @@
 (ns dinsro.client.lnd-s
   "Clojure interop for Bitcoin-S LND client"
   (:require
-   [buddy.core.codecs :refer [bytes->hex]]
    [clojure.core.async :as async]
    [dinsro.client.scala :as cs :refer [Recordable]]
-   [lambdaisland.glogc :as log]
-   [ring.util.codec :refer [base64-decode]])
+   [lambdaisland.glogc :as log])
   (:import
-   java.net.URI
    org.bitcoins.lnd.rpc.config.LndInstanceRemote
    org.bitcoins.lnd.rpc.config.LndInstance
    org.bitcoins.lnd.rpc.LndRpcClient
@@ -18,46 +15,10 @@
    lnrpc.LightningAddress
    scalapb.UnknownFieldSet))
 
-(def bob-cert
-  "-----BEGIN CERTIFICATE-----
-MIICezCCAiGgAwIBAgIQTeOjoj/ubeyJD7VEGVC2mTAKBggqhkjOPQQDAjBDMR8w
-HQYDVQQKExZsbmQgYXV0b2dlbmVyYXRlZCBjZXJ0MSAwHgYDVQQDExdib2ItbG5k
-LTc1Zjc3Njc2ZC1nYnN2cjAeFw0yMjA0MjkxNTE2MjFaFw0yMzA2MjQxNTE2MjFa
-MEMxHzAdBgNVBAoTFmxuZCBhdXRvZ2VuZXJhdGVkIGNlcnQxIDAeBgNVBAMTF2Jv
-Yi1sbmQtNzVmNzc2NzZkLWdic3ZyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE
-bjoNJjql3sodXCZ6mBakLRU8SqT+TvQFJ5NlSzF2G9su/Zo9NN0qPTEBnLc2i/Sw
-GivkfFg4xI9b3KBfFf3tFaOB9jCB8zAOBgNVHQ8BAf8EBAMCAqQwEwYDVR0lBAww
-CgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUiOj/a/26jIKM
-SPgLm668V8seJW8wgZsGA1UdEQSBkzCBkIIXYm9iLWxuZC03NWY3NzY3NmQtZ2Jz
-dnKCCWxvY2FsaG9zdIIZbG5kLmJvYi5zdmMuY2x1c3Rlci5sb2NhbIIEdW5peIIK
-dW5peHBhY2tldIIHYnVmY29ubocEfwAAAYcQAAAAAAAAAAAAAAAAAAAAAYcECioA
-X4cQ/oAAAAAAAABUnxP//p8TrocEAAAAADAKBggqhkjOPQQDAgNIADBFAiEAwqOo
-HUcY4qptDzAjtZ1FpDqFoWhR7JokQvXraK6bbyACICmycgFPcxRzpM7AynbqnIFr
-ZEw+de+2IU8TFQ4JWo9Y
------END CERTIFICATE-----")
-
-(def bob-macaroon
-  (str
-   "AgEDbG5kAvgBAwoQmsrEBJEPx1X7PO46nmoPdRIBMBoWCgdhZGRyZXNzEgR"
-   "yZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpbnZvaWNlcx"
-   "IEcmVhZBIFd3JpdGUaIQoIbWFjYXJvb24SCGdlbmVyYXRlEgRyZWFkEgV3c"
-   "ml0ZRoWCgdtZXNzYWdlEgRyZWFkEgV3cml0ZRoXCghvZmZjaGFpbhIEcmVh"
-   "ZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJ"
-   "lYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2VuZXJhdGUSBHJlYWQAAAYgr9elVJ"
-   "2PWZVVxxLOtFYda319lftE96nIKgjG0zMXPYs="))
-
 (defn get-remote-instance
-  ([]
-   (let [host "lnd.bob.svc.cluster.local"
-         port 10009
-         url  (URI. (str "https://" host ":" port "/"))]
-     (get-remote-instance url)))
-  ([url]
-   (let [macaroon (bytes->hex (base64-decode bob-macaroon))]
-     (get-remote-instance url macaroon)))
   ([url macaroon]
    (let [cert-file (Option/empty)
-         cert-opt  (Option/apply bob-cert)]
+         cert-opt  (Option/empty)]
      (get-remote-instance url macaroon cert-file cert-opt)))
   ([url macaroon cert-file cert-opt]
    (log/info :get-remote-instance/creating
@@ -155,25 +116,8 @@ ZEw+de+2IU8TFQ4JWo9Y
   (log/info :unlock-wallet/starting {:client client :passphrase passphrase})
   (await-throwable (.unlockWallet client passphrase)))
 
-(comment
-
-  (->lightning-address "lnd.bob:9735")
-  (->connect-peer-request "lnd.bob:9735")
-
-  (def instance (get-remote-instance))
-
-  (LndRpcClient. instance (Option/empty))
-
-  (def client (get-remote-client instance))
-  (async/<!! (cs/await-future (.connectPeer client (->connect-peer-request "lnd.bob:9735"))))
-
-  (async/<!! (cs/await-future (.getInfo client)))
-
-  (def result (get-info client))
-  (.alias result)
-
-  bob-cert
-
-  (Option/apply bob-cert)
-
-  nil)
+(defn initialize!
+  "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#initWallet(password:String):scala.concurrent.Future[com.google.protobuf.ByteString]"
+  [^LndRpcClient client ^String password]
+  (log/info :initialize!/starting {:client client :password password})
+  (.initWallet client password))
