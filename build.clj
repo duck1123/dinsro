@@ -47,7 +47,12 @@
       (merge {:lib           lib
               :version       version
               :main          'dinsro.core
-              :src-dirs      ["src/main" "src/notebooks" "src/notebook-utils"]
+              :src-dirs      ["src/dispatch"
+                              "src/main"
+                              "src/notebooks"
+                              "src/notebook-utils"
+                              "src/prod"
+                              "src/shared"]
               :basis         basis
               :resource-dirs ["resources/main"]})
       (bb/uber)))
