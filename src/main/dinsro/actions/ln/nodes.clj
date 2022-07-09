@@ -237,6 +237,13 @@
       (log/info :initialize-sync!/starting {:request request})
       (.initWallet client request))))
 
+(defn initialize!-s
+  [node]
+  (log/info :initialize!-s/starting {:node node})
+
+  )
+
+
 (>defn save-info!
   [id data]
   [::m.ln.nodes/id ::m.ln.info/params => any?]

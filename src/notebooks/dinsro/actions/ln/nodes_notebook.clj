@@ -23,18 +23,28 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
+(def user-alice (q.users/find-eid-by-name "alice"))
+(def alice-id (q.users/find-eid-by-name "alice"))
+(def user-bob (q.users/find-eid-by-name "bob"))
+(def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name alice-id "lnd-alice")))
+(def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
+(def node node-alice)
+
+;; ## initialize!
+
+(comment
+
+  (a.ln.nodes/initialize!-s node)
+
+  nil)
+
 (comment
   (a.ln.nodes/download-cert! (first (q.ln.nodes/index-ids)))
 
-  (def user-alice (q.users/find-eid-by-name "alice"))
-  (def user-bob (q.users/find-eid-by-name "bob"))
 
   user-alice
   user-bob
 
-  (def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "alice") "lnd-alice")))
-  (def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
-  (def node node-alice)
   node-alice
   node-bob
   node
