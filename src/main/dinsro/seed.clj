@@ -421,7 +421,7 @@
    alice-data
    bob-data])
 
-(def core-node-data [core-node1 core-node2 core-node3])
+(def core-node-data [core-node1 core-node2 #_core-node3])
 
 (def default-chains ["bitcoin" "fakecoin"])
 
