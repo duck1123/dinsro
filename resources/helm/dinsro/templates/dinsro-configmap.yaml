@@ -39,8 +39,8 @@ data:
      {:min-level
      [[#{"_rad.resolvers"
          "roterski.fulcro.rad.database-adapters.xtdb.generate-resolvers"} :fatal]
-      [#{"dinsro.*"} :debug]
-      [#{"*"} :info]]
-      :level :debug}
+      [#{"dinsro.*"} {{ .Values.logLevel }} ]
+      [#{"*"} :info ]]
+      :level {{ .Values.logLevel }} }
     }
 {{- end}}

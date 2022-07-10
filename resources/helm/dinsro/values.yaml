@@ -110,6 +110,9 @@ docs:
     #   - docs.dinsro.localhost
     #   secretName: docs-tls
 
+# -- base log level for dinsro
+logLevel: ":fine"
+
 nrepl:
   # -- enable nRepl connection
   enabled: false

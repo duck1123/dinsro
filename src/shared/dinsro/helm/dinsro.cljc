@@ -8,11 +8,14 @@
 (defn merge-defaults
   [options]
   (let [local-devtools        false
-        {:keys       [devcards devtools docs notebooks portal workspaces]
+        {:keys       [devcards devtools docs
+                      logLevel
+                      notebooks portal workspaces]
          base-url    :baseUrl
          production? :useProduction
          :or
          {base-url    default-base-url
+          logLevel   :fine
           production? false}} options
 
         ;; devcards
@@ -73,6 +76,7 @@
       :devtools-enabled       devtools-enabled
       :devtools-host          devtools-host
       :docs-enabled           docs-enabled?
+      :log-level              (str logLevel)
       :image-tag              image-tag
       :notebooks-enabled      notebooks-enabled?
       :notebooks-inherit-host notebooks-inherit-host
@@ -94,6 +98,7 @@
           devtools-host
           docs-enabled
           image-tag
+          log-level
           notebooks-enabled
           notebooks-host
           portal-enabled
@@ -139,6 +144,8 @@
      :ingress
      {:hosts [{:host  base-url
                :paths [{:path "/"}]}]}
+
+     :logLevel log-level
 
      :notebooks
      {:enabled notebooks-enabled

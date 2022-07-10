@@ -12,7 +12,8 @@
 (nu/display-file-links)
 
 (def inputs
-  {:portal {:enabled true}})
+  {:log-level :finest
+   :portal {:enabled true}})
 
 ;; ## merge-defaults
 
