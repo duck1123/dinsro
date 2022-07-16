@@ -12,19 +12,43 @@
    [dinsro.queries.core.tx :as q.c.tx]
    [lambdaisland.glogc :as log])
   (:import
-   org.bitcoins.rpc.config.BitcoindInstanceRemote
    org.bitcoins.rpc.client.v22.BitcoindV22RpcClient
-   java.net.URI
-   akka.actor.ActorSystem
-   scala.Option))
+   java.net.URI))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
+
+(defn get-remote-uri
+  [{::m.c.nodes/keys [host]}]
+  (URI. (str "http://" host ":" "18444")))
+
+(defn get-rpc-uri
+  [{::m.c.nodes/keys [host port]}]
+  (URI. (str "http://" host ":" port)))
+
+(defn get-auth-credentials
+  [{::m.c.nodes/keys [rpcuser rpcpass]}]
+  (c.bitcoin-s/get-auth-credentials rpcuser rpcpass))
+
+(defn get-remote-instance
+  [node]
+  (c.bitcoin-s/get-remote-instance
+   (c.bitcoin-s/regtest-network)
+   (get-remote-uri node)
+   (get-rpc-uri node)
+   (get-auth-credentials node)
+   (c.bitcoin-s/get-zmq-config)))
+
+(defn get-client
+  [node]
+  (let [instance (get-remote-instance node)]
+    (BitcoindV22RpcClient/apply instance)))
 
 (defn generate-to-address!
   "Generate regtest blocks paying to address"
   [node address]
-  (let [client (m.c.nodes/get-client node)]
-    (c.bitcoin/generate-to-address client address)))
+  (log/info :generate-to-address!/starting {:node node :address address})
+  (let [client (get-client node)]
+    (c.bitcoin-s/generate-to-address! client address)))
 
 (>defn get-blockchain-info
   "Fetch blockchain info for node"
@@ -87,31 +111,3 @@
     (do
       (log/error :generate!/node-not-found {:node-id node-id})
       nil)))
-
-(defn get-remote-uri
-  [{::m.c.nodes/keys [host]}]
-  (URI. (str "http://" host ":" "18444")))
-
-(defn get-rpc-uri
-  [{::m.c.nodes/keys [host port]}]
-  (URI. (str "http://" host ":" port)))
-
-(defn get-auth-credentials
-  [{::m.c.nodes/keys [rpcuser rpcpass]}]
-  (c.bitcoin-s/get-auth-credentials rpcuser rpcpass))
-
-(defn get-remote-instance
-  [node]
-  (BitcoindInstanceRemote/apply
-   (c.bitcoin-s/regtest-network)
-   (get-remote-uri node)
-   (get-rpc-uri node)
-   (get-auth-credentials node)
-   (c.bitcoin-s/get-zmq-config)
-   (Option/empty)
-   (ActorSystem/apply)))
-
-(defn get-client
-  [node]
-  (let [instance (get-remote-instance node)]
-    (BitcoindV22RpcClient/apply instance)))
