@@ -1,4 +1,7 @@
-(ns dinsro.helm.dinsro)
+(ns dinsro.helm.dinsro
+  (:require
+   #?(:clj [clj-yaml.core :as yaml])
+   #?(:cljs [dinsro.yaml :as yaml])))
 
 (def default-base-url "dinsro.localhost")
 
@@ -162,3 +165,7 @@
      {:enabled workspaces-enabled
       :ingress {:hosts
                 [{:host workspaces-host :paths [{:path "/"}]}]}}}))
+
+(defn ->values-yaml
+  [options]
+  (yaml/generate-string (->dinsro-config (merge-defaults options))))

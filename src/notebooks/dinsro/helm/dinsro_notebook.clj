@@ -11,7 +11,8 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-(def inputs {})
+(def inputs
+  {:portal {:enabled true}})
 
 ;; ## merge-defaults
 
@@ -22,5 +23,8 @@
 
 ;; This generates the helm values file for dinsro
 
+;; ^{::clerk/viewer clerk/code ::clerk/no-cache true}
+;; (h.dinsro/->dinsro-config merged-defaults)
+
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
-(h.dinsro/->dinsro-config merged-defaults)
+(h.dinsro/->values-yaml merged-defaults)
