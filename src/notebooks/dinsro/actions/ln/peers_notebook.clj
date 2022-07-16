@@ -3,11 +3,11 @@
   (:refer-clojure :exclude [next])
   (:require
    [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.actions.ln.nodes-notebook :as n.a.ln.nodes]
    [dinsro.actions.ln.peers :as a.ln.peers]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.lnd-notebook :as n.lnd]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
    [dinsro.notebook-utils :as nu]
@@ -21,27 +21,25 @@
 
 (def address
   (str
-   (::m.ln.info/identity-pubkey n.a.ln.nodes/node-bob)
+   (::m.ln.info/identity-pubkey n.lnd/node-bob)
    "@"
-   (::m.ln.nodes/host n.a.ln.nodes/node-bob)
+   (::m.ln.nodes/host n.lnd/node-bob)
    ":"
-   (::m.ln.nodes/port n.a.ln.nodes/node-bob)))
+   (::m.ln.nodes/port n.lnd/node-bob)))
 
 ;; ## create-peer!
 
 (comment
 
   (a.ln.peers/create-peer!
-   n.a.ln.nodes/node-alice
+   n.lnd/node-alice
    address
-   (::m.ln.info/identity-pubkey n.a.ln.nodes/node-bob))
+   (::m.ln.info/identity-pubkey n.lnd/node-bob))
 
   (a.ln.peers/create-peer!
-   n.a.ln.nodes/node-bob
-   (str
-    (::m.ln.nodes/host n.a.ln.nodes/node-alice)
-    ":9735")
-   (::m.ln.info/identity-pubkey n.a.ln.nodes/node-alice))
+   n.lnd/node-bob
+   (str (::m.ln.nodes/host n.lnd/node-alice) ":9735")
+   (::m.ln.info/identity-pubkey n.lnd/node-alice))
 
   nil)
 
@@ -51,11 +49,11 @@
 
   (map ::m.ln.info/identity-pubkey (q.ln.nodes/index-records))
 
-  (a.ln.nodes/download-cert! n.a.ln.nodes/node-alice)
-  (a.ln.nodes/download-macaroon! n.a.ln.nodes/node-alice)
+  (a.ln.nodes/download-cert! n.lnd/node-alice)
+  (a.ln.nodes/download-macaroon! n.lnd/node-alice)
 
-  (a.ln.nodes/download-cert! n.a.ln.nodes/node-bob)
-  (a.ln.nodes/download-macaroon! n.a.ln.nodes/node-bob)
+  (a.ln.nodes/download-cert! n.lnd/node-bob)
+  (a.ln.nodes/download-macaroon! n.lnd/node-bob)
 
   (def peer (first (q.ln.peers/index-records)))
   (tap> peer)

@@ -2,9 +2,11 @@
   "Clojure interop for Bitcoin-S LND client"
   (:require
    [clojure.core.async :as async]
+   [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
    [dinsro.client.scala :as cs :refer [Recordable]]
    [lambdaisland.glogc :as log])
   (:import
+   com.google.protobuf.ByteString
    org.bitcoins.lnd.rpc.config.LndInstanceRemote
    org.bitcoins.lnd.rpc.config.LndInstance
    org.bitcoins.lnd.rpc.LndRpcClient
@@ -13,7 +15,8 @@
    lnrpc.ConnectPeerRequest
    lnrpc.GetInfoResponse
    lnrpc.LightningAddress
-   scalapb.UnknownFieldSet))
+   scalapb.UnknownFieldSet
+   scala.util.Failure))
 
 (defn get-remote-instance
   ([url macaroon]
@@ -96,14 +99,29 @@
   (log/info :connect-peer/starting {:client client}))
 
 (defn await-throwable
+  "Return the results of a throwable future"
   [response]
-  (let [f           (cs/await-future response)
-        result-data (async/<!! f)]
-    (if (instance? Throwable result-data)
-      (throw result-data)
-      (let [{:keys [passed result]} result-data]
-        (if passed
-          result (throw result))))))
+  (log/info :await-throwable/starting {:response response})
+  (let [f (cs/await-future response)]
+    (log/info :await-throwable/awaited {:f f})
+    (let [result-data (async/<!! f)]
+      (if (instance? Throwable result-data)
+        (do
+          (log/info :await-throwable/throwable {:result-data result-data})
+          (throw result-data))
+        (let [{:keys [passed result]} result-data]
+          (if passed
+            (do
+              (log/info :await-throwable/passed {:passed passed :result result})
+              result)
+            (do
+              (log/info :await-throwable/not-passed {:passed passed :result result})
+              (if (instance? Failure result)
+
+                (let [o (.get result)]
+                  (log/info :await-throwable/failure {:o o})
+                  (throw (RuntimeException. (pr-str o))))
+                (throw (RuntimeException. (pr-str result)))))))))))
 
 (defn get-new-address
   "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#getNewAddress:scala.concurrent.Future[org.bitcoins.core.protocol.BitcoinAddress]"
@@ -120,4 +138,12 @@
   "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#initWallet(password:String):scala.concurrent.Future[com.google.protobuf.ByteString]"
   [^LndRpcClient client ^String password]
   (log/info :initialize!/starting {:client client :password password})
-  (.initWallet client password))
+  (let [unlocker-client (.unlocker client)
+        wallet-password (ByteString/copyFromUtf8 "passphrase12345678")
+        request         (c.c.init-wallet-request/->request wallet-password)]
+    (log/info :initialize!/request-generated {:request request})
+    (let [response (.initWallet unlocker-client request)]
+      (log/info :initialize!/finished {:response response})
+      (let [awaited-response (await-throwable response)]
+        (log/info :initialize!/awaited {:awaited-response awaited-response})
+        awaited-response))))

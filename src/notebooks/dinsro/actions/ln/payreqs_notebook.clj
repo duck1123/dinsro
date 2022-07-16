@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.actions.ln.payreqs-notebook
   (:require
-   [dinsro.actions.ln.nodes-notebook :as n.a.ln.nodes]
    [dinsro.actions.ln.payreqs :as a.ln.payreqs]
+   [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.queries.ln.payreqs :as q.ln.payreqs]
    [dinsro.notebook-utils :as nu]
@@ -20,7 +20,7 @@
 
 (comment
   (a.ln.payreqs/decode {::m.ln.payreqs/payment-request payment-request
-                        ::m.ln.payreqs/node            n.a.ln.nodes/node-alice})
+                        ::m.ln.payreqs/node            n.lnd/node-alice})
   nil)
 
 (comment

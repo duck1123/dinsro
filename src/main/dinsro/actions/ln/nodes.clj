@@ -68,10 +68,12 @@
   (log/info :get-client-s/creating {:id id :name name})
   (let [url       (URI. (str "https://" host ":" port "/"))
         cert-file (Option/apply (get-cert-text node))
-        macaroon  (get-macaroon-hex node)
-        instance  (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
-    (log/finer :get-client-s/creating {:url url :cert-file cert-file :macaroon macaroon})
-    (c.lnd-s/get-remote-client instance)))
+        macaroon  (or (get-macaroon-hex node) "")]
+    (if macaroon
+      (let [instance (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
+        (log/finer :get-client-s/creating {:url url :cert-file cert-file :macaroon macaroon})
+        (c.lnd-s/get-remote-client instance))
+      (throw (RuntimeException. "No macaroon")))))
 
 (>defn get-invoices-client
   "Get a lightningj invoices client"
@@ -304,8 +306,12 @@
 (defn get-info
   "Fetch info for the node"
   [node]
-  (let [client (get-client-s node)]
-    (cs/->record (c.lnd-s/get-info client))))
+  (let [client (get-client-s node)
+        response (c.lnd-s/get-info client)]
+    (log/info :get-info/response {:response response})
+    (let [record (cs/->record response)]
+      (log/info :get-info/converted {:record record})
+      record)))
 
 (>defn new-address-s
   [node]

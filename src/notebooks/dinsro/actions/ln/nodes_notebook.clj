@@ -11,10 +11,8 @@
    [dinsro.client.scala :as cs]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
-   [dinsro.queries.users :as q.users]
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
@@ -24,28 +22,45 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-(def user-alice (q.users/find-eid-by-name "alice"))
-(def alice-id (q.users/find-eid-by-name "alice"))
-(def user-bob (q.users/find-eid-by-name "bob"))
-(def node-alice (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name alice-id "lnd-alice")))
-(def node-bob (q.ln.nodes/read-record (q.ln.nodes/find-id-by-user-and-name (q.users/find-eid-by-name "bob") "lnd-bob")))
-#_(def node node-alice)
-(def core-node-alice (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-alice))))
-(def core-node-bob (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-bob))))
-
 ;; ## initialize!
 
 (comment
 
+  n.lnd/node
+
+  (:mnemonic n.lnd/node)
+
+  (.genSeed (.unlocker n.lnd/client))
+
+  (c.lnd-s/await-throwable (.genSeed n.lnd/client))
+
+  (a.ln.nodes/download-cert! n.lnd/node)
+  (a.ln.nodes/download-macaroon! n.lnd/node)
+
+  (a.ln.nodes/get-client-s n.lnd/node)
+
+  (a.ln.nodes/new-address-s n.lnd/node)
+
+  (a.ln.nodes/get-info n.lnd/node)
+
   (a.ln.nodes/initialize! n.lnd/node)
-  (a.ln.nodes/initialize!-s n.lnd/node)
+
+  (def f (a.ln.nodes/initialize!-s n.lnd/node))
+
+  f
+
+  (.toStringUtf8 f)
+
+  (<!! (cs/await-future f))
 
   nil)
 
 (comment
   (a.ln.nodes/download-cert! (first (q.ln.nodes/index-ids)))
 
-  core-node-alice
+  n.lnd/client
+
+  (.unlocker n.lnd/client)
 
   (def a (a.ln.nodes/new-address-s n.lnd/node))
   a
@@ -64,7 +79,7 @@
 
   (q.ln.nodes/index-ids)
 
-  (a.ln.nodes/generate! node-alice)
+  (a.ln.nodes/generate! n.lnd/node-alice)
 
   (a.ln.nodes/update-info! n.lnd/node)
 
@@ -88,7 +103,9 @@
 
   (a.ln.nodes/get-info n.lnd/node)
 
-  (a.c.nodes/generate-to-address! core-node-alice (a.ln.nodes/new-address-str node-alice))
+  (a.c.nodes/generate-to-address!
+   n.lnd/core-node-alice
+   (a.ln.nodes/new-address-str n.lnd/node-alice))
 
   (<!! (a.ln.nodes/initialize! n.lnd/node))
 

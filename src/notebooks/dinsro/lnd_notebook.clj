@@ -1,7 +1,9 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.lnd-notebook
   (:require
+   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.users :as q.users]
    [dinsro.notebook-utils :as nu]
@@ -21,6 +23,8 @@
 (def node-bob-id (q.ln.nodes/find-id-by-user-and-name user-bob "lnd-bob"))
 (def node-bob (q.ln.nodes/read-record node-bob-id))
 (def node node-alice)
+(def core-node-alice (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-alice))))
+(def core-node-bob (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-bob))))
 
 ;; (a.ln.nodes/get-cert-text node)
 ;; (a.ln.nodes/get-macaroon-hex node)
