@@ -56,6 +56,7 @@ A Helm chart for Kubernetes
 | ingress.enabled | bool | `true` |  |
 | ingress.hosts[0].host | string | `"dinsro.localhost"` |  |
 | ingress.hosts[0].paths[0].path | string | `"/"` |  |
+| logLevel | string | `":fine"` | base log level for dinsro |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | notebooks.enabled | bool | `false` | deploy notebooks |
