@@ -21,8 +21,8 @@
          cert-opt  (Option/empty)]
      (get-remote-instance url macaroon cert-file cert-opt)))
   ([url macaroon cert-file cert-opt]
-   (log/info :get-remote-instance/creating
-             {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
+   (log/finer :get-remote-instance/creating
+              {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
    (LndInstanceRemote. url macaroon cert-file cert-opt)))
 
 (extend-type Chain

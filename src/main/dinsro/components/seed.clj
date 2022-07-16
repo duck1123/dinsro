@@ -224,7 +224,7 @@
                 (a.ln.nodes/update-info! node)
                 (a.ln.peers/fetch-peers! node-id))
               (catch Exception ex
-                (log/error :seed-ln-nodes!/init-node-failed {:ex ex}))))
+                (log/error :seed-ln-nodes!/init-node-failed {:msg (.getMessage ex)}))))
           (throw (RuntimeException. (str "Failed to find node: " node-name))))))))
 
 (defn seed-ln-peers!

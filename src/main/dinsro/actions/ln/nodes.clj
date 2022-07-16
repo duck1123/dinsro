@@ -65,12 +65,12 @@
 (defn get-client-s
   "Get a bitcoin-s client"
   ^LndRpcClient [{::m.ln.nodes/keys [id name host port] :as node}]
-  (log/info :client/creating {:id id :name name})
+  (log/info :get-client-s/creating {:id id :name name})
   (let [url       (URI. (str "https://" host ":" port "/"))
         cert-file (Option/apply (get-cert-text node))
         macaroon  (get-macaroon-hex node)
         instance  (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
-    (log/info :get-client-s/creating {:url url :cert-file cert-file :macaroon macaroon})
+    (log/finer :get-client-s/creating {:url url :cert-file cert-file :macaroon macaroon})
     (c.lnd-s/get-remote-client instance)))
 
 (>defn get-invoices-client
@@ -118,18 +118,21 @@
       false)))
 
 (>defn has-cert?
+  "Is the cert available for this node?"
   [{::m.ln.nodes/keys [id]}]
   [::m.ln.nodes/item => boolean?]
   (log/info :cert/checking {:node-id id})
   (m.ln.nodes/has-cert? id))
 
 (>defn has-macaroon?
+  "Is the macaroon available for this node?"
   [{::m.ln.nodes/keys [id]}]
   [::m.ln.nodes/item => boolean?]
   (log/info :macaroon/checking {:node-id id})
   (m.ln.nodes/has-macaroon? id))
 
 (>defn delete-cert
+  "Delete the cert file"
   [{::m.ln.nodes/keys [id]}]
   [::m.ln.nodes/item => nil?]
   (let [path (m.ln.nodes/cert-path id)
@@ -137,6 +140,7 @@
     (.delete f)))
 
 (>defn delete-macaroon
+  "Delete the macaroon file"
   [{::m.ln.nodes/keys [id]}]
   [::m.ln.nodes/item => nil?]
   (let [path (m.ln.nodes/macaroon-path id)
@@ -144,6 +148,7 @@
     (.delete f)))
 
 (>defn download-cert!
+  "Download the cert from the fileserver"
   [node]
   [::m.ln.nodes/item => boolean?]
   (let [{::m.ln.nodes/keys [host id]} node
@@ -161,6 +166,7 @@
       (download-file url cert-file))))
 
 (>defn download-macaroon!
+  "Download the macaroon from the fileserver"
   [{::m.ln.nodes/keys [id host]}]
   [::m.ln.nodes/item => (? (ds/instance? File))]
   (let [url      (format "http://%s/admin.macaroon" host)
@@ -176,8 +182,8 @@
         (do
           (log/error :download-macaroon!/failed {:node-id id :host host})
           nil))
-      (catch FileNotFoundException ex
-        (log/error :download-macaroon!/download-failed {:exception ex})
+      (catch FileNotFoundException _ex
+        (log/error :download-macaroon!/download-failed {:url url})
         nil))))
 
 (defn get-macaroon-text
@@ -296,6 +302,7 @@
     (c.lnd-s/get-remote-instance url macaroon)))
 
 (defn get-info
+  "Fetch info for the node"
   [node]
   (let [client (get-client-s node)]
     (cs/->record (c.lnd-s/get-info client))))

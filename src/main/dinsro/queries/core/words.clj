@@ -34,9 +34,9 @@
         prepared-params (-> params
                             (assoc ::m.c.words/id id)
                             (assoc :xt/id id))]
-    (log/debug :word/create {:params prepared-params})
+    (log/finer :create-record/starting {:params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    (log/debug :word/created {:id id})
+    (log/fine :create-record/finished {:id id})
     id))
 
 (>defn index-records
