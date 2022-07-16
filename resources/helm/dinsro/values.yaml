@@ -111,7 +111,7 @@ docs:
     #   secretName: docs-tls
 
 # -- base log level for dinsro
-logLevel: ":fine"
+logLevel: ":info"
 
 nrepl:
   # -- enable nRepl connection
