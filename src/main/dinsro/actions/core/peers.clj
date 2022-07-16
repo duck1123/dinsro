@@ -1,7 +1,8 @@
 (ns dinsro.actions.core.peers
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.client.bitcoin :as c.bitcoin]
+   [dinsro.actions.core.node-base :as a.c.node-base]
+   [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.queries.core.nodes :as q.c.nodes]
@@ -12,8 +13,8 @@
   "Fetch peer info for node"
   [node]
   [::m.c.nodes/item => any?]
-  (let [client (m.c.nodes/get-client node)]
-    (c.bitcoin/get-peer-info client)))
+  (let [client (a.c.node-base/get-client node)]
+    (c.bitcoin-s/get-peer-info client)))
 
 (defn update-peer!
   [node-id peer]
@@ -35,16 +36,16 @@
   [::m.c.nodes/item => any?]
   (let [node-id (::m.c.nodes/id node)]
     (log/info :fetch-peers!/starting {:node-id node-id})
-    (let [client  (m.c.nodes/get-client node)]
-      (doseq [peer (c.bitcoin/get-peer-info client)]
+    (let [client  (a.c.node-base/get-client node)]
+      (doseq [peer (c.bitcoin-s/get-peer-info client)]
         (update-peer! node-id peer)))))
 
 (>defn add-peer!
   [node address]
   [::m.c.nodes/item string? => any?]
   (log/info :add-peer!/starting {:node-id (::m.c.nodes/id node) :address address})
-  (let [client (m.c.nodes/get-client node)]
-    (c.bitcoin/add-node client address)))
+  (let [client (a.c.node-base/get-client node)]
+    (c.bitcoin-s/add-node client address)))
 
 (defn create!
   "Create a new peer connection for this node"
@@ -65,8 +66,8 @@
            addr    ::m.c.peers/addr} peer]
       (log/info :delete!/starting {:node-id node-id :peer-id peer-id})
       (if-let [node (q.c.nodes/read-record node-id)]
-        (let [client (m.c.nodes/get-client node)]
-          (c.bitcoin/disconnect-node client addr)
+        (let [client (a.c.node-base/get-client node)]
+          (c.bitcoin-s/disconnect-node client addr)
           (q.c.peers/delete! peer-id))
         (do
           (log/warn :delete!/node-not-found {:peer-id peer-id :node-id :node-id})

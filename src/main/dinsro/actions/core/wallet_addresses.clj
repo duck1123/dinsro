@@ -1,8 +1,8 @@
 (ns dinsro.actions.core.wallet-addresses
   (:require
+   [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.actions.core.wallets :as a.c.wallets]
-   [dinsro.client.bitcoin :as c.bitcoin]
-   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.queries.core.nodes :as q.c.nodes]
@@ -38,7 +38,7 @@
   (if-let [wallet (q.c.wallets/read-record wallet-id)]
     (let [node-id (::m.c.wallets/node wallet)]
       (if-let [node (q.c.nodes/read-record node-id)]
-        (let [client (m.c.nodes/get-client node)]
-          (c.bitcoin/generate-to-address client address))
+        (let [client (a.c.node-base/get-client node)]
+          (c.bitcoin-s/generate-to-address! client address))
         (throw (RuntimeException. "Failed to find node"))))
     (throw (RuntimeException. "Failed to find wallet"))))

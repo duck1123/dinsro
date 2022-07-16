@@ -2,7 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.client.bitcoin :as c.bitcoin]
+   [dinsro.actions.core.node-base :as a.c.node-base]
+   [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
@@ -32,8 +33,8 @@
   "Fetch a block from the node"
   [node height]
   [::m.c.nodes/item number? => any?]
-  (let [client (m.c.nodes/get-client node)]
-    (c.bitcoin/fetch-block-by-height client height)))
+  (let [client (a.c.node-base/get-client node)]
+    (c.bitcoin-s/fetch-block-by-height client height)))
 
 (>defn update-block!
   "Fetch and update a block from the node"
@@ -58,8 +59,8 @@
   [::m.c.nodes/item ::m.c.blocks/height => ::m.c.blocks/id]
   (log/info :update-block-by-height/updating {:height height})
   (if-let [core-node-id (::m.c.nodes/id node)]
-    (let [client (m.c.nodes/get-client node)]
-      (if-let [block (c.bitcoin/fetch-block-by-height client height)]
+    (let [client (a.c.node-base/get-client node)]
+      (if-let [block (c.bitcoin-s/fetch-block-by-height client height)]
         (let [previous-hash (:previousblockhash block)
               next-hash     (:nextblockhash block)
               prev-id       (when previous-hash (register-block core-node-id previous-hash (dec height)))
@@ -90,8 +91,8 @@
   [node]
   [::m.c.nodes/item => any?]
   (log/debug :fetch-blocks/fetching {:node node})
-  (let [client (m.c.nodes/get-client node)
-        info   (c.bitcoin/get-blockchain-info client)
+  (let [client (a.c.node-base/get-client node)
+        info   (c.bitcoin-s/get-blockchain-info client)
         tip    (:blocks info)]
     (log/info :fetch-blocks/fetched {:info info})
     (update-block-by-height node tip)
@@ -105,8 +106,8 @@
   (let [block-id (::m.c.blocks/id block)
         node-id  (q.c.nodes/find-by-block block-id)]
     (if-let [node (q.c.nodes/read-record node-id)]
-      (let [client (m.c.nodes/get-client node)]
-        (doseq [tx (c.bitcoin/list-transactions client)]
+      (let [client (a.c.node-base/get-client node)]
+        (doseq [tx (c.bitcoin-s/list-transactions client)]
           (let [params (m.c.tx/prepare-params tx)]
             (q.c.tx/create-record params))))
       (throw (RuntimeException. "Failed to find node")))))

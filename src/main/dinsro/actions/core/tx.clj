@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.core.blocks :as a.c.blocks]
-   [dinsro.client.bitcoin :as c.bitcoin]
+   [dinsro.actions.core.node-base :as a.c.node-base]
+   [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
@@ -20,8 +21,8 @@
   [node tx-id]
   [::m.c.nodes/item ::m.c.tx/tx-id => any?]
   (log/info :tx/fetch {:node node :tx-id tx-id})
-  (let [client (m.c.nodes/get-client node)
-        result (c.bitcoin/get-raw-transaction client tx-id)]
+  (let [client (a.c.node-base/get-client node)
+        result (c.bitcoin-s/get-raw-transaction client tx-id)]
     (log/info :tx/fetched {:result result})
     result))
 
