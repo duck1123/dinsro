@@ -42,10 +42,17 @@
       (let [{:keys [no-stacktrace?]}                                 opts
             {:keys [level ?err msg_ ?ns-str ?file timestamp_ context]} data]
         (format
-         "%1.1S %s %30s - %s%s%s"
+         "%1.1S %s %15s - %s%s%s"
          (name level)
          (force timestamp_)
-         (str/replace-first (or ?ns-str ?file "?") "com.fulcrologic." "_")
+         (-> (or ?ns-str ?file "?")
+             (str/replace-first  "com.fulcrologic." "_")
+             (str/replace-first  "dinsro.actions." "_da.")
+             (str/replace-first  "dinsro.components." "_dc.")
+             (str/replace-first  "dinsro.model." "_dm.")
+             (str/replace-first  "dinsro.mutations." "_dmu.")
+             (str/replace-first  "dinsro.queries." "_dq.")
+             (str/replace-first  "dinsro." "_d."))
          (force msg_)
          (if context (str " - " context) "")
          (enc/if-let [_   (not no-stacktrace?)
