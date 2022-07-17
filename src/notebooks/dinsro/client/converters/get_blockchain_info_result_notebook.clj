@@ -50,15 +50,15 @@
 
 result
 
-^:nextjournal.clerk/no-cache
+^::clerk/no-cache
 (nu/display2 (cs/->record result))
 
-;; converted record
+;; ## converted record
 
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
 (and result (cs/->record result))
 
-;; randomly generated record
+;; ## randomly generated record
 
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
 (ds/gen-key ::c.converters.get-blockchain-info-result/record)

@@ -8,6 +8,8 @@
    [lambdaisland.glogc :as log])
   (:import
    akka.actor.ActorSystem
+   java.net.URI
+   org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts$AddNodeArgument$Add$
    org.bitcoins.core.hd.BIP32Path
    org.bitcoins.core.hd.SegWitHDPath
    org.bitcoins.core.hd.HDPurpose
@@ -20,6 +22,7 @@
    org.bitcoins.core.crypto.ExtKeyPrivVersion
    org.bitcoins.core.config.NetworkParameters
    org.bitcoins.core.protocol.Bech32Address
+   org.bitcoins.core.protocol.BitcoinAddress
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
    org.bitcoins.core.protocol.script.WitnessScriptPubKey
    org.bitcoins.core.config.BitcoinNetworks
@@ -152,10 +155,18 @@
   []
   (ZmqConfig/empty))
 
+(defn ->bitcoin-address
+  [address-s]
+  (BitcoinAddress/apply address-s))
+
 (defn generate-to-address!
-  [client address]
-  (log/info :generate-to-address!/starting {:address address})
-  (let [response (.generateToAddress client address)]
+  "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#generateToAddress(blocks:Int,address:org.bitcoins.core.protocol.BitcoinAddress,maxTries:Int):scala.concurrent.Future[Vector[org.bitcoins.crypto.DoubleSha256DigestBE]]"
+  [client address-s]
+  (log/info :generate-to-address!/starting {:address-s address-s})
+  (let [blocks    (int 1)
+        address   (->bitcoin-address address-s)
+        max-tries (int 1000000)
+        response  (.generateToAddress client blocks address max-tries)]
     (log/info :generate-to-address!/finished {:resonse response})
     response))
 
@@ -166,7 +177,9 @@
     (log/info :get-peer-info/response {:response response})
     (let [{:keys [passed result]} response]
       (if passed
-        (cs/vector->vec result)
+        (let [parsed-response (map cs/->record (cs/vector->vec result))]
+          (log/info :get-peer-info/parsed-response {:parsed-response parsed-response})
+          parsed-response)
         (throw "Did not pass")))))
 
 (defn ->segwit-path
@@ -225,8 +238,15 @@
         converted-response))))
 
 (defn add-node
-  [client address]
-  (log/info :add-node/starting {:client client :address address}))
+  "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#addNode(address:java.net.URI,command:org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts.AddNodeArgument):scala.concurrent.Future[Unit]"
+  [client address-s]
+  (log/info :add-node/starting {:client client :address-s address-s})
+  (let [address  (URI. address-s)
+        command  (RpcOpts$AddNodeArgument$Add$.)
+        p        (.addNode client address command)
+        response (async/<!! (cs/await-future p))]
+    (log/info :add-node/finished {:response response})
+    response))
 
 (defn disconnect-node
   [client addr]

@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.client.scala :as cs]
-   [dinsro.specs :as ds])
+   [dinsro.specs :as ds]
+   [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.commons.jsonmodels.bitcoind.GetBlockResult))
 
@@ -32,24 +33,28 @@
 (>defn GetBlockResult->record
   [^GetBlockResult this]
   [(ds/instance? GetBlockResult) => ::record]
-  {:bits                (some-> this .bits .toLong)
-   :chainwork           (.chainwork this)
-   :confirmations       (.confirmations this)
-   :difficulty          (.difficulty this)
-   :hash                (some-> this .hash .hex)
-   :height              (.height this)
-   :median-time         (some-> this .mediantime .toLong)
-   :merkle-root         (some-> this .merkleroot .hex)
-   :next-block-hash     (some-> this .nextblockhash cs/get-or-nil)
-   :nonce               (some-> this .nonce .toInt)
-   :previous-block-hash (some-> this .previousblockhash cs/get-or-nil)
-   :size                (.size this)
-   :stripped-size       (.strippedsize this)
-   :time                (some-> this .time .toLong)
-   :tx                  (some-> this .tx cs/vector->vec)
-   :version             (.version this)
-   :version-hex         (some-> this .versionHex .toLong)
-   :weight              (.weight this)})
+  (let [record {:bits                (some-> this .bits .toLong)
+                :chainwork           (.chainwork this)
+                :confirmations       (.confirmations this)
+                :difficulty          (some-> this .difficulty .toLong)
+                :hash                (some-> this .hash .hex)
+                :height              (.height this)
+                :median-time         (some-> this .mediantime .toLong)
+                :merkle-root         (some-> this .merkleroot .hex)
+                :next-block-hash     (some-> this .nextblockhash cs/get-or-nil cs/->record)
+                :nonce               (some-> this .nonce .toInt)
+                :previous-block-hash (some-> this .previousblockhash cs/get-or-nil cs/->record)
+                :size                (.size this)
+                :stripped-size       (.strippedsize this)
+                :time                (some-> this .time .toLong)
+                :tx                  (map
+                                      (fn [x] (cs/->record x))
+                                      (some-> this .tx cs/vector->vec))
+                :version             (.version this)
+                :version-hex         (some-> this .versionHex .toLong)
+                :weight              (.weight this)}]
+    (log/info :GetBlockResult->record/finished {:record record})
+    record))
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockResult.html
 

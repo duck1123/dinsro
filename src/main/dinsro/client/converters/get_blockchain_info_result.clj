@@ -41,9 +41,9 @@
         ::headers
         ::initial-block-download?
         ::median-time
-        ::product-element-names
+        ;; ::product-element-names
         ::size-on-disk
-        ::softforks
+        ;; ::softforks
         ::verification-progress
         ::warnings]))
 
@@ -53,23 +53,24 @@
 (>defn GetBlockChainInfoResultPostV19->record
   [this]
   [::get-blockchain-info-result-obj => ::record]
-  (log/info :GetBlockChainInfoResultPostV19/->record {:this this})
+  (log/finer :GetBlockChainInfoResultPostV19->record/starting {:this this})
   (let [response {:best-block-hash         (some-> this .bestblockhash .hex)
                   :blocks                  (.blocks this)
                   :chain                   (some-> this .chain .name)
                   :chainwork               (.chainwork this)
-                  :difficulty              (.difficulty this)
+                  :difficulty              (some-> this .difficulty .toLong)
                   :headers                 (.headers this)
                   :initial-block-download? (.initialblockdownload this)
                   :median-time             (.mediantime this)
-                  :product-element-names   (.productElementNames this)
+                  ;; :product-element-names   (.productElementNames this)
                   :pruned                  (.pruned this)
-                  :prune-height            (.pruneheight this)
+                  :prune-height            (some-> this .pruneheight cs/get-or-nil)
                   :size-on-disk            (.size_on_disk this)
-                  :softforks               (.softforks this)
-                  :verification-progress   (.verificationprogress this)
+                  ;; :softforks               (.softforks this)
+                  :verification-progress   (some-> this .verificationprogress .toLong)
                   :warnings                (.warnings this)}]
-    (log/finer :GetBlockChainInfoResultPostV19/->record-response {:this this :response response})
+    (log/info :GetBlockChainInfoResultPostV19->record/response {;; :this this
+                                                                :response response})
     response))
 
 (extend-type GetBlockChainInfoResultPostV19
