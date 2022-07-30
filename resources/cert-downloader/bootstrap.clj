@@ -6,13 +6,15 @@
    [clojure.java.io :as io]))
 
 (def default-base-path "/mnt/data")
+(def fileserver-service-name "fileserver")
+
 
 (defn download-file!
   ([name data-path file-name]
    (download-file! name data-path file-name file-name))
   ([name data-path file-name dest-file-name]
    (try
-     (let [url  (format "http://%s.%s/%s" name name file-name)
+     (let [url  (format "http://%s.%s/%s" fileserver-service-name name file-name)
            path (format "%s/%s" data-path dest-file-name)]
        (println (str "Downloading: " url))
        (io/copy (:body (curl/get url {:as :bytes})) (io/file path)))
@@ -20,7 +22,8 @@
        (println (str "failed to download file: " ex))))))
 
 (defn initialize-cert!
-  [path data-path]
+  [name path data-path]
+  (println (str "Initializing cert: " name " " path " " data-path))
   (try
     (let [backup-path (str path ".bak")]
       (fs/delete-if-exists (format "%s/%s" data-path backup-path))
@@ -34,24 +37,25 @@
 
 (defn initialize-certs!
   [name]
-  (println "Initializing certs")
+  (println (str "Initializing certs - " name))
   (let [base-path default-base-path
         data-path (format "%s/%s" base-path name)]
     (fs/create-dirs (format "%s" data-path))
     (let [paths ["admin.macaroon" "tls.cert"]]
       (doseq [path paths]
-        (initialize-cert! path data-path)))))
+        (initialize-cert! name path data-path)))))
+
+(def default-names ["alice" "bob"])
 
 (defn -main
   []
   (println "Bootstrapping cert downloader")
   (fs/create-dirs (format "%s" default-base-path))
-  (let [names ["lnd-alice" "lnd-bob"]]
-    (doseq [name names]
-      (try
-        (initialize-certs! name)
-        (catch Exception ex
-          (println (str "Error: " ex)))))))
+  (doseq [name default-names]
+    (try
+      (initialize-certs! name)
+      (catch Exception ex
+        (println (str "Error: " ex))))))
 
 ;; Execute main if run as a script
 (when (= *file* (System/getProperty "babashka.file")) (-main))
