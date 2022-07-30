@@ -12,7 +12,6 @@ watch_file('site-defaults.edn')
 watch_file('src/babashka')
 
 config_data = decode_json(local_output('bb tilt-config'))
-# dinsro_values = local_output('bb generate-dinsro-values')
 
 def config_get(key):
   v = config_data.get(key)
@@ -21,28 +20,54 @@ def config_get(key):
   else:
     return config_data[key]
 
-base_url         = config_get('baseUrl')
-project_id       = config_get('projectId')
-repo             = config_get('repo')
-version          = config_get('version')
-devcards         = config_get('devcards')
-notebooks        = config_get('notebooks')
-docs_enabled     = config_get('docs-enabled')
-local_devtools   = config_get('localDevtools')
-notebooks_host   = notebooks.get('host')
-portal_enabled   = config_get('portal-enabled')
-use_linting      = config_get('useLinting')
-use_notebooks    = notebooks.get('enabled')
-use_nrepl        = config_get('useNrepl')
-use_persistence  = config_get('usePersistence')
-use_production   = config_get('useProduction')
-use_tests        = config_get('useTests')
-use_docs         = config_get('useDocs')
-use_devcards     = devcards.get('enabled')
-devcards_enabled = config_get('devcards-enabled')
-portal_url       = 'http://' + config_get('portalHost')
-devcards_url     = 'http://devcards.dinsro.localhost'
-devcards_devtools_url     = 'http://devtools.devcards.dinsro.localhost'
+base_url              = config_get('baseUrl')
+project_id            = config_get('projectId')
+repo                  = config_get('repo')
+version               = config_get('version')
+devcards              = config_get('devcards')
+notebooks             = config_get('notebooks')
+docs_enabled          = config_get('docs-enabled')
+local_devtools        = config_get('localDevtools')
+notebooks_host        = notebooks.get('host')
+portal_enabled        = config_get('portal-enabled')
+use_linting           = config_get('useLinting')
+use_notebooks         = notebooks.get('enabled')
+use_nrepl             = config_get('useNrepl')
+use_persistence       = config_get('usePersistence')
+use_production        = config_get('useProduction')
+use_tests             = config_get('useTests')
+use_docs              = config_get('useDocs')
+use_devcards          = devcards.get('enabled')
+devcards_enabled      = config_get('devcards-enabled')
+portal_url            = 'http://' + config_get('portalHost')
+devcards_url          = 'http://devcards.dinsro.localhost'
+devcards_devtools_url = 'http://devtools.devcards.dinsro.localhost'
+has_devtools          = not (local_devtools or use_production)
+
+nodes = config_get('nodes')
+# alice_lnd      = False
+use_alice      = nodes.get('alice').get('bitcoin')
+use_bob        = nodes.get('bob').get('bitcoin')
+# use_bitcoin    = True
+# use_lnd        = False
+# use_fileserver = False
+# use_rtl        = False
+# use_specter    = False
+# use_lnbts      = False
+
+multple_envs = use_alice and use_bob
+multiple_rtl = nodes.get('alice').get('rtl') and nodes.get('bob').get('rtl')
+
+def has_key(service_name):
+  print(nodes)
+  for k, v in nodes.items():
+    if v.get(service_name):
+      return True
+  return False
+
+dinsro_dev_image = "%s/dinsro:dev-sources-%s" % (repo, version)
+devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
+docs_url = 'docs.dinsro.localhost'
 
 def get_notebooks_host():
   return "notebooks." + base_url if notebooks.get('inheritHost') else notebooks_host
@@ -88,12 +113,36 @@ def earthly_build(
     skips_local_docker=skips_local_docker,
   )
 
-disable_snapshots()
-docker_prune_settings(
-  disable = False,
-  num_builds = 2,
-  keep_recent = 2,
-)
+def has_bitcoind_values(name):
+  return os.path.exists("./target/conf/%s/bitcoind_values.yaml" % name)
+
+def has_dinsro_values():
+  return os.path.exists("./target/dinsro_values.yaml")
+
+def has_fileserver_values(name):
+  return os.path.exists("./target/conf/%s/fileserver_values.yaml" % name)
+
+def has_lnd_values(name):
+  return os.path.exists("./target/conf/%s/lnd_values.yaml" % name)
+
+def has_rtl_values(name):
+  return os.path.exists("./target/conf/%s/rtl_values.yaml" % name)
+
+def has_specter_values(name):
+  return os.path.exists("./target/conf/%s/specter_values.yaml" % name)
+
+# local_resource(
+#   "generate-values",
+#   allow_parallel = True,
+#   cmd = "bb generate-values",
+#   deps = [
+#     'site.edn',
+#     'site-defaults.edn',
+#     'src/shared',
+#     'src/babashka',
+#   ],
+#   labels = [ "compile" ],
+# )
 
 # Create Namespaces
 namespace_create(
@@ -102,66 +151,176 @@ namespace_create(
   labels = [ "field.cattle.io/projectId: %s" % project_id ],
 )
 
-dinsro_dev_image = "%s/dinsro:dev-sources-%s" % (repo, version)
-devtools_host = ("devtools.%s" % base_url) if not local_devtools else "localhost:9630"
+if use_alice:
+  namespace_create(
+    'alice',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
 
-local_resource(
-  'dinsro-values',
-  allow_parallel = True,
-  cmd='bb generate-dinsro-values',
-  deps = [
-    'site.edn',
-    'src/shared',
-    'src/babashka',
-  ],
-  labels = [ 'compile' ],
-)
+if use_bob:
+  namespace_create(
+    'bob',
+    annotations = [ "field.cattle.io/projectId: local:%s" % project_id ],
+    labels = [ "field.cattle.io/projectId: %s" % project_id ],
+  )
 
-local_resource(
-  'alice-values',
-  allow_parallel = True,
-  cmd='bb generate-lnd-values alice',
-  deps = [
-    'site.edn',
-    'src/shared',
-    'src/babashka',
-  ],
-  labels = [ 'compile' ],
-)
+def lnd_environment(name):
+  k8s_yaml(local("bb helm-lnd %s" % name))
+  k8s_resource(
+    workload = "%s-lnd" % name,
+    labels = [ name ],
+  )
 
-local_resource(
-  'bob-values',
-  allow_parallel = True,
-  cmd='bb generate-lnd-values bob',
-  deps = [
-    'site.edn',
-    'src/shared',
-    'src/babashka',
-  ],
-  labels = [ 'compile' ],
-)
+def fileserver_environment(name):
+  k8s_yaml(local("bb helm-fileserver %s" % name))
+  k8s_resource(
+    workload = "%s-fileserver" % name,
+    labels = [ name ],
+    links = [
+      link("http://lnd.%s.localhost" % name, 'fileserver')
+    ],
+  )
 
-k8s_yaml(helm(
-  'resources/helm/fold/charts/lnd',
-  name = 'alice',
-  namespace = 'alice',
-  values = [ "./conf/alice/lnd_values.yaml" ]
-))
+def rtl_environment(name):
+  k8s_yaml(local("bb helm-rtl %s" % name))
+  k8s_resource(
+    workload = "rtl:deployment:%s" % name if multiple_rtl else 'rtl',
+    labels = [ name ],
+    links = [
+      link("http://rtl.%s.localhost" % name, 'rtl')
+    ]
+  )
+  k8s_resource(
+    workload = "cert-downloader:job:%s" % name if multiple_rtl else 'cert-downloader',
+    labels = [ name ],
+  )
 
-k8s_yaml(helm(
-  'resources/helm/fold/charts/lnd',
-  name = 'bob',
-  namespace = 'bob',
-  values = [ "./conf/bob/lnd_values.yaml" ]
-))
+def specter_environment(name):
+  k8s_yaml(local("bb helm-specter %s" % name))
+  k8s_resource(
+    workload = "%s-specter-desktop" % name,
+    labels = [ name ],
+    links = [
+      link("http://specter.%s.localhost" % name, 'specter')
+    ]
+  )
 
+def bitcoind_environment(name):
+  k8s_yaml(local("bb helm-bitcoin %s" % name))
+  k8s_resource(
+    workload = "bitcoin:deployment:%s" % name if multple_envs else "bitcoin",
+    labels = [ name ],
+  )
 
-k8s_yaml(helm(
-  'resources/helm/dinsro',
-  name = 'dinsro',
-  namespace = 'dinsro',
-  values=["./target/dinsro_values.yaml"],
-))
+def lnbits_environment(name):
+  k8s_yaml(helm(
+    'resources/helm/lnbits',
+    name = "%s-lnbits" % name,
+    namespace = name,
+    set = [
+      "persistence.certs.existingClaim=%s-lnd" % name
+      # "ingress.hosts[0].host=lnbits.alice.dev.kronkltd.net",
+      # "ingress.hosts[0].paths[0].path=/",
+      # "ingress.hosts[0].paths[0].pathType=ImplementationSpecific",
+    ]
+    # values = [ "./target/conf/bob/lnd_values.yaml" ]
+  ))
+  k8s_resource(
+    workload = "%s-lnbts" % name,
+    labels = [ name ],
+    links = [
+      link("http://lnbits.%s.localhost" % name, 'web')
+    ]
+  )
+
+def bitcoin_environment(name):
+  if nodes.get(name).get('bitcoin'):
+    bitcoind_environment(name)
+  if nodes.get(name).get('lnd'):
+    lnd_environment(name)
+  if nodes.get(name).get('fileserver'):
+    fileserver_environment(name)
+  if nodes.get(name).get('rtl'):
+    rtl_environment(name)
+  if nodes.get(name).get('specter'):
+    specter_environment(name)
+
+bitcoin_environment('alice')
+bitcoin_environment('bob')
+
+if has_key('rtl'):
+  earthly_build(
+    "%s/cert-downloader:%s" % (repo, version),
+    '+cert-downloader',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      # 'src',
+      'resources/cert-downloader',
+      'deps.edn',
+      'site.edn',
+      'site-defaults.edn',
+    ],
+  )
+
+if has_key('fileserver'):
+  earthly_build(
+    "%s/lnd-fileserver:%s" % (repo, version),
+    '+fileserver',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      # 'src',
+      'resources/fileserver',
+      'deps.edn',
+      'site.edn',
+      'site-defaults.edn',
+    ],
+  )
+
+# Dinsro
+
+# Generate Dinsro Values
+# local_resource(
+#   'dinsro-values',
+#   allow_parallel = True,
+#   cmd='bb generate-dinsro-values',
+#   deps = [
+#     'site.edn',
+#     'src/shared',
+#     'src/babashka',
+#   ],
+#   labels = [ 'compile' ],
+# )
+
+if has_dinsro_values():
+  # k8s_yaml(helm(
+  #   'resources/helm/dinsro',
+  #   name = 'dinsro',
+  #   namespace = 'dinsro',
+  #   values=["./target/dinsro_values.yaml"],
+  # ))
+  k8s_yaml(local('bb helm-dinsro'))
+  k8s_resource(
+    workload='dinsro',
+    port_forwards = [x for x in [
+      port_forward(3333, 3333, name='cljs nrepl') if has_devtools else None,
+      port_forward(3693, 3693, name='workspaces') if has_devtools else None,
+      port_forward(7000, 7000, name='nRepl') if use_nrepl else None,
+      port_forward(9630, 9630, name='devtools') if has_devtools else None,
+    ] if x != None],
+    links = [x for x in [
+      link(base_url, 'dinsro'),
+      link('devtools.' + base_url, 'Devtools') if has_devtools else None,
+      link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
+      link(devcards.get('host') or "devcards.dinsro.localhost", 'Cards') if devcards_enabled else None,
+      link(get_notebooks_host(), 'Notebooks') if use_notebooks else None,
+    ] if x != None],
+    labels = [ 'dinsro' ],
+  )
 
 if use_production:
   earthly_build(
@@ -178,72 +337,7 @@ if use_production:
       'REPO': repo,
     },
   )
-
-if portal_enabled:
-  earthly_build(
-    "%s/portal:%s" % (repo, version),
-    '+portal',
-    deps = [
-      'Earthfile',
-      '.dockerignore',
-      'bb.edn',
-      "resources/portal",
-      'deps.edn',
-    ],
-    build_args = {
-      'REPO': repo,
-    }
-  )
-
-if devcards_enabled:
-  earthly_build(
-    "%s/dinsro:devcards-%s" % (repo, version),
-    '+devcards-image',
-    deps = [
-      'Earthfile',
-      '.dockerignore',
-      'bb.edn',
-      "resources/devcards",
-      'src',
-      'deps.edn',
-      'site.edn',
-      'site-defaults.edn',
-    ],
-    build_args = {
-      'REPO': repo,
-    },
-    live_update=[
-      sync('resources/devcards', '/usr/src/app/resources/devcards'),
-      sync('site.edn', '/usr/src/app/site.edn'),
-      sync('src', '/usr/src/app/src'),
-      # sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
-    ],
-  )
-
-if docs_enabled:
-  earthly_build(
-    "%s/dinsro:docs-%s" % (repo, version),
-    '+docs-image',
-    deps = [
-      'Earthfile',
-      '.dockerignore',
-      'bb.edn',
-      'deps.edn',
-      'site.edn',
-      'site-defaults.edn',
-      'src',
-      'target/doc',
-    ],
-    build_args = {
-      'REPO': repo,
-    },
-    live_update=[
-      sync('site.edn', '/usr/src/app/site.edn'),
-      sync('src', '/usr/src/app/src'),
-    ],
-  )
-
-if not use_production:
+else:
   earthly_build(
     dinsro_dev_image,
     '+dev-image-sources',
@@ -271,31 +365,107 @@ if not use_production:
     ]
   )
 
-has_devtools = not (local_devtools or use_production)
+# Portal
 
-k8s_resource(
-  workload='dinsro',
-  port_forwards = [x for x in [
-    port_forward(3333, 3333, name='cljs nrepl') if has_devtools else None,
-    port_forward(3693, 3693, name='workspaces') if has_devtools else None,
-    port_forward(7000, 7000, name='nRepl') if use_nrepl else None,
-    port_forward(9630, 9630, name='devtools') if has_devtools else None,
-  ] if x != None],
-  links = [x for x in [
-    link(base_url, 'dinsro'),
-    link('devtools.' + base_url, 'Devtools') if has_devtools else None,
-    link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
-    link(devcards.get('host') or "devcards.dinsro.localhost", 'Cards') if devcards_enabled else None,
-    link(get_notebooks_host(), 'Notebooks') if use_notebooks else None,
-  ] if x != None],
-  labels = [ 'dinsro' ],
-)
+if portal_enabled:
+  earthly_build(
+    "%s/portal:%s" % (repo, version),
+    '+portal',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      "resources/portal",
+      'deps.edn',
+    ],
+    build_args = {
+      'REPO': repo,
+    }
+  )
+  k8s_resource(
+    workload = 'portal',
+    labels = [ 'dinsro' ],
+    links = [
+      link(portal_url, 'Portal'),
+    ],
+  )
+
+# Devcards
+
+if devcards_enabled:
+  earthly_build(
+    "%s/dinsro:devcards-%s" % (repo, version),
+    '+devcards-image',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      "resources/devcards",
+      'src',
+      'deps.edn',
+      'site.edn',
+      'site-defaults.edn',
+    ],
+    build_args = {
+      'REPO': repo,
+    },
+    live_update=[
+      sync('resources/devcards', '/usr/src/app/resources/devcards'),
+      sync('site.edn', '/usr/src/app/site.edn'),
+      sync('src', '/usr/src/app/src'),
+      # sync('tilt_config.json', '/usr/src/app/tilt_config.json'),
+    ],
+  )
+  k8s_resource(
+    workload = 'devcards',
+    labels = [ 'dinsro' ],
+    links = [
+      link(devcards_url, 'devcards'),
+      link(devcards_devtools_url, 'devcards devtools'),
+    ],
+  )
+
+# Docs
+
+if docs_enabled and has_dinsro_values():
+  earthly_build(
+    "%s/dinsro:docs-%s" % (repo, version),
+    '+docs-image',
+    deps = [
+      'Earthfile',
+      '.dockerignore',
+      'bb.edn',
+      'deps.edn',
+      'site.edn',
+      'site-defaults.edn',
+      'src',
+      'target/doc',
+    ],
+    build_args = {
+      'REPO': repo,
+    },
+    live_update=[
+      sync('site.edn', '/usr/src/app/site.edn'),
+      sync('src', '/usr/src/app/src'),
+    ],
+  )
+  k8s_resource(
+    workload = 'docs',
+    labels = [ 'dinsro' ],
+    links = [
+      link(docs_url, 'docs'),
+    ],
+  )
+
+# Database
 
 if use_persistence:
   k8s_resource(
     workload = 'postgres',
     labels = [ 'database' ],
   )
+
+# Local Resources
 
 if use_linting:
   local_resource(
@@ -413,6 +583,8 @@ if use_tests:
 #     labels = [ 'test' ],
 #   )
 
+# SqlPad
+
 if use_persistence:
   namespace_create(
     'sqlpad',
@@ -452,35 +624,7 @@ if use_persistence:
     ],
   )
 
-if portal_enabled:
-  k8s_resource(
-    workload = 'portal',
-    labels = [ 'dinsro' ],
-    links = [
-      link(portal_url, 'Portal'),
-    ],
-  )
-
-docs_url = 'docs.dinsro.localhost'
-
-if docs_enabled:
-  k8s_resource(
-    workload = 'docs',
-    labels = [ 'dinsro' ],
-    links = [
-      link(docs_url, 'docs'),
-    ],
-  )
-
-if devcards_enabled:
-  k8s_resource(
-    workload = 'devcards',
-    labels = [ 'dinsro' ],
-    links = [
-      link(devcards_url, 'devcards'),
-      link(devcards_devtools_url, 'devcards devtools'),
-    ],
-  )
+# Buttons
 
 cmd_button(
   'dinsro:format',

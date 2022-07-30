@@ -150,19 +150,21 @@
    (let [name    (or (first *command-line-args*) "3")
          options (h.bitcoind/->value-options {:name name})
          yaml    (yaml/generate-string (h.bitcoind/->values options))]
-     (c/mkdir (format "conf/%s" name))
-     (spit (format "conf/%s/bitcoind_values.yaml" name) yaml))}
+     (c/mkdir (format "target/conf/%s" name))
+     (spit (format "target/conf/%s/bitcoind_values.yaml" name) yaml))}
 
   generate-dinsro-values
-  {:task
-   (do
-     (c/mkdir "target")
-     (spit (str "target/dinsro_values.yaml") (yaml/generate-string
-                                              (h.dinsro/->dinsro-config (site/get-site-config)))))}
+  {:task (c/generate-dinsro-values)}
+
+  generate-fileserver-values
+  {:doc  "generate a fileserver values file"
+   :task (let [name (or (first *command-line-args*) "3")]
+           (c/generate-fileserver-values name))}
 
   generate-lnd-values
   {:doc  "generate a lnd values file"
-   :task (c/generate-lnd-values)}
+   :task (let [name (or (first *command-line-args*) "3")]
+           (c/generate-lnd-values name))}
 
   generate-nbxplorer-values
   {:doc "generate a nbxplorer values file"
@@ -170,8 +172,8 @@
    (let [name    (or (first *command-line-args*) "3")
          options (h.nbxplorer/->value-options {:name name})
          yaml    (yaml/generate-string (h.nbxplorer/->values options))]
-     (c/mkdir (format "conf/%s" name))
-     (spit (format "conf/%s/nbxplorer_values.yaml" name) yaml))}
+     (c/mkdir (format "target/conf/%s" name))
+     (spit (format "target/conf/%s/nbxplorer_values.yaml" name) yaml))}
 
   generate-rtl-values
   {:doc "generate a rtl values file"
@@ -179,42 +181,24 @@
    (let [name    (or (first *command-line-args*) "3")
          options {:name name}
          yaml    (yaml/generate-string (h.rtl/->values options))]
-     (c/mkdir (format "conf/%s" name))
-     (spit (format "conf/%s/rtl_values.yaml" name) yaml))}
+     (c/mkdir (format "target/conf/%s" name))
+     (spit (format "target/conf/%s/rtl_values.yaml" name) yaml))}
 
   generate-specter-values
   {:doc "generate a specter values file"
    :task
-   (let [name    (or (first *command-line-args*) "3")
-         options {:name name}
-         yaml    (yaml/generate-string (h.specter/->values options))]
-     (c/mkdir (format "conf/%s" name))
-     (spit (format "conf/%s/specter_values.yaml" name) yaml))}
+   (let [name (or (first *command-line-args*) "3")]
+     (c/generate-specter-values name))}
 
   generate-values
-  {:doc "generate a lnd values file"
+  {:doc "generate all values"
    :task
-   (let [name (or (first *command-line-args*) "3")]
-     (c/mkdir (format "conf/%s" name))
-     (let [value-options (h.lnd/->value-options {:name name})
-           data          (yaml/generate-string (h.lnd/->values value-options))]
-       (spit (format "conf/%s/lnd_values.yaml" name) data)))}
+   (c/generate-values)}
 
   helm-bitcoin
   {:depends [generate-bitcoind-values]
    :task
-   (let [n        (or (first *command-line-args*) "3")
-         path     "resources/helm/fold/charts/bitcoind/"
-         filename (format "conf/%s/bitcoind_values.yaml" n)
-         cmd      (string/join
-                   " "
-                   ["helm template "
-                    "--create-namespace"
-                    (str "--namespace " n)
-                    (str "--name-template=bitcoin")
-                    (str "--values " filename)
-                    path])]
-     (shell cmd))}
+   (let [name (or (first *command-line-args*) "3")] (c/helm-bitcoin name))}
 
   helm-bitcoin-apply
   {:task
@@ -252,6 +236,10 @@
        (catch Exception ex
          (println "failed"))))}
 
+  helm-dinsro
+  {:depends [generate-dinsro-values]
+   :task (c/helm-dinsro)}
+
   helm-up
   {:task
    (let [name (or (first *command-line-args*) "3")]
@@ -276,19 +264,13 @@
        (catch Exception ex
          (println "failed"))))}
 
+  helm-fileserver
+  {:depends [generate-fileserver-values]
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-fileserver name))}
+
   helm-lnd
   {:depends [generate-lnd-values]
-   :task
-   (let [name     (or (first *command-line-args*) "3")
-         path     "resources/helm/fold/charts/lnd/"
-         filename (format "conf/%s/lnd_values.yaml" name)
-         cmd      (string/join
-                   " "
-                   ["helm template "
-                    (str "--name-template=" name)
-                    (str "--values " filename)
-                    path])]
-     (shell cmd))}
+   :task (let [name (or (first *command-line-args*) "3")] (c/helm-lnd name))}
 
   helm-lnd-apply
   {:task
@@ -305,18 +287,8 @@
   helm-nbxplorer
   {:depends [generate-nbxplorer-values]
    :task
-   (let [n        (or (first *command-line-args*) "3")
-         options  {}
-         path     "resources/helm/nbxplorer"
-         filename (format "conf/%s/nbxplorer_values.yaml" n)
-         cmd      (string/join
-                   " "
-                   ["helm template"
-                    (str "--values " filename)
-                    (format "--namespace nbxplorer-%s" n)
-                    "--name-template=nbxplorer"
-                    path])]
-     (shell cmd))}
+   (let [name  (or (first *command-line-args*) "3")]
+     (c/helm-nbxplorer name))}
 
   helm-nbxplorer-apply
   {:task
@@ -483,7 +455,7 @@
 
   tilt-config
   {:doc  "generates a config file for Tilt"
-   :task (c/->tilt-config)}
+   :task (println (c/->tilt-config))}
 
   update-chart
   {:doc "Copy dinsro chart files to chart.kronkltd.net repository"

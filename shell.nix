@@ -4,7 +4,7 @@
       babashka
       clojure
       docker
-      # earthly
+      earthly
       # helm
       helm-docs
       # kubectl

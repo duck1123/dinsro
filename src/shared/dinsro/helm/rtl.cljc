@@ -5,8 +5,8 @@
   [options]
   (let [{name :name}  options
         node-name     (str "Node " name)
-        macaroon-path (str "/mnt/data/lnd-" name)
-        backup-path   (str "/mnt/data/lnd-" name "/backups")
+        macaroon-path (str "/mnt/data/" name)
+        backup-path   (str "/mnt/data/" name "/backups")
         server-url    (str "https://lnd." name ".svc.cluster.local:8080")]
     {:index            1
      :lnNode           node-name

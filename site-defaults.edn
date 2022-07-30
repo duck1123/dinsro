@@ -24,9 +24,28 @@
   :host        "devtools.dinsro.localhost"}
 
  :docs
- {:enabled     true
+ {:enabled     false
   :inheritHost true
   :host        "docs.dinsro.localhost"}
+
+ :logLevel ":info"
+
+ :nodes
+ {"alice"
+  {:bitcoin    true
+   :lnd        true
+   :fileserver true
+   :rtl        true
+   :specter    false
+   :lnbits     false}
+
+  "bob"
+  {:bitcoin    true
+   :lnd        true
+   :fileserver true
+   :rtl        false
+   :specter    false
+   :lnbits     false}}
 
  :notebooks
  {

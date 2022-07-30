@@ -1,8 +1,14 @@
-(ns dinsro.helm.specter)
+(ns dinsro.helm.specter
+  (:require
+   #?(:clj [cheshire.core :as json2])
+   #?(:clj [clj-yaml.core :as yaml])
+   #?(:cljs [dinsro.yaml :as yaml])))
 
 (defn ->node-config
   [options]
-  (let [{:keys [name alias rpcuser rpcpassword port host]} options]
+  (let [{:keys [name alias rpcuser rpcpassword port host]
+         :or   {rpcuser     "rpcuser"
+                rpcpassword "rpcpassword"}} options]
     {:name          name
      :alias         alias
      :autodetect    false
@@ -13,7 +19,7 @@
      :host          host
      :protocol      "http"
      :external_node true
-     :fullpath      (format "/data/.specter/nodes/%s.json" name)}))
+     :fullpath      (str "/data/.specter/nodes/" name ".json")}))
 
 (defn merge-defaults
   [options]
@@ -24,7 +30,7 @@
           rpcuser     "rpcuser"
           rpcpassword "rpcpassword"
           port        18443
-          host        (str "lnd." name)}} options]
+          host        (str "bitcoin." name)}} options]
 
     {:name        name
      :alias       alias
@@ -35,9 +41,15 @@
 
 (defn ->values
   [{:keys [name] :as options}]
-  (let [options (merge-defaults options)]
-    {:image        {:tag "v1.7.2"}
-     :ingress      {:hosts [{:host  (str "specter." name ".localhost")
+  (let [options (merge-defaults options)
+        host    (str "specter." name ".localhost")]
+    {:image        {:tag "v1.10.3"}
+     :ingress      {:hosts [{:host  host
                              :paths [{:path "/"}]}]}
      :persistence  {:storageClassName "local-path"}
-     :walletConfig (prn-str (->node-config options))}))
+     :walletConfig #?(:clj (json2/encode (->node-config options))
+                      :cljs (do (comment options) "{}"))}))
+
+(defn ->values-yaml
+  [options]
+  (yaml/generate-string (->values (merge-defaults options))))

@@ -4,10 +4,15 @@
    [cheshire.core :as json]
    [clojure.string :as string]
    [clj-yaml.core :as yaml]
+   [dinsro.helm.bitcoind :as h.bitcoind]
    [dinsro.helm.dinsro :as h.dinsro]
+   [dinsro.helm.fileserver :as h.fileserver]
    [dinsro.helm.lnd :as h.lnd]
    [dinsro.helm.rtl :as h.rtl]
+   [dinsro.helm.specter :as h.specter]
    [dinsro.site :as site]))
+
+(def target-dir "target")
 
 (defn cljfmt
   [paths]
@@ -65,6 +70,7 @@
 
 (defn mkdir
   [path]
+  #_(println (str "mkdir " path))
   (shell (str "mkdir -p " path)))
 
 (defn display-env
@@ -108,7 +114,12 @@
 (defn ->tilt-config
   []
   (let [data      (h.dinsro/merge-defaults (site/get-site-config))]
-    (println (json/generate-string data))))
+    (json/generate-string data)))
+
+(defn generate-tilt-config
+  []
+  (let [config-string (->tilt-config)]
+    (spit "target/tilt_config.json" config-string)))
 
 (defn tap
   [data]
@@ -117,27 +128,12 @@
 
 (defn generate-dinsro-values
   []
-  (let [{:keys [devtools-host ingress-host portal-host]} {}]
-    {:database    {:enabled true}
-     :devtools
-     {:enabled true
-      :ingress
-      {:enabled true
-       :hosts   [{:host  devtools-host
-                  :paths [{:path "/"}]}]}}
-     :notebooks
-     {:enabled true
-      :ingress
-      {:hosts [{:host  ingress-host
-                :paths [{:path "/"}]}]}}
-     :nrepl       {:enabled true}
-     :persistence {:enabled true}
-     :workspaces  {:enabled true}
-     :portal
-     {:ingress
-      {:hosts
-       [{:host  portal-host
-         :paths [{:path "/"}]}]}}}))
+  (let [data (site/get-site-config)
+        dinsro-values (h.dinsro/->dinsro-config data)
+        filename (str target-dir "/dinsro_values.yaml")
+        value-yaml (yaml/generate-string dinsro-values)]
+    (mkdir target-dir)
+    (spit filename value-yaml)))
 
 (defn clean-semantic
   []
@@ -194,21 +190,6 @@
         (future (shell watch-cmd)))
       (shell run-cmd))))
 
-(defn generate-lnd-values
-  []
-  (let [name    (or (first *command-line-args*) "3")
-        options (h.lnd/->value-options {:name name})
-        yaml    (yaml/generate-string (h.lnd/->values options))]
-    (mkdir (format "conf/%s" name))
-    (spit (format "conf/%s/lnd_values.yaml" name) yaml)))
-
-(defn generate-rtl-values
-  [n]
-  (let [options {:name n}
-        yaml    (yaml/generate-string (h.rtl/->values options))]
-    (mkdir (format "conf/%s" n))
-    (spit (format "conf/%s/rtl_values.yaml" n) yaml)))
-
 (defn watch-cljs
   ([]
    (watch-cljs ["main" "workspaces"]))
@@ -232,14 +213,147 @@
   []
   (watch-cljs "workspaces"))
 
-(defn helm-specter
-  [n]
-  (let [path     "resources/helm/specter-desktop/"
-        filename (format "conf/%s/specter_values.yaml" n)
+(defn helm-nbxplorer
+  [name]
+  (let [path     "resources/helm/nbxplorer"
+        filename (str "target/conf/" name "/nbxplorer_values.yaml")
+        cmd      (string/join
+                  " "
+                  ["helm template"
+                   (str "-n " name)
+                   (str "--values " filename)
+                   (format "--namespace nbxplorer-%s" name)
+                   "--name-template=nbxplorer"
+                   path])]
+    (shell cmd)))
+
+(defn helm-fileserver
+  [name]
+  (let [path     "resources/helm/fileserver"
+        filename (str "target/conf/" name "/fileserver_values.yaml")
         cmd      (string/join
                   " "
                   ["helm template "
-                   (str "--name-template=specter-" n)
+                   (str "-n " name)
+                   (str "--name-template=" name)
                    (str "--values " filename)
                    path])]
     (shell cmd)))
+
+(defn helm-bitcoin
+  [name]
+  (let [path     "resources/helm/fold/charts/bitcoind/"
+        filename (str  "target/conf/" name "/bitcoind_values.yaml")
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   ;; "--create-namespace"
+                   (str "-n " name)
+                   (str "--name-template=" name)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
+(defn helm-dinsro
+  []
+  (let [name     "dinsro"
+        path     "resources/helm/dinsro"
+        filename "target/dinsro_values.yaml"
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   ;; "--create-namespace"
+                   (str "-n " name)
+                   (str "--name-template=" name)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
+(defn helm-lnd
+  [name]
+  (let [path     "resources/helm/fold/charts/lnd/"
+        filename (str "target/conf/" name "/lnd_values.yaml")
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "-n " name)
+                   (str "--name-template=" name)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
+(defn helm-specter
+  [name]
+  (let [path     "resources/helm/specter-desktop/"
+        filename (format "target/conf/%s/specter_values.yaml" name)
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "-n " name)
+                   (str "--name-template=specter-" name)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
+(defn generate-fileserver-values
+  [name]
+  (let [options (h.fileserver/->value-options {:name name})
+        yaml    (yaml/generate-string (h.fileserver/->values options))]
+    (mkdir (format "target/conf/%s" name))
+    (spit (format "target/conf/%s/fileserver_values.yaml" name) yaml)))
+
+(defn generate-lnd-values
+  [name]
+  (let [options (h.lnd/->value-options {:name name})
+        yaml    (yaml/generate-string (h.lnd/->values options))]
+    (mkdir (format "target/conf/%s" name))
+    (spit (format "target/conf/%s/lnd_values.yaml" name) yaml)))
+
+(defn generate-rtl-values
+  [name]
+  (let [options {:name name}
+        yaml    (yaml/generate-string (h.rtl/->values options))]
+    (mkdir (format "target/conf/%s" name))
+    (spit (format "target/conf/%s/rtl_values.yaml" name) yaml)))
+
+(defn generate-bitcoind-values
+  [name]
+  (let [options (h.bitcoind/->value-options {:name name})
+        yaml    (yaml/generate-string (h.bitcoind/->values options))]
+    (mkdir (str "target/conf/" name))
+    (spit (str "target/conf/" name "/bitcoind_values.yaml") yaml)))
+
+(defn generate-specter-values
+  [name]
+  (let [options {:name name}
+        yaml    (yaml/generate-string (h.specter/->values options))]
+    (mkdir (format "target/conf/%s" name))
+    (spit (format "target/conf/%s/specter_values.yaml" name) yaml)))
+
+(defn generate-values
+  "generate-all-values"
+  []
+  (generate-dinsro-values)
+  (generate-tilt-config)
+  (let [data  (h.dinsro/merge-defaults (site/get-site-config))
+        nodes (:nodes data)]
+    (doseq [[name node-data] nodes]
+      (let [{:keys [bitcoin lnd fileserver rtl specter #_lnbits]} node-data]
+        (when bitcoin
+          (println "generating bitcoin for " name)
+          (generate-bitcoind-values name))
+        (when lnd
+          (println (str "generating lnd for " name))
+          (generate-lnd-values name))
+        (when fileserver
+          (println (str "generating fileserver for " name))
+          (generate-fileserver-values name))
+        (when rtl
+          (println (str "generating rtl for " name))
+          (generate-rtl-values name))
+        (when specter
+          (println (str "generating specter for " name))
+          (generate-specter-values name))
+        #_(when lnbits
+            (println (str "generating lnbits for " name))
+            (generate-lnbits-values name))))))
