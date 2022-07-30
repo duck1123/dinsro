@@ -29,8 +29,8 @@
   metosin/ring-http-response             {:mvn/version "0.9.3"}
   mount/mount                            {:mvn/version "0.1.16"}
   nrepl/nrepl                            {:mvn/version "0.9.0"}
-  org.bitcoin-s/bitcoin-s-core_2.13      {:mvn/version "1.9.0"}
-  org.bitcoin-s/bitcoin-s-lnd-rpc_2.13   {:mvn/version "1.9.0"}
+  org.bitcoin-s/bitcoin-s-core_2.13      {:mvn/version "1.9.2"}
+  org.bitcoin-s/bitcoin-s-lnd-rpc_2.13   {:mvn/version "1.9.2"}
   org.clj-commons/byte-streams           {:mvn/version "0.3.0"}
   org.clojure/clojure                    {:mvn/version "1.10.3"}
   org.clojure/clojurescript              {:mvn/version "1.10.879"}
