@@ -14,20 +14,56 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
+(def node1-id (first (q.c.nodes/index-ids)))
+(def node2-id (second (q.c.nodes/index-ids)))
+
+(def node1 (q.c.nodes/read-record node1-id))
+(def node2 (q.c.nodes/read-record node2-id))
+
+(def remote-host (::m.c.nodes/host node2))
+(def remote-host-url (str "http://" remote-host))
+
+;; ## get-peer-info
+
 (comment
 
-  (def node1 (first (q.c.nodes/index-ids)))
-  (def node2 (second (q.c.nodes/index-ids)))
+  (a.c.peers/get-peer-info node1)
+
+  nil)
+
+;; ## has-peer?
+
+(comment
+
+  (a.c.peers/has-peer? node1 remote-host-url)
+
+  nil)
+
+;; ## fetch-peers!
+
+(comment
+
+  (a.c.peers/fetch-peers! node1)
+
+  nil)
+
+;; ## add-peer!
+
+
+(comment
+
+  (a.c.peers/add-peer! node1 remote-host-url)
+
+  nil)
+
+;; ## other
+
+(comment
+
   (map q.c.peers/find-by-core-node (q.c.nodes/index-ids))
   (q.c.nodes/read-record node1)
 
-  (a.c.peers/get-peer-info (q.c.nodes/read-record node1))
-
   (::m.c.nodes/host (q.c.nodes/read-record node2))
-
-  (a.c.peers/add-peer!
-   (q.c.nodes/read-record node1)
-   (::m.c.nodes/host (q.c.nodes/read-record node2)))
 
   (def peer (first (q.c.peers/index-records)))
   (a.c.peers/delete! peer)

@@ -24,11 +24,12 @@
 (def category-names ["Category A" "Category B" "Category C"])
 
 (def core-node1
-  {::m.c.nodes/name        "bitcoin-alice"
-   ::m.c.nodes/host        "bitcoin.alice"
-   ::m.c.nodes/port        18443
-   ::m.c.nodes/rpcuser     "rpcuser"
-   ::m.c.nodes/rpcpass     "rpcpassword"})
+  {::m.c.nodes/name    "bitcoin-alice"
+   ::m.c.nodes/host    "bitcoin.alice"
+   ::m.c.nodes/port    18443
+   ::m.c.nodes/rpcuser "rpcuser"
+   ::m.c.nodes/rpcpass "rpcpassword"
+   :peers              ["bitcoin-bob"]})
 
 (def core-node2
   {::m.c.nodes/name        "bitcoin-bob"

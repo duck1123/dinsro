@@ -7,6 +7,7 @@
    [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.core.nodes :as a.c.nodes]
+   [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.ln.peers :as a.ln.peers]
@@ -431,6 +432,25 @@
         (catch Exception ex
           (log/error :seed-core-nodes!/failed {:ex ex}))))))
 
+(defn seed-core-peers!
+  [core-node-data]
+  (log/info :seed-core-peers!/starting {:core-node-data core-node-data})
+  (doseq [node-data core-node-data]
+    (let [peers       (:peers node-data)
+          target-name (::m.c.nodes/name node-data)
+          target-peer (q.c.nodes/read-record (q.c.nodes/find-id-by-name target-name))]
+      (a.c.peers/fetch-peers! target-peer)
+      (doseq [peer-name peers]
+        (let [remote-peer (q.c.nodes/read-record (q.c.nodes/find-id-by-name peer-name))
+              remote-host (::m.c.nodes/host remote-peer)
+              remote-uri  (str "http://" remote-host)]
+          (if (a.c.peers/has-peer? target-peer remote-uri)
+            (log/info :seed-core-peers!/has-peer {})
+            (do
+              (log/info :seed-core-peers!/no-peer {})
+              (a.c.peers/add-peer! target-peer remote-uri)
+              (a.c.peers/fetch-peers! target-peer))))))))
+
 (>defn seed-db!
   [seed-data]
   [::seed-data => any?]
@@ -447,6 +467,7 @@
     (seed-chains! default-chains)
     (seed-networks! default-networks)
     (seed-core-nodes! core-node-data)
+    (seed-core-peers! core-node-data)
 
     #_(seed-core-txes!)
 
