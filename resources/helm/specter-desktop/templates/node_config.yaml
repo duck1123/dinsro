@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: config
 data:
-  wallet-config.edn: |-
+  default.json: |-
 {{ .Values.walletConfig | indent 4 }}

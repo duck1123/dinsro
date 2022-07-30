@@ -1,0 +1,32 @@
+{
+    "name": "default",
+    "alias": "default",
+    "description": "Single (Segwit)",
+    "address_type": "bech32",
+    "address": "bcrt1qpe5thhr9p582w0ymg99ea5ql9e5y5lqsxm5527",
+    "address_index": 0,
+    "change_address": "bcrt1q9lqkyt84nctp7eh2sfp6fxuuf0wcjug42r3see",
+    "change_index": 0,
+    "keypool": 56,
+    "change_keypool": 20,
+    "recv_descriptor": "wpkh([8c694d63/84h/1h/0h]tpubDCaHeqXShp6x7GSBnyBaFB6tPtdCfU5otmgRZu6ChfVvE4EXYHxPhwMsXvp1aFZBd7CRmpJWfDbZDKfV7tNe5ThHgUaRMEDQM39BCyxWwNU/0/*)#ytuthqy3",
+    "change_descriptor": "wpkh([8c694d63/84h/1h/0h]tpubDCaHeqXShp6x7GSBnyBaFB6tPtdCfU5otmgRZu6ChfVvE4EXYHxPhwMsXvp1aFZBd7CRmpJWfDbZDKfV7tNe5ThHgUaRMEDQM39BCyxWwNU/1/*)#4le2245f",
+    "keys": [
+        {
+            "original": "vpub5YY8XGMvhB4Y8ss6g4dEd5aWiqEenqbkWv3geZFHbjzGNZwMxknBKNNmFUp43wJ71vRufHbXCo4QkZwkHdhNbYsntCSGVsvCDdRUfqiiKMB",
+            "fingerprint": "8c694d63",
+            "derivation": "m/84h/1h/0h",
+            "type": "wpkh",
+            "purpose": "#0 Single Sig (Segwit)",
+            "xpub": "tpubDCaHeqXShp6x7GSBnyBaFB6tPtdCfU5otmgRZu6ChfVvE4EXYHxPhwMsXvp1aFZBd7CRmpJWfDbZDKfV7tNe5ThHgUaRMEDQM39BCyxWwNU"
+        }
+    ],
+    "devices": [
+        "default"
+    ],
+    "sigs_required": 1,
+    "blockheight": 0,
+    "pending_psbts": {},
+    "frozen_utxo": [],
+    "last_block": "6db40bf393c9ce2b6765a5a181fd06b2628ef27a5dff617eefd4a711dea7c908"
+}

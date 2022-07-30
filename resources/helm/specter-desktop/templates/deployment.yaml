@@ -29,6 +29,15 @@ spec:
       serviceAccountName: {{ include "specter-desktop.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: copy-node-config
+          image: busybox
+          command: ['sh', '-c', 'ls -al /data-config && cp /data-config/default.json /data/.specter/nodes/default.json']
+          volumeMounts:
+            - name: specter
+              mountPath: /data
+            - name: config
+              mountPath: /data-config
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -46,6 +55,8 @@ spec:
           volumeMounts:
           - mountPath: /data
             name: specter
+          - mountPath: /data-config
+            name: config
           ports:
           - name: specter
             containerPort: {{.Values.service.port}}
@@ -76,3 +87,6 @@ spec:
         - name: specter
           persistentVolumeClaim:
             claimName: {{ include "specter-desktop.fullname" . }}
+        - name: config
+          configMap:
+            name: config

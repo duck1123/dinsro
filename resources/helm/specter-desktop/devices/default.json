@@ -1,0 +1,49 @@
+{
+    "name": "default",
+    "alias": "default",
+    "type": "bitcoincore",
+    "keys": [
+        {
+            "original": "upub5E7bCguufNrMb1Umm9HZgcxSRAQngjfYK19AwXuUi6DDR79BVRE3nNgG8aptADyMW7QW7bF3Qj2FEGnvevXxFNRY5BCsahTKaCjLhxR61BW",
+            "fingerprint": "8c694d63",
+            "derivation": "m/49h/1h/0h",
+            "type": "sh-wpkh",
+            "purpose": "#0 Single Sig (Nested)",
+            "xpub": "tpubDCz1dvkLphSFQhEyiQdXWoaKGBwnVz96byJ8eGeHC26kKhFaKcZpo1KWSEnRgStMWwHpybYbKouwaK8ECsdEXWvdjo3T1xa1yLWgdk6m9gw"
+        },
+        {
+            "original": "vpub5YY8XGMvhB4Y8ss6g4dEd5aWiqEenqbkWv3geZFHbjzGNZwMxknBKNNmFUp43wJ71vRufHbXCo4QkZwkHdhNbYsntCSGVsvCDdRUfqiiKMB",
+            "fingerprint": "8c694d63",
+            "derivation": "m/84h/1h/0h",
+            "type": "wpkh",
+            "purpose": "#0 Single Sig (Segwit)",
+            "xpub": "tpubDCaHeqXShp6x7GSBnyBaFB6tPtdCfU5otmgRZu6ChfVvE4EXYHxPhwMsXvp1aFZBd7CRmpJWfDbZDKfV7tNe5ThHgUaRMEDQM39BCyxWwNU"
+        },
+        {
+            "original": "tpubDD5kYZF56y2uHkG2jonAXzUMpMETfCV7iNTVv6jq2gkiFeEuqdwqr8YuPAkcy2SbfGNa3dSsFZGPidBfyKd5KPvmauJF3xuKoSJgTonr9Tu",
+            "fingerprint": "8c694d63",
+            "derivation": "m/86h/1h/0h",
+            "type": "tr",
+            "purpose": "#0 Single Sig (Taproot)",
+            "xpub": "tpubDD5kYZF56y2uHkG2jonAXzUMpMETfCV7iNTVv6jq2gkiFeEuqdwqr8YuPAkcy2SbfGNa3dSsFZGPidBfyKd5KPvmauJF3xuKoSJgTonr9Tu"
+        },
+        {
+            "original": "Upub5TBPRhvE5Ra2WboEWtd7Azr4YaJYavt5nBMNSq6r8DwLTmwsq53YGJVs1xG6mRBbcJ2vgNRBEYXV4mak7PcfD2CVpCG4EsnmtWwcv6ETQja",
+            "fingerprint": "8c694d63",
+            "derivation": "m/48h/1h/0h/1h",
+            "type": "sh-wsh",
+            "purpose": "#0 Multisig Sig (Nested)",
+            "xpub": "tpubDF9iji2DfnbYuiQ4XVW6B788fooHBpg3ksrfEJa7ENzTkBVMts13BpHBWuGAjCshPerGfnicGR2gHeJHN7YzLgaveLzEGjSUPvT6FsDrNMa"
+        },
+        {
+            "original": "Vpub5n1ejNb9E77WR4vEkReDTWYyAwZsyqwH3gj6ycgdomkeY3m54zUBTi56qUgYQat9C8SMZdyTym5XGjSB69nKqHZP56ZcNRkeirQf3zdV7tM",
+            "fingerprint": "8c694d63",
+            "derivation": "m/48h/1h/0h/2h",
+            "type": "wsh",
+            "purpose": "#0 Multisig Sig (Segwit)",
+            "xpub": "tpubDF9iji2DfnbYxtKwvfjaFXjY8CvAe7jk7GiAyhG1XvRtmMVKt8G7mACHKDj2NTvKZr8toagLYyEAcKY9dBJeAiGD2ubMpNarxXrV1J2w3zh"
+        }
+    ],
+    "blinding_key": "",
+    "fullpath": "/data/.specter/devices/default.json"
+}
