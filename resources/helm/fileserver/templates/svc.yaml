@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fileserver
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "lnd.name" . }}
+    chart: {{ template "lnd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: files
+      port: 80
+      targetPort: files
+  selector:
+    app: {{ template "lnd.name" . }}
+    release: {{ .Release.Name }}
