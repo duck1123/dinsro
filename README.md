@@ -31,6 +31,11 @@ Recommended:
 * Helm ([install](https://helm.sh/docs/intro/install/))
 * K3D ([install](https://k3d.io/#install-script))
 
+A large number of requirements are available through nix.
+
+``` shell
+cp .envrc.example .envrc
+```
 
 ## Tilt-based development
 
