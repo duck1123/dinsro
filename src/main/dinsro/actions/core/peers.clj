@@ -19,16 +19,25 @@
 (defn update-peer!
   [node-id peer]
   (log/info :update-peer!/starting {:node-id node-id :peer peer})
-  (let [{peer-index ::m.c.peers/peer-id} peer]
-    (if-let [existing-peer (q.c.peers/find-by-node-and-peer-id node-id peer-index)]
-      (let [peer-id (::m.c.peers/id existing-peer)]
-        (log/info :update-peer!/record-exists {:node-id node-id :peer-index peer-index})
-        peer-id)
-      (do
-        (log/info :update-peer!/record-exists {:node-id node-id :peer-index peer-index})
-        (let [params (assoc peer ::m.c.peers/node node-id)
-              params (m.c.peers/prepare-params params)]
-          (q.c.peers/create-record params))))))
+  (if-let [peer-index (:id peer)]
+    (do
+      (log/info :update-peer!/got-index {:peer-index peer-index :node-id node-id :peer peer})
+      (if-let [existing-peer (q.c.peers/find-by-node-and-peer-id node-id peer-index)]
+        (let [peer-id (::m.c.peers/id existing-peer)]
+          (log/info :update-peer!/record-exists
+                    {:node-id    node-id
+                     :peer-index peer-index
+                     :peer-id    peer-id})
+          peer-id)
+        (do
+          (log/info :update-peer!/record-not-exists {:node-id node-id :peer-index peer-index})
+          (let [params (assoc peer ::m.c.peers/node node-id)
+                params (m.c.peers/prepare-params params)]
+            (log/info :update-peer!/params-prepared {:params params})
+            (q.c.peers/create-record params)))))
+    (do
+      (log/error :update-peer!/peer-index-missing {:node-id node-id :peer peer})
+      (throw (RuntimeException. "Failed to find peer id")))))
 
 (>defn fetch-peers!
   "Fetch and update peers for node"
@@ -44,8 +53,10 @@
   [node address]
   [::m.c.nodes/item string? => any?]
   (log/info :add-peer!/starting {:node-id (::m.c.nodes/id node) :address address})
-  (let [client (a.c.node-base/get-client node)]
-    (c.bitcoin-s/add-node client address)))
+  (let [client   (a.c.node-base/get-client node)
+        response (c.bitcoin-s/add-node client address)]
+    (log/info :add-peer!/finished {:response response})
+    response))
 
 (defn create!
   "Create a new peer connection for this node"

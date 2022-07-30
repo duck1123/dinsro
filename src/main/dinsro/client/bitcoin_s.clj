@@ -201,7 +201,7 @@
     (let [{:keys [passed result]} response]
       (if passed
         result
-        (throw "Did not pass")))))
+        (throw (RuntimeException. "Did not pass"))))))
 
 (defn get-blockchain-info
   [client]
@@ -228,7 +228,7 @@
 (>defn fetch-block-by-height
   [client height]
   [::client number? => ::c.converters/fetch-block-by-height-result]
-  (log/finer :fetch-block-by-height/starting {:height height :client client})
+  (log/finer :fetch-block-by-height/starting {:height height})
   (let [hash (:result (async/<!! (get-block-hash client height)))]
     (log/fine :fetch-block-by-height/located {:hash hash})
     (let [response (:result (async/<!! (cs/await-future (.getBlock client hash))))]
@@ -240,19 +240,23 @@
 (defn add-node
   "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#addNode(address:java.net.URI,command:org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts.AddNodeArgument):scala.concurrent.Future[Unit]"
   [client address-s]
-  (log/info :add-node/starting {:client client :address-s address-s})
+  (log/info :add-node/starting {:address-s address-s})
   (let [address  (URI. address-s)
         command  (RpcOpts$AddNodeArgument$Add$.)
-        p        (.addNode client address command)
-        response (async/<!! (cs/await-future p))]
-    (log/info :add-node/finished {:response response})
-    response))
+        p        (.addNode client address command)]
+    (log/info :add-node/sent {:p p :address address :command command})
+    (let [ch (cs/await-future p)]
+      (log/info :add-node/awaited {:ch ch})
+      (let [response (async/<!! ch)]
+        (log/info :add-node/finished {:response response})
+        response))))
 
 (defn disconnect-node
   [client addr]
-  (log/info :disconnect-node/starting {:client client :addr addr}))
+  (log/info :disconnect-node/starting {:addr addr})
+  (comment client))
 
 (defn get-raw-transaction
   [client tx-id]
-  (log/info :get-raw-transaction/starting {:client client :tx-id tx-id})
+  (log/info :get-raw-transaction/starting {:tx-id tx-id})
   (.getRawTransaction client tx-id))

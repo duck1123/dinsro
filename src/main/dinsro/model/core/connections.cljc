@@ -2,10 +2,8 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
-   [com.fulcrologic.rad.attributes-options :as ao]
-   #?(:clj [dinsro.client.bitcoin :as c.bitcoin])))
+   [com.fulcrologic.rad.attributes-options :as ao]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -65,17 +63,6 @@
 (defn idents
   [ids]
   (mapv ident ids))
-
-#?(:clj
-   (>defn get-client
-     ([node]
-      [::item => any?]
-      (get-client node ""))
-     ([{::keys [host port rpcuser rpcpass]} path]
-      [::item string? => any?]
-      (c.bitcoin/get-client
-       {:http/url        (str "http://" host ":" port path)
-        :http/basic-auth [rpcuser rpcpass]}))))
 
 (def attributes
   [id name host port rpcuser rpcpass])

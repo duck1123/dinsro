@@ -1,14 +1,14 @@
 (ns dinsro.model.core.peers
   (:refer-clojure :exclude [name])
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core.nodes :as m.c.nodes]))
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [lambdaisland.glogc :as log]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -75,8 +75,18 @@
 (>defn prepare-params
   [params]
   [any? => ::params]
-  (-> params
-      (set/rename-keys rename-map)))
+  ;; (-> params
+  ;;     (set/rename-keys rename-map))
+  (log/info :prepare-params/starting {:params params})
+  (let [address-bind (get-in params [:network-info :addr-bind])
+        prepared     {::address-bind    address-bind
+                      ::subver          (:subver params)
+                      ::addr            (get-in params [:network-info :addr])
+                      ::peer-id         (:id params)
+                      ::connection-type (:connection-type params)
+                      ::node            (::node params)}]
+    (log/info :prepare-params/finished {:prepared prepared})
+    prepared))
 
 (>defn ident
   [id]

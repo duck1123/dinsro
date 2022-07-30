@@ -9,6 +9,7 @@
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn create-record
@@ -90,8 +91,10 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))))
 
 (defn update-wallet-info
-  [{:keys               [balance tx-count]
-    ::m.c.nodes/keys [id]}]
+  [{:keys            [balance tx-count]
+    ::m.c.nodes/keys [id]
+    :as              params}]
+  (log/info :update-wallet-info {:params params})
   (let [node   (c.xtdb/main-node)
         db     (c.xtdb/main-db)
         old    (xt/pull db '[*] id)

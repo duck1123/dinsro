@@ -51,7 +51,7 @@
                                       (fn [x] (cs/->record x))
                                       (some-> this .tx cs/vector->vec))
                 :version             (.version this)
-                :version-hex         (some-> this .versionHex .toLong)
+                :version-hex         (some-> this .versionHex .hex)
                 :weight              (.weight this)}]
     (log/info :GetBlockResult->record/finished {:record record})
     record))

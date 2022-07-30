@@ -1,15 +1,11 @@
 (ns dinsro.actions.core.node-base
   (:require
-   [com.fulcrologic.guardrails.core :refer [>def]]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.rpc.client.v22.BitcoindV22RpcClient
    java.net.URI))
-
-(>def ::client (ds/instance? BitcoindV22RpcClient))
 
 (defn get-remote-uri
   [{::m.c.nodes/keys [host]}]

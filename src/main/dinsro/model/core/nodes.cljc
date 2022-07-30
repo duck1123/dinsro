@@ -6,7 +6,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   #?(:clj [dinsro.client.bitcoin :as c.bitcoin])
    [lambdaisland.glogc :as log]))
 
 (s/def ::id uuid?)
@@ -159,16 +158,16 @@
   [ids]
   (mapv ident ids))
 
-#?(:clj
-   (>defn get-client
-     ([node]
-      [::item => any?]
-      (get-client node ""))
-     ([{::keys [host port rpcuser rpcpass]} path]
-      [::item string? => any?]
-      (c.bitcoin/get-client
-       {:http/url        (str "http://" host ":" port path)
-        :http/basic-auth [rpcuser rpcpass]}))))
+;; #?(:clj
+;;    (>defn get-client
+;;      ([node]
+;;       [::item => any?]
+;;       (get-client node ""))
+;;      ([{::keys [host port rpcuser rpcpass]} path]
+;;       [::item string? => any?]
+;;       (c.bitcoin/get-client
+;;        {:http/url        (str "http://" host ":" port path)
+;;         :http/basic-auth [rpcuser rpcpass]}))))
 
 (def attributes
   [id name host port rpcuser rpcpass balance tx-count chain pruned? difficulty size-on-disk initial-block-download? best-block-hash verification-progress warnings headers chainwork block-count])

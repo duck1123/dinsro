@@ -1,8 +1,8 @@
 (ns dinsro.model.core.blocks
   (:refer-clojure :exclude [hash time])
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -46,8 +46,8 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::median-time int?)
-(defattr median-time ::median-time :int
+(s/def ::median-time inst?)
+(defattr median-time ::median-time :date
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -139,25 +139,50 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(defn prepare-params
-  [params]
-  (log/debug :prepare-params/preparing {:params params})
-  (let [params                   (set/rename-keys params rename-map)
-        {::keys [time fetched?]} params
-        time-ms                  (* time 1000)
-        time-inst                (tick/instant time-ms)
-        updated-params           (-> params
-                                     (assoc ::time time-inst)
-                                     (assoc ::fetched? (boolean fetched?))
-                                     (dissoc ::confirmations))]
-    (log/info :prepare-params/prepared {:params params :updated-params updated-params})
-    updated-params))
-
 (s/def ::params
   (s/keys :req [::hash ::height ::node ::fetched?]
           :opt [::bits ::chainwork ::difficulty ::merkle-root ::nonce ::size ::time
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version ::next-block ::previous-block]))
+
+(>def ::unprepared-params (s/keys))
+
+(>defn prepare-params
+  [params]
+  [::unprepared-params => ::params]
+  (log/debug :prepare-params/preparing {:params params})
+  (let [{:keys  [bits hash height chainwork difficulty merkle-root nonce size
+                 time tx median-time weight version-hex stripped-size version]
+         ::keys [fetched? node]} params
+
+        time-inst                     (some-> time (* 1000) tick/instant)
+        transaction-count             (count tx)
+        median-time-inst              (some-> median-time (* 1000) tick/instant)
+        updated-params                (-> params
+                                          (assoc ::time time-inst)
+                                          (assoc ::fetched? (boolean fetched?))
+                                          (dissoc ::confirmations))]
+    (log/info :prepare-params/prepared {#_#_:params params
+                                        :updated-params updated-params})
+    {::hash              hash
+     ::height            height
+     ::node              node
+     ::fetched?          fetched?
+     ::bits              bits
+     ::chainwork         chainwork
+     ::difficulty        difficulty
+     ::merkle-root       merkle-root
+     ::nonce             nonce
+     ::size              size
+     ::time              time-inst
+     ::transaction-count transaction-count
+     ::median-time       median-time-inst
+     ::weight            weight
+     ::version-hex       version-hex
+     ::stripped-size     stripped-size
+     ::version           version}
+    #_updated-params))
+
 (s/def ::item
   (s/keys :req [::id ::hash ::height ::node ::fetched?]
           :opt [::bits ::chainwork ::difficulty ::merkle-root ::nonce ::size ::time

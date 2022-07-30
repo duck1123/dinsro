@@ -236,6 +236,8 @@
                  :current-noramlized current-normalized})
       updated-data)))
 
+(def force-fetch-button true)
+
 (defsc ShowBlock
   "Show a core block"
   [this {::m.c.blocks/keys [id height hash previous-block next-block fetched?]
@@ -283,7 +285,7 @@
     (dom/div :.ui.segment
       (dom/h1 {}
               "Block " height
-              (when-not fetched?
+              (when-not (and (not force-fetch-button) fetched?)
                 (comp/fragment
                  " ("
                  (dom/a {:href    "#"

@@ -117,10 +117,12 @@
            (apply [_this try-obj]
              (log/finer :await-future/applied {:try-obj try-obj})
              (if (instance? Success try-obj)
-               (let [response (try (.get try-obj) (catch Exception ex ex))]
-                 (log/finer :await-future/got {:response response})
-                 (let [data {:passed true :result response}]
-                   (>!! ch data)))
+               (do
+                 (log/finer :await-future/success-instance {:try-obj try-obj})
+                 (let [response (try (.get try-obj) (catch Exception ex ex))]
+                   (log/finer :await-future/got {:response response})
+                   (let [data {:passed true :result response}]
+                     (>!! ch data))))
                (let [data {:passed false :result try-obj}]
                  (log/finer :await-future/not-success {:data data})
                  (>!! ch data)))))]

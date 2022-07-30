@@ -41,9 +41,12 @@
 
 ;; ## Generate to address
 
+(def address "bcrt1qpe5thhr9p582w0ymg99ea5ql9e5y5lqsxm5527")
+(def address2 "bcrt1qasndfxduf6ap94hkpn3kde0mcvdrqvs95e8adz")
+
 (comment
 
-  (a.c.nodes/generate-to-address! node "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
+  (dotimes [_a 100] (a.c.nodes/generate-to-address! node address))
 
   nil)
 

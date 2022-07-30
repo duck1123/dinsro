@@ -4,7 +4,6 @@
    [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.client.bitcoin :as c.bitcoin]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
@@ -56,7 +55,7 @@
   (def node (q.c.nodes/read-record (q.c.nodes/find-id-by-name node-name)))
   node
 
-  (def client (m.c.nodes/get-client node ""))
+  (def client nil)
   client
 
   (c.bitcoin/add-node client "bitcoin.bitcoin-bob")

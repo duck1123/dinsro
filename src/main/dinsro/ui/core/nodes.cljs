@@ -226,7 +226,7 @@
 (def show-peers true)
 (def show-wallets true)
 (def show-blocks true)
-(def show-transactions true)
+(def show-transactions false)
 
 (defsc ShowNode
   "Show a core node"

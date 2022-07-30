@@ -144,8 +144,6 @@
    fo/title        "Transactions"
    fo/attributes   [m.ln.tx/tx-hash]})
 
-(def override-tx-subform true)
-
 (defsc ActionsMenuItem
   [this {:keys [label mutation id]}]
   (ui-dropdown-item

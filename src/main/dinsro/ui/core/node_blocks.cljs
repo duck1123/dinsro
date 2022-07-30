@@ -3,22 +3,23 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
-   [com.fulcrologic.rad.form :as form]
+   ;; [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
-(defn delete-action
-  [report-instance {::m.c.nodes/keys [id]}]
-  (form/delete! report-instance ::m.c.blocks/id id))
+(defn fetch-action
+  [report-instance {::m.c.blocks/keys [id]}]
+  (comp/transact! report-instance [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))
 
 (def fetch-action-button
   {:label  "Fetch"
-   :action delete-action
+   :action fetch-action
    :style  :fetch-button})
 
 (report/defsc-report NodeBlocksReport
@@ -42,7 +43,7 @@
                         ::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Node Blocks"
-   ro/row-actions      [u.c.blocks/fetch-action-button
+   ro/row-actions      [fetch-action-button
                         u.c.blocks/delete-action-button]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
