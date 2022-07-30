@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: certs
+  namespace: "{{ .Release.Namespace }}"
   labels:
     app: certs
     type: local

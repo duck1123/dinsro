@@ -3,6 +3,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "dinsro.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "dinsro.labels" . | nindent 4 }}
 spec:

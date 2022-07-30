@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres
+  namespace: "{{ .Release.Namespace }}"
   labels:
     app: {{ template "dinsro.fullname" . }}-data
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config
+  namespace: "{{ .Release.Namespace }}"
 data:
   config.edn: |-
 {{ if not (eq .Values.dinsroConfig "-") }}
