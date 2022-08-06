@@ -116,9 +116,6 @@ def earthly_build(
 def has_bitcoind_values(name):
   return os.path.exists("./target/conf/%s/bitcoind_values.yaml" % name)
 
-def has_dinsro_values():
-  return os.path.exists("./target/dinsro_values.yaml")
-
 def has_fileserver_values(name):
   return os.path.exists("./target/conf/%s/fileserver_values.yaml" % name)
 
@@ -296,31 +293,24 @@ if has_key('fileserver'):
 #   labels = [ 'compile' ],
 # )
 
-if has_dinsro_values():
-  # k8s_yaml(helm(
-  #   'resources/helm/dinsro',
-  #   name = 'dinsro',
-  #   namespace = 'dinsro',
-  #   values=["./target/dinsro_values.yaml"],
-  # ))
-  k8s_yaml(local('bb helm-dinsro'))
-  k8s_resource(
-    workload='dinsro',
-    port_forwards = [x for x in [
-      port_forward(3333, 3333, name='cljs nrepl') if has_devtools else None,
-      port_forward(3693, 3693, name='workspaces') if has_devtools else None,
-      port_forward(7000, 7000, name='nRepl') if use_nrepl else None,
-      port_forward(9630, 9630, name='devtools') if has_devtools else None,
-    ] if x != None],
-    links = [x for x in [
-      link(base_url, 'dinsro'),
-      link('devtools.' + base_url, 'Devtools') if has_devtools else None,
-      link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
-      link(devcards.get('host') or "devcards.dinsro.localhost", 'Cards') if devcards_enabled else None,
-      link(get_notebooks_host(), 'Notebooks') if use_notebooks else None,
-    ] if x != None],
-    labels = [ 'dinsro' ],
-  )
+k8s_yaml(local('bb helm-dinsro'))
+k8s_resource(
+  workload='dinsro',
+  port_forwards = [x for x in [
+    port_forward(3333, 3333, name='cljs nrepl') if has_devtools else None,
+    port_forward(3693, 3693, name='workspaces') if has_devtools else None,
+    port_forward(7000, 7000, name='nRepl') if use_nrepl else None,
+    port_forward(9630, 9630, name='devtools') if has_devtools else None,
+  ] if x != None],
+  links = [x for x in [
+    link(base_url, 'dinsro'),
+    link('devtools.' + base_url, 'Devtools') if has_devtools else None,
+    link('workspaces.' + base_url, 'Workspaces') if has_devtools else None,
+    link(devcards.get('host') or "devcards.dinsro.localhost", 'Cards') if devcards_enabled else None,
+    link(get_notebooks_host(), 'Notebooks') if use_notebooks else None,
+  ] if x != None],
+  labels = [ 'dinsro' ],
+)
 
 if use_production:
   earthly_build(
@@ -427,7 +417,7 @@ if devcards_enabled:
 
 # Docs
 
-if docs_enabled and has_dinsro_values():
+if docs_enabled:
   earthly_build(
     "%s/dinsro:docs-%s" % (repo, version),
     '+docs-image',
