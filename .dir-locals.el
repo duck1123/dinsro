@@ -5,6 +5,7 @@
     ((eval .
        (progn
          (define-clojure-indent
+           (>def 1)
            (>defn 1)
            (a 1)
            (action 1)

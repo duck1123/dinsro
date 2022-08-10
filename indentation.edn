@@ -1,4 +1,5 @@
-{>defn            [[:inner 0]]
+{>def             [[:inner 0]]
+ >defn            [[:inner 0]]
  a                [[:inner 0]]
  action           [[:inner 0]]
  behavior         [[:inner 0]]

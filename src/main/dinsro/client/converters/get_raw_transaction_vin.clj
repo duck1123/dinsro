@@ -19,14 +19,14 @@
 (>def ::vout (? number?))
 
 (>def ::record
-      (s/keys
-       :req
-       [;; ::product-element-names
-        ::script-sig
-        ::sequence
-        ::tx-id
-        ::tx-in-witness
-        ::vout]))
+  (s/keys
+   :req
+   [;; ::product-element-names
+    ::script-sig
+    ::sequence
+    ::tx-id
+    ::tx-in-witness
+    ::vout]))
 
 (>defn GetRawTransactionVin->record
   [this]

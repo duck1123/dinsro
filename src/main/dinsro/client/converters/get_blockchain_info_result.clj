@@ -31,21 +31,21 @@
 (>def ::get-blockchain-info-result-obj (ds/instance? GetBlockChainInfoResultPostV19))
 
 (>def ::record
-      (s/keys
-       :req-un
-       [::best-block-hash
-        ::blocks
-        ::chain
-        ::chainwork
-        ::difficulty
-        ::headers
-        ::initial-block-download?
-        ::median-time
+  (s/keys
+   :req-un
+   [::best-block-hash
+    ::blocks
+    ::chain
+    ::chainwork
+    ::difficulty
+    ::headers
+    ::initial-block-download?
+    ::median-time
         ;; ::product-element-names
-        ::size-on-disk
+    ::size-on-disk
         ;; ::softforks
-        ::verification-progress
-        ::warnings]))
+    ::verification-progress
+    ::warnings]))
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockChainInfoResultPostV19.html
 

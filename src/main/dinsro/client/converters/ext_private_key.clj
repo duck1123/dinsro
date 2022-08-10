@@ -19,8 +19,8 @@
 (>def ::version string?)
 
 (>def ::record
-      (s/keys
-       :req-un [::chain-code ::depth ::fingerprint ::key ::version]))
+  (s/keys
+   :req-un [::chain-code ::depth ::fingerprint ::key ::version]))
 
 (defn ->path
   ([]

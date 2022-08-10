@@ -14,9 +14,9 @@
 (>def ::hex string?)
 
 (>def ::record
-      (s/keys
-       :req
-       [::hex]))
+  (s/keys
+   :req
+   [::hex]))
 
 (>defn ScriptPubKey->record
   [this]

@@ -22,10 +22,10 @@
 (>def ::synced-blocks number?)
 
 (>def ::record
-      (s/keys :req-un
-              [::synced-headers ::subver ::inflight ::network-info
-               ::connection-type ::id ::inbound ::version
-               ::add-node ::synced-blocks]))
+  (s/keys :req-un
+          [::synced-headers ::subver ::inflight ::network-info
+           ::connection-type ::id ::inbound ::version
+           ::add-node ::synced-blocks]))
 
 (>defn PeerPostV21->record
   [this]

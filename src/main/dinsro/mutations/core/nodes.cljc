@@ -48,17 +48,17 @@
 ;; Fetch
 
 (>def ::fetch!-request
-      (s/keys :req [::m.c.nodes/id]))
+  (s/keys :req [::m.c.nodes/id]))
 
 (>def ::fetch!-response-success
-      (s/keys :req [::mu/status ::m.c.nodes/item]))
+  (s/keys :req [::mu/status ::m.c.nodes/item]))
 
 (>def ::fetch!-response-error
-      (s/keys :req [::mu/status ::mu/errors]))
+  (s/keys :req [::mu/status ::mu/errors]))
 
 (>def ::fetch!-response
-      (s/or :success ::fetch!-response-success
-            :error ::fetch!-response-error))
+  (s/or :success ::fetch!-response-success
+        :error ::fetch!-response-error))
 
 (defsc FetchResponse
   [_ _]

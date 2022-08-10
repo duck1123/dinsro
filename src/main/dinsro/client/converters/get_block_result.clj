@@ -19,16 +19,16 @@
 (>def ::next-block-hash (s/or :hash string? :no-hash nil?))
 
 (>def ::record
-      (s/keys :req-un
-              [::bits
-               ::chainwork
-               ::confirmations
-               ::difficulty
-               ::hash
-               ::height
-               ::median-time
-               ::merkle-root
-               ::next-block-hash]))
+  (s/keys :req-un
+          [::bits
+           ::chainwork
+           ::confirmations
+           ::difficulty
+           ::hash
+           ::height
+           ::median-time
+           ::merkle-root
+           ::next-block-hash]))
 
 (>defn GetBlockResult->record
   [^GetBlockResult this]

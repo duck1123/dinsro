@@ -40,22 +40,22 @@
 (>def ::vsize number?)
 
 (>def ::record
-      (s/keys
-       :req
-       [::block-hash
-        ::block-time
-        ::confirmations
-        ::hash
-        ::hex
-        ::in-active-blockchain?
-        ::locktime
-        ::size
-        ::time
-        ::tx-id
-        ::version
-        ::vin
-        ::vout
-        ::vsize]))
+  (s/keys
+   :req
+   [::block-hash
+    ::block-time
+    ::confirmations
+    ::hash
+    ::hex
+    ::in-active-blockchain?
+    ::locktime
+    ::size
+    ::time
+    ::tx-id
+    ::version
+    ::vin
+    ::vout
+    ::vsize]))
 
 (>defn GetRawTransactionResult->record
   [^GetRawTransactionResult this]

@@ -10,9 +10,9 @@
    org.bitcoins.core.currency.CurrencyUnit))
 
 (>def ::record
-      (s/keys
-       :req
-       [::value]))
+  (s/keys
+   :req
+   [::value]))
 
 (>defn CurrencyUnit->record
   [this]
