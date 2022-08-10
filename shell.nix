@@ -13,5 +13,6 @@
       openjdk
       # tilt
       yarn
+      yq
     ];
 }

@@ -145,12 +145,14 @@
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version ::next-block ::previous-block]))
 
-(>def ::unprepared-params (s/keys))
+(>def ::unprepared-params
+  (s/keys
+   :req [::node ::fetched?]))
 
 (>defn prepare-params
   [params]
   [::unprepared-params => ::params]
-  (log/debug :prepare-params/preparing {:params params})
+  (log/finer :prepare-params/preparing {:params params})
   (let [{:keys  [bits hash height chainwork difficulty merkle-root nonce size
                  time tx median-time weight version-hex stripped-size version]
          ::keys [fetched? node]} params
@@ -162,8 +164,8 @@
                                           (assoc ::time time-inst)
                                           (assoc ::fetched? (boolean fetched?))
                                           (dissoc ::confirmations))]
-    (log/info :prepare-params/prepared {#_#_:params params
-                                        :updated-params updated-params})
+    (log/finer :prepare-params/prepared {#_#_:params params
+                                         :updated-params updated-params})
     {::hash              hash
      ::height            height
      ::node              node

@@ -218,29 +218,29 @@
               :state-map          state-map
               :current-noramlized current-normalized})
   (let [id (::m.c.tx/id data-tree)]
-    (log/info :ShowTransaction-pre-merge/parsed {:id id})
+    (log/finer :ShowTransaction-pre-merge/parsed {:id id})
     (let [inputs-data
           (let [initial (comp/get-initial-state u.c.transaction-inputs/TransactionInputsSubPage)
                 state   (get-in state-map (comp/get-ident u.c.transaction-inputs/TransactionInputsSubPage {}))
                 merged  (merge initial state {::m.c.blocks/id id})]
-            (log/info :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            (log/finer :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
             merged)
 
           outputs-data
           (let [initial (comp/get-initial-state u.c.transaction-outputs/TransactionOutputsSubPage)
                 state   (get-in state-map (comp/get-ident u.c.transaction-outputs/TransactionOutputsSubPage {}))
                 merged  (merge initial state {::m.c.blocks/id id})]
-            (log/info :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            (log/finer :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
             merged)
 
           updated-data (-> data-tree
                            (assoc :ui/inputs inputs-data)
                            (assoc :ui/outputs outputs-data))]
-      (log/info :ShowBlock-pre-merge/merged
-                {:updated-data       updated-data
-                 :data-tree          data-tree
-                 :state-map          state-map
-                 :current-noramlized current-normalized})
+      (log/finer :ShowBlock-pre-merge/merged
+                 {:updated-data       updated-data
+                  :data-tree          data-tree
+                  :state-map          state-map
+                  :current-noramlized current-normalized})
       updated-data)))
 
 (defsc ShowTransaction
@@ -272,11 +272,11 @@
      (let [id    (new-uuid id)
            ident [::m.c.tx/id id]
            state (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowTransaction/will-enter {:id id :app app})
+       (log/finer :ShowTransaction/will-enter {:id id :app app})
        (dr/route-deferred
         ident
         (fn []
-          (log/info :ShowTransaction/will-enter2 {:id id :state state})
+          (log/finer :ShowTransaction/will-enter2 {:id id :state state})
           (df/load!
            app ident ShowTransaction
            {:marker               :ui/selected-node
@@ -284,7 +284,7 @@
             :post-mutation        `dr/target-ready
             :post-mutation-params {:target ident}})))))
    :pre-merge     ShowTransaction-pre-merge}
-  (log/info :ShowTransaction/creating {:id id :props props :this this})
+  (log/finer :ShowTransaction/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {} "Transaction")
@@ -310,22 +310,24 @@
                         m.c.tx/fetched?
                         m.c.tx/block]
    ro/controls
-   {::search search-control
+   {;; ::search search-control
     ::refresh
     {:type   :button
      :label  "Refresh"
      :action (fn [this] (control/run! this))}
-    ::tx-id
-    {:type          :string
-     :style         :search
-     :default-value ""
-     :label         "Transaction Id"
-     :onChange      (fn [this _] (control/run! this))}}
-   ro/control-layout   {:inputs         [[::tx-id ::search]]
+
+    ;; ::tx-id
+    ;; {:type          :string
+    ;;  :style         :search
+    ;;  :default-value ""
+    ;;  :label         "Transaction Id"
+    ;;  :onChange      (fn [this _] (control/run! this))}
+    }
+   ro/control-layout   {;; :inputs         [[::tx-id ::search]]
                         :action-buttons [::refresh]}
-   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
-                        ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)
-                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
+   ;; ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
+   ;;                      ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)
+   ;;                      ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Transactions"
    ro/row-actions      [fetch-action-button delete-action-button]

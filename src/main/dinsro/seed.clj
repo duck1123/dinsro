@@ -245,7 +245,8 @@
     :isActive   false
     :isIdentity false
     :path       ".rate"
-    :code       "usd"}
+    :code       "usd"
+    :rates      []}
    #_{:name       "Coinbase USD"
       :code       "usd"
       :url        "https://api.coinbase.com/v2/prices/spot?currency=USD"
@@ -257,7 +258,8 @@
     :isActive   false
     :isIdentity false
     :path       ".rate"
-    :code       "usd"}
+    :code       "usd"
+    :rates      []}
    {:name       "DuckBitcoin"
     :url        "https://www.duckbitcoin.localhost/api/current-rates"
     :code       "usd"
@@ -270,7 +272,8 @@
     :isActive   false
     :isIdentity false
     :path       ".rate"
-    :code       "usd"}])
+    :code       "usd"
+    :rates      []}])
 
 (def admin-categories
   [{:name "Admin Category A"}

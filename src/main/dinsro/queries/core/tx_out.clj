@@ -69,10 +69,9 @@
     (ffirst (xt/q db query [tx-id n]))))
 
 (>defn update!
-  [params]
-  [::m.c.tx-out/params => any?]
-  (let [id (::m.c.tx-out/id params)
-        node   (c.xtdb/main-node)
+  [id params]
+  [::m.c.tx-out/id ::m.c.tx-out/params => any?]
+  (let [node   (c.xtdb/main-node)
         db     (c.xtdb/main-db)
         old    (xt/pull db '[*] id)
         params (merge old params)

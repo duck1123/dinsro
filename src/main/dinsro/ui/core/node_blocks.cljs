@@ -59,26 +59,26 @@
    :componentDidMount
    (fn [this]
      (let [props (comp/props this)]
-       (log/info :NodePeersSubPage/did-mount {:props props :this this})
+       (log/finer :NodePeersSubPage/did-mount {:props props :this this})
        (report/start-report! this NodeBlocksReport)))
    :pre-merge
    (fn [{:keys [data-tree state-map]}]
-     (log/info :NodeBlocksSubPage/pre-merge {:data-tree data-tree})
+     (log/finer :NodeBlocksSubPage/pre-merge {:data-tree data-tree})
      (let [initial             (comp/get-initial-state NodeBlocksReport)
            report-data         (get-in state-map (comp/get-ident NodeBlocksReport {}))
            updated-report-data (merge initial report-data)
            updated-data        (-> data-tree (assoc :blocks updated-report-data))]
-       (log/info :NodeBlocksSubPage/merged {:updated-data updated-data :data-tree data-tree})
+       (log/finer :NodeBlocksSubPage/merged {:updated-data updated-data :data-tree data-tree})
        updated-data))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
    :ident         (fn [] [:component/id ::NodeBlocksSubPage])}
-  (log/info :NodeBlocksSubPage/creating {:props props})
+  (log/finer :NodeBlocksSubPage/creating {:props props})
   (let [block-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
       (if node-id
         (do
-          (log/info :NodeBlocksSubPage/report-renderin {:block-data block-data})
+          (log/finer :NodeBlocksSubPage/report-renderin {:block-data block-data})
           (ui-node-blocks-report block-data))
         (dom/p {} "Node ID not set")))))
 

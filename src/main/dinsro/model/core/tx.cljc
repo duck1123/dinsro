@@ -1,12 +1,13 @@
 (ns dinsro.model.core.tx
   (:refer-clojure :exclude [hash sequence time])
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core.blocks :as m.c.blocks]))
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [lambdaisland.glogc :as log]))
 
 (def rename-map
   {:blockhash     ::block-hash
@@ -23,13 +24,6 @@
    :vout          ::vout
    :vin           ::vin
    :weight        ::weight})
-
-(defn prepare-params
-  [params]
-  (-> params
-      (set/rename-keys rename-map)
-      (dissoc :vOut)
-      (dissoc :vIn)))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -110,6 +104,30 @@
                 ::block
                 ::fetched?]
           :opt [::hash ::hex ::lock-time ::size ::time ::version]))
+
+(>def ::unprepared-params
+  (s/keys
+   :req [::block ::fetched?]))
+
+(>defn prepare-params
+  [params]
+  [::unprepared-params => ::params]
+  (log/info :prepare-params/starting {:params params})
+  (let [{::keys [block fetched?]
+         :dinsro.client.converters.get-raw-transaction-result/keys
+         [tx-id hash hex locktime size time version]} params
+        prepared-params
+        {::tx-id     tx-id
+         ::block     block
+         ::fetched?  fetched?
+         ::hash      hash
+         ::hex       (some->  hex :dinsro.client.converters.witness-transaction/bytes)
+         ::lock-time locktime
+         ::size      size
+         ::time      time
+         ::version   version}]
+    (log/info :prepare-params/finished {:prepared-params prepared-params})
+    prepared-params))
 
 (defn idents
   [ids]

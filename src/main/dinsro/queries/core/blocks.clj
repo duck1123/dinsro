@@ -37,9 +37,9 @@
                    :in    [?node-id ?height]
                    :where [[?id ::m.c.blocks/node ?node-id]
                            [?id ::m.c.blocks/height ?height]]}
-        response (ffirst (xt/q db query node-id height))]
-    (log/info :fetch-by-node-and-height/finished {:node-id node-id :height height :response response})
-    response))
+        block-id (ffirst (xt/q db query node-id height))]
+    (log/info :fetch-by-node-and-height/finished {:node-id node-id :height height :block-id block-id})
+    block-id))
 
 (>defn read-record
   [id]

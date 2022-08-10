@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.node-base :as a.c.node-base]
+   [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -99,7 +100,16 @@
                            :block-record block-record
                            :core-node-id core-node-id
                            :updated-id   updated-id})
+
+                (let [params block
+                      params (assoc params ::m.c.blocks/node core-node-id)
+                      params (assoc params ::m.c.blocks/fetched? true)
+                      params (m.c.blocks/prepare-params params)]
+                  (log/info :update-block-by-height/found-params {:params params})
+                  (q.c.blocks/update-block updated-id params))
                 (update-neighbors core-node-id block height)
+                (doseq [tx-id (:tx block)]
+                  (a.c.tx/register-tx core-node-id updated-id tx-id))
                 updated-id)
               (throw (RuntimeException. "Failed to read record")))
             (if-let [update-response (update-block! core-node-id height block)]
@@ -108,7 +118,8 @@
                           {:block        block
                            :core-node-id core-node-id
                            :updated-id   updated-id})
-
+                (doseq [tx-id (:tx block)]
+                  (a.c.tx/register-tx core-node-id updated-id tx-id))
                 updated-id)
               (throw (RuntimeException. "Updated record returned nil")))))
         (throw (RuntimeException. "Failed to fetch block from node"))))

@@ -1,25 +1,18 @@
 (ns dinsro.model.core.tx-out
   (:refer-clojure :exclude [hash sequence time type])
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core.tx :as m.c.tx]))
+   [dinsro.model.core.tx :as m.c.tx]
+   [lambdaisland.glogc :as log]))
 
 (def rename-map
   {:value ::value
    :n     ::n})
 
-(defn prepare-params
-  [params]
-  (let [{:keys [scriptPubKey]}         params
-        {:keys [asm hex type address]} scriptPubKey
-        params                         (set/rename-keys params rename-map)
-        params                         (merge {::asm asm ::hex hex ::type type ::address address} params)]
-    params))
-
-(s/def ::id uuid?)
+(>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
@@ -62,10 +55,42 @@
 
 (s/def ::params
   (s/keys :req [::n ::value ::transaction]
-          :opt [::asm ::hex ::type ::address]))
+          :opt [::asm ::hex ::type
+                ;; ::address
+                ]))
+
 (s/def ::item
   (s/keys :req [::id ::n ::value ::transaction]
-          :opt [::asm ::hex ::type ::address]))
+          :opt [::asm ::hex ::type
+                ;; ::address
+                ]))
+
+(>def ::unprepared-params
+  (s/keys
+   :req [:dinsro.client.converters.rpc-transaction-output/n
+         :dinsro.client.converters.rpc-transaction-output/script-pub-key
+         :dinsro.client.converters.rpc-transaction-output/value]))
+
+(>defn prepare-params
+  [params]
+  [::unprepared-params => ::params]
+  (log/info :prepare-params/starting {:params params})
+  (let [{::keys [transaction]
+         :dinsro.client.converters.rpc-transaction-output/keys
+         [n script-pub-key]}           params
+        currency-value                 (:dinsro.client.converters.rpc-transaction-output/value params)
+        value                          (:dinsro.client.converters.currency-unit/value currency-value)
+        {:keys [asm hex script-type]} script-pub-key
+        prepared-params                {::n           n
+                                        ::value       value
+                                        ::transaction transaction
+                                        ::asm         asm
+                                        ::hex         hex
+                                        ::type        script-type
+                                        ;; ::address     address
+                                        }]
+    (log/info :prepare-params/finished {:prepared-params prepared-params})
+    prepared-params))
 
 (defn idents
   [ids]

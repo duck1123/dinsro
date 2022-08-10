@@ -57,6 +57,7 @@ use_bob        = nodes.get('bob').get('bitcoin')
 
 multple_envs = use_alice and use_bob
 multiple_rtl = nodes.get('alice').get('rtl') and nodes.get('bob').get('rtl')
+multiple_specter = nodes.get('alice').get('specter') and nodes.get('bob').get('specter')
 
 def has_key(service_name):
   print(nodes)
@@ -196,7 +197,7 @@ def rtl_environment(name):
 def specter_environment(name):
   k8s_yaml(local("bb helm-specter %s" % name))
   k8s_resource(
-    workload = "%s-specter-desktop" % name,
+    workload = "%s-specter-desktop" % name if multiple_specter else "specter-%s-specter-desktop" % name,
     labels = [ name ],
     links = [
       link("http://specter.%s.localhost" % name, 'specter')
@@ -604,6 +605,15 @@ if use_persistence:
       'resources/tilt/sqlpad/seed-data'
     ],
   )
+
+earthly_build(
+  'duck1123/specter-config-manager:latest',
+  './resources/specter-config-manager+image',
+  deps = [
+    'resources/specter-config-manager',
+  ],
+)
+
 
 if use_persistence:
   k8s_resource(

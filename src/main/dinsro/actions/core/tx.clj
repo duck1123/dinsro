@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -20,27 +19,26 @@
 (>defn fetch-tx
   [node tx-id]
   [::m.c.nodes/item ::m.c.tx/tx-id => any?]
-  (log/info :tx/fetch {:node node :tx-id tx-id})
-  (let [client (a.c.node-base/get-client node)
-        result (c.bitcoin-s/get-raw-transaction client tx-id)]
-    (log/info :tx/fetched {:result result})
-    result))
+  (let [node-id (::m.c.nodes/id node)]
+    (log/info :fetch-tx/starting {:node-id node-id :tx-id tx-id})
+    (let [client (a.c.node-base/get-client node)
+          result (c.bitcoin-s/get-raw-transaction client tx-id)]
+      (log/info :fetch-tx/finished {:result result})
+      result)))
 
 (>defn register-tx
-  [core-node-id block-hash block-height tx-id]
-  [::m.c.nodes/id ::m.c.blocks/hash ::m.c.blocks/height ::m.c.tx/tx-id => ::m.c.tx/id]
-  (log/info :tx/register {:block-hash   block-hash
-                          :block-height block-height
-                          :core-node-id core-node-id
-                          :tx-id        tx-id})
+  [core-node-id block-id tx-id]
+  [::m.c.nodes/id ::m.c.blocks/id ::m.c.tx/tx-id => ::m.c.tx/id]
+  (log/info :register-tx/starting {:block-id   block-id
+                                   :core-node-id core-node-id
+                                   :tx-id        tx-id})
   (if-let [id (q.c.tx/fetch-by-txid tx-id)]
     (do
-      (log/info :tx/found {:id id})
+      (log/info :register-tx/found {:id id})
       id)
     (do
-      (log/info :tx/not-found {})
-      (let [block-id (a.c.blocks/register-block core-node-id block-hash block-height)
-            params   {::m.c.tx/block    block-id
+      (log/info :register-tx/not-found {})
+      (let [params   {::m.c.tx/block    block-id
                       ::m.c.tx/tx-id    tx-id
                       ::m.c.tx/fetched? false}]
         (q.c.tx/create-record params)))))
@@ -54,45 +52,62 @@
 (>defn update-tx-out
   [tx-id old-output params]
   [::m.c.tx/id ::m.c.tx-out/item any? => ::m.c.tx-out/id]
-  (log/info :tx-out/update {:tx-id tx-id :out-output old-output :params params})
+  (log/info :update-tx-out/starting {:tx-id tx-id :out-output old-output :params params})
   (let [tx-out-id (::m.c.tx-out/id old-output)
         params    (assoc params ::m.c.tx-out/id tx-out-id)
         params    (assoc params ::m.c.tx-out/transaction tx-id)
         params    (m.c.tx-out/prepare-params params)]
-    (q.c.tx-out/update! params)
+    (q.c.tx-out/update! tx-out-id params)
     tx-out-id))
 
 (>defn create-tx-out
   [tx-id params]
   [::m.c.tx/id any? => ::m.c.tx-out/id]
-  (log/info :tx-out/create {})
+  (log/info :create-tx-out/starting {})
   (let [params (assoc params ::m.c.tx-out/transaction tx-id)
         params (m.c.tx-out/prepare-params params)]
     (q.c.tx-out/create-record params)))
 
+(>defn update-tx-out!
+  [tx-id output]
+  [::m.c.tx/id any? => ::m.c.tx-out/id]
+  (log/info :update-tx-out!/starting {:tx-id tx-id :output output})
+  (if-let [n (:dinsro.client.converters.rpc-transaction-output/n output)]
+    (do
+      (log/info :update-tx/handling-output {:output output :n n})
+      (if-let [old-output-id (q.c.tx-out/find-by-tx-and-index tx-id n)]
+        (do
+          (log/info :update-tx/old-output-found {:old-output-id old-output-id})
+          (if-let [old-output (q.c.tx-out/read-record old-output-id)]
+            (update-tx-out tx-id old-output output)
+            (throw (RuntimeException. "Failed to find old output id"))))
+        (do
+          (log/info :update-tx/old-output-not-found {})
+          (create-tx-out tx-id output))))
+    (throw (RuntimeException. "failed to find n"))))
+
 (>defn update-tx
-  [node-id tx-id]
-  [::m.c.nodes/id ::m.c.tx/tx-id => (? ::m.c.tx/id)]
-  (log/info :tx/update {:node-id node-id :tx-id tx-id})
+  [node-id block-id tx-id]
+  [::m.c.nodes/id ::m.c.tx/block ::m.c.tx/tx-id => (? ::m.c.tx/id)]
+  (log/info :update-tx/starting {:node-id node-id :tx-id tx-id})
   (if-let [node (q.c.nodes/read-record node-id)]
     (if-let [raw-tx (fetch-tx node tx-id)]
-      (let [tx-params (assoc (m.c.tx/prepare-params raw-tx) ::m.c.tx/node node-id)]
-        (if-let [existing-tx-id (q.c.tx/fetch-by-txid (::m.c.tx/tx-id tx-params))]
+      (let [raw-tx         (assoc raw-tx ::m.c.tx/fetched? true)
+            raw-tx         (assoc raw-tx  ::m.c.tx/block block-id)
+            {:dinsro.client.converters.get-raw-transaction-result/keys
+             [vin vout]}   raw-tx
+            tx-params      (m.c.tx/prepare-params raw-tx)
+            transaction-id (::m.c.tx/tx-id tx-params)]
+        (if-let [existing-tx-id (q.c.tx/fetch-by-txid transaction-id)]
           (if-let [existing-tx (q.c.tx/read-record existing-tx-id)]
-            (let [{::m.c.tx/keys [block]} existing-tx
-                  tx-params                  (assoc tx-params ::m.c.tx/fetched? true)
-                  tx-params                  (assoc tx-params ::m.c.tx/block block)]
+            (let [{block-id ::m.c.tx/block} existing-tx
+                  tx-params                 (assoc tx-params ::m.c.tx/fetched? true)
+                  tx-params                 (assoc tx-params ::m.c.tx/block block-id)]
               (q.c.tx/update-tx existing-tx-id tx-params)
-              (let [{:keys [vin vout]} raw-tx]
-                (doseq [output vout]
-                  (let [n (:n output)]
-                    (if-let [old-output-id (q.c.tx-out/find-by-tx-and-index existing-tx-id n)]
-                      (if-let [old-output (q.c.tx-out/read-record old-output-id)]
-                        (update-tx-out existing-tx-id old-output output)
-                        (throw (RuntimeException. "Failed to find old output id")))
-                      (create-tx-out existing-tx-id output))))
-                (doseq [input vin]
-                  (update-tx-in existing-tx-id input)))
+              (doseq [output vout]
+                (update-tx-out! existing-tx-id output))
+              (doseq [input vin]
+                (update-tx-in existing-tx-id input))
               existing-tx-id)
             (throw (RuntimeException. "failed to find tx")))
           (q.c.tx/create-record tx-params)))
@@ -107,7 +122,7 @@
          block-id         ::m.c.tx/block} (q.c.tx/read-record id)]
     (if-let [block (q.c.blocks/read-record block-id)]
       (let [{::m.c.blocks/keys [node]} block
-            returned-id                  (update-tx node tx-id)]
+            returned-id                  (update-tx node block-id tx-id)]
         {:status          :passed
          ::m.c.tx/item (q.c.tx/read-record returned-id)
          :id              returned-id})
@@ -117,15 +132,15 @@
 
 (defn search!
   [props]
-  (log/info :tx/searching {:props props})
+  (log/info :search!/searching {:props props})
   (let [{tx-id ::m.c.tx/tx-id
          node-id ::m.c.tx/node} props]
-    (log/info :search/started {:tx-id tx-id
-                               :node-id node-id})
+    (log/info :search!/started {:tx-id tx-id
+                                :node-id node-id})
     (if-let [txid (q.c.tx/fetch-by-txid tx-id)]
       (do
-        (log/info :search/found {:tx-id tx-id :txid txid})
+        (log/info :search!/found {:tx-id tx-id :txid txid})
         (q.c.tx/read-record txid))
       (do
-        (log/info :fetch/not-cached {:tx-id tx-id})
+        (log/info :search!/not-cached {:tx-id tx-id})
         nil))))

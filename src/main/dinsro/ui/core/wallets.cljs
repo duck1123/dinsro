@@ -19,6 +19,7 @@
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
+   [dinsro.ui.core.wallet-words :as u.c.wallet-words]
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow
@@ -145,25 +146,33 @@
               :state-map          state-map
               :current-noramlized current-normalized})
   (let [id (::m.c.wallets/id data-tree)]
-    (log/info :ShowTransaction-pre-merge/parsed {:id id})
+    (log/finer :ShowTransaction-pre-merge/parsed {:id id})
     (let [addresses-data
           (let [initial (comp/get-initial-state u.c.wallet-addresses/WalletAddressesSubPage)
                 state   (get-in state-map (comp/get-ident u.c.wallet-addresses/WalletAddressesSubPage {}))
                 merged  (merge initial state {::m.c.wallets/id id})]
-            (log/info :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            (log/info :ShowBlock-pre-merge/address-data {:initial initial :state state :merged merged})
             merged)
-          updated-data (-> data-tree (assoc :ui/addresses addresses-data))]
-      (log/info :ShowBlock-pre-merge/merged
-                {:updated-data       updated-data
-                 :data-tree          data-tree
-                 :state-map          state-map
-                 :current-noramlized current-normalized})
+          words-data
+          (let [initial (comp/get-initial-state u.c.wallet-words/WalletWordsSubPage)
+                state   (get-in state-map (comp/get-ident u.c.wallet-words/WalletWordsSubPage {}))
+                merged  (merge initial state {::m.c.wallets/id id})]
+            (log/info :ShowBlock-pre-merge/words-data {:initial initial :state state :merged merged})
+            merged)
+          updated-data (-> data-tree
+                           (assoc :ui/addresses addresses-data)
+                           (assoc :ui/words words-data))]
+      (log/finer :ShowBlock-pre-merge/merged
+                 {:updated-data       updated-data
+                  :data-tree          data-tree
+                  :state-map          state-map
+                  :current-noramlized current-normalized})
       updated-data)))
 
 (defsc ShowWallet
   "Show a wallet"
   [this {::m.c.wallets/keys [id name derivation key node]
-         :ui/keys           [addresses]
+         :ui/keys           [addresses words]
          :as                props}]
   {:route-segment ["wallets" :id]
    :query         [::m.c.wallets/id
@@ -172,13 +181,15 @@
                    {::m.c.wallets/node (comp/get-query u.links/CoreNodeLinkForm)}
                    ::m.c.wallets/key
                    {:ui/addresses (comp/get-query u.c.wallet-addresses/WalletAddressesSubPage)}
+                   {:ui/words (comp/get-query u.c.wallet-words/WalletWordsSubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.wallets/id         nil
                    ::m.c.wallets/name       ""
                    ::m.c.wallets/derivation ""
                    ::m.c.wallets/key        ""
                    ::m.c.wallets/node       {}
-                   :ui/addresses            {}}
+                   :ui/addresses            {}
+                   :ui/words                {}}
    :ident         ::m.c.wallets/id
    :will-enter
    (fn [app {id :id}]
@@ -189,7 +200,7 @@
        (dr/route-deferred
         ident
         (fn []
-          (log/info :ShowTransaction/will-enter2 {:id id :state state})
+          (log/info :ShowWallet/will-enter2 {:id id :state state})
           (df/load!
            app ident ShowWallet
            {:marker               :ui/selected-node
@@ -197,17 +208,26 @@
             :post-mutation        `dr/target-ready
             :post-mutation-params {:target ident}})))))
    :pre-merge     ShowWallet-pre-merge}
-  (log/info :ShowTransaction/creating {:id id :props props :this this})
+  (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {} "Wallet")
+      (dom/button
+        {:onClick (fn [_]
+                    (log/info :ShowWallet/derive-clicked {})
+                    (comp/transact! this [(mu.c.wallets/derive! {::m.c.wallets/id id})]))}
+        "derive")
       (dom/p :.ui.segment "Name: " (str name))
       (dom/p :.ui.segment "Derivation: " (str derivation))
       (dom/p :.ui.segment "Key: " (str key))
       (dom/p :.ui.segment "Node: " (u.links/ui-core-node-link node)))
     (if id
-      (dom/div :.ui.segment
-        (u.c.wallet-addresses/ui-wallet-addresses-sub-page addresses))
+      (comp/fragment
+       (dom/div :.ui.segment
+         (u.c.wallet-addresses/ui-wallet-addresses-sub-page addresses))
+       (dom/div :.ui.segment
+         (u.c.wallet-words/ui-wallet-words-sub-page words)))
+
       (dom/p {} "id not set"))))
 
 (report/defsc-report WalletsReport

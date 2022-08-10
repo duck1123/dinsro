@@ -18,7 +18,7 @@
   :host        "devcards.dinsro.localhost"}
 
  :devtools
- {:enabled     true
+ {:enabled     false
   :embedded    false
   :inheritHost true
   :host        "devtools.dinsro.localhost"}

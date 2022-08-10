@@ -27,7 +27,8 @@
                             :core-chains
                             :core-networks
                             :wallets
-                            :wallet-addresses]]
+                            :wallet-addresses
+                            :words]]
    :core-node-connections ["Connections"       "/core/connections"  :dinsro.ui.core.connections/CoreNodeConnectionsReport]
    :core-networks         ["Networks"          "/core/networks"     :dinsro.ui.core.networks/CoreNetworksReport]
    :core-nodes            ["Nodes"             "/core/nodes"        :dinsro.ui.core.nodes/CoreNodesReport]
@@ -59,7 +60,8 @@
    :tx                    ["LN TXes"           "/ln/transactions"  :dinsro.ui.ln.transactions/LNTransactionsReport]
    :users                 ["Users"             "/users"            :dinsro.ui.users/UsersReport]
    :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/WalletsReport]
-   :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/WalletAddressesReport]})
+   :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/WalletAddressesReport]
+   :words ["Words" "/core/words" :dinsro.ui.core.words/WordsReport]})
 
 #?(:clj
    (pc/defresolver id

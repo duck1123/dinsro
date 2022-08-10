@@ -44,18 +44,18 @@
                    {:report (comp/get-query u.c.tx/CoreTxReport)}]
    :pre-merge
    (fn [{:keys [data-tree state-map]}]
-     (log/info :NodeTransactionsSubPage/pre-merge {:data-tree data-tree})
+     (log/finer :NodeTransactionsSubPage/pre-merge {:data-tree data-tree})
      (let [initial             (comp/get-initial-state u.c.tx/CoreTxReport)
            report-data         (get-in state-map (comp/get-ident u.c.tx/CoreTxReport {}))
            updated-report-data (merge initial report-data)
            updated-data        (-> data-tree
                                    (assoc :transactions updated-report-data))]
-       (log/info :NodeTransactionsSubPage/merged {:updated-data updated-data :data-tree data-tree})
+       (log/finer :NodeTransactionsSubPage/merged {:updated-data updated-data :data-tree data-tree})
        updated-data))
    :initial-state {::m.c.nodes/id nil
                    :report        {}}
    :ident         (fn [] [:component/id ::NodeTransactionsSubPage])}
-  (log/info :NodeTransactionsSubPage/creating {:props props})
+  (log/finer :NodeTransactionsSubPage/creating {:props props})
   (let [transaction-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
       (ui-node-transactions-report transaction-data))))

@@ -8,7 +8,7 @@
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
-   #?(:cljs [taoensso.timbre :as log])))
+   [taoensso.timbre :as log]))
 
 (comment ::pc/_ ::m.c.wallets/_)
 
@@ -81,4 +81,30 @@
      (action [_env] true)
      (remote [env] (fm/returning env RollResponse))))
 
-#?(:clj (def resolvers [create! roll!]))
+;; derive!
+
+(defsc DeriveResponse
+  [_this _props]
+  {:query [:status]})
+
+#?(:clj
+   (defn do-derive!
+     [props]
+     (log/info :do-derive!/starting {:props props})))
+
+#?(:clj
+   (pc/defmutation derive!
+     [env props]
+     {::pc/params #{::m.c.wallets/id}
+      ::pc/output [:status]}
+
+     (let [user-id (a.authentication/get-user-id env)
+           props   (assoc props ::m.c.wallets/user user-id)]
+       (do-derive! props)))
+
+   :cljs
+   (fm/defmutation derive! [_props]
+     (action [_env] true)
+     (remote [env] (fm/returning env DeriveResponse))))
+
+#?(:clj (def resolvers [create! derive! roll!]))

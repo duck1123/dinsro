@@ -1,0 +1,9 @@
+VERSION 0.6
+
+image:
+  FROM babashka/babashka:latest
+  WORKDIR ${src_home}
+  ARG EXPECTED_REF=${repo}/${project}:${version}
+  COPY . .
+  CMD ["bb", "bootstrap.clj"]
+  SAVE IMAGE --push ${EXPECTED_REF}

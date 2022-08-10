@@ -18,13 +18,19 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
+(def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
+(def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
+
+(def id (first (q.c.tx/index-ids)))
+(def tx (q.c.tx/read-record id))
+(def block-id (::m.c.tx/block tx))
+
 (comment
-  (def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
-  (def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
 
   (tap> (q.c.nodes/index-records))
 
   (a.c.tx/update-tx (first (q.c.nodes/index-ids))
+                    block-id
                     "8d3b5c3f7e726b57cdd293885f74c28773ee9682548756c7f393e76a2b935a20")
 
   (def node node-alice)
@@ -33,9 +39,6 @@
 
   (q.c.nodes/index-ids)
 
-  (def id (first (q.c.tx/index-ids)))
-  (def tx (q.c.tx/read-record id))
-  (def block-id (::m.c.tx/block tx))
   (q.c.blocks/read-record block-id)
   (q.c.nodes/find-by-tx id)
 
@@ -57,6 +60,6 @@
 
   (q.c.blocks/index-ids)
 
-  (a.c.tx/update-tx node-id tx-id)
+  (a.c.tx/update-tx node-id block-id tx-id)
 
   nil)

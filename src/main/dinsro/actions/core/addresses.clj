@@ -1,6 +1,7 @@
 (ns dinsro.actions.core.addresses
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.nbxplorer :as a.nbxplorer]
    [dinsro.model.core.addresses :as m.c.addresses]
@@ -16,8 +17,9 @@
       (log/infof "Fetching address: %s" address)
       (let [response (a.nbxplorer/get-transactions-for-address (::m.c.addresses/address address))]
         (doseq [transaction (:transactions (:confirmedTransactions response))]
-          (let [{:keys [blockHash height transactionId]} transaction]
-            (a.c.tx/register-tx node-id blockHash height transactionId))))
+          (let [{:keys [blockHash height transactionId]} transaction
+                block-id (a.c.blocks/register-block node-id blockHash height)]
+            (a.c.tx/register-tx node-id block-id transactionId))))
       nil)
     (do
       (log/error "no address")

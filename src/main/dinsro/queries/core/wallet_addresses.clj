@@ -52,10 +52,10 @@
 
 (>defn find-by-wallet-and-index
   [wallet-id index]
-  [::m.c.wallets/id ::m.c.wallet-addresses/index => (? ::m.c.wallet-addresses/id)]
+  [::m.c.wallets/id ::m.c.wallet-addresses/path-index => (? ::m.c.wallet-addresses/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?address-id]
                 :in    [[?wallet-id ?index]]
                 :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]
-                        [?address-id ::m.c.wallet-addresses/index ?index]]}]
+                        [?address-id ::m.c.wallet-addresses/path-index ?index]]}]
     (ffirst (xt/q db query [wallet-id index]))))

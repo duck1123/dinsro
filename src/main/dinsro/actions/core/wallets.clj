@@ -7,11 +7,13 @@
    [dinsro.model.core.words :as m.c.words]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.words :as q.c.words]
+   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.core.crypto.BIP39Seed
    org.bitcoins.core.crypto.MnemonicCode
    org.bitcoins.core.crypto.ExtPrivateKey
+   org.bitcoins.core.crypto.ExtPublicKey
    org.bitcoins.core.protocol.Bech32Address
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0))
 
@@ -42,14 +44,12 @@
     (->> ids
          (map q.c.words/read-record)
          (sort-by ::m.c.words/position)
-         (mapv
-          (fn [word]
-            (log/info :word-list/item {:word word})
-            (::m.c.words/word word))))))
+         (mapv ::m.c.words/word))))
 
 (>defn calculate-derivation
+  "get a mnemonic code from a wallet"
   [wallet]
-  [::m.c.wallets/item => any?]
+  [::m.c.wallets/item => (ds/instance? MnemonicCode)]
   (log/info :calculate-derivation/starting {:wallet wallet})
   (let [{::m.c.wallets/keys [id]} wallet
         words                     (get-word-list id)]
@@ -68,7 +68,7 @@
 
 (defn update-words!
   [wallet-id words]
-  (log/info :words/updating {:wallet-id wallet-id :words words})
+  (log/info :update-words!/starting {:wallet-id wallet-id :words words})
   (let [old-ids (q.c.words/find-by-wallet wallet-id)]
     (doseq [id old-ids]
       (q.c.words/delete! id))
@@ -81,12 +81,14 @@
                              word-id (q.c.words/create-record props)]
                          (q.c.words/read-record word-id)))
                      words))]
-      (log/info :words/update-finished {:response response})
+      (log/info :update-words!/finished {:response response})
       response)))
 
 (defn get-mnemonic
   ^MnemonicCode [wallet-id]
   (c.bitcoin-s/words->mnemonic (get-word-list wallet-id)))
+
+;; https://bitcoin-s.org/api/org/bitcoins/core/crypto/ExtPrivateKey.html
 
 (defn get-xpriv
   ^ExtPrivateKey [wallet-id]
@@ -106,12 +108,14 @@
     private-key-bytes))
 
 (defn get-wif
+  "Get the wallet's private key wif formatted"
   [wallet-id]
   (let [xpriv (get-xpriv wallet-id)
         key   (.key xpriv)]
     (c.bitcoin-s/->wif key)))
 
 (defn roll!
+  "Update wallet with a new set of words"
   [props]
   (log/info :roll/started {:props props})
   (let [wallet-id (::m.c.wallets/id props)
@@ -124,30 +128,34 @@
     (log/info :roll/finished {:response response})
     (merge wallet {::m.c.wallets/words response})))
 
-(defn get-ext-pub-key
+(>defn get-ext-pub-key
+  "Calculate the pubkey for an address for the wallet at the given index"
   [wallet index]
+  [::m.c.wallets/item number? => (ds/instance? ExtPublicKey)]
   (log/info :get-address/starting {:wallet wallet :index index})
   (let [wallet-id          (::m.c.wallets/id wallet)
         xpriv              (get-xpriv wallet-id)
-        account-path       (c.bitcoin-s/->bip32-path "m/84'/0'/0'")
-        first-address-path (c.bitcoin-s/->segwit-path "m/84'/0'/0'/0/0")
+        account-path       (c.bitcoin-s/->bip32-path "m/84'/1'/0'")
+        first-address-path (c.bitcoin-s/->segwit-path "m/84'/1'/0'/0/0")
         diffsome           (.diff account-path first-address-path)
         account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
         ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))]
     ext-pub-key))
 
-(defn get-address
+(>defn get-address
+  "Get the address at the given index for the wallet"
   [wallet index]
-  (log/info :get-address/starting {:wallet wallet :index index})
-  (let [wallet-id          (::m.c.wallets/id wallet)
-        xpriv              (get-xpriv wallet-id)
-        account-path       (c.bitcoin-s/->bip32-path "m/84'/0'/0'")
-        first-address-path (c.bitcoin-s/->segwit-path (str "m/84'/0'/0'/0/" index))
-        diffsome           (.diff account-path first-address-path)
-        account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
-        ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))
-        pubkey             (.key ext-pub-key)
-        script-pub-key     (P2WPKHWitnessSPKV0/apply pubkey)
-        network            (c.bitcoin-s/regtest-network)
-        address            (Bech32Address/apply script-pub-key network)]
-    (.value address)))
+  [::m.c.wallets/item number? => string?]
+  (let [wallet-id (::m.c.wallets/id wallet)]
+    (log/info :get-address/starting {:wallet-id wallet-id :index index})
+    (let [xpriv              (get-xpriv wallet-id)
+          account-path       (c.bitcoin-s/->bip32-path "m/84'/1'/0'")
+          first-address-path (c.bitcoin-s/->segwit-path (str "m/84'/1'/0'/0/" index))
+          diffsome           (.diff account-path first-address-path)
+          account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
+          ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))
+          pubkey             (.key ext-pub-key)
+          script-pub-key     (P2WPKHWitnessSPKV0/apply pubkey)
+          network            (c.bitcoin-s/regtest-network)
+          address            (Bech32Address/apply script-pub-key network)]
+      (.value address))))

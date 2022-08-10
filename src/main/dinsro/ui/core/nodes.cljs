@@ -191,11 +191,11 @@
 
 (defn ShowNode-pre-merge
   [{:keys [data-tree state-map current-normalized]}]
-  (log/info :ShowNode/pre-merge {:data-tree          data-tree
-                                 :state-map          state-map
-                                 :current-noramlized current-normalized})
+  (log/finer :ShowNode-pre-merge/starting {:data-tree          data-tree
+                                           :state-map          state-map
+                                           :current-noramlized current-normalized})
   (let [node-id (::m.c.nodes/id data-tree)]
-    (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
+    (log/finer :ShowNode-pre-merge/parsed {:node-id node-id})
     (let [peers-data        (merge
                              (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
                              (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
@@ -217,10 +217,10 @@
                                 (assoc :ui/blocks blocks-data)
                                 (assoc :ui/transactions transactions-data)
                                 (assoc :ui/wallets wallets-data))]
-      (log/info :ShowNode/merged {:updated-data       updated-data
-                                  :data-tree          data-tree
-                                  :state-map          state-map
-                                  :current-noramlized current-normalized})
+      (log/finer :ShowNode-pre-merge/merged {:updated-data       updated-data
+                                             :data-tree          data-tree
+                                             :state-map          state-map
+                                             :current-noramlized current-normalized})
       updated-data)))
 
 (def show-peers true)
@@ -255,14 +255,14 @@
      (let [id    (new-uuid id)
            ident [::m.c.nodes/id id]
            state (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
+       (log/finer :ShowNode/will-enter {:app app :id id :ident ident})
        (dr/route-deferred
         ident
         (fn []
-          (log/info :ShowNode/will-enter2
-                    {:id       id
-                     :state    state
-                     :controls (control/component-controls app)})
+          (log/finer :ShowNode/will-enter2
+                     {:id       id
+                      :state    state
+                      :controls (control/component-controls app)})
           (df/load!
            app ident ShowNode
            {:marker               :ui/selected-node
@@ -270,7 +270,7 @@
             :post-mutation        `dr/target-ready
             :post-mutation-params {:target ident}})))))
    :pre-merge     ShowNode-pre-merge}
-  (log/info :ShowNode/creating {:id id :props props :this this})
+  (log/finer :ShowNode/creating {:id id :props props :this this})
   (let [{:keys [main sub]} (css/get-classnames ShowNode)]
     (dom/div {:classes [main]}
       (ui-actions-menu {::m.c.nodes/id id})

@@ -31,8 +31,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: copy-node-config
-          image: busybox
-          command: ['sh', '-c', 'ls -al /data-config && cp /data-config/default.json /data/.specter/nodes/default.json']
+          image: duck1123/specter-config-manager:latest
+          # command: ['sh', '-c', 'set -x; ls -al /data-config && mkdir -p /data/.specter/nodes/ && cp /data-config/default.json /data/.specter/nodes/default.json']
           volumeMounts:
             - name: specter
               mountPath: /data

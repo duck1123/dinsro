@@ -30,9 +30,9 @@
           devcards-devtools-declared-host (str "devtools.devcards." base-url)}} devcards
 
         ;; devtools
-        {devtools-enabled :enabled
+        {devtools-enabled? :enabled
          :or
-         {devtools-enabled true}} devtools
+         {devtools-enabled? true}} devtools
 
         ;; docs
         {docs-enabled? :enabled
@@ -73,7 +73,7 @@
       :devcards-enabled       devcards-enabled
       :devcards-host          devcards-host
       :devcards-devtools-host devcards-devtools-host
-      :devtools-enabled       devtools-enabled
+      :devtools-enabled?       devtools-enabled?
       :devtools-host          devtools-host
       :docs-enabled           docs-enabled?
       :log-level              (str logLevel)
@@ -94,7 +94,7 @@
           devcards-enabled
           devcards-host
           devcards-devtools-host
-          devtools-enabled
+          devtools-enabled?
           devtools-host
           docs-enabled
           image-tag
@@ -129,7 +129,7 @@
        [{:host devcards-host :paths [{:path "/"}]}]}}
 
      :devtools
-     {:enabled     devtools-enabled
+     {:enabled     devtools-enabled?
       :webtoolsUrl webtools-url
       :ingress     {:enabled (not local-devtools)
                     :hosts

@@ -22,6 +22,9 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+(def force-fetch-button false)
+(def override-form false)
+
 (defsc RefRow
   [this {::m.c.blocks/keys [fetched? height id] :as props}]
   {:ident ::m.c.blocks/id
@@ -94,8 +97,6 @@
    fo/title        "Core Block Transactions"
    fo/attributes   [m.c.tx/tx-id m.c.tx/fetched?]
    fo/route-prefix "node-tx"})
-
-(def override-form false)
 
 (form/defsc-form CoreBlockForm
   [this props]
@@ -220,33 +221,33 @@
               :state-map          state-map
               :current-noramlized current-normalized})
   (let [block-id (::m.c.blocks/id data-tree)]
-    (log/info :ShowBlock-pre-merge/parsed {:block-id block-id})
+    (log/finer :ShowBlock-pre-merge/parsed {:block-id block-id})
     (let [transactions-data
           (let [initial (comp/get-initial-state u.c.block-transactions/BlockTransactionsSubPage)
                 state   (get-in state-map (comp/get-ident u.c.block-transactions/BlockTransactionsSubPage {}))
                 merged  (merge initial state {::m.c.blocks/id block-id})]
-            (log/info :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
+            (log/finer :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
             merged)
           updated-data (-> data-tree
                            (assoc :ui/transactions transactions-data))]
-      (log/info :ShowBlock-pre-merge/merged
-                {:updated-data       updated-data
-                 :data-tree          data-tree
-                 :state-map          state-map
-                 :current-noramlized current-normalized})
+      (log/finer :ShowBlock-pre-merge/merged
+                 {:updated-data       updated-data
+                  :data-tree          data-tree
+                  :state-map          state-map
+                  :current-noramlized current-normalized})
       updated-data)))
-
-(def force-fetch-button true)
 
 (defsc ShowBlock
   "Show a core block"
-  [this {::m.c.blocks/keys [id height hash previous-block next-block fetched?]
+  [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight]
          :ui/keys          [transactions]
          :as               props}]
   {:route-segment ["blocks" :id]
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
+                   ::m.c.blocks/nonce
+                   ::m.c.blocks/weight
                    ::m.c.blocks/fetched?
                    {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
@@ -257,6 +258,8 @@
                    ::m.c.blocks/hash           ""
                    ::m.c.blocks/previous-block {}
                    ::m.c.blocks/next-block     {}
+                   ::m.c.blocks/weight 0
+                   ::m.c.blocks/nonce ""
                    ::m.c.blocks/fetched?       false
                    :ui/transactions            {}}
    :ident         ::m.c.blocks/id
@@ -265,14 +268,14 @@
      (let [id    (new-uuid id)
            ident [::m.c.blocks/id id]
            state (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowBlock/will-enter {:id id :app app})
+       (log/finer :ShowBlock/will-enter {:id id :app app})
        (dr/route-deferred
         ident
         (fn []
-          (log/info :ShowBlock/will-enter2
-                    {:id       id
-                     :state    state
-                     :controls (control/component-controls app)})
+          (log/finer :ShowBlock/will-enter2
+                     {:id       id
+                      :state    state
+                      :controls (control/component-controls app)})
           (df/load!
            app ident ShowBlock
            {:marker               :ui/selected-node
@@ -280,7 +283,7 @@
             :post-mutation        `dr/target-ready
             :post-mutation-params {:target ident}})))))
    :pre-merge     ShowBlock-pre-merge}
-  (log/info :ShowBlock/creating {:id id :props props :this this})
+  (log/finer :ShowBlock/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {}
@@ -293,6 +296,13 @@
                    "unfetched")
                  ")")))
       (dom/p {}  (str "Hash: " hash))
+      (dom/p {}  (str "Weight: " weight))
+      (dom/p {}  (str "Nonce: " nonce))
+      (dom/button {:onClick (fn [_e]
+                              (log/info :ShowBlock/fetch-button-clicked {})
+                              (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+
+        "Fetch")
       (when previous-block (dom/p {} "Previous: " (u.links/ui-block-height-link previous-block)))
       (when next-block (dom/p {} "Next: " (u.links/ui-block-link next-block))))
     (if id

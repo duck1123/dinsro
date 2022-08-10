@@ -3,6 +3,7 @@
   (:require
    [clojure.core.async :as async :refer [<!]]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
+   [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.client.lnd :as c.lnd]
@@ -42,7 +43,8 @@
           tx-id)
         (if-let [core-node-id (q.c.nodes/find-by-ln-node ln-node-id)]
           (do (log/error "no tx")
-              (let [core-tx-id (a.c.tx/register-tx core-node-id block-hash block-height tx-hash)]
+              (let [block-id (a.c.blocks/register-block core-node-id block-hash block-height)
+                    core-tx-id (a.c.tx/register-tx core-node-id block-id tx-hash)]
                 (save-transactions! ln-node-id core-tx-id data)))
           (throw (RuntimeException. (str "failed to find core node: " node))))))
     (throw (RuntimeException. "failed to find node id"))))
