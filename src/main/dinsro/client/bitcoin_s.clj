@@ -9,6 +9,8 @@
   (:import
    akka.actor.ActorSystem
    java.net.URI
+
+   org.bitcoins.commons.jsonmodels.bitcoind.GetRawTransactionResult
    org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts$AddNodeArgument$Add$
    org.bitcoins.core.hd.BIP32Path
    org.bitcoins.core.hd.SegWitHDPath
@@ -131,16 +133,19 @@
     ext-pub-key))
 
 (defn get-script-pub-key
+  "https://bitcoin-s.org/api/org/bitcoins/core/protocol/script/P2WPKHWitnessSPKV0$.html#apply(pubKey:org.bitcoins.crypto.ECPublicKey):org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0"
   [ext-pub-key]
   (let [pub-key (.key ext-pub-key)]
     (P2WPKHWitnessSPKV0/apply pub-key)))
 
 (defn get-xpriv
+  "https://bitcoin-s.org/api/org/bitcoins/core/crypto/BIP39Seed.html#toExtPrivateKey(keyVersion:org.bitcoins.core.crypto.ExtKeyPrivVersion):org.bitcoins.core.crypto.ExtPrivateKey"
   ^ExtPrivateKey [^BIP39Seed bip39-seed purpose network]
   (let [priv-version (get-xpriv-version purpose network)]
     (.toExtPrivateKey bip39-seed priv-version)))
 
 (defn ->wif
+  "https://bitcoin-s.org/api/org/bitcoins/core/crypto/ECPrivateKeyUtil$.html#toWIF(privKey:org.bitcoins.crypto.ECPrivateKeyBytes,network:org.bitcoins.core.config.NetworkParameters):String"
   [key]
   (let [pk-bv (.bytes key)
         pk-bytes (ECPrivateKeyBytes. pk-bv false)
@@ -148,10 +153,12 @@
     (ECPrivateKeyUtil/toWIF pk-bytes network)))
 
 (defn wif->pk
+  "https://bitcoin-s.org/api/org/bitcoins/core/crypto/ECPrivateKeyUtil$.html#fromWIFToPrivateKey(WIF:String):org.bitcoins.crypto.ECPrivateKeyBytes"
   ^ECPrivateKeyBytes [wif]
   (ECPrivateKeyUtil/fromWIFToPrivateKey wif))
 
 (defn get-zmq-config
+  "https://bitcoin-s.org/api/org/bitcoins/rpc/config/ZmqConfig$.html#empty:org.bitcoins.rpc.config.ZmqConfig"
   []
   (ZmqConfig/empty))
 
@@ -174,13 +181,15 @@
   [client]
   (let [fut      (.getPeerInfo client)
         response (async/<!! (cs/await-future fut))]
-    (log/info :get-peer-info/response {:response response})
+    (log/finer :get-peer-info/response {:response response})
     (let [{:keys [passed result]} response]
       (if passed
         (let [parsed-response (map cs/->record (cs/vector->vec result))]
           (log/info :get-peer-info/parsed-response {:parsed-response parsed-response})
           parsed-response)
-        (throw "Did not pass")))))
+        (let [result-obj (.get result)
+              ex         (or result-obj (RuntimeException. "Did not pass"))]
+          (throw ex))))))
 
 (defn ->segwit-path
   [path]
@@ -201,7 +210,9 @@
     (let [{:keys [passed result]} response]
       (if passed
         result
-        (throw (RuntimeException. "Did not pass"))))))
+        (let [result-obj (.get result)
+              ex (or result-obj (RuntimeException. "Did not pass"))]
+          (throw ex))))))
 
 (defn get-blockchain-info
   [client]
@@ -210,16 +221,20 @@
 (>defn list-transactions-raw
   [client]
   [::client => any?]
-  (log/info :list-transactions/starting {:client client})
+  (log/info :list-transactions-raw/starting {})
   (let [account             "*"
         count               (int 10)
         skip                (int 0)
-        include-watch-only? false]
-    (.listTransactions client account count skip include-watch-only?)))
+        include-watch-only? false
+        response (async/<!! (cs/await-future (.listTransactions client account count skip include-watch-only?)))]
+    (log/info :list-transactions-raw/finished {:response response})
+    response))
 
-(defn list-transactions
+(>defn list-transactions
   [client]
-  (cs/->record (list-transactions-raw client)))
+  [::client => any?]
+  (let [obj (list-transactions-raw client)]
+    (cs/->record obj)))
 
 (defn get-block-hash
   [client height]
@@ -237,26 +252,44 @@
         (log/info :fetch-block-by-height/converted {:converted-response converted-response})
         converted-response))))
 
-(defn add-node
+(>defn add-node
   "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#addNode(address:java.net.URI,command:org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts.AddNodeArgument):scala.concurrent.Future[Unit]"
   [client address-s]
+  [::client string? => any?]
   (log/info :add-node/starting {:address-s address-s})
   (let [address  (URI. address-s)
         command  (RpcOpts$AddNodeArgument$Add$.)
         p        (.addNode client address command)]
-    (log/info :add-node/sent {:p p :address address :command command})
+    (log/finer :add-node/sent {:p p :address address :command command})
     (let [ch (cs/await-future p)]
-      (log/info :add-node/awaited {:ch ch})
+      (log/finer :add-node/awaited {:ch ch})
       (let [response (async/<!! ch)]
         (log/info :add-node/finished {:response response})
         response))))
 
-(defn disconnect-node
+(>defn disconnect-node
   [client addr]
+  [::client string? => any?]
   (log/info :disconnect-node/starting {:addr addr})
   (comment client))
 
-(defn get-raw-transaction
-  [client tx-id]
-  (log/info :get-raw-transaction/starting {:tx-id tx-id})
-  (.getRawTransaction client tx-id))
+(>defn get-raw-transaction-raw
+  "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#addNode(address:java.net.URI,command:org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts.AddNodeArgument):scala.concurrent.Future[Unit]"
+  [client tx-id-s]
+  [::client string? => (ds/instance? GetRawTransactionResult)]
+  (log/info :get-raw-transaction/starting {:tx-id-s tx-id-s})
+  (let [tx-id                   (cs/double-sha256-digest-be tx-id-s)
+        block-hash              (cs/none)
+        p                       (.getRawTransaction client tx-id block-hash)
+        ch                      (cs/await-future p)
+        response                (async/<!! ch)
+        {:keys [passed result]} response]
+    (if passed result (throw result))))
+
+(>defn get-raw-transaction
+  "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#addNode(address:java.net.URI,command:org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts.AddNodeArgument):scala.concurrent.Future[Unit]"
+  [client tx-id-s]
+  [::client string? => any?]
+  (let [record (cs/->record (get-raw-transaction-raw client tx-id-s))]
+    (log/info :get-raw-transaction/finished {:record record})
+    record))
