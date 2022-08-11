@@ -268,7 +268,7 @@ fileserver:
   SAVE IMAGE --push ${EXPECTED_REF}
 
 image:
-  FROM openjdk:17-alpine
+  FROM amazoncorretto:17
   ARG EXPECTED_REF=${repo}/${project}:${version}
   WORKDIR ${src_home}
   VOLUME ${data_dir}
