@@ -98,3 +98,20 @@
                                        (clerk/show! ~f)))))}
              n]]))
        props)]))
+
+(defn defnotebook
+  [n]
+  (let [links (x2)]
+    [:div
+     [:p (str "Current Namespace: " n)]
+     [:ul (map
+           (fn [link]
+             [:li
+              (let [{:keys [n f]} link]
+                [:a {:onClick (fn []
+                                #?(:cljs (js/console.log "foo")
+                                   :clj (println "bar")))
+
+                     :href (str "#" f)}
+                 n])])
+           links)]]))

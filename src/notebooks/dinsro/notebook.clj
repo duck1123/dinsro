@@ -2,7 +2,7 @@
 (ns dinsro.notebook
   (:require
    [dinsro.actions.site :as a.site]
-   [dinsro.notebook-utils :as nu]
+   [dinsro.notebook-utils :as nu :refer [defnotebook]]
    [dinsro.site :as site]
    [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
@@ -10,8 +10,11 @@
 
 ;; # Dinsro Notebooks
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
-(nu/display-file-links)
+^{::clerk/viewer clerk/html ::clerk/visibility {:code :hide} ::clerk/no-cache true}
+(defnotebook "dinsro.notebook")
+
+;; ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
+;; (nu/display-file-links)
 
 ;; # Namespaces
 
