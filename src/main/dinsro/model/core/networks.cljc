@@ -22,7 +22,7 @@
   {ao/identities       #{::id}
    ao/target           ::m.c.chains/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.c.chains/id ::m.c.chains/name]}})
+   ::report/column-EQL {::chain [::m.c.chains/id ::m.c.chains/name]}})
 
 (s/def ::params (s/keys :req [::chain ::name]))
 (s/def ::item (s/keys :req [::id ::chain ::name]))

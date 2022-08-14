@@ -24,10 +24,12 @@
                     u.c.blocks/CoreBlockReport
                     u.c.chains/CoreChainForm
                     u.c.chains/Report
+                    u.c.chains/ShowChain
                     u.c.connections/CoreNodeConnectionsReport
                     u.c.connections/NewConnectionForm
                     u.c.networks/CoreNetworkForm
                     u.c.networks/CoreNetworksReport
+                    u.c.networks/ShowNetwork
                     u.c.nodes/NewCoreNodeForm
                     u.c.nodes/CoreNodeForm
                     u.c.nodes/CoreNodesReport

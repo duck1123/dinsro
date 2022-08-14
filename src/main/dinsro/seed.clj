@@ -28,19 +28,25 @@
    ::m.c.nodes/port    18443
    ::m.c.nodes/rpcuser "rpcuser"
    ::m.c.nodes/rpcpass "rpcpassword"
+   :chain              "bitcoin"
+   :network            "regtest"
    :peers              ["bitcoin-bob"]})
 
 (def core-node2
-  {::m.c.nodes/name        "bitcoin-bob"
-   ::m.c.nodes/host        "bitcoin.bob"
-   ::m.c.nodes/port        18443
-   ::m.c.nodes/rpcuser     "rpcuser"
-   ::m.c.nodes/rpcpass     "rpcpassword"})
+  {::m.c.nodes/name    "bitcoin-bob"
+   ::m.c.nodes/host    "bitcoin.bob"
+   ::m.c.nodes/port    18443
+   :chain              "bitcoin"
+   :network            "regtest"
+   ::m.c.nodes/rpcuser "rpcuser"
+   ::m.c.nodes/rpcpass "rpcpassword"})
 
 (def core-node3
   {::m.c.nodes/name    "bitcoin-larry"
    ::m.c.nodes/host    "bitcoin.larry"
    ::m.c.nodes/port    18332
+   :chain              "bitcoin"
+   :network            "testnet"
    ::m.c.nodes/rpcuser "rpcuser"
    ::m.c.nodes/rpcpass "rpcpassword"})
 

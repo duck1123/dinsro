@@ -132,7 +132,7 @@
                       ::new-wallet
                       ::new-peer]
    fo/attributes     [m.c.nodes/name
-                      m.c.nodes/chain
+                      m.c.nodes/network
                       m.c.nodes/block-count
                       j.c.nodes/blocks
                       j.c.nodes/transactions
@@ -213,25 +213,25 @@
 
 (defsc ShowNode
   "Show a core node"
-  [this {::m.c.nodes/keys [id name chain]
+  [this {::m.c.nodes/keys [id name network]
          :ui/keys         [blocks peers transactions wallets]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
-                   ::m.c.nodes/chain
+                   {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {:ui/peers (comp/get-query u.c.node-peers/SubPage)}
                    {:ui/blocks (comp/get-query u.c.node-blocks/SubPage)}
                    {:ui/transactions (comp/get-query u.c.node-transactions/SubPage)}
                    {:ui/wallets (comp/get-query u.c.node-wallets/SubPage)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.nodes/id    nil
-                   ::m.c.nodes/name  ""
-                   ::m.c.nodes/chain ""
-                   :ui/peers         {}
-                   :ui/blocks        {}
-                   :ui/transactions  {}
-                   :ui/wallets       {}}
+   :initial-state {::m.c.nodes/id      nil
+                   ::m.c.nodes/name    ""
+                   ::m.c.nodes/network {}
+                   :ui/peers           {}
+                   :ui/blocks          {}
+                   :ui/transactions    {}
+                   :ui/wallets         {}}
    :ident         ::m.c.nodes/id
    :will-enter
    (fn [app {id :id}]
@@ -259,8 +259,7 @@
       (ui-actions-menu {::m.c.nodes/id id})
       (dom/div :.ui.segment
         (dom/p {}  (str "Name: " name))
-        (dom/p {}  (str "Chain: " chain)))
-
+        (dom/p {}  "Network: " (u.links/ui-network-link network)))
       (when id
         (dom/div {:classes [sub]}
           (when show-peers (u.c.node-peers/ui-sub-page peers))
@@ -302,9 +301,10 @@
 (report/defsc-report CoreNodesReport
   [_this _props]
   {ro/columns           [m.c.nodes/name
-                         m.c.nodes/chain
+                         m.c.nodes/network
                          m.c.nodes/block-count]
-   ro/column-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
+   ro/column-formatters {::m.c.nodes/name    #(u.links/ui-core-node-link %3)
+                         ::m.c.nodes/network #(u.links/ui-network-link %2)}
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}

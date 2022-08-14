@@ -15,6 +15,8 @@
    [dinsro.actions.ln.peers :as a.ln.peers]
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.actions.rates :as a.rates]
+   [dinsro.components.seed.accounts]
+   [dinsro.components.seed.categories]
    [dinsro.components.seed.core :as cs.core]
    [dinsro.components.seed.ln-node :as cs.ln-node]
    [dinsro.components.config :as config]
@@ -411,19 +413,34 @@
         nil))))
 
 (defn seed-core-nodes!
+  "Create core nodes"
   [core-node-data]
   (log/fine :seed-core-nodes!/starting {:core-node-data core-node-data})
   (doseq [data core-node-data]
     (log/info :seed-core-nodes!/processing-node {:data data})
-    (let [node-id (q.c.nodes/create-record data)
-          node (q.c.nodes/read-record node-id)]
-      (try
-        (a.c.nodes/fetch! node)
-        (catch Exception ex
-          (log/error :seed-core-nodes!/failed {:ex ex})
-          (when strict (throw (RuntimeException. "seed core nodes failed"))))))))
+    (let [{chain-name       :chain
+           network-name     :network
+           ::m.c.nodes/keys [host port rpcuser rpcpass name]} data]
+      (if-let [network-id (q.c.networks/find-by-chain-and-network chain-name network-name)]
+        (let [params  {::m.c.nodes/name    name
+                       ::m.c.nodes/host    host
+                       ::m.c.nodes/port    port
+                       ::m.c.nodes/network network-id
+                       ::m.c.nodes/rpcuser rpcuser
+                       ::m.c.nodes/rpcpass rpcpass}
+              node-id (q.c.nodes/create-record params)
+              node    (q.c.nodes/read-record node-id)]
+          (try
+            (a.c.nodes/fetch! node)
+            (catch Exception ex
+              (log/error :seed-core-nodes!/failed {:ex ex})
+              (when strict (throw (RuntimeException. "seed core nodes failed"))))))
+        (do
+          (log/error :seed-core-nodes!/network-not-found {:chain-name chain-name :network-name network-name})
+          (throw (RuntimeException. "Failed to find chain")))))))
 
 (defn seed-core-peers!
+  "Create peers between core nodes"
   [core-node-data]
   (log/info :seed-core-peers!/starting {:core-node-data core-node-data})
   (doseq [node-data core-node-data]

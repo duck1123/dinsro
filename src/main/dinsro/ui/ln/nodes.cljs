@@ -36,7 +36,7 @@
    [dinsro.ui.ln.transactions :as u.ln.tx]
    [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogi :as log]))
 
 (declare CreateLightningNodeForm)
 
@@ -85,10 +85,7 @@
        [::uism/states :state/gathering-parameters ::uism/events]
        assoc
        :event/edit-detail
-       {::uism/handler
-        (fn [_env]
-          (log/info "editing detail")
-          (edit-detail))})))
+       {::uism/handler (fn [_env] (edit-detail))})))
 
 (def button-info
   [{:label            "Fetch Peers"
@@ -273,7 +270,7 @@
 
 (defn ShowNode-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/info :ShowNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
+  (log/finer :ShowNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
   (let [node-id (::m.ln.nodes/id data-tree)]
     (log/info :ShowNode-pre-merge/parsed {:node-id node-id})
     (let [peers-data        (u.links/merge-state state-map u.ln.node-peers/SubPage {::m.ln.nodes/id node-id})
@@ -285,7 +282,7 @@
                                 (assoc :ui/channels channels-data)
                                 (assoc :ui/transactions transactions-data)
                                 (assoc :ui/remote-nodes remote-nodes-data))]
-      (log/info :ShowNode-pre-merge/finished {:updated-data updated-data})
+      (log/finer :ShowNode-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (defsc ShowNode
@@ -325,14 +322,14 @@
      (let [id    (new-uuid id)
            ident [::m.ln.nodes/id id]
            state (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
+       (log/finer :ShowNode/will-enter {:app app :id id :ident ident})
        (dr/route-immediate ident)
        (dr/route-deferred
         ident
         (fn []
-          (log/info :ShowNode/will-enter2 {:id       id
-                                           :state    state
-                                           :controls (control/component-controls app)})
+          (log/finer :ShowNode-will-enter/routed {:id       id
+                                                  :state    state
+                                                  :controls (control/component-controls app)})
           (df/load!
            app ident ShowNode
            {:marker               :ui/selected-node

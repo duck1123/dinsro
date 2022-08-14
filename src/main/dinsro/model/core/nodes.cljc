@@ -6,6 +6,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.report :as report]
+   [dinsro.model.core.networks :as m.c.networks]
    [lambdaisland.glogc :as log]))
 
 (s/def ::id uuid?)
@@ -48,10 +50,12 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::chain string?)
-(defattr chain ::chain :string
-  {ao/identities #{::id}
-   ao/schema     :production})
+(s/def ::network uuid?)
+(defattr network ::network :ref
+  {ao/identities       #{::id}
+   ao/target           ::m.c.networks/id
+   ao/schema           :production
+   ::report/column-EQL {::network [::m.c.networks/id ::m.c.networks/name]}})
 
 (s/def ::pruned? boolean?)
 (defattr pruned? ::pruned? :boolean
@@ -112,15 +116,15 @@
                 ::chainwork ::chain ::block-count]))
 
 (s/def ::params
-  (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass]
+  (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass ::network]
           :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
                 ::best-block-hash ::verification-progress ::warnings ::headers
-                ::chainwork ::chain ::block-count]))
+                ::chainwork ::block-count]))
 (s/def ::item
   (s/keys :req [::id ::name ::host ::port ::rpcuser ::rpcpass]
           :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
                 ::best-block-hash ::verification-progress ::warnings ::headers
-                ::chainwork ::chain ::block-count]))
+                ::chainwork ::block-count]))
 (s/def ::items (s/coll-of ::item))
 
 (def rename-map
@@ -158,16 +162,7 @@
   [ids]
   (mapv ident ids))
 
-;; #?(:clj
-;;    (>defn get-client
-;;      ([node]
-;;       [::item => any?]
-;;       (get-client node ""))
-;;      ([{::keys [host port rpcuser rpcpass]} path]
-;;       [::item string? => any?]
-;;       (c.bitcoin/get-client
-;;        {:http/url        (str "http://" host ":" port path)
-;;         :http/basic-auth [rpcuser rpcpass]}))))
-
 (def attributes
-  [id name host port rpcuser rpcpass balance tx-count chain pruned? difficulty size-on-disk initial-block-download? best-block-hash verification-progress warnings headers chainwork block-count])
+  [id name host port rpcuser rpcpass balance tx-count network pruned? difficulty
+   size-on-disk initial-block-download? best-block-hash verification-progress
+   warnings headers chainwork block-count])

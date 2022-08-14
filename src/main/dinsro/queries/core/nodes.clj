@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -13,6 +14,7 @@
    [xtdb.api :as xt]))
 
 (>defn create-record
+  "Create a node record"
   [params]
   [::m.c.nodes/params => :xt/id]
   (let [node            (c.xtdb/main-node)
@@ -24,6 +26,7 @@
     id))
 
 (>defn read-record
+  "Read a node record"
   [id]
   [::m.c.nodes/id => (? ::m.c.nodes/item)]
   (let [db     (c.xtdb/main-db)
@@ -32,6 +35,7 @@
       (dissoc record :xt/id))))
 
 (>defn index-ids
+  "Return the id of every node"
   []
   [=> (s/coll-of :xt/id)]
   (let [db    (c.xtdb/main-db)
@@ -40,6 +44,7 @@
     (map first (xt/q db query))))
 
 (>defn index-records
+  "Read all node records"
   []
   [=> (s/coll-of ::m.c.nodes/item)]
   (map read-record (index-ids)))
@@ -54,6 +59,7 @@
     (ffirst (xt/q db query name))))
 
 (>defn find-by-block
+  "Find the node associated with a block"
   [block-id]
   [::m.c.blocks/id => (? ::m.c.nodes/id)]
   (let [db    (c.xtdb/main-db)
@@ -61,6 +67,16 @@
                 :in    [?block-id]
                 :where [[?block-id ::m.c.blocks/node ?node-id]]}]
     (ffirst (xt/q db query block-id))))
+
+(>defn find-by-network
+  "Find all nodes associated with a network"
+  [network-id]
+  [::m.c.networks/id => (s/coll-of ::m.c.nodes/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?node-id]
+                :in    [[?network-id]]
+                :where [[?node-id ::m.c.nodes/network ?network-id]]}]
+    (ffirst (xt/q db query [network-id]))))
 
 (>defn find-by-ln-node
   [ln-node-id]

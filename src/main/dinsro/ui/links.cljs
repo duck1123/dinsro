@@ -8,6 +8,8 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.chains :as m.c.chains]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
@@ -117,6 +119,15 @@
 
 (def ui-category-link (comp/factory CategoryLinkForm {:keyfn ::m.categories/id}))
 
+(form/defsc-form ChainLinkForm [this {::m.c.chains/keys [id name]}]
+  {fo/id           m.c.chains/id
+   fo/route-prefix "chain-link"
+   fo/title        "Chains"
+   fo/attributes   [m.c.chains/name]}
+  (form-link this id name :dinsro.ui.core.chains/ShowChain))
+
+(def ui-chain-link (comp/factory ChainLinkForm {:keyfn ::m.c.chains/id}))
+
 (form/defsc-form ChannelLinkForm [this {::m.ln.channels/keys [id channel-point]}]
   {fo/id           m.ln.channels/id
    fo/route-prefix "channel-link"
@@ -190,13 +201,24 @@
 
 (def ui-ln-tx-link (comp/factory LNTxLinkForm {:keyfn ::m.ln.tx/id}))
 
+(form/defsc-form NetworkLinkForm
+  [this {::m.c.networks/keys [id name] :as props}]
+  {fo/id           m.c.networks/id
+   fo/route-prefix "network-link"
+   fo/title        "Network"
+   fo/attributes   [m.c.networks/name]}
+  (log/finer :NetworkLinkForm/starting {:id id :name name :props props})
+  (form-link this id name :dinsro.ui.core.networks/ShowNetwork))
+
+(def ui-network-link (comp/factory NetworkLinkForm {:keyfn ::m.c.networks/id}))
+
 (form/defsc-form NodeLinkForm
   [this {::m.ln.nodes/keys [id name] :as props}]
   {fo/id           m.ln.nodes/id
    fo/route-prefix "node-link"
    fo/title        "LN Node"
    fo/attributes   [m.ln.nodes/name]}
-  (log/info :NodeLinkForm/starting {:id id :name name :props props})
+  (log/finer :NodeLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.ln.nodes/ShowNode))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
@@ -206,7 +228,7 @@
    fo/route-prefix "remote-node-link"
    fo/title        "Remote Node"
    fo/attributes   [m.ln.remote-nodes/pubkey]}
-  (log/info :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
+  (log/finer :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
   (form-link this id pubkey :dinsro.ui.ln.remote-nodes/ShowRemoteNode))
 
 (def ui-remote-node-link (comp/factory RemoteNodeLinkForm {:keyfn ::m.ln.remote-nodes/id}))
