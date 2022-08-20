@@ -9,39 +9,36 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(defn NodeTransactionsSubPage-row
+(defn SubPage-row
   ([]
    (let [node {::m.c.nodes/id   (ds/gen-key ::m.c.nodes/id)
                ::m.c.nodes/name (ds/gen-key ::m.c.nodes/name)}]
-     (NodeTransactionsSubPage-row node)))
+     (SubPage-row node)))
   ([node]
    {::m.c.tx/id       (ds/gen-key ::m.c.tx/id)
     ::m.c.tx/fetched? (ds/gen-key ::m.c.tx/fetched?)
     ::m.c.tx/tx-id    (ds/gen-key ::m.c.tx/tx-id)
     ::m.c.tx/node     node}))
 
-(defn NodeTransactionsSubPage-report-data
+(defn SubPage-report-data
   []
   {:foo             "bar"
    :ui/controls     []
-   :ui/current-rows (map (fn [_] (NodeTransactionsSubPage-row)) (range 3))
+   :ui/current-rows (map (fn [_] (SubPage-row)) (range 3))
    :ui/busy?        false
    :ui/parameters   {}
    :ui/page-count   1
    :ui/current-page 1
    :ui/cache        {}})
 
-(defn NodeTransactionsSubPage-data
+(defn SubPage-data
   []
-  (let [initial-report-data (comp/get-initial-state u.c.node-transactions/NodeTransactionsSubPage)
-        report-data         (merge initial-report-data (NodeTransactionsSubPage-report-data))]
+  (let [initial-report-data (comp/get-initial-state u.c.node-transactions/SubPage)
+        report-data         (merge initial-report-data (SubPage-report-data))]
     {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)
      :report        report-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard NodeTransactionsSubPage
+(ws/defcard SubPage
   {::wsm/card-width 6 ::wsm/card-height 12}
-  (th/fulcro-card
-   u.c.node-transactions/NodeTransactionsSubPage
-   NodeTransactionsSubPage-data
-   {}))
+  (th/fulcro-card u.c.node-transactions/SubPage SubPage-data {}))

@@ -223,8 +223,8 @@
   (let [block-id (::m.c.blocks/id data-tree)]
     (log/finer :ShowBlock-pre-merge/parsed {:block-id block-id})
     (let [transactions-data
-          (let [initial (comp/get-initial-state u.c.block-transactions/BlockTransactionsSubPage)
-                state   (get-in state-map (comp/get-ident u.c.block-transactions/BlockTransactionsSubPage {}))
+          (let [initial (comp/get-initial-state u.c.block-transactions/SubPage)
+                state   (get-in state-map (comp/get-ident u.c.block-transactions/SubPage {}))
                 merged  (merge initial state {::m.c.blocks/id block-id})]
             (log/finer :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
             merged)
@@ -251,7 +251,7 @@
                    ::m.c.blocks/fetched?
                    {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
-                   {:ui/transactions (comp/get-query u.c.block-transactions/BlockTransactionsSubPage)}
+                   {:ui/transactions (comp/get-query u.c.block-transactions/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.blocks/id             nil
                    ::m.c.blocks/height         ""

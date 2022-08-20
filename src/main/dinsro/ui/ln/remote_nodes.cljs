@@ -34,8 +34,8 @@
     (log/finer :ShowNode/pre-merge-parsed {:node-id node-id})
     (let [peers-data
           (merge
-           (comp/get-initial-state u.ln.remote-node-peers/RemoteNodePeersSubPage)
-           (get-in state-map (comp/get-ident u.ln.remote-node-peers/RemoteNodePeersSubPage {}))
+           (comp/get-initial-state u.ln.remote-node-peers/SubPage)
+           (get-in state-map (comp/get-ident u.ln.remote-node-peers/SubPage {}))
            {::m.ln.remote-nodes/id node-id})
 
           updated-data (-> data-tree (assoc :peers peers-data))]
@@ -52,7 +52,7 @@
    :ident         ::m.ln.remote-nodes/id
    :query         [::m.ln.remote-nodes/id
                    ::m.ln.remote-nodes/pubkey
-                   {:peers (comp/get-query u.ln.remote-node-peers/RemoteNodePeersSubPage)}
+                   {:peers (comp/get-query u.ln.remote-node-peers/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.ln.remote-nodes/id     nil
                    ::m.ln.remote-nodes/pubkey ""

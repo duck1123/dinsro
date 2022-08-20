@@ -73,7 +73,7 @@
 
 (def ui-node-channels-report (comp/factory NodeChannelsReport))
 
-(defsc NodeChannelsSubPage
+(defsc SubPage
   [_this {:keys   [report] :as props
           node-id ::m.ln.nodes/id}]
   {:query         [::m.ln.nodes/id
@@ -81,12 +81,12 @@
    :componentDidMount
    (fn [this]
      (let [props (comp/props this)]
-       (log/info :NodeChannelsSubPage/did-mount {:props props :this this})
+       (log/info :SubPage/did-mount {:props props :this this})
        (report/start-report! this NodeChannelsReport)))
    :initial-state {::m.ln.nodes/id nil
                    :report         {}}
-   :ident         (fn [] [:component/id ::NodeChannelsSubPage])}
-  (log/info :NodeChannelsSubPage/creating {:props props})
+   :ident         (fn [] [:component/id ::SubPage])}
+  (log/info :SubPage/creating {:props props})
   (let [peer-data (assoc-in report [:ui/parameters ::m.ln.nodes/id] node-id)]
     (dom/div :.ui.segment
       #_(dom/code {} (dom/pre {} (pr-str props)))
@@ -94,4 +94,4 @@
         (ui-node-channels-report peer-data)
         (dom/div {} "Node ID not set")))))
 
-(def ui-node-channels-sub-page (comp/factory NodeChannelsSubPage))
+(def ui-node-channels-sub-page (comp/factory SubPage))

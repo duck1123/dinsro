@@ -77,7 +77,7 @@
 
 (def ui-node-peers-report (comp/factory NodePeersReport))
 
-(defsc NodePeersSubPage
+(defsc SubPage
   [_this {:keys   [report] :as props
           node-id ::m.ln.nodes/id}]
   {:query         [::m.ln.nodes/id
@@ -85,12 +85,12 @@
    :componentDidMount
    (fn [this]
      (let [props (comp/props this)]
-       (log/info :NodePeersSubPage/did-mount {:props props :this this})
+       (log/info :SubPage/did-mount {:props props :this this})
        (report/start-report! this NodePeersReport)))
    :initial-state {::m.ln.nodes/id nil
                    :report        {}}
-   :ident         (fn [] [:component/id ::NodePeersSubPage])}
-  (log/info :NodePeersSubPage/creating {:props props})
+   :ident         (fn [] [:component/id ::SubPage])}
+  (log/info :SubPage/creating {:props props})
   (let [peer-data (assoc-in report [:ui/parameters ::m.ln.nodes/id] node-id)]
     (dom/div :.ui.segment
       #_(dom/code {} (dom/pre {} (pr-str props)))
@@ -98,4 +98,4 @@
         (ui-node-peers-report peer-data)
         (dom/div {} "Node ID not set")))))
 
-(def ui-node-peers-sub-page (comp/factory NodePeersSubPage))
+(def ui-node-peers-sub-page (comp/factory SubPage))

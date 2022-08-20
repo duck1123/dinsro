@@ -31,7 +31,7 @@
 
 (def ui-node-transactions-report (comp/factory NodeTransactionsReport))
 
-(defsc NodeTransactionsSubPage
+(defsc SubPage
   [_this {:keys   [report] :as props
           node-id ::m.ln.nodes/id}]
   {:query         [::m.ln.nodes/id
@@ -39,12 +39,12 @@
    :componentDidMount
    (fn [this]
      (let [props (comp/props this)]
-       (log/info :NodeTransactionsSubPage/did-mount {:props props :this this})
+       (log/info :SubPage/did-mount {:props props :this this})
        (report/start-report! this NodeTransactionsReport)))
    :initial-state {::m.ln.nodes/id nil
                    :report         {}}
-   :ident         (fn [] [:component/id ::NodeTransactionsSubPage])}
-  (log/info :NodeTransactionsSubPage/creating {:props props})
+   :ident         (fn [] [:component/id ::SubPage])}
+  (log/info :SubPage/creating {:props props})
   (let [peer-data (assoc-in report [:ui/parameters ::m.ln.nodes/id] node-id)]
     (dom/div :.ui.segment
       #_(dom/code {} (dom/pre {} (pr-str props)))
@@ -52,4 +52,4 @@
         (ui-node-transactions-report peer-data)
         (dom/div {} "Node ID not set")))))
 
-(def ui-node-transactions-sub-page (comp/factory NodeTransactionsSubPage))
+(def ui-node-transactions-sub-page (comp/factory SubPage))

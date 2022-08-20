@@ -148,14 +148,14 @@
   (let [id (::m.c.wallets/id data-tree)]
     (log/finer :ShowTransaction-pre-merge/parsed {:id id})
     (let [addresses-data
-          (let [initial (comp/get-initial-state u.c.wallet-addresses/WalletAddressesSubPage)
-                state   (get-in state-map (comp/get-ident u.c.wallet-addresses/WalletAddressesSubPage {}))
+          (let [initial (comp/get-initial-state u.c.wallet-addresses/SubPage)
+                state   (get-in state-map (comp/get-ident u.c.wallet-addresses/SubPage {}))
                 merged  (merge initial state {::m.c.wallets/id id})]
             (log/info :ShowBlock-pre-merge/address-data {:initial initial :state state :merged merged})
             merged)
           words-data
-          (let [initial (comp/get-initial-state u.c.wallet-words/WalletWordsSubPage)
-                state   (get-in state-map (comp/get-ident u.c.wallet-words/WalletWordsSubPage {}))
+          (let [initial (comp/get-initial-state u.c.wallet-words/SubPage)
+                state   (get-in state-map (comp/get-ident u.c.wallet-words/SubPage {}))
                 merged  (merge initial state {::m.c.wallets/id id})]
             (log/info :ShowBlock-pre-merge/words-data {:initial initial :state state :merged merged})
             merged)
@@ -180,8 +180,8 @@
                    ::m.c.wallets/derivation
                    {::m.c.wallets/node (comp/get-query u.links/CoreNodeLinkForm)}
                    ::m.c.wallets/key
-                   {:ui/addresses (comp/get-query u.c.wallet-addresses/WalletAddressesSubPage)}
-                   {:ui/words (comp/get-query u.c.wallet-words/WalletWordsSubPage)}
+                   {:ui/addresses (comp/get-query u.c.wallet-addresses/SubPage)}
+                   {:ui/words (comp/get-query u.c.wallet-words/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.wallets/id         nil
                    ::m.c.wallets/name       ""

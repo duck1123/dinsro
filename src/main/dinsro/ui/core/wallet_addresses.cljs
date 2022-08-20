@@ -88,19 +88,19 @@
 
 (def ui-wallet-addresses-report (comp/factory WalletAddressesReport))
 
-(defsc WalletAddressesSubPage
+(defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:query         [::m.c.wallets/id
                    {:ui/report (comp/get-query WalletAddressesReport)}]
    :componentDidMount
    (fn [this]
      (let [{id ::m.c.wallets/id :as props} (comp/props this)]
-       (log/info :WalletAddressesSubPage/did-mount {:props props :this this})
+       (log/info :SubPage/did-mount {:props props :this this})
        (report/start-report! this WalletAddressesReport {:route-params {::m.c.wallets/id id}})))
    :initial-state {::m.c.wallets/id nil
                    :ui/report       {}}
-   :ident         (fn [] [:component/id ::BlockTransactionsSubPage])}
-  (log/info :BlockTransactionsSubPage/creating {:props props})
+   :ident         (fn [] [:component/id ::SubPage])}
+  (log/info :SubPage/creating {:props props})
   (ui-wallet-addresses-report report))
 
-(def ui-wallet-addresses-sub-page (comp/factory WalletAddressesSubPage))
+(def ui-wallet-addresses-sub-page (comp/factory SubPage))

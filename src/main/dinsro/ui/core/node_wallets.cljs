@@ -36,7 +36,7 @@
 
 (def ui-node-wallets-report (comp/factory NodeWalletsReport))
 
-(defsc NodeWalletsSubPage
+(defsc SubPage
   [_this {:ui/keys [report] :as props
           node-id  ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
@@ -44,15 +44,15 @@
    :componentDidMount
    (fn [this]
      (let [{::m.c.nodes/keys [id] :as props} (comp/props this)]
-       (log/info :NodeWalletsSubPage/did-mount {:props props :this this})
+       (log/info :SubPage/did-mount {:props props :this this})
        (report/start-report! this NodeWalletsReport {:route-params {::m.c.nodes/id id}})))
    :initial-state {::m.c.nodes/id nil
                    :ui/report     {}}
-   :ident         (fn [] [:component/id ::NodeWalletsSubPage])}
-  (log/info :NodeWalletsSubPage/creating {:props props})
+   :ident         (fn [] [:component/id ::SubPage])}
+  (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id
       (ui-node-wallets-report report)
       (dom/p {} "Node ID not set"))))
 
-(def ui-node-wallets-sub-page (comp/factory NodeWalletsSubPage))
+(def ui-node-wallets-sub-page (comp/factory SubPage))

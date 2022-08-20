@@ -220,15 +220,15 @@
   (let [id (::m.c.tx/id data-tree)]
     (log/finer :ShowTransaction-pre-merge/parsed {:id id})
     (let [inputs-data
-          (let [initial (comp/get-initial-state u.c.transaction-inputs/TransactionInputsSubPage)
-                state   (get-in state-map (comp/get-ident u.c.transaction-inputs/TransactionInputsSubPage {}))
+          (let [initial (comp/get-initial-state u.c.transaction-inputs/SubPage)
+                state   (get-in state-map (comp/get-ident u.c.transaction-inputs/SubPage {}))
                 merged  (merge initial state {::m.c.blocks/id id})]
             (log/finer :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
             merged)
 
           outputs-data
-          (let [initial (comp/get-initial-state u.c.transaction-outputs/TransactionOutputsSubPage)
-                state   (get-in state-map (comp/get-ident u.c.transaction-outputs/TransactionOutputsSubPage {}))
+          (let [initial (comp/get-initial-state u.c.transaction-outputs/SubPage)
+                state   (get-in state-map (comp/get-ident u.c.transaction-outputs/SubPage {}))
                 merged  (merge initial state {::m.c.blocks/id id})]
             (log/finer :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
             merged)
@@ -254,8 +254,8 @@
                    ::m.c.tx/hash
                    ::m.c.tx/size
                    ::m.c.tx/fetched?
-                   {:ui/inputs (comp/get-query u.c.transaction-inputs/TransactionInputsSubPage)}
-                   {:ui/outputs (comp/get-query u.c.transaction-outputs/TransactionOutputsSubPage)}
+                   {:ui/inputs (comp/get-query u.c.transaction-inputs/SubPage)}
+                   {:ui/outputs (comp/get-query u.c.transaction-outputs/SubPage)}
                    {::m.c.tx/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]
    :initial-state {::m.c.tx/id       nil

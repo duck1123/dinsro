@@ -197,20 +197,20 @@
   (let [node-id (::m.c.nodes/id data-tree)]
     (log/finer :ShowNode-pre-merge/parsed {:node-id node-id})
     (let [peers-data        (merge
-                             (comp/get-initial-state u.c.node-peers/NodePeersSubPage)
-                             (get-in state-map (comp/get-ident u.c.node-peers/NodePeersSubPage {}))
+                             (comp/get-initial-state u.c.node-peers/SubPage)
+                             (get-in state-map (comp/get-ident u.c.node-peers/SubPage {}))
                              {::m.c.nodes/id node-id})
           wallets-data      (merge
-                             (comp/get-initial-state u.c.node-wallets/NodeWalletsSubPage)
-                             (get-in state-map (comp/get-ident u.c.node-wallets/NodeWalletsSubPage {}))
+                             (comp/get-initial-state u.c.node-wallets/SubPage)
+                             (get-in state-map (comp/get-ident u.c.node-wallets/SubPage {}))
                              {::m.c.nodes/id node-id})
           blocks-data       (merge
-                             (comp/get-initial-state u.c.node-blocks/NodeBlocksSubPage)
-                             (get-in state-map (comp/get-ident u.c.node-blocks/NodeBlocksSubPage {}))
+                             (comp/get-initial-state u.c.node-blocks/SubPage)
+                             (get-in state-map (comp/get-ident u.c.node-blocks/SubPage {}))
                              {::m.c.nodes/id node-id})
           transactions-data (merge
-                             (comp/get-initial-state u.c.node-transactions/NodeTransactionsSubPage)
-                             (get-in state-map (comp/get-ident u.c.node-transactions/NodeTransactionsSubPage {}))
+                             (comp/get-initial-state u.c.node-transactions/SubPage)
+                             (get-in state-map (comp/get-ident u.c.node-transactions/SubPage {}))
                              {::m.c.nodes/id node-id})
           updated-data      (-> data-tree
                                 (assoc :ui/peers peers-data)
@@ -237,10 +237,10 @@
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    ::m.c.nodes/chain
-                   {:ui/peers (comp/get-query u.c.node-peers/NodePeersSubPage)}
-                   {:ui/blocks (comp/get-query u.c.node-blocks/NodeBlocksSubPage)}
-                   {:ui/transactions (comp/get-query u.c.node-transactions/NodeTransactionsSubPage)}
-                   {:ui/wallets (comp/get-query u.c.node-wallets/NodeWalletsSubPage)}
+                   {:ui/peers (comp/get-query u.c.node-peers/SubPage)}
+                   {:ui/blocks (comp/get-query u.c.node-blocks/SubPage)}
+                   {:ui/transactions (comp/get-query u.c.node-transactions/SubPage)}
+                   {:ui/wallets (comp/get-query u.c.node-wallets/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id    nil
                    ::m.c.nodes/name  ""

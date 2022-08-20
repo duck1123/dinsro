@@ -279,20 +279,20 @@
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
     (let [peers-data
           (merge
-           (comp/get-initial-state u.ln.node-peers/NodePeersSubPage)
-           (get-in state-map (comp/get-ident u.ln.node-peers/NodePeersSubPage {}))
+           (comp/get-initial-state u.ln.node-peers/SubPage)
+           (get-in state-map (comp/get-ident u.ln.node-peers/SubPage {}))
            {::m.ln.nodes/id node-id})
 
           channels-data
           (merge
-           (comp/get-initial-state u.ln.node-channels/NodeChannelsSubPage)
-           (get-in state-map (comp/get-ident u.ln.node-channels/NodeChannelsSubPage {}))
+           (comp/get-initial-state u.ln.node-channels/SubPage)
+           (get-in state-map (comp/get-ident u.ln.node-channels/SubPage {}))
            {::m.ln.nodes/id node-id})
 
           transactions-data
           (merge
-           (comp/get-initial-state u.ln.node-transactions/NodeTransactionsSubPage)
-           (get-in state-map (comp/get-ident u.ln.node-transactions/NodeTransactionsSubPage {}))
+           (comp/get-initial-state u.ln.node-transactions/SubPage)
+           (get-in state-map (comp/get-ident u.ln.node-transactions/SubPage {}))
            {::m.ln.nodes/id node-id})
 
           updated-data (-> data-tree
@@ -311,9 +311,9 @@
          ::m.ln.info/keys  [chains]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]}]
   {:route-segment ["nodes" :id]
-   :query         [{:channels (comp/get-query u.ln.node-channels/NodeChannelsSubPage)}
-                   {:peers (comp/get-query u.ln.node-peers/NodePeersSubPage)}
-                   {:transactions (comp/get-query u.ln.node-transactions/NodeTransactionsSubPage)}
+   :query         [{:channels (comp/get-query u.ln.node-channels/SubPage)}
+                   {:peers (comp/get-query u.ln.node-peers/SubPage)}
+                   {:transactions (comp/get-query u.ln.node-transactions/SubPage)}
                    ::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port

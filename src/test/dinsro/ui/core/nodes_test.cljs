@@ -21,7 +21,7 @@
               ::m.c.nodes/fetched?    true
               ::m.c.nodes/height      6
               ::m.c.nodes/hash        "yes"
-              :peers                  (u.c.node-peers-test/NodePeersSubPage-data)}]
+              :peers                  (u.c.node-peers-test/SubPage-data)}]
     (log/info :ShowNode-data/response {:data data})
     data))
 
@@ -36,12 +36,12 @@
       {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)})}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard NodePeersSubPage
+(ws/defcard SubPage
   {::wsm/card-width 7 ::wsm/card-height 20}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.node-peers/NodePeersSubPage
+   {::ct.fulcro3/root          u.c.node-peers/SubPage
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state u.c.node-peers-test/NodePeersSubPage-data}))
+    ::ct.fulcro3/initial-state u.c.node-peers-test/SubPage-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowNode
