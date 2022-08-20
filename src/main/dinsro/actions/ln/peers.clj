@@ -46,7 +46,7 @@
         (throw (RuntimeException. "Can't find peer")))
       (let [network-id (q.c.networks/find-by-chain-and-network "bitcoin" "regtest")]
         (log/error :update-peer!/no-peer {:network-id network-id :params params})
-        (let [remote-node-id (a.ln.remote-nodes/register-node! network-id pubkey)
+        (let [remote-node-id (a.ln.remote-nodes/register-node! network-id pubkey nil)
               params         (assoc params ::m.ln.peers/remote-node remote-node-id)]
           (create-peer-record! params))))))
 

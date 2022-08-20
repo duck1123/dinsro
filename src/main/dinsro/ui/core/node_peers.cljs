@@ -13,6 +13,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
+(def fetch-button
+  {:type   :button
+   :label  "Fetch"
+   :action (u.links/report-action ::m.c.nodes/id mu.c.nodes/fetch!)})
+
 (report/defsc-report Report
   [this props]
   {ro/columns        [m.c.peers/peer-id
@@ -23,19 +28,7 @@
                       :inputs         [[::m.c.nodes/id]]}
    ro/controls       {::m.c.nodes/id {:type :uuid :label "Nodes"}
                       ::refresh      u.links/refresh-control
-                      ::fetch        {:type   :button
-                                      :label  "Fetch"
-                                      :action (fn [this]
-                                                (let [props                 (comp/props this)
-                                                      {:ui/keys [controls]} props
-                                                      id-control            (some
-                                                                             (fn [c]
-                                                                               (let [{::control/keys [id]} c]
-                                                                                 (when (= id ::m.c.nodes/id)
-                                                                                   c)))
-                                                                             controls)
-                                                      node-id               (::control/value id-control)]
-                                                  (comp/transact! this [(mu.c.nodes/fetch! {::m.c.nodes/id node-id})])))}
+                      ::fetch        fetch-button
                       ::new          {:type   :button
                                       :label  "New"
                                       :action (fn [this]

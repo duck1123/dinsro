@@ -51,16 +51,16 @@
                 :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]]}]
     (map first (xt/q db query node-id))))
 
-(>defn find-by-network-and-pubkey
-  [network-id pubkey]
-  [::m.ln.remote-nodes/network ::m.ln.remote-nodes/pubkey => (? ::m.ln.remote-nodes/id)]
+(>defn find-by-node-and-pubkey
+  [node-id pubkey]
+  [::m.ln.remote-nodes/node ::m.ln.remote-nodes/pubkey => (? ::m.ln.remote-nodes/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?remote-node-id]
-                :in    [[?network-id ?pubkey]]
+                :in    [[?node-id ?pubkey]]
                 :where [[?remote-node-id ::m.ln.remote-nodes/pubkey ?pubkey]
-                        [?remote-node-id ::m.ln.remote-nodes/network ?network-id]]}
-        id (ffirst (xt/q db query [network-id pubkey]))]
-    (log/info :find-by-network-and-pubkey/finished {:id id :network-id network-id :pubkey pubkey})
+                        [?remote-node-id ::m.ln.remote-nodes/node ?node-id]]}
+        id (ffirst (xt/q db query [node-id pubkey]))]
+    (log/info :find-by-network-and-pubkey/finished {:id id :node-id node-id :pubkey pubkey})
     id))
 
 (>defn find-channel

@@ -31,8 +31,9 @@
 
 (defn form-link
   [this id name form-kw]
-  (log/debug :form-link/creating {:id id :name name :form-kw form-kw})
+  (log/debug :form-link/starting {:id id :name name :form-kw form-kw})
   (dom/a {:href "#"
+          :data-form (str form-kw)
           :onClick
           (fn [e]
             (.preventDefault e)
@@ -126,11 +127,12 @@
 (def ui-channel-link (comp/factory ChannelLinkForm {:keyfn ::m.ln.channels/id}))
 
 (form/defsc-form CoreNodeLinkForm
-  [this {::m.c.nodes/keys [id name]}]
+  [this {::m.c.nodes/keys [id name] :as props}]
   {fo/id           m.c.nodes/id
    fo/route-prefix "core-node-link"
    fo/attributes   [m.c.nodes/id m.c.nodes/name]}
-  (form-link this id name :dinsro.ui.core.nodes/ShowNode))
+  (log/info :CoreNodeLinkForm/starting {:id id :name name :props props})
+  (form-link this id (or name (str id)) :dinsro.ui.core.nodes/ShowNode))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
@@ -188,11 +190,13 @@
 
 (def ui-ln-tx-link (comp/factory LNTxLinkForm {:keyfn ::m.ln.tx/id}))
 
-(form/defsc-form NodeLinkForm [this {::m.ln.nodes/keys [id name]}]
+(form/defsc-form NodeLinkForm
+  [this {::m.ln.nodes/keys [id name] :as props}]
   {fo/id           m.ln.nodes/id
    fo/route-prefix "node-link"
    fo/title        "LN Node"
    fo/attributes   [m.ln.nodes/name]}
+  (log/info :NodeLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.ln.nodes/ShowNode))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))

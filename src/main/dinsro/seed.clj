@@ -174,6 +174,9 @@
    :port            "10009"
    :node            "bitcoin-alice"
    :mnemonic        lnd1-mnemonic
+   :remote-nodes
+   [{:host   "lnd.bob.svc.cluster.local"
+     :pubKey lnd2-key}]
    :peers           []
    :txes            []})
 
@@ -184,6 +187,8 @@
    :fileserver-host "fileserver.bob"
    :port            "10009"
    :mnemonic        lnd2-mnemonic
+   :remote-nodes    [{:host   "lnd.alice.svc.cluster.local"
+                      :pubKey lnd1-key}]
    :peers           []
    :txes            []})
 

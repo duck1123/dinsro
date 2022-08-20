@@ -166,9 +166,10 @@
 
 #?(:clj
    (pc/defmutation fetch-peers!
-     [_env {::m.ln.nodes/keys [id]}]
+     [_env {::m.ln.nodes/keys [id] :as props}]
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
+     (log/info :fetch-peers!/starting {:props props})
      (a.ln.peers/fetch-peers! id)
      {:status :ok})
    :cljs

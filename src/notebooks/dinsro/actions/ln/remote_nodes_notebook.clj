@@ -33,6 +33,7 @@
 
   (a.ln.remote-nodes/register-node!
    network-id
-   (::m.ln.info/identity-pubkey n.lnd/node-alice))
+   (::m.ln.info/identity-pubkey n.lnd/node-alice)
+   nil)
 
   nil)

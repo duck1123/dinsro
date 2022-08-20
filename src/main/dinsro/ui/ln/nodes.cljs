@@ -34,6 +34,7 @@
    [dinsro.ui.ln.invoices :as u.ln.invoices]
    [dinsro.ui.ln.payments :as u.ln.payments]
    [dinsro.ui.ln.transactions :as u.ln.tx]
+   [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
    [dinsro.ui.links :as u.links]
    [taoensso.timbre :as log]))
 
@@ -278,22 +279,25 @@
     (let [peers-data        (u.links/merge-state state-map u.ln.node-peers/SubPage {::m.ln.nodes/id node-id})
           channels-data     (u.links/merge-state state-map u.ln.node-channels/SubPage {::m.ln.nodes/id node-id})
           transactions-data (u.links/merge-state state-map u.ln.node-transactions/SubPage {::m.ln.nodes/id node-id})
+          remote-nodes-data (u.links/merge-state state-map u.ln.node-remote-nodes/SubPage {::m.ln.nodes/id node-id})
           updated-data      (-> data-tree
-                                (assoc :peers peers-data)
-                                (assoc :channels channels-data)
-                                (assoc :transactions transactions-data))]
+                                (assoc :ui/peers peers-data)
+                                (assoc :ui/channels channels-data)
+                                (assoc :ui/transactions transactions-data)
+                                (assoc :ui/remote-nodes remote-nodes-data))]
       (log/info :ShowNode-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (defsc ShowNode
   "Show a ln node"
-  [this {:keys             [peers channels transactions]
+  [this {:ui/keys          [peers channels transactions remote-nodes]
          ::m.ln.info/keys  [chains]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]}]
   {:route-segment ["nodes" :id]
-   :query         [{:channels (comp/get-query u.ln.node-channels/SubPage)}
-                   {:peers (comp/get-query u.ln.node-peers/SubPage)}
-                   {:transactions (comp/get-query u.ln.node-transactions/SubPage)}
+   :query         [{:ui/channels (comp/get-query u.ln.node-channels/SubPage)}
+                   {:ui/peers (comp/get-query u.ln.node-peers/SubPage)}
+                   {:ui/transactions (comp/get-query u.ln.node-transactions/SubPage)}
+                   {:ui/remote-nodes (comp/get-query u.ln.node-remote-nodes/SubPage)}
                    ::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -302,9 +306,10 @@
                    ::m.ln.info/chains
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
-   :initial-state {:channels                 {}
-                   :peers                    {}
-                   :transactions             {}
+   :initial-state {:ui/channels              {}
+                   :ui/peers                 {}
+                   :ui/transactions          {}
+                   :ui/remote-nodes          {}
                    ::m.ln.info/chains        []
                    ::m.ln.nodes/id           nil
                    ::m.ln.nodes/user         {}
@@ -361,11 +366,13 @@
       (dom/p {} (pr-str id)))
     (u.ln.node-peers/ui-sub-page peers)
     (u.ln.node-channels/ui-sub-page channels)
-    (u.ln.node-transactions/ui-sub-page transactions)))
+    (u.ln.node-transactions/ui-sub-page transactions)
+    (u.ln.node-remote-nodes/ui-sub-page remote-nodes)))
 
 (report/defsc-report LightningNodesReport
   [this props]
   {ro/columns          [m.ln.nodes/id
+                        m.ln.nodes/name
                         m.ln.info/alias-attr
                         m.ln.nodes/core-node
                         m.ln.info/color

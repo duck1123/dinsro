@@ -18,18 +18,28 @@
    #?(:clj [dinsro.queries.ln.payreqs :as q.ln.payreqs])
    #?(:clj [dinsro.queries.ln.peers :as q.ln.peers])
    #?(:clj [dinsro.queries.ln.transactions :as q.ln.tx])
-   [dinsro.specs]))
+   [dinsro.specs]
+   [lambdaisland.glogc :as log]))
 
 (defattr index ::m.ln.nodes/index :ref
   {ao/target    ::m.ln.nodes/id
    ao/pc-output [{::m.ln.nodes/index [::m.ln.nodes/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params] :as env} _]
-     (let [ids #?(:clj (if-let [user-id (a.authentication/get-user-id env)]
-                         (q.ln.nodes/find-by-user user-id)
-                         []) :cljs [])]
+     (let [ids #?(:clj
+                  (if-let [user-id (a.authentication/get-user-id env)]
+                    (do
+                      (log/info :index/found-user {:user-id user-id})
+                      (q.ln.nodes/find-by-user user-id))
+                    (do
+                      (log/warn :index/no-user {:env env})
+                      []))
+                  :cljs [])]
+       (log/info :index/starting {:ids ids})
        (comment env query-params)
-       {::m.ln.nodes/index (m.ln.nodes/idents ids)}))})
+       (let [idents (m.ln.nodes/idents ids)]
+         (log/info :index/finished {:idents idents})
+         {::m.ln.nodes/index idents})))})
 
 (defattr admin-index ::m.ln.nodes/admin-index :ref
   {ao/target    ::m.ln.nodes/id

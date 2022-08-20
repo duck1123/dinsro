@@ -13,6 +13,7 @@
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.ln.peers :as a.ln.peers]
+   [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.seed.core :as cs.core]
    [dinsro.components.seed.ln-node :as cs.ln-node]
@@ -444,6 +445,41 @@
                 (log/error :seed-core-peers!/no-peer-failed {:ex ex})
                 (when strict (throw (RuntimeException. "Failed to add peer" ex)))))))))))
 
+(defn seed-remote-nodes-remote-node!
+  [user-id node-id remote-node-data]
+  (log/info
+   :seed-remote-nodes-remote-node!/starting
+   {:user-id          user-id
+    :node-id          node-id
+    :remote-node-data remote-node-data})
+  (let [{:keys [pubKey host]} remote-node-data]
+    (a.ln.remote-nodes/register-node! node-id pubKey host)))
+
+(defn seed-remote-nodes-node!
+  [user-id ln-node-data]
+  (log/info :seed-remote-nodes-node!/starting {:user-id user-id :ln-node-data ln-node-data})
+  (let [node-name (:name ln-node-data)
+        node-id (q.ln.nodes/find-id-by-user-and-name user-id node-name)]
+    (log/info :seed-remote-nodes-node!/found-node-id {:node-id node-id})
+    (let [remote-nodes-data (:remote-nodes ln-node-data)]
+      (doseq [remote-node-data remote-nodes-data]
+        (seed-remote-nodes-remote-node! user-id node-id remote-node-data)))))
+
+(defn seed-remote-nodes-user!
+  [user-data]
+  (log/info :seed-remote-nodes-user!/starting {:user-data user-data})
+  (let [username      (:username user-data)
+        user-id       (q.users/find-eid-by-name username)
+        ln-nodes-data (:ln-nodes user-data)]
+    (doseq [ln-node-data ln-nodes-data]
+      (seed-remote-nodes-node! user-id ln-node-data))))
+
+(defn seed-remote-nodes!
+  [users-data]
+  (log/info :seed-remote-nodes!/starting {:users-data users-data})
+  (doseq [user-data users-data]
+    (seed-remote-nodes-user! user-data)))
+
 (>defn seed-db!
   [seed-data]
   [::cs.core/seed-data => any?]
@@ -467,8 +503,6 @@
         (log/error :seed-db!/core-nodes-failed {:ex ex})
         (when strict (throw (RuntimeException. "seed core nodes failed" ex)))))
 
-    #_(seed-core-txes!)
-
     (seed-currencies! default-currencies)
     (seed-rate-sources! default-rate-sources)
     (seed-rates! default-rate-sources)
@@ -479,8 +513,7 @@
     (seed-ln-nodes! users)
     (seed-wallets! users)
     (seed-addresses! [])
-    ;; (seed-ln-peers! users)
-    ;; (seed-ln-txes! users)
+    (seed-remote-nodes! users)
 
     (log/info :seed/finished {})
     (item-report)))
