@@ -79,11 +79,12 @@
    :pre-merge     ShowChain-pre-merge
    :will-enter    ShowChain-will-enter}
   (log/info :ShowChain/starting {:props props})
-  (dom/div {}
-    (dom/h1 {} (str "Show Chain: " name))
-    (if networks
-      (u.c.chain-networks/ui-sub-page networks)
-      (dom/p "Failed to load chain networks"))))
+  (comp/fragment
+   (dom/div :.ui.segment
+     (dom/h1 {} (str "Show Chain: " name)))
+   (if networks
+     (u.c.chain-networks/ui-sub-page networks)
+     (dom/p "Failed to load chain networks"))))
 
 (def ui-show-chain (comp/factory ShowChain))
 

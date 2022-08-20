@@ -11,15 +11,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.networks/id
-                        m.c.networks/name
-                        m.c.networks/chain]
-   ro/controls         {::refresh       u.links/refresh-control
-                        ::m.c.chains/id {:type :uuid :label "Chains"}}
+  {ro/columns          [m.c.networks/name]
    ro/control-layout   {:inputs         [[::m.c.chains/id]]
                         :action-buttons [::refresh]}
-   ro/field-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
-                        ::m.c.networks/name  #(u.links/ui-network-link %3)}
+   ro/controls         {::m.c.chains/id {:type :uuid :label "Chains"}
+                        ::refresh       u.links/refresh-control}
+   ro/field-formatters {::m.c.networks/name #(u.links/ui-network-link %3)}
    ro/source-attribute ::m.c.networks/index
    ro/title            "Chain Networks"
    ro/row-pk           m.c.networks/id

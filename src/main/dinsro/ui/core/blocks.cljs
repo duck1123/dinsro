@@ -214,6 +214,8 @@
 
 (s/def ::rows (s/coll-of ::row))
 
+(declare ShowBlock)
+
 (defn ShowBlock-pre-merge
   [{:keys [data-tree state-map]}]
   (log/finer :ShowBlock-pre-merge/starting {:data-tree data-tree :state-map state-map})
@@ -225,9 +227,29 @@
       (log/finer :ShowBlock-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
+(defn ShowBlock-will-enter
+  [app {id :id}]
+  (let [id    (new-uuid id)
+        ident [::m.c.blocks/id id]
+        state (-> (app/current-state app) (get-in ident))]
+    (log/finer :ShowBlock-will-enter/starting {:id id :app app})
+    (dr/route-deferred
+     ident
+     (fn []
+       (log/finer :ShowBlock-will-enter/routed
+                  {:id       id
+                   :state    state
+                   :controls (control/component-controls app)})
+       (df/load!
+        app ident ShowBlock
+        {:marker               :ui/selected-node
+         :target               [:ui/selected-node]
+         :post-mutation        `dr/target-ready
+         :post-mutation-params {:target ident}})))))
+
 (defsc ShowBlock
   "Show a core block"
-  [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight]
+  [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight network]
          :ui/keys          [transactions]
          :as               props}]
   {:route-segment ["blocks" :id]
@@ -237,6 +259,7 @@
                    ::m.c.blocks/nonce
                    ::m.c.blocks/weight
                    ::m.c.blocks/fetched?
+                   {::m.c.blocks/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {:ui/transactions (comp/get-query u.c.block-transactions/SubPage)}
@@ -246,30 +269,13 @@
                    ::m.c.blocks/hash           ""
                    ::m.c.blocks/previous-block {}
                    ::m.c.blocks/next-block     {}
-                   ::m.c.blocks/weight 0
-                   ::m.c.blocks/nonce ""
+                   ::m.c.blocks/weight         0
+                   ::m.c.blocks/nonce          ""
                    ::m.c.blocks/fetched?       false
+                   ::m.c.blocks/network        {}
                    :ui/transactions            {}}
    :ident         ::m.c.blocks/id
-   :will-enter
-   (fn [app {id :id}]
-     (let [id    (new-uuid id)
-           ident [::m.c.blocks/id id]
-           state (-> (app/current-state app) (get-in ident))]
-       (log/finer :ShowBlock/will-enter {:id id :app app})
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/finer :ShowBlock/will-enter2
-                     {:id       id
-                      :state    state
-                      :controls (control/component-controls app)})
-          (df/load!
-           app ident ShowBlock
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))
+   :will-enter    ShowBlock-will-enter
    :pre-merge     ShowBlock-pre-merge}
   (log/finer :ShowBlock/creating {:id id :props props :this this})
   (dom/div {}
@@ -286,6 +292,7 @@
       (dom/p {}  (str "Hash: " hash))
       (dom/p {}  (str "Weight: " weight))
       (dom/p {}  (str "Nonce: " nonce))
+      (dom/p {}  (str "Network: ") (u.links/ui-network-link network))
       (dom/button {:onClick (fn [_e]
                               (log/info :ShowBlock/fetch-button-clicked {})
                               (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}

@@ -9,10 +9,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.users/name]
+  {ro/columns          [m.accounts/name]
    ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.accounts/index

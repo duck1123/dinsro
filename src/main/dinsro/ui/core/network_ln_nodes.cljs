@@ -11,10 +11,13 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.nodes/name]
+  {ro/columns          [m.ln.nodes/name
+                        m.ln.nodes/user]
    ro/controls         {::refresh         u.links/refresh-control
                         ::m.c.networks/id {:type :uuid :label "Network"}}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
+                        ::m.ln.nodes/user #(u.links/ui-user-link %2)}
    ro/source-attribute ::m.ln.nodes/index
    ro/title            "Network Ln Nodes"
    ro/row-pk           m.ln.nodes/id
@@ -24,12 +27,12 @@
 
 (defn SubPage-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/finer :SubPage/pre-merge {:data-tree data-tree})
+  (log/finer :SubPage-pre-merge/starting {:data-tree data-tree})
   (let [initial             (comp/get-initial-state Report)
         report-data         (get-in state-map (comp/get-ident Report {}))
         updated-report-data (merge initial report-data)
         updated-data        (-> data-tree (assoc :nodes updated-report-data))]
-    (log/finer :SubPage/merged {:updated-data updated-data :data-tree data-tree})
+    (log/finer :SubPage-pre-merge/finished {:updated-data updated-data :data-tree data-tree})
     updated-data))
 
 (defsc SubPage
@@ -42,7 +45,7 @@
    :initial-state     {::m.c.networks/id nil
                        :ui/report        {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/creating {:props props})
+  (log/finer :SubPage/starting {:props props})
   (dom/div :.ui.segment
     (if network-id
       (ui-report report)
