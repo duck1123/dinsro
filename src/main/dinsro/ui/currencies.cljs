@@ -121,7 +121,7 @@
 (defsc ShowCurrency
   [_this {::m.currencies/keys [name]
           :ui/keys       [accounts]}]
-  {:route-segment ["users" :id]
+  {:route-segment ["currency" :id]
    :query         [::m.currencies/name
                    ::m.currencies/code
                    ::m.currencies/id
