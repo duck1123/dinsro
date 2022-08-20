@@ -263,10 +263,10 @@
 
       (when id
         (dom/div {:classes [sub]}
-          (when show-peers (u.c.node-peers/ui-node-peers-sub-page peers))
-          (when show-wallets (u.c.node-wallets/ui-node-wallets-sub-page wallets))
-          (when show-blocks (u.c.node-blocks/ui-node-blocks-sub-page blocks))
-          (when show-transactions (u.c.node-transactions/ui-node-transactions-sub-page transactions)))))))
+          (when show-peers (u.c.node-peers/ui-sub-page peers))
+          (when show-wallets (u.c.node-wallets/ui-sub-page wallets))
+          (when show-blocks (u.c.node-blocks/ui-sub-page blocks))
+          (when show-transactions (u.c.node-transactions/ui-sub-page transactions)))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id

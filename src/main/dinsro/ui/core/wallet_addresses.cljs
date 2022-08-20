@@ -86,7 +86,7 @@
    ro/source-attribute ::m.c.wallet-addresses/index
    ro/title            "Addresses"})
 
-(def ui-wallet-addresses-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
@@ -97,6 +97,6 @@
                        :ui/report       {}}
    :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
-  (ui-wallet-addresses-report report))
+  (ui-report report))
 
-(def ui-wallet-addresses-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

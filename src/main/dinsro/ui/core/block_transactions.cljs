@@ -52,7 +52,7 @@
     (dom/div :.ui.segment
       (report/render-layout this))))
 
-(def ui-block-transactions-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
@@ -63,6 +63,6 @@
                        :ui/report      {}}
    :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
-  (ui-block-transactions-report report))
+  (ui-report report))
 
-(def ui-block-transactions-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

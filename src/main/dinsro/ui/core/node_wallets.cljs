@@ -34,7 +34,7 @@
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-node-wallets-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props
@@ -48,7 +48,7 @@
   (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id
-      (ui-node-wallets-report report)
+      (ui-report report)
       (dom/p {} "Node ID not set"))))
 
-(def ui-node-wallets-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

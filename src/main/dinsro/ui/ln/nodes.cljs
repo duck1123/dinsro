@@ -359,9 +359,9 @@
           (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
             (str hasMacaroon?))))
       (dom/p {} (pr-str id)))
-    (u.ln.node-peers/ui-node-peers-sub-page peers)
-    (u.ln.node-channels/ui-node-channels-sub-page channels)
-    (u.ln.node-transactions/ui-node-transactions-sub-page transactions)))
+    (u.ln.node-peers/ui-sub-page peers)
+    (u.ln.node-channels/ui-sub-page channels)
+    (u.ln.node-transactions/ui-sub-page transactions)))
 
 (report/defsc-report LightningNodesReport
   [this props]

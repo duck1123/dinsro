@@ -30,7 +30,7 @@
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true})
 
-(def ui-node-transactions-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props
@@ -43,6 +43,6 @@
   (log/finer :SubPage/creating {:props props})
   (let [transaction-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment
-      (ui-node-transactions-report transaction-data))))
+      (ui-report transaction-data))))
 
-(def ui-node-transactions-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

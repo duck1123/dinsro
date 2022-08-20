@@ -71,7 +71,7 @@
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-node-channels-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]
@@ -86,7 +86,7 @@
   (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id
-      (ui-node-channels-report report)
+      (ui-report report)
       (dom/div {} "Node ID not set"))))
 
-(def ui-node-channels-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

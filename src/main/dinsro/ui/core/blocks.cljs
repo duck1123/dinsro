@@ -295,7 +295,7 @@
       (when next-block (dom/p {} "Next: " (u.links/ui-block-link next-block))))
     (if id
       (dom/div {}
-        (u.c.block-transactions/ui-block-transactions-sub-page transactions))
+        (u.c.block-transactions/ui-sub-page transactions))
       (dom/div {}
         (dom/p {} "No id")))))
 

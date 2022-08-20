@@ -55,7 +55,7 @@
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-remote-node-peers-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]
@@ -71,7 +71,7 @@
   (dom/div :.ui.segment
     (dom/h2 "Peers")
     (if node-id
-      (ui-remote-node-peers-report report)
+      (ui-report report)
       (dom/div {} "Node ID not set"))))
 
-(def ui-remote-node-peers-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

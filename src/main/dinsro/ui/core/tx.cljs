@@ -280,8 +280,8 @@
       (dom/p :.ui.segment "Size: " (str size)))
     (if id
       (comp/fragment
-       (when inputs (u.c.transaction-inputs/ui-transaction-inputs-sub-page inputs))
-       (when outputs (u.c.transaction-outputs/ui-transaction-outputs-sub-page outputs)))
+       (when inputs (u.c.transaction-inputs/ui-sub-page inputs))
+       (when outputs (u.c.transaction-outputs/ui-sub-page outputs)))
       (dom/p {} "id not set"))))
 
 (report/defsc-report CoreTxReport

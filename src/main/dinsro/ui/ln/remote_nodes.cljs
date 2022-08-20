@@ -72,7 +72,7 @@
       (dom/h1 {} "Remote Node")
       (dom/p {} "id: " (pr-str id))
       (dom/p {} "pubkey: " (str pubkey)))
-    (u.ln.remote-node-peers/ui-remote-node-peers-sub-page peers)))
+    (u.ln.remote-node-peers/ui-sub-page peers)))
 
 (def fetch-action-button
   "Delete button for reports"

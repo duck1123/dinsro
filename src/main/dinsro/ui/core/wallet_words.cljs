@@ -21,7 +21,7 @@
    ro/source-attribute ::m.c.words/index
    ro/title            "Words"})
 
-(def ui-wallet-words-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
@@ -32,6 +32,6 @@
                        :ui/report       {}}
    :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
-  (ui-wallet-words-report report))
+  (ui-report report))
 
-(def ui-wallet-words-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))

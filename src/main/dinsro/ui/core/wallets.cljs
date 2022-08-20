@@ -207,9 +207,9 @@
     (if id
       (comp/fragment
        (dom/div :.ui.segment
-         (u.c.wallet-addresses/ui-wallet-addresses-sub-page addresses))
+         (u.c.wallet-addresses/ui-sub-page addresses))
        (dom/div :.ui.segment
-         (u.c.wallet-words/ui-wallet-words-sub-page words)))
+         (u.c.wallet-words/ui-sub-page words)))
 
       (dom/p {} "id not set"))))
 

@@ -38,7 +38,7 @@
    ro/run-on-mount?    true
    ro/route            "blocks"})
 
-(def ui-node-blocks-report (comp/factory Report))
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props
@@ -55,7 +55,7 @@
       (if node-id
         (do
           (log/finer :SubPage/report-renderin {:block-data block-data})
-          (ui-node-blocks-report block-data))
+          (ui-report block-data))
         (dom/p {} "Node ID not set")))))
 
-(def ui-node-blocks-sub-page (comp/factory SubPage))
+(def ui-sub-page (comp/factory SubPage))
