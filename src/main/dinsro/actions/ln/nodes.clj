@@ -56,7 +56,7 @@
   "Get a lightningj client"
   [{::m.ln.nodes/keys [id name host port]}]
   [::m.ln.nodes/item => (ds/instance? AsynchronousLndAPI)]
-  (log/info :client/creating {:id id :name name})
+  (log/finer :get-client/starting {:id id :name name})
   (let [port-num (Integer/parseInt port)
         cert-file (m.ln.nodes/cert-file id)
         macaroon-file (io/file (m.ln.nodes/macaroon-path id))]
@@ -93,7 +93,13 @@
         port-num                           (Integer/parseInt port)
         file                               (io/file (m.ln.nodes/cert-path id))]
     (log/info :get-unlocker-client/starting {:host host :port-num port-num :id id :file file})
-    (c.lnd/get-unlocker-client host port-num file)))
+    (try
+      (let [client (c.lnd/get-unlocker-client host port-num file)]
+        (log/info :get-unlocker-client/finished {:client client})
+        client)
+      (catch Exception ex
+        (log/info :get-unlocker-client/errored {:ex ex})
+        (throw (RuntimeException. "Failed to get unlocker client" ex))))))
 
 (>defn get-sync-unlocker-client
   "Get a lightningj unlocker client"
@@ -116,7 +122,7 @@
       (io/copy in out))
     true
     (catch UnknownHostException _ex
-      (log/warn :download/unknown-host {:uri uri :file file})
+      (log/warn :download-file/unknown-host {:uri uri :file file})
       false)))
 
 (>defn has-cert?
@@ -153,25 +159,31 @@
   "Download the cert from the fileserver"
   [node]
   [::m.ln.nodes/item => boolean?]
-  (let [{::m.ln.nodes/keys [host id]} node
-        dir-path                      (m.ln.nodes/data-path id)
-        dir-file                      (io/file dir-path)
-        url                           (format "http://%s/tls.cert" host)]
-    (log/info
-     :download-cert!/downloading
-     {:id       id
-      :dir-path dir-path
-      :dir-file dir-file
-      :url      url})
-    (.mkdirs dir-file)
-    (let [cert-file (m.ln.nodes/cert-file id)]
-      (download-file url cert-file))))
+  (let [node-id (::m.ln.nodes/id node)]
+    (log/info :download-cert!/starting {:node-id node-id})
+    (let [fileserver-host (::m.ln.nodes/fileserver-host node)
+          dir-path        (m.ln.nodes/data-path node-id)
+          dir-file        (io/file dir-path)
+          url             (format "http://%s/tls.cert" fileserver-host)]
+      (log/info
+       :download-cert!/downloading
+       {:node-id  node-id
+        :dir-path dir-path
+        :dir-file dir-file
+        :url      url})
+      (.mkdirs dir-file)
+      (let [cert-file (m.ln.nodes/cert-file node-id)]
+        (if-let [response (download-file url cert-file)]
+          (do
+            (log/info :download-cert!/downloaded {:response response})
+            response)
+          (throw (RuntimeException. "Failed to download cert")))))))
 
 (>defn download-macaroon!
   "Download the macaroon from the fileserver"
-  [{::m.ln.nodes/keys [id host]}]
+  [{::m.ln.nodes/keys [id fileserver-host]}]
   [::m.ln.nodes/item => (? (ds/instance? File))]
-  (let [url      (format "http://%s/admin.macaroon" host)
+  (let [url      (format "http://%s/admin.macaroon" fileserver-host)
         dir-path (m.ln.nodes/data-path id)
         file     (io/file (m.ln.nodes/macaroon-path id))]
     (log/info
@@ -182,7 +194,7 @@
       (if (download-file url file)
         file
         (do
-          (log/error :download-macaroon!/failed {:node-id id :host host})
+          (log/error :download-macaroon!/failed {:node-id id :fileserver-host fileserver-host})
           nil))
       (catch FileNotFoundException _ex
         (log/error :download-macaroon!/download-failed {:url url})

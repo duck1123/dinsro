@@ -59,6 +59,11 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
+(>def ::fileserver-host string?)
+(defattr fileserver-host ::fileserver-host :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (>def ::port string?)
 (defattr port ::port :string
   {ao/identities #{::id}
@@ -113,9 +118,9 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::required-params (s/keys :req [::name ::host ::port ::core-node]))
-(>def ::params  (s/keys :req [::name ::host ::port ::user ::core-node]))
-(>def ::item (s/keys :req [::id ::name ::host ::port ::user ::core-node]))
+(>def ::required-params (s/keys :req [::name ::host ::port ::core-node ::fileserver-host]))
+(>def ::params  (s/keys :req [::name ::host ::port ::user ::core-node ::fileserver-host]))
+(>def ::item (s/keys :req [::id ::name ::host ::port ::user ::core-node ::fileserver-host]))
 (>def ::items (s/coll-of ::item))
 (>def ::ident (s/tuple keyword? ::id))
 
@@ -147,4 +152,4 @@
      (io/file (macaroon-path id))))
 
 (def attributes
-  [id name user host port mnemonic hasCert? hasMacaroon? unlocked? initialized? core-node])
+  [id name user host fileserver-host port mnemonic hasCert? hasMacaroon? unlocked? initialized? core-node])

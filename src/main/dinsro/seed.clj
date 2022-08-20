@@ -1,6 +1,5 @@
 (ns dinsro.seed
   (:require
-   ;; [dinsro.components.seed :as c.seed]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]
    [reitit.coercion.spec]
@@ -139,8 +138,6 @@
 
 (def lnd1-txes
   [{:description   "tx 1"
-    ;; :account          "a"
-    ;; :value            "1"
     :amount        1
     :blockHeight   1
     :blockHash     ""
@@ -150,8 +147,6 @@
     :label         "TX1"
     :destAddresses [""]}
    {:description   "tx 2"
-    ;; :account          "b"
-    ;; :value            "2"
     :amount        2
     :blockHeight   2
     :blockHash     ""
@@ -163,8 +158,6 @@
 
 (def lnd2-txes
   [{:description   "tx 3"
-    ;; :account          "c"
-    ;; :value            "1"
     :amount        3
     :blockHeight   3
     :blockHash     ""
@@ -175,56 +168,24 @@
     :destAddresses [""]}])
 
 (def lnd1
-  {:name                "lnd-alice"
-   :host                "lnd.alice.svc.cluster.local"
-   :port                "10009"
-   :node                "bitcoin-alice"
-   :mnemonic            lnd1-mnemonic
-   :identityPubkey      lnd1-key
-   :alias               "Node Alice"
-   :blockHeight         7
-   :syncedToChain       false
-   :syncedToGraph       false
-   :color               "#3399ff"
-   :bestHeaderTimestamp ""
-   :blockHash           ""
-   :commitHash          ""
-   :features            []
-   :numActiveChannels   0
-   :numInactiveChannels 0
-   :numPeers            0
-   :numPendingChannels  0
-   :testnet             false
-   :uris                []
-   :version             ""
-   :peers               lnd1-peers
-   :txes                lnd1-txes})
+  {:name            "lnd-alice"
+   :host            "lnd.alice.svc.cluster.local"
+   :fileserver-host "fileserver.alice"
+   :port            "10009"
+   :node            "bitcoin-alice"
+   :mnemonic        lnd1-mnemonic
+   :peers           []
+   :txes            []})
 
 (def lnd2
-  {:name                "lnd-bob"
-   :node                "bitcoin-bob"
-   :host                "lnd.bob.svc.cluster.local"
-   :port                "10009"
-   :mnemonic            lnd2-mnemonic
-   :identityPubkey      lnd2-key
-   :alias               "Node Bob"
-   :blockHeight         8
-   :syncedToChain       false
-   :syncedToGraph       false
-   :color               "#3399ff"
-   :bestHeaderTimestamp ""
-   :blockHash           ""
-   :commitHash          ""
-   :features            []
-   :numActiveChannels   0
-   :numInactiveChannels 0
-   :numPeers            0
-   :numPendingChannels  0
-   :testnet             false
-   :uris                []
-   :version             ""
-   :peers               lnd2-peers
-   :txes                lnd2-txes})
+  {:name            "lnd-bob"
+   :node            "bitcoin-bob"
+   :host            "lnd.bob.svc.cluster.local"
+   :fileserver-host "fileserver.bob"
+   :port            "10009"
+   :mnemonic        lnd2-mnemonic
+   :peers           []
+   :txes            []})
 
 (def default-currencies
   [{:name "Sats"
@@ -247,12 +208,6 @@
     :path       ".rate"
     :code       "usd"
     :rates      []}
-   #_{:name       "Coinbase USD"
-      :code       "usd"
-      :url        "https://api.coinbase.com/v2/prices/spot?currency=USD"
-      :isActive   true
-      :isIdentity false
-      :path       "100000000 / (.data.amount | tonumber)"}
    {:name       "BitPonzi"
     :url        "https://www.bitponzi.biz.localhost/cgi?id=3496709"
     :isActive   false
@@ -333,46 +288,12 @@
     :source        "identity"}
    {:name          "LND1 On-chain"
     :initial-value 0
-    :source        "identity"}
-   ;; {:name          "hot wallet"
-   ;;  :initial-value (bitcoin 1)
-   ;;  :source        "identity"}
-   ;; {:name          "duress account"
-   ;;  :initial-value (bitcoin 0.0615)
-   ;;  :source        "identity"}
-   ;; {:name          "hodl stack"
-   ;;  :initial-value (bitcoin 6.15)
-   ;;  :source        "identity"}
-   ])
+    :source        "identity"}])
 
 (def bob-accounts
-  [;; {:name          "Bank Account"
-   ;;  :initial-value 0
-   ;;  :source        "DuckBitcoin"
-   ;;  :transactions  bob-usd-transactions}
-   ;; {:name          "Exchange USD"
-   ;;  :initial-value 0
-   ;;  :source        "DuckBitcoin"
-   ;;  :transactions  bob-sat-transactions}
-   ;; {:name          "Cash"
-   ;;  :source        "DuckBitcoin"
-   ;;  :initial-value 0}
-   ;; {:name          "Exchange Sats"
-   ;;  :initial-value 0
-   ;;  :source        "identity"}
-   {:name          "LND2 On-chain"
+  [{:name          "LND2 On-chain"
     :initial-value 0
-    :source        "identity"}
-   ;; {:name          "hot wallet"
-   ;;  :initial-value (bitcoin 1)
-   ;;  :source        "identity"}
-   ;; {:name          "duress account"
-   ;;  :initial-value (bitcoin 0.0615)
-   ;;  :source        "identity"}
-   ;; {:name          "hodl stack"
-   ;;  :initial-value (bitcoin 6.15)
-   ;;  :source        "identity"}
-   ])
+    :source        "identity"}])
 
 (def admin-data
   {:username   "admin"
@@ -425,7 +346,7 @@
    alice-data
    bob-data])
 
-(def core-node-data [core-node1 core-node2 #_core-node3])
+(def core-node-data [core-node1 core-node2])
 
 (def default-chains ["bitcoin" "fakecoin"])
 

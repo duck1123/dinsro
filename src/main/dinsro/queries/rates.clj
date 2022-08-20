@@ -96,9 +96,9 @@
                             (assoc ::m.rates/id id)
                             (assoc :xt/id id)
                             (update ::m.rates/date tick/inst))]
-    (log/debug :record/create {:prepared-params prepared-params})
+    (log/finer :create-record/prepared {:prepared-params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    (log/debug :record/created {:id id})
+    (log/finer :create-record/finished {:id id})
     (comment (ms/put! streams/message-source [::create-record [:dinsro.events.rates/add-record id]]))
     id))
 

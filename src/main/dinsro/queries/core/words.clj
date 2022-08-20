@@ -36,7 +36,7 @@
                             (assoc :xt/id id))]
     (log/finer :create-record/starting {:params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    (log/fine :create-record/finished {:id id})
+    (log/finer :create-record/finished {:id id})
     id))
 
 (>defn index-records
