@@ -9,7 +9,7 @@
    #?(:cljs [com.fulcrologic.rad.authorization :as auth])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.navlink :as m.navlink]
-   #?(:cljs [taoensso.timbre :as log])))
+   #?(:cljs [lambdaisland.glogc :as log])))
 
 (comment ::m.navlink/_ ::pc/_ ::dr/_ ::fs/_ ::uism/_)
 
@@ -21,9 +21,10 @@
            (swap! state #(assoc-in % [::uism/asm-id ident ::uism/local-storage :abandoned?] true)))
          (if-let [component (comp/registry-key->class target)]
            (do
+             (log/info :navigate!/component-found {:component component :props props})
              (uism/trigger! app ::navbarsm :event/hide {})
              (uism/trigger! app auth/machine-id :event/cancel {})
              (if auth-link?
                (auth/authenticate! app :local nil)
                (rroute/route-to! app component {})))
-           (log/infof "Could not find target: %s" target))))))
+           (log/info :navigate!/component-not-found {:target target}))))))

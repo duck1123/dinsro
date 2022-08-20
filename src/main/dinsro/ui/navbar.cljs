@@ -53,11 +53,12 @@
                    ::m.navlink/name
                    ::m.navlink/target
                    {[:root/router '_] (comp/get-query RouteQuery)}]}
-  (log/fine :navlink/rendering {:props props})
+  (log/fine :Navlink/starting {:props props})
   (dom/a :.item
     {:onClick (fn [e]
                 (.preventDefault e)
                 (let [props (comp/props this)]
+                  (log/info :NavLink/clicked {:props props})
                   (comp/transact! this [(mu.navbar/navigate! props)])))}
     name))
 
