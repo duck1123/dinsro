@@ -1,14 +1,21 @@
 (ns dinsro.ui.users
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.application :as app]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.user-accounts :as u.user-accounts]
+   [lambdaisland.glogi :as log]))
 
 (def override-form true)
 
@@ -36,6 +43,57 @@
     (dom/div {}
       (dom/p {} name))))
 
+(declare ShowUser)
+
+(defn ShowUser-will-enter
+  [app {id :id}]
+  (let [id    (new-uuid id)
+        ident [::m.users/id id]
+        state (-> (app/current-state app) (get-in ident))]
+    (log/finer :ShowUser-will-enter/starting {:app app :id id :ident ident})
+    (dr/route-deferred
+     ident
+     (fn []
+       (log/finer :ShowUser-will-enter/routing
+                  {:id       id
+                   :state    state
+                   :controls (control/component-controls app)})
+       (df/load!
+        app ident ShowUser
+        {:marker               :ui/selected-node
+         :target               [:ui/selected-node]
+         :post-mutation        `dr/target-ready
+         :post-mutation-params {:target ident}})))))
+
+(defn ShowUser-pre-merge
+  [{:keys [data-tree state-map current-normalized]}]
+  (log/finer :ShowUser-pre-merge/starting {:data-tree          data-tree
+                                           :state-map          state-map
+                                           :current-noramlized current-normalized})
+  (let [user-id (::m.users/id data-tree)]
+    (log/finer :ShowUser-pre-merge/parsed {:user-id user-id})
+    (let [accounts-data (u.links/merge-state state-map u.user-accounts/SubPage {::m.users/id user-id})]
+      (-> data-tree
+          (assoc :ui/accounts accounts-data)))))
+
+(defsc ShowUser
+  [_this {::m.users/keys [name]
+          :ui/keys       [user-accounts]}]
+  {:route-segment ["users" :id]
+   :query         [::m.users/name
+                   ::m.users/id
+                   {:ui/user-accounts (comp/get-query u.user-accounts/SubPage)}]
+   :initial-state {::m.users/name    ""
+                   ::m.users/id      nil
+                   :ui/user-accounts {}}
+   :ident         ::m.users/id
+   :will-enter    ShowUser-will-enter
+   :pre-merge     ShowUser-pre-merge}
+  (comp/fragment
+   (dom/div :.ui.segment
+     (dom/p {} "Show User " (str name)))
+   (u.user-accounts/ui-sub-page user-accounts)))
+
 (form/defsc-form AdminUserForm
   [_this _props]
   {fo/id           m.users/id
@@ -48,8 +106,7 @@
 
 (report/defsc-report UsersReport
   [_this _props]
-  {ro/form-links       {::m.users/name UserForm}
-   ro/columns          [m.users/name]
+  {ro/columns          [m.users/name]
    ro/source-attribute ::m.users/index
    ro/title            "Users"
    ro/route            "users"

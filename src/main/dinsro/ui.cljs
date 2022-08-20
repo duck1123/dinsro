@@ -75,7 +75,7 @@
                     u.transactions/TransactionForm
                     u.transactions/TransactionsReport
                     u.users/AdminUserForm
-                    u.users/UserForm
+                    u.users/ShowUser
                     u.users/UsersReport]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
