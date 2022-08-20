@@ -409,10 +409,8 @@
                                                             {::m.ln.nodes/id   id
                                                              ::m.ln.nodes/name name})))
                                                        (dom/p {} "not found")))))
-                        ::m.ln.nodes/user      (fn [_this props]
-                                                 (log/info :LightningNodesReport/formatting-user {:props props})
-                                                 (u.links/ui-user-link props))
-                        ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
+                        ::m.ln.nodes/user      #(u.links/ui-user-link %2)
+                        ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
@@ -431,8 +429,8 @@
    ro/control-layout   {:action-buttons [::new-node]}
    ro/form-links       {::m.ln.nodes/name LightningNodeForm}
    ro/controls         {::new-node new-node-button}
-   ro/field-formatters {::m.ln.nodes/user      (fn [_this props] (u.links/ui-user-link props))
-                        ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/field-formatters {::m.ln.nodes/user      #(u.links/ui-user-link %2)
+                        ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
    ro/machine          lightning-node-report-machine
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
@@ -449,8 +447,8 @@
    ro/control-layout   {:action-buttons [::new-node]}
    ro/form-links       {::m.ln.nodes/name LightningNodeForm}
    ro/controls         {::new-node new-node-button}
-   ro/field-formatters {::m.ln.nodes/user      (fn [_this props] (u.links/ui-user-link props))
-                        ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/field-formatters {::m.ln.nodes/user      #(u.links/ui-user-link %2)
+                        ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
    ro/machine          lightning-node-report-machine
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id

@@ -101,7 +101,7 @@
    ro/links            {::m.ln.channels/id (fn [this props]
                                              (let [{::m.ln.channels/keys [id]} props]
                                                (form/view! this LNChannelForm id)))}
-   ro/field-formatters {::m.ln.channels/node (fn [_this props] (u.links/ui-node-link props))}
+   ro/field-formatters {::m.ln.channels/node #(u.links/ui-node-link %2)}
    ro/route            "channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true

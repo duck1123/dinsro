@@ -143,7 +143,7 @@
    ro/controls         {::new new-button}
    ro/links            {::m.ln.invoices/id (fn [this {::m.ln.invoices/keys [id]}]
                                              (form/view! this LNInvoiceForm id))}
-   ro/field-formatters {::m.ln.invoices/node (fn [_this props] (u.links/ui-node-link props))}
+   ro/field-formatters {::m.ln.invoices/node #(u.links/ui-node-link %2)}
    ro/route            "invoices"
    ro/row-pk           m.ln.invoices/id
    ro/run-on-mount?    true

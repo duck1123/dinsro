@@ -18,8 +18,8 @@
                         :inputs         [[::m.ln.nodes/id]]}
    ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                         ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.transactions/block (fn [_this props] (u.links/ui-block-link props))
-                        ::m.ln.transactions/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/field-formatters {::m.ln.transactions/block #(u.links/ui-block-link %2)
+                        ::m.ln.transactions/node  #(u.links/ui-core-node-link %2)}
    ro/form-links       {::m.ln.transactions/transactions-id u.ln.transactions/LNTransactionForm}
    ro/source-attribute ::m.ln.transactions/index
    ro/title            "Node Transactions"

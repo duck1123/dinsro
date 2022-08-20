@@ -120,37 +120,33 @@
 
 (report/defsc-report CorePeersReport
   [_this _props]
-  {ro/columns [m.c.peers/addr
-               m.c.peers/address-bind
-               m.c.peers/subver
-               m.c.peers/peer-id
-               m.c.peers/node]
-   ro/controls
-   {::m.c.nodes/id {:type :uuid :label "Nodes"}
-    ::refresh      u.links/refresh-control
-
-    ::new-peer
-    {:type   :button
-     :label  "New Peer"
-     :action (fn [this]
-               (let [props                 (comp/props this)
-                     {:ui/keys [controls]} props
-                     id-control            (some
-                                            (fn [c]
-                                              (let [{::control/keys [id]} c]
-                                                (when (= id ::m.c.nodes/id)
-                                                  c)))
-                                            controls)
-                     node-id               (::control/value id-control)]
-                 (log/info :peers/creating {:props      props
-                                            :controls   controls
-                                            :id-control id-control
-                                            :node-id    node-id})
-                 (form/create! this NewCorePeerForm
-                               {:initial-state {::m.c.peers/addr "foo"}})))}}
-
-   ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
-                        ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
+  {ro/columns          [m.c.peers/addr
+                        m.c.peers/address-bind
+                        m.c.peers/subver
+                        m.c.peers/peer-id
+                        m.c.peers/node]
+   ro/controls         {::m.c.nodes/id {:type :uuid :label "Nodes"}
+                        ::refresh      u.links/refresh-control
+                        ::new-peer     {:type   :button
+                                        :label  "New Peer"
+                                        :action (fn [this]
+                                                  (let [props                 (comp/props this)
+                                                        {:ui/keys [controls]} props
+                                                        id-control            (some
+                                                                               (fn [c]
+                                                                                 (let [{::control/keys [id]} c]
+                                                                                   (when (= id ::m.c.nodes/id)
+                                                                                     c)))
+                                                                               controls)
+                                                        node-id               (::control/value id-control)]
+                                                    (log/info :peers/creating {:props      props
+                                                                               :controls   controls
+                                                                               :id-control id-control
+                                                                               :node-id    node-id})
+                                                    (form/create! this NewCorePeerForm
+                                                                  {:initial-state {::m.c.peers/addr "foo"}})))}}
+   ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
+                        ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
    ro/form-links       {::m.c.peers/peers-id CorePeerForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.c.peers/index
@@ -166,8 +162,8 @@
                         m.c.peers/subver
                         m.c.peers/peer-id
                         m.c.peers/node]
-   ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
-                        ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
+                        ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
    ro/form-links       {::m.c.peers/peers-id CorePeerForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.c.peers/index

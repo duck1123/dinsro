@@ -43,9 +43,9 @@
                                                                               :node-id    node-id})
                                                    (form/create! this u.ln.peers/NewPeerForm
                                                                  {:initial-state {::m.ln.peers/address "foo"}})))}}
-   ro/field-formatters {::m.ln.peers/block       (fn [_this props] (u.links/ui-block-link props))
-                        ::m.ln.peers/node        (fn [_this props] (u.links/ui-core-node-link props))
-                        ::m.ln.peers/remote-node (fn [_this props] (u.links/ui-remote-node-link props))}
+   ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
+                        ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
+                        ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
    ro/form-links       {::m.ln.peers/peers-id u.ln.peers/LNPeerForm}
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Remote Node Peers"

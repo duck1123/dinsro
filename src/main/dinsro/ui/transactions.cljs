@@ -50,8 +50,8 @@
                                            :type   :button
                                            :action (fn [this] (form/create! this TransactionForm))}}
    ro/control-layout   {:action-buttons [::new-transaction]}
+   ro/field-formatters {::m.transactions/account #(u.links/ui-account-link %2)}
    ro/form-links       {::m.transactions/description TransactionForm}
-   ro/field-formatters {::m.transactions/account (fn [_this props] (u.links/ui-account-link props))}
    ro/route            "transactions"
    ro/row-actions      []
    ro/row-pk           m.transactions/id

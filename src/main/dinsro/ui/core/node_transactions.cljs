@@ -22,7 +22,7 @@
    ro/field-formatters {::m.c.tx/block (fn [_this props]
                                          (log/debug :formatting {:props props})
                                          (u.links/ui-block-height-link props))
-                        ::m.c.tx/node  (fn [_this props] (u.links/ui-core-node-link props))}
+                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
    ro/form-links       {::m.c.tx/tx-id u.c.tx/CoreTxForm}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Node Transactions"

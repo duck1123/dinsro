@@ -56,8 +56,7 @@
                                            :action (fn [this] (form/create! this RateSourceForm))}}
    ro/control-layout   {:action-buttons [::new-rate-source]}
    ro/form-links       {::m.rate-sources/name RateSourceForm}
-   ro/field-formatters
-   {::m.rate-sources/currency (fn [_this props] (u.links/ui-currency-link props))}
+   ro/field-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)}
    ro/route            "rate-sources"
    ro/row-actions      []
    ro/row-pk           m.rate-sources/id

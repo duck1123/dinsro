@@ -67,12 +67,12 @@
 
 (report/defsc-report CategoriesReport
   [_this _props]
-  {ro/field-formatters {::m.categories/user (fn [_this props] (u.links/ui-user-link props))}
-   ro/form-links       {::m.categories/name CategoryForm}
-   ro/columns          [m.categories/name
+  {ro/columns          [m.categories/name
                         m.categories/user]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
+   ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
+   ro/form-links       {::m.categories/name CategoryForm}
    ro/route            "categories"
    ro/row-actions      []
    ro/row-pk           m.categories/id
@@ -82,7 +82,7 @@
 
 (report/defsc-report CategoriesSubReport
   [_this _props]
-  {ro/field-formatters {::m.categories/user (fn [_this props] (u.links/ui-user-link props))}
+  {ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
    ro/form-links       {::m.categories/name CategoryForm}
    ro/columns          [m.categories/name]
    ro/row-actions      []
@@ -97,7 +97,7 @@
    ro/controls         {::new {:label  "New Category"
                                :type   :button
                                :action #(form/create! % AdminCategoryForm)}}
-   ro/field-formatters {::m.categories/user (fn [_this props] (u.links/ui-user-link props))}
+   ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
    ro/form-links       {::m.categories/name CategoryForm}
    ro/source-attribute ::m.categories/admin-index
    ro/title            "Admin Categories"

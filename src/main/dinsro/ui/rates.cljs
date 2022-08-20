@@ -63,12 +63,11 @@
 
 (report/defsc-report RatesReport
   [_this _props]
-  {ro/field-formatters
-   {::m.rates/currency (fn [_this props] (u.links/ui-currency-link props))
-    ::m.rates/source   (fn [_this props] (u.links/ui-rate-source-link props))}
-   ro/columns          [m.rates/rate
+  {ro/columns          [m.rates/rate
                         m.rates/source
                         m.rates/date]
+   ro/field-formatters {::m.rates/currency #(u.links/ui-currency-link %2)
+                        ::m.rates/source   #(u.links/ui-rate-source-link %2)}
    ro/route            "rates"
    ro/row-actions      []
    ro/row-pk           m.rates/id

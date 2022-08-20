@@ -103,7 +103,7 @@
                         m.ln.payreqs/node]
    ro/links            {::m.ln.payreqs/payment-hash (fn [this {::m.ln.payreqs/keys [id]}]
                                                       (form/view! this LNPaymentForm id))}
-   ro/field-formatters {::m.ln.payreqs/node (fn [_this props] (u.links/ui-node-link props))}
+   ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)}
    ro/route            "payreqs"
    ro/row-pk           m.ln.payreqs/id
    ro/run-on-mount?    true

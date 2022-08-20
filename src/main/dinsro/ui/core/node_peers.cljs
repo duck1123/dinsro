@@ -21,48 +21,42 @@
                       m.c.peers/connection-type]
    ro/control-layout {:action-buttons [::new ::fetch ::refresh]
                       :inputs         [[::m.c.nodes/id]]}
-   ro/controls
-   {::m.c.nodes/id {:type :uuid :label "Nodes"}
-    ::refresh      u.links/refresh-control
+   ro/controls       {::m.c.nodes/id {:type :uuid :label "Nodes"}
+                      ::refresh      u.links/refresh-control
+                      ::fetch        {:type   :button
+                                      :label  "Fetch"
+                                      :action (fn [this]
+                                                (let [props                 (comp/props this)
+                                                      {:ui/keys [controls]} props
+                                                      id-control            (some
+                                                                             (fn [c]
+                                                                               (let [{::control/keys [id]} c]
+                                                                                 (when (= id ::m.c.nodes/id)
+                                                                                   c)))
+                                                                             controls)
+                                                      node-id               (::control/value id-control)]
+                                                  (comp/transact! this [(mu.c.nodes/fetch! {::m.c.nodes/id node-id})])))}
+                      ::new          {:type   :button
+                                      :label  "New"
+                                      :action (fn [this]
+                                                (let [props                 (comp/props this)
+                                                      {:ui/keys [controls]} props
+                                                      id-control            (some
+                                                                             (fn [c]
+                                                                               (let [{::control/keys [id]} c]
+                                                                                 (when (= id ::m.c.nodes/id)
+                                                                                   c)))
 
-    ::fetch
-    {:type   :button
-     :label  "Fetch"
-     :action (fn [this]
-               (let [props                 (comp/props this)
-                     {:ui/keys [controls]} props
-                     id-control            (some
-                                            (fn [c]
-                                              (let [{::control/keys [id]} c]
-                                                (when (= id ::m.c.nodes/id)
-                                                  c)))
-                                            controls)
-                     node-id               (::control/value id-control)]
-                 (comp/transact! this [(mu.c.nodes/fetch! {::m.c.nodes/id node-id})])))}
-
-    ::new
-    {:type   :button
-     :label  "New"
-     :action (fn [this]
-               (let [props                 (comp/props this)
-                     {:ui/keys [controls]} props
-                     id-control            (some
-                                            (fn [c]
-                                              (let [{::control/keys [id]} c]
-                                                (when (= id ::m.c.nodes/id)
-                                                  c)))
-
-                                            controls)
-                     node-id (::control/value id-control)]
-                 (log/info :peers/creating {:props      props
-                                            :controls   controls
-                                            :id-control id-control
-                                            :node-id    node-id})
-                 (form/create! this u.c.peers/NewCorePeerForm
-                               {:initial-state {::m.c.peers/addr "foo"}})))}}
-
-   ro/field-formatters {::m.c.peers/block (fn [_this props] (u.links/ui-block-link props))
-                        ::m.c.peers/node  (fn [_this props] (u.links/ui-core-node-link props))}
+                                                                             controls)
+                                                      node-id (::control/value id-control)]
+                                                  (log/info :peers/creating {:props      props
+                                                                             :controls   controls
+                                                                             :id-control id-control
+                                                                             :node-id    node-id})
+                                                  (form/create! this u.c.peers/NewCorePeerForm
+                                                                {:initial-state {::m.c.peers/addr "foo"}})))}}
+   ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
+                        ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
    ro/form-links       {::m.c.peers/peers-id u.c.peers/CorePeerForm}
    ro/row-actions      [u.c.peers/delete-action-button]
    ro/source-attribute ::m.c.peers/index

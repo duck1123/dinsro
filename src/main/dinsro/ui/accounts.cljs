@@ -118,16 +118,15 @@
 
 (report/defsc-report AccountsReport
   [_this _props]
-  {ro/form-links       {::m.accounts/name AccountForm}
-   ro/field-formatters
-   {::m.accounts/currency (fn [_this props] (u.links/ui-currency-link props))
-    ::m.accounts/user     (fn [_this props] (u.links/ui-user-link props))}
-   ro/columns          [m.accounts/name
+  {ro/columns          [m.accounts/name
                         m.accounts/currency
                         m.accounts/user
                         m.accounts/initial-value]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
+   ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                        ::m.accounts/user     #(u.links/ui-user-link %2)}
+   ro/form-links       {::m.accounts/name AccountForm}
    ro/route            "accounts"
    ro/row-actions      [{:action
                          (fn [report-instance row-props]
@@ -141,16 +140,15 @@
 
 (report/defsc-report AdminIndexAccountsReport
   [_this _props]
-  {ro/form-links       {::m.accounts/name AccountForm}
-   ro/field-formatters
-   {::m.accounts/currency (fn [_this props] (u.links/ui-currency-link props))
-    ::m.accounts/user     (fn [_this props] (u.links/ui-user-link props))}
-   ro/columns          [m.accounts/name
+  {ro/columns          [m.accounts/name
                         m.accounts/currency
                         m.accounts/user
                         m.accounts/initial-value]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
+   ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                        ::m.accounts/user     #(u.links/ui-user-link %2)}
+   ro/form-links       {::m.accounts/name AccountForm}
    ro/route            "accounts"
    ro/row-actions      [{:action
                          (fn [report-instance row-props]
@@ -167,9 +165,8 @@
 (report/defsc-report AccountsSubReport
   [_this _props]
   {ro/form-links       {::m.accounts/name AccountForm}
-   ro/field-formatters
-   {::m.accounts/currency (fn [_this props] (u.links/ui-currency-link props))
-    ::m.accounts/user     (fn [_this props] (u.links/ui-user-link props))}
+   ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                        ::m.accounts/user     #(u.links/ui-user-link %2)}
    ro/columns          [m.accounts/name
                         m.accounts/currency
                         m.accounts/initial-value]

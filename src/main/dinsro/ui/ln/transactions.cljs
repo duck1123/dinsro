@@ -79,9 +79,8 @@
   {ro/columns          [m.ln.tx/core-tx
                         m.ln.tx/amount
                         m.ln.tx/node]
-   ro/field-formatters
-   {::m.ln.tx/node    (fn [_this props] (u.links/ui-node-link props))
-    ::m.ln.tx/core-tx (fn [_this props] (u.links/ui-core-tx-link props))}
+   ro/field-formatters {::m.ln.tx/node    #(u.links/ui-node-link %2)
+                        ::m.ln.tx/core-tx #(u.links/ui-core-tx-link %2)}
    ro/route            "transactions"
    ro/row-actions      []
    ro/row-pk           m.ln.tx/id

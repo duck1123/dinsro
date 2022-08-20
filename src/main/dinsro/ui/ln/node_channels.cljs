@@ -59,8 +59,8 @@
                                                                  :node-id    node-id})
                                    (form/create! this u.ln.channels/NewChannelForm
                                                  {:initial-state {::m.ln.channels/address "foo"}})))}}
-   ro/field-formatters {::m.ln.channels/block (fn [_this props] (u.links/ui-block-link props))
-                        ::m.ln.channels/node  (fn [_this props] (u.links/ui-core-node-link props))}
+   ro/field-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
+                        ::m.ln.channels/node  #(u.links/ui-core-node-link %2)}
    ro/form-links       {::m.ln.channels/channels-id u.ln.channels/LNChannelForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.ln.channels/index

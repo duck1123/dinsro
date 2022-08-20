@@ -123,7 +123,7 @@
                         m.ln.peers/inbound
                         m.ln.peers/node]
    ro/controls {::new new-button}
-   ro/field-formatters {::m.ln.peers/node (fn [_this props] (u.links/ui-node-link props))}
+   ro/field-formatters {::m.ln.peers/node #(u.links/ui-node-link %2)}
    ro/form-links       {::m.ln.peers/pubkey LNPeerForm}
    ro/route            "peers"
    ro/row-actions      []
