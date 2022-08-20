@@ -606,14 +606,15 @@ if use_persistence:
     ],
   )
 
-earthly_build(
-  'duck1123/specter-config-manager:latest',
-  './resources/specter-config-manager+image',
-  deps = [
-    'resources/specter-config-manager',
-  ],
-)
 
+if has_key('specter'):
+  earthly_build(
+    'duck1123/specter-config-manager:latest',
+    './resources/specter-config-manager+image',
+    deps = [
+      'resources/specter-config-manager',
+    ],
+  )
 
 if use_persistence:
   k8s_resource(
