@@ -40,6 +40,33 @@
               (log/error :form-link/no-component {:form-kw form-kw})))}
     name))
 
+(defn get-control-value
+  [this id-key]
+  (some->> this comp/props
+           :ui/controls
+           (some (fn [c]
+                   (let [{::control/keys [id]} c]
+                     (when (= id id-key) c))))
+           ::control/value))
+
+(def refresh-control
+  "config to add a refresh button to a report"
+  {:type   :button
+   :label  "Refresh"
+   :action (fn [this] (control/run! this))})
+
+(defn report-action
+  [id-key mutation]
+  (fn [this]
+    (let [id     (get-control-value this id-key)]
+      (comp/transact! this [(mutation {id-key id})]))))
+
+(defn fetch-button
+  [id-key mutation]
+  {:type   :button
+   :label  "Fetch"
+   :action (report-action id-key mutation)})
+
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
   {fo/id           m.accounts/id
