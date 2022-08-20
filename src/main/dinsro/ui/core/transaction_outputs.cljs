@@ -2,11 +2,11 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-out :as m.c.tx-out]
+   [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
 (def override-form false)
@@ -18,14 +18,8 @@
                         m.c.tx-out/address
                         m.c.tx-out/hex
                         m.c.tx-out/type]
-   ro/controls
-   {::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-    ::m.c.tx/id
-    {:type  :uuid
-     :label "TX"}}
+   ro/controls         {::refresh   u.links/refresh-control
+                        ::m.c.tx/id {:type :uuid :label "TX"}}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/source-attribute ::m.c.tx-out/index
    ro/title            "Outputs"

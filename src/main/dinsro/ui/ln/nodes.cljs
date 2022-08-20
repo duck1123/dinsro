@@ -385,49 +385,34 @@
 
 (report/defsc-report LightningNodesReport
   [this props]
-  {ro/columns
-   [m.ln.nodes/id
-    m.ln.info/alias-attr
-    m.ln.nodes/core-node
-    m.ln.info/color
-    m.ln.nodes/user]
-
-   ro/control-layout
-   {:action-buttons [::new-node ::refresh]}
-
-   ro/controls
-   {::new-node new-node-button
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}}
-
-   ro/field-formatters
-   {::m.ln.nodes/id
-    (fn [this id]
-      (let [props2 (comp/props this)]
-        (log/info :LightningNodesReport/formatting-name {:id id :props2 props2})
-        (let [{:ui/keys [current-rows]} props2
-              row                       (first (filter
-                                                (fn [r]
-                                                  (= (::m.ln.nodes/id r) id))
-                                                current-rows))]
-          (if row
-            (do
-              (log/info :LightningNodesReport/row {:row row})
-              (let [name (::m.ln.info/alias row)]
-                (u.links/ui-node-link
-                 {::m.ln.nodes/id   id
-                  ::m.ln.nodes/name name})))
-            (dom/p {} "not found")))))
-
-    ::m.ln.nodes/user
-    (fn [_this props]
-      (log/info :LightningNodesReport/formatting-user {:props props})
-      (u.links/ui-user-link props))
-
-    ::m.ln.nodes/core-node
-    (fn [_this props] (u.links/ui-core-node-link props))}
+  {ro/columns          [m.ln.nodes/id
+                        m.ln.info/alias-attr
+                        m.ln.nodes/core-node
+                        m.ln.info/color
+                        m.ln.nodes/user]
+   ro/control-layout   {:action-buttons [::new-node ::refresh]}
+   ro/controls         {::new-node new-node-button
+                        ::refresh  u.links/refresh-control}
+   ro/field-formatters {::m.ln.nodes/id        (fn [this id]
+                                                 (let [props2 (comp/props this)]
+                                                   (log/info :LightningNodesReport/formatting-name {:id id :props2 props2})
+                                                   (let [{:ui/keys [current-rows]} props2
+                                                         row                       (first (filter
+                                                                                           (fn [r]
+                                                                                             (= (::m.ln.nodes/id r) id))
+                                                                                           current-rows))]
+                                                     (if row
+                                                       (do
+                                                         (log/info :LightningNodesReport/row {:row row})
+                                                         (let [name (::m.ln.info/alias row)]
+                                                           (u.links/ui-node-link
+                                                            {::m.ln.nodes/id   id
+                                                             ::m.ln.nodes/name name})))
+                                                       (dom/p {} "not found")))))
+                        ::m.ln.nodes/user      (fn [_this props]
+                                                 (log/info :LightningNodesReport/formatting-user {:props props})
+                                                 (u.links/ui-user-link props))
+                        ::m.ln.nodes/core-node (fn [_this props] (u.links/ui-core-node-link props))}
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true

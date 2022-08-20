@@ -2,8 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
-   ;; [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -24,20 +22,11 @@
 
 (report/defsc-report NodeBlocksReport
   [_this _props]
-  {ro/columns
-   [m.c.blocks/hash
-    m.c.blocks/height
-    m.c.blocks/fetched?]
-
-   ro/controls
-   {::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-
-    ::m.c.nodes/id
-    {:type  :uuid
-     :label "Nodes"}}
+  {ro/columns          [m.c.blocks/hash
+                        m.c.blocks/height
+                        m.c.blocks/fetched?]
+   ro/controls         {::refresh      u.links/refresh-control
+                        ::m.c.nodes/id {:type :uuid :label "Nodes"}}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/node #(u.links/ui-core-node-link %2)
                         ::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}

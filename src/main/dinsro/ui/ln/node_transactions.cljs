@@ -2,32 +2,22 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.ui.ln.transactions :as u.ln.transactions]
-   [lambdaisland.glogi :as log]
-   [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln.transactions :as m.ln.transactions]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.ui.links :as u.links]))
+   [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.transactions :as m.ln.transactions]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.ln.transactions :as u.ln.transactions]
+   [lambdaisland.glogi :as log]))
 
 (report/defsc-report NodeTransactionsReport
   [this props]
-  {ro/columns
-   [m.ln.transactions/block-hash
-    m.ln.transactions/node]
-
-   ro/control-layout {:action-buttons [::refresh]
-                      :inputs         [[::m.ln.nodes/id]]}
-   ro/controls
-   {::m.ln.nodes/id
-    {:type  :uuid
-     :label "Nodes"}
-
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}}
+  {ro/columns          [m.ln.transactions/block-hash
+                        m.ln.transactions/node]
+   ro/control-layout   {:action-buttons [::refresh]
+                        :inputs         [[::m.ln.nodes/id]]}
+   ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                        ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.ln.transactions/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.ln.transactions/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.ln.transactions/transactions-id u.ln.transactions/LNTransactionForm}

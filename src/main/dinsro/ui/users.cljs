@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -63,9 +62,7 @@
    ro/controls         {::new-user {:label  "New User"
                                     :type   :button
                                     :action (fn [this] (form/create! this AdminUserForm))}
-                        ::refresh  {:label  "Refresh"
-                                    :type   :button
-                                    :action (fn [this] (control/run! this))}}
+                        ::refresh  u.links/refresh-control}
    ro/form-links       {::m.users/name AdminUserForm}
    ro/source-attribute ::m.users/index
    ro/title            "Admin Users"

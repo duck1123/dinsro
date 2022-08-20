@@ -25,29 +25,22 @@
 
 (report/defsc-report BlockTransactionsReport
   [this props]
-  {ro/columns [m.c.tx/tx-id
-               m.c.tx/fetched?
-               m.c.tx/block]
+  {ro/columns          [m.c.tx/tx-id
+                        m.c.tx/fetched?
+                        m.c.tx/block]
    ro/controls
    {::fetch
     {:type   :button
      :label  "Fetch"
      :action (fn [this]
                (let [id-key ::m.c.blocks/id
-                     id (get-control-value this id-key)]
+                     id     (get-control-value this id-key)]
                  (comp/transact! this [(mu.c.blocks/fetch-transactions! {id-key id})])))}
-
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-    ::m.c.blocks/id
-    {:type  :uuid
-     :label "Block"}}
+    ::refresh       u.links/refresh-control
+    ::m.c.blocks/id {:type :uuid :label "Block"}}
    ro/control-layout   {:action-buttons [::fetch ::refresh]}
    ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
                         ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)}
-   ;; ro/form-links       {::m.c.tx/tx-id u.c.tx/CoreTxForm}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Transactions"
    ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]

@@ -2,11 +2,11 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
+   [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
 (def override-form false)
@@ -17,14 +17,8 @@
                         m.c.tx-in/vout
                         m.c.tx-in/sequence
                         m.c.tx-in/coinbase]
-   ro/controls
-   {::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-    ::m.c.tx/id
-    {:type  :uuid
-     :label "TX"}}
+   ro/controls         {::refresh   u.links/refresh-control
+                        ::m.c.tx/id {:type :uuid :label "TX"}}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/source-attribute ::m.c.tx-in/index
    ro/title            "Inputs"

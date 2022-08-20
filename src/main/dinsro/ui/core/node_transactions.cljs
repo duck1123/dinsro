@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx :as j.c.tx]
@@ -18,11 +17,7 @@
                         j.c.tx/node
                         m.c.tx/fetched?
                         m.c.tx/block]
-   ro/controls
-   {::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}}
+   ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.tx/block (fn [_this props]
                                          (log/debug :formatting {:props props})

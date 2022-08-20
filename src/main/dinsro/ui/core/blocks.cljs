@@ -317,11 +317,7 @@
                         m.c.blocks/height
                         m.c.blocks/fetched?
                         m.c.blocks/node]
-   ro/controls
-   {::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}}
+   ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)
                         ::m.c.blocks/node #(u.links/ui-core-node-link %2)}

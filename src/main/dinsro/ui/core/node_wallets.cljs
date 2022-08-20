@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -20,14 +19,9 @@
                         m.c.wallets/node]
    ro/control-layout   {:inputs         [[::m.c.nodes/id]]
                         :action-buttons [::new ::refresh]}
-   ro/controls         {::new u.c.wallets/new-action-button
-                        ::m.c.nodes/id
-                        {:type  :uuid
-                         :label "Nodes"}
-                        ::refresh
-                        {:type   :button
-                         :label  "Refresh"
-                         :action (fn [this] (control/run! this))}}
+   ro/controls         {::new          u.c.wallets/new-action-button
+                        ::m.c.nodes/id {:type :uuid :label "Nodes"}
+                        ::refresh      u.links/refresh-control}
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
                         ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}

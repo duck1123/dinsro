@@ -34,46 +34,31 @@
 
 (report/defsc-report NodeChannelsReport
   [this props]
-  {ro/columns
-   [;; m.ln.channels/address
-    ;; m.ln.channels/address-bind
-    ;; m.ln.channels/subver
-    ;; m.ln.channels/peer-id
-    m.ln.channels/node]
-
+  {ro/columns        [m.ln.channels/node]
    ro/control-layout {:action-buttons [::new ::refresh]
                       :inputs         [[::m.ln.nodes/id]]}
-   ro/controls
-   {::m.ln.nodes/id
-    {:type  :uuid
-     :label "Nodes"}
+   ro/controls       {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                      ::refresh       u.links/refresh-control
+                      ::new
+                      {:type   :button
+                       :label  "New"
+                       :action (fn [this]
+                                 (let [props                 (comp/props this)
+                                       {:ui/keys [controls]} props
+                                       id-control            (some
+                                                              (fn [c]
+                                                                (let [{::control/keys [id]} c]
+                                                                  (when (= id ::m.ln.nodes/id)
+                                                                    c)))
 
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-
-    ::new
-    {:type   :button
-     :label  "New"
-     :action (fn [this]
-               (let [props                 (comp/props this)
-                     {:ui/keys [controls]} props
-                     id-control            (some
-                                            (fn [c]
-                                              (let [{::control/keys [id]} c]
-                                                (when (= id ::m.ln.nodes/id)
-                                                  c)))
-
-                                            controls)
-                     node-id (::control/value id-control)]
-                 (log/info :channels/creating {:props      props
-                                               :controls   controls
-                                               :id-control id-control
-                                               :node-id    node-id})
-                 (form/create! this u.ln.channels/NewChannelForm
-                               {:initial-state {::m.ln.channels/address "foo"}})))}}
-
+                                                              controls)
+                                       node-id (::control/value id-control)]
+                                   (log/info :channels/creating {:props      props
+                                                                 :controls   controls
+                                                                 :id-control id-control
+                                                                 :node-id    node-id})
+                                   (form/create! this u.ln.channels/NewChannelForm
+                                                 {:initial-state {::m.ln.channels/address "foo"}})))}}
    ro/field-formatters {::m.ln.channels/block (fn [_this props] (u.links/ui-block-link props))
                         ::m.ln.channels/node  (fn [_this props] (u.links/ui-core-node-link props))}
    ro/form-links       {::m.ln.channels/channels-id u.ln.channels/LNChannelForm}

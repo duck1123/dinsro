@@ -15,50 +15,37 @@
 
 (report/defsc-report RemoteNodePeersReport
   [this props]
-  {ro/columns
-   [m.ln.peers/address
-    m.ln.peers/remote-node
-    m.ln.peers/sat-recv
-    m.ln.peers/sat-sent
-    m.ln.peers/inbound]
-
+  {ro/columns        [m.ln.peers/address
+                      m.ln.peers/remote-node
+                      m.ln.peers/sat-recv
+                      m.ln.peers/sat-sent
+                      m.ln.peers/inbound]
    ro/control-layout {:action-buttons [::new ::refresh]
                       :inputs         [[::m.ln.remote-nodes/id]]}
-   ro/controls
-   {::m.ln.nodes/id
-    {:type  :uuid
-     :label "Nodes"}
+   ro/controls       {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                      ::refresh       u.links/refresh-control
+                      ::new           {:type   :button
+                                       :label  "New"
+                                       :action (fn [this]
+                                                 (let [props                 (comp/props this)
+                                                       {:ui/keys [controls]} props
+                                                       id-control            (some
+                                                                              (fn [c]
+                                                                                (let [{::control/keys [id]} c]
+                                                                                  (when (= id ::m.ln.nodes/id)
+                                                                                    c)))
 
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-
-    ::new
-    {:type   :button
-     :label  "New"
-     :action (fn [this]
-               (let [props                 (comp/props this)
-                     {:ui/keys [controls]} props
-                     id-control            (some
-                                            (fn [c]
-                                              (let [{::control/keys [id]} c]
-                                                (when (= id ::m.ln.nodes/id)
-                                                  c)))
-
-                                            controls)
-                     node-id (::control/value id-control)]
-                 (log/info :peers/creating {:props      props
-                                            :controls   controls
-                                            :id-control id-control
-                                            :node-id    node-id})
-                 (form/create! this u.ln.peers/NewPeerForm
-                               {:initial-state {::m.ln.peers/address "foo"}})))}}
-
-   ro/field-formatters
-   {::m.ln.peers/block       (fn [_this props] (u.links/ui-block-link props))
-    ::m.ln.peers/node        (fn [_this props] (u.links/ui-core-node-link props))
-    ::m.ln.peers/remote-node (fn [_this props] (u.links/ui-remote-node-link props))}
+                                                                              controls)
+                                                       node-id (::control/value id-control)]
+                                                   (log/info :peers/creating {:props      props
+                                                                              :controls   controls
+                                                                              :id-control id-control
+                                                                              :node-id    node-id})
+                                                   (form/create! this u.ln.peers/NewPeerForm
+                                                                 {:initial-state {::m.ln.peers/address "foo"}})))}}
+   ro/field-formatters {::m.ln.peers/block       (fn [_this props] (u.links/ui-block-link props))
+                        ::m.ln.peers/node        (fn [_this props] (u.links/ui-core-node-link props))
+                        ::m.ln.peers/remote-node (fn [_this props] (u.links/ui-remote-node-link props))}
    ro/form-links       {::m.ln.peers/peers-id u.ln.peers/LNPeerForm}
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Remote Node Peers"

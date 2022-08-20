@@ -1,7 +1,6 @@
 (ns dinsro.ui.core.wallet-addresses
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -73,14 +72,10 @@
 
 (report/defsc-report WalletAddressesReport
   [_this _props]
-  {ro/columns  [m.c.wallet-addresses/path-index
-                m.c.wallet-addresses/address]
-   ro/controls {::new new-action-button
-                ::refresh
-                {:type   :button
-                 :label  "Refresh"
-                 :action (fn [this] (control/run! this))}}
-
+  {ro/columns          [m.c.wallet-addresses/path-index
+                        m.c.wallet-addresses/address]
+   ro/controls         {::new     new-action-button
+                        ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
    ro/form-links       {::m.c.wallet-addresses/address WalletAddressForm}

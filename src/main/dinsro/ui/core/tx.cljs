@@ -309,25 +309,8 @@
                         j.c.tx/node
                         m.c.tx/fetched?
                         m.c.tx/block]
-   ro/controls
-   {;; ::search search-control
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
-
-    ;; ::tx-id
-    ;; {:type          :string
-    ;;  :style         :search
-    ;;  :default-value ""
-    ;;  :label         "Transaction Id"
-    ;;  :onChange      (fn [this _] (control/run! this))}
-    }
-   ro/control-layout   {;; :inputs         [[::tx-id ::search]]
-                        :action-buttons [::refresh]}
-   ;; ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
-   ;;                      ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)
-   ;;                      ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
+   ro/controls         {::refresh u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Transactions"
    ro/row-actions      [fetch-action-button delete-action-button]

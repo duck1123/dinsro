@@ -15,22 +15,15 @@
 
 (report/defsc-report NodePeersReport
   [this props]
-  {ro/columns
-   [m.c.peers/peer-id
-    m.c.peers/addr
-    m.c.peers/subver
-    m.c.peers/connection-type]
+  {ro/columns        [m.c.peers/peer-id
+                      m.c.peers/addr
+                      m.c.peers/subver
+                      m.c.peers/connection-type]
    ro/control-layout {:action-buttons [::new ::fetch ::refresh]
                       :inputs         [[::m.c.nodes/id]]}
    ro/controls
-   {::m.c.nodes/id
-    {:type  :uuid
-     :label "Nodes"}
-
-    ::refresh
-    {:type   :button
-     :label  "Refresh"
-     :action (fn [this] (control/run! this))}
+   {::m.c.nodes/id {:type :uuid :label "Nodes"}
+    ::refresh      u.links/refresh-control
 
     ::fetch
     {:type   :button

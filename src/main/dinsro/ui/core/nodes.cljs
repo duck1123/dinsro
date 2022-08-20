@@ -323,11 +323,8 @@
                          m.c.nodes/block-count]
    ro/column-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
    ro/control-layout    {:action-buttons [::new ::refresh]}
-   ro/controls          {::new new-button
-                         ::refresh
-                         {:type   :button
-                          :label  "Refresh"
-                          :action (fn [this] (control/run! this))}}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
    ro/row-actions       [fetch-action-button delete-action-button]
    ro/source-attribute  ::m.c.nodes/index
    ro/title             "Core Node Report"
@@ -343,7 +340,5 @@
                         [{:id :node :width 16}]]
    co/route            "node-container"
    co/title            "Node"
-   copt/controls       {::refresh {:type   :button
-                                   :label  "Refresh"
-                                   :action (fn [container] (control/run! container))}}
+   copt/controls       {::refresh u.links/refresh-control}
    copt/control-layout {:action-buttons [::refresh]}})
