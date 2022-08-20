@@ -64,6 +64,7 @@
                     u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport
                     u.currencies/NewCurrencyForm
+                    u.currencies/ShowCurrency
                     u.home/HomePage
                     u.login/LoginPage
                     u.ln/LnPage

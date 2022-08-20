@@ -172,7 +172,7 @@
    fo/route-prefix "currency-link"
    fo/title        "Currency"
    fo/attributes   [m.currencies/name]}
-  (form-link this id name :dinsro.ui.currencies/CurrencyForm))
+  (form-link this id name :dinsro.ui.currencies/ShowCurrency))
 
 (def ui-currency-link (comp/factory CurrencyLinkForm {:keyfn ::m.currencies/name}))
 
