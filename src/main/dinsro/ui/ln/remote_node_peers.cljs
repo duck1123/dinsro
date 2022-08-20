@@ -58,24 +58,24 @@
 (def ui-remote-node-peers-report (comp/factory RemoteNodePeersReport))
 
 (defsc SubPage
-  [_this {:keys   [report] :as props
-          node-id ::m.ln.remote-nodes/id}]
+  [_this {:ui/keys [report]
+          :as      props
+          node-id  ::m.ln.remote-nodes/id}]
   {:query         [::m.ln.remote-nodes/id
-                   {:report (comp/get-query RemoteNodePeersReport)}]
+                   {:ui/report (comp/get-query RemoteNodePeersReport)}]
    :componentDidMount
    (fn [this]
      (let [props (comp/props this)]
        (log/info :SubPage/did-mount {:props props :this this})
        (report/start-report! this RemoteNodePeersReport)))
    :initial-state {::m.ln.remote-nodes/id nil
-                   :report                {}}
+                   :ui/report             {}}
    :ident         (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
-  (let [peer-data (assoc-in report [:ui/parameters ::m.ln.remote-nodes/id] node-id)]
-    (dom/div :.ui.segment
-      (dom/h2 "Peers")
-      (if node-id
-        (ui-remote-node-peers-report peer-data)
-        (dom/div {} "Node ID not set")))))
+  (dom/div :.ui.segment
+    (dom/h2 "Peers")
+    (if node-id
+      (ui-remote-node-peers-report report)
+      (dom/div {} "Node ID not set"))))
 
 (def ui-remote-node-peers-sub-page (comp/factory SubPage))
