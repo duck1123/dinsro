@@ -19,7 +19,6 @@
    :core-chains           ["Chains"            "/core/chains"      :dinsro.ui.core.chains/CoreChainsReport]
    :core-menu             ["Core"              "/core"             nil
                            [:core-nodes
-                            :core-node-connections
                             :core-peers
                             :core-blocks
                             :core-transactions
@@ -27,7 +26,6 @@
                             :core-chains
                             :core-networks
                             :wallets
-                            :wallet-addresses
                             :words]]
    :core-node-connections ["Connections"       "/core/connections"  :dinsro.ui.core.connections/CoreNodeConnectionsReport]
    :core-networks         ["Networks"          "/core/networks"     :dinsro.ui.core.networks/CoreNetworksReport]
