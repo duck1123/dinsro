@@ -68,6 +68,14 @@
    :label  "Fetch"
    :action (report-action id-key mutation)})
 
+(defn merge-state
+  "Used by a show page's pre-merge to merge the parent id into the state"
+  [state-map sub-page data]
+  (merge
+   (comp/get-initial-state sub-page)
+   (get-in state-map (comp/get-ident sub-page {}))
+   data))
+
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
   {fo/id           m.accounts/id
