@@ -20,7 +20,7 @@
    :action fetch-action
    :style  :fetch-button})
 
-(report/defsc-report NodeBlocksReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.blocks/hash
                         m.c.blocks/height
@@ -38,25 +38,25 @@
    ro/run-on-mount?    true
    ro/route            "blocks"})
 
-(def ui-node-blocks-report (comp/factory NodeBlocksReport))
+(def ui-node-blocks-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:keys   [report] :as props
-          node-id ::m.c.nodes/id}]
+  [_this {:ui/keys [report] :as props
+          node-id  ::m.c.nodes/id}]
   {:query             [::m.c.nodes/id
-                       {:report (comp/get-query NodeBlocksReport)}]
-   :componentDidMount #(report/start-report! % NodeBlocksReport {:query-param (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:query-param (comp/props %)})
    :pre-merge
    (fn [{:keys [data-tree state-map]}]
      (log/finer :SubPage/pre-merge {:data-tree data-tree})
-     (let [initial             (comp/get-initial-state NodeBlocksReport)
-           report-data         (get-in state-map (comp/get-ident NodeBlocksReport {}))
+     (let [initial             (comp/get-initial-state Report)
+           report-data         (get-in state-map (comp/get-ident Report {}))
            updated-report-data (merge initial report-data)
            updated-data        (-> data-tree (assoc :blocks updated-report-data))]
        (log/finer :SubPage/merged {:updated-data updated-data :data-tree data-tree})
        updated-data))
    :initial-state     {::m.c.nodes/id nil
-                       :report        {}}
+                       :ui/report     {}}
    :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
   (let [block-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]

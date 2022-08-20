@@ -93,17 +93,17 @@
              (log/info :fetch-action-button/clicked {:id id :props props})
              (comp/transact! this [(mu.ln.remote-nodes/fetch! {::m.ln.remote-nodes/id id})]))})
 
-(report/defsc-report RemoteNodesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.ln.remote-nodes/pubkey
                         m.ln.remote-nodes/alias]
    ro/controls         {::refresh u.links/refresh-control}
    ro/field-formatters {::m.ln.remote-nodes/pubkey (fn [this value]
                                                      (let [{:ui/keys [current-rows] :as props} (comp/props this)]
-                                                       (log/info :RemoteNodesReport/formatting-name {:value value :props props})
+                                                       (log/info :Report/formatting-name {:value value :props props})
                                                        (if-let [row (first (filter #(= (::m.ln.remote-nodes/pubkey %) value) current-rows))]
                                                          (do
-                                                           (log/info :RemoteNodesReport/row {:row row})
+                                                           (log/info :Report/row {:row row})
                                                            (let [{::m.ln.remote-nodes/keys [id pubkey]} row]
                                                              (u.links/ui-remote-node-link
                                                               {::m.ln.remote-nodes/id     id

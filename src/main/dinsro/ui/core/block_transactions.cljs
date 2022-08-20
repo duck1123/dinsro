@@ -23,7 +23,7 @@
                      (when (= id id-key) c))))
            ::control/value))
 
-(report/defsc-report BlockTransactionsReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.c.tx/tx-id
                         m.c.tx/fetched?
@@ -46,19 +46,19 @@
    ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true}
-  (log/finer :BlockTransactionsReport/starting {:props props})
+  (log/finer :Report/starting {:props props})
   (if override-form
     (report/render-layout this)
     (dom/div :.ui.segment
       (report/render-layout this))))
 
-(def ui-block-transactions-report (comp/factory BlockTransactionsReport))
+(def ui-block-transactions-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:query             [::m.c.blocks/id
-                       {:ui/report (comp/get-query BlockTransactionsReport)}]
-   :componentDidMount #(report/start-report! % BlockTransactionsReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.blocks/id nil
                        :ui/report      {}}
    :ident             (fn [] [:component/id ::SubPage])}

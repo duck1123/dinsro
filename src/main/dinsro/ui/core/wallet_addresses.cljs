@@ -70,7 +70,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewWalletAddressForm))})
 
-(report/defsc-report WalletAddressesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.wallet-addresses/path-index
                         m.c.wallet-addresses/address]
@@ -86,13 +86,13 @@
    ro/source-attribute ::m.c.wallet-addresses/index
    ro/title            "Addresses"})
 
-(def ui-wallet-addresses-report (comp/factory WalletAddressesReport))
+(def ui-wallet-addresses-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:query             [::m.c.wallets/id
-                       {:ui/report (comp/get-query WalletAddressesReport)}]
-   :componentDidMount #(report/start-report! % WalletAddressesReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.wallets/id nil
                        :ui/report       {}}
    :ident             (fn [] [:component/id ::SubPage])}

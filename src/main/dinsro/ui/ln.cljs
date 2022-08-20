@@ -34,7 +34,7 @@
                     u.ln.peers/NewPeerForm
                     u.ln.remote-nodes/ShowRemoteNode
                     u.ln.remote-nodes/RemoteNodeForm
-                    u.ln.remote-nodes/RemoteNodesReport
+                    u.ln.remote-nodes/Report
                     u.ln.tx/LNTransactionForm
                     u.ln.tx/LNTransactionsReport]}
 

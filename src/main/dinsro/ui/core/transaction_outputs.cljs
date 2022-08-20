@@ -11,7 +11,7 @@
 
 (def override-form false)
 
-(report/defsc-report TransactionOutputsReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.c.tx-out/n
                         m.c.tx-out/value
@@ -25,24 +25,24 @@
    ro/title            "Outputs"
    ro/row-pk           m.c.tx-out/id
    ro/run-on-mount?    true}
-  (log/info :TransactionOutputsReport/starting {:props props})
+  (log/info :Report/starting {:props props})
   (if override-form
     (report/render-layout this)
     (dom/div :.ui.segment
       (report/render-layout this))))
 
-(def ui-transaction-outputs-report (comp/factory TransactionOutputsReport))
+(def ui-transaction-outputs-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report2] :as props}]
+  [_this {:ui/keys [report] :as props}]
   {:query             [::m.c.tx/id
-                       {:ui/report2 (comp/get-query TransactionOutputsReport)}]
-   :componentDidMount #(report/start-report! % TransactionOutputsReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.tx/id nil
-                       :ui/report2 {}}
+                       :ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
-  (when report2
-    (ui-transaction-outputs-report report2)))
+  (when report
+    (ui-transaction-outputs-report report)))
 
 (def ui-transaction-outputs-sub-page (comp/factory SubPage))

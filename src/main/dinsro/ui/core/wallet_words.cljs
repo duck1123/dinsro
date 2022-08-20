@@ -8,7 +8,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-(report/defsc-report WalletWordsReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.words/word
                         m.c.words/position]
@@ -21,13 +21,13 @@
    ro/source-attribute ::m.c.words/index
    ro/title            "Words"})
 
-(def ui-wallet-words-report (comp/factory WalletWordsReport))
+(def ui-wallet-words-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:query             [::m.c.wallets/id
-                       {:ui/report (comp/get-query WalletWordsReport)}]
-   :componentDidMount #(report/start-report! % WalletWordsReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.wallets/id nil
                        :ui/report       {}}
    :ident             (fn [] [:component/id ::SubPage])}

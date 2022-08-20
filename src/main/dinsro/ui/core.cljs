@@ -23,7 +23,7 @@
                     u.c.blocks/CoreBlockForm
                     u.c.blocks/CoreBlockReport
                     u.c.chains/CoreChainForm
-                    u.c.chains/CoreChainsReport
+                    u.c.chains/Report
                     u.c.connections/CoreNodeConnectionsReport
                     u.c.connections/NewConnectionForm
                     u.c.networks/CoreNetworkForm
@@ -46,7 +46,6 @@
                     u.c.wallets/WalletsReport
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
-                    u.c.wallet-addresses/WalletAddressesReport
                     u.c.words/WordsReport]}
   (dom/div {} "Core router"))
 

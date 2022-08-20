@@ -10,7 +10,7 @@
    [dinsro.ui.ln.transactions :as u.ln.transactions]
    [lambdaisland.glogi :as log]))
 
-(report/defsc-report NodeTransactionsReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.ln.transactions/block-hash
                         m.ln.transactions/node]
@@ -26,18 +26,18 @@
    ro/row-pk           m.ln.transactions/id
    ro/run-on-mount?    true
    ro/route            "node-transactions"}
-  (log/info :NodeTransactionsReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-node-transactions-report (comp/factory NodeTransactionsReport))
+(def ui-node-transactions-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props
           node-id  ::m.ln.nodes/id}]
   {:query             [::m.ln.nodes/id
-                       {:ui/report (comp/get-query NodeTransactionsReport)}]
-   :componentDidMount #(report/start-report! % NodeTransactionsReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.ln.nodes/id nil
                        :ui/report      {}}
    :ident             (fn [] [:component/id ::SubPage])}

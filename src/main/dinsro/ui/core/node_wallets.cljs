@@ -10,7 +10,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
-(report/defsc-report NodeWalletsReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.c.wallets/name
                         m.c.wallets/derivation
@@ -31,17 +31,17 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index
    ro/title            "Wallets"}
-  (log/info :NodeWalletsReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-node-wallets-report (comp/factory NodeWalletsReport))
+(def ui-node-wallets-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props
           node-id  ::m.c.nodes/id}]
   {:query             [::m.c.nodes/id
-                       {:ui/report (comp/get-query NodeWalletsReport)}]
-   :componentDidMount #(report/start-report! % NodeWalletsReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.nodes/id nil
                        :ui/report     {}}
    :ident             (fn [] [:component/id ::SubPage])}

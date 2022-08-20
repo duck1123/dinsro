@@ -32,7 +32,7 @@
              (log/info :delete-action/clicked {:id id})
              (comp/transact! this [(mu.ln.channels/delete! {::m.ln.channels/id id})]))})
 
-(report/defsc-report NodeChannelsReport
+(report/defsc-report Report
   [this props]
   {ro/columns        [m.ln.channels/node]
    ro/control-layout {:action-buttons [::new ::refresh]
@@ -68,18 +68,18 @@
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
    ro/route            "node-channels"}
-  (log/info :NodeChannelsReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-node-channels-report (comp/factory NodeChannelsReport))
+(def ui-node-channels-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props
           node-id  ::m.ln.nodes/id}]
   {:query             [::m.ln.nodes/id
-                       {:ui/report (comp/get-query NodeChannelsReport)}]
-   :componentDidMount #(report/start-report! % NodeChannelsReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.ln.nodes/id nil
                        :ui/report      {}}
    :ident             (fn [] [:component/id ::SubPage])}

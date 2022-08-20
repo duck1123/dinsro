@@ -30,7 +30,7 @@
              (log/info :delete-action/clicked {:id id})
              (comp/transact! this [(mu.ln.peers/delete! {::m.ln.peers/id id})]))})
 
-(report/defsc-report NodePeersReport
+(report/defsc-report Report
   [this props]
   {ro/columns        [m.ln.peers/address
                       m.ln.peers/remote-node
@@ -72,18 +72,18 @@
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true
    ro/route            "node-peers"}
-  (log/info :NodePeersReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-node-peers-report (comp/factory NodePeersReport))
+(def ui-node-peers-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props
           node-id  ::m.ln.nodes/id}]
   {:query             [::m.ln.nodes/id
-                       {:ui/report (comp/get-query NodePeersReport)}]
-   :componentDidMount #(report/start-report! % NodePeersReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.ln.nodes/id nil
                        :ui/report      {}}
    :ident             (fn [] [:component/id ::SubPage])}

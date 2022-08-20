@@ -13,7 +13,7 @@
    [dinsro.ui.ln.peers :as u.ln.peers]
    [lambdaisland.glogi :as log]))
 
-(report/defsc-report RemoteNodePeersReport
+(report/defsc-report Report
   [this props]
   {ro/columns        [m.ln.peers/address
                       m.ln.peers/remote-node
@@ -52,18 +52,18 @@
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true
    ro/route            "node-peers"}
-  (log/info :RemoteNodePeersReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-remote-node-peers-report (comp/factory RemoteNodePeersReport))
+(def ui-remote-node-peers-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props
           node-id  ::m.ln.remote-nodes/id}]
   {:query             [::m.ln.remote-nodes/id
-                       {:ui/report (comp/get-query RemoteNodePeersReport)}]
-   :componentDidMount #(report/start-report! % RemoteNodePeersReport {:route-params (comp/props %)})
+                       {:ui/report (comp/get-query Report)}]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.ln.remote-nodes/id nil
                        :ui/report             {}}
    :ident             (fn [] [:component/id ::SubPage])}

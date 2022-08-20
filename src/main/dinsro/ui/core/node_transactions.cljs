@@ -11,7 +11,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
-(report/defsc-report NodeTransactionsReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.tx/tx-id
                         j.c.tx/node
@@ -30,25 +30,25 @@
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true})
 
-(def ui-node-transactions-report (comp/factory NodeTransactionsReport))
+(def ui-node-transactions-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:keys   [report] :as props
-          node-id ::m.c.nodes/id}]
+  [_this {:ui/keys [report] :as props
+          node-id  ::m.c.nodes/id}]
   {:query         [::m.c.nodes/id
-                   {:report (comp/get-query u.c.tx/CoreTxReport)}]
+                   {:ui/report (comp/get-query Report)}]
    :pre-merge
    (fn [{:keys [data-tree state-map]}]
      (log/finer :SubPage/pre-merge {:data-tree data-tree})
-     (let [initial             (comp/get-initial-state u.c.tx/CoreTxReport)
-           report-data         (get-in state-map (comp/get-ident u.c.tx/CoreTxReport {}))
+     (let [initial             (comp/get-initial-state Report)
+           report-data         (get-in state-map (comp/get-ident Report {}))
            updated-report-data (merge initial report-data)
            updated-data        (-> data-tree
                                    (assoc :transactions updated-report-data))]
        (log/finer :SubPage/merged {:updated-data updated-data :data-tree data-tree})
        updated-data))
    :initial-state {::m.c.nodes/id nil
-                   :report        {}}
+                   :ui/report     {}}
    :ident         (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
   (let [transaction-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]

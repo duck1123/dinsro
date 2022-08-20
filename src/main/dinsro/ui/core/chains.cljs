@@ -24,7 +24,7 @@
       (dom/p {} "foo")
       (form/render-layout this props))))
 
-(report/defsc-report CoreChainsReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.chains/name]
    ro/controls         {::refresh u.links/refresh-control}
@@ -35,4 +35,4 @@
    ro/run-on-mount?    true
    ro/route            "chains"})
 
-(def ui-tx-report (comp/factory CoreChainsReport))
+(def ui-tx-report (comp/factory Report))
