@@ -141,30 +141,15 @@
 
 (defn ShowWallet-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/finer :ShowTransaction-pre-merge/starting
-             {:data-tree data-tree
-              :state-map state-map})
+  (log/finer :ShowWallet-pre-merge/starting {:data-tree data-tree :state-map state-map})
   (let [id (::m.c.wallets/id data-tree)]
     (log/finer :ShowTransaction-pre-merge/parsed {:id id})
-    (let [addresses-data
-          (let [initial (comp/get-initial-state u.c.wallet-addresses/SubPage)
-                state   (get-in state-map (comp/get-ident u.c.wallet-addresses/SubPage {}))
-                merged  (merge initial state {::m.c.wallets/id id})]
-            (log/info :ShowBlock-pre-merge/address-data {:initial initial :state state :merged merged})
-            merged)
-          words-data
-          (let [initial (comp/get-initial-state u.c.wallet-words/SubPage)
-                state   (get-in state-map (comp/get-ident u.c.wallet-words/SubPage {}))
-                merged  (merge initial state {::m.c.wallets/id id})]
-            (log/info :ShowBlock-pre-merge/words-data {:initial initial :state state :merged merged})
-            merged)
-          updated-data (-> data-tree
-                           (assoc :ui/addresses addresses-data)
-                           (assoc :ui/words words-data))]
-      (log/finer :ShowBlock-pre-merge/merged
-                 {:updated-data updated-data
-                  :data-tree    data-tree
-                  :state-map    state-map})
+    (let [addresses-data (u.links/merge-state state-map u.c.wallet-addresses/SubPage {::m.c.wallets/id id})
+          words-data     (u.links/merge-state state-map u.c.wallet-words/SubPage {::m.c.wallets/id id})
+          updated-data   (-> data-tree
+                             (assoc :ui/addresses addresses-data)
+                             (assoc :ui/words words-data))]
+      (log/finer :ShowWallet-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (defsc ShowWallet

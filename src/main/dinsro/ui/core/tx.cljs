@@ -213,32 +213,15 @@
 
 (defn ShowTransaction-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/finer :ShowTransaction-pre-merge/starting
-             {:data-tree data-tree
-              :state-map state-map})
+  (log/finer :ShowTransaction-pre-merge/starting {:data-tree data-tree :state-map state-map})
   (let [id (::m.c.tx/id data-tree)]
     (log/finer :ShowTransaction-pre-merge/parsed {:id id})
-    (let [inputs-data
-          (let [initial (comp/get-initial-state u.c.transaction-inputs/SubPage)
-                state   (get-in state-map (comp/get-ident u.c.transaction-inputs/SubPage {}))
-                merged  (merge initial state {::m.c.blocks/id id})]
-            (log/finer :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
-            merged)
-
-          outputs-data
-          (let [initial (comp/get-initial-state u.c.transaction-outputs/SubPage)
-                state   (get-in state-map (comp/get-ident u.c.transaction-outputs/SubPage {}))
-                merged  (merge initial state {::m.c.blocks/id id})]
-            (log/finer :ShowTransaction-pre-merge/transaction-data {:initial initial :state state :merged merged})
-            merged)
-
+    (let [inputs-data  (u.links/merge-state state-map u.c.transaction-inputs/SubPage {::m.c.blocks/id id})
+          outputs-data (u.links/merge-state state-map u.c.transaction-outputs/SubPage {::m.c.blocks/id id})
           updated-data (-> data-tree
                            (assoc :ui/inputs inputs-data)
                            (assoc :ui/outputs outputs-data))]
-      (log/finer :ShowBlock-pre-merge/merged
-                 {:updated-data updated-data
-                  :data-tree    data-tree
-                  :state-map    state-map})
+      (log/finer :ShowBlock-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (defsc ShowTransaction

@@ -46,15 +46,6 @@
   {:query             [::m.c.nodes/id
                        {:ui/report (comp/get-query Report)}]
    :componentDidMount #(report/start-report! % Report {:query-param (comp/props %)})
-   :pre-merge
-   (fn [{:keys [data-tree state-map]}]
-     (log/finer :SubPage/pre-merge {:data-tree data-tree})
-     (let [initial             (comp/get-initial-state Report)
-           report-data         (get-in state-map (comp/get-ident Report {}))
-           updated-report-data (merge initial report-data)
-           updated-data        (-> data-tree (assoc :blocks updated-report-data))]
-       (log/finer :SubPage/merged {:updated-data updated-data :data-tree data-tree})
-       updated-data))
    :initial-state     {::m.c.nodes/id nil
                        :ui/report     {}}
    :ident             (fn [] [:component/id ::SubPage])}

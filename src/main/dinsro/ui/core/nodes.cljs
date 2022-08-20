@@ -191,34 +191,19 @@
 
 (defn ShowNode-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/finer :ShowNode-pre-merge/starting {:data-tree data-tree
-                                           :state-map state-map})
+  (log/finer :ShowNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
   (let [node-id (::m.c.nodes/id data-tree)]
     (log/finer :ShowNode-pre-merge/parsed {:node-id node-id})
-    (let [peers-data        (merge
-                             (comp/get-initial-state u.c.node-peers/SubPage)
-                             (get-in state-map (comp/get-ident u.c.node-peers/SubPage {}))
-                             {::m.c.nodes/id node-id})
-          wallets-data      (merge
-                             (comp/get-initial-state u.c.node-wallets/SubPage)
-                             (get-in state-map (comp/get-ident u.c.node-wallets/SubPage {}))
-                             {::m.c.nodes/id node-id})
-          blocks-data       (merge
-                             (comp/get-initial-state u.c.node-blocks/SubPage)
-                             (get-in state-map (comp/get-ident u.c.node-blocks/SubPage {}))
-                             {::m.c.nodes/id node-id})
-          transactions-data (merge
-                             (comp/get-initial-state u.c.node-transactions/SubPage)
-                             (get-in state-map (comp/get-ident u.c.node-transactions/SubPage {}))
-                             {::m.c.nodes/id node-id})
+    (let [peers-data        (u.links/merge-state state-map u.c.node-peers/SubPage {::m.c.nodes/id node-id})
+          wallets-data      (u.links/merge-state state-map u.c.node-wallets/SubPage {::m.c.nodes/id node-id})
+          blocks-data       (u.links/merge-state state-map u.c.node-blocks/SubPage {::m.c.nodes/id node-id})
+          transactions-data (u.links/merge-state state-map u.c.node-transactions/SubPage {::m.c.nodes/id node-id})
           updated-data      (-> data-tree
                                 (assoc :ui/peers peers-data)
                                 (assoc :ui/blocks blocks-data)
                                 (assoc :ui/transactions transactions-data)
                                 (assoc :ui/wallets wallets-data))]
-      (log/finer :ShowNode-pre-merge/merged {:updated-data updated-data
-                                             :data-tree    data-tree
-                                             :state-map    state-map})
+      (log/finer :ShowNode-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (def show-peers true)

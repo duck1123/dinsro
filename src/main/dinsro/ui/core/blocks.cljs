@@ -216,23 +216,13 @@
 
 (defn ShowBlock-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/finer :ShowBlock-pre-merge/starting
-             {:data-tree          data-tree
-              :state-map          state-map})
+  (log/finer :ShowBlock-pre-merge/starting {:data-tree data-tree :state-map state-map})
   (let [block-id (::m.c.blocks/id data-tree)]
     (log/finer :ShowBlock-pre-merge/parsed {:block-id block-id})
-    (let [transactions-data
-          (let [initial (comp/get-initial-state u.c.block-transactions/SubPage)
-                state   (get-in state-map (comp/get-ident u.c.block-transactions/SubPage {}))
-                merged  (merge initial state {::m.c.blocks/id block-id})]
-            (log/finer :ShowBlock-pre-merge/transaction-data {:initial initial :state state :merged merged})
-            merged)
-          updated-data (-> data-tree
-                           (assoc :ui/transactions transactions-data))]
-      (log/finer :ShowBlock-pre-merge/merged
-                 {:updated-data       updated-data
-                  :data-tree          data-tree
-                  :state-map          state-map})
+    (let [transactions-data (u.links/merge-state state-map u.c.block-transactions/SubPage {::m.c.blocks/id block-id})
+          updated-data      (-> data-tree
+                                (assoc :ui/transactions transactions-data))]
+      (log/finer :ShowBlock-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (defsc ShowBlock

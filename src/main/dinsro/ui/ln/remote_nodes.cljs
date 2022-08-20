@@ -27,18 +27,12 @@
 
 (defn ShowRemoteNode-pre-merge
   [{:keys [data-tree state-map]}]
-  (log/finer :ShowNode/pre-merge {:data-tree data-tree
-                                  :state-map state-map})
+  (log/finer :ShowRemoteNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
   (let [node-id (::m.ln.remote-nodes/id data-tree)]
     (log/finer :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data   (merge
-                        (comp/get-initial-state u.ln.remote-node-peers/SubPage)
-                        (get-in state-map (comp/get-ident u.ln.remote-node-peers/SubPage {}))
-                        {::m.ln.remote-nodes/id node-id})
+    (let [peers-data   (u.links/merge-state state-map u.ln.remote-node-peers/SubPage {::m.ln.remote-nodes/id node-id})
           updated-data (-> data-tree (assoc :peers peers-data))]
-      (log/finer :ShowNode/merged {:updated-data updated-data
-                                   :data-tree    data-tree
-                                   :state-map    state-map})
+      (log/finer :ShowRemoteNode-pre-merge/finished {:updated-data updated-data})
       updated-data)))
 
 (defsc ShowRemoteNode
