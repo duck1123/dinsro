@@ -18,9 +18,7 @@
   {ro/columns          [m.c.tx/tx-id
                         m.c.tx/fetched?
                         m.c.tx/block]
-   ro/controls         {::fetch         {:type   :button
-                                         :label  "Fetch"
-                                         :action (u.links/report-action ::m.c.blocks/id mu.c.blocks/fetch-transactions!)}
+   ro/controls         {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
                         ::refresh       u.links/refresh-control
                         ::m.c.blocks/id {:type :uuid :label "Block"}}
    ro/control-layout   {:action-buttons [::fetch ::refresh]}
