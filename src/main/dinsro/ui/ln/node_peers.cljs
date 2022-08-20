@@ -80,8 +80,7 @@
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Node Peers"
    ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true
-   ro/route            "node-peers"}
+   ro/run-on-mount?    true}
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 

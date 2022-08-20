@@ -41,8 +41,7 @@
                    :ui/report     {}}
    :ident         (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
-  (let [transaction-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
-    (dom/div :.ui.segment
-      (ui-report transaction-data))))
+  (dom/div :.ui.segment
+    (ui-node-transactions-report report)))
 
 (def ui-sub-page (comp/factory SubPage))

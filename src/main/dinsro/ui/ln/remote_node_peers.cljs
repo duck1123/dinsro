@@ -42,7 +42,7 @@
                                                                               :id-control id-control
                                                                               :node-id    node-id})
                                                    (form/create! this u.ln.peers/NewPeerForm
-                                                                 {:initial-state {::m.ln.peers/address "foo"}})))}}
+                                                                 {:initial-state {::m.ln.peers/address ""}})))}}
    ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
@@ -50,16 +50,14 @@
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Remote Node Peers"
    ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true
-   ro/route            "node-peers"}
+   ro/run-on-mount?    true}
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props
+  [_this {:ui/keys [report] :as props
           node-id  ::m.ln.remote-nodes/id}]
   {:query             [::m.ln.remote-nodes/id
                        {:ui/report (comp/get-query Report)}]
@@ -67,9 +65,8 @@
    :initial-state     {::m.ln.remote-nodes/id nil
                        :ui/report             {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/creating {:props props})
+  (log/info :SubPage/starting {:props props})
   (dom/div :.ui.segment
-    (dom/h2 "Peers")
     (if node-id
       (ui-report report)
       (dom/div {} "Node ID not set"))))

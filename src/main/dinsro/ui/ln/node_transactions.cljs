@@ -8,7 +8,6 @@
    [dinsro.model.ln.transactions :as m.ln.transactions]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.ln.transactions :as u.ln.transactions]
    [lambdaisland.glogi :as log]))
 
 (def fetch-button
@@ -25,14 +24,13 @@
    ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                         ::fetch         fetch-button
                         ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.transactions/block #(u.links/ui-block-link %2)
-                        ::m.ln.transactions/node  #(u.links/ui-core-node-link %2)}
-   ro/form-links       {::m.ln.transactions/transactions-id u.ln.transactions/LNTransactionForm}
+   ro/field-formatters {::m.ln.transactions/block           #(u.links/ui-block-link %2)
+                        ::m.ln.transactions/node            #(u.links/ui-core-node-link %2)
+                        ::m.ln.transactions/transactions-id #(u.links/ui-core-tx-link %3)}
    ro/source-attribute ::m.ln.transactions/index
    ro/title            "Node Transactions"
    ro/row-pk           m.ln.transactions/id
-   ro/run-on-mount?    true
-   ro/route            "node-transactions"}
+   ro/run-on-mount?    true}
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 
