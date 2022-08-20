@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]))
@@ -134,20 +135,27 @@
    ao/schema           :production
    ::report/column-EQL {::node [::m.c.nodes/id ::m.c.nodes/name]}})
 
+(s/def ::network uuid?)
+(defattr network ::network :ref
+  {ao/identities       #{::id}
+   ao/target           ::m.c.networks/id
+   ao/schema           :production
+   ::report/column-EQL {::node [::m.c.networks/id ::m.c.networks/name]}})
+
 (s/def ::fetched? boolean?)
 (defattr fetched? ::fetched? :boolean
   {ao/identities #{::id}
    ao/schema     :production})
 
 (s/def ::params
-  (s/keys :req [::hash ::height ::node ::fetched?]
+  (s/keys :req [::hash ::height ::fetched? ::network]
           :opt [::bits ::chainwork ::difficulty ::merkle-root ::nonce ::size ::time
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version ::next-block ::previous-block]))
 
 (>def ::unprepared-params
   (s/keys
-   :req [::node ::fetched?]))
+   :req [::network ::fetched?]))
 
 (>defn prepare-params
   [params]
@@ -159,13 +167,7 @@
 
         time-inst                     (some-> time (* 1000) tick/instant)
         transaction-count             (count tx)
-        median-time-inst              (some-> median-time (* 1000) tick/instant)
-        updated-params                (-> params
-                                          (assoc ::time time-inst)
-                                          (assoc ::fetched? (boolean fetched?))
-                                          (dissoc ::confirmations))]
-    (log/finer :prepare-params/prepared {#_#_:params params
-                                         :updated-params updated-params})
+        median-time-inst              (some-> median-time (* 1000) tick/instant)]
     {::hash              hash
      ::height            height
      ::node              node
@@ -182,11 +184,10 @@
      ::weight            weight
      ::version-hex       version-hex
      ::stripped-size     stripped-size
-     ::version           version}
-    #_updated-params))
+     ::version           version}))
 
 (s/def ::item
-  (s/keys :req [::id ::hash ::height ::node ::fetched?]
+  (s/keys :req [::id ::hash ::height ::network ::fetched?]
           :opt [::bits ::chainwork ::difficulty ::merkle-root ::nonce ::size ::time
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version  ::next-block ::previous-block]))
@@ -206,4 +207,4 @@
    weight
    version-hex
    stripped-size
-   fetched? node])
+   fetched? network])

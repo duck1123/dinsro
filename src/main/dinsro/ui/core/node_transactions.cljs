@@ -33,15 +33,13 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props
-          node-id  ::m.c.nodes/id}]
+  [_this {:ui/keys [report]}]
   {:query         [::m.c.nodes/id
                    {:ui/report (comp/get-query Report)}]
    :initial-state {::m.c.nodes/id nil
                    :ui/report     {}}
    :ident         (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/creating {:props props})
   (dom/div :.ui.segment
-    (ui-node-transactions-report report)))
+    (ui-report report)))
 
 (def ui-sub-page (comp/factory SubPage))

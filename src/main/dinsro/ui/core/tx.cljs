@@ -292,6 +292,9 @@
                         m.c.tx/block]
    ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
+                        ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)
+                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Transactions"
    ro/row-actions      [fetch-action-button delete-action-button]
