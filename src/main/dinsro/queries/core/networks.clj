@@ -6,6 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]
+   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -56,7 +57,7 @@
     (log/info :find-id-by-name/finished {:id id :network-name network-name})
     id))
 
-(>defn find-by-chain
+(>defn find-by-chain-id
   [chain-id]
   [::m.c.chains/id => (s/coll-of ::m.c.networks/id)]
   (log/finer :find-by-chain/starting {:chain-id chain-id})
@@ -67,6 +68,19 @@
         ids    (map first (xt/q db query [chain-id]))]
     (log/info :find-by-chain/finished {:chain-id chain-id :ids ids})
     ids))
+
+(>defn find-by-node-id
+  "Returns the id of the network the node with the provided id belongs to."
+  [node-id]
+  [::m.c.nodes/id => (? ::m.c.networks/id)]
+  (log/finer :find-by-node/starting {:node-id node-id})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?network-id]
+                :in    [[?node-id]]
+                :where [[?node-id ::m.c.nodes/network ?network-id]]}
+        id   (ffirst (xt/q db query [node-id]))]
+    (log/info :find-by-chain/finished {:node-id node-id :id id})
+    id))
 
 (>defn find-by-chain-and-network
   [chain-name network-name]

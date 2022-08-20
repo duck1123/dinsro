@@ -9,6 +9,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.queries.core.blocks :as q.c.blocks]
+   [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.tx :as q.c.tx]
    [dinsro.specs]
@@ -49,11 +50,14 @@
             id     (q.c.blocks/update-block existing-block-id params)]
         [id params])
       (throw (RuntimeException. "cannot find existing block")))
-    (let [params (assoc params ::m.c.blocks/node core-node-id)
-          params (assoc params ::m.c.blocks/fetched? true)
-          params (m.c.blocks/prepare-params params)
-          id     (q.c.blocks/create-record params)]
-      [id params])))
+    (if-let [network-id (q.c.networks/find-by-node-id core-node-id)]
+      (let [params (assoc params ::m.c.blocks/network network-id)
+            params (assoc params ::m.c.blocks/node core-node-id)
+            params (assoc params ::m.c.blocks/fetched? true)
+            params (m.c.blocks/prepare-params params)
+            id     (q.c.blocks/create-record params)]
+        [id params])
+      (throw (RuntimeException. "Failed to find network")))))
 
 (>defn update-neighbors
   [core-node-id block height]

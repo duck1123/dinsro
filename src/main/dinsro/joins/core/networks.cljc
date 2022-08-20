@@ -16,7 +16,7 @@
      (log/info :index/starting {:query-params query-params :props props})
      (let [{chain-id ::m.c.chains/id} query-params
            ids                        (if chain-id
-                                        #?(:clj (q.c.networks/find-by-chain chain-id) :cljs [])
+                                        #?(:clj (q.c.networks/find-by-chain-id chain-id) :cljs [])
                                         #?(:clj (q.c.networks/index-ids) :cljs []))
            objs                       (map (fn [id] {::m.c.networks/id id}) ids)]
        (log/info :index/starting {:query-params query-params :ids ids})

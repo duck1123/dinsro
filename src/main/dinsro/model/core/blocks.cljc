@@ -163,11 +163,11 @@
   (log/finer :prepare-params/preparing {:params params})
   (let [{:keys  [bits hash height chainwork difficulty merkle-root nonce size
                  time tx median-time weight version-hex stripped-size version]
-         ::keys [fetched? node]} params
+         ::keys [fetched? node network]} params
 
-        time-inst                     (some-> time (* 1000) tick/instant)
-        transaction-count             (count tx)
-        median-time-inst              (some-> median-time (* 1000) tick/instant)]
+        time-inst         (some-> time (* 1000) tick/instant)
+        transaction-count (count tx)
+        median-time-inst  (some-> median-time (* 1000) tick/instant)]
     {::hash              hash
      ::height            height
      ::node              node
@@ -177,6 +177,7 @@
      ::difficulty        difficulty
      ::merkle-root       merkle-root
      ::nonce             nonce
+     ::network           network
      ::size              size
      ::time              time-inst
      ::transaction-count transaction-count
