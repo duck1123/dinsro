@@ -15,7 +15,6 @@
    ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
-   ro/route            "wallet-words"
    ro/row-pk           m.c.words/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.words/index
