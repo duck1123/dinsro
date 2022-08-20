@@ -45,7 +45,7 @@
                             :tx
                             :payreqs
                             :payments]]
-   :ln-remote-nodes       ["Remote Nodes"      "/ln/remote-nodes"  :dinsro.ui.ln.remote-nodes/RemoteNodesReport]
+   :ln-remote-nodes       ["Remote Nodes"      "/ln/remote-nodes"  :dinsro.ui.ln.remote-nodes/Report]
    :login                 ["Login"             "/login"            :dinsro.ui.login/LoginPage]
    :payments              ["Payments"          "/payments"         :dinsro.ui.ln.payments/LNPaymentsReport]
    :payreqs               ["Payreqs"           "/payreqs"          :dinsro.ui.ln.payreqs/LNPayreqsReport]
