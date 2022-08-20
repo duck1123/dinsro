@@ -271,38 +271,30 @@
             (form/render-layout this props)))))))
 
 (defn ShowNode-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
-  (log/info :ShowNode/pre-merge {:data-tree          data-tree
-                                 :state-map          state-map
-                                 :current-noramlized current-normalized})
+  [{:keys [data-tree state-map]}]
+  (log/info :ShowNode/pre-merge {:data-tree data-tree
+                                 :state-map state-map})
   (let [node-id (::m.ln.nodes/id data-tree)]
     (log/info :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data
-          (merge
-           (comp/get-initial-state u.ln.node-peers/SubPage)
-           (get-in state-map (comp/get-ident u.ln.node-peers/SubPage {}))
-           {::m.ln.nodes/id node-id})
-
-          channels-data
-          (merge
-           (comp/get-initial-state u.ln.node-channels/SubPage)
-           (get-in state-map (comp/get-ident u.ln.node-channels/SubPage {}))
-           {::m.ln.nodes/id node-id})
-
-          transactions-data
-          (merge
-           (comp/get-initial-state u.ln.node-transactions/SubPage)
-           (get-in state-map (comp/get-ident u.ln.node-transactions/SubPage {}))
-           {::m.ln.nodes/id node-id})
-
-          updated-data (-> data-tree
-                           (assoc :peers peers-data)
-                           (assoc :channels channels-data)
-                           (assoc :transactions transactions-data))]
-      (log/info :ShowNode/merged {:updated-data       updated-data
-                                  :data-tree          data-tree
-                                  :state-map          state-map
-                                  :current-noramlized current-normalized})
+    (let [peers-data        (merge
+                             (comp/get-initial-state u.ln.node-peers/SubPage)
+                             (get-in state-map (comp/get-ident u.ln.node-peers/SubPage {}))
+                             {::m.ln.nodes/id node-id})
+          channels-data     (merge
+                             (comp/get-initial-state u.ln.node-channels/SubPage)
+                             (get-in state-map (comp/get-ident u.ln.node-channels/SubPage {}))
+                             {::m.ln.nodes/id node-id})
+          transactions-data (merge
+                             (comp/get-initial-state u.ln.node-transactions/SubPage)
+                             (get-in state-map (comp/get-ident u.ln.node-transactions/SubPage {}))
+                             {::m.ln.nodes/id node-id})
+          updated-data      (-> data-tree
+                                (assoc :peers peers-data)
+                                (assoc :channels channels-data)
+                                (assoc :transactions transactions-data))]
+      (log/info :ShowNode/merged {:updated-data updated-data
+                                  :data-tree    data-tree
+                                  :state-map    state-map})
       updated-data)))
 
 (defsc ShowNode

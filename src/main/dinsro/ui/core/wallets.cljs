@@ -140,11 +140,10 @@
    :action (fn [this _] (form/create! this NewWalletForm))})
 
 (defn ShowWallet-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
+  [{:keys [data-tree state-map]}]
   (log/finer :ShowTransaction-pre-merge/starting
-             {:data-tree          data-tree
-              :state-map          state-map
-              :current-noramlized current-normalized})
+             {:data-tree data-tree
+              :state-map state-map})
   (let [id (::m.c.wallets/id data-tree)]
     (log/finer :ShowTransaction-pre-merge/parsed {:id id})
     (let [addresses-data
@@ -163,10 +162,9 @@
                            (assoc :ui/addresses addresses-data)
                            (assoc :ui/words words-data))]
       (log/finer :ShowBlock-pre-merge/merged
-                 {:updated-data       updated-data
-                  :data-tree          data-tree
-                  :state-map          state-map
-                  :current-noramlized current-normalized})
+                 {:updated-data updated-data
+                  :data-tree    data-tree
+                  :state-map    state-map})
       updated-data)))
 
 (defsc ShowWallet

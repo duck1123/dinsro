@@ -215,11 +215,10 @@
 (s/def ::rows (s/coll-of ::row))
 
 (defn ShowBlock-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
+  [{:keys [data-tree state-map]}]
   (log/finer :ShowBlock-pre-merge/starting
              {:data-tree          data-tree
-              :state-map          state-map
-              :current-noramlized current-normalized})
+              :state-map          state-map})
   (let [block-id (::m.c.blocks/id data-tree)]
     (log/finer :ShowBlock-pre-merge/parsed {:block-id block-id})
     (let [transactions-data
@@ -233,8 +232,7 @@
       (log/finer :ShowBlock-pre-merge/merged
                  {:updated-data       updated-data
                   :data-tree          data-tree
-                  :state-map          state-map
-                  :current-noramlized current-normalized})
+                  :state-map          state-map})
       updated-data)))
 
 (defsc ShowBlock

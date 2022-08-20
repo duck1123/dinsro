@@ -26,23 +26,19 @@
    fo/title        "Remote Node"})
 
 (defn ShowRemoteNode-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
-  (log/finer :ShowNode/pre-merge {:data-tree          data-tree
-                                  :state-map          state-map
-                                  :current-noramlized current-normalized})
+  [{:keys [data-tree state-map]}]
+  (log/finer :ShowNode/pre-merge {:data-tree data-tree
+                                  :state-map state-map})
   (let [node-id (::m.ln.remote-nodes/id data-tree)]
     (log/finer :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data
-          (merge
-           (comp/get-initial-state u.ln.remote-node-peers/SubPage)
-           (get-in state-map (comp/get-ident u.ln.remote-node-peers/SubPage {}))
-           {::m.ln.remote-nodes/id node-id})
-
+    (let [peers-data   (merge
+                        (comp/get-initial-state u.ln.remote-node-peers/SubPage)
+                        (get-in state-map (comp/get-ident u.ln.remote-node-peers/SubPage {}))
+                        {::m.ln.remote-nodes/id node-id})
           updated-data (-> data-tree (assoc :peers peers-data))]
-      (log/finer :ShowNode/merged {:updated-data       updated-data
-                                   :data-tree          data-tree
-                                   :state-map          state-map
-                                   :current-noramlized current-normalized})
+      (log/finer :ShowNode/merged {:updated-data updated-data
+                                   :data-tree    data-tree
+                                   :state-map    state-map})
       updated-data)))
 
 (defsc ShowRemoteNode

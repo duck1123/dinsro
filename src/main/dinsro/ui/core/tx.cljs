@@ -212,11 +212,10 @@
    :action search-control-action})
 
 (defn ShowTransaction-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
+  [{:keys [data-tree state-map]}]
   (log/finer :ShowTransaction-pre-merge/starting
-             {:data-tree          data-tree
-              :state-map          state-map
-              :current-noramlized current-normalized})
+             {:data-tree data-tree
+              :state-map state-map})
   (let [id (::m.c.tx/id data-tree)]
     (log/finer :ShowTransaction-pre-merge/parsed {:id id})
     (let [inputs-data
@@ -237,10 +236,9 @@
                            (assoc :ui/inputs inputs-data)
                            (assoc :ui/outputs outputs-data))]
       (log/finer :ShowBlock-pre-merge/merged
-                 {:updated-data       updated-data
-                  :data-tree          data-tree
-                  :state-map          state-map
-                  :current-noramlized current-normalized})
+                 {:updated-data updated-data
+                  :data-tree    data-tree
+                  :state-map    state-map})
       updated-data)))
 
 (defsc ShowTransaction

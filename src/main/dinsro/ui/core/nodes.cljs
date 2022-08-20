@@ -190,10 +190,9 @@
   (comp/factory ActionsMenu))
 
 (defn ShowNode-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
-  (log/finer :ShowNode-pre-merge/starting {:data-tree          data-tree
-                                           :state-map          state-map
-                                           :current-noramlized current-normalized})
+  [{:keys [data-tree state-map]}]
+  (log/finer :ShowNode-pre-merge/starting {:data-tree data-tree
+                                           :state-map state-map})
   (let [node-id (::m.c.nodes/id data-tree)]
     (log/finer :ShowNode-pre-merge/parsed {:node-id node-id})
     (let [peers-data        (merge
@@ -217,10 +216,9 @@
                                 (assoc :ui/blocks blocks-data)
                                 (assoc :ui/transactions transactions-data)
                                 (assoc :ui/wallets wallets-data))]
-      (log/finer :ShowNode-pre-merge/merged {:updated-data       updated-data
-                                             :data-tree          data-tree
-                                             :state-map          state-map
-                                             :current-noramlized current-normalized})
+      (log/finer :ShowNode-pre-merge/merged {:updated-data updated-data
+                                             :data-tree    data-tree
+                                             :state-map    state-map})
       updated-data)))
 
 (def show-peers true)
