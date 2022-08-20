@@ -25,16 +25,12 @@
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
-  {:query         [::m.c.wallets/id
-                   {:ui/report (comp/get-query WalletWordsReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [{id ::m.c.wallets/id :as props} (comp/props this)]
-       (log/finer :SubPage/did-mount {:props props :this this})
-       (report/start-report! this WalletWordsReport {:route-params {::m.c.wallets/id id}})))
-   :initial-state {::m.c.wallets/id nil
-                   :ui/report       {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+  {:query             [::m.c.wallets/id
+                       {:ui/report (comp/get-query WalletWordsReport)}]
+   :componentDidMount #(report/start-report! % WalletWordsReport {:route-params (comp/props %)})
+   :initial-state     {::m.c.wallets/id nil
+                       :ui/report       {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
   (ui-wallet-words-report report))
 

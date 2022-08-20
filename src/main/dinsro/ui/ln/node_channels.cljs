@@ -74,19 +74,15 @@
 (def ui-node-channels-report (comp/factory NodeChannelsReport))
 
 (defsc SubPage
-  [_this {:ui/keys   [report]
-          :as props
-          node-id ::m.ln.nodes/id}]
-  {:query         [::m.ln.nodes/id
-                   {:ui/report (comp/get-query NodeChannelsReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [props (comp/props this)]
-       (log/info :SubPage/did-mount {:props props :this this})
-       (report/start-report! this NodeChannelsReport)))
-   :initial-state {::m.ln.nodes/id nil
-                   :ui/report         {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+  [_this {:ui/keys [report]
+          :as      props
+          node-id  ::m.ln.nodes/id}]
+  {:query             [::m.ln.nodes/id
+                       {:ui/report (comp/get-query NodeChannelsReport)}]
+   :componentDidMount #(report/start-report! % NodeChannelsReport {:route-params (comp/props %)})
+   :initial-state     {::m.ln.nodes/id nil
+                       :ui/report      {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id

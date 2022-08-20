@@ -43,13 +43,9 @@
 (defsc SubPage
   [_this {:keys   [report] :as props
           node-id ::m.c.nodes/id}]
-  {:query         [::m.c.nodes/id
-                   {:report (comp/get-query NodeBlocksReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [props (comp/props this)]
-       (log/finer :SubPage/did-mount {:props props :this this})
-       (report/start-report! this NodeBlocksReport)))
+  {:query             [::m.c.nodes/id
+                       {:report (comp/get-query NodeBlocksReport)}]
+   :componentDidMount #(report/start-report! % NodeBlocksReport {:query-param (comp/props %)})
    :pre-merge
    (fn [{:keys [data-tree state-map]}]
      (log/finer :SubPage/pre-merge {:data-tree data-tree})
@@ -59,9 +55,9 @@
            updated-data        (-> data-tree (assoc :blocks updated-report-data))]
        (log/finer :SubPage/merged {:updated-data updated-data :data-tree data-tree})
        updated-data))
-   :initial-state {::m.c.nodes/id nil
-                   :report        {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+   :initial-state     {::m.c.nodes/id nil
+                       :report        {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
   (let [block-data (assoc-in report [:ui/parameters ::m.c.nodes/id] node-id)]
     (dom/div :.ui.segment

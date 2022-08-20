@@ -81,16 +81,12 @@
   [_this {:ui/keys [report]
           :as      props
           node-id  ::m.ln.nodes/id}]
-  {:query         [::m.ln.nodes/id
-                   {:ui/report (comp/get-query NodePeersReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [props (comp/props this)]
-       (log/info :SubPage/did-mount {:props props :this this})
-       (report/start-report! this NodePeersReport)))
-   :initial-state {::m.ln.nodes/id nil
-                   :ui/report      {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+  {:query             [::m.ln.nodes/id
+                       {:ui/report (comp/get-query NodePeersReport)}]
+   :componentDidMount #(report/start-report! % NodePeersReport {:route-params (comp/props %)})
+   :initial-state     {::m.ln.nodes/id nil
+                       :ui/report      {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id

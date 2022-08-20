@@ -56,17 +56,12 @@
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
-  {:query         [::m.c.blocks/id
-                   {:ui/report (comp/get-query BlockTransactionsReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [props    (comp/props this)
-           block-id (::m.c.blocks/id props)]
-       (log/finer :SubPage/did-mount {:props props :this this})
-       (report/start-report! this BlockTransactionsReport {:route-params {::m.c.blocks/id block-id}})))
-   :initial-state {::m.c.blocks/id nil
-                   :ui/report      {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+  {:query             [::m.c.blocks/id
+                       {:ui/report (comp/get-query BlockTransactionsReport)}]
+   :componentDidMount #(report/start-report! % BlockTransactionsReport {:route-params (comp/props %)})
+   :initial-state     {::m.c.blocks/id nil
+                       :ui/report      {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
   (ui-block-transactions-report report))
 

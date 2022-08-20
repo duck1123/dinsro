@@ -35,16 +35,12 @@
 
 (defsc SubPage
   [_this {:ui/keys [report2] :as props}]
-  {:query         [::m.c.tx/id
-                   {:ui/report2 (comp/get-query TransactionOutputsReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [{id ::m.c.tx/id :as props} (comp/props this)]
-       (log/info :SubPage/did-mount {:props props :this this})
-       (report/start-report! this TransactionOutputsReport {:route-params {::m.c.tx/id id}})))
-   :initial-state {::m.c.tx/id nil
-                   :ui/report2 {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+  {:query             [::m.c.tx/id
+                       {:ui/report2 (comp/get-query TransactionOutputsReport)}]
+   :componentDidMount #(report/start-report! % TransactionOutputsReport {:route-params (comp/props %)})
+   :initial-state     {::m.c.tx/id nil
+                       :ui/report2 {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
   (when report2
     (ui-transaction-outputs-report report2)))

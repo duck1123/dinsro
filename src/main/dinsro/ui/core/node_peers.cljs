@@ -72,16 +72,12 @@
 (defsc SubPage
   [_this {:ui/keys [report] :as props
           node-id  ::m.c.nodes/id}]
-  {:query         [::m.c.nodes/id
-                   {:ui/report (comp/get-query NodePeersReport)}]
-   :componentDidMount
-   (fn [this]
-     (let [{::m.c.nodes/keys [id] :as props} (comp/props this)]
-       (log/info :SubPage/did-mount {:id id :props props :this this})
-       (report/start-report! this NodePeersReport {:route-params {::m.c.nodes/id id}})))
-   :initial-state {::m.c.nodes/id nil
-                   :ui/report     {}}
-   :ident         (fn [] [:component/id ::SubPage])}
+  {:query             [::m.c.nodes/id
+                       {:ui/report (comp/get-query NodePeersReport)}]
+   :componentDidMount #(report/start-report! % NodePeersReport {:route-params (comp/props %)})
+   :initial-state     {::m.c.nodes/id nil
+                       :ui/report     {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id
