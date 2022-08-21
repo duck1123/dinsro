@@ -1,10 +1,10 @@
 (ns dinsro.client.converters.init-wallet-request
+  (:require
+   [dinsro.client.scala :as cs])
   (:import
    lnrpc.InitWalletRequest
    com.google.protobuf.ByteString
-   scala.Option
-   ;; org.bitcoins.core.number.UInt64
-   scalapb.UnknownFieldSet))
+   scala.Option))
 
 (defn ->request
   "see: https://bitcoin-s.org/api/lnrpc/InitWalletRequest.html"
@@ -16,29 +16,10 @@
    (->request wallet-password cipher-seed-mnemonic ByteString/EMPTY))
   ([wallet-password cipher-seed-mnemonic aezeed-passphrase]
    (->request wallet-password cipher-seed-mnemonic aezeed-passphrase (int 0)))
-  ([wallet-password
-    cipher-seed-mnemonic
-    aezeed-passphrase
-    recovery-window]
-   (->request
-    wallet-password
-    cipher-seed-mnemonic
-    aezeed-passphrase
-    recovery-window
-    (Option/empty)))
-  ([wallet-password
-    cipher-seed-mnemonic
-    aezeed-passphrase
-    recovery-window
-    channel-backups]
-   (->request
-    wallet-password
-    cipher-seed-mnemonic
-    aezeed-passphrase
-    recovery-window
-    channel-backups
-    false))
-
+  ([wallet-password cipher-seed-mnemonic aezeed-passphrase recovery-window]
+   (->request wallet-password cipher-seed-mnemonic aezeed-passphrase recovery-window (cs/none)))
+  ([wallet-password cipher-seed-mnemonic aezeed-passphrase recovery-window channel-backups]
+   (->request wallet-password cipher-seed-mnemonic aezeed-passphrase recovery-window channel-backups false))
   ([wallet-password
     cipher-seed-mnemonic
     aezeed-passphrase
@@ -53,7 +34,6 @@
     channel-backups
     stateless-init
     ""))
-
   ([wallet-password
     cipher-seed-mnemonic
     aezeed-passphrase
@@ -107,7 +87,7 @@
     extended-master-key
     extended-master-key-birthday-timestamp
     watch-only
-    (UnknownFieldSet/empty)))
+    (cs/empty-unknown-field-set)))
   ([;; ^ByteString
     wallet-password
     cipher-seed-mnemonic

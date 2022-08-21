@@ -21,26 +21,23 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-;; ## initialize!
+;; ## get-client
 
 (comment
 
-  n.lnd/node
+  nil)
 
-  (:mnemonic n.lnd/node)
+;; ## get-client-s
 
-  (.genSeed (.unlocker n.lnd/client))
+(def client (a.ln.nodes/get-client-s n.lnd/node))
 
-  (c.lnd-s/await-throwable (.genSeed n.lnd/client))
+;; ## get-macaroon-text
 
-  (a.ln.nodes/download-cert! n.lnd/node)
-  (a.ln.nodes/download-macaroon! n.lnd/node)
+(a.ln.nodes/get-macaroon-text n.lnd/node)
 
-  (a.ln.nodes/get-client-s n.lnd/node)
+;; ## initialize-s!
 
-  (a.ln.nodes/new-address-s n.lnd/node)
-
-  (a.ln.nodes/get-info n.lnd/node)
+(comment
 
   (def f (a.ln.nodes/initialize!-s n.lnd/node))
 
@@ -52,8 +49,55 @@
 
   nil)
 
+;; ## download-cert!
+
 (comment
-  (a.ln.nodes/download-cert! (first (q.ln.nodes/index-ids)))
+
+  (a.ln.nodes/download-cert! n.lnd/node)
+
+  nil)
+
+;; ## download-macaroon
+
+(comment
+
+  (a.ln.nodes/download-macaroon! n.lnd/node)
+
+  nil)
+
+;; ## delete-cert
+
+(comment
+
+  (a.ln.nodes/delete-cert n.lnd/node)
+
+  nil)
+
+;; ## get-info
+
+(comment
+
+  (a.ln.nodes/get-info n.lnd/node)
+
+  (def response (c.lnd-s/get-info client))
+
+  (cs/->record response)
+  (.alias response)
+
+  nil)
+
+;; ## other
+
+(comment
+  n.lnd/node
+
+  (:mnemonic n.lnd/node)
+
+  (.genSeed (.unlocker n.lnd/client))
+
+  (c.lnd-s/await-throwable (.genSeed n.lnd/client))
+
+  (a.ln.nodes/new-address-s n.lnd/node)
 
   n.lnd/client
 
@@ -70,9 +114,7 @@
 
   (q.ln.nodes/index-ids)
 
-  (a.ln.nodes/delete-cert n.lnd/node)
   (a.ln.nodes/has-cert? n.lnd/node)
-  (a.ln.nodes/download-cert! n.lnd/node)
   (a.ln.nodes/download-macaroon! n.lnd/node)
 
   (a.ln.nodes/delete-macaroon n.lnd/node)
@@ -80,15 +122,9 @@
 
   (prn (slurp (a.ln.nodes/download-macaroon! n.lnd/node)))
 
-  (println (a.ln.nodes/get-macaroon-text n.lnd/node))
   (a.ln.nodes/get-remote-instance n.lnd/node)
 
-  (def client (a.ln.nodes/get-client-s n.lnd/node))
-  client
-
   (.unlockWallet client a.ln.nodes/default-passphrase)
-
-  (a.ln.nodes/get-info n.lnd/node)
 
   (a.c.nodes/generate-to-address!
    n.lnd/core-node-alice
@@ -103,11 +139,6 @@
   (def f (m.ln.nodes/macaroon-file (::m.ln.nodes/id n.lnd/node)))
 
   (.exists f)
-
-  (def response (c.lnd-s/get-info client))
-
-  (cs/->record response)
-  (.alias response)
 
   (bytes->hex (bs/to-byte-array f))
   nil)

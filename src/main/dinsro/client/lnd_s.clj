@@ -4,6 +4,7 @@
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
+   [dinsro.client.converters.list-accounts-request :as c.c.list-accounts-request]
    [dinsro.client.scala :as cs :refer [Recordable]]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
@@ -17,8 +18,8 @@
    lnrpc.ConnectPeerRequest
    lnrpc.GetInfoResponse
    lnrpc.LightningAddress
-   scalapb.UnknownFieldSet
-   scala.util.Failure))
+   scala.util.Failure
+   walletrpc.WalletKitClient))
 
 (defn get-remote-instance
   ([url macaroon]
@@ -48,9 +49,18 @@
      :version      (.version this)
      :commit-hash  (.commitHash this)}))
 
+(>def ::client (ds/instance? LndRpcClient))
+(>def ::walletkit-client (ds/instance? WalletKitClient))
+
 (defn get-remote-client
   [^LndInstance i]
   (LndRpcClient/apply i (Option/empty)))
+
+(>defn get-walletkit-client
+  "https://bitcoin-s.org/api/walletrpc/WalletKitClient.html"
+  [^LndRpcClient client]
+  [::client => ::walletkit-client]
+  (.wallet client))
 
 (defn get-info
   "Fetch node info from the remote node"
@@ -81,13 +91,11 @@
 ;;   (:result (async/<!! (cs/await-future (.getInfo client))))
 ;;   )
 
-(>def ::client any?)
-
 (>defn ->lightning-address
   "https://bitcoin-s.org/api/lnrpc/LightningAddress.html"
   [^String host ^String pubkey]
   [string? string? => (ds/instance? LightningAddress)]
-  (let [unknown-fields (UnknownFieldSet/empty)]
+  (let [unknown-fields (cs/empty-unknown-field-set)]
     (LightningAddress. pubkey host unknown-fields)))
 
 (>defn ->connect-peer-request
@@ -97,7 +105,7 @@
   (let [addr           (Option/apply (->lightning-address host pubkey))
         perm           false
         timeout        (cs/uint64 0)
-        unknown-fields (UnknownFieldSet/empty)
+        unknown-fields (cs/empty-unknown-field-set)
         obj            (ConnectPeerRequest. addr perm timeout unknown-fields)]
     (log/info :->connect-peer-request/finished {:obj obj})
     obj))
@@ -162,3 +170,13 @@
         awaited-response (await-throwable response)]
     (log/info :connect-peer!/finished {:awaited-response awaited-response})
     awaited-response))
+
+(>defn list-wallet-accounts
+  [client]
+  [::walletkit-client => any?]
+  (log/info :list-wallet-accounts/starting {})
+  (let [request  (c.c.list-accounts-request/->obj)
+        response (.listAccounts client request)
+        obj      (await-throwable response)]
+    (log/info :list-wallet-accounts/finished {:obj obj})
+    obj))

@@ -1,13 +1,13 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.client.converters.init-wallet-request-notebook
-  (:require [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
-            [dinsro.notebook-utils :as nu]
-            [dinsro.viewers :as dv]
-            [nextjournal.clerk :as clerk])
+  (:require
+   [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
+   [dinsro.client.scala :as cs]
+   [dinsro.notebook-utils :as nu]
+   [dinsro.viewers :as dv]
+   [nextjournal.clerk :as clerk])
   (:import
-   com.google.protobuf.ByteString
-   scala.Option
-   scalapb.UnknownFieldSet))
+   com.google.protobuf.ByteString))
 
 ;; # Init Wallet Request [link](https://bitcoin-s.org/api/lnrpc/InitWalletRequest.html)
 
@@ -20,13 +20,13 @@
 (def cipher-seed-mnemonic                   nil)
 (def aezeed-passphrase                      ByteString/EMPTY)
 (def recovery-window                        (int 0))
-(def channel-backups                        (Option/empty))
+(def channel-backups                        (cs/none))
 (def stateless-init                         false)
 (def extended-master-key                    "")
 (def extended-master-key-birthday-timestamp (int 0))
 
-(def watch-only                             (Option/empty))
-(def unknown-fields                         (UnknownFieldSet/empty))
+(def watch-only                             (cs/none))
+(def unknown-fields                         (cs/empty-unknown-field-set))
 
 ^{::clerk/viewer clerk/code}
 (def request

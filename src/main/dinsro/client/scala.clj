@@ -15,6 +15,7 @@
    org.bitcoins.core.number.UInt32
    org.bitcoins.core.number.UInt64
    org.bitcoins.crypto.DoubleSha256DigestBE
+   scalapb.UnknownFieldSet
    scala.collection.immutable.Vector
    scala.concurrent.ExecutionContext
    scala.Function1
@@ -130,6 +131,14 @@
      (log/finer :await-future/awaiting {:f f})
      (.onComplete f handler context)
      ch)))
+
+(defn empty-unknown-field-set
+  []
+  (UnknownFieldSet/empty))
+
+(defn empty-seq
+  []
+  (vector->vec []))
 
 (defprotocol Recordable
   (->record [this]))
