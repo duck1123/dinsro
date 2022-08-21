@@ -2,7 +2,6 @@
 (ns dinsro.actions.ln.transactions-notebook
   (:refer-clojure :exclude [next])
   (:require
-   [dinsro.actions.ln.transactions :as a.ln.transactions]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.core.blocks :as q.c.blocks]
@@ -35,7 +34,5 @@
   (def node-id (::m.ln.nodes/id n.lnd/node-alice))
   node-id
   (q.c.nodes/find-by-ln-node node-id)
-
-  (a.ln.transactions/get-transactions n.lnd/node)
 
   nil)

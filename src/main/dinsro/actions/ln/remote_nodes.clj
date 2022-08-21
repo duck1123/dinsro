@@ -1,16 +1,9 @@
 (ns dinsro.actions.ln.remote-nodes
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.client.lnd :as c.lnd]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.queries.ln.remote-nodes :as q.ln.remote-nodes]
    [lambdaisland.glogc :as log]))
-
-(defn get-node-info
-  [node pubkey]
-  (with-open [client (a.ln.nodes/get-client node)]
-    (c.lnd/get-node-info client pubkey)))
 
 (>defn register-node!
   [node-id pubkey host]

@@ -45,11 +45,11 @@
    ao/schema     :production})
 
 (s/def ::params
-  (s/keys :req [::pubkey ::host ::node]
-          :opt [::color ::alias]))
+  (s/keys :req [::pubkey ::node]
+          :opt [::color ::alias ::host]))
 (s/def ::item
-  (s/keys :req [::id ::pubkey ::host ::node]
-          :opt [::color ::alias]))
+  (s/keys :req [::id ::pubkey ::node]
+          :opt [::color ::alias ::host]))
 
 (defn idents
   [ids]

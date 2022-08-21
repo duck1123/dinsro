@@ -3,6 +3,7 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
+   #?(:clj [dinsro.actions.ln.peers-lj :as a.ln.peers-lj])
    [dinsro.model.ln.peers :as m.ln.peers]
    #?(:clj [lambdaisland.glogc :as log])))
 
@@ -14,7 +15,7 @@
      {::pc/params #{::m.ln.peers/id}
       ::pc/output [:status]}
      (log/info :create!/starting {:props props})
-     (a.ln.peers/create! props))
+     (a.ln.peers-lj/create! props))
 
    :cljs
    (defmutation create! [_props]

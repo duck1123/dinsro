@@ -12,7 +12,8 @@
    [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses]
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.actions.ln.peers :as a.ln.peers]
+   [dinsro.actions.ln.nodes-lj :as a.ln.nodes-lj]
+   [dinsro.actions.ln.peers-lj :as a.ln.peers-lj]
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.actions.rates :as a.rates]
    [dinsro.components.seed.accounts]
@@ -182,11 +183,11 @@
             (if-let [macaroon-response (a.ln.nodes/download-macaroon! node)]
               (do
                 (log/info :seed-ln-node!/macaroon-downloaded {:macaroon-response macaroon-response})
-                (a.ln.nodes/update-info! node)
-                (a.ln.peers/fetch-peers! node-id))
+                (a.ln.nodes-lj/update-info! node)
+                (a.ln.peers-lj/fetch-peers! node-id))
               (do
                 (log/info :seed-ln-node!/download-macaroon-failed {})
-                (let [initialize-response (a.ln.nodes/initialize! node)]
+                (let [initialize-response (a.ln.nodes-lj/initialize! node)]
                   (log/info :seed-ln-node!/initialized {:initialize-response initialize-response})
 
                   nil))))

@@ -6,7 +6,6 @@
    [clojure.core.async :as async :refer [<!!]]
    [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.client.lnd :as c.lnd]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
    [dinsro.lnd-notebook :as n.lnd]
@@ -43,8 +42,6 @@
 
   (a.ln.nodes/get-info n.lnd/node)
 
-  (a.ln.nodes/initialize! n.lnd/node)
-
   (def f (a.ln.nodes/initialize!-s n.lnd/node))
 
   f
@@ -71,17 +68,7 @@
 
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id n.lnd/node)))
 
-  (def client1 (a.ln.nodes/get-client n.lnd/node))
-  client1
-
-  (with-open [client (a.ln.nodes/get-client n.lnd/node)] (c.lnd/list-invoices client))
-  (c.lnd/list-payments client1)
-
   (q.ln.nodes/index-ids)
-
-  (a.ln.nodes/generate! n.lnd/node-alice)
-
-  (a.ln.nodes/update-info! n.lnd/node)
 
   (a.ln.nodes/delete-cert n.lnd/node)
   (a.ln.nodes/has-cert? n.lnd/node)
@@ -107,13 +94,8 @@
    n.lnd/core-node-alice
    (a.ln.nodes/new-address-str n.lnd/node-alice))
 
-  (<!! (a.ln.nodes/initialize! n.lnd/node))
-
   (q.ln.peers/index-records)
 
-  (a.ln.nodes/new-address n.lnd/node (fn [response] response))
-
-  (a.ln.nodes/get-client n.lnd/node)
   (a.ln.nodes/get-macaroon-hex n.lnd/node)
 
   (m.ln.nodes/cert-file n.lnd/node)
