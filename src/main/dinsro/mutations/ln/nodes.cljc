@@ -9,14 +9,16 @@
    #?(:clj [dinsro.actions.ln.nodes :as a.ln.nodes])
    #?(:clj [dinsro.actions.ln.nodes-lj :as a.ln.nodes-lj])
    #?(:clj [dinsro.actions.ln.payments-lj :as a.ln.payments-lj])
+   #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
    #?(:clj [dinsro.actions.ln.peers-lj :as a.ln.peers-lj])
    #?(:clj [dinsro.actions.ln.transactions-lj :as a.ln.tx-lj])
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
    #?(:clj [taoensso.timbre :as log])))
 
-(comment ::m.ln.info/_ ::m.ln.nodes/_ ::pc/_)
+(comment ::m.ln.info/_ ::m.ln.nodes/_ ::m.ln.remote-nodes/_ ::pc/_)
 
 (s/def ::creation-response (s/keys))
 
@@ -28,7 +30,7 @@
      (if-let [node (q.ln.nodes/read-record id)]
        (let [host     ""
              pubkey   ""
-             response (a.ln.peers-lj/create-peer! node host pubkey)]
+             response (a.ln.peers/create-peer! node host pubkey)]
          {:status (if (nil? response) :fail :ok)})
        {:status :not-found}))
    :cljs
@@ -193,26 +195,12 @@
      (remote [_env] true)))
 
 #?(:clj
-   (defn make-peer*
-     [id]
-     (if-let [node (q.ln.nodes/read-record id)]
-       (let [other-node                            (->> (q.ln.nodes/index-records)
-                                                        (filter #(not= id (::m.ln.nodes/id %)))
-                                                        first)
-             {::m.ln.nodes/keys [host]
-              ::m.ln.info/keys  [identity-pubkey]} other-node]
-         (if identity-pubkey
-           (let [response (a.ln.peers-lj/create-peer! node host identity-pubkey)]
-             {:status (if (nil? response) :fail :ok)})
-           {:status :fail :message "No pubkey"}))
-       {:status :not-found})))
-
-#?(:clj
    (pc/defmutation make-peer!
-     [_env {::m.ln.nodes/keys [id]}]
-     {::pc/params #{::m.ln.nodes/id}
+     [_env {node-id ::m.ln.nodes/id
+            remote-node-id ::m.ln.remote-nodes/id}]
+     {::pc/params #{::m.ln.nodes/id ::m.ln.remote-nodes/id}
       ::pc/output [:status]}
-     (make-peer* id))
+     (a.ln.peers/make-peer* node-id remote-node-id))
    :cljs
    (defmutation make-peer! [_props]
      (action [_env] true)

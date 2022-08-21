@@ -2,8 +2,10 @@
   "Clojure interop for Bitcoin-S LND client"
   (:require
    [clojure.core.async :as async]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
    [dinsro.client.scala :as cs :refer [Recordable]]
+   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
    com.google.protobuf.ByteString
@@ -79,24 +81,26 @@
 ;;   (:result (async/<!! (cs/await-future (.getInfo client))))
 ;;   )
 
-(defn ->lightning-address
-  [host]
-  (let [pubkey         ""
-        ;; host           nil
-        unknown-fields (UnknownFieldSet/empty)]
+(>def ::client any?)
+
+(>defn ->lightning-address
+  "https://bitcoin-s.org/api/lnrpc/LightningAddress.html"
+  [^String host ^String pubkey]
+  [string? string? => (ds/instance? LightningAddress)]
+  (let [unknown-fields (UnknownFieldSet/empty)]
     (LightningAddress. pubkey host unknown-fields)))
 
-(defn ->connect-peer-request
-  [host]
-  (let [addr           (Option/apply (->lightning-address host))
+(>defn ->connect-peer-request
+  "https://bitcoin-s.org/api/lnrpc/ConnectPeerRequest.html"
+  [^String host ^String pubkey]
+  [string? string?  => (ds/instance? ConnectPeerRequest)]
+  (let [addr           (Option/apply (->lightning-address host pubkey))
         perm           false
-        timeout        0
-        unknown-fields (UnknownFieldSet/empty)]
-    (ConnectPeerRequest. addr perm timeout unknown-fields)))
-
-(defn connect-peer
-  [client]
-  (log/info :connect-peer/starting {:client client}))
+        timeout        (cs/uint64 0)
+        unknown-fields (UnknownFieldSet/empty)
+        obj            (ConnectPeerRequest. addr perm timeout unknown-fields)]
+    (log/info :->connect-peer-request/finished {:obj obj})
+    obj))
 
 (defn await-throwable
   "Return the results of a throwable future"
@@ -147,3 +151,14 @@
       (let [awaited-response (await-throwable response)]
         (log/info :initialize!/awaited {:awaited-response awaited-response})
         awaited-response))))
+
+(>defn connect-peer!
+  "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#connectPeer(request:lnrpc.ConnectPeerRequest):scala.concurrent.Future[Unit]"
+  [^LndRpcClient client  ^String host  ^String pubkey]
+  [::client string? string? => any?]
+  (log/info :connect-peer!/starting {:host host :pubkey pubkey})
+  (let [request          (->connect-peer-request host pubkey)
+        response         (.connectPeer client request)
+        awaited-response (await-throwable response)]
+    (log/info :connect-peer!/finished {:awaited-response awaited-response})
+    awaited-response))

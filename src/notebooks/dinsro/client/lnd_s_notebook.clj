@@ -62,12 +62,13 @@ ZEw+de+2IU8TFQ4JWo9Y
 
 (comment
 
-  (c.lnd-s/->lightning-address "lnd.bob:9735")
-  (c.lnd-s/->connect-peer-request "lnd.bob:9735")
+  (c.lnd-s/->lightning-address "lnd.bob:9735" "")
+
+  (def request (c.lnd-s/->connect-peer-request "lnd.bob:9735" ""))
 
   (LndRpcClient. instance (cs/none))
 
-  (async/<!! (cs/await-future (.connectPeer client (c.lnd-s/->connect-peer-request "lnd.bob:9735"))))
+  (async/<!! (cs/await-future (.connectPeer client request)))
 
   (async/<!! (cs/await-future (.getInfo client)))
 
