@@ -16,7 +16,7 @@
    :channels              ["Channels"          "/ln/channels"      :dinsro.ui.ln.channels/LNChannelsReport]
    :core-addresses        ["Core Address"      "/core/addresses"   :dinsro.ui.core.addresses/CoreAddressReport]
    :core-blocks           ["Core Blocks"       "/core/blocks"      :dinsro.ui.core.blocks/CoreBlockReport]
-   :core-chains           ["Chains"            "/core/chains"      :dinsro.ui.core.chains/CoreChainsReport]
+   :core-chains           ["Chains"            "/core/chains"      :dinsro.ui.core.chains/Report]
    :core-menu             ["Core"              "/core"             nil
                            [:core-nodes
                             :core-peers
