@@ -301,7 +301,7 @@
 (report/defsc-report CoreNodesReport
   [_this _props]
   {ro/columns           [m.c.nodes/name
-                         m.c.nodes/network
+                         ;; m.c.nodes/network
                          m.c.nodes/block-count]
    ro/column-formatters {::m.c.nodes/name    #(u.links/ui-core-node-link %3)
                          ::m.c.nodes/network #(u.links/ui-network-link %2)}
