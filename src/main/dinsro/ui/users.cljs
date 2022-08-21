@@ -15,6 +15,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.user-accounts :as u.user-accounts]
+   [dinsro.ui.user-transactions :as u.user-transactions]
    [lambdaisland.glogi :as log]))
 
 (def override-form true)
@@ -72,27 +73,38 @@
                                            :current-noramlized current-normalized})
   (let [user-id (::m.users/id data-tree)]
     (log/finer :ShowUser-pre-merge/parsed {:user-id user-id})
-    (let [accounts-data (u.links/merge-state state-map u.user-accounts/SubPage {::m.users/id user-id})]
+    (let [accounts-data (u.links/merge-state state-map u.user-accounts/SubPage {::m.users/id user-id})
+          transactions-data (u.links/merge-state state-map u.user-transactions/SubPage {::m.users/id user-id})]
       (-> data-tree
-          (assoc :ui/accounts accounts-data)))))
+          (assoc :ui/accounts accounts-data)
+          (assoc :ui/transactions transactions-data)))))
 
 (defsc ShowUser
   [_this {::m.users/keys [name]
-          :ui/keys       [user-accounts]}]
+          :ui/keys       [accounts transactions]}]
   {:route-segment ["users" :id]
    :query         [::m.users/name
                    ::m.users/id
-                   {:ui/user-accounts (comp/get-query u.user-accounts/SubPage)}]
-   :initial-state {::m.users/name    ""
-                   ::m.users/id      nil
-                   :ui/user-accounts {}}
+                   {:ui/accounts (comp/get-query u.user-accounts/SubPage)}
+                   {:ui/transactions (comp/get-query u.user-transactions/SubPage)}]
+   :initial-state {::m.users/name   ""
+                   ::m.users/id     nil
+                   :ui/accounts     {}
+                   :ui/transactions {}}
    :ident         ::m.users/id
    :will-enter    ShowUser-will-enter
    :pre-merge     ShowUser-pre-merge}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show User " (str name)))
-   (u.user-accounts/ui-sub-page user-accounts)))
+   (dom/div  :.ui.segment
+     (if accounts
+       (u.user-accounts/ui-sub-page accounts)
+       (dom/p {} "User accounts not loaded")))
+   (dom/div :.ui.segment
+     (if transactions
+       (u.user-transactions/ui-sub-page transactions)
+       (dom/p {} "User transactions not loaded")))))
 
 (form/defsc-form AdminUserForm
   [_this _props]
