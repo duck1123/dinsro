@@ -190,21 +190,14 @@
   (comp/factory ActionsMenu))
 
 (defn ShowNode-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [node-id (::m.c.nodes/id data-tree)]
-    (log/finer :ShowNode-pre-merge/parsed {:node-id node-id})
-    (let [peers-data        (u.links/merge-state state-map u.c.node-peers/SubPage {::m.c.nodes/id node-id})
-          wallets-data      (u.links/merge-state state-map u.c.node-wallets/SubPage {::m.c.nodes/id node-id})
-          blocks-data       (u.links/merge-state state-map u.c.node-blocks/SubPage {::m.c.nodes/id node-id})
-          transactions-data (u.links/merge-state state-map u.c.node-transactions/SubPage {::m.c.nodes/id node-id})
-          updated-data      (-> data-tree
-                                (assoc :ui/peers peers-data)
-                                (assoc :ui/blocks blocks-data)
-                                (assoc :ui/transactions transactions-data)
-                                (assoc :ui/wallets wallets-data))]
-      (log/finer :ShowNode-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.c.nodes/id
+   {:ui/blocks       u.c.node-blocks/SubPage
+    :ui/peers        u.c.node-peers/SubPage
+    :ui/transactions u.c.node-transactions/SubPage
+    :ui/wallets      u.c.node-wallets/SubPage}))
 
 (def show-peers true)
 (def show-wallets true)

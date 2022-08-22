@@ -217,15 +217,11 @@
 (declare ShowBlock)
 
 (defn ShowBlock-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowBlock-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [block-id (::m.c.blocks/id data-tree)]
-    (log/finer :ShowBlock-pre-merge/parsed {:block-id block-id})
-    (let [transactions-data (u.links/merge-state state-map u.c.block-transactions/SubPage {::m.c.blocks/id block-id})
-          updated-data      (-> data-tree
-                                (assoc :ui/transactions transactions-data))]
-      (log/finer :ShowBlock-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.c.blocks/id
+   {:ui/transactions u.c.block-transactions/SubPage}))
 
 (defn ShowBlock-will-enter
   [app {id :id}]

@@ -26,27 +26,24 @@
    fo/title        "Remote Node"})
 
 (defn ShowRemoteNode-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowRemoteNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [node-id (::m.ln.remote-nodes/id data-tree)]
-    (log/finer :ShowNode/pre-merge-parsed {:node-id node-id})
-    (let [peers-data   (u.links/merge-state state-map u.ln.remote-node-peers/SubPage {::m.ln.remote-nodes/id node-id})
-          updated-data (-> data-tree (assoc :peers peers-data))]
-      (log/finer :ShowRemoteNode-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.ln.remote-nodes/id
+   {:ui/peers u.ln.remote-node-peers/SubPage}))
 
 (defsc ShowRemoteNode
-  [_this {:keys                    [peers]
+  [_this {:ui/keys                 [peers]
           ::m.ln.remote-nodes/keys [id pubkey]}]
   {:route-segment ["remote-nodes" :id]
    :ident         ::m.ln.remote-nodes/id
    :query         [::m.ln.remote-nodes/id
                    ::m.ln.remote-nodes/pubkey
-                   {:peers (comp/get-query u.ln.remote-node-peers/SubPage)}
+                   {:ui/peers (comp/get-query u.ln.remote-node-peers/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.ln.remote-nodes/id     nil
                    ::m.ln.remote-nodes/pubkey ""
-                   :peers                     {}}
+                   :ui/peers                  {}}
    :pre-merge     ShowRemoteNode-pre-merge
    :will-enter
    (fn [app {id :id}]

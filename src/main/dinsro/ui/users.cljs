@@ -67,17 +67,12 @@
          :post-mutation-params {:target ident}})))))
 
 (defn ShowUser-pre-merge
-  [{:keys [data-tree state-map current-normalized]}]
-  (log/finer :ShowUser-pre-merge/starting {:data-tree          data-tree
-                                           :state-map          state-map
-                                           :current-noramlized current-normalized})
-  (let [user-id (::m.users/id data-tree)]
-    (log/finer :ShowUser-pre-merge/parsed {:user-id user-id})
-    (let [accounts-data (u.links/merge-state state-map u.user-accounts/SubPage {::m.users/id user-id})
-          transactions-data (u.links/merge-state state-map u.user-transactions/SubPage {::m.users/id user-id})]
-      (-> data-tree
-          (assoc :ui/accounts accounts-data)
-          (assoc :ui/transactions transactions-data)))))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.users/id
+   {:ui/accounts     u.user-accounts/SubPage
+    :ui/transactions u.user-transactions/SubPage}))
 
 (defsc ShowUser
   [_this {::m.users/keys [name]

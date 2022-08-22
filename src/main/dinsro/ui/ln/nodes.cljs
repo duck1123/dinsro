@@ -269,21 +269,14 @@
             (form/render-layout this props)))))))
 
 (defn ShowNode-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowNode-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [node-id (::m.ln.nodes/id data-tree)]
-    (log/info :ShowNode-pre-merge/parsed {:node-id node-id})
-    (let [peers-data        (u.links/merge-state state-map u.ln.node-peers/SubPage {::m.ln.nodes/id node-id})
-          channels-data     (u.links/merge-state state-map u.ln.node-channels/SubPage {::m.ln.nodes/id node-id})
-          transactions-data (u.links/merge-state state-map u.ln.node-transactions/SubPage {::m.ln.nodes/id node-id})
-          remote-nodes-data (u.links/merge-state state-map u.ln.node-remote-nodes/SubPage {::m.ln.nodes/id node-id})
-          updated-data      (-> data-tree
-                                (assoc :ui/peers peers-data)
-                                (assoc :ui/channels channels-data)
-                                (assoc :ui/transactions transactions-data)
-                                (assoc :ui/remote-nodes remote-nodes-data))]
-      (log/finer :ShowNode-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.ln.nodes/id
+   {:ui/peers        u.ln.node-peers/SubPage
+    :ui/channels     u.ln.node-channels/SubPage
+    :ui/transactions u.ln.node-transactions/SubPage
+    :ui/remote-nodes u.ln.node-remote-nodes/SubPage}))
 
 (defsc ShowNode
   "Show a ln node"

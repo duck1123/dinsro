@@ -3,13 +3,17 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.words :as m.c.words]
+   ;; [dinsro.model.]
+   [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
 (report/defsc-report WordsReport
   [this props]
   {ro/columns          [m.c.words/word
-                        m.c.words/position]
-   ro/control-layout   {:action-buttons [::new]}
+                        m.c.words/position
+                        m.c.words/wallet]
+   ;; ro/control-layout   {:action-buttons [::new]}
+   ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
    ro/route            "words"
    ro/row-pk           m.c.words/id
    ro/run-on-mount?    true

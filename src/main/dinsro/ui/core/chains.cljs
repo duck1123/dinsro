@@ -54,14 +54,11 @@
          :post-mutation-params {:target ident}})))))
 
 (defn ShowChain-pre-merge
-  [{:keys [data-tree state-map]}]
-  (let [chain-id (::m.c.chains/id data-tree)]
-    (log/info :ShowChain-pre-merge/starting {:chain-id chain-id})
-    (let [networks-data (u.links/merge-state state-map u.c.chain-networks/SubPage {::m.c.chains/id chain-id})
-          updated-data  (-> data-tree
-                            (assoc :ui/networks networks-data))]
-      (log/info :ShowChain-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.c.chains/id
+   {:ui/networks u.c.chain-networks/SubPage}))
 
 (defsc ShowChain
   [_this {::m.c.chains/keys [name]

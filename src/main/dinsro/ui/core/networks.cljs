@@ -22,17 +22,12 @@
 (declare ShowNetwork)
 
 (defn ShowNetwork-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowNetwork-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [network-id (::m.c.networks/id data-tree)]
-    (log/finer :ShowNetwork-pre-merge/parsed {:network-id network-id})
-    (let [nodes-data    (u.links/merge-state state-map u.c.network-nodes/SubPage {::m.c.networks/id network-id})
-          ln-nodes-data (u.links/merge-state state-map u.c.network-ln-nodes/SubPage {::m.c.networks/id network-id})
-          updated-data  (-> data-tree
-                            (assoc :ui/nodes nodes-data)
-                            (assoc :ui/ln-nodes ln-nodes-data))]
-      (log/finer :ShowNetwork-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.c.networks/id
+   {:ui/ln-nodes u.c.network-ln-nodes/SubPage
+    :ui/nodes    u.c.network-nodes/SubPage}))
 
 (defn ShowNetwork-will-enter
   [app {id :id}]

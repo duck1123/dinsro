@@ -212,17 +212,12 @@
    :action search-control-action})
 
 (defn ShowTransaction-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowTransaction-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [id (::m.c.tx/id data-tree)]
-    (log/finer :ShowTransaction-pre-merge/parsed {:id id})
-    (let [inputs-data  (u.links/merge-state state-map u.c.transaction-inputs/SubPage {::m.c.blocks/id id})
-          outputs-data (u.links/merge-state state-map u.c.transaction-outputs/SubPage {::m.c.blocks/id id})
-          updated-data (-> data-tree
-                           (assoc :ui/inputs inputs-data)
-                           (assoc :ui/outputs outputs-data))]
-      (log/finer :ShowBlock-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.c.tx/id
+   {:ui/inputs  u.c.transaction-inputs/SubPage
+    :ui/outputs u.c.transaction-outputs/SubPage}))
 
 (defsc ShowTransaction
   "Show a core tx"

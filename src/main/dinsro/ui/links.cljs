@@ -79,6 +79,19 @@
    (get-in state-map (comp/get-ident sub-page {}))
    data))
 
+(defn merge-pages
+  [{:keys [data-tree state-map]} id-key page-map]
+  (log/info :merge-pages/starting {:id-key id-key})
+  (let [id (get data-tree id-key)
+        states (->> page-map
+                    (map
+                     (fn [[key page]]
+                       (log/debug :merge-pages/process-page {:key key :page page})
+                       (let [state (merge-state state-map page {id-key id})]
+                         {key state})))
+                    (into {}))]
+    (merge data-tree states)))
+
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
   {fo/id           m.accounts/id

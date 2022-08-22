@@ -140,17 +140,12 @@
    :action (fn [this _] (form/create! this NewWalletForm))})
 
 (defn ShowWallet-pre-merge
-  [{:keys [data-tree state-map]}]
-  (log/finer :ShowWallet-pre-merge/starting {:data-tree data-tree :state-map state-map})
-  (let [id (::m.c.wallets/id data-tree)]
-    (log/finer :ShowWallet-pre-merge/parsed {:id id})
-    (let [addresses-data (u.links/merge-state state-map u.c.wallet-addresses/SubPage {::m.c.wallets/id id})
-          words-data     (u.links/merge-state state-map u.c.wallet-words/SubPage {::m.c.wallets/id id})
-          updated-data   (-> data-tree
-                             (assoc :ui/addresses addresses-data)
-                             (assoc :ui/words words-data))]
-      (log/finer :ShowWallet-pre-merge/finished {:updated-data updated-data})
-      updated-data)))
+  [ctx]
+  (u.links/merge-pages
+   ctx
+   ::m.c.wallets/id
+   {:ui/addresses u.c.wallet-addresses/SubPage
+    :ui/words     u.c.wallet-words/SubPage}))
 
 (defsc ShowWallet
   "Show a wallet"
