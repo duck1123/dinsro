@@ -7,8 +7,7 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
-   [dinsro.queries.ln.payments :as q.ln.payments]
-   [taoensso.timbre :as log]))
+   [dinsro.queries.ln.payments :as q.ln.payments]))
 
 (>defn fetch-payments
   [node]
@@ -20,11 +19,11 @@
   [node]
   [::m.ln.nodes/item => any?]
   (let [node-id           (::m.ln.nodes/id node)
-        {:keys [payments]} (log/spy :info (<!! (fetch-payments node)))]
+        {:keys [payments]} (<!! (fetch-payments node))]
     (doseq [params payments]
       (let [params (assoc params ::m.ln.payments/node node-id)
             params (m.ln.payments/prepare-params params)]
-        (q.ln.payments/create-record (log/spy :info params))))))
+        (q.ln.payments/create-record params)))))
 
 (defn fetch!
   [node-id]

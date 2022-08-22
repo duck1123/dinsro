@@ -8,7 +8,7 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.invoices :as q.ln.invoices]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (>defn fetch
   [node]
@@ -21,14 +21,14 @@
   (let [{{node-id ::m.ln.nodes/id} ::m.ln.invoices/node} data
         node                                             (q.ln.nodes/read-record node-id)
         client                                           (a.ln.nodes-lj/get-client node)]
-    (log/infof "Adding invoice: %s" data)
+    (log/info :add-invoice/starting {:data data})
     (let [{::m.ln.invoices/keys [value memo]} data]
       (<!! (c.lnd/add-invoice client value memo)))))
 
 (>defn update!
   [node-id]
   [::m.ln.nodes/id => any?]
-  (log/info "Updating invoices")
+  (log/info :update!/starting {})
   (if-let [node (q.ln.nodes/read-record node-id)]
     (doseq [params (:invoices (fetch node))]
       (let [{:keys [addIndex]} params]
@@ -37,7 +37,7 @@
             (let [params     (assoc params ::m.ln.invoices/node node-id)
                   params     (m.ln.invoices/prepare-params params)
                   new-params (merge old-invoice params)]
-              (log/infof "has an invoice: %s" new-params)
+              (log/info :update!/invoice-found {:new-params new-params})
               (q.ln.invoices/update! new-params))
             (throw (RuntimeException. "Failed to find invoice")))
           (let [params (assoc params ::m.ln.invoices/node node-id)

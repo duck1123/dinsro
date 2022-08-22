@@ -64,7 +64,7 @@
        (fn [unhandled-errs [path :as entry]]
          (if (target-component-requests-errors query path)
            (do
-             (log/info :message "unhandled-errors: Ignoring error for" (last path) ", handled by the requesting component")
+             (log/info :unhandled-errors/ignored {:last-path (last path)})
              unhandled-errs)
            (conj unhandled-errs entry)))
        {}

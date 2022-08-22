@@ -5,7 +5,7 @@
    [dinsro.lib.logging :as logging]
    [mount.core :refer [defstate args]]
    [ring.util.codec :refer [base64-encode base64-decode]]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log])
   (:import java.io.File
            java.io.FileNotFoundException))
 
@@ -33,7 +33,7 @@
         loaded-config              (fserver/load-config! {:config-path config-path})
         merged-config              (merge loaded-config overrides)]
     (logging/configure-logging! merged-config)
-    (log/infof "Loading config: %s" config-path)
+    (log/info :config/starting {:config-path config-path})
     merged-config))
 
 (def default-secret-path ".secret")
@@ -44,14 +44,14 @@
 
 (defn write-secret
   [secret-path]
-  (log/debug "Generating new secret")
+  (log/debug  :write-secret/starting {})
   (spit secret-path (base64-encode (generate-secret))))
 
 (defn read-secret
   [secret-path]
   (try (base64-decode (slurp secret-path))
        (catch FileNotFoundException _ex
-         (log/warn "No secret found"))))
+         (log/warn :read-secret/no-secret {}))))
 
 (defstate secret
   :start

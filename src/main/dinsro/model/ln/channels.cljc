@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def rename-map
   {:active                ::active
@@ -121,7 +121,7 @@
 (>defn find-channel
   [_node-id _pubkey]
   [::id ::pubkey => any?]
-  (log/info "Finding channel")
+  (log/info :find-channel/starting {})
   nil)
 
 (s/def ::nodeless-params

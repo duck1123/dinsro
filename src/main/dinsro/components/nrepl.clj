@@ -3,7 +3,7 @@
    [dinsro.components.config :as config]
    [mount.core :as mount]
    [nrepl.server :as nrepl]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defn nrepl-handler []
   (require 'cider.nrepl)
@@ -16,7 +16,7 @@
   clojure.tools.nrepl.server/start-server as they are."
   [{:keys [port bind transport-fn handler ack-port greeting-fn]}]
   (try
-    (log/info "starting nREPL server on port" port)
+    (log/info :start/starting {:bind bind :port port})
     (nrepl/start-server :port port
                         :bind bind
                         :transport-fn transport-fn
@@ -24,20 +24,19 @@
                         :ack-port ack-port
                         :greeting-fn greeting-fn)
 
-    (catch Throwable t
-      (log/error t "failed to start nREPL")
-      (throw t))))
+    (catch Throwable ex
+      (log/error :start/failed {:ex ex})
+      (throw ex))))
 
 (defn stop [server]
   (nrepl/stop-server server)
-  (log/info "nREPL server stopped"))
+  (log/info :stop/finished {}))
 
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (config/config :nrepl-port)
     (let [bind (or (config/config :nrepl-bind) "0.0.0.0")
           port (config/config :nrepl-port)]
-      (log/infof "Starting nrepl server: %s:%s" bind port)
       (start {:bind    bind
               :handler (nrepl-handler)
               :port    port})))

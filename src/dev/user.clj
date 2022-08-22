@@ -7,7 +7,7 @@
    [mount.core :as mount]
    [shadow.cljs.devtools.api :as shadow]
    [shadow.cljs.devtools.server.runtime]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (set-refresh-dirs "src/main" "src/dev")
 
@@ -45,7 +45,7 @@
 (defn restart
   "Stop, refresh, and restart the server."
   []
-  (log/info "Restarting")
+  (log/info :restart/starting {})
   (stop)
   (tools-ns/refresh :after 'user/start))
 

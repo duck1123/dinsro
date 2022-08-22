@@ -5,7 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.model.users :as m.users]
    [expound.alpha :as expound]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def param-rename-map
   {:username ::m.users/id})
@@ -20,5 +20,5 @@
     (if (s/valid? ::m.users/params params)
       params
       (do
-        (log/warnf "not valid: %s" (expound/expound-str ::m.users/params params))
+        (log/warn :prepare-record/not-valid {:message (expound/expound-str ::m.users/params params)})
         nil))))

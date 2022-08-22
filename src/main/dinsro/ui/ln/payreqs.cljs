@@ -10,7 +10,7 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
    [dinsro.ui.links :as u.links]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defsc LnPayreqRow
   [_this {::m.ln.payreqs/keys [description
@@ -81,7 +81,7 @@
    :label  "Decode"
    :action (fn [this _]
              (let [props (comp/props this)]
-               (log/infof "decoding: %s" props)
+               (log/info :decode-button/clicked {:props props})
                (comp/transact! this [(mu.ln.payreqs/decode props)])))})
 
 (form/defsc-form NewPaymentForm [_this _props]

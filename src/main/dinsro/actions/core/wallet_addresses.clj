@@ -9,7 +9,7 @@
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (>defn register-address!
   [wallet address path-index]
@@ -38,7 +38,7 @@
   [{wallet-id                   ::m.c.wallet-addresses/wallet
     ::m.c.wallet-addresses/keys [address]}]
   [::m.c.wallet-addresses/item => any?]
-  (log/infof "generate: %s" address)
+  (log/info :generate!/starting {:address address})
   (if-let [wallet (q.c.wallets/read-record wallet-id)]
     (let [node-id (::m.c.wallets/node wallet)]
       (if-let [node (q.c.nodes/read-record node-id)]

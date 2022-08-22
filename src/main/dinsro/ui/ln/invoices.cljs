@@ -11,12 +11,12 @@
    [dinsro.mutations.ln.invoices :as mu.ln.invoices]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.scanner :as u.scanner]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defsc Scanner
   [_this _props]
   (dom/div {}
-    (u.scanner/ui-scanner {} {:onScan (fn [data] (log/infof "scanned: %s" data))})))
+    (u.scanner/ui-scanner {} {:onScan (fn [data] (log/info :onScan/starting {:data data}))})))
 
 (defsc LnInvoiceRow
   [_this {::m.ln.invoices/keys [amount-paid
@@ -110,7 +110,7 @@
    :label  "Submit"
    :action (fn [this _key]
              (let [props (comp/props this)]
-               (log/infof "submit: %s" props)
+               (log/info :submit-button/starting {:props props})
                (comp/transact! this [(mu.ln.invoices/submit! props)])))})
 
 (form/defsc-form NewInvoiceForm [this props]

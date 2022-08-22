@@ -8,7 +8,7 @@
    [dinsro.test-helpers :as th]
    [fulcro-spec.check :as _]
    [fulcro-spec.core :refer [assertions]]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def schemata
   [])
@@ -25,7 +25,7 @@
        (::m.users/name response) => (:user/username data)
        (::m.users/id response) =check=> (_/valid?* ::m.users/id)))
     (catch Exception ex
-      (log/error ex "caught"))))
+      (log/error :register-success/failed {:ex ex}))))
 
 (deftest login
   (let [env      {:request {:session {}}}

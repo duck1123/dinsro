@@ -4,7 +4,7 @@
    [dinsro.components.config :as config]
    [mount.core :refer [defstate]]
    [ring.util.codec :refer [base64-encode base64-decode]]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log])
   (:import java.io.FileNotFoundException))
 
 (defn generate-secret
@@ -20,9 +20,10 @@
 (defn read-secret
   "Read the secret file"
   []
-  (try (base64-decode (slurp ".secret"))
-       (catch FileNotFoundException _ex
-         (log/warn "No secret found"))))
+  (try
+    (base64-decode (slurp ".secret"))
+    (catch FileNotFoundException _ex
+      (log/warn :read-secret/no-secret {}))))
 
 (defstate secret
   "A secret value used to encrypt session state"

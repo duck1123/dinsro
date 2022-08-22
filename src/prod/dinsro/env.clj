@@ -1,12 +1,12 @@
 (ns dinsro.env
   (:require
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def defaults
   {:init
    (fn []
-     (log/info "-=[dinsro started successfully]=-"))
+     (log/info :defaults/starting {}))
    :stop
    (fn []
-     (log/info "-=[dinsro has shut down successfully]=-"))
+     (log/info :defaults/stopping {}))
    :middleware identity})

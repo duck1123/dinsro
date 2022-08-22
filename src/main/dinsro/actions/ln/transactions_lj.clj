@@ -15,7 +15,7 @@
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (>defn fetch-transactions
   [node]
@@ -32,7 +32,7 @@
 (>defn update-transactions
   [{::m.ln.nodes/keys [id] :as node}]
   [::m.ln.nodes/item => ds/channel?]
-  (log/info "updating transactions")
+  (log/info :update-transactions/starting {})
   (let [ch (get-transactions node)]
     (async/go
       (let [response               (<! ch)
@@ -52,18 +52,19 @@
 (>defn update-transaction!
   [node data]
   [::m.ln.nodes/item ::m.ln.tx/raw-params => (? ::m.ln.tx/id)]
-  (log/info "updating transaction")
+  (log/info :update-transaction!/starting {})
   (if-let [ln-node-id (::m.ln.nodes/id node)]
     (let [{::m.ln.tx/keys [block-hash block-height tx-hash]} data]
       (if-let [tx-id (q.ln.tx/find-id-by-node-and-tx-hash ln-node-id tx-hash)]
         (do
-          (log/infof "has tx: %s" tx-id)
+          (log/info :update-transaction!/has-tx {:tx-id tx-id})
           tx-id)
         (if-let [core-node-id (q.c.nodes/find-by-ln-node ln-node-id)]
-          (do (log/error "no tx")
-              (let [block-id (a.c.blocks/register-block core-node-id block-hash block-height)
-                    core-tx-id (a.c.tx/register-tx core-node-id block-id tx-hash)]
-                (save-transactions! ln-node-id core-tx-id data)))
+          (do
+            (log/error :update-transaction!/no-tx {})
+            (let [block-id   (a.c.blocks/register-block core-node-id block-hash block-height)
+                  core-tx-id (a.c.tx/register-tx core-node-id block-id tx-hash)]
+              (save-transactions! ln-node-id core-tx-id data)))
           (throw (RuntimeException. (str "failed to find core node: " node))))))
     (throw (RuntimeException. "failed to find node id"))))
 
@@ -82,15 +83,15 @@
                 (update-transaction! node params)))))
         ch)
       (do
-        (log/error "channel error")
+        (log/error :update-transactions!/channel-error {})
         nil))))
 
 (>defn fetch-transactions!
   [node-id]
   [::m.ln.nodes/id => (? ds/channel?)]
-  (log/infof "Fetching Transactions - %s" node-id)
+  (log/info :fetch-transactions!/starting {:node-id node-id})
   (if-let [node (q.ln.nodes/read-record node-id)]
     (update-transactions! node)
     (do
-      (log/error "No Node")
+      (log/error :fetch-transactions!/no-node {})
       nil)))

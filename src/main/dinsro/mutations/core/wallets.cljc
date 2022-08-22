@@ -8,7 +8,7 @@
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
-   [taoensso.timbre :as log]))
+   #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::pc/_ ::m.c.wallets/_)
 
@@ -32,13 +32,12 @@
      (action [_env] true)
      (remote [env] (fm/returning env CreationResponse))
      (ok-action [{:keys [app component] :as env}]
-       (let [body     (get-in env [:result :body])
-             response (get body `create!)]
-         (log/spy :info response)
-         (let [{:keys [id]}     response
-               target-component (comp/registry-key->class :dinsro.ui.core.wallets/WalletForm)]
-           (form/mark-all-complete! component)
-           (form/view! app target-component id))
+       (let [body             (get-in env [:result :body])
+             response         (get body `create!)
+             {:keys [id]}     response
+             target-component (comp/registry-key->class :dinsro.ui.core.wallets/WalletForm)]
+         (form/mark-all-complete! component)
+         (form/view! app target-component id)
          {}))))
 
 (defsc RollWord

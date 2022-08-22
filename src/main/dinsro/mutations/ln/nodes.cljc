@@ -16,7 +16,7 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
-   #?(:clj [taoensso.timbre :as log])))
+   #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::m.ln.info/_ ::m.ln.nodes/_ ::m.ln.remote-nodes/_ ::pc/_)
 
@@ -215,7 +215,7 @@
        (do (a.ln.nodes-lj/initialize!-sync node)
            {:status "ok"})
        (do
-         (log/error "No node")
+         (log/error :initialize!/no-node {})
          {:status "fail"})))
    :cljs
    (defmutation initialize! [_props]
@@ -230,7 +230,7 @@
      (if-let [node (q.ln.nodes/read-record id)]
        (let [ch (a.ln.nodes-lj/update-info! node)]
          {:status (if (nil? ch) "fail" "pass")})
-       (do (log/error "No node")
+       (do (log/error :update-info!/no-node {})
            {:status "fail"})))
    :cljs
    (defmutation update-info! [_props]
@@ -245,7 +245,7 @@
      (if-let [node (q.ln.nodes/read-record id)]
        (do (a.ln.tx-lj/update-transactions! node)
            {:status "ok"})
-       (do (log/error "No node")
+       (do (log/error :update-transactions!/no-node {})
            {:status "fail"})))
    :cljs
    (defmutation update-transactions! [_props]
@@ -260,7 +260,7 @@
      (if-let [node (q.ln.nodes/read-record id)]
        (do (a.ln.nodes-lj/unlock-sync! node)
            {:status "ok"})
-       (do (log/error "No node")
+       (do (log/error :unlock!/no-node {})
            {:status "fail"})))
    :cljs
    (defmutation unlock! [_props]

@@ -5,8 +5,7 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as log]))
+   [dinsro.ui.inputs :as u.inputs]))
 
 (defsc RegistrationForm
   [this {::keys [confirm-password password username]}]
@@ -38,7 +37,6 @@
      {:content "Submit"}
      {:onClick
       (fn []
-        (log/info "clicked")
         (let [data {:user/username username
                     :user/password password}]
           (comp/transact! this [(mu.session/register data)])))})))

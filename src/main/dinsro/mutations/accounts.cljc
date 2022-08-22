@@ -8,7 +8,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
-   [taoensso.timbre :as log]))
+   #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::pc/_)
 
@@ -31,9 +31,9 @@
      [props]
      [::delete!-request => ::delete!-response]
      (let [{::m.accounts/keys [id]} props]
-       (log/info "Deleting account")
+       (log/info :do-delete!/starting {})
        (let [response (q.accounts/delete! id)]
-         (log/spy :info response)
+         (log/info :do-delete!/finished {:response response})
          {::mu/status       :ok
           ::deleted-records [id]}))))
 
@@ -48,11 +48,9 @@
    (defmutation delete! [_props]
      (action [_env] true)
      (ok-action [env]
-       (log/info "ok")
        (let [body (get-in env [:result :body])
              response (get body `delete!)]
-         (log/spy :info body)
-         (log/spy :info response)))
+         response))
 
      (remote [env]
        (fm/returning env DeleteResponse))))

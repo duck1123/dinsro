@@ -8,7 +8,7 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.payreqs :as q.ln.payreqs]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log])
   (:import
    org.lightningj.lnd.wrapper.message.ListPaymentsRequest))
 
@@ -30,7 +30,7 @@
 
 (defn submit!
   [props]
-  (log/infof "Submitting: %s" props)
+  (log/info :submit!/starting {:props props})
   (let [{::m.ln.payreqs/keys       [payment-request]
          {node-id ::m.ln.nodes/id} ::m.ln.payreqs/node} props]
     (if-let [node (q.ln.nodes/read-record node-id)]
@@ -39,7 +39,7 @@
 
 (defn decode
   [props]
-  (log/infof "Decoding request: %s" props)
+  (log/info :decode/starting {:props props})
   (let [{::m.ln.payreqs/keys      [payment-request]
          {node-id ::m.ln.nodes/id} ::m.ln.payreqs/node} props]
     (if-let [node (q.ln.nodes/read-record node-id)]

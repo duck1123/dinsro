@@ -2,14 +2,14 @@
   (:require
    [dinsro.dev-middleware :refer [wrap-dev]]
    [selmer.parser :as parser]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def defaults
   {:init
    (fn []
      (parser/cache-off!)
-     (log/info "-=[dinsro started successfully using the development profile]=-"))
+     (log/info :defaults/starting {}))
    :stop
    (fn []
-     (log/info "-=[dinsro has shut down successfully]=-"))
+     (log/info :defaults/stopping {}))
    :middleware wrap-dev})

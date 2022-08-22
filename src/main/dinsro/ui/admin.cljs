@@ -10,7 +10,7 @@
    [dinsro.ui.ln.nodes :as u.ln.nodes]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.users :as u.users]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defsc AdminAccounts
   [_this {::keys [report]}]
@@ -84,6 +84,6 @@
       :onItemClick
       (fn [_e d]
         (let [route (get (js->clj d) "route")]
-          (log/info "route" route)
+          (log/info :onItemClick/starting {:route route})
           (rroute/route-to! this route {})))})
     (ui-admin-router admin-router)))

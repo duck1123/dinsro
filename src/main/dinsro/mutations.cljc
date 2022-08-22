@@ -3,11 +3,11 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defmutation submit [props]
   (action [_env]
-    (log/infof "submitting: %s" props)))
+    (log/info :submit/starting {:props props})))
 
 (s/def ::message string?)
 (s/def ::data map?)

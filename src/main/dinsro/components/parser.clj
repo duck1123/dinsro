@@ -18,7 +18,7 @@
    [dinsro.model.users :as m.users]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def default-timezone "America/Detroit")
 
@@ -51,7 +51,7 @@
              {}))))}
     {::p/wrap-parser
      (fn transform-parser-out-plugin-external [wrapped-parser]
-       (log/info "running auth processor plugin")
+       (log/info :transform-parser-out-plugin-external/starting {})
        (fn transform-parser-out-plugin-internal [env tx]
          (if (and (map? env) (seq tx))
            (let [user-id (a.authentication/get-user-id env)

@@ -5,7 +5,7 @@
    [clojure.data.json :as json]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as log])
+   [lambdaisland.glogc :as log])
   (:import
    io.grpc.stub.StreamObserver
    org.lightningj.lnd.wrapper.AsynchronousLndAPI
@@ -58,14 +58,14 @@
   (reify StreamObserver
     (onNext [_this message]
       (let [data (parse message)]
-        (log/infof "next: %s" data)
+        (log/info :ch-observer/onNext {:data data})
         (>!! ch data)))
     (onError [_this err]
-      (log/infof "error: %s" err)
+      (log/info :ch-observer/onError {:err err})
       (>!! ch {:error err})
       (async/close! ch))
     (onCompleted [_this]
-      (log/info "close")
+      (log/info :ch-observer/onCompleted {})
       (async/close! ch))))
 
 (defmacro fetch-async

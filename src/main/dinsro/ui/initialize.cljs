@@ -7,7 +7,7 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [dinsro.mutations.settings :as mu.settings]
    [dinsro.ui.inputs :as u.inputs]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defsc InitForm
   [this {::keys [password username]} _ {:keys [container header]}]
@@ -50,7 +50,7 @@
              {:content "Submit"}
              {:onClick
               (fn []
-                (log/info "clicked")
+                (log/info :InitForm/primary-clicked {})
                 (let [data {:user/username username
                             :user/password password}]
                   (comp/transact! this [(mu.settings/initialize! data)])))})))))))

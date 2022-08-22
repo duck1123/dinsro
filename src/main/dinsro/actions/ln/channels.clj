@@ -4,7 +4,7 @@
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.channels :as q.ln.channels]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (>defn update-channel!
   [node data]
@@ -14,15 +14,15 @@
         params                                 (assoc data ::m.ln.channels/node id)]
     (if-let [channel-id (q.ln.channels/find-channel id channel-point)]
       (do
-        (log/infof "has channel: %s" channel-id)
+        (log/info :update-channel!/has-channel {:channel-id channel-id})
         (if-let [channel (q.ln.channels/read-record channel-id)]
           (do
-            (log/info "found")
+            (log/info :update-channel!/found {})
             (let [params (merge channel params)]
               (q.ln.channels/update! params)))
           (throw (RuntimeException. "Can't find channel"))))
       (do
-        (log/error "no channel")
+        (log/error :update-channel!/no-channel {})
         (q.ln.channels/create-record params)))))
 
 (defn delete!

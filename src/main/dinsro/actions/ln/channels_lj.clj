@@ -9,7 +9,7 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.specs :as ds]
-   [taoensso.timbre :as log]))
+   [lambdaisland.glogc :as log]))
 
 (>defn fetch-channels
   [node]
@@ -23,7 +23,7 @@
 (>defn fetch-channels!
   [id]
   [::m.ln.nodes/id => (? any?)]
-  (log/infof "Fetching Channels - %s" id)
+  (log/info :fetch-channels!/starting {:id id})
   (if-let [node (q.ln.nodes/read-record id)]
     (if-let [ch (fetch-channels node)]
       (do
@@ -31,16 +31,16 @@
           (let [data               (async/<! ch)
                 {:keys [channels]} data]
             (doseq [channel channels]
-              (log/infof "channel: %s" channel)
+              (log/info :fetch-channels!/processing-channel {:channel channel})
               (let [params (m.ln.channels/prepare-params channel)]
                 (try
                   (a.ln.channels/update-channel! node params)
                   (catch Exception ex
-                    (log/error "Failed to update" ex)))))))
+                    (log/error :fetch-channels!/update-failed {:ex ex})))))))
         ch)
       (do
-        (log/error "channel error")
+        (log/error :fetch-channels!/channel-error {})
         nil))
     (do
-      (log/error "No Node")
+      (log/error :fetch-channels!/no-node {})
       nil)))

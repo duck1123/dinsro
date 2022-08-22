@@ -7,7 +7,7 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    [dinsro.model.settings :as m.settings]
    [dinsro.model.users :as m.users]
-   #?(:clj [taoensso.timbre :as log])))
+   #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::pc/_ ::m.users/_)
 
@@ -33,8 +33,7 @@
      (let [{::m.users/keys [id]} (a.authentication/do-register username password true)
            ;; TODO: Set default timezone or determine from system
            zone-id               {:xt/id :America-Detroit}]
-
-       (log/infof "Created admin account with identifier: %s" id)
+       (log/info :initialize!/starting {:id id})
        (a.authentication/associate-session!
         env
         id

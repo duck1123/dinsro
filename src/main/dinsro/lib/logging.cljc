@@ -5,7 +5,8 @@
    #?@(:clj [[clojure.pprint :refer [pprint]]
              [clojure.string :as str]
              [taoensso.encore :as enc]])
-   #?(:clj [taoensso.timbre :as log])))
+   #?(:clj [taoensso.timbre :as log])
+   #?(:clj [lambdaisland.glogc :as glog])))
 
 #?(:clj
    (defmacro p
@@ -68,8 +69,7 @@
      `:taoensso.timbre/logging-config` as a key."
      [config]
      (let [{::log/keys [logging-config]} config]
-       (log/debug "Configured Timbre with " (p logging-config))
+       (glog/debug :configure-logging!/starting {:logging-config logging-config})
        (log/merge-config! (assoc logging-config
                                  :middleware [(pretty-middleware #(with-out-str (pprint %)))]
-                                 :output-fn custom-output-fn))
-       (log/debug "Configured Timbre with " (p logging-config)))))
+                                 :output-fn custom-output-fn)))))
