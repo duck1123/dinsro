@@ -5,6 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
    [dinsro.client.converters.list-accounts-request :as c.c.list-accounts-request]
+   [dinsro.client.converters.list-channels-request :as c.c.list-channels-request]
    [dinsro.client.scala :as cs :refer [Recordable]]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
@@ -180,3 +181,11 @@
         obj      (await-throwable response)]
     (log/info :list-wallet-accounts/finished {:obj obj})
     obj))
+
+(>defn list-channels
+  "https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#listChannels(request:lnrpc.ListChannelsRequest):scala.concurrent.Future[Vector[lnrpc.Channel]]"
+  [client]
+  [::client => any?]
+  (log/info :fetch-channels!/starting {})
+  (let [request (c.c.list-channels-request/->obj)]
+    (.listChannels client request)))

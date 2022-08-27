@@ -6,6 +6,7 @@
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
+   com.google.protobuf.ByteString
    java.util.concurrent.ArrayBlockingQueue
    java.util.concurrent.BlockingQueue
    java.util.concurrent.TimeUnit
@@ -139,6 +140,10 @@
 (defn empty-seq
   []
   (vector->vec []))
+
+(defn empty-byte-string
+  []
+  ByteString/EMPTY)
 
 (defprotocol Recordable
   (->record [this]))
