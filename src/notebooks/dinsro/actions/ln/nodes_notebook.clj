@@ -108,7 +108,7 @@
   (.value a)
   (a.ln.nodes/new-address-str n.lnd/node)
 
-  (a.ln.nodes/unlock-sync! n.lnd/node)
+  (a.ln.nodes/unlock! n.lnd/node)
 
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id n.lnd/node)))
 

@@ -124,12 +124,3 @@
         cnode             (first (q.c.nodes/index-records))]
     (a.c.nodes/generate-to-address! cnode address)
     address))
-
-(>defn unlock-sync!
-  [node]
-  [::m.ln.nodes/item => any?]
-  (log/info :unlock-sync!/starting {:node-id (::m.ln.nodes/id node)})
-  (let [wallet-passphrase a.ln.nodes/default-passphrase]
-    (with-open [client (get-sync-unlocker-client node)]
-      (let [request (c.lnd/->unlock-wallet-request wallet-passphrase)]
-        (.unlockWallet client request)))))

@@ -201,9 +201,9 @@
   [node]
   (.value (new-address node)))
 
-(defn unlock-sync!
+(defn unlock!
   [node]
-  (log/info :unlock-sync!-s/starting {:node-id (::m.ln.nodes/id node)})
+  (log/info :unlock!/starting {:node-id (::m.ln.nodes/id node)})
   (let [client     (get-client node)
         passphrase default-passphrase]
     (c.lnd-s/unlock-wallet client passphrase)))
