@@ -120,18 +120,6 @@
      (remote [_env] true)))
 
 #?(:clj
-   (pc/defmutation fetch-address!
-     [_env {::m.ln.nodes/keys [id]}]
-     {::pc/params #{::m.ln.nodes/id}
-      ::pc/output [:status]}
-     (a.ln.nodes-lj/fetch-address! id)
-     {:status :ok})
-   :cljs
-   (defmutation fetch-address! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
-
-#?(:clj
    (pc/defmutation fetch-channels!
      [_env {::m.ln.nodes/keys [id]}]
      {::pc/params #{::m.ln.nodes/id}
@@ -272,7 +260,6 @@
      [create-peer!
       download-cert!
       download-macaroon!
-      fetch-address!
       fetch-channels!
       fetch-invoices!
       fetch-payments!

@@ -11,11 +11,9 @@
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import
-   clojure.core.async.impl.channels.ManyToManyChannel
    io.grpc.stub.StreamObserver
    org.lightningj.lnd.wrapper.AsynchronousLndAPI
    org.lightningj.lnd.wrapper.invoices.AsynchronousInvoicesAPI
@@ -109,12 +107,6 @@
      (Integer/parseInt port)
      (io/file (m.ln.nodes/cert-path id))
      nil)))
-
-(>defn fetch-address!
-  [node-id]
-  [::m.ln.nodes/id => (ds/instance? ManyToManyChannel)]
-  (let [node (q.ln.nodes/read-record node-id)]
-    (get-lnd-address node)))
 
 (>defn generate!
   [node]
