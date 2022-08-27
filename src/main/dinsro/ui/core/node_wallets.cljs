@@ -16,7 +16,7 @@
                         m.c.wallets/derivation
                         m.c.wallets/key
                         m.c.wallets/user
-                        m.c.wallets/node]
+                        m.c.wallets/network]
    ro/control-layout   {:inputs         [[::m.c.nodes/id]]
                         :action-buttons [::new ::refresh]}
    ro/controls         {::new          u.c.wallets/new-action-button

@@ -8,6 +8,7 @@
    [dinsro.client.converters.list-channels-request :as c.c.list-channels-request]
    [dinsro.client.scala :as cs :refer [Recordable]]
    [dinsro.specs :as ds]
+   [erp12.fijit.try :as eft]
    [lambdaisland.glogc :as log])
   (:import
    com.google.protobuf.ByteString
@@ -68,11 +69,11 @@
   ^GetInfoResponse [^LndRpcClient client]
   (log/info :get-info/starting {})
   (let [response (.getInfo client)]
-    (log/info :get-info/response {:response response})
+    (log/finer :get-info/response {:response response})
     (let [f (cs/await-future response)]
-      (log/info :get-info/awaited {:f f})
+      (log/finer :get-info/awaited {:f f})
       (let [result-data (async/<!! f)]
-        (log/info :get-info/results {:result-data result-data})
+        (log/finer :get-info/results {:result-data result-data})
         (if (instance? Throwable result-data)
           (do
             (log/info :get-info/throwable {:result-data result-data})
@@ -80,17 +81,12 @@
           (let [{:keys [passed result]} result-data]
             (if passed
               (do
-                (log/info :get-info/passed {})
+                (log/finer :get-info/passed {})
                 result)
               (do
-                (log/info :get-info/failed {})
-                (throw result)))
-            #_(:result result-data)))))))
-
-;; (defn list-payments
-;;   [client]
-;;   (:result (async/<!! (cs/await-future (.getInfo client))))
-;;   )
+                (log/finer :get-info/failed {:result result})
+                (let [_ex (eft/get result)]
+                  (throw result))))))))))
 
 (>defn ->lightning-address
   "https://bitcoin-s.org/api/lnrpc/LightningAddress.html"
@@ -114,25 +110,24 @@
 (defn await-throwable
   "Return the results of a throwable future"
   [response]
-  (log/info :await-throwable/starting {:response response})
+  (log/finer :await-throwable/starting {:response response})
   (let [f (cs/await-future response)]
-    (log/info :await-throwable/awaited {:f f})
+    (log/finer :await-throwable/awaited {:f f})
     (let [result-data (async/<!! f)]
       (if (instance? Throwable result-data)
         (do
-          (log/info :await-throwable/throwable {:result-data result-data})
+          (log/finer :await-throwable/throwable {:result-data result-data})
           (throw result-data))
         (let [{:keys [passed result]} result-data]
           (if passed
             (do
-              (log/info :await-throwable/passed {:passed passed :result result})
+              (log/finer :await-throwable/passed {:passed passed :result result})
               result)
             (do
-              (log/info :await-throwable/not-passed {:passed passed :result result})
+              (log/finer :await-throwable/not-passed {:passed passed :result result})
               (if (instance? Failure result)
-
                 (let [o (.get result)]
-                  (log/info :await-throwable/failure {:o o})
+                  (log/finer :await-throwable/failure {:o o})
                   (throw (RuntimeException. (pr-str o))))
                 (throw (RuntimeException. (pr-str result)))))))))))
 

@@ -4,8 +4,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [com.fulcrologic.rad.report :as report]
-   [dinsro.model.accounts :as m.accounts]
    [dinsro.specs :as ds]))
 
 (s/def ::id        uuid?)
@@ -18,26 +16,14 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::account ::m.accounts/id)
-(defattr account ::account :ref
-  {ao/identities #{::id}
-   ao/schema     :production
-   ao/target     ::m.accounts/id
-   ::report/column-EQL {::account [::m.accounts/id ::m.accounts/name]}})
-
 (s/def ::date ::ds/date)
 (defattr date ::date :date
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::value ::ds/valid-double)
-(defattr value ::value :double
-  {ao/identities #{::id}
-   ao/schema     :production})
-
-(s/def ::required-params (s/keys :req [::date ::description ::value]))
-(s/def ::params (s/keys :req [::account ::date ::description ::value]))
-(s/def ::item (s/keys :req [::id ::account ::date ::description ::value]))
+(s/def ::required-params (s/keys :req [::date ::description]))
+(s/def ::params (s/keys :req [::date ::description]))
+(s/def ::item (s/keys :req [::id ::date ::description]))
 (s/def ::ident (s/tuple keyword? ::id))
 
 (>defn ident
@@ -54,6 +40,6 @@
   [ids]
   (mapv (fn [id] {::id id}) ids))
 
-(def attributes [account date description id value])
+(def attributes [date description id])
 
 #?(:clj (def resolvers []))

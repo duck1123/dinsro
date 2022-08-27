@@ -18,7 +18,7 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-(def descriptor "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l")
+(def descriptor "wpkh([8c694d63/84h/1h/0h]tpubDCaHeqXShp6x7GSBnyBaFB6tPtdCfU5otmgRZu6ChfVvE4EXYHxPhwMsXvp1aFZBd7CRmpJWfDbZDKfV7tNe5ThHgUaRMEDQM39BCyxWwNU/0/*)#ytuthqy3")
 
 (def node-name "bitcoin-alice")
 
@@ -29,12 +29,18 @@
 ;; ## get-xpriv
 
 (def xpriv (try (a.c.wallets/get-xpriv wallet-id) (catch Exception _ex nil)))
+(.toStringSensitive xpriv)
 
-(def account-path (c.bitcoin-s/->bip32-path "m/84'/0'/0'"))
-(def first-address-path (c.bitcoin-s/->segwit-path "m/84'/0'/0'/0/0"))
+(.extPublicKey xpriv)
+
+(def base-path "m/84'/1'/0'")
+(def account-path (c.bitcoin-s/->bip32-path base-path))
+(def first-address-path (c.bitcoin-s/->segwit-path (str base-path "/0/0")))
 (def account-xpub (some-> xpriv (.deriveChildPrivKey account-path) .extPublicKey))
 (def diffsome (.diff account-path first-address-path))
 (def purpose (HDPurpose. 84))
+
+(.fingerprint xpriv)
 
 ;; ##  get-word-list
 
@@ -59,8 +65,6 @@
 ^{::clerk/viewer clerk/code}
 (cc.ext-privat-key/ExtPrivateKey->record xpriv)
 
-(.toStringSensitive xpriv)
-
 ;; ## get-wif
 
 (a.c.wallets/get-wif wallet-id)
@@ -79,15 +83,14 @@
 
 ;; ## ->priv-key
 
-(comment
-
-  (a.c.wallets/->priv-key wallet)
-
-  nil)
+(a.c.wallets/->priv-key wallet)
 
 ;; ## parse-descriptor
 
+^{::clerk/viewer clerk/code}
 (a.c.wallets/parse-descriptor descriptor)
+
+(a.c.wallets/get-ext-pub-key wallet 0)
 
 (comment
   {:type        "wpkh"
@@ -99,12 +102,9 @@
 
   (c.bitcoin-s/create-mnemonic-words)
 
-  (.key (a.c.wallets/get-ext-pub-key wallet 0))
-
   (a.c.wallets/roll! {::m.c.wallets/id wallet-id})
 
   (c.bitcoin-s/->wif (.key (a.c.wallets/get-xpriv wallet-id)))
-  (a.c.wallets/get-wif wallet-id)
 
   (c.bitcoin-s/words->mnemonic (a.c.wallets/get-word-list wallet-id))
 

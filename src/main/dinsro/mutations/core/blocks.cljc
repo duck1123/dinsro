@@ -6,11 +6,12 @@
    #?(:clj [dinsro.actions.core.blocks :as a.c.blocks])
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
    [lambdaisland.glogc :as log]))
 
-(comment ::pc/_ ::m.c.blocks/_ ::m.c.nodes/_)
+(comment ::pc/_ ::m.c.blocks/_ ::m.c.nodes/_ ::m.users/_)
 
 (defsc FetchResponseResponse
   [_this _props]
@@ -33,7 +34,7 @@
            ::m.c.blocks/version-hex
            ::m.c.blocks/stripped-size
            ::m.c.blocks/fetched?
-           ::m.c.blocks/node]
+           ::m.c.blocks/network]
    :ident ::m.c.blocks/id})
 
 (defsc FetchResponse
@@ -43,51 +44,13 @@
            :message]})
 
 #?(:clj
-   (defn do-fetch!
-     [id]
-     (if-let [block (q.c.blocks/read-record id)]
-       (let [{node-id ::m.c.blocks/node height ::m.c.blocks/height} block]
-         (if-let [node (q.c.nodes/read-record node-id)]
-           (let [block-id     (a.c.blocks/update-block-by-height node height)
-                 updated-item (q.c.blocks/read-record block-id)
-                 next-id      (::m.c.blocks/next-block updated-item)
-                 updated-item (if next-id
-                                (let [block                             (q.c.blocks/read-record next-id)
-                                      {::m.c.blocks/keys [hash height]} block]
-                                  (assoc updated-item ::m.c.blocks/next-block {::m.c.blocks/id     next-id
-                                                                               ::m.c.blocks/hash   hash
-                                                                               ::m.c.blocks/height height}))
-                                (dissoc updated-item ::m.c.blocks/next-block))
-                 previous-id  (::m.c.blocks/previous-block updated-item)
-                 updated-item (if previous-id
-                                (let [block                             (q.c.blocks/read-record previous-id)
-                                      {::m.c.blocks/keys [hash height]} block]
-                                  (assoc updated-item ::m.c.blocks/previous-block {::m.c.blocks/id     next-id
-                                                                                   ::m.c.blocks/hash   hash
-                                                                                   ::m.c.blocks/height height}))
-                                (dissoc updated-item ::m.c.blocks/previous-block))
-                 updated-item (let [node                      (q.c.nodes/read-record node-id)
-                                    {::m.c.nodes/keys [name]} node]
-                                (assoc updated-item ::m.c.blocks/node {::m.c.nodes/id   node-id
-                                                                       ::m.c.nodes/name name}))]
-
-             {:status :passed
-              :item   updated-item})
-           (do
-             (log/error :node/not-found {})
-             {:status  :failed
-              :message "no node"})))
-       (do
-         (log/error :block/not-found {})
-         {:status  :failed
-          :message "No block"}))))
-
-#?(:clj
    (pc/defmutation fetch!
-     [_env {::m.c.blocks/keys [id]}]
+     [{user-id ::m.users/id} {block-id ::m.c.blocks/id}]
      {::pc/params #{::m.c.blocks/id}
       ::pc/output [:status]}
-     (do-fetch! id))
+     (if-let [node-id (first (q.c.nodes/find-by-user user-id))]
+       (a.c.blocks/do-fetch! node-id block-id)
+       (throw (RuntimeException. "no node id"))))
 
    :cljs
    (defmutation fetch! [_props]
@@ -126,30 +89,11 @@
                    ::m.c.blocks/item]})
 
 #?(:clj
-   (defn do-search!
-     [props]
-     (log/info :tx/searching {:props props})
-     (let [{hash    ::m.c.blocks/block
-            node-id ::m.c.blocks/node} props]
-       (log/info :search/started {:hash hash :node-id node-id})
-       (let [result (a.c.blocks/search! props)]
-         (log/info :search/result {:result result})
-         (if result
-           {:status  :passed
-            :tx      result
-            :hash    hash
-            :node-id node-id}
-           {:status  :failed
-            :tx      result
-            :hash    hash
-            :node-id node-id})))))
-
-#?(:clj
    (pc/defmutation search!
      [_env props]
      {::pc/params #{::m.c.blocks/id}
       ::pc/output [:status]}
-     (do-search! props))
+     (a.c.blocks/do-search! props))
 
    :cljs
    (defmutation search! [_props]

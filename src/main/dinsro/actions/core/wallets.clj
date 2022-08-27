@@ -17,15 +17,17 @@
    org.bitcoins.core.protocol.Bech32Address
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0))
 
+;; FIXME: Use a proper parser
 (defn parse-descriptor
+  "parse a descriptor using regex"
   [descriptor]
-  (let [pattern #"(?<type>.*)\(\[(?<fingerprint>.*?)/(?<path>.*)\](?<key>.*?)/(?<keypath>.*)\)#(?<checksum>.*)"
+  (let [pattern #"(?<type>.*)\(\[(?<fingerprint>.*?)/(?<derivation>.*)\](?<xpub>.*?)/(?<keypath>.*)\)#(?<checksum>.*)"
         matcher (re-matcher pattern  descriptor)]
     (when (.matches matcher)
       {:type        (.group matcher "type")
        :fingerprint (.group matcher "fingerprint")
-       :path        (.group matcher "path")
-       :key         (.group matcher "key")
+       :derivation  (.group matcher "derivation")
+       :xpub        (.group matcher "xpub")
        :keypath     (.group matcher "keypath")
        :checksum    (.group matcher "checksum")})))
 
@@ -35,12 +37,13 @@
   (let [props {::m.c.wallets/name name
                ::m.c.wallets/user user
                ::m.c.wallets/node node}]
-    (log/info :wallet/create {:props props})
+    (log/finer :wallet/create {:props props})
     (q.c.wallets/create-record props)))
 
 (defn get-word-list
   [wallet-id]
   (let [ids (q.c.words/find-by-wallet wallet-id)]
+    (log/finer :get-word-list/ids-read {:ids ids})
     (->> ids
          (map q.c.words/read-record)
          (sort-by ::m.c.words/position)
@@ -86,16 +89,16 @@
 
 (defn get-mnemonic
   ^MnemonicCode [wallet-id]
+  (log/finer :get-mnemonic/starting {:wallet-id wallet-id})
   (c.bitcoin-s/words->mnemonic (get-word-list wallet-id)))
 
 ;; https://bitcoin-s.org/api/org/bitcoins/core/crypto/ExtPrivateKey.html
 
 (defn get-xpriv
   ^ExtPrivateKey [wallet-id]
-  (log/info :get-xpriv/starting {:wallet-id wallet-id})
-  (let [;; wallet (q.c.wallets/read-record wallet-id)
-        mnemonic     (get-mnemonic wallet-id)
-        network-name "regtest"
+  (log/finer :get-xpriv/starting {:wallet-id wallet-id})
+  (let [mnemonic     (get-mnemonic wallet-id)
+        network-name "testnet"
         bip39-seed   (BIP39Seed/fromMnemonic mnemonic (BIP39Seed/EMPTY_PASSWORD))
         purpose      84]
     (c.bitcoin-s/get-xpriv bip39-seed purpose network-name)))
@@ -132,11 +135,12 @@
   "Calculate the pubkey for an address for the wallet at the given index"
   [wallet index]
   [::m.c.wallets/item number? => (ds/instance? ExtPublicKey)]
-  (log/info :get-address/starting {:wallet wallet :index index})
+  (log/finer :get-ext-pub-key/starting {:wallet wallet :index index})
   (let [wallet-id          (::m.c.wallets/id wallet)
         xpriv              (get-xpriv wallet-id)
-        account-path       (c.bitcoin-s/->bip32-path "m/84'/1'/0'")
-        first-address-path (c.bitcoin-s/->segwit-path "m/84'/1'/0'/0/0")
+        prefix             "m/84'/1'/0'"
+        account-path       (c.bitcoin-s/->bip32-path prefix)
+        first-address-path (c.bitcoin-s/->segwit-path (str prefix "/0/" index))
         diffsome           (.diff account-path first-address-path)
         account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
         ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))]
@@ -147,15 +151,10 @@
   [wallet index]
   [::m.c.wallets/item number? => string?]
   (let [wallet-id (::m.c.wallets/id wallet)]
-    (log/info :get-address/starting {:wallet-id wallet-id :index index})
-    (let [xpriv              (get-xpriv wallet-id)
-          account-path       (c.bitcoin-s/->bip32-path "m/84'/1'/0'")
-          first-address-path (c.bitcoin-s/->segwit-path (str "m/84'/1'/0'/0/" index))
-          diffsome           (.diff account-path first-address-path)
-          account-xpub       (.extPublicKey (.deriveChildPrivKey xpriv account-path))
-          ext-pub-key        (.get (.deriveChildPubKey account-xpub (.get diffsome)))
-          pubkey             (.key ext-pub-key)
-          script-pub-key     (P2WPKHWitnessSPKV0/apply pubkey)
-          network            (c.bitcoin-s/regtest-network)
-          address            (Bech32Address/apply script-pub-key network)]
+    (log/finer :get-address/starting {:wallet-id wallet-id :index index})
+    (let [ext-pub-key    (get-ext-pub-key wallet index)
+          pubkey         (.key ext-pub-key)
+          script-pub-key (P2WPKHWitnessSPKV0/apply pubkey)
+          network        (c.bitcoin-s/regtest-network)
+          address        (Bech32Address/apply script-pub-key network)]
       (.value address))))

@@ -29,6 +29,7 @@
 (>defn create-record
   [params]
   [::m.c.words/params => ::m.c.words/id]
+  (s/assert ::m.c.words/params params)
   (let [node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (-> params
@@ -50,8 +51,11 @@
   (let [db    (c.xtdb/main-db)
         query '{:find  [?word-id]
                 :in    [?wallet-id]
-                :where [[?word-id ::m.c.words/wallet ?wallet-id]]}]
-    (map first (xt/q db query wallet-id))))
+                :where [[?word-id ::m.c.words/mnemonic ?mnemonic-id]
+                        [?wallet-id ::m.c.wallets/mnemonic ?mnemonic-id]]}
+        ids   (map first (xt/q db query wallet-id))]
+    (log/finer :find-by-wallet/finished {:ids ids})
+    ids))
 
 (>defn delete!
   [id]

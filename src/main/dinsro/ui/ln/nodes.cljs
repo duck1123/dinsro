@@ -21,6 +21,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.ln.channels :as u.ln.channels]
+   [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
    [dinsro.ui.ln.node-channels :as u.ln.node-channels]
    [dinsro.ui.ln.node-peers :as u.ln.node-peers]
    [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
@@ -265,11 +266,11 @@
 
 (defsc ShowNode
   "Show a ln node"
-  [this {:ui/keys          [channels peers remote-nodes transactions]
-         ::m.ln.info/keys  [chains]
-         ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]}]
+  [this {:ui/keys          [accounts peers channels transactions remote-nodes]
+         ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]}]
   {:route-segment ["nodes" :id]
-   :query         [{:ui/channels (comp/get-query u.ln.node-channels/SubPage)}
+   :query         [{:ui/accounts (comp/get-query u.ln.node-accounts/SubPage)}
+                   {:ui/channels (comp/get-query u.ln.node-channels/SubPage)}
                    {:ui/peers (comp/get-query u.ln.node-peers/SubPage)}
                    {:ui/transactions (comp/get-query u.ln.node-transactions/SubPage)}
                    {:ui/remote-nodes (comp/get-query u.ln.node-remote-nodes/SubPage)}
@@ -278,16 +279,17 @@
                    ::m.ln.nodes/port
                    ::m.ln.nodes/hasCert?
                    ::m.ln.nodes/hasMacaroon?
-                   ::m.ln.info/chains
+                   {::m.ln.nodes/network (comp/get-query u.links/NodeLinkForm)}
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
-   :initial-state {:ui/channels              {}
+   :initial-state {:ui/accounts              {}
+                   :ui/channels              {}
                    :ui/peers                 {}
                    :ui/transactions          {}
                    :ui/remote-nodes          {}
-                   ::m.ln.info/chains        []
                    ::m.ln.nodes/id           nil
                    ::m.ln.nodes/user         {}
+                   ::m.ln.nodes/network      {}
                    ::m.ln.nodes/core-node    {}
                    ::m.ln.nodes/host         ""
                    ::m.ln.nodes/port         0
@@ -296,12 +298,12 @@
    :ident         ::m.ln.nodes/id
    :pre-merge     (u.links/page-merger
                    ::m.ln.nodes/id
-                   {:ui/channels     u.ln.node-channels/SubPage
+                   {:ui/accounts     u.ln.node-accounts/SubPage
+                    :ui/channels     u.ln.node-channels/SubPage
                     :ui/peers        u.ln.node-peers/SubPage
                     :ui/remote-nodes u.ln.node-remote-nodes/SubPage
                     :ui/transactions u.ln.node-transactions/SubPage})
    :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::ShowNode)}
-
   (dom/div {}
     (dom/div :.ui.segment
       (ui-actions-menu
@@ -311,7 +313,9 @@
       (dom/p {} "User: " (u.links/ui-user-link user))
       (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
       (dom/p {} "Address: " host ":" (str port))
-      (dom/p {} "Chains: " (pr-str chains))
+      (dom/p {} "Network: "
+        (pr-str (keys network))
+        (u.links/ui-network-link network))
       (when-not hasCert?
         (comp/fragment
          (dom/p {} "Cert not found")
@@ -326,6 +330,7 @@
           (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
             (str hasMacaroon?))))
       (dom/p {} (pr-str id)))
+    (u.ln.node-accounts/ui-sub-page accounts)
     (u.ln.node-peers/ui-sub-page peers)
     (u.ln.node-channels/ui-sub-page channels)
     (u.ln.node-transactions/ui-sub-page transactions)
@@ -333,8 +338,8 @@
 
 (report/defsc-report LightningNodesReport
   [this props]
-  {ro/columns          [m.ln.nodes/id
-                        m.ln.nodes/name
+  {ro/columns          [m.ln.nodes/name
+                        m.ln.nodes/network
                         m.ln.info/alias-attr
                         m.ln.nodes/core-node
                         m.ln.info/color
@@ -342,22 +347,8 @@
    ro/control-layout   {:action-buttons [::new-node ::refresh]}
    ro/controls         {::new-node new-node-button
                         ::refresh  u.links/refresh-control}
-   ro/field-formatters {::m.ln.nodes/id        (fn [this id]
-                                                 (let [props2 (comp/props this)]
-                                                   (log/info :LightningNodesReport/formatting-name {:id id :props2 props2})
-                                                   (let [{:ui/keys [current-rows]} props2
-                                                         row                       (first (filter
-                                                                                           (fn [r]
-                                                                                             (= (::m.ln.nodes/id r) id))
-                                                                                           current-rows))]
-                                                     (if row
-                                                       (do
-                                                         (log/info :LightningNodesReport/row {:row row})
-                                                         (let [name (::m.ln.info/alias row)]
-                                                           (u.links/ui-node-link
-                                                            {::m.ln.nodes/id   id
-                                                             ::m.ln.nodes/name name})))
-                                                       (dom/p {} "not found")))))
+   ro/field-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
+                        ::m.ln.nodes/network   #(u.links/ui-network-link %2)
                         ::m.ln.nodes/user      #(u.links/ui-user-link %2)
                         ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
    ro/route            "nodes"
@@ -369,24 +360,7 @@
     (log/info :LightningNodesReport/starting {:props props})
     (report/render-layout this)))
 
-(report/defsc-report LNNodesSubReport
-  [_this _props]
-  {ro/columns          [m.ln.nodes/name
-                        m.ln.info/alias-attr
-                        m.ln.nodes/core-node
-                        m.ln.info/color]
-   ro/control-layout   {:action-buttons [::new-node]}
-   ro/form-links       {::m.ln.nodes/name LightningNodeForm}
-   ro/controls         {::new-node new-node-button}
-   ro/field-formatters {::m.ln.nodes/user      #(u.links/ui-user-link %2)
-                        ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
-   ro/machine          lightning-node-report-machine
-   ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.nodes/index
-   ro/title            "Lightning Node Report"})
-
-(report/defsc-report AdminLNNodesReport
+(report/defsc-report AdminReport
   [_this _props]
   {ro/columns          [m.ln.nodes/name
                         m.ln.info/alias-attr
@@ -394,9 +368,9 @@
                         m.ln.info/color
                         m.ln.nodes/user]
    ro/control-layout   {:action-buttons [::new-node]}
-   ro/form-links       {::m.ln.nodes/name LightningNodeForm}
    ro/controls         {::new-node new-node-button}
-   ro/field-formatters {::m.ln.nodes/user      #(u.links/ui-user-link %2)
+   ro/field-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
+                        ::m.ln.nodes/user      #(u.links/ui-user-link %2)
                         ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
    ro/machine          lightning-node-report-machine
    ro/route            "nodes"

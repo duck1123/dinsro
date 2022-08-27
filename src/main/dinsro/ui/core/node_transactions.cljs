@@ -17,7 +17,8 @@
                         j.c.tx/node
                         m.c.tx/fetched?
                         m.c.tx/block]
-   ro/controls         {::refresh u.links/refresh-control}
+   ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
+                        ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.tx/block (fn [_this props]
                                          (log/debug :formatting {:props props})

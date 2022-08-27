@@ -111,6 +111,18 @@
                    path])]
     (shell cmd)))
 
+(defn helm-rtl2
+  [n]
+  (let [path     "resources/helm/rtl/"
+        filename (format "conf/%s/rtl_values.yaml" n)
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "--name-template=rtl-" n)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
 (defn ->tilt-config
   []
   (let [data      (h.dinsro/merge-defaults (site/get-site-config))]

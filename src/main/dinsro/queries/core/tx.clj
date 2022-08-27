@@ -22,6 +22,7 @@
 (>defn find-by-node
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.tx/id)]
+  (log/info :find-by-node/starting {:node-id node-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-id]
                 :in    [?node-id]
@@ -31,12 +32,12 @@
 (>defn find-by-block
   [block-id]
   [::m.c.blocks/id => (s/coll-of ::m.c.tx/id)]
-  (log/finer :find-by-block/starting {:block-id block-id})
+  (log/info :find-by-block/starting {:block-id block-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-id]
-                :in    [?block-id]
+                :in    [[?block-id]]
                 :where [[?tx-id ::m.c.tx/block ?block-id]]}
-        ids   (map first (xt/q db query block-id))]
+        ids   (map first (xt/q db query [block-id]))]
     (log/fine :find-by-block/finished {:block-id block-id :ids ids})
     ids))
 

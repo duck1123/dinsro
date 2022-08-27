@@ -22,7 +22,7 @@
                       m.ln.peers/inbound]
    ro/control-layout {:action-buttons [::new ::refresh]
                       :inputs         [[::m.ln.remote-nodes/id]]}
-   ro/controls       {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+   ro/controls       {::m.ln.remote-nodes/id {:type :uuid :label "Nodes"}
                       ::refresh       u.links/refresh-control
                       ::new           {:type   :button
                                        :label  "New"

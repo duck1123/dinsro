@@ -41,7 +41,7 @@
      [_env props]
      {::pc/params #{::m.c.tx/id}
       ::pc/output [:status]}
-     (a.c.tx/fetch! props))
+     (a.c.tx/do-fetch! props))
 
    :cljs
    (defmutation fetch! [_props]
@@ -52,7 +52,7 @@
 #?(:clj
    (defn do-search!
      [props]
-     (log/info :tx/searching {:props props})
+     (log/info :do-search!/starting {:props props})
      (let [{tx-id   ::m.c.tx/tx-id
             node-id ::m.c.tx/node} props]
        (log/info :search/started {:tx-id tx-id :node-id node-id})

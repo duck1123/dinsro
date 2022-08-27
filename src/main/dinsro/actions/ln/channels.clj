@@ -27,4 +27,5 @@
 
 (defn delete!
   [id]
-  (log/info :delete!/starting {:id id}))
+  (log/info :delete!/starting {:id id})
+  (throw (RuntimeException. "Not implemented")))

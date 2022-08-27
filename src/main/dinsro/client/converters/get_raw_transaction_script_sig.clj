@@ -22,8 +22,8 @@
   [this]
   [(ds/instance? GetRawTransactionScriptSig) => ::record]
   (let [record {::asm                   (some-> this .asm)
-                ::hex                   (some-> this .hex)
-                ::product-element-names (some-> this .productElementNames)}]
+                ::hex                   (some-> this .hex cs/->record)
+                ::product-element-names (some-> this .productElementNames .toVector cs/vector->vec)}]
     (log/info :GetRawTransactionScriptSig->record/finished {:record record})
     record))
 

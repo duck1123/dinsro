@@ -1,7 +1,7 @@
 (ns dinsro.actions.core.tx
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn => ?]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn => ?]]
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -45,6 +45,7 @@
 
 (defn update-tx-in
   [tx-id params]
+  (log/info :update-tx-in/starting {:tx-id tx-id :params params})
   (let [params (assoc params ::m.c.tx-in/transaction tx-id)
         params (m.c.tx-in/prepare-params params)]
     (q.c.tx-in/create-record params)))
@@ -53,6 +54,9 @@
   [tx-id old-output params]
   [::m.c.tx/id ::m.c.tx-out/item any? => ::m.c.tx-out/id]
   (log/info :update-tx-out/starting {:tx-id tx-id :out-output old-output :params params})
+  (let [script-pub-key (:dinsro.client.converters.rpc-transaction-output/script-pub-key params)
+        addresses (:dinsro.client.converters.rpc-script-pub-key/addresses script-pub-key)]
+    (log/info :update-tx-out/found-addresses {:addresses addresses}))
   (let [tx-out-id (::m.c.tx-out/id old-output)
         params    (assoc params ::m.c.tx-out/id tx-out-id)
         params    (assoc params ::m.c.tx-out/transaction tx-id)
@@ -114,21 +118,38 @@
       (throw (RuntimeException. "failed to find tx")))
     (throw (RuntimeException. "failed to find node"))))
 
-(>defn fetch!
-  "Fetch tx info from node"
+(>def ::fetch-result (s/keys))
+
+(>defn do-fetch!
+  "Fetch tx info from node. Mutation handler"
   [{::m.c.tx/keys [id]}]
-  [::m.c.tx/id-obj => (s/keys)]
-  (let [{::m.c.tx/keys [tx-id]
-         block-id         ::m.c.tx/block} (q.c.tx/read-record id)]
-    (if-let [block (q.c.blocks/read-record block-id)]
-      (let [{::m.c.blocks/keys [node]} block
-            returned-id                  (update-tx node block-id tx-id)]
-        {:status          :passed
-         ::m.c.tx/item (q.c.tx/read-record returned-id)
-         :id              returned-id})
+  [::m.c.tx/id-obj => ::fetch-result]
+  (if-let [tx (q.c.tx/read-record id)]
+    (if-let [block-id (::m.c.tx/block tx)]
+      (if-let [block (q.c.blocks/read-record block-id)]
+        (if-let [network-id (::m.c.blocks/network block)]
+          (if-let [node-id (first (q.c.nodes/find-by-network network-id))]
+            (let [{::m.c.tx/keys [tx-id]} tx
+
+                  returned-id (update-tx node-id block-id tx-id)]
+              {:status       :passed
+               ::m.c.tx/item (q.c.tx/read-record returned-id)
+               :id           returned-id})
+            (do
+              (log/warn :fetch!/no-node-id {:network-id network-id})
+              {:status :failed}))
+          (do
+            (log/warn :fetch!/no-network-id {:block block})
+            {:status :failed}))
+        (do
+          (log/info :fetch!/block-not-found {:block-id block-id})
+          {:status :failed}))
       (do
-        (log/info :block/failed-to-find {})
-        {:status :failed}))))
+        (log/warn :fetch!/no-block-id {:id id :tx tx})
+        {:status :failed}))
+    (do
+      (log/warn :fetch!/tx-not-read {:id id})
+      {:status :failed})))
 
 (defn search!
   [props]

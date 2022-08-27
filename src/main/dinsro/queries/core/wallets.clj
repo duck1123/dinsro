@@ -36,9 +36,9 @@
         prepared-params (-> params
                             (assoc ::m.c.wallets/id id)
                             (assoc :xt/id id))]
-    (log/debug :wallet/create {:params prepared-params})
+    (log/debug :create-record/starting {:params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    (log/debug :wallet/created {:id id})
+    (log/finer :create-record/finished {:id id})
     id))
 
 (>defn index-records
@@ -55,6 +55,16 @@
                 :where [[?wallet-id ::m.c.wallets/user ?user-id]]}]
     (map first (xt/q db query user-id))))
 
+(>defn find-by-user-and-name
+  [user-id name]
+  [::m.users/id string? => (? ::m.c.wallets/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?wallet-id]
+                :in    [[?user-id ?name]]
+                :where [[?wallet-id ::m.c.wallets/user ?user-id]
+                        [?wallet-id ::m.c.wallets/name ?name]]}]
+    (ffirst (xt/q db query [user-id name]))))
+
 (>defn find-by-core-node
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.wallets/id)]
@@ -67,7 +77,7 @@
 
 (defn update!
   [wallet-id new-props]
-  (log/info :wallet/updating {:wallet-id wallet-id :new-props new-props})
+  (log/info :update!/starting {:wallet-id wallet-id :new-props new-props})
   (let [node          (c.xtdb/main-node)
         wallet        (read-record wallet-id)
         updated-props (merge wallet

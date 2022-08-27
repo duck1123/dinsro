@@ -114,8 +114,8 @@
      :ingress      {:hosts [{:host  host
                              :paths [{:path "/"}]}]}
      :persistence  {:storageClassName "local-path"}
-     :walletConfig #?(:clj (json2/encode (->node-config options))
-                      :cljs (do (comment options) "{}"))}))
+     :nodeConfig #?(:clj (json2/encode (->node-config options))
+                    :cljs (do (comment options) "{}"))}))
 
 (defn ->values-yaml
   [options]

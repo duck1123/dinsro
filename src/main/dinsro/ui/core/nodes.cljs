@@ -24,7 +24,6 @@
    [dinsro.ui.core.node-blocks :as u.c.node-blocks]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
    [dinsro.ui.core.node-transactions :as u.c.node-transactions]
-   [dinsro.ui.core.node-wallets :as u.c.node-wallets]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
@@ -186,14 +185,13 @@
   (comp/factory ActionsMenu))
 
 (def show-peers true)
-(def show-wallets true)
 (def show-blocks true)
 (def show-transactions false)
 
 (defsc ShowNode
   "Show a core node"
   [this {::m.c.nodes/keys [id name network]
-         :ui/keys         [blocks peers transactions wallets]
+         :ui/keys         [blocks peers transactions]
          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
@@ -202,22 +200,19 @@
                    {:ui/peers (comp/get-query u.c.node-peers/SubPage)}
                    {:ui/blocks (comp/get-query u.c.node-blocks/SubPage)}
                    {:ui/transactions (comp/get-query u.c.node-transactions/SubPage)}
-                   {:ui/wallets (comp/get-query u.c.node-wallets/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.nodes/id      nil
                    ::m.c.nodes/name    ""
                    ::m.c.nodes/network {}
                    :ui/peers           {}
                    :ui/blocks          {}
-                   :ui/transactions    {}
-                   :ui/wallets         {}}
+                   :ui/transactions    {}}
    :ident         ::m.c.nodes/id
    :pre-merge     (u.links/page-merger
                    ::m.c.nodes/id
                    {:ui/blocks       u.c.node-blocks/SubPage
                     :ui/peers        u.c.node-peers/SubPage
-                    :ui/transactions u.c.node-transactions/SubPage
-                    :ui/wallets      u.c.node-wallets/SubPage})
+                    :ui/transactions u.c.node-transactions/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.nodes/id ::ShowNode)}
   (log/finer :ShowNode/creating {:id id :props props :this this})
   (let [{:keys [main sub]} (css/get-classnames ShowNode)]
@@ -229,7 +224,6 @@
       (when id
         (dom/div {:classes [sub]}
           (when show-peers (u.c.node-peers/ui-sub-page peers))
-          (when show-wallets (u.c.node-wallets/ui-sub-page wallets))
           (when show-blocks (u.c.node-blocks/ui-sub-page blocks))
           (when show-transactions (u.c.node-transactions/ui-sub-page transactions)))))))
 
@@ -267,7 +261,6 @@
 (report/defsc-report CoreNodesReport
   [_this _props]
   {ro/columns           [m.c.nodes/name
-                         ;; m.c.nodes/network
                          m.c.nodes/block-count]
    ro/column-formatters {::m.c.nodes/name    #(u.links/ui-core-node-link %3)
                          ::m.c.nodes/network #(u.links/ui-network-link %2)}

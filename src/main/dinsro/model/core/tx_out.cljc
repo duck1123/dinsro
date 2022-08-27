@@ -80,7 +80,7 @@
          [n script-pub-key]}           params
         currency-value                 (:dinsro.client.converters.rpc-transaction-output/value params)
         value                          (:dinsro.client.converters.currency-unit/value currency-value)
-        {:keys [asm hex script-type]} script-pub-key
+        {:dinsro.client.converters.rpc-script-pub-key/keys [asm hex script-type]} script-pub-key
         prepared-params                {::n           n
                                         ::value       value
                                         ::transaction transaction

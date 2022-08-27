@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
+   #?(:clj [dinsro.actions.ln.accounts :as a.ln.accounts])
    #?(:clj [dinsro.actions.ln.channels-lj :as a.ln.channels-lj])
    #?(:clj [dinsro.actions.ln.invoices-lj :as a.ln.invoices-lj])
    #?(:clj [dinsro.actions.ln.nodes :as a.ln.nodes])
@@ -115,6 +116,17 @@
        {:status :not-found}))
    :cljs
    (defmutation generate! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
+#?(:clj
+   (pc/defmutation fetch-accounts!
+     [_env {::m.ln.nodes/keys [id]}]
+     {::pc/params #{::m.ln.nodes/id}
+      ::pc/output [:status]}
+     (a.ln.accounts/do-fetch-accounts! id))
+   :cljs
+   (defmutation fetch-accounts! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
@@ -259,6 +271,7 @@
      [create-peer!
       download-cert!
       download-macaroon!
+      fetch-accounts!
       fetch-channels!
       fetch-invoices!
       fetch-payments!

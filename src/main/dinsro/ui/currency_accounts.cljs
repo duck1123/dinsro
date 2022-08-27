@@ -1,7 +1,6 @@
 (ns dinsro.ui.currency-accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.accounts :as m.accounts]
@@ -11,10 +10,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.accounts/name]
-   ro/controls         {::refresh
-                        {:type   :button
-                         :label  "Refresh"
-                         :action (fn [this] (control/run! this))}}
+   ro/controls         {::m.currencies/id {:type :uuid :label "id"}
+                        ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
    ro/row-pk           m.accounts/id

@@ -12,6 +12,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
+   [dinsro.ui.account-transactions :as u.account-transactions]
    [dinsro.ui.links :as u.links]))
 
 (defsc RefRow
@@ -60,7 +61,7 @@
                     m.accounts/initial-value
                     j.accounts/transactions]
    fo/cancel-route ["accounts"]
-   fo/route-prefix "account"
+   fo/route-prefix "account3"
    fo/title        "Edit Account"}
   (if override-form
     (form/render-layout this props)
@@ -121,12 +122,14 @@
   {ro/columns          [m.accounts/name
                         m.accounts/currency
                         m.accounts/user
-                        m.accounts/initial-value]
+                        m.accounts/initial-value
+                        m.accounts/wallet]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
    ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                        ::m.accounts/user     #(u.links/ui-user-link %2)}
-   ro/form-links       {::m.accounts/name AccountForm}
+                        ::m.accounts/user     #(u.links/ui-user-link %2)
+                        ::m.accounts/name     #(u.links/ui-account-link %3)
+                        ::m.accounts/wallet   #(u.links/ui-wallet-link %2)}
    ro/route            "accounts"
    ro/row-actions      [{:action
                          (fn [report-instance row-props]
@@ -138,7 +141,7 @@
    ro/source-attribute ::m.accounts/index
    ro/title            "Accounts"})
 
-(report/defsc-report AdminIndexAccountsReport
+(report/defsc-report AdminReport
   [_this _props]
   {ro/columns          [m.accounts/name
                         m.accounts/currency
@@ -147,8 +150,8 @@
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
    ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                        ::m.accounts/user     #(u.links/ui-user-link %2)}
-   ro/form-links       {::m.accounts/name AccountForm}
+                        ::m.accounts/user     #(u.links/ui-user-link %2)
+                        ::m.accounts/name     #(u.links/ui-account-link %3)}
    ro/route            "accounts"
    ro/row-actions      [{:action
                          (fn [report-instance row-props]
@@ -160,13 +163,13 @@
    ro/source-attribute ::m.accounts/admin-index
    ro/title            "Accounts"})
 
-(def ui-admin-index-accounts (comp/factory AdminIndexAccountsReport))
+(def ui-admin-report (comp/factory AdminReport))
 
 (report/defsc-report AccountsSubReport
   [_this _props]
-  {ro/form-links       {::m.accounts/name AccountForm}
-   ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                        ::m.accounts/user     #(u.links/ui-user-link %2)}
+  {ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                        ::m.accounts/user     #(u.links/ui-user-link %2)
+                        ::m.accounts/name     #(u.links/ui-account-link %3)}
    ro/columns          [m.accounts/name
                         m.accounts/currency
                         m.accounts/initial-value]
@@ -174,3 +177,41 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.accounts/index
    ro/title            "Accounts"})
+
+(defsc ShowAccount
+  [_this {::m.accounts/keys [name currency source user wallet]
+          :ui/keys          [transactions]}]
+  {:route-segment ["accounts" :id]
+   :query         [::m.accounts/name
+                   ::m.accounts/id
+                   {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
+                   {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
+                   {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
+                   {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
+                   {:ui/transactions (comp/get-query u.account-transactions/SubPage)}]
+   :initial-state {::m.accounts/name     ""
+                   ::m.accounts/id       nil
+                   ::m.accounts/currency {}
+                   ::m.accounts/source   {}
+                   ::m.accounts/user     {}
+                   ::m.accounts/wallet   {}}
+   :ident         ::m.accounts/id
+   :will-enter    (partial u.links/page-loader ::m.accounts/id ::ShowAccount)
+   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})}
+  (comp/fragment
+   (dom/div :.ui.segment
+     (dom/dl {}
+             (dom/dt {} "Name")
+             (dom/dd {} (str name))
+             (dom/dt {} "Currency")
+             (dom/dd {} (u.links/ui-currency-link currency))
+             (dom/dt {} "Source")
+             (dom/dd {} (u.links/ui-rate-source-link source))
+             (dom/dt {} "User")
+             (dom/dd {} (u.links/ui-user-link user))
+             (dom/dt {} "Wallet")
+             (dom/dd {} (u.links/ui-wallet-link wallet))))
+   (dom/div :.ui.segment
+     (if transactions
+       (u.account-transactions/ui-sub-page transactions)
+       (dom/p {} "Account transactions not loaded")))))

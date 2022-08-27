@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln.nodes :as m.ln.nodes]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [lambdaisland.glogc :as log]))
 
 (def rename-map
   {:blockHeight         ::block-height
@@ -24,6 +25,10 @@
    :numPendingChannels  ::num-pending-channels
    :uris                ::uris
    :features            ::features})
+
+(defattr block-height ::block-height :int
+  {ao/identities #{::m.ln.nodes/id}
+   ao/schema     :production})
 
 (s/def ::alias string?)
 (defattr alias-attr ::alias :string
@@ -63,10 +68,6 @@
   {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
 
-(defattr block-height ::block-height :int
-  {ao/identities #{::m.ln.nodes/id}
-   ao/schema     :production})
-
 (defattr num-active-channels ::num-active-channels :int
   {ao/identities #{::m.ln.nodes/id}
    ao/schema     :production})
@@ -98,26 +99,35 @@
 (s/def ::params
   (s/keys
    :req
-   [::alias
-    ::identity-pubkey
-    ::version
-    ::block-hash
-    ::color
-    ::commit-hash
-    ::testnet
-    ::synced-to-graph
-    ::num-inactive-channels
-    ::block-height
-    ::num-active-channels
-    ::num-pending-channels
-    ::num-peers
-    ::uris
-    ::features
-    ::best-header-timestamp
-    ::synced-to-chain]))
+   [;; ::alias
+    ;; ::identity-pubkey
+    ;; ::version
+    ;; ::block-hash
+    ;; ::color
+    ;; ::commit-hash
+    ;; ::testnet
+    ;; ::synced-to-graph
+    ;; ::num-inactive-channels
+    ;; ::block-height
+    ;; ::num-active-channels
+    ;; ::num-pending-channels
+    ;; ::num-peers
+    ;; ::uris
+    ;; ::features
+    ;; ::best-header-timestamp
+    ;; ::synced-to-chain
+    ]))
+
+(defn prepare-params
+  [params]
+  (log/info :prepare-params/starting {:params params})
+  (let [prepared {}]
+    (log/info :prepare-params/finished {:prepared prepared})
+    prepared))
 
 (def attributes
-  [alias-attr identity-pubkey version block-hash color commit-hash
-   testnet synced-to-graph num-inactive-channels block-height
-   num-active-channels num-pending-channels num-peers uris features
-   best-header-timestamp synced-to-chain])
+  [;; alias-attr identity-pubkey version block-hash color commit-hash
+   ;; testnet synced-to-graph num-inactive-channels block-height
+   ;; num-active-channels num-pending-channels num-peers uris features
+   ;; best-header-timestamp synced-to-chain
+   ])

@@ -11,7 +11,7 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetRawTransactionVin.html
 
-(>def ::product-element-names any?)
+(>def ::product-element-names (? (s/coll-of string?)))
 (>def ::script-sig (? ::cc.get-raw-transaction-script-sig/record))
 (>def ::sequence (? number?))
 (>def ::tx-id (? string?))

@@ -1,5 +1,6 @@
 (ns dinsro.actions.core.nodes
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.node-base :as a.c.node-base]
@@ -15,12 +16,15 @@
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
 
-(defn generate-to-address!
+(>defn generate-to-address!
   "Generate regtest blocks paying to address"
   [node address]
+  [::m.c.nodes/item string? => (s/coll-of string?)]
   (log/info :generate-to-address!/starting {:node node :address address})
-  (let [client (a.c.node-base/get-client node)]
-    (c.bitcoin-s/generate-to-address! client address)))
+  (let [client (a.c.node-base/get-client node)
+        result (c.bitcoin-s/generate-to-address! client address)]
+    (log/info :generate-to-address!/finished {:result result})
+    result))
 
 (>defn get-blockchain-info
   "Fetch blockchain info for node"
@@ -78,14 +82,15 @@
         (q.c.tx/create-record params)))))
 
 (>defn generate!
-  "Generate a block for the node"
+  "Generate a block for the node."
   [node-id]
   [::m.c.nodes/id => any?]
   (log/info :generate!/starting {:node-id node-id})
   (if-let [node (q.c.nodes/read-record node-id)]
-    (let [client  (a.c.node-base/get-client node)
-          address sample-address]
-      (c.bitcoin-s/generate-to-address! client address))
+    (let [address sample-address
+          response (generate-to-address! node address)]
+      (log/info :generate!/finished {:response response})
+      response)
     (do
       (log/error :generate!/node-not-found {:node-id node-id})
       nil)))

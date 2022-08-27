@@ -11,7 +11,7 @@
   [this props]
   {ro/columns          [m.c.words/word
                         m.c.words/position
-                        m.c.words/wallet]
+                        m.c.words/mnemonic]
    ;; ro/control-layout   {:action-buttons [::new]}
    ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
    ro/route            "words"

@@ -9,9 +9,7 @@
 
 (defn PeerNetworkInfoPostV21->record
   [this]
-  (let [service-names (map (fn [x]
-                             (log/info :PeerNetworkInfoPostV21->record/servicename {:x x})
-                             (cs/->record x))
+  (let [service-names (map cs/->record
                            (or (some-> this .servicesnames cs/get-or-nil cs/vector->vec) []))
         record        {:addr             (some-> this .addr str)
                        :addr-bind        (some-> this .addrbind str)
@@ -32,7 +30,7 @@
                        :services         (some-> this .services)
                        :services-names   service-names
                        :time-offset      (some-> this .timeoffset)}]
-    (log/info :PeerNetworkInfoPostV21->record/finished {:record record})
+    (log/finer :PeerNetworkInfoPostV21->record/finished {:record record})
     record))
 
 (extend-type PeerNetworkInfoPostV21

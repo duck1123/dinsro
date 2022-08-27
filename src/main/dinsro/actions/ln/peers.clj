@@ -5,7 +5,6 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.actions.ln.peers :as a.ln.peers]
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -57,8 +56,6 @@
   (let [{peer-id ::m.ln.peers/id} props]
     (q.ln.peers/delete peer-id)))
 
-(>def ::peer-response (s/keys))
-
 (>defn create-peer!
   [node host pubkey]
   [::m.ln.nodes/item string? string? => any?]
@@ -77,10 +74,12 @@
         pubkey nil]
     (create-peer! node host pubkey)))
 
+(>def ::peer-response (s/keys))
+
 (>defn make-peer*
   "Mutation handler for make-peer!"
   [node-id remote-node-id]
-  [::m.ln.remote-nodes/node ::m.ln.remote-nodes/id => ::a.ln.peers/peer-response]
+  [::m.ln.remote-nodes/node ::m.ln.remote-nodes/id => ::peer-response]
   (if-let [node (q.ln.nodes/read-record node-id)]
     (if-let [remote-node (q.ln.remote-nodes/read-record remote-node-id)]
       (let [{::m.ln.remote-nodes/keys [pubkey host]} remote-node]

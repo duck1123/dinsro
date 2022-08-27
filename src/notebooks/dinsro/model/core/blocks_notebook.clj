@@ -29,7 +29,6 @@ m.c.blocks/attributes
 
 (def unprepared-params
   {:hash                 "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
-   ::m.c.blocks/node     #uuid "01822cba-ae41-8028-bae2-cefb350c1654",
    :difficulty           0,
    :time                 1296688602,
    :stripped-size        285,

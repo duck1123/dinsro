@@ -11,6 +11,8 @@
      (:import
       clojure.core.async.impl.channels.ManyToManyChannel)))
 
+(def default-timezone "America/Detroit")
+
 (defn valid-jwt? [jwt]
   (re-matches #"^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$" jwt))
 
@@ -29,6 +31,10 @@
    (defn channel?
      [c]
      (clojure.core/instance? ManyToManyChannel c)))
+
+(defn ->inst
+  [s]
+  (tick/instant (tick/in (tick/date-time s) default-timezone)))
 
 (def non-empty-string-alphanumeric
   "Generator for non-empty alphanumeric strings"

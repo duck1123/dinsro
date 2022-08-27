@@ -1,20 +1,17 @@
 (ns dinsro.components.seed
   (:require
-   [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.type-support.date-time :as dt]
    [xtdb.api :as xt]
    [dinsro.actions.authentication :as a.authentication]
-   [dinsro.actions.core.blocks :as a.c.blocks]
    [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses]
-   [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.ln.peers-lj :as a.ln.peers-lj]
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
-   [dinsro.actions.rates :as a.rates]
+   [dinsro.actions.users :as a.users]
    [dinsro.components.seed.accounts]
    [dinsro.components.seed.categories]
    [dinsro.components.seed.core :as cs.core]
@@ -30,9 +27,8 @@
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.ln.peers :as m.ln.peers]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -45,11 +41,13 @@
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.core.addresses :as q.c.addresses]
    [dinsro.queries.core.chains :as q.c.chains]
+   [dinsro.queries.core.mnemonics :as q.c.mnemonics]
    [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.tx :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.currencies :as q.currencies]
+   [dinsro.queries.debits :as q.debits]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
    [dinsro.queries.ln.transactions :as q.ln.tx]
@@ -64,7 +62,9 @@
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
    [reitit.coercion.spec]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as tick])
+  (:import
+   io.grpc.StatusRuntimeException))
 
 (def strict true)
 
@@ -81,37 +81,13 @@
                   vals
                   flatten
                   (mapv #(vector ::xt/put %)))]
-    (log/info :navlink/create {:txes txes})
+    (log/finer :navlink/create {:txes txes})
     (xt/submit-tx node txes)))
-
-(>defn seed-rate!
-  [_user-id currency-id source-id {:keys [date rate]}]
-  [::m.users/id ::m.currencies/id ::m.rate-sources/id any? => ::m.rates/item]
-  (let [params {::m.rates/currency currency-id
-                ::m.rates/date     date
-                ::m.rates/rate     rate}]
-    (log/info :rate/create {:params params})
-    (a.rates/add-rate source-id params)))
-
-(defn seed-peer!
-  [node-id {:keys [ref] :as peer}]
-  (let [[target-username target-node] ref]
-    (if-let [target-user-id (q.users/find-by-name target-username)]
-      (if-let [target-id (q.ln.nodes/find-by-user-and-name target-user-id target-node)]
-        (let [{:keys [host identity-pubkey]} (q.ln.nodes/read-record target-id)
-              params                         (-> peer
-                                                 (assoc ::m.ln.peers/address host)
-                                                 (assoc ::m.ln.peers/pubkey identity-pubkey)
-                                                 (set/rename-keys m.ln.peers/rename-map))]
-          (log/info :peer/create {:params params})
-          (q.ln.peers/add-peer! node-id params))
-        (throw (RuntimeException. (str "no ref: " ref))))
-      (throw (RuntimeException. "no user")))))
 
 (>defn seed-currencies!
   [default-currencies]
   [::cs.core/default-currencies => nil?]
-  (log/info :seed/currencies {:default-currencies default-currencies})
+  (log/finer :seed/currencies {:default-currencies default-currencies})
   (doseq [{:keys [code name]} default-currencies]
     (let [currency {::m.currencies/code code
                     ::m.currencies/name name}]
@@ -119,7 +95,7 @@
 
 (defn seed-rate-sources!
   [default-rate-sources]
-  (log/info :seed/rate-sources {:default-rate-sources default-rate-sources})
+  (log/finer :seed/rate-sources {:default-rate-sources default-rate-sources})
   (doseq [{:keys [isActive isIdentity code name path url]} default-rate-sources]
     (when-let [currency-id (q.currencies/find-by-code code)]
       (let [rate-source {::m.rate-sources/name      name
@@ -132,7 +108,7 @@
 
 (defn seed-rates!
   [default-rate-sources]
-  (log/info :seed/rates {})
+  (log/finer :seed/rates {})
   (doseq [{:keys [name code rates]} default-rate-sources]
     (if-let [currency-id (q.currencies/find-by-code code)]
       (if-let [source-id (q.rate-sources/find-by-currency-and-name currency-id name)]
@@ -147,139 +123,143 @@
 
 (defn seed-users!
   [users]
-  (log/info :seed/users {})
-  (doseq [{:keys [username password]} users]
-    (a.authentication/do-register username password)))
+  (log/finer :seed/users {})
+  (doseq [{:keys [username password role]} users]
+    (let [user (a.authentication/do-register username password)
+          user-id (::m.users/id user)]
+      (log/info :seed-users!/registered {:user-id user-id})
+      (a.users/set-role! user-id role))))
 
 (defn seed-categories!
   [users]
-  (log/info :seed-categories!/starting {})
+  (log/finer :seed-categories!/starting {})
   (doseq [{:keys [categories username]} users]
     (let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name]} categories]
         (q.categories/create-record {::m.categories/name name
                                      ::m.categories/user user-id})))))
 
+(defn initialize-ln-node!
+  [node-id]
+  (let [node (q.ln.nodes/read-record node-id)]
+    (a.ln.nodes/download-cert! node)
+    (if-let [macaroon-response (a.ln.nodes/download-macaroon! node)]
+      (do
+        (log/finer :seed-ln-node!/macaroon-downloaded {:macaroon-response macaroon-response})
+        (try
+          (a.ln.nodes/unlock! node)
+          (catch StatusRuntimeException _ex
+            (log/finer :seed-ln-node!/status-failed {}))
+          (catch RuntimeException ex
+            (log/finer :seed-ln-node!/unlock-failed {:ex ex})))
+        (a.ln.nodes/update-info! node)
+        (a.ln.peers-lj/fetch-peers! node-id))
+      (do
+        (log/finer :seed-ln-node!/download-macaroon-failed {})
+        (let [initialize-response (a.ln.nodes/initialize! node)]
+          (log/finer :seed-ln-node!/initialized {:initialize-response initialize-response})
+          (a.ln.nodes/download-macaroon! node)
+          nil)))))
+
 (>defn seed-ln-node!
   [user-id node-info]
   [::m.users/id ::cs.ln-node/item => any?]
   (let [{:keys     [name fileserver-host host port mnemonic]
          node-name :node} node-info]
-    (log/info :seed-ln-node!/starting {:node-name node-name})
+    (log/finer :seed-ln-node!/starting {:node-name node-name})
     (if-let [core-id (q.c.nodes/find-by-name node-name)]
-      (let [ln-node {::m.ln.nodes/name            name
-                     ::m.ln.nodes/core-node       core-id
-                     ::m.ln.nodes/host            host
-                     ::m.ln.nodes/fileserver-host fileserver-host
-                     ::m.ln.nodes/port            port
-                     ::m.ln.nodes/user            user-id
-                     ::m.ln.nodes/mnemonic        mnemonic}
-            node-id (q.ln.nodes/create-record ln-node)]
-        (log/info :seed-ln-node!/saved {:node-id node-id})
-        (try
-          (let [node (q.ln.nodes/read-record node-id)]
-            (a.ln.nodes/download-cert! node)
-            (if-let [macaroon-response (a.ln.nodes/download-macaroon! node)]
-              (do
-                (log/info :seed-ln-node!/macaroon-downloaded {:macaroon-response macaroon-response})
-                (a.ln.nodes/update-info! node)
-                (a.ln.peers-lj/fetch-peers! node-id))
-              (do
-                (log/info :seed-ln-node!/download-macaroon-failed {})
-                (let [initialize-response (a.ln.nodes/initialize! node)]
-                  (log/info :seed-ln-node!/initialized {:initialize-response initialize-response})
+      (if-let [network-id (q.c.networks/find-by-core-node core-id)]
+        (let [ln-node {::m.ln.nodes/name            name
+                       ::m.ln.nodes/core-node       core-id
+                       ::m.ln.nodes/network       network-id
+                       ::m.ln.nodes/host            host
+                       ::m.ln.nodes/fileserver-host fileserver-host
+                       ::m.ln.nodes/port            port
+                       ::m.ln.nodes/user            user-id
+                       ::m.ln.nodes/mnemonic        mnemonic}
+              node-id (q.ln.nodes/create-record ln-node)]
+          (log/finer :seed-ln-node!/saved {:node-id node-id})
 
-                  nil))))
-          (catch Exception ex
-            (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
-            (when strict (throw (RuntimeException. "init node failed" ex))))))
+          (try
+            (initialize-ln-node! node-id)
+            (catch Exception ex
+              (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
+              (when strict (throw (RuntimeException. "init node failed" ex))))))
+        (throw (RuntimeException. "Failed to determine network id")))
       (throw (RuntimeException. (str "Failed to find node: " node-name))))))
 
 (defn seed-ln-nodes!
   [users]
   (log/finer :seed-ln-nodes!/starting {:users users})
   (doseq [{:keys [username ln-nodes]} users]
-    (log/info :seed-ln-nodes!/processing-user {:username username})
+    (log/finer :seed-ln-nodes!/processing-user {:username username})
     (let [user-id (q.users/find-by-name username)]
       (doseq [node-info ln-nodes]
         (seed-ln-node! user-id node-info)))))
 
-(defn seed-ln-peers!
-  [users]
-  (log/info :seed-ln-peers!/starting {})
-  (doseq [{:keys [username ln-nodes]} users]
-    (let [user-id (q.users/find-by-name username)]
-      (doseq [{:keys [name peers]} ln-nodes]
-        (if-let [node-id (q.ln.nodes/find-by-user-and-name user-id name)]
-          (doseq [{[target-username target-node] :ref :as peer} peers]
-            (if-let [target-user-id (q.users/find-by-name target-username)]
-              (if-let [target-id (q.ln.nodes/find-by-user-and-name target-user-id target-node)]
-                (let [{:keys [host identity-pubkey]} (q.ln.nodes/read-record target-id)
-                      peer                           (-> peer
-                                                         (assoc ::m.ln.peers/address host)
-                                                         (assoc ::m.ln.peers/pubkey identity-pubkey)
-                                                         (set/rename-keys m.ln.peers/rename-map))]
-                  (q.ln.peers/add-peer! node-id peer))
-                (throw (RuntimeException. (str "no target: " target-node))))
-              (throw (RuntimeException. "no user"))))
-          (throw (RuntimeException. "no node")))))))
-
-(defn seed-ln-txes!
-  [users]
-  (log/info :seed/ln.txes {})
-  (doseq [{:keys [ln-nodes username]} users]
-    (if-let [user-id (q.users/find-by-name username)]
-      (doseq [{:keys [name txes]} ln-nodes]
-        (if-let [ln-node-id (q.ln.nodes/find-by-user-and-name user-id name)]
-          (if-let [ln-node (q.ln.nodes/read-record ln-node-id)]
-            (if-let [core-node-id (::m.ln.nodes/core-node ln-node)]
-              (doseq [tx txes]
-                (let [tx           (set/rename-keys tx m.ln.tx/rename-map)
-                      tx           (assoc tx ::m.ln.tx/node ln-node-id)
-                      tx-hash      (::m.ln.tx/tx-hash tx)
-                      block-hash   (::m.ln.tx/block-hash tx)
-                      block-height (::m.ln.tx/block-height tx)
-                      block-id (a.c.blocks/register-block core-node-id block-hash block-height)
-                      core-tx-id   (a.c.tx/register-tx core-node-id block-id tx-hash)
-                      tx           (assoc tx ::m.ln.tx/core-tx core-tx-id)]
-                  (q.ln.tx/add-tx ln-node-id tx)))
-              (throw (RuntimeException. "Node does not contain a core node id")))
-            (throw (RuntimeException. "Failed to read ln node")))
-          (throw (RuntimeException. "Failed to find ln node"))))
-      (throw (RuntimeException. "Failed to find ln tx")))))
+(defn seed-account!
+  [user-id account-data]
+  (let [{:keys       [name initial-value source]
+         wallet-name :wallet} account-data
+        wallet-id             (when wallet-name (q.c.wallets/find-by-user-and-name user-id wallet-name))]
+    (if-let [source-id (q.rate-sources/find-by-name source)]
+      (let [source      (q.rate-sources/read-record source-id)
+            currency-id (::m.rate-sources/currency source)]
+        (q.accounts/create-record
+         {::m.accounts/name          name
+          ::m.accounts/currency      currency-id
+          ::m.accounts/user          user-id
+          ::m.accounts/initial-value initial-value
+          ::m.accounts/wallet        wallet-id
+          ::m.accounts/source        source-id}))
+      (throw (RuntimeException. "failed to find source")))))
 
 (defn seed-accounts!
   [users]
-  (log/info :seed/accounts {})
+  (log/finer :seed/accounts {})
   (doseq [{:keys [username accounts]} users]
     (if-let [user-id (q.users/find-by-name username)]
-      (doseq [{:keys [name initial-value source]} accounts]
-        (if-let [source-id (q.rate-sources/find-by-name source)]
-          (let [source      (q.rate-sources/read-record source-id)
-                currency-id (::m.rate-sources/currency source)]
-            (q.accounts/create-record
-             {::m.accounts/name          name
-              ::m.accounts/currency      currency-id
-              ::m.accounts/user          user-id
-              ::m.accounts/initial-value initial-value
-              ::m.accounts/source        source-id}))
-          (throw (RuntimeException. "failed to find source"))))
+      (doseq [account-data accounts]
+        (seed-account! user-id account-data))
+
       (throw (RuntimeException. "Failed to find user")))))
+
+(defn seed-debit!
+  [user-id transaction-id debit-data]
+  (log/finer :seed-debit!/starting {:debit-data debit-data})
+  (let [{account-name :account
+         :keys        [value]} debit-data]
+    (log/finer :seed-debit!/parsed {:account-name account-name})
+    (if-let [account-id (q.accounts/find-by-user-and-name user-id account-name)]
+      (do
+        (log/finer :seed-debit!/has-account {})
+        (let [params   {::m.debits/account     account-id
+                        ::m.debits/transaction transaction-id
+                        ::m.debits/value       value}
+              debit-id (q.debits/create-record params)]
+          (log/finer :seed-debit!/finished {:debit-id debit-id})
+          debit-id))
+      (throw (RuntimeException. "no account")))))
+
+(defn seed-transaction!
+  [user-id transaction-data]
+  (let [{:keys [description date debits]} transaction-data
+        transaction                       {::m.transactions/date        date
+                                           ::m.transactions/description description}]
+    (log/finer :seed-transaction!/prepared {:transaction transaction})
+    (let [transaction-id (q.transactions/create-record transaction)]
+      (log/finer :seed-transaction!/created {:transaction-id transaction-id})
+      (doseq [debit debits]
+        (seed-debit! user-id transaction-id debit))
+      transaction-id)))
 
 (defn seed-transactions!
   [users]
-  (log/info :seed/txes {})
-  (doseq [{:keys [accounts username]} users]
+  (log/finer :seed/txes {})
+  (doseq [{:keys [username transactions]} users]
     (if-let [user-id (q.users/find-by-name username)]
-      (doseq [{:keys [name transactions]} accounts]
-        (if-let [account-id (q.accounts/find-by-user-and-name user-id name)]
-          (doseq [{:keys [description date value]} transactions]
-            (let [transaction {::m.transactions/date        date
-                               ::m.transactions/description description
-                               ::m.transactions/account     account-id
-                               ::m.transactions/value       value}]
-              (q.transactions/create-record transaction)))
-          (throw (RuntimeException. "Failed fo find account"))))
+      (doseq [transaction transactions]
+        (seed-transaction! user-id transaction))
       (throw (RuntimeException. "Failed to find user")))))
 
 (defn item-report
@@ -294,17 +274,17 @@
         ln-nodes     (count (q.ln.nodes/index-ids))
         ln-peers     (count (q.ln.peers/index-ids))
         ln-txes      (count (q.ln.tx/index-ids))]
-    (log/info :report
-              {:users        users
-               :categories   categories
-               :currencies   currencies
-               :rate-sources rate-sources
-               :rates        rates
-               :accounts     accounts
-               :transactions transactions
-               :ln-nodes     ln-nodes
-               :ln-peers     ln-peers
-               :ln-txes      ln-txes})))
+    (log/finer :report
+               {:users        users
+                :categories   categories
+                :currencies   currencies
+                :rate-sources rate-sources
+                :rates        rates
+                :accounts     accounts
+                :transactions transactions
+                :ln-nodes     ln-nodes
+                :ln-peers     ln-peers
+                :ln-txes      ln-txes})))
 
 (defn mock-tx
   [o]
@@ -346,13 +326,36 @@
 
 (defn seed-wallet-address!
   [wallet-id]
-  (log/info :seed-wallet-address!/starting {:wallet-id wallet-id})
+  (log/finer :seed-wallet-address!/starting {:wallet-id wallet-id})
   (let [wallet (q.c.wallets/read-record wallet-id)]
     (doseq [i (range 20)]
-      (log/info :seed-wallet-address!/iterating {:i i})
+      (log/finer :seed-wallet-address!/iterating {:i i})
       (let [address (a.c.wallets/get-address wallet i)]
-        (log/info :seed-wallet-address!/process-address {:address address})
+        (log/finer :seed-wallet-address!/process-address {:address address})
         (a.c.wallet-addresses/register-address! wallet address i)))))
+
+(defn seed-wallet!
+  [user-id wallet-data]
+  (log/finer :seed-wallets!/process-wallet {:wallet-data wallet-data})
+  (let [{:keys     [name seed path]
+         node-name :node} wallet-data
+        node-id           (q.c.nodes/find-by-name node-name)
+        node              (q.c.nodes/read-record node-id)
+        network-id        (::m.c.nodes/network node)
+        mnemonic-id       (q.c.mnemonics/create-record {})
+        wallet-id         (q.c.wallets/create-record
+                           {::m.c.wallets/name       name
+                            ::m.c.wallets/derivation path
+                            ::m.c.wallets/network    network-id
+                            ::m.c.wallets/mnemonic   mnemonic-id
+                            ::m.c.wallets/user       user-id})]
+    (doseq [[i word] (map-indexed vector seed)]
+      (log/finer :seed-wallets!/process-word {:word word :i i})
+      (let [props {::m.c.words/mnemonic mnemonic-id
+                   ::m.c.words/word     word
+                   ::m.c.words/position (inc i)}]
+        (q.c.words/create-record props)))
+    (seed-wallet-address! wallet-id)))
 
 (defn seed-wallets!
   [users]
@@ -361,22 +364,7 @@
           user-id            (q.users/find-by-name username)]
       (log/debug :seed-wallets!/starting {:username username :user-id user-id})
       (doseq [wallet (get user-info :wallets [])]
-        (log/debug :seed-wallets!/process-wallet {:wallet wallet})
-        (let [{:keys     [name seed path]
-               node-name :node} wallet
-              node-id           (q.c.nodes/find-by-name node-name)
-              wallet-id         (q.c.wallets/create-record
-                                 {::m.c.wallets/name       name
-                                  ::m.c.wallets/derivation path
-                                  ::m.c.wallets/node       node-id
-                                  ::m.c.wallets/user       user-id})]
-          (doseq [[i word] (map-indexed vector seed)]
-            (log/debug :seed-wallets!/process-word {:word word :i i})
-            (let [props {::m.c.words/wallet   wallet-id
-                         ::m.c.words/word     word
-                         ::m.c.words/position (inc i)}]
-              (q.c.words/create-record props)))
-          (seed-wallet-address! wallet-id))))))
+        (seed-wallet! user-id wallet)))))
 
 (defn seed-addresses!
   [addresses]
@@ -391,25 +379,25 @@
 
 (defn seed-chains!
   [chains]
-  (log/info :seed-chains!/starting {:chains chains})
+  (log/finer :seed-chains!/starting {:chains chains})
   (doseq [chain chains]
     (q.c.chains/create-record {::m.c.chains/name chain})))
 
 (defn seed-networks!
   [networks]
-  (log/info :seed-networks!/starting {:networks networks})
+  (log/finer :seed-networks!/starting {:networks networks})
   (doseq [[chain-name network-names] networks]
     (if-let [chain-id (q.c.chains/find-by-name chain-name)]
       (do
-        (log/info :seed-networks!/found {:chain-id chain-id :chain-name chain-name})
+        (log/finer :seed-networks!/found {:chain-id chain-id :chain-name chain-name})
         (doseq [network-name network-names]
-          (log/info :seed-networks!/processing-network {:network-name network-name})
+          (log/finer :seed-networks!/processing-network {:network-name network-name})
           (q.c.networks/create-record
            {::m.c.networks/name network-name
             ::m.c.networks/chain chain-id})))
 
       (do
-        (log/info :seed-networks!/not-foind {:chain-name chain-name})
+        (log/finer :seed-networks!/not-foind {:chain-name chain-name})
         nil))))
 
 (defn seed-core-nodes!
@@ -417,7 +405,7 @@
   [core-node-data]
   (log/fine :seed-core-nodes!/starting {:core-node-data core-node-data})
   (doseq [data core-node-data]
-    (log/info :seed-core-nodes!/processing-node {:data data})
+    (log/finer :seed-core-nodes!/processing-node {:data data})
     (let [{chain-name       :chain
            network-name     :network
            ::m.c.nodes/keys [host port rpcuser rpcpass name]} data]
@@ -442,7 +430,7 @@
 (defn seed-core-peers!
   "Create peers between core nodes"
   [core-node-data]
-  (log/info :seed-core-peers!/starting {:core-node-data core-node-data})
+  (log/finer :seed-core-peers!/starting {:core-node-data core-node-data})
   (doseq [node-data core-node-data]
     (let [peers       (:peers node-data)
           target-name (::m.c.nodes/name node-data)
@@ -453,9 +441,9 @@
               remote-host (::m.c.nodes/host remote-peer)
               remote-uri  (str "http://" remote-host)]
           (if (a.c.peers/has-peer? target-peer remote-uri)
-            (log/info :seed-core-peers!/has-peer {})
+            (log/finer :seed-core-peers!/has-peer {})
             (try
-              (log/info :seed-core-peers!/no-peer {})
+              (log/finer :seed-core-peers!/no-peer {})
               (a.c.peers/add-peer! target-peer remote-uri)
               (a.c.peers/fetch-peers! target-peer)
               (catch Exception ex
@@ -464,7 +452,7 @@
 
 (defn seed-remote-nodes-remote-node!
   [user-id node-id remote-node-data]
-  (log/info
+  (log/finer
    :seed-remote-nodes-remote-node!/starting
    {:user-id          user-id
     :node-id          node-id
@@ -474,17 +462,17 @@
 
 (defn seed-remote-nodes-node!
   [user-id ln-node-data]
-  (log/info :seed-remote-nodes-node!/starting {:user-id user-id :ln-node-data ln-node-data})
+  (log/finer :seed-remote-nodes-node!/starting {:user-id user-id :ln-node-data ln-node-data})
   (let [node-name (:name ln-node-data)
         node-id (q.ln.nodes/find-by-user-and-name user-id node-name)]
-    (log/info :seed-remote-nodes-node!/found-node-id {:node-id node-id})
+    (log/finer :seed-remote-nodes-node!/found-node-id {:node-id node-id})
     (let [remote-nodes-data (:remote-nodes ln-node-data)]
       (doseq [remote-node-data remote-nodes-data]
         (seed-remote-nodes-remote-node! user-id node-id remote-node-data)))))
 
 (defn seed-remote-nodes-user!
   [user-data]
-  (log/info :seed-remote-nodes-user!/starting {:user-data user-data})
+  (log/finer :seed-remote-nodes-user!/starting {:user-data user-data})
   (let [username      (:username user-data)
         user-id       (q.users/find-by-name username)
         ln-nodes-data (:ln-nodes user-data)]
@@ -493,7 +481,7 @@
 
 (defn seed-remote-nodes!
   [users-data]
-  (log/info :seed-remote-nodes!/starting {:users-data users-data})
+  (log/finer :seed-remote-nodes!/starting {:users-data users-data})
   (doseq [user-data users-data]
     (seed-remote-nodes-user! user-data)))
 
@@ -523,16 +511,17 @@
     (seed-currencies! default-currencies)
     (seed-rate-sources! default-rate-sources)
     (seed-rates! default-rate-sources)
+
     (seed-users! users)
     (seed-categories! users)
+    (seed-wallets! users)
     (seed-accounts! users)
     (seed-transactions! users)
     (seed-ln-nodes! users)
-    (seed-wallets! users)
     (seed-addresses! [])
     (seed-remote-nodes! users)
 
-    (log/info :seed/finished {})
+    (log/finer :seed/finished {})
     (item-report)))
 
 (>defn get-seed-data
@@ -546,9 +535,9 @@
   []
   (if (config/config ::enabled)
     (if (q.settings/get-setting seeded-key)
-      (log/info :seed!/seeded {})
+      (log/finer :seed!/seeded {})
       (do
-        (log/info :seed!/not-seeded {})
+        (log/finer :seed!/not-seeded {})
         (let [seed-data (get-seed-data)]
           (try
             (seed-db! seed-data)
@@ -556,7 +545,7 @@
               (log/error :seed!/failed {:ex ex})
               (when strict (throw (RuntimeException. "seed failed" ex)))))
           (q.settings/set-setting seeded-key true))))
-    (log/info :seed!/not-enabled {})))
+    (log/finer :seed!/not-enabled {})))
 
 (comment
 

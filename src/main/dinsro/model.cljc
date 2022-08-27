@@ -14,6 +14,8 @@
    [dinsro.joins.core.tx-in :as j.c.tx-in]
    [dinsro.joins.core.tx-out :as j.c.tx-out]
    [dinsro.joins.currencies :as j.currencies]
+   [dinsro.joins.debits :as j.debits]
+   [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.joins.ln.invoices :as j.ln.invoices]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
@@ -35,6 +37,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.connections :as m.c.connections]
+   [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -43,6 +46,8 @@
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
+   [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.ln.chains :as m.ln.chains]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -71,6 +76,8 @@
    #?(:clj [dinsro.mutations.core.nodes :as mu.c.nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.c.peers])
    #?(:clj [dinsro.mutations.core.tx :as mu.c.tx])
+   #?(:clj [dinsro.mutations.debits :as mu.debits])
+   #?(:clj [dinsro.mutations.ln.accounts :as mu.ln.accounts])
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
    #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
@@ -100,6 +107,8 @@
         j.c.tx-in/attributes
         j.c.tx-out/attributes
         j.currencies/attributes
+        j.debits/attributes
+        j.ln.accounts/attributes
         j.ln.channels/attributes
         j.ln.invoices/attributes
         j.ln.nodes/attributes
@@ -121,6 +130,7 @@
         m.c.blocks/attributes
         m.c.chains/attributes
         m.c.connections/attributes
+        m.c.mnemonics/attributes
         m.c.networks/attributes
         m.c.nodes/attributes
         m.c.peers/attributes
@@ -129,6 +139,8 @@
         m.c.tx-in/attributes
         m.c.tx-out/attributes
         m.currencies/attributes
+        m.debits/attributes
+        m.ln.accounts/attributes
         m.ln.chains/attributes
         m.ln.channels/attributes
         m.ln.info/attributes
@@ -164,6 +176,8 @@
            mu.c.nodes/resolvers
            mu.c.peers/resolvers
            mu.c.tx/resolvers
+           mu.debits/resolvers
+           mu.ln.accounts/resolvers
            mu.ln.invoices/resolvers
            mu.ln.payreqs/resolvers
            mu.ln.peers/resolvers

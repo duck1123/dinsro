@@ -91,7 +91,7 @@
    ro/source-attribute ::m.categories/index
    ro/title            "Categories"})
 
-(report/defsc-report AdminIndexCategoriesReport
+(report/defsc-report AdminReport
   [_this _props]
   {ro/columns          [m.categories/name m.categories/user]
    ro/controls         {::new {:label  "New Category"

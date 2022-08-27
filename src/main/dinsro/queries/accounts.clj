@@ -109,3 +109,14 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
+
+(defn find-by-wallet
+  [wallet-id]
+  (log/info :find-by-wallet/starting {:wallet-id wallet-id})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?account-id]
+                :in    [[?wallet-id]]
+                :where [[?account-id ::m.accounts/wallet ?wallet-id]]}
+        ids (map first (xt/q db query [wallet-id]))]
+    (log/finer :find-by-wallet/finished {:ids ids})
+    ids))

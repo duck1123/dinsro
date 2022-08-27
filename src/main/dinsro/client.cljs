@@ -139,7 +139,7 @@
         target0                (dr/resolve-target app route)
         target                 (condp = target0
                                  nil               u.home/HomePage
-                                 u.admin/AdminPage u.users/AdminIndexUsersReport
+                                 u.admin/AdminPage u.users/AdminReport
                                  target0)]
     (routing/route-to! app target (or params {}))))
 

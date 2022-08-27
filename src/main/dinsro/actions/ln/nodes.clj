@@ -232,7 +232,11 @@
   [::m.ln.nodes/item => any?]
   (log/info :update-info!/starting {:id id})
   (let [client   (get-client node)
-        response (async/<!! (c.lnd-s/get-info client))
-        params   (set/rename-keys response m.ln.info/rename-map)]
-    (log/info :update-info!/saving {:id id :response response :params params})
-    (save-info! id params)))
+        response (c.lnd-s/get-info client)]
+    (log/finer :update-info!/got-channel {:response response})
+    (let [record (cs/->record response)]
+      (log/info :update-info!/converted {:record record})
+
+      (let [params (set/rename-keys record m.ln.info/rename-map)]
+        (log/finer :update-info!/saving {:id id :params params})
+        (save-info! id params)))))

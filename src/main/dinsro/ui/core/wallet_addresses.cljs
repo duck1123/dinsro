@@ -74,7 +74,8 @@
   [_this _props]
   {ro/columns          [m.c.wallet-addresses/path-index
                         m.c.wallet-addresses/address]
-   ro/controls         {::new     new-action-button
+   ro/controls         {::m.c.wallets/id {:type :uuid :label "id"}
+                        ::new     new-action-button
                         ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
@@ -83,7 +84,7 @@
    ro/row-actions      [generate-button]
    ro/row-pk           m.c.wallet-addresses/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.wallet-addresses/index
+   ro/source-attribute ::m.c.wallet-addresses/index-by-wallet
    ro/title            "Addresses"})
 
 (def ui-report (comp/factory Report))

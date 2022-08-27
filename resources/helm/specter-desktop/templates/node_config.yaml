@@ -4,4 +4,4 @@ metadata:
   name: config
 data:
   default.json: |-
-{{ .Values.walletConfig | indent 4 }}
+{{ .Values.nodeConfig | indent 4 }}

@@ -173,9 +173,21 @@
   (let [blocks    (int 1)
         address   (->bitcoin-address address-s)
         max-tries (int 1000000)
-        response  (.generateToAddress client blocks address max-tries)]
-    (log/info :generate-to-address!/finished {:resonse response})
-    response))
+        fut       (.generateToAddress client blocks address max-tries)
+        response  (async/<!! (cs/await-future fut))]
+    (log/info :generate-to-address!/response {:response response})
+    (let [{:keys [passed result]} response]
+      (if passed
+        (do
+          (log/info :generate-to-address!/passed {:result result})
+          (let [parsed-response (map cs/->record (cs/vector->vec result))]
+            (log/info :generate-to-address!/parsed {:parsed-response parsed-response})
+            parsed-response))
+        (do
+          (log/info :generate-to-address!/not-passed {:result result})
+          (let [result-obj (.get result)
+                ex         (or result-obj (RuntimeException. "did not pass"))]
+            (throw ex)))))))
 
 (defn get-peer-info
   [client]
@@ -185,7 +197,7 @@
     (let [{:keys [passed result]} response]
       (if passed
         (let [parsed-response (map cs/->record (cs/vector->vec result))]
-          (log/info :get-peer-info/parsed-response {:parsed-response parsed-response})
+          (log/finer :get-peer-info/parsed-response {:parsed-response parsed-response})
           parsed-response)
         (let [result-obj (.get result)
               ex         (or result-obj (RuntimeException. "Did not pass"))]
@@ -203,7 +215,7 @@
 
 (defn get-blockchain-info-raw
   [client]
-  (log/info :get-blockchain-info-raw/starting {:client client})
+  (log/finer :get-blockchain-info-raw/starting {:client client})
   (let [fut (.getBlockChainInfo client)
         response (async/<!! (cs/await-future fut))]
     (log/info :get-blockchain-info-raw/response {:response response})
@@ -227,7 +239,7 @@
         skip                (int 0)
         include-watch-only? false
         response (async/<!! (cs/await-future (.listTransactions client account count skip include-watch-only?)))]
-    (log/info :list-transactions-raw/finished {:response response})
+    (log/finer :list-transactions-raw/finished {:response response})
     response))
 
 (>defn list-transactions
@@ -249,7 +261,7 @@
     (let [response (:result (async/<!! (cs/await-future (.getBlock client hash))))]
       (log/finer :fetch-block-by-height/read {:response response})
       (let [converted-response (cs/->record response)]
-        (log/info :fetch-block-by-height/converted {:converted-response converted-response})
+        (log/finer :fetch-block-by-height/converted {:converted-response converted-response})
         converted-response))))
 
 (>defn add-node
@@ -264,7 +276,7 @@
     (let [ch (cs/await-future p)]
       (log/finer :add-node/awaited {:ch ch})
       (let [response (async/<!! ch)]
-        (log/info :add-node/finished {:response response})
+        (log/finer :add-node/finished {:response response})
         response))))
 
 (>defn disconnect-node
@@ -291,5 +303,5 @@
   [client tx-id-s]
   [::client string? => any?]
   (let [record (cs/->record (get-raw-transaction-raw client tx-id-s))]
-    (log/info :get-raw-transaction/finished {:record record})
+    (log/finer :get-raw-transaction/finished {:record record})
     record))

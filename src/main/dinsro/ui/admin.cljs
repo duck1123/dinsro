@@ -3,52 +3,26 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.ui.categories :as u.categories]
+   [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.debits :as u.debits]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
    [dinsro.ui.accounts :as u.accounts]
+   [dinsro.ui.transactions :as u.transactions]
    [dinsro.ui.users :as u.users]
    [lambdaisland.glogc :as log]))
 
-(defsc AdminAccounts
-  [_this {::keys [report]}]
-  {:query             [{::report (comp/get-query u.accounts/AdminIndexAccountsReport)}]
-   :initial-state     {::report {}}
-   :ident             (fn [] [:component/id ::AdminAccounts])
-   :route-segment     ["accounts"]
-   :componentDidMount (fn [this] (report/run-report! this))}
-  (dom/div {}
-    (dom/p "Admin Accounts")
-    (u.accounts/ui-admin-index-accounts report)))
-
-(defsc AdminUsers
-  [_this {::keys [report]}]
-  {:query             [{::report (comp/get-query u.users/AdminIndexUsersReport)}]
-   :initial-state     {::report {}}
-   :ident             (fn [] [:component/id ::AdminUsers])
-   :route-segment     ["users"]
-   :componentDidMount (fn [this] (report/run-report! this))}
-  (dom/div {}
-    (dom/p "Admin Users")
-    (u.users/ui-admin-index-users report)))
-
-(defsc AdminCategories
-  [_this _props]
-  {:query         []
-   :initial-state {}
-   :ident         (fn [] [:component/id ::AdminCategories])
-   :route-segment ["categories"]}
-  (dom/div {}
-    (dom/p "Admin Categories")))
-
 (defrouter AdminRouter
   [_this {:keys [current-state]}]
-  {:router-targets [u.users/AdminIndexUsersReport
-                    u.categories/AdminIndexCategoriesReport
-                    u.ln.nodes/AdminLNNodesReport
-                    u.accounts/AdminIndexAccountsReport]}
+  {:router-targets [u.users/AdminReport
+                    u.c.blocks/AdminReport
+                    u.categories/AdminReport
+                    u.ln.nodes/AdminReport
+                    u.transactions/AdminReport
+                    u.debits/AdminReport
+                    u.accounts/AdminReport]}
   (dom/div :.admin-router
     (dom/h2 {} "Admin Router")
     (case current-state
@@ -71,16 +45,25 @@
     (ui-menu
      {:items [{:key   "users"
                :name  "users"
-               :route u.users/AdminIndexUsersReport}
+               :route u.users/AdminReport}
               {:key   "categories"
                :name  "Categories"
-               :route u.categories/AdminIndexCategoriesReport}
+               :route u.categories/AdminReport}
               {:key   "ln-nodes"
                :name  "LN Nodes"
-               :route u.ln.nodes/AdminLNNodesReport}
+               :route u.ln.nodes/AdminReport}
               {:key   "accounts"
                :name  "Accounts"
-               :route u.accounts/AdminIndexAccountsReport}]
+               :route u.accounts/AdminReport}
+              {:key "transactions"
+               :name "Transactions"
+               :route u.transactions/AdminReport}
+              {:key   "debits"
+               :name  "Debits"
+               :route u.debits/AdminReport}
+              {:key   "blocks"
+               :name  "Blocks"
+               :route u.c.blocks/AdminReport}]
       :onItemClick
       (fn [_e d]
         (let [route (get (js->clj d) "route")]

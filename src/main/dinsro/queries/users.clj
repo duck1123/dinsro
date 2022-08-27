@@ -8,7 +8,8 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.specs]))
+   [dinsro.specs]
+   [lambdaisland.glogc :as log]))
 
 (>defn read-record
   [user-id]
@@ -38,7 +39,7 @@
 
 (>defn find-by-transaction
   [transaction-id]
-  [::m.transactions/name => (? ::m.users/id)]
+  [::m.transactions/id => (? ::m.users/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?user-id]
                 :in    [[?transaction-id]]
@@ -88,3 +89,15 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(>defn update!
+  [id data]
+  [::m.users/id (s/keys) => ::m.users/id]
+  (log/info :update!/starting {:id id :data data})
+  (let [node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        old    (xt/pull db '[*] id)
+        params (merge old data)
+        tx     (xt/submit-tx node [[::xt/put params]])]
+    (xt/await-tx node tx)
+    id))

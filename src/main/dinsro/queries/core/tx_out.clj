@@ -68,6 +68,17 @@
                         [?tx-out-id ::m.c.tx-out/n ?n]]}]
     (ffirst (xt/q db query [tx-id n]))))
 
+(>defn find-by-tx-id-and-index
+  [tx-id n]
+  [::m.c.tx/tx-id ::m.c.tx-out/n => (? ::m.c.tx-out/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?tx-out-id]
+                :in    [[?tx-id ?n]]
+                :where [[?transaction-id ::m.c.tx/tx-id           ?tx-id]
+                        [?tx-out-id      ::m.c.tx-out/transaction ?transaction-id]
+                        [?tx-out-id      ::m.c.tx-out/n           ?n]]}]
+    (ffirst (xt/q db query [tx-id n]))))
+
 (>defn update!
   [id params]
   [::m.c.tx-out/id ::m.c.tx-out/params => any?]
@@ -77,8 +88,3 @@
         params (merge old params)
         tx     (xt/submit-tx node [[::xt/put params]])]
     (xt/await-tx node tx)))
-
-(comment
-  (index-records)
-
-  nil)

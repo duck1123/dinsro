@@ -33,7 +33,7 @@
    :core-peers            ["Peers"             "/core/peers"        :dinsro.ui.core.peers/CorePeers2Report]
    :core-transactions     ["Transactions"      "/core/transactions" :dinsro.ui.core.tx/CoreTxReport]
    :currencies            ["Currencies"        "/currencies"        :dinsro.ui.currencies/CurrenciesReport]
-   :home                  ["Home"              "/"                  :dinsro.ui.home/HomePage2]
+   :home                  ["Home"              "/"                  :dinsro.ui.home/HomePage]
    :invoices              ["Invoices"          "/ln/invoices"       :dinsro.ui.ln.invoices/LNInvoicesReport]
    :lightning-nodes       ["Lightning Nodes"   "/ln/nodes"          :dinsro.ui.ln.nodes/LightningNodesReport]
    :ln-menu               ["LN"                "/ln"                nil

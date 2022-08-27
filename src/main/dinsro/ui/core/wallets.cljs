@@ -15,6 +15,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.core.wallet-accounts :as u.c.wallet-accounts]
    [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
    [dinsro.ui.core.wallet-words :as u.c.wallet-words]
    [lambdaisland.glogc :as log]))
@@ -56,7 +57,6 @@
   {fo/id             m.c.wallets/id
    fo/action-buttons (concat [::create] form/standard-action-buttons)
    fo/attributes     [m.c.wallets/name
-                      m.c.wallets/node
                       m.c.wallets/user]
 
    fo/controls     (merge form/standard-controls {::create create-button})
@@ -108,7 +108,6 @@
    fo/action-buttons (concat [::roll] form/standard-action-buttons)
    fo/attributes     [m.c.wallets/id
                       m.c.wallets/name
-                      m.c.wallets/node
                       m.c.wallets/derivation
                       m.c.wallets/key
                       j.c.wallets/words]
@@ -138,15 +137,17 @@
 
 (defsc ShowWallet
   "Show a wallet"
-  [this {::m.c.wallets/keys [id name derivation key node]
-         :ui/keys           [addresses words]
+  [this {::m.c.wallets/keys [id name derivation key network user]
+         :ui/keys           [addresses words accounts]
          :as                props}]
   {:route-segment ["wallets" :id]
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
                    ::m.c.wallets/derivation
-                   {::m.c.wallets/node (comp/get-query u.links/CoreNodeLinkForm)}
+                   {::m.c.wallets/network (comp/get-query u.links/NetworkLinkForm)}
+                   {::m.c.wallets/user (comp/get-query u.links/UserLinkForm)}
                    ::m.c.wallets/key
+                   {:ui/accounts (comp/get-query u.c.wallet-accounts/SubPage)}
                    {:ui/addresses (comp/get-query u.c.wallet-addresses/SubPage)}
                    {:ui/words (comp/get-query u.c.wallet-words/SubPage)}
                    [df/marker-table '_]]
@@ -154,13 +155,15 @@
                    ::m.c.wallets/name       ""
                    ::m.c.wallets/derivation ""
                    ::m.c.wallets/key        ""
-                   ::m.c.wallets/node       {}
+                   ::m.c.wallets/network    {}
+                   ::m.c.wallets/user       {}
                    :ui/addresses            {}
                    :ui/words                {}}
    :ident         ::m.c.wallets/id
    :pre-merge     (u.links/page-merger
                    ::m.c.wallets/id
-                   {:ui/addresses u.c.wallet-addresses/SubPage
+                   {:ui/accounts     u.c.wallet-accounts/SubPage
+                    :ui/addresses u.c.wallet-addresses/SubPage
                     :ui/words     u.c.wallet-words/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::ShowWallet)}
   (log/info :ShowWallet/creating {:id id :props props :this this})
@@ -175,20 +178,22 @@
       (dom/p :.ui.segment "Name: " (str name))
       (dom/p :.ui.segment "Derivation: " (str derivation))
       (dom/p :.ui.segment "Key: " (str key))
-      (dom/p :.ui.segment "Node: " (u.links/ui-core-node-link node)))
+      (dom/p :.ui.segment "Network: " (u.links/ui-network-link network))
+      (dom/p :.ui.segment "User: " (u.links/ui-user-link user)))
     (if id
       (comp/fragment
        (dom/div :.ui.segment
-         (u.c.wallet-addresses/ui-sub-page addresses))
+         (u.c.wallet-words/ui-sub-page words))
        (dom/div :.ui.segment
-         (u.c.wallet-words/ui-sub-page words)))
+         (u.c.wallet-accounts/ui-sub-page accounts))
+       (dom/div :.ui.segment
+         (u.c.wallet-addresses/ui-sub-page addresses)))
 
       (dom/p {} "id not set"))))
 
 (report/defsc-report WalletsReport
   [this props]
   {ro/columns          [m.c.wallets/name
-                        m.c.wallets/node
                         m.c.wallets/user]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-action-button}

@@ -27,6 +27,29 @@
          (log/info :do-index/results {:idents idents})
          {::m.c.blocks/index idents}))))
 
+#?(:clj
+   (defn do-admin-index
+     [{:keys [query-params]} props]
+     (log/info :do-admin-index/starting
+               {:props        props
+                :query-params query-params})
+     (let [{node-id ::m.c.nodes/id} query-params]
+       (log/info :do-admin-index/params-parsed {:node-id node-id})
+       (let [ids    (if node-id
+                      (q.c.blocks/find-by-node node-id)
+                      (q.c.blocks/index-ids))
+             idents (m.c.blocks/idents ids)]
+         (log/info :do-admin-index/results {:idents idents})
+         {::m.c.blocks/admin-index idents}))))
+
+(defattr admin-index ::m.c.blocks/admin-index :ref
+  {ao/target    ::m.c.blocks/id
+   ao/pc-output [{::m.c.blocks/admin-index [::m.c.blocks/id]}]
+   ao/pc-resolve
+   (fn [env props]
+     #?(:clj  (do-admin-index env props)
+        :cljs (let [_ [env props]] {::m.c.blocks/admin-index []})))})
+
 (defattr index ::m.c.blocks/index :ref
   {ao/target    ::m.c.blocks/id
    ao/pc-output [{::m.c.blocks/index [::m.c.blocks/id]}]
@@ -47,4 +70,5 @@
 
 (def attributes
   [index
+   admin-index
    transactions])

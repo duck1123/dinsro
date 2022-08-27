@@ -86,3 +86,4 @@ affinity: {}
 persistence:
   size: 1G
   # existingClaim: {}
+  certs: {}

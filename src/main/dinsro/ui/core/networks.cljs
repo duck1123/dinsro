@@ -8,30 +8,38 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.core.network-blocks :as u.c.network-blocks]
    [dinsro.ui.core.network-ln-nodes :as u.c.network-ln-nodes]
-   [dinsro.ui.core.network-nodes :as u.c.network-nodes]))
+   [dinsro.ui.core.network-nodes :as u.c.network-nodes]
+   [dinsro.ui.core.network-wallets :as u.c.network-wallets]))
 
 (def override-form false)
 
 (defsc ShowNetwork
   [_this {::m.c.networks/keys [chain name]
-          :ui/keys            [nodes ln-nodes]}]
+          :ui/keys            [blocks nodes ln-nodes wallets]}]
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
+                   {:ui/blocks (comp/get-query u.c.network-blocks/SubPage)}
                    {:ui/nodes (comp/get-query u.c.network-nodes/SubPage)}
-                   {:ui/ln-nodes (comp/get-query u.c.network-ln-nodes/SubPage)}]
-   :initial-state {::m.c.networks/id    {}
+                   {:ui/ln-nodes (comp/get-query u.c.network-ln-nodes/SubPage)}
+                   {:ui/wallets (comp/get-query u.c.network-wallets/SubPage)}]
+   :initial-state {::m.c.networks/id    nil
                    ::m.c.networks/name  ""
                    ::m.c.networks/chain {}
+                   :ui/blocks {}
                    :ui/nodes            {}
-                   :ui/ln-nodes         {}}
+                   :ui/ln-nodes         {}
+                   :ui/wallets          {}}
    :route-segment ["network" :id]
    :pre-merge     (u.links/page-merger
                    ::m.c.networks/id
-                   {:ui/ln-nodes u.c.network-ln-nodes/SubPage
-                    :ui/nodes    u.c.network-nodes/SubPage})
+                   {:ui/blocks   u.c.network-blocks/SubPage
+                    :ui/ln-nodes u.c.network-ln-nodes/SubPage
+                    :ui/nodes    u.c.network-nodes/SubPage
+                    :ui/wallets  u.c.network-wallets/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
   (comp/fragment
    (dom/div :.ui.segment
@@ -39,8 +47,10 @@
      (dom/div {}
        (dom/span {} "Chain: ")
        (u.links/ui-chain-link chain)))
+   (u.c.network-blocks/ui-sub-page blocks)
    (u.c.network-nodes/ui-sub-page nodes)
-   (u.c.network-ln-nodes/ui-sub-page ln-nodes)))
+   (u.c.network-ln-nodes/ui-sub-page ln-nodes)
+   (u.c.network-wallets/ui-sub-page wallets)))
 
 (form/defsc-form CoreNetworkForm
   [this props]

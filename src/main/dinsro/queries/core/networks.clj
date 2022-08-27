@@ -104,3 +104,16 @@
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
+
+(>defn find-by-core-node
+  [core-node-id]
+  [::m.c.nodes/id => (? ::m.c.networks/id)]
+  (log/finer :find-by-core-node/starting
+             {:core-node-id core-node-id})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?network-id]
+                :in    [[?core-node-id]]
+                :where [[?core-node-id ::m.c.nodes/network ?network-id]]}
+        id    (ffirst (xt/q db query [core-node-id]))]
+    (log/info :find-by-core-node/finished {:id id})
+    id))

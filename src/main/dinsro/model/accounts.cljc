@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.report :as report]
    [com.wsscode.pathom.connect :as pc]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
@@ -63,6 +64,15 @@
    ao/schema      :production
    ao/target      ::m.rate-sources/id})
 
+(s/def ::wallet (s/or :id ::m.c.wallets/id
+                      :nil nil?))
+(defattr wallet ::wallet :ref
+  {ao/cardinality :one
+   ao/identities  #{::id}
+   ao/schema      :production
+   ao/target      ::m.c.wallets/id
+   ::report/column-EQL {::wallet [::m.c.wallets/id ::m.c.wallets/name]}})
+
 (s/def ::user ::m.users/id)
 (defattr user ::user :ref
   {ao/cardinality      :one
@@ -80,14 +90,14 @@
   "Required params for accounts"
   ::required-params)
 (s/def ::params (s/keys :req [::currency ::initial-value ::name ::user]
-                        :opt [::source]))
+                        :opt [::source ::wallet]))
 (s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::user]
-                      :opt [::source]))
+                      :opt [::source ::wallet]))
 
 (defn idents
   [ids]
   (mapv (fn [id] {::id id}) ids))
 
-(def attributes [currency id initial-value name source user])
+(def attributes [currency id initial-value name source user wallet])
 
 #?(:clj (def resolvers []))

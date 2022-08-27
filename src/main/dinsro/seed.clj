@@ -2,15 +2,11 @@
   (:require
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]
-   [reitit.coercion.spec]
-   [tick.alpha.api :as tick]))
+   [dinsro.specs :refer [->inst]]
+   [reitit.coercion.spec]))
 
 (def default-password m.users/default-password)
 (def default-timezone "America/Detroit")
-
-(defn ->inst
-  [s]
-  (tick/instant (tick/in (tick/date-time s) default-timezone)))
 
 (defn bitcoin
   "converts btc to sats"
@@ -50,16 +46,33 @@
    ::m.c.nodes/rpcuser "rpcuser"
    ::m.c.nodes/rpcpass "rpcpassword"})
 
+;; universe loud stable patrol artwork chimney acoustic chief one use object gossip enter green scout brother worry fancy olive salmon chef repair hospital milk
+
 (def wallet-1
   {:label       "a"
    :blockheight 0
    :name        "Wallet A"
    :descriptor  "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"
-   :seed        ["universe" "loud" "stable" "patrol" "artwork" "chimney" "acoustic" "chief" "one"
-                 "use" "object" "gossip" "enter" "green" "scout" "brother" "worry" "fancy" "olive"
-                 "salmon" "chef" "repair" "hospital" "milk"]
+   :seed        ["universe" "loud"   "stable" "patrol"  "artwork"  "chimney"
+                 "acoustic" "chief"  "one"    "use"     "object"   "gossip"
+                 "enter"    "green"  "scout"  "brother" "worry"    "fancy"
+                 "olive"    "salmon" "chef"   "repair"  "hospital" "milk"]
    :node        "bitcoin-alice"
    :path        "m/84'/0'/0'"})
+
+(def wallet-2
+  {:label        "a"
+   :blockheight  0
+   :name         "Wallet B"
+   :descriptor   ""
+   :bip39seed    "88eb1087c7e97a9c7f1895e4e42a2e64bdc51b5364c8c80e3ab7041b9267ae747b3a108c85cd57f23c0788b200bd9844c80c62888f5affb1e3939d5e9750d145"
+   :bip32rootkey "tprv8ZgxMBicQKsPehNiYwinuVTeh9GzDmr8ToRZ6z4jYXynkwJi9bQPfhGwJ2q7GBKkpuQcWwktyzqYm33NKc6cMCRYJXn6BakdYbT9TLvnJx8"
+   :seed         ["violin" "bleak"  "raw"  "mistake" "toddler" "wire"
+                  "kind"   "state"  "aim"  "game"    "glass"   "peace"
+                  "bone"   "luxury" "list" "flash"   "music"   "impulse"
+                  "naive"  "type"   "wet"  "reform"  "panic"   "expand"]
+   :node         "bitcoin-alice"
+   :path         "m/84'/0'/0'"})
 
 (def default-rates
   [{:rate 1813.
@@ -99,7 +112,11 @@
    {:rate 4647.
     :date (->inst "2022-07-09T09:50:00")}
    {:rate 4705.
-    :date (->inst "2022-08-20T09:13:00")}])
+    :date (->inst "2022-08-20T09:13:00")}
+   {:rate 5051.
+    :date (->inst "2022-09-03T18:50:00")}
+   {:rate 5027.
+    :date (->inst "2022-09-05T11:06:00")}])
 
 (def sat-rates
   [{:rate 1.
@@ -248,11 +265,6 @@
    {:name "Admin Category B"}
    {:name "Admin Category C"}])
 
-(def alice-categories
-  [{:name "Category A"}
-   {:name "Category B"}
-   {:name "Category C"}])
-
 (def bob-categories
   [{:name "Bob's Category A"}
    {:name "Bob's Category B"}
@@ -271,84 +283,101 @@
     :date        (->inst "2021-10-01T01:00:00")
     :value       400.}])
 
-(def bob-usd-transactions
-  [{:description "Payday"
-    :date        (->inst "2021-10-01T00:00:00")
-    :value       2000.}
-   {:description "Transfer to exchange"
-    :date        (->inst "2021-10-01T01:00:00")
-    :value       -600.}])
-
 (def bob-sat-transactions
   [{:description "Transfer to exchange"
     :date        (->inst "2021-10-01T01:00:00")
     :value       600.}])
 
-(def alice-accounts
-  [{:name          "Bank Account"
-    :initial-value 0
-    :source        "DuckBitcoin"
-    :transactions  alice-usd-transactions}
-   {:name          "Exchange USD"
-    :initial-value 0
-    :source        "DuckBitcoin"
-    :transactions  alice-sat-transactions}
-   {:name          "Cash"
-    :source        "DuckBitcoin"
-    :initial-value 0}
-   {:name          "Exchange Sats"
-    :initial-value 0
-    :source        "identity"}
-   {:name          "LND1 On-chain"
-    :initial-value 0
-    :source        "identity"}])
-
-(def bob-accounts
-  [{:name          "LND2 On-chain"
-    :initial-value 0
-    :source        "identity"}])
+(def bank-account "Alice's Bank Account")
+(def exchange-usd "Exchange USD")
+(def exchange-sats "Exchange sats")
+(def wallet-a-account "Wallet A")
+(def bob-bank "Bank Account")
+(def bob-exchange "Bob's Exchange")
 
 (def admin-data
-  {:username   "admin"
-   :password   m.users/default-password
-   :accounts   []
-   :wallets    [wallet-1]
-   :categories admin-categories})
+  {:username     "admin"
+   :password     m.users/default-password
+   :role         :account.role/admin
+   :accounts     []
+   :transactions []
+   :ln-nodes     []
+   :wallets      []
+   :categories   admin-categories})
 
 (def alice-data
-  {:username   "alice"
-   :password   m.users/default-password
-   :accounts   alice-accounts
-   :categories alice-categories
-   :ln-nodes   [lnd1]
-   :wallets    []})
+  {:username     "alice"
+   :password     m.users/default-password
+   :role         :account.role/user
+   :accounts     [{:name bank-account :initial-value 0 :source "DuckBitcoin"}
+                  {:name exchange-usd :initial-value 0 :source "DuckBitcoin"}
+                  {:name "Cash" :source "DuckBitcoin" :initial-value 0}
+                  {:name exchange-sats :initial-value 0 :source "identity"}
+                  {:name wallet-a-account :initial-value 0 :source "identity" :wallet "Wallet A"}
+                  {:name "LND1 On-chain" :initial-value 0 :source "identity"}]
+   :categories   [{:name "Category A"}
+                  {:name "Category B"}
+                  {:name "Category C"}]
+   :transactions [{:date        (->inst "2022-09-03T16:30:00")
+                   :description "Initial deposit"
+                   :debits      [{:value 2000. :account bank-account}]}
+                  {:date        (->inst "2022-09-03T16:32:00")
+                   :description "Transfer to exchange"
+                   :debits      [{:value -100. :account bank-account}
+                                 {:value 100. :account exchange-usd}]}
+                  {:date        (->inst "2022-09-03T16:35:00")
+                   :description "Buy Bitcoin"
+                   :debits      [{:value -50. :account exchange-usd}
+                                 {:value 5000000000. :account exchange-sats}]}
+                  {:date        (->inst "2022-09-03T16:38:00")
+                   :description "withdraw sats"
+                   :debits      [{:value -5000000000. :account exchange-sats}
+                                 {:value 5000000000. :account wallet-a-account}]}]
+   :ln-nodes     [lnd1]
+   :wallets      [wallet-1]})
 
 (def bob-data
-  {:username   "bob"
-   :password   m.users/default-password
-   :accounts   bob-accounts
-   :categories bob-categories
-   :ln-nodes   [lnd2]})
+  {:username     "bob"
+   :password     m.users/default-password
+   :role         :account.role/user
+   :accounts     [{:name bob-bank :initial-value 0 :source "DuckBitcoin"}
+                  {:name bob-exchange :initial-value 0 :source "DuckBitcoin"}
+                  {:name "LND2 On-chain" :initial-value 0 :source "identity"}]
+   :transactions [{:date        (->inst "2022-09-05T10:57:00")
+                   :description "Payday"
+                   :debits      [{:value 2000. :account bob-bank}]}
+                  {:date        (->inst "2022-09-05T10:59:00")
+                   :description "Transfer to exchange"
+                   :debits      [{:value -600. :account bob-bank}
+                                 {:value 600. :account bob-exchange}]}]
+   :categories   bob-categories
+   :ln-nodes     [lnd2]
+   :wallets      [wallet-2]})
 
 (def carol-data
-  {:username "carol"
-   :password m.users/default-password
+  {:username     "carol"
+   :password     m.users/default-password
+   :role         :account.role/user
+   :transactions []
    :categories
    [{:name "Category A"}
     {:name "Category B"}
     {:name "Category C"}]})
 
 (def dave-data
-  {:username "dave"
-   :password m.users/default-password
+  {:username     "dave"
+   :password     m.users/default-password
+   :role         :account.role/user
+   :transactions []
    :categories
    [{:name "Category A"}
     {:name "Category B"}
     {:name "Category C"}]})
 
 (def eve-data
-  {:username "eve"
-   :password m.users/default-password
+  {:username     "eve"
+   :password     m.users/default-password
+   :transactions []
    :categories
    [{:name "Category A"}
     {:name "Category B"}

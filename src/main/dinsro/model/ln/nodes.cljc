@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    #?(:clj [dinsro.components.config :refer [config]])
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.specs :as ds]))
@@ -53,6 +54,13 @@
    ao/target     ::m.c.nodes/id
    ao/schema     :production
    ::report/column-EQL {::core-node [::m.c.nodes/id ::m.c.nodes/name]}})
+
+(>def ::network uuid?)
+(defattr network ::network :ref
+  {ao/identities       #{::id}
+   ao/target           ::m.c.networks/id
+   ao/schema           :production
+   ::report/column-EQL {::network [::m.c.networks/id ::m.c.networks/name]}})
 
 (>def ::host string?)
 (defattr host ::host :string
@@ -118,9 +126,9 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::required-params (s/keys :req [::name ::host ::port ::core-node ::fileserver-host]))
-(>def ::params  (s/keys :req [::name ::host ::port ::user ::core-node ::fileserver-host]))
-(>def ::item (s/keys :req [::id ::name ::host ::port ::user ::core-node ::fileserver-host]))
+(>def ::required-params (s/keys :req [::name ::host ::port ::network ::core-node ::fileserver-host]))
+(>def ::params  (s/keys :req [::name ::host ::port ::user ::network ::core-node ::fileserver-host]))
+(>def ::item (s/keys :req [::id ::name ::host ::port ::user ::network ::core-node ::fileserver-host]))
 (>def ::items (s/coll-of ::item))
 (>def ::ident (s/tuple keyword? ::id))
 
@@ -152,4 +160,5 @@
      (io/file (macaroon-path id))))
 
 (def attributes
-  [id name user host fileserver-host port mnemonic hasCert? hasMacaroon? unlocked? initialized? core-node])
+  [id name user host fileserver-host port mnemonic hasCert? hasMacaroon?
+   unlocked? initialized? core-node network])

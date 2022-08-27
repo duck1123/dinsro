@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.ui.ln.accounts :as u.ln.accounts]
    [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
@@ -14,7 +15,8 @@
 
 (defrouter LnRouter
   [_this _props]
-  {:router-targets [u.ln.channels/LNChannelForm
+  {:router-targets [u.ln.accounts/Report
+                    u.ln.channels/LNChannelForm
                     u.ln.channels/LNChannelsReport
                     u.ln.invoices/LNInvoiceForm
                     u.ln.invoices/LNInvoicesReport

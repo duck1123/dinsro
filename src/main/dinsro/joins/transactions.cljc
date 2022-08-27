@@ -8,17 +8,30 @@
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    #?(:clj [dinsro.queries.users :as q.users])
-   [dinsro.specs]))
+   [dinsro.specs]
+   [lambdaisland.glogc :as log]))
 
 (defattr index ::m.transactions/index :ref
   {ao/target    ::m.transactions/id
    ao/pc-output [{::m.transactions/index [::m.transactions/id]}]
    ao/pc-resolve
-   (fn [env _]
+   (fn [{:keys [query-params]
+         :as env} _]
+     (log/info :index/starting {:query-params query-params})
      (comment env)
      (let [ids #?(:clj (let [user-id (a.authentication/get-user-id env)]
-                         (q.transactions/find-by-user user-id)) :cljs [])]
+                         (q.transactions/find-by-user user-id))
+                  :cljs [])]
        {::m.transactions/index (m.transactions/idents ids)}))})
+
+(defattr admin-index ::m.transactions/admin-index :ref
+  {ao/target    ::m.transactions/id
+   ao/pc-output [{::m.transactions/admin-index [::m.transactions/id]}]
+   ao/pc-resolve
+   (fn [env _]
+     (comment env)
+     (let [ids #?(:clj (q.transactions/index-ids) :cljs [])]
+       {::m.transactions/admin-index (m.transactions/idents ids)}))})
 
 (defattr user ::m.transactions/user :ref
   {ao/cardinality      :one
@@ -31,4 +44,4 @@
        {::m.transactions/user (m.users/ident user-id)}))
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
-(def attributes [index user])
+(def attributes [admin-index index user])

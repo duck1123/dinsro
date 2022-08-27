@@ -21,6 +21,7 @@
 
 (def force-fetch-button false)
 (def override-form false)
+(def debug-page false)
 
 (defsc RefRow
   [this {::m.c.blocks/keys [fetched? height id] :as props}]
@@ -106,7 +107,6 @@
                       m.c.blocks/height
                       m.c.blocks/bits
                       m.c.blocks/chainwork
-                      m.c.blocks/node
                       m.c.blocks/difficulty
                       m.c.blocks/merkle-root
                       m.c.blocks/nonce
@@ -115,11 +115,9 @@
                       j.c.blocks/transactions]
    fo/cancel-route   ["core-blocks"]
    fo/field-styles   {::m.c.blocks/transactions   :core-tx-table
-                      ::m.c.blocks/node           :link
                       ::m.c.blocks/previous-block :link
                       ::m.c.blocks/next-block     :link}
-   fo/subforms       {::m.c.blocks/node           {fo/ui u.links/CoreNodeLinkForm}
-                      ::m.c.blocks/transactions   {fo/ui CoreBlockTxSubform}
+   fo/subforms       {::m.c.blocks/transactions   {fo/ui CoreBlockTxSubform}
                       ::m.c.blocks/previous-block {fo/ui u.links/BlockLinkForm}
                       ::m.c.blocks/next-block     {fo/ui u.links/BlockLinkForm}}
    fo/controls       (merge form/standard-controls
@@ -130,7 +128,6 @@
   (if override-form
     (form/render-layout this props)
     (dom/div {}
-      "foo"
       (form/render-layout this props))))
 
 (defn find-control
@@ -157,15 +154,16 @@
                         controls)
         txid-value (first (filter identity values))
         block-id   (::control/value (find-control controls ::block-id))
-        node-id    (second (::control/value (find-control controls ::node-id)))]
+        network-id (::control/value (find-control controls ::network-id))
+        _node-id   (second (::control/value (find-control controls ::node-id)))]
     (log/info :tx/searching {:props       props
                              :current-row current-row
                              :txid-value  txid-value
                              :values      values})
     (comp/transact! this
                     [(mu.c.blocks/search!
-                      {::m.c.blocks/block block-id
-                       ::m.c.blocks/node  node-id})])
+                      {::m.c.blocks/block   block-id
+                       ::m.c.blocks/network network-id})])
     (control/run! this)))
 
 (def search-control
@@ -196,13 +194,11 @@
    :req [::m.c.blocks/id
          ::m.c.blocks/hash
          ::m.c.blocks/height
-         ::m.c.blocks/fetched?
-         ::m.c.blocks/node]))
+         ::m.c.blocks/fetched?]))
 (s/def ::row-keywords #{::m.c.blocks/id
                         ::m.c.blocks/hash
                         ::m.c.blocks/height
-                        ::m.c.blocks/fetched?
-                        ::m.c.blocks/node})
+                        ::m.c.blocks/fetched?})
 (s/def ::row2
   (s/and
    (s/every-kv
@@ -255,15 +251,21 @@
                          :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
                    "unfetched")
                  ")")))
-      (dom/p {}  (str "Hash: " hash))
-      (dom/p {}  (str "Weight: " weight))
-      (dom/p {}  (str "Nonce: " nonce))
-      (dom/p {}  (str "Network: ") (u.links/ui-network-link network))
-      (dom/button {:onClick (fn [_e]
-                              (log/info :ShowBlock/fetch-button-clicked {})
-                              (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+      (dom/dl {}
+              (dom/dt {} "Hash")
+              (dom/dd {} hash)
+              (dom/dt {} "Weight")
+              (dom/dd {} weight)
+              (dom/dt {} "Nonce")
+              (dom/dd {} nonce)
+              (dom/dt {} "Network")
+              (dom/dd {} (u.links/ui-network-link network)))
+      (when debug-page
+        (dom/button {:onClick (fn [_e]
+                                (log/info :ShowBlock/fetch-button-clicked {})
+                                (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
 
-        "Fetch")
+          "Fetch"))
       (when previous-block (dom/p {} "Previous: " (u.links/ui-block-height-link previous-block)))
       (when next-block (dom/p {} "Next: " (u.links/ui-block-link next-block))))
     (if id
@@ -276,12 +278,10 @@
   [_this _props]
   {ro/columns          [m.c.blocks/hash
                         m.c.blocks/height
-                        m.c.blocks/fetched?
-                        m.c.blocks/node]
+                        m.c.blocks/fetched?]
    ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)
-                        ::m.c.blocks/node #(u.links/ui-core-node-link %2)}
+   ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Core Blocks"
    ro/row-actions      [delete-action-button]
@@ -290,3 +290,18 @@
    ro/route            "blocks"})
 
 (def ui-blocks-report (comp/factory CoreBlockReport))
+
+(report/defsc-report AdminReport
+  [_this _props]
+  {ro/columns          [m.c.blocks/hash
+                        m.c.blocks/height
+                        m.c.blocks/fetched?]
+   ro/controls         {::refresh u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::refresh]}
+   ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
+   ro/source-attribute ::m.c.blocks/admin-index
+   ro/title            "Admin Core Blocks"
+   ro/row-actions      [delete-action-button]
+   ro/row-pk           m.c.blocks/id
+   ro/run-on-mount?    true
+   ro/route            "blocks"})

@@ -29,16 +29,22 @@ spec:
       serviceAccountName: {{ include "specter-desktop.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
+      # initContainers:
+      #   - name: copy-node-config
+      #     image: duck1123/specter-config-manager:latest
+      #     volumeMounts:
+      #       - name: specter
+      #         mountPath: /data
+      #       - name: config
+      #         mountPath: /data-config
+      containers:
         - name: copy-node-config
           image: duck1123/specter-config-manager:latest
-          # command: ['sh', '-c', 'set -x; ls -al /data-config && mkdir -p /data/.specter/nodes/ && cp /data-config/default.json /data/.specter/nodes/default.json']
           volumeMounts:
             - name: specter
               mountPath: /data
             - name: config
               mountPath: /data-config
-      containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

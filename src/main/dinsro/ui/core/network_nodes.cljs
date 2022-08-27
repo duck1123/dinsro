@@ -11,9 +11,10 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.nodes/name]
+  {ro/columns          [m.c.nodes/name
+                        m.c.nodes/host]
    ro/controls         {::refresh      u.links/refresh-control
-                        ::m.c.nodes/id {:type :uuid :label "Nodes"}}
+                        ::m.c.networks/id {:type :uuid :label "Nodes"}}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
    ro/source-attribute ::m.c.nodes/index

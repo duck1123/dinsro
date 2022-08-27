@@ -58,16 +58,6 @@
                 :where [[?node-id ::m.c.nodes/name ?name]]}]
     (ffirst (xt/q db query name))))
 
-(>defn find-by-block
-  "Find the node associated with a block"
-  [block-id]
-  [::m.c.blocks/id => (? ::m.c.nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?node-id]
-                :in    [?block-id]
-                :where [[?block-id ::m.c.blocks/node ?node-id]]}]
-    (ffirst (xt/q db query block-id))))
-
 (>defn find-by-network
   "Find all nodes associated with a network"
   [network-id]
@@ -76,7 +66,7 @@
         query '{:find  [?node-id]
                 :in    [[?network-id]]
                 :where [[?node-id ::m.c.nodes/network ?network-id]]}]
-    (ffirst (xt/q db query [network-id]))))
+    (map first (xt/q db query [network-id]))))
 
 (>defn find-by-ln-node
   [ln-node-id]
@@ -86,16 +76,6 @@
                 :in    [?ln-node-id]
                 :where [[?ln-node-id ::m.ln.nodes/core-node ?core-node-id]]}]
     (ffirst (xt/q db query ln-node-id))))
-
-(>defn find-by-tx
-  [tx-id]
-  [::m.c.tx/id => (? ::m.c.nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?node-id]
-                :in    [?tx-id]
-                :where [[?block-id ::m.c.blocks/node ?node-id]
-                        [?tx-id ::m.c.tx/block ?block-id]]}]
-    (ffirst (xt/q db query tx-id))))
 
 (>defn update-blockchain-info
   [id props]
@@ -126,3 +106,17 @@
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
+
+(defn find-by-tx
+  [tx-id]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?node-id]
+                :in    [[?tx-id]]
+                :where [[?tx-id ::m.c.tx/block ?block-id]
+                        [?block-id ::m.c.blocks/network ?network-id]
+                        [?node-id ::m.c.nodes/network ?network-id]]}]
+    (ffirst (xt/q db query [tx-id]))))
+
+(defn find-by-user
+  [_user-id]
+  (index-ids))

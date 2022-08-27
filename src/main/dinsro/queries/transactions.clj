@@ -7,9 +7,11 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]
    [xtdb.api :as xt]))
 
@@ -18,11 +20,14 @@
 (>defn find-by-account
   [id]
   [::m.accounts/id => (s/coll-of ::m.transactions/id)]
+  (log/info :find-by-account/starting {:account-id id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?id]
                 :in    [?account-id]
-                :where [[?id ::m.transactions/account ?account-id]]}]
-    (map first (xt/q db query id))))
+                :where [[?id ::m.transactions/account ?account-id]]}
+        ids (map first (xt/q db query id))]
+    (log/info :find-by-account/finished {:ids ids})
+    ids))
 
 (>defn find-by-category
   [id]
@@ -43,18 +48,23 @@
     (map first (xt/q db query id))))
 
 (>defn find-by-user
-  [id]
+  [user-id]
   [::m.users/id => (s/coll-of ::m.transactions/id)]
+  (log/info :find-by-user/starting {:user-id user-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?transaction-id]
-                :in    [?user-id]
-                :where [[?transaction-id ::m.transactions/account ?account-id]
-                        [?account-id ::m.accounts/user ?user-id]]}]
-    (map first (xt/q db query id))))
+                :in    [[?user-id]]
+                :where [[?debit-id ::m.debits/account ?account-id]
+                        [?debit-id ::m.debits/transaction ?transaction-id]
+                        [?account-id ::m.accounts/user ?user-id]]}
+        ids (map first (xt/q db query [user-id]))]
+    (log/info :find-by-user/finished {:ids ids})
+    ids))
 
 (>defn create-record
   [params]
   [::m.transactions/params => :xt/id]
+  (log/info :create-record/starting {:params params})
   (let [node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (-> params
@@ -69,7 +79,7 @@
   [:xt/id => (? ::m.transactions/item)]
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
-    (when (get record ::m.transactions/value)
+    (when (get record ::m.transactions/id)
       (-> record
           (update ::m.transactions/date tick/instant)
           (dissoc :xt/id)))))
@@ -79,7 +89,7 @@
   [=> (s/coll-of :xt/id)]
   (let [db (c.xtdb/main-db)
         query '{:find [?e]
-                :where [[?e ::m.transactions/value _]]}]
+                :where [[?e ::m.transactions/id _]]}]
     (map first (xt/q db query))))
 
 (>defn index-records

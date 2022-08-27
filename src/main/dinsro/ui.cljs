@@ -51,9 +51,9 @@
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]
   {:css            [[:.rootrouter {:height "100%"}]]
-   :router-targets [u.accounts/AccountForm
-                    u.accounts/AccountsReport
+   :router-targets [u.accounts/AccountsReport
                     u.accounts/NewAccountForm
+                    u.accounts/ShowAccount
                     u.admin/AdminPage
                     u.categories/AdminCategoryForm
                     u.categories/CategoryForm
@@ -68,11 +68,13 @@
                     u.home/HomePage
                     u.login/LoginPage
                     u.ln/LnPage
+                    u.rate-sources/ShowRateSource
                     u.rate-sources/RateSourceForm
                     u.rate-sources/RateSourcesReport
                     u.rates/RateForm
                     u.rates/RatesReport
                     u.registration/RegistrationPage
+                    u.transactions/ShowTransaction
                     u.transactions/TransactionForm
                     u.transactions/TransactionsReport
                     u.users/AdminUserForm

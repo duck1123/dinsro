@@ -6,8 +6,9 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.client.converters.get-block-result :as c.c.get-block-result]
    [dinsro.model.core.networks :as m.c.networks]
-   [dinsro.model.core.nodes :as m.c.nodes]
+   ;; [dinsro.model.core.nodes :as m.c.nodes]
    [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]))
 
@@ -128,24 +129,30 @@
    ao/schema           :production
    ::report/column-EQL {::previous-block [::id ::hash ::height]}})
 
-(s/def ::node uuid?)
-(defattr node ::node :ref
-  {ao/identities       #{::id}
-   ao/target           ::m.c.nodes/id
-   ao/schema           :production
-   ::report/column-EQL {::node [::m.c.nodes/id ::m.c.nodes/name]}})
-
 (s/def ::network uuid?)
 (defattr network ::network :ref
   {ao/identities       #{::id}
    ao/target           ::m.c.networks/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.c.networks/id ::m.c.networks/name]}})
+   ::report/column-EQL {::network [::m.c.networks/id ::m.c.networks/name]}})
 
 (s/def ::fetched? boolean?)
 (defattr fetched? ::fetched? :boolean
   {ao/identities #{::id}
    ao/schema     :production})
+
+(>def ::unprepared-params
+  (s/keys
+   :req [::network ::fetched?
+         ::c.c.get-block-result/bits
+         ::c.c.get-block-result/chainwork
+         ::c.c.get-block-result/confirmations
+         ::c.c.get-block-result/difficulty
+         ::c.c.get-block-result/hash
+         ::c.c.get-block-result/height
+         ::c.c.get-block-result/median-time
+         ::c.c.get-block-result/merkle-root
+         ::c.c.get-block-result/next-block-hash]))
 
 (s/def ::params
   (s/keys :req [::hash ::height ::fetched? ::network]
@@ -153,39 +160,38 @@
                 ::transaction-count ::median-time ::weight ::version-hex ::stripped-size
                 ::version ::next-block ::previous-block]))
 
-(>def ::unprepared-params
-  (s/keys
-   :req [::network ::fetched?]))
-
 (>defn prepare-params
   [params]
   [::unprepared-params => ::params]
   (log/finer :prepare-params/preparing {:params params})
-  (let [{:keys  [bits hash height chainwork difficulty merkle-root nonce size
-                 time tx median-time weight version-hex stripped-size version]
-         ::keys [fetched? node network]} params
-
-        time-inst         (some-> time (* 1000) tick/instant)
-        transaction-count (count tx)
-        median-time-inst  (some-> median-time (* 1000) tick/instant)]
-    {::hash              hash
-     ::height            height
-     ::node              node
-     ::fetched?          fetched?
-     ::bits              bits
-     ::chainwork         chainwork
-     ::difficulty        difficulty
-     ::merkle-root       merkle-root
-     ::nonce             nonce
-     ::network           network
-     ::size              size
-     ::time              time-inst
-     ::transaction-count transaction-count
-     ::median-time       median-time-inst
-     ::weight            weight
-     ::version-hex       version-hex
-     ::stripped-size     stripped-size
-     ::version           version}))
+  (let [{:dinsro.client.converters.get-block-result/keys
+         [bits hash height chainwork difficulty merkle-root
+          nonce size time tx median-time weight version-hex
+          stripped-size version]
+         ::keys [fetched? network]} params
+        time-inst                   (some-> time (* 1000) tick/instant)
+        transaction-count           (count tx)
+        median-time-inst            (some-> median-time (* 1000) tick/instant)
+        record                      {::hash              hash
+                                     ::height            height
+                                          ;; ::node              node
+                                     ::fetched?          fetched?
+                                     ::bits              bits
+                                     ::chainwork         chainwork
+                                     ::difficulty        difficulty
+                                     ::merkle-root       merkle-root
+                                     ::nonce             nonce
+                                     ::network           network
+                                     ::size              size
+                                     ::time              time-inst
+                                     ::transaction-count transaction-count
+                                     ::median-time       median-time-inst
+                                     ::weight            weight
+                                     ::version-hex       version-hex
+                                     ::stripped-size     stripped-size
+                                     ::version           version}]
+    (log/finer :prepare-params/finished {:record record})
+    record))
 
 (s/def ::item
   (s/keys :req [::id ::hash ::height ::network ::fetched?]

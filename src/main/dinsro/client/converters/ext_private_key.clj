@@ -20,7 +20,7 @@
 
 (>def ::record
   (s/keys
-   :req-un [::chain-code ::depth ::fingerprint ::key ::version]))
+   :req [::chain-code ::depth ::fingerprint ::key ::version]))
 
 (defn ->path
   ([]
@@ -47,12 +47,12 @@
         fingerprint (some-> this .fingerprint .toHex)
         key         (some-> this .key .hex)
         version     (some-> this .version .hex)
-        record      {:chain-code  chain-code
-                     :child-num   child-num
-                     :depth       depth
-                     :fingerprint fingerprint
-                     :key         key
-                     :version     version}]
+        record      {::chain-code  chain-code
+                     ::child-num   child-num
+                     ::depth       depth
+                     ::fingerprint fingerprint
+                     ::key         key
+                     ::version     version}]
     (log/info :ExtPrivateKey->record/finished {:record record})
     record))
 

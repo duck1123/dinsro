@@ -15,6 +15,7 @@
   [this props]
   {ro/columns          [m.c.tx-in/txid
                         m.c.tx-in/vout
+                        m.c.tx-in/tx-id
                         m.c.tx-in/sequence
                         m.c.tx-in/coinbase]
    ro/controls         {::refresh   u.links/refresh-control

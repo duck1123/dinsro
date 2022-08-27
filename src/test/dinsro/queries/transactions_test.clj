@@ -2,7 +2,6 @@
   (:require
    [clojure.test :refer [deftest use-fixtures]]
    [dinsro.mocks :as mocks]
-   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
@@ -12,16 +11,6 @@
 (def schemata [])
 
 (use-fixtures :each (fn [f] (th/start-db f schemata)))
-
-(deftest create-record-success
-  (let [account    (mocks/mock-account)
-        account-id (::m.accounts/id account)
-        params     (ds/gen-key ::m.transactions/required-params)
-        params     (assoc params ::m.transactions/account account-id)
-        id         (q.transactions/create-record params)
-        record     (q.transactions/read-record id)]
-    (assertions
-     (double (::m.transactions/value params)) => (::m.transactions/value record))))
 
 (deftest read-record-success
   (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)]

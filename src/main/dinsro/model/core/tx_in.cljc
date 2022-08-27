@@ -33,6 +33,11 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
+(s/def ::tx-id (s/or :string string? :nil nil?))
+(defattr tx-id ::tx-id :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (s/def ::sequence number?)
 (defattr sequence ::sequence :long
   {ao/identities #{::id}
@@ -76,14 +81,16 @@
   [::unprepared-params => ::params]
   (let [{::keys [transaction]
          :dinsro.client.converters.get-raw-transaction-vin/keys
-         [sequence script-sig vout]} params
-        coinbase                nil
-        prepared-params         {::sequence       sequence
-                                 ::transaction    transaction
-                                 ::vout           vout
-                                 ::script-pub-key script-sig
-                                 ::coinbase       coinbase}]
+         [sequence script-sig vout tx-in-witness tx-id]} params
+        coinbase                                   nil
+        prepared-params                            {::sequence       sequence
+                                                    ::transaction    transaction
+                                                    ::vout           vout
+                                                    ::script-pub-key script-sig
+                                                    ::tx-id tx-id
+                                                    ::tx-in-witness  tx-in-witness
+                                                    ::coinbase       coinbase}]
     (log/info :prepare-params/finished {:prepared-params prepared-params})
     prepared-params))
 
-(def attributes [id sequence transaction vout script-pub-key txid vout coinbase])
+(def attributes [id sequence transaction vout script-pub-key txid vout coinbase tx-id])

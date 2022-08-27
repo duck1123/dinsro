@@ -1,6 +1,7 @@
 (ns dinsro.ui.core.wallet-words
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -12,7 +13,8 @@
   [_this _props]
   {ro/columns          [m.c.words/word
                         m.c.words/position]
-   ro/controls         {::refresh u.links/refresh-control}
+   ro/controls         {::m.c.wallets/id {:type :uuid :label "id"}
+                        ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
    ro/row-pk           m.c.words/id
@@ -30,7 +32,19 @@
    :initial-state     {::m.c.wallets/id nil
                        :ui/report       {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/creating {:props props})
-  (ui-report report))
+  (log/info :SubPage/creating {:props props})
+  (let [{:ui/keys [current-rows]} report
+        sorted-rows               (sort-by ::m.c.words/position current-rows)
+        groups                    (partition 12 sorted-rows)]
+    (dom/div {}
+      (dom/div :.ui.grid
+        (map (fn [words]
+               (dom/div :.eight.wide.column
+                 (map
+                  (fn [row]
+                    (let [{::m.c.words/keys [position word]} row]
+                      (dom/div :.eight.wide.column (str position) ". " (str word))))
+                  words)))
+             groups)))))
 
 (def ui-sub-page (comp/factory SubPage))

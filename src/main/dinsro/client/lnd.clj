@@ -58,14 +58,14 @@
   (reify StreamObserver
     (onNext [_this message]
       (let [data (parse message)]
-        (log/info :ch-observer/onNext {:data data})
+        (log/finer :ch-observer/onNext {:data data})
         (>!! ch data)))
     (onError [_this err]
-      (log/info :ch-observer/onError {:err err})
+      (log/finer :ch-observer/onError {:err err})
       (>!! ch {:error err})
       (async/close! ch))
     (onCompleted [_this]
-      (log/info :ch-observer/onCompleted {})
+      (log/finer :ch-observer/onCompleted {})
       (async/close! ch))))
 
 (defmacro fetch-async
