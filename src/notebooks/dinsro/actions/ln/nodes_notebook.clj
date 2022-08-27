@@ -27,7 +27,7 @@
 
   nil)
 
-;; ## get-client-s
+;; ## get-client
 
 (def client (a.ln.nodes/get-client n.lnd/node))
 

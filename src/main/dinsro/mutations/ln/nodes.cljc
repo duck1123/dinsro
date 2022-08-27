@@ -111,7 +111,7 @@
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
      (if-let [node (q.ln.nodes/read-record id)]
-       (let [address (a.ln.nodes-lj/generate! node)]
+       (let [address (a.ln.nodes/generate! node)]
          {:status :ok :address address})
        {:status :not-found}))
    :cljs

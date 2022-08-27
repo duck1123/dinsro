@@ -6,12 +6,14 @@
    [clojure.core.async :as async]
    [clojure.java.io :as io]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
+   [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.specs :as ds]
    [erp12.fijit.collection :as efc]
    [lambdaisland.glogc :as log]
@@ -45,13 +47,13 @@
 (defn get-client
   "Get a bitcoin-s client"
   ^LndRpcClient [{::m.ln.nodes/keys [id name host port] :as node}]
-  (log/info :get-client-s/creating {:id id :name name})
+  (log/info :get-client/creating {:id id :name name})
   (let [url       (URI. (str "https://" host ":" port "/"))
         cert-file (Option/apply (get-cert-text node))
         macaroon  (or (get-macaroon-hex node) "")]
     (if macaroon
       (let [instance (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
-        (log/finer :get-client-s/creating {:url url :cert-file cert-file :macaroon macaroon})
+        (log/finer :get-client/creating {:url url :cert-file cert-file :macaroon macaroon})
         (c.lnd-s/get-remote-client instance))
       (throw (RuntimeException. "No macaroon")))))
 
@@ -207,3 +209,19 @@
   (let [client     (get-client node)
         passphrase default-passphrase]
     (c.lnd-s/unlock-wallet client passphrase)))
+
+(>defn get-lnd-address
+  [node]
+  [::m.ln.nodes/item => string?]
+  (log/info :get-lnd-address/starting {:node-id (::m.ln.nodes/id node)})
+  (let [client     (get-client node)]
+    (async/<!! (c.lnd-s/get-new-address client))))
+
+(defn generate!
+  [node]
+  [::m.ln.nodes/item => any?]
+  (log/info :generate!/starting {:node-id (::m.ln.nodes/id node)})
+  (let [{:keys [address]} (async/<!! (get-lnd-address node))
+        cnode             (first (q.c.nodes/index-records))]
+    (a.c.nodes/generate-to-address! cnode address)
+    address))
