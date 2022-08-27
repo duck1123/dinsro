@@ -41,7 +41,7 @@
       (bytes->hex (bs/to-byte-array f)))
     (catch FileNotFoundException _ nil)))
 
-(defn get-client-s
+(defn get-client
   "Get a bitcoin-s client"
   ^LndRpcClient [{::m.ln.nodes/keys [id name host port] :as node}]
   (log/info :get-client-s/creating {:id id :name name})
@@ -153,10 +153,10 @@
     (.nextAddr client request (c.lnd/ch-observer ch))
     ch))
 
-(defn initialize!-s
+(defn initialize!
   [node]
   (log/info :initialize!-s/starting {:node node})
-  (let [client (get-client-s node)]
+  (let [client (get-client node)]
     (c.lnd-s/initialize! client "password12345678")))
 
 (>defn save-info!
@@ -178,26 +178,26 @@
 (defn get-info
   "Fetch info for the node"
   [node]
-  (let [client (get-client-s node)
+  (let [client (get-client node)
         response (c.lnd-s/get-info client)]
     (log/info :get-info/response {:response response})
     (let [record (cs/->record response)]
       (log/info :get-info/converted {:record record})
       record)))
 
-(>defn new-address-s
+(>defn new-address
   [node]
   [::m.ln.nodes/item => any?]
-  (let [client (get-client-s node)]
+  (let [client (get-client node)]
     (c.lnd-s/get-new-address client)))
 
 (defn new-address-str
   [node]
-  (.value (new-address-s node)))
+  (.value (new-address node)))
 
-(defn unlock-sync!-s
+(defn unlock-sync!
   [node]
   (log/info :unlock-sync!-s/starting {:node-id (::m.ln.nodes/id node)})
-  (let [client     (get-client-s node)
+  (let [client     (get-client node)
         passphrase default-passphrase]
     (c.lnd-s/unlock-wallet client passphrase)))

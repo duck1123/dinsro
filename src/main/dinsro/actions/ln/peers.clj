@@ -63,7 +63,7 @@
   [node host pubkey]
   [::m.ln.nodes/item string? string? => any?]
   (log/info :create-peer!/starting {:pubkey pubkey :host host :node-id (::m.ln.nodes/id node)})
-  (let [client (a.ln.nodes/get-client-s node)]
+  (let [client (a.ln.nodes/get-client node)]
     (c.lnd-s/connect-peer! client host pubkey)))
 
 (defn create!

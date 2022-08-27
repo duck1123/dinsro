@@ -29,4 +29,4 @@
 ;; (a.ln.nodes/get-cert-text node)
 ;; (a.ln.nodes/get-macaroon-hex node)
 
-(def client (a.ln.nodes/get-client-s node))
+(def client (a.ln.nodes/get-client node))

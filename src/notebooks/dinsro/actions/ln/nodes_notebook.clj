@@ -29,7 +29,7 @@
 
 ;; ## get-client-s
 
-(def client (a.ln.nodes/get-client-s n.lnd/node))
+(def client (a.ln.nodes/get-client n.lnd/node))
 
 ;; ## get-macaroon-text
 
@@ -39,7 +39,7 @@
 
 (comment
 
-  (def f (a.ln.nodes/initialize!-s n.lnd/node))
+  (def f (a.ln.nodes/initialize! n.lnd/node))
 
   f
 
@@ -97,18 +97,18 @@
 
   (c.lnd-s/await-throwable (.genSeed n.lnd/client))
 
-  (a.ln.nodes/new-address-s n.lnd/node)
+  (a.ln.nodes/new-address n.lnd/node)
 
   n.lnd/client
 
   (.unlocker n.lnd/client)
 
-  (def a (a.ln.nodes/new-address-s n.lnd/node))
+  (def a (a.ln.nodes/new-address n.lnd/node))
   a
   (.value a)
   (a.ln.nodes/new-address-str n.lnd/node)
 
-  (a.ln.nodes/unlock-sync!-s n.lnd/node)
+  (a.ln.nodes/unlock-sync! n.lnd/node)
 
   (slurp (m.ln.nodes/cert-file (::m.ln.nodes/id n.lnd/node)))
 
