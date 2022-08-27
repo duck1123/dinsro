@@ -166,7 +166,7 @@
   [::m.users/id ::cs.ln-node/item => any?]
   (let [{:keys     [name fileserver-host host port mnemonic]
          node-name :node} node-info]
-    (log/info :seed-ln-nodes!/processing-node {:node-name node-name})
+    (log/info :seed-ln-node!/starting {:node-name node-name})
     (if-let [core-id (q.c.nodes/find-id-by-name node-name)]
       (let [ln-node {::m.ln.nodes/name            name
                      ::m.ln.nodes/core-node       core-id
@@ -176,7 +176,7 @@
                      ::m.ln.nodes/user            user-id
                      ::m.ln.nodes/mnemonic        mnemonic}
             node-id (q.ln.nodes/create-record ln-node)]
-        (log/info :seed-ln-nodes!/saved {:node-id node-id})
+        (log/info :seed-ln-node!/saved {:node-id node-id})
         (try
           (let [node (q.ln.nodes/read-record node-id)]
             (a.ln.nodes/download-cert! node)
@@ -192,7 +192,7 @@
 
                   nil))))
           (catch Exception ex
-            (log/error :seed-ln-nodes!/init-node-failed {:msg (.getMessage ex)})
+            (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
             (when strict (throw (RuntimeException. "init node failed" ex))))))
       (throw (RuntimeException. (str "Failed to find node: " node-name))))))
 
