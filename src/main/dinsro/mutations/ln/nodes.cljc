@@ -7,7 +7,6 @@
    #?(:clj [dinsro.actions.ln.channels-lj :as a.ln.channels-lj])
    #?(:clj [dinsro.actions.ln.invoices-lj :as a.ln.invoices-lj])
    #?(:clj [dinsro.actions.ln.nodes :as a.ln.nodes])
-   #?(:clj [dinsro.actions.ln.nodes-lj :as a.ln.nodes-lj])
    #?(:clj [dinsro.actions.ln.payments-lj :as a.ln.payments-lj])
    #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
    #?(:clj [dinsro.actions.ln.peers-lj :as a.ln.peers-lj])
@@ -216,7 +215,7 @@
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
      (if-let [node (q.ln.nodes/read-record id)]
-       (let [ch (a.ln.nodes-lj/update-info! node)]
+       (let [ch (a.ln.nodes/update-info! node)]
          {:status (if (nil? ch) "fail" "pass")})
        (do (log/error :update-info!/no-node {})
            {:status "fail"})))

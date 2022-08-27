@@ -5,6 +5,7 @@
    [clj-commons.byte-streams :as bs]
    [clojure.core.async :as async]
    [clojure.java.io :as io]
+   [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.core.nodes :as a.c.nodes]
    [dinsro.client.lnd :as c.lnd]
@@ -225,3 +226,13 @@
         cnode             (first (q.c.nodes/index-records))]
     (a.c.nodes/generate-to-address! cnode address)
     address))
+
+(>defn update-info!
+  [{::m.ln.nodes/keys [id] :as node}]
+  [::m.ln.nodes/item => any?]
+  (log/info :update-info!/starting {:id id})
+  (let [client   (get-client node)
+        response (async/<!! (c.lnd-s/get-info client))
+        params   (set/rename-keys response m.ln.info/rename-map)]
+    (log/info :update-info!/saving {:id id :response response :params params})
+    (save-info! id params)))
