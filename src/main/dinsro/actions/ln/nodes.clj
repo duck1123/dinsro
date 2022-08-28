@@ -6,7 +6,6 @@
    [clojure.core.async :as async]
    [clojure.java.io :as io]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [xtdb.api :as xt]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
@@ -14,7 +13,9 @@
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs :as ds]
-   [lambdaisland.glogc :as log])
+   [erp12.fijit.collection :as efc]
+   [lambdaisland.glogc :as log]
+   [xtdb.api :as xt])
   (:import
    java.io.File
    java.io.FileNotFoundException
@@ -156,8 +157,13 @@
 (defn initialize!
   [node]
   (log/info :initialize!-s/starting {:node node})
-  (let [client (get-client node)]
-    (c.lnd-s/initialize! client "password12345678")))
+  (let [client   (get-client node)
+        password "password12345678"]
+    (if-let [mnemonic (::m.ln.nodes/mnemonic node)]
+      (let [cipher-seed-mnemonic (efc/to-scala-list mnemonic)]
+        (log/info :initialize!/mnemonic {:mnemonic cipher-seed-mnemonic})
+        (c.lnd-s/initialize! client password cipher-seed-mnemonic))
+      (throw (RuntimeException. "no mnemonic")))))
 
 (>defn save-info!
   [id data]

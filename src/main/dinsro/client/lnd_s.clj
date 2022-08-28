@@ -148,11 +148,11 @@
 
 (defn initialize!
   "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#initWallet(password:String):scala.concurrent.Future[com.google.protobuf.ByteString]"
-  [^LndRpcClient client ^String password]
+  [^LndRpcClient client ^String password mnemonic]
   (log/info :initialize!/starting {:client client :password password})
   (let [unlocker-client (.unlocker client)
         wallet-password (ByteString/copyFromUtf8 "passphrase12345678")
-        request         (c.c.init-wallet-request/->request wallet-password)]
+        request         (c.c.init-wallet-request/->request wallet-password mnemonic)]
     (log/info :initialize!/request-generated {:request request})
     (let [response (.initWallet unlocker-client request)]
       (log/info :initialize!/finished {:response response})

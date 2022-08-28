@@ -116,24 +116,6 @@
   (let [node (q.ln.nodes/read-record node-id)]
     (get-lnd-address node)))
 
-(>defn initialize!
-  [{::m.ln.nodes/keys [mnemonic] :as node}]
-  [::m.ln.nodes/item => any?]
-  (with-open [client (get-unlocker-client node)]
-    (let [request (c.lnd/->init-wallet-request mnemonic "password12345678")
-          ch      (async/chan)]
-      (log/info :initialize!/starting {:request request :client client})
-      (.initWallet client request (c.lnd/ch-observer ch))
-      ch)))
-
-(>defn initialize!-sync
-  [{::m.ln.nodes/keys [mnemonic] :as node}]
-  [::m.ln.nodes/item => any?]
-  (with-open [client (get-sync-unlocker-client node)]
-    (let [request (c.lnd/->init-wallet-request mnemonic  "password12345678")]
-      (log/info :initialize-sync!/starting {:request request})
-      (.initWallet client request))))
-
 (>defn generate!
   [node]
   [::m.ln.nodes/item => any?]

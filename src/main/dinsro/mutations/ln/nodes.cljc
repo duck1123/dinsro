@@ -212,7 +212,7 @@
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
      (if-let [node (q.ln.nodes/read-record id)]
-       (do (a.ln.nodes-lj/initialize!-sync node)
+       (do (a.ln.nodes/initialize! node)
            {:status "ok"})
        (do
          (log/error :initialize!/no-node {})

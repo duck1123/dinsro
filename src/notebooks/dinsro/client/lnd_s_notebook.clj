@@ -7,6 +7,7 @@
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
+   [erp12.fijit.collection :as efc]
    [nextjournal.clerk :as clerk])
   (:import
    org.bitcoins.lnd.rpc.LndRpcClient
@@ -56,7 +57,7 @@ ZEw+de+2IU8TFQ4JWo9Y
 (comment
   (def instance nil #_(c.lnd-s/get-remote-instance))
   (def client (c.lnd-s/get-remote-client instance))
-  (c.lnd-s/initialize! n.lnd/client password)
+  (c.lnd-s/initialize! n.lnd/client password (efc/scala-list))
 
   nil)
 

@@ -187,7 +187,7 @@
                 (a.ln.peers-lj/fetch-peers! node-id))
               (do
                 (log/info :seed-ln-node!/download-macaroon-failed {})
-                (let [initialize-response (a.ln.nodes-lj/initialize! node)]
+                (let [initialize-response (a.ln.nodes/initialize! node)]
                   (log/info :seed-ln-node!/initialized {:initialize-response initialize-response})
 
                   nil))))

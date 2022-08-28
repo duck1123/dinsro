@@ -1,6 +1,8 @@
 (ns dinsro.client.converters.init-wallet-request
   (:require
-   [dinsro.client.scala :as cs])
+   [dinsro.client.scala :as cs]
+   [erp12.fijit.collection :as efc]
+   [lambdaisland.glogc :as log])
   (:import
    lnrpc.InitWalletRequest
    com.google.protobuf.ByteString
@@ -11,7 +13,7 @@
   ([]
    (->request (ByteString/copyFromUtf8 "passphrase12345678")))
   ([wallet-password]
-   (->request wallet-password nil))
+   (->request wallet-password (efc/scala-list)))
   ([wallet-password cipher-seed-mnemonic]
    (->request wallet-password cipher-seed-mnemonic ByteString/EMPTY))
   ([wallet-password cipher-seed-mnemonic aezeed-passphrase]
@@ -49,7 +51,7 @@
     channel-backups
     stateless-init
     extended-master-key
-    (int 0)))
+    (cs/uint64 0)))
   ([wallet-password
     cipher-seed-mnemonic
     aezeed-passphrase
@@ -107,6 +109,18 @@
     watch-only
     ;; ^UnknownFieldSet
     unknown-fields]
+   (log/info :->request/starting
+             {:wallet-password                        wallet-password
+              :cipher-seed-mnemonic                   cipher-seed-mnemonic
+              :aezeed-passphrase                      aezeed-passphrase
+              :recovery-window                        recovery-window
+              :channel-backups                        channel-backups
+              :stateless-init                         stateless-init
+              :extended-master-key                    extended-master-key
+              :extended-master-key-birthday-timestamp extended-master-key-birthday-timestamp
+              :watch-only                             watch-only
+              :unknown-fields                         unknown-fields})
+
    (InitWalletRequest.
     wallet-password
     cipher-seed-mnemonic
