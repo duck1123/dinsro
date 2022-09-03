@@ -45,16 +45,16 @@
   [=> (s/coll-of ::m.c.networks/item)]
   (map read-record (index-ids)))
 
-(>defn find-id-by-name
+(>defn find-by-name
   [network-name]
   [::m.c.networks/name => (? ::m.c.networks/id)]
-  (log/finer :find-id-by-name/starting {:network-name network-name})
+  (log/finer :find-by-name/starting {:network-name network-name})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?network-id]
                 :in    [?network-name]
                 :where [[?network-id ::m.c.networks/name ?network-name]]}
         id (ffirst (xt/q db query network-name))]
-    (log/info :find-id-by-name/finished {:id id :network-name network-name})
+    (log/info :find-by-name/finished {:id id :network-name network-name})
     id))
 
 (>defn find-by-chain-id
@@ -94,7 +94,7 @@
                          [?network-id ::m.c.networks/chain ?chain-id]
                          [?network-id ::m.c.networks/name ?network-name]]}
         id (ffirst (xt/q db query [chain-name network-name]))]
-    (log/info :find-id-by-name/finished
+    (log/info :find-by-name/finished
               {:chain-name chain-name :network-name network-name :id id})
     id))
 

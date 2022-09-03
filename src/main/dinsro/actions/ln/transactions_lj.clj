@@ -55,7 +55,7 @@
   (log/info :update-transaction!/starting {})
   (if-let [ln-node-id (::m.ln.nodes/id node)]
     (let [{::m.ln.tx/keys [block-hash block-height tx-hash]} data]
-      (if-let [tx-id (q.ln.tx/find-id-by-node-and-tx-hash ln-node-id tx-hash)]
+      (if-let [tx-id (q.ln.tx/find-by-node-and-tx-hash ln-node-id tx-hash)]
         (do
           (log/info :update-transaction!/has-tx {:tx-id tx-id})
           tx-id)

@@ -26,7 +26,7 @@
 (deftest read-record-success
   (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)]
     (assertions
-     (q.transactions/read-record (q.transactions/find-eid-by-id id)) => item)))
+     (q.transactions/read-record id) => item)))
 
 (deftest read-record-not-found
   (let [id (ds/gen-key :xt/id)]
@@ -44,17 +44,16 @@
      (q.transactions/index-records) => [transaction])))
 
 (deftest delete-record-success
-  (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)
-        eid                                   (q.transactions/find-eid-by-id id)]
+  (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)]
     (assertions
      "the record should exist to start"
-     (q.transactions/read-record eid) => item
+     (q.transactions/read-record id) => item
 
      "should return nil"
-     (q.transactions/delete-record eid) => nil
+     (q.transactions/delete-record id) => nil
 
      "the record shouldn't exist after"
-     (q.transactions/read-record eid) => nil)))
+     (q.transactions/read-record id) => nil)))
 
 (comment
 

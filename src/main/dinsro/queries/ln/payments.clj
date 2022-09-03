@@ -36,7 +36,7 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
-(>defn find-ids-by-node
+(>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.payments/id)]
   (let [db    (c.xtdb/main-db)

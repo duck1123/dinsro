@@ -17,7 +17,7 @@
                 :where [[?e ::m.ln.tx/id _]]}]
     (map first (xt/q db query))))
 
-(>defn find-ids-by-node
+(>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.tx/id)]
   (let [db    (c.xtdb/main-db)
@@ -26,7 +26,7 @@
                 :where [[?tx-id ::m.ln.tx/node ?node-id]]}]
     (map first (xt/q db query node-id))))
 
-(>defn find-id-by-node-and-tx-hash
+(>defn find-by-node-and-tx-hash
   [node-id tx-hash]
   [::m.ln.nodes/id ::m.ln.tx/tx-hash => (? ::m.ln.tx/id)]
   (let [db    (c.xtdb/main-db)

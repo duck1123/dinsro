@@ -13,16 +13,7 @@
 
 (def record-limit 1000)
 
-(>defn find-eid-by-id
-  [id]
-  [::m.accounts/id => :xt/id]
-  (let [db (c.xtdb/main-db)
-        query '{:find  [?eid]
-                :in    [?id]
-                :where [[?eid ::m.accounts/id ?id]]}]
-    (ffirst (xt/q db query id))))
-
-(>defn find-id-by-user-and-name
+(>defn find-by-user-and-name
   [user-id name]
   [::m.accounts/user ::m.accounts/name => ::m.accounts/id]
   (let [db    (c.xtdb/main-db)
@@ -36,10 +27,10 @@
   [currency-id]
   [::m.currencies/id => (s/coll-of ::m.accounts/id)]
   (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-eid]
-                :in    [?currency-id]
-                :where [[?account-eid ::m.accounts/currency ?currency-id]]}]
-    (map first (xt/q db query currency-id))))
+        query '{:find  [?account-id]
+                :in    [[?currency-id]]
+                :where [[?account-id ::m.accounts/currency ?currency-id]]}]
+    (map first (xt/q db query [currency-id]))))
 
 (>defn find-by-user
   [user-id]
@@ -118,9 +109,3 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
-
-(comment
-
-  (index-records)
-
-  nil)

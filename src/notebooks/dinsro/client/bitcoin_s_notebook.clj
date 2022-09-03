@@ -23,7 +23,7 @@
 
 (def client
   (-> "bitcoin-alice"
-      q.c.nodes/find-id-by-name
+      q.c.nodes/find-by-name
       q.c.nodes/read-record
       a.c.node-base/get-client))
 

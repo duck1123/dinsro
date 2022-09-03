@@ -56,7 +56,7 @@
    ao/target      ::m.ln.channels/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.channels/find-ids-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.channels/find-by-node id) :cljs []) [])]
        {::m.ln.nodes/channels (m.ln.channels/idents ids)}))})
 
 (defattr invoices ::m.ln.nodes/invoices :ref
@@ -66,7 +66,7 @@
    ao/target      ::m.ln.invoices/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.invoices/find-ids-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.invoices/find-by-node id) :cljs []) [])]
        {::m.ln.nodes/invoices (m.ln.invoices/idents ids)}))})
 
 (defattr payments ::m.ln.nodes/payments :ref
@@ -76,7 +76,7 @@
    ao/target      ::m.ln.payments/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.payments/find-ids-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.payments/find-by-node id) :cljs []) [])]
        {::m.ln.nodes/payments (m.ln.payments/idents ids)}))})
 
 (defattr payreqs ::m.ln.nodes/payreqs :ref
@@ -86,7 +86,7 @@
    ao/target      ::m.ln.payreqs/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.payreqs/find-ids-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.payreqs/find-by-node id) :cljs []) [])]
        {::m.ln.nodes/payreqs (m.ln.payreqs/idents ids)}))})
 
 (defattr peers ::m.ln.nodes/peers :ref
@@ -96,7 +96,7 @@
    ao/target      ::m.ln.peers/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.peers/find-ids-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.peers/find-by-node id) :cljs []) [])]
        {::m.ln.nodes/peers (m.ln.peers/idents ids)}))})
 
 (defattr transactions ::m.ln.nodes/transactions :ref
@@ -106,7 +106,7 @@
    ao/target      ::m.ln.tx/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.tx/find-ids-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.tx/find-by-node id) :cljs []) [])]
        {::m.ln.nodes/transactions (m.transactions/idents (take 3 ids))}))})
 
 (def attributes

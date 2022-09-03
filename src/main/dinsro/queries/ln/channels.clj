@@ -41,13 +41,13 @@
   [=> (s/coll-of ::m.ln.channels/item)]
   (map read-record (index-ids)))
 
-(>defn find-ids-by-node
+(>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.channels/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?channel-id]
-                :in    [?node-id]
-                :where [[?channel-id ::m.ln.channels/node ?node-id]]}]
+                :in    [[?node-id]]
+                :where [[?channel-id ::m.ln.channels/node [?node-id]]]}]
     (map first (xt/q db query node-id))))
 
 (>defn find-channel

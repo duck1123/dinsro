@@ -17,59 +17,33 @@
     ::m.currencies/name])
 (def record-limit 1000)
 
-(def find-eid-by-id-query
-  '[:find  ?eid
-    :in    $ ?id
-    :where [?eid ::m.currencies/id ?id]])
-
-(def find-eid-by-code-query
-  '{:find  [?eid]
-    :in    [?code]
-    :where [[?eid ::m.currencies/code ?code]]})
-
-(def find-id-by-eid-query
-  '[:find  ?id
-    :in    $ ?eid
-    :where [?eid ::m.currencies/id ?id]])
-
-(def find-name-by-eid-query
-  '[:find  ?name
-    :in    $ ?eid
-    :where [?eid ::m.currencies/name ?name]])
-
-(>defn find-eid-by-id
-  [id]
-  [::m.currencies/id => :xt/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-id-query id))))
-
-(>defn find-eid-by-code
-  [id]
+(>defn find-by-code
+  [code]
   [::m.currencies/code => ::m.currencies/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-code-query id))))
+  (let [db (c.xtdb/main-db)
+        query '{:find  [?id]
+                :in    [[?code]]
+                :where [[?id ::m.currencies/code ?code]]}]
+    (ffirst (xt/q db query [code]))))
 
-(>defn find-name-by-eid
-  [eid]
+(>defn find-name-by-id
+  [id]
   [:xt/id => ::m.currencies/name]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-name-by-eid-query eid))))
+  (let [db (c.xtdb/main-db)
+        query '{:find  [?name]
+                :in    [[?id]]
+                :where [[?id ::m.currencies/name ?name]]}]
+    (ffirst (xt/q db query [id]))))
 
-(>defn find-id-by-eid
-  [eid]
-  [:xt/id => (? ::m.currencies/id)]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-id-by-eid-query eid))))
-
-(>defn find-id-by-user-and-name
+(>defn find-by-user-and-name
   [user-id name]
   [::m.users/id ::m.currencies/name => (? ::m.currencies/id)]
   (let [db (c.xtdb/main-db)
         query '{:find  [?currency-id]
-                :in    [?user-id ?name]
+                :in    [[?user-id ?name]]
                 :where [[?currency-id ::m.currencies/user ?user-id]
                         [?currency-id ::m.currencies/name ?name]]}]
-    (ffirst (xt/q db query user-id name))))
+    (ffirst (xt/q db query [user-id name]))))
 
 (>defn create-record
   [params]
@@ -99,15 +73,6 @@
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.currencies/id)
-      (dissoc record :xt/id))))
-
-(>defn find-by-id
-  [id]
-  [::m.currencies/id => (? ::m.currencies/item)]
-  (let [db     (c.xtdb/main-db)
-        eid    (find-eid-by-id id)
-        record (xt/pull db attribute-list eid)]
-    (when (get record ::m.currencies/name)
       (dissoc record :xt/id))))
 
 (>defn index-records

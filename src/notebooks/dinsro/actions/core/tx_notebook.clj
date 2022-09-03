@@ -18,8 +18,8 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-(def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
-(def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
+(def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
+(def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
 
 (def id (first (q.c.tx/index-ids)))
 (def tx (q.c.tx/read-record id))

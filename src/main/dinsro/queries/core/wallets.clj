@@ -46,7 +46,7 @@
   [=> (s/coll-of ::m.c.wallets/item)]
   (map read-record (index-ids)))
 
-(>defn find-ids-by-user
+(>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.c.wallets/id)]
   (let [db    (c.xtdb/main-db)

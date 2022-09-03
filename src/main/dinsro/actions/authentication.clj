@@ -96,23 +96,28 @@
   "Check user authentication"
   [username password]
   [string? string? => (? (s/keys))]
-  (if-let [user (q.users/find-by-id username)]
-    (if-let [password-hash (::m.users/password-hash user)]
-      (if (hashers/check password password-hash)
-        (let [username (::m.users/id user)
-              claims   {:user username
-                        :exp  (t/>> (t/now) (t/new-duration 1 :days))}]
-          {:identity username
-           :token    (jwt/sign claims secret)})
-        ;; Password does not match
+  (if-let [user-id (q.users/find-by-name username)]
+    (if-let [user (q.users/read-record user-id)]
+      (if-let [password-hash (::m.users/password-hash user)]
+        (if (hashers/check password password-hash)
+          (let [username (::m.users/id user)
+                claims   {:user username
+                          :exp  (t/>> (t/now) (t/new-duration 1 :days))}]
+            {:identity username
+             :token    (jwt/sign claims secret)})
+          ;; Password does not match
+          (do
+            (log/info :password/not-matched {})
+            nil))
         (do
-          (log/info :password/not-matched {})
+          ;; No password, invalid user
+          (log/info :password/missing {})
           nil))
-      (do
-        ;; No password, invalid user
-        (log/info :password/missing {})
-        nil))
 
+      (do
+        ;; User cannot be read
+        (log/info :user/not-read {})
+        nil))
     (do
       ;; User not found
       (log/info :user/not-found {})

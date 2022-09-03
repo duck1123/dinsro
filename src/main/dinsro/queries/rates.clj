@@ -16,29 +16,7 @@
 
 (def record-limit 75)
 
-(def find-eid-by-id-query
-  '[:find  ?eid
-    :in    $ ?id
-    :where [?eid ::m.rates/id ?id]])
-
-(def find-id-by-eid-query
-  '[:find  ?id
-    :in    $ ?eid
-    :where [?eid ::m.rates/id ?id]])
-
-(>defn find-eid-by-id
-  [id]
-  [::m.rates/id => :xt/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-id-query id))))
-
-(>defn find-id-by-eid
-  [eid]
-  [:xt/id => ::m.rates/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-id-by-eid-query eid))))
-
-(>defn find-ids-by-rate-source
+(>defn find-by-rate-source
   [rate-source-id]
   [::m.rate-sources/id => (s/coll-of ::m.rates/id)]
   (let [db (c.xtdb/main-db)
@@ -128,12 +106,11 @@
   [:xt/id => ::m.rates/rate-feed]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?date ?rate]
-                :in    [?currency-eid]
-                :where [[?currency-eid ::m.currencies/id ?currency]
-                        [?e ::m.rates/currency ?currency]
-                        [?e ::m.rates/rate ?rate]
-                        [?e ::m.rates/date ?date]]}]
-    (->> (xt/q db query currency-id)
+                :in    [[?currency-id]]
+                :where [[?rate-id ::m.rates/currency ?currency-id]
+                        [?rate-id ::m.rates/rate ?rate]
+                        [?rate-id ::m.rates/date ?date]]}]
+    (->> (xt/q db query [currency-id])
          (sort-by first)
          (reverse)
          (take record-limit)

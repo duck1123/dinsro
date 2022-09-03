@@ -97,8 +97,8 @@
 (defn seed-peer!
   [node-id {:keys [ref] :as peer}]
   (let [[target-username target-node] ref]
-    (if-let [target-user-id (q.users/find-eid-by-name target-username)]
-      (if-let [target-id (q.ln.nodes/find-id-by-user-and-name target-user-id target-node)]
+    (if-let [target-user-id (q.users/find-by-name target-username)]
+      (if-let [target-id (q.ln.nodes/find-by-user-and-name target-user-id target-node)]
         (let [{:keys [host identity-pubkey]} (q.ln.nodes/read-record target-id)
               params                         (-> peer
                                                  (assoc ::m.ln.peers/address host)
@@ -122,7 +122,7 @@
   [default-rate-sources]
   (log/info :seed/rate-sources {:default-rate-sources default-rate-sources})
   (doseq [{:keys [isActive isIdentity code name path url]} default-rate-sources]
-    (when-let [currency-id (q.currencies/find-eid-by-code code)]
+    (when-let [currency-id (q.currencies/find-by-code code)]
       (let [rate-source {::m.rate-sources/name      name
                          ::m.rate-sources/currency  currency-id
                          ::m.rate-sources/url       url
@@ -135,8 +135,8 @@
   [default-rate-sources]
   (log/info :seed/rates {})
   (doseq [{:keys [name code rates]} default-rate-sources]
-    (if-let [currency-id (q.currencies/find-eid-by-code code)]
-      (if-let [source-id (q.rate-sources/find-id-by-currency-and-name currency-id name)]
+    (if-let [currency-id (q.currencies/find-by-code code)]
+      (if-let [source-id (q.rate-sources/find-by-currency-and-name currency-id name)]
         (doseq [{:keys [date rate]} rates]
           (let [rate {::m.rates/currency currency-id
                       ::m.rates/date     date
@@ -156,7 +156,7 @@
   [users]
   (log/info :seed-categories!/starting {})
   (doseq [{:keys [categories username]} users]
-    (let [user-id (q.users/find-eid-by-name username)]
+    (let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name]} categories]
         (q.categories/create-record {::m.categories/name name
                                      ::m.categories/user user-id})))))
@@ -167,7 +167,7 @@
   (let [{:keys     [name fileserver-host host port mnemonic]
          node-name :node} node-info]
     (log/info :seed-ln-node!/starting {:node-name node-name})
-    (if-let [core-id (q.c.nodes/find-id-by-name node-name)]
+    (if-let [core-id (q.c.nodes/find-by-name node-name)]
       (let [ln-node {::m.ln.nodes/name            name
                      ::m.ln.nodes/core-node       core-id
                      ::m.ln.nodes/host            host
@@ -201,7 +201,7 @@
   (log/finer :seed-ln-nodes!/starting {:users users})
   (doseq [{:keys [username ln-nodes]} users]
     (log/info :seed-ln-nodes!/processing-user {:username username})
-    (let [user-id (q.users/find-eid-by-name username)]
+    (let [user-id (q.users/find-by-name username)]
       (doseq [node-info ln-nodes]
         (seed-ln-node! user-id node-info)))))
 
@@ -209,12 +209,12 @@
   [users]
   (log/info :seed-ln-peers!/starting {})
   (doseq [{:keys [username ln-nodes]} users]
-    (let [user-id (q.users/find-eid-by-name username)]
+    (let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name peers]} ln-nodes]
-        (if-let [node-id (q.ln.nodes/find-id-by-user-and-name user-id name)]
+        (if-let [node-id (q.ln.nodes/find-by-user-and-name user-id name)]
           (doseq [{[target-username target-node] :ref :as peer} peers]
-            (if-let [target-user-id (q.users/find-eid-by-name target-username)]
-              (if-let [target-id (q.ln.nodes/find-id-by-user-and-name target-user-id target-node)]
+            (if-let [target-user-id (q.users/find-by-name target-username)]
+              (if-let [target-id (q.ln.nodes/find-by-user-and-name target-user-id target-node)]
                 (let [{:keys [host identity-pubkey]} (q.ln.nodes/read-record target-id)
                       peer                           (-> peer
                                                          (assoc ::m.ln.peers/address host)
@@ -229,9 +229,9 @@
   [users]
   (log/info :seed/ln.txes {})
   (doseq [{:keys [ln-nodes username]} users]
-    (if-let [user-id (q.users/find-eid-by-name username)]
+    (if-let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name txes]} ln-nodes]
-        (if-let [ln-node-id (q.ln.nodes/find-id-by-user-and-name user-id name)]
+        (if-let [ln-node-id (q.ln.nodes/find-by-user-and-name user-id name)]
           (if-let [ln-node (q.ln.nodes/read-record ln-node-id)]
             (if-let [core-node-id (::m.ln.nodes/core-node ln-node)]
               (doseq [tx txes]
@@ -253,9 +253,9 @@
   [users]
   (log/info :seed/accounts {})
   (doseq [{:keys [username accounts]} users]
-    (if-let [user-id (q.users/find-eid-by-name username)]
+    (if-let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name initial-value source]} accounts]
-        (if-let [source-id (q.rate-sources/find-eid-by-name source)]
+        (if-let [source-id (q.rate-sources/find-by-name source)]
           (let [source      (q.rate-sources/read-record source-id)
                 currency-id (::m.rate-sources/currency source)]
             (q.accounts/create-record
@@ -271,9 +271,9 @@
   [users]
   (log/info :seed/txes {})
   (doseq [{:keys [accounts username]} users]
-    (if-let [user-id (q.users/find-eid-by-name username)]
+    (if-let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name transactions]} accounts]
-        (if-let [account-id (q.accounts/find-id-by-user-and-name user-id name)]
+        (if-let [account-id (q.accounts/find-by-user-and-name user-id name)]
           (doseq [{:keys [description date value]} transactions]
             (let [transaction {::m.transactions/date        date
                                ::m.transactions/description description
@@ -334,7 +334,7 @@
   (doseq [{:as       tx
            :keys     [in]
            node-name :node} core-txes]
-    (if-let [node-id (q.c.nodes/find-id-by-name node-name)]
+    (if-let [node-id (q.c.nodes/find-by-name node-name)]
       (let [tx    (assoc tx ::m.c.tx/node node-id)
             tx-id (q.c.tx/create-record tx)]
         (doseq [tx-in in]
@@ -359,13 +359,13 @@
   [users]
   (doseq [user-info users]
     (let [{:keys [username]} user-info
-          user-id            (q.users/find-eid-by-name username)]
+          user-id            (q.users/find-by-name username)]
       (log/debug :seed-wallets!/starting {:username username :user-id user-id})
       (doseq [wallet (get user-info :wallets [])]
         (log/debug :seed-wallets!/process-wallet {:wallet wallet})
         (let [{:keys     [name seed path]
                node-name :node} wallet
-              node-id           (q.c.nodes/find-id-by-name node-name)
+              node-id           (q.c.nodes/find-by-name node-name)
               wallet-id         (q.c.wallets/create-record
                                  {::m.c.wallets/name       name
                                   ::m.c.wallets/derivation path
@@ -400,7 +400,7 @@
   [networks]
   (log/info :seed-networks!/starting {:networks networks})
   (doseq [[chain-name network-names] networks]
-    (if-let [chain-id (q.c.chains/find-id-by-name chain-name)]
+    (if-let [chain-id (q.c.chains/find-by-name chain-name)]
       (do
         (log/info :seed-networks!/found {:chain-id chain-id :chain-name chain-name})
         (doseq [network-name network-names]
@@ -447,10 +447,10 @@
   (doseq [node-data core-node-data]
     (let [peers       (:peers node-data)
           target-name (::m.c.nodes/name node-data)
-          target-peer (q.c.nodes/read-record (q.c.nodes/find-id-by-name target-name))]
+          target-peer (q.c.nodes/read-record (q.c.nodes/find-by-name target-name))]
       (a.c.peers/fetch-peers! target-peer)
       (doseq [peer-name peers]
-        (let [remote-peer (q.c.nodes/read-record (q.c.nodes/find-id-by-name peer-name))
+        (let [remote-peer (q.c.nodes/read-record (q.c.nodes/find-by-name peer-name))
               remote-host (::m.c.nodes/host remote-peer)
               remote-uri  (str "http://" remote-host)]
           (if (a.c.peers/has-peer? target-peer remote-uri)
@@ -477,7 +477,7 @@
   [user-id ln-node-data]
   (log/info :seed-remote-nodes-node!/starting {:user-id user-id :ln-node-data ln-node-data})
   (let [node-name (:name ln-node-data)
-        node-id (q.ln.nodes/find-id-by-user-and-name user-id node-name)]
+        node-id (q.ln.nodes/find-by-user-and-name user-id node-name)]
     (log/info :seed-remote-nodes-node!/found-node-id {:node-id node-id})
     (let [remote-nodes-data (:remote-nodes ln-node-data)]
       (doseq [remote-node-data remote-nodes-data]
@@ -487,7 +487,7 @@
   [user-data]
   (log/info :seed-remote-nodes-user!/starting {:user-data user-data})
   (let [username      (:username user-data)
-        user-id       (q.users/find-eid-by-name username)
+        user-id       (q.users/find-by-name username)
         ln-nodes-data (:ln-nodes user-data)]
     (doseq [ln-node-data ln-nodes-data]
       (seed-remote-nodes-node! user-id ln-node-data))))

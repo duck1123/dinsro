@@ -7,26 +7,16 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
-   [dinsro.queries.users :as q.users]
    [dinsro.specs]))
-
-(>defn find-eid-by-id
-  [id]
-  [::m.categories/id => (? :xt/id)]
-  (let [db (c.xtdb/main-db)
-        query '{:find  [?eid]
-                :in    [?id]
-                :where [[?eid ::m.categories/id ?id]]}]
-    (ffirst (xt/q db query id))))
 
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.categories/id)]
   (let [db    (c.xtdb/main-db)
-        query '{:find  [?category-eid]
-                :in    [?user-id]
-                :where [[?category-eid ::m.categories/user ?user-id]]}]
-    (map first (xt/q db query user-id))))
+        query '{:find  [?category-id]
+                :in    [[?user-id]]
+                :where [[?category-id ::m.categories/user ?user-id]]}]
+    (map first (xt/q db query [user-id]))))
 
 (>defn create-record
   [params]
@@ -43,9 +33,9 @@
   [:xt/id => (? ::m.categories/item)]
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
+    ;; FIXME: This is doing too much
     (when (get record ::m.categories/name)
-      (let [user-eid (get-in record [::m.categories/user :xt/id])
-            user-id  (q.users/find-id-by-eid user-eid)]
+      (let [user-id (get-in record [::m.categories/user :xt/id])]
         (-> record
             (dissoc :xt/id)
             (assoc ::m.categories/user {::m.users/id user-id}))))))
@@ -76,10 +66,3 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
-
-(comment
-  (index-records)
-
-  (delete-all)
-
-  nil)

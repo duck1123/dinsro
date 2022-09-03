@@ -4,7 +4,6 @@
    [dinsro.mocks :as mocks]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rates :as m.rates]
-   [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
@@ -32,10 +31,9 @@
 
 (deftest read-record-found
   (let [{::m.rates/keys [id]
-         :as            item} (mocks/mock-rate)
-        eid                   (q.rates/find-eid-by-id id)]
+         :as            item} (mocks/mock-rate)]
     (assertions
-     (q.rates/read-record eid) => item)))
+     (q.rates/read-record id) => item)))
 
 (deftest index-records-no-records
   (assertions
@@ -53,8 +51,7 @@
         params       (assoc params ::m.rates/currency currency-id)
         rate-id      (q.rates/create-record params)
         rate         (q.rates/read-record rate-id)
-        currency-eid (q.currencies/find-eid-by-id currency-id)
-        response     (q.rates/index-records-by-currency currency-eid)
+        response     (q.rates/index-records-by-currency currency-id)
         date         (.getTime (tick/inst (::m.rates/date rate)))]
     (assertions
      (nth (first response) 0) => date

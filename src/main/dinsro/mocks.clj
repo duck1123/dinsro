@@ -78,8 +78,8 @@
   ([user-id]
    (let [params (ds/gen-key ::m.categories/params)
          params (assoc-in params [::m.categories/user ::m.users/id] user-id)
-         eid     (q.categories/create-record params)]
-     (q.categories/read-record eid))))
+         id     (q.categories/create-record params)]
+     (q.categories/read-record id))))
 
 (>defn mock-rate
   ([]

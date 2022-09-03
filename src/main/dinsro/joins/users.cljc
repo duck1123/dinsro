@@ -84,7 +84,7 @@
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      (let [ids (if id
-                 #?(:clj (q.c.wallets/find-ids-by-user id) :cljs [])
+                 #?(:clj (q.c.wallets/find-by-user id) :cljs [])
                  [])]
        {::m.users/wallets (m.c.wallets/idents ids)}))})
 

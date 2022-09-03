@@ -7,7 +7,6 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
-   [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions]]))
@@ -57,10 +56,9 @@
 
 (deftest index-records-by-user-found
   (let [record  (mocks/mock-account)
-        user-id (::m.accounts/user record)
-        eid     (q.users/find-eid-by-id user-id)]
+        user-id (::m.accounts/user record)]
     (assertions
-     (q.accounts/index-records-by-user eid) => [record])))
+     (q.accounts/index-records-by-user user-id) => [record])))
 
 (deftest read-record-not-found
   (let [id (ds/gen-key :xt/id)]
@@ -68,22 +66,20 @@
 
 (deftest read-record-found
   (let [record (mocks/mock-account)
-        id     (::m.accounts/id record)
-        eid    (q.accounts/find-eid-by-id id)]
+        id     (::m.accounts/id record)]
     (assertions
      "Should return mocked account"
-     (q.accounts/read-record eid) => record)))
+     (q.accounts/read-record id) => record)))
 
 (deftest delete!-success
   (let [account (mocks/mock-account)
-        id      (::m.accounts/id account)
-        eid     (q.accounts/find-eid-by-id id)]
+        id      (::m.accounts/id account)]
     (assertions
      "record should exist"
-     (q.accounts/read-record eid) => account
+     (q.accounts/read-record id) => account
 
      "should return nil"
-     (q.accounts/delete! eid) => nil
+     (q.accounts/delete! id) => nil
 
      "record should note exist"
-     (q.accounts/read-record eid) => nil)))
+     (q.accounts/read-record id) => nil)))

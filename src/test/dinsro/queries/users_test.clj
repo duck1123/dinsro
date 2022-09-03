@@ -16,8 +16,8 @@
 (deftest create-record-valid
   (let [params   (ds/gen-key ::m.users/params)
         username (::m.users/name params)
-        eid      (q.users/create-record params)
-        user     (q.users/read-record eid)]
+        id       (q.users/create-record params)
+        user     (q.users/read-record id)]
     (assertions
      (::m.users/name user) => username)))
 
@@ -30,8 +30,8 @@
 (deftest read-record-success
   (let [params                  (ds/gen-key ::m.users/params)
         {::m.users/keys [name]} params
-        eid                     (q.users/create-record params)
-        response                (q.users/read-record eid)]
+        id                      (q.users/create-record params)
+        response                (q.users/read-record id)]
     (assertions
      (::m.users/name response) => name)))
 

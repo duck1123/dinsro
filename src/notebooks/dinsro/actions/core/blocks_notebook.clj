@@ -14,8 +14,8 @@
 (nu/display-file-links)
 
 (comment
-  (def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
-  (def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
+  (def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
+  (def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
   (def node node-alice)
 
   (tap> (q.c.blocks/index-records))

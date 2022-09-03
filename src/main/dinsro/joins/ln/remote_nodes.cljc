@@ -23,7 +23,7 @@
    ao/target      ::m.ln.peers/id
    ao/pc-resolve
    (fn [_env {::m.ln.remote-nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.peers/find-ids-by-remote-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.peers/find-by-remote-node id) :cljs []) [])]
        {::m.ln.remote-nodes/peers (m.ln.peers/idents ids)}))})
 
 (def attributes [index peers])

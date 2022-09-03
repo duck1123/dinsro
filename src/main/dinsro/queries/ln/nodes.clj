@@ -61,7 +61,7 @@
                 :where [[?node-id ::m.ln.nodes/user ?user-id]]}]
     (map first (xt/q db query user-id))))
 
-(>defn find-id-by-user-and-name
+(>defn find-by-user-and-name
   [user-id name]
   [::m.users/id ::m.ln.nodes/name => (? ::m.ln.nodes/id)]
   (let [db    (c.xtdb/main-db)

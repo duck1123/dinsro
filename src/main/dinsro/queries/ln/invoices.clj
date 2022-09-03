@@ -36,7 +36,7 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
-(>defn find-ids-by-node
+(>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.invoices/id)]
   (let [db    (c.xtdb/main-db)
@@ -45,7 +45,7 @@
                 :where [[?invoice-id ::m.ln.invoices/node ?node-id]]}]
     (map first (xt/q db query node-id))))
 
-(>defn find-id-by-node-and-index
+(>defn find-by-node-and-index
   [node-id index]
   [::m.ln.nodes/id number? => (? ::m.ln.invoices/id)]
   (let [db    (c.xtdb/main-db)

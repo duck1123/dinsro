@@ -20,38 +20,14 @@
   '[:find ?dbid
     :where [?dbid ::m.rate-sources/id _]])
 
-(def find-eid-by-id-query
-  '[:find  ?eid
-    :in    $ ?id
-    :where [?eid ::m.rate-sources/id ?id]])
-
-(def find-eid-by-name-query
-  '[:find  ?eid
-    :in    $ ?name
-    :where [?eid ::m.rate-sources/name ?name]])
-
-(def find-id-by-eid-query
-  '[:find  ?id
-    :in    $ ?eid
-    :where [?eid ::m.rate-sources/id ?id]])
-
-(>defn find-eid-by-id
-  [id]
-  [::m.rate-sources/id => :xt/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-id-query id))))
-
-(>defn find-eid-by-name
+(>defn find-by-name
   [name]
   [::m.rate-sources/name => ::m.rate-sources/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-eid-by-name-query name))))
-
-(>defn find-id-by-eid
-  [eid]
-  [:xt/id => ::m.rate-sources/id]
-  (let [db (c.xtdb/main-db)]
-    (ffirst (xt/q db find-id-by-eid-query eid))))
+  (let [db (c.xtdb/main-db)
+        query '{:find  [?id]
+                :in    [?name]
+                :where [[?id ::m.rate-sources/name ?name]]}]
+    (ffirst (xt/q db query name))))
 
 (>defn index-ids-by-account
   [account-id]
@@ -71,7 +47,7 @@
                 :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]]}]
     (map first (xt/q db query currency-id))))
 
-(>defn find-id-by-currency-and-name
+(>defn find-by-currency-and-name
   [currency-id name]
   [::m.rate-sources/currency ::m.rate-sources/name => (? ::m.rate-sources/id)]
   (let [db (c.xtdb/main-db)

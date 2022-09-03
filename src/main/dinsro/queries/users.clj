@@ -10,86 +10,47 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
-(def find-id-by-eid-query
-  '{:find  [?id]
-    :in    [?eid]
-    :where [[?eid ::m.users/id ?id]]})
-
 (>defn read-record
   [user-id]
   [uuid? => (? ::m.users/item)]
   (let [db     (c.xtdb/main-db)
-        query  '{:find  [(pull ?eid [*])]
-                 :in    [?eid]
-                 :where [[?eid ::m.users/id ?name]]}
-        result (xt/q db query user-id)
+        query  '{:find  [(pull ?id [*])]
+                 :in    [[?id]]
+                 :where [[?id ::m.users/id ?name]]}
+        result (xt/q db query [user-id])
         record (ffirst result)]
-    (when (get record ::m.users/id)
-      (dissoc record :xt/id))))
-
-(>defn read-record-by-eid
-  [user-dbid]
-  [:xt/id => (? ::m.users/item)]
-  (let [db     (c.xtdb/main-db)
-        query  '{:find [(pull ?user [*])]
-                 :in   [?user]}
-        record (ffirst (xt/q db query user-dbid))]
     (when (get record ::m.users/id)
       (dissoc record :xt/id))))
 
 (>defn read-records
   [ids]
   [(s/coll-of :xt/id) => (s/coll-of ::m.users/item)]
-  (map read-record-by-eid ids))
+  (map read-record ids))
 
-(>defn find-eid-by-id
-  [id]
-  [::m.users/id => (? ::m.users/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?eid]
-                :in    [?id]
-                :where [[?eid ::m.users/id ?id]]}]
-    (ffirst (xt/q db query id))))
-
-(>defn find-eid-by-name
+(>defn find-by-name
   [name]
   [::m.users/name => (? ::m.users/id)]
   (let [db    (c.xtdb/main-db)
-        query '{:find  [?eid]
-                :in    [?name]
-                :where [[?eid ::m.users/name ?name]]}]
-    (ffirst (xt/q db query name))))
+        query '{:find  [?id]
+                :in    [[?name]]
+                :where [[?id ::m.users/name ?name]]}]
+    (ffirst (xt/q db query [name]))))
 
 (>defn find-by-transaction
   [transaction-id]
   [::m.transactions/name => (? ::m.users/id)]
-  (let [db (c.xtdb/main-db)
-        query '{:find [?user-id]
-                :in [?transaction-id]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?user-id]
+                :in    [[?transaction-id]]
                 :where [[?transaction-id ::m.transactions/account ?account-id]
                         [?account-id ::m.accounts/user ?user-id]]}]
-    (ffirst (xt/q db query transaction-id))))
-
-(>defn find-id-by-eid
-  [eid]
-  [:xt/id => (? ::m.users/id)]
-  (let [db (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [?eid]
-                :where [[?eid ::m.users/id ?id]]}]
-    (ffirst (xt/q db query eid))))
-
-(>defn find-by-id
-  [id]
-  [::m.users/id => (? ::m.users/item)]
-  (when-let [eid (find-eid-by-id id)]
-    (read-record eid)))
+    (ffirst (xt/q db query [transaction-id]))))
 
 (>defn create-record
   "Create a user record"
   [params]
   [::m.users/params => ::m.users/id]
-  (if (nil? (find-eid-by-name (::m.users/name params)))
+  (if (nil? (find-by-name (::m.users/name params)))
     (let [node   (c.xtdb/main-node)
           id     (new-uuid)
           params (assoc params :xt/id id)

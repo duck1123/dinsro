@@ -32,7 +32,7 @@
   (if-let [node (q.ln.nodes/read-record node-id)]
     (doseq [params (:invoices (fetch node))]
       (let [{:keys [addIndex]} params]
-        (if-let [old-invoice-id (q.ln.invoices/find-id-by-node-and-index node-id addIndex)]
+        (if-let [old-invoice-id (q.ln.invoices/find-by-node-and-index node-id addIndex)]
           (if-let [old-invoice (q.ln.invoices/read-record old-invoice-id)]
             (let [params     (assoc params ::m.ln.invoices/node node-id)
                   params     (m.ln.invoices/prepare-params params)

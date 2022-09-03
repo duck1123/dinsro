@@ -19,12 +19,12 @@
   (q.c.chains/index-records)
   (q.c.chains/create-record {::m.c.chains/name "bitcoin"})
 
-  (q.c.chains/find-id-by-name "bitcoin")
+  (q.c.chains/find-by-name "bitcoin")
 
   (q.c.networks/index-records)
 
   (q.c.networks/create-record
    {::m.c.networks/name   "regtest"
-    ::m.c.networks/chains (q.c.chains/find-id-by-name "bitcoin")})
+    ::m.c.networks/chains (q.c.chains/find-by-name "bitcoin")})
 
   nil)

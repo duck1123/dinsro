@@ -49,7 +49,7 @@
   [=> (s/coll-of ::m.c.nodes/item)]
   (map read-record (index-ids)))
 
-(>defn find-id-by-name
+(>defn find-by-name
   [name]
   [::m.c.nodes/name => (? ::m.c.nodes/id)]
   (let [db    (c.xtdb/main-db)

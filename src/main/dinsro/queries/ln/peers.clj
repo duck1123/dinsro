@@ -62,7 +62,7 @@
   (let [peer-id (create-record (merge peer {::m.ln.peers/node node-id}))]
     (read-record peer-id)))
 
-(>defn find-ids-by-node
+(>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.peers/id)]
   (let [db    (c.xtdb/main-db)
@@ -71,7 +71,7 @@
                 :where [[?peer-id ::m.ln.peers/node ?node-id]]}]
     (map first (xt/q db query node-id))))
 
-(>defn find-ids-by-remote-node
+(>defn find-by-remote-node
   [remote-node-id]
   [::m.ln.peers/remote-node => (s/coll-of ::m.ln.peers/id)]
   (let [db    (c.xtdb/main-db)

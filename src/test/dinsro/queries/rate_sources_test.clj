@@ -32,7 +32,7 @@
   (let [item (mocks/mock-rate-source)
         id   (::m.rate-sources/id item)]
     (assertions
-     (q.rate-sources/read-record (q.rate-sources/find-eid-by-id id)) => item)))
+     (q.rate-sources/read-record id) => item)))
 
 (deftest index-records-no-records
   (assertions

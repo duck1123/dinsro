@@ -42,7 +42,7 @@
   [=> (s/coll-of ::m.ln.remote-nodes/item)]
   (map read-record (index-ids)))
 
-(>defn find-ids-by-node
+(>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.remote-nodes/id)]
   (let [db    (c.xtdb/main-db)

@@ -17,7 +17,7 @@
    (defn get-site-config
      []
      ;; TODO: has user with admin role
-     (let [has-admin? (boolean (q.users/find-eid-by-name "admin"))]
+     (let [has-admin? (boolean (q.users/find-by-name "admin"))]
        {::id           :main
         ::initialized? has-admin?
         ::loaded?      true})))

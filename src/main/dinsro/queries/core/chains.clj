@@ -43,16 +43,16 @@
   [=> (s/coll-of ::m.c.chains/item)]
   (map read-record (index-ids)))
 
-(>defn find-id-by-name
+(>defn find-by-name
   [name]
   [::m.c.chains/name => (? ::m.c.chains/id)]
-  (log/info :find-id-by-name/starting {:name name})
+  (log/info :find-by-name/starting {:name name})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?node-id]
                 :in    [?name]
                 :where [[?node-id ::m.c.chains/name ?name]]}
         result (ffirst (xt/q db query name))]
-    (log/info :find-id-by-name/finished {:result result})
+    (log/info :find-by-name/finished {:result result})
     result))
 
 (>defn delete!

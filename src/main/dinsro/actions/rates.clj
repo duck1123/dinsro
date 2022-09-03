@@ -17,8 +17,8 @@
 
   (q.currencies/index-ids)
 
-  (def sats (q.currencies/find-eid-by-code "sats"))
-  (def dollars (q.currencies/find-eid-by-code "usd"))
+  (def sats (q.currencies/find-by-code "sats"))
+  (def dollars (q.currencies/find-by-code "usd"))
 
   (q.rates/find-by-currency dollars)
   (q.rates/find-top-by-currency dollars)

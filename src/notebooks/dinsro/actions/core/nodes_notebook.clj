@@ -24,12 +24,12 @@
 
 
 ^{::clerk/viewer clerk/code ::clerk/visibility :hide}
-(def node-alice (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-alice")))
+(def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
 
 ;; Bob
 
 ^{::clerk/viewer clerk/code ::clerk/visibility :hide}
-(def node-bob (q.c.nodes/read-record (q.c.nodes/find-id-by-name "bitcoin-bob")))
+(def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
 
 ^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
 (def node node-alice)

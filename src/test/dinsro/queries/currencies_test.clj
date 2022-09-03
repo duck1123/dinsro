@@ -21,7 +21,7 @@
 (deftest read-record-success
   (let [{::m.currencies/keys [id] :as item} (mocks/mock-currency)]
     (assertions
-     (q.currencies/read-record (q.currencies/find-eid-by-id id)) => item)))
+     (q.currencies/read-record id) => item)))
 
 (deftest read-record-not-found
   (let [id (ds/gen-key :xt/id)]
@@ -41,9 +41,8 @@
 
 (deftest delete-record-success
   (let [record                     (mocks/mock-currency)
-        {::m.currencies/keys [id]} record
-        eid                        (q.currencies/find-eid-by-id id)]
+        {::m.currencies/keys [id]} record]
     (assertions
-     (q.currencies/read-record eid) => record
-     (q.currencies/delete-record eid) => nil
-     (q.currencies/read-record eid) => nil)))
+     (q.currencies/read-record id) => record
+     (q.currencies/delete-record id) => nil
+     (q.currencies/read-record id) => nil)))
