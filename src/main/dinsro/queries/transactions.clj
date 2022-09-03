@@ -18,7 +18,7 @@
 (>defn find-by-account
   [id]
   [::m.accounts/id => (s/coll-of ::m.transactions/id)]
-  (let [db (c.xtdb/main-db)
+  (let [db    (c.xtdb/main-db)
         query '{:find  [?id]
                 :in    [?account-id]
                 :where [[?id ::m.transactions/account ?account-id]]}]
