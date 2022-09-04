@@ -48,8 +48,9 @@
                         j.transactions/user]
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
-                                           :action (fn [this] (form/create! this TransactionForm))}}
-   ro/control-layout   {:action-buttons [::new-transaction]}
+                                           :action (fn [this] (form/create! this TransactionForm))}
+                        ::refresh         u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/account #(u.links/ui-account-link %2)}
    ro/form-links       {::m.transactions/description TransactionForm}
    ro/route            "transactions"
