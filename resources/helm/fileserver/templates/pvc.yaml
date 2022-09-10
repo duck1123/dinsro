@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "lnd.fullname" . }}
+  name: {{ template "fileserver.fullname" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/resource-policy": keep
   labels:
-    app: {{ template "lnd.name" . }}
+    app: {{ template "fileserver.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
