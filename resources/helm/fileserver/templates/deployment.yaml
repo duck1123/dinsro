@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "lnd.fullname" . }}
+  name: {{ template "fileserver.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "lnd.name" . }}
-    chart: {{ template "lnd.chart" . }}
+    app: {{ template "fileserver.name" . }}
+    chart: {{ template "fileserver.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -13,18 +13,18 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: {{ template "lnd.name" . }}
+      app: {{ template "fileserver.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "lnd.name" . }}
+        app: {{ template "fileserver.name" . }}
         release: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: "fileserver"
-          image: {{ .Values.fileserver.image.repository }}:{{ .Values.fileserver.image.tag }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           volumeMounts:
           - name: data
             mountPath: /mnt/lnd-data
@@ -36,7 +36,7 @@ spec:
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "lnd.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "fileserver.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end -}}

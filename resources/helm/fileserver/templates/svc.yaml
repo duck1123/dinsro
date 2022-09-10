@@ -4,8 +4,8 @@ metadata:
   name: fileserver
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "lnd.name" . }}
-    chart: {{ template "lnd.chart" . }}
+    app: {{ template "fileserver.name" . }}
+    chart: {{ template "fileserver.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -14,5 +14,5 @@ spec:
       port: 80
       targetPort: files
   selector:
-    app: {{ template "lnd.name" . }}
+    app: {{ template "fileserver.name" . }}
     release: {{ .Release.Name }}
