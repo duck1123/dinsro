@@ -86,7 +86,7 @@
 
 (>defn update-block
   [id data]
-  [::m.c.blocks/id ::m.c.blocks/params => any?]
+  [::m.c.blocks/id any? => ::m.c.blocks/id]
   (let [node   (c.xtdb/main-node)
         db     (c.xtdb/main-db)
         old    (xt/pull db '[*] id)

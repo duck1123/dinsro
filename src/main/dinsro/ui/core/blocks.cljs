@@ -259,15 +259,21 @@
               (dom/dt {} "Nonce")
               (dom/dd {} nonce)
               (dom/dt {} "Network")
-              (dom/dd {} (u.links/ui-network-link network)))
+              (dom/dd {} (u.links/ui-network-link network))
+              (when previous-block
+                (comp/fragment
+                 (dom/dt {} "Previous")
+                 (dom/dd {} (u.links/ui-block-height-link previous-block))))
+              (when next-block
+                (comp/fragment
+                 (dom/dt {} "Next")
+                 (dom/dd {} (u.links/ui-block-height-link next-block)))))
       (when debug-page
         (dom/button {:onClick (fn [_e]
                                 (log/info :ShowBlock/fetch-button-clicked {})
                                 (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
 
-          "Fetch"))
-      (when previous-block (dom/p {} "Previous: " (u.links/ui-block-height-link previous-block)))
-      (when next-block (dom/p {} "Next: " (u.links/ui-block-link next-block))))
+          "Fetch")))
     (if id
       (dom/div {}
         (u.c.block-transactions/ui-sub-page transactions))

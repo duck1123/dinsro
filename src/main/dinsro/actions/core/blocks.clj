@@ -21,6 +21,7 @@
   "Create a block reference"
   [node-id hash height]
   [::m.c.nodes/id ::m.c.blocks/hash ::m.c.blocks/height => ::m.c.blocks/id]
+  (log/info :register-block/starting {:node-id node-id :hash hash :height height})
   (if-let [network-id (q.c.networks/find-by-node-id node-id)]
     (if-let [block-id (q.c.blocks/fetch-by-network-and-height network-id height)]
       (do
@@ -54,42 +55,34 @@
               params (m.c.blocks/prepare-params params)
               id     (q.c.blocks/update-block existing-block-id params)]
           [id params])
-        (throw (RuntimeException. "cannot find existing block")))
+        (do
+          (log/error :update-block!/block-not-found {})
+          (throw (RuntimeException. "cannot find existing block"))))
       (if-let [network-id (q.c.networks/find-by-node-id core-node-id)]
         (let [params (assoc params ::m.c.blocks/network network-id)
               params (assoc params ::m.c.blocks/fetched? true)
               params (m.c.blocks/prepare-params params)
               id     (q.c.blocks/create-record params)]
           [id params])
-        (throw (RuntimeException. "Failed to find network"))))
-    (throw (RuntimeException. "Failed to find network"))))
+        (do
+          (log/error :update-block!/network-not-found {})
+          (throw (RuntimeException. "Failed to find network")))))
+    (do
+      (log/error :update-block!/network-not-found2 {})
+      (throw (RuntimeException. "Failed to find network")))))
 
 (>defn update-neighbors
-  [core-node-id block height]
-  [::m.c.nodes/id any? ::m.c.blocks/height => any?]
+  [core-node-id block-id block height]
+  [::m.c.nodes/id ::m.c.blocks/id  any? ::m.c.blocks/height => any?]
+  (log/finer :update-neighbors/statring {:block-id block-id :block block :height height})
   (let [previous-hash (:dinsro.client.converters.get-block-result/previous-block-hash block)
-        next-hash     (:dinsro.client.converters.get-block-result/next-block-hash block)
-        prev-id       (when previous-hash (register-block core-node-id previous-hash (dec height)))
-        next-id       (when next-hash (register-block core-node-id next-hash (inc height)))]
+        next-hash     (:dinsro.client.converters.get-block-result/next-block-hash block)]
     (log/info :update-neighbors/parsing-neighbors {:previous previous-hash :next next-hash})
-    (if-let [block-hash (:dinsro.client.converters.get-block-result/hash block)]
-      (let [params            block
-            params            (assoc params ::m.c.blocks/fetched? true)
-            params            (assoc params ::m.c.blocks/hash block-hash)
-            params            (assoc params ::m.c.blocks/height height)
-            params            (assoc params ::m.c.blocks/next-block next-id)
-            params            (assoc params ::m.c.blocks/previous-block prev-id)
-            [block-id params] (update-block! core-node-id height params)]
-        (doseq [tx-id (::m.c.blocks/tx params)]
-          (if-let [existing-id (q.c.tx/fetch-by-txid tx-id)]
-            (log/info :update-neighbors/tx-exists {:tx-id existing-id})
-            (let [params {::m.c.tx/block    block-id
-                          ::m.c.tx/tx-id    tx-id
-                          ::m.c.tx/fetched? false}]
-              (log/debug :update-neighbors/tx-creating {:params params})
-              (q.c.tx/create-record params))))
-        block-id)
-      (throw (RuntimeException. "Failed to find block hash")))))
+    (let [prev-id (when previous-hash (register-block core-node-id previous-hash (dec height)))
+          next-id (when next-hash (register-block core-node-id next-hash (inc height)))]
+      (log/fine :update-neighbors/registered {:prev-id prev-id :next-id next-id})
+      (q.c.blocks/update-block block-id {::m.c.blocks/next-block     next-id
+                                         ::m.c.blocks/previous-block prev-id}))))
 
 (>defn update-block-by-height
   "Fetch and update the block by height"
@@ -118,7 +111,7 @@
                         params (m.c.blocks/prepare-params params)]
                     (log/info :update-block-by-height/found-params {:params params})
                     (q.c.blocks/update-block updated-id params))
-                  (update-neighbors core-node-id block height)
+                  (update-neighbors core-node-id block-record-id block height)
                   (doseq [tx-id (::c.c.get-block-result/tx block)]
                     (a.c.tx/register-tx core-node-id updated-id tx-id))
                   updated-id)
