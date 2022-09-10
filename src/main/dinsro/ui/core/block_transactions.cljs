@@ -16,14 +16,12 @@
 (report/defsc-report Report
   [this props]
   {ro/columns          [m.c.tx/tx-id
-                        m.c.tx/fetched?
-                        m.c.tx/block]
+                        m.c.tx/fetched?]
    ro/controls         {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
                         ::refresh       u.links/refresh-control
                         ::m.c.blocks/id {:type :uuid :label "Block"}}
    ro/control-layout   {:action-buttons [::fetch ::refresh]}
-   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
-                        ::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)}
+   ro/field-formatters {::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Transactions"
    ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]
