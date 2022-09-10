@@ -1,13 +1,10 @@
 (ns dinsro.ui.core.wallets
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
@@ -139,14 +136,6 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewWalletForm))})
 
-(defn ShowWallet-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.c.wallets/id
-   {:ui/addresses u.c.wallet-addresses/SubPage
-    :ui/words     u.c.wallet-words/SubPage}))
-
 (defsc ShowWallet
   "Show a wallet"
   [this {::m.c.wallets/keys [id name derivation key node]
@@ -169,23 +158,11 @@
                    :ui/addresses            {}
                    :ui/words                {}}
    :ident         ::m.c.wallets/id
-   :will-enter
-   (fn [app {id :id}]
-     (let [id    (new-uuid id)
-           ident [::m.c.wallets/id id]
-           state (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowWallet/will-enter {:id id :app app})
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/info :ShowWallet/will-enter2 {:id id :state state})
-          (df/load!
-           app ident ShowWallet
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))
-   :pre-merge     ShowWallet-pre-merge}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.wallets/id
+                   {:ui/addresses u.c.wallet-addresses/SubPage
+                    :ui/words     u.c.wallet-words/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::ShowWallet)}
   (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment

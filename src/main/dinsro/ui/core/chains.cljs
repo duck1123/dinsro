@@ -1,14 +1,10 @@
 (ns dinsro.ui.core.chains
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.chains :as m.c.chains]
@@ -31,35 +27,6 @@
       (dom/p {} "foo")
       (form/render-layout this props))))
 
-(declare ShowChain)
-
-(defn ShowChain-will-enter
-  [app {id-str :id}]
-  (let [id    (new-uuid id-str)
-        ident [::m.c.chains/id id]
-        state (-> (app/current-state app) (get-in ident))]
-    (log/finer :ShowChain-will-enter/starting {:app app :id id :ident ident})
-    (dr/route-deferred
-     ident
-     (fn []
-       (log/finer :ShowChain-will-enter/routing
-                  {:id       id
-                   :state    state
-                   :controls (control/component-controls app)})
-       (df/load!
-        app ident ShowChain
-        {:marker               :ui/selected-node
-         :target               [:ui/selected-node]
-         :post-mutation        `dr/target-ready
-         :post-mutation-params {:target ident}})))))
-
-(defn ShowChain-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.c.chains/id
-   {:ui/networks u.c.chain-networks/SubPage}))
-
 (defsc ShowChain
   [_this {::m.c.chains/keys [name]
           :ui/keys          [networks]
@@ -73,8 +40,10 @@
                    ::m.c.chains/name  ""
                    :ui/networks {}}
    :ident         ::m.c.chains/id
-   :pre-merge     ShowChain-pre-merge
-   :will-enter    ShowChain-will-enter}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.chains/id
+                   {:ui/networks u.c.chain-networks/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.c.chains/id ::ShowChain)}
   (log/info :ShowChain/starting {:props props})
   (comp/fragment
    (dom/div :.ui.segment

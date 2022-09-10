@@ -2,10 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.fulcro.data-fetch :as df]
-   [com.fulcrologic.fulcro.application :as app]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
@@ -214,35 +211,6 @@
 
 (s/def ::rows (s/coll-of ::row))
 
-(declare ShowBlock)
-
-(defn ShowBlock-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.c.blocks/id
-   {:ui/transactions u.c.block-transactions/SubPage}))
-
-(defn ShowBlock-will-enter
-  [app {id :id}]
-  (let [id    (new-uuid id)
-        ident [::m.c.blocks/id id]
-        state (-> (app/current-state app) (get-in ident))]
-    (log/finer :ShowBlock-will-enter/starting {:id id :app app})
-    (dr/route-deferred
-     ident
-     (fn []
-       (log/finer :ShowBlock-will-enter/routed
-                  {:id       id
-                   :state    state
-                   :controls (control/component-controls app)})
-       (df/load!
-        app ident ShowBlock
-        {:marker               :ui/selected-node
-         :target               [:ui/selected-node]
-         :post-mutation        `dr/target-ready
-         :post-mutation-params {:target ident}})))))
-
 (defsc ShowBlock
   "Show a core block"
   [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight network]
@@ -271,8 +239,10 @@
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
    :ident         ::m.c.blocks/id
-   :will-enter    ShowBlock-will-enter
-   :pre-merge     ShowBlock-pre-merge}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.blocks/id
+                   {:ui/transactions u.c.block-transactions/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::ShowBlock)}
   (log/finer :ShowBlock/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment

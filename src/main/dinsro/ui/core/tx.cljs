@@ -1,14 +1,11 @@
 (ns dinsro.ui.core.tx
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -211,14 +208,6 @@
    :label  "Search"
    :action search-control-action})
 
-(defn ShowTransaction-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.c.tx/id
-   {:ui/inputs  u.c.transaction-inputs/SubPage
-    :ui/outputs u.c.transaction-outputs/SubPage}))
-
 (defsc ShowTransaction
   "Show a core tx"
   [this {::m.c.tx/keys [id tx-id hash fetched? block size]
@@ -243,23 +232,11 @@
                    :ui/outputs       {}
                    ::m.c.tx/fetched? false}
    :ident         ::m.c.tx/id
-   :will-enter
-   (fn [app {id :id}]
-     (let [id    (new-uuid id)
-           ident [::m.c.tx/id id]
-           state (-> (app/current-state app) (get-in ident))]
-       (log/finer :ShowTransaction/will-enter {:id id :app app})
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/finer :ShowTransaction/will-enter2 {:id id :state state})
-          (df/load!
-           app ident ShowTransaction
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))
-   :pre-merge     ShowTransaction-pre-merge}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.tx/id
+                   {:ui/inputs  u.c.transaction-inputs/SubPage
+                    :ui/outputs u.c.transaction-outputs/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.c.tx/id ::ShowTransaction)}
   (log/finer :ShowTransaction/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment

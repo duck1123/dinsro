@@ -1,22 +1,16 @@
 (ns dinsro.ui.users
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.user-accounts :as u.user-accounts]
-   [dinsro.ui.user-transactions :as u.user-transactions]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.user-transactions :as u.user-transactions]))
 
 (def override-form true)
 
@@ -44,36 +38,6 @@
     (dom/div {}
       (dom/p {} name))))
 
-(declare ShowUser)
-
-(defn ShowUser-will-enter
-  [app {id :id}]
-  (let [id    (new-uuid id)
-        ident [::m.users/id id]
-        state (-> (app/current-state app) (get-in ident))]
-    (log/finer :ShowUser-will-enter/starting {:app app :id id :ident ident})
-    (dr/route-deferred
-     ident
-     (fn []
-       (log/finer :ShowUser-will-enter/routing
-                  {:id       id
-                   :state    state
-                   :controls (control/component-controls app)})
-       (df/load!
-        app ident ShowUser
-        {:marker               :ui/selected-node
-         :target               [:ui/selected-node]
-         :post-mutation        `dr/target-ready
-         :post-mutation-params {:target ident}})))))
-
-(defn ShowUser-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.users/id
-   {:ui/accounts     u.user-accounts/SubPage
-    :ui/transactions u.user-transactions/SubPage}))
-
 (defsc ShowUser
   [_this {::m.users/keys [name]
           :ui/keys       [accounts transactions]}]
@@ -87,8 +51,11 @@
                    :ui/accounts     {}
                    :ui/transactions {}}
    :ident         ::m.users/id
-   :will-enter    ShowUser-will-enter
-   :pre-merge     ShowUser-pre-merge}
+   :pre-merge     (u.links/page-merger
+                   ::m.users/id
+                   {:ui/accounts     u.user-accounts/SubPage
+                    :ui/transactions u.user-transactions/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.users/id ::ShowUser)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show User " (str name)))

@@ -1,6 +1,5 @@
 (ns dinsro.ui.ln.nodes
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
@@ -12,10 +11,6 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.fulcro.data-fetch :as df]
-   [com.fulcrologic.rad.control :as control]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.invoices :as m.ln.invoices]
@@ -268,19 +263,9 @@
           (dom/div {}
             (form/render-layout this props)))))))
 
-(defn ShowNode-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.ln.nodes/id
-   {:ui/peers        u.ln.node-peers/SubPage
-    :ui/channels     u.ln.node-channels/SubPage
-    :ui/transactions u.ln.node-transactions/SubPage
-    :ui/remote-nodes u.ln.node-remote-nodes/SubPage}))
-
 (defsc ShowNode
   "Show a ln node"
-  [this {:ui/keys          [peers channels transactions remote-nodes]
+  [this {:ui/keys          [channels peers remote-nodes transactions]
          ::m.ln.info/keys  [chains]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon?]}]
   {:route-segment ["nodes" :id]
@@ -309,26 +294,13 @@
                    ::m.ln.nodes/hasCert?     false
                    ::m.ln.nodes/hasMacaroon? false}
    :ident         ::m.ln.nodes/id
-   :pre-merge     ShowNode-pre-merge
-   :will-enter
-   (fn [app {id :id}]
-     (let [id    (new-uuid id)
-           ident [::m.ln.nodes/id id]
-           state (-> (app/current-state app) (get-in ident))]
-       (log/finer :ShowNode/will-enter {:app app :id id :ident ident})
-       (dr/route-immediate ident)
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/finer :ShowNode-will-enter/routed {:id       id
-                                                  :state    state
-                                                  :controls (control/component-controls app)})
-          (df/load!
-           app ident ShowNode
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))}
+   :pre-merge     (u.links/page-merger
+                   ::m.ln.nodes/id
+                   {:ui/channels     u.ln.node-channels/SubPage
+                    :ui/peers        u.ln.node-peers/SubPage
+                    :ui/remote-nodes u.ln.node-remote-nodes/SubPage
+                    :ui/transactions u.ln.node-transactions/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::ShowNode)}
 
   (dom/div {}
     (dom/div :.ui.segment

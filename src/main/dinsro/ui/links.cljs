@@ -1,10 +1,14 @@
 (ns dinsro.ui.links
   (:require
+   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -81,16 +85,44 @@
 
 (defn merge-pages
   [{:keys [data-tree state-map]} id-key page-map]
-  (log/info :merge-pages/starting {:id-key id-key})
-  (let [id (get data-tree id-key)
-        states (->> page-map
-                    (map
-                     (fn [[key page]]
-                       (log/debug :merge-pages/process-page {:key key :page page})
-                       (let [state (merge-state state-map page {id-key id})]
-                         {key state})))
-                    (into {}))]
-    (merge data-tree states)))
+  (let [id (get data-tree id-key)]
+    (log/info :merge-pages/starting {:id-key id-key :id id :page-map page-map})
+    (let [states (->> page-map
+                      (map
+                       (fn [[key page]]
+                         (log/debug :merge-pages/process-page {:key key :page page})
+                         (let [state (merge-state state-map page {id-key id})]
+                           {key state})))
+                      (into {}))]
+      (merge data-tree states))))
+
+(defn page-loader
+  "Returns a will-enter handler for a page"
+  [key control-key app {id :id :as props}]
+  (let [id    (new-uuid id)
+        ident [key id]
+        control (comp/registry-key->class control-key)]
+    (log/info :page-loader/loading {:ident ident :control control
+                                    :app app :props props})
+    (let [state (-> (app/current-state app) (get-in ident))]
+      (log/finer :page-loader/starting {:app app :id id :ident ident})
+      (dr/route-deferred
+       ident
+       (fn []
+         (log/finer :page-loader/routing
+                    {:id       id
+                     :state    state
+                     :controls (control/component-controls app)})
+         (df/load!
+          app ident control
+          {:marker               :ui/selected-node
+           :target               [:ui/selected-node]
+           :post-mutation        `dr/target-ready
+           :post-mutation-params {:target ident}}))))))
+
+(defn page-merger
+  [k mappings]
+  (fn [ctx] (merge-pages ctx k mappings)))
 
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]

@@ -1,18 +1,14 @@
 (ns dinsro.ui.core.nodes
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.container :as container :refer [defsc-container]]
    [com.fulcrologic.rad.container-options :as co]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.rad.control-options :as copt]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
@@ -189,16 +185,6 @@
   "node actions menu"
   (comp/factory ActionsMenu))
 
-(defn ShowNode-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.c.nodes/id
-   {:ui/blocks       u.c.node-blocks/SubPage
-    :ui/peers        u.c.node-peers/SubPage
-    :ui/transactions u.c.node-transactions/SubPage
-    :ui/wallets      u.c.node-wallets/SubPage}))
-
 (def show-peers true)
 (def show-wallets true)
 (def show-blocks true)
@@ -226,26 +212,13 @@
                    :ui/transactions    {}
                    :ui/wallets         {}}
    :ident         ::m.c.nodes/id
-   :will-enter
-   (fn [app {id :id}]
-     (let [id    (new-uuid id)
-           ident [::m.c.nodes/id id]
-           state (-> (app/current-state app) (get-in ident))]
-       (log/finer :ShowNode/will-enter {:app app :id id :ident ident})
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/finer :ShowNode/will-enter2
-                     {:id       id
-                      :state    state
-                      :controls (control/component-controls app)})
-          (df/load!
-           app ident ShowNode
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))
-   :pre-merge     ShowNode-pre-merge}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.nodes/id
+                   {:ui/blocks       u.c.node-blocks/SubPage
+                    :ui/peers        u.c.node-peers/SubPage
+                    :ui/transactions u.c.node-transactions/SubPage
+                    :ui/wallets      u.c.node-wallets/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.c.nodes/id ::ShowNode)}
   (log/finer :ShowNode/creating {:id id :props props :this this})
   (let [{:keys [main sub]} (css/get-classnames ShowNode)]
     (dom/div {:classes [main]}

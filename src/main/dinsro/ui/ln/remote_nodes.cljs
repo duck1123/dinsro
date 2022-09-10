@@ -1,14 +1,10 @@
 (ns dinsro.ui.ln.remote-nodes
   (:require
-   [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
@@ -25,13 +21,6 @@
    fo/route-prefix "remote-node-form"
    fo/title        "Remote Node"})
 
-(defn ShowRemoteNode-pre-merge
-  [ctx]
-  (u.links/merge-pages
-   ctx
-   ::m.ln.remote-nodes/id
-   {:ui/peers u.ln.remote-node-peers/SubPage}))
-
 (defsc ShowRemoteNode
   [_this {:ui/keys                 [peers]
           ::m.ln.remote-nodes/keys [id pubkey]}]
@@ -44,26 +33,10 @@
    :initial-state {::m.ln.remote-nodes/id     nil
                    ::m.ln.remote-nodes/pubkey ""
                    :ui/peers                  {}}
-   :pre-merge     ShowRemoteNode-pre-merge
-   :will-enter
-   (fn [app {id :id}]
-     (let [id    (new-uuid id)
-           ident [::m.ln.remote-nodes/id id]
-           state (-> (app/current-state app) (get-in ident))]
-       (log/info :ShowNode/will-enter {:app app :id id :ident ident})
-       (dr/route-deferred
-        ident
-        (fn []
-          (log/info :ShowRemoteNode/will-enter2
-                    {:id       id
-                     :state    state
-                     :controls (control/component-controls app)})
-          (df/load!
-           app ident ShowRemoteNode
-           {:marker               :ui/selected-node
-            :target               [:ui/selected-node]
-            :post-mutation        `dr/target-ready
-            :post-mutation-params {:target ident}})))))}
+   :pre-merge     (u.links/page-merger
+                   ::m.ln.remote-nodes/id
+                   {:ui/peers u.ln.remote-node-peers/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.ln.remote-nodes/id ::ShowRemoteNode)}
   (dom/div {}
     (dom/div {:classes [:.ui.segment]}
       (dom/h1 {} "Remote Node")
