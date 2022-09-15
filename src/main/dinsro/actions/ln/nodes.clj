@@ -11,20 +11,18 @@
    [dinsro.client.lnd :as c.lnd]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
-   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.specs :as ds]
    [erp12.fijit.collection :as efc]
-   [lambdaisland.glogc :as log]
-   [xtdb.api :as xt])
+   [lambdaisland.glogc :as log])
   (:import
    java.io.File
    java.io.FileNotFoundException
    java.net.UnknownHostException
    java.net.URI
-   org.bitcoins.lnd.rpc.config.LndInstance
    org.bitcoins.lnd.rpc.LndRpcClient
    scala.Option))
 
@@ -46,7 +44,7 @@
     (catch FileNotFoundException _ nil)))
 
 (defn get-client
-  "Get a bitcoin-s client"
+  "Get a bitcoin-s client for this node"
   ^LndRpcClient [{::m.ln.nodes/keys [id name host port] :as node}]
   (log/info :get-client/creating {:id id :name name})
   (let [url       (URI. (str "https://" host ":" port "/"))
@@ -168,21 +166,12 @@
         (c.lnd-s/initialize! client password cipher-seed-mnemonic))
       (throw (RuntimeException. "no mnemonic")))))
 
-(>defn save-info!
-  [id data]
-  [::m.ln.nodes/id ::m.ln.info/params => any?]
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
-        entity (xt/entity db id)
-        tx     (xt/submit-tx node [[::xt/put (merge entity data)]])]
-    (xt/await-tx node tx)))
-
-(defn get-remote-instance
-  "Create a Bitcoin-s lnd remote instance for node"
-  ^LndInstance [{::m.ln.nodes/keys [host port] :as node}]
-  (let [url       (URI. (str "http://" host ":" port "/"))
-        macaroon  (get-macaroon-text node)]
-    (c.lnd-s/get-remote-instance url macaroon)))
+;; (defn get-remote-instance
+;;   "Create a Bitcoin-s lnd remote instance for node"
+;;   ^LndInstance [{::m.ln.nodes/keys [host port] :as node}]
+;;   (let [url       (URI. (str "http://" host ":" port "/"))
+;;         macaroon  (get-macaroon-text node)]
+;;     (c.lnd-s/get-remote-instance url macaroon)))
 
 (defn get-info
   "Fetch info for the node"
@@ -195,16 +184,19 @@
       record)))
 
 (>defn new-address
+  "Request a new address from the node"
   [node]
   [::m.ln.nodes/item => any?]
   (let [client (get-client node)]
     (c.lnd-s/get-new-address client)))
 
 (defn new-address-str
+  "Request new address as string"
   [node]
   (.value (new-address node)))
 
 (defn unlock!
+  "Unlock the wallet"
   [node]
   (log/info :unlock!/starting {:node-id (::m.ln.nodes/id node)})
   (let [client     (get-client node)
@@ -212,6 +204,7 @@
     (c.lnd-s/unlock-wallet client passphrase)))
 
 (>defn get-lnd-address
+  "Fetch an address from the node"
   [node]
   [::m.ln.nodes/item => string?]
   (log/info :get-lnd-address/starting {:node-id (::m.ln.nodes/id node)})
@@ -219,6 +212,7 @@
     (async/<!! (c.lnd-s/get-new-address client))))
 
 (defn generate!
+  "Request an address and generate a block to it"
   [node]
   [::m.ln.nodes/item => any?]
   (log/info :generate!/starting {:node-id (::m.ln.nodes/id node)})
@@ -228,6 +222,7 @@
     address))
 
 (>defn update-info!
+  "Fetch and update this node's info"
   [{::m.ln.nodes/keys [id] :as node}]
   [::m.ln.nodes/item => any?]
   (log/info :update-info!/starting {:id id})
@@ -236,7 +231,6 @@
     (log/finer :update-info!/got-channel {:response response})
     (let [record (cs/->record response)]
       (log/info :update-info!/converted {:record record})
-
       (let [params (set/rename-keys record m.ln.info/rename-map)]
         (log/finer :update-info!/saving {:id id :params params})
-        (save-info! id params)))))
+        (q.ln.nodes/update! id params)))))

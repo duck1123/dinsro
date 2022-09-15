@@ -17,16 +17,19 @@
 
 (report/defsc-report Report
   [this props]
-  {ro/columns          [m.ln.accounts/id
-                        m.ln.accounts/node]
-
+  {ro/columns          [m.ln.accounts/wallet
+                        ;; m.ln.accounts/id
+                        m.ln.accounts/address-type
+                        m.ln.accounts/node
+                        ;; m.ln.accounts/master-key-fingerprint
+                        ]
    ro/control-layout   {:action-buttons [::fetch ::refresh]
                         :inputs         [[::m.ln.nodes/id]]}
    ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                         ::fetch         fetch-button
                         ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.accounts/block           #(u.links/ui-block-link %2)
-                        ::m.ln.accounts/transactions-id #(u.links/ui-core-tx-link %3)}
+   ro/field-formatters {::m.ln.accounts/wallet #(u.links/ui-wallet-link %2)
+                        ::m.ln.accounts/node   #(u.links/ui-node-link %2)}
    ro/source-attribute ::m.ln.accounts/index
    ro/title            "Node Accounts"
    ro/row-pk           m.ln.accounts/id

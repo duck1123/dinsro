@@ -310,6 +310,8 @@
        {::m.ln.nodes/id           id
         ::m.ln.nodes/hasCert?     hasCert?
         ::m.ln.nodes/hasMacaroon? hasMacaroon?})
+      (dom/dl {})
+
       (dom/p {} "User: " (u.links/ui-user-link user))
       (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
       (dom/p {} "Address: " host ":" (str port))

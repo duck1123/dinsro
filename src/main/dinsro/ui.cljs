@@ -130,7 +130,7 @@
          [loaded? initialized?]}                site-config
         root                                    (uism/get-active-state this ::auth/auth-machine)
         gathering-credentials?                  (#{:state/gathering-credentials} root)]
-    (dom/div {:classes [:.ui.container container]}
+    (dom/div {:classes [:.ui container]}
       (if loaded?
         (if initialized?
           (comp/fragment

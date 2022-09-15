@@ -9,7 +9,9 @@
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log])
+  (:import
+   org.bitcoins.core.crypto.ExtPublicKey))
 
 (>defn register-address!
   [wallet address path-index]
@@ -36,7 +38,7 @@
     (let [address (a.c.wallets/get-address wallet index)]
       (register-address! wallet address index))))
 
-(defn generate!
+(>defn generate!
   [{wallet-id                   ::m.c.wallet-addresses/wallet
     ::m.c.wallet-addresses/keys [address]}]
   [::m.c.wallet-addresses/item => any?]
@@ -51,3 +53,39 @@
         (throw (RuntimeException. "Failed to find node id")))
       (throw (RuntimeException. "no network id")))
     (throw (RuntimeException. "Failed to find wallet"))))
+
+(defn calculate-address!
+  [wallet index]
+  (log/info :calculate-address!/starting {:wallet wallet :index index})
+  (let [ext-public-key  (::m.c.wallets/ext-public-key wallet)
+        ext-public-key2 (ExtPublicKey/fromString ext-public-key)]
+    (log/info :calculate-addresses!/read-key {:ext-public-key  ext-public-key
+                                              :ext-public-key2 ext-public-key2})
+    (let [wallet-path (::m.c.wallets/derivation wallet)
+          child-path  (str "/0/" index)
+          ext-pub-key (c.bitcoin-s/get-child-key-pub ext-public-key2
+                                                     wallet-path
+                                                     (str wallet-path child-path))]
+      (log/info :calculate-addresses!/a {:ext-pub-key ext-pub-key})
+      (let [script-pub-key (c.bitcoin-s/get-script-pub-key ext-pub-key)]
+        (log/info :calculate-addresses!/b {:script-pub-key script-pub-key})
+        (let [network "regtest"]
+          (log/info :calculate-addresses!/c {:network network})
+          (let [address (c.bitcoin-s/get-address script-pub-key network)]
+            (log/info :calculate-addresses!/d {:address address})
+            (register-address! wallet address index)))))))
+
+;; bash-4.4# lncli -n regtest newaddress p2wkh
+;; {
+;;  "address" : "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g"
+;;  }
+
+(defn calculate-addresses!
+  [wallet-id]
+  (log/info :calculate-addresses!/starting {:wallet-id wallet-id})
+  (if-let [wallet (q.c.wallets/read-record wallet-id)]
+    (dotimes [n 20]
+      (calculate-address! wallet n))
+    (do
+      (log/error :calculate-addresses!/no-wallet {:wallet-id wallet-id})
+      (throw (RuntimeException. "Failed to find wallet")))))

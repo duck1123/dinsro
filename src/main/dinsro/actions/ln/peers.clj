@@ -3,7 +3,7 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.client.lnd-s :as c.lnd-s]
@@ -24,6 +24,7 @@
 (>defn update-peer!
   [node data]
   [::m.ln.nodes/item ::m.ln.peers/params => any?]
+  (log/info :update-peer!/starting {:node node :data data})
   (let [{::m.ln.nodes/keys [id]}     node
         {::m.ln.peers/keys [pubkey]} data
         params                       (assoc data ::m.ln.peers/node id)]
@@ -41,11 +42,15 @@
               params         (assoc params ::m.ln.peers/remote-node remote-node-id)]
           (create-peer-record! params))))))
 
-(defn handle-fetched-peer
+(>defn handle-fetched-peer
   [node peer]
+  [::m.ln.nodes/item any? => any?]
+  (log/info :handle-fetched-peer/starting {:node node :peer peer})
   (try
-    (let [params (set/rename-keys peer m.ln.peers/rename-map)]
-      (update-peer! node params))
+    (let [params   (set/rename-keys peer m.ln.peers/rename-map)
+          response (update-peer! node params)]
+      (log/info :handle-fetched-peer/finished {:response response})
+      response)
     (catch Exception ex
       (log/error :handle-fetched-peer/failed {:ex ex}))))
 
@@ -90,3 +95,10 @@
           {:status :fail :message "No pubkey"}))
       {:status :not-found :message "Failed to find remote node"})
     {:status :not-found :message "Failed to find node"}))
+
+(>defn fetch-peers!
+  [node-id]
+  [::m.ln.nodes/id => (? any?)]
+  (log/info :fetch-peers!/starting {:node-id node-id})
+  #_(throw (RuntimeException. "Not implemented"))
+  nil)

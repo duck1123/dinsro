@@ -89,6 +89,8 @@
  ;; If true, production image will be deployed
  :useProduction false
 
+ :useSqlpad false
+
  ;; Should testing resources be run?
  :useTests false
  }

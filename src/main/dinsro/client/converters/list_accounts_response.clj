@@ -21,3 +21,7 @@
                          (some->> (map cs/->record)))]
     {::accounts accounts
      ::unknown-fields []}))
+
+(extend-type ListAccountsResponse
+  cs/Recordable
+  (->record [this] (ListAccountsResponse->record this)))

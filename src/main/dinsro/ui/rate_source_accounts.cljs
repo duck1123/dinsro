@@ -9,14 +9,17 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.accounts/name]
+  {ro/columns          [m.accounts/name
+                        m.accounts/currency
+                        m.accounts/source
+                        m.accounts/wallet]
    ro/controls         {::m.rate-sources/id {:type :uuid :label "id"}
                         ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index
+   ro/source-attribute ::m.accounts/index-by-rate-source
    ro/title            "Rate Sources Accounts"})
 
 (def ui-report (comp/factory Report))
@@ -27,7 +30,7 @@
                        {:ui/report (comp/get-query Report)}]
    :componentDidMount #(report/start-report! % Report {:route-params %})
    :initial-state     {::m.rate-sources/id nil
-                       :ui/report        {}}
+                       :ui/report          {}}
    :ident             (fn [] [:component/id ::SubPage])}
   (ui-report report))
 

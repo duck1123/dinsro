@@ -137,7 +137,8 @@
 
 (defsc ShowWallet
   "Show a wallet"
-  [this {::m.c.wallets/keys [id name derivation key network user]
+  [this {::m.c.wallets/keys [id name derivation key network user
+                             ext-public-key ext-private-key]
          :ui/keys           [addresses words accounts]
          :as                props}]
   {:route-segment ["wallets" :id]
@@ -147,6 +148,8 @@
                    {::m.c.wallets/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.c.wallets/user (comp/get-query u.links/UserLinkForm)}
                    ::m.c.wallets/key
+                   ::m.c.wallets/ext-private-key
+                   ::m.c.wallets/ext-public-key
                    {:ui/accounts (comp/get-query u.c.wallet-accounts/SubPage)}
                    {:ui/addresses (comp/get-query u.c.wallet-addresses/SubPage)}
                    {:ui/words (comp/get-query u.c.wallet-words/SubPage)}
@@ -155,6 +158,8 @@
                    ::m.c.wallets/name       ""
                    ::m.c.wallets/derivation ""
                    ::m.c.wallets/key        ""
+                   ::m.c.wallets/ext-private-key ""
+                   ::m.c.wallets/ext-public-key ""
                    ::m.c.wallets/network    {}
                    ::m.c.wallets/user       {}
                    :ui/addresses            {}
@@ -175,11 +180,22 @@
                     (log/info :ShowWallet/derive-clicked {})
                     (comp/transact! this [(mu.c.wallets/derive! {::m.c.wallets/id id})]))}
         "derive")
-      (dom/p :.ui.segment "Name: " (str name))
-      (dom/p :.ui.segment "Derivation: " (str derivation))
-      (dom/p :.ui.segment "Key: " (str key))
-      (dom/p :.ui.segment "Network: " (u.links/ui-network-link network))
-      (dom/p :.ui.segment "User: " (u.links/ui-user-link user)))
+      (dom/dl {}
+              (dom/dt {} "Name")
+              (dom/dd {} (str name))
+              (dom/dt {} "Derivation")
+              (dom/dd {} (str derivation))
+              (dom/dt {} "Key")
+              (dom/dd {} (str key))
+              (dom/dt {} "Network")
+              (dom/dd {} (u.links/ui-network-link network))
+              (dom/dt {} "User")
+              (dom/dd {} (u.links/ui-user-link user))
+              (dom/dt {} "Extended Public Key")
+              (dom/dd {} ext-public-key)
+              (dom/dt {} "Extended Private Key")
+              (dom/dd {} ext-private-key)))
+
     (if id
       (comp/fragment
        (dom/div :.ui.segment
@@ -194,7 +210,10 @@
 (report/defsc-report WalletsReport
   [this props]
   {ro/columns          [m.c.wallets/name
-                        m.c.wallets/user]
+                        m.c.wallets/user
+                        m.c.wallets/derivation
+                        m.c.wallets/ext-public-key
+                        m.c.wallets/ext-private-key]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-action-button}
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)

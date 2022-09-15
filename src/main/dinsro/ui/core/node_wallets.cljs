@@ -23,7 +23,7 @@
                         ::m.c.nodes/id {:type :uuid :label "Nodes"}
                         ::refresh      u.links/refresh-control}
    ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
-                        ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
+                        ::m.c.wallets/name #(u.links/ui-wallet-link %3)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/route            "wallets"
    ro/row-actions      [u.c.wallets/delete-action-button]

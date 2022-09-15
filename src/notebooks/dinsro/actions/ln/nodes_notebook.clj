@@ -122,8 +122,6 @@
 
   (prn (slurp (a.ln.nodes/download-macaroon! n.lnd/node)))
 
-  (a.ln.nodes/get-remote-instance n.lnd/node)
-
   (.unlockWallet client a.ln.nodes/default-passphrase)
 
   (a.c.nodes/generate-to-address!

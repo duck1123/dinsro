@@ -5,6 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.report :as report]
    [dinsro.model.core.tx :as m.c.tx]
    [lambdaisland.glogc :as log]))
 
@@ -51,7 +52,8 @@
 (defattr transaction ::transaction :ref
   {ao/identities #{::id}
    ao/target     ::m.c.tx/id
-   ao/schema     :production})
+   ao/schema     :production
+   ::report/column-EQL {::transaction [::m.c.tx/id ::m.c.tx/tx-id]}})
 
 (s/def ::params
   (s/keys :req [::n ::value ::transaction]

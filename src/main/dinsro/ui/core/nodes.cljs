@@ -261,7 +261,8 @@
 (report/defsc-report CoreNodesReport
   [_this _props]
   {ro/columns           [m.c.nodes/name
-                         m.c.nodes/block-count]
+                         m.c.nodes/host
+                         m.c.nodes/network]
    ro/column-formatters {::m.c.nodes/name    #(u.links/ui-core-node-link %3)
                          ::m.c.nodes/network #(u.links/ui-network-link %2)}
    ro/control-layout    {:action-buttons [::new ::refresh]}

@@ -15,7 +15,6 @@
   [this props]
   {ro/columns          [m.c.tx-out/n
                         m.c.tx-out/value
-                        m.c.tx-out/address
                         m.c.tx-out/hex
                         m.c.tx-out/type]
    ro/controls         {::refresh   u.links/refresh-control

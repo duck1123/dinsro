@@ -35,6 +35,7 @@ use_notebooks         = notebooks.get('enabled')
 use_nrepl             = config_get('useNrepl')
 use_persistence       = config_get('usePersistence')
 use_production        = config_get('useProduction')
+use_sqlpad            = config_get('useSqlpad')
 use_tests             = config_get('useTests')
 use_docs              = config_get('useDocs')
 use_devcards          = devcards.get('enabled')
@@ -45,15 +46,8 @@ devcards_devtools_url = 'http://devtools.devcards.dinsro.localhost'
 has_devtools          = not (local_devtools or use_production)
 
 nodes = config_get('nodes')
-# alice_lnd      = False
-use_alice      = nodes.get('alice').get('bitcoin')
-use_bob        = nodes.get('bob').get('bitcoin')
-# use_bitcoin    = True
-# use_lnd        = False
-# use_fileserver = False
-# use_rtl        = False
-# use_specter    = False
-# use_lnbts      = False
+use_alice = nodes.get('alice').get('bitcoin')
+use_bob = nodes.get('bob').get('bitcoin')
 
 multple_envs = use_alice and use_bob
 multiple_rtl = nodes.get('alice').get('rtl') and nodes.get('bob').get('rtl')
@@ -576,14 +570,12 @@ if use_tests:
 
 # SqlPad
 
-if use_persistence:
+if use_persistence and use_sqlpad:
   namespace_create(
     'sqlpad',
     annotations = [ 'field.cattle.io/projectId: local:%s' % project_id ],
     labels = [ 'field.cattle.io/projectId: %s' % project_id ],
   )
-
-if use_persistence:
   k8s_yaml(helm(
     'resources/helm/sqlpad',
     name = 'sqlpad',
@@ -595,8 +587,6 @@ if use_persistence:
       'ingress.hosts[0].paths[0].path=' + '/',
     ],
   ))
-
-if use_persistence:
   earthly_build(
     'dinsro/sqlpad:6.7',
     './resources/tilt/sqlpad+sqlpad',
@@ -605,7 +595,15 @@ if use_persistence:
       'resources/tilt/sqlpad/seed-data'
     ],
   )
+  k8s_resource(
+    workload = 'sqlpad',
+    labels = [ 'database' ],
+    links = [
+      link('http://sqlpad.localhost', 'SQLPad'),
+    ],
+  )
 
+# Specter
 
 if has_key('specter'):
   earthly_build(
@@ -613,15 +611,6 @@ if has_key('specter'):
     './resources/specter-config-manager+image',
     deps = [
       'resources/specter-config-manager',
-    ],
-  )
-
-if use_persistence:
-  k8s_resource(
-    workload = 'sqlpad',
-    labels = [ 'database' ],
-    links = [
-      link('http://sqlpad.localhost', 'SQLPad'),
     ],
   )
 

@@ -13,14 +13,14 @@
 
 (report/defsc-report Report
   [this props]
-  {ro/columns          [m.c.tx-in/txid
-                        m.c.tx-in/vout
+  {ro/columns          [m.c.tx-in/vout
                         m.c.tx-in/tx-id
                         m.c.tx-in/sequence
-                        m.c.tx-in/coinbase]
+                        m.c.tx-in/transaction]
    ro/controls         {::refresh   u.links/refresh-control
                         ::m.c.tx/id {:type :uuid :label "TX"}}
-   ro/control-layout   {:action-buttons [::refresh]}
+   ro/control-layout   {:action-buttons [::refresh]
+                        :inputs [[::m.c.tx/id]]}
    ro/source-attribute ::m.c.tx-in/index
    ro/title            "Inputs"
    ro/row-pk           m.c.tx-in/id

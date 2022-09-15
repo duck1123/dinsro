@@ -62,7 +62,8 @@
    ao/required?   true
    ao/identities  #{::id}
    ao/schema      :production
-   ao/target      ::m.rate-sources/id})
+   ao/target      ::m.rate-sources/id
+   ::report/column-EQL {::source [::m.rate-sources/id ::m.rate-sources/name]}})
 
 (s/def ::wallet (s/or :id ::m.c.wallets/id
                       :nil nil?))

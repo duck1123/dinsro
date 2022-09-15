@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
@@ -70,14 +71,22 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewWalletAddressForm))})
 
+(def calculate-action-button
+  {:type   :button
+   :local? true
+   :label  "Calculate"
+   :action (u.links/report-action ::m.c.wallets/id mu.c.wallets/calculate-addresses!)})
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.wallet-addresses/path-index
                         m.c.wallet-addresses/address]
    ro/controls         {::m.c.wallets/id {:type :uuid :label "id"}
-                        ::new     new-action-button
-                        ::refresh u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::new ::refresh]}
+                        ::new            new-action-button
+                        ::refresh        u.links/refresh-control
+                        ::calculate      calculate-action-button}
+   ro/control-layout   {:inputs         [[::m.c.wallets/id]]
+                        :action-buttons [::new ::calculate ::refresh]}
    ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
    ro/form-links       {::m.c.wallet-addresses/address WalletAddressForm}
    ro/route            "wallets-addresses"

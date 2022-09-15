@@ -42,6 +42,16 @@
   [=> (s/coll-of ::m.ln.nodes/item)]
   (map read-record (index-ids)))
 
+(defn update!
+  [id data]
+  [::m.ln.nodes/id any? => any?]
+  (let [node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        entity (xt/entity db id)
+        new-data (merge entity data)
+        tx     (xt/submit-tx node [[::xt/put new-data]])]
+    (xt/await-tx node tx)))
+
 (defn create-transaction
   [params]
   (let [node            (c.xtdb/main-node)

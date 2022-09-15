@@ -2,6 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def]]
+   dinsro.client.converters.account
+   dinsro.client.converters.address-type
    dinsro.client.converters.bitcoin-address
    dinsro.client.converters.byte-vector
    dinsro.client.converters.currency-unit

@@ -4,6 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
@@ -11,7 +12,7 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-(comment ::m.c.wallets/_)
+(comment ::m.c.wallets/_ ::m.rate-sources/_)
 
 (defattr transactions ::m.accounts/transactions :ref
   {ao/cardinality :many
@@ -54,7 +55,20 @@
                   :cljs [])]
        {::m.accounts/index (m.accounts/idents ids)}))})
 
+(defattr index-by-rate-source ::m.accounts/index-by-rate-source :ref
+  {ao/target    ::m.accounts/id
+   ao/pc-output [{::m.accounts/index-by-rate-source [::m.accounts/id]}]
+   ao/pc-resolve
+   #?(:clj (fn [{:keys [query-params]} _]
+             (log/info :index-by-rate-source/starting {:query-params query-params})
+             (let [ids (if-let [rate-source-id (::m.rate-sources/id query-params)]
+                         (q.accounts/find-by-rate-source rate-source-id)
+                         [])]
+               {::m.accounts/index-by-rate-source (m.accounts/idents ids)}))
+      :cljs (fn [] {::m.accounts/index-by-rate-source []}))})
+
 (def attributes
   [transactions
    index
+   index-by-rate-source
    admin-index])

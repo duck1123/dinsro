@@ -9,7 +9,6 @@
   (:import
    akka.actor.ActorSystem
    java.net.URI
-
    org.bitcoins.commons.jsonmodels.bitcoind.GetRawTransactionResult
    org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts$AddNodeArgument$Add$
    org.bitcoins.core.hd.BIP32Path
@@ -21,8 +20,9 @@
    org.bitcoins.core.crypto.MnemonicCode
    org.bitcoins.core.crypto.BIP39Seed
    org.bitcoins.core.crypto.ExtPrivateKey
+   org.bitcoins.core.crypto.ExtPublicKey
    org.bitcoins.core.crypto.ExtKeyPrivVersion
-   org.bitcoins.core.config.NetworkParameters
+   org.bitcoins.core.crypto.ExtKeyPubVersion
    org.bitcoins.core.protocol.Bech32Address
    org.bitcoins.core.protocol.BitcoinAddress
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
@@ -82,6 +82,7 @@
   (BitcoinNetworks/fromString "regtest"))
 
 (defn get-xpub-version
+  ^ExtKeyPubVersion
   [purpose network]
   (HDUtil/getXpubVersion
    (HDPurpose. purpose)
@@ -112,7 +113,7 @@
 
 (defn get-address
   [^WitnessScriptPubKey script-pub-key
-   ^NetworkParameters network]
+   network]
   (.value (Bech32Address/apply script-pub-key (BitcoinNetworks/fromString network))))
 
 (defn get-ext-pubkey
@@ -125,16 +126,30 @@
 
 (defn get-child-key
   [xpriv wallet-path child-path]
+  (log/info :get-child-key/starting {:xpriv xpriv :wallet-path wallet-path :child-path child-path})
   (let [account-path (BIP32Path/fromString wallet-path)
         account-xpub (get-ext-pubkey xpriv account-path)
         segwit-path  (SegWitHDPath/fromString child-path)
         path-diff    (.get (.diff account-path segwit-path))
         ext-pub-key  (.get (.deriveChildPubKey account-xpub path-diff))]
+    (log/info :get-child-key/finished {:ext-public-key ext-pub-key})
+    ext-pub-key))
+
+(defn get-child-key-pub
+  [account-xpub wallet-path child-path]
+  (log/info :get-child-key/starting {:account-xpub account-xpub
+                                     :wallet-path  wallet-path
+                                     :child-path   child-path})
+  (let [account-path (BIP32Path/fromString wallet-path)
+        segwit-path  (BIP32Path/fromString child-path)
+        path-diff    (.get (.diff account-path segwit-path))
+        ext-pub-key  (.get (.deriveChildPubKey account-xpub path-diff))]
+    (log/info :get-child-key/finished {:ext-public-key ext-pub-key})
     ext-pub-key))
 
 (defn get-script-pub-key
   "https://bitcoin-s.org/api/org/bitcoins/core/protocol/script/P2WPKHWitnessSPKV0$.html#apply(pubKey:org.bitcoins.crypto.ECPublicKey):org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0"
-  [ext-pub-key]
+  [^ExtPublicKey ext-pub-key]
   (let [pub-key (.key ext-pub-key)]
     (P2WPKHWitnessSPKV0/apply pub-key)))
 

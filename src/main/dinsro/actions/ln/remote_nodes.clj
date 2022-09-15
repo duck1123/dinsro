@@ -1,6 +1,8 @@
 (ns dinsro.actions.ln.remote-nodes
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [dinsro.actions.ln.nodes :as a.ln.nodes]
+   [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.queries.ln.remote-nodes :as q.ln.remote-nodes]
    [lambdaisland.glogc :as log]))
@@ -27,3 +29,9 @@
   [id]
   (log/info :fetch!/starting {:id id})
   nil)
+
+(defn get-node-info
+  [node pubkey]
+  (log/info :get-node-info/starting {:node node :pubkey pubkey})
+  (let [client (a.ln.nodes/get-client node)]
+    (c.lnd-s/get-node-info client pubkey)))

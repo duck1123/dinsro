@@ -110,6 +110,17 @@
   (doseq [id (index-ids)]
     (delete! id)))
 
+(defn find-by-rate-source
+  [rate-source-id]
+  (log/info :find-by-rate-source/starting {:rate-source-id rate-source-id})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?account-id]
+                :in    [[?rate-source-id]]
+                :where [[?account-id ::m.accounts/source ?rate-source-id]]}
+        ids   (map first (xt/q db query [rate-source-id]))]
+    (log/finer :find-by-rate-source/finished {:ids ids})
+    ids))
+
 (defn find-by-wallet
   [wallet-id]
   (log/info :find-by-wallet/starting {:wallet-id wallet-id})

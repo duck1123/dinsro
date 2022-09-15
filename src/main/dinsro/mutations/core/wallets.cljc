@@ -6,11 +6,13 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
+   #?(:clj [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses])
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.words :as m.c.words]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.c.wallets/_)
+(comment ::pc/_ ::m.c.wallets/_ ::m.c.wallet-addresses/_)
 
 (defsc CreationResponse
   [_this _props]
@@ -106,4 +108,23 @@
      (action [_env] true)
      (remote [env] (fm/returning env DeriveResponse))))
 
-#?(:clj (def resolvers [create! derive! roll!]))
+(defsc CalculateAddressesResponse
+  [_this _props]
+  {:query [:status]})
+
+#?(:clj
+   (pc/defmutation calculate-addresses!
+     [_env props]
+     {::pc/params #{::m.c.wallets/id}
+      ::pc/output [:status]}
+     (log/info :calculate-addresses!/starting {})
+     (let [wallet-id (::m.c.wallets/id props)]
+       (a.c.wallet-addresses/calculate-addresses! wallet-id)))
+
+   :cljs
+   (fm/defmutation calculate-addresses! [_props]
+     (action [_env] true)
+     (remote [env] (fm/returning env CalculateAddressesResponse))))
+
+#?(:clj (def resolvers [calculate-addresses!
+                        create! derive! roll!]))

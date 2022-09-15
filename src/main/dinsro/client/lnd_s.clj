@@ -6,6 +6,7 @@
    [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
    [dinsro.client.converters.list-accounts-request :as c.c.list-accounts-request]
    [dinsro.client.converters.list-channels-request :as c.c.list-channels-request]
+   [dinsro.client.converters.list-accounts-response]
    [dinsro.client.scala :as cs :refer [Recordable]]
    [dinsro.specs :as ds]
    [erp12.fijit.try :as eft]
@@ -169,11 +170,12 @@
 
 (>defn list-wallet-accounts
   [client]
-  [::walletkit-client => any?]
+  [::client => any?]
   (log/info :list-wallet-accounts/starting {})
-  (let [request  (c.c.list-accounts-request/->obj)
-        response (.listAccounts client request)
-        obj      (await-throwable response)]
+  (let [wallet-kit-client (.wallet client)
+        request           (c.c.list-accounts-request/->obj)
+        response          (.listAccounts wallet-kit-client request)
+        obj               (await-throwable response)]
     (log/info :list-wallet-accounts/finished {:obj obj})
     obj))
 
@@ -184,3 +186,10 @@
   (log/info :fetch-channels!/starting {})
   (let [request (c.c.list-channels-request/->obj)]
     (.listChannels client request)))
+
+(>defn get-node-info
+  [_client pubkey]
+  [::client string? => any?]
+  (log/info :get-node-info/starting {:pubkey pubkey})
+  (let [_response nil]
+    (throw (RuntimeException. "not implemented"))))

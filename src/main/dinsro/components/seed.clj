@@ -9,7 +9,8 @@
    [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
-   [dinsro.actions.ln.peers-lj :as a.ln.peers-lj]
+   [dinsro.actions.ln.peers :as a.ln.peers]
+   ;; [dinsro.actions.ln.peers-lj :as a.ln.peers-lj]
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.actions.users :as a.users]
    [dinsro.components.seed.accounts]
@@ -153,7 +154,7 @@
           (catch RuntimeException ex
             (log/finer :seed-ln-node!/unlock-failed {:ex ex})))
         (a.ln.nodes/update-info! node)
-        (a.ln.peers-lj/fetch-peers! node-id))
+        (a.ln.peers/fetch-peers! node-id))
       (do
         (log/finer :seed-ln-node!/download-macaroon-failed {})
         (let [initialize-response (a.ln.nodes/initialize! node)]
