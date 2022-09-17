@@ -5,7 +5,6 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.accounts :as m.accounts]
@@ -13,30 +12,6 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.account-transactions :as u.account-transactions]
    [dinsro.ui.links :as u.links]))
-
-(defsc RefRow
-  [_this props]
-  {:ident ::m.accounts/id
-   :query [::m.accounts/id
-           ::m.accounts/name
-           ::m.accounts/currency]}
-  (dom/tr {}
-    (dom/td (u.links/ui-account-link props))))
-
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.accounts/id}))
-
-(defn ref-table
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "Name")))
-     (dom/tbody {}
-       (for [tx value]
-         (ui-ref-row tx))))))
-
-(def render-ref-table (render-field-factory ref-table))
 
 (defsc CurrencyQuery
   [_this _props]

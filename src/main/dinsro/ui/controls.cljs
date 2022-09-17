@@ -27,10 +27,8 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.rates :as u.rates]
    [lambdaisland.glogc :as log]))
 
 (def ui-victory-bar (interop/react-factory victory/VictoryBar))
@@ -183,12 +181,10 @@
 (defn all-controls
   []
   (-> sui/all-controls
-      (control-type :ref  :account-table    u.accounts/render-ref-table)
       (control-type :ref  :default          render-ref)
       (control-type :ref  :link             render-link-control)
       (control-type :ref  :link-list        render-link-list-control)
       (control-type :ref  :rate-chart       render-rate-chart-control)
-      (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)
       (control-type :ref  :word-list        u.c.wallets/render-word-list)
       (control-type :uuid :default          render-uuid)

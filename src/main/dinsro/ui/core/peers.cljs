@@ -14,40 +14,6 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-(defsc RefRow
-  [_this {::m.c.peers/keys [connection-type peer-id addr]}]
-  {:ident         ::m.c.peers/id
-   :query         [::m.c.peers/id
-                   ::m.c.peers/peer-id
-                   ::m.c.peers/connection-type
-                   ::m.c.peers/addr]
-   :initial-state {::m.c.peers/addr            "127.0.0.1"
-                   ::m.c.peers/peer-id         0
-                   ::m.c.peers/connection-type ""}}
-
-  (dom/tr {}
-    (dom/td {} (str peer-id))
-    (dom/td {} (str connection-type))
-    (dom/td {} (str addr))))
-
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.peers/id}))
-
-(defsc RefTable
-  [_this {:keys [rows]}]
-  {:initial-state {:rows []}
-   :query         [{:rows (comp/get-query RefRow)}]}
-  (dom/table :.ui.table
-    (dom/thead {}
-      (dom/tr {}
-        (dom/th {} "Peer Id")
-        (dom/th {} "Connection Type")
-        (dom/th {} "Address")))
-    (dom/tbody {}
-      (for [tx rows]
-        (ui-ref-row tx)))))
-
-(def ui-ref-table (comp/factory RefTable))
-
 (def submit-button
   {:type   :button
    :local? true

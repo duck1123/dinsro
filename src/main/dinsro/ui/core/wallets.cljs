@@ -6,7 +6,6 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -19,29 +18,6 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-(defsc RefRow
-  [_this props]
-  {:ident ::m.c.wallets/id
-   :query [::m.c.wallets/id
-           ::m.c.wallets/name]}
-  (dom/tr {}
-    (dom/td (u.links/ui-rate-link props))))
-
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.wallets/id}))
-
-(defn ref-table
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "Name")))
-     (dom/tbody {}
-       (for [ref value]
-         (ui-ref-row ref))))))
-
-(def render-ref-table (render-field-factory ref-table))
-
 (def create-button
   {:type   :button
    :local? true
@@ -49,8 +25,6 @@
    :action (fn [this _]
              (let [props (comp/props this)]
                (comp/transact! this [(mu.c.wallets/create! props)])))})
-
-(def override-new-wallet-form false)
 
 (form/defsc-form NewWalletForm [this props]
   {fo/id             m.c.wallets/id
