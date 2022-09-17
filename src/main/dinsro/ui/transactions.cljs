@@ -40,8 +40,7 @@
 (report/defsc-report TransactionsReport
   [_this _props]
   {ro/columns          [m.transactions/description
-                        m.transactions/date
-                        j.transactions/user]
+                        m.transactions/date]
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
                                            :action (fn [this] (form/create! this NewTransactionForm))}

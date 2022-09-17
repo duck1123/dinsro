@@ -10,6 +10,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations.ln.peers :as mu.ln.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
@@ -41,11 +42,6 @@
 
 (def render-ref-ln-peer-row (render-field-factory ref-ln-peer-row))
 
-(form/defsc-form NodeLink [_this _props]
-  {fo/id           m.ln.nodes/id
-   fo/route-prefix "peers-node"
-   fo/attributes   [m.ln.nodes/name]})
-
 (def submit-button
   {:type   :button
    :local? true
@@ -63,7 +59,8 @@
 (form/defsc-form NewPeerForm [_this _props]
   {fo/id           m.ln.peers/id
    fo/action-buttons [::submit]
-   fo/attributes   [m.ln.peers/node]
+   fo/attributes   [m.ln.peers/node
+                    m.ln.peers/remote-node]
    fo/controls {::submit submit-button}
    fo/field-options  {::m.ln.peers/node
                       {::picker-options/query-key       ::m.ln.nodes/index
@@ -74,9 +71,20 @@
                           (fn [{::m.ln.nodes/keys [id name]}]
                             {:text  (str name)
                              :value [::m.ln.nodes/id id]})
-                          (sort-by ::m.ln.nodes/name options)))}}
+                          (sort-by ::m.ln.nodes/name options)))}
+                      ::m.ln.peers/remote-node
+                      {::picker-options/query-key       ::m.ln.remote-nodes/index
+                       ::picker-options/query-component u.links/RemoteNodeLinkForm
+                       ::picker-options/options-xform
+                       (fn [_ options]
+                         (mapv
+                          (fn [{::m.ln.remote-nodes/keys [id pubkey]}]
+                            {:text  (str pubkey)
+                             :value [::m.ln.remote-nodes/id id]})
+                          (sort-by ::m.ln.remote-nodes/pubkey options)))}}
+
    fo/field-styles {::m.ln.peers/node :pick-one
-                    ::m.ln.peers/id   :link}
+                    ::m.ln.peers/remote-node :pick-one}
    fo/route-prefix "new-peer"
    fo/title        "New Peer"})
 
@@ -90,11 +98,13 @@
 
 (report/defsc-report LNPeersReport
   [this _props]
-  {ro/columns          [m.ln.peers/inbound?
-                        m.ln.peers/node]
+  {ro/columns          [m.ln.peers/node
+                        m.ln.peers/remote-node
+                        m.ln.peers/inbound?]
    ro/controls {::new new-button}
    ro/field-formatters {::m.ln.peers/node #(u.links/ui-node-link %2)
-                        ::m.ln.peers/pubkey #(u.links/ui-ln-peer-link %3)}
+                        ::m.ln.peers/pubkey #(u.links/ui-ln-peer-link %3)
+                        ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
    ro/route            "peers"
    ro/row-actions      []
    ro/row-pk           m.ln.peers/id

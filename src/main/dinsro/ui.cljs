@@ -70,6 +70,7 @@
                     u.rate-sources/RateSourcesReport
                     u.rates/RatesReport
                     u.registration/RegistrationPage
+                    u.transactions/NewTransactionForm
                     u.transactions/ShowTransaction
                     u.transactions/TransactionsReport
                     u.users/AdminUserForm
