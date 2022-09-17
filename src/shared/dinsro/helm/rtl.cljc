@@ -48,6 +48,7 @@
         {name :name} options]
     {:certDownloader    {:image {:repository "duck1123/cert-downloader"
                                  :pullPolicy "Always"}}
+     :image             {:tag "0.13.1"}
      :ingress           {:hosts [{:host  (str "rtl." name ".localhost")
                                   :paths [{:path "/"}]}]}
      :configurationFile #?(:clj (json2/encode config) :cljs (do (comment config) ""))

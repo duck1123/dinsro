@@ -373,6 +373,31 @@
     ;; (println cmd)
     (shell cmd)))
 
+
+(defn helm-rtl
+  [n]
+  (let [path     "resources/helm/rtl/"
+        filename (format "target/conf/%s/rtl_values.yaml" n)
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "--name-template=rtl-" n)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
+(defn helm-rtl2
+  [n]
+  (let [path     "resources/helm/rtl/"
+        filename (format "target/conf/%s/rtl_values.yaml" n)
+        cmd      (string/join
+                  " "
+                  ["helm template "
+                   (str "--name-template=rtl-" n)
+                   (str "--values " filename)
+                   path])]
+    (shell cmd)))
+
 (defn helm-specter
   [name]
   (let [path     "specter-desktop"
