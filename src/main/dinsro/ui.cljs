@@ -69,6 +69,7 @@
                     u.rate-sources/ShowRateSource
                     u.rate-sources/RateSourcesReport
                     u.rates/RatesReport
+                    u.rates/ShowRate
                     u.registration/RegistrationPage
                     u.transactions/NewTransactionForm
                     u.transactions/ShowTransaction

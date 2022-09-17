@@ -15,13 +15,16 @@
 (defrouter LnRouter
   [_this _props]
   {:router-targets [u.ln.accounts/Report
+                    u.ln.channels/NewChannelForm
                     u.ln.channels/LNChannelsReport
+                    u.ln.channels/ShowChannel
                     u.ln.invoices/LNInvoicesReport
                     u.ln.invoices/NewInvoiceForm
                     u.ln.nodes/CreateLightningNodeForm
                     u.ln.nodes/LightningNodesReport
                     u.ln.nodes/ShowNode
                     u.ln.payments/LNPaymentsReport
+                    u.ln.payments/ShowPayment
                     u.ln.payreqs/NewPaymentForm
                     u.ln.payreqs/LNPayreqsReport
                     u.ln.payreqs/NewPaymentForm

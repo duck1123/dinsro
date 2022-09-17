@@ -4,46 +4,10 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.ui.links :as u.links]))
-
-(defsc RefRow
-  [_this {::m.ln.channels/keys [capacity commit-fee local-balance remote-balance] :as props}]
-  {:ident ::m.ln.channels/id
-   :query [::m.ln.channels/id
-           ::m.ln.channels/channel-point
-           ::m.ln.channels/capacity
-           ::m.ln.channels/commit-fee
-           ::m.ln.channels/local-balance
-           ::m.ln.channels/remote-balance]}
-  (dom/tr {}
-    (dom/td (u.links/ui-channel-link props))
-    (dom/td (str capacity))
-    (dom/td (str commit-fee))
-    (dom/td (str local-balance))
-    (dom/td (str remote-balance))))
-
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.ln.channels/id}))
-
-(defn ref-row
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "Channel Point")
-         (dom/th {} "Capacity")
-         (dom/th {} "Commit Fee")
-         (dom/th {} "Local Balance")
-         (dom/th {} "Remote Balance")))
-     (dom/tbody {}
-       (for [tx value]
-         (ui-ref-row tx))))))
-
-(def render-ref-row (render-field-factory ref-row))
 
 (form/defsc-form NewChannelForm [_this _props]
   {fo/id           m.ln.channels/id
@@ -74,3 +38,10 @@
   (dom/div {}
     (dom/h1 {} "Channels")
     (report/render-layout this)))
+
+(defsc ShowChannel
+  [_this _props]
+  {:ident ::m.ln.channels/id
+   :query [::m.ln.channels/id]
+   :initial-state {::m.ln.channels/id nil}}
+  (dom/div {}))
