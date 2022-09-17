@@ -34,4 +34,5 @@
    dinsro.client.converters.transaction-input
    dinsro.client.converters.transaction-out-point
    dinsro.client.converters.transaction-output
+   dinsro.client.converters.uint32
    dinsro.client.converters.witness-transaction))
