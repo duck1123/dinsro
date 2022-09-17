@@ -2,7 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
-   [dinsro.client.converters :as c.converters]
+   dinsro.client.converters
    [dinsro.client.scala :as cs]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
@@ -269,7 +269,7 @@
 
 (>defn fetch-block-by-height
   [client height]
-  [::client number? => ::c.converters/fetch-block-by-height-result]
+  [::client number? => any?]
   (log/finer :fetch-block-by-height/starting {:height height})
   (let [hash (:result (async/<!! (get-block-hash client height)))]
     (log/fine :fetch-block-by-height/located {:hash hash})

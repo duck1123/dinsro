@@ -5,9 +5,8 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
    [dinsro.client.converters.list-accounts-request :as c.c.list-accounts-request]
-   [dinsro.client.converters.list-accounts-response]
    [dinsro.client.converters.list-channels-request :as c.c.list-channels-request]
-   [dinsro.client.scala :as cs :refer [Recordable]]
+   [dinsro.client.scala :as cs]
    [dinsro.specs :as ds]
    [erp12.fijit.try :as eft]
    [lambdaisland.glogc :as log]
@@ -18,7 +17,6 @@
    org.bitcoins.lnd.rpc.config.LndInstance
    org.bitcoins.lnd.rpc.LndRpcClient
    scala.Option
-   lnrpc.Chain
    lnrpc.ConnectPeerRequest
    lnrpc.GetInfoResponse
    lnrpc.LightningAddress
@@ -34,24 +32,6 @@
    (log/finer :get-remote-instance/creating
               {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
    (LndInstanceRemote. url macaroon cert-file cert-opt)))
-
-(extend-type Chain
-  Recordable
-  (->record [this]
-    (log/info :Chain/->record {:this this})
-    {:chain              (.chain this)
-     :network            (.network this)
-     #_#_:unknown-fields (.unknownFields this)}))
-
-(extend-type GetInfoResponse
-  Recordable
-  (->record [this]
-    {:alias        (.alias this)
-     :block-hash   (.blockHash this)
-     :block-height (.blockHeight this)
-     :chains       (map cs/->record (cs/vector->vec (.chains this)))
-     :version      (.version this)
-     :commit-hash  (.commitHash this)}))
 
 (>def ::client (ds/instance? LndRpcClient))
 (>def ::walletkit-client (ds/instance? WalletKitClient))

@@ -239,7 +239,7 @@
   (log/info :update-info!/starting {:id id})
   (let [client   (get-client node)
         response (c.lnd-s/get-info client)]
-    (log/finer :update-info!/got-channel {:response response})
+    (log/info :update-info!/got-channel {:response response})
     (let [record (cs/->record response)]
       (log/info :update-info!/converted {:record record})
       (let [params (set/rename-keys record m.ln.info/rename-map)]

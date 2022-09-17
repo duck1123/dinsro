@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
-   dinsro.client.converters.get-block-result
    [dinsro.client.scala :as cs]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])

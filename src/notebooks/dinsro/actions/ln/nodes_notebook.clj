@@ -21,14 +21,15 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
+(def message "this is a test message")
+(def signature "dh5bb37x188z6ccqq8ijsjnwa9wbugckicnjzqa73fjb4osegzsdnnejxip76oagetuwknicpktzk6jubpg59bho3r1maew78uudizqw")
+
+(try
+  (pr-str n.lnd/node)
+  (catch Exception ex ex))
+
 ;; ## get-client
 
-
-(comment
-
-  nil)
-
-;; ## get-client
 
 (def client (a.ln.nodes/get-client n.lnd/node))
 

@@ -76,12 +76,16 @@
        {::uism/handler (fn [_env] (edit-detail))})))
 
 (def button-info
-  [{:label            "Fetch Peers"
-    :action           mu.ln/fetch-peers!
+  [{:label            "Unlock"
+    :action           mu.ln/unlock!
     :requiresCert     true
     :requiresMacaroon true}
-   {:label            "Fetch Channels"
-    :action           mu.ln/fetch-channels!
+   {:label            "Initialize"
+    :action           mu.ln/initialize!
+    :requiresCert     true
+    :requiresMacaroon false}
+   {:label            "Update Info"
+    :action           mu.ln/update-info!
     :requiresCert     true
     :requiresMacaroon true}
    {:label            "Fetch Invoices"
@@ -94,32 +98,6 @@
     :requiresMacaroon true}
    {:label            "Fetch Transactions"
     :action           mu.ln/fetch-transactions!
-    :requiresCert     true
-    :requiresMacaroon true}
-   {:label            "Download Cert"
-    :action           mu.ln/download-cert!
-    :hideCert         true
-    :requiresCert     false
-    :requiresMacaroon false}
-   {:label            "Download Macaroon"
-    :action           mu.ln/download-macaroon!
-    :hideMacaroon     true
-    :requiresCert     true
-    :requiresMacaroon false}
-   {:label            "Initialize"
-    :action           mu.ln/initialize!
-    :requiresCert     true
-    :requiresMacaroon false}
-   {:label            "Unlock"
-    :action           mu.ln/unlock!
-    :requiresCert     true
-    :requiresMacaroon true}
-   {:label            "Update Info"
-    :action           mu.ln/update-info!
-    :requiresCert     true
-    :requiresMacaroon true}
-   {:label            "Generate"
-    :action           mu.ln/generate!
     :requiresCert     true
     :requiresMacaroon true}])
 
