@@ -5,7 +5,7 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.accounts :as a.ln.accounts])
-   #?(:clj [dinsro.actions.ln.channels-lj :as a.ln.channels-lj])
+   #?(:clj [dinsro.actions.ln.channels :as a.ln.channels])
    #?(:clj [dinsro.actions.ln.invoices-lj :as a.ln.invoices-lj])
    #?(:clj [dinsro.actions.ln.nodes :as a.ln.nodes])
    #?(:clj [dinsro.actions.ln.payments-lj :as a.ln.payments-lj])
@@ -135,7 +135,7 @@
      [_env {::m.ln.nodes/keys [id]}]
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
-     (a.ln.channels-lj/fetch-channels! id)
+     (a.ln.channels/fetch-channels! id)
      {:status :ok})
    :cljs
    (defmutation fetch-channels! [_props]

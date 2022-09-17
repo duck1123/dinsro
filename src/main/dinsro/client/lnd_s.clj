@@ -183,9 +183,12 @@
   "https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#listChannels(request:lnrpc.ListChannelsRequest):scala.concurrent.Future[Vector[lnrpc.Channel]]"
   [client]
   [::client => any?]
-  (log/info :fetch-channels!/starting {})
-  (let [request (c.c.list-channels-request/->obj)]
-    (.listChannels client request)))
+  (log/info :list-channels!/starting {})
+  (let [request (c.c.list-channels-request/->obj)
+        response (.listChannels client request)
+        o (cs/await-future response)]
+    (log/info :list-channels!/finished {:o o})
+    o))
 
 (>defn get-node-info
   [_client pubkey]
