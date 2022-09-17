@@ -24,6 +24,8 @@
 (def message "this is a test message")
 (def signature "dh5bb37x188z6ccqq8ijsjnwa9wbugckicnjzqa73fjb4osegzsdnnejxip76oagetuwknicpktzk6jubpg59bho3r1maew78uudizqw")
 
+;; ## get-client
+
 (try
   (pr-str n.lnd/node)
   (catch Exception ex ex))

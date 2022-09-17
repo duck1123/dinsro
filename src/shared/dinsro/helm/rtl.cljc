@@ -16,20 +16,23 @@
                         :themeMode         "NIGHT"
                         :themeColor        "PURPLE"
                         :channelBackupPath backup-path
-                        :enableLogging     true
+                        ;; :enableLogging     true
+                        :logLevel          "DEBUG"
                         :lnServerUrl       server-url
                         :fiatConversion    false}}))
 
 (defn ->config
+  "See: https://github.com/Ride-The-Lightning/RTL/blob/master/Sample-RTL-Config.json"
   [options]
   (let [{name :name}     options
         multipass-hashed "f52fbd32b2b3b86ff88ef6c490628285f482af15ddcb29541f94bcf526a3f6c7"
         port             3000
         nodes            [{:name name}]]
-    {:multiPassHashed  multipass-hashed
+    {;; :multiPass "hunter2"
+     :multiPassHashed  multipass-hashed
      :port             port
      :defaultNodeIndex 1,
-     :sso              {:rtlSSO             0
+     :SSO              {:rtlSSO             0
                         :rtlCookiePath      ""
                         :logoutRedirectLink ""}
      :nodes            (map make-node nodes)}))
@@ -49,6 +52,8 @@
     {:certDownloader    {:image {:repository "duck1123/cert-downloader"
                                  :pullPolicy "Always"}}
      :image             {:tag "0.13.1"}
+     ;; :image             {:tag "0.12.2"}
+     ;; :image             {:tag "0.11.1"}
      :ingress           {:hosts [{:host  (str "rtl." name ".localhost")
                                   :paths [{:path "/"}]}]}
      :configurationFile #?(:clj (json2/encode config) :cljs (do (comment config) ""))

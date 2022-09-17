@@ -373,7 +373,6 @@
     ;; (println cmd)
     (shell cmd)))
 
-
 (defn helm-rtl
   [n]
   (let [path     "resources/helm/rtl/"
@@ -382,6 +381,7 @@
                   " "
                   ["helm template "
                    (str "--name-template=rtl-" n)
+                   (str "--namespace " n)
                    (str "--values " filename)
                    path])]
     (shell cmd)))
