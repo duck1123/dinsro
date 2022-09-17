@@ -29,13 +29,15 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.nodes/name
-                        m.c.nodes/host]
+                        m.c.nodes/host
+                        m.c.nodes/initial-block-download?
+                        m.c.nodes/block-count]
    ro/controls         {::refresh      u.links/refresh-control
                         ::m.c.networks/id {:type :uuid :label "Nodes"}}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
    ro/source-attribute ::m.c.nodes/index
-   ro/title            "Network Nodes"
+   ro/title            "Core Nodes"
    ro/row-actions       [fetch-action-button delete-action-button]
    ro/row-pk           m.c.nodes/id
    ro/run-on-mount?    true
@@ -52,6 +54,7 @@
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.networks/id nil
                        :ui/report        {}}
+   :route-segment     ["nodes"]
    :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/creating {:props props})
   (dom/div :.ui.segment

@@ -193,7 +193,7 @@
                    ::m.ln.nodes/port
                    ::m.ln.nodes/hasCert?
                    ::m.ln.nodes/hasMacaroon?
-                   {::m.ln.nodes/network (comp/get-query u.links/NodeLinkForm)}
+                   {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
    :initial-state {:ui/accounts              {}
@@ -224,28 +224,35 @@
        {::m.ln.nodes/id           id
         ::m.ln.nodes/hasCert?     hasCert?
         ::m.ln.nodes/hasMacaroon? hasMacaroon?})
-      (dom/dl {})
+      (dom/div :.ui.list
+        (dom/div :.item
+          (dom/div :.header "User")
+          (u.links/ui-user-link user))
+        (dom/div :.item
+          (dom/div :.header "Core Node")
+          (u.links/ui-core-node-link core-node))
+        (dom/div :.item
+          (dom/div :.header "Address")
+          host ":" (str port))
+        (dom/div :.item
+          (dom/div :.header "Network")
+          (u.links/ui-network-link network))
+        (dom/div :.item
+          (dom/div :.header "Has Cert?")
+          (str hasCert?)
+          (when-not hasCert?
+            (comp/fragment
+             (dom/p {} "Cert not found")
+             (dom/button {:classes [:.ui.button]
+                          :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
+               "Fetch"))))
+        (dom/div :.item
+          (dom/div :.header "Has Macaroon?")
+          (if hasMacaroon?
+            (str hasMacaroon?)
+            (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
+              (str hasMacaroon?))))))
 
-      (dom/p {} "User: " (u.links/ui-user-link user))
-      (dom/p {} "Core Node: " (u.links/ui-core-node-link core-node))
-      (dom/p {} "Address: " host ":" (str port))
-      (dom/p {} "Network: "
-        (pr-str (keys network))
-        (u.links/ui-network-link network))
-      (when-not hasCert?
-        (comp/fragment
-         (dom/p {} "Cert not found")
-         (dom/button {:classes [:.ui.button]
-                      :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
-           "Fetch")))
-      (dom/p {} "Has Cert: " (str hasCert?))
-      (dom/p {}
-        "Has Macaroon: "
-        (if hasMacaroon?
-          (str hasMacaroon?)
-          (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
-            (str hasMacaroon?))))
-      (dom/p {} (pr-str id)))
     (u.ln.node-accounts/ui-sub-page accounts)
     (u.ln.node-peers/ui-sub-page peers)
     (u.ln.node-channels/ui-sub-page channels)

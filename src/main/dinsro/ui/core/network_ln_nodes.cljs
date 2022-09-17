@@ -19,7 +19,7 @@
    ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
                         ::m.ln.nodes/user #(u.links/ui-user-link %2)}
    ro/source-attribute ::m.ln.nodes/index
-   ro/title            "Network Ln Nodes"
+   ro/title            "Lightning Nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true})
 
@@ -44,6 +44,7 @@
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {::m.c.networks/id nil
                        :ui/report        {}}
+   :route-segment     ["ln-nodes"]
    :ident             (fn [] [:component/id ::SubPage])}
   (log/finer :SubPage/starting {:props props})
   (dom/div :.ui.segment

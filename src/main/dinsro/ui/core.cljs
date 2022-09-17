@@ -16,7 +16,7 @@
    [dinsro.ui.core.words :as u.c.words]))
 
 (defrouter CoreRouter
-  [_this _props]
+  [_this props]
   {:router-targets [u.c.addresses/CoreAddressForm
                     u.c.addresses/CoreAddressReport
                     u.c.blocks/ShowBlock
@@ -44,14 +44,16 @@
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
                     u.c.words/WordsReport]}
-  (dom/div {} "Core router"))
+  (dom/div :.ui.segment
+    (dom/p {} "Core router failed to match any target")
+    (dom/code {} (pr-str props))))
 
 (def ui-core-router (comp/factory CoreRouter))
 
 (defsc CorePage
-  [_this {:keys [core-router]}]
-  {:query         [{:core-router (comp/get-query CoreRouter)}]
-   :initial-state {:core-router {}}
+  [_this {:ui/keys [core-router]}]
+  {:query         [{:ui/core-router (comp/get-query CoreRouter)}]
+   :initial-state {:ui/core-router {}}
    :ident         (fn [] [:component/id ::CorePage])
    :route-segment ["core"]}
   (ui-core-router core-router))
