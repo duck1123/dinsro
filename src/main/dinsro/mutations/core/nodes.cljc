@@ -45,6 +45,20 @@
      (action [_env] true)
      (remote [env]  (fm/returning env ConnectResponse))))
 
+;; Delete
+
+#?(:clj
+   (pc/defmutation delete!
+     [_env props]
+     {::pc/params #{::m.c.nodes/id}
+      ::pc/output [::status ::errors ::m.c.nodes/item]}
+     (a.c.nodes/do-delete! props))
+
+   :cljs
+   (defmutation delete! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
 ;; Fetch
 
 (>def ::fetch!-request
@@ -174,4 +188,4 @@
      (remote [_env] true)))
 
 #?(:clj
-   (def resolvers [connect! fetch! generate! fetch-peers!]))
+   (def resolvers [connect! delete! fetch! generate! fetch-peers!]))

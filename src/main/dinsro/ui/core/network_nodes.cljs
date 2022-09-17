@@ -6,8 +6,25 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
+
+(defn delete-action
+  [report-instance {::m.c.nodes/keys [id]}]
+  (comp/transact! report-instance [(mu.c.nodes/delete! {::m.c.nodes/id id})]))
+
+(defn fetch-action
+  [report-instance {::m.c.nodes/keys [id]}]
+  (comp/transact! report-instance [(mu.c.nodes/fetch! {::m.c.nodes/id id})]))
+
+(def delete-action-button
+  {:label  "Delete"
+   :action delete-action})
+
+(def fetch-action-button
+  {:label     "Fetch"
+   :action    fetch-action})
 
 (report/defsc-report Report
   [_this _props]
@@ -19,6 +36,7 @@
    ro/field-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
    ro/source-attribute ::m.c.nodes/index
    ro/title            "Network Nodes"
+   ro/row-actions       [fetch-action-button delete-action-button]
    ro/row-pk           m.c.nodes/id
    ro/run-on-mount?    true
    ro/route            "nodes"})

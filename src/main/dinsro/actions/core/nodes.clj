@@ -94,3 +94,8 @@
     (do
       (log/error :generate!/node-not-found {:node-id node-id})
       nil)))
+
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props})
+  (throw (RuntimeException. "no implemented")))
