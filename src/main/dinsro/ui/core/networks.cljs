@@ -21,20 +21,21 @@
 (def override-form false)
 
 (defrouter Router
-  [_this props]
+  [this props]
   {:router-targets [u.c.network-addresses/SubPage
                     u.c.network-blocks/SubPage
                     u.c.network-nodes/SubPage
                     u.c.network-ln-nodes/SubPage
                     u.c.network-wallets/SubPage]}
-  (log/info :Router/starting {:props props})
-  (let [{:keys [current-state pending-path-segment route-props]} props]
+  (log/info :Router/starting {:props props :this this})
+  (let [{:keys [current-state pending-path-segment route-props route-factory]} props]
     (case current-state
-
       (dom/div :.ui.segment
         (dom/div {} "Default route")
-        (dom/p "Current State: " current-state)
-        (dom/p "Segment: " pending-path-segment)
+        (dom/p {} "Current State: " (pr-str current-state))
+        (dom/p {} "Segment: " (pr-str pending-path-segment))
+        (dom/p {} "Props: " (pr-str route-props))
+        (dom/p {} "Props 2: " (pr-str props))
         (dom/code {} (pr-str route-props))))))
 
 (def ui-router (comp/factory Router))
@@ -42,7 +43,7 @@
 (defsc ShowNetwork
   [this {::m.c.networks/keys [id chain name]
          :ui/keys            [router]
-         :as props}]
+         :as                 props}]
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
@@ -55,13 +56,16 @@
    :route-segment ["network" :id]
    :pre-merge
    (fn [ctx]
-     (log/finer :pre-merge/starting {:ctx ctx})
-     (let [{:keys [data-tree]} ctx
-           id (::m.c.networks/id data-tree)
-           new-context      {:ui/router (assoc (comp/get-initial-state Router)
-                                               ::m.c.networks/id id)}
-           merged-data-tree (merge data-tree new-context)]
-       (log/info :pre-merge/finished {:merged-data-tree merged-data-tree})
+     (log/info :ShowNetwork/pre-merge-starting {:ctx ctx})
+     (let [{:keys [data-tree state-map]} ctx
+           id                            (::m.c.networks/id data-tree)
+           merged-data-tree              (merge
+                                          (comp/get-initial-state ShowNetwork)
+                                          {:ui/router (-> state-map
+                                                          (get-in (comp/get-ident Router {}))
+                                                          (assoc ::m.c.networks/id id))}
+                                          data-tree)]
+       (log/info :ShowNetwork/pre-merge-finished {:merged-data-tree merged-data-tree})
        merged-data-tree))
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
   (log/info :ShowNetwork/starting {:props props})
@@ -80,21 +84,29 @@
                 :route "dinsro.ui.core.network-addresses/SubPage"}
                {:key   "blocks"
                 :name  "Blocks"
-                :route "dinsro.ui.core.network-blocks/SubPage"}]
-
+                :route "dinsro.ui.core.network-blocks/SubPage"}
+               {:name  "LN Nodes"
+                :key   "ln-nodes"
+                :route "dinsro.ui.core.network-ln-nodes/SubPage"}
+               {:name  "Core Nodes"
+                :key   "core-nodes"
+                :route "dinsro.ui.core.network-nodes/SubPage"}
+               {:name  "Wallets"
+                :key   "wallets"
+                :route "dinsro.ui.core.network-wallets/SubPage"}]
        :onItemClick
        (fn [_e d]
-         (log/info :onItemClick/starting {:d d})
-         (let [route-name (get (js->clj d) "route")]
-           (log/info :onItemClick/starting {:route-name route-name})
-           (let [route-kw (keyword route-name)]
-             (log/info :onItemClick/kw {:route-kw route-kw})
-             (let [route (comp/registry-key->class route-kw)]
-               (rroute/route-to! this route {:id               (str id)
-                                             ::m.c.networks/id id})))))})
+         (let [route-name (get (js->clj d) "route")
+               route-kw   (keyword route-name)
+               route      (comp/registry-key->class route-kw)]
+           (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
+           (if id
+             (rroute/route-to! this route {:id (str id) :foo "bar"})
+             (log/info :onItemClick/no-id {}))))})
      (if router
-       (ui-router (assoc router ::m.c.networks/id id))
-       (dom/div :.ui.segment "Router not loaded")))
+       (ui-router router)
+       (dom/div :.ui.segment "Network Router not loaded")))
+
     (dom/p :.ui.segment
       "Network Not loaded"
       (pr-str props))))

@@ -51,78 +51,50 @@
 (def ui-report (comp/factory Report))
 
 (defsc ReportBlock
-  [this {::m.c.networks/keys [id]
-         :ui/keys            [report]
-         :as                 props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:query             [::m.c.networks/id
                        {:ui/report (comp/get-query Report)}]
    :ident             (fn [] [:component/id ::ReportBlock])
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :componentDidMount (fn [this]
+                        (let [props (comp/props this)]
+                          (log/info :ReportBlock/did-mount {:props props})
+                          (report/start-report! this Report {:route-params props})))
+   :pre-merge         (fn [ctx]
+                        (log/info :ReportBlock/pre-merge-starting {:ctx ctx})
+                        (let [{:keys [data-tree]} ctx
+                              id                  (::m.c.networks/id data-tree)
+                              new-context         {:ui/report
+                                                   (assoc (comp/get-initial-state Report)
+                                                          ::m.c.networks/id id)}
+                              merged-data-tree    (merge data-tree new-context)]
+                          (log/info :ReportBlock/pre-merge-finished {:data-tree        data-tree
+                                                                     :merged-data-tree merged-data-tree})
+                          merged-data-tree))
    :initial-state     {::m.c.networks/id nil
                        :ui/report        {}}}
-  (dom/div :.ui.segment
-    (dom/p {} "Report Block")
-    (dom/p {} "ID: " (pr-str id))
-    (if report
-      (ui-report report)
-      (dom/p {} "report not loaded"))))
+  (log/info :ReportBlock/starting {:props props})
+  (if report
+    (ui-report report)
+    (dom/p :.ui.segment "report not loaded")))
 
 (def ui-report-block (comp/factory ReportBlock))
 
 (defsc SubPage
-  [_this {:ui/keys   [block-report report-block]
-          :as        props
-          network-id ::m.c.networks/id}]
-  {:query             [::m.c.networks/id
-                       {:ui/report-block (comp/get-query ReportBlock)}
-                       {:ui/block-report (comp/get-query Report)}]
-   :componentDidMount (fn [this]
-                        (let [props (comp/props this)]
-                          (log/info :SubPage/did-mount {:this this :props props})
-                          (report/start-report! this Report {:route-params props})))
-   :initial-state     {::m.c.networks/id nil
-                       :ui/block-report  {}
-                       :ui/report-block  {}}
+  [_this {:ui/keys [report-block]
+          :as      props}]
+  {:query             [{:ui/report-block (comp/get-query ReportBlock)}
+                       [::dr/id :dinsro.ui.core.networks/Router]]
+   :initial-state     {:ui/report-block {}}
    :route-segment     ["blocks"]
-   :pre-merge
-   (fn [ctx]
-     (log/info :pre-merge/starting {:ctx ctx})
-     (let [{:keys [data-tree]} ctx
-           id                  (::m.c.networks/id data-tree)
-           new-context         {:ui/report-block
-                                (assoc (comp/get-initial-state ReportBlock)
-                                       ::m.c.networks/id id)
-                                :ui/block-report
-                                (assoc (comp/get-initial-state Report)
-                                       ::m.c.networks/id id)}
-
-           merged-data-tree (merge data-tree new-context)]
-       (log/info :pre-merge/finished {:data-tree        data-tree
-                                      :merged-data-tree merged-data-tree})
-       merged-data-tree))
-   :will-enter (fn [app route-params]
-                 (let [id-str (:id route-params)
-                       id     (new-uuid id-str)
-                       ident  [::m.c.networks/id id]
-                       state  (-> (app/current-state app) (get-in ident))]
-                   (log/info :SubPage/will-enter-starting {:id           id
-                                                           :app          app
-                                                           :route-params route-params
-                                                           :state        state})
-                   (if id-str
-                     (do
-                       (log/info :SubPage/routing-immediate {:id id})
-                       (dr/route-immediate
-                        ident))
-                     (log/error :SubPage/no-id {}))))
-
    :ident (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/starting {:props props})
-  (if network-id
-    (dom/div :.ui.segment
-      (dom/p {} "Network id: " (pr-str network-id))
-      (ui-report-block (assoc report-block ::m.c.networks/id network-id)))
-    (dom/div :.ui.segment
-      "No network id")))
+  (let [router-info (get props [::dr/id :dinsro.ui.core.networks/Router])
+        network-id  (::m.c.networks/id router-info)]
+    (log/info :SubPage/starting {:props props :report-block report-block :router-info router-info})
+    (if network-id
+      (if report-block
+        (ui-report-block (assoc report-block ::m.c.networks/id network-id))
+        (dom/div :.ui.segment "Report not loaded"))
+      (dom/div :.ui.segment "Network Blocks: No network id"))))
 
 (def ui-sub-page (comp/factory SubPage))
