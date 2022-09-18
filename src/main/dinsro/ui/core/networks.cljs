@@ -90,9 +90,8 @@
            (let [route-kw (keyword route-name)]
              (log/info :onItemClick/kw {:route-kw route-kw})
              (let [route (comp/registry-key->class route-kw)]
-               (rroute/route-to! this route {:id      (str id)
+               (rroute/route-to! this route {:id               (str id)
                                              ::m.c.networks/id id})))))})
-
      (if router
        (ui-router (assoc router ::m.c.networks/id id))
        (dom/div :.ui.segment "Router not loaded")))

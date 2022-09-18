@@ -87,8 +87,7 @@
                           (if id-str
                             (do
                               (log/info :SubPage/routing-immediate {:id id})
-                              (dr/route-immediate
-                               [:component/id ::SubPage]))
+                              (dr/route-immediate ident))
                             (log/error :SubPage/no-id {}))))
 
    :ident (fn [] [:component/id ::SubPage])}
