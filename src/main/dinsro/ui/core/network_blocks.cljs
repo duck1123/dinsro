@@ -62,6 +62,6 @@
   (dom/div :.ui.segment
     (if network-id
       (ui-report report)
-      (dom/p {} "Node ID not set"))))
+      (dom/p {} "Network Blocks: Node ID not set"))))
 
 (def ui-sub-page (comp/factory SubPage))

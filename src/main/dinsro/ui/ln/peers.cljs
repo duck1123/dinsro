@@ -1,11 +1,10 @@
 (ns dinsro.ui.ln.peers
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -14,33 +13,6 @@
    [dinsro.mutations.ln.peers :as mu.ln.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
-
-(defsc LnPeerRow
-  [_this {::m.ln.peers/keys [address pubkey inbound sat-sent]}]
-  {}
-  (dom/tr {}
-    (dom/td address)
-    (dom/td pubkey)
-    (dom/td (str inbound))
-    (dom/td sat-sent)))
-
-(def ui-ln-peer-row (comp/factory LnPeerRow {:keyfn ::m.ln.peers/id}))
-
-(defn ref-ln-peer-row
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "Address")
-         (dom/th {} "pubkey")
-         (dom/th {} "inbound")
-         (dom/th {} "sats sent")))
-     (dom/tbody {}
-       (for [peer value]
-         (ui-ln-peer-row peer))))))
-
-(def render-ref-ln-peer-row (render-field-factory ref-ln-peer-row))
 
 (def submit-button
   {:type   :button
@@ -57,11 +29,11 @@
                (comp/transact! this [(mu.ln.peers/create! props)])))})
 
 (form/defsc-form NewPeerForm [_this _props]
-  {fo/id           m.ln.peers/id
+  {fo/id             m.ln.peers/id
    fo/action-buttons [::submit]
-   fo/attributes   [m.ln.peers/node
-                    m.ln.peers/remote-node]
-   fo/controls {::submit submit-button}
+   fo/attributes     [m.ln.peers/node
+                      m.ln.peers/remote-node]
+   fo/controls       {::submit submit-button}
    fo/field-options  {::m.ln.peers/node
                       {::picker-options/query-key       ::m.ln.nodes/index
                        ::picker-options/query-component u.links/NodeLinkForm
@@ -82,11 +54,10 @@
                             {:text  (str pubkey)
                              :value [::m.ln.remote-nodes/id id]})
                           (sort-by ::m.ln.remote-nodes/pubkey options)))}}
-
-   fo/field-styles {::m.ln.peers/node :pick-one
-                    ::m.ln.peers/remote-node :pick-one}
-   fo/route-prefix "new-peer"
-   fo/title        "New Peer"})
+   fo/field-styles   {::m.ln.peers/node        :pick-one
+                      ::m.ln.peers/remote-node :pick-one}
+   fo/route-prefix   "new-peer"
+   fo/title          "New Peer"})
 
 (def override-report true)
 

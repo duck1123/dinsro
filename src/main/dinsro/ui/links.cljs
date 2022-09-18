@@ -86,7 +86,7 @@
 (defn merge-pages
   [{:keys [data-tree state-map]} id-key page-map]
   (let [id (get data-tree id-key)]
-    (log/info :merge-pages/starting {:id-key id-key :id id :page-map page-map})
+    (log/finer :merge-pages/starting {:id-key id-key :id id :page-map page-map})
     (let [states (->> page-map
                       (map
                        (fn [[key page]]
@@ -127,6 +127,7 @@
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
   {fo/id         m.accounts/id
+   fo/route-prefix "account-link"
    fo/attributes [m.accounts/name]}
   (form-link this id name :dinsro.ui.accounts/ShowAccount))
 
@@ -135,6 +136,7 @@
 (form/defsc-form BlockLinkForm
   [this {::m.c.blocks/keys [id hash]}]
   {fo/id         m.c.blocks/id
+   fo/route-prefix "block-link"
    fo/attributes [m.c.blocks/hash]}
   (log/info :BlockLinkForm/starting {:id id :hash hash})
   (form-link this id hash :dinsro.ui.core.blocks/ShowBlock))
@@ -144,6 +146,7 @@
 (form/defsc-form BlockHeightLinkForm
   [this {::m.c.blocks/keys [id height]}]
   {fo/id         m.c.blocks/id
+   fo/route-prefix "block-height-link"
    fo/attributes [m.c.blocks/height]}
   (form-link this id height :dinsro.ui.core.blocks/ShowBlock))
 
@@ -152,6 +155,7 @@
 (form/defsc-form CategoryLinkForm
   [this {::m.categories/keys [id name]}]
   {fo/id         m.categories/id
+   fo/route-prefix "category-link"
    fo/attributes [m.categories/name]}
   (form-link this id name :dinsro.ui.categories/CategoryForm))
 
@@ -159,6 +163,7 @@
 
 (form/defsc-form ChainLinkForm [this {::m.c.chains/keys [id name]}]
   {fo/id         m.c.chains/id
+   fo/route-prefix "chain-link"
    fo/attributes [m.c.chains/name]}
   (form-link this id name :dinsro.ui.core.chains/ShowChain))
 
@@ -166,6 +171,7 @@
 
 (form/defsc-form ChannelLinkForm [this {::m.ln.channels/keys [id channel-point]}]
   {fo/id         m.ln.channels/id
+   fo/route-prefix "channel-link"
    fo/attributes [m.ln.channels/channel-point]}
   (form-link this id channel-point :dinsro.ui.ln.channels/LNChannelForm))
 
@@ -174,6 +180,7 @@
 (form/defsc-form CoreNodeLinkForm
   [this {::m.c.nodes/keys [id name] :as props}]
   {fo/id         m.c.nodes/id
+   fo/route-prefix "core-node-link"
    fo/attributes [m.c.nodes/id m.c.nodes/name]}
   (log/info :CoreNodeLinkForm/starting {:id id :name name :props props})
   (form-link this id (or name (str id)) :dinsro.ui.core.nodes/ShowNode))
@@ -183,6 +190,7 @@
 (form/defsc-form CorePeerLinkForm
   [this {::m.c.peers/keys [id addr]}]
   {fo/id         m.c.peers/id
+   fo/route-prefix "core-peer-link"
    fo/attributes [m.c.peers/id m.c.peers/addr]}
   (form-link this id addr :dinsro.ui.core.peers/ShowPeer))
 
@@ -191,6 +199,7 @@
 (form/defsc-form CoreTxLinkForm
   [this {::m.c.tx/keys [id tx-id]}]
   {fo/id         m.c.tx/id
+   fo/route-prefix "tx-link"
    fo/attributes [m.c.tx/id m.c.tx/tx-id]}
   (form-link this id tx-id :dinsro.ui.core.tx/ShowTransaction))
 
@@ -198,6 +207,7 @@
 
 (form/defsc-form CurrencyLinkForm [this {::m.currencies/keys [id name]}]
   {fo/id         m.currencies/id
+   fo/route-prefix "currency-link"
    fo/attributes [m.currencies/name]}
   (form-link this id name :dinsro.ui.currencies/ShowCurrency))
 
@@ -205,6 +215,7 @@
 
 (form/defsc-form DebitLinkForm [this {::m.debits/keys [id value]}]
   {fo/id         m.currencies/id
+   fo/route-prefix "debit-link"
    fo/attributes [m.debits/value]}
   (form-link this id value :dinsro.ui.debits/ShowDebit))
 
@@ -212,6 +223,7 @@
 
 (form/defsc-form InvoiceLinkForm [this {::m.ln.invoices/keys [id r-preimage]}]
   {fo/id         m.ln.invoices/id
+   fo/route-prefix "invoice-link"
    fo/attributes [m.ln.invoices/r-preimage]}
   (form-link this id r-preimage :dinsro.ui.ln.invoices/LNInvoiceForm))
 
@@ -219,6 +231,7 @@
 
 (form/defsc-form LNPeerLinkForm [this {::m.ln.peers/keys [id remote-node]}]
   {fo/id         m.ln.peers/id
+   fo/route-prefix "ln-peer-link"
    fo/attributes [m.ln.peers/remote-node]}
 
   (form-link this id remote-node :dinsro.ui.ln.peers/LNPeerForm))
@@ -228,6 +241,7 @@
 (form/defsc-form NetworkLinkForm
   [this {::m.c.networks/keys [id name] :as props}]
   {fo/id         m.c.networks/id
+   fo/route-prefix "network-link"
    fo/attributes [m.c.networks/name]}
   (log/finer :NetworkLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.core.networks/ShowNetwork))
@@ -237,6 +251,7 @@
 (form/defsc-form NodeLinkForm
   [this {::m.ln.nodes/keys [id name] :as props}]
   {fo/id         m.ln.nodes/id
+   fo/route-prefix "ln-node-link"
    fo/attributes [m.ln.nodes/name]}
   (log/finer :NodeLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.ln.nodes/ShowNode))
@@ -245,6 +260,7 @@
 
 (form/defsc-form RemoteNodeLinkForm [this {::m.ln.remote-nodes/keys [id pubkey]}]
   {fo/id         m.ln.remote-nodes/id
+   fo/route-prefix "remote-node-link"
    fo/attributes [m.ln.remote-nodes/pubkey]}
   (log/finer :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
   (form-link this id pubkey :dinsro.ui.ln.remote-nodes/ShowRemoteNode))
@@ -253,6 +269,7 @@
 
 (form/defsc-form PaymentsLinkForm [this {::m.ln.payments/keys [id payment-hash]}]
   {fo/id         m.ln.payments/id
+   fo/route-prefix "payment-link"
    fo/attributes [m.ln.payments/payment-hash]}
   (form-link this id payment-hash :dinsro.ui.ln.payments/LNPaymentForm))
 
@@ -260,6 +277,7 @@
 
 (form/defsc-form PayReqLinkForm [this {::m.ln.payreqs/keys [id description]}]
   {fo/id         m.ln.payreqs/id
+   fo/route-prefix "payreq-link"
    fo/attributes [m.ln.payreqs/description]}
   (form-link this id description :dinsro.ui.ln.payreqs/LNPaymentForm))
 
@@ -267,6 +285,7 @@
 
 (form/defsc-form RateLinkForm [this {::m.rates/keys [id date]}]
   {fo/id         m.rates/id
+   fo/route-prefix "rate-link"
    fo/attributes [m.rates/date]}
   (form-link this id (str date) :dinsro.ui.rates/RateForm))
 
@@ -274,6 +293,7 @@
 
 (form/defsc-form RateSourceLinkForm [this {::m.rate-sources/keys [id name]}]
   {fo/id         m.rate-sources/id
+   fo/route-prefix "rate-source-link"
    fo/attributes [m.rate-sources/name]}
   (form-link this id name :dinsro.ui.rate-sources/ShowRateSource))
 
@@ -281,6 +301,7 @@
 
 (form/defsc-form TransactionLinkForm [this {::m.transactions/keys [id description]}]
   {fo/id         m.transactions/id
+   fo/route-prefix "transaction-link"
    fo/attributes [m.transactions/id m.transactions/description]}
   (form-link this id description :dinsro.ui.transactions/ShowTransaction))
 
@@ -288,6 +309,7 @@
 
 (form/defsc-form UserLinkForm [this {::m.users/keys [id name]}]
   {fo/id         m.users/id
+   fo/route-prefix "user-link"
    fo/attributes [m.users/name]}
   (form-link this id name :dinsro.ui.users/ShowUser))
 
@@ -295,6 +317,7 @@
 
 (form/defsc-form WalletAddressLinkForm [this {::m.c.wallet-addresses/keys [id address]}]
   {fo/id         m.c.wallet-addresses/id
+   fo/route-prefix "wallet-address-link"
    fo/attributes [m.c.wallet-addresses/address]}
   (form-link this id address :dinsro.ui.core.wallet-addresses/WalletAddressForm))
 
@@ -302,6 +325,7 @@
 
 (form/defsc-form WalletLinkForm [this {::m.c.wallets/keys [id name]}]
   {fo/id         m.c.wallets/id
+   fo/route-prefix "wallet-link"
    fo/attributes [m.c.wallets/name]}
   (form-link this id name :dinsro.ui.core.wallets/ShowWallet))
 
@@ -309,6 +333,7 @@
 
 (form/defsc-form WordLinkForm [this {::m.c.words/keys [id word]}]
   {fo/id         m.c.words/id
+   fo/route-prefix "word-link"
    fo/attributes [m.c.words/word]}
   (form-link this id word :dinsro.ui.core.words/WordForm))
 

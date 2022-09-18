@@ -20,8 +20,7 @@
 
 (form/defsc-form NewTransactionForm [_this _props]
   {fo/id            m.transactions/id
-   fo/attributes    [m.transactions/description
-                     j.transactions/user]
+   fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]
    fo/field-styles  {::m.transactions/account :pick-one}
    fo/field-options {::m.transactions/account
@@ -82,7 +81,8 @@
                    {:ui/debits (comp/get-query u.transaction-debits/SubPage)}]
    :initial-state {::m.transactions/description ""
                    ::m.transactions/id          nil
-                   ::m.transactions/date        ""}
+                   ::m.transactions/date        ""
+                   :ui/debits                   {}}
    :ident         ::m.transactions/id
    :pre-merge     (u.links/page-merger
                    ::m.transactions/id

@@ -3,8 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.routing :as rroute]
@@ -27,82 +25,70 @@
                     u.c.network-nodes/SubPage
                     u.c.network-ln-nodes/SubPage
                     u.c.network-wallets/SubPage]}
-  (dom/div :.ui.segment "Default route" (pr-str props)))
+  (let [{:keys [current-state]} props]
+    (case current-state
+      (dom/div {} "Unknown state"))
+    (dom/div :.ui.segment "Default route" (pr-str props))))
 
 (def ui-router (comp/factory Router))
 
 (defsc ShowNetwork
   [this {::m.c.networks/keys [id chain name]
-         :ui/keys            [addresses blocks nodes ln-nodes wallets router]}]
+         :ui/keys            [router]
+         :as                 props}]
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
-                   {:ui/addresses (comp/get-query u.c.network-addresses/SubPage)}
-                   {:ui/blocks (comp/get-query u.c.network-blocks/SubPage)}
-                   {:ui/nodes (comp/get-query u.c.network-nodes/SubPage)}
-                   {:ui/ln-nodes (comp/get-query u.c.network-ln-nodes/SubPage)}
-                   {:ui/wallets (comp/get-query u.c.network-wallets/SubPage)}
                    {:ui/router (comp/get-query Router)}]
    :initial-state {::m.c.networks/id    nil
                    ::m.c.networks/name  ""
                    ::m.c.networks/chain {}
-                   :ui/addresses        {}
-                   :ui/blocks           {}
-                   :ui/nodes            {}
-                   :ui/ln-nodes         {}
-                   :ui/router           {}
-                   :ui/wallets          {}}
+                   :ui/router           {}}
    :route-segment ["network" :id]
-   :pre-merge     (u.links/page-merger
-                   ::m.c.networks/id
-                   {:ui/addresses u.c.network-addresses/SubPage
-                    :ui/blocks    u.c.network-blocks/SubPage
-                    :ui/ln-nodes  u.c.network-ln-nodes/SubPage
-                    :ui/nodes     u.c.network-nodes/SubPage
-                    :ui/wallets   u.c.network-wallets/SubPage})
+   :pre-merge
+   (fn [ctx]
+     (log/info :pre-merge/starting {:ctx ctx})
+     (let [{:keys [data-tree]} ctx]
+       (log/info :pre-merge/a {:data-tree data-tree})
+       (let [new-context      {:ui/router (comp/get-initial-state Router)}
+             merged-data-tree (merge data-tree new-context)]
+         (log/info :pre-merge/b {:merged-data-tree merged-data-tree})
+         merged-data-tree)))
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
-  (comp/fragment
-   (dom/div :.ui.segment
-     (dom/h1 {} (str name))
-     (dom/div {}
-       (dom/span {} "Chain: ")
-       (u.links/ui-chain-link chain)))
-   (ui-menu
-    {:items [{:key   "addresses"
-              :name  "Addresses"
-              :route u.c.network-addresses/SubPage}
-             {:key   "blocks"
-              :name  "Blocks"
-              :route u.c.network-blocks/SubPage}]
-
-     :onItemClick
-     (fn [_e d]
-       (log/info :onItemClick/starting {:d d})
-       (let [route (get (js->clj d) "route")]
-         (log/info :onItemClick/starting {:route route})
-         (rroute/route-to! this route {:id      (str id)
-                                       :subpage "foo"})))})
-
-   (ui-router router)
-   (u.c.network-addresses/ui-sub-page addresses)
-   (u.c.network-blocks/ui-sub-page blocks)
-   (u.c.network-nodes/ui-sub-page nodes)
-   (u.c.network-ln-nodes/ui-sub-page ln-nodes)
-   (u.c.network-wallets/ui-sub-page wallets)))
-
-(form/defsc-form CoreNetworkForm
-  [this props]
-  {fo/id             m.c.networks/id
-   fo/attributes     [m.c.networks/name]
-   fo/cancel-route   ["networks"]
-   fo/route-prefix   "network"
-   fo/title          "Network"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {}
-      (dom/p {} "foo")
-      (form/render-layout this props))))
+  (log/info :ShowNetwork/starting {:props props})
+  (if id
+    (comp/fragment
+     (dom/div :.ui.segment
+       (dom/h1 {} (str name))
+       (dom/div {}
+         (dom/span {} "Chain: ")
+         (if chain
+           (u.links/ui-chain-link chain)
+           "None")))
+     (ui-menu
+      {:items [{:key   "addresses"
+                :name  "Addresses"
+                :route "dinsro.ui.core.network-addresses/SubPage"}
+               {:key   "blocks"
+                :name  "Blocks"
+                :route "dinsro.ui.core.network-blocks/SubPage"}]
+       :onItemClick
+       (fn [_e d]
+         (log/info :onItemClick/starting {:d d})
+         (let [route-name (get (js->clj d) "route")]
+           (log/info :onItemClick/starting {:route-name route-name})
+           (let [route-kw (keyword route-name)]
+             (log/info :onItemClick/kw {:route-kw route-kw})
+             (let [route (comp/registry-key->class route-kw)]
+               (rroute/route-to! this route {:id               (str id)
+                                             ::m.c.networks/id id})))))})
+     (if router
+       (ui-router router)
+       (dom/div :.ui.segment "Router not loaded")))
+    (dom/p :.ui.segment
+      "Network Not loaded"
+      (pr-str props))))
 
 (report/defsc-report CoreNetworksReport
   [_this _props]
@@ -112,7 +98,6 @@
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
                         ::m.c.networks/name  #(u.links/ui-network-link %3)}
-   ro/form-links       {::m.c.networks/id CoreNetworkForm}
    ro/source-attribute ::m.c.networks/index
    ro/title            "Networks"
    ro/row-pk           m.c.networks/id

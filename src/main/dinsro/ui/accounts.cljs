@@ -147,7 +147,8 @@
                    ::m.accounts/currency {}
                    ::m.accounts/source   {}
                    ::m.accounts/user     {}
-                   ::m.accounts/wallet   {}}
+                   ::m.accounts/wallet   {}
+                   :ui/transactions      {}}
    :ident         ::m.accounts/id
    :will-enter    (partial u.links/page-loader ::m.accounts/id ::ShowAccount)
    :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})}

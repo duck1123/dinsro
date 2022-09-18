@@ -107,20 +107,21 @@
                    {:ui/addresses (comp/get-query u.c.wallet-addresses/SubPage)}
                    {:ui/words (comp/get-query u.c.wallet-words/SubPage)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.wallets/id         nil
-                   ::m.c.wallets/name       ""
-                   ::m.c.wallets/derivation ""
-                   ::m.c.wallets/key        ""
+   :initial-state {::m.c.wallets/id              nil
+                   ::m.c.wallets/name            ""
+                   ::m.c.wallets/derivation      ""
+                   ::m.c.wallets/key             ""
                    ::m.c.wallets/ext-private-key ""
-                   ::m.c.wallets/ext-public-key ""
-                   ::m.c.wallets/network    {}
-                   ::m.c.wallets/user       {}
-                   :ui/addresses            {}
-                   :ui/words                {}}
+                   ::m.c.wallets/ext-public-key  ""
+                   ::m.c.wallets/network         {}
+                   ::m.c.wallets/user            {}
+                   :ui/accounts                  {}
+                   :ui/addresses                 {}
+                   :ui/words                     {}}
    :ident         ::m.c.wallets/id
    :pre-merge     (u.links/page-merger
                    ::m.c.wallets/id
-                   {:ui/accounts     u.c.wallet-accounts/SubPage
+                   {:ui/accounts  u.c.wallet-accounts/SubPage
                     :ui/addresses u.c.wallet-addresses/SubPage
                     :ui/words     u.c.wallet-words/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::ShowWallet)}
@@ -148,7 +149,6 @@
         (dom/dd {} ext-public-key)
         (dom/dt {} "Extended Private Key")
         (dom/dd {} ext-private-key)))
-
     (if id
       (comp/fragment
        (dom/div :.ui.segment

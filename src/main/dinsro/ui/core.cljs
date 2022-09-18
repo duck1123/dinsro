@@ -16,7 +16,8 @@
    [dinsro.ui.core.words :as u.c.words]))
 
 (defrouter CoreRouter
-  [_this props]
+  [_this {:keys [current-state pending-path-segment]
+          :as   props}]
   {:router-targets [u.c.addresses/CoreAddressForm
                     u.c.addresses/CoreAddressReport
                     u.c.blocks/ShowBlock
@@ -26,7 +27,6 @@
                     u.c.chains/ShowChain
                     u.c.connections/CoreNodeConnectionsReport
                     u.c.connections/NewConnectionForm
-                    u.c.networks/CoreNetworkForm
                     u.c.networks/CoreNetworksReport
                     u.c.networks/ShowNetwork
                     u.c.nodes/NewCoreNodeForm
@@ -44,9 +44,13 @@
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
                     u.c.words/WordsReport]}
-  (dom/div :.ui.segment
-    (dom/p {} "Core router failed to match any target")
-    (dom/code {} (pr-str props))))
+  (case current-state
+    :pending (dom/div {} "Loading... " (pr-str pending-path-segment))
+    :failed  (dom/div {} "Route Failed "  (pr-str pending-path-segment))
+    (dom/div {}
+      (dom/div :.ui.segment
+        (dom/p {} "Core router failed to match any target")
+        (dom/code {} (pr-str props))))))
 
 (def ui-core-router (comp/factory CoreRouter))
 

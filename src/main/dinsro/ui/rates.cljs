@@ -25,5 +25,6 @@
   [_this _props]
   {:ident ::m.rates/id
    :query [::m.rates/id]
-   :initial-state {::m.rates/id nil}}
+   :initial-state {::m.rates/id nil}
+   :route-segment ["rates" :id]}
   (dom/div {}))

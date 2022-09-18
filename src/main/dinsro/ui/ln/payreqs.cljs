@@ -60,8 +60,7 @@
   {fo/id             m.ln.payreqs/id
    fo/action-buttons [::decode]
    fo/controls       {::decode decode-button}
-   fo/attributes     [m.ln.payreqs/payment-request
-                      m.ln.payreqs/node]
+   fo/attributes     [m.ln.payreqs/payment-request]
    fo/route-prefix   "new-payment"
    fo/title          "New Payreqs"})
 

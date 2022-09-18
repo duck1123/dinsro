@@ -18,8 +18,7 @@
                     m.ln.channels/channel-point
                     m.ln.channels/chan-status-flags
                     m.ln.channels/close-address
-                    m.ln.channels/commit-fee
-                    m.ln.channels/node]
+                    m.ln.channels/commit-fee]
    fo/route-prefix "new-channel"
    fo/title        "New Lightning Channels"})
 
@@ -43,5 +42,6 @@
   [_this _props]
   {:ident ::m.ln.channels/id
    :query [::m.ln.channels/id]
-   :initial-state {::m.ln.channels/id nil}}
+   :initial-state {::m.ln.channels/id nil}
+   :route-segment ["channels" :id]}
   (dom/div {}))

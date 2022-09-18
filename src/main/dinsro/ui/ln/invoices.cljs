@@ -76,8 +76,7 @@
   {fo/id             m.ln.invoices/id
    fo/action-buttons [::submit]
    fo/attributes     [m.ln.invoices/memo
-                      m.ln.invoices/value
-                      m.ln.invoices/node]
+                      m.ln.invoices/value]
    fo/controls       {::submit submit-button}
    fo/route-prefix   "new-invoice"
    fo/title          "New Invoice"}

@@ -47,10 +47,10 @@
                                    (when (= id id-key) c)))
                                controls)
         node-id (::control/value id-control)]
-    (log/info :peers/creating {:props      props
-                               :controls   controls
-                               :id-control id-control
-                               :node-id    node-id})
+    (log/finer :peers/creating {:props      props
+                                :controls   controls
+                                :id-control id-control
+                                :node-id    node-id})
     (form/create! this u.ln.peers/NewPeerForm
                   {:initial-state {::m.ln.peers/address "foo"}})))
 
@@ -79,7 +79,7 @@
    ro/title            "Node Peers"
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true}
-  (log/info :Report/creating {:props props})
+  (log/finer :Report/creating {:props props})
   (report/render-layout this))
 
 (def ui-report (comp/factory Report))
@@ -93,7 +93,7 @@
    :initial-state     {::m.ln.nodes/id nil
                        :ui/report      {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/creating {:props props})
+  (log/finer :SubPage/creating {:props props})
   (dom/div :.ui.segment
     (if node-id
       (ui-report report)

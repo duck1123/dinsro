@@ -141,6 +141,7 @@
                                  nil               u.home/HomePage
                                  u.admin/AdminPage u.users/AdminReport
                                  target0)]
+    (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})
     (routing/route-to! app target (or params {}))))
 
 (defonce app

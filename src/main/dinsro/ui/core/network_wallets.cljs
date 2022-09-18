@@ -21,7 +21,7 @@
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/source-attribute ::m.c.wallets/index
    ro/title            "Wallets"
-   ro/row-pk           m.c.networks/id
+   ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true})
 
 (def ui-report (comp/factory Report))
