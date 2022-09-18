@@ -177,16 +177,20 @@
             (form/render-layout this props)))))))
 
 (def override-form false)
+(def show-accounts false)
+(def show-channels false)
+(def show-peers false)
+(def show-remote-nodes false)
 
 (defsc ShowNode
   "Show a ln node"
-  [this {:ui/keys          [accounts peers channels transactions remote-nodes]
+  [this {:ui/keys          [accounts peers channels
+                            remote-nodes]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]}]
   {:route-segment ["nodes" :id]
    :query         [{:ui/accounts (comp/get-query u.ln.node-accounts/SubPage)}
                    {:ui/channels (comp/get-query u.ln.node-channels/SubPage)}
                    {:ui/peers (comp/get-query u.ln.node-peers/SubPage)}
-                   {:ui/transactions (comp/get-query u.ln.node-transactions/SubPage)}
                    {:ui/remote-nodes (comp/get-query u.ln.node-remote-nodes/SubPage)}
                    ::m.ln.nodes/id
                    ::m.ln.nodes/host
@@ -199,7 +203,6 @@
    :initial-state {:ui/accounts              {}
                    :ui/channels              {}
                    :ui/peers                 {}
-                   :ui/transactions          {}
                    :ui/remote-nodes          {}
                    ::m.ln.nodes/id           nil
                    ::m.ln.nodes/user         {}
@@ -215,8 +218,7 @@
                    {:ui/accounts     u.ln.node-accounts/SubPage
                     :ui/channels     u.ln.node-channels/SubPage
                     :ui/peers        u.ln.node-peers/SubPage
-                    :ui/remote-nodes u.ln.node-remote-nodes/SubPage
-                    :ui/transactions u.ln.node-transactions/SubPage})
+                    :ui/remote-nodes u.ln.node-remote-nodes/SubPage})
    :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::ShowNode)}
   (dom/div {}
     (dom/div :.ui.segment
@@ -252,12 +254,10 @@
             (str hasMacaroon?)
             (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
               (str hasMacaroon?))))))
-
-    (u.ln.node-accounts/ui-sub-page accounts)
-    (u.ln.node-peers/ui-sub-page peers)
-    (u.ln.node-channels/ui-sub-page channels)
-    (u.ln.node-transactions/ui-sub-page transactions)
-    (u.ln.node-remote-nodes/ui-sub-page remote-nodes)))
+    (when show-accounts (u.ln.node-accounts/ui-sub-page accounts))
+    (when show-peers (u.ln.node-peers/ui-sub-page peers))
+    (when show-channels (u.ln.node-channels/ui-sub-page channels))
+    (when show-remote-nodes (u.ln.node-remote-nodes/ui-sub-page remote-nodes))))
 
 (report/defsc-report LightningNodesReport
   [this props]

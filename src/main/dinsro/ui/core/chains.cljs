@@ -50,7 +50,7 @@
      (dom/h1 {} (str "Show Chain: " name)))
    (if networks
      (u.c.chain-networks/ui-sub-page networks)
-     (dom/p "Failed to load chain networks"))))
+     (dom/p :.ui.segment "Failed to load chain networks"))))
 
 (def ui-show-chain (comp/factory ShowChain))
 

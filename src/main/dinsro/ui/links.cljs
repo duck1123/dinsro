@@ -96,25 +96,23 @@
                       (into {}))]
       (merge data-tree states))))
 
+(def force-load false)
+
 (defn page-loader
   "Returns a will-enter handler for a page"
-  [key control-key app {id :id :as props}]
-  (let [id    (new-uuid id)
-        ident [key id]
-        control (comp/registry-key->class control-key)]
-    (log/info :page-loader/loading {:ident ident :control control
-                                    :app app :props props})
-    (let [state (-> (app/current-state app) (get-in ident))]
-      (log/finer :page-loader/starting {:app app :id id :ident ident})
+  [key control-key app {id :id}]
+  (let [id             (new-uuid id)
+        ident          [key id]
+        parent-control (comp/registry-key->class control-key)
+        state          (-> (app/current-state app) (get-in ident))]
+    (if (or force-load state)
+      (dr/route-immediate ident)
       (dr/route-deferred
        ident
        (fn []
-         (log/finer :page-loader/routing
-                    {:id       id
-                     :state    state
-                     :controls (control/component-controls app)})
+         (log/info :page-loader/routing {:key key :id id :parent-control parent-control})
          (df/load!
-          app ident control
+          app ident parent-control
           {:marker               :ui/selected-node
            :target               [:ui/selected-node]
            :post-mutation        `dr/target-ready

@@ -17,7 +17,7 @@
 
 (defrouter CoreRouter
   [_this {:keys [current-state pending-path-segment]
-          :as   props}]
+          :as props}]
   {:router-targets [u.c.addresses/CoreAddressForm
                     u.c.addresses/CoreAddressReport
                     u.c.blocks/ShowBlock
@@ -45,8 +45,8 @@
                     u.c.wallet-addresses/WalletAddressForm
                     u.c.words/WordsReport]}
   (case current-state
-    :pending (dom/div {} "Loading... " (pr-str pending-path-segment))
-    :failed  (dom/div {} "Route Failed "  (pr-str pending-path-segment))
+    :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))
+    :failed (dom/div :.ui.segment "Route Failed "  (pr-str pending-path-segment))
     (dom/div {}
       (dom/div :.ui.segment
         (dom/p {} "Core router failed to match any target")

@@ -3,6 +3,8 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.routing :as rroute]
@@ -25,17 +27,22 @@
                     u.c.network-nodes/SubPage
                     u.c.network-ln-nodes/SubPage
                     u.c.network-wallets/SubPage]}
-  (let [{:keys [current-state]} props]
+  (log/info :Router/starting {:props props})
+  (let [{:keys [current-state pending-path-segment route-props]} props]
     (case current-state
-      (dom/div {} "Unknown state"))
-    (dom/div :.ui.segment "Default route" (pr-str props))))
+
+      (dom/div :.ui.segment
+        (dom/div {} "Default route")
+        (dom/p "Current State: " current-state)
+        (dom/p "Segment: " pending-path-segment)
+        (dom/code {} (pr-str route-props))))))
 
 (def ui-router (comp/factory Router))
 
 (defsc ShowNetwork
   [this {::m.c.networks/keys [id chain name]
          :ui/keys            [router]
-         :as                 props}]
+         :as props}]
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
@@ -48,13 +55,14 @@
    :route-segment ["network" :id]
    :pre-merge
    (fn [ctx]
-     (log/info :pre-merge/starting {:ctx ctx})
-     (let [{:keys [data-tree]} ctx]
-       (log/info :pre-merge/a {:data-tree data-tree})
-       (let [new-context      {:ui/router (comp/get-initial-state Router)}
-             merged-data-tree (merge data-tree new-context)]
-         (log/info :pre-merge/b {:merged-data-tree merged-data-tree})
-         merged-data-tree)))
+     (log/finer :pre-merge/starting {:ctx ctx})
+     (let [{:keys [data-tree]} ctx
+           id (::m.c.networks/id data-tree)
+           new-context      {:ui/router (assoc (comp/get-initial-state Router)
+                                               ::m.c.networks/id id)}
+           merged-data-tree (merge data-tree new-context)]
+       (log/info :pre-merge/finished {:merged-data-tree merged-data-tree})
+       merged-data-tree))
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
   (log/info :ShowNetwork/starting {:props props})
   (if id
@@ -73,6 +81,7 @@
                {:key   "blocks"
                 :name  "Blocks"
                 :route "dinsro.ui.core.network-blocks/SubPage"}]
+
        :onItemClick
        (fn [_e d]
          (log/info :onItemClick/starting {:d d})
@@ -81,10 +90,11 @@
            (let [route-kw (keyword route-name)]
              (log/info :onItemClick/kw {:route-kw route-kw})
              (let [route (comp/registry-key->class route-kw)]
-               (rroute/route-to! this route {:id               (str id)
+               (rroute/route-to! this route {:id      (str id)
                                              ::m.c.networks/id id})))))})
+
      (if router
-       (ui-router router)
+       (ui-router (assoc router ::m.c.networks/id id))
        (dom/div :.ui.segment "Router not loaded")))
     (dom/p :.ui.segment
       "Network Not loaded"

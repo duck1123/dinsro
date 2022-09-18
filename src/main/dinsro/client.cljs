@@ -20,6 +20,8 @@
    [dinsro.ui :as ui]
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.core.networks :as u.c.networks]
+   [dinsro.ui.core.network-addresses :as u.c.network-addresses]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.users :as u.users]
@@ -138,8 +140,9 @@
   (let [{:keys [route params]} (hist5/url->route)
         target0                (dr/resolve-target app route)
         target                 (condp = target0
-                                 nil               u.home/HomePage
-                                 u.admin/AdminPage u.users/AdminReport
+                                 nil                      u.home/HomePage
+                                 u.admin/AdminPage        u.users/AdminReport
+                                 u.c.networks/ShowNetwork u.c.network-addresses/SubPage
                                  target0)]
     (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})
     (routing/route-to! app target (or params {}))))

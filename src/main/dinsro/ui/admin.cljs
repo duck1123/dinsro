@@ -35,9 +35,9 @@
 (def ui-admin-router (comp/factory AdminRouter))
 
 (defsc AdminPage
-  [this {:keys [admin-router]}]
-  {:query         [{:admin-router (comp/get-query AdminRouter)}]
-   :initial-state {:admin-router {}}
+  [this {:ui/keys [admin-router]}]
+  {:query         [{:ui/admin-router (comp/get-query AdminRouter)}]
+   :initial-state {:ui/admin-router {}}
    :ident         (fn [] [:component/id ::AdminPage])
    :route-segment ["admin"]}
   (dom/div :.admin-page
