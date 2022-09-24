@@ -55,6 +55,21 @@
                    ::m.c.networks/chain {}
                    :ui/router           {}}
    :route-segment ["network" :id]
+
+  ;;  :pre-merge
+  ;;  (fn [ctx]
+  ;;    (log/info :ShowNetwork/pre-merge-starting {:ctx ctx})
+  ;;    (let [{:keys [data-tree state-map]} ctx
+  ;;          id                            (::m.c.networks/id data-tree)
+  ;;          merged-data-tree              (merge
+  ;;                                         (comp/get-initial-state ShowNetwork)
+  ;;                                         {:ui/router (-> state-map
+  ;;                                                         (get-in (comp/get-ident Router {}))
+  ;;                                                         (assoc ::m.c.networks/id id))}
+  ;;                                         data-tree)]
+  ;;      (log/info :ShowNetwork/pre-merge-finished {:merged-data-tree merged-data-tree})
+  ;;      merged-data-tree))
+
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
   (log/info :ShowNetwork/starting {:props props})
   (if id
@@ -67,7 +82,14 @@
          (dom/dd {}
            (if chain
              (u.links/ui-chain-link2 chain)
-             "None"))))
+             "None")))
+       ;; (dom/h1 {} (str name))
+       ;; (dom/div {}
+       ;;   (dom/span {} "Chain: ")
+       ;;   (if chain
+       ;;     (u.links/ui-chain-link2 chain)
+       ;;     "None"))
+       #_(u.links/log-props props))
      (ui-menu
       {:items [{:key   "addresses"
                 :name  "Addresses"
