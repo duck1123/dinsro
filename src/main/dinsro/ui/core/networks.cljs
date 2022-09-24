@@ -47,41 +47,26 @@
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
-                   {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
+                   {::m.c.networks/chain (comp/get-query u.links/ChainLink)}
                    {:ui/router (comp/get-query Router)}]
    :initial-state {::m.c.networks/id    nil
                    ::m.c.networks/name  ""
                    ::m.c.networks/chain {}
                    :ui/router           {}}
    :route-segment ["network" :id]
-
-  ;;  :pre-merge
-  ;;  (fn [ctx]
-  ;;    (log/info :ShowNetwork/pre-merge-starting {:ctx ctx})
-  ;;    (let [{:keys [data-tree state-map]} ctx
-  ;;          id                            (::m.c.networks/id data-tree)
-  ;;          merged-data-tree              (merge
-  ;;                                         (comp/get-initial-state ShowNetwork)
-  ;;                                         {:ui/router (-> state-map
-  ;;                                                         (get-in (comp/get-ident Router {}))
-  ;;                                                         (assoc ::m.c.networks/id id))}
-  ;;                                         data-tree)]
-  ;;      (log/info :ShowNetwork/pre-merge-finished {:merged-data-tree merged-data-tree})
-  ;;      merged-data-tree))
-
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
   (log/info :ShowNetwork/starting {:props props})
   (if id
     (comp/fragment
      (dom/div :.ui.segment
        (dom/dl {}
-         (dom/dd {} "Name"))
-       (dom/h1 {} (str name))
-       (dom/div {}
-         (dom/span {} "Chain: ")
-         (if chain
-           (u.links/ui-chain-link chain)
-           "None")))
+         (dom/dt {} "Name")
+         (dom/dd {} (str name))
+         (dom/dt {} "Chain: ")
+         (dom/dd {}
+           (if chain
+             (u.links/ui-chain-link2 chain)
+             "None"))))
      (ui-menu
       {:items [{:key   "addresses"
                 :name  "Addresses"

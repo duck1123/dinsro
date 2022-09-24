@@ -129,19 +129,19 @@
            (comp/fragment
             (dom/dt {} (str k))
             (dom/dd {}
-                    (let [v (get props k)]
-                      (if (map? v)
-                        (log-props v)
-                        (do
-                          (str v)
-                          (if (vector? v)
-                            (dom/ul {}
-                              #_(dom/li {} (str "List: " v))
-                              (map
-                               (fn [vi]
-                                 (dom/li {} (str vi)))
-                               v))
-                            (dom/div :.ui.segment (str v)))))))))
+              (let [v (get props k)]
+                (if (map? v)
+                  (log-props v)
+                  (do
+                    (str v)
+                    (if (vector? v)
+                      (dom/ul {}
+                        #_(dom/li {} (str "List: " v))
+                        (map
+                         (fn [vi]
+                           (dom/li {} (str vi)))
+                         v))
+                      (dom/div :.ui.segment (str v)))))))))
 
          (keys props))))
 
@@ -189,6 +189,16 @@
   (form-link this id name :dinsro.ui.core.chains/ShowChain))
 
 (def ui-chain-link (comp/factory ChainLinkForm {:keyfn ::m.c.chains/id}))
+
+(defsc ChainLink
+  [this props]
+  {:ident ::m.c.chains/id
+   :query [::m.c.chains/id ::m.c.chains/name]
+   :initial-state {::m.c.chains/id nil
+                   ::m.c.chains/name ""}}
+  (dom/div "Chain Link"))
+
+(def ui-chain-link2 (comp/factory ChainLink {:keyfn ::m.c.chains/id}))
 
 (form/defsc-form ChannelLinkForm [this {::m.ln.channels/keys [id channel-point]}]
   {fo/id         m.ln.channels/id

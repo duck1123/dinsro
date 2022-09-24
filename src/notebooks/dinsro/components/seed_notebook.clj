@@ -18,16 +18,12 @@
 ^{::clerk/viewer clerk/code}
 (ds/gen-key ::c.seed/default-rate-sources)
 
-
 ;; ## users
-
 
 ^{::clerk/viewer clerk/code}
 (ds/gen-key ::c.seed/users)
 
-
 ;; ## seed-data
-
 
 ^{::clerk/viewer clerk/code}
 (ds/gen-key ::c.seed/seed-data)
