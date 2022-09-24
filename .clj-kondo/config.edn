@@ -1,12 +1,4 @@
-{
- :config-paths
- ["babashka/fs"
-  "com.fulcrologic/fulcro"
-  "com.wsscode/async"
-  "com.wsscode/pathom"
-  "rewrite-clj/rewrite-clj"]
-
- :lint-as
+{:lint-as
  {com.fulcrologic.rad.container/defsc-container cljs.core/defn
   mount.core/defstate                           cljs.core/def
   nextjournal.devcards/defcard                  cljs.core/def
@@ -14,8 +6,14 @@
   taoensso.encore/if-let                        cljs.core/let}
 
  :linters
- {:unresolved-var {:exclude [http.async.client/GET http.async.client/POST
-                             nextjournal.clerk.viewer/clerk-eval]}
+ {:unresolved-var
+  {:exclude [http.async.client/GET http.async.client/POST]}
 
-  ;; ignore the arrow symbols
-  :unresolved-symbol {:exclude [(fulcro-spec.core/assertions)]}}}
+  :unused-referred-var
+  {:exclude {com.fulcrologic.guardrails.core [? =>]}}
+
+  :unsorted-required-namespaces
+  {:level :warning}
+
+  :unresolved-symbol
+  {:exclude [(fulcro-spec.core/assertions)]}}}
