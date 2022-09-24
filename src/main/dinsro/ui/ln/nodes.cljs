@@ -22,8 +22,8 @@
    [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
    [dinsro.ui.ln.node-channels :as u.ln.node-channels]
    [dinsro.ui.ln.node-peers :as u.ln.node-peers]
+   ;; [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
    [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
-   [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
    [lambdaisland.glogi :as log]))
 
 (declare CreateLightningNodeForm)

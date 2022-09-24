@@ -5,6 +5,7 @@
    [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [ring.util.codec :refer [base64-encode base64-decode]])
+
   (:import java.io.FileNotFoundException))
 
 (defn generate-secret

@@ -3,8 +3,8 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
+   ;; [com.fulcrologic.rad.form :as form]
+   ;; [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.routing :as rroute]
@@ -28,7 +28,8 @@
                     u.c.network-ln-nodes/SubPage
                     u.c.network-wallets/SubPage]}
   (log/info :Router/starting {:props props :this this})
-  (let [{:keys [current-state pending-path-segment route-props route-factory]} props]
+  (let [{:keys [current-state pending-path-segment route-props
+                #_route-factory]} props]
     (case current-state
       (dom/div :.ui.segment
         (dom/div {} "Default route")

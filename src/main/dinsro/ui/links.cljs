@@ -20,6 +20,7 @@
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
+
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.ln.channels :as m.ln.channels]
@@ -191,7 +192,7 @@
 (def ui-chain-link (comp/factory ChainLinkForm {:keyfn ::m.c.chains/id}))
 
 (defsc ChainLink
-  [this props]
+  [_this _props]
   {:ident ::m.c.chains/id
    :query [::m.c.chains/id ::m.c.chains/name]
    :initial-state {::m.c.chains/id nil

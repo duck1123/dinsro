@@ -18,11 +18,8 @@
 (report/defsc-report Report
   [this props]
   {ro/columns          [m.ln.accounts/wallet
-                        ;; m.ln.accounts/id
                         m.ln.accounts/address-type
-                        m.ln.accounts/node
-                        ;; m.ln.accounts/master-key-fingerprint
-                        ]
+                        m.ln.accounts/node]
    ro/control-layout   {:action-buttons [::fetch ::refresh]
                         :inputs         [[::m.ln.nodes/id]]}
    ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}

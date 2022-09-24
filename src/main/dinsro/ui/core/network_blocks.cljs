@@ -1,13 +1,13 @@
 (ns dinsro.ui.core.network-blocks
   (:require
-   [com.fulcrologic.fulcro.application :as app]
+   ;; [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
+   ;; [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]

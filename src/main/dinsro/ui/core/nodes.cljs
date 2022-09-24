@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
+   ;; [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.container :as container :refer [defsc-container]]
    [com.fulcrologic.rad.container-options :as co]

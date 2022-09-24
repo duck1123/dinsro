@@ -14,6 +14,7 @@
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
    [dinsro.components.xtdb :refer [xtdb-nodes]]
+
    [dinsro.model :refer [all-attributes all-resolvers]]
    [dinsro.model.users :as m.users]
    [lambdaisland.glogc :as log]
