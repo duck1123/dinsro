@@ -1,7 +1,7 @@
 (ns dinsro.ui.core.words-test
   (:require
-   [dinsro.model.core.words :as m.c.words]
    [dinsro.client :as client]
+   [dinsro.model.core.words :as m.c.words]
    [dinsro.specs :as ds]
    [dinsro.ui.core.words :as u.c.words]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]

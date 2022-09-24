@@ -3,9 +3,9 @@
    [buddy.core.nonce :refer [random-bytes]]
    [com.fulcrologic.fulcro.server.config :as fserver]
    [dinsro.lib.logging :as logging]
+   [lambdaisland.glogc :as log]
    [mount.core :refer [defstate args]]
-   [ring.util.codec :refer [base64-encode base64-decode]]
-   [lambdaisland.glogc :as log])
+   [ring.util.codec :refer [base64-encode base64-decode]])
   (:import java.io.File
            java.io.FileNotFoundException))
 

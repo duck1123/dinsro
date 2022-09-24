@@ -2,13 +2,13 @@
   (:require
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.client.lnd-s :as c.lnd-s]
+   [dinsro.client.scala :as cs]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.ln.accounts :as q.ln.accounts]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
-   [dinsro.client.scala :as cs]
    [lambdaisland.glogc :as log]))
 
 (defn delete!

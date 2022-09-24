@@ -1,12 +1,12 @@
 (ns dinsro.ui.core.nodes-test
   (:require
+   [dinsro.client :as client]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.client :as client]
    [dinsro.specs :as ds]
+   [dinsro.ui.core.node-peers :as u.c.node-peers]
    [dinsro.ui.core.node-peers-test :as u.c.node-peers-test]
    [dinsro.ui.core.nodes :as u.c.nodes]
-   [dinsro.ui.core.node-peers :as u.c.node-peers]
    [lambdaisland.glogc :as log]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]

@@ -1,13 +1,14 @@
 (ns dinsro.ui
   (:require
+   ["fomantic-ui"]
    [clojure.string :as string]
+   [com.fulcrologic.fulcro-css.css :as css]
+   [com.fulcrologic.fulcro-css.css-injection :as inj]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [com.fulcrologic.fulcro-css.css :as css]
-   [com.fulcrologic.fulcro-css.css-injection :as inj]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
@@ -15,9 +16,9 @@
    [dinsro.machines :as machines]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.settings :as m.settings]
-   [dinsro.mutations.ui :as mu.ui]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.mutations.settings :as mu.settings]
+   [dinsro.mutations.ui :as mu.ui]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
@@ -29,12 +30,11 @@
    [dinsro.ui.ln :as u.ln]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.navbar :as u.navbar]
-   [dinsro.ui.rates :as u.rates]
    [dinsro.ui.rate-sources :as u.rate-sources]
+   [dinsro.ui.rates :as u.rates]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.transactions :as u.transactions]
-   [dinsro.ui.users :as u.users]
-   ["fomantic-ui"]))
+   [dinsro.ui.users :as u.users]))
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
   {:query         [[:ui/global-error '_]]

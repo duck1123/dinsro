@@ -1,9 +1,9 @@
 (ns dinsro.components.nrepl
   (:require
    [dinsro.components.config :as config]
+   [lambdaisland.glogc :as log]
    [mount.core :as mount]
-   [nrepl.server :as nrepl]
-   [lambdaisland.glogc :as log]))
+   [nrepl.server :as nrepl]))
 
 (defn nrepl-handler []
   (require 'cider.nrepl)

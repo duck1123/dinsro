@@ -7,11 +7,11 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.networks :as m.c.networks]
-   [dinsro.ui.links :as u.links]
    [dinsro.ui.core.network-blocks :as u.c.network-blocks]
    [dinsro.ui.core.network-ln-nodes :as u.c.network-ln-nodes]
    [dinsro.ui.core.network-nodes :as u.c.network-nodes]
-   [dinsro.ui.core.network-wallets :as u.c.network-wallets]))
+   [dinsro.ui.core.network-wallets :as u.c.network-wallets]
+   [dinsro.ui.links :as u.links]))
 
 (def override-form false)
 

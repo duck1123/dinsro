@@ -3,13 +3,13 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [xtdb.api :as xt]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [io.pedestal.log :as log]))
+   [io.pedestal.log :as log]
+   [xtdb.api :as xt]))
 
 (def attribute-list
   '[:xt/id

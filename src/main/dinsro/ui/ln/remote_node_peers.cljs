@@ -2,10 +2,10 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.control :as control]
-   [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]

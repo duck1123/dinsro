@@ -9,9 +9,9 @@
    [com.fulcrologic.rad.authorization :as auth]
    [dinsro.components.config :refer [secret]]
    [dinsro.components.database-queries :as queries]
-   [dinsro.queries.users :as q.users]
    [dinsro.model.timezone :as timezone]
    [dinsro.model.users :as m.users]
+   [dinsro.queries.users :as q.users]
    [io.pedestal.log :as log]
    [taoensso.encore :as enc]
    [tick.core :as t]))

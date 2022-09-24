@@ -7,8 +7,8 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
    #?(:clj [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses])
-   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
    #?(:clj [lambdaisland.glogc :as log])))
 

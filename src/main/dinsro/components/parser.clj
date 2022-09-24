@@ -11,14 +11,14 @@
    [dinsro.components.auto-resolvers :refer [automatic-resolvers]]
    [dinsro.components.blob-store :as bs]
    [dinsro.components.config :refer [config]]
-   [dinsro.components.xtdb :refer [xtdb-nodes]]
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
+   [dinsro.components.xtdb :refer [xtdb-nodes]]
    [dinsro.model :refer [all-attributes all-resolvers]]
    [dinsro.model.users :as m.users]
+   [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
-   [roterski.fulcro.rad.database-adapters.xtdb :as xt]
-   [lambdaisland.glogc :as log]))
+   [roterski.fulcro.rad.database-adapters.xtdb :as xt]))
 
 (def default-timezone "America/Detroit")
 

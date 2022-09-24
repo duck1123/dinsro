@@ -1,9 +1,9 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.actions.debits-notebook
   (:require
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.debits :as q.debits]
    [dinsro.queries.transactions :as q.transactions]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

@@ -14,10 +14,10 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
-   [dinsro.ui.links :as u.links]
    [dinsro.ui.core.wallet-accounts :as u.c.wallet-accounts]
    [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
    [dinsro.ui.core.wallet-words :as u.c.wallet-words]
+   [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
 (defsc RefRow

@@ -4,9 +4,9 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.transactions :as m.transactions]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
+   [dinsro.model.transactions :as m.transactions]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
    #?(:clj [dinsro.queries.currencies :as q.currencies])
    #?(:clj [dinsro.queries.transactions :as q.transactions])

@@ -1,7 +1,7 @@
 (ns dinsro.notebook-utils
   (:require
-   [clojure.tools.namespace.find :as n.find]
    [clojure.tools.namespace.file :as n.file]
+   [clojure.tools.namespace.find :as n.find]
    [clojure.tools.namespace.parse :as n.parse]
    [nextjournal.clerk :as clerk]
    [nextjournal.clerk.viewer :as v])

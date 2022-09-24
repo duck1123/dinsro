@@ -3,13 +3,13 @@
   (:refer-clojure :exclude [next])
   (:require
    [dinsro.actions.ln.nodes :as a.ln.nodes]
+   [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
-   [dinsro.lnd-notebook :as n.lnd]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

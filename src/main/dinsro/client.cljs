@@ -1,6 +1,7 @@
 (ns dinsro.client
   (:require
    [clojure.string :as string]
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.algorithms.timbre-support :refer [console-appender prefix-output-fn]]
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
@@ -9,7 +10,6 @@
    [com.fulcrologic.fulcro.react.error-boundaries :as eb]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.rad.application :as rad-app]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.report :as report]

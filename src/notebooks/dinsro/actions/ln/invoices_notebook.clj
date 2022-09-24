@@ -4,8 +4,8 @@
    [dinsro.actions.ln.invoices :as a.ln.invoices]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.queries.ln.invoices :as q.ln.invoices]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.ln.invoices :as q.ln.invoices]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

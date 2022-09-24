@@ -1,15 +1,16 @@
 (ns dinsro.ui.navbar
   (:require
+   ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.algorithms.form-state :as fs]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.routing :as rroute]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu-menu :refer [ui-menu-menu]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar :refer [ui-sidebar]]
    [dinsro.model.navbar :as m.navbar]
@@ -17,8 +18,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.home :as u.home]
-   [lambdaisland.glogc :as log]
-   ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]))
+   [lambdaisland.glogc :as log]))
 
 (s/def ::expanded? boolean?)
 

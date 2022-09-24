@@ -2,10 +2,10 @@
   (:require
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
-   [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.rad.form-options :as fo]
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.users :as m.users]))
 

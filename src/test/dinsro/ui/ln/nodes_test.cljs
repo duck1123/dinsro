@@ -1,9 +1,9 @@
 (ns dinsro.ui.ln.nodes-test
   (:require
+   [dinsro.client :as client]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.transactions :as m.ln.tx]
-   [dinsro.client :as client]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]))

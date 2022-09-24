@@ -11,8 +11,8 @@
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.core.tx :as u.c.tx]
-   [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
+   [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.core.words :as u.c.words]))
 
 (defrouter CoreRouter

@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.actions.core.connections-notebook
   (:require
-   [dinsro.queries.core.connections :as q.c.connections]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.core.connections :as q.c.connections]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

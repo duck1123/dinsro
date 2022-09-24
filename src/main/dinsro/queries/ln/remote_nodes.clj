@@ -4,8 +4,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))

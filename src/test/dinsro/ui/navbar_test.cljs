@@ -2,12 +2,12 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+   dinsro.machines
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
+   [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.sample :as sample]
    [dinsro.specs :as ds]
-   dinsro.machines
-   [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.navbar :as u.navbar]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]

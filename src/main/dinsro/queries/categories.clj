@@ -3,11 +3,11 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [xtdb.api :as xt]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
-   [dinsro.specs]))
+   [dinsro.specs]
+   [xtdb.api :as xt]))
 
 (>defn find-by-user
   [user-id]

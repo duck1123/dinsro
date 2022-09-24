@@ -5,11 +5,11 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
+   [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.debits :as u.debits]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
-   [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.transactions :as u.transactions]
    [dinsro.ui.users :as u.users]
    [lambdaisland.glogc :as log]))

@@ -10,9 +10,9 @@
    [dinsro.client.scala :as cs]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

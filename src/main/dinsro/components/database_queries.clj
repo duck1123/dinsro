@@ -1,8 +1,8 @@
 (ns dinsro.components.database-queries
   (:require
-   [xtdb.api :as xt]
    [roterski.fulcro.rad.database-adapters.xtdb-options :as co]
-   [taoensso.encore :as enc]))
+   [taoensso.encore :as enc]
+   [xtdb.api :as xt]))
 
 (defn get-login-info
   "Get the account name, time zone, and password info via a username (email)."

@@ -3,13 +3,13 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [xtdb.api :as xt]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log]
+   [xtdb.api :as xt]))
 
 (>defn read-record
   [user-id]

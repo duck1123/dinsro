@@ -1,8 +1,8 @@
 (ns dinsro.env
   (:require
    [dinsro.dev-middleware :refer [wrap-dev]]
-   [selmer.parser :as parser]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log]
+   [selmer.parser :as parser]))
 
 (def defaults
   {:init

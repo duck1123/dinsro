@@ -4,10 +4,10 @@
    [dinsro.components.nrepl :as c.nrepl]
    [dinsro.components.seed :as c.seed]
    [dinsro.seed :as seed]
+   [lambdaisland.glogc :as log]
    [mount.core :as mount]
    [shadow.cljs.devtools.api :as shadow]
-   [shadow.cljs.devtools.server.runtime]
-   [lambdaisland.glogc :as log]))
+   [shadow.cljs.devtools.server.runtime]))
 
 (set-refresh-dirs "src/main" "src/dev")
 

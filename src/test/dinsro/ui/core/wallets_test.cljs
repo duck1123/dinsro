@@ -1,9 +1,9 @@
 (ns dinsro.ui.core.wallets-test
   (:require
+   [dinsro.client :as client]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
-   [dinsro.client :as client]
    [dinsro.specs :as ds]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [lambdaisland.glogc :as log]

@@ -3,8 +3,8 @@
   (:require
    [clojure.core.async]
    [clojure.spec.alpha :as s]
-   [clojure.test.check.generators]
    [clojure.spec.gen.alpha :as gen]
+   [clojure.test.check.generators]
    [ring.util.http-status :as status]
    [tick.alpha.api :as tick])
   #?(:clj

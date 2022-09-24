@@ -1,8 +1,8 @@
 (ns dinsro.ui.home
   (:require
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro-css.css :as css]
    [dinsro.model.users :as m.users]
    [dinsro.ui.authenticator :as u.authenticator]
    [lambdaisland.glogc :as log]))

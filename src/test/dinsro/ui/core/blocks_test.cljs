@@ -1,9 +1,9 @@
 (ns dinsro.ui.core.blocks-test
   (:require
-   [dinsro.model.core.blocks :as m.c.blocks]
-   [dinsro.specs :as ds]
    [dinsro.client :as client]
    dinsro.machines
+   [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.specs :as ds]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]

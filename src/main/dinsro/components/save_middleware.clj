@@ -1,9 +1,9 @@
 (ns dinsro.components.save-middleware
   (:require
-   [com.fulcrologic.rad.middleware.save-middleware :as r.s.middleware]
-   [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [com.fulcrologic.rad.blob :as blob]
-   [dinsro.model :as model]))
+   [com.fulcrologic.rad.middleware.save-middleware :as r.s.middleware]
+   [dinsro.model :as model]
+   [roterski.fulcro.rad.database-adapters.xtdb :as xt]))
 
 (def middleware
   (->

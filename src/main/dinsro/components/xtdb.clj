@@ -1,8 +1,8 @@
 (ns dinsro.components.xtdb
   (:require
    [dinsro.components.config :refer [config]]
-   [mount.core :refer [defstate]]
    [lambdaisland.glogc :as log]
+   [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
    [xtdb.api :as c.api]))
 

@@ -2,8 +2,8 @@
 (ns dinsro.actions.core.chains-notebook
   (:require
    [dinsro.model.core.chains :as m.c.chains]
-   [dinsro.queries.core.chains :as q.c.chains]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.core.chains :as q.c.chains]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

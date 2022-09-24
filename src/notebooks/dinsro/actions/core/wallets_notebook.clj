@@ -5,8 +5,8 @@
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.client.converters.ext-private-key :as cc.ext-privat-key]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk])
   (:import

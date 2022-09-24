@@ -3,9 +3,9 @@
   (:require
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.chains :as q.c.chains]
    [dinsro.queries.core.networks :as q.c.networks]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

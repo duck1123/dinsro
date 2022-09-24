@@ -2,8 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]

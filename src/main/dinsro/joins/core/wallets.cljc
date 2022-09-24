@@ -4,11 +4,11 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
-   #?(:clj [dinsro.queries.core.wallets :as q.c.wallets])
    #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])
+   #?(:clj [dinsro.queries.core.wallets :as q.c.wallets])
    #?(:clj [dinsro.queries.core.words :as q.c.words])
    [dinsro.specs]))
 

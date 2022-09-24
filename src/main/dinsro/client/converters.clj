@@ -7,8 +7,8 @@
    dinsro.client.converters.bitcoin-address
    dinsro.client.converters.byte-vector
    dinsro.client.converters.currency-unit
-   dinsro.client.converters.get-blockchain-info-result
    dinsro.client.converters.get-block-result
+   dinsro.client.converters.get-blockchain-info-result
    dinsro.client.converters.get-raw-transaction-result
    dinsro.client.converters.get-raw-transaction-vin
    dinsro.client.converters.peer-network-info-post-v21
@@ -17,8 +17,8 @@
    dinsro.client.converters.script-pub-key
    dinsro.client.converters.service-identifier
    dinsro.client.converters.transaction-input
-   dinsro.client.converters.transaction-output
    dinsro.client.converters.transaction-out-point
+   dinsro.client.converters.transaction-output
    dinsro.client.converters.witness-transaction
    [dinsro.client.scala :as cs])
   (:import

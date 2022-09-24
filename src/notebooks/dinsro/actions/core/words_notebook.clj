@@ -2,9 +2,9 @@
 (ns dinsro.actions.core.words-notebook
   (:require
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.words :as q.c.words]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

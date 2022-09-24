@@ -1,11 +1,11 @@
 (ns dinsro.model.navlink
   (:refer-clojure :exclude [name])
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [com.wsscode.pathom.connect :as pc]
-   [clojure.spec.alpha :as s]))
+   [com.wsscode.pathom.connect :as pc]))
 
 (comment ::pc/_)
 

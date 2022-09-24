@@ -1,10 +1,10 @@
 (ns dinsro.ui.scanner
   (:require
+   ["react-qr-scanner" :as QrReader]
    [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.react.error-boundaries :as eb]
-   ["react-qr-scanner" :as QrReader]))
+   [com.fulcrologic.fulcro.react.error-boundaries :as eb]))
 
 (def ui-qr-reader (interop/react-factory QrReader))
 

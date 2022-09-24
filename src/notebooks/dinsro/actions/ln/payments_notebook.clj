@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.actions.ln.payments-notebook
   (:require
-   [dinsro.queries.ln.payments :as q.ln.payments]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.ln.payments :as q.ln.payments]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

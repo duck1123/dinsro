@@ -1,5 +1,6 @@
 (ns dinsro.ui.controls
   (:require
+   ["victory" :as victory]
    [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -13,20 +14,20 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.core.words :as m.c.words]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
-   [dinsro.model.core.words :as m.c.words]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.tx :as u.c.tx]
@@ -41,8 +42,7 @@
    [dinsro.ui.ln.peers :as u.ln.peers]
    [dinsro.ui.ln.transactions :as u.ln.tx]
    [dinsro.ui.rates :as u.rates]
-   [lambdaisland.glogc :as log]
-   ["victory" :as victory]))
+   [lambdaisland.glogc :as log]))
 
 (def ui-victory-bar (interop/react-factory victory/VictoryBar))
 (def ui-victory-chart (interop/react-factory victory/VictoryChart))

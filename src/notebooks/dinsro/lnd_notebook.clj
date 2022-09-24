@@ -1,12 +1,12 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.lnd-notebook
   (:require
-   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.notebook-utils :as nu]
+   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.users :as q.users]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

@@ -4,8 +4,8 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.accounts :as m.ln.accounts]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))

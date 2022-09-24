@@ -2,9 +2,9 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def]]
-   [dinsro.components.seed.networks :as cs.networks]
    [dinsro.components.seed.core-node :as cs.core-node]
    [dinsro.components.seed.currencies :as cs.currencies]
+   [dinsro.components.seed.networks :as cs.networks]
    [dinsro.components.seed.rate-sources :as cs.rate-sources]
    [dinsro.components.seed.user :as cs.user]))
 

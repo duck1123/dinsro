@@ -6,8 +6,8 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
    #?(:clj [dinsro.queries.core.peers :as q.c.peers])

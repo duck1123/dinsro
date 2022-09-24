@@ -4,9 +4,9 @@
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.info :as m.ln.info]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.ln.remote-nodes :as q.ln.remote-nodes]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

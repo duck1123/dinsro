@@ -3,9 +3,9 @@
   (:require
    [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses]
    [dinsro.actions.nbxplorer :as a.nbxplorer]
-   [dinsro.queries.core.wallets :as q.c.wallets]
-   [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
+   [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

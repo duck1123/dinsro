@@ -5,8 +5,8 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.users :as m.users]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.users :as m.users]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))

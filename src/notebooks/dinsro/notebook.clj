@@ -3,8 +3,8 @@
   (:require
    [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
-   [nextjournal.clerk :as clerk]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log]
+   [nextjournal.clerk :as clerk]))
 
 ;; # Dinsro Notebooks
 

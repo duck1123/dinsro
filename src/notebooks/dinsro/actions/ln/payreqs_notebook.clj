@@ -4,8 +4,8 @@
    [dinsro.actions.ln.payreqs :as a.ln.payreqs]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
-   [dinsro.queries.ln.payreqs :as q.ln.payreqs]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.ln.payreqs :as q.ln.payreqs]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

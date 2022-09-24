@@ -6,8 +6,8 @@
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.client.scala :as cs]
    [dinsro.notebook-utils :as nu]
-   [dinsro.viewers :as dv]
    [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk])
   (:import
    org.bitcoins.core.crypto.ExtKeyVersion$SegWitMainNetPriv$

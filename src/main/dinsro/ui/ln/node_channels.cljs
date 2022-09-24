@@ -2,17 +2,15 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.control :as control]
-   [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.form :as form]
-
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.ui.ln.channels :as u.ln.channels]
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.channels :as m.ln.channels]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.channels :as mu.ln.channels]
    [dinsro.ui.links :as u.links]
-
+   [dinsro.ui.ln.channels :as u.ln.channels]
    [lambdaisland.glogi :as log]))
 
 (def delete-button

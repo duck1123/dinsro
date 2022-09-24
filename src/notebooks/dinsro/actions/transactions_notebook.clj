@@ -2,8 +2,8 @@
 (ns dinsro.actions.transactions-notebook
   (:require
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.queries.transactions :as q.transactions]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.transactions :as q.transactions]
    [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]

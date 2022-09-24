@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.client.lnd-s-notebook
   (:require
-   [dinsro.client.lnd-s :as c.lnd-s]
    [clojure.core.async :as async]
+   [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.notebook-utils :as nu]

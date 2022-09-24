@@ -2,8 +2,8 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
-   [dinsro.client.scala :as cs]
    [dinsro.client.converters.transaction-input :as cc.transaction-input]
+   [dinsro.client.scala :as cs]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log])
   (:import

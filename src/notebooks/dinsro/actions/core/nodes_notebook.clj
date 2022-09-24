@@ -7,9 +7,9 @@
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.peers :as q.c.peers]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

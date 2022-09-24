@@ -1,11 +1,11 @@
 (ns dinsro.workspace-core
   (:require
-   [nubank.workspaces.core :as ws]
+   [com.fulcrologic.rad.application :as rad-app]
    dinsro.all-tests
    [dinsro.client :as client]
-   [com.fulcrologic.rad.application :as rad-app]
    [lambdaisland.glogc :as log]
-   [lambdaisland.glogi.console :as glogi-console]))
+   [lambdaisland.glogi.console :as glogi-console]
+   [nubank.workspaces.core :as ws]))
 
 (defonce app (rad-app/fulcro-rad-app {}))
 

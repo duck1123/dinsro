@@ -4,11 +4,11 @@
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
-   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
+   [dinsro.queries.core.wallets :as q.c.wallets]
    [lambdaisland.glogc :as log])
   (:import
    org.bitcoins.core.crypto.ExtPublicKey))

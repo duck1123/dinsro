@@ -17,6 +17,9 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.core.words :as m.c.words]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.ln.channels :as m.ln.channels]
@@ -31,9 +34,6 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
-   [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
-   [dinsro.model.core.words :as m.c.words]
    [lambdaisland.glogc :as log]))
 
 (defn form-link

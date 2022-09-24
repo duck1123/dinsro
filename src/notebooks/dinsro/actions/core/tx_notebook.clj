@@ -5,12 +5,12 @@
    [dinsro.lnd-notebook :as n.lnd]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
+   [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.tx :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.tx-out :as q.c.tx-out]
-   [dinsro.notebook-utils :as nu]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

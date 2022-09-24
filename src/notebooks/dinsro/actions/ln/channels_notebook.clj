@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
 (ns dinsro.actions.ln.channels-notebook
   (:require
-   [dinsro.queries.ln.channels :as q.ln.channels]
    [dinsro.notebook-utils :as nu]
+   [dinsro.queries.ln.channels :as q.ln.channels]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 

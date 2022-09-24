@@ -3,8 +3,8 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.model.users :as m.users]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report

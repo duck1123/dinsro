@@ -5,15 +5,15 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
-   [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.currencies :as q.currencies]
+   [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
    [http.async.client :as http-client]
    [jq.api :as jq]
+   [lambdaisland.glogc :as log]
    [manifold.time :as t]
    [mount.core :as mount]
-   [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]))
 
 (declare ^:dynamic *scheduler*)
