@@ -140,7 +140,7 @@
                    {:ui/peers (comp/get-query u.c.node-peers/SubPage)}
                    {:ui/blocks (comp/get-query u.c.node-blocks/SubPage)}
                    {:ui/transactions (comp/get-query u.c.node-transactions/SubPage)}
-                   [df/marker-table '_]]
+                   #_[df/marker-table '_]]
    :initial-state {::m.c.nodes/id      nil
                    ::m.c.nodes/name    ""
                    ::m.c.nodes/network {}
@@ -157,14 +157,24 @@
   (log/finer :ShowNode/creating {:id id :props props :this this})
   (let [{:keys [main sub]} (css/get-classnames ShowNode)]
     (dom/div {:classes [main]}
-      (ui-actions-menu {::m.c.nodes/id id})
       (dom/div :.ui.segment
-        (dom/p {}  (str "Name: " name))
-        (dom/p {}  "Network: " (u.links/ui-network-link network)))
+        (ui-actions-menu {::m.c.nodes/id id})
+        (dom/dl {}
+          (dom/dt {} "Name")
+          (dom/dd {} (str name))
+          (dom/dt {} "Network")
+          (dom/dd {} (u.links/ui-network-link network)))
+        (u.links/log-props props))
       (when id
         (dom/div {:classes [sub]}
-          (when show-peers (u.c.node-peers/ui-sub-page peers))
-          (when show-blocks (u.c.node-blocks/ui-sub-page blocks))
+          (when show-peers
+            (if peers
+              (u.c.node-peers/ui-sub-page peers)
+              (dom/p :.ui.segment "Peers not defined")))
+          (when show-blocks
+            (if blocks
+              (u.c.node-blocks/ui-sub-page blocks)
+              (dom/p :.ui.segment "Blocks not defined")))
           (when show-transactions (u.c.node-transactions/ui-sub-page transactions)))))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]

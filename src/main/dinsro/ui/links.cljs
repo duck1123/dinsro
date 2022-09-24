@@ -122,6 +122,29 @@
   [k mappings]
   (fn [ctx] (merge-pages ctx k mappings)))
 
+(defn log-props
+  [props]
+  (dom/dl :.ui.segment
+    (map (fn [k]
+           (comp/fragment
+            (dom/dt {} (str k))
+            (dom/dd {}
+                    (let [v (get props k)]
+                      (if (map? v)
+                        (log-props v)
+                        (do
+                          (str v)
+                          (if (vector? v)
+                            (dom/ul {}
+                              #_(dom/li {} (str "List: " v))
+                              (map
+                               (fn [vi]
+                                 (dom/li {} (str vi)))
+                               v))
+                            (dom/div :.ui.segment (str v)))))))))
+
+         (keys props))))
+
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
   {fo/id         m.accounts/id
