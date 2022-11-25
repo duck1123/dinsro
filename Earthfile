@@ -268,7 +268,7 @@ fileserver:
   SAVE IMAGE --push ${EXPECTED_REF}
 
 image:
-  FROM amazoncorretto:17
+  FROM amazoncorretto:17-alpine
   ARG EXPECTED_REF=${repo}/${project}:${version}
   WORKDIR ${src_home}
   VOLUME ${data_dir}
