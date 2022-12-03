@@ -21,7 +21,7 @@
   djblue/portal                          {:mvn/version "0.27.0"}
   edn-query-language/eql                 {:mvn/version "2021.07.18"}
   http.async.client/http.async.client    {:mvn/version "1.3.1"}
-  io.github.erp12/fijit                  {:git/tag "1.0.7" :git/sha "5009b4d"}
+  io.github.erp12/fijit                  {:mvn/version "1.0.8"}
   io.pedestal/pedestal.log               {:mvn/version "0.5.9"}
   lt.jocas/clj-jq                        {:mvn/version "1.1.4"}
   manifold/manifold                      {:mvn/version "0.2.3"}
