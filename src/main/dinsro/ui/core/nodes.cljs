@@ -14,17 +14,12 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
-   [dinsro.joins.core.nodes :as j.c.nodes]
-   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
-   [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.node-blocks :as u.c.node-blocks]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
    [dinsro.ui.core.node-transactions :as u.c.node-transactions]
-   [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
@@ -44,21 +39,6 @@
   {:label     "Connect"
    :action    connect-action
    :disabled? (fn [_ row-props] (:account/active? row-props))})
-
-(form/defsc-form CoreNodeBlockSubform
-  [_this _props]
-  {fo/id           m.c.blocks/id
-   fo/title        "Blocks"
-   fo/route-prefix "node-block"
-   fo/attributes   [m.c.blocks/hash m.c.blocks/height]})
-
-(form/defsc-form CoreNodeTxSubform
-  [_this _props]
-  {fo/id           m.c.tx/id
-   fo/title        "Core Node Transactions"
-   fo/attributes   [m.c.tx/hex m.c.tx/version m.c.tx/block]
-   fo/route-prefix "node-tx"
-   fo/subforms     {::m.c.tx/block {fo/ui CoreNodeBlockSubform}}})
 
 (def fetch-button
   {:type   :button
@@ -118,46 +98,6 @@
     :action mu.c.nodes/fetch-peers!}
    {:label  "generate"
     :action mu.c.nodes/generate!}])
-
-(form/defsc-form CoreNodeForm [this props]
-  {fo/id             m.c.nodes/id
-   fo/action-buttons [::fetch
-                      ::fetch-peers
-                      ::generate
-                      ::new-wallet
-                      ::new-peer]
-   fo/attributes     [m.c.nodes/name
-                      m.c.nodes/network
-                      m.c.nodes/block-count
-                      j.c.nodes/blocks
-                      j.c.nodes/transactions
-                      j.c.nodes/ln-nodes
-                      j.c.nodes/wallets
-                      j.c.nodes/peers]
-   fo/cancel-route   ["nodes"]
-   fo/controls       {::fetch       fetch-button
-                      ::fetch-peers fetch-peers-button
-                      ::generate    generate-button
-                      ::new-wallet  new-wallet-button
-                      ::new-peer    new-peer-button}
-   fo/field-styles   {::m.c.nodes/blocks       :core-block-table
-                      ::m.c.nodes/transactions :link-list
-                      ::m.c.nodes/ln-nodes     :link-list
-                      ::m.c.nodes/wallets      :link-list
-                      ::m.c.nodes/peers        :link-list}
-   fo/route-prefix   "node3"
-   fo/subforms       {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}
-                      ::m.c.nodes/blocks       {fo/ui u.c.blocks/CoreBlockSubForm}
-                      ::m.c.nodes/ln-nodes     {fo/ui u.links/NodeLinkForm}
-                      ::m.c.nodes/wallets      {fo/ui u.links/WalletLinkForm}
-                      ::m.c.nodes/peers        {fo/ui u.links/CorePeerLinkForm}}
-   fo/title          "Core Node"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div :.ui.container
-      (dom/h1 {} "Core Node")
-      (form/render-layout this props)
-      (u.c.peers/ui-peers-report {}))))
 
 (defsc ActionsMenuItem
   [this {:keys [label mutation id]}]
@@ -235,8 +175,7 @@
                     m.c.nodes/rpcuser
                     m.c.nodes/rpcpass]
    fo/cancel-route ["nodes"]
-   fo/route-prefix "node2"
-   fo/subforms     {::m.c.nodes/transactions {fo/ui CoreNodeTxSubform}}
+   fo/route-prefix "new-core-node"
    fo/title        "Core Node"})
 
 (def fetch-action-button

@@ -10,35 +10,25 @@
    [dinsro.ui.ln.payments :as u.ln.payments]
    [dinsro.ui.ln.payreqs :as u.ln.payreqs]
    [dinsro.ui.ln.peers :as u.ln.peers]
-   [dinsro.ui.ln.remote-nodes :as u.ln.remote-nodes]
-   [dinsro.ui.ln.transactions :as u.ln.tx]))
+   [dinsro.ui.ln.remote-nodes :as u.ln.remote-nodes]))
 
 (defrouter LnRouter
   [_this _props]
   {:router-targets [u.ln.accounts/Report
-                    u.ln.channels/LNChannelForm
                     u.ln.channels/LNChannelsReport
-                    u.ln.invoices/LNInvoiceForm
                     u.ln.invoices/LNInvoicesReport
                     u.ln.invoices/NewInvoiceForm
                     u.ln.nodes/CreateLightningNodeForm
-                    u.ln.nodes/LightningNodeForm
                     u.ln.nodes/LightningNodesReport
                     u.ln.nodes/ShowNode
-                    u.ln.payments/LNPaymentForm
                     u.ln.payments/LNPaymentsReport
                     u.ln.payreqs/NewPaymentForm
-                    u.ln.payreqs/LNPaymentForm
                     u.ln.payreqs/LNPayreqsReport
                     u.ln.payreqs/NewPaymentForm
-                    u.ln.peers/LNPeerForm
                     u.ln.peers/LNPeersReport
                     u.ln.peers/NewPeerForm
                     u.ln.remote-nodes/ShowRemoteNode
-                    u.ln.remote-nodes/RemoteNodeForm
-                    u.ln.remote-nodes/Report
-                    u.ln.tx/LNTransactionForm
-                    u.ln.tx/LNTransactionsReport]}
+                    u.ln.remote-nodes/Report]}
 
   (dom/div {} "Ln router"))
 

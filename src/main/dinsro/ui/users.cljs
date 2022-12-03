@@ -6,7 +6,6 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.user-accounts :as u.user-accounts]
@@ -15,30 +14,6 @@
    [dinsro.ui.user-wallets :as u.user-wallets]))
 
 (def override-form true)
-
-(form/defsc-form UserForm
-  [this {::m.users/keys [name] :as props}]
-  {fo/id           m.users/id
-   fo/attributes   [m.users/name
-                    j.users/accounts
-                    j.users/categories
-                    j.users/ln-nodes
-                    j.users/transactions]
-   fo/cancel-route ["users"]
-   fo/field-styles {::m.users/accounts     :account-table
-                    ::m.users/categories   :link-list
-                    ::m.users/ln-nodes     :link-list
-                    ::m.users/transactions :link-list}
-   fo/route-prefix "user"
-   fo/subforms     {::m.users/accounts     {fo/ui u.links/AccountLinkForm}
-                    ::m.users/categories   {fo/ui u.links/CategoryLinkForm}
-                    ::m.users/ln-nodes     {fo/ui u.links/NodeLinkForm}
-                    ::m.users/transactions {fo/ui u.links/TransactionLinkForm}}
-   fo/title        "User"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {}
-      (dom/p {} name))))
 
 (defsc ShowUser
   [_this {::m.users/keys [name]

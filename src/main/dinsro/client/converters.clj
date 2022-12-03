@@ -11,6 +11,7 @@
    dinsro.client.converters.get-blockchain-info-result
    dinsro.client.converters.get-raw-transaction-result
    dinsro.client.converters.get-raw-transaction-vin
+   dinsro.client.converters.peer
    dinsro.client.converters.peer-network-info-post-v21
    dinsro.client.converters.peer-post-v21
    dinsro.client.converters.rpc-transaction-output

@@ -4,8 +4,8 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.ln.transactions :as m.ln.transactions]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
@@ -17,19 +17,17 @@
 
 (report/defsc-report Report
   [this props]
-  {ro/columns          [m.ln.transactions/block-hash
-                        m.ln.transactions/node]
+  {ro/columns          [m.c.tx/block-hash]
    ro/control-layout   {:action-buttons [::fetch ::refresh]
                         :inputs         [[::m.ln.nodes/id]]}
    ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                         ::fetch         fetch-button
                         ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.transactions/block           #(u.links/ui-block-link %2)
-                        ::m.ln.transactions/node            #(u.links/ui-core-node-link %2)
-                        ::m.ln.transactions/transactions-id #(u.links/ui-core-tx-link %3)}
-   ro/source-attribute ::m.ln.transactions/index
+   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-link %2)
+                        ::m.c.tx/tx-id #(u.links/ui-core-tx-link %3)}
+   ro/source-attribute ::m.c.tx/index
    ro/title            "Node Transactions"
-   ro/row-pk           m.ln.transactions/id
+   ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true}
   (log/info :Report/creating {:props props})
   (report/render-layout this))

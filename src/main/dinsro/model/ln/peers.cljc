@@ -8,19 +8,6 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]))
 
-(def rename-map
-  {:address    ::address
-   :flapCount  ::flap-count
-   :inbound    ::inbound
-   :pubKey     ::pubkey
-   :satRecv    ::sat-recv
-   :satSent    ::sat-sent
-   :syncType   ::sync-type
-   :pingTime   ::ping-time
-   :bytesSent  ::bytes-sent
-   :bytesRecv  ::bytes-recv
-   :lastFlapNs ::last-flap-ns})
-
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
@@ -40,20 +27,8 @@
    ao/schema           :production
    ::report/column-EQL {::remote-node [::m.ln.remote-nodes/id ::m.ln.remote-nodes/pubkey]}})
 
-(s/def ::address string?)
-(defattr address ::address :string
-  {ao/identities #{::id}
-   ao/schema     :production})
-
-(s/def ::pubkey (s/or
-                 :nil nil?
-                 :string string?))
-(defattr pubkey ::pubkey :string
-  {ao/identities #{::id}
-   ao/schema     :production})
-
-(s/def ::inbound boolean?)
-(defattr inbound ::inbound :boolean
+(s/def ::inbound? boolean?)
+(defattr inbound? ::inbound? :boolean
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -67,12 +42,15 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::params (s/keys :req [::address ::pubkey ::inbound ::sat-sent ::sat-recv ::remote-node]))
-(s/def ::item (s/keys :req [::id ::address ::pubkey ::inbound ::sat-sent ::sat-recv ::node ::remote-node]))
+(s/def ::params (s/keys :req [::inbound? ::sat-sent ::sat-recv
+                              ::node
+                              ::remote-node]))
+(s/def ::item (s/keys :req [::id
+                            ::inbound? ::sat-sent ::sat-recv ::node ::remote-node]))
 
 (>defn idents
   [ids]
   [(s/coll-of ::id) => (s/coll-of (s/keys))]
   (map (fn [id] {::id id}) ids))
 
-(def attributes [id address pubkey inbound sat-sent node remote-node])
+(def attributes [id inbound? sat-sent node remote-node])

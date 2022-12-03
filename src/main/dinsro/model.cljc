@@ -26,7 +26,6 @@
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
-   [dinsro.joins.ln.tx :as j.ln.tx]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.transactions :as j.transactions]
@@ -60,7 +59,6 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -116,7 +114,6 @@
         j.ln.payreqs/attributes
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
-        j.ln.tx/attributes
         j.rates/attributes
         j.rate-sources/attributes
         j.transactions/attributes
@@ -150,7 +147,6 @@
         m.ln.payreqs/attributes
         m.ln.peers/attributes
         m.ln.remote-nodes/attributes
-        m.ln.tx/attributes
         m.navbar/attributes
         m.navlink/attributes
         m.rates/attributes

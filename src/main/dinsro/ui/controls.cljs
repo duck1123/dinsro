@@ -24,23 +24,12 @@
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.ui.accounts :as u.accounts]
-   [dinsro.ui.core.blocks :as u.c.blocks]
-   [dinsro.ui.core.tx :as u.c.tx]
-   [dinsro.ui.core.tx-in :as u.c.tx-in]
-   [dinsro.ui.core.tx-out :as u.c.tx-out]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.ln.channels :as u.ln.channels]
-   [dinsro.ui.ln.invoices :as u.ln.invoices]
-   [dinsro.ui.ln.payments :as u.ln.payments]
-   [dinsro.ui.ln.payreqs :as u.ln.payreqs]
-   [dinsro.ui.ln.peers :as u.ln.peers]
-   [dinsro.ui.ln.transactions :as u.ln.tx]
    [dinsro.ui.rates :as u.rates]
    [lambdaisland.glogc :as log]))
 
@@ -72,7 +61,6 @@
          currency-id    ::m.currencies/id
          channel-id     ::m.ln.channels/id
          invoice-id     ::m.ln.invoices/id
-         ln-tx-id       ::m.ln.tx/id
          payreq-id      ::m.ln.payreqs/id
          payment-id     ::m.ln.payments/id
          peer-id        ::m.ln.peers/id
@@ -93,7 +81,6 @@
      (when currency-id (u.links/ui-currency-link value))
      (when invoice-id (u.links/ui-invoice-link value))
      (when node-id (u.links/ui-node-link value))
-     (when ln-tx-id (u.links/ui-ln-tx-link value))
      (when payment-id (u.links/ui-payment-link value))
      (when payreq-id (u.links/ui-payreq-link value))
      (when peer-id (u.links/ui-ln-peer-link value))
@@ -200,17 +187,6 @@
       (control-type :ref  :default          render-ref)
       (control-type :ref  :link             render-link-control)
       (control-type :ref  :link-list        render-link-list-control)
-      (control-type :ref  :link-subform     render-link-subform-control)
-      (control-type :ref  :core-block-table u.c.blocks/render-ref-row)
-      (control-type :ref  :core-tx-table    u.c.tx/render-ref-row)
-      (control-type :ref  :ln-tx-row        u.ln.tx/render-ref-ln-tx-row)
-      (control-type :ref  :ln-channels-row  u.ln.channels/render-ref-row)
-      (control-type :ref  :ln-payments-row  u.ln.payments/render-ref-row)
-      (control-type :ref  :ln-payreqs-row   u.ln.payreqs/render-ref-ln-payreq-row)
-      (control-type :ref  :ln-peer-row      u.ln.peers/render-ref-ln-peer-row)
-      (control-type :ref  :ln-invoice-row   u.ln.invoices/render-ref-ln-invoice-row)
-      (control-type :ref  :tx-in-table      u.c.tx-in/render-ref-row)
-      (control-type :ref  :tx-out-table     u.c.tx-out/render-ref-row)
       (control-type :ref  :rate-chart       render-rate-chart-control)
       (control-type :ref  :rate-table       u.rates/render-ref-table)
       (control-type :ref  :user-selector    render-user-selector)

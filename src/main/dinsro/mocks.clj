@@ -5,7 +5,6 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -14,7 +13,6 @@
    [dinsro.queries.categories :as q.categories]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
-   [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.transactions :as q.transactions]
@@ -114,13 +112,6 @@
         id (q.ln.nodes/create-record params)]
     (q.ln.nodes/read-record id)))
 
-(>defn mock-ln-tx
-  []
-  [=> ::m.ln.tx/item]
-  (let [params (ds/gen-key ::m.ln.tx/params)
-        id (q.ln.tx/create-record params)]
-    (q.ln.tx/read-record id)))
-
 (comment
   (ds/gen-key ::m.users/id)
   (ds/gen-key ::m.users/hashed-value)
@@ -158,8 +149,5 @@
 
   (mock-ln-node)
   (ds/gen-key ::m.ln.nodes/item)
-
-  (mock-ln-tx)
-  (ds/gen-key ::m.ln.tx/item)
 
   nil)

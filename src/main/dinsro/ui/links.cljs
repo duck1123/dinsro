@@ -29,7 +29,6 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -185,7 +184,7 @@
   [this {::m.c.peers/keys [id addr]}]
   {fo/id         m.c.peers/id
    fo/attributes [m.c.peers/id m.c.peers/addr]}
-  (form-link this id addr :dinsro.ui.core.peers/CorePeerForm))
+  (form-link this id addr :dinsro.ui.core.peers/ShowPeer))
 
 (def ui-core-peer-link (comp/factory CorePeerLinkForm {:keyfn ::m.c.peers/id}))
 
@@ -218,19 +217,13 @@
 
 (def ui-invoice-link (comp/factory InvoiceLinkForm {:keyfn ::m.ln.invoices/id}))
 
-(form/defsc-form LNPeerLinkForm [this {::m.ln.peers/keys [id pubkey]}]
+(form/defsc-form LNPeerLinkForm [this {::m.ln.peers/keys [id remote-node]}]
   {fo/id         m.ln.peers/id
-   fo/attributes [m.ln.peers/pubkey]}
-  (form-link this id pubkey :dinsro.ui.ln.peers/LNPeerForm))
+   fo/attributes [m.ln.peers/remote-node]}
+
+  (form-link this id remote-node :dinsro.ui.ln.peers/LNPeerForm))
 
 (def ui-ln-peer-link (comp/factory LNPeerLinkForm {:keyfn ::m.ln.peers/id}))
-
-(form/defsc-form LNTxLinkForm [this {::m.ln.tx/keys [id tx-hash]}]
-  {fo/id         m.ln.tx/id
-   fo/attributes [m.ln.tx/tx-hash]}
-  (form-link this id tx-hash :dinsro.ui.ln.transactions/LNTransactionForm))
-
-(def ui-ln-tx-link (comp/factory LNTxLinkForm {:keyfn ::m.ln.tx/id}))
 
 (form/defsc-form NetworkLinkForm
   [this {::m.c.networks/keys [id name] :as props}]

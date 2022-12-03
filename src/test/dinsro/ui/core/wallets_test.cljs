@@ -126,14 +126,6 @@
     ::ct.fulcro3/initial-state NewWalletForm-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard WalletForm
-  {::wsm/card-width 6 ::wsm/card-height 12}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.wallets/WalletForm
-    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state WalletForm-data}))
-
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard WalletsReport
   {::wsm/card-width 6 ::wsm/card-height 12}
   (ct.fulcro3/fulcro-card

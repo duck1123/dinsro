@@ -2,8 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -42,44 +40,13 @@
 
 (def render-ref-row (render-field-factory ref-row))
 
-(form/defsc-form PaymentSubForm [_this _props]
-  {fo/id           m.ln.payments/id
-   fo/attributes   [m.ln.payments/payment-hash
-                    m.ln.payments/payment-preimage
-                    m.ln.payments/payment-request
-                    m.ln.payments/status
-                    m.ln.payments/fee
-                    m.ln.payments/value
-                    m.ln.payments/payment-index
-                    m.ln.payments/failure-reason
-                    m.ln.payments/creation-date]
-   fo/route-prefix "payment"
-   fo/title        "Lightning Payments"})
-
-(form/defsc-form LNPaymentForm [_this _props]
-  {fo/id           m.ln.payments/id
-   fo/attributes   [m.ln.payments/payment-hash
-                    m.ln.payments/payment-preimage
-                    m.ln.payments/payment-request
-                    m.ln.payments/status
-                    m.ln.payments/fee
-                    m.ln.payments/value
-                    m.ln.payments/payment-index
-                    m.ln.payments/failure-reason
-                    m.ln.payments/creation-date
-                    m.ln.payments/node]
-   fo/subforms     {::m.ln.payments/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix "payment"
-   fo/title        "Lightning Payments"})
-
 (report/defsc-report LNPaymentsReport
   [this _props]
   {ro/columns          [m.ln.payments/payment-hash
                         m.ln.payments/node
                         m.ln.payments/status]
-   ro/links            {::m.ln.payments/payment-hash (fn [this {::m.ln.payments/keys [id]}]
-                                                       (form/view! this LNPaymentForm id))}
-   ro/field-formatters {::m.ln.payments/node #(u.links/ui-node-link %2)}
+   ro/field-formatters {::m.ln.payments/node         #(u.links/ui-node-link %2)
+                        ::m.ln.payments/payment-hash #(u.links/ui-payment-link %3)}
    ro/route            "payments"
    ro/row-pk           m.ln.payments/id
    ro/run-on-mount?    true
@@ -88,3 +55,10 @@
   (dom/div {}
     (dom/h1 {} "Payments")
     (report/render-layout this)))
+
+(defsc ShowPayment
+  [_this _props]
+  {:ident ::m.ln.payments/id
+   :query [::m.ln.payments/id]
+   :initial-state {::m.ln.payments/id nil}}
+  (dom/div {}))

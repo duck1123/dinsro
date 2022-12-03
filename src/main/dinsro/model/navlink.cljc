@@ -42,7 +42,6 @@
                             :peers
                             :channels
                             :invoices
-                            :tx
                             :payreqs
                             :payments]]
    :ln-remote-nodes       ["Remote Nodes"      "/ln/remote-nodes"  :dinsro.ui.ln.remote-nodes/Report]
@@ -55,7 +54,6 @@
    :registration          ["Registration"      "/register"         :dinsro.ui.registration/RegistrationPage]
    :settings              ["Settings"          "/settings"         :dinsro.ui.settings/SettingsPage]
    :transactions          ["Transactions"      "/transactions"     :dinsro.ui.transactions/TransactionsReport]
-   :tx                    ["LN TXes"           "/ln/transactions"  :dinsro.ui.ln.transactions/LNTransactionsReport]
    :users                 ["Users"             "/users"            :dinsro.ui.users/UsersReport]
    :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/WalletsReport]
    :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/WalletAddressesReport]

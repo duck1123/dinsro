@@ -8,7 +8,6 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
@@ -45,31 +44,6 @@
    :ident ::m.currencies/id})
 
 (def override-form true)
-
-(form/defsc-form AccountForm
-  [this {::m.accounts/keys [currency name initial-value user]
-         :as               props}]
-  {fo/id           m.accounts/id
-   fo/subforms     {::m.accounts/user         {fo/ui u.links/UserLinkForm}
-                    ::m.accounts/currency     {fo/ui u.links/CurrencyLinkForm}
-                    ::m.accounts/transactions {fo/ui u.links/TransactionLinkForm}}
-   fo/field-styles {::m.accounts/transactions :link-list
-                    ::m.accounts/user         :link}
-   fo/attributes   [m.accounts/name
-                    m.accounts/currency
-                    m.accounts/user
-                    m.accounts/initial-value
-                    j.accounts/transactions]
-   fo/cancel-route ["accounts"]
-   fo/route-prefix "account3"
-   fo/title        "Edit Account"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div :.ui
-      (dom/p {} (str "Account: " name))
-      (dom/p {} (str "Initial Value: " initial-value))
-      (dom/p {} (str "Currency: " currency))
-      (dom/p {} (str "User: " user)))))
 
 (form/defsc-form NewAccountForm
   [this {::m.accounts/keys [currency name initial-value user]

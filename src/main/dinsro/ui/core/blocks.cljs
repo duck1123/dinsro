@@ -6,21 +6,17 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.core.block-transactions :as u.c.block-transactions]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
 (def force-fetch-button false)
-(def override-form false)
 (def debug-page false)
 
 (defsc RefRow
@@ -58,25 +54,12 @@
 
 (def render-ref-row (render-field-factory ref-row))
 
-(form/defsc-form CoreBlockSubForm
-  [_this _props]
-  {fo/id           m.c.blocks/id
-   fo/route-prefix "ln-core-block"
-   fo/title        "Block"
-   fo/attributes   [m.c.blocks/fetched?
-                    m.c.blocks/hash
-                    m.c.blocks/height]})
-
-(declare CoreBlockForm)
-
 (def fetch-button
   {:type   :button
    :local? true
    :label  "Fetch"
-   :action (fn [this _key]
-             (let [{::m.c.blocks/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])
-               (form/view! this CoreBlockForm id)))})
+   :action (fn [this _key] (let [props (comp/props this)]
+                             (comp/transact! this [(mu.c.blocks/fetch! props)])))})
 
 (def fetch-transactions-button
   {:type   :button
@@ -86,49 +69,7 @@
              (let [{::m.c.blocks/keys [id]} (comp/props this)]
                (comp/transact!
                 this
-                [(mu.c.blocks/fetch-transactions! {::m.c.blocks/id id})])
-               (form/view! this CoreBlockForm id)))})
-
-(form/defsc-form CoreBlockTxSubform
-  [_this _props]
-  {fo/id           m.c.tx/id
-   fo/title        "Core Block Transactions"
-   fo/attributes   [m.c.tx/tx-id m.c.tx/fetched?]
-   fo/route-prefix "node-tx"})
-
-(form/defsc-form CoreBlockForm
-  [this props]
-  {fo/id             m.c.blocks/id
-   fo/action-buttons (concat [::fetch ::fetch-transactions] form/standard-action-buttons)
-   fo/attributes     [m.c.blocks/hash
-                      m.c.blocks/previous-block
-                      m.c.blocks/next-block
-                      m.c.blocks/fetched?
-                      m.c.blocks/height
-                      m.c.blocks/bits
-                      m.c.blocks/chainwork
-                      m.c.blocks/difficulty
-                      m.c.blocks/merkle-root
-                      m.c.blocks/nonce
-                      m.c.blocks/size
-                      m.c.blocks/version
-                      j.c.blocks/transactions]
-   fo/cancel-route   ["core-blocks"]
-   fo/field-styles   {::m.c.blocks/transactions   :core-tx-table
-                      ::m.c.blocks/previous-block :link
-                      ::m.c.blocks/next-block     :link}
-   fo/subforms       {::m.c.blocks/transactions   {fo/ui CoreBlockTxSubform}
-                      ::m.c.blocks/previous-block {fo/ui u.links/BlockLinkForm}
-                      ::m.c.blocks/next-block     {fo/ui u.links/BlockLinkForm}}
-   fo/controls       (merge form/standard-controls
-                            {::fetch              fetch-button
-                             ::fetch-transactions fetch-transactions-button})
-   fo/route-prefix   "block-form"
-   fo/title          "Core Block"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {}
-      (form/render-layout this props))))
+                [(mu.c.blocks/fetch-transactions! {::m.c.blocks/id id})])))})
 
 (defn find-control
   [controls key]

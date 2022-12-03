@@ -3,19 +3,16 @@
   (:require
    [clojure.core.async :as async :refer [<!]]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.core.blocks :as a.c.blocks]
-   [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.actions.ln.nodes-lj :as a.ln.nodes-lj]
    [dinsro.actions.ln.transactions :as a.ln.transactions]
    [dinsro.client.lnd :as c.lnd]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.ln.transactions :as m.ln.tx]
-   [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
-   [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]))
+
+(defn not-implemented [] (throw (RuntimeException. "not-implemented")))
 
 (>defn fetch-transactions
   [node]
@@ -42,31 +39,16 @@
 
 (>defn save-transactions!
   [ln-node-id tx-id params]
-  [::m.ln.nodes/id
-   ::m.c.tx/id any? => any?]
-  (let [params (assoc params ::m.ln.tx/core-tx tx-id)
-        params (assoc params ::m.ln.tx/node ln-node-id)
-        params (m.ln.tx/prepare-params params)]
-    (q.ln.tx/create-record params)))
+  [::m.ln.nodes/id ::m.c.tx/id any? => any?]
+  (comment ln-node-id tx-id params)
+  (not-implemented))
 
 (>defn update-transaction!
   [node data]
-  [::m.ln.nodes/item ::m.ln.tx/raw-params => (? ::m.ln.tx/id)]
+  [::m.ln.nodes/item any? => (? ::m.c.tx/id)]
   (log/info :update-transaction!/starting {})
-  (if-let [ln-node-id (::m.ln.nodes/id node)]
-    (let [{::m.ln.tx/keys [block-hash block-height tx-hash]} data]
-      (if-let [tx-id (q.ln.tx/find-by-node-and-tx-hash ln-node-id tx-hash)]
-        (do
-          (log/info :update-transaction!/has-tx {:tx-id tx-id})
-          tx-id)
-        (if-let [core-node-id (q.c.nodes/find-by-ln-node ln-node-id)]
-          (do
-            (log/error :update-transaction!/no-tx {})
-            (let [block-id   (a.c.blocks/register-block core-node-id block-hash block-height)
-                  core-tx-id (a.c.tx/register-tx core-node-id block-id tx-hash)]
-              (save-transactions! ln-node-id core-tx-id data)))
-          (throw (RuntimeException. (str "failed to find core node: " node))))))
-    (throw (RuntimeException. "failed to find node id"))))
+  (comment node data)
+  (not-implemented))
 
 (>defn update-transactions!
   [node]
@@ -78,8 +60,8 @@
           (let [data                   (async/<! ch)
                 {:keys [transactions]} data]
             (doseq [params (take 3 transactions)]
-              (let [params (assoc params ::m.ln.tx/node node-id)
-                    params (m.ln.tx/prepare-params params)]
+              (let [params (assoc params ::m.c.tx/node node-id)
+                    params (m.c.tx/prepare-params params)]
                 (update-transaction! node params)))))
         ch)
       (do

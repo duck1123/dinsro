@@ -47,34 +47,6 @@
              (let [props (comp/props this)]
                (comp/transact! this [(mu.ln.payreqs/submit! props)])))})
 
-(form/defsc-form PayreqSubForm [_this _props]
-  {fo/id         m.ln.payreqs/id
-   fo/attributes [m.ln.payreqs/description
-                  m.ln.payreqs/payment-hash
-                  m.ln.payreqs/num-satoshis
-                  m.ln.payreqs/destination
-                  m.ln.payreqs/payment-request]
-   fo/title      "Lightning Payreqs"})
-
-(form/defsc-form LNPaymentForm [_this _props]
-  {fo/id             m.ln.payreqs/id
-   fo/attributes     [m.ln.payreqs/description
-                      m.ln.payreqs/cltv-expiry
-                      m.ln.payreqs/expiry
-                      m.ln.payreqs/payment-hash
-                      m.ln.payreqs/num-satoshis
-                      m.ln.payreqs/fallback-address
-                      m.ln.payreqs/num-msats
-                      m.ln.payreqs/description-hash
-                      m.ln.payreqs/destination
-                      m.ln.payreqs/payment-request
-                      m.ln.payreqs/node]
-   fo/action-buttons [::pay]
-   fo/controls       {::pay pay-button}
-   fo/subforms       {::m.ln.payreqs/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix   "payreq"
-   fo/title          "Lightning Payreqs"})
-
 (def decode-button
   {:type   :button
    :local? true
@@ -90,7 +62,6 @@
    fo/controls       {::decode decode-button}
    fo/attributes     [m.ln.payreqs/payment-request
                       m.ln.payreqs/node]
-   fo/subforms       {::m.ln.payreqs/node {fo/ui u.links/NodeLinkForm}}
    fo/route-prefix   "new-payment"
    fo/title          "New Payreqs"})
 
@@ -101,9 +72,8 @@
                         m.ln.payreqs/payment-request
                         m.ln.payreqs/num-satoshis
                         m.ln.payreqs/node]
-   ro/links            {::m.ln.payreqs/payment-hash (fn [this {::m.ln.payreqs/keys [id]}]
-                                                      (form/view! this LNPaymentForm id))}
-   ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)}
+   ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)
+                        ::m.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
    ro/route            "payreqs"
    ro/row-pk           m.ln.payreqs/id
    ro/run-on-mount?    true
@@ -112,3 +82,10 @@
   (dom/div {}
     (dom/h1 {} "Payreqs")
     (report/render-layout this)))
+
+(defsc ShowPayreq
+  [_this _props]
+  {:ident ::m.ln.payreqs/id
+   :query [::m.ln.payreqs/id]
+   :initial-state {::m.ln.payreqs/id nil}}
+  (dom/div {}))

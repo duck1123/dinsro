@@ -1,7 +1,6 @@
 (ns dinsro.actions.ln.peers
   (:refer-clojure :exclude [next])
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
@@ -33,7 +32,7 @@
         (do
           (log/info :update-peer!/starting {:peer peer :data data})
           (let [params (merge peer params)]
-            (q.ln.peers/update! params))
+            (q.ln.peers/update! peer-id params))
           nil)
         (throw (RuntimeException. "Can't find peer")))
       (let [network-id (q.c.networks/find-by-chain-and-network "bitcoin" "regtest")]
@@ -41,18 +40,6 @@
         (let [remote-node-id (a.ln.remote-nodes/register-node! network-id pubkey nil)
               params         (assoc params ::m.ln.peers/remote-node remote-node-id)]
           (create-peer-record! params))))))
-
-(>defn handle-fetched-peer
-  [node peer]
-  [::m.ln.nodes/item any? => any?]
-  (log/info :handle-fetched-peer/starting {:node node :peer peer})
-  (try
-    (let [params   (set/rename-keys peer m.ln.peers/rename-map)
-          response (update-peer! node params)]
-      (log/info :handle-fetched-peer/finished {:response response})
-      response)
-    (catch Exception ex
-      (log/error :handle-fetched-peer/failed {:ex ex}))))
 
 (defn delete!
   "Handler for delete peer mutation"
@@ -62,6 +49,7 @@
     (q.ln.peers/delete peer-id)))
 
 (>defn create-peer!
+  "Connect this node to a new peer"
   [node host pubkey]
   [::m.ln.nodes/item string? string? => any?]
   (log/info :create-peer!/starting {:pubkey pubkey :host host :node-id (::m.ln.nodes/id node)})
@@ -96,9 +84,38 @@
       {:status :not-found :message "Failed to find remote node"})
     {:status :not-found :message "Failed to find node"}))
 
+(>defn process-fetched-peer!
+  [node-id peer]
+  [::m.ln.nodes/id any? => ::m.ln.peers/id]
+  (log/info :process-fetched-peer/starting {:node-id node-id
+                                            :peer    peer})
+  (let [{:dinsro.client.converters.peer/keys
+         [address sat-sent inbound? sat-recv pubkey]} peer
+        remote-node-id                                (a.ln.remote-nodes/register-node! node-id pubkey address)
+        params                                        {::m.ln.peers/node        node-id
+                                                       ::m.ln.peers/remote-node remote-node-id
+                                                       ::m.ln.peers/inbound?    inbound?
+                                                       ::m.ln.peers/sat-sent    sat-sent
+                                                       ::m.ln.peers/sat-recv    sat-recv}]
+    (if-let [peer-id (q.ln.peers/find-by-node-and-remote-node node-id remote-node-id)]
+      (do
+        (log/info :process-fetched-peer/peer-found {})
+        (q.ln.peers/update! peer-id params))
+      (do
+        (log/info :process-fetched-peer/peer-not-found {})
+        (q.ln.peers/create-record params)))))
+
 (>defn fetch-peers!
   [node-id]
   [::m.ln.nodes/id => (? any?)]
   (log/info :fetch-peers!/starting {:node-id node-id})
-  #_(throw (RuntimeException. "Not implemented"))
-  nil)
+  (if-let [node (q.ln.nodes/read-record node-id)]
+    (let [client   (a.ln.nodes/get-client node)
+          response (c.lnd-s/list-peers client)]
+      (log/info :fetch-peers!/finished {:response response})
+      (doseq [peer response]
+        (process-fetched-peer! node-id peer))
+      response)
+    (do
+      (log/error :fetch-peers!/no-node {})
+      nil)))

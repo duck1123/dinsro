@@ -60,8 +60,6 @@
                     u.categories/CategoriesReport
                     u.categories/NewCategoryForm
                     u.core/CorePage
-                    u.currencies/AdminCurrencyForm
-                    u.currencies/CurrencyForm
                     u.currencies/CurrenciesReport
                     u.currencies/NewCurrencyForm
                     u.currencies/ShowCurrency
@@ -69,13 +67,10 @@
                     u.login/LoginPage
                     u.ln/LnPage
                     u.rate-sources/ShowRateSource
-                    u.rate-sources/RateSourceForm
                     u.rate-sources/RateSourcesReport
-                    u.rates/RateForm
                     u.rates/RatesReport
                     u.registration/RegistrationPage
                     u.transactions/ShowTransaction
-                    u.transactions/TransactionForm
                     u.transactions/TransactionsReport
                     u.users/AdminUserForm
                     u.users/ShowUser

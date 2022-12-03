@@ -20,7 +20,6 @@
   {:router-targets [u.c.addresses/CoreAddressForm
                     u.c.addresses/CoreAddressReport
                     u.c.blocks/ShowBlock
-                    u.c.blocks/CoreBlockForm
                     u.c.blocks/CoreBlockReport
                     u.c.chains/CoreChainForm
                     u.c.chains/Report
@@ -31,20 +30,16 @@
                     u.c.networks/CoreNetworksReport
                     u.c.networks/ShowNetwork
                     u.c.nodes/NewCoreNodeForm
-                    u.c.nodes/CoreNodeForm
                     u.c.nodes/CoreNodesReport
                     u.c.nodes/ShowNode
                     u.c.nodes/NodeContainer
-                    u.c.peers/CorePeerForm
                     u.c.peers/CorePeersReport
                     u.c.peers/CorePeers2Report
                     u.c.peers/NewCorePeerForm
-                    u.c.tx/CoreTxForm
                     u.c.tx/CoreTxReport
                     u.c.tx/ShowTransaction
                     u.c.wallets/NewWalletForm
                     u.c.wallets/ShowWallet
-                    u.c.wallets/WalletForm
                     u.c.wallets/WalletsReport
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm

@@ -40,9 +40,6 @@
    :ui/page-count   1
    :ui/parameters   {}})
 
-(ws/defcard LNPeerForm
-  (th/fulcro-card u.ln.peers/LNPeerForm LNPeerForm-data {}))
-
 (ws/defcard LNPeersReport
   (th/fulcro-card u.ln.peers/LNPeersReport LNPeersReport-data {}))
 

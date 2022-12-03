@@ -51,7 +51,6 @@
    [dinsro.queries.debits :as q.debits]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
-   [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.settings :as q.settings]
@@ -272,8 +271,7 @@
         accounts     (count (q.accounts/index-ids))
         transactions (count (q.transactions/index-ids))
         ln-nodes     (count (q.ln.nodes/index-ids))
-        ln-peers     (count (q.ln.peers/index-ids))
-        ln-txes      (count (q.ln.tx/index-ids))]
+        ln-peers     (count (q.ln.peers/index-ids))]
     (log/finer :report
                {:users        users
                 :categories   categories
@@ -283,8 +281,7 @@
                 :accounts     accounts
                 :transactions transactions
                 :ln-nodes     ln-nodes
-                :ln-peers     ln-peers
-                :ln-txes      ln-txes})))
+                :ln-peers     ln-peers})))
 
 (defn mock-tx
   [o]

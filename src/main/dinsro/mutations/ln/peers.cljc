@@ -3,7 +3,6 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
-   ;; #?(:clj [dinsro.actions.ln.peers-lj :as a.ln.peers-lj])
    [dinsro.model.ln.peers :as m.ln.peers]
    #?(:clj [lambdaisland.glogc :as log])))
 

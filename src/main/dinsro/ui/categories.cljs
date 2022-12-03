@@ -14,7 +14,6 @@
   [_this _props]
   {fo/id           m.categories/id
    fo/attributes   [m.categories/name]
-   fo/subforms     {::m.categories/user {fo/ui u.links/UserLinkForm}}
    fo/cancel-route ["categories"]
    fo/route-prefix "new-category"
    fo/title        "New Category"
@@ -27,7 +26,6 @@
   {fo/id           m.categories/id
    fo/attributes   [m.categories/name
                     m.categories/user]
-   fo/subforms     {::m.categories/user {fo/ui u.links/UserLinkForm}}
    fo/cancel-route ["categories"]
    fo/route-prefix "category"
    fo/title        "Edit Category"

@@ -10,7 +10,6 @@
    [dinsro.queries.core.tx :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.tx-out :as q.c.tx-out]
-   [dinsro.queries.ln.transactions :as q.ln.tx]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
@@ -22,14 +21,11 @@
 (comment
   (q.c.blocks/index-ids)
   (q.c.tx/index-ids)
-  (q.ln.tx/index-records)
-  (q.ln.tx/index-ids)
 
   (map q.c.blocks/delete (q.c.blocks/index-ids))
   (map q.c.tx/delete (q.c.tx/index-ids))
   (map q.c.tx-out/delete! (q.c.tx-out/index-ids))
   (map q.c.tx-in/delete! (q.c.tx-in/index-ids))
-  (map q.ln.tx/delete! (q.ln.tx/index-ids))
 
   (def node-id (::m.ln.nodes/id n.lnd/node-alice))
   node-id

@@ -59,7 +59,6 @@
                                                  {:initial-state {::m.ln.channels/address "foo"}})))}}
    ro/field-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
                         ::m.ln.channels/node  #(u.links/ui-core-node-link %2)}
-   ro/form-links       {::m.ln.channels/channels-id u.ln.channels/LNChannelForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.ln.channels/index
    ro/title            "Node Channels"

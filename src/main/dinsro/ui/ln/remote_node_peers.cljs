@@ -15,11 +15,10 @@
 
 (report/defsc-report Report
   [this props]
-  {ro/columns        [m.ln.peers/address
-                      m.ln.peers/remote-node
+  {ro/columns        [m.ln.peers/remote-node
                       m.ln.peers/sat-recv
                       m.ln.peers/sat-sent
-                      m.ln.peers/inbound]
+                      m.ln.peers/inbound?]
    ro/control-layout {:action-buttons [::new ::refresh]
                       :inputs         [[::m.ln.remote-nodes/id]]}
    ro/controls       {::m.ln.remote-nodes/id {:type :uuid :label "Nodes"}
@@ -46,7 +45,6 @@
    ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
-   ro/form-links       {::m.ln.peers/peers-id u.ln.peers/LNPeerForm}
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Remote Node Peers"
    ro/row-pk           m.ln.peers/id

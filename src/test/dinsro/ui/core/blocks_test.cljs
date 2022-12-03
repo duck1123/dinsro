@@ -18,17 +18,6 @@
             ::m.c.blocks/height   6
             ::m.c.blocks/hash     "yes"})}))
 
-(ws/defcard CoreBlockSubForm
-  {::wsm/card-width 4 ::wsm/card-height 9}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.c.blocks/CoreBlockSubForm
-    ::ct.fulcro3/app  {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state
-    (fn [] {::m.c.blocks/id       :foo
-            ::m.c.blocks/fetched? true
-            ::m.c.blocks/height   6
-            ::m.c.blocks/hash     "yes"})}))
-
 (defn CoreBlockReport-data
   []
   {:ui/busy?        false

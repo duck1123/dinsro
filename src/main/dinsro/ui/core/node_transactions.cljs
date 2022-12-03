@@ -8,8 +8,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.ui.core.tx :as u.c.tx]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
   [_this _props]
@@ -18,13 +17,11 @@
                         m.c.tx/fetched?
                         m.c.tx/block]
    ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
-                        ::refresh u.links/refresh-control}
+                        ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/field-formatters {::m.c.tx/block (fn [_this props]
-                                         (log/debug :formatting {:props props})
-                                         (u.links/ui-block-height-link props))
-                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)}
-   ro/form-links       {::m.c.tx/tx-id u.c.tx/CoreTxForm}
+   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
+                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)
+                        ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Node Transactions"
    ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]

@@ -48,8 +48,6 @@
 
 (def ui-ref-table (comp/factory RefTable))
 
-(declare CorePeerForm)
-
 (def submit-button
   {:type   :button
    :local? true
@@ -61,9 +59,7 @@
                    props                               {::m.c.peers/id   id
                                                         ::m.c.peers/addr addr
                                                         ::m.c.peers/node node-id}]
-               (log/info :submit-action/clicked props)
-               (comp/transact! this [(mu.c.peers/create! props)])
-               (form/view! this CorePeerForm id)))})
+               (comp/transact! this [(mu.c.peers/create! props)])))})
 
 (form/defsc-form NewCorePeerForm
   [this props]
@@ -94,20 +90,6 @@
    :action (fn [this _]
              (let [{::m.c.peers/keys [id]} (comp/props this)]
                (comp/transact! this [(mu.c.peers/delete! {::m.c.peers/id id})])))})
-
-(form/defsc-form CorePeerForm
-  [_this _props]
-  {fo/id             m.c.peers/id
-   fo/action-buttons [::delete]
-   fo/attributes     [m.c.peers/addr
-                      m.c.peers/node
-                      m.c.peers/subver
-                      m.c.peers/peer-id]
-   fo/controls       {::delete delete-button}
-   fo/field-styles   {::m.c.peers/node :link}
-   fo/route-prefix   "peer"
-   fo/subforms       {::m.c.peers/node {fo/ui u.links/CoreNodeLinkForm}}
-   fo/title          "Core Peer"})
 
 (def delete-action-button
   "Delete button for reports"
@@ -147,7 +129,6 @@
                                                                   {:initial-state {::m.c.peers/addr "foo"}})))}}
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
-   ro/form-links       {::m.c.peers/peers-id CorePeerForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.c.peers/index
    ro/title            "Core Peers"
@@ -164,7 +145,6 @@
                         m.c.peers/node]
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
-   ro/form-links       {::m.c.peers/peers-id CorePeerForm}
    ro/row-actions      [delete-action-button]
    ro/source-attribute ::m.c.peers/index
    ro/title            "Core Peers 2"
@@ -173,3 +153,10 @@
    ro/route            "peers2"})
 
 (def ui-peers-report (comp/factory CorePeersReport))
+
+(defsc ShowPeer
+  [_this _props]
+  {:ident ::m.c.peers/id
+   :query [::m.c.peers/id]
+   :initial-state {::m.c.peers/id nil}}
+  (dom/div {}))

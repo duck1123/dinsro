@@ -3,21 +3,20 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
+   [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
-   [dinsro.model.ln.transactions :as m.ln.tx]
-   [dinsro.model.transactions :as m.transactions]
+   #?(:clj [dinsro.queries.core.tx :as q.c.tx])
    #?(:clj [dinsro.queries.ln.channels :as q.ln.channels])
    #?(:clj [dinsro.queries.ln.invoices :as q.ln.invoices])
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
    #?(:clj [dinsro.queries.ln.payments :as q.ln.payments])
    #?(:clj [dinsro.queries.ln.payreqs :as q.ln.payreqs])
    #?(:clj [dinsro.queries.ln.peers :as q.ln.peers])
-   #?(:clj [dinsro.queries.ln.transactions :as q.ln.tx])
    #?(:clj [dinsro.queries.users :as q.users])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -108,12 +107,12 @@
 (defattr transactions ::m.ln.nodes/transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/transactions [::m.ln.tx/id]}]
-   ao/target      ::m.ln.tx/id
+   ao/pc-output   [{::m.ln.nodes/transactions [::m.c.tx/id]}]
+   ao/target      ::m.c.tx/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.tx/find-by-node id) :cljs []) [])]
-       {::m.ln.nodes/transactions (m.transactions/idents (take 3 ids))}))})
+     (let [ids (if id #?(:clj (q.c.tx/find-by-ln-node id) :cljs []) [])]
+       {::m.ln.nodes/transactions (m.c.tx/idents (take 3 ids))}))})
 
 (def attributes
   [admin-index

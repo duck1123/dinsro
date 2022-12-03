@@ -9,7 +9,6 @@
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
@@ -101,26 +100,6 @@
    :action (fn [this _key]
              (let [{::m.c.wallets/keys [id]} (comp/props this)]
                (comp/transact! this [(mu.c.wallets/roll! {::m.c.wallets/id id})])))})
-
-(form/defsc-form WalletForm
-  [this props]
-  {fo/id             m.c.wallets/id
-   fo/action-buttons (concat [::roll] form/standard-action-buttons)
-   fo/attributes     [m.c.wallets/id
-                      m.c.wallets/name
-                      m.c.wallets/derivation
-                      m.c.wallets/key
-                      j.c.wallets/words]
-   fo/controls       (merge form/standard-controls {::roll roll-button})
-   fo/field-styles   {::m.c.wallets/addresses :link-list
-                      ::m.c.wallets/words     :word-list}
-   fo/route-prefix   "wallet"
-   fo/subforms       {::m.c.wallets/node      {fo/ui u.links/CoreNodeLinkForm}
-                      ::m.c.wallets/addresses {fo/ui u.links/WalletAddressLinkForm}
-                      ::m.c.wallets/words     {fo/ui u.links/WordLinkForm}}
-   fo/title          "Wallet"}
-  (log/info :WalletForm/creating {:props props})
-  (form/render-layout this props))
 
 (def delete-action-button
   {:type   :button

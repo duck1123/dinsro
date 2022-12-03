@@ -168,6 +168,23 @@
     (log/info :connect-peer!/finished {:awaited-response awaited-response})
     awaited-response))
 
+(defn list-peers
+  "https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#listPeers():scala.concurrent.Future[Vector[lnrpc.Peer]]"
+  [client]
+  (log/info :list-peers/starting {})
+  (let [f (.listPeers client)]
+    (log/info :list-peers/a {:f f})
+    (let [{:keys [passed result]} (async/<!! (cs/await-future f))]
+      (if passed
+        (do
+          (log/info :list-peers/b {:result result})
+          (let [peers (cs/vector->vec result)]
+            (log/info :list-peers/c {:peers peers})
+            (let [records (map cs/->record peers)]
+              (log/info :list-peers/finished {:records records})
+              records)))
+        (throw (RuntimeException. "did not pass"))))))
+
 (>defn list-wallet-accounts
   [client]
   [::client => any?]

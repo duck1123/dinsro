@@ -89,11 +89,21 @@
     (xt/await-tx node tx)))
 
 (>defn update!
-  [params]
-  [::m.ln.peers/item => ::m.ln.peers/id]
-  (if-let [id (::m.ln.peers/id params)]
-    (let [node   (c.xtdb/main-node)
-          params (assoc params :xt/id id)]
-      (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-      id)
-    (throw (RuntimeException. "Failed to find id"))))
+  [id params]
+  [::m.ln.peers/id ::m.ln.peers/item => ::m.ln.peers/id]
+  (let [node   (c.xtdb/main-node)
+        params (assoc params :xt/id id)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
+    id))
+
+(>defn find-by-node-and-remote-node
+  [node-id remote-node-id]
+  [::m.ln.nodes/id
+   ::m.ln.peers/remote-node => (? ::m.ln.peers/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?peer-id]
+                :in    [[?node-id
+                         ?remote-node-id]]
+                :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]
+                        [?peer-id ::m.ln.peers/node ?node-id]]}]
+    (ffirst (xt/q db query [node-id remote-node-id]))))

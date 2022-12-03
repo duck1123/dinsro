@@ -3,23 +3,13 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.remote-node-peers :as u.ln.remote-node-peers]
    [lambdaisland.glogc :as log]))
-
-(form/defsc-form RemoteNodeForm
-  [_this _props]
-  {fo/id           m.ln.tx/id
-   fo/attributes   [m.ln.remote-nodes/pubkey]
-   fo/route-prefix "remote-node-form"
-   fo/title        "Remote Node"})
 
 (defsc ShowRemoteNode
   [_this {:ui/keys                 [peers]

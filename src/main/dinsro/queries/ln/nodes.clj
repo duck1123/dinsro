@@ -52,16 +52,6 @@
         tx     (xt/submit-tx node [[::xt/put new-data]])]
     (xt/await-tx node tx)))
 
-(defn create-transaction
-  [params]
-  (let [node            (c.xtdb/main-node)
-        id              (new-uuid)
-        prepared-params (-> params
-                            (assoc :m.ln.tx/id id)
-                            (assoc :xt/id id))]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    id))
-
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.ln.nodes/id)]

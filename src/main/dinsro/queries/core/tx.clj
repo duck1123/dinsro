@@ -7,6 +7,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -92,6 +93,24 @@
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
+
+(>defn find-by-ln-node
+  [ln-node-id]
+  [::m.ln.nodes/id => (? ::m.c.tx/id)]
+  (comment ln-node-id)
+  ;; (let [db    (c.xtdb/main-db)
+  ;;       query '{:find  [?id]
+  ;;               :in    [[?ln-node-id]]
+  ;;               :where [
+  ;;                       []
+  ;;                       [?id ::m.c.tx/tx-id ?tx-id]
+
+
+  ;;                       ]}]
+  ;;   (ffirst (xt/q db query [ln-node-id]))
+
+  ;;   )
+  (throw (RuntimeException. "not implemented")))
 
 (comment
   2

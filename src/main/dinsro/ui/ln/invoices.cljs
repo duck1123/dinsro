@@ -63,47 +63,6 @@
 
 (def render-ref-ln-invoice-row (render-field-factory ref-ln-invoice-row))
 
-(form/defsc-form InvoiceSubForm [_this _props]
-  {fo/id         m.ln.invoices/id
-   fo/attributes [m.ln.invoices/ammount-paid
-                  m.ln.invoices/add-index
-                  m.ln.invoices/value
-                  m.ln.invoices/payment-request
-                  m.ln.invoices/state
-                  m.ln.invoices/settled?
-                  m.ln.invoices/r-preimage
-                  m.ln.invoices/fallback-address
-                  m.ln.invoices/settle-date
-                  m.ln.invoices/settle-index
-                  m.ln.invoices/description-hash
-                  m.ln.invoices/memo]
-   fo/title      "Lightning Invoices"})
-
-(form/defsc-form LNInvoiceForm [_this _props]
-  {fo/id           m.ln.invoices/id
-   fo/attributes   [m.ln.invoices/ammount-paid
-                    m.ln.invoices/add-index
-                    m.ln.invoices/cltv-expiry
-                    m.ln.invoices/expiry
-                    m.ln.invoices/private?
-                    m.ln.invoices/keysend?
-                    m.ln.invoices/value
-                    m.ln.invoices/r-hash
-                    m.ln.invoices/r-preimage
-                    m.ln.invoices/payment-request
-                    m.ln.invoices/state
-                    m.ln.invoices/settled?
-                    m.ln.invoices/fallback-address
-                    m.ln.invoices/settle-date
-                    m.ln.invoices/settle-index
-                    m.ln.invoices/description-hash
-                    m.ln.invoices/amp?
-                    m.ln.invoices/memo
-                    m.ln.invoices/node]
-   fo/subforms     {::m.ln.invoices/node {fo/ui u.links/NodeLinkForm}}
-   fo/route-prefix "invoice"
-   fo/title        "Lightning Invoices"})
-
 (def submit-button
   {:type   :button
    :local? true
@@ -120,7 +79,6 @@
                       m.ln.invoices/value
                       m.ln.invoices/node]
    fo/controls       {::submit submit-button}
-   fo/subforms       {::m.ln.invoices/node {fo/ui u.links/NodeLinkForm}}
    fo/route-prefix   "new-invoice"
    fo/title          "New Invoice"}
   (dom/div {}
@@ -141,9 +99,8 @@
                         m.ln.invoices/node]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
-   ro/links            {::m.ln.invoices/id (fn [this {::m.ln.invoices/keys [id]}]
-                                             (form/view! this LNInvoiceForm id))}
-   ro/field-formatters {::m.ln.invoices/node #(u.links/ui-node-link %2)}
+   ro/field-formatters {::m.ln.invoices/node #(u.links/ui-node-link %2)
+                        ::m.ln.invoices/id #(u.links/ui-invoice-link %3)}
    ro/route            "invoices"
    ro/row-pk           m.ln.invoices/id
    ro/run-on-mount?    true
@@ -152,3 +109,10 @@
   (dom/div {}
     (dom/h1 {} "Invoices")
     (report/render-layout this)))
+
+(defsc ShowInvoice
+  [_this _props]
+  {:ident ::m.ln.invoices/id
+   :query [::m.ln.invoices/id]
+   :initial-state {::m.ln.invoices/id nil}}
+  (dom/div {}))

@@ -18,7 +18,7 @@
   {:query [::m.accounts/id ::m.accounts/name]
    :ident ::m.accounts/id})
 
-(form/defsc-form TransactionForm [_this _props]
+(form/defsc-form NewTransactionForm [_this _props]
   {fo/id            m.transactions/id
    fo/attributes    [m.transactions/description
                      j.transactions/user]
@@ -35,8 +35,6 @@
                             :value [::m.accounts/id id]})
                          (sort-by ::m.accounts/name options)))}}
    fo/route-prefix  "transaction-form"
-   fo/subforms      {::m.transactions/account {fo/ui u.links/AccountLinkForm}
-                     ::m.transactions/user    {fo/ui u.links/UserLinkForm}}
    fo/title         "Transaction"})
 
 (report/defsc-report TransactionsReport
@@ -46,7 +44,7 @@
                         j.transactions/user]
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
-                                           :action (fn [this] (form/create! this TransactionForm))}
+                                           :action (fn [this] (form/create! this NewTransactionForm))}
                         ::refresh         u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
@@ -64,7 +62,7 @@
                         j.transactions/user]
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
-                                           :action (fn [this] (form/create! this TransactionForm))}
+                                           :action (fn [this] (form/create! this NewTransactionForm))}
                         ::refresh         u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}

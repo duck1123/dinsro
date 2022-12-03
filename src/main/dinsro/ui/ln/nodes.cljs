@@ -11,27 +11,19 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
-   [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
-   [dinsro.model.ln.transactions :as m.ln.tx]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.ln.channels :as u.ln.channels]
-   [dinsro.ui.ln.invoices :as u.ln.invoices]
    [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
    [dinsro.ui.ln.node-channels :as u.ln.node-channels]
    [dinsro.ui.ln.node-peers :as u.ln.node-peers]
    [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
    [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
-   [dinsro.ui.ln.payments :as u.ln.payments]
-   [dinsro.ui.ln.payreqs :as u.ln.payreqs]
-   [dinsro.ui.ln.peers :as u.ln.peers]
-   [dinsro.ui.ln.transactions :as u.ln.tx]
    [lambdaisland.glogi :as log]))
 
 (declare CreateLightningNodeForm)
@@ -131,13 +123,6 @@
     :requiresCert     true
     :requiresMacaroon true}])
 
-(form/defsc-form CoreTxForm
-  [_this _props]
-  {fo/id           m.ln.tx/tx-hash
-   fo/route-prefix "nodes-tx"
-   fo/title        "Transactions"
-   fo/attributes   [m.ln.tx/tx-hash]})
-
 (defsc ActionsMenuItem
   [this {:keys [label mutation id]}]
   (ui-dropdown-item
@@ -214,55 +199,6 @@
             (form/render-layout this props)))))))
 
 (def override-form false)
-
-(form/defsc-form LightningNodeForm
-  [this {::m.ln.nodes/keys [id hasCert? hasMacaroon?] :as props}]
-  {fo/id             m.ln.nodes/id
-   fo/attributes     [m.ln.nodes/name
-                      m.ln.nodes/core-node
-                      m.ln.info/alias-attr
-                      m.ln.nodes/hasCert?
-                      m.ln.nodes/hasMacaroon?
-                      m.ln.info/identity-pubkey
-                      j.ln.nodes/peers
-                      j.ln.nodes/channels
-                      j.ln.nodes/invoices
-                      j.ln.nodes/payreqs
-                      j.ln.nodes/payments]
-   fo/action-buttons [::new-invoice ::new-payment]
-   fo/controls       {::new-invoice new-invoice-button
-                      ::new-payment new-payment-button}
-   fo/subforms       {::m.ln.nodes/core-node    {fo/ui u.links/CoreNodeLinkForm}
-                      ::m.ln.nodes/payments     {fo/ui u.ln.payments/PaymentSubForm}
-                      ::m.ln.nodes/payreqs      {fo/ui u.ln.payreqs/PayreqSubForm}
-                      ::m.ln.nodes/peers        {fo/ui u.ln.peers/PeerSubform}
-                      ::m.ln.nodes/transactions {fo/ui u.ln.tx/TxSubform}
-                      ::m.ln.nodes/channels     {fo/ui u.ln.channels/ChannelSubform}
-                      ::m.ln.nodes/invoices     {fo/ui u.ln.invoices/InvoiceSubForm}}
-   fo/field-styles   {::m.ln.nodes/core-node    :link
-                      ::m.ln.nodes/channels     :ln-channels-row
-                      ::m.ln.nodes/payments     :ln-payments-row
-                      ::m.ln.nodes/payreqs      :ln-payreqs-row
-                      ::m.ln.nodes/peers        :ln-peer-row
-                      ::m.ln.nodes/transactions :ln-tx-row
-                      ::m.ln.nodes/invoices     :ln-invoice-row}
-   fo/cancel-route   ["nodes"]
-   fo/route-prefix   "node"
-   fo/title          "Lightning Node"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div :.ui.grid
-      (dom/div :.row
-        (dom/div :.sixteen.wide.column
-          (dom/div :.ui
-            (ui-actions-menu
-             {::m.ln.nodes/id           id
-              ::m.ln.nodes/hasCert?     hasCert?
-              ::m.ln.nodes/hasMacaroon? hasMacaroon?}))))
-      (dom/div :.row
-        (dom/div :.sixteen.wide.column
-          (dom/div {}
-            (form/render-layout this props)))))))
 
 (defsc ShowNode
   "Show a ln node"

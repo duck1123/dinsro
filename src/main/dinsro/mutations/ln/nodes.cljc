@@ -10,8 +10,7 @@
    #?(:clj [dinsro.actions.ln.nodes :as a.ln.nodes])
    #?(:clj [dinsro.actions.ln.payments-lj :as a.ln.payments-lj])
    #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
-   #?(:clj [dinsro.actions.ln.peers-lj :as a.ln.peers-lj])
-   #?(:clj [dinsro.actions.ln.transactions-lj :as a.ln.tx-lj])
+   #?(:clj [dinsro.actions.ln.transactions :as a.ln.transactions])
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
@@ -172,7 +171,7 @@
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
      (log/info :fetch-peers!/starting {:props props})
-     (a.ln.peers-lj/fetch-peers! id)
+     (a.ln.peers/fetch-peers! id)
      {:status :ok})
    :cljs
    (defmutation fetch-peers! [_props]
@@ -186,7 +185,7 @@
      [_env {::m.ln.nodes/keys [id]}]
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
-     (a.ln.tx-lj/fetch-transactions! id)
+     (a.ln.transactions/fetch-transactions! id)
      {:status :ok})
    :cljs
    (defmutation fetch-transactions! [_props]
@@ -242,8 +241,10 @@
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
      (if-let [node (q.ln.nodes/read-record id)]
-       (do (a.ln.tx-lj/update-transactions! node)
-           {:status "ok"})
+       (do
+         (comment node)
+         (throw (RuntimeException. "not implemented"))
+         {:status "ok"})
        (do (log/error :update-transactions!/no-node {})
            {:status "fail"})))
    :cljs

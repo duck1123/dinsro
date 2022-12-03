@@ -41,34 +41,10 @@
 
 (def render-ref-ln-peer-row (render-field-factory ref-ln-peer-row))
 
-(form/defsc-form PeerSubform
-  [_this _props]
-  {fo/id           m.ln.peers/id
-   fo/route-prefix "nodes-peers"
-   fo/title        "Peers"
-   fo/attributes   [m.ln.peers/address
-                    m.ln.peers/pubkey
-                    m.ln.peers/inbound
-                    m.ln.peers/sat-sent]})
-
 (form/defsc-form NodeLink [_this _props]
   {fo/id           m.ln.nodes/id
    fo/route-prefix "peers-node"
    fo/attributes   [m.ln.nodes/name]})
-
-(form/defsc-form LNPeerForm [_this _props]
-  {fo/id           m.ln.peers/id
-   fo/attributes   [m.ln.peers/address
-                    m.ln.peers/pubkey
-                    m.ln.peers/inbound
-                    m.ln.peers/sat-sent
-                    m.ln.peers/node]
-   fo/subforms     {::m.ln.peers/node {::form/ui NodeLink}
-                    ::m.ln.nodes/id   {::form/ui NodeLink}}
-   fo/field-styles {::m.ln.peers/node :link
-                    ::m.ln.peers/id   :link}
-   fo/route-prefix "peer"
-   fo/title        "Lightning Peer"})
 
 (def submit-button
   {:type   :button
@@ -82,15 +58,12 @@
                                                         ::m.ln.peers/address address
                                                         ::m.ln.peers/node node-id}]
                (log/info :submit-action/clicked props)
-               (comp/transact! this [(mu.ln.peers/create! props)])
-               (form/view! this LNPeerForm id)))})
+               (comp/transact! this [(mu.ln.peers/create! props)])))})
 
 (form/defsc-form NewPeerForm [_this _props]
   {fo/id           m.ln.peers/id
    fo/action-buttons [::submit]
-   fo/attributes   [m.ln.peers/address
-                    m.ln.peers/pubkey
-                    m.ln.peers/node]
+   fo/attributes   [m.ln.peers/node]
    fo/controls {::submit submit-button}
    fo/field-options  {::m.ln.peers/node
                       {::picker-options/query-key       ::m.ln.nodes/index
@@ -102,8 +75,6 @@
                             {:text  (str name)
                              :value [::m.ln.nodes/id id]})
                           (sort-by ::m.ln.nodes/name options)))}}
-   fo/subforms     {::m.ln.peers/node {::form/ui NodeLink}
-                    ::m.ln.nodes/id   {::form/ui NodeLink}}
    fo/field-styles {::m.ln.peers/node :pick-one
                     ::m.ln.peers/id   :link}
    fo/route-prefix "new-peer"
@@ -119,12 +90,11 @@
 
 (report/defsc-report LNPeersReport
   [this _props]
-  {ro/columns          [m.ln.peers/pubkey
-                        m.ln.peers/inbound
+  {ro/columns          [m.ln.peers/inbound?
                         m.ln.peers/node]
    ro/controls {::new new-button}
-   ro/field-formatters {::m.ln.peers/node #(u.links/ui-node-link %2)}
-   ro/form-links       {::m.ln.peers/pubkey LNPeerForm}
+   ro/field-formatters {::m.ln.peers/node #(u.links/ui-node-link %2)
+                        ::m.ln.peers/pubkey #(u.links/ui-ln-peer-link %3)}
    ro/route            "peers"
    ro/row-actions      []
    ro/row-pk           m.ln.peers/id

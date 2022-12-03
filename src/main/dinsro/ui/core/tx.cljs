@@ -13,11 +13,9 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
-   [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.mutations.core.tx :as mu.c.tx]
    [dinsro.ui.core.transaction-inputs :as u.c.transaction-inputs]
    [dinsro.ui.core.transaction-outputs :as u.c.transaction-outputs]
-   [dinsro.ui.core.tx-out :as u.c.tx-out]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
@@ -55,38 +53,6 @@
          (ui-ref-row tx))))))
 
 (def render-ref-row (render-field-factory ref-row))
-
-(form/defsc-form CoreTxInSubForm
-  [_this _props]
-  {fo/id           m.c.tx-in/id
-   fo/route-prefix "ln-nodes-tx"
-   fo/title        "Inputs"
-   fo/attributes   [m.c.tx-in/txid]})
-
-(form/defsc-form CoreTxOutSubForm
-  [_this _props]
-  {fo/id           m.c.tx-out/id
-   fo/route-prefix "node-tx-out"
-   fo/title        "Outputs"
-   fo/attributes   [m.c.tx-out/value
-                    m.c.tx-out/n
-                    m.c.tx-out/asm
-                    m.c.tx-out/hex
-                    m.c.tx-out/type]})
-
-(form/defsc-form CoreTxSubForm
-  [_this _props]
-  {fo/id           m.c.tx/id
-   fo/route-prefix "tx-sub"
-   fo/title        "Core Transaction"
-   fo/attributes   [m.c.tx/fetched?
-                    m.c.tx/tx-id
-                    m.c.tx/block
-                    j.c.tx/ins
-                    j.c.tx/outs]
-   fo/field-styles {::m.c.tx/block :link}
-   fo/subforms     {::m.c.tx/ins  {fo/ui CoreTxInSubForm}
-                    ::m.c.tx/outs {fo/ui CoreTxOutSubForm}}})
 
 (def fetch-button
   {:type   :button
@@ -128,39 +94,6 @@
    fo/title        "Block"})
 
 (def override-form false)
-
-(form/defsc-form CoreTxForm
-  [this props]
-  {fo/id             m.c.tx/id
-   fo/action-buttons (concat [::fetch] form/standard-action-buttons)
-   fo/attributes     [m.c.tx/tx-id
-                      m.c.tx/fetched?
-                      m.c.tx/block
-                      m.c.tx/hash
-                      m.c.tx/hex
-                      m.c.tx/lock-time
-                      m.c.tx/size
-                      m.c.tx/time
-                      m.c.tx/version
-                      j.c.tx/ins
-                      j.c.tx/outs
-                      j.c.tx/node]
-   fo/cancel-route   ["transactions"]
-   fo/controls       (merge form/standard-controls {::fetch fetch-button})
-   fo/field-styles   {::m.c.tx/block :link
-                      ::m.c.tx/outs  :tx-out-table
-                      ::m.c.tx/ins   :tx-in-table}
-   fo/route-prefix   "tx-form"
-   fo/subforms       {::m.c.tx/block {fo/ui CoreTxBlock}
-                      ::m.c.tx/ins   {fo/ui CoreTxInput}
-                      ::m.c.tx/outs  {fo/ui u.c.tx-out/CoreTxOutput}
-                      ::m.c.tx/node  {fo/ui u.links/CoreNodeLinkForm}}
-   fo/title          "Core Transaction"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {}
-      (dom/p {} "foo")
-      (form/render-layout this props))))
 
 (defn fetch-action
   [report-instance {::m.c.tx/keys [id]}]
