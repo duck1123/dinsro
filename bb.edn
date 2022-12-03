@@ -105,11 +105,11 @@
    :task    (shell "tilt up --legacy=true")}
 
   dev-bootstrap
-  {:doc "DOCKER-ONLY: Start clojurescript watch and main server"
+  {:doc  "DOCKER-ONLY: Start clojurescript watch and main server"
    :task (c/dev-bootstrap)}
 
   dev-bootstrap-user
-  {:doc "DOCKER-ONLY: Start clojurescript watch and main server as user"
+  {:doc  "DOCKER-ONLY: Start clojurescript watch and main server as user"
    :task (c/dev-bootstrap-user)}
 
   devcards-server
@@ -158,59 +158,37 @@
 
   generate-fileserver-values
   {:doc  "generate a fileserver values file"
-   :task (let [name (or (first *command-line-args*) "3")]
-           (c/generate-fileserver-values name))}
+   :task (let [name (or (first *command-line-args*) "3")] (c/generate-fileserver-values name))}
 
   generate-lnd-values
   {:doc  "generate a lnd values file"
-   :task (let [name (or (first *command-line-args*) "3")]
-           (c/generate-lnd-values name))}
+   :task (let [name (or (first *command-line-args*) "3")] (c/generate-lnd-values name))}
 
   generate-nbxplorer-values
-  {:doc "generate a nbxplorer values file"
-   :task
-   (let [name    (or (first *command-line-args*) "3")
-         options (h.nbxplorer/->value-options {:name name})
-         yaml    (yaml/generate-string (h.nbxplorer/->values options))]
-     (c/mkdir (format "target/conf/%s" name))
-     (spit (format "target/conf/%s/nbxplorer_values.yaml" name) yaml))}
+  {:doc  "generate a nbxplorer values file"
+   :task (let [name (or (first *command-line-args*) "3")] (c/generate-nbxplorer-values name))}
 
   generate-rtl-values
-  {:doc "generate a rtl values file"
-   :task
-   (let [name    (or (first *command-line-args*) "3")
-         options {:name name}
-         yaml    (yaml/generate-string (h.rtl/->values options))]
-     (c/mkdir (format "target/conf/%s" name))
-     (spit (format "target/conf/%s/rtl_values.yaml" name) yaml))}
+  {:doc  "generate a rtl values file"
+   :task (let [name (or (first *command-line-args*) "3")] (c/generate-rtl-values name))}
 
   generate-specter-values
-  {:doc "generate a specter values file"
-   :task
-   (let [name (or (first *command-line-args*) "3")]
-     (c/generate-specter-values name))}
+  {:doc  "generate a specter values file"
+   :task (let [name (or (first *command-line-args*) "3")] (c/generate-specter-values name))}
 
   generate-values
-  {:doc "generate all values"
-   :task
-   (c/generate-values)}
+  {:doc  "generate all values"
+   :task (c/generate-values)}
 
   helm-bitcoin
   {:depends [generate-bitcoind-values]
-   :task
-   (let [name (or (first *command-line-args*) "3")] (c/helm-bitcoin name))}
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-bitcoin name))}
 
   helm-bitcoin-apply
-  {:task
-   (let [name (or (first *command-line-args*) "3")
-         cmd  (format "bb helm-bitcoin %s | kubectl apply -n %s -f -" name name)]
-     (c/create-namespace name)
-     (shell (format "sh -c \"%s\"" cmd)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-bitcoin-apply name))}
 
   helm-bitcoin-remove
-  {:task
-   (let [name (or (first *command-line-args*) "3")]
-     (c/delete-namespace name))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace name))}
 
   helm-clean
   {:task
@@ -238,7 +216,7 @@
 
   helm-dinsro
   {:depends [generate-dinsro-values]
-   :task (c/helm-dinsro)}
+   :task    (c/helm-dinsro)}
 
   helm-up
   {:task
@@ -270,79 +248,47 @@
 
   helm-lnd
   {:depends [generate-lnd-values]
-   :task (let [name (or (first *command-line-args*) "3")] (c/helm-lnd name))}
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-lnd name))}
 
   helm-lnd-apply
-  {:task
-   (let [name (or (first *command-line-args*) "3")
-         cmd  (format "bb helm-lnd %s | kubectl apply -n %s -f -" name name)]
-     (c/create-namespace  name)
-     (shell (format "sh -c \"%s\"" cmd)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-lnd-apply name))}
 
   helm-lnd-remove
-  {:task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/delete-namespace (str "lnd-" n)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "lnd-" name)))}
 
   helm-nbxplorer
   {:depends [generate-nbxplorer-values]
-   :task
-   (let [name  (or (first *command-line-args*) "3")]
-     (c/helm-nbxplorer name))}
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-nbxplorer name))}
 
   helm-nbxplorer-apply
-  {:task
-   (let [n   (or (first *command-line-args*) "3")
-         cmd (format "bb helm-nbxplorer %s | kubectl apply -n nbxplorer-%s -f -" n n)]
-     (c/create-namespace (str "nbxplorer-" n))
-     (shell (format "sh -c \"%s\"" cmd)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-nbxplorer-apply name))}
 
   helm-nbxplorer-remove
-  {:task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/delete-namespace (str "nbxplorer-" n)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "nbxplorer-" name)))}
 
   helm-rtl
   {:depends [generate-rtl-values]
-   :task
-   (let [name (or (first *command-line-args*) "3")]
-     (c/helm-rtl name))}
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-rtl name))}
 
   helm-rtl2
   {:depends [generate-rtl-values]
-   :task
-   (let [name (or (first *command-line-args*) "3")]
-     (c/helm-rtl name))}
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-rtl name))}
 
   helm-rtl-apply
-  {:task
-   (let [n   (or (first *command-line-args*) "3")
-         cmd (format "bb helm-rtl %s | kubectl apply -n rtl-%s -f -" n n)]
-     (c/create-namespace (str "rtl-" n))
-     (shell (format "sh -c \"%s\"" cmd)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-rtl-apply name))}
 
   helm-rtl-remove
-  {:task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/delete-namespace (str "rtl-" n)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "rtl-" name)))}
 
   helm-specter
   {:depends [generate-specter-values]
-   :task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/helm-specter n))}
+   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-specter name))}
 
   helm-specter-apply
-  {:task
-   (let [n   (or (first *command-line-args*) "3")
-         cmd (format "bb helm-specter %s | kubectl apply -n specter-%s -f -" n n)]
-     (c/create-namespace (str "specter-" n))
-     (shell (format "sh -c \"%s\"" cmd)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-specter-apply name))}
 
   helm-specter-remove
-  {:task
-   (let [n (or (first *command-line-args*) "3")]
-     (c/delete-namespace (str "specter-" n)))}
+  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "specter-" name)))}
 
   init
   {:doc     "Initialize the system"

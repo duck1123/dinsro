@@ -29,6 +29,7 @@
 
 ;; ## nodes
 
+;; This is all the nodes currently defined
 
 ^{::clerk/viewer clerk/table}
 (map q.c.nodes/read-record (q.c.nodes/index-ids))

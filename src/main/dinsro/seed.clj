@@ -194,13 +194,13 @@
 
 (def lnd1
   {:name            "lnd-alice"
-   :host            "lnd.alice.svc.cluster.local"
+   :host            "alice-lnd-internal.alice.svc.cluster.local"
    :fileserver-host "fileserver.alice"
    :port            "10009"
    :node            "bitcoin-alice"
    :mnemonic        lnd1-mnemonic
    :remote-nodes
-   [{:host   "lnd.bob.svc.cluster.local"
+   [{:host   "bob-lnd-external.bob.svc.cluster.local"
      :pubKey lnd2-key}]
    :peers           []
    :txes            []})
@@ -208,11 +208,11 @@
 (def lnd2
   {:name            "lnd-bob"
    :node            "bitcoin-bob"
-   :host            "lnd.bob.svc.cluster.local"
+   :host            "bob-lnd-internal.bob.svc.cluster.local"
    :fileserver-host "fileserver.bob"
    :port            "10009"
    :mnemonic        lnd2-mnemonic
-   :remote-nodes    [{:host   "lnd.alice.svc.cluster.local"
+   :remote-nodes    [{:host   "alice-lnd-external.alice.svc.cluster.local"
                       :pubKey lnd1-key}]
    :peers           []
    :txes            []})
