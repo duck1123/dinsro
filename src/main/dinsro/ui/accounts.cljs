@@ -205,16 +205,16 @@
   (comp/fragment
    (dom/div :.ui.segment
      (dom/dl {}
-             (dom/dt {} "Name")
-             (dom/dd {} (str name))
-             (dom/dt {} "Currency")
-             (dom/dd {} (u.links/ui-currency-link currency))
-             (dom/dt {} "Source")
-             (dom/dd {} (u.links/ui-rate-source-link source))
-             (dom/dt {} "User")
-             (dom/dd {} (u.links/ui-user-link user))
-             (dom/dt {} "Wallet")
-             (dom/dd {} (u.links/ui-wallet-link wallet))))
+       (dom/dt {} "Name")
+       (dom/dd {} (str name))
+       (dom/dt {} "Currency")
+       (dom/dd {} (u.links/ui-currency-link currency))
+       (dom/dt {} "Source")
+       (dom/dd {} (u.links/ui-rate-source-link source))
+       (dom/dt {} "User")
+       (dom/dd {} (u.links/ui-user-link user))
+       (dom/dt {} "Wallet")
+       (dom/dd {} (u.links/ui-wallet-link wallet))))
    (dom/div :.ui.segment
      (if transactions
        (u.account-transactions/ui-sub-page transactions)

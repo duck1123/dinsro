@@ -5,6 +5,8 @@
  behavior         [[:inner 0]]
  button           [[:inner 0]]
  div              [[:inner 0]]
+ dd               [[:inner 0]]
+ dl               [[:inner 0]]
  error-action     [[:inner 0]]
  footer           [[:inner 0]]
  form             [[:inner 0]]

@@ -242,18 +242,18 @@
     (dom/div :.ui.segment
       (dom/h1 {} "Transaction")
       (dom/dl {}
-              (dom/dt {} "TX id")
-              (dom/dd {} (str tx-id))
-              (dom/dt {} "Hash: ")
-              (dom/dd {} (str hash))
-              (dom/dt {} "Block: ")
-              (dom/dd {} (u.links/ui-block-height-link block))
-              (dom/dt {} "Fetched")
-              (dom/dd {} (dom/a {:onClick #(comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})])
-                                 :href    "#"}
-                           (str fetched?)))
-              (dom/dt {} "Size")
-              (dom/dd {} (str size))))
+        (dom/dt {} "TX id")
+        (dom/dd {} (str tx-id))
+        (dom/dt {} "Hash: ")
+        (dom/dd {} (str hash))
+        (dom/dt {} "Block: ")
+        (dom/dd {} (u.links/ui-block-height-link block))
+        (dom/dt {} "Fetched")
+        (dom/dd {} (dom/a {:onClick #(comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})])
+                           :href    "#"}
+                     (str fetched?)))
+        (dom/dt {} "Size")
+        (dom/dd {} (str size))))
 
     (if id
       (comp/fragment

@@ -13,6 +13,8 @@
            (button 1)
            (describe 1)
            (div 1)
+           (dd 1)
+           (dl 1)
            (error-action 1)
            (footer 1)
            (form 1)

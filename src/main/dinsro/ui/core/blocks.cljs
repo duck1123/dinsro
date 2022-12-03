@@ -252,22 +252,22 @@
                    "unfetched")
                  ")")))
       (dom/dl {}
-              (dom/dt {} "Hash")
-              (dom/dd {} hash)
-              (dom/dt {} "Weight")
-              (dom/dd {} weight)
-              (dom/dt {} "Nonce")
-              (dom/dd {} nonce)
-              (dom/dt {} "Network")
-              (dom/dd {} (u.links/ui-network-link network))
-              (when previous-block
-                (comp/fragment
-                 (dom/dt {} "Previous")
-                 (dom/dd {} (u.links/ui-block-height-link previous-block))))
-              (when next-block
-                (comp/fragment
-                 (dom/dt {} "Next")
-                 (dom/dd {} (u.links/ui-block-height-link next-block)))))
+        (dom/dt {} "Hash")
+        (dom/dd {} hash)
+        (dom/dt {} "Weight")
+        (dom/dd {} weight)
+        (dom/dt {} "Nonce")
+        (dom/dd {} nonce)
+        (dom/dt {} "Network")
+        (dom/dd {} (u.links/ui-network-link network))
+        (when previous-block
+          (comp/fragment
+           (dom/dt {} "Previous")
+           (dom/dd {} (u.links/ui-block-height-link previous-block))))
+        (when next-block
+          (comp/fragment
+           (dom/dt {} "Next")
+           (dom/dd {} (u.links/ui-block-height-link next-block)))))
       (when debug-page
         (dom/button {:onClick (fn [_e]
                                 (log/info :ShowBlock/fetch-button-clicked {})
