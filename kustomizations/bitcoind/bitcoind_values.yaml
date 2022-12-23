@@ -1,0 +1,16 @@
+configurationFile:
+  bitcoin.conf: |-
+    regtest=1
+    server=1
+    txindex=1
+    printtoconsole=1
+    blockfilterindex=1
+    txindex=1
+    rpcauth=rpcuser:3de4eb23a68a288cfbc857d3cf52b5c4$0b28c21a8d32d047b4da6b4b5f290951319bad3cb0985ef863c8fa4614f3c109
+    rpcallowip=0.0.0.0/0
+    whitelist=0.0.0.0/0
+    zmqpubrawblock=tcp://0.0.0.0:28332
+    zmqpubrawtx=tcp://0.0.0.0:28333
+    zmqpubhashblock=tcp://0.0.0.0:28334
+    [regtest]
+    rpcbind=0.0.0.0

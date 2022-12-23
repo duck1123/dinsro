@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: duck1123/dinsro
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # -- Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 

@@ -201,7 +201,8 @@ def specter_environment(name):
 def bitcoind_environment(name):
   k8s_yaml(local("bb helm-bitcoin %s" % name))
   k8s_resource(
-    workload = "bitcoin:deployment:%s" % name if multple_envs else "bitcoin",
+    workload = "%s-bitcoind" % name,
+    #  "bitcoin:deployment:%s" % name if multple_envs else "bitcoin",
     labels = [ name ],
   )
 

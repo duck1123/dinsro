@@ -1,0 +1,8 @@
+- op: replace
+  path: /spec/template/spec/initContainers/0/command
+  value:
+  - 'sh'
+  - '-c'
+  - |-
+    set -ex
+    cp /configmap/bitcoin.conf /bitcoin/bitcoin.conf

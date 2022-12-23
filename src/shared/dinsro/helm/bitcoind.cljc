@@ -55,9 +55,9 @@
 (defn ->values
   [options]
   (let [options (merge-defaults options)]
-    {:fullnameOverride "bitcoin"
-     :image            {:repository "ruimarinho/bitcoin-core"
-                        :tag        "22"}
+    {;; :fullnameOverride "bitcoin"
+     ;; :image            {:repository "ruimarinho/bitcoin-core"
+     ;;                    :tag        "22"}
      :configurationFile
      {"bitcoin.conf" (->bitcoin-conf options)}}))
 

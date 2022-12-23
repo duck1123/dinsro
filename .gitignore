@@ -44,3 +44,7 @@ site.edn
 /tilt_config.json
 /.preprocessor-cljs/
 *.bak
+
+
+# Ignore DevSpace cache and log folder
+.devspace/

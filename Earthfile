@@ -10,8 +10,8 @@ ARG node_version=14.15.3
 # https://www.npmjs.com/package/npm?activeTab=versions
 ARG npm_version=8.13.2
 
-ARG repo=duck1123
-ARG project=dinsro
+# ARG repo=duck1123
+# ARG project=dinsro
 ARG version=latest
 ARG dev_group=circleci
 ARG dev_user=circleci
@@ -132,6 +132,7 @@ ci:
   BUILD +lint
   BUILD +test
   BUILD +image
+  BUILD +devspace-base
 
 cert-downloader:
   FROM babashka/babashka:latest
@@ -196,6 +197,16 @@ devcards-image:
   COPY --dir public .
   CMD ["bb", "devcards-server"]
   SAVE IMAGE ${EXPECTED_REF}
+
+devspace-base:
+  ARG repo=duck1123
+  ARG project=devimage
+  ARG tag=latest
+  FROM +base-builder
+  USER root
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
+  DO +IMPORT_JAR_DEPS
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 dev-image-sources-base:
   ARG watch_sources=true
@@ -269,7 +280,11 @@ fileserver:
 
 image:
   FROM amazoncorretto:17-alpine
-  ARG EXPECTED_REF=${repo}/${project}:${version}
+  ARG repo=duck1123
+  ARG project=dinsro
+  ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
+  RUN echo ${EXPECTED_REF}
   WORKDIR ${src_home}
   VOLUME ${data_dir}
   RUN mkdir -p src

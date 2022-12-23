@@ -20,7 +20,7 @@
 
 (def core-node1
   {::m.c.nodes/name    "bitcoin-alice"
-   ::m.c.nodes/host    "bitcoin.alice"
+   ::m.c.nodes/host    "alice-bitcoind.alice"
    ::m.c.nodes/port    18443
    ::m.c.nodes/rpcuser "rpcuser"
    ::m.c.nodes/rpcpass "rpcpassword"
@@ -30,7 +30,7 @@
 
 (def core-node2
   {::m.c.nodes/name    "bitcoin-bob"
-   ::m.c.nodes/host    "bitcoin.bob"
+   ::m.c.nodes/host    "bob-bitcoind.bob"
    ::m.c.nodes/port    18443
    :chain              "bitcoin"
    :network            "regtest"
@@ -39,7 +39,7 @@
 
 (def core-node3
   {::m.c.nodes/name    "bitcoin-larry"
-   ::m.c.nodes/host    "bitcoin.larry"
+   ::m.c.nodes/host    "larry-bitcoind.larry"
    ::m.c.nodes/port    18332
    :chain              "bitcoin"
    :network            "testnet"

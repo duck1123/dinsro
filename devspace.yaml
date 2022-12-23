@@ -1,0 +1,251 @@
+version: v2beta1
+name: dinsro
+
+vars:
+  REPO:
+    default: duck1123
+  PROJECT:
+    default: dinsro
+  DEVIMAGE_PROJECT:
+    default: devimage
+  REGISTRY:
+    question: Where is the registry used by you local cluster
+    default: "k3d-myregistry.localhost:12345"
+
+pipelines:
+  build-devimage: |-
+    build_images devimage
+
+  create-chart-directories: |-
+    mkdir -p target/charts
+
+  create-namespace: |-
+    kubectl create namespace ${NAME} || true
+
+  deploy: |-
+    bb generate-dinsro-values
+    run_dependencies --all
+    build_images dinsro
+    create_deployments dinsro
+
+  deploy-bitcoin: |-
+    echo ""
+    echo "=== Deploy: ${NAME} ==="
+    run_pipelines deploy-bitcoind
+    run_pipelines deploy-lnd
+    run_pipelines deploy-fileserver
+
+  deploy-bitcoind: |-
+    echo ""
+    echo "--- Deployng Bitcoind for ${NAME} ---"
+    echo ""
+    run_pipelines create-namespace
+    run_pipelines create-chart-directories
+    YAML_PATH=target/charts/${NAME}_bitcoind.yaml
+    bb helm-bitcoin ${NAME} > ${YAML_PATH}
+    kubectl apply -f ${YAML_PATH}
+
+  deploy-fileserver: |-
+    echo ""
+    echo "--- Deploying Fileserver for ${NAME} ---"
+    echo ""
+    run_pipelines create-namespace
+    run_pipelines create-chart-directories
+    YAML_PATH=target/charts/${NAME}_fileserver.yaml
+    bb helm-fileserver ${NAME} > ${YAML_PATH}
+    kubectl apply -f ${YAML_PATH}
+
+  deploy-lnd: |-
+    echo ""
+    echo "--- Deploying LND for ${NAME} ---"
+    echo ""
+    run_pipelines create-namespace
+    run_pipelines create-chart-directories
+    YAML_PATH=target/charts/${NAME}_lnd.yaml
+    bb helm-lnd ${NAME} > ${YAML_PATH}
+    kubectl apply -f ${YAML_PATH}
+
+  dev: |-
+    echo "Starting dev"
+    run_dependencies --all
+    create_deployments dinsro
+    start_dev app
+
+  purge: |-
+    echo "Purging Dinsro"
+    purge_deployments dinsro
+
+  purge-bitcoin: |-
+    echo ""
+    echo "=== Purging Bitcoin stack for ${NAME} ==="
+    run_pipelines purge-bitcoind
+    run_pipelines purge-lnd
+    run_pipelines purge-fileserver
+
+  purge-bitcoind: |-
+    echo ""
+    echo "--- Purging Bitcoind for ${NAME} ---"
+    echo ""
+    YAML_PATH=target/charts/${NAME}_bitcoind.yaml
+    kubectl delete -f ${YAML_PATH} || true
+
+  purge-fileserver: |-
+    echo ""
+    echo "--- Purging fileserver for ${NAME} ---"
+    echo ""
+    YAML_PATH=target/charts/${NAME}_fileserver.yaml
+    kubectl delete -f ${YAML_PATH} || true
+
+  purge-lnd: |-
+    echo ""
+    echo "--- Purging LND for ${NAME} ---"
+    echo ""
+    YAML_PATH=target/charts/${NAME}_lnd.yaml
+    kubectl delete -f ${YAML_PATH} || true
+
+images:
+  dinsro:
+    image: ${REGISTRY}/${REPO}/${PROJECT}
+    custom:
+      command: |-
+        set -ex
+        export TAG=${runtime.images.dinsro.tag}
+        export IMAGE=${REPO}/${PROJECT}
+
+        earthly +image --repo ${REPO} --project ${PROJECT} --tag ${TAG}
+
+        docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
+        docker push ${REGISTRY}/${IMAGE}:${TAG}
+        docker image rm ${IMAGE}:${TAG}
+        docker image rm ${REGISTRY}/${IMAGE}:${TAG}
+  sources:
+    image: ${REGISTRY}/${REPO}/${PROJECT}-sources
+    custom:
+      command: |-
+        set -ex
+        export TAG=${runtime.images.sources.tag}
+        export IMAGE=${REPO}/${PROJECT}-sources
+
+        earthly +dev-sources-image --REPO ${REPO} --PROJECT ${PROJECT}-sources --TAG ${TAG}
+
+        docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
+        docker push ${REGISTRY}/${IMAGE}:${TAG}
+        docker image rm ${IMAGE}:${TAG}
+        docker image rm ${REGISTRY}/${IMAGE}:${TAG}
+
+  devcards:
+    image: ${REPO}/dinsro-devcards:devcards-latest
+    custom:
+      command: |-
+        echo "Building devcards"
+        earthly +devcards-image
+  # devimage:
+  #   image: ${REPO}/${DEVIMAGE_PROJECT}
+  #   custom:
+  #     command: |-
+  #       set -ex
+  #       echo "building devimage"
+  #       export TAG=${runtime.images.devimage.tag}
+  #       export IMAGE=${REPO}/${DEVIMAGE_PROJECT}
+
+  #       earthly +devspace-base --repo ${REPO} --project ${DEVIMAGE_PROJECT} --tag ${TAG}
+
+  #       docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
+  #       docker push ${REGISTRY}/${IMAGE}:${TAG}
+  #       docker image rm ${IMAGE}:${TAG}
+  #       docker image rm ${REGISTRY}/${IMAGE}:${TAG}
+
+# This is a list of `deployments` that DevSpace can create for this project
+deployments:
+  dinsro:
+    helm:
+      chart:
+        # name: dinsro
+        # repo: https://chart.kronkltd.net/
+        # version: 0.1.4
+        name: ./resources/helm/dinsro/
+      valuesFiles:
+      - "target/dinsro_values.yaml"
+      values:
+        image:
+          repository: ${runtime.images.dinsro.image}
+          tag: ${runtime.images.dinsro.tag}
+        devcards:
+          enabled: false
+        devtools:
+          enabled: false
+        docs:
+          enabled: false
+
+# This is a list of `dev` containers that are based on the containers created by your deployments
+dev:
+  app:
+    # imageSelector: duck1123/dinsro
+    # devImage: ${REGISTRY}/${REPO}/${DEVIMAGE_PROJECT}:${runtime.images.devimage.tag}
+    # devImage: ${REGISTRY}/${REPO}/${DEVIMAGE_PROJECT}
+    devImage: ${REPO}/${DEVIMAGE_PROJECT}:latest
+    labelSelector:
+      app.kubernetes.io/name: dinsro
+      app.kubernetes.io/instance: dinsro
+    sync:
+      - path: ./
+    terminal:
+      command: ./devspace_start.sh
+    ssh:
+      enabled: true
+    proxyCommands:
+      - command: devspace
+      - command: kubectl
+      - command: helm
+      - command: git
+    # ports:
+    #   - port: "3000"
+    open:
+      - url: http://dinsro.localhost
+
+# Use the `commands` section to define repeatable dev workflows for this project
+commands:
+  deploy:
+    command: |-
+      devspace run-pipeline deploy || true
+  deploy-alice:
+    command: |-
+      export NAME=alice
+      devspace run-pipeline deploy-bitcoin || true
+      devspace run-pipeline deploy-lnd || true
+  deploy-bitcoin:
+    command: |-
+      NAME=alice devspace run-pipeline deploy-bitcoin || true
+      NAME=bob devspace run-pipeline deploy-bitcoin || true
+  deploy-bob:
+    command: |-
+      export NAME=bob
+      devspace run-pipeline deploy-bitcoin || true
+      devspace run-pipeline deploy-lnd || true
+  test:
+    command: |-
+      bb test
+  lint:
+    command: |-
+      bb lint
+  purge:
+    command: |-
+      devspace run-pipeline purge
+  purge-bitcoin:
+    command: |-
+      NAME=alice devspace run-pipeline purge-bitcoin
+      NAME=bob devspace run-pipeline purge-bitcoin
+  purge-alice:
+    command: |-
+      export NAME=alice
+      devspace run-pipeline purge-bitcoin || true
+      devspace run-pipeline purge-lnd || true
+  purge-bob:
+    command: |-
+      export NAME=bob
+      echo "Purging ${NAME}"
+      devspace run-pipeline purge-bitcoin || true
+      devspace run-pipeline purge-lnd || true
+  start:
+    command: |-
+      devspace enter -- bash -c 'bb clean && bb run'

@@ -1,0 +1,31 @@
+configMapGenerator:
+- name: environment-variables
+  envs: [environment-properties.env]
+  behavior: create
+
+
+vars:
+- name: name
+
+helmCharts:
+- name: bitcoind
+  repo: https://charts.foldapp.com/
+  version: 0.3.2
+  releaseName: alice-bitcoind
+  namespace: alice
+  # valuesFile: ../../target/conf/alice/bitcoind_values.yaml
+  # valuesFile: bitcoind_values.yaml
+  # valuesInline:
+  #   persistence:
+  #     enabled: true
+
+patches:
+# - path: remove_copy_config_container.yaml
+#   target:
+#     kind: Deployment
+- path: change_copy_config_container.yaml
+  target:
+    kind: Deployment
+- path: change_main_container.yaml
+  target:
+    kind: Deployment

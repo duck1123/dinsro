@@ -1,0 +1,8 @@
+- op: add
+  path: /spec/template/spec/containers/0/command
+  value:
+  - 'sh'
+  - '-c'
+  - |-
+    [ ! -e /bitcoin/.bitcoin/bitcoin.conf ] && cp /bitcoin/bitcoin.conf /bitcoin/.bitcoin/bitcoin.conf
+    btc_oneshot

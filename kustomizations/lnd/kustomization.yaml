@@ -1,0 +1,6 @@
+helmCharts:
+- name: lnd
+  repo: https://charts.foldapp.com/
+  version: 0.3.2
+  releaseName: alice-lnd
+  namespace: lnd
