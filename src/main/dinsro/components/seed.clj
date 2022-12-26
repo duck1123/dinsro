@@ -145,19 +145,19 @@
     (a.ln.nodes/download-cert! node)
     (if-let [macaroon-response (a.ln.nodes/download-macaroon! node)]
       (do
-        (log/finer :seed-ln-node!/macaroon-downloaded {:macaroon-response macaroon-response})
+        (log/info :seed-ln-node!/macaroon-downloaded {:macaroon-response macaroon-response})
         (try
           (a.ln.nodes/unlock! node)
           (catch StatusRuntimeException _ex
-            (log/finer :seed-ln-node!/status-failed {}))
+            (log/info :seed-ln-node!/status-failed {}))
           (catch RuntimeException ex
-            (log/finer :seed-ln-node!/unlock-failed {:ex ex})))
+            (log/info :seed-ln-node!/unlock-failed {:ex ex})))
         (a.ln.nodes/update-info! node)
         (a.ln.peers/fetch-peers! node-id))
       (do
         (log/finer :seed-ln-node!/download-macaroon-failed {})
         (let [initialize-response (a.ln.nodes/initialize! node)]
-          (log/finer :seed-ln-node!/initialized {:initialize-response initialize-response})
+          (log/info :seed-ln-node!/initialized {:initialize-response initialize-response})
           (a.ln.nodes/download-macaroon! node)
           nil)))))
 
