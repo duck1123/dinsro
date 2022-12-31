@@ -162,31 +162,34 @@
           nil)))))
 
 (>defn seed-ln-node!
-  [user-id node-info]
-  [::m.users/id ::cs.ln-node/item => any?]
-  (let [{:keys     [name fileserver-host host port mnemonic]
-         node-name :node} node-info]
-    (log/finer :seed-ln-node!/starting {:node-name node-name})
-    (if-let [core-id (q.c.nodes/find-by-name node-name)]
-      (if-let [network-id (q.c.networks/find-by-core-node core-id)]
-        (let [ln-node {::m.ln.nodes/name            name
-                       ::m.ln.nodes/core-node       core-id
-                       ::m.ln.nodes/network       network-id
-                       ::m.ln.nodes/host            host
-                       ::m.ln.nodes/fileserver-host fileserver-host
-                       ::m.ln.nodes/port            port
-                       ::m.ln.nodes/user            user-id
-                       ::m.ln.nodes/mnemonic        mnemonic}
-              node-id (q.ln.nodes/create-record ln-node)]
-          (log/finer :seed-ln-node!/saved {:node-id node-id})
-
-          (try
-            (initialize-ln-node! node-id)
-            (catch Exception ex
-              (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
-              (when strict (throw (RuntimeException. "init node failed" ex))))))
-        (throw (RuntimeException. "Failed to determine network id")))
-      (throw (RuntimeException. (str "Failed to find node: " node-name))))))
+  ([user-id node-info]
+   [::m.users/id ::cs.ln-node/item => any?]
+   (seed-ln-node! user-id node-info false))
+  ([user-id node-info initialize-node]
+   [::m.users/id ::cs.ln-node/item boolean? => any?]
+   (let [{:keys     [name fileserver-host host port mnemonic]
+          node-name :node} node-info]
+     (log/finer :seed-ln-node!/starting {:node-name node-name})
+     (if-let [core-id (q.c.nodes/find-by-name node-name)]
+       (if-let [network-id (q.c.networks/find-by-core-node core-id)]
+         (let [ln-node {::m.ln.nodes/name            name
+                        ::m.ln.nodes/core-node       core-id
+                        ::m.ln.nodes/network         network-id
+                        ::m.ln.nodes/host            host
+                        ::m.ln.nodes/fileserver-host fileserver-host
+                        ::m.ln.nodes/port            port
+                        ::m.ln.nodes/user            user-id
+                        ::m.ln.nodes/mnemonic        mnemonic}
+               node-id (q.ln.nodes/create-record ln-node)]
+           (log/finer :seed-ln-node!/saved {:node-id node-id})
+           (when initialize-node
+             (try
+               (initialize-ln-node! node-id)
+               (catch Exception ex
+                 (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
+                 (when strict (throw (RuntimeException. "init node failed" ex)))))))
+         (throw (RuntimeException. "Failed to determine network id")))
+       (throw (RuntimeException. (str "Failed to find node: " node-name)))))))
 
 (defn seed-ln-nodes!
   [users]
@@ -516,7 +519,7 @@
     (seed-accounts! users)
     (seed-transactions! users)
 
-    ;; (seed-ln-nodes! users)
+    (seed-ln-nodes! users)
     ;; (seed-addresses! [])
     ;; (seed-remote-nodes! users)
 
