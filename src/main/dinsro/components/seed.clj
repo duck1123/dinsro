@@ -515,9 +515,10 @@
     (seed-wallets! users)
     (seed-accounts! users)
     (seed-transactions! users)
-    (seed-ln-nodes! users)
-    (seed-addresses! [])
-    (seed-remote-nodes! users)
+
+    ;; (seed-ln-nodes! users)
+    ;; (seed-addresses! [])
+    ;; (seed-remote-nodes! users)
 
     (log/finer :seed/finished {})
     (item-report)))
