@@ -203,6 +203,9 @@ dev-image:
 
 image-dev:
   FROM +dev-image
+  ARG repo=duck1123
+  ARG project=dinsro
+  ARG tag=latest
   ARG EXPECTED_REF=${repo}/${project}:dev-${version}
   SAVE IMAGE ${EXPECTED_REF}
 
@@ -260,6 +263,9 @@ dev-image-sources-base:
 dev-image-sources:
   ARG use_notebooks=false
   ARG watch_sources=true
+  ARG repo=duck1123
+  ARG project=dinsro
+  ARG tag=latest
   FROM +dev-image-sources-base \
        --build-arg watch_sources=$watch_sources \
        --build-arg use_notebooks=$use_notebooks
@@ -286,7 +292,10 @@ docs:
 
 docs-image:
   FROM babashka/babashka:latest
-  ARG EXPECTED_REF=${repo}/dinsro:docs-${version}
+  ARG repo=duck1123
+  ARG project=dinsro
+  ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:docs-${version}
   WORKDIR /usr/src/app
   COPY resources/docs-server .
   COPY --dir +docs/docs .

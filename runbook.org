@@ -116,6 +116,16 @@ kubectl create namespace dinsro
 #+BEGIN_SRC  shell
   devspace deploy
 #+END_SRC
+
+* Dev
+
+** If running inside the devimage fails
+
+#+BEGIN_SRC shell
+  rm -rf node_modules
+  bb install
+#+END_SRC
+
 * Cleaning up
 
 ** Delete Cluster
