@@ -208,6 +208,9 @@ image-dev:
 
 devcards-image:
   FROM +dev-sources-minimal
+  ARG repo=duck1123
+  ARG project=dinsro
+  ARG tag=latest
   ARG EXPECTED_REF=${repo}/${project}:devcards-${version}
   COPY --dir resources/tilt resources
   COPY --dir public .
