@@ -119,42 +119,6 @@ or, from a repl:
 (dinsro.components.seed/seed-db!)
 ```
 
-## Bitcoin Resources
-
-The seed data assumes that both the "alice" and "bob" users have lnd nodes.
-
-To launch these resources for those users, run:
-
-``` shell
-bb helm-up alice
-bb helm-up bob
-```
-
-Additional nodes can be created by substituting any name.
-
-Each component of the above command can be substituted with:
-
-``` shell
-bb helm-bitcoin-apply ${USERNAME}
-bb helm-lnd-apply ${USERNAME}
-bb helm-specter-apply ${USERNAME}
-bb helm-rtl-apply ${USERNAME}
-bb helm-nbxplorer-apply ${USERNAME}
-```
-
-### Cleaning up
-
-Nodes can be removed via:
-
-``` shell
-bb helm-clean ${USERNAME}
-```
-or
-
-``` shell
-bb helm-${SERVICE}-remove ${USERNAME}
-```
-
 ## Testing
 
 ``` shell

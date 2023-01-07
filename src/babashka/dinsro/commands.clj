@@ -100,30 +100,6 @@
         full-command (str "-Mdispatch " cmd)]
     (clojure full-command)))
 
-(defn helm-rtl
-  [n]
-  (let [path     "resources/helm/rtl/"
-        filename (format "conf/%s/rtl_values.yaml" n)
-        cmd      (string/join
-                  " "
-                  ["helm template "
-                   (str "--name-template=rtl-" n)
-                   (str "--values " filename)
-                   path])]
-    (shell cmd)))
-
-(defn helm-rtl2
-  [n]
-  (let [path     "resources/helm/rtl/"
-        filename (format "conf/%s/rtl_values.yaml" n)
-        cmd      (string/join
-                  " "
-                  ["helm template "
-                   (str "--name-template=rtl-" n)
-                   (str "--values " filename)
-                   path])]
-    (shell cmd)))
-
 (defn ->tilt-config
   []
   (let [data      (h.dinsro/merge-defaults (site/get-site-config))]
@@ -212,13 +188,12 @@
          data            {:devtools {:devtools-url devtools-url}}
          aliases         (filter identity ["dev"
                                            (when use-guardrails? "guardrails")
-                                           "devcards"
                                            "shadow-cljs"])
          alias-str       (str "-M:" (string/join ":" aliases))
          config-str      (str "--config-merge '" (pr-str data) "'")
          target-str      (string/join " " targets)
          args            (string/join " " [alias-str "watch" target-str config-str])]
-     (println args)
+     (println (str "clojure " args))
      (clojure args))))
 
 (defn workspaces
@@ -228,48 +203,50 @@
 
 ;; Generate Values
 
+(def conf-dir "target/conf/")
+
 (defn generate-fileserver-values
   [name]
   (let [options (h.fileserver/->value-options {:name name})
         yaml    (yaml/generate-string (h.fileserver/->values options))]
-    (mkdir (format "target/conf/%s" name))
-    (spit (format "target/conf/%s/fileserver_values.yaml" name) yaml)))
+    (mkdir (str conf-dir name))
+    (spit (str conf-dir name "/fileserver_values.yaml") yaml)))
 
 (defn generate-lnd-values
   [name]
-  (let [options (h.lnd/->value-options {:name name})
+  (let [options (h.lnd/->value-options {:name name
+                                        :port 9735})
         yaml    (yaml/generate-string (h.lnd/->values options))]
-    (mkdir (format "target/conf/%s" name))
-    (spit (format "target/conf/%s/lnd_values.yaml" name) yaml)))
+    (mkdir (str conf-dir name))
+    (spit (str conf-dir name "/lnd_values.yaml") yaml)))
 
 (defn generate-rtl-values
   [name]
   (let [options {:name name}
         yaml    (yaml/generate-string (h.rtl/->values options))]
-    (mkdir (format "target/conf/%s" name))
-    (spit (format "target/conf/%s/rtl_values.yaml" name) yaml)))
+    (mkdir (str conf-dir name))
+    (spit (str conf-dir name "/rtl_values.yaml") yaml)))
 
 (defn generate-bitcoind-values
   [name]
   (let [options (h.bitcoind/->value-options {:name name})
         yaml    (yaml/generate-string (h.bitcoind/->values options))]
-    (mkdir (str "target/conf/" name))
-    (spit (str "target/conf/" name "/bitcoind_values.yaml") yaml)))
+    (mkdir (str conf-dir name))
+    (spit (str conf-dir name "/bitcoind_values.yaml") yaml)))
 
 (defn generate-nbxplorer-values
   [name]
   (let [options (h.nbxplorer/->value-options {:name name})
         yaml    (yaml/generate-string (h.nbxplorer/->values options))]
-
-    (mkdir (format "target/conf/%s" name))
-    (spit (format "target/conf/%s/nbxplorer_values.yaml" name) yaml)))
+    (mkdir (str conf-dir name))
+    (spit (str conf-dir name "/nbxplorer_values.yaml") yaml)))
 
 (defn generate-specter-values
   [name]
   (let [options {:name name}
         yaml    (yaml/generate-string (h.specter/->values options))]
-    (mkdir (format "target/conf/%s" name))
-    (spit (format "target/conf/%s/specter_values.yaml" name) yaml)))
+    (mkdir (str conf-dir name))
+    (spit (str conf-dir name "/specter_values.yaml") yaml)))
 
 (defn generate-values
   "generate-all-values"
@@ -299,50 +276,53 @@
             (println (str "generating lnbits for " name))
             (generate-lnbits-values name))))))
 
-
 ;; Helm Commands
 
+(def use-prefix false)
 
 (defn helm-bitcoin
   [name]
-  (let [path     "resources/helm/fold/charts/bitcoind/"
+  (let [repo     "https://chart.kronkltd.net/"
+        chart    "bitcoind"
+        version  "0.2.3"
+        prefix   (if use-prefix "resources/helm/fold/charts/" "")
+        path     (str prefix chart)
         filename (str  "target/conf/" name "/bitcoind_values.yaml")
-        cmd      (string/join
-                  " "
-                  ["helm template "
-                   ;; "--create-namespace"
-                   (str "-n " name)
-                   (str "--name-template=" name)
-                   (str "--values " filename)
-                   path])]
+        args     [(str "-n " name)
+                  (str "--name-template=" name)
+                  (str "--repo " repo)
+                  (str "--values " filename)
+                  (str "--version " version)]
+        cmd      (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
 (defn helm-dinsro
   []
-  (let [name     "dinsro"
-        path     "resources/helm/dinsro"
+  (let [repo     "https://chart.kronkltd.net/"
+        chart    "dinsro"
+        version  "0.1.0"
+        name     chart
+        prefix   (if use-prefix "resources/helm/" "")
+        path     (str prefix chart)
         filename "target/dinsro_values.yaml"
-        cmd      (string/join
-                  " "
-                  ["helm template "
-                   ;; "--create-namespace"
-                   (str "-n " name)
-                   (str "--name-template=" name)
-                   (str "--values " filename)
-                   path])]
+        args     [(str "-n " name)
+                  (str "--name-template=" name)
+                  (str "--repo " repo)
+                  (str "--values " filename)
+                  (str "--version " version)]
+        cmd      (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
 (defn helm-fileserver
   [name]
-  (let [path     "resources/helm/fileserver"
+  (let [prefix   (if use-prefix "resources/helm/" "")
+        path     (str prefix "fileserver")
         filename (str "target/conf/" name "/fileserver_values.yaml")
-        cmd      (string/join
-                  " "
-                  ["helm template "
-                   (str "-n " name)
-                   (str "--name-template=" name)
-                   (str "--values " filename)
-                   path])]
+        args     [(str "-n " name)
+                  (str "--name-template=" name)
+                  (str "--repo " "https://chart.kronkltd.net/")
+                  (str "--values " filename)]
+        cmd      (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
 (defn helm-nbxplorer
@@ -356,79 +336,54 @@
                    (str "--values " filename)
                    (format "--namespace nbxplorer-%s" name)
                    "--name-template=nbxplorer"
+                   (str "--repo " "https://chart.kronkltd.net/")
                    path])]
     (shell cmd)))
 
 (defn helm-lnd
   [name]
-  (let [path     "resources/helm/fold/charts/lnd/"
+  (let [repo     "https://charts.foldapp.com"
+        path     "lnd"
+        version  "0.3.12"
         filename (str "target/conf/" name "/lnd_values.yaml")
-        cmd      (string/join
-                  " "
-                  ["helm template "
-                   (str "-n " name)
-                   (str "--name-template=" name)
-                   (str "--values " filename)
-                   path])]
+        args     [(str "-n " name)
+                  (str "--name-template=" name)
+                  (str "--repo " repo)
+                  (str "--values " filename)
+                  (str "--version " version)]
+        cmd      (string/join " " (concat ["helm template "] args [path]))]
+    ;; (println cmd)
+    (shell cmd)))
+
+(defn helm-rtl
+  [name]
+  (let [use-local-rtl #_use-prefix true
+        prefix         (if use-local-rtl "resources/helm/" "")
+        repo           "https://chart.kronkltd.net/"
+        chart          "rtl"
+        path           (str prefix chart)
+        version        "0.1.0"
+        filename       (format "target/conf/%s/rtl_values.yaml" name)
+        args           (filter identity
+                               [(when-not use-local-rtl (str "--repo " repo))
+                                (when-not use-local-rtl (str "--version " version))
+                                (str "--name-template=" name)
+                                (str "--values " filename)])
+        cmd            (string/join " " (concat ["helm template "] args [path]))]
     ;; (println cmd)
     (shell cmd)))
 
 (defn helm-specter
   [name]
-  (let [path     "resources/helm/specter-desktop/"
+  (let [path     "specter-desktop"
         filename (format "target/conf/%s/specter_values.yaml" name)
         cmd      (string/join
                   " "
                   ["helm template "
                    (str "-n " name)
+                   (str "--repo " "https://chart.kronkltd.net/")
                    (str "--name-template=specter-" name)
                    (str "--values " filename)
                    path])]
     ;; (println cmd)
     (shell cmd)))
-
-;; Apply Helm
-
-(defn helm-lnd-apply
-  [name]
-  (let [cmd (string/join
-             ""
-             ["bb helm-lnd" name "|" "kubectl apply"
-              "-n" name (str "--namespace=" name)
-              "-f" "-"])]
-    (create-namespace name)
-    (println cmd)
-    (shell (format "sh -c \"%s\"" cmd))))
-
-(defn helm-bitcoin-apply
-  [name]
-  (let [cmd  (string/join
-              ""
-              ["bb helm-bitcoin" name "|" "kubectl apply"
-               "-n" name (str "--namespace=" name)
-               "-f" "-"])]
-    (create-namespace name)
-    (shell (format "sh -c \"%s\"" cmd))))
-
-(defn helm-nbxplorer-apply
-  [name]
-  (let [cmd (str "bb helm-nbxplorer %s" name
-                 " | kubectl apply -n nbxplorer-%s"
-                 name
-                 " -f -")]
-    (create-namespace (str "nbxplorer-" name))
-    (shell (format "sh -c \"%s\"" cmd))))
-
-(defn helm-rtl-apply
-  [name]
-  (let [cmd (format "bb helm-rtl %s | kubectl apply -n rtl-%s -f -" name name)]
-    (create-namespace (str "rtl-" name))
-    (shell (format "sh -c \"%s\"" cmd))))
-
-(defn helm-specter-apply
-  [name]
-  (let [cmd (format "bb helm-specter %s | kubectl apply -n specter-%s -f -" name name)]
-    (create-namespace (str "specter-" name))
-    (shell (format "sh -c \"%s\"" cmd))))
-
-;; Remove Helm

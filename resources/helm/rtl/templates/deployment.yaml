@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rtl
+  name: {{ include "rtl.fullname" . }}
 spec:
   selector:
     matchLabels:
@@ -15,6 +15,7 @@ spec:
       - name: rtl
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["sh", "-c", "ls -al /mnt/data/alice && node rtl"]
         env:
         - name: RTL_SSO
           value: "0"
@@ -59,7 +60,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: rtl-config
+          name: {{ template "rtl.fullname" . }}-rtl-config
       - name: certs
         persistentVolumeClaim:
-          claimName: certs
+          claimName: {{ template "rtl.fullname" . }}-certs

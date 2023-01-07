@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cert-downloader
+  name: {{ template "rtl.fullname" . }}-cert-downloader
 spec:
   template:
     spec:
@@ -28,4 +28,4 @@ spec:
       volumes:
       - name: certs
         persistentVolumeClaim:
-          claimName: certs
+          claimName: {{ template "rtl.fullname" . }}-certs

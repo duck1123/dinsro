@@ -1,8 +1,13 @@
 (ns dinsro.helm.lnd
   (:require
    #?(:clj [clj-yaml.core :as yaml])
+   [clojure.spec.alpha :as s]
    [clojure.string :as string]
    #?(:cljs [dinsro.yaml :as yaml])))
+
+(s/def ::alias string?)
+(s/def ::name string?)
+(s/def ::defaults-options (s/keys :opt [::alias ::name]))
 
 (defn merge-defaults
   [options]
@@ -14,35 +19,35 @@
           chain       :regtest
           ingress     {}
           rpc         {}
-          tls         {}}}                                    options
+          tls         {}}}                                                      options
         {auto-unlock-password :password
          :or
-         {auto-unlock-password "password12345678"}}           auto-unlock
+         {auto-unlock-password "password12345678"}}                             auto-unlock
         {ingress-host :host
          :or
-         {ingress-host (str "lnd." name ".locahost")}}        ingress
+         {ingress-host (str "lnd." name ".locahost")}}                          ingress
         {rpc-host     :host
          rpc-port     :port
          rpc-user     :user
          rpc-password :password
          :keys        [zmqpubrawblock zmqpubrawtx]
          :or
-         {rpc-host       (str "bitcoin.bitcoin-" name)
+         {rpc-host       (str name "-bitcoin." name)
           rpc-port       18443
           rpc-user       "rpcuser"
           rpc-password   "rpcpassword"
           zmqpubrawblock {}
-          zmqpubrawtx    {}}}                                 rpc
+          zmqpubrawtx    {}}}                                                   rpc
         {zmqpubrawblock-host :host
          zmqpubrawblock-port :port
          :or
          {zmqpubrawblock-host rpc-host
-          zmqpubrawblock-port 28332}}                         zmqpubrawblock
+          zmqpubrawblock-port 28332}}                                           zmqpubrawblock
         {zmqpubrawtx-host :host
          zmqpubrawtx-port :port
          :or
          {zmqpubrawtx-host rpc-host
-          zmqpubrawtx-port 28333}}                            zmqpubrawtx
+          zmqpubrawtx-port 28333}}                                              zmqpubrawtx
         {tls-domains :domains
          :or
          {tls-domains [(str name "-lnd-internal." name ".svc.cluster.local")]}} tls]
@@ -121,9 +126,9 @@
 (defn ->value-options
   [{:keys [name]}]
   (let [alias           (str "Node " name)
-        external-host   (str name "-lnd-external.default.svc.cluster.local")
+        external-host   (str name "-lnd-external." name ".svc.cluster.local")
         internal-host   (str name "-lnd-internal." name ".svc.cluster.local")
-        bitcoin-host    (str "bitcoin." name)
+        bitcoin-host    (str name "-bitcoind." name)
         unlock-password "unlockpassword"]
     {:alias       alias
      :auto-unlock {:password unlock-password}

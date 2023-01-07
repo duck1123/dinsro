@@ -10,7 +10,8 @@
    [dinsro.client.scala :as cs :refer [Recordable]]
    [dinsro.specs :as ds]
    [erp12.fijit.try :as eft]
-   [lambdaisland.glogc :as log])
+   [lambdaisland.glogc :as log]
+   [ring.util.codec :refer [base64-encode]])
   (:import
    com.google.protobuf.ByteString
    org.bitcoins.lnd.rpc.config.LndInstanceRemote
@@ -148,14 +149,20 @@
   [^LndRpcClient client ^String password mnemonic]
   (log/info :initialize!/starting {:client client :password password})
   (let [unlocker-client (.unlocker client)
-        wallet-password (ByteString/copyFromUtf8 "passphrase12345678")
-        request         (c.c.init-wallet-request/->request wallet-password mnemonic)]
-    (log/info :initialize!/request-generated {:request request})
-    (let [response (.initWallet unlocker-client request)]
-      (log/info :initialize!/finished {:response response})
-      (let [awaited-response (await-throwable response)]
-        (log/info :initialize!/awaited {:awaited-response awaited-response})
-        awaited-response))))
+        wallet-password (ByteString/copyFromUtf8 password)
+        encoded         (base64-encode (.getBytes password))]
+    (log/info :initialize!/request-generated {:encoded encoded})
+    (let [passphrase (ByteString/copyFromUtf8 encoded)]
+      (log/info :initialize!/request-generated {:wallet-password wallet-password
+                                                :passphrase      passphrase})
+      (let [request (c.c.init-wallet-request/->request wallet-password mnemonic #_passphrase)]
+        (log/info :initialize!/request-generated {:request    request
+                                                  :passphrase passphrase})
+        (let [response (.initWallet unlocker-client request)]
+          (log/info :initialize!/finished {:response response})
+          (let [awaited-response (await-throwable response)]
+            (log/info :initialize!/awaited {:awaited-response awaited-response})
+            awaited-response))))))
 
 (>defn connect-peer!
   "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#connectPeer(request:lnrpc.ConnectPeerRequest):scala.concurrent.Future[Unit]"

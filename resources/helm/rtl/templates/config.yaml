@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: rtl-config
+  name: {{ template "rtl.fullname" . }}-rtl-config
   labels:
     app: {{ template "rtl.fullname" . }}-data
 # "multiPass": "leeloo dallas",

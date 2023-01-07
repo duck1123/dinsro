@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: certs
+  name: {{ template "rtl.fullname" . }}-certs
   labels:
     app: {{ template "rtl.fullname" . }}-data
     type: local

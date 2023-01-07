@@ -8,7 +8,7 @@ ARG clojure_version=1.10.1.727
 ARG kondo_version=2021.12.16
 ARG node_version=14.15.3
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG npm_version=8.13.2
+ARG npm_version=9.2.0
 
 # ARG repo=duck1123
 # ARG project=dinsro
@@ -44,11 +44,13 @@ IMPORT_JAR_DEPS:
   COPY --dir --chown=circleci \
        +jar-deps/.clojure \
        +jar-deps/.deps.clj \
+       +jar-deps/.gitlibs \
        +jar-deps/.m2 \
        ${USER_HOME}
   COPY --dir --chown=root \
        +jar-deps/.clojure \
        +jar-deps/.deps.clj \
+       +jar-deps/.gitlibs \
        +jar-deps/.m2 \
        /root
   COPY --dir --chown=circleci +jar-deps/.cpcache .
@@ -60,6 +62,13 @@ INSTALL_BABASHKA:
       && chmod +x install \
       && ./install \
       && rm -f install
+
+INSTALL_BYOBU:
+  COMMAND
+  RUN apt update && apt install -y \
+      byobu \
+    && rm -rf /var/lib/apt/lists/*
+  ENV CHROME_BIN=chromium-browser
 
 INSTALL_CHROMIUM:
   COMMAND
@@ -84,6 +93,10 @@ INSTALL_NODE:
   RUN npm install -g npm@${npm_version}
   # RUN npm install -g yarn
   RUN npm install -g karma-cli
+
+INSTALL_TILT:
+  COMMAND
+  RUN curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
 
 base-builder:
   FROM ${base_image}
@@ -136,7 +149,10 @@ ci:
 
 cert-downloader:
   FROM babashka/babashka:latest
-  ARG EXPECTED_REF=${repo}/cert-downloader:${version}
+  ARG repo=duck1123
+  ARG project=cert-downloader
+  ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
   COPY resources/cert-downloader .
   ENTRYPOINT ["bb", "bootstrap.clj"]
   CMD ["bb", "bootstrap.clj"]
@@ -202,10 +218,19 @@ devspace-base:
   ARG repo=duck1123
   ARG project=devimage
   ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
   FROM +base-builder
   USER root
-  ARG EXPECTED_REF=${repo}/${project}:${tag}
   DO +IMPORT_JAR_DEPS
+  # RUN mkdir -p /home/root
+  DO +INSTALL_BYOBU
+  DO +INSTALL_TILT
+  RUN apt update && apt install -y \
+      inetutils-ping \
+    && rm -rf /var/lib/apt/lists/*
+  # ENV GITLIBS=/root/.gitlibs
+  # RUN chown -R root:root .
+  # RUN ls -al
   SAVE IMAGE --push ${EXPECTED_REF}
 
 dev-image-sources-base:
@@ -272,7 +297,10 @@ eastwood:
 
 fileserver:
   FROM babashka/babashka:latest
-  ARG EXPECTED_REF=${repo}/lnd-fileserver:${version}
+  ARG repo=duck1123
+  ARG project=lnd-fileserver
+  ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
   COPY resources/fileserver .
   RUN mkdir -p /mnt/lnd-data
   CMD ["bb", "watch.clj", "/mnt/lnd-data"]
@@ -311,16 +339,19 @@ jar-deps:
   USER root
   RUN rm -rf ${USER_HOME}/.m2
   RUN --mount=type=cache,target=/root/.clojure \
+      --mount=type=cache,target=/root/.gitlibs \
       --mount=type=cache,target=/root/.m2 \
       --mount=type=cache,target=/root/.deps.clj \
       (bb display-path || bb display-path) \
       && bb init-bb \
       && cp -r /root/.clojure ${USER_HOME}/ \
       && cp -r /root/.deps.clj ${USER_HOME}/ \
+      && cp -r /root/.gitlibs ${USER_HOME}/ \
       && cp -r /root/.m2 ${USER_HOME}/
   USER ${uid}
   SAVE ARTIFACT ${USER_HOME}/.clojure
   SAVE ARTIFACT ${USER_HOME}/.deps.clj
+  SAVE ARTIFACT ${USER_HOME}/.gitlibs
   SAVE ARTIFACT ${USER_HOME}/.m2
   SAVE ARTIFACT .cpcache
 
@@ -346,7 +377,10 @@ node-deps:
 
 portal:
   FROM +babashka-base
-  ARG EXPECTED_REF=${repo}/portal:${version}
+  ARG repo=duck1123
+  ARG project=portal
+  ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
   # RUN apk add java
   COPY resources/portal .
   ENTRYPOINT ["bb", "portal.clj"]

@@ -184,63 +184,9 @@
   {:depends [generate-bitcoind-values]
    :task    (let [name (or (first *command-line-args*) "3")] (c/helm-bitcoin name))}
 
-  helm-bitcoin-apply
-  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-bitcoin-apply name))}
-
-  helm-bitcoin-remove
-  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace name))}
-
-  helm-clean
-  {:task
-   (let [name (or (first *command-line-args*) "3")]
-     (try
-       (run 'helm-nbxplorer-remove)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-rtl-remove)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-specter-remove)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-lnd-remove)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-bitcoin-remove)
-       (catch Exception ex
-         (println "failed"))))}
-
   helm-dinsro
   {:depends [generate-dinsro-values]
    :task    (c/helm-dinsro)}
-
-  helm-up
-  {:task
-   (let [name (or (first *command-line-args*) "3")]
-     (try
-       (run 'helm-bitcoin-apply)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-lnd-apply)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-specter-apply)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-rtl-apply)
-       (catch Exception ex
-         (println "failed")))
-     (try
-       (run 'helm-nbxplorer-apply)
-       (catch Exception ex
-         (println "failed"))))}
 
   helm-fileserver
   {:depends [generate-fileserver-values]
@@ -250,45 +196,17 @@
   {:depends [generate-lnd-values]
    :task    (let [name (or (first *command-line-args*) "3")] (c/helm-lnd name))}
 
-  helm-lnd-apply
-  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-lnd-apply name))}
-
-  helm-lnd-remove
-  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "lnd-" name)))}
-
   helm-nbxplorer
   {:depends [generate-nbxplorer-values]
    :task    (let [name (or (first *command-line-args*) "3")] (c/helm-nbxplorer name))}
-
-  helm-nbxplorer-apply
-  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-nbxplorer-apply name))}
-
-  helm-nbxplorer-remove
-  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "nbxplorer-" name)))}
 
   helm-rtl
   {:depends [generate-rtl-values]
    :task    (let [name (or (first *command-line-args*) "3")] (c/helm-rtl name))}
 
-  helm-rtl2
-  {:depends [generate-rtl-values]
-   :task    (let [name (or (first *command-line-args*) "3")] (c/helm-rtl name))}
-
-  helm-rtl-apply
-  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-rtl-apply name))}
-
-  helm-rtl-remove
-  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "rtl-" name)))}
-
   helm-specter
   {:depends [generate-specter-values]
    :task    (let [name (or (first *command-line-args*) "3")] (c/helm-specter name))}
-
-  helm-specter-apply
-  {:task (let [name (or (first *command-line-args*) "3")] (c/helm-specter-apply name))}
-
-  helm-specter-remove
-  {:task (let [name (or (first *command-line-args*) "3")] (c/delete-namespace (str "specter-" name)))}
 
   init
   {:doc     "Initialize the system"
@@ -432,7 +350,7 @@
 
   watch-cljs
   {:do   "watch and compile css"
-   :task (c/watch-cljs ["main" "workspaces" "notebooks" "devcards"])}
+   :task (c/watch-cljs ["main" "workspaces" "notebooks"])}
 
   workspaces
   {:doc  "Starts and watches for workspaces"

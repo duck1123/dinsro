@@ -157,13 +157,17 @@
 
 (defn initialize!
   [node]
-  (log/info :initialize!-s/starting {:node node})
+  (log/info :initialize!/starting {:node node})
   (let [client   (get-client node)
         password "password12345678"]
     (if-let [mnemonic (::m.ln.nodes/mnemonic node)]
       (let [cipher-seed-mnemonic (efc/to-scala-list mnemonic)]
         (log/info :initialize!/mnemonic {:mnemonic cipher-seed-mnemonic})
-        (c.lnd-s/initialize! client password cipher-seed-mnemonic))
+        (try
+          (c.lnd-s/initialize! client password cipher-seed-mnemonic)
+          (catch Exception ex
+            (log/error :initialize!/error {:ex ex})
+            (throw ex))))
       (throw (RuntimeException. "no mnemonic")))))
 
 ;; (defn get-remote-instance
@@ -198,10 +202,17 @@
 (defn unlock!
   "Unlock the wallet"
   [node]
-  (log/info :unlock!/starting {:node-id (::m.ln.nodes/id node)})
-  (let [client     (get-client node)
-        passphrase default-passphrase]
-    (c.lnd-s/unlock-wallet client passphrase)))
+  (let [node-id (::m.ln.nodes/id node)]
+    (log/info :unlock!/starting {:node-id node-id})
+    (let [client     (get-client node)
+          passphrase default-passphrase]
+      (try
+        (let [response (c.lnd-s/unlock-wallet client passphrase)]
+          (log/info :unlock!/finished {:node-id node-id :response response})
+          response)
+        (catch Exception ex
+          (log/error :unlock!/failed {:message "Unlock failed" :ex ex})
+          (throw ex))))))
 
 (>defn get-lnd-address
   "Fetch an address from the node"

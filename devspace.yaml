@@ -34,6 +34,7 @@ pipelines:
     run_pipelines deploy-bitcoind
     run_pipelines deploy-lnd
     run_pipelines deploy-fileserver
+    run_pipelines deploy-rtl
 
   deploy-bitcoind: |-
     echo ""
@@ -43,7 +44,7 @@ pipelines:
     run_pipelines create-chart-directories
     YAML_PATH=target/charts/${NAME}_bitcoind.yaml
     bb helm-bitcoin ${NAME} > ${YAML_PATH}
-    kubectl apply -f ${YAML_PATH}
+    kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
   deploy-fileserver: |-
     echo ""
@@ -53,7 +54,7 @@ pipelines:
     run_pipelines create-chart-directories
     YAML_PATH=target/charts/${NAME}_fileserver.yaml
     bb helm-fileserver ${NAME} > ${YAML_PATH}
-    kubectl apply -f ${YAML_PATH}
+    kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
   deploy-lnd: |-
     echo ""
@@ -63,10 +64,22 @@ pipelines:
     run_pipelines create-chart-directories
     YAML_PATH=target/charts/${NAME}_lnd.yaml
     bb helm-lnd ${NAME} > ${YAML_PATH}
-    kubectl apply -f ${YAML_PATH}
+    kubectl apply --namespace ${NAME} -f ${YAML_PATH}
+
+  deploy-rtl: |-
+    echo ""
+    echo "--- Deploying RTL for ${NAME} ---"
+    echo ""
+    run_pipelines create-namespace
+    run_pipelines create-chart-directories
+    YAML_PATH=target/charts/${NAME}_rtl.yaml
+    bb generate-rtl-values ${NAME}
+    bb helm-rtl ${NAME} > ${YAML_PATH}
+    kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
   dev: |-
     echo "Starting dev"
+    bb generate-dinsro-values
     run_dependencies --all
     create_deployments dinsro
     start_dev app
@@ -79,29 +92,40 @@ pipelines:
     echo ""
     echo "=== Purging Bitcoin stack for ${NAME} ==="
     run_pipelines purge-bitcoind
-    run_pipelines purge-lnd
     run_pipelines purge-fileserver
+    run_pipelines purge-lnd
+    run_pipelines purge-rtl
 
   purge-bitcoind: |-
     echo ""
     echo "--- Purging Bitcoind for ${NAME} ---"
     echo ""
     YAML_PATH=target/charts/${NAME}_bitcoind.yaml
-    kubectl delete -f ${YAML_PATH} || true
+    kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
+
+  purge-dinsro: |-
+    purge_deployments dinsro
 
   purge-fileserver: |-
     echo ""
     echo "--- Purging fileserver for ${NAME} ---"
     echo ""
     YAML_PATH=target/charts/${NAME}_fileserver.yaml
-    kubectl delete -f ${YAML_PATH} || true
+    kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
 
   purge-lnd: |-
     echo ""
     echo "--- Purging LND for ${NAME} ---"
     echo ""
     YAML_PATH=target/charts/${NAME}_lnd.yaml
-    kubectl delete -f ${YAML_PATH} || true
+    kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
+
+  purge-rtl: |-
+    echo ""
+    echo "--- Purging RTL for ${NAME} ---"
+    echo ""
+    YAML_PATH=target/charts/${NAME}_rtl.yaml
+    kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
 
 images:
   dinsro:
@@ -188,23 +212,28 @@ dev:
       app.kubernetes.io/name: dinsro
       app.kubernetes.io/instance: dinsro
     sync:
-      - path: ./
+    - path: ./
     terminal:
       command: ./devspace_start.sh
     ssh:
       enabled: true
     proxyCommands:
-      - command: devspace
-      - command: kubectl
-      - command: helm
-      - command: git
-    # ports:
-    #   - port: "3000"
+    - command: devspace
+    - command: kubectl
+    - command: helm
+    # - command: git
+    ports:
+    - port: "3000"
+    - port: "9630"
+    - port: "10350"
     open:
-      - url: http://dinsro.localhost
+    - url: http://localhost:10350
 
 # Use the `commands` section to define repeatable dev workflows for this project
 commands:
+  build-devimage:
+    command: |-
+      earthly --push +devspace-base
   deploy:
     command: |-
       devspace run-pipeline deploy || true
@@ -222,6 +251,15 @@ commands:
       export NAME=bob
       devspace run-pipeline deploy-bitcoin || true
       devspace run-pipeline deploy-lnd || true
+  dev:
+    command: |-
+      echo "Running Dev Command"
+      devspace enter -- bash -c 'byobu'
+  dev-all:
+    command: |-
+      echo "Running dev-all Command"
+      devspace run deploy-bitcoin
+      devspace dev
   test:
     command: |-
       bb test
@@ -231,10 +269,19 @@ commands:
   purge:
     command: |-
       devspace run-pipeline purge
+  purge-all:
+    command: |-
+      set -ex
+      devspace run purge
+      devspace run purge-devimage
+      devspace run purge-bitcoin
   purge-bitcoin:
     command: |-
       NAME=alice devspace run-pipeline purge-bitcoin
       NAME=bob devspace run-pipeline purge-bitcoin
+  purge-dinsro:
+    command: |-
+      devspace run-pipeline purge-dinsro
   purge-alice:
     command: |-
       export NAME=alice
@@ -246,6 +293,9 @@ commands:
       echo "Purging ${NAME}"
       devspace run-pipeline purge-bitcoin || true
       devspace run-pipeline purge-lnd || true
+  purge-devimage:
+    command: |-
+      kubectl delete deployments dinsro-devspace
   start:
     command: |-
       devspace enter -- bash -c 'bb clean && bb run'

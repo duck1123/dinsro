@@ -12,11 +12,11 @@
   "see: https://bitcoin-s.org/api/lnrpc/InitWalletRequest.html"
   ([]
    (->request (ByteString/copyFromUtf8 "passphrase12345678")))
-  ([wallet-password]
+  ([^ByteString wallet-password]
    (->request wallet-password (efc/scala-list)))
-  ([wallet-password cipher-seed-mnemonic]
+  ([^ByteString wallet-password cipher-seed-mnemonic]
    (->request wallet-password cipher-seed-mnemonic ByteString/EMPTY))
-  ([wallet-password cipher-seed-mnemonic aezeed-passphrase]
+  ([^ByteString wallet-password cipher-seed-mnemonic ^ByteString aezeed-passphrase]
    (->request wallet-password cipher-seed-mnemonic aezeed-passphrase (int 0)))
   ([wallet-password cipher-seed-mnemonic aezeed-passphrase recovery-window]
    (->request wallet-password cipher-seed-mnemonic aezeed-passphrase recovery-window (cs/none)))

@@ -65,7 +65,7 @@
   (:import
    io.grpc.StatusRuntimeException))
 
-(def strict true)
+(def strict false)
 
 (defn create-navlinks!
   []
@@ -140,6 +140,7 @@
 
 (defn initialize-ln-node!
   [node-id]
+  (log/info :initialize-ln-node!/starting {:node-id node-id})
   (let [node (q.ln.nodes/read-record node-id)]
     (a.ln.nodes/download-cert! node)
     (if-let [macaroon-response (a.ln.nodes/download-macaroon! node)]

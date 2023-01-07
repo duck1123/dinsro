@@ -7,7 +7,7 @@
         node-name     (str "Node " name)
         macaroon-path (str "/mnt/data/" name)
         backup-path   (str "/mnt/data/" name "/backups")
-        server-url    (str "https://lnd." name ".svc.cluster.local:8080")]
+        server-url    (str "https://" name "-lnd-internal." name ".svc.cluster.local:10009")]
     {:index            1
      :lnNode           node-name
      :lnImplementation "LND"
@@ -51,7 +51,7 @@
      :ingress           {:hosts [{:host  (str "rtl." name ".localhost")
                                   :paths [{:path "/"}]}]}
      :configurationFile #?(:clj (json2/encode config) :cljs (do (comment config) ""))
-     :bitcoin           {:host (str "bitcoin." name)}}))
+     :bitcoin           {:host (str name "-bitcoind." name)}}))
 
 (comment
   (->values {})
