@@ -125,26 +125,32 @@
 
 (defn log-props
   [props]
-  (dom/dl :.ui.segment
-    (map (fn [k]
-           (comp/fragment
-            (dom/dt {} (str k))
-            (dom/dd {}
-              (let [v (get props k)]
-                (if (map? v)
-                  (log-props v)
-                  (do
-                    (str v)
-                    (if (vector? v)
-                      (dom/ul {}
-                        #_(dom/li {} (str "List: " v))
-                        (map
-                         (fn [vi]
-                           (dom/li {} (str vi)))
-                         v))
-                      (dom/div :.ui.segment (str v)))))))))
-
-         (keys props))))
+  (let [blacklisted-keys #{:config
+                           :com.fulcrologic.fulcro.ui-state-machines/asm-id
+                           :com.fulcrologic.fulcro.application/active-remotes
+                           :ui/controls
+                           :ui/report}]
+    (dom/dl :.ui.segment
+      (->> (keys props)
+           (filter (fn [k] (not (blacklisted-keys k))))
+           (map
+            (fn [k]
+              (comp/fragment
+               (dom/dt {} (str k))
+               (dom/dd {}
+                 (let [v (get props k)]
+                   (if (map? v)
+                     (log-props v)
+                     (do
+                       (str v)
+                       (if (vector? v)
+                         (dom/ul {}
+                           #_(dom/li {} (str "List: " v))
+                           (map
+                            (fn [vi]
+                              (dom/li {} (str vi)))
+                            v))
+                         (dom/div :.ui.segment (str v))))))))))))))
 
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]

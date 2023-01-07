@@ -164,7 +164,7 @@
           (dom/dd {} (str name))
           (dom/dt {} "Network")
           (dom/dd {} (u.links/ui-network-link network)))
-        (u.links/log-props props))
+        #_(u.links/log-props props))
       (when id
         (dom/div {:classes [sub]}
           (when show-peers

@@ -72,7 +72,7 @@
    :ident             (fn [] [:component/id ::SubPage])}
   (log/info :SubPage/creating {:props props})
   (dom/div :.ui.segment
-    (pr-str props)
+    #_(u.links/log-props props)
     (if node-id
       (ui-report report)
       (dom/div {} "Node ID not set"))))
