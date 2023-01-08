@@ -1,5 +1,6 @@
 (ns dinsro.components.seed
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.type-support.date-time :as dt]
    [dinsro.actions.authentication :as a.authentication]
@@ -12,10 +13,15 @@
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.actions.users :as a.users]
    [dinsro.components.config :as config]
-   [dinsro.components.seed.accounts]
+   [dinsro.components.seed.accounts :as cs.accounts]
    [dinsro.components.seed.categories]
    [dinsro.components.seed.core :as cs.core]
+   [dinsro.components.seed.core-nodes :as cs.core-nodes]
+   [dinsro.components.seed.currencies :as cs.currencies]
+   [dinsro.components.seed.debits :as cs.debits]
    [dinsro.components.seed.ln-node :as cs.ln-node]
+   [dinsro.components.seed.rate-sources :as cs.rate-sources]
+   [dinsro.components.seed.transactions :as cs.transactions]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -56,8 +62,9 @@
    [dinsro.queries.settings :as q.settings]
    [dinsro.queries.transactions :as q.transactions]
    [dinsro.queries.users :as q.users]
-   [dinsro.seed :as seeds]
-   [dinsro.specs :as ds]
+   [dinsro.specs :as ds :refer [->inst]]
+   [edamame.core :as ec]
+   [expound.alpha :as expound]
    [lambdaisland.glogc :as log]
    [reitit.coercion.spec]
    [tick.alpha.api :as tick]
@@ -84,18 +91,21 @@
     (xt/submit-tx node txes)))
 
 (>defn seed-currencies!
-  [default-currencies]
-  [::cs.core/default-currencies => nil?]
-  (log/finer :seed/currencies {:default-currencies default-currencies})
-  (doseq [{:keys [code name]} default-currencies]
+  [currencies]
+  [::cs.core/currencies => nil?]
+  (log/finer :seed/currencies {:currencies currencies})
+  (doseq [{:keys [code name]} currencies]
     (let [currency {::m.currencies/code code
-                    ::m.currencies/name name}]
-      (q.currencies/create-record currency))))
+                    ::m.currencies/name name}
+          id       (q.currencies/create-record currency)]
+      (log/finer :seed-curencies!/finished {:id id})
+      id)))
 
-(defn seed-rate-sources!
-  [default-rate-sources]
-  (log/finer :seed/rate-sources {:default-rate-sources default-rate-sources})
-  (doseq [{:keys [isActive isIdentity code name path url]} default-rate-sources]
+(>defn seed-rate-sources!-currency-source
+  [code source]
+  [string? ::cs.rate-sources/item => any?]
+  (log/info :seed-rate-sources!-currency-source/starting {:source source})
+  (let [{:keys [isActive isIdentity name path url]} source]
     (when-let [currency-id (q.currencies/find-by-code code)]
       (let [rate-source {::m.rate-sources/name      name
                          ::m.rate-sources/currency  currency-id
@@ -104,6 +114,21 @@
                          ::m.rate-sources/identity? isIdentity
                          ::m.rate-sources/path      path}]
         (q.rate-sources/create-record rate-source)))))
+
+(>defn seed-rate-sources!-currency
+  [currency]
+  [::cs.currencies/item => any?]
+  (log/info :seed-rate-sources!-currency/starting {:currency currency})
+  (let [{:keys [code]} currency]
+    (doseq [source (:sources currency)]
+      (seed-rate-sources!-currency-source code source))))
+
+(>defn seed-rate-sources!
+  [currencies]
+  [::cs.core/currencies => any?]
+  (log/finer :seed/rate-sources {:currencies currencies})
+  (doseq [currency currencies]
+    (seed-rate-sources!-currency currency)))
 
 (defn seed-rates!
   [default-rate-sources]
@@ -120,8 +145,9 @@
         (throw (RuntimeException. "Failed to find source")))
       (throw (RuntimeException. "Failed to find currency")))))
 
-(defn seed-users!
+(>defn seed-users!
   [users]
+  [::cs.core/users => any?]
   (log/finer :seed/users {})
   (doseq [{:keys [username password role]} users]
     (let [user (a.authentication/do-register username password)
@@ -129,8 +155,9 @@
       (log/info :seed-users!/registered {:user-id user-id})
       (a.users/set-role! user-id role))))
 
-(defn seed-categories!
+(>defn seed-categories!
   [users]
+  [::cs.core/users => any?]
   (log/finer :seed-categories!/starting {})
   (doseq [{:keys [categories username]} users]
     (let [user-id (q.users/find-by-name username)]
@@ -138,8 +165,9 @@
         (q.categories/create-record {::m.categories/name name
                                      ::m.categories/user user-id})))))
 
-(defn initialize-ln-node!
+(>defn initialize-ln-node!
   [node-id]
+  [::m.ln.nodes/id => any?]
   (log/info :initialize-ln-node!/starting {:node-id node-id})
   (let [node (q.ln.nodes/read-record node-id)]
     (a.ln.nodes/download-cert! node)
@@ -179,20 +207,22 @@
                         ::m.ln.nodes/fileserver-host fileserver-host
                         ::m.ln.nodes/port            port
                         ::m.ln.nodes/user            user-id
-                        ::m.ln.nodes/mnemonic        mnemonic}
-               node-id (q.ln.nodes/create-record ln-node)]
-           (log/finer :seed-ln-node!/saved {:node-id node-id})
-           (when initialize-node
-             (try
-               (initialize-ln-node! node-id)
-               (catch Exception ex
-                 (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
-                 (when strict (throw (RuntimeException. "init node failed" ex)))))))
+                        ::m.ln.nodes/mnemonic        mnemonic}]
+           (log/info :seed-ln-node!/ready {:ln-node ln-node})
+           (let [node-id (q.ln.nodes/create-record ln-node)]
+             (log/finer :seed-ln-node!/saved {:node-id node-id})
+             (when initialize-node
+               (try
+                 (initialize-ln-node! node-id)
+                 (catch Exception ex
+                   (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
+                   (when strict (throw (RuntimeException. "init node failed" ex))))))))
          (throw (RuntimeException. "Failed to determine network id")))
        (throw (RuntimeException. (str "Failed to find node: " node-name)))))))
 
-(defn seed-ln-nodes!
+(>defn seed-ln-nodes!
   [users]
+  [::cs.core/users => any?]
   (log/finer :seed-ln-nodes!/starting {:users users})
   (doseq [{:keys [username ln-nodes]} users]
     (log/finer :seed-ln-nodes!/processing-user {:username username})
@@ -200,35 +230,45 @@
       (doseq [node-info ln-nodes]
         (seed-ln-node! user-id node-info)))))
 
-(defn seed-account!
+(>defn seed-account!
   [user-id account-data]
-  (let [{:keys       [name initial-value source]
-         wallet-name :wallet} account-data
-        wallet-id             (when wallet-name (q.c.wallets/find-by-user-and-name user-id wallet-name))]
-    (if-let [source-id (q.rate-sources/find-by-name source)]
-      (let [source      (q.rate-sources/read-record source-id)
-            currency-id (::m.rate-sources/currency source)]
-        (q.accounts/create-record
-         {::m.accounts/name          name
-          ::m.accounts/currency      currency-id
-          ::m.accounts/user          user-id
-          ::m.accounts/initial-value initial-value
-          ::m.accounts/wallet        wallet-id
-          ::m.accounts/source        source-id}))
-      (throw (RuntimeException. "failed to find source")))))
+  [::m.users/id ::cs.accounts/item => any?]
+  (let [{:keys [name initial-value source] wallet-name :wallet} account-data]
+    (log/info :seed-account!/starting {:user-id       user-id
+                                       :account-data  account-data
+                                       :name          name
+                                       :initial-value initial-value
+                                       :source        source
+                                       :wallet-name   wallet-name})
 
-(defn seed-accounts!
+    (let [wallet-id (when wallet-name (q.c.wallets/find-by-user-and-name user-id wallet-name))]
+      (if-let [source-id (q.rate-sources/find-by-name source)]
+        (let [source      (q.rate-sources/read-record source-id)
+              currency-id (::m.rate-sources/currency source)
+              params      (merge
+                           {::m.accounts/name          name
+                            ::m.accounts/currency      currency-id
+                            ::m.accounts/user          user-id
+                            ::m.accounts/initial-value initial-value
+
+                            ::m.accounts/source source-id}
+                           (when wallet-id {::m.accounts/wallet wallet-id}))]
+          (q.accounts/create-record params))
+        (throw (RuntimeException. "failed to find source"))))))
+
+(>defn seed-accounts!
   [users]
+  [::cs.core/users => any?]
   (log/finer :seed/accounts {})
   (doseq [{:keys [username accounts]} users]
     (if-let [user-id (q.users/find-by-name username)]
       (doseq [account-data accounts]
         (seed-account! user-id account-data))
-
       (throw (RuntimeException. "Failed to find user")))))
 
-(defn seed-debit!
+(>defn seed-debit!
   [user-id transaction-id debit-data]
+  [::m.users/id ::m.transactions/id ::cs.debits/item => any?]
   (log/finer :seed-debit!/starting {:debit-data debit-data})
   (let [{account-name :account
          :keys        [value]} debit-data]
@@ -244,12 +284,14 @@
           debit-id))
       (throw (RuntimeException. "no account")))))
 
-(defn seed-transaction!
+(>defn seed-transaction!
   [user-id transaction-data]
+  [::m.users/id ::cs.transactions/item => any?]
+  (log/info :seed-transaction!/starting {:user-id user-id :transaction-data transaction-data})
   (let [{:keys [description date debits]} transaction-data
-        transaction                       {::m.transactions/date        date
+        transaction                       {::m.transactions/date        (->inst date)
                                            ::m.transactions/description description}]
-    (log/finer :seed-transaction!/prepared {:transaction transaction})
+    (log/fine :seed-transaction!/prepared {:transaction transaction})
     (let [transaction-id (q.transactions/create-record transaction)]
       (log/finer :seed-transaction!/created {:transaction-id transaction-id})
       (doseq [debit debits]
@@ -327,6 +369,7 @@
 
 (defn seed-wallet-address!
   [wallet-id]
+
   (log/finer :seed-wallet-address!/starting {:wallet-id wallet-id})
   (let [wallet (q.c.wallets/read-record wallet-id)]
     (doseq [i (range 20)]
@@ -335,8 +378,9 @@
         (log/finer :seed-wallet-address!/process-address {:address address})
         (a.c.wallet-addresses/register-address! wallet address i)))))
 
-(defn seed-wallet!
+(>defn seed-wallet!
   [user-id wallet-data]
+  [::m.users/id any? => any?]
   (log/finer :seed-wallets!/process-wallet {:wallet-data wallet-data})
   (let [{:keys     [name seed path]
          node-name :node} wallet-data
@@ -358,8 +402,9 @@
         (q.c.words/create-record props)))
     (seed-wallet-address! wallet-id)))
 
-(defn seed-wallets!
+(>defn seed-wallets!
   [users]
+  [::cs.core/users => any?]
   (doseq [user-info users]
     (let [{:keys [username]} user-info
           user-id            (q.users/find-by-name username)]
@@ -367,8 +412,9 @@
       (doseq [wallet (get user-info :wallets [])]
         (seed-wallet! user-id wallet)))))
 
-(defn seed-addresses!
+(>defn seed-addresses!
   [addresses]
+  [(s/coll-of string?) => any?]
   (doseq [address addresses]
     (q.c.addresses/create-record {::m.c.addresses/address address})))
 
@@ -378,14 +424,16 @@
 
   nil)
 
-(defn seed-chains!
+(>defn seed-chains!
   [chains]
+  [(s/coll-of string?) => any?]
   (log/finer :seed-chains!/starting {:chains chains})
   (doseq [chain chains]
     (q.c.chains/create-record {::m.c.chains/name chain})))
 
-(defn seed-networks!
+(>defn seed-networks!
   [networks]
+  [::cs.core/networks => any?]
   (log/finer :seed-networks!/starting {:networks networks})
   (doseq [[chain-name network-names] networks]
     (if-let [chain-id (q.c.chains/find-by-name chain-name)]
@@ -398,58 +446,81 @@
             ::m.c.networks/chain chain-id})))
 
       (do
-        (log/finer :seed-networks!/not-foind {:chain-name chain-name})
+        (log/warn :seed-networks!/not-found {:chain-name chain-name})
         nil))))
 
 (defn seed-core-nodes!
   "Create core nodes"
   [core-node-data]
+  [::cs.core/nodes => any?]
   (log/fine :seed-core-nodes!/starting {:core-node-data core-node-data})
-  (doseq [data core-node-data]
-    (log/finer :seed-core-nodes!/processing-node {:data data})
-    (let [{chain-name       :chain
-           network-name     :network
-           ::m.c.nodes/keys [host port rpcuser rpcpass name]} data]
-      (if-let [network-id (q.c.networks/find-by-chain-and-network chain-name network-name)]
-        (let [params  {::m.c.nodes/name    name
-                       ::m.c.nodes/host    host
-                       ::m.c.nodes/port    port
-                       ::m.c.nodes/network network-id
-                       ::m.c.nodes/rpcuser rpcuser
-                       ::m.c.nodes/rpcpass rpcpass}
-              node-id (q.c.nodes/create-record params)
-              node    (q.c.nodes/read-record node-id)]
-          (try
-            (a.c.nodes/fetch! node)
-            (catch Exception ex
-              (log/error :seed-core-nodes!/failed {:ex ex})
-              (when strict (throw (RuntimeException. "seed core nodes failed"))))))
-        (do
-          (log/error :seed-core-nodes!/network-not-found {:chain-name chain-name :network-name network-name})
-          (throw (RuntimeException. "Failed to find chain")))))))
+  (try
+    (doseq [data core-node-data]
+      (log/finer :seed-core-nodes!/processing-node {:data data})
+      (let [{chain-name       :chain
+             network-name     :network
+             :keys [host port rpcuser rpcpass name]} data]
+        (if-let [network-id (q.c.networks/find-by-chain-and-network chain-name network-name)]
+          (let [params  {::m.c.nodes/name    name
+                         ::m.c.nodes/host    host
+                         ::m.c.nodes/port    port
+                         ::m.c.nodes/network network-id
+                         ::m.c.nodes/rpcuser rpcuser
+                         ::m.c.nodes/rpcpass rpcpass}
+                node-id (q.c.nodes/create-record params)
+                node    (q.c.nodes/read-record node-id)]
+            (try
+              (a.c.nodes/fetch! node)
+              (catch Exception ex
+                (log/error :seed-core-nodes!/failed {:ex ex})
+                (when strict (throw (RuntimeException. "seed core nodes failed"))))))
+          (do
+            (log/error :seed-core-nodes!/network-not-found {:chain-name chain-name :network-name network-name})
+            (throw (RuntimeException. "Failed to find chain"))))))
+    (log/fine :seed-core-nodes!/finished {})
+    (catch Exception ex
+      (println ex)
+      (log/error :seed-core-nodes!/failed {:ex ex})
+      (when strict (throw (RuntimeException. "seed core nodes failed"))))))
 
-(defn seed-core-peers!
+(>defn seed-core-peers!-peer
+  [peer-name target-peer]
+  [string? ::m.c.nodes/item => any?]
+  (let [remote-peer (q.c.nodes/read-record (q.c.nodes/find-by-name peer-name))
+        remote-host (::m.c.nodes/host remote-peer)
+        remote-uri  (str "http://" remote-host)]
+    (if (a.c.peers/has-peer? target-peer remote-uri)
+      (log/finer :seed-core-peers!/has-peer {})
+      (try
+        (log/finer :seed-core-peers!/no-peer {})
+        (a.c.peers/add-peer! target-peer remote-uri)
+        (a.c.peers/fetch-peers! target-peer)
+        (catch Exception ex
+          (log/error :seed-core-peers!/no-peer-failed {:ex ex})
+          (when strict (throw (RuntimeException. "Failed to add peer" ex))))))))
+
+(>defn seed-core-peers!-node
+  [node-data]
+  [::cs.core-nodes/item => any?]
+  (log/info :seed-core-peers!-node/starting {:node-data node-data})
+  (let [peers       (:peers node-data)
+        target-name (:name node-data)
+        target-peer (q.c.nodes/read-record (q.c.nodes/find-by-name target-name))]
+    (a.c.peers/fetch-peers! target-peer)
+    (doseq [peer-name peers]
+      (seed-core-peers!-peer peer-name target-peer))))
+
+(>defn seed-core-peers!
   "Create peers between core nodes"
   [core-node-data]
-  (log/finer :seed-core-peers!/starting {:core-node-data core-node-data})
-  (doseq [node-data core-node-data]
-    (let [peers       (:peers node-data)
-          target-name (::m.c.nodes/name node-data)
-          target-peer (q.c.nodes/read-record (q.c.nodes/find-by-name target-name))]
-      (a.c.peers/fetch-peers! target-peer)
-      (doseq [peer-name peers]
-        (let [remote-peer (q.c.nodes/read-record (q.c.nodes/find-by-name peer-name))
-              remote-host (::m.c.nodes/host remote-peer)
-              remote-uri  (str "http://" remote-host)]
-          (if (a.c.peers/has-peer? target-peer remote-uri)
-            (log/finer :seed-core-peers!/has-peer {})
-            (try
-              (log/finer :seed-core-peers!/no-peer {})
-              (a.c.peers/add-peer! target-peer remote-uri)
-              (a.c.peers/fetch-peers! target-peer)
-              (catch Exception ex
-                (log/error :seed-core-peers!/no-peer-failed {:ex ex})
-                (when strict (throw (RuntimeException. "Failed to add peer" ex)))))))))))
+  [::cs.core/nodes => any?]
+  (log/fine :seed-core-peers!/starting {:core-node-data core-node-data})
+  (try
+    (doseq [node-data core-node-data]
+      (seed-core-peers!-node node-data))
+    (catch Exception ex
+      (println ex)
+      (log/error :seed-core-peers!/failed {:ex ex}))))
 
 (defn seed-remote-nodes-remote-node!
   [user-id node-id remote-node-data]
@@ -489,29 +560,31 @@
 (>defn seed-db!
   [seed-data]
   [::cs.core/seed-data => any?]
-  (let [{:keys [default-timezone
-                core-node-data
+  (let [{:keys [timezone
+                nodes
                 users
-                default-chains
-                default-currencies
-                default-networks
-                default-rate-sources]} seed-data]
-    (create-navlinks!)
-    (dt/set-timezone! default-timezone)
+                ;; default-chains
+                currencies
+                networks
+                ;; default-rate-sources
+                ]}seed-data]
 
-    (seed-chains! default-chains)
-    (seed-networks! default-networks)
+    (create-navlinks!)
+    (dt/set-timezone! timezone)
+
+    (seed-chains! (keys networks))
+    (seed-networks! networks)
 
     (try
-      (seed-core-nodes! core-node-data)
-      (seed-core-peers! core-node-data)
+      (seed-core-nodes! nodes)
+      (seed-core-peers! nodes)
       (catch Exception ex
         (log/error :seed-db!/core-nodes-failed {:ex ex})
         (when strict (throw (RuntimeException. "seed core nodes failed" ex)))))
 
-    (seed-currencies! default-currencies)
-    (seed-rate-sources! default-rate-sources)
-    (seed-rates! default-rate-sources)
+    (seed-currencies! currencies)
+    (seed-rate-sources! currencies)
+    ;; (seed-rates! default-rate-sources)
 
     (seed-users! users)
     (seed-categories! users)
@@ -520,8 +593,8 @@
     (seed-transactions! users)
 
     (seed-ln-nodes! users)
-    ;; (seed-addresses! [])
-    ;; (seed-remote-nodes! users)
+    (seed-addresses! [])
+    (seed-remote-nodes! users)
 
     (log/finer :seed/finished {})
     (item-report)))
@@ -529,7 +602,7 @@
 (>defn get-seed-data
   []
   [=> ::cs.core/seed-data]
-  (seeds/get-seed-data))
+  (ec/parse-string (slurp "seed.edn")))
 
 (def seeded-key ::seeded)
 
@@ -540,18 +613,44 @@
       (log/finer :seed!/seeded {})
       (do
         (log/finer :seed!/not-seeded {})
-        (let [seed-data (get-seed-data)]
-          (try
-            (seed-db! seed-data)
-            (catch Exception ex
-              (log/error :seed!/failed {:ex ex})
-              (when strict (throw (RuntimeException. "seed failed" ex)))))
-          (q.settings/set-setting seeded-key true))))
+        (try
+          (let [seed-data (get-seed-data)]
+            (seed-db! seed-data))
+          (catch Exception ex
+            (log/error :seed!/failed {:ex ex})
+            (when strict (throw (RuntimeException. "seed failed" ex)))))
+        (q.settings/set-setting seeded-key true)))
     (log/finer :seed!/not-enabled {})))
 
 (comment
 
   (q.settings/set-setting seeded-key :foo)
   (q.settings/get-setting seeded-key)
+
+  (:currencies (get-seed-data))
+
+  (expound/expound-str
+   :dinsro.components.seed.core/seed-data
+   (get-seed-data))
+
+  (expound/expound-str
+   :dinsro.components.seed.core/currencies
+   (:currencies (get-seed-data)))
+
+  (def currency (nth (:currencies (get-seed-data)) 1))
+
+  currency
+
+  (expound/expound-str
+   :dinsro.components.seed.currencies/item currency)
+
+  (let [seed-data            (get-seed-data)
+        {:keys [currencies]} seed-data
+        currency             (nth currencies 1)
+        {:keys [sources]}    currency
+        source               (nth sources 1)]
+    (expound/expound-str :dinsro.components.seed.rate-sources/item source))
+
+  (seed-db! (get-seed-data))
 
   nil)

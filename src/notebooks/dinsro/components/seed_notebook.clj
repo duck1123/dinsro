@@ -13,7 +13,7 @@
 (nu/display-file-links)
 
 ^{::clerk/viewer clerk/code}
-(ds/gen-key ::c.seed/default-currencies)
+(ds/gen-key ::c.seed/currencies)
 
 ^{::clerk/viewer clerk/code}
 (ds/gen-key ::c.seed/default-rate-sources)

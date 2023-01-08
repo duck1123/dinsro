@@ -403,7 +403,7 @@
 (defn get-seed-data
   []
   {:default-chains       default-chains
-   :default-currencies   default-currencies
+   :currencies           default-currencies
    :default-networks     default-networks
    :default-rate-sources default-rate-sources
    :default-timezone     default-timezone

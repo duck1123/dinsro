@@ -6,7 +6,6 @@
 
 (>def ::name string?)
 (>def ::url string?)
-(>def ::code string?)
 (>def ::isActive boolean?)
 (>def ::isIdentity boolean?)
 (>def ::rates (s/coll-of ::cs.rates/item))
@@ -14,4 +13,4 @@
 
 (>def ::item
   (s/keys
-   :req-un [::name ::url ::code ::isActive ::isIdentity ::rates ::path]))
+   :req-un [::name ::url ::isActive ::isIdentity ::rates ::path]))
