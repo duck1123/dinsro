@@ -1,6 +1,7 @@
 .cache
 .calva
 .cpcache
+.envrc
 .lsp
 .preprocessor-cljs
 .rebel_readline_history
@@ -10,8 +11,10 @@ classes
 config.edn
 cypress/screenshots
 cypress/videos
+cosign.key
 data
 log
+node_modules
 target
 yarn-error.log
 tls.cert

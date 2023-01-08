@@ -213,6 +213,8 @@ dev:
       app.kubernetes.io/instance: dinsro
     sync:
     - path: ./
+      excludePaths:
+      - node_modules/
     terminal:
       command: ./devspace_start.sh
     ssh:
@@ -224,6 +226,7 @@ dev:
     # - command: git
     ports:
     - port: "3000"
+    - port: "7000"
     - port: "9630"
     - port: "10350"
     open:

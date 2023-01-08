@@ -57,16 +57,16 @@ local_resource(
   labels = [ 'lint' ],
 )
 
-local_resource(
-  'compile-docs',
-  allow_parallel = True,
-  cmd='bb docs',
-  deps = [
-    'src/babashka',
-    'src/main',
-  ],
-  labels = [ 'compile' ],
-)
+# local_resource(
+#   'compile-docs',
+#   allow_parallel = True,
+#   cmd='bb docs',
+#   deps = [
+#     'src/babashka',
+#     'src/main',
+#   ],
+#   labels = [ 'compile' ],
+# )
 
 local_resource(
   'devtools',

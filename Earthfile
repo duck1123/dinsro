@@ -146,6 +146,8 @@ ci:
   BUILD +test
   BUILD +image
   BUILD +devspace-base
+  BUILD +devcards-image
+  BUILD +dev-image-sources
 
 cert-downloader:
   FROM babashka/babashka:latest
@@ -227,13 +229,15 @@ devspace-base:
   ARG EXPECTED_REF=${repo}/${project}:${tag}
   FROM +base-builder
   USER root
-  DO +IMPORT_JAR_DEPS
-  # RUN mkdir -p /home/root
   DO +INSTALL_BYOBU
   DO +INSTALL_TILT
   RUN apt update && apt install -y \
+      bash-completion \
       inetutils-ping \
     && rm -rf /var/lib/apt/lists/*
+  DO +IMPORT_JAR_DEPS
+  COPY --dir +node-deps/node_modules node_modules
+  # RUN mkdir -p /home/root
   # ENV GITLIBS=/root/.gitlibs
   # RUN chown -R root:root .
   # RUN ls -al
@@ -277,6 +281,8 @@ dev-sources:
   FROM +deps-builder
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   COPY --dir . ${src_home}
+  COPY --dir +node-deps/node_modules node_modules
+  DO +IMPORT_JAR_DEPS
 
 dev-sources-minimal:
   FROM +deps-builder
