@@ -2,6 +2,7 @@
   (:require
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.categories :as j.categories]
+   [dinsro.joins.contacts :as j.contacts]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.joins.core.chains :as j.c.chains]
@@ -25,12 +26,15 @@
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
+   [dinsro.joins.nostr.events :as j.n.events]
+   [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.joins.users :as j.users]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.contacts :as m.contacts]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.chains :as m.c.chains]
@@ -60,6 +64,9 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
+   [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
+   [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.settings :as m.settings]
@@ -67,6 +74,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
+   #?(:clj [dinsro.mutations.contacts :as mu.contacts])
    #?(:clj [dinsro.mutations.core.addresses :as mu.c.addresses])
    #?(:clj [dinsro.mutations.core.blocks :as mu.c.blocks])
    #?(:clj [dinsro.mutations.core.connections :as mu.c.connections])
@@ -81,6 +89,8 @@
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
+   #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
+   #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
@@ -92,6 +102,7 @@
   (vec (concat
         j.accounts/attributes
         j.categories/attributes
+        j.contacts/attributes
         j.c.addresses/attributes
         j.c.blocks/attributes
         j.c.chains/attributes
@@ -112,6 +123,8 @@
         j.ln.payreqs/attributes
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
+        j.n.events/attributes
+        j.n.relays/attributes
         j.rates/attributes
         j.rate-sources/attributes
         j.transactions/attributes
@@ -121,6 +134,7 @@
         j.c.words/attributes
         m.accounts/attributes
         m.categories/attributes
+        m.contacts/attributes
         m.c.addresses/attributes
         m.c.blocks/attributes
         m.c.chains/attributes
@@ -145,6 +159,9 @@
         m.ln.payreqs/attributes
         m.ln.peers/attributes
         m.ln.remote-nodes/attributes
+        m.n.contact-relays/attributes
+        m.n.events/attributes
+        m.n.relays/attributes
         m.navbar/attributes
         m.navlink/attributes
         m.rates/attributes
@@ -162,6 +179,7 @@
      (vec (concat
            m.navlink/resolvers
            mu.accounts/resolvers
+           mu.contacts/resolvers
            mu.c.addresses/resolvers
            mu.c.connections/resolvers
            mu.c.blocks/resolvers
@@ -176,6 +194,8 @@
            mu.ln.peers/resolvers
            mu.ln.nodes/resolvers
            mu.ln.remote-nodes/resolvers
+           mu.n.events/resolvers
+           mu.n.relays/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers
