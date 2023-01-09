@@ -57,7 +57,7 @@
    :users                 ["Users"             "/users"            :dinsro.ui.users/UsersReport]
    :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/WalletsReport]
    :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/WalletAddressesReport]
-   :words ["Words" "/core/words" :dinsro.ui.core.words/WordsReport]})
+   :words                 ["Words"             "/core/words"       :dinsro.ui.core.words/WordsReport]})
 
 #?(:clj
    (pc/defresolver id

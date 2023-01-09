@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
@@ -22,7 +23,6 @@
    [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
    [dinsro.ui.ln.node-channels :as u.ln.node-channels]
    [dinsro.ui.ln.node-peers :as u.ln.node-peers]
-   ;; [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
    [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
    [lambdaisland.glogi :as log]))
 
@@ -176,49 +176,56 @@
           (dom/div {}
             (form/render-layout this props)))))))
 
-(def override-form false)
-(def show-accounts false)
-(def show-channels false)
-(def show-peers false)
-(def show-remote-nodes false)
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.ln.node-accounts/SubPage
+    u.ln.node-channels/SubPage
+    u.ln.node-peers/SubPage
+    u.ln.node-remote-nodes/SubPage]})
+
+(def ui-router (comp/factory Router))
+
+(def menu-items
+  [{:key   "accounts"
+    :name  "Accounts"
+    :route "dinsro.ui.ln.node-accounts/SubPage"}
+   {:key   "channels"
+    :name  "Channels"
+    :route "dinsro.ui.ln.node-channels/SubPage"}
+   {:key   "peers"
+    :name  "Peers"
+    :route "dinsro.ui.ln.node-peers/SubPage"}
+   {:key   "remote-nodes"
+    :name  "Remote Nodes"
+    :route "dinsro.ui.ln.node-remote-nodes/SubPage"}])
 
 (defsc ShowNode
   "Show a ln node"
-  [this {:ui/keys          [accounts peers channels
-                            remote-nodes]
-         ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]}]
+  [this {:ui/keys          [router]
+         ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
+         :as               props}]
   {:route-segment ["nodes" :id]
-   :query         [{:ui/accounts (comp/get-query u.ln.node-accounts/SubPage)}
-                   {:ui/channels (comp/get-query u.ln.node-channels/SubPage)}
-                   {:ui/peers (comp/get-query u.ln.node-peers/SubPage)}
-                   {:ui/remote-nodes (comp/get-query u.ln.node-remote-nodes/SubPage)}
-                   ::m.ln.nodes/id
+   :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
                    ::m.ln.nodes/hasCert?
                    ::m.ln.nodes/hasMacaroon?
                    {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
-                   {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}]
-   :initial-state {:ui/accounts              {}
-                   :ui/channels              {}
-                   :ui/peers                 {}
-                   :ui/remote-nodes          {}
-                   ::m.ln.nodes/id           nil
+                   {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
+                   {:ui/router (comp/get-query Router)}]
+   :initial-state {::m.ln.nodes/id           nil
                    ::m.ln.nodes/user         {}
                    ::m.ln.nodes/network      {}
                    ::m.ln.nodes/core-node    {}
                    ::m.ln.nodes/host         ""
                    ::m.ln.nodes/port         0
                    ::m.ln.nodes/hasCert?     false
-                   ::m.ln.nodes/hasMacaroon? false}
+                   ::m.ln.nodes/hasMacaroon? false
+                   :ui/router                {}}
    :ident         ::m.ln.nodes/id
-   :pre-merge     (u.links/page-merger
-                   ::m.ln.nodes/id
-                   {:ui/accounts     u.ln.node-accounts/SubPage
-                    :ui/channels     u.ln.node-channels/SubPage
-                    :ui/peers        u.ln.node-peers/SubPage
-                    :ui/remote-nodes u.ln.node-remote-nodes/SubPage})
+   :pre-merge     (u.links/page-merger ::m.ln.nodes/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::ShowNode)}
   (dom/div {}
     (dom/div :.ui.segment
@@ -243,21 +250,23 @@
           (dom/div :.header "Has Cert?")
           (str hasCert?)
           (when-not hasCert?
-            (comp/fragment
-             (dom/p {} "Cert not found")
-             (dom/button {:classes [:.ui.button]
-                          :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
-               "Fetch"))))
+            (dom/div {}
+              (dom/p {} "Cert not found")
+              (dom/button {:classes [:.ui.button]
+                           :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
+                "Fetch"))))
         (dom/div :.item
           (dom/div :.header "Has Macaroon?")
           (if hasMacaroon?
             (str hasMacaroon?)
             (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
               (str hasMacaroon?))))))
-    (when show-accounts (u.ln.node-accounts/ui-sub-page accounts))
-    (when show-peers (u.ln.node-peers/ui-sub-page peers))
-    (when show-channels (u.ln.node-channels/ui-sub-page channels))
-    (when show-remote-nodes (u.ln.node-remote-nodes/ui-sub-page remote-nodes))))
+    (u.links/ui-nav-menu {:id id :menu-items menu-items})
+    (if router
+      (ui-router router)
+      (dom/div :.ui.segment
+        (dom/h3 {} "Network Router not loaded")
+        (u.links/ui-props-logger props)))))
 
 (report/defsc-report LightningNodesReport
   [this props]

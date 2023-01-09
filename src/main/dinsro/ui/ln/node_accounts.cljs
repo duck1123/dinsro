@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.accounts :as m.ln.accounts]
@@ -36,19 +37,50 @@
 
 (def ui-report (comp/factory Report))
 
-(defsc SubPage
-  [_this {:ui/keys [report] :as props
-          node-id  ::m.ln.nodes/id}]
+(defsc ReportBlock
+  [_this {:ui/keys [report]
+          :as      props}]
   {:query             [::m.ln.nodes/id
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::ReportBlock])
+   :componentDidMount (fn [this]
+                        (let [props (comp/props this)]
+                          (report/start-report! this Report {:route-params props})))
+   :pre-merge         (fn [ctx]
+                        (log/info :ReportBlock/pre-merge-starting {:ctx ctx})
+                        (let [{:keys [data-tree]} ctx
+                              id                  (::m.ln.nodes/id data-tree)
+                              new-context         {:ui/report
+                                                   (assoc (comp/get-initial-state Report)
+                                                          ::m.ln.nodes/id id)}
+                              merged-data-tree    (merge data-tree new-context)]
+                          (log/info :ReportBlock/pre-merge-finished {:data-tree        data-tree
+                                                                     :merged-data-tree merged-data-tree})
+                          merged-data-tree))
    :initial-state     {::m.ln.nodes/id nil
-                       :ui/report      {}}
+                       :ui/report        {}}}
+  (log/info :ReportBlock/starting {:props props})
+  (if report
+    (ui-report report)
+    (dom/p :.ui.segment "report not loaded")))
+
+(def ui-report-block (comp/factory ReportBlock))
+
+(def ident-key ::m.ln.nodes/id)
+(def router-key :dinsro.ui.ln.nodes/Router)
+
+(defsc SubPage
+  [_this {:ui/keys [report] :as props}]
+  {:query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
+   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :route-segment     ["accounts"]
+   :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/creating {:props props})
-  (dom/div :.ui.segment
-    (if node-id
-      (ui-report report)
-      (dom/div {} "Node ID not set"))))
+  (if (get-in props [[::dr/id router-key] ident-key])
+    (ui-report report)
+    (dom/div  :.ui.segment
+      (dom/h3 {} "Node ID not set")
+      (u.links/log-props props))))
 
 (def ui-sub-page (comp/factory SubPage))

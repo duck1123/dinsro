@@ -2,8 +2,8 @@
   (:require
    [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   ;; [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.container :as container :refer [defsc-container]]
    [com.fulcrologic.rad.container-options :as co]
    [com.fulcrologic.rad.control-options :as copt]
@@ -19,7 +19,6 @@
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.node-blocks :as u.c.node-blocks]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
-   [dinsro.ui.core.node-transactions :as u.c.node-transactions]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
@@ -128,54 +127,57 @@
 (def show-blocks true)
 (def show-transactions false)
 
+(defrouter Router
+  [_this _props]
+  {:router-targets [u.c.node-blocks/SubPage
+                    u.c.node-peers/SubPage]})
+
+(def ui-router (comp/factory Router))
+
+(def menu-items
+  [{:key   "peers"
+    :name  "Peers"
+    :route "dinsro.ui.core.node-peers/SubPage"}
+   {:key   "blocks"
+    :name  "Blocks"
+    :route "dinsro.ui.core.node-blocks/SubPage"}])
+
 (defsc ShowNode
   "Show a core node"
-  [this {::m.c.nodes/keys [id name network]
-         :ui/keys         [blocks peers transactions]
-         :as              props}]
+  [_this {::m.c.nodes/keys [id name network]
+          :ui/keys         [router]
+          :as              props}]
   {:route-segment ["node" :id]
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
-                   {:ui/peers (comp/get-query u.c.node-peers/SubPage)}
-                   {:ui/blocks (comp/get-query u.c.node-blocks/SubPage)}
-                   {:ui/transactions (comp/get-query u.c.node-transactions/SubPage)}
-                   #_[df/marker-table '_]]
+                   {:ui/router (comp/get-query Router)}]
    :initial-state {::m.c.nodes/id      nil
                    ::m.c.nodes/name    ""
                    ::m.c.nodes/network {}
-                   :ui/peers           {}
-                   :ui/blocks          {}
-                   :ui/transactions    {}}
+                   :ui/router          {}}
    :ident         ::m.c.nodes/id
-   :pre-merge     (u.links/page-merger
-                   ::m.c.nodes/id
-                   {:ui/blocks       u.c.node-blocks/SubPage
-                    :ui/peers        u.c.node-peers/SubPage
-                    :ui/transactions u.c.node-transactions/SubPage})
+   :pre-merge (u.links/page-merger ::m.c.nodes/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.c.nodes/id ::ShowNode)}
-  (log/finer :ShowNode/creating {:id id :props props :this this})
-  (let [{:keys [main sub]} (css/get-classnames ShowNode)]
-    (dom/div {:classes [main]}
-      (dom/div :.ui.segment
-        (ui-actions-menu {::m.c.nodes/id id})
-        (dom/dl {}
-          (dom/dt {} "Name")
-          (dom/dd {} (str name))
-          (dom/dt {} "Network")
-          (dom/dd {} (u.links/ui-network-link network)))
-        #_(u.links/log-props props))
-      (when id
-        (dom/div {:classes [sub]}
-          (when show-peers
-            (if peers
-              (u.c.node-peers/ui-sub-page peers)
-              (dom/p :.ui.segment "Peers not defined")))
-          (when show-blocks
-            (if blocks
-              (u.c.node-blocks/ui-sub-page blocks)
-              (dom/p :.ui.segment "Blocks not defined")))
-          (when show-transactions (u.c.node-transactions/ui-sub-page transactions)))))))
+  (if id
+    (let [{:keys [main _sub]} (css/get-classnames ShowNode)]
+      (dom/div {:classes [main]}
+        (dom/div :.ui.segment
+          (ui-actions-menu {::m.c.nodes/id id})
+          (dom/dl {}
+            (dom/dt {} "Name")
+            (dom/dd {} (str name))
+            (dom/dt {} "Network")
+            (dom/dd {} (u.links/ui-network-link network))))
+        (u.links/ui-nav-menu {:menu-items menu-items :id id})
+        (if router
+          (ui-router router)
+          (dom/div :.ui.segment
+            (dom/h3 {} "Network Router not loaded")
+            (u.links/ui-props-logger props)))))
+    (dom/div :.ui.segment
+      (dom/h3 {} "Node not loaded")
+      (u.links/ui-props-logger props))))
 
 (form/defsc-form NewCoreNodeForm [_this _props]
   {fo/id           m.c.nodes/id

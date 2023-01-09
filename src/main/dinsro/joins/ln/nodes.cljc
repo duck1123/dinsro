@@ -25,9 +25,9 @@
    (defn do-index
      [env]
      (if-let [user-id (a.authentication/get-user-id env)]
-       (if-let [user (q.users/read-record user-id)]
+       (if (q.users/read-record user-id)
          (do
-           (log/info :do-index/found-user {:user-id user-id :user user})
+           (log/info :do-index/found-user {:user-id user-id})
            (q.ln.nodes/find-by-user user-id))
          (do
            (log/warn :do-index/user-not-found {:user-id user-id})

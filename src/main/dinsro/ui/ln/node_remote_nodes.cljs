@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -47,19 +48,21 @@
 
 (def ui-report (comp/factory Report))
 
+(def ident-key ::m.ln.nodes/id)
+(def router-key :dinsro.ui.ln.nodes/Router)
+
 (defsc SubPage
-  [_this {:ui/keys [report] :as props
-          node-id  ::m.ln.nodes/id}]
-  {:query             [::m.ln.nodes/id
-                       {:ui/report (comp/get-query Report)}]
+  [_this {:ui/keys [report] :as props}]
+  {:query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :initial-state     {::m.ln.nodes/id nil
-                       :ui/report      {}}
+   :route-segment     ["remote-nodes"]
+   :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/starting {:props props})
-  (dom/div :.ui.segment
-    (if node-id
-      (ui-report report)
-      (dom/div {} "Node ID not set"))))
+  (if (get-in props [[::dr/id router-key] ident-key])
+    (ui-report report)
+    (dom/div  :.ui.segment
+      (dom/h3 {} "Node ID not set")
+      (u.links/log-props props))))
 
 (def ui-sub-page (comp/factory SubPage))

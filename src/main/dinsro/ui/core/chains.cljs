@@ -1,16 +1,15 @@
 (ns dinsro.ui.core.chains
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.ui.core.chain-networks :as u.c.chain-networks]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (def override-form false)
 
@@ -27,30 +26,43 @@
       (dom/p {} "foo")
       (form/render-layout this props))))
 
+(defrouter Router
+  [_this _props]
+  {:router-targets [u.c.chain-networks/SubPage]})
+
+(def ui-router (comp/factory Router))
+
+(def menu-items
+  [{:key   "networks"
+    :name  "Networks"
+    :route "dinsro.ui.core.chain-networks/SubPage"}])
+
 (defsc ShowChain
-  [_this {::m.c.chains/keys [name]
-          :ui/keys          [networks]
+  [_this {::m.c.chains/keys [id name]
+          :ui/keys          [router]
           :as               props}]
-  {:route-segment ["chain" :id]
+  {:ident         ::m.c.chains/id
    :query         [::m.c.chains/id
                    ::m.c.chains/name
-                   {:ui/networks (comp/get-query u.c.chain-networks/SubPage)}
-                   [df/marker-table '_]]
-   :initial-state {::m.c.chains/id    nil
-                   ::m.c.chains/name  ""
-                   :ui/networks {}}
-   :ident         ::m.c.chains/id
-   :pre-merge     (u.links/page-merger
-                   ::m.c.chains/id
-                   {:ui/networks u.c.chain-networks/SubPage})
+                   {:ui/router (comp/get-query Router)}]
+   :initial-state {::m.c.chains/id   nil
+                   ::m.c.chains/name ""
+                   :ui/router        {}}
+   :route-segment ["chain" :id]
+   :pre-merge     (u.links/page-merger ::m.c.chains/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.c.chains/id ::ShowChain)}
-  (log/info :ShowChain/starting {:props props})
   (comp/fragment
    (dom/div :.ui.segment
-     (dom/h1 {} (str "Show Chain: " name)))
-   (if networks
-     (u.c.chain-networks/ui-sub-page networks)
-     (dom/p :.ui.segment "Failed to load chain networks"))))
+     (dom/h1 {} "Show Chain")
+     (dom/dl {}
+       (dom/dt {} "Name")
+       (dom/dd {} (str name))))
+   (u.links/ui-nav-menu {:id id :menu-items menu-items})
+   (if router
+     (ui-router router)
+     (dom/div :.ui.segment
+       (dom/h3 {} "Chain Router not loaded")
+       (u.links/ui-props-logger props)))))
 
 (def ui-show-chain (comp/factory ShowChain))
 

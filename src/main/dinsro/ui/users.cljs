@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -9,55 +10,62 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.user-accounts :as u.user-accounts]
+   [dinsro.ui.user-debits :as u.user-debits]
    [dinsro.ui.user-ln-nodes :as u.user-ln-nodes]
    [dinsro.ui.user-transactions :as u.user-transactions]
    [dinsro.ui.user-wallets :as u.user-wallets]))
 
 (def override-form true)
 
+(def menu-items
+  [{:key   "accounts"
+    :name  "Accounts"
+    :route "dinsro.ui.user-accounts/SubPage"}
+   {:key   "debits"
+    :name  "Debits"
+    :route "dinsro.ui.user-debits/SubPage"}
+   {:key   "ln-nodes"
+    :name  "LN Nodes"
+    :route "dinsro.ui.user-ln-nodes/SubPage"}
+   {:key   "transactions"
+    :name  "Transactions"
+    :route "dinsro.ui.user-transactions/SubPage"}
+
+   {:key   "wallets"
+    :name  "Wallets"
+    :route "dinsro.ui.user-wallets/SubPage"}])
+
+(defrouter Router
+  [_this _props]
+  {:router-targets [u.user-accounts/SubPage
+                    u.user-debits/SubPage
+                    u.user-ln-nodes/SubPage
+                    u.user-transactions/SubPage
+                    u.user-wallets/SubPage]})
+
+(def ui-router (comp/factory Router))
+
 (defsc ShowUser
-  [_this {::m.users/keys [name]
-          :ui/keys       [accounts nodes transactions wallets]}]
+  [_this {::m.users/keys [id name]
+          :ui/keys       [router]}]
   {:route-segment ["users" :id]
    :query         [::m.users/name
                    ::m.users/id
-                   {:ui/accounts (comp/get-query u.user-accounts/SubPage)}
-                   {:ui/nodes (comp/get-query u.user-ln-nodes/SubPage)}
-                   {:ui/transactions (comp/get-query u.user-transactions/SubPage)}
-                   {:ui/wallets (comp/get-query u.user-wallets/SubPage)}]
+                   {:ui/router (comp/get-query Router)}]
    :initial-state {::m.users/name   ""
                    ::m.users/id     nil
-                   :ui/accounts     {}
-                   :ui/nodes        {}
-                   :ui/transactions {}
-                   :ui/wallets      {}}
+                   :ui/router {}}
+
    :ident         ::m.users/id
    :pre-merge     (u.links/page-merger
                    ::m.users/id
-                   {:ui/accounts     u.user-accounts/SubPage
-                    :ui/nodes        u.user-ln-nodes/SubPage
-                    :ui/transactions u.user-transactions/SubPage
-                    :ui/wallets      u.user-wallets/SubPage})
+                   {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.users/id ::ShowUser)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show User " (str name)))
-   (dom/div  :.ui.segment
-     (if nodes
-       (u.user-ln-nodes/ui-sub-page nodes)
-       (dom/p {} "User accounts not loaded")))
-   (dom/div  :.ui.segment
-     (if accounts
-       (u.user-accounts/ui-sub-page accounts)
-       (dom/p {} "User accounts not loaded")))
-   (dom/div :.ui.segment
-     (if transactions
-       (u.user-transactions/ui-sub-page transactions)
-       (dom/p {} "User transactions not loaded")))
-   (dom/div :.ui.segment
-     (if wallets
-       (u.user-wallets/ui-sub-page wallets)
-       (dom/p {} "User wallets not loaded")))))
+   (u.links/ui-nav-menu {:id id :menu-items menu-items})
+   (ui-router router)))
 
 (form/defsc-form AdminUserForm
   [_this _props]

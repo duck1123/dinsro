@@ -10,6 +10,8 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.routing :as rroute]
+   [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -95,9 +97,9 @@
                          (let [state (merge-state state-map page {id-key id})]
                            {key state})))
                       (into {}))]
-      (merge data-tree states))))
+      (merge data-tree states {:ui/page-merged true}))))
 
-(def force-load false)
+(def skip-loaded true)
 
 (defn page-loader
   "Returns a will-enter handler for a page"
@@ -106,18 +108,23 @@
         ident          [key id]
         parent-control (comp/registry-key->class control-key)
         state          (-> (app/current-state app) (get-in ident))]
-    (if (or force-load state)
-      (dr/route-immediate ident)
-      (dr/route-deferred
-       ident
-       (fn []
-         (log/info :page-loader/routing {:key key :id id :parent-control parent-control})
-         (df/load!
-          app ident parent-control
-          {:marker               :ui/selected-node
-           :target               [:ui/selected-node]
-           :post-mutation        `dr/target-ready
-           :post-mutation-params {:target ident}}))))))
+    (log/info :page-loader/starting {:key key :control-key control-key :id id :state state})
+    (if (and skip-loaded (:ui/page-merged state))
+      (do
+        (log/info :page-loader/routing-immediate {:ident ident})
+        (dr/route-immediate ident))
+      (do
+        (log/info :page-loader/deferring {:ident ident})
+        (dr/route-deferred
+         ident
+         (fn []
+           (log/info :page-loader/routing {:key key :id id :parent-control parent-control})
+           (df/load!
+            app ident parent-control
+            {:marker               :ui/selected-node
+             :target               [:ui/selected-node]
+             :post-mutation        `dr/target-ready
+             :post-mutation-params {:target ident}})))))))
 
 (defn subpage-loader
   [ident-key router-key Report this]
@@ -127,7 +134,10 @@
 
 (defn page-merger
   [k mappings]
-  (fn [ctx] (merge-pages ctx k mappings)))
+  (log/info :page-merger/starting {:k k :mappings mappings})
+  (fn [ctx]
+    (log/info :page-merger/merging {:k k :mappings mappings :ctx ctx})
+    (merge-pages ctx k mappings)))
 
 (def blacklisted-keys
   #{:com.fulcrologic.fulcro.ui-state-machines/asm-id
@@ -140,32 +150,28 @@
 
 (defn log-props
   [props]
-  (let [blacklisted-keys #{:config
-                           :com.fulcrologic.fulcro.ui-state-machines/asm-id
-                           :com.fulcrologic.fulcro.application/active-remotes
-                           :ui/controls
-                           :ui/report}]
-    (dom/dl :.ui.segment
-      (->> (keys props)
-           (filter (fn [k] (not (blacklisted-keys k))))
-           (map
-            (fn [k]
-              (comp/fragment
-               (dom/dt {} (str k))
-               (dom/dd {}
-                 (let [v (get props k)]
-                   (if (map? v)
-                     (log-props v)
-                     (do
-                       (str v)
-                       (if (vector? v)
-                         (dom/ul {}
-                           #_(dom/li {} (str "List: " v))
-                           (map
-                            (fn [vi]
-                              (dom/li {} (str vi)))
-                            v))
-                         (dom/div :.ui.segment (str v))))))))))))))
+  (dom/dl :.ui.segment
+    (->> (keys props)
+         (filter (fn [k] (not (blacklisted-keys k))))
+         (map
+          (fn [k]
+            ^{:key k}
+            (comp/fragment
+             (dom/dt {} (str k))
+             (dom/dd {}
+               (let [v (get props k)]
+                 (if (map? v)
+                   (log-props v)
+                   (do
+                     (str v)
+                     (if (vector? v)
+                       (dom/ul {}
+                         (map
+                          (fn [vi]
+                            ^{:key (str k vi)}
+                            (dom/li {} (str vi)))
+                          v))
+                       (dom/div :.ui.segment (str v)))))))))))))
 
 (declare ui-inner-prop-logger)
 
@@ -198,6 +204,22 @@
     (ui-inner-prop-logger props)))
 
 (def ui-props-logger (comp/factory PropsLogger))
+
+(defsc NavMenu
+  [this {:keys [menu-items id]}]
+  (ui-menu
+   {:items menu-items
+    :onItemClick
+    (fn [_e d]
+      (let [route-name (get (js->clj d) "route")
+            route-kw   (keyword route-name)
+            route      (comp/registry-key->class route-kw)]
+        (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
+        (if id
+          (rroute/route-to! this route {:id (str id)})
+          (log/info :onItemClick/no-id {}))))}))
+
+(def ui-nav-menu (comp/factory NavMenu))
 
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]

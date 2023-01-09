@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.networks :as m.c.networks]
@@ -36,19 +37,14 @@
     updated-data))
 
 (defsc SubPage
-  [_this {:ui/keys   [report]
-          :as        props
-          network-id ::m.c.networks/id}]
-  {:query             [::m.c.networks/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :initial-state     {::m.c.networks/id nil
-                       :ui/report        {}}
-   :route-segment     ["ln-nodes"]
-   :ident             (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/starting {:props props})
-  (dom/div :.ui.segment
-    (if network-id
+  [_this {:ui/keys [report] :as props}]
+  {:query         [{:ui/report (comp/get-query Report)}
+                   [::dr/id :dinsro.ui.core.networks/Router]]
+   :initial-state {:ui/report {}}
+   :route-segment ["ln-nodes"]
+   :ident         (fn [] [:component/id ::SubPage])}
+  (let [router-info (get props [::dr/id :dinsro.ui.core.networks/Router])]
+    (if (::m.c.networks/id router-info)
       (ui-report report)
       (dom/p {} "Network ID not set"))))
 

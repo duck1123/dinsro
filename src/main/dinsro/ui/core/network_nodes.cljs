@@ -2,13 +2,13 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defn delete-action
   [report-instance {::m.c.nodes/keys [id]}]
@@ -46,19 +46,16 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys   [report]
-          :as        props
-          network-id ::m.c.networks/id}]
-  {:query             [::m.c.networks/id
-                       {:ui/report (comp/get-query Report)}]
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id :dinsro.ui.core.networks/Router]]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :initial-state     {::m.c.networks/id nil
-                       :ui/report        {}}
+   :initial-state     {:ui/report {}}
    :route-segment     ["nodes"]
    :ident             (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/creating {:props props})
-  (dom/div :.ui.segment
-    (if network-id
+  (let [router-info (get props [::dr/id :dinsro.ui.core.networks/Router])]
+    (if (::m.c.networks/id router-info)
       (ui-report report)
       (dom/p {} "Node ID not set"))))
 

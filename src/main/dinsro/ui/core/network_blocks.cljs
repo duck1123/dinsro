@@ -81,19 +81,19 @@
 (def ui-report-block (comp/factory ReportBlock))
 
 (defsc SubPage
-  [_this {:ui/keys [report-block]
+  [_this {:ui/keys [report]
           :as      props}]
-  {:query             [{:ui/report-block (comp/get-query ReportBlock)}
+  {:query             [{:ui/report (comp/get-query ReportBlock)}
                        [::dr/id :dinsro.ui.core.networks/Router]]
-   :initial-state     {:ui/report-block {}}
+   :initial-state     {:ui/report {}}
    :route-segment     ["blocks"]
    :ident (fn [] [:component/id ::SubPage])}
   (let [router-info (get props [::dr/id :dinsro.ui.core.networks/Router])
         network-id  (::m.c.networks/id router-info)]
-    (log/info :SubPage/starting {:props props :report-block report-block :router-info router-info})
+    (log/info :SubPage/starting {:props props :report report :router-info router-info})
     (if network-id
-      (if report-block
-        (ui-report-block (assoc report-block ::m.c.networks/id network-id))
+      (if report
+        (ui-report (assoc report ::m.c.networks/id network-id))
         (dom/div :.ui.segment "Report not loaded"))
       (dom/div :.ui.segment "Network Blocks: No network id"))))
 

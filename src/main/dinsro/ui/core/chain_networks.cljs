@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.chains :as m.c.chains]
@@ -35,21 +36,21 @@
     (log/finer :SubPage-pre-merge/finished {:updated-data updated-data :data-tree data-tree})
     updated-data))
 
+(def ident-key ::m.c.chains/id)
+(def router-key :dinsro.ui.core.chains/Router)
+
 (defsc SubPage
-  [_this {:ui/keys [report]
-          chain-id ::m.c.chains/id
-          :as      props}]
-  {:query         [::m.c.chains/id
-                   {:ui/report (comp/get-query Report)}]
-   :pre-merge     SubPage-pre-merge
-   :initial-state {::m.c.chains/id nil
-                   :ui/report      {}}
+  [_this {:ui/keys [report] :as props}]
+  {:query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident         (fn [] [:component/id ::SubPage])}
-  (log/finer :SubPage/starting {:props props})
-  (dom/div :.ui.segment
-    (if chain-id
-      (ui-report report)
-      (dom/p {} "Chain id not set"))))
+   :route-segment     ["remote-nodes"]
+   :initial-state     {:ui/report {}}
+   :ident             (fn [] [:component/id ::SubPage])}
+  (if (get-in props [[::dr/id router-key] ident-key])
+    (ui-report report)
+    (dom/div  :.ui.segment
+      (dom/h3 {} "Node ID not set")
+      (u.links/log-props props))))
 
 (def ui-sub-page (comp/factory SubPage))

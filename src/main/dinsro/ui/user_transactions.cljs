@@ -1,15 +1,20 @@
 (ns dinsro.ui.user-transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.transactions/description]
+  {ro/columns          [m.transactions/description
+                        m.transactions/date
+                        j.transactions/user]
    ro/controls         {::m.users/id {:type :uuid :label "id"}
                         ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
@@ -21,14 +26,21 @@
 
 (def ui-report (comp/factory Report))
 
+(def ident-key ::m.users/id)
+(def router-key :dinsro.ui.users/Router)
+
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:query             [::m.users/id
-                       {:ui/report (comp/get-query Report)}]
+  [_this {:ui/keys [report] :as props}]
+  {:query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :initial-state     {::m.users/id nil
-                       :ui/report   {}}
+   :route-segment     ["transactions"]
+   :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (ui-report report))
+  (if (get-in props [[::dr/id router-key] ident-key])
+    (ui-report report)
+    (dom/div  :.ui.segment
+      (dom/h3 {} "Node ID not set")
+      (u.links/log-props props))))
 
 (def ui-sub-page (comp/factory SubPage))

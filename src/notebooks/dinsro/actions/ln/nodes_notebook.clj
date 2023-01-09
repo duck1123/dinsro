@@ -37,7 +37,9 @@
 
 ;; ## get-macaroon-text
 
-(a.ln.nodes/get-macaroon-text n.lnd/node)
+(try
+  (a.ln.nodes/get-macaroon-text n.lnd/node)
+  (catch Exception ex ex))
 
 ;; ## initialize-s!
 

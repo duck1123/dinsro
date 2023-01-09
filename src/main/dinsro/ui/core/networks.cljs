@@ -3,48 +3,49 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   ;; [com.fulcrologic.rad.form :as form]
-   ;; [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.routing :as rroute]
-   [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.ui.core.network-addresses :as u.c.network-addresses]
    [dinsro.ui.core.network-blocks :as u.c.network-blocks]
    [dinsro.ui.core.network-ln-nodes :as u.c.network-ln-nodes]
    [dinsro.ui.core.network-nodes :as u.c.network-nodes]
    [dinsro.ui.core.network-wallets :as u.c.network-wallets]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (def override-form false)
 
 (defrouter Router
-  [this props]
+  [_this _props]
   {:router-targets [u.c.network-addresses/SubPage
                     u.c.network-blocks/SubPage
                     u.c.network-nodes/SubPage
                     u.c.network-ln-nodes/SubPage
-                    u.c.network-wallets/SubPage]}
-  (log/info :Router/starting {:props props :this this})
-  (let [{:keys [current-state pending-path-segment route-props
-                #_route-factory]} props]
-    (case current-state
-      (dom/div :.ui.segment
-        (dom/div {} "Default route")
-        (dom/p {} "Current State: " (pr-str current-state))
-        (dom/p {} "Segment: " (pr-str pending-path-segment))
-        (dom/p {} "Props: " (pr-str route-props))
-        (dom/p {} "Props 2: " (pr-str props))
-        (dom/code {} (pr-str route-props))))))
+                    u.c.network-wallets/SubPage]})
 
 (def ui-router (comp/factory Router))
 
+(def menu-items
+  [{:key   "addresses"
+    :name  "Addresses"
+    :route "dinsro.ui.core.network-addresses/SubPage"}
+   {:key   "blocks"
+    :name  "Blocks"
+    :route "dinsro.ui.core.network-blocks/SubPage"}
+   {:name  "LN Nodes"
+    :key   "ln-nodes"
+    :route "dinsro.ui.core.network-ln-nodes/SubPage"}
+   {:name  "Core Nodes"
+    :key   "core-nodes"
+    :route "dinsro.ui.core.network-nodes/SubPage"}
+   {:name  "Wallets"
+    :key   "wallets"
+    :route "dinsro.ui.core.network-wallets/SubPage"}])
+
 (defsc ShowNetwork
-  [this {::m.c.networks/keys [id chain name]
-         :ui/keys            [router]
-         :as                 props}]
+  [_this {::m.c.networks/keys [id chain name]
+          :ui/keys            [router]
+          :as                 props}]
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
@@ -55,73 +56,25 @@
                    ::m.c.networks/chain {}
                    :ui/router           {}}
    :route-segment ["network" :id]
-
-  ;;  :pre-merge
-  ;;  (fn [ctx]
-  ;;    (log/info :ShowNetwork/pre-merge-starting {:ctx ctx})
-  ;;    (let [{:keys [data-tree state-map]} ctx
-  ;;          id                            (::m.c.networks/id data-tree)
-  ;;          merged-data-tree              (merge
-  ;;                                         (comp/get-initial-state ShowNetwork)
-  ;;                                         {:ui/router (-> state-map
-  ;;                                                         (get-in (comp/get-ident Router {}))
-  ;;                                                         (assoc ::m.c.networks/id id))}
-  ;;                                         data-tree)]
-  ;;      (log/info :ShowNetwork/pre-merge-finished {:merged-data-tree merged-data-tree})
-  ;;      merged-data-tree))
-
+   :pre-merge     (u.links/page-merger ::m.c.networks/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
-  (log/info :ShowNetwork/starting {:props props})
   (if id
     (comp/fragment
      (dom/div :.ui.segment
        (dom/dl {}
          (dom/dt {} "Name")
          (dom/dd {} (str name))
-         (dom/dt {} "Chain: ")
-         (dom/dd {}
-           (if chain
-             (u.links/ui-chain-link2 chain)
-             "None")))
-       ;; (dom/h1 {} (str name))
-       ;; (dom/div {}
-       ;;   (dom/span {} "Chain: ")
-       ;;   (if chain
-       ;;     (u.links/ui-chain-link2 chain)
-       ;;     "None"))
-       #_(u.links/log-props props))
-     (ui-menu
-      {:items [{:key   "addresses"
-                :name  "Addresses"
-                :route "dinsro.ui.core.network-addresses/SubPage"}
-               {:key   "blocks"
-                :name  "Blocks"
-                :route "dinsro.ui.core.network-blocks/SubPage"}
-               {:name  "LN Nodes"
-                :key   "ln-nodes"
-                :route "dinsro.ui.core.network-ln-nodes/SubPage"}
-               {:name  "Core Nodes"
-                :key   "core-nodes"
-                :route "dinsro.ui.core.network-nodes/SubPage"}
-               {:name  "Wallets"
-                :key   "wallets"
-                :route "dinsro.ui.core.network-wallets/SubPage"}]
-       :onItemClick
-       (fn [_e d]
-         (let [route-name (get (js->clj d) "route")
-               route-kw   (keyword route-name)
-               route      (comp/registry-key->class route-kw)]
-           (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
-           (if id
-             (rroute/route-to! this route {:id (str id)})
-             (log/info :onItemClick/no-id {}))))})
+         (dom/dt {} "Chain")
+         (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
+     (u.links/ui-nav-menu {:id id :menu-items menu-items})
      (if router
        (ui-router router)
-       (dom/div :.ui.segment "Network Router not loaded")))
-
-    (dom/p :.ui.segment
-      "Network Not loaded"
-      (pr-str props))))
+       (dom/div :.ui.segment
+         (dom/h3 {} "Network Router not loaded")
+         (u.links/ui-props-logger props))))
+    (dom/div :.ui.segment
+      (dom/h3 {} "Network Not loaded")
+      (u.links/ui-props-logger props))))
 
 (report/defsc-report CoreNetworksReport
   [_this _props]
