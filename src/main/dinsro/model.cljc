@@ -27,6 +27,7 @@
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.joins.nostr.events :as j.n.events]
+   [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
@@ -66,6 +67,7 @@
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -90,6 +92,7 @@
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
+   #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
@@ -124,6 +127,7 @@
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
         j.n.events/attributes
+        j.n.pubkeys/attributes
         j.n.relays/attributes
         j.rates/attributes
         j.rate-sources/attributes
@@ -161,6 +165,7 @@
         m.ln.remote-nodes/attributes
         m.n.contact-relays/attributes
         m.n.events/attributes
+        m.n.pubkeys/attributes
         m.n.relays/attributes
         m.navbar/attributes
         m.navlink/attributes
@@ -195,6 +200,7 @@
            mu.ln.nodes/resolvers
            mu.ln.remote-nodes/resolvers
            mu.n.events/resolvers
+           mu.n.pubkeys/resolvers
            mu.n.relays/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers

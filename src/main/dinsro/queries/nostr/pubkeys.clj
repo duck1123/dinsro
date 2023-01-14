@@ -1,5 +1,6 @@
 (ns dinsro.queries.nostr.pubkeys
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
@@ -23,3 +24,31 @@
   [pubkey]
   [string? => ::m.n.pubkeys/id]
   (create-record {::m.n.pubkeys/pubkey pubkey}))
+
+(>defn read-record
+  [id]
+  [:xt/id => (? ::m.n.pubkeys/item)]
+  (let [db     (c.xtdb/main-db)
+        record (xt/pull db '[*] id)]
+    (when (get record ::m.n.pubkeys/id)
+      (dissoc record :xt/id))))
+
+(>defn index-ids
+  []
+  [=> (s/coll-of :xt/id)]
+  (let [db    (c.xtdb/main-db)
+        query '[:find ?e :where [?e ::m.n.pubkeys/id _]]]
+    (map first (xt/q db query))))
+
+(>defn delete!
+  [id]
+  [::m.n.pubkeys/id => nil?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
+    nil))
+
+(>defn delete-all
+  []
+  [=> nil?]
+  (doseq [id (index-ids)]
+    (delete! id)))

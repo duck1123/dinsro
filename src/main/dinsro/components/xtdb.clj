@@ -31,7 +31,7 @@
 (defn main-node
   "Returns the main xtdb node"
   []
-  (log/finer :nodes/read {:nodes xtdb-nodes})
+  #_(log/finer :nodes/read {:nodes xtdb-nodes})
   (:main xtdb-nodes))
 
 (defn main-db
@@ -39,5 +39,5 @@
   []
   (let [node (main-node)
         db (c.api/db node)]
-    (log/finer :db/read {:db db :node node})
+    #_(log/finer :db/read {:db db :node node})
     db))

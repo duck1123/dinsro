@@ -32,6 +32,7 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -407,6 +408,14 @@
   (form-link this id description :dinsro.ui.ln.payreqs/LNPaymentForm))
 
 (def ui-payreq-link (comp/factory PayReqLinkForm {:keyfn ::m.ln.payreqs/id}))
+
+(form/defsc-form PubkeyLinkForm [this {::m.n.pubkeys/keys [id pubkey]}]
+  {fo/id           m.n.pubkeys/id
+   fo/route-prefix "pubkey-link"
+   fo/attributes   [m.n.pubkeys/pubkey]}
+  (form-link this id pubkey :dinsro.ui.nostr.pubkeys/ShowPubkey))
+
+(def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 
 (form/defsc-form RateLinkForm [this {::m.rates/keys [id date]}]
   {fo/id         m.rates/id
