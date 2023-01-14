@@ -5,6 +5,7 @@
 
 (s/def ::username string?)
 (s/def ::password string?)
+(>def ::pubkey string?)
 (>def ::role keyword?)
 (s/def ::accounts (s/coll-of :dinsro.components.seed.accounts/item))
 (s/def ::categories (s/coll-of :dinsro.components.seed.categories/item))
@@ -16,6 +17,7 @@
    :req-un
    [::username
     ::password
+    ::pubkey
     ::role
     ::accounts
     ::categories

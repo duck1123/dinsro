@@ -147,15 +147,21 @@
         (throw (RuntimeException. "Failed to find source")))
       (throw (RuntimeException. "Failed to find currency")))))
 
+(defn seed-user-pubkey!
+  [user-id pubkey-info]
+  (log/info :seed-user-pubkey!/starting {:user-id user-id :pubkey-info pubkey-info}))
+
 (>defn seed-user!
   [user]
   [::cs.users/item => any?]
   (log/finer :seed-user!/starting {:user user})
-  (let [{:keys [username password role]} user
+  (let [{:keys [username password pubkeys role]} user
         user                             (a.authentication/do-register username password)
         user-id                          (::m.users/id user)]
     (log/info :seed-users!/registered {:user-id user-id})
-    (a.users/set-role! user-id role)))
+    (a.users/set-role! user-id role)
+    (doseq [pubkey-info pubkeys]
+      (seed-user-pubkey! user-id pubkey-info))))
 
 (>defn seed-users!
   [users]

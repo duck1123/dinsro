@@ -17,6 +17,7 @@
 (>def ::category-names (s/coll-of string?))
 (>def ::users (s/coll-of ::cs.users/item))
 (>def ::addresses (s/coll-of string?))
+(>def ::relays (s/coll-of string?))
 
 (>def ::seed-data
   (s/keys
@@ -27,4 +28,5 @@
     ::networks
     ::nodes
     ::users
+    ::relays
     ::currencies]))
