@@ -3,11 +3,13 @@
    [clojure.core.async :as async]
    [clojure.data.json :as json]
    [dinsro.actions.contacts :as a.contacts]
-   ;; [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [hato.client :as hc]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
+
+(defonce connections (atom {}))
 
 (defn on-message
   [chan]
@@ -44,6 +46,15 @@
                  {:on-message (on-message chan)
                   :on-close   on-close}))
 
+(defn get-client-for-id
+  [relay-id]
+  (let [chan                          (async/chan)
+        relay                         (q.n.relays/read-record relay-id)
+        {::m.n.relays/keys [address]} relay
+        client (get-client chan address)]
+    {:chan    chan
+     :client client}))
+
 (defn process-messages
   [chan]
   (async/go
@@ -56,7 +67,8 @@
            content  "content"} evt]
       (log/info
        :go/msg
-       {:type     type
+       {:evt      evt
+        :type     type
         :req-id   req-id
         :tags     tags
         :id       id

@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.pubkey-relays :as u.n.pubkey-relays]
    [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]))
@@ -50,7 +51,6 @@
           (dom/dl {}
             (dom/dt {} "Pubkey")
             (dom/dd {} (str pubkey))))
-
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (if router
           (ui-router router)
@@ -75,14 +75,24 @@
    :label  "New"
    :action (fn [this _] (form/create! this CreateForm))})
 
+(defn fetch-action
+  [report-instance {::m.n.pubkeys/keys [id]}]
+  (comp/transact! report-instance [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))
+
+(def fetch-action-button
+  {:label     "Fetch"
+   :action    fetch-action
+   :disabled? (fn [_ row-props] (:account/active? row-props))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.pubkeys/pubkey]
-   ro/control-layout   {:action-buttons [::new-node ::refresh]}
-   ro/controls         {::new-node new-button
-                        ::refresh  u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::new ::refresh]}
+   ro/controls         {::new     new-button
+                        ::refresh u.links/refresh-control}
    ro/field-formatters {::m.n.pubkeys/pubkey #(u.links/ui-pubkey-link %3)}
    ro/route            "nodes"
+   ro/row-actions      [fetch-action-button]
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.n.pubkeys/index
