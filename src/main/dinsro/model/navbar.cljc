@@ -13,7 +13,7 @@
    :rates
    :rate-sources
    :admin])
-(def menu-link-names [:accounts :transactions :core-menu :ln-menu])
+(def menu-link-names [:accounts :transactions :core-menu :ln-menu :nostr])
 (def unauth-link-names [:login :registration])
 
 (defattr id ::id :symbol
