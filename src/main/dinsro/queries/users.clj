@@ -5,6 +5,8 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.user-pubkeys :as m.n.user-pubkeys]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
@@ -36,6 +38,22 @@
                 :in    [[?name]]
                 :where [[?id ::m.users/name ?name]]}]
     (ffirst (xt/q db query [name]))))
+
+(>defn find-by-pubkey
+  [pubkey]
+  [::m.n.pubkeys/pubkey => (s/coll-of ::m.users/id)]
+  (log/info :find-by-pubkey/starting {:pubkey pubkey})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?user-id]
+                :in    [[?pubkey]]
+                :where [[?pubkey-id ::m.n.pubkeys/pubkey ?pubkey]
+                        [?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
+                        [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
+        results (xt/q db query [pubkey])
+        ids (map first results)]
+    (log/info :find-by-pubkey/finished {:ids ids})
+
+    ids))
 
 (>defn find-by-transaction
   [transaction-id]

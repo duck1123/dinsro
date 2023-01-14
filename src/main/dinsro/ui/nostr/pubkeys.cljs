@@ -26,7 +26,7 @@
     :route "dinsro.ui.nostr.pubkey-users/SubPage"}
    {:key   "relays"
     :name  "Relays"
-    :route "dinsro.ui.noste.pubkey-relays/SubPage"}])
+    :route "dinsro.ui.nostr.pubkey-relays/SubPage"}])
 
 (defsc Show
   "Show a core node"
@@ -42,7 +42,7 @@
                    :ui/router           {}}
    :ident         ::m.n.pubkeys/id
    :pre-merge     (u.links/page-merger ::m.n.pubkeys/id {:ui/router Router})
-   :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::ShowNode)}
+   :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
   (if id
     (let [{:keys [main _sub]} (css/get-classnames Show)]
       (dom/div {:classes [main]}

@@ -23,7 +23,7 @@
                         ::m.c.tx/node  #(u.links/ui-core-node-link %2)
                         ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
    ro/source-attribute ::m.c.tx/index
-   ro/title            "Node Transactions"
+   ro/title            "Relays"
    ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true})
@@ -34,6 +34,7 @@
   [_this {:ui/keys [report]}]
   {:query         [::m.c.nodes/id
                    {:ui/report (comp/get-query Report)}]
+   :route-segment ["relays"]
    :initial-state {::m.c.nodes/id nil
                    :ui/report     {}}
    :ident         (fn [] [:component/id ::SubPage])}

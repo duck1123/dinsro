@@ -25,6 +25,16 @@
        (comment env query-params)
        {::m.users/index (m.users/idents ids)}))})
 
+(defattr index-by-pubkey ::index-by-pubkey :ref
+  {ao/target    ::m.users/id
+   ao/pc-output [{::index-by-pubkey [::m.users/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
+     (let [pubkey nil
+           ids #?(:clj (q.users/find-by-pubkey pubkey) :cljs [])]
+       (comment env query-params pubkey)
+       {::index-by-pubkey (m.users/idents ids)}))})
+
 (defattr accounts ::m.users/accounts :ref
   {ao/cardinality :many
    ao/target      ::m.accounts/id
@@ -90,6 +100,7 @@
 
 (def attributes
   [index
+   index-by-pubkey
    accounts
    categories
    ln-nodes
