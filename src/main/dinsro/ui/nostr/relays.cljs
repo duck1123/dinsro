@@ -53,3 +53,5 @@
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/route             "nodes"})
+
+;; (def ui-relays-report (comp/fragment ))

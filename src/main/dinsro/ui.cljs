@@ -68,6 +68,7 @@
                     u.home/HomePage
                     u.login/LoginPage
                     u.ln/LnPage
+                    u.nostr/Page
                     u.rate-sources/ShowRateSource
                     u.rate-sources/Report
                     u.rates/Report
