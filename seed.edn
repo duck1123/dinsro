@@ -7,6 +7,8 @@
  {"bitcoin"  ["mainnet" "testnet" "regtest"]
   "fakecoin" ["mainnet"]}
 
+ :relays ["wss://relay.kronkltd.net"]
+
  :nodes
  [{:name    "bitcoin-alice"
    :host    "alice-bitcoind"
@@ -39,6 +41,7 @@
  :users
  [{:username "admin"
    :password "hunter2"
+   :pubkey   "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
    :role     :account.role/admin
    :accounts []
 
@@ -53,6 +56,7 @@
 
   {:username "alice"
    :password "hunter2"
+   :pubkey   "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a"
    :role     :account.role/user
 
    :accounts
@@ -126,6 +130,7 @@
 
   {:username "bob"
    :password "hunter2"
+   :pubkey   "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
    :role     :account.role/user
 
    :accounts
