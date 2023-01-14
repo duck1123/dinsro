@@ -30,7 +30,7 @@
   {:query             [{:ui/report (comp/get-query Report)}
                        [::dr/id router-key]]
    :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["networks"]
+   :route-segment     ["users"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))

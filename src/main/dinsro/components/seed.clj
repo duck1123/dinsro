@@ -60,6 +60,7 @@
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
+   [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.settings :as q.settings]
@@ -573,15 +574,22 @@
   (doseq [user-data users-data]
     (seed-remote-nodes-user! user-data)))
 
+(>defn seed-relays!
+  [relays]
+  [::cs.core/relays => any?]
+  (doseq [relay-address relays]
+    (q.n.relays/register-relay relay-address)))
+
 (>defn seed-db!
   [seed-data]
   [::cs.core/seed-data => any?]
-  (let [{:keys [currencies networks nodes timezone users]} seed-data]
+  (let [{:keys [currencies networks nodes relays timezone users]} seed-data]
     (create-navlinks!)
     (dt/set-timezone! timezone)
 
     (seed-chains! (keys networks))
     (seed-networks! networks)
+    (seed-relays! relays)
 
     (try
       (seed-core-nodes! nodes)

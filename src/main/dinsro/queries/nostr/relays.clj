@@ -13,12 +13,14 @@
   "Create a relay record"
   [params]
   [::m.n.relays/params => :xt/id]
+  (log/info :create-record/starting {:params params})
   (let [node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.n.relays/id id)
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
+    (log/info :create-record/finished {:id id})
     id))
 
 (>defn read-record
@@ -41,6 +43,41 @@
     (log/info :index-ids/finished {:ids ids})
     ids))
 
+(>defn find-by-address
+  [address]
+  [::m.n.relays/address => (? ::m.n.relays/id)]
+  (log/info :find-by-address/starting {:address address})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?relay-id]
+                :in [[?address]]
+                :where [[?relay-id ::m.n.relays/address ?address]]}
+        results (xt/q db query [address])
+        id   (ffirst results)]
+    (log/info :find-by-address/finished {:id id :results results})
+    id))
+
+(>defn delete-record
+  [id]
+  [:xt/id => nil?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
+    nil))
+
+(>defn delete-all
+  []
+  [=> nil?]
+  (doseq [id (index-ids)] (delete-record id)))
+
+(>defn register-relay
+  [address]
+  [string? => ::m.n.relays/id]
+  (log/info :register-relay/starting {:address address})
+  (if-let [id (find-by-address address)]
+    id
+    (do
+      (log/info :register-relay/not-found {})
+      (create-record {::m.n.relays/address address}))))
+
 (comment
 
   (some->
@@ -50,5 +87,11 @@
 
   (create-record
    {::m.n.relays/addresses "wss://relay.kronkltd.net/"})
+
+  (find-by-address "wss://relay.kronkltd.net/")
+
+  (register-relay "wss://relay.kronkltd.net/")
+
+  (delete-all)
 
   nil)

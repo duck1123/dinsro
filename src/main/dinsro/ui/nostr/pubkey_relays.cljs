@@ -1,21 +1,22 @@
 (ns dinsro.ui.nostr.pubkey-relays
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.tx :as j.c.tx]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.ui.core.tx :as u.c.tx]
    [dinsro.ui.links :as u.links]))
 
+(def ident-key ::m.n.pubkeys/id)
+(def router-key :dinsro.ui.nostr.pubkeys/Router)
+
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.tx/tx-id
-                        j.c.tx/node
-                        m.c.tx/fetched?
-                        m.c.tx/block]
+  {ro/columns          [m.n.relays/address]
    ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
                         ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
@@ -32,13 +33,12 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query         [::m.c.nodes/id
-                   {:ui/report (comp/get-query Report)}]
-   :route-segment ["relays"]
-   :initial-state {::m.c.nodes/id nil
-                   :ui/report     {}}
-   :ident         (fn [] [:component/id ::SubPage])}
-  (dom/div :.ui.segment
-    (ui-report report)))
+  {:query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :route-segment     ["relays"]
+   :initial-state     {:ui/report {}}
+   :ident             (fn [] [:component/id ::SubPage])}
+  ((comp/factory Report) report))
 
 (def ui-sub-page (comp/factory SubPage))

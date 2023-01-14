@@ -17,14 +17,14 @@
    ao/schema     :production})
 
 (>def ::required-params
-  (s/keys :req []))
+  (s/keys :req [:address]))
 
 (def required-params
   "Required params for contacts"
   ::required-params)
 
-(s/def ::params (s/keys :req []))
-(s/def ::item (s/keys :req [::id]))
+(s/def ::params (s/keys :req [:address]))
+(s/def ::item (s/keys :req [::id :address]))
 
 (defn idents
   [ids]
