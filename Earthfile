@@ -9,6 +9,7 @@ ARG kondo_version=2021.12.16
 ARG node_version=14.15.3
 # https://www.npmjs.com/package/npm?activeTab=versions
 ARG npm_version=9.2.0
+ARG tilt_version=0.31.1
 
 # ARG repo=duck1123
 # ARG project=dinsro
@@ -95,6 +96,13 @@ INSTALL_NODE:
   RUN npm install -g karma-cli
 
 INSTALL_TILT:
+  COMMAND
+  RUN echo ${tilt_version}
+  RUN curl -fsSL "https://github.com/tilt-dev/tilt/releases/download/v${tilt_version}/tilt.${tilt_version}.linux.x86_64.tar.gz" \
+        | tar -xzv tilt \
+      && sudo mv tilt /usr/local/bin/tilt
+
+INSTALL_TILT_LATEST:
   COMMAND
   RUN curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
 
