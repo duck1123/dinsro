@@ -31,6 +31,7 @@
    [dinsro.ui.ln :as u.ln]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.navbar :as u.navbar]
+   [dinsro.ui.nostr :as u.nostr]
    [dinsro.ui.rate-sources :as u.rate-sources]
    [dinsro.ui.rates :as u.rates]
    [dinsro.ui.registration :as u.registration]

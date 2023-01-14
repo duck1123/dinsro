@@ -48,10 +48,10 @@
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
    ro/row-actions       [fetch-action-button delete-action-button]
-   ro/source-attribute  ::m.c.nodes/index
-   ro/title             "Core Node Report"
+   ro/source-attribute  ::m.n.relays/index
+   ro/title             "Relays Report"
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
-   ro/route             "nodes"})
+   ro/route             "relays"})
 
 ;; (def ui-relays-report (comp/fragment ))
