@@ -6,4 +6,4 @@
 (>def ::host string?)
 (>def ::pubkey string?)
 
-(>def ::item (s/keys :req-un [::host :pubkey]))
+(>def ::item (s/keys :req-un [::host ::pubkey]))

@@ -59,6 +59,7 @@
    [dinsro.queries.debits :as q.debits]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.ln.peers :as q.ln.peers]
+   [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.rate-sources :as q.rate-sources]
    [dinsro.queries.rates :as q.rates]
    [dinsro.queries.settings :as q.settings]
@@ -149,7 +150,8 @@
 
 (defn seed-user-pubkey!
   [user-id pubkey-info]
-  (log/info :seed-user-pubkey!/starting {:user-id user-id :pubkey-info pubkey-info}))
+  (log/info :seed-user-pubkey!/starting {:user-id user-id :pubkey-info pubkey-info})
+  (q.n.pubkeys/register-pubkey pubkey-info))
 
 (>defn seed-user!
   [user]
