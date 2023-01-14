@@ -30,12 +30,14 @@
   [_this _props]
   {ro/columns          [m.c.blocks/hash
                         m.c.blocks/height
-                        m.c.blocks/fetched?]
+                        m.c.blocks/fetched?
+                        m.c.blocks/network]
    ro/controls         {::refresh      u.links/refresh-control
-                        ::generate generate-button
+                        ::generate     generate-button
                         ::m.c.nodes/id {:type :uuid :label "Nodes"}}
    ro/control-layout   {:action-buttons [::generate ::refresh]}
-   ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
+   ro/field-formatters {::m.c.blocks/hash    #(u.links/ui-block-link %3)
+                        ::m.c.blocks/network #(u.links/ui-network-link %2)}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Node Blocks"
    ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)]

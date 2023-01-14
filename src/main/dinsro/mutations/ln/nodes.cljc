@@ -170,9 +170,15 @@
      [_env {::m.ln.nodes/keys [id] :as props}]
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
-     (log/info :fetch-peers!/starting {:props props})
-     (a.ln.peers/fetch-peers! id)
-     {:status :ok})
+     (if id
+       (do
+         (log/info :fetch-peers!/starting {:props props})
+         (a.ln.peers/fetch-peers! id)
+         {:status :ok})
+       (do
+         (log/error :fetch-peers!/missing-id {})
+         (throw (RuntimeException. "Missing id")))))
+
    :cljs
    (defmutation fetch-peers! [_props]
      (action [_env] true)

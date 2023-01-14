@@ -1,13 +1,16 @@
 (ns dinsro.ui.core.node-transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx :as j.c.tx]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.ui.links :as u.links]))
+
+(def ident-key ::m.c.nodes/id)
+(def router-key :dinsro.ui.core.nodes/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -30,10 +33,12 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query         [::m.c.nodes/id
-                   {:ui/report (comp/get-query Report)}]
-   :initial-state {::m.c.nodes/id nil
-                   :ui/report     {}}
-   :ident         (fn [] [:component/id ::SubPage])}
-  (dom/div :.ui.segment
-    (ui-report report)))
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
+   :initial-state     {:ui/report {}}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["transactions"]}
+  ((comp/factory Report) report))
+
+(def ui-sub-page (comp/factory SubPage))

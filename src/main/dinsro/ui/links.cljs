@@ -413,7 +413,7 @@
   {fo/id           m.n.pubkeys/id
    fo/route-prefix "pubkey-link"
    fo/attributes   [m.n.pubkeys/pubkey]}
-  (form-link this id pubkey :dinsro.ui.nostr.pubkeys/ShowPubkey))
+  (form-link this id pubkey :dinsro.ui.nostr.pubkeys/Show))
 
 (def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 

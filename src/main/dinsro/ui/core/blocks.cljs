@@ -67,9 +67,7 @@
                    ::m.c.blocks/fetched?       false
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
-   :pre-merge     (u.links/page-merger
-                   ::m.c.blocks/id
-                   {:ui/transactions u.c.block-transactions/SubPage})
+   :pre-merge     (u.links/page-merger ::m.c.blocks/id {:ui/transactions u.c.block-transactions/SubPage})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash

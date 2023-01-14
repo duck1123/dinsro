@@ -9,7 +9,8 @@
   [_this _props]
   {:router-targets
    [u.n.relays/Report
-    u.n.pubkeys/Report]})
+    u.n.pubkeys/Report
+    u.n.pubkeys/Show]})
 
 (def ui-router (comp/factory Router))
 

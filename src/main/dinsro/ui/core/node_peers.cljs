@@ -26,7 +26,8 @@
   {ro/columns        [m.c.peers/peer-id
                       m.c.peers/addr
                       m.c.peers/subver
-                      m.c.peers/connection-type]
+                      m.c.peers/connection-type
+                      m.c.peers/node]
    ro/control-layout {:action-buttons [::new ::fetch ::refresh]
                       :inputs         [[::m.c.nodes/id]]}
    ro/controls       {::m.c.nodes/id {:type :uuid :label "Nodes"}

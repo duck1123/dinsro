@@ -13,12 +13,14 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.networks/name]
+  {ro/columns          [m.c.networks/name
+                        m.c.networks/chain]
    ro/control-layout   {:inputs         [[::m.c.chains/id]]
                         :action-buttons [::refresh]}
    ro/controls         {::m.c.chains/id {:type :uuid :label "Chains"}
                         ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.c.networks/name #(u.links/ui-network-link %3)}
+   ro/field-formatters {::m.c.networks/name  #(u.links/ui-network-link %3)
+                        ::m.c.networks/chain #(u.links/ui-chain-link %2)}
    ro/row-pk           m.c.networks/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.networks/index
@@ -26,10 +28,10 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["remote-nodes"]}
+   :route-segment     ["networks"]}
   ((comp/factory Report) report))
