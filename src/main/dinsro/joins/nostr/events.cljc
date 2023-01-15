@@ -25,6 +25,4 @@
      (let [ids #?(:clj (q.n.events/index-ids) :cljs [])]
        {::m.n.events/admin-index (m.n.events/idents ids)}))})
 
-(def attributes
-  [admin-index
-   index])
+(def attributes [admin-index index])
