@@ -11,17 +11,18 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
-(defn fetch!
+(defn fetch-contact!
   [pubkey-id]
 
-  (let [relay-id (first (q.n.relays/index-ids))
-        relay (q.n.relays/read-record relay-id)
-        address (::m.n.relays/address relay)
-        client (a.n.relays/get-client-for-id relay-id)
+  (let [relay-id      (first (q.n.relays/index-ids))
+        relay         (q.n.relays/read-record relay-id)
+        address       (::m.n.relays/address relay)
+        client        (a.n.relays/get-client-for-id relay-id)
         pubkey-record (q.n.pubkeys/read-record pubkey-id)
-        pubkey (::m.n.pubkeys/pubkey pubkey-record)
-        chan (a.n.relays/get-channel address)]
-    (log/info :fetch!/starting {:pubkey-id pubkey-id})
+        pubkey        (::m.n.pubkeys/pubkey pubkey-record)
+        chan          (a.n.relays/get-channel address)]
+    (log/info :fetch-contact!/starting {:pubkey pubkey
+                                        #_#_#_#_:client client :chan chan})
     (ws/send! client (json/json-str (a.n.relays/adhoc-request [pubkey])))
     (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
 
@@ -29,11 +30,20 @@
   [client pubkey]
   (ws/send! client (json/json-str (a.n.relays/adhoc-request [pubkey]))))
 
+(defn poll!
+  [relay-id]
+  (let [relay   (q.n.relays/read-record relay-id)
+        address (::m.n.relays/address relay)
+        chan    (a.n.relays/get-channel address)]
+    (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
 
-  (q.n.pubkeys/index-ids)
+  (fetch-contact! (first (q.n.pubkeys/index-ids)))
+
+  (poll! relay-id)
 
   (def response (a.n.relays/get-client-for-id relay-id))
 

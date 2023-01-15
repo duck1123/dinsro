@@ -34,9 +34,11 @@
    a.contacts/duck
    a.contacts/matt-odell])
 
+(def req-id "5022")
+
 (defn adhoc-request
   [author-ids]
-  (let [id "5021"]
+  (let [id req-id]
     ["REQ" (str "adhoc " id)
      {:authors author-ids
       :kinds   [0]}]))
@@ -70,8 +72,7 @@
         relay                         (q.n.relays/read-record relay-id)
         {::m.n.relays/keys [address]} relay
         client (get-client chan address)]
-    {:chan    chan
-     :client client}))
+    client))
 
 (defn parse-message
   "Parse a response message"
