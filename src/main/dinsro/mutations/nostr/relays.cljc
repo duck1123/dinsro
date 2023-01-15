@@ -1,7 +1,9 @@
 (ns dinsro.mutations.nostr.relays
   (:require
    [clojure.spec.alpha :as s]
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting])
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   ;; [com.fulcrologic.fulcro.data-fetch :as df]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def >defn =>] :cljs [>def])]
    [com.wsscode.pathom.connect :as pc]
@@ -66,7 +68,10 @@
    :cljs
    (fm/defmutation fetch! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchResponse))
+     (remote    [env]
+       (-> env
+           (fm/returning FetchResponse)
+           (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))
      (ok-action [env]  (handle-fetch env))))
 
 ;; Connect
@@ -84,11 +89,19 @@
   (s/or :success ::connect!-response-success
         :error ::connect!-response-error))
 
+(defsc RelayData
+  [_ _]
+  {:query [::m.n.relays/id ::m.n.relays/address ::m.n.relays/connected]
+   :ident ::m.n.relays/id})
+
 (defsc ConnectResponse
   [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
+  {:initial-state {::mu/status       :initial
+                   ::m.n.relays/item {}
+                   ::mu/errors       {}}
+   :ident         (fn [] [:responses/id ::ConnectReponse])
    :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   {::m.n.relays/item (comp/get-query RelayData)}
                    ::mu/status]})
 
 #?(:clj
@@ -103,10 +116,14 @@
 
 #?(:cljs
    (defn handle-connect
-     [{:keys [state] :as env}]
-     (comment state env)
-     (log/info :handle-connect/started {:state state :env env})
-     {}))
+     [{:keys [state result] :as env}]
+     (log/info :handle-connect/starting {:env env})
+     (let [{:keys [body]} result
+           data           (get body `toggle!)
+           relay          (get data ::m.n.relays/item)]
+       (comment state env)
+       (log/info :handle-connect/started {:result result :body body :data data :relay relay})
+       {})))
 
 #?(:clj
    (pc/defmutation connect!
@@ -135,7 +152,9 @@
    :cljs
    (fm/defmutation toggle! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env ConnectResponse))
-     (ok-action [env]  (handle-connect env))))
+     (remote    [env]
+       (-> env
+           (fm/returning ConnectResponse)
+           (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))))
 
 #?(:clj (def resolvers [connect! fetch! toggle!]))
