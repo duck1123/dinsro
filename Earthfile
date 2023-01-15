@@ -5,10 +5,10 @@ FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d
 ARG base_image=cimg/clojure:1.10-node
 ARG clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
-ARG kondo_version=2021.12.16
-ARG node_version=14.15.3
+ARG kondo_version=2023.01.20
+ARG node_version=18.13.0
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG npm_version=9.2.0
+ARG npm_version=9.3.1
 ARG tilt_version=0.31.1
 
 # ARG repo=duck1123
@@ -345,6 +345,7 @@ image:
   COPY +jar/dinsro.jar dinsro.jar
   COPY resources/docker/config.edn /etc/dinsro/config.edn
   COPY --dir src/main src/notebooks src/notebook-utils src/shared src
+  COPY seed.edn .
   CMD ["java", "-jar", "dinsro.jar"]
   SAVE IMAGE --push ${EXPECTED_REF}
 

@@ -1,6 +1,6 @@
 {
  ;; The host that dinsro is served at
- :baseUrl "dinsro.localhost"
+ :baseUrl "dinsro.localtest.me"
 
  ;; repo for images
  :repo "duck1123"
@@ -15,18 +15,18 @@
  {:enabled     false
   :embedded    false
   :inheritHost true
-  :host        "devcards.dinsro.localhost"}
+  :host        "devcards.dinsro.localtest.me"}
 
  :devtools
  {:enabled     false
   :embedded    false
   :inheritHost true
-  :host        "devtools.dinsro.localhost"}
+  :host        "devtools.dinsro.localtest.me"}
 
  :docs
  {:enabled     false
   :inheritHost true
-  :host        "docs.dinsro.localhost"}
+  :host        "docs.dinsro.localtest.me"}
 
  :logLevel ":info"
 
@@ -53,17 +53,17 @@
   :enabled     false
   :embedded    false
   :inheritHost true
-  :host        "notebooks.dinsro.localhost"}
+  :host        "notebooks.dinsro.localtest.me"}
 
  :workspaces
  {:enabled     false
   :embedded    false
   :inheritHost true
-  :host        "workspaces.dinsro.localhost"}
+  :host        "workspaces.dinsro.localtest.me"}
 
  :useDocs true
 
- :portalHost "portal.dinsro.localhost"
+ :portalHost "portal.dinsro.localtest.me"
 
  ;; If true, devtools will be run on the host, otherwise the dev image will launch
  ;; a devtools watcher on startup and will pre-compile the js resources

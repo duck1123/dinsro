@@ -12,11 +12,12 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
-(def inputs {:name "notebooktest"
-             :alias "Notebook Test"
-             :auto-unlock {:password "hunter2"}
-             :ingress {:host "fileserver.lnd.localhost"}
-             :chain :mainnet})
+(def inputs
+  {:name        "notebooktest"
+   :alias       "Notebook Test"
+   :auto-unlock {:password "hunter2"}
+   :ingress     {:host "fileserver.lnd.localtest.me"}
+   :chain       :mainnet})
 
 ;; ## merge-defaults
 

@@ -54,22 +54,22 @@ devcards:
       # -- Enable ingress for devcards devtools
       enabled: true
       hosts:
-      - host: devtools.devcards.dinsro.localhost
+      - host: devtools.devcards.dinsro.localtest.me
         paths:
         - path: /
       # tls:
       # - hosts:
-      #   - devtools.devcards.dinsro.localhost
+      #   - devtools.devcards.dinsro.localtest.me
       #   secretName: dinsro-devcards-devtools-tls
   ingress:
     enabled: true
     hosts:
-    - host: cards.dinsro.localhost
+    - host: cards.dinsro.localtest.me
       paths:
       - path: /
     # tls:
     # - hosts:
-    #   - cards.dinsro.localhost
+    #   - cards.dinsro.localtest.me
     #   secretName: cards-tls
   service:
     type: ClusterIP
@@ -85,12 +85,12 @@ devtools:
     # -- Deploy Devtools ingress
     enabled: true
     hosts:
-    - host: devtools.dinsro.localhost
+    - host: devtools.dinsro.localtest.me
       paths:
       - path: /
     # tls: []
     # - hosts:
-    #   - devtools.dinsro.localhost
+    #   - devtools.dinsro.localtest.me
     #   secretName: dinsro-devtools-tls
 
 docs:
@@ -102,12 +102,12 @@ docs:
   ingress:
     enabled: true
     hosts:
-    - host: docs.dinsro.localhost
+    - host: docs.dinsro.localtest.me
       paths:
       - path: /
     # tls:
     # - hosts:
-    #   - docs.dinsro.localhost
+    #   - docs.dinsro.localtest.me
     #   secretName: docs-tls
 
 # -- base log level for dinsro
@@ -127,12 +127,12 @@ workspaces:
     # -- deploy workspaces ingress
     enabled: true
     hosts:
-    - host: workspaces.dinsro.localhost
+    - host: workspaces.dinsro.localtest.me
       paths:
       - path: /
     # tls:
     # - hosts:
-    #   - workspaces.dinsro.localhost
+    #   - workspaces.dinsro.localtest.me
     #   secretName: dinsro-workspaces-tls
 
 notebooks:
@@ -145,12 +145,12 @@ notebooks:
     # -- deploy notebooks ingress
     enabled: true
     hosts:
-    - host: notebooks.dinsro.localhost
+    - host: notebooks.dinsro.localtest.me
       paths:
       - path: /
     # tls:
     # - hosts:
-    #   - notebooks.dinsro.localhost
+    #   - notebooks.dinsro.localtest.me
     #   secretName: dinsro-notebooks-tls
 
 portal:
@@ -163,12 +163,12 @@ portal:
     # -- Deploy Portal ingress
     enabled: true
     hosts:
-    - host: portal.dinsro.localhost
+    - host: portal.dinsro.localtest.me
       paths:
       - path: /
     # tls:
     # - hosts:
-    #   - portal.dinsro.localhost
+    #   - portal.dinsro.localtest.me
     #   secretName: dinsro-portal-tls
 
 persistence:
@@ -207,12 +207,12 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-  - host: dinsro.localhost
+  - host: dinsro.localtest.me
     paths:
     - path: "/"
   # tls:
   # - hosts:
-  #   - dinsro.localhost
+  #   - dinsro.localtest.me
   #   secretName: dinsro-tls
 
 resources: {}

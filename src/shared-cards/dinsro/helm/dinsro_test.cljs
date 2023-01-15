@@ -7,26 +7,25 @@
    [nextjournal.viewer :as viewer :refer [inspect]]))
 
 (def site-config
-  {:baseUrl             "dinsro.localhost"
-   :repo                "duck1123"
-   :version             "latest"
-   :projectId           "p-vhkqf"
-   :devcards
-   {:enabled     true
-    :inheritHost true
-    :host        "devcards.dinsro.localhost"}
-   :useDocs             true
-   :portalHost          "portal.dinsro.localhost"
-   :localDevtools       true
-   :useCards            true
-   :seedDatabase        false
-   :useGuardrails       true
-   :useLinting          true
-   :useNrepl            false
-   :usePersistence      false
-   :usePortal           true
-   :useProduction       false
-   :useTests            false})
+  {:baseUrl        "dinsro.localtest.me"
+   :repo           "duck1123"
+   :version        "latest"
+   :projectId      "p-vhkqf"
+   :devcards       {:enabled     true
+                    :inheritHost true
+                    :host        "devcards.dinsro.localtest.me"}
+   :useDocs        true
+   :portalHost     "portal.dinsro.localtest.me"
+   :localDevtools  true
+   :useCards       true
+   :seedDatabase   false
+   :useGuardrails  true
+   :useLinting     true
+   :useNrepl       false
+   :usePersistence false
+   :usePortal      true
+   :useProduction  false
+   :useTests       false})
 
 (dc/defcard site-config [] [inspect site-config])
 

@@ -3,7 +3,7 @@
    #?(:clj [clj-yaml.core :as yaml])
    #?(:cljs [dinsro.yaml :as yaml])))
 
-(def default-base-url "dinsro.localhost")
+(def default-base-url "dinsro.localtest.me")
 
 (defn merge-defaults
   [options]

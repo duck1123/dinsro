@@ -168,7 +168,7 @@
 ;;      :autoUnlock false
 ;;      :autoUnlockPassword "password12345678"
 ;;      :network "regtest"
-;;      :ingress {:host "lnd1.localhost"}
+;;      :ingress {:host "lnd1.localtest.me"}
 ;;      }))
 
 (defn ->values-yaml

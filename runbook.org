@@ -33,8 +33,8 @@ https://earthly.dev/get-earthly
 https://www.devspace.sh/docs/getting-started/installation
 
 #+BEGIN_SRC shell
-    curl -L -o devspace "https://github.com/loft-sh/devspace/releases/latest/download/devspace-linux-amd64" \
-        && sudo install -c -m 0755 devspace /usr/local/bin
+  curl -L -o devspace "https://github.com/loft-sh/devspace/releases/latest/download/devspace-linux-amd64" \
+      && sudo install -c -m 0755 devspace /usr/local/bin
 #+END_SRC
 
 *** Clojure
@@ -55,7 +55,7 @@ https://clojure.org/guides/install_clojure#_linux_instructions
 This will create a registry to share created images with the cluster
 
 #+BEGIN_SRC shell
-  k3d registry create myregistry.localhost --port 12345
+  k3d registry create myregistry.localtest.me --port 12345
 #+END_SRC
 
 *** Create Cluster
@@ -68,7 +68,7 @@ This will create a single node kubernetes cluster in a docker container
       -p "80:80@loadbalancer" \
       -p "443:443@loadbalancer" \
       --servers 1 \
-      --registry-use k3d-myregistry.localhost:12345 \
+      --registry-use k3d-myregistry.localtest.me:12345 \
       --kubeconfig-update-default
 #+END_SRC
 
@@ -137,7 +137,7 @@ kubectl create namespace dinsro
 ** Delete Registry
 
 #+BEGIN_SRC  shell
-  k3d registry delete k3d-myregistry.localhost
+  k3d registry delete k3d-myregistry.localtest.me
 #+END_SRC
 
 * Running

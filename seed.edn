@@ -202,19 +202,19 @@
    :code "usd"
    :sources
    [{:name       "CoinLott0"
-     :url        "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"
+     :url        "https://www.coinlott0.localtest.me/api/v1/quotes/BTC-USD"
      :isActive   false
      :isIdentity false
      :path       ".rate"
      :rates      []}
     {:name       "BitPonzi"
-     :url        "https://www.bitponzi.biz.localhost/cgi?id=3496709"
+     :url        "https://www.bitponzi.biz.localtest.me/cgi?id=3496709"
      :isActive   false
      :isIdentity false
      :path       ".rate"
      :rates      []}
     {:name       "DuckBitcoin"
-     :url        "https://www.duckbitcoin.localhost/api/current-rates"
+     :url        "https://www.duckbitcoin.localtest.me/api/current-rates"
      :isActive   false
      :isIdentity false
      :path       ".rate"
@@ -244,7 +244,7 @@
       {:date "2022-12-03T13:43:16" :rate 5887 }]}
 
     {:name       "Leviathan"
-     :url        "https://www.leviathan.localhost/prices"
+     :url        "https://www.leviathan.localtest.me/prices"
      :isActive   false
      :isIdentity false
      :path       ".rate"

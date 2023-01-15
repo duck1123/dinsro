@@ -315,14 +315,15 @@
 
 (defn helm-fileserver
   [name]
-  (let [prefix   (if use-prefix "resources/helm/" "")
-        path     (str prefix "fileserver")
-        filename (str "target/conf/" name "/fileserver_values.yaml")
-        args     [(str "-n " name)
-                  (str "--name-template=" name)
-                  (str "--repo " "https://chart.kronkltd.net/")
-                  (str "--values " filename)]
-        cmd      (string/join " " (concat ["helm template "] args [path]))]
+  (let [use-prefix true
+        prefix     (if use-prefix "resources/helm/" "")
+        path       (str prefix "fileserver")
+        filename   (str "target/conf/" name "/fileserver_values.yaml")
+        args       [(str "-n " name)
+                    (str "--name-template=" name)
+                    (str "--repo " "https://chart.kronkltd.net/")
+                    (str "--values " filename)]
+        cmd        (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
 (defn helm-nbxplorer

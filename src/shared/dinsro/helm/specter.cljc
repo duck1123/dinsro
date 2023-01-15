@@ -109,7 +109,7 @@
 (defn ->values
   [{:keys [name] :as options}]
   (let [options (merge-defaults options)
-        host    (str "specter." name ".localhost")]
+        host    (str "specter." name ".localtest.me")]
     {:image        {:tag "v1.10.3"}
      :ingress      {:hosts [{:host  host
                              :paths [{:path "/"}]}]}

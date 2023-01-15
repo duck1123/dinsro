@@ -54,7 +54,7 @@
      :image             {:tag "0.13.1"}
      ;; :image             {:tag "0.12.2"}
      ;; :image             {:tag "0.11.1"}
-     :ingress           {:hosts [{:host  (str "rtl." name ".localhost")
+     :ingress           {:hosts [{:host  (str "rtl." name ".localtest.me")
                                   :paths [{:path "/"}]}]}
      :configurationFile #?(:clj (json2/encode config) :cljs (do (comment config) ""))
      :bitcoin           {:host (str name "-bitcoind." name)}}))

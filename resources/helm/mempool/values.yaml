@@ -45,7 +45,7 @@ persistence:
 devtoolsIngress:
   enabled: false
   hosts:
-  - host: devtools.dinsro.localhost
+  - host: devtools.dinsro.localtest.me
 
 ingress:
   enabled: true
@@ -53,7 +53,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-  - host: rtl.localhost
+  - host: rtl.localtest.me
     paths:
     - path: "/"
   tls: []

@@ -203,9 +203,8 @@
    :port            "10009"
    :node            "bitcoin-alice"
    :mnemonic        lnd1-mnemonic
-   :remote-nodes
-   [{:host   "bob-lnd-external.bob.svc.cluster.local"
-     :pubKey lnd2-key}]
+   :remote-nodes    [{:host   "bob-lnd-external.bob.svc.cluster.local"
+                      :pubKey lnd2-key}]
    :peers           []
    :txes            []})
 
@@ -236,28 +235,28 @@
     :rates      sat-rates
     :path       "1"}
    {:name       "CoinLott0"
-    :url        "https://www.coinlott0.localhost/api/v1/quotes/BTC-USD"
+    :url        "https://www.coinlott0.localtest.me/api/v1/quotes/BTC-USD"
     :isActive   false
     :isIdentity false
     :path       ".rate"
     :code       "usd"
     :rates      []}
    {:name       "BitPonzi"
-    :url        "https://www.bitponzi.biz.localhost/cgi?id=3496709"
+    :url        "https://www.bitponzi.biz.localtest.me/cgi?id=3496709"
     :isActive   false
     :isIdentity false
     :path       ".rate"
     :code       "usd"
     :rates      []}
    {:name       "DuckBitcoin"
-    :url        "https://www.duckbitcoin.localhost/api/current-rates"
+    :url        "https://www.duckbitcoin.localtest.me/api/current-rates"
     :code       "usd"
     :isActive   false
     :isIdentity false
     :path       ".rate"
     :rates      default-rates}
    {:name       "Leviathan"
-    :url        "https://www.leviathan.localhost/prices"
+    :url        "https://www.leviathan.localtest.me/prices"
     :isActive   false
     :isIdentity false
     :path       ".rate"

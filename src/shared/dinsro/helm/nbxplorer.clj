@@ -4,7 +4,7 @@
   [options]
   (let [{:keys [host rpcurl nodeEndpoint]
          :or
-         {host         "nbxplorer.localhost"
+         {host         "nbxplorer.localtest.me"
           rpcurl       "http://bitcoin-bitcoind.bitcoin3:18443"
           nodeEndpoint "bitcoin-bitcoind.bitcoin3:18444"}} options]
     {:host         host
@@ -26,6 +26,6 @@
 
 (defn ->value-options
   [{:keys [name]}]
-  {:host         (str "nbxplorer." name ".localhost")
+  {:host         (str "nbxplorer." name ".localtest.me")
    :rpcurl       (str "http://bitcoin." name ":18443")
    :nodeEndpoint (str "bitcoin." name ":18444")})

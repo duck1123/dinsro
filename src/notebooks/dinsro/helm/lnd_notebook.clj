@@ -14,7 +14,7 @@
 (def inputs {:name "notebooktest"
              :alias "Notebook Test"
              :auto-unlock {:password "hunter2"}
-             :ingress {:host "fileserver.lnd.localhost"}
+             :ingress {:host "fileserver.lnd.localtest.me"}
              :chain :mainnet})
 
 ;; ## merge-defaults

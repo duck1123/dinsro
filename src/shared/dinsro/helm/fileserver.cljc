@@ -41,7 +41,7 @@
 (defn ->value-options
   [{:keys [name]}]
   (let [alias           (str "Node " name)
-        external-host   (str "lnd." name ".localhost")
+        external-host   (str "lnd." name ".localtest.me")
         internal-host   (str "lnd." name ".svc.cluster.local")
         bitcoin-host    (str "bitcoin." name)
         unlock-password "unlockpassword"]
