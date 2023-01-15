@@ -93,4 +93,4 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
-#?(:clj (def resolvers []))
+#?(:clj (def resolvers [fetch!]))
