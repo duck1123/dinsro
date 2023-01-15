@@ -149,8 +149,10 @@
 (>defn connect!
   [relay-id]
   [::m.n.relays/id => any?]
-  (log/info :connect/starting {:relay-id relay-id})
-  (q.n.relays/set-connected relay-id true))
+  (log/info :connect!/starting {:relay-id relay-id})
+  (let [response (q.n.relays/set-connected relay-id true)]
+    (log/info :connect!/finished {:response response})
+    response))
 
 (comment
 

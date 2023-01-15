@@ -8,6 +8,7 @@
    #?(:clj [dinsro.actions.nostr.relays :as a.n.relays])
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
+   #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    [lambdaisland.glogc :as log]))
 
 (comment ::pc/_ ::m.n.relays/_ ::log/_)
@@ -90,7 +91,8 @@
      [{::m.n.relays/keys [id]}]
      [::connect!-request => ::connect!-response]
      (log/info :do-connect!/started {:id id})
-     (let [updated-node (a.n.relays/connect! id)]
+     (a.n.relays/connect! id)
+     (let [updated-node (q.n.relays/read-record id)]
        {::mu/status       :ok
         ::m.n.relays/item updated-node})))
 

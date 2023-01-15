@@ -8,7 +8,8 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [lambdaisland.glogc :as log]))
 
 (defn delete-action
   [report-instance {::m.n.relays/keys [id]}]
@@ -19,8 +20,11 @@
   (comp/transact! report-instance [(mu.n.relays/fetch! {::m.n.relays/id id})]))
 
 (defn connect-action
-  [report-instance {::m.n.relays/keys [id]}]
-  (comp/transact! report-instance [(mu.n.relays/connect! {::m.n.relays/id id})]))
+  [report-instance {::m.n.relays/keys [id] :as props}]
+  (log/info :connect-action/starting {:props props})
+  (if id
+    (comp/transact! report-instance [(mu.n.relays/connect! {::m.n.relays/id id})])
+    (throw (js/Error. "no id"))))
 
 (def delete-action-button
   {:label  "Delete"
@@ -52,7 +56,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns           [m.n.relays/address
+  {ro/columns           [m.n.relays/id
+                         m.n.relays/address
                          m.n.relays/connected]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
