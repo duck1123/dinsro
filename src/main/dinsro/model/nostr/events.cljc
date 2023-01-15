@@ -14,10 +14,6 @@
 (>def ::required-params
   (s/keys :req []))
 
-(def required-params
-  "Required params for contacts"
-  ::required-params)
-
 (s/def ::params (s/keys :req []))
 (s/def ::item (s/keys :req [::id]))
 
@@ -26,5 +22,3 @@
   (mapv (fn [id] {::id id}) ids))
 
 (def attributes [id])
-
-#?(:clj (def resolvers []))

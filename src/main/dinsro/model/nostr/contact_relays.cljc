@@ -19,29 +19,21 @@
   {ao/identities       #{::id}
    ao/target           ::m.contacts/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.contacts/id ::m.contacts/name]}})
+   ::report/column-EQL {::contact [::m.contacts/id ::m.contacts/name]}})
 
 (s/def ::relay uuid?)
 (defattr relay ::relay :ref
   {ao/identities       #{::id}
    ao/target           ::m.n.relays/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.relays/id ::m.n.relays/address]}})
+   ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
 
 (>def ::required-params
   (s/keys :req []))
 
-(def required-params
-  "Required params for contacts"
-  ::required-params)
-
 (s/def ::params (s/keys :req []))
 (s/def ::item (s/keys :req [::id]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(defn idents [ids] (mapv (fn [id] {::id id}) ids))
 
-(def attributes [id])
-
-#?(:clj (def resolvers []))
+(def attributes [id contact relay])

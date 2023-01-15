@@ -29,8 +29,6 @@
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -40,5 +38,3 @@
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["transactions"]}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))

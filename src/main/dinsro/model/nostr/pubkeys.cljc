@@ -16,18 +16,14 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-
 ;; name
-
 
 (s/def ::name string?)
 (defattr name ::name :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-
 ;; picture
-
 
 (s/def ::picture string?)
 (defattr picture ::picture :string
@@ -41,18 +37,14 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-
 ;; nip05
-
 
 (s/def ::nip05 string?)
 (defattr nip05 ::nip05 :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-
 ;; website
-
 
 (s/def ::website string?)
 (defattr website ::website :string
@@ -80,7 +72,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::pubkey]))
 (s/def ::params (s/keys :req [::pubkey]
                         :opt [::name ::picture ::about ::nip05 ::website ::lud16 ::lud06 ::banner]))
 (s/def ::item (s/keys :req [::id ::pubkey]
@@ -93,16 +84,9 @@
   [::id => any?]
   {::id id})
 
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => any?]
-  (ident id))
-
 (>defn idents
   [ids]
   [(s/coll-of ::id) => any?]
   (mapv ident ids))
 
 (def attributes [id pubkey name picture about nip05 website lud16 lud06 banner])
-
-#?(:clj (def resolvers []))

@@ -19,72 +19,86 @@
 
 (defn get-auth-data
   [user-id zone-id]
-  (log/info :auth/get {:user-id user-id :zone-id zone-id})
-  {:identity             user-id
-   ::auth/provider       :local
-   ::auth/status         :success
-   :session/current-user (when user-id
-                           (let [{::m.users/keys [name]} (q.users/read-record user-id)]
-                             (assoc (m.users/ident user-id) ::m.users/name name)))
-   :time-zone/zone-id    (-> zone-id :xt/id timezone/datomic-time-zones)})
+  (log/info :get-auth-data/starting {:user-id user-id :zone-id zone-id})
+  (let [current-user (when user-id
+                       (let [{::m.users/keys [name]} (q.users/read-record user-id)]
+                         (assoc (m.users/ident user-id) ::m.users/name name)))
+        zone-id      (-> zone-id :xt/id timezone/datomic-time-zones)
+        data         {:identity             user-id
+                      ::auth/provider       :local
+                      ::auth/status         :success
+                      :time-zone/zone-id    zone-id}]
+    (log/info :get-auth-data/finished {:data data :current-user current-user})
+    data))
 
 (defn associate-session!
-  [env id zone-id response]
-  (let [s (get-auth-data id zone-id)]
-    (log/info :session/associate {:s s})
+  [env user-id zone-id response]
+  (let [auth-data (get-auth-data user-id zone-id)]
+    (log/info :associate-session/starting {:auth-data auth-data :response response})
     (fmw/augment-response
-     (or response s)
+     (let [current-user (when user-id
+                          (let [{::m.users/keys [name]} (q.users/read-record user-id)]
+                            (assoc (m.users/ident user-id) ::m.users/name name)))]
+       (or response (assoc auth-data :session/current-user current-user)))
      (fn [resp]
+       (log/info :associate-session/handling {:resp resp :auth-data auth-data})
        (let [current-session (-> env :ring/request :session)
-             merged (merge current-session s)]
-         (log/info :session/merging {:current-session current-session
-                                     :merged merged})
+             merged (merge current-session auth-data)]
+         (log/info :associate-session!/merged {:current-session current-session :merged merged})
          (assoc resp :session merged))))))
 
 (defn login!
   "Implementation of login. This is database-specific and is not further generalized for the demo."
   [env {:user/keys [username password]}]
-  (log/info :login/begin {:username username})
+  (log/info :login!/starting {:username username})
 
   (enc/if-let [{::m.users/keys  [id #_name hashed-value salt iterations]
                 :time-zone/keys [zone-id]} (queries/get-login-info env username)
                current-hashed-value (attr/encrypt password salt iterations)]
     (if (= hashed-value current-hashed-value)
       (do
-        (log/info :login/success {:username username})
-        (associate-session! env id zone-id nil))
+        (log/info :login!/success {:username username})
+        (let [response (associate-session! env id zone-id nil)]
+          (log/info :login!/finished {:response response})
+          response))
       (do
-        (log/error :login/failure {:username username})
+        (log/error :login!/failure {:username username})
         {::auth/provider :local
          ::auth/status   :failed}))
     (do
-      (log/error :login/user-not-found {:username username})
+      (log/error :login!/user-not-found {:username username})
       {::auth/provider :local
        ::auth/status   :failed})))
 
 (defn logout!
   "Implementation of logout."
-  [_env]
-  (log/info :logout/started {})
+  [env]
+  (log/info :logout!/starting {})
   (fmw/augment-response
    {::auth/provider       :local
     :session/current-user nil
     :identity             nil
     ::auth/status         :not-logged-in}
    (fn [resp]
-     (let [merged (-> resp
-                      (assoc-in [:session :session/current-user] nil)
-                      (assoc-in [:session :identity] nil))]
-       (log/info :logout/merging {:session (:session resp) :merged merged})))))
+     (log/info :logout!/handler {:resp resp})
+     (let [session (some-> env :ring/request :session)
+           merged  (assoc session :identity nil)]
+       (log/info :logout/merging {:merged merged})
+       ;; FIXME: shouldn't this return something
+       merged))))
 
 (defn check-session!
   "get session from env"
   [env]
-  (log/info :session/checking {})
-  (or
-   (some-> env :ring/request :session)
-   {::auth/provider :local
-    ::auth/status   :not-logged-in}))
+  (log/info :check-session!/starting {})
+  (if-let [session  (some-> env :ring/request :session)]
+    (do
+      (log/info :check-session!/existing-session {:session session})
+      session)
+    (do
+      (log/info :check-session!/no-session {})
+      {::auth/provider :local
+       ::auth/status   :not-logged-in})))
 
 (>defn register
   "Register user with params"
@@ -116,13 +130,12 @@
    (do-register name password false))
   ([name password admin?]
    [::m.users/name ::m.users/password boolean? => (s/keys)]
-   (let [params #::m.users{:password password :name name :role (if admin?
-                                                                 :account.role/admin
-                                                                 :account.role/user)}]
-
+   (let [params #::m.users{:password password
+                           :name     name
+                           :role     (if admin? :account.role/admin :account.role/user)}]
      (try
        (register params)
        (catch Exception ex
-         (log/error :registration/failed {:message "Failed to register" :exception ex})
+         (log/error :do-register/failed {:message "Failed to register" :exception ex})
          {::error true
           :ex     (str ex)})))))

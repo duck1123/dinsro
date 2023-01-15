@@ -57,16 +57,9 @@
   [::id => any?]
   {::id id})
 
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => any?]
-  (ident id))
-
 (>defn idents
   [ids]
   [(s/coll-of ::id) => any?]
   (mapv ident ids))
 
 (def attributes [currency id name url active? path identity?])
-
-#?(:clj (def resolvers []))

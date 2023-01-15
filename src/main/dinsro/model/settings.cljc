@@ -31,6 +31,3 @@
                        :clj (get-site-config))})})
 
 (def attributes [site-config])
-
-#?(:clj
-   (def resolvers []))

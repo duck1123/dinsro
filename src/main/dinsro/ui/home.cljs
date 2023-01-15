@@ -20,12 +20,17 @@
    :ident         (fn [] [:component/id ::HomePage])}
   (log/info :home-page/rendered {:authenticator authenticator})
   (let [{:keys [container title]} (css/get-classnames HomePage)
-        username                  (get-in authenticator [:local [:com.fulcrologic.rad.authorization/authorization :local] :session/current-user ::m.users/name])]
+        username                  (get-in authenticator
+                                          [:local
+                                           [:com.fulcrologic.rad.authorization/authorization :local]
+                                           :session/current-user
+                                           ::m.users/name])]
     (comp/fragment
-     (dom/div {:classes [:.ui.inverted.vertical.masthead.center.aligned.segment container]}
+     (dom/div {:classes [:.ui :.inverted :.vertical :.masthead
+                         :.center :.aligned :.segment container]}
        (dom/div :.ui.container
          (dom/div :.ui.text.container
-           (dom/h1 {:classes [:.ui.inverted.header title]}
+           (dom/h1 {:classes [:.ui :.inverted :.header title]}
                    (if username
                      (str "Welcome, " username)
                      "Home Page"))

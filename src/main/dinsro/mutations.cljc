@@ -1,13 +1,7 @@
 (ns dinsro.mutations
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]]
-   [lambdaisland.glogc :as log]))
-
-(defmutation submit [props]
-  (action [_env]
-    (log/info :submit/starting {:props props})))
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]))
 
 (s/def ::message string?)
 (s/def ::data map?)

@@ -1,26 +1,10 @@
 (ns dinsro.model.ln.payments
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.ln.nodes :as m.ln.nodes]))
-
-(def rename-map
-  {:paymentPreimage ::payment-preimage
-   :paymentHash     ::payment-hash
-   :paymentRequest  ::payment-request
-   :status          ::status
-   :fee             ::fee
-   :value           ::value
-   :paymentIndex    ::payment-index
-   :failureReason   ::failure-reason
-   :creationDate    ::creation-date})
-
-(defn prepare-params
-  [params]
-  (set/rename-keys params rename-map))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

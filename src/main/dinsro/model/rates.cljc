@@ -20,7 +20,6 @@
 
 (s/def ::date ds/date)
 (s/def ::date-ms pos-int?)
-(s/def ::date-inst inst?)
 
 (defattr date ::date :date
   {ao/identities #{::id}
@@ -34,7 +33,6 @@
    ao/target     ::m.rate-sources/id
    ::report/column-EQL {::source [::m.rate-sources/id ::m.rate-sources/name]}})
 
-(s/def ::required-params (s/keys :req [::rate ::date]))
 (s/def ::params (s/keys :req [::rate ::date ::source]))
 (s/def ::item (s/keys :req [::id ::rate ::date ::source]))
 (s/def ::ident (s/tuple keyword? ::id))
@@ -43,11 +41,6 @@
   [id]
   [::id => any?]
   {::id id})
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => any?]
-  (ident id))
 
 (>defn idents
   [ids]
@@ -59,5 +52,3 @@
 (s/def ::rate-feed (s/coll-of ::rate-feed-item))
 
 (def attributes [date id rate source])
-
-#?(:clj (def resolvers []))

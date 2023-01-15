@@ -12,10 +12,6 @@
 
 (comment ::auth/_ ::m.users/_ ::pc/_ ::s/_)
 
-(defsc CurrentUser
-  [_this _props]
-  {:query [:user/username :user/valid?]})
-
 (defsc UserLink
   [_this _props]
   {:ident ::m.users/id
@@ -49,7 +45,9 @@
                    :identity
                    :time-zone/zone-id
                    {:session/current-user [::m.users/id ::m.users/name]}]}
-     (a.authentication/login! env params))
+     (let [response (a.authentication/login! env params)]
+       (log/info :login/finished {:response response})
+       response))
    :cljs
    (fm/defmutation login [_]
      (action [_env]
@@ -60,7 +58,8 @@
 
      (ok-action [{:keys [app state] :as env}]
        (let [body                   (get-in env [:result :body])
-             {::auth/keys [status]} (get body `login)]
+             {::auth/keys [status] :as response} (get body `login)]
+         (log/info :login-ok-action/starting {:response response})
          (if (= status :success)
            (auth/logged-in! app :local)
            (do

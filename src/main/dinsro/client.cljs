@@ -122,13 +122,6 @@
                 (vals body)))]
       (swap! state assoc :ui/global-error msg))))
 
-(m/defmutation ui-ready
-  "Mutation. Called at the end of [[init]], after `dr/initialize!` and thus 'executed' after all relevant routers have been started"
-  [_]
-  (action [{:keys [state]}]
-    (swap! state assoc :ui/ready? true)
-    (log/info :ui/ready {})))
-
 (defn restore-route-ensuring-leaf!
   "Attempt to restore the route given in the URL. If that fails, simply route to the default given (a class and map).
    WARNING: This should not be called until the HTML5 history is installed in your app.

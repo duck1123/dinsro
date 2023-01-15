@@ -4,7 +4,6 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.navlink :as m.navlink]))
 
-(def auth-link-names [:accounts])
 (def dropdown-link-names
   [:accounts
    :transactions
@@ -19,13 +18,6 @@
 (defattr id ::id :symbol
   {ao/identity?  true
    ao/pc-resolve (fn [_env _props] {::id :main})})
-
-(defattr auth-links ::auth-links :ref
-  {ao/target     ::m.navlink/id
-   ao/identities #{::id}
-   ao/pc-input   #{::id}
-   ao/pc-output  [{::auth-links [::m.navlink/id]}]
-   ao/pc-resolve (fn [_env _props] {::auth-links (m.navlink/idents auth-link-names)})})
 
 (defattr dropdown-links ::dropdown-links :ref
   {ao/target     ::m.navlink/id

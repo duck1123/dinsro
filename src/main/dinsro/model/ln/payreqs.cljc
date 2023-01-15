@@ -1,34 +1,11 @@
 (ns dinsro.model.ln.payreqs
   (:refer-clojure :exclude [name])
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [tick.alpha.api :as tick]))
-
-(def rename-map
-  {:description     ::description
-   :features        ::features
-   :cltvExpiry      ::cltv-expiry
-   :expiry          ::expiry
-   :paymentHash     ::payment-hash
-   :paymentAddr     ::payment-address
-   :numSatoshis     ::num-satoshis
-   :fallbackAddr    ::fallback-address
-   :numMsat         ::num-msats
-   :descriptionHash ::description-hash
-   :routeHints      ::route-hints
-   :timestamp       ::timestamp
-   :destination     ::destination})
-
-(defn prepare-params
-  [params]
-  (let [timestamp (:timestamp params)]
-    (-> (set/rename-keys params rename-map)
-        (assoc ::timestamp (tick/instant (* timestamp 1000))))))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

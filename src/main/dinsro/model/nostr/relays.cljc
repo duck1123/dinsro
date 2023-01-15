@@ -26,10 +26,6 @@
 (>def ::required-params
   (s/keys :req [::address]))
 
-(def required-params
-  "Required params for contacts"
-  ::required-params)
-
 (s/def ::params (s/keys :req [::address] :opt [::connected]))
 (s/def ::item (s/keys :req [::id ::address ::connected]))
 
@@ -38,5 +34,3 @@
   (mapv (fn [id] {::id id}) ids))
 
 (def attributes [id address connected])
-
-#?(:clj (def resolvers []))

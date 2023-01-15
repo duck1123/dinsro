@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -32,29 +31,6 @@
   {:label  "Delete"
    :action delete-action
    :style  :delete-button})
-
-(defn search-control-action
-  [this]
-  (let [props                              (comp/props this)
-        {:ui/keys [controls current-rows]} props
-        [current-row]                      current-rows
-        values                             (map (fn [control]
-                                                  (let [control-id (::control/id control)]
-                                                    (log/debug :mapping {:control-id control-id})
-                                                    (when (= control-id ::tx-id)
-                                                      (::control/value control))))
-                                                controls)
-        txid-value                         (first (filter identity values))
-        block-id                           nil]
-    (log/info :tx/searching {:props       props
-                             :current-row current-row
-                             :txid-value  txid-value
-                             :values      values})
-    (comp/transact! this
-                    [(mu.c.tx/search!
-                      {::m.c.tx/block block-id
-                       ::m.c.tx/tx-id txid-value})])
-    (control/run! this)))
 
 (defsc ShowTransaction
   "Show a core tx"
