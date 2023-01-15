@@ -2,7 +2,7 @@
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.ln.payreqs-lj :as a.ln.payreqs-lj])
+   #?(:clj [dinsro.actions.ln.payreqs :as a.ln.payreqs])
    [dinsro.model.ln.invoices :as m.ln.invoices]))
 
 (comment ::m.ln.invoices/_ ::pc/_)
@@ -12,7 +12,9 @@
      [_env props]
      {::pc/params #{::m.ln.invoices/payment-request}
       ::pc/output [:status]}
-     (a.ln.payreqs-lj/decode props))
+
+     (a.ln.payreqs/decode props))
+
    :cljs
    (fm/defmutation decode [_props]
      (action [_env] true)
@@ -23,7 +25,9 @@
      [_env props]
      {::pc/params #{::m.ln.invoices/id}
       ::pc/output [:status]}
-     (a.ln.payreqs-lj/submit! props))
+
+     (a.ln.payreqs/submit! props))
+
    :cljs
    (fm/defmutation submit! [_props]
      (action [_env] true)
