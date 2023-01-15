@@ -55,6 +55,21 @@
 
     ids))
 
+(>defn find-by-pubkey-id
+  [pubkey-id]
+  [::m.n.pubkeys/id => (s/coll-of ::m.users/id)]
+  (log/info :find-by-pubkey/starting {:pubkey-id pubkey-id})
+  (let [db      (c.xtdb/main-db)
+        query   '{:find  [?user-id]
+                  :in    [[?pubkey-id]]
+                  :where [[?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
+                          [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
+        results (xt/q db query [pubkey-id])
+        ids     (map first results)]
+    (log/info :find-by-pubkey/finished {:ids ids})
+
+    ids))
+
 (>defn find-by-transaction
   [transaction-id]
   [::m.transactions/id => (? ::m.users/id)]

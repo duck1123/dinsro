@@ -31,9 +31,9 @@
    ao/pc-output [{::index-by-pubkey [::m.users/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params] :as env} _]
-     (if-let [pubkey (::m.n.pubkeys/id query-params)]
-       (let [ids #?(:clj (q.users/find-by-pubkey pubkey) :cljs [])]
-         (comment env query-params pubkey)
+     (if-let [pubkey-id (::m.n.pubkeys/id query-params)]
+       (let [ids #?(:clj (q.users/find-by-pubkey-id pubkey-id) :cljs [])]
+         (comment env query-params pubkey-id)
          {::index-by-pubkey (m.users/idents ids)})
        #?(:clj (throw (RuntimeException. "Missing pubkey"))
           :cljs (throw (js/Error. "Missing pubkey")))))})
