@@ -166,6 +166,33 @@
     (log/info :disconnect!/finished {:response response})
     response))
 
+(>defn toggle-relay!
+  [relay]
+  [::m.n.relays/item => any?]
+  (log/info :toggle-relay!/starting {:relay relay})
+  (let [{::m.n.relays/keys [connected]
+         relay-id          ::m.n.relays/id} relay]
+    (if (connected)
+      (disconnect! relay-id)
+      (connect! relay-id))))
+
+(>defn toggle!
+  [relay-id]
+  [::m.n.relays/id => any?]
+  (log/info :toggle!/starting {:relay-id relay-id})
+  (let [relay    (q.n.relays/read-record relay-id)
+        response (toggle-relay! relay)]
+    (log/info :toggle!/finished {:response response})
+    response))
+
+(defn do-toggle!
+  [props]
+  (log/info :do-toggle!/starting {:props props})
+  (let [relay-id (::m.n.relays/id props)
+        response (toggle! relay-id)]
+    (log/info :do-toggle!/finished {:response response})
+    response))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))

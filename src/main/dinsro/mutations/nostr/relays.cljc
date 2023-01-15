@@ -11,6 +11,11 @@
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/relays.clj][Actions]]
+;; [[../../model/nostr/relays.cljc][Model]]
+;; [[../../queries/nostr/relays.clj][Queries]]
+;; [[../../ui/nostr/relays.cljs][UI]]
+
 (comment ::pc/_ ::m.n.relays/_ ::log/_)
 
 (>def ::fetch!-request
@@ -117,4 +122,21 @@
      (remote    [env]  (fm/returning env ConnectResponse))
      (ok-action [env]  (handle-connect env))))
 
-#?(:clj (def resolvers [connect! fetch!]))
+;; Toggle
+
+#?(:clj
+   (pc/defmutation toggle!
+     [_env props]
+     {::pc/params #{::m.n.relays/id}
+      ::pc/output [::status
+                   ::errors
+                   ::m.n.relays/item]}
+     (a.n.relays/do-toggle! props))
+
+   :cljs
+   (fm/defmutation toggle! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env ConnectResponse))
+     (ok-action [env]  (handle-connect env))))
+
+#?(:clj (def resolvers [connect! fetch! toggle!]))

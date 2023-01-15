@@ -11,6 +11,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/relays.clj][Actions]]
+;; [[../../model/nostr/relays.cljc][Model]]
+;; [[../../mutations/nostr/relays.cljc][Mutations]]
+;; [[../../queries/nostr/relays.clj][Queries]]
+
 (defn delete-action
   [report-instance {::m.n.relays/keys [id]}]
   (form/delete! report-instance ::m.n.relays/id id))
@@ -24,6 +29,13 @@
   (log/info :connect-action/starting {:props props})
   (if id
     (comp/transact! report-instance [(mu.n.relays/connect! {::m.n.relays/id id})])
+    (throw (js/Error. "no id"))))
+
+(defn toggle-action
+  [report-instance {::m.n.relays/keys [id] :as props}]
+  (log/info :connect-action/starting {:props props})
+  (if id
+    (comp/transact! report-instance [(mu.n.relays/toggle! {::m.n.relays/id id})])
     (throw (js/Error. "no id"))))
 
 (def delete-action-button
@@ -40,6 +52,11 @@
   {:label  "Connect"
    :action connect-action
    :style  :connect-button})
+
+(def toggle-action-button
+  {:label  "Toggle"
+   :action toggle-action
+   :style  :toggle-button})
 
 (form/defsc-form NewRelayForm [_this _props]
   {fo/id           m.n.relays/id
@@ -63,7 +80,7 @@
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
    ro/row-actions       [fetch-action-button
-                         connect-action-button
+                         toggle-action-button
                          delete-action-button]
    ro/source-attribute  ::m.n.relays/index
    ro/title             "Relays Report"
