@@ -50,7 +50,7 @@
      (log/info :do-fetch!/started {:id id})
      (try
        (log/info :do-fetch!/starting {:id id})
-       (a.n.pubkeys/fetch! id)
+       (a.n.pubkeys/fetch-contact! id)
        {::mu/status :ok}
        (catch Exception ex
          (log/error :do-fetch!/failed {:exception ex})

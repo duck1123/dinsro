@@ -11,20 +11,26 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
+(defn fetch-pubkey!
+  [pubkey]
+  (log/info :fetch-pubkey!/starting {:pubkey pubkey})
+  (let [relay-id (first (q.n.relays/index-ids))
+        relay    (q.n.relays/read-record relay-id)
+        address  (::m.n.relays/address relay)
+        client   (a.n.relays/get-client-for-id relay-id)
+        chan     (a.n.relays/get-channel address)
+        request  (a.n.relays/adhoc-request [pubkey])
+        body     {:authors [pubkey] :kinds [0]}
+        message  (json/json-str request)]
+    (a.n.relays/send! relay-id body)
+    (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
+
 (defn fetch-contact!
   [pubkey-id]
-
-  (let [relay-id      (first (q.n.relays/index-ids))
-        relay         (q.n.relays/read-record relay-id)
-        address       (::m.n.relays/address relay)
-        client        (a.n.relays/get-client-for-id relay-id)
-        pubkey-record (q.n.pubkeys/read-record pubkey-id)
-        pubkey        (::m.n.pubkeys/pubkey pubkey-record)
-        chan          (a.n.relays/get-channel address)]
-    (log/info :fetch-contact!/starting {:pubkey pubkey
-                                        #_#_#_#_:client client :chan chan})
-    (ws/send! client (json/json-str (a.n.relays/adhoc-request [pubkey])))
-    (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
+  (let [pubkey-record (q.n.pubkeys/read-record pubkey-id)
+        pubkey        (::m.n.pubkeys/pubkey pubkey-record)]
+    (log/info :fetch-contact!/starting {:pubkey pubkey})
+    (fetch-pubkey! pubkey)))
 
 (defn send-adhoc-request
   [client pubkey]
@@ -59,7 +65,7 @@
 
   (async/poll! (a.n.relays/process-messages chan))
 
-  (fetch! a.contacts/duck)
+  (fetch-pubkey! a.contacts/duck)
 
   (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))
 

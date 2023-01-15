@@ -74,50 +74,76 @@
         client (get-client chan address)]
     client))
 
-(defn parse-message
-  "Parse a response message"
-  [message]
-  (let [[type req-id evt]    message
-        {tags     "tags"
+(defn handle-event
+  [req-id evt]
+  (log/info :handle-event/starting {:evt evt})
+  (let [{tags     "tags"
          id       "id"
          pow      "pow"
          notified "notified"
          sig      "sig"
-         content  "content"} evt]
+         content  "content"} evt
+        parsed-content (json/read-str content)]
     (log/info :parse-message/parsed
               {:evt      evt
-               :type     type
                :req-id   req-id
                :tags     tags
                :id       id
                :pow      pow
                :notified notified
                :sig      sig
-               :content  content})
-    {:type     type
-     :req-id   req-id
+               :content  content
+               :parsed-content parsed-content})
+    {:req-id   req-id
      :tags     tags
      :id       id
      :pow      pow
      :notified notified
      :sig      sig
-     :content  content}))
+     :content  content
+     :parsed-content parsed-content}))
+
+(defn handle-eose
+  [req-id evt]
+  (log/info :handle-eose/starting {})
+  nil)
+
+(defn parse-message
+  "Parse a response message"
+  [message]
+  (log/info :parse-message/starting {:message message})
+  (let [[type req-id evt] message]
+    (condp = type
+      "EVENT" (handle-event req-id evt)
+      "EOSE"  (handle-eose req-id evt)
+      (do
+        (log/warn :parse-message/unknown-type {:type type})
+        #_(throw (RuntimeException. "Unknown type"))
+        nil))))
 
 (defn process-messages
   [chan]
   (async/go
     (let [message (parse-message (async/<! chan))]
+      (log/info :process-messages/finished {:message message})
       message)))
 
 (defn take-timeout
   [chan]
   (async/go
-    (let [[v c] (async/alts! [chan (async/timeout 3000)])]
-      (if (= c chan)
-        v
-        (do
-          (comment (async/close! chan))
-          :timeout)))))
+    (let [[v c] (async/alts! [chan (async/timeout 10000)])]
+      (if (= c chan) v (do (comment (async/close! chan)) :timeout)))))
+
+(defn send!
+  [relay-id body]
+  (let [relay      (q.n.relays/read-record relay-id)
+        address    (::m.n.relays/address relay)
+        client     (get-client-for-id relay-id)
+        chan       (get-channel address)
+        request-id "adhoc1"
+        message    (json/json-str ["REQ" request-id body])]
+    (ws/send! client message)
+    chan))
 
 (comment
 
