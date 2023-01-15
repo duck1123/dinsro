@@ -47,8 +47,9 @@
    :ln-remote-nodes       ["Remote Nodes"      "/ln/remote-nodes"  :dinsro.ui.ln.remote-nodes/Report]
    :login                 ["Login"             "/login"            :dinsro.ui.login/LoginPage]
    :nostr                 ["Nostr"             "/nostr"            nil
-                           [:nostr-relays :nostr-pubkeys]]
-   :nostr-pubkeys         ["Pubkeys"            "/pubkeys"           :dinsro.ui.nostr.pubkeys/Report]
+                           [:nostr-relays :nostr-pubkeys :nostr-events]]
+   :nostr-pubkeys         ["Pubkeys"           "/pubkeys"          :dinsro.ui.nostr.pubkeys/Report]
+   :nostr-events          ["Events"            "/events"           :dinsro.ui.nostr.events/Report]
    :nostr-relays          ["Relays"            "/relays"           :dinsro.ui.nostr.relays/Report]
    :payments              ["Payments"          "/payments"         :dinsro.ui.ln.payments/Report]
    :payreqs               ["Payreqs"           "/payreqs"          :dinsro.ui.ln.payreqs/Report]

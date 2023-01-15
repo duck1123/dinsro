@@ -104,7 +104,7 @@
      :parsed-content parsed-content}))
 
 (defn handle-eose
-  [req-id evt]
+  [_req-id _evt]
   (log/info :handle-eose/starting {})
   nil)
 
