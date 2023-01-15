@@ -172,7 +172,7 @@
   (log/info :toggle-relay!/starting {:relay relay})
   (let [{::m.n.relays/keys [connected]
          relay-id          ::m.n.relays/id} relay]
-    (if (connected)
+    (if connected
       (disconnect! relay-id)
       (connect! relay-id))))
 
