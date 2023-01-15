@@ -6,6 +6,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
@@ -30,10 +31,12 @@
    ao/pc-output [{::index-by-pubkey [::m.users/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params] :as env} _]
-     (let [pubkey nil
-           ids #?(:clj (q.users/find-by-pubkey pubkey) :cljs [])]
-       (comment env query-params pubkey)
-       {::index-by-pubkey (m.users/idents ids)}))})
+     (if-let [pubkey (::m.n.pubkeys/id query-params)]
+       (let [ids #?(:clj (q.users/find-by-pubkey pubkey) :cljs [])]
+         (comment env query-params pubkey)
+         {::index-by-pubkey (m.users/idents ids)})
+       #?(:clj (throw (RuntimeException. "Missing pubkey"))
+          :cljs (throw (js/Error "Missing pubkey")))))})
 
 (defattr accounts ::m.users/accounts :ref
   {ao/cardinality :many
