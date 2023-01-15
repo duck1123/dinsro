@@ -12,7 +12,8 @@
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.pubkey-relays :as u.n.pubkey-relays]
-   [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]))
+   [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]
+   [lambdaisland.glogc :as log]))
 
 (defrouter Router
   [_this _props]
@@ -31,16 +32,20 @@
 
 (defsc Show
   "Show a core node"
-  [_this {::m.n.pubkeys/keys [id pubkey]
-          :ui/keys           [router]
-          :as                props}]
+  [this {::m.n.pubkeys/keys [id pubkey name picture]
+         :ui/keys           [router]
+         :as                props}]
   {:route-segment ["pubkey" :id]
    :query         [::m.n.pubkeys/id
                    ::m.n.pubkeys/pubkey
+                   ::m.n.pubkeys/name
+                   ::m.n.pubkeys/picture
                    {:ui/router (comp/get-query Router)}]
-   :initial-state {::m.n.pubkeys/id     nil
-                   ::m.n.pubkeys/pubkey ""
-                   :ui/router           {}}
+   :initial-state {::m.n.pubkeys/id      nil
+                   ::m.n.pubkeys/pubkey  ""
+                   ::m.n.pubkeys/name    ""
+                   ::m.n.pubkeys/picture ""
+                   :ui/router            {}}
    :ident         ::m.n.pubkeys/id
    :pre-merge     (u.links/page-merger ::m.n.pubkeys/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
@@ -50,7 +55,17 @@
         (dom/div :.ui.segment
           (dom/dl {}
             (dom/dt {} "Pubkey")
-            (dom/dd {} (str pubkey))))
+            (dom/dd {} (str pubkey))
+            (dom/dt {} "Name")
+            (dom/dd {} (str name))
+            (dom/dt {} "Picture")
+            (dom/dd {} (str picture)))
+          (dom/button {:classes [:.ui.button]
+                       :onClick (fn [_e]
+                                  (log/info :click {})
+                                  (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
+
+            "Fetch"))
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (if router
           (ui-router router)
