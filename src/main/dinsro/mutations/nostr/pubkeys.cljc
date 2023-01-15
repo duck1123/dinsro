@@ -25,10 +25,10 @@
   (s/keys :req [::m.n.pubkeys/id]))
 
 (>def ::fetch!-response-success
-  (s/keys :req [::mu/status ::m.n.pubkeys/item]))
+  (s/keys :req [::mu/status]))
 
 (>def ::fetch!-response-error
-  (s/keys :req [::mu/status ::mu/errors]))
+  (s/keys :req [::mu/status]))
 
 (>def ::fetch!-response
   (s/or :success ::fetch!-response-success
