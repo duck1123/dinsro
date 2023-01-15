@@ -5,6 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [hato.client :as hc]
    [hato.websocket :as ws]
@@ -191,7 +192,9 @@
   (let [relay-id (::m.n.relays/id props)
         response (toggle! relay-id)]
     (log/info :do-toggle!/finished {:response response})
-    response))
+    (let [relay (q.n.relays/read-record relay-id)]
+      {::mu/status       :ok
+       ::m.n.relays/item relay})))
 
 (comment
 

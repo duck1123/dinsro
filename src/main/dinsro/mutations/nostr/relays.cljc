@@ -105,6 +105,7 @@
    (defn handle-connect
      [{:keys [state] :as env}]
      (comment state env)
+     (log/info :handle-connect/started {:state state :env env})
      {}))
 
 #?(:clj
@@ -128,9 +129,7 @@
    (pc/defmutation toggle!
      [_env props]
      {::pc/params #{::m.n.relays/id}
-      ::pc/output [::status
-                   ::errors
-                   ::m.n.relays/item]}
+      ::pc/output [::status ::errors ::m.n.relays/item]}
      (a.n.relays/do-toggle! props))
 
    :cljs

@@ -9,6 +9,7 @@
 ;; [[../../actions/nostr/relays.clj][Relay Actions]]
 ;; [[../../joins/nostr/relays.cljc][Relay Joins]]
 ;; [[../../queries/nostr/relays.clj][Relay Queries]]
+;; [[../../mutations/nostr/relays.cljc][Relay Mutations]]
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
