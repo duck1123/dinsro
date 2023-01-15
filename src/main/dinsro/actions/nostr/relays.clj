@@ -2,6 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
+   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.queries.nostr.relays :as q.n.relays]
@@ -44,9 +45,24 @@
 
 (defn get-client
   [chan url]
-  @(ws/websocket url
-                 {:on-message (on-message chan)
-                  :on-close   (on-close chan)}))
+  (if-let [existing-connection (get @connections url)]
+    (do
+      (log/info :get-client/cached {:url url})
+      (:client existing-connection))
+    (do
+      (log/info :get-client/opening {:url url})
+      (let [client @(ws/websocket url
+                                  {:on-message (on-message chan)
+                                   :on-close   (on-close chan)})]
+        (swap! connections assoc url {:client client :chan chan})
+        client))))
+
+(>defn get-channel
+  [address]
+  [string? => any?]
+  (if-let [item (get @connections address)]
+    (:chan item)
+    (throw (RuntimeException. "No channel"))))
 
 (defn get-client-for-id
   [relay-id]
