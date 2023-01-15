@@ -15,6 +15,17 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
+
+;; name
+;; picture
+;; about
+;; nip05
+;; website
+;; lud16
+;; lud06
+;; banner
+
+
 (s/def ::required-params (s/keys :req [::pubkey]))
 (s/def ::params (s/keys :req [::pubkey]))
 (s/def ::item (s/keys :req [::id ::pubkey]))
