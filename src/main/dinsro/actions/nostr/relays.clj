@@ -16,11 +16,13 @@
   (fn [_ws msg _last?]
     (let [msg-str (str msg)
           o       (json/read-str msg-str)]
-      (async/>!! chan o))))
+      (async/put! chan o))))
 
 (defn on-close
-  [_ws _status _reason]
-  (log/info :on-closed/received {}))
+  [chan]
+  (fn [_ws _status _reason]
+    (log/info :on-closed/received {})
+    (async/close! chan)))
 
 (def sample-ids
   ["29f63b70d8961835b14062b195fc7d84fa810560b36dde0749e4bc084f0f8952"
@@ -44,7 +46,7 @@
   [chan url]
   @(ws/websocket url
                  {:on-message (on-message chan)
-                  :on-close   on-close}))
+                  :on-close   (on-close chan)}))
 
 (defn get-client-for-id
   [relay-id]
@@ -55,35 +57,40 @@
     {:chan    chan
      :client client}))
 
+(defn parse-message
+  "Parse a response message"
+  [message]
+  (let [[type req-id evt]    message
+        {tags     "tags"
+         id       "id"
+         pow      "pow"
+         notified "notified"
+         sig      "sig"
+         content  "content"} evt]
+    (log/info :parse-message/parsed
+              {:evt      evt
+               :type     type
+               :req-id   req-id
+               :tags     tags
+               :id       id
+               :pow      pow
+               :notified notified
+               :sig      sig
+               :content  content})
+    {:type     type
+     :req-id   req-id
+     :tags     tags
+     :id       id
+     :pow      pow
+     :notified notified
+     :sig      sig
+     :content  content}))
+
 (defn process-messages
   [chan]
   (async/go
-    (let [[type req-id evt]    (async/<! chan)
-          {tags     "tags"
-           id       "id"
-           pow      "pow"
-           notified "notified"
-           sig      "sig"
-           content  "content"} evt]
-      (log/info
-       :go/msg
-       {:evt      evt
-        :type     type
-        :req-id   req-id
-        :tags     tags
-        :id       id
-        :pow      pow
-        :notified notified
-        :sig      sig
-        :content  content})
-      {:type     type
-       :req-id   req-id
-       :tags     tags
-       :id       id
-       :pow      pow
-       :notified notified
-       :sig      sig
-       :content  content})))
+    (let [message (parse-message (async/<! chan))]
+      message)))
 
 (comment
 

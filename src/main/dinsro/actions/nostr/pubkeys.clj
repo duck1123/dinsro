@@ -35,4 +35,6 @@
 
   (ws/send! client (json/json-str (a.n.relays/adhoc-request [a.contacts/duck])))
 
-  (async/<!! (a.n.relays/process-messages chan)))
+  (async/poll! (a.n.relays/process-messages chan))
+
+  nil)
