@@ -18,6 +18,10 @@
   [report-instance {::m.n.relays/keys [id]}]
   (comp/transact! report-instance [(mu.n.relays/fetch! {::m.n.relays/id id})]))
 
+(defn connect-action
+  [report-instance {::m.n.relays/keys [id]}]
+  (comp/transact! report-instance [(mu.n.relays/connect! {::m.n.relays/id id})]))
+
 (def delete-action-button
   {:label  "Delete"
    :action delete-action
@@ -27,6 +31,11 @@
   {:label  "Fetch"
    :action fetch-action
    :style  :fetch-button})
+
+(def connect-action-button
+  {:label  "Connect"
+   :action connect-action
+   :style  :connect-button})
 
 (form/defsc-form NewRelayForm [_this _props]
   {fo/id           m.n.relays/id
@@ -43,15 +52,16 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns           [m.n.relays/address]
+  {ro/columns           [m.n.relays/address
+                         m.n.relays/connected]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ro/row-actions       [fetch-action-button delete-action-button]
+   ro/row-actions       [fetch-action-button
+                         connect-action-button
+                         delete-action-button]
    ro/source-attribute  ::m.n.relays/index
    ro/title             "Relays Report"
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/route             "relays"})
-
-;; (def ui-relays-report (comp/fragment ))

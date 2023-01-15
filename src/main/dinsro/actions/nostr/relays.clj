@@ -134,8 +134,9 @@
     (let [[v c] (async/alts! [chan (async/timeout 10000)])]
       (if (= c chan) v (do (comment (async/close! chan)) :timeout)))))
 
-(defn send!
+(>defn send!
   [relay-id body]
+  [::m.n.relays/id any? => any?]
   (let [relay      (q.n.relays/read-record relay-id)
         address    (::m.n.relays/address relay)
         client     (get-client-for-id relay-id)
@@ -144,6 +145,12 @@
         message    (json/json-str ["REQ" request-id body])]
     (ws/send! client message)
     chan))
+
+(>defn connect!
+  [relay-id]
+  [::m.n.relays/id => any?]
+  (log/info :connect/starting {:relay-id relay-id})
+  (q.n.relays/set-connected relay-id true))
 
 (comment
 

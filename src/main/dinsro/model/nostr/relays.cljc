@@ -16,6 +16,11 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
+(s/def ::connected string?)
+(defattr connected ::connected :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (>def ::required-params
   (s/keys :req [::address]))
 
@@ -30,6 +35,6 @@
   [ids]
   (mapv (fn [id] {::id id}) ids))
 
-(def attributes [id address])
+(def attributes [id address connected])
 
 #?(:clj (def resolvers []))

@@ -78,6 +78,23 @@
       (log/info :register-relay/not-found {})
       (create-record {::m.n.relays/address address}))))
 
+(defn create-connected-toggle
+  []
+  (let [node (c.xtdb/main-node)]
+    (xt/submit-tx
+     node
+     [[::xt/put
+       {:xt/id :toggle-connected
+        :xt/fn `(fn [ctx [eid connected]]
+                  (let [db     (xtdb.api/db ctx)
+                        entity (xtdb.api/entity db eid)]
+                    [[::xt/put (assoc entity ::m.n.relays/connected connected)]]))}]])))
+
+(defn set-connected
+  [relay-id connected]
+  (let [node (c.xtdb/main-node)]
+    (xt/submit-tx node [[::xt/fn :toggle-connected [relay-id connected]]])))
+
 (comment
 
   (some->
