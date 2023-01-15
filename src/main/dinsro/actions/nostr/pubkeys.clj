@@ -37,4 +37,8 @@
 
   (async/poll! (a.n.relays/process-messages chan))
 
+  (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))
+
+  chan
+
   nil)

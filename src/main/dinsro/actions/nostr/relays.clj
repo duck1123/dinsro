@@ -92,6 +92,16 @@
     (let [message (parse-message (async/<! chan))]
       message)))
 
+(defn take-timeout
+  [chan]
+  (async/go
+    (let [[v c] (async/alts! [chan (async/timeout 3000)])]
+      (if (= c chan)
+        v
+        (do
+          (comment (async/close! chan))
+          :timeout)))))
+
 (comment
 
   (hc/get "https://relay.kronkltd.net")
