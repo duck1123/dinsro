@@ -83,29 +83,29 @@
          notified "notified"
          sig      "sig"
          content  "content"} evt
-        parsed-content (json/read-str content)]
+        parsed-content       (json/read-str content)]
     (log/info :parse-message/parsed
-              {:evt      evt
-               :req-id   req-id
-               :tags     tags
-               :id       id
-               :pow      pow
-               :notified notified
-               :sig      sig
-               :content  content
+              {:evt            evt
+               :req-id         req-id
+               :tags           tags
+               :id             id
+               :pow            pow
+               :notified       notified
+               :sig            sig
+               :content        content
                :parsed-content parsed-content})
-    {:req-id   req-id
-     :tags     tags
-     :id       id
-     :pow      pow
-     :notified notified
-     :sig      sig
-     :content  content
+    {:req-id         req-id
+     :tags           tags
+     :id             id
+     :pow            pow
+     :notified       notified
+     :sig            sig
+     :content        content
      :parsed-content parsed-content}))
 
 (defn handle-eose
-  [_req-id _evt]
-  (log/info :handle-eose/starting {})
+  [req-id evt]
+  (log/info :handle-eose/starting {:req-id req-id :evt evt})
   nil)
 
 (defn parse-message
