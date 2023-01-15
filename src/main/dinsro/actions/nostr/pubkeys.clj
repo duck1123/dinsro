@@ -12,18 +12,13 @@
    [lambdaisland.glogc :as log]))
 
 (defn fetch-pubkey!
-  [pubkey]
-  (log/info :fetch-pubkey!/starting {:pubkey pubkey})
-  (let [relay-id (first (q.n.relays/index-ids))
-        relay    (q.n.relays/read-record relay-id)
-        address  (::m.n.relays/address relay)
-        client   (a.n.relays/get-client-for-id relay-id)
-        chan     (a.n.relays/get-channel address)
-        request  (a.n.relays/adhoc-request [pubkey])
-        body     {:authors [pubkey] :kinds [0]}
-        message  (json/json-str request)]
-    (a.n.relays/send! relay-id body)
-    (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
+  ([pubkey]
+   (fetch-pubkey! pubkey (first (q.n.relays/index-ids))))
+  ([pubkey relay-id]
+   (log/info :fetch-pubkey!/starting {:pubkey pubkey})
+   (let [body     {:authors [pubkey] :kinds [0]}
+         chan (a.n.relays/send! relay-id body)]
+     (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan))))))
 
 (defn fetch-contact!
   [pubkey-id]
