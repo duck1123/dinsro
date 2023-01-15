@@ -55,11 +55,20 @@
             (str/starts-with? uri "/css")
             (str/starts-with? uri "/images")
             (str/starts-with? uri "/files")
-            (str/starts-with? uri "/js"))
+            (str/starts-with? uri "/js")
+            (str/starts-with? uri "/.well-known"))
       (ring-handler req)
       (resp/content-type
        (resp/response (index anti-forgery-token))
        "text/html"))))
+
+(defn wrap-well-known-routes
+  [ring-handler]
+  (fn [req]
+    (let [{:keys [uri]} req]
+      (if (str/starts-with? uri "/.well-known")
+        {:status 200 :body "Well known"}
+        (ring-handler req)))))
 
 (def transit-write-handlers
   {java.lang.Throwable
@@ -90,4 +99,5 @@
         (server/wrap-transit-params {})
         (server/wrap-transit-response {:opts {:handlers transit-write-handlers}})
         (wrap-html-routes)
+        (wrap-well-known-routes)
         (wrap-defaults defaults-config))))
