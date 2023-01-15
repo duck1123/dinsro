@@ -14,9 +14,11 @@
   [params]
   [::m.n.relays/params => :xt/id]
   (log/info :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [connected       (boolean (::m.n.relays/connected params))
+        node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (-> params
+                            (assoc ::m.n.relays/connected connected)
                             (assoc ::m.n.relays/id id)
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
@@ -80,6 +82,7 @@
 
 (defn create-connected-toggle
   []
+  (log/info :create-connected-toggle/starting {})
   (let [node (c.xtdb/main-node)]
     (xt/submit-tx
      node
@@ -90,10 +93,14 @@
                         entity (xtdb.api/entity db eid)]
                     [[::xt/put (assoc entity ::m.n.relays/connected connected)]]))}]])))
 
-(defn set-connected
+(>defn set-connected
   [relay-id connected]
-  (let [node (c.xtdb/main-node)]
-    (xt/submit-tx node [[::xt/fn :toggle-connected [relay-id connected]]])))
+  [::m.n.relays/id ::m.n.relays/connected => any?]
+  (log/info :set-connected/starting {:relay-id relay-id :connected connected})
+  (let [node     (c.xtdb/main-node)
+        response (xt/submit-tx node [[::xt/fn :toggle-connected [relay-id connected]]])]
+    (log/info :set-connected/finished {:response response})
+    response))
 
 (comment
 

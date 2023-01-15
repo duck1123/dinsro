@@ -16,8 +16,8 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::connected string?)
-(defattr connected ::connected :string
+(s/def ::connected boolean?)
+(defattr connected ::connected :boolean
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -28,8 +28,8 @@
   "Required params for contacts"
   ::required-params)
 
-(s/def ::params (s/keys :req [::address]))
-(s/def ::item (s/keys :req [::id ::address]))
+(s/def ::params (s/keys :req [::address] :opt [::connected]))
+(s/def ::item (s/keys :req [::id ::address ::connected]))
 
 (defn idents
   [ids]
