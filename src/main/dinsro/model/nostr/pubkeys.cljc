@@ -1,4 +1,5 @@
 (ns dinsro.model.nostr.pubkeys
+  (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
@@ -17,18 +18,73 @@
 
 
 ;; name
+
+
+(s/def ::name string?)
+(defattr name ::name :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+
 ;; picture
+
+
+(s/def ::picture string?)
+(defattr picture ::picture :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 ;; about
+
+(s/def ::about string?)
+(defattr about ::about :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+
 ;; nip05
+
+
+(s/def ::nip05 string?)
+(defattr nip05 ::nip05 :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+
 ;; website
+
+
+(s/def ::website string?)
+(defattr website ::website :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 ;; lud16
+
+(s/def ::lud16 string?)
+(defattr lud16 ::lud16 :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 ;; lud06
+
+(s/def ::lud06 string?)
+(defattr lud06 ::lud06 :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 ;; banner
 
+(s/def ::banner string?)
+(defattr banner ::banner :string
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (s/def ::required-params (s/keys :req [::pubkey]))
-(s/def ::params (s/keys :req [::pubkey]))
-(s/def ::item (s/keys :req [::id ::pubkey]))
+(s/def ::params (s/keys :req [::pubkey]
+                        :opt [::name ::picture ::about ::nip05 ::website ::lud16 ::lud06 ::banner]))
+(s/def ::item (s/keys :req [::id ::pubkey]
+                      :opt [::name ::picture ::about ::nip05 ::website ::lud16 ::lud06 ::banner]))
 (s/def ::items (s/coll-of ::item))
 (s/def ::ident (s/tuple keyword? ::id))
 
@@ -47,6 +103,6 @@
   [(s/coll-of ::id) => any?]
   (mapv ident ids))
 
-(def attributes [id pubkey])
+(def attributes [id pubkey name picture about nip05 website lud16 lud06 banner])
 
 #?(:clj (def resolvers []))
