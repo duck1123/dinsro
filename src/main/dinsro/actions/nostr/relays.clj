@@ -154,7 +154,27 @@
     (log/info :connect!/finished {:response response})
     response))
 
+(>defn disconnect!
+  [relay-id]
+  [::m.n.relays/id => any?]
+  (log/info :disconnect!/starting {:relay-id relay-id})
+  (let [response (q.n.relays/set-connected relay-id false)]
+    (log/info :disconnect!/finished {:response response})
+    response))
+
 (comment
+
+  (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
+
+
+  (q.n.relays/create-connected-toggle)
+
+  (q.n.relays/initialize-queries!)
+
+  (q.n.relays/read-record relay-id)
+
+  (connect! relay-id)
+  (disconnect! relay-id)
 
   (hc/get "https://relay.kronkltd.net")
 
