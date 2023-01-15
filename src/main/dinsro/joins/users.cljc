@@ -36,7 +36,7 @@
          (comment env query-params pubkey)
          {::index-by-pubkey (m.users/idents ids)})
        #?(:clj (throw (RuntimeException. "Missing pubkey"))
-          :cljs (throw (js/Error "Missing pubkey")))))})
+          :cljs (throw (js/Error. "Missing pubkey")))))})
 
 (defattr accounts ::m.users/accounts :ref
   {ao/cardinality :many
