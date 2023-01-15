@@ -6,9 +6,7 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.accounts :as a.ln.accounts])
    #?(:clj [dinsro.actions.ln.channels :as a.ln.channels])
-   #?(:clj [dinsro.actions.ln.invoices-lj :as a.ln.invoices-lj])
    #?(:clj [dinsro.actions.ln.nodes :as a.ln.nodes])
-   #?(:clj [dinsro.actions.ln.payments-lj :as a.ln.payments-lj])
    #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
    #?(:clj [dinsro.actions.ln.transactions :as a.ln.transactions])
    [dinsro.model.ln.info :as m.ln.info]
@@ -146,7 +144,7 @@
      [_env {::m.ln.nodes/keys [id]}]
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
-     (a.ln.invoices-lj/update! id)
+     (comment id)
      {:status :ok})
    :cljs
    (defmutation fetch-invoices! [_props]
@@ -158,7 +156,7 @@
      [_env {::m.ln.nodes/keys [id]}]
      {::pc/params #{::m.ln.nodes/id}
       ::pc/output [:status]}
-     (a.ln.payments-lj/fetch! id)
+     (comment id)
      {:status :ok})
    :cljs
    (defmutation fetch-payments! [_props]

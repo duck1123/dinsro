@@ -8,7 +8,6 @@
    [clojure.set :as set]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.core.nodes :as a.c.nodes]
-   [dinsro.client.lnd :as c.lnd]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
    [dinsro.model.ln.info :as m.ln.info]
@@ -149,33 +148,23 @@
   (slurp (download-macaroon! node)))
 
 (defn next-address
-  [client]
-  (let [ch      (async/chan)
-        request (c.lnd/->addr-request "")]
-    (.nextAddr client request (c.lnd/ch-observer ch))
-    ch))
+  [_client]
+  (throw (RuntimeException. "not implemented")))
 
 (defn initialize!
-  [node]
-  (log/info :initialize!/starting {:node node})
-  (let [client   (get-client node)
-        password "password12345678"]
-    (if-let [mnemonic (::m.ln.nodes/mnemonic node)]
-      (let [cipher-seed-mnemonic (efc/to-scala-list mnemonic)]
-        (log/info :initialize!/mnemonic {:mnemonic cipher-seed-mnemonic})
-        (try
-          (c.lnd-s/initialize! client password cipher-seed-mnemonic)
-          (catch Exception ex
-            (log/error :initialize!/error {:ex ex})
-            (throw ex))))
-      (throw (RuntimeException. "no mnemonic")))))
-
-;; (defn get-remote-instance
-;;   "Create a Bitcoin-s lnd remote instance for node"
-;;   ^LndInstance [{::m.ln.nodes/keys [host port] :as node}]
-;;   (let [url       (URI. (str "http://" host ":" port "/"))
-;;         macaroon  (get-macaroon-text node)]
-;;     (c.lnd-s/get-remote-instance url macaroon)))
+  ([node] (initialize! node "password12345678"))
+  ([node password]
+   (log/info :initialize!/starting {:node node})
+   (let [client   (get-client node)]
+     (if-let [mnemonic (::m.ln.nodes/mnemonic node)]
+       (let [cipher-seed-mnemonic (efc/to-scala-list mnemonic)]
+         (log/info :initialize!/mnemonic {:mnemonic cipher-seed-mnemonic})
+         (try
+           (c.lnd-s/initialize! client password cipher-seed-mnemonic)
+           (catch Exception ex
+             (log/error :initialize!/error {:ex ex})
+             (throw ex))))
+       (throw (RuntimeException. "no mnemonic"))))))
 
 (defn get-info
   "Fetch info for the node"
