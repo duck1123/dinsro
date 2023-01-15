@@ -79,20 +79,9 @@
     (log/info :prepare-params/finished {:prepared prepared})
     prepared))
 
-(>defn ident
-  [id]
-  [::id => (s/keys)]
-  {::id id})
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => (s/keys)]
-  (ident id))
-
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => (s/coll-of (s/keys))]
-  (mapv ident ids))
+(s/def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes
   [id address-bind subver addr peer-id connection-type node])

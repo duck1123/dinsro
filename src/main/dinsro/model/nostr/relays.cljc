@@ -1,12 +1,14 @@
 (ns dinsro.model.nostr.relays
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.specs]))
 
-;; [[../../actions/nostr/relays.clj][Action]]
+;; [[../../actions/nostr/relays.clj][Relay Actions]]
+;; [[../../joins/nostr/relays.cljc][Relay Joins]]
+;; [[../../queries/nostr/relays.clj][Relay Queries]]
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -29,8 +31,8 @@
 (s/def ::params (s/keys :req [::address] :opt [::connected]))
 (s/def ::item (s/keys :req [::id ::address ::connected]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id address connected])

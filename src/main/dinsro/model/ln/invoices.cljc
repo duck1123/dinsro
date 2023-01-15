@@ -2,6 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -169,9 +170,9 @@
                 ::settled? ::fallback-address ::settle-date ::settle-index ::description-hash
                 ::amp? ::creation-date ::memo ::node]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes
   [id ammount-paid add-index cltv-expiry expiry private? keysend? value r-hash r-preimage

@@ -2,7 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -44,57 +44,57 @@
   [params]
   (set/rename-keys params rename-map))
 
-(s/def ::id uuid?)
+(>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
 
-(s/def ::active boolean?)
+(>def ::active boolean?)
 (defattr active ::active :boolean
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::capacity number?)
+(>def ::capacity number?)
 (defattr capacity ::capacity :long
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::chan-id number?)
+(>def ::chan-id number?)
 (defattr chan-id ::chan-id :long
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::channel-point string?)
+(>def ::channel-point string?)
 (defattr channel-point ::channel-point :string
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::chan-status-flags string?)
+(>def ::chan-status-flags string?)
 (defattr chan-status-flags ::chan-status-flags :string
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::close-address string?)
+(>def ::close-address string?)
 (defattr close-address ::close-address :string
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::commit-fee number?)
+(>def ::commit-fee number?)
 (defattr commit-fee ::commit-fee :long
   {ao/identities #{::id}
    ao/schema    :production})
 
-(s/def ::local-balance number?)
+(>def ::local-balance number?)
 (defattr local-balance ::local-balance :long
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::remote-balance number?)
+(>def ::remote-balance number?)
 (defattr remote-balance ::remote-balance :long
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::node uuid?)
+(>def ::node uuid?)
 (defattr node ::node :ref
   {ao/identities #{::id}
    ao/target     ::m.ln.nodes/id
@@ -124,19 +124,19 @@
   (log/info :find-channel/starting {})
   nil)
 
-(s/def ::nodeless-params
+(>def ::nodeless-params
   (s/keys :req [::active ::capacity ::chan-id ::channel-point ::chan-status-flags
                 ::close-address ::commit-fee]))
-(s/def ::params
+(>def ::params
   (s/keys :req [::active ::capacity ::chan-id ::channel-point ::chan-status-flags
                 ::close-address ::commit-fee ::node]))
-(s/def ::item
+(>def ::item
   (s/keys :req [::id ::active ::capacity ::chan-id ::channel-point ::chan-status-flags
                 ::close-address ::commit-fee ::node]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id active capacity chan-id channel-point chan-status-flags
                  close-address commit-fee node local-balance remote-balance])

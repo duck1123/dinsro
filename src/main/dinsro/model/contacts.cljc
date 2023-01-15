@@ -37,17 +37,9 @@
   (s/keys :req [::name
                 ::pubkey]))
 
-(def required-params
-  "Required params for contacts"
-  ::required-params)
-
 (s/def ::params (s/keys :req [::name ::pubkey ::user]))
 (s/def ::item (s/keys :req [::id ::name ::pubkey ::user]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(defn idents [ids] (mapv (fn [id] {::id id}) ids))
 
 (def attributes [id name pubkey user])
-
-#?(:clj (def resolvers []))

@@ -71,17 +71,9 @@
   (s/keys :req [::id ::name ::network]
           :opt [::mnemonic]))
 (>def ::items (s/coll-of ::item))
-(>def ::ident (s/tuple keyword? ::id))
-(>def ::ident-map (s/keys :req [::id]))
 
-(>defn ident
-  [id]
-  [::id => ::ident-map]
-  {::id id})
-
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => (s/coll-of ::ident-map)]
-  (mapv ident ids))
+(s/def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id name derivation key network mnemonic user ext-public-key ext-private-key])

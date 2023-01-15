@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [alias])
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -51,9 +52,9 @@
   (s/keys :req [::id ::pubkey ::node]
           :opt [::color ::alias ::host]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes
   [id pubkey color host alias num-channels])

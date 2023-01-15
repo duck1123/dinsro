@@ -72,11 +72,4 @@
 (>defn ident [id] [::id => any?] {::id id})
 (defn idents [ids] (mapv ident ids))
 
-(def attributes
-  [id
-   name
-   hashed-value
-   password
-   password-salt
-   password-iterations
-   role])
+(def attributes [id name hashed-value password password-salt password-iterations role])

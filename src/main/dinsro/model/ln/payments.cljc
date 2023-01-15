@@ -1,6 +1,7 @@
 (ns dinsro.model.ln.payments
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -70,9 +71,9 @@
   (s/keys :req [::id ::payment-preimage ::payment-hash ::payment-request ::status ::fee ::value
                 ::payment-index ::failure-reason ::creation-date ::node]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes
   [id payment-preimage payment-hash payment-request status fee value payment-index failure-reason

@@ -52,14 +52,7 @@
 (s/def ::items (s/coll-of ::item))
 (s/def ::ident (s/tuple keyword? ::id))
 
-(>defn ident
-  [id]
-  [::id => any?]
-  {::id id})
-
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => any?]
-  (mapv ident ids))
+(>defn ident [id] [::id => any?] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => any?] (mapv ident ids))
 
 (def attributes [currency id name url active? path identity?])

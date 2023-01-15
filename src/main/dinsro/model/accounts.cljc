@@ -82,7 +82,6 @@
                         :opt [::source ::wallet]))
 (s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::user]
                       :opt [::source ::wallet]))
-
 (s/def ::ident (s/tuple keyword? ::id))
 
 (>defn ident [id] [::id => ::ident] [::id id])

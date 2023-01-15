@@ -1,7 +1,7 @@
 (ns dinsro.model.ln.peers
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -48,9 +48,8 @@
 (s/def ::item (s/keys :req [::id
                             ::inbound? ::sat-sent ::sat-recv ::node ::remote-node]))
 
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => (s/coll-of (s/keys))]
-  (map (fn [id] {::id id}) ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id inbound? sat-sent node remote-node])

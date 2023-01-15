@@ -90,4 +90,8 @@
     (log/info :prepare-params/finished {:prepared-params prepared-params})
     prepared-params))
 
+(s/def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
+
 (def attributes [id sequence transaction vout script-pub-key txid vout coinbase tx-id])

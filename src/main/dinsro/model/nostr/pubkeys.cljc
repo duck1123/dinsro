@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]))
 
@@ -77,16 +77,9 @@
 (s/def ::item (s/keys :req [::id ::pubkey]
                       :opt [::name ::picture ::about ::nip05 ::website ::lud16 ::lud06 ::banner]))
 (s/def ::items (s/coll-of ::item))
-(s/def ::ident (s/tuple keyword? ::id))
 
-(>defn ident
-  [id]
-  [::id => any?]
-  {::id id})
-
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => any?]
-  (mapv ident ids))
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id pubkey name picture about nip05 website lud16 lud06 banner])

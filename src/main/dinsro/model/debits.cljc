@@ -1,6 +1,7 @@
 (ns dinsro.model.debits
   (:require
    [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -34,8 +35,8 @@
 
 (s/def ::params (s/keys :req [::account ::transaction ::value]))
 
-(def attributes [id account transaction value])
+(>def ::ident (s/keys :req [::id]))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(def attributes [id account transaction value])

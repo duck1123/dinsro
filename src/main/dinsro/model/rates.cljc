@@ -20,6 +20,7 @@
 
 (s/def ::date ds/date)
 (s/def ::date-ms pos-int?)
+(s/def ::date-inst inst?)
 
 (defattr date ::date :date
   {ao/identities #{::id}
@@ -37,15 +38,8 @@
 (s/def ::item (s/keys :req [::id ::rate ::date ::source]))
 (s/def ::ident (s/tuple keyword? ::id))
 
-(>defn ident
-  [id]
-  [::id => any?]
-  {::id id})
-
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => any?]
-  (mapv ident ids))
+(>defn ident [id] [::id => any?] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => any?] (mapv ident ids))
 
 (s/def ::rate-feed-item (s/cat :date ::date-ms
                                :rate ::rate))
