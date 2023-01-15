@@ -1,6 +1,7 @@
 (ns dinsro.components.ring-middleware
   (:require
    [buddy.core.bytes :as b]
+   [clojure.data.json :as json]
    [clojure.string :as str]
    [cognitect.transit :as ct]
    [com.fulcrologic.fulcro.networking.file-upload :as file-upload]
@@ -67,7 +68,21 @@
   (fn [req]
     (let [{:keys [uri]} req]
       (if (str/starts-with? uri "/.well-known")
-        {:status 200 :body "Well known"}
+        (if (str/starts-with? uri "/.well-known/nostr.json")
+          {:status 200 :body
+           (json/json-str
+            {:names
+             {"_"           "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
+              "alice"       "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a"
+              "bob"         "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
+              "dinsro"      "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
+              "duck"        "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"}
+             :relays {"6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec" ["wss://relay.kronkltd.net"]
+                      "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a" ["wss://relay.kronkltd.net"]
+                      "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28" ["wss://relay.kronkltd.net"]
+                      "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88" ["wss://relay.kronkltd.net"]}})}
+
+          {:status 200 :body "Well known"})
         (ring-handler req)))))
 
 (def transit-write-handlers
