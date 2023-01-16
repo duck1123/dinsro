@@ -7,6 +7,11 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/relays.clj][Actions]]
+;; [[../../model/nostr/relays.cljc][Model]]
+;; [[../../queries/nostr/relays.clj][Queries]]
+;; [[../../ui/nostr/relays.cljs][UI]]
+
 (defattr index ::m.n.relays/index :ref
   {ao/target    ::m.n.relays/id
    ao/pc-output [{::m.n.relays/index [::m.n.relays/id]}]
