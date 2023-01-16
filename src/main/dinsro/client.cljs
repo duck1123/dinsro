@@ -197,8 +197,8 @@
 (defn install-logging!
   []
   (glogi-console/install!)
-  (timbre/merge-config! {:level     :debug
-                         :min-level :debug
+  (timbre/merge-config! {:level     :warn
+                         :min-level :warn
                          :output-fn prefix-output-fn
                          :appenders {:console (console-appender)}})
   (log/debug :logging/initialized {}))
