@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
+   [com.fulcrologic.rad.report :as report]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -20,7 +21,6 @@
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
-
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.ln.channels :as m.ln.channels]
@@ -118,6 +118,12 @@
            :target               [:ui/selected-node]
            :post-mutation        `dr/target-ready
            :post-mutation-params {:target ident}}))))))
+
+(defn subpage-loader
+  [ident-key router-key Report this]
+  (let [props    (comp/props this)
+        chain-id (get-in props [[::dr/id router-key] ident-key])]
+    (report/start-report! this Report {:route-params {ident-key chain-id}})))
 
 (defn page-merger
   [k mappings]
