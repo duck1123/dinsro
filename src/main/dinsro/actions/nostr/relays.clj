@@ -11,6 +11,7 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/nostr/relays.cljc][Joins]]
 ;; [[../../model/nostr/relays.cljc][Model]]
 ;; [[../../queries/nostr/relays.clj][Queries]]
 ;; [[../../ui/nostr/relays.cljs][UI]]
@@ -157,7 +158,9 @@
   (log/info :connect!/starting {:relay-id relay-id})
   (let [response (q.n.relays/set-connected relay-id true)]
     (log/info :connect!/finished {:response response})
-    response))
+    (let [client (get-client-for-id relay-id)]
+      (log/info :connect!/got-client {:client client})
+      response)))
 
 (>defn disconnect!
   [relay-id]
