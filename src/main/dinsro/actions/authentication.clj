@@ -83,18 +83,29 @@
      (log/info :logout!/handler {:resp resp})
      (let [session (some-> env :ring/request :session)
            merged  (assoc session :identity nil)]
-       (log/info :logout/merging {:merged merged})
-       ;; FIXME: shouldn't this return something
-       merged))))
+       (log/info :logout!/merging {:merged merged})
+       (let [updated-response (assoc resp :session merged)]
+         (log/info :logout!/updated {:updated-response updated-response})
+         updated-response)))))
 
 (defn check-session!
   "get session from env"
   [env]
   (log/info :check-session!/starting {})
-  (if-let [session  (some-> env :ring/request :session)]
+  (if-let [session (some-> env :ring/request :session)]
     (do
       (log/info :check-session!/existing-session {:session session})
-      session)
+      (if-let [identity (:identity session)]
+        (if-let [current-user (q.users/read-record identity)]
+          (do
+            (log/info :check-session!/has-identity {})
+            (assoc session :session/current-user current-user))
+          {::auth/provider :local
+           ::auth/status   :not-logged-in})
+        (do
+          (log/info :check-session!/no-identity {})
+          {::auth/provider :local
+           ::auth/status   :not-logged-in})))
     (do
       (log/info :check-session!/no-session {})
       {::auth/provider :local
