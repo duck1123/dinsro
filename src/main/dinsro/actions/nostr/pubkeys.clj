@@ -27,14 +27,13 @@
      (throw (RuntimeException. "No relays"))))
   ([pubkey relay-id]
    [::m.n.pubkeys/pubkey ::m.n.relays/id => ds/channel?]
-   (do
+   (async/go
      (log/info :fetch-pubkey!/starting {:pubkey pubkey :relay-id relay-id})
-     (async/go
-       (let [body    {:authors [pubkey] :kinds [0]}
-             chan    (a.n.relays/send! relay-id body)
-             message (async/<! (a.n.relays/process-messages chan))]
-         (log/info :fetch-pubkey!/fetched {:message message})
-         message)))))
+     (let [body    {:authors [pubkey] :kinds [0]}
+           chan    (a.n.relays/send! relay-id body)
+           message (async/<! (a.n.relays/process-messages chan))]
+       (log/info :fetch-pubkey!/fetched {:message message})
+       message))))
 
 (>defn send-adhoc-request
   [client pubkey]
