@@ -18,14 +18,6 @@
 ;; [[../../queries/nostr/pubkeys.clj][Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][UI]]
 
-(>defn update-pubkey!
-  [pubkey-id fetch-response]
-  [::m.n.pubkeys/id any? => any?]
-  (log/info :update-pubkey!/starting {:pubkey-id pubkey-id :fetch-response fetch-response})
-  (let [response nil]
-    (log/info :update-pubkey!/finished {:response response})
-    response))
-
 (>defn fetch-pubkey!
   "Fetch info about pubkey from relay"
   ([pubkey]
@@ -52,8 +44,7 @@
     (log/info :fetch-contact!/starting {:pubkey pubkey})
     (async/go
       (let [response (async/<! (fetch-pubkey! pubkey))]
-        (log/info :fetch-contact!/fetched {:response response})
-        (update-pubkey! pubkey-id response)))))
+        (log/info :fetch-contact!/fetched {:response response})))))
 
 (>defn send-adhoc-request
   [client pubkey]
@@ -69,6 +60,35 @@
         chan    (a.n.relays/get-channel address)]
     (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
 
+(>defn parse-content
+  [content]
+  [string? => any?]
+  (log/info :parse-content/starting {:content content})
+  (let [data (json/read-str content)]
+    (log/info :parse-content/parsed {:data data})
+    (let [{name    "name"
+           about   "about"
+           nip05   "nip05"
+           lud06   "lud06"
+           lud16   "lud16"
+           picture "picture"
+           website "website"} data]
+      {::m.n.pubkeys/name    name
+       ::m.n.pubkeys/about   about
+       ::m.n.pubkeys/nip05   nip05
+       ::m.n.pubkeys/lud06   lud06
+       ::m.n.pubkeys/lud16   lud16
+       ::m.n.pubkeys/picture picture
+       ::m.n.pubkeys/website website})))
+
+(>defn update-pubkey!
+  [pubkey-id]
+  [::m.n.pubkeys/id => any?]
+  (log/info :update-pubkey!/starting {:pubkey-id pubkey-id})
+  (let [response (fetch-pubkey! pubkey-id)]
+    (log/info :update-pubkey!/finished {:response response})
+    response))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
@@ -81,6 +101,7 @@
   (a.n.relays/disconnect! relay-id)
 
   (def pubkey-id (first (q.n.pubkeys/index-ids)))
+  pubkey-id
 
   (q.n.pubkeys/read-record pubkey-id)
 
