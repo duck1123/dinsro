@@ -10,8 +10,10 @@
 ;; # Pubkeys
 
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
-(nu/display-file-links)
+^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+(comment
+  ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+  (nu/display-file-links))
 
 ;; The id we're working with
 
@@ -37,9 +39,19 @@
 
 ;; ## Updating pubkey
 
+;; This will run the update action
+
+^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+(def last-update-result (atom nil))
+
+^{::clerk/viewer clerk/hide-result}
+(defn update-pubkey-run []
+  (reset! last-update-result (nu/try-await (a.n.pubkeys/update-pubkey! pubkey-id))))
+
+;; last update result
+
 ^{::clerk/visibility :hide}
-(comment
+@last-update-result
 
-  (a.n.pubkeys/update-pubkey! pubkey-id)
-
-  nil)
+^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+(comment (update-pubkey-run))

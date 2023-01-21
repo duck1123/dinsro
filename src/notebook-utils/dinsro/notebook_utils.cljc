@@ -1,8 +1,10 @@
 (ns dinsro.notebook-utils
   (:require
+   #?(:clj [clojure.core.async :as async])
    [clojure.tools.namespace.file :as n.file]
    [clojure.tools.namespace.find :as n.find]
    [clojure.tools.namespace.parse :as n.parse]
+   #?(:clj [dinsro.actions.nostr.relays :as a.n.relays])
    [nextjournal.clerk :as clerk]
    [nextjournal.clerk.viewer :as v])
   (:import java.io.File))
@@ -56,6 +58,12 @@
   (clerk/with-viewers
     (clerk/add-viewers [:file-link-viewer/main])
     (x2)))
+
+#?(:clj
+   (defn try-await
+     [chan]
+     (let [timeout-response (a.n.relays/take-timeout chan)]
+       (async/<!! timeout-response))))
 
 #_(fn display-file-links
     [props]

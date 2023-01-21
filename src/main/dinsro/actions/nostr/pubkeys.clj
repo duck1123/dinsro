@@ -85,9 +85,13 @@
   [pubkey-id]
   [::m.n.pubkeys/id => any?]
   (log/info :update-pubkey!/starting {:pubkey-id pubkey-id})
-  (let [response (fetch-pubkey! pubkey-id)]
-    (log/info :update-pubkey!/finished {:response response})
-    response))
+  (async/go
+    (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
+      (let [hex      (::m.n.pubkeys/pubkey pubkey)
+            response (async/<! (fetch-pubkey! hex))]
+        (log/info :update-pubkey!/finished {:response response})
+        response)
+      (throw (RuntimeException. "No pubkey")))))
 
 (comment
 
