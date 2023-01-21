@@ -46,6 +46,10 @@
   metosin/reitit                            {:mvn/version "0.5.15"}
   metosin/ring-http-response                {:mvn/version "0.9.3"}
   mount/mount                               {:mvn/version "0.1.16"}
+
+  ;; https://github.com/roterski/fulcro-rad-xtdb
+  net.clojars.roterski/fulcro-rad-xtdb      {:mvn/version "0.0.1-alpha-7"}
+
   nrepl/nrepl                               {:mvn/version "0.9.0"}
   org.bitcoin-s/bitcoin-s-bitcoind-rpc_2.13 {:mvn/version "1.9.4"}
   org.bitcoin-s/bitcoin-s-core_2.13         {:mvn/version "1.9.4"}
@@ -64,8 +68,6 @@
   ring/ring-devel                           {:mvn/version "1.9.5"}
   ring/ring-mock                            {:mvn/version "0.4.0"}
 
-  ;; https://github.com/roterski/fulcro-rad-xtdb
-  net.clojars.roterski/fulcro-rad-xtdb      {:mvn/version "0.0.1-alpha-9"}
   selmer/selmer                             {:mvn/version "1.12.49"}
   thheller/shadow-cljs                      {:mvn/version "2.15.12"}
   tick/tick                                 {:mvn/version "0.4.32"
