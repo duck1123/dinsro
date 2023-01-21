@@ -1,7 +1,7 @@
 (ns dinsro.components.database-queries
   (:require
-   ;; [dinsro.components.xtdb]
-   ;; [dinsro.queries :as q]
+   [dinsro.components.xtdb]
+   [dinsro.queries :as q]
    [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb-options :as co]
@@ -12,7 +12,7 @@
   "A collection of started xtdb nodes"
   :start (do
            (log/info :queries/starting {})
-           #_(q/initialize-queries!))
+           (q/initialize-queries!))
   :stop (log/info :queries/stopping {}))
 
 (defn get-login-info
