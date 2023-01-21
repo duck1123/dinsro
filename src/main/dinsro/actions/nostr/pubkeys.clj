@@ -12,6 +12,11 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/nostr/pubkeys.cljc][Joins]]
+;; [[../../model/nostr/pubkeys.cljc][Model]]
+;; [[../../queries/nostr/pubkeys.clj][Queries]]
+;; [[../../ui/nostr/pubkeys.cljs][UI]]
+
 (>defn fetch-pubkey!
   "Fetch info about pubkey from relay"
   ([pubkey]
