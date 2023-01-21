@@ -7,7 +7,6 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
-   [hato.client :as hc]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
@@ -199,6 +198,15 @@
       {::mu/status       :ok
        ::m.n.relays/item relay})))
 
+(>defn do-fetch!
+  "Handler for fetch! mutation"
+  [{::m.n.relays/keys [id]}]
+  [::m.n.relays/ident => ::m.n.relays/item]
+  (log/info :do-fetch!/starting {:id id})
+  (let [updated-node (q.n.relays/read-record id)]
+    (connect! id)
+    updated-node))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
@@ -212,32 +220,32 @@
   (connect! relay-id)
   (disconnect! relay-id)
 
-  (hc/get "https://relay.kronkltd.net")
+  ;; (hc/get "https://relay.kronkltd.net")
 
-  (json/json-str
-   (adhoc-request sample-ids))
+  ;; (json/json-str
+  ;;  (adhoc-request sample-ids))
 
-  (def chan (async/chan))
+  ;; (def chan (async/chan))
 
-  (def client (get-client chan ws-url))
+  ;; (def client (get-client chan ws-url))
 
-  client
+  ;; client
 
-  (ws/close! client)
+  ;; (ws/close! client)
 
-  (ws/send! client (json/json-str (adhoc-request sample-ids)))
+  ;; (ws/send! client (json/json-str (adhoc-request sample-ids)))
 
-  chan
+  ;; chan
 
-  (process-messages chan)
+  ;; (process-messages chan)
 
   (some->
    (q.n.relays/index-ids)
    first
    q.n.relays/read-record)
 
-  (async/<!! chan)
+  ;; (async/<!! chan)
 
-  (def content "")
+  ;; (def content "")
 
   nil)

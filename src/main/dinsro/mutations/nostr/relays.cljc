@@ -41,29 +41,18 @@
                    ::mu/status]})
 
 #?(:clj
-   (>defn do-fetch!
-     "Handler for fetch! mutation"
-     [{::m.n.relays/keys [id]}]
-     [::fetch!-request => ::fetch!-response]
-     (log/info :do-fetch!/started {:id id})
-     (let [updated-node nil]
-       {::mu/status      :ok
-        ::m.n.relays/item updated-node})))
-
-#?(:cljs
-   (defn handle-fetch
-     [{:keys [state] :as env}]
-     (comment state env)
-     {}))
-
-#?(:clj
    (pc/defmutation fetch!
      [_env props]
      {::pc/params #{::m.n.relays/id}
       ::pc/output [::status
                    ::errors
                    ::m.n.relays/item]}
-     (do-fetch! props))
+     (try
+       (let [updated-node (a.n.relays/do-fetch! props)]
+         {::mu/status       :ok
+          ::m.n.relays/item updated-node})
+       (catch Exception ex
+         (log/error :fetch!/errored {:ex ex}))))
 
    :cljs
    (fm/defmutation fetch! [_props]
@@ -71,8 +60,7 @@
      (remote    [env]
        (-> env
            (fm/returning FetchResponse)
-           (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))
-     (ok-action [env]  (handle-fetch env))))
+           (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))))
 
 ;; Connect
 
