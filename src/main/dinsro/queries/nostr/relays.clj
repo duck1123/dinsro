@@ -9,6 +9,9 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/relays.clj][Actions]]
+;; [[../nostr.clj][Nostr Queries]]
+
 (>defn create-record
   "Create a relay record"
   [params]
@@ -91,8 +94,7 @@
       [[::xt/put
         {:xt/id :toggle-connected
          :xt/fn '(fn [ctx eid connected]
-                   (let [
-                         ;; connected true
+                   (let [;; connected true
                          db           (xtdb.api/db ctx)
                          entity       (xtdb.api/entity db eid)
                          updated-data (assoc entity ::m.n.relays/connected connected)]
@@ -110,7 +112,8 @@
 (defn initialize-queries!
   []
   (log/info :initialize-queries!/starting {})
-  (create-connected-toggle))
+  (create-connected-toggle)
+  (log/info :initialize-queries!/finished {}))
 
 (comment
 

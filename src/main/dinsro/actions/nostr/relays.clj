@@ -10,6 +10,10 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
+;; [[../../model/nostr/relays.cljc][Model]]
+;; [[../../queries/nostr/relays.clj][Queries]]
+;; [[../../ui/nostr/relays.cljs][UI]]
+
 (defonce connections (atom {}))
 
 (defn on-message
@@ -165,7 +169,6 @@
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
-
 
   (q.n.relays/create-connected-toggle)
 

@@ -6,6 +6,8 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.specs]))
 
+;; [[../../actions/nostr/relays.clj][Action]]
+
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
