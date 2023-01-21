@@ -22,16 +22,18 @@
 
 (defonce connections (atom {}))
 
-(defn handle-message
+(>defn handle-message
   [chan _ws msg _last?]
+  [ds/channel? any? any? any? => any?]
   (let [msg-str (str msg)
         o       (json/read-str msg-str)]
     (log/debug :handle-message/received {:o o})
     (async/put! chan o)))
 
-(defn on-message
+(>defn on-message
   "Takes a chan, returns a message handler"
   [chan]
+  [ds/channel? => any?]
   (partial handle-message chan))
 
 (>defn on-close
@@ -49,8 +51,9 @@
      {:authors author-ids
       :kinds   [0]}]))
 
-(defn get-client
+(>defn get-client
   [chan url]
+  [ds/channel? string? => any?]
   (if-let [existing-connection (get @connections url)]
     (do
       (log/info :get-client/cached {:url url})
@@ -66,7 +69,7 @@
 (>defn get-channel
   "Returns a channel for a relay address"
   [address]
-  [string? => any?]
+  [string? => ds/channel?]
   (if-let [item (get @connections address)]
     (:chan item)
     (throw (RuntimeException. "No channel"))))
@@ -75,11 +78,11 @@
   ([relay-id]
    [::m.n.relays/id => any?]
    (get-client-for-id relay-id true))
-  ([relay-id create-if-missing]
+  ([relay-id create-if-missing?]
    [::m.n.relays/id boolean? => (? ::client)]
    (let [relay                         (q.n.relays/read-record relay-id)
          {::m.n.relays/keys [address]} relay]
-     (if create-if-missing
+     (if create-if-missing?
        (let [chan   (async/chan)
              client (get-client chan address)]
          client)
@@ -145,15 +148,24 @@
       (log/info :process-messages/finished {:message message})
       message)))
 
-(defn take-timeout
+(def timeout-time 10000)
+
+(>defn take-timeout
+  "Read from a channel with a timeout"
   [chan]
+  [ds/channel? => ds/channel?]
   (async/go
-    (let [[v c] (async/alts! [chan (async/timeout 10000)])]
-      (if (= c chan) v (do (comment (async/close! chan)) :timeout)))))
+    (let [[v c] (async/alts! [chan (async/timeout timeout-time)])]
+      (if (= c chan)
+        v
+        (do
+          (comment (async/close! chan))
+          :timeout)))))
 
 (>defn send!
+  "Send a message to a relay"
   [relay-id body]
-  [::m.n.relays/id any? => any?]
+  [::m.n.relays/id string? => ds/channel?]
   (let [relay      (q.n.relays/read-record relay-id)
         address    (::m.n.relays/address relay)
         client     (get-client-for-id relay-id)
@@ -164,16 +176,21 @@
     chan))
 
 (>defn connect!
+  "Connect to relay and store connection information"
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :connect!/starting {:relay-id relay-id})
   (let [response (q.n.relays/set-connected relay-id true)]
     (log/info :connect!/finished {:response response})
+
+    ;; initialize client
     (let [client (get-client-for-id relay-id)]
-      (log/info :connect!/got-client {:client client})
-      response)))
+      (log/info :connect!/got-client {:client client}))
+
+    response))
 
 (>defn disconnect!
+  "Disconnect from relay and clear connection information"
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :disconnect!/starting {:relay-id relay-id})
@@ -186,6 +203,7 @@
     response))
 
 (>defn toggle-relay!
+  "Toggle state of relay"
   [relay]
   [::m.n.relays/item => any?]
   (log/info :toggle-relay!/starting {:relay relay})
@@ -196,6 +214,7 @@
       (connect! relay-id))))
 
 (>defn toggle!
+  "Toggle state of relay identified by id"
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :toggle!/starting {:relay-id relay-id})
@@ -204,8 +223,10 @@
     (log/info :toggle!/finished {:response response})
     response))
 
-(defn do-toggle!
+(>defn do-toggle!
+  "Handler for toggle! mutation"
   [props]
+  [::m.n.relays/ident => any?]
   (log/info :do-toggle!/starting {:props props})
   (let [relay-id (::m.n.relays/id props)
         response (toggle! relay-id)]

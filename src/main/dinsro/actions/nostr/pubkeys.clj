@@ -2,6 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -11,28 +12,35 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
-(defn fetch-pubkey!
+(>defn fetch-pubkey!
   ([pubkey]
+   [::m.n.pubkeys/pubkey => any?]
    (fetch-pubkey! pubkey (first (q.n.relays/index-ids))))
   ([pubkey relay-id]
-   (log/info :fetch-pubkey!/starting {:pubkey pubkey})
-   (let [body     {:authors [pubkey] :kinds [0]}
-         chan (a.n.relays/send! relay-id body)]
-     (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan))))))
+   [::m.n.pubkeys/pubkey ::m.n.relays/id => any?]
+   (do
+     (log/info :fetch-pubkey!/starting {:pubkey pubkey :relay-id relay-id})
+     (let [body {:authors [pubkey] :kinds [0]}
+           chan (a.n.relays/send! relay-id body)]
+       (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))))
 
-(defn fetch-contact!
+(>defn fetch-contact!
   [pubkey-id]
+  [::m.n.pubkeys/id => any?]
   (let [pubkey-record (q.n.pubkeys/read-record pubkey-id)
         pubkey        (::m.n.pubkeys/pubkey pubkey-record)]
     (log/info :fetch-contact!/starting {:pubkey pubkey})
     (fetch-pubkey! pubkey)))
 
-(defn send-adhoc-request
+(>defn send-adhoc-request
   [client pubkey]
-  (ws/send! client (json/json-str (a.n.relays/adhoc-request [pubkey]))))
+  [any? ::m.n.pubkeys/pubkey => any?]
+  (let [msg (json/json-str (a.n.relays/adhoc-request [pubkey]))]
+    (ws/send! client msg)))
 
-(defn poll!
+(>defn poll!
   [relay-id]
+  [::m.n.relays/id => any?]
   (let [relay   (q.n.relays/read-record relay-id)
         address (::m.n.relays/address relay)
         chan    (a.n.relays/get-channel address)]
