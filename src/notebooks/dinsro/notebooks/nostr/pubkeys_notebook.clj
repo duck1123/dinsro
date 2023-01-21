@@ -9,7 +9,6 @@
 
 ;; # Pubkeys
 
-
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
 (nu/display-file-links)
 
@@ -52,7 +51,9 @@
 
 ^{::clerk/viewer clerk/hide-result}
 (defn update-pubkey-run []
-  (reset! last-update-result (nu/try-await (a.n.pubkeys/update-pubkey! pubkey-id))))
+  (let [result (nu/try-await (a.n.pubkeys/update-pubkey! pubkey-id))]
+    (reset! last-update-result result)
+    result))
 
 ;; last update result
 

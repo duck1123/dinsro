@@ -36,16 +36,6 @@
          (log/info :fetch-pubkey!/fetched {:message message})
          message)))))
 
-(>defn fetch-contact!
-  [pubkey-id]
-  [::m.n.pubkeys/id => ds/channel?]
-  (let [pubkey-record (q.n.pubkeys/read-record pubkey-id)
-        pubkey        (::m.n.pubkeys/pubkey pubkey-record)]
-    (log/info :fetch-contact!/starting {:pubkey pubkey})
-    (async/go
-      (let [response (async/<! (fetch-pubkey! pubkey))]
-        (log/info :fetch-contact!/fetched {:response response})))))
-
 (>defn send-adhoc-request
   [client pubkey]
   [any? ::m.n.pubkeys/pubkey => any?]
@@ -92,6 +82,11 @@
         (log/info :update-pubkey!/finished {:response response})
         response)
       (throw (RuntimeException. "No pubkey")))))
+
+(>defn fetch-contact!
+  [pubkey-id]
+  [::m.n.pubkeys/id => ds/channel?]
+  (update-pubkey! pubkey-id))
 
 (comment
 
