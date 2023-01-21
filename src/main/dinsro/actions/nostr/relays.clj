@@ -2,11 +2,12 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
-   [dinsro.actions.contacts :as a.contacts]
+   [clojure.spec.alpha :as s]
+   [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.specs :as ds]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
@@ -15,40 +16,38 @@
 ;; [[../../queries/nostr/relays.clj][Queries]]
 ;; [[../../ui/nostr/relays.cljs][UI]]
 
+(>def ::client any?)
+
+(def req-id "5022")
+
 (defonce connections (atom {}))
 
-(defn on-message
-  [chan]
-  (fn [_ws msg _last?]
-    (let [msg-str (str msg)
-          o       (json/read-str msg-str)]
-      (async/put! chan o))))
+(defn handle-message
+  [chan _ws msg _last?]
+  (let [msg-str (str msg)
+        o       (json/read-str msg-str)]
+    (log/debug :handle-message/received {:o o})
+    (async/put! chan o)))
 
-(defn on-close
+(defn on-message
+  "Takes a chan, returns a message handler"
   [chan]
+  (partial handle-message chan))
+
+(>defn on-close
+  [chan]
+  [ds/channel? => any?]
   (fn [_ws _status _reason]
     (log/info :on-closed/received {})
     (async/close! chan)))
 
-(def sample-ids
-  ["29f63b70d8961835b14062b195fc7d84fa810560b36dde0749e4bc084f0f8952"
-   "82341f882b6eabcd2ba7f1ef90aad961cf074af15b9ef44a09f9d2a8fbfbe6a2",
-   "247e76e8ec55a48010575785960550971654e12a4c8e1980b84432b8e538c485",
-   "d12652d77742fee5e27f0d37ec034c20ec87923589537924db0174f0dc7ee132",
-   "3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d",
-   a.contacts/duck
-   a.contacts/matt-odell])
-
-(def req-id "5022")
-
-(defn adhoc-request
+(>defn adhoc-request
   [author-ids]
+  [(s/coll-of string?) => any?]
   (let [id req-id]
     ["REQ" (str "adhoc " id)
      {:authors author-ids
       :kinds   [0]}]))
-
-(def ws-url "wss://relay.kronkltd.net")
 
 (defn get-client
   [chan url]
@@ -65,19 +64,32 @@
         client))))
 
 (>defn get-channel
+  "Returns a channel for a relay address"
   [address]
   [string? => any?]
   (if-let [item (get @connections address)]
     (:chan item)
     (throw (RuntimeException. "No channel"))))
 
-(defn get-client-for-id
-  [relay-id]
-  (let [chan                          (async/chan)
-        relay                         (q.n.relays/read-record relay-id)
-        {::m.n.relays/keys [address]} relay
-        client (get-client chan address)]
-    client))
+(>defn get-client-for-id
+  ([relay-id]
+   [::m.n.relays/id => any?]
+   (get-client-for-id relay-id true))
+  ([relay-id create-if-missing]
+   [::m.n.relays/id boolean? => (? ::client)]
+   (let [relay                         (q.n.relays/read-record relay-id)
+         {::m.n.relays/keys [address]} relay]
+     (if create-if-missing
+       (let [chan   (async/chan)
+             client (get-client chan address)]
+         client)
+       (if-let [client (get-in @connections [address :client])]
+         (do
+           (log/info :get-client-for-id/cached {:client client})
+           client)
+         (do
+           (log/info :get-client-for-id/missing {})
+           nil))))))
 
 (defn handle-event
   [req-id evt]
@@ -165,8 +177,12 @@
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :disconnect!/starting {:relay-id relay-id})
-  (let [response (q.n.relays/set-connected relay-id false)]
-    (log/info :disconnect!/finished {:response response})
+  (let [response (q.n.relays/set-connected relay-id false)
+        relay    (q.n.relays/read-record relay-id)
+        url      (::m.n.relays/address relay)
+        client   (get-client-for-id relay-id)]
+    (swap! connections dissoc url)
+    (log/info :disconnect!/finished {:response response :client client})
     response))
 
 (>defn toggle-relay!
@@ -219,25 +235,6 @@
 
   (connect! relay-id)
   (disconnect! relay-id)
-
-  ;; (hc/get "https://relay.kronkltd.net")
-
-  ;; (json/json-str
-  ;;  (adhoc-request sample-ids))
-
-  ;; (def chan (async/chan))
-
-  ;; (def client (get-client chan ws-url))
-
-  ;; client
-
-  ;; (ws/close! client)
-
-  ;; (ws/send! client (json/json-str (adhoc-request sample-ids)))
-
-  ;; chan
-
-  ;; (process-messages chan)
 
   (some->
    (q.n.relays/index-ids)

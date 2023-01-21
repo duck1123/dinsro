@@ -41,8 +41,17 @@
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
+  (q.n.relays/read-record relay-id)
 
-  (fetch-contact! (first (q.n.pubkeys/index-ids)))
+  a.n.relays/connections
+
+  (a.n.relays/disconnect! relay-id)
+
+  (def pubkey-id (first (q.n.pubkeys/index-ids)))
+
+  (q.n.pubkeys/read-record pubkey-id)
+
+  (fetch-contact! pubkey-id)
 
   (poll! relay-id)
 
