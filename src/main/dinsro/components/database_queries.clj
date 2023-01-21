@@ -1,8 +1,19 @@
 (ns dinsro.components.database-queries
   (:require
+   ;; [dinsro.components.xtdb]
+   ;; [dinsro.queries :as q]
+   [lambdaisland.glogc :as log]
+   [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb-options :as co]
    [taoensso.encore :as enc]
    [xtdb.api :as xt]))
+
+(defstate ^{:on-reload :noop} queries
+  "A collection of started xtdb nodes"
+  :start (do
+           (log/info :queries/starting {})
+           #_(q/initialize-queries!))
+  :stop (log/info :queries/stopping {}))
 
 (defn get-login-info
   "Get the account name, time zone, and password info via a username (email)."
