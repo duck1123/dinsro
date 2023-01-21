@@ -162,10 +162,12 @@
           (comment (async/close! chan))
           :timeout)))))
 
+;; body is a map that will be turned into a message
+
 (>defn send!
   "Send a message to a relay"
   [relay-id body]
-  [::m.n.relays/id string? => ds/channel?]
+  [::m.n.relays/id any? => ds/channel?]
   (let [relay      (q.n.relays/read-record relay-id)
         address    (::m.n.relays/address relay)
         client     (get-client-for-id relay-id)
