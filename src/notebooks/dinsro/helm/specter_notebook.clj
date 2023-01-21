@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.helm.specter-notebook
   (:require
    [dinsro.helm.specter :as h.specter]
@@ -8,7 +8,7 @@
 
 ;; # Specter Helm generator
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def inputs {:name "alice"})

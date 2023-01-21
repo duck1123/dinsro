@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.networks-notebook
   (:require
    [dinsro.model.core.chains :as m.c.chains]
@@ -11,7 +11,7 @@
 
 ;; # Core Network Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (comment

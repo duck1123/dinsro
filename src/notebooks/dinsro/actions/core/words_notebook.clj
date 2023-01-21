@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.words-notebook
   (:require
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -10,7 +10,7 @@
 
 ;; # Core Word Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def wallet (first (q.c.wallets/index-records)))

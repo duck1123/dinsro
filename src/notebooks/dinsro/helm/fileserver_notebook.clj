@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.helm.fileserver-notebook
   (:require
    [dinsro.helm.fileserver :as h.fileserver]
@@ -9,7 +9,7 @@
 
 ;; # LND Helm generator
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def inputs

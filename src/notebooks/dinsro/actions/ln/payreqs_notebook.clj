@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.ln.payreqs-notebook
   (:require
    [dinsro.actions.ln.payreqs :as a.ln.payreqs]
@@ -11,7 +11,7 @@
 
 ;; # LND Payment Request Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def payment-request "lnbcrt230n1psuca02pp5lhjau56zdmmce9hva726lvqyxuztfsusyv7yw770mur5hu2x989qdq523jhxapqf9h8vmmfvdjscqzpgxqyz5vqsp5rxljvwf9r3q4zhecwr2ccnn3eakvs0n500t4p3hnrv626s8852ms9qyyssqpz8a9dnmhhk3q3ly8ykdnr3ts9m94v9e9un2j6rsvstqlhh0wdgrx84hawf2zagqs7ph24r4pqk0yy7jpmxay8f0kjxf6khkh2z9axspc25re5")

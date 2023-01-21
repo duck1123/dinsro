@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.wallets-notebook
   (:require
    [dinsro.actions.core.wallets :as a.c.wallets]
@@ -15,7 +15,7 @@
 
 ;; # Core Wallet Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def descriptor "wpkh([8c694d63/84h/1h/0h]tpubDCaHeqXShp6x7GSBnyBaFB6tPtdCfU5otmgRZu6ChfVvE4EXYHxPhwMsXvp1aFZBd7CRmpJWfDbZDKfV7tNe5ThHgUaRMEDQM39BCyxWwNU/0/*)#ytuthqy3")

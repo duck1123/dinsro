@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.nodes-notebook
   (:require
    [clojure.core.async :as async]
@@ -15,7 +15,7 @@
 
 ;; # Core Node Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 ;; ## Setup users
@@ -23,18 +23,18 @@
 ;; Alice
 
 
-^{::clerk/viewer clerk/code ::clerk/visibility :hide}
+^{::clerk/viewer clerk/code ::clerk/visibility {:code :hide}}
 (def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
 
 ;; Bob
 
-^{::clerk/viewer clerk/code ::clerk/visibility :hide}
+^{::clerk/viewer clerk/code ::clerk/visibility {:code :hide}}
 (def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
 
-^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide :result :hide}}
 (def node node-alice)
 
-^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide :result :hide}}
 (def node-id (::m.c.nodes/id node))
 
 (def client (a.c.node-base/get-client node))

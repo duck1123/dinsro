@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.components.seed-notebook
   (:require
    [dinsro.components.seed :as c.seed]
@@ -9,7 +9,7 @@
 
 ;; Seed Component
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 ^{::clerk/viewer clerk/code}

@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.client.converters.init-wallet-request-notebook
   (:require
    [dinsro.client.converters.init-wallet-request :as c.c.init-wallet-request]
@@ -11,7 +11,7 @@
 
 ;; # Init Wallet Request [link](https://bitcoin-s.org/api/lnrpc/InitWalletRequest.html)
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 ;; scala.collection.immutable.Seq/empty

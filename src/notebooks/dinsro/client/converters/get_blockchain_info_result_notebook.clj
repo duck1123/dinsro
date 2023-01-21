@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.client.converters.get-blockchain-info-result-notebook
   (:require
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
@@ -13,10 +13,10 @@
 
 ;; # Get Block Chain Info Result [link](https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockChainInfoResultPostV19.html)
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
-^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide} ::clerk/viewer clerk/hide-result}
 (def result
   (let [chain                   (c.bitcoin-s/regtest-network)
         blocks                  (int 1)

@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}
+^{:nextjournal.clerk/visibility {:code :hide}
   :nextjournal.clerk/toc        true}
 (ns dinsro.helm.dinsro-test
   (:require

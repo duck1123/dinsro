@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.debits-notebook
   (:require
    [dinsro.notebook-utils :as nu]
@@ -7,7 +7,7 @@
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 ^{::clerk/viewer clerk/table}

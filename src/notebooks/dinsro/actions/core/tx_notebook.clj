@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.tx-notebook
   (:require
    [dinsro.actions.core.tx :as a.c.tx]
@@ -16,7 +16,7 @@
 
 ;; # Core TX Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def transaction-id (first (q.c.tx/index-ids)))

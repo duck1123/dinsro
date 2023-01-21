@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.wallet-addresses-notebook
   (:require
    [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses]
@@ -11,7 +11,7 @@
 
 ;; # Core Wallet Address Actions
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def address "bcrt1q69zq0gn5cuflasuu8redktssdqxyxg8h6mh53j")

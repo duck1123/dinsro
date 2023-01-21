@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility #{:code :hide}}
 (ns dinsro.notebook
   (:require
    [dinsro.notebook-utils :as nu]
@@ -8,15 +8,15 @@
 
 ;; # Dinsro Notebooks
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 ;; # Namespaces
 
-^{::clerk/viewer clerk/table ::clerk/visibility :hide}
+^{::clerk/viewer clerk/table ::clerk/visibility {:code :hide}}
 (nu/x2)
 
-^{::clerk/visibility :hide
+^{::clerk/visibility {:code :hide}
   ::clerk/viewer
   {:render-fn
    '(fn display-file-links
@@ -38,10 +38,10 @@
          props)]))}}
 (nu/x2)
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/x2)
 
-^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide :result :hide}}
 (comment
 
   4

@@ -51,6 +51,7 @@
   org.clj-commons/byte-streams              {:mvn/version "0.3.0"}
   org.clojure/clojure                       {:mvn/version "1.10.3"}
   org.clojure/clojurescript                 {:mvn/version "1.10.879"}
+  org.clojure/core.async                    {:mvn/version "1.5.648"}
   org.clojure/spec.alpha                    {:mvn/version "0.3.214"}
   org.clojure/test.check                    {:mvn/version "1.1.1"}
   org.clojure/tools.cli                     {:mvn/version "1.0.206"}
@@ -137,7 +138,7 @@
   :notebooks
   {:extra-paths ["src/notebooks" "src/notebook-utils"]
    :extra-deps
-   {io.github.nextjournal/clerk {:mvn/version "0.8.486"}}}
+   {io.github.nextjournal/clerk {:mvn/version "0.12.707"}}}
 
   :outdated
   {:replace-deps {olical/depot {:mvn/version "2.3.0"}}

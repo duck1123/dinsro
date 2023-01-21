@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility #{:code :hide}}
 (ns dinsro.lnd-notebook
   (:require
    [dinsro.actions.ln.nodes :as a.ln.nodes]
@@ -12,7 +12,7 @@
 
 ;; # LND Notebook
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def user-alice (q.users/find-by-name "alice"))

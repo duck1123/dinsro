@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.client.converters.get-block-result-notebook
   (:require
    [dinsro.client.converters.get-block-result :as c.converters.get-block-result]
@@ -12,7 +12,7 @@
 
 ;; # Get Block Result [link](https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockResult.html#%3Cinit%3E(hash:org.bitcoins.crypto.DoubleSha256DigestBE,confirmations:Int,strippedsize:Int,size:Int,weight:Int,height:Int,version:Int,versionHex:org.bitcoins.core.number.Int32,merkleroot:org.bitcoins.crypto.DoubleSha256DigestBE,tx:Vector[org.bitcoins.crypto.DoubleSha256DigestBE],time:org.bitcoins.core.number.UInt32,mediantime:org.bitcoins.core.number.UInt32,nonce:org.bitcoins.core.number.UInt32,bits:org.bitcoins.core.number.UInt32,difficulty:BigDecimal,chainwork:String,previousblockhash:Option[org.bitcoins.crypto.DoubleSha256DigestBE],nextblockhash:Option[org.bitcoins.crypto.DoubleSha256DigestBE]):org.bitcoins.commons.jsonmodels.bitcoind.GetBlockResult)
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def get-block-result

@@ -1,4 +1,4 @@
-^{:nextjournal.clerk/visibility #{:hide-ns}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.client.converters.list-accounts-response-notebook
   (:require
    [dinsro.client.converters.list-accounts-response :as c.c.list-accounts-response]
@@ -10,7 +10,7 @@
 ;; # List Accounts Response
 
 
-^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (def obj (c.c.list-accounts-response/->response))
