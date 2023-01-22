@@ -10,12 +10,18 @@
 ;; # Pubkeys
 
 
+^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
+(nu/display-file-links)
+
 ^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
-(comment
-  ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility :hide}
-  (nu/display-file-links))
+(comment)
+
+^{::clerk/viewer clerk/html ::clerk/no-cache true}
+(nu/x3)
+
 
 ;; The id we're working with
+
 
 ^{::clerk/viewer clerk/code ::clerk/visibility :hide}
 (def pubkey-id (first (q.n.pubkeys/index-ids)))

@@ -53,6 +53,18 @@
        {:n n :f (str f)}))
    (n.find/find-sources-in-dir (File. "src/notebooks"))))
 
+(defn x3
+  []
+  (let [data (x2)]
+    [:ul
+     (map
+      (fn [item]
+        [:li
+         (let [f (:f item)]
+           [:a {:href     (str "?f=" f)}
+            (:n item)])])
+      data)]))
+
 (defn display-file-links
   []
   (clerk/with-viewers
