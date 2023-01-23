@@ -2,8 +2,10 @@
 (ns dinsro.notebooks.nostr.pubkeys_notebook
   (:require
    [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
+   [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
+   [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
@@ -62,3 +64,17 @@
 
 ^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
 (comment (update-pubkey-run))
+
+(comment
+
+  (def relay-id (first (q.n.relays/index-ids)))
+  (def relay (q.n.relays/read-record relay-id))
+
+  (a.n.relays/connect! relay-id)
+  (a.n.relays/disconnect! relay-id)
+
+  relay
+
+  (a.n.relays/get-client-for-id relay-id false)
+
+  nil)
