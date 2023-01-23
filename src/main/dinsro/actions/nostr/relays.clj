@@ -199,7 +199,8 @@
   (let [response (q.n.relays/set-connected relay-id false)
         relay    (q.n.relays/read-record relay-id)
         url      (::m.n.relays/address relay)
-        client   (get-client-for-id relay-id)]
+        client   (get-client-for-id relay-id false)]
+    (ws/close! client)
     (swap! connections dissoc url)
     (log/info :disconnect!/finished {:response response :client client})
     response))
