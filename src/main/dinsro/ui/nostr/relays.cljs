@@ -1,6 +1,9 @@
 (ns dinsro.ui.nostr.relays
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro-css.css :as css]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -73,17 +76,53 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns           [m.n.relays/id
-                         m.n.relays/address
+  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
+   ro/columns           [m.n.relays/address
                          m.n.relays/connected]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
+   ro/route             "relays"
    ro/row-actions       [fetch-action-button
                          toggle-action-button
                          delete-action-button]
-   ro/source-attribute  ::m.n.relays/index
-   ro/title             "Relays Report"
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
-   ro/route             "relays"})
+   ro/source-attribute  ::m.n.relays/index
+   ro/title             "Relays Report"})
+
+(defrouter Router
+  [_this _props]
+  {:router-targets []})
+
+(def menu-items [])
+
+(defsc Show
+  [this {::m.n.relays/keys [id address]
+         :ui/keys          [router]}]
+  {:ident         ::m.n.relays/id
+   :initial-state {::m.n.relays/id      nil
+                   ::m.n.relays/address ""
+                   :ui/router           {}}
+   :pre-merge     (u.links/page-merger ::m.n.relays/id {:ui/router Router})
+   :query         [::m.n.relays/id
+                   ::m.n.relays/address
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["pubkey" :id]
+   :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
+  (let [{:keys [main _sub]} (css/get-classnames Show)]
+    (dom/div {:classes [main]}
+      (dom/div :.ui.segment
+        (dom/dl {}
+          (dom/dt {} "Name")
+          (dom/dd {} (str name))
+          (dom/dt {} "Address")
+          (dom/dd {} (str address)))
+        (dom/button {:classes [:.ui.button]
+                     :onClick (fn [_e]
+                                (log/info :click {})
+                                (comp/transact! this [(mu.n.relays/fetch! {::m.n.relays/id id})]))}
+
+          "Fetch"))
+      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      ((comp/factory Router) router))))

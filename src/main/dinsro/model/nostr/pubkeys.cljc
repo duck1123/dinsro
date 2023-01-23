@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]))
 
@@ -25,49 +25,50 @@
 
 ;; picture
 
-(s/def ::picture string?)
+
+(s/def ::picture (? string?))
 (defattr picture ::picture :string
   {ao/identities #{::id}
    ao/schema     :production})
 
 ;; about
 
-(s/def ::about string?)
+(s/def ::about (? string?))
 (defattr about ::about :string
   {ao/identities #{::id}
    ao/schema     :production})
 
 ;; nip05
 
-(s/def ::nip05 string?)
+(s/def ::nip05 (? string?))
 (defattr nip05 ::nip05 :string
   {ao/identities #{::id}
    ao/schema     :production})
 
 ;; website
 
-(s/def ::website string?)
+(s/def ::website (? string?))
 (defattr website ::website :string
   {ao/identities #{::id}
    ao/schema     :production})
 
 ;; lud16
 
-(s/def ::lud16 string?)
+(s/def ::lud16 (? string?))
 (defattr lud16 ::lud16 :string
   {ao/identities #{::id}
    ao/schema     :production})
 
 ;; lud06
 
-(s/def ::lud06 string?)
+(s/def ::lud06 (? string?))
 (defattr lud06 ::lud06 :string
   {ao/identities #{::id}
    ao/schema     :production})
 
 ;; banner
 
-(s/def ::banner string?)
+(s/def ::banner (? string?))
 (defattr banner ::banner :string
   {ao/identities #{::id}
    ao/schema     :production})

@@ -33,6 +33,7 @@
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -432,6 +433,14 @@
   (form-link this id name :dinsro.ui.rate-sources/ShowRateSource))
 
 (def ui-rate-source-link (comp/factory RateSourceLinkForm {:keyfn ::m.rate-sources/id}))
+
+(form/defsc-form RelayLinkForm [this {::m.n.relays/keys [id address]}]
+  {fo/id           m.n.relays/id
+   fo/route-prefix "relay-link"
+   fo/attributes   [m.n.relays/address]}
+  (form-link this id address :dinsro.ui.nostr.relays/Show))
+
+(def ui-relay-link (comp/factory RelayLinkForm {:keyfn ::m.n.relays/id}))
 
 (form/defsc-form TransactionLinkForm [this {::m.transactions/keys [id description]}]
   {fo/id         m.transactions/id
