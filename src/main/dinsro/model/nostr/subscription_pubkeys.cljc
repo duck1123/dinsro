@@ -8,6 +8,9 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]))
 
+;; [[./pubkeys.cljc][Pubkeys Model]]
+;; [[./subscriptions.cljc][Subscriptions Model]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
@@ -18,7 +21,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-;; [[subscriptions.cljc][Subscriptions Model]]
 (>def ::subscription uuid?)
 (defattr subscription ::subscription :ref
   {ao/identities       #{::id}

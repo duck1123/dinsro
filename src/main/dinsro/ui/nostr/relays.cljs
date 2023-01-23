@@ -95,7 +95,12 @@
   [_this _props]
   {:router-targets []})
 
-(def menu-items [])
+(def ui-router (comp/factory Router))
+
+(def menu-items
+  [{:key   "subscriptions"
+    :name  "Subscriptions"
+    :route "dinsro.ui.nostr.relay_subscriptions/SubPage"}])
 
 (defsc Show
   [this {::m.n.relays/keys [id address]
@@ -114,8 +119,6 @@
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
         (dom/dl {}
-          (dom/dt {} "Name")
-          (dom/dd {} (str name))
           (dom/dt {} "Address")
           (dom/dd {} (str address)))
         (dom/button {:classes [:.ui.button]
