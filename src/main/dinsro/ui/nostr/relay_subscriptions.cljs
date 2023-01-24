@@ -22,7 +22,7 @@
                         ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/source-attribute ::m.n.subscriptions/index
-   ro/title            "Relays"
+   ro/title            "Subscriptions"
    ro/row-pk           m.n.subscriptions/id
    ro/run-on-mount?    true})
 
@@ -33,7 +33,7 @@
   {:query             [{:ui/report (comp/get-query Report)}
                        [::dr/id router-key]]
    :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["relays"]
+   :route-segment     ["subscriptions"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))

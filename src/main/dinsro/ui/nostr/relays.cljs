@@ -12,6 +12,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.relay-subscriptions :as u.n.relay-subscriptions]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
@@ -26,13 +27,6 @@
 (defn fetch-action
   [report-instance {::m.n.relays/keys [id]}]
   (comp/transact! report-instance [(mu.n.relays/fetch! {::m.n.relays/id id})]))
-
-(defn connect-action
-  [report-instance {::m.n.relays/keys [id] :as props}]
-  (log/info :connect-action/starting {:props props})
-  (if id
-    (comp/transact! report-instance [(mu.n.relays/connect! {::m.n.relays/id id})])
-    (throw (js/Error. "no id"))))
 
 (defn toggle-action
   [report-instance {::m.n.relays/keys [id] :as props}]
@@ -50,11 +44,6 @@
   {:label  "Fetch"
    :action fetch-action
    :style  :fetch-button})
-
-(def connect-action-button
-  {:label  "Connect"
-   :action connect-action
-   :style  :connect-button})
 
 (def toggle-action-button
   {:label  "Toggle"
@@ -77,7 +66,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/columns           [m.n.relays/address
+   ro/columns           [m.n.relays/id
+                         m.n.relays/address
                          m.n.relays/connected]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
@@ -93,14 +83,12 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets []})
-
-(def ui-router (comp/factory Router))
+  {:router-targets [u.n.relay-subscriptions/SubPage]})
 
 (def menu-items
   [{:key   "subscriptions"
     :name  "Subscriptions"
-    :route "dinsro.ui.nostr.relay_subscriptions/SubPage"}])
+    :route "dinsro.ui.nostr.relay-subscriptions/SubPage"}])
 
 (defsc Show
   [this {::m.n.relays/keys [id address]
@@ -113,7 +101,7 @@
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    {:ui/router (comp/get-query Router)}]
-   :route-segment ["pubkey" :id]
+   :route-segment ["relay" :id]
    :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}

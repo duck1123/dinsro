@@ -10,6 +10,7 @@
   [_this _props]
   {:router-targets
    [u.n.relays/Report
+    u.n.relays/Show
     u.n.pubkeys/Report
     u.n.pubkeys/Show
     u.n.events/Report]})
