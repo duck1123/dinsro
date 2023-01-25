@@ -29,22 +29,24 @@
 ;; ## get-xpriv
 
 (def xpriv (try (a.c.wallets/get-xpriv wallet-id) (catch Exception _ex nil)))
-(.toStringSensitive xpriv)
 
-(.extPublicKey xpriv)
+(and xpriv (.toStringSensitive xpriv))
+
+(and xpriv (.extPublicKey xpriv))
 
 (def base-path "m/84'/1'/0'")
-(def account-path (c.bitcoin-s/->bip32-path base-path))
+(def account-path (try (c.bitcoin-s/->bip32-path base-path) (catch Exception _ex nil)))
 (def first-address-path (c.bitcoin-s/->segwit-path (str base-path "/0/0")))
-(def account-xpub (some-> xpriv (.deriveChildPrivKey account-path) .extPublicKey))
-(def diffsome (.diff account-path first-address-path))
+(def account-xpub (and account-path
+                       (some-> xpriv (.deriveChildPrivKey account-path) .extPublicKey)))
+(def diffsome (and account-path (.diff account-path first-address-path)))
 (def purpose (HDPurpose. 84))
 
-(.fingerprint xpriv)
+(and xpriv (.fingerprint xpriv))
 
 ;; ##  get-word-list
 
-(a.c.wallets/get-word-list wallet-id)
+(try (a.c.wallets/get-word-list wallet-id) (catch Exception ex ex))
 
 ;; ## ->bip39-seed
 
@@ -56,22 +58,22 @@
 
 ;; ## get-mnemonic
 
-(a.c.wallets/get-mnemonic wallet-id)
+(try (a.c.wallets/get-mnemonic wallet-id) (catch Exception ex ex))
 
 ;; ## get-bip39-seed
 
 #_(a.c.wallets/get-bip39-seed wallet)
 
 ^{::clerk/viewer clerk/code}
-(cc.ext-privat-key/ExtPrivateKey->record xpriv)
+(try (cc.ext-privat-key/ExtPrivateKey->record xpriv) (catch Exception ex ex))
 
 ;; ## get-wif
 
-(a.c.wallets/get-wif wallet-id)
+(try (a.c.wallets/get-wif wallet-id) (catch Exception ex ex))
 
 ;; ## get-address
 
-(a.c.wallets/get-address wallet 0)
+(try (a.c.wallets/get-address wallet 0) (catch Exception ex ex))
 
 ;; ## update-words!
 
@@ -83,14 +85,14 @@
 
 ;; ## ->priv-key
 
-(a.c.wallets/->priv-key wallet)
+(try (a.c.wallets/->priv-key wallet) (catch Exception ex ex))
 
 ;; ## parse-descriptor
 
 ^{::clerk/viewer clerk/code}
 (a.c.wallets/parse-descriptor descriptor)
 
-(a.c.wallets/get-ext-pub-key wallet 0)
+(try (a.c.wallets/get-ext-pub-key wallet 0) (catch Exception ex ex))
 
 (comment
   {:type        "wpkh"
