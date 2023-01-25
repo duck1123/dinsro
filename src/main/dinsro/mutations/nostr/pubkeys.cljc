@@ -95,7 +95,6 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
-
 #?(:clj
    (pc/defmutation subscribe! [_env props]
      {::pc/params #{::m.n.pubkeys/id}
@@ -107,6 +106,5 @@
      (action    [_env] true)
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
-
 
 #?(:clj (def resolvers [fetch! subscribe!]))
