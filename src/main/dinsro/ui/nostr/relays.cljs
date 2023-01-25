@@ -12,6 +12,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.relay-pubkeys :as u.n.relay-pubkeys]
    [dinsro.ui.nostr.relay-subscriptions :as u.n.relay-subscriptions]
    [lambdaisland.glogc :as log]))
 
@@ -83,12 +84,18 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets [u.n.relay-subscriptions/SubPage]})
+  {:router-targets
+   [u.n.relay-pubkeys/AddForm
+    u.n.relay-pubkeys/SubPage
+    u.n.relay-subscriptions/SubPage]})
 
 (def menu-items
   [{:key   "subscriptions"
     :name  "Subscriptions"
-    :route "dinsro.ui.nostr.relay-subscriptions/SubPage"}])
+    :route "dinsro.ui.nostr.relay-subscriptions/SubPage"}
+   {:key   "pubkeys"
+    :name  "Pubkeys"
+    :route "dinsro.ui.nostr.relay-pubkeys/SubPage"}])
 
 (defsc Show
   [this {::m.n.relays/keys [id address]

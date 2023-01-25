@@ -4,13 +4,17 @@
    #?(:cljs [com.fulcrologic.fulcro.algorithms.merge :as merge])
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def >defn =>] :cljs [>def])]
-   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
+   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
    [lambdaisland.glogc :as log]))
+
+;; [[../../model/nostr/relays.cljc][Relay Model]]
+;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
+
 
 (comment ::pc/_)
 
@@ -81,16 +85,28 @@
 #?(:clj
    (pc/defmutation fetch!
      [_env props]
-     {::pc/params #{::m.c.nodes/id}
-      ::pc/output [::status
-                   ::errors
-                   ::m.c.nodes/item]}
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
      (do-fetch! props))
 
    :cljs
-   (defmutation fetch! [_props]
+   (fm/defmutation fetch! [_props]
      (action    [_env] true)
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
-#?(:clj (def resolvers [fetch!]))
+
+#?(:clj
+   (pc/defmutation subscribe! [_env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+     (do-fetch! props))
+
+   :cljs
+   (fm/defmutation subscribe! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env FetchResponse))
+     (ok-action [env]  (handle-fetch env))))
+
+
+#?(:clj (def resolvers [fetch! subscribe!]))

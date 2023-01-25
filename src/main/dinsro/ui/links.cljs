@@ -54,8 +54,8 @@
     name))
 
 (defn get-control-value
-  [this id-key]
-  (some->> this comp/props
+  [report-instance id-key]
+  (some->> report-instance comp/props
            :ui/controls
            (some (fn [c]
                    (let [{::control/keys [id]} c]
