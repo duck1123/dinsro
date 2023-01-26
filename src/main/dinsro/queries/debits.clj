@@ -10,9 +10,12 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../../notebooks/dinsro/notebooks/debits.clj]]
+;; [[../model/debits.cljc][Model]]
+
 (>defn create-record
   [params]
-  [::m.debits/params => :xt/id]
+  [::m.debits/params => ::m.debits/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
         node   (c.xtdb/main-node)
@@ -24,7 +27,7 @@
 
 (>defn read-record
   [id]
-  [:xt/id => (? ::m.debits/item)]
+  [::m.debits/id => (? ::m.debits/item)]
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.debits/id)
@@ -32,7 +35,7 @@
 
 (>defn index-ids
   []
-  [=> (s/coll-of :xt/id)]
+  [=> (s/coll-of ::m.debits/id)]
   (let [db    (c.xtdb/main-db)
         query '[:find ?e :where [?e ::m.debits/id _]]]
     (map first (xt/q db query))))

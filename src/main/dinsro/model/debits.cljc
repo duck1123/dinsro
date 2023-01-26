@@ -9,31 +9,36 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]))
 
-(s/def ::id        uuid?)
+;; [[../joins/debits.cljc][Joins]]
+;; [[../queries/debits.clj][Queries]]
+
+(>def ::id        uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
 
-(s/def ::account ::m.accounts/id)
+(>def ::account ::m.accounts/id)
 (defattr account ::account :ref
   {ao/identities       #{::id}
    ao/schema           :production
    ao/target           ::m.accounts/id
    ::report/column-EQL {::account [::m.accounts/id ::m.accounts/name]}})
 
-(s/def ::transaction ::m.transactions/id)
+(>def ::transaction ::m.transactions/id)
 (defattr transaction ::transaction :ref
   {ao/identities       #{::id}
    ao/schema           :production
    ao/target           ::m.transactions/id
    ::report/column-EQL {::transaction [::m.transactions/id ::m.transactions/description]}})
 
-(s/def ::value ::ds/valid-double)
+(>def ::value ::ds/valid-double)
 (defattr value ::value :double
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::params (s/keys :req [::account ::transaction ::value]))
+(>def ::required-params (s/keys :req [::account ::transaction ::value]))
+(>def ::params (s/keys :req [::account ::transaction ::value]))
+(>def ::item (s/keys :req [::id ::account ::transaction ::value]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.blocks-notebook
+(ns dinsro.notebooks.core.blocks-notebook
   (:require
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.notebook-utils :as nu]
@@ -9,7 +9,7 @@
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-;; # Core Block Actions
+;; # Blocks
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
