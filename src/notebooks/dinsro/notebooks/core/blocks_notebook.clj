@@ -1,11 +1,13 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.notebooks.core.blocks-notebook
   (:require
+   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]
+   [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
@@ -26,6 +28,8 @@
 
 ^{::clerk/viewer clerk/code}
 (q.c.networks/read-record (q.c.networks/find-by-core-node alice-id))
+
+(ds/gen-key ::m.c.blocks/item)
 
 ;; ## nodes
 
