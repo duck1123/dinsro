@@ -33,7 +33,7 @@
   {:query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["ln-nodes"]
+   :route-segment     ["pubkeys"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))

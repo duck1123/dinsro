@@ -7,6 +7,8 @@
    [com.fulcrologic.rad.attributes-options :as ao]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkeys Actions]]
+;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
+;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
 ;; id

@@ -4,27 +4,25 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    #?(:clj [dinsro.queries.nostr.pubkeys :as q.n.pubkeys])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   [dinsro.specs]))
 
-(defattr index ::m.n.pubkeys/index :ref
-  {ao/target    ::m.n.pubkeys/id
-   ao/pc-output [{::m.n.pubkeys/index [::m.n.pubkeys/id]}]
-   ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
-       (log/info :index/starting {:ids ids})
-       {::m.n.pubkeys/index (m.n.pubkeys/idents ids)}))})
+;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
+;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
+;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
+;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
-(defattr admin-index ::m.n.pubkeys/admin-index :ref
-  {ao/target    ::m.n.pubkeys/id
-   ao/pc-output [{::m.n.pubkeys/admin-index [::m.n.pubkeys/id]}]
-   ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
-       {::m.n.pubkeys/admin-index (m.n.pubkeys/idents ids)}))})
+(defattr index ::index :ref
+  {ao/target     ::m.n.pubkeys/id
+   ao/pc-output  [{::m.n.pubkeys/index [::m.n.pubkeys/id]}]
+   ao/pc-resolve (fn [_env _]
+                   (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
+                     {::index (m.n.pubkeys/idents ids)}))})
 
-(def attributes
-  [admin-index
-   index])
+(defattr admin-index ::admin-index :ref
+  {ao/target     ::m.n.pubkeys/id
+   ao/pc-output  [{::admin-index [::m.n.pubkeys/id]}]
+   ao/pc-resolve (fn [_env _]
+                   (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
+                     {::admin-index (m.n.pubkeys/idents ids)}))})
+
+(def attributes [admin-index index])

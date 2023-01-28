@@ -149,8 +149,9 @@
         (throw (RuntimeException. "Failed to find source")))
       (throw (RuntimeException. "Failed to find currency")))))
 
-(defn seed-user-pubkey!
+(>defn seed-user-pubkey!
   [user-id pubkey-info]
+  [::m.users/id any? => any?]
   (log/info :seed-user-pubkey!/starting {:user-id user-id :pubkey-info pubkey-info})
   (q.n.pubkeys/register-pubkey pubkey-info))
 

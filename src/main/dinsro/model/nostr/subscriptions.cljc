@@ -8,6 +8,9 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.nostr.relays :as m.n.relays]))
 
+;; [[../../actions/nostr/relays.clj][Relay Actions]]
+;; [[../../model/nostr/relays.cljc][Relays Model]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
@@ -18,7 +21,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-;; [[relays.cljc][Relays Model]]
 (>def ::relay uuid?)
 (defattr relay ::relay :ref
   {ao/identities       #{::id}

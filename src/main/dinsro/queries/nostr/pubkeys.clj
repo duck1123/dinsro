@@ -8,6 +8,8 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
+
 (>defn create-record
   [params]
   [::m.n.pubkeys/params => :xt/id]
@@ -21,9 +23,9 @@
     id))
 
 (>defn register-pubkey
-  [pubkey]
-  [string? => ::m.n.pubkeys/id]
-  (create-record {::m.n.pubkeys/pubkey pubkey}))
+  [hex]
+  [::m.n.pubkeys/hex => ::m.n.pubkeys/id]
+  (create-record {::m.n.pubkeys/hex hex}))
 
 (>defn read-record
   [id]
@@ -35,7 +37,7 @@
 
 (>defn index-ids
   []
-  [=> (s/coll-of :xt/id)]
+  [=> (s/coll-of ::m.n.pubkeys/id)]
   (let [db    (c.xtdb/main-db)
         query '[:find ?e :where [?e ::m.n.pubkeys/id _]]]
     (map first (xt/q db query))))

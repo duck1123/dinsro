@@ -8,28 +8,30 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.pubkey-contacts :as u.n.pubkey-contacts]
    [dinsro.ui.nostr.pubkey-relays :as u.n.pubkey-relays]
    [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]))
 
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 
+
 (defrouter Router
   [_this _props]
-  {:router-targets [u.n.pubkey-users/SubPage
-                    u.n.pubkey-relays/SubPage]})
+  {:router-targets
+   [u.n.pubkey-users/SubPage
+    u.n.pubkey-relays/SubPage
+    u.n.pubkey-contacts/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (def menu-items
-  [{:key   "users"
-    :name  "Users"
-    :route "dinsro.ui.nostr.pubkey-users/SubPage"}
-   {:key   "relays"
-    :name  "Relays"
-    :route "dinsro.ui.nostr.pubkey-relays/SubPage"}])
+  [{:key "contacts" :name "Contacts" :route "dinsro.ui.nostr.pubkey-contacts/SubPage"}
+   {:key "users" :name "Users" :route "dinsro.ui.nostr.pubkey-users/SubPage"}
+   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkey-relays/SubPage"}])
 
 (defsc Show
   "Show a core node"
@@ -109,5 +111,5 @@
    ro/row-actions      [fetch-action-button]
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.n.pubkeys/index
+   ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Pubkey Report"})

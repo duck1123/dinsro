@@ -72,16 +72,16 @@
 
 (>defn ->lightning-address
   "https://bitcoin-s.org/api/lnrpc/LightningAddress.html"
-  [^String host ^String pubkey]
+  [^String host ^String pubkey-hex]
   [string? string? => (ds/instance? LightningAddress)]
   (let [unknown-fields (cs/empty-unknown-field-set)]
-    (LightningAddress. pubkey host unknown-fields)))
+    (LightningAddress. pubkey-hex host unknown-fields)))
 
 (>defn ->connect-peer-request
   "https://bitcoin-s.org/api/lnrpc/ConnectPeerRequest.html"
-  [^String host ^String pubkey]
+  [^String host ^String pubkey-hex]
   [string? string?  => (ds/instance? ConnectPeerRequest)]
-  (let [addr           (Option/apply (->lightning-address host pubkey))
+  (let [addr           (Option/apply (->lightning-address host pubkey-hex))
         perm           false
         timeout        (cs/uint64 0)
         unknown-fields (cs/empty-unknown-field-set)
@@ -165,11 +165,10 @@
       (if passed
         (do
           (log/info :list-peers/b {:result result})
-          (let [peers (cs/vector->vec result)]
-            (log/info :list-peers/c {:peers peers})
-            (let [records (map cs/->record peers)]
-              (log/info :list-peers/finished {:records records})
-              records)))
+          (let [peers   (cs/vector->vec result)
+                records (map cs/->record peers)]
+            (log/info :list-peers/finished {:records records})
+            records))
         (throw (RuntimeException. "did not pass"))))))
 
 (>defn list-wallet-accounts
@@ -188,15 +187,15 @@
   [client]
   [::client => any?]
   (log/info :list-channels!/starting {})
-  (let [request (c.c.list-channels-request/->obj)
+  (let [request  (c.c.list-channels-request/->obj)
         response (.listChannels client request)
-        o (cs/await-future response)]
+        o        (cs/await-future response)]
     (log/info :list-channels!/finished {:o o})
     o))
 
 (>defn get-node-info
-  [_client pubkey]
+  [_client pubkey-hex]
   [::client string? => any?]
-  (log/info :get-node-info/starting {:pubkey pubkey})
+  (log/info :get-node-info/starting {:pubkey-hex pubkey-hex})
   (let [_response nil]
     (throw (RuntimeException. "not implemented"))))
