@@ -17,6 +17,11 @@
    #?(:clj [dinsro.queries.users :as q.users])
    [dinsro.specs]))
 
+;; [[../actions/users.clj][User Actions]]
+;; [[../model/users.cljc][Users Model]]
+;; [[../queries/users.clj][User Queries]]
+;; [[../ui/users.cljs][Users UI]]
+
 (defattr index ::m.users/index :ref
   {ao/target    ::m.users/id
    ao/pc-output [{::m.users/index [::m.users/id]}]
