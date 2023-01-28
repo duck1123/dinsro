@@ -86,8 +86,7 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.relay-pubkeys/AddForm
-    u.n.relay-pubkeys/SubPage
+   [u.n.relay-pubkeys/SubPage
     u.n.relay-subscriptions/SubPage]})
 
 (def menu-items
