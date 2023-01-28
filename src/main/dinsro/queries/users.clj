@@ -40,16 +40,16 @@
     (ffirst (xt/q db query [name]))))
 
 (>defn find-by-pubkey
-  [pubkey]
-  [::m.n.pubkeys/pubkey => (s/coll-of ::m.users/id)]
-  (log/info :find-by-pubkey/starting {:pubkey pubkey})
+  [hex]
+  [::m.n.pubkeys/hex => (s/coll-of ::m.users/id)]
+  (log/info :find-by-pubkey/starting {:hex hex})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?user-id]
-                :in    [[?pubkey]]
-                :where [[?pubkey-id ::m.n.pubkeys/pubkey ?pubkey]
+                :in    [[?hex]]
+                :where [[?pubkey-id ::m.n.pubkeys/hex ?hex]
                         [?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
                         [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
-        results (xt/q db query [pubkey])
+        results (xt/q db query [hex])
         ids (map first results)]
     (log/info :find-by-pubkey/finished {:ids ids})
 

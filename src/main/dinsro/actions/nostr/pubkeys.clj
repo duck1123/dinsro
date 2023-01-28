@@ -21,24 +21,24 @@
 (>defn fetch-pubkey!
   "Fetch info about pubkey from relay"
   ([pubkey]
-   [::m.n.pubkeys/pubkey => ds/channel?]
+   [::m.n.pubkeys/hex => ds/channel?]
    (if-let [relay-id (first (q.n.relays/index-ids))]
      (fetch-pubkey! pubkey relay-id)
      (throw (RuntimeException. "No relays"))))
-  ([pubkey relay-id]
-   [::m.n.pubkeys/pubkey ::m.n.relays/id => ds/channel?]
+  ([hex relay-id]
+   [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
    (async/go
-     (log/info :fetch-pubkey!/starting {:pubkey pubkey :relay-id relay-id})
-     (let [body    {:authors [pubkey] :kinds [0]}
+     (log/info :fetch-pubkey!/starting {:hex hex :relay-id relay-id})
+     (let [body    {:authors [hex] :kinds [0]}
            chan    (a.n.relays/send! relay-id body)
            message (async/<! (a.n.relays/process-messages chan))]
        (log/info :fetch-pubkey!/fetched {:message message})
        message))))
 
 (>defn send-adhoc-request
-  [client pubkey]
-  [any? ::m.n.pubkeys/pubkey => any?]
-  (let [msg (json/json-str (a.n.relays/adhoc-request [pubkey]))]
+  [client hex]
+  [any? ::m.n.pubkeys/hex => any?]
+  (let [msg (json/json-str (a.n.relays/adhoc-request [hex]))]
     (ws/send! client msg)))
 
 (>defn poll!
@@ -76,7 +76,7 @@
   (log/info :update-pubkey!/starting {:pubkey-id pubkey-id})
   (async/go
     (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
-      (let [hex      (::m.n.pubkeys/pubkey pubkey)
+      (let [hex      (::m.n.pubkeys/hex pubkey)
             response (async/<! (fetch-pubkey! hex))]
         (log/info :update-pubkey!/finished {:response response})
         response)

@@ -98,15 +98,17 @@
     :route "dinsro.ui.nostr.relay-pubkeys/SubPage"}])
 
 (defsc Show
-  [this {::m.n.relays/keys [id address]
+  [this {::m.n.relays/keys [id address connected]
          :ui/keys          [router]}]
   {:ident         ::m.n.relays/id
-   :initial-state {::m.n.relays/id      nil
-                   ::m.n.relays/address ""
-                   :ui/router           {}}
+   :initial-state {::m.n.relays/id        nil
+                   ::m.n.relays/address   ""
+                   ::m.n.relays/connected false
+                   :ui/router             {}}
    :pre-merge     (u.links/page-merger ::m.n.relays/id {:ui/router Router})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
+                   ::m.n.relays/connected
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["relay" :id]
    :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
@@ -115,12 +117,20 @@
       (dom/div :.ui.segment
         (dom/dl {}
           (dom/dt {} "Address")
-          (dom/dd {} (str address)))
+          (dom/dd {} (str address))
+          (dom/dt {} "Connected")
+          (dom/dd {} (str connected)))
         (dom/button {:classes [:.ui.button]
                      :onClick (fn [_e]
                                 (log/info :click {})
                                 (comp/transact! this [(mu.n.relays/fetch! {::m.n.relays/id id})]))}
 
-          "Fetch"))
+          "Fetch")
+        (dom/button {:classes [:.ui.button]
+                     :onClick (fn [_e]
+                                (log/info :click {})
+                                (comp/transact! this [(mu.n.relays/toggle! {::m.n.relays/id id})]))}
+
+          "Toggle"))
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))

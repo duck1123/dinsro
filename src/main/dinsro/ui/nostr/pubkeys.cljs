@@ -106,7 +106,7 @@
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/pubkey #(u.links/ui-pubkey-link %3)}
+   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
    ro/route            "nodes"
    ro/row-actions      [fetch-action-button]
    ro/row-pk           m.n.pubkeys/id

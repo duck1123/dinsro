@@ -54,13 +54,13 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/hex
-                        m.n.pubkeys/id]
+  {ro/columns          [m.n.pubkeys/hex]
    ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
                         ::new           new-button
                         ::refresh       u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/row-actions [subscribe-action-button]
+   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
+   ro/row-actions      [subscribe-action-button]
    ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Pubkeys"
    ro/row-pk           m.n.pubkeys/id

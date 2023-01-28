@@ -37,24 +37,26 @@
 (>defn find-by-name
   [name]
   [::m.users/name => (? ::m.users/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [[?name]]
-                :where [[?id ::m.users/name ?name]]}]
-    (ffirst (xt/q db query [name]))))
+  (let [db      (c.xtdb/main-db)
+        query   '{:find  [?id]
+                  :in    [[?name]]
+                  :where [[?id ::m.users/name ?name]]}
+        results (xt/q db query [name])
+        item    (ffirst results)]
+    item))
 
 (>defn find-by-pubkey
-  [pubkey]
-  [::m.n.pubkeys/pubkey => (s/coll-of ::m.users/id)]
-  (log/info :find-by-pubkey/starting {:pubkey pubkey})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?user-id]
-                :in    [[?pubkey]]
-                :where [[?pubkey-id ::m.n.pubkeys/pubkey ?pubkey]
-                        [?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
-                        [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
-        results (xt/q db query [pubkey])
-        ids (map first results)]
+  [hex]
+  [::m.n.pubkeys/hex => (s/coll-of ::m.users/id)]
+  (log/info :find-by-pubkey/starting {:hex hex})
+  (let [db      (c.xtdb/main-db)
+        query   '{:find  [?user-id]
+                  :in    [[?hex]]
+                  :where [[?pubkey-id ::m.n.pubkeys/hex ?hex]
+                          [?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
+                          [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
+        results (xt/q db query [hex])
+        ids     (map first results)]
     (log/info :find-by-pubkey/finished {:ids ids})
     ids))
 
