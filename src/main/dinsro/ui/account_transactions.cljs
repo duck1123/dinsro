@@ -4,13 +4,15 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.join.transactions :as j.transactions]
+   [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]))
 
+;; [[../joins/transactions.cljc][Transaction Joins]]
 ;; [[../model/accounts.cljc][Accounts Model]]
 ;; [[../model/transactions.cljc][Transactions Model]]
+
 
 (def debug-page false)
 

@@ -6,10 +6,13 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.join.categories :as j.categories]
+   [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
+
+;; [[../joins/categories.cljc][Category Joins]]
+;; [[../model/categories.cljc][Categories Model]]
 
 (form/defsc-form NewCategoryForm
   [_this _props]
