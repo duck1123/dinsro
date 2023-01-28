@@ -26,7 +26,7 @@
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.n.pubkeys/index
-   ro/title            "User Ln Nodes"})
+   ro/title            "Pubkeys"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
