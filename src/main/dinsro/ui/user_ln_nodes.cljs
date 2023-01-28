@@ -9,6 +9,8 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
+;; [[../actions/users.clj][User Actions]]
+
 (def ident-key ::m.users/id)
 (def router-key :dinsro.ui.users/Router)
 

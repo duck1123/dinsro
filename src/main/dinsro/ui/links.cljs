@@ -410,11 +410,11 @@
 
 (def ui-payreq-link (comp/factory PayReqLinkForm {:keyfn ::m.ln.payreqs/id}))
 
-(form/defsc-form PubkeyLinkForm [this {::m.n.pubkeys/keys [id pubkey]}]
+(form/defsc-form PubkeyLinkForm [this {::m.n.pubkeys/keys [id hex]}]
   {fo/id           m.n.pubkeys/id
    fo/route-prefix "pubkey-link"
-   fo/attributes   [m.n.pubkeys/pubkey]}
-  (form-link this id pubkey :dinsro.ui.nostr.pubkeys/Show))
+   fo/attributes   [m.n.pubkeys/hex]}
+  (form-link this id hex :dinsro.ui.nostr.pubkeys/Show))
 
 (def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 

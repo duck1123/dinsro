@@ -50,10 +50,8 @@
    ao/pc-output   [{::m.users/accounts [::m.accounts/id]}]
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
-     #?(:clj  (if id
-                (let [account-ids (q.accounts/find-by-user id)]
-                  {::m.users/accounts (map (fn [id] {::m.accounts/id id}) account-ids)})
-                {::m.users/accounts []})
+     #?(:clj  (let [account-ids (if id (q.accounts/find-by-user id) [])]
+                {::m.users/accounts (m.accounts/idents account-ids)})
         :cljs (comment id)))})
 
 (defattr categories ::m.users/categories :ref
@@ -63,11 +61,9 @@
    ao/target      ::m.categories/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
-     #?(:clj  (if id
-                (let [category-ids (q.categories/find-by-user id)]
-                  {::m.users/categories (map (fn [id] {::m.categories/id id}) category-ids)})
-                {::m.users/categories []})
-        :cljs (comment id)))})
+     (let [category-ids #?(:clj  (if id (q.categories/find-by-user id) [])
+                           :cljs (do (comment id) []))]
+       {::m.users/categories (m.categories/idents category-ids)}))})
 
 (defattr ln-nodes ::m.users/ln-nodes :ref
   {ao/cardinality :many

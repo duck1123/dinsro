@@ -12,8 +12,9 @@
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.pubkey-relays :as u.n.pubkey-relays]
-   [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]))
+
+;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 
 (defrouter Router
   [_this _props]
@@ -32,17 +33,17 @@
 
 (defsc Show
   "Show a core node"
-  [this {::m.n.pubkeys/keys [id pubkey name picture]
+  [this {::m.n.pubkeys/keys [id hex name picture]
          :ui/keys           [router]
          :as                props}]
   {:route-segment ["pubkey" :id]
    :query         [::m.n.pubkeys/id
-                   ::m.n.pubkeys/pubkey
+                   ::m.n.pubkeys/hex
                    ::m.n.pubkeys/name
                    ::m.n.pubkeys/picture
                    {:ui/router (comp/get-query Router)}]
    :initial-state {::m.n.pubkeys/id      nil
-                   ::m.n.pubkeys/pubkey  ""
+                   ::m.n.pubkeys/hex     ""
                    ::m.n.pubkeys/name    ""
                    ::m.n.pubkeys/picture ""
                    :ui/router            {}}
@@ -54,17 +55,15 @@
       (dom/div {:classes [main]}
         (dom/div :.ui.segment
           (dom/dl {}
-            (dom/dt {} "Pubkey")
-            (dom/dd {} (str pubkey))
+            (dom/dt {} "Pubkey Hex")
+            (dom/dd {} (str hex))
             (dom/dt {} "Name")
             (dom/dd {} (str name))
             (dom/dt {} "Picture")
             (dom/dd {} (str picture)))
-          (dom/button {:classes [:.ui.button]
-                       :onClick (fn [_e]
-                                  (log/info :click {})
-                                  (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
-
+          (dom/button
+            {:classes [:.ui.button]
+             :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
             "Fetch"))
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (if router
@@ -79,7 +78,7 @@
 (form/defsc-form CreateForm
   [_this _props]
   {fo/id            m.n.pubkeys/id
-   fo/attributes    [m.n.pubkeys/pubkey]
+   fo/attributes    [m.n.pubkeys/hex]
    fo/cancel-route  ["pubkeys"]
    fo/route-prefix  "create-pubkey"
    fo/title         "Create A Pubkey"})
@@ -101,7 +100,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/pubkey]
+  {ro/columns          [m.n.pubkeys/hex]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}

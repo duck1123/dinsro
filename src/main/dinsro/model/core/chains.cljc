@@ -6,6 +6,9 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]))
 
+;; [[../../actions/core/chains.clj][Chains Model]]
+;; [[../../ui/core/chains.cljs][Chain UI]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

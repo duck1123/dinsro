@@ -12,6 +12,9 @@
 
 ;; [[../actions/users.clj][Actions]]
 ;; [[../queries/users.clj][Queries]]
+;; [[../model/nostr/pubkeys.cljc][Pubkeys Model]]
+;; [[../model/users.cljc][Users Model]]
+
 
 
 (s/def ::id        uuid?)

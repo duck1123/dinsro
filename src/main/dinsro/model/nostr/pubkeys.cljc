@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkeys Actions]]
+;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
 ;; id
 
@@ -15,10 +16,10 @@
   {ao/identity? true
    ao/schema    :production})
 
-;; pubkey
+;; hex
 
-(>def ::pubkey string?)
-(defattr pubkey ::pubkey :string
+(>def ::hex string?)
+(defattr hex ::hex :string
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -79,10 +80,10 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::required-params (s/keys :req [::pubkey]))
-(>def ::params (s/keys :req [::pubkey]
+(>def ::required-params (s/keys :req [::hex]))
+(>def ::params (s/keys :req [::hex]
                        :opt [::name ::picture ::about ::nip05 ::website ::lud16 ::lud06 ::banner]))
-(>def ::item (s/keys :req [::id ::pubkey]
+(>def ::item (s/keys :req [::id ::hex]
                      :opt [::name ::picture ::about ::nip05 ::website ::lud16 ::lud06 ::banner]))
 (>def ::items (s/coll-of ::item))
 
@@ -90,4 +91,4 @@
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id pubkey name picture about nip05 website lud16 lud06 banner])
+(def attributes [id hex name picture about nip05 website lud16 lud06 banner])

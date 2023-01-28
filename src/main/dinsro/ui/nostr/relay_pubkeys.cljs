@@ -12,6 +12,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 ;; [[../../model/nostr/relays.cljc][Relay Model]]
 ;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
 ;; [[../../mutations/nostr/pubkeys.cljc][Pubkeys Mutations]]
@@ -23,7 +24,7 @@
   [_this _props]
   {fo/id           m.n.pubkeys/id
    fo/title        "Pubkey"
-   fo/attributes   [m.n.pubkeys/pubkey]
+   fo/attributes   [m.n.pubkeys/hex]
    fo/route-prefix "new-pubkey"})
 
 (def new-button
@@ -50,7 +51,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/pubkey
+  {ro/columns          [m.n.pubkeys/hex
                         m.n.pubkeys/id]
    ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
                         ::new           new-button
