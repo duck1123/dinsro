@@ -4,6 +4,7 @@
    ;; [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.ui.links :as u.links]
@@ -21,7 +22,7 @@
                         ::m.accounts/user #(u.links/ui-user-link %2)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index
+   ro/source-attribute ::j.accounts/index
    ro/title            "Accounts"})
 
 (def ui-report (comp/factory Report))

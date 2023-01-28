@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
@@ -22,7 +23,7 @@
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.wallets/index
+   ro/source-attribute ::j.c.wallets/index
    ro/title            "User Wallets"})
 
 (defsc SubPage

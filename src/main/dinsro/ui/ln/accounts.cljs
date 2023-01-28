@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.ui.links :as u.links]))
 
@@ -14,7 +15,7 @@
    ro/route            "accounts"
    ro/row-pk           m.ln.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.accounts/index
+   ro/source-attribute ::j.ln.accounts/index
    ro/title            "Lightning Accounts Report"}
   (dom/div {}
     (dom/h1 {} "Accounts")

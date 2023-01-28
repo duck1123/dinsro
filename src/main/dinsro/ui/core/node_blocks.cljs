@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
@@ -38,7 +39,7 @@
    ro/control-layout   {:action-buttons [::generate ::refresh]}
    ro/field-formatters {::m.c.blocks/hash    #(u.links/ui-block-link %3)
                         ::m.c.blocks/network #(u.links/ui-network-link %2)}
-   ro/source-attribute ::m.c.blocks/index
+   ro/source-attribute ::j.c.blocks/index
    ro/title            "Node Blocks"
    ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)]
    ro/row-pk           m.c.blocks/id

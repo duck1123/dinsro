@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.ui.links :as u.links]))
@@ -18,7 +19,7 @@
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.wallets/name #(u.links/ui-wallet-link %3)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ro/source-attribute ::m.c.wallets/index
+   ro/source-attribute ::j.c.wallets/index
    ro/title            "Wallets"
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true})

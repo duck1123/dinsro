@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
@@ -20,7 +21,7 @@
    ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index
+   ro/source-attribute ::j.accounts/index
    ro/title            "User Accounts"})
 
 (defsc SubPage

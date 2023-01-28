@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.ui.links :as u.links]
@@ -19,7 +20,7 @@
    ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
    ro/row-pk           m.c.words/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.words/index
+   ro/source-attribute ::j.c.words/index
    ro/title            "Words"})
 
 (defsc SubPage

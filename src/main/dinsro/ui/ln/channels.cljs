@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.ui.links :as u.links]))
 
@@ -32,7 +33,7 @@
    ro/route            "channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.channels/index
+   ro/source-attribute ::j.ln.channels/index
    ro/title            "Lightning Channels Report"}
   (dom/div {}
     (dom/h1 {} "Channels")

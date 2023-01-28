@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
@@ -21,7 +22,7 @@
    ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
                         ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/source-attribute ::m.n.subscriptions/index
+   ro/source-attribute ::j.n.subscriptions/index
    ro/title            "Subscriptions"
    ro/row-pk           m.n.subscriptions/id
    ro/run-on-mount?    true})

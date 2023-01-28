@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
@@ -41,7 +42,7 @@
    ro/row-actions      [fetch-action-button delete-action-button]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.blocks/index
+   ro/source-attribute ::j.c.blocks/index
    ro/title            "Blocks"})
 
 (defsc SubPage
@@ -51,5 +52,4 @@
    :query             [[::dr/id :dinsro.ui.core.networks/Router]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["blocks"]}
-
   ((comp/factory Report) report))

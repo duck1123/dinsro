@@ -49,7 +49,7 @@
    ro/route            "transactions"
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.transactions/index
+   ro/source-attribute ::j.transactions/index
    ro/title            "Transaction Report"})
 
 (report/defsc-report AdminReport
@@ -67,7 +67,7 @@
    ro/row-actions      []
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.transactions/admin-index
+   ro/source-attribute ::j.transactions/admin-index
    ro/title            "Admin Transaction Report"})
 
 (defsc ShowTransaction

@@ -14,32 +14,32 @@
 
 (comment ::m.c.wallets/_ ::m.rate-sources/_)
 
-(defattr transactions ::m.accounts/transactions :ref
+(defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.accounts/id}
-   ao/pc-output   [{::m.accounts/transactions [::m.transactions/id]}]
+   ao/pc-output   [{::transactions [::m.transactions/id]}]
    ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.accounts/keys [id]}]
      #?(:clj  (if id
                 (let [ids (q.transactions/find-by-account id)]
-                  {::m.accounts/transactions (map (fn [id] {::m.transactions/id id}) ids)})
-                {::m.accounts/transactions []})
+                  {::transactions (m.transactions/idents ids)})
+                {::transactions []})
         :cljs (comment id)))})
 
 ;; "All accounts regardless of user"
-(defattr admin-index ::m.accounts/admin-index :ref
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.accounts/id
-   ao/pc-output [{::m.accounts/admin-index [::m.accounts/id]}]
+   ao/pc-output [{::admin-index [::m.accounts/id]}]
    ao/pc-resolve
    (fn [{user-id ::m.users/id} _]
      (let [ids (if user-id #?(:clj (q.accounts/index-ids) :cljs []) [])]
-       {::m.accounts/admin-index (m.accounts/idents ids)}))})
+       {::admin-index (m.accounts/idents ids)}))})
 
 ;; "All accounts belonging to authenticated user"
-(defattr index ::m.accounts/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.accounts/id
-   ao/pc-output [{::m.accounts/index [::m.accounts/id]}]
+   ao/pc-output [{::index [::m.accounts/id]}]
    ao/pc-resolve
    (fn [{:keys   [query-params] :as env} _]
      (log/info :index/starting {:query-params query-params})
@@ -53,19 +53,19 @@
                         (log/warn :index/no-user {})
                         [])))
                   :cljs [])]
-       {::m.accounts/index (m.accounts/idents ids)}))})
+       {::index (m.accounts/idents ids)}))})
 
-(defattr index-by-rate-source ::m.accounts/index-by-rate-source :ref
+(defattr index-by-rate-source ::index-by-rate-source :ref
   {ao/target    ::m.accounts/id
-   ao/pc-output [{::m.accounts/index-by-rate-source [::m.accounts/id]}]
+   ao/pc-output [{::index-by-rate-source [::m.accounts/id]}]
    ao/pc-resolve
    #?(:clj (fn [{:keys [query-params]} _]
              (log/info :index-by-rate-source/starting {:query-params query-params})
              (let [ids (if-let [rate-source-id (::m.rate-sources/id query-params)]
                          (q.accounts/find-by-rate-source rate-source-id)
                          [])]
-               {::m.accounts/index-by-rate-source (m.accounts/idents ids)}))
-      :cljs (fn [] {::m.accounts/index-by-rate-source []}))})
+               {::index-by-rate-source (m.accounts/idents ids)}))
+      :cljs (fn [] {::index-by-rate-source []}))})
 
 (def attributes
   [transactions

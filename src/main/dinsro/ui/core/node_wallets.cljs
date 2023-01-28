@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.ui.core.wallets :as u.c.wallets]
@@ -28,7 +29,7 @@
    ro/route            "wallets"
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.wallets/index
+   ro/source-attribute ::j.c.wallets/index
    ro/title            "Wallets"}
   (log/info :Report/creating {:props props})
   (report/render-layout this))

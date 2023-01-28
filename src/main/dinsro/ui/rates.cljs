@@ -4,8 +4,13 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.rates :as j.rates]
    [dinsro.model.rates :as m.rates]
    [dinsro.ui.links :as u.links]))
+
+;; [[../actions/rates.clj][Rate Actions]]
+;; [[../joins/rates.cljc][Rate Joins]]
+;; [[../model/rates.cljc][Rates Model]]
 
 (report/defsc-report Report
   [_this _props]
@@ -17,13 +22,13 @@
    ro/route            "rates"
    ro/row-pk           m.rates/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.rates/index
+   ro/source-attribute ::j.rates/index
    ro/title            "Rates Report"})
 
 (defsc ShowRate
   [_this _props]
-  {:ident ::m.rates/id
-   :query [::m.rates/id]
+  {:ident         ::m.rates/id
+   :query         [::m.rates/id]
    :initial-state {::m.rates/id nil}
    :route-segment ["rates" :id]}
   (dom/div {}))

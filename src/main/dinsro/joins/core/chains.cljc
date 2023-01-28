@@ -6,12 +6,12 @@
    #?(:clj [dinsro.queries.core.chains :as q.c.chains])
    [dinsro.specs]))
 
-(defattr index ::m.c.chains/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.chains/id
-   ao/pc-output [{::m.c.chains/index [::m.c.chains/id]}]
+   ao/pc-output [{::index [::m.c.chains/id]}]
    ao/pc-resolve
    (fn [_env _props]
      (let [ids #?(:clj (q.c.chains/index-ids) :cljs [])]
-       {::m.c.chains/index (map (fn [id] {::m.c.chains/id id}) ids)}))})
+       {::index (m.c.chains/idents ids)}))})
 
 (def attributes [index])

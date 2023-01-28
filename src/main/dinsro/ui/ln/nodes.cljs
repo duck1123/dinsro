@@ -1,27 +1,36 @@
 (ns dinsro.ui.ln.nodes
-  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-            [com.fulcrologic.fulcro.dom :as dom]
-            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-            [com.fulcrologic.rad.form :as form]
-            [com.fulcrologic.rad.form-options :as fo]
-            [com.fulcrologic.rad.picker-options :as picker-options]
-            [com.fulcrologic.rad.report :as report]
-            [com.fulcrologic.rad.report-options :as ro]
-            [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
-            [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
-            [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
-            [dinsro.model.core.nodes :as m.c.nodes]
-            [dinsro.model.ln.info :as m.ln.info]
-            [dinsro.model.ln.nodes :as m.ln.nodes]
-            [dinsro.model.users :as m.users]
-            [dinsro.mutations.ln.nodes :as mu.ln]
-            [dinsro.ui.links :as u.links]
-            [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
-            [dinsro.ui.ln.node-channels :as u.ln.node-channels]
-            [dinsro.ui.ln.node-peers :as u.ln.node-peers]
-            [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
-            [dinsro.ui.ln.node-transactions :as u.ln.node-transactions]
-            [lambdaisland.glogi :as log]))
+  (:require
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.picker-options :as picker-options]
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
+   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
+   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
+   [dinsro.joins.ln.nodes :as j.ln.nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.ln.info :as m.ln.info]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.users :as m.users]
+   [dinsro.mutations.ln.nodes :as mu.ln]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
+   [dinsro.ui.ln.node-channels :as u.ln.node-channels]
+   [dinsro.ui.ln.node-peers :as u.ln.node-peers]
+   [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
+   [lambdaisland.glogi :as log]))
+
+(declare CreateLightningNodeForm)
+
+(def new-node-button
+  {:type   :button
+   :local? true
+   :label  "New Node"
+   :action (fn [this _] (form/create! this CreateLightningNodeForm))})
 
 (def button-info
   [{:label            "Unlock"
@@ -130,8 +139,7 @@
    [u.ln.node-accounts/SubPage
     u.ln.node-channels/SubPage
     u.ln.node-peers/SubPage
-    u.ln.node-remote-nodes/SubPage
-    u.ln.node-transactions/SubPage]})
+    u.ln.node-remote-nodes/SubPage]})
 
 (def ui-router (comp/factory Router))
 
@@ -225,8 +233,9 @@
                         m.ln.nodes/core-node
                         m.ln.info/color
                         m.ln.nodes/user]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh  u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::new-node ::refresh]}
+   ro/controls         {::new-node new-node-button
+                        ::refresh  u.links/refresh-control}
    ro/field-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
                         ::m.ln.nodes/network   #(u.links/ui-network-link %2)
                         ::m.ln.nodes/user      #(u.links/ui-user-link %2)
@@ -234,7 +243,7 @@
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.nodes/index
+   ro/source-attribute ::j.ln.nodes/index
    ro/title            "Lightning Node Report"}
   (do
     (log/info :Report/starting {:props props})
@@ -247,11 +256,13 @@
                         m.ln.nodes/core-node
                         m.ln.info/color
                         m.ln.nodes/user]
+   ro/control-layout   {:action-buttons [::new-node]}
+   ro/controls         {::new-node new-node-button}
    ro/field-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
                         ::m.ln.nodes/user      #(u.links/ui-user-link %2)
                         ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
    ro/route            "nodes"
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.nodes/admin-index
+   ro/source-attribute ::j.ln.nodes/admin-index
    ro/title            "Lightning Node Report"})

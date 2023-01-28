@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.connections :as j.c.connections]
    [dinsro.model.core.connections :as m.c.connections]
    [dinsro.mutations.core.connections :as mu.c.connections]))
 
@@ -19,12 +20,11 @@
    fo/title        "Core Node Connection"})
 
 (def new-button
-  {:action (fn [this {::m.c.connections/keys [id]}]
-             (comp/transact! this [(mu.c.connections/create! {::m.c.connections/id id})]))
-
-   :label  "New Connection"
+  {:type   :button
    :local? true
-   :type   :button})
+   :label  "New Connection"
+   :action (fn [this {::m.c.connections/keys [id]}]
+             (comp/transact! this [(mu.c.connections/create! {::m.c.connections/id id})]))})
 
 (report/defsc-report Report
   [_this _props]
@@ -35,5 +35,5 @@
    ro/route            "connections"
    ro/row-pk           m.c.connections/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.connections/index
+   ro/source-attribute ::j.c.connections/index
    ro/title            "Core Node Connections"})

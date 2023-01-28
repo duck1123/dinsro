@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
@@ -79,7 +80,7 @@
                          delete-action-button]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::m.n.relays/index
+   ro/source-attribute  ::j.n.relays/index
    ro/title             "Relays Report"})
 
 (defrouter Router

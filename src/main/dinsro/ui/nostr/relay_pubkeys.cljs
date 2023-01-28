@@ -6,16 +6,19 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/nostr/pubkeys.cljc][Pubkeys Join]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 ;; [[../../model/nostr/relays.cljc][Relay Model]]
 ;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
 ;; [[../../mutations/nostr/pubkeys.cljc][Pubkeys Mutations]]
+;; [[../../ui/nostr/relays.cljs][Relays UI]]
 
 (def ident-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
@@ -58,7 +61,7 @@
                         ::refresh       u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/row-actions [subscribe-action-button]
-   ro/source-attribute ::m.n.pubkeys/index
+   ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Pubkeys"
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true})

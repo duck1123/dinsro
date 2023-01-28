@@ -8,18 +8,16 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-(defattr index ::m.c.peers/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.peers/id
-   ao/pc-output [{::m.c.peers/index [::m.c.peers/id]}]
+   ao/pc-output [{::index [::m.c.peers/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} props]
      (log/info :peers/indexing {:query-params query-params :props props})
      (let [{node-id ::m.c.nodes/id} query-params
            ids                      (if node-id
-                                      #?(:clj  (q.c.peers/find-by-core-node node-id)
-                                         :cljs [])
-                                      #?(:clj  (q.c.peers/index-ids)
-                                         :cljs []))]
-       {::m.c.peers/index (map (fn [id] {::m.c.peers/id id}) ids)}))})
+                                      #?(:clj (q.c.peers/find-by-core-node node-id) :cljs [])
+                                      #?(:clj (q.c.peers/index-ids) :cljs []))]
+       {::index (m.c.peers/idents ids)}))})
 
 (def attributes [index])

@@ -8,9 +8,9 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-(defattr index ::m.c.networks/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.networks/id
-   ao/pc-output [{::m.c.networks/index [::m.c.networks/id]}]
+   ao/pc-output [{::index [::m.c.networks/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} props]
      (log/info :index/starting {:query-params query-params :props props})
@@ -18,8 +18,8 @@
            ids                        (if chain-id
                                         #?(:clj (q.c.networks/find-by-chain-id chain-id) :cljs [])
                                         #?(:clj (q.c.networks/index-ids) :cljs []))
-           objs                       (map (fn [id] {::m.c.networks/id id}) ids)]
+           objs                       (m.c.networks/idents ids)]
        (log/info :index/starting {:query-params query-params :ids ids})
-       {::m.c.networks/index objs}))})
+       {::index objs}))})
 
 (def attributes [index])

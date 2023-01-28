@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.channels :as mu.ln.channels]
@@ -46,7 +47,7 @@
    ro/field-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
                         ::m.ln.channels/node  #(u.links/ui-core-node-link %2)}
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
-   ro/source-attribute ::m.ln.channels/index
+   ro/source-attribute ::j.ln.channels/index
    ro/title            "Node Channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true

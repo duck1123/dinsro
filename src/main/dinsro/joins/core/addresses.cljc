@@ -6,14 +6,12 @@
    #?(:clj [dinsro.queries.core.addresses :as q.c.addresses])
    [dinsro.specs]))
 
-(defattr index ::m.c.addresses/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.addresses/id
-   ao/pc-output [{::m.c.addresses/index [::m.c.addresses/id]}]
+   ao/pc-output [{::index [::m.c.addresses/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     (comment env query-params)
+   (fn [_ _]
      (let [ids #?(:clj (q.c.addresses/index-ids) :cljs [])]
-       {::m.c.addresses/index (m.c.addresses/idents ids)}))})
+       {::index (m.c.addresses/idents ids)}))})
 
-(def attributes
-  [index])
+(def attributes [index])

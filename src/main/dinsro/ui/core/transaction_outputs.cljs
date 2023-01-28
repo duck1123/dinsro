@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.tx-out :as j.c.tx-out]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.ui.links :as u.links]
@@ -20,7 +21,7 @@
    ro/controls         {::refresh   u.links/refresh-control
                         ::m.c.tx/id {:type :uuid :label "TX"}}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/source-attribute ::m.c.tx-out/index
+   ro/source-attribute ::j.c.tx-out/index
    ro/title            "Outputs"
    ro/row-pk           m.c.tx-out/id
    ro/run-on-mount?    true}

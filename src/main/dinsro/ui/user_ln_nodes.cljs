@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.users :as m.users]
@@ -24,7 +25,7 @@
    ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)}
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.nodes/index
+   ro/source-attribute ::j.ln.nodes/index
    ro/title            "User Ln Nodes"})
 
 (defsc SubPage

@@ -10,17 +10,17 @@
 
 (comment ::m.c.wallets/_)
 
-(defattr index ::m.c.wallet-addresses/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.wallet-addresses/id
-   ao/pc-output [{::m.c.wallet-addresses/index [::m.c.wallet-addresses/id]}]
+   ao/pc-output [{::index [::m.c.wallet-addresses/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.c.wallet-addresses/index-ids) :cljs [])]
-       {::m.c.wallet-addresses/index (m.c.wallet-addresses/idents ids)}))})
+       {::index (m.c.wallet-addresses/idents ids)}))})
 
-(defattr index-by-wallet ::m.c.wallet-addresses/index-by-wallet :ref
+(defattr index-by-wallet ::index-by-wallet :ref
   {ao/target    ::m.c.wallet-addresses/id
-   ao/pc-output [{::m.c.wallet-addresses/index-by-wallet [::m.c.wallet-addresses/id]}]
+   ao/pc-output [{::index-by-wallet [::m.c.wallet-addresses/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} _]
      (log/info :index-by-wallet/starting {:query-params query-params})
@@ -30,6 +30,6 @@
                     (do
                       (log/warn :index-by-wallet/no-wallet-id {:query-params query-params})
                       [])) :cljs [])]
-       {::m.c.wallet-addresses/index-by-wallet (m.c.wallet-addresses/idents ids)}))})
+       {::index-by-wallet (m.c.wallet-addresses/idents ids)}))})
 
 (def attributes [index index-by-wallet])

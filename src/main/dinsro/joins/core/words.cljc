@@ -10,9 +10,9 @@
 
 (comment ::m.c.wallets/_)
 
-(defattr index ::m.c.words/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.words/id
-   ao/pc-output [{::m.c.words/index [::m.c.words/id]}]
+   ao/pc-output [{::index [::m.c.words/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} _]
      (log/info :index/starting {:query-params query-params})
@@ -21,6 +21,6 @@
                     (q.c.words/find-by-wallet wallet-id)
                     (q.c.words/index-ids))
                   :cljs [])]
-       {::m.c.words/index (m.c.words/idents ids)}))})
+       {::index (m.c.words/idents ids)}))})
 
 (def attributes [index])

@@ -17,9 +17,9 @@
 
 (comment ::m.c.blocks/_)
 
-(defattr index ::m.c.tx/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.tx/id
-   ao/pc-output [{::m.c.tx/index [::m.c.tx/id]}]
+   ao/pc-output [{::index [::m.c.tx/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} props]
      (log/info :index/starting {:query-params query-params :props props})
@@ -30,37 +30,37 @@
                   (q.c.tx/find-by-block block-id)
                   (q.c.tx/index-ids)))
               :cljs [])]
-       {::m.c.tx/index (map (fn [id] {::m.c.tx/id id}) ids)}))})
+       {::index (m.c.tx/idents ids)}))})
 
-(defattr node ::m.c.tx/node :ref
+(defattr node ::node :ref
   {ao/cardinality      :one
    ao/pc-input         #{::m.c.tx/id}
-   ao/pc-output        [{::m.c.tx/node [::m.c.nodes/id]}]
+   ao/pc-output        [{::node [::m.c.nodes/id]}]
    ao/target           ::m.c.nodes/id
    ao/pc-resolve
    (fn [_env {::m.c.tx/keys [id]}]
      (let [node-id (if id #?(:clj (q.c.nodes/find-by-tx id) :cljs nil) nil)]
-       {::m.c.tx/node (m.c.nodes/ident node-id)}))
+       {::node (m.c.nodes/ident node-id)}))
    ::report/column-EQL {::m.c.tx/node m.c.nodes/link-query}})
 
-(defattr ins ::m.c.tx/ins :ref
+(defattr ins ::ins :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.c.tx/id}
-   ao/pc-output   [{::m.c.tx/ins [::m.c.tx-in/id]}]
+   ao/pc-output   [{::ins [::m.c.tx-in/id]}]
    ao/target      ::m.c.tx-in/id
    ao/pc-resolve
    (fn [_env {::m.c.tx/keys [id]}]
      (let [ids (if id #?(:clj (q.c.tx-in/find-by-tx id) :cljs []) [])]
-       {::m.c.tx/ins (m.c.tx/idents ids)}))})
+       {::ins (m.c.tx/idents ids)}))})
 
-(defattr outs ::m.c.tx/outs :ref
+(defattr outs ::outs :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.c.tx/id}
-   ao/pc-output   [{::m.c.tx/outs [::m.c.tx-out/id]}]
+   ao/pc-output   [{::outs [::m.c.tx-out/id]}]
    ao/target      ::m.c.tx-out/id
    ao/pc-resolve
    (fn [_env {::m.c.tx/keys [id]}]
      (let [ids (if id #?(:clj (q.c.tx-out/find-by-tx id) :cljs []) [])]
-       {::m.c.tx/outs (m.c.tx-out/idents ids)}))})
+       {::outs (m.c.tx-out/idents ids)}))})
 
 (def attributes [index node ins outs])

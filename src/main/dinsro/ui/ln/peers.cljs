@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
@@ -79,7 +80,7 @@
    ro/route            "peers"
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.peers/index
+   ro/source-attribute ::j.ln.peers/index
    ro/title            "Lightning Peers"}
   (if override-report
     (report/render-layout this)

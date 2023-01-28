@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.ui.links :as u.links]))
@@ -11,12 +12,12 @@
   [_this _props]
   {ro/columns          [m.accounts/name]
    ro/controls         {::m.currencies/id {:type :uuid :label "id"}
-                        ::refresh u.links/refresh-control}
+                        ::refresh         u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index
+   ro/source-attribute ::j.accounts/index
    ro/title            "Currency Accounts"})
 
 (def ui-report (comp/factory Report))

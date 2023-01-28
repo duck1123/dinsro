@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.join.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
@@ -74,7 +75,18 @@
    ro/route            "categories"
    ro/row-pk           m.categories/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.categories/index
+   ro/source-attribute ::j.categories/index
+   ro/title            "Categories"})
+
+(report/defsc-report CategoriesSubReport
+  [_this _props]
+  {ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
+   ro/form-links       {::m.categories/name CategoryForm}
+   ro/columns          [m.categories/name]
+   ro/row-actions      []
+   ro/row-pk           m.categories/id
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.categories/index
    ro/title            "Categories"})
 
 (report/defsc-report AdminReport
@@ -85,7 +97,7 @@
                                :action #(form/create! % AdminCategoryForm)}}
    ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
    ro/form-links       {::m.categories/name CategoryForm}
-   ro/source-attribute ::m.categories/admin-index
+   ro/source-attribute ::j.categories/admin-index
    ro/title            "Admin Categories"
    ro/row-pk           m.categories/id
    ro/route            "categories"

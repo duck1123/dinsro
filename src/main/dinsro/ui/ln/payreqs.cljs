@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
    [dinsro.ui.links :as u.links]
@@ -40,7 +41,7 @@
    ro/route            "payreqs"
    ro/row-pk           m.ln.payreqs/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.payreqs/index
+   ro/source-attribute ::j.ln.payreqs/index
    ro/title            "Lightning Payreqs"}
   (dom/div {}
     (dom/h1 {} "Payreqs")

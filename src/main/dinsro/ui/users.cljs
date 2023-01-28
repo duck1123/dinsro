@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.user-accounts :as u.user-accounts]
@@ -87,7 +88,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name]
-   ro/source-attribute ::m.users/index
+   ro/source-attribute ::j.users/index
    ro/title            "Users"
    ro/route            "users"
    ro/row-pk           m.users/id
@@ -101,7 +102,7 @@
                                     :action (fn [this] (form/create! this AdminUserForm))}
                         ::refresh  u.links/refresh-control}
    ro/form-links       {::m.users/name AdminUserForm}
-   ro/source-attribute ::m.users/index
+   ro/source-attribute ::j.users/index
    ro/title            "Admin Users"
    ro/row-pk           m.users/id
    ro/route            "users"

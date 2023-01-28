@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.ui.links :as u.links]))
@@ -19,7 +20,7 @@
    ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index-by-rate-source
+   ro/source-attribute ::j.accounts/index-by-rate-source
    ro/title            "Rate Sources Accounts"})
 
 (def ui-report (comp/factory Report))

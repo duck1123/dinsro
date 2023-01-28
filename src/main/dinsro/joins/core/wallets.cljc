@@ -12,9 +12,9 @@
    #?(:clj [dinsro.queries.core.words :as q.c.words])
    [dinsro.specs]))
 
-(defattr index ::m.c.wallets/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.wallets/id
-   ao/pc-output [{::m.c.wallets/index [::m.c.wallets/id]}]
+   ao/pc-output [{::index [::m.c.wallets/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} _]
      (let [{node-id ::m.c.nodes/id} query-params
@@ -26,26 +26,26 @@
                                        (do
                                          (comment node-id)
                                          []))]
-       {::m.c.wallets/index (m.c.wallets/idents ids)}))})
+       {::index (m.c.wallets/idents ids)}))})
 
-(defattr addresses ::m.c.wallets/addresses :ref
+(defattr addresses ::addresses :ref
   {ao/target           ::m.c.wallet-addresses/id
    ao/pc-input         #{::m.c.wallets/id}
-   ao/pc-output        [{::m.c.wallets/addresses [::m.c.wallet-addresses/id]}]
+   ao/pc-output        [{::addresses [::m.c.wallet-addresses/id]}]
    ao/pc-resolve
    (fn [_env {::m.c.wallets/keys [id]}]
      (let [ids (if id #?(:clj (q.c.wallet-addresses/find-by-wallet id) :cljs []) [])]
-       {::m.c.wallets/addresses (m.c.wallet-addresses/idents ids)}))
-   ::report/column-EQL {::m.c.wallets/addresses [::m.c.wallet-addresses/id ::m.c.wallet-addresses/address]}})
+       {::addresses (m.c.wallet-addresses/idents ids)}))
+   ::report/column-EQL {::addresses [::m.c.wallet-addresses/id ::m.c.wallet-addresses/address]}})
 
-(defattr words ::m.c.wallets/words :ref
+(defattr words ::words :ref
   {ao/target           ::m.c.words/id
    ao/pc-input         #{::m.c.wallets/id}
-   ao/pc-output        [{::m.c.wallets/words [::m.c.words/id]}]
+   ao/pc-output        [{::words [::m.c.words/id]}]
    ao/pc-resolve
    (fn [_env {::m.c.wallets/keys [id]}]
      (let [ids (if id #?(:clj (q.c.words/find-by-wallet id) :cljs []) [])]
-       {::m.c.wallets/words (m.c.words/idents ids)}))
-   ::report/column-EQL {::m.c.wallets/words [::m.c.words/id ::m.c.words/word]}})
+       {::words (m.c.words/idents ids)}))
+   ::report/column-EQL {::words [::m.c.words/id ::m.c.words/word]}})
 
 (def attributes [index addresses words])

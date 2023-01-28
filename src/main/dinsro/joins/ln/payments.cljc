@@ -6,12 +6,12 @@
    #?(:clj [dinsro.queries.ln.payments :as q.ln.payments])
    [dinsro.specs]))
 
-(defattr index ::m.ln.payments/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.ln.payments/id
-   ao/pc-output [{::m.ln.payments/index [::m.ln.payments/id]}]
+   ao/pc-output [{::index [::m.ln.payments/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.ln.payments/index-ids) :cljs [])]
-       {::m.ln.payments/index (m.ln.payments/idents ids)}))})
+       {::index (m.ln.payments/idents ids)}))})
 
 (def attributes [index])

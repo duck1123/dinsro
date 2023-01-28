@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
@@ -93,7 +94,7 @@
    ro/row-actions      [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
    ro/row-pk           m.c.wallet-addresses/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.wallet-addresses/index-by-wallet
+   ro/source-attribute ::j.c.wallet-addresses/index-by-wallet
    ro/title            "Addresses"})
 
 (def ui-report (comp/factory Report))

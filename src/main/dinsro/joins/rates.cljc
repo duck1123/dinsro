@@ -5,12 +5,16 @@
    [dinsro.model.rates :as m.rates]
    #?(:clj [dinsro.queries.rates :as q.rates])))
 
-(defattr index ::m.rates/index :ref
+;; [[../actions/rates.clj][Rate Actions]]
+;; [[../model/rates.cljc][Rates Model]]
+;; [[../ui/rates.cljs][Rates UI]]
+
+(defattr index ::index :ref
   {ao/target    ::m.rates/id
-   ao/pc-output [{::m.rates/index [::m.rates/id]}]
+   ao/pc-output [{::index [::m.rates/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.rates/index-ids) :cljs [])]
-       {::m.rates/index (m.rates/idents ids)}))})
+       {::index (m.rates/idents ids)}))})
 
 (def attributes [index])

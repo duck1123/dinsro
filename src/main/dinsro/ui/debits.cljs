@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.ui.links :as u.links]))
 
@@ -19,7 +20,7 @@
    ro/row-actions      []
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.debits/admin-index
+   ro/source-attribute ::j.debits/admin-index
    ro/title            "Admin Debits Report"})
 
 (defsc ShowDebits
@@ -31,9 +32,7 @@
                    ::m.debits/id    nil}
    :ident         ::m.debits/id
    :will-enter    (partial u.links/page-loader ::m.debits/id ::ShowDebit)
-   :pre-merge     (u.links/page-merger
-                   ::m.debits/id
-                   {})}
+   :pre-merge     (u.links/page-merger ::m.debits/id {})}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show Debit " (str value)))))

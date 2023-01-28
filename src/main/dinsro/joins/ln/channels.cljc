@@ -6,12 +6,12 @@
    #?(:clj [dinsro.queries.ln.channels :as q.ln.channels])
    [dinsro.specs]))
 
-(defattr index ::m.ln.channels/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.ln.channels/id
-   ao/pc-output [{::m.ln.channels/index [::m.ln.channels/id]}]
+   ao/pc-output [{::index [::m.ln.channels/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.ln.channels/index-ids) :cljs [])]
-       {::m.ln.channels/index (m.ln.channels/idents ids)}))})
+       {::index (m.ln.channels/idents ids)}))})
 
 (def attributes [index])

@@ -23,7 +23,7 @@
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.transactions/index
+   ro/source-attribute ::j.transactions/index
    ro/title            "User Transactions"})
 
 (defsc SubPage

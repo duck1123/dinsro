@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.payments :as j.ln.payments]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.ui.links :as u.links]))
 
@@ -17,7 +18,7 @@
    ro/route            "payments"
    ro/row-pk           m.ln.payments/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.payments/index
+   ro/source-attribute ::j.ln.payments/index
    ro/title            "Lightning Payments"}
   (dom/div {}
     (dom/h1 {} "Payments")

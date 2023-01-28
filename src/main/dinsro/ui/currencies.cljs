@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.ui.currency-accounts :as u.currency-accounts]
    [dinsro.ui.links :as u.links]))
@@ -14,7 +15,6 @@
   {fo/id           m.currencies/id
    fo/attributes   [m.currencies/name
                     m.currencies/code]
-   ;; fo/cancel-route ["admin"]
    fo/route-prefix "new-currency"
    fo/title        "New Currency"})
 
@@ -22,7 +22,6 @@
   {fo/id           m.currencies/id
    fo/attributes   [m.currencies/name
                     m.currencies/code]
-   ;; fo/cancel-route ["admin"]
    fo/route-prefix "new-admin-currency"
    fo/title        "New Currency"})
 
@@ -40,7 +39,7 @@
    ro/route            "currencies"
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.currencies/index
+   ro/source-attribute ::j.currencies/index
    ro/title            "Currencies Report"})
 
 (report/defsc-report AdminIndexCurrenciesReport
@@ -49,7 +48,7 @@
    ro/controls         {::new {:label  "New Currency"
                                :type   :button
                                :action #(form/create! % NewAdminCurrencyForm)}}
-   ro/source-attribute ::m.currencies/index
+   ro/source-attribute ::j.currencies/index
    ro/title            "Currencies"
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true})

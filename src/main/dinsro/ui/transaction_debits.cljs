@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    ;; [dinsro.model.users :as m.users]
@@ -21,7 +22,7 @@
                         ::m.debits/account #(u.links/ui-account-link %2)}
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.debits/index
+   ro/source-attribute ::j.debits/index
    ro/title            "Transaction Debits"})
 
 (def ui-report (comp/factory Report))

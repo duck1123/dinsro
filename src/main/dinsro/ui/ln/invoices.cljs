@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.invoices :as j.ln.invoices]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.mutations.ln.invoices :as mu.ln.invoices]
    [dinsro.ui.links :as u.links]
@@ -51,7 +52,7 @@
    ro/route            "invoices"
    ro/row-pk           m.ln.invoices/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.invoices/index
+   ro/source-attribute ::j.ln.invoices/index
    ro/title            "Lightning Invoices Report"}
   (dom/div {}
     (dom/h1 {} "Invoices")

@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
@@ -25,7 +26,7 @@
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.ln.remote-nodes/block #(u.links/ui-block-link %2)
                         ::m.ln.remote-nodes/node  #(u.links/ui-core-node-link %2)}
-   ro/source-attribute ::m.ln.remote-nodes/index
+   ro/source-attribute ::j.ln.remote-nodes/index
    ro/title            "Node Remote-Nodes"
    ro/row-actions      [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
    ro/row-pk           m.ln.remote-nodes/id

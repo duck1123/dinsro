@@ -11,37 +11,35 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-(defattr index ::m.transactions/index :ref
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.transactions/id
-   ao/pc-output [{::m.transactions/index [::m.transactions/id]}]
+   ao/pc-output [{::admin-index [::m.transactions/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]
-         :as env} _]
+   (fn [_ _]
+     (let [ids #?(:clj (q.transactions/index-ids) :cljs [])]
+       {::admin-index (m.transactions/idents ids)}))})
+
+(defattr index ::index :ref
+  {ao/target    ::m.transactions/id
+   ao/pc-output [{::index [::m.transactions/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params] :as env} _]
      (log/info :index/starting {:query-params query-params})
      (comment env)
      (let [ids #?(:clj (let [user-id (a.authentication/get-user-id env)]
                          (q.transactions/find-by-user user-id))
                   :cljs [])]
-       {::m.transactions/index (m.transactions/idents ids)}))})
+       {::index (m.transactions/idents ids)}))})
 
-(defattr admin-index ::m.transactions/admin-index :ref
-  {ao/target    ::m.transactions/id
-   ao/pc-output [{::m.transactions/admin-index [::m.transactions/id]}]
-   ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (q.transactions/index-ids) :cljs [])]
-       {::m.transactions/admin-index (m.transactions/idents ids)}))})
-
-(defattr user ::m.transactions/user :ref
+(defattr user ::user :ref
   {ao/cardinality      :one
    ao/pc-input         #{::m.transactions/id}
    ao/target           ::m.users/id
-   ao/pc-output        [{::m.transactions/user [::m.users/id]}]
+   ao/pc-output        [{::user [::m.users/id]}]
    ao/pc-resolve
    (fn [_env {::m.transactions/keys [id]}]
      (let [user-id (if id #?(:clj (q.users/find-by-transaction id) :cljs nil) nil)]
-       {::m.transactions/user (m.users/ident user-id)}))
+       {::user (m.users/ident user-id)}))
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
 (def attributes [admin-index index user])

@@ -42,33 +42,30 @@
          (log/info :do-admin-index/results {:idents idents})
          {::m.c.blocks/admin-index idents}))))
 
-(defattr admin-index ::m.c.blocks/admin-index :ref
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.c.blocks/id
-   ao/pc-output [{::m.c.blocks/admin-index [::m.c.blocks/id]}]
+   ao/pc-output [{::admin-index [::m.c.blocks/id]}]
    ao/pc-resolve
    (fn [env props]
      #?(:clj  (do-admin-index env props)
-        :cljs (let [_ [env props]] {::m.c.blocks/admin-index []})))})
+        :cljs (let [_ [env props]] {::admin-index []})))})
 
-(defattr index ::m.c.blocks/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.blocks/id
-   ao/pc-output [{::m.c.blocks/index [::m.c.blocks/id]}]
+   ao/pc-output [{::index [::m.c.blocks/id]}]
    ao/pc-resolve
    (fn [env props]
      #?(:clj  (do-index env props)
-        :cljs (let [_ [env props]] {::m.c.blocks/index []})))})
+        :cljs (let [_ [env props]] {::index []})))})
 
-(defattr transactions ::m.c.blocks/transactions :ref
+(defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.c.blocks/id}
-   ao/pc-output   [{::m.c.blocks/transactions [::m.c.tx/id]}]
+   ao/pc-output   [{::transactions [::m.c.tx/id]}]
    ao/target      ::m.c.tx/id
    ao/pc-resolve
    (fn [_env {::m.c.blocks/keys [id]}]
      (let [ids (if id #?(:clj (q.c.tx/find-by-block id) :cljs []) [])]
-       {::m.c.blocks/transactions (m.c.tx/idents ids)}))})
+       {::transactions (m.c.tx/idents ids)}))})
 
-(def attributes
-  [index
-   admin-index
-   transactions])
+(def attributes [index admin-index transactions])

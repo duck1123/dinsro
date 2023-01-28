@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
@@ -61,7 +62,7 @@
                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.peers/id mu.ln.peers/delete!)]
-   ro/source-attribute ::m.ln.peers/index
+   ro/source-attribute ::j.ln.peers/index
    ro/title            "Node Peers"
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true})

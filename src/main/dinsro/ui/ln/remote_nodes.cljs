@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.remote-node-peers :as u.ln.remote-node-peers]
@@ -52,5 +53,5 @@
    ro/route            "remote-nodes"
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.ln.remote-nodes/index
+   ro/source-attribute ::j.ln.remote-nodes/index
    ro/title            "Remote Nodes"})

@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.mutations.core.peers :as mu.c.peers]
@@ -88,7 +89,7 @@
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
-   ro/source-attribute ::m.c.peers/index
+   ro/source-attribute ::j.c.peers/index
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
@@ -104,7 +105,7 @@
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
    ro/row-actions      [delete-action-button]
-   ro/source-attribute ::m.c.peers/index
+   ro/source-attribute ::j.c.peers/index
    ro/title            "Core Peers 2"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true

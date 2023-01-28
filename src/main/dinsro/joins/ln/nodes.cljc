@@ -36,90 +36,82 @@
          (log/warn :do-index/no-user {:env env})
          []))))
 
-(defattr index ::m.ln.nodes/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.ln.nodes/id
-   ao/pc-output [{::m.ln.nodes/index [::m.ln.nodes/id]}]
+   ao/pc-output [{::index [::m.ln.nodes/id]}]
    ao/pc-resolve
    (fn [env _]
      (comment env)
      (let [ids #?(:clj (do-index env) :cljs [])]
        (log/info :index/starting {:ids ids})
-       {::m.ln.nodes/index (m.ln.nodes/idents ids)}))})
+       {::index (m.ln.nodes/idents ids)}))})
 
-(defattr admin-index ::m.ln.nodes/admin-index :ref
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.ln.nodes/id
-   ao/pc-output [{::m.ln.nodes/admin-index [::m.ln.nodes/id]}]
+   ao/pc-output [{::admin-index [::m.ln.nodes/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.ln.nodes/index-ids) :cljs [])]
-       {::m.ln.nodes/admin-index (m.ln.nodes/idents ids)}))})
+       {::admin-index (m.ln.nodes/idents ids)}))})
 
-(defattr channels ::m.ln.nodes/channels :ref
+(defattr channels ::channels :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/channels [::m.ln.channels/id]}]
+   ao/pc-output   [{::channels [::m.ln.channels/id]}]
    ao/target      ::m.ln.channels/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.channels/find-by-node id) :cljs []) [])]
-       {::m.ln.nodes/channels (m.ln.channels/idents ids)}))})
+       {::channels (m.ln.channels/idents ids)}))})
 
-(defattr invoices ::m.ln.nodes/invoices :ref
+(defattr invoices ::invoices :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/invoices [::m.ln.invoices/id]}]
+   ao/pc-output   [{::invoices [::m.ln.invoices/id]}]
    ao/target      ::m.ln.invoices/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.invoices/find-by-node id) :cljs []) [])]
-       {::m.ln.nodes/invoices (m.ln.invoices/idents ids)}))})
+       {::invoices (m.ln.invoices/idents ids)}))})
 
-(defattr payments ::m.ln.nodes/payments :ref
+(defattr payments ::payments :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/payments [::m.ln.payments/id]}]
+   ao/pc-output   [{::payments [::m.ln.payments/id]}]
    ao/target      ::m.ln.payments/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.payments/find-by-node id) :cljs []) [])]
-       {::m.ln.nodes/payments (m.ln.payments/idents ids)}))})
+       {::payments (m.ln.payments/idents ids)}))})
 
-(defattr payreqs ::m.ln.nodes/payreqs :ref
+(defattr payreqs ::payreqs :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/payreqs [::m.ln.payreqs/id]}]
+   ao/pc-output   [{::payreqs [::m.ln.payreqs/id]}]
    ao/target      ::m.ln.payreqs/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.payreqs/find-by-node id) :cljs []) [])]
-       {::m.ln.nodes/payreqs (m.ln.payreqs/idents ids)}))})
+       {::payreqs (m.ln.payreqs/idents ids)}))})
 
-(defattr peers ::m.ln.nodes/peers :ref
+(defattr peers ::peers :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/peers [::m.ln.peers/id]}]
+   ao/pc-output   [{::peers [::m.ln.peers/id]}]
    ao/target      ::m.ln.peers/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.peers/find-by-node id) :cljs []) [])]
-       {::m.ln.nodes/peers (m.ln.peers/idents ids)}))})
+       {::peers (m.ln.peers/idents ids)}))})
 
-(defattr transactions ::m.ln.nodes/transactions :ref
+(defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::m.ln.nodes/transactions [::m.c.tx/id]}]
+   ao/pc-output   [{::transactions [::m.c.tx/id]}]
    ao/target      ::m.c.tx/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.c.tx/find-by-ln-node id) :cljs []) [])]
-       {::m.ln.nodes/transactions (m.c.tx/idents (take 3 ids))}))})
+       {::transactions (m.c.tx/idents (take 3 ids))}))})
 
-(def attributes
-  [admin-index
-   index
-   channels
-   invoices
-   payments
-   payreqs
-   peers
-   transactions])
+(def attributes [admin-index index channels invoices payments payreqs peers transactions])

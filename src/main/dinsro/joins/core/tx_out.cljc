@@ -10,21 +10,16 @@
 
 (comment ::m.c.tx/_)
 
-(defattr index ::m.c.tx-out/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.c.tx-out/id
-   ao/pc-output [{::m.c.tx-out/index [::m.c.tx-out/id]}]
+   ao/pc-output [{::index [::m.c.tx-out/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} _]
      (log/info :index/starting {})
-     (let [ids #?(:clj
-                  (let [tx-id (::m.c.tx/id query-params)]
-                    (if tx-id
-                      (q.c.tx-out/find-by-tx tx-id)
-                      (q.c.tx-out/index-ids)))
-                  :cljs
-                  (do
-                    (comment query-params)
-                    []))]
-       {::m.c.tx-out/index (map (fn [id] {::m.c.tx-out/id id}) ids)}))})
+     (let [ids #?(:clj  (if-let [tx-id (::m.c.tx/id query-params)]
+                          (q.c.tx-out/find-by-tx tx-id)
+                          (q.c.tx-out/index-ids))
+                  :cljs (do (comment query-params) []))]
+       {::index (m.c.tx-out/idents ids)}))})
 
 (def attributes [index])

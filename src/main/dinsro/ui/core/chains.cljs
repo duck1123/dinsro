@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.chains :as j.c.chains]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.ui.core.chain-networks :as u.c.chain-networks]
    [dinsro.ui.links :as u.links]))
@@ -73,5 +74,5 @@
    ro/route             "chains"
    ro/row-pk            m.c.chains/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::m.c.chains/index
+   ro/source-attribute  ::j.c.chains/index
    ro/title             "Chains"})

@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.ui.links :as u.links]
@@ -47,13 +48,13 @@
    ro/route            "rate-sources"
    ro/row-pk           m.rate-sources/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.rate-sources/index
+   ro/source-attribute ::j.rate-sources/index
    ro/title            "Rate Sources Report"})
 
 (report/defsc-report AdminIndexRateSourcesReport
   [_this _props]
   {ro/columns          [m.rate-sources/name]
-   ro/source-attribute ::m.rate-sources/index
+   ro/source-attribute ::j.rate-sources/index
    ro/title            "Rate Sources"
    ro/row-pk           m.rate-sources/id
    ro/run-on-mount?    true})

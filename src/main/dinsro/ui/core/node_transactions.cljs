@@ -24,7 +24,7 @@
    ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
                         ::m.c.tx/node  #(u.links/ui-core-node-link %2)
                         ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
-   ro/source-attribute ::m.c.tx/index
+   ro/source-attribute ::j.c.tx/index
    ro/title            "Node Transactions"
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true})

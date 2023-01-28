@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.ui.core.network-addresses :as u.c.network-addresses]
    [dinsro.ui.core.network-blocks :as u.c.network-blocks]
@@ -15,11 +16,12 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets [u.c.network-addresses/SubPage
-                    u.c.network-blocks/SubPage
-                    u.c.network-nodes/SubPage
-                    u.c.network-ln-nodes/SubPage
-                    u.c.network-wallets/SubPage]})
+  {:router-targets
+   [u.c.network-addresses/SubPage
+    u.c.network-blocks/SubPage
+    u.c.network-nodes/SubPage
+    u.c.network-ln-nodes/SubPage
+    u.c.network-wallets/SubPage]})
 
 (def menu-items
   [{:key   "addresses"
@@ -71,7 +73,7 @@
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
                         ::m.c.networks/name  #(u.links/ui-network-link %3)}
-   ro/source-attribute ::m.c.networks/index
+   ro/source-attribute ::j.c.networks/index
    ro/title            "Networks"
    ro/row-pk           m.c.networks/id
    ro/run-on-mount?    true

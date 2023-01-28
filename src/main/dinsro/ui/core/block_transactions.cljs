@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.tx :as j.c.tx]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
@@ -25,7 +26,7 @@
    ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.tx/id mu.c.transactions/fetch!)]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.c.tx/index
+   ro/source-attribute ::j.c.tx/index
    ro/title            "Transactions"}
   (log/finer :Report/starting {:props props})
   (if override-form

@@ -8,22 +8,22 @@
    #?(:clj [dinsro.queries.ln.remote-nodes :as q.ln.remote-nodes])
    [dinsro.specs]))
 
-(defattr index ::m.ln.remote-nodes/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.ln.remote-nodes/id
-   ao/pc-output [{::m.ln.remote-nodes/index [::m.ln.remote-nodes/id]}]
+   ao/pc-output [{::index [::m.ln.remote-nodes/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.ln.remote-nodes/index-ids) :cljs [])]
-       {::m.ln.remote-nodes/index (m.ln.remote-nodes/idents ids)}))})
+       {::index (m.ln.remote-nodes/idents ids)}))})
 
-(defattr peers ::m.ln.remote-nodes/peers :ref
+(defattr peers ::peers :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.remote-nodes/id}
-   ao/pc-output   [{::m.ln.remote-nodes/peers [::m.ln.peers/id]}]
+   ao/pc-output   [{::peers [::m.ln.peers/id]}]
    ao/target      ::m.ln.peers/id
    ao/pc-resolve
    (fn [_env {::m.ln.remote-nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.peers/find-by-remote-node id) :cljs []) [])]
-       {::m.ln.remote-nodes/peers (m.ln.peers/idents ids)}))})
+       {::peers (m.ln.peers/idents ids)}))})
 
 (def attributes [index peers])

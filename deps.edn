@@ -28,6 +28,9 @@
   com.lambdaisland/glogi                    {:mvn/version "1.1.144"}
   com.taoensso/timbre                       {:mvn/version "5.1.2"}
 
+  ;; https://github.com/wilkerlucio/pathom
+  com.wsscode/pathom                        {:mvn/version "2.4.0"}
+
   ;; https://docs.xtdb.com/guides/quickstart/
   com.xtdb/xtdb-core                        {:mvn/version "1.23.0"}
   com.xtdb/xtdb-jdbc                        {:mvn/version "1.23.0"}

@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
@@ -30,7 +31,7 @@
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.ln.accounts/wallet #(u.links/ui-wallet-link %2)
                         ::m.ln.accounts/node   #(u.links/ui-node-link %2)}
-   ro/source-attribute ::m.ln.accounts/index
+   ro/source-attribute ::j.ln.accounts/index
    ro/title            "Node Accounts"
    ro/row-pk           m.ln.accounts/id
    ro/run-on-mount?    true}

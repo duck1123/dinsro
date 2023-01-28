@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.core.tx :as j.c.tx]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
@@ -25,7 +26,7 @@
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.c.tx/block #(u.links/ui-block-link %2)
                         ::m.c.tx/tx-id #(u.links/ui-core-tx-link %3)}
-   ro/source-attribute ::m.c.tx/index
+   ro/source-attribute ::j.c.tx/index
    ro/title            "Node Transactions"
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true}

@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
@@ -24,7 +25,7 @@
                         ::m.debits/transaction #(u.links/ui-transaction-link %2)}
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.debits/index
+   ro/source-attribute ::j.debits/index
    ro/title            "User Debits"})
 
 (defsc SubPage

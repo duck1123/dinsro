@@ -14,6 +14,7 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
+   [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.node-blocks :as u.c.node-blocks]
@@ -131,7 +132,7 @@
                          ::refresh u.links/refresh-control}
    ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
                          (u.links/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
-   ro/source-attribute  ::m.c.nodes/index
+   ro/source-attribute  ::j.c.nodes/index
    ro/title             "Core Node Report"
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true

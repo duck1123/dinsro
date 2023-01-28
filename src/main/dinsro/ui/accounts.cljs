@@ -7,12 +7,16 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.ui.account-transactions :as u.account-transactions]
    [dinsro.ui.links :as u.links]))
+
+;; [[../joins/accounts.cljc][Account Joins]]
+;; [[../model/accounts.cljc][Account Models]]
 
 (defsc CurrencyQuery
   [_this _props]
@@ -87,7 +91,7 @@
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index
+   ro/source-attribute ::j.accounts/index
    ro/title            "Accounts"})
 
 (report/defsc-report AdminReport
@@ -109,21 +113,28 @@
                          :label "delete"}]
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/admin-index
+   ro/source-attribute ::j.accounts/admin-index
+   ro/title            "Accounts"})
+
+(def ui-admin-report (comp/factory AdminReport))
+
+(report/defsc-report AccountsSubReport
+  [_this _props]
+  {ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                        ::m.accounts/user     #(u.links/ui-user-link %2)
+                        ::m.accounts/name     #(u.links/ui-account-link %3)}
+   ro/columns          [m.accounts/name
+                        m.accounts/currency
+                        m.accounts/initial-value]
+   ro/row-pk           m.accounts/id
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.accounts/index
    ro/title            "Accounts"})
 
 (defsc Show
   [_this {::m.accounts/keys [name currency source user wallet]
           :ui/keys          [transactions]}]
-  {:ident         ::m.accounts/id
-   :initial-state {::m.accounts/name     ""
-                   ::m.accounts/id       nil
-                   ::m.accounts/currency {}
-                   ::m.accounts/source   {}
-                   ::m.accounts/user     {}
-                   ::m.accounts/wallet   {}
-                   :ui/transactions      {}}
-   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})
+  {:route-segment ["accounts" :id]
    :query         [::m.accounts/name
                    ::m.accounts/id
                    {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
@@ -131,8 +142,16 @@
                    {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
                    {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
                    {:ui/transactions (comp/get-query u.account-transactions/SubPage)}]
-   :route-segment ["accounts" :id]
-   :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)}
+   :initial-state {::m.accounts/name     ""
+                   ::m.accounts/id       nil
+                   ::m.accounts/currency {}
+                   ::m.accounts/source   {}
+                   ::m.accounts/user     {}
+                   ::m.accounts/wallet   {}
+                   :ui/transactions      {}}
+   :ident         ::m.accounts/id
+   :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)
+   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/dl {}

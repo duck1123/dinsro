@@ -8,36 +8,34 @@
    #?(:clj [dinsro.queries.rate-sources :as q.rate-sources])
    [dinsro.specs]))
 
-(defattr current-rate ::m.rate-sources/current-rate :ref
+(defattr current-rate ::current-rate :ref
   {ao/cardinality :one
    ao/target      ::m.rates/id
    ao/pc-input    #{::m.rate-sources/id}
-   ao/pc-output   [{::m.rate-sources/current-rate [::m.rates/id]}]
+   ao/pc-output   [{::current-rate [::m.rates/id]}]
    ao/pc-resolve
    (fn [_env {::m.rate-sources/keys [id]}]
      (let [id (when id #?(:clj (q.rates/find-top-by-rate-source id) :cljs nil))]
-       {::m.rate-sources/current-rate (when id (m.rates/ident id))}))})
+       {::current-rate (when id (m.rates/ident id))}))})
 
-(defattr index ::m.rate-sources/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.rate-sources/id
-   ao/pc-output [{::m.rate-sources/index [::m.rate-sources/id]}]
+   ao/pc-output [{::index [::m.rate-sources/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
+   (fn [_ _]
      (let [ids #?(:clj (q.rate-sources/index-ids) :cljs [])]
-       (comment env query-params)
-       {::m.rate-sources/index (m.rate-sources/idents ids)}))})
+       {::index (m.rate-sources/idents ids)}))})
 
-(defattr rates ::m.rate-sources/rates :ref
+(defattr rates ::rates :ref
   {ao/cardinality :many
    ao/target      ::m.rates/id
    ao/pc-input    #{::m.rate-sources/id}
-   ao/pc-output   [{::m.rate-sources/rates [::m.rates/id]}]
+   ao/pc-output   [{::rates [::m.rates/id]}]
    ao/pc-resolve
    (fn [_env {::m.rate-sources/keys [id]}]
      (if id
-       #?(:clj (let [rate-ids (q.rates/find-by-rate-source id)]
-                 {::m.rate-sources/rates (map (fn [id] {::m.rates/id id}) rate-ids)})
-          :cljs {::m.rate-sources/rates []})
+       (let [ids #?(:clj (q.rates/find-by-rate-source id) :cljs [])]
+         {::rates (m.rates/idents ids)})
        {:errors "no id"}))})
 
 (def attributes [current-rate index rates])

@@ -22,14 +22,35 @@
 ;; [[../queries/users.clj][User Queries]]
 ;; [[../ui/users.cljs][Users UI]]
 
-(defattr index ::m.users/index :ref
-  {ao/target    ::m.users/id
-   ao/pc-output [{::m.users/index [::m.users/id]}]
+(defattr accounts ::accounts :ref
+  {ao/cardinality :many
+   ao/target      ::m.accounts/id
+   ao/pc-input    #{::m.users/id}
+   ao/pc-output   [{::accounts [::m.accounts/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
+   (fn [_env {::m.users/keys [id]}]
+     #?(:clj  (let [account-ids (if id (q.accounts/find-by-user id) [])]
+                {::accounts (m.accounts/idents account-ids)})
+        :cljs (comment id)))})
+
+(defattr categories ::categories :ref
+  {ao/cardinality :many
+   ao/pc-input    #{::m.users/id}
+   ao/pc-output   [{::categories [::m.categories/id]}]
+   ao/target      ::m.categories/id
+   ao/pc-resolve
+   (fn [_env {::m.users/keys [id]}]
+     (let [category-ids #?(:clj  (if id (q.categories/find-by-user id) [])
+                           :cljs (do (comment id) []))]
+       {::categories (m.categories/idents category-ids)}))})
+
+(defattr index ::index :ref
+  {ao/target    ::m.users/id
+   ao/pc-output [{::index [::m.users/id]}]
+   ao/pc-resolve
+   (fn [_ _]
      (let [ids #?(:clj (q.users/index-ids) :cljs [])]
-       (comment env query-params)
-       {::m.users/index (m.users/idents ids)}))})
+       {::index (m.users/idents ids)}))})
 
 (defattr index-by-pubkey ::index-by-pubkey :ref
   {ao/target    ::m.users/id
@@ -42,28 +63,6 @@
          {::index-by-pubkey (m.users/idents ids)})
        #?(:clj (throw (RuntimeException. "Missing pubkey"))
           :cljs (throw (js/Error. "Missing pubkey")))))})
-
-(defattr accounts ::m.users/accounts :ref
-  {ao/cardinality :many
-   ao/target      ::m.accounts/id
-   ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/accounts [::m.accounts/id]}]
-   ao/pc-resolve
-   (fn [_env {::m.users/keys [id]}]
-     #?(:clj  (let [account-ids (if id (q.accounts/find-by-user id) [])]
-                {::m.users/accounts (m.accounts/idents account-ids)})
-        :cljs (comment id)))})
-
-(defattr categories ::m.users/categories :ref
-  {ao/cardinality :many
-   ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/categories [::m.categories/id]}]
-   ao/target      ::m.categories/id
-   ao/pc-resolve
-   (fn [_env {::m.users/keys [id]}]
-     (let [category-ids #?(:clj  (if id (q.categories/find-by-user id) [])
-                           :cljs (do (comment id) []))]
-       {::m.users/categories (m.categories/idents category-ids)}))})
 
 (defattr ln-nodes ::m.users/ln-nodes :ref
   {ao/cardinality :many
@@ -102,11 +101,4 @@
                  [])]
        {::m.users/wallets (m.c.wallets/idents ids)}))})
 
-(def attributes
-  [index
-   index-by-pubkey
-   accounts
-   categories
-   ln-nodes
-   transactions
-   wallets])
+(def attributes [accounts categories index index-by-pubkey ln-nodes transactions wallets])
