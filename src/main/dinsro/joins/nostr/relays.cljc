@@ -12,22 +12,22 @@
 ;; [[../../queries/nostr/relays.clj][Queries]]
 ;; [[../../ui/nostr/relays.cljs][UI]]
 
-(defattr index ::m.n.relays/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.n.relays/id
-   ao/pc-output [{::m.n.relays/index [::m.n.relays/id]}]
+   ao/pc-output [{::index [::m.n.relays/id]}]
    ao/pc-resolve
    (fn [env _]
      (comment env)
      (let [ids #?(:clj (q.n.relays/index-ids) :cljs [])]
        (log/info :index/starting {:ids ids})
-       {::m.n.relays/index (m.n.relays/idents ids)}))})
+       {::index (m.n.relays/idents ids)}))})
 
-(defattr admin-index ::m.n.relays/admin-index :ref
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.relays/id
-   ao/pc-output [{::m.n.relays/admin-index [::m.n.relays/id]}]
+   ao/pc-output [{::admin-index [::m.n.relays/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.n.relays/index-ids) :cljs [])]
-       {::m.n.relays/admin-index (m.n.relays/idents ids)}))})
+       {::admin-index (m.n.relays/idents ids)}))})
 
 (def attributes [admin-index index])

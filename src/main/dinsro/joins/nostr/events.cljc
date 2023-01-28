@@ -7,22 +7,22 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-(defattr index ::m.n.events/index :ref
+(defattr index ::index :ref
   {ao/target    ::m.n.events/id
-   ao/pc-output [{::m.n.events/index [::m.n.events/id]}]
+   ao/pc-output [{::index [::m.n.events/id]}]
    ao/pc-resolve
    (fn [env _]
      (comment env)
      (let [ids #?(:clj (q.n.events/index-ids) :cljs [])]
        (log/info :index/starting {:ids ids})
-       {::m.n.events/index (m.n.events/idents ids)}))})
+       {::index (m.n.events/idents ids)}))})
 
-(defattr admin-index ::m.n.events/admin-index :ref
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.events/id
-   ao/pc-output [{::m.n.events/admin-index [::m.n.events/id]}]
+   ao/pc-output [{::admin-index [::m.n.events/id]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.n.events/index-ids) :cljs [])]
-       {::m.n.events/admin-index (m.n.events/idents ids)}))})
+       {::admin-index (m.n.events/idents ids)}))})
 
 (def attributes [admin-index index])
