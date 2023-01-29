@@ -34,18 +34,29 @@
 
 (defsc Show
   "Show a core node"
-  [this {::m.n.pubkeys/keys [id hex name picture]
+  [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website
+                             banner]
          :ui/keys           [router]
          :as                props}]
   {:route-segment ["pubkey" :id]
    :query         [::m.n.pubkeys/id
                    ::m.n.pubkeys/hex
                    ::m.n.pubkeys/name
+                   ::m.n.pubkeys/about
+                   ::m.n.pubkeys/nip05
+                   ::m.n.pubkeys/website
+                   ::m.n.pubkeys/lud06
+                   ::m.n.pubkeys/banner
                    ::m.n.pubkeys/picture
                    {:ui/router (comp/get-query Router)}]
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/hex     ""
                    ::m.n.pubkeys/name    ""
+                   ::m.n.pubkeys/nip05 ""
+                   ::m.n.pubkeys/lud06 ""
+                   ::m.n.pubkeys/banner ""
+                   ::m.n.pubkeys/about ""
+                   ::m.n.pubkeys/website ""
                    ::m.n.pubkeys/picture ""
                    :ui/router            {}}
    :ident         ::m.n.pubkeys/id
@@ -60,6 +71,17 @@
             (dom/dd {} (str hex))
             (dom/dt {} "Name")
             (dom/dd {} (str name))
+            (dom/dt {} "About")
+            (dom/dd {} (str about))
+            (dom/dt {} "Nip 05")
+            (dom/dd {} (str nip05))
+            (dom/dt {} "Website")
+            (dom/dd {} (str website))
+            (dom/dt {} "lud06")
+            (dom/dd {} (str lud06))
+            (dom/dt {} "banner")
+            (dom/dd {} (str banner))
+
             (dom/dt {} "Picture")
             (dom/dd {} (when picture
                          (dom/img {:src (str picture)
