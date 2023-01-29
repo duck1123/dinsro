@@ -135,10 +135,12 @@
                                                          :pubkey     pubkey-hex
                                                          :tags       tags
                                                          :content    content})
-              (let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)
-                    parsed (parse-content content)]
-                (log/info :start-pubkey-listener!/parsed {:parsed parsed})
-                (q.n.pubkeys/update! pubkey-id parsed)))))
+              (if-let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
+                (let [parsed (parse-content content)]
+                  (log/info :start-pubkey-listener!/parsed {:parsed parsed})
+                  (q.n.pubkeys/update! pubkey-id parsed))
+                (throw (RuntimeException. "failed to find pubkey"))
+                ))))
 
         (recur))
       (do
