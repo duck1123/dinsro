@@ -10,6 +10,7 @@
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]))
 
 ;; [[./pubkeys.cljc][Pubkeys Model]]
+;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
 ;; [[./subscriptions.cljc][Subscriptions Model]]
 
 (>def ::id uuid?)
@@ -29,7 +30,7 @@
   {ao/identities       #{::id}
    ao/target           ::m.n.pubkeys/id
    ao/schema           :production
-   ::report/column-EQL {::pubkey [::m.n.subscriptions/id ::m.n.subscriptions/code]}})
+   ::report/column-EQL {::pubkey [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
 
 (>def ::required-params (s/keys :req [::subscription ::pubkey]))
 (>def ::params (s/keys :req [::subscription ::pubkey]))

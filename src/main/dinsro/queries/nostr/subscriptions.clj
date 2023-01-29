@@ -60,3 +60,16 @@
     (log/info :read-record/starting {:record record})
     (when (get record ::m.n.subscriptions/id)
       (dissoc record :xt/id))))
+
+(>defn find-by-relay-and-code
+  [relay-id code]
+  [::m.n.relays/id ::m.n.subscriptions/code => (? ::m.n.subscriptions/id)]
+  (log/info :find-by-relay-and-code/starting {:relay-id relay-id :code code})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?id]
+                :in    [[?relay-id ?code]]
+                :where [[?id ::m.n.subscriptions/relay ?relay-id]
+                        [?id ::m.n.subscriptions/code ?code]]}
+        id    (ffirst (xt/q db query [relay-id code]))]
+    (log/info :find-by-relay-and-code/finished {:id id})
+    id))

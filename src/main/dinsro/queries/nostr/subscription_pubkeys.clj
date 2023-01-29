@@ -70,3 +70,19 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
+
+(>defn find-by-subscription-and-pubkey
+  [subscription-id pubkey-id]
+  [::m.n.subscription-pubkeys/subscription ::m.n.subscription-pubkeys/pubkey
+   => (? ::m.n.subscription-pubkeys/id)]
+  (log/info :find-by-relay-and-code/starting {:subscription-id subscription-id
+                                              :pubkey-id       pubkey-id})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?sp-id]
+                 :in    [[?subscription-id ?pubkey-id]]
+                 :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
+                         [?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]]}
+        result (xt/q db query [subscription-id pubkey-id])
+        id     (ffirst result)]
+    (log/info :find-by-relay-and-code/finished {:id id})
+    id))

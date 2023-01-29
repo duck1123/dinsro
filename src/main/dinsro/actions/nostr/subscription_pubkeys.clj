@@ -14,21 +14,21 @@
   (log/info :registration-subscription!/starting
             {:subscription-id subscription-id
              :pubkey-id       pubkey-id})
-  (if-let [record (q.n.subscriptions/read-record subscription-id)]
+  (if-let [subscription (q.n.subscriptions/read-record subscription-id)]
     (do
-      (log/info :register-subscription!/exists {:record record})
-      (let [relay-id (::m.n.subscriptions/relay record)]
-        (if-let [sp-id (q.n.subscription-pubkeys/index-by-relay relay-id)]
-          (do
-            (log/info :register-subscription!/sp-exists {:sp-id sp-id})
-            sp-id)
-          (do
-            (log/info :register-subscription!/sp-not-exists {})
-            (let [params {::m.n.subscription-pubkeys/relay        relay-id
-                          ::m.n.subscription-pubkeys/subscription subscription-id}]
-              (if-let [sp-id (q.n.subscription-pubkeys/create-record params)]
-                sp-id
-                (throw (RuntimeException. "failed"))))))))
+      (log/info :register-subscription!/exists {:subscription subscription})
+      (if-let [sp-id (q.n.subscription-pubkeys/find-by-subscription-and-pubkey
+                      subscription-id pubkey-id)]
+        (do
+          (log/info :register-subscription!/sp-exists {:sp-id sp-id})
+          sp-id)
+        (do
+          (log/info :register-subscription!/sp-not-exists {})
+          (let [params {::m.n.subscription-pubkeys/pubkey       pubkey-id
+                        ::m.n.subscription-pubkeys/subscription subscription-id}]
+            (if-let [sp-id (q.n.subscription-pubkeys/create-record params)]
+              sp-id
+              (throw (RuntimeException. "failed")))))))
     (do
       (log/info :register-subscription!/not-exists {})
       (throw (RuntimeException. "Not exists")))))
