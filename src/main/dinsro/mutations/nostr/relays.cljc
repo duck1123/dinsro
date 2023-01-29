@@ -8,7 +8,7 @@
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def >defn =>] :cljs [>def])]
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.relays :as a.n.relays])
-   #?(:clj [dinsro.actions.nostr.relay-subscriptions :as a.n.relay-subscriptions])
+   #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
@@ -49,7 +49,7 @@
                    ::errors
                    ::m.n.relays/item]}
      (try
-       (let [updated-node (a.n.relay-subscriptions/do-fetch! props)]
+       (let [updated-node (a.n.subscription-pubkeys/do-fetch! props)]
          {::mu/status       :ok
           ::m.n.relays/item updated-node})
        (catch Exception ex

@@ -22,6 +22,17 @@
     (log/info :create-record/finished {:id id})
     id))
 
+(>defn find-by-hex
+  [hex]
+  [::m.n.pubkeys/hex => (? ::m.n.pubkeys/id)]
+  (let [db    (c.xtdb/main-db)
+        query '[:find ?e
+                :in [[?hex]]
+                :where [?e ::m.n.pubkeys/hex ?hex]]
+        result (xt/q db query [hex])
+        id (ffirst result)]
+    id))
+
 (>defn register-pubkey
   [hex]
   [::m.n.pubkeys/hex => ::m.n.pubkeys/id]
@@ -54,3 +65,14 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
+
+(defn update!
+  [id data]
+  (log/info :update!/starting {:id id :data data})
+  (let [node   (c.xtdb/main-node)
+        db     (c.xtdb/main-db)
+        old    (xt/pull db '[*] id)
+        params (merge old data)
+        tx     (xt/submit-tx node [[::xt/put params]])]
+    (xt/await-tx node tx)
+    id))

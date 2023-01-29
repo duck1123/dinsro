@@ -8,7 +8,6 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
    #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
-   ;; #?(:clj [dinsro.actions.nostr.subscriptions :as a.n.subscriptions])
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
