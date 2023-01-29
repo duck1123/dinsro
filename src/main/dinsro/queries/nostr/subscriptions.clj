@@ -55,11 +55,13 @@
 (>defn read-record
   [id]
   [::m.n.subscriptions/id => (? ::m.n.subscriptions/item)]
+  (log/info :read-record/starting {:id id})
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
-    (log/info :read-record/starting {:record record})
     (when (get record ::m.n.subscriptions/id)
-      (dissoc record :xt/id))))
+      (let [read-record (dissoc record :xt/id)]
+        (log/info :read-record/read {:read-record read-record})
+        read-record))))
 
 (>defn find-by-relay-and-code
   [relay-id code]
