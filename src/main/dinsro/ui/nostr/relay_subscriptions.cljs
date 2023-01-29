@@ -19,21 +19,22 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)}
-   ro/columns           [m.n.subscriptions/code]
+   ro/columns           [m.n.subscriptions/code
+                         j.n.subscriptions/pubkey-count]
+   ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::m.c.nodes/id {:type :uuid :label "id"}
                          ::refresh      u.links/refresh-control}
-   ro/control-layout    {:action-buttons [::refresh]}
-   ro/source-attribute  ::j.n.subscriptions/index
-   ro/title             "Subscriptions"
    ro/row-pk            m.n.subscriptions/id
-   ro/run-on-mount?     true})
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.subscriptions/index
+   ro/title             "Subscriptions"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
    :route-segment     ["subscriptions"]}
   ((comp/factory Report) report))

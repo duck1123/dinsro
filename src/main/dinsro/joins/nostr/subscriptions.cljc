@@ -25,4 +25,14 @@
      (let [ids #?(:clj (q.n.subscriptions/index-ids) :cljs [])]
        {::admin-index (m.n.subscriptions/idents ids)}))})
 
-(def attributes [admin-index index])
+(defattr pubkey-count ::pubkey-count :int
+  {ao/identities #{::m.n.subscriptions/id}
+   ao/pc-resolve
+   (fn [env params]
+     (log/info :pubkey-count/query {:query (:query-params env)})
+     (log/info :pubkey-count/s {:keys (keys env)})
+     (log/info :pubkey-count/starting {:env env
+                                       :params params})
+     {::pubkey-count 1})})
+
+(def attributes [admin-index index pubkey-count])

@@ -139,8 +139,7 @@
                 (let [parsed (parse-content content)]
                   (log/info :start-pubkey-listener!/parsed {:parsed parsed})
                   (q.n.pubkeys/update! pubkey-id parsed))
-                (throw (RuntimeException. "failed to find pubkey"))
-                ))))
+                (throw (RuntimeException. "failed to find pubkey"))))))
 
         (recur))
       (do
