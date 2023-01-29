@@ -4,7 +4,8 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.ui.nostr.events :as u.n.events]
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
-   [dinsro.ui.nostr.relays :as u.n.relays]))
+   [dinsro.ui.nostr.relays :as u.n.relays]
+   [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]))
 
 (defrouter Router
   [_this _props]
@@ -13,6 +14,7 @@
     u.n.relays/Show
     u.n.pubkeys/Report
     u.n.pubkeys/Show
+    u.n.subscriptions/Report
     u.n.events/Report]})
 
 (def ui-router (comp/factory Router))

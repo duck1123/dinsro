@@ -10,6 +10,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
@@ -88,9 +89,20 @@
   [::m.n.pubkeys/id => ds/channel?]
   (update-pubkey! pubkey-id))
 
-(defn register-subscription!
+(>defn register-subscription!
   [relay-id pubkey-id]
-  (log/info :register-subscription!/starting {:relay-id relay-id :pubkey-id pubkey-id}))
+  [::m.n.relays/id ::m.n.pubkeys/id => any?]
+  (log/info :register-subscription!/starting {:relay-id relay-id :pubkey-id pubkey-id})
+  (if-let [subscription-id (q.n.subscriptions/find-by-relay-and-pubkey relay-id pubkey-id)]
+    (do
+      (log/info :register-subscription!/found {:subscription-id subscription-id})
+      subscription-id)
+    (do
+      (log/info :register-subscription!/not-found {})
+      (let [params          {}
+            subscription-id (q.n.subscriptions/create-record params)]
+        (log/info :register-subscription!/created {:subscription-id subscription-id})
+        subscription-id))))
 
 (defn do-subscribe!
   [props]

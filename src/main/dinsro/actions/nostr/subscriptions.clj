@@ -3,6 +3,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [lambdaisland.glogc :as log]))
 
+;; [[../../queries/nostr/subscriptions.clj]]
+
 (>defn register-subscription!
   [relay-id code]
   [any? any? => any?]

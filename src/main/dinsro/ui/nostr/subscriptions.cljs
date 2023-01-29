@@ -8,11 +8,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns           [m.n.subscriptions/id]
-   ro/control-layout    {:action-buttons [::new ::refresh]}
-   ro/controls          {::refresh u.links/refresh-control}
-   ro/source-attribute  ::j.n.subscriptions/index
-   ro/title             "Subscriptions Report"
-   ro/row-pk            m.n.subscriptions/id
-   ro/run-on-mount?     true
-   ro/route             "subscriptions"})
+  {ro/columns          [m.n.subscriptions/id]
+   ro/control-layout   {:action-buttons [::new ::refresh]}
+   ro/controls         {::refresh u.links/refresh-control}
+   ro/source-attribute ::j.n.subscriptions/index
+   ro/title            "Subscriptions"
+   ro/row-pk           m.n.subscriptions/id
+   ro/run-on-mount?    true
+   ro/route            "subscriptions"})
