@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   #?(:clj [dinsro.queries.nostr.pubkeys :as q.n.pubkeys])
    #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -29,10 +30,14 @@
   {ao/identities #{::m.n.subscriptions/id}
    ao/pc-input   #{::m.n.subscriptions/id}
    ao/pc-resolve
-   (fn [env params]
+   (fn [_env params]
      (log/info :pubkey-count/starting {:params params})
      (let [subscription-id (::m.n.subscriptions/id params)
-           pubkeys         (q.n.pubkeys/find-by-subscription subscription-id)]
+           pubkeys         #?(:clj (q.n.pubkeys/find-by-subscription subscription-id)
+                              :cljs
+                              (do
+                                (comment subscription-id)
+                                []))]
        {::pubkey-count (count pubkeys)}))})
 
 (def attributes [admin-index index pubkey-count])
