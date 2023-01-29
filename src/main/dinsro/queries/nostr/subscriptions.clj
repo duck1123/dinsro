@@ -6,6 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
@@ -27,12 +28,14 @@
 (>defn find-by-relay-and-pubkey
   [relay-id pubkey-id]
   [::m.n.relays/id ::m.n.pubkeys/id => (? ::m.n.subscriptions/id)]
-  (log/info :find/starting {:relay-id relay-id :pubkey-id pubkey-id})
+  (log/info :find-by-relay-and-pubkey/starting {:relay-id relay-id :pubkey-id pubkey-id})
   (let [db      (c.xtdb/main-db)
         query   '{:find  [?subscription-id]
                   :in    [[?relay-id ?pubkey-id]]
-                  :where [[?relay-id ::m.n.relays/address ?address]]}
+                  :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
+                          [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
+                          [?subscription-id ::m.n.subscriptions/relay ?relay-id]]}
         results (xt/q db query [relay-id pubkey-id])
         id      (ffirst results)]
-    (log/info :find/finished {:id id :results results})
+    (log/info :find-by-relay-and-pubkey/finished {:id id :results results})
     id))

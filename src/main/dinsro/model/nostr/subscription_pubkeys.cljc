@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]))
 
 ;; [[./pubkeys.cljc][Pubkeys Model]]
@@ -16,28 +17,30 @@
   {ao/identity? true
    ao/schema    :production})
 
-(>def ::code string?)
-(defattr code ::code :string
-  {ao/identities #{::id}
-   ao/schema     :production})
-
 (>def ::subscription uuid?)
 (defattr subscription ::subscription :ref
   {ao/identities       #{::id}
    ao/target           ::m.n.subscriptions/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.subscriptions/id ::m.n.subscriptions/code]}})
+   ::report/column-EQL {::subscription [::m.n.subscriptions/id ::m.n.subscriptions/code]}})
 
-(s/def ::required-params (s/keys :req [::code ::relay]))
-(s/def ::params (s/keys :req [::code ::relay]))
-(s/def ::item (s/keys :req [::id ::code ::relay]))
-(s/def ::items (s/coll-of ::item))
+(>def ::pubkey uuid?)
+(defattr pubkey ::pubkey :ref
+  {ao/identities       #{::id}
+   ao/target           ::m.n.pubkeys/id
+   ao/schema           :production
+   ::report/column-EQL {::pubkey [::m.n.subscriptions/id ::m.n.subscriptions/code]}})
 
+(>def ::required-params (s/keys :req [::subscription ::pubkey]))
+(>def ::params (s/keys :req [::subscription ::pubkey]))
+(>def ::item (s/keys :req [::id ::subscription ::pubkey]))
+(>def ::items (s/coll-of ::item))
 (>def ::ident (s/keys :req [::id]))
+
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn ident-item [item] [::item => ::ident] (select-keys item [::id]))
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id code subscription])
+(def attributes [id pubkey subscription])
 
 #?(:clj (def resolvers []))
