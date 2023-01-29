@@ -90,13 +90,13 @@
 
 (defn find-pubkeys-by-subscription
   [subscription-id]
-  (log/info :index-by-relay/starting {:subscription-id subscription-id})
+  (log/info :find-pubkeys-by-subscription/starting {:subscription-id subscription-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?pubkey]
                 :in    [[?subscription-id]]
                 :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
                         [?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
                         [?pubkey-id ::m.n.pubkeys/hex ?pubkey]]}
-        ids   (map first (xt/q db query [subscription-id]))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+        pubkeys   (map first (xt/q db query [subscription-id]))]
+    (log/info :find-pubkeys-by-subscription/finished {:pubkeys pubkeys})
+    pubkeys))

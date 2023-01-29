@@ -1,6 +1,6 @@
 (ns dinsro.actions.nostr.subscriptions
   (:require
-   [clojure.data.json :as json]
+   ;; [clojure.data.json :as json]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -43,7 +43,7 @@
                 (log/info :fetch!/client-found {:client client})
                 (let [pubkeys (q.n.subscription-pubkeys/find-pubkeys-by-subscription subscription-id)]
                   (log/info :fetch!/pubkeys-read {:pubkeys pubkeys})
-                  (let [message (json/json-str (a.n.relay-client/adhoc-request pubkeys))]
+                  (let [message {:authors pubkeys :kinds [0]}]
                     (log/info :fetch!/message-prepared {:message message})
                     (a.n.relay-client/send! client "adhoc" message))))))
           (throw (RuntimeException. "failed to find relay")))))
