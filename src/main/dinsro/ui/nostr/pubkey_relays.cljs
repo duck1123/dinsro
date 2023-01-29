@@ -17,7 +17,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.relays/address]
+  {ro/columns          [m.n.relays/address j.n.relays/subscription-count]
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}

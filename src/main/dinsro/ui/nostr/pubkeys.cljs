@@ -18,7 +18,6 @@
 
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 
-
 (defrouter Router
   [_this _props]
   {:router-targets
@@ -62,7 +61,10 @@
             (dom/dt {} "Name")
             (dom/dd {} (str name))
             (dom/dt {} "Picture")
-            (dom/dd {} (str picture)))
+            (dom/dd {} (when picture
+                         (dom/img {:src (str picture)
+                                   :width 200
+                                   :height 200}))))
           (dom/button
             {:classes [:.ui.button]
              :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
