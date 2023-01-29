@@ -12,7 +12,6 @@
 ;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
 ;; [[../../ui/nostr/subscriptions.cljs][Subscription UI]]
 
-
 (>defn register-subscription!
   [relay-id code]
   [any? any? => any?]
@@ -23,9 +22,20 @@
     (log/info :register-subscription!/created {:subscription-id subscription-id})
     subscription-id))
 
-(defn fetch!
+(>defn fetch!
   [subscription-id]
-  (log/info :fetch!/starting {:subscription-id subscription-id}))
+  [::m.n.subscriptions/id => nil?]
+  (log/info :fetch!/starting {:subscription-id subscription-id})
+  (if-let [subscription (q.n.subscriptions/read-record subscription-id)]
+    (do
+      (log/info :fetch!/subscription-found {:subscription subscription})
+      (let [relay-id (::m.n.subscriptions/relay subscription)]
+        (if-let [relay (q.n.relays/read-record relay-id)]
+          (do
+            (log/info :fetch!/relay-found {:relay relay})
+            nil)
+          (throw (RuntimeException. "failed to find relay")))))
+    (throw (RuntimeException. "failed to find subscription"))))
 
 (comment
   (q.n.relays/delete-all)

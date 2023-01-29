@@ -4,6 +4,7 @@
    [clojure.data.json :as json]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.contacts :as a.contacts]
+   [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys]
    [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
@@ -45,7 +46,7 @@
 (>defn send-adhoc-request
   [client hex]
   [any? ::m.n.pubkeys/hex => any?]
-  (let [msg (json/json-str (a.n.relays/adhoc-request [hex]))]
+  (let [msg (json/json-str (a.n.relay-client/adhoc-request [hex]))]
     (ws/send! client msg)))
 
 (>defn poll!
@@ -53,7 +54,7 @@
   [::m.n.relays/id => any?]
   (let [relay   (q.n.relays/read-record relay-id)
         address (::m.n.relays/address relay)
-        chan    (a.n.relays/get-channel address)]
+        chan    (a.n.relay-client/get-channel address)]
     (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
 
 (>defn parse-content
@@ -132,7 +133,7 @@
 
   (def duck-content "{\"name\":\"dinsro\",\"about\":\"sats-first budget management\\n\\nhttps://github.com/duck1123/dinsro\",\"nip05\":\"dinsro@detbtc.com\",\"lud06\":\"lnurl1dp68gurn8ghj7cm0d9hx7uewd9hj7tnhv4kxctttdehhwm30d3h82unvwqhkgatrdvrwrevc\",\"lud16\":\"duck@coinos.io\",\"picture\":\"https://void.cat/d/JpoHXq8TQNpB7H6oCpTz6J\",\"website\":\"https://dinsro.com/\"}")
 
-  a.n.relays/connections
+  a.n.relay-client/connections
 
   (a.n.relays/disconnect! relay-id)
 
@@ -157,7 +158,7 @@
   (send-adhoc-request client a.contacts/duck)
   (send-adhoc-request client a.contacts/matt-odell)
 
-  (ws/send! client (json/json-str (a.n.relays/adhoc-request [a.contacts/duck])))
+  (ws/send! client (json/json-str (a.n.relay-client/adhoc-request [a.contacts/duck])))
 
   (async/poll! (a.n.relays/process-messages chan))
 
@@ -167,6 +168,6 @@
 
   chan
 
-  a.n.relays/connections
+  a.n.relay-client/connections
 
   nil)

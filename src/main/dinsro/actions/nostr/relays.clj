@@ -2,8 +2,8 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
+   [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
@@ -21,80 +21,6 @@
 (>def ::client any?)
 
 (def req-id "5022")
-
-(defonce connections (atom {}))
-
-(>defn handle-message
-  [chan _ws msg _last?]
-  [ds/channel? any? any? any? => any?]
-  (let [msg-str (str msg)
-        o       (json/read-str msg-str)]
-    (log/debug :handle-message/received {:o o})
-    (async/put! chan o)))
-
-(>defn on-message
-  "Takes a chan, returns a message handler"
-  [chan]
-  [ds/channel? => any?]
-  (partial handle-message chan))
-
-(>defn on-close
-  [chan]
-  [ds/channel? => any?]
-  (fn [_ws _status _reason]
-    (log/info :on-closed/received {})
-    (async/close! chan)))
-
-(>defn adhoc-request
-  [author-ids]
-  [(s/coll-of string?) => any?]
-  (let [id req-id]
-    ["REQ" (str "adhoc " id)
-     {:authors author-ids
-      :kinds   [0]}]))
-
-(>defn get-client
-  [chan url]
-  [ds/channel? string? => any?]
-  (if-let [existing-connection (get @connections url)]
-    (do
-      (log/info :get-client/cached {:url url})
-      (:client existing-connection))
-    (do
-      (log/info :get-client/opening {:url url})
-      (let [client @(ws/websocket url
-                                  {:on-message (on-message chan)
-                                   :on-close   (on-close chan)})]
-        (swap! connections assoc url {:client client :chan chan})
-        client))))
-
-(>defn get-channel
-  "Returns a channel for a relay address"
-  [address]
-  [string? => ds/channel?]
-  (if-let [item (get @connections address)]
-    (:chan item)
-    (throw (RuntimeException. "No channel"))))
-
-(>defn get-client-for-id
-  ([relay-id]
-   [::m.n.relays/id => any?]
-   (get-client-for-id relay-id true))
-  ([relay-id create-if-missing?]
-   [::m.n.relays/id boolean? => (? ::client)]
-   (let [relay                         (q.n.relays/read-record relay-id)
-         {::m.n.relays/keys [address]} relay]
-     (if create-if-missing?
-       (let [chan   (async/chan)
-             client (get-client chan address)]
-         client)
-       (if-let [client (get-in @connections [address :client])]
-         (do
-           (log/info :get-client-for-id/cached {:client client})
-           client)
-         (do
-           (log/info :get-client-for-id/missing {})
-           nil))))))
 
 (defn handle-event
   [req-id evt]
@@ -150,6 +76,24 @@
       (log/info :process-messages/finished {:message message})
       message)))
 
+(>defn get-client-for-id
+  ([relay-id]
+   [::m.n.relays/id => any?]
+   (get-client-for-id relay-id true))
+  ([relay-id create-if-missing?]
+   [::m.n.relays/id boolean? => (? ::client)]
+   (if-let [relay (q.n.relays/read-record relay-id)]
+     (let [address (::m.n.relays/address relay)]
+       (if create-if-missing?
+         (let [chan (async/chan)]
+           (if-let [client (a.n.relay-client/get-client chan address)]
+             client
+             (throw (RuntimeException. "Failed to create client"))))
+         (if-let [client (a.n.relay-client/get-client-for-address address)]
+           client
+           (throw (RuntimeException. "Failed to find client")))))
+     (throw (RuntimeException. "Failed to find relay")))))
+
 (def timeout-time 10000)
 
 (>defn take-timeout
@@ -173,10 +117,9 @@
   (let [relay      (q.n.relays/read-record relay-id)
         address    (::m.n.relays/address relay)
         client     (get-client-for-id relay-id)
-        chan       (get-channel address)
-        request-id "adhoc1"
-        message    (json/json-str ["REQ" request-id body])]
-    (ws/send! client message)
+        chan       (a.n.relay-client/get-channel address)
+        request-id "adhoc1"]
+    (a.n.relay-client/send! client request-id body)
     chan))
 
 (>defn connect!
@@ -190,7 +133,7 @@
     (let [relay   (q.n.relays/read-record relay-id)
           address (::m.n.relays/address relay)
           client  (get-client-for-id relay-id)
-          channel (get-channel address)]
+          channel (a.n.relay-client/get-channel address)]
       (log/info :connect!/got-client {:client client})
       (async/go-loop []
         (if-let [msg (async/<! channel)]
@@ -212,7 +155,7 @@
         url      (::m.n.relays/address relay)
         client   (get-client-for-id relay-id false)]
     (ws/close! client)
-    (swap! connections dissoc url)
+    (swap! a.n.relay-client/connections dissoc url)
     (log/info :disconnect!/finished {:response response :client client})
     response))
 
