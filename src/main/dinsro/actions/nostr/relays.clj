@@ -139,6 +139,11 @@
         (if-let [msg (async/<! channel)]
           (do
             (log/info :connect!/got-message {:msg msg})
+            (let [[event-type code body] msg]
+              (log/info :connect!/parsed {:event-type event-type
+                                          :code       code
+                                          :body       body}))
+
             (recur))
           (do
             (log/info :connect!/no-message {})
