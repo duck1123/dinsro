@@ -20,14 +20,15 @@
       (let [relay-id (::m.n.subscriptions/relay record)]
         (if-let [sp-id (q.n.subscription-pubkeys/index-by-relay relay-id)]
           (do
-            (log/info :register-subscription!/sp-exists {})
+            (log/info :register-subscription!/sp-exists {:sp-id sp-id})
             sp-id)
           (do
             (log/info :register-subscription!/sp-not-exists {})
             (let [params {::m.n.subscription-pubkeys/relay        relay-id
                           ::m.n.subscription-pubkeys/subscription subscription-id}]
-              (q.n.subscription-pubkeys/create-record params))))))
-
+              (if-let [sp-id (q.n.subscription-pubkeys/create-record params)]
+                sp-id
+                (throw (RuntimeException. "failed"))))))))
     (do
       (log/info :register-subscription!/not-exists {})
       (throw (RuntimeException. "Not exists")))))
