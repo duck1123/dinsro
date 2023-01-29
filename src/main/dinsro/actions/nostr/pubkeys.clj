@@ -8,6 +8,7 @@
    [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
@@ -99,7 +100,9 @@
       subscription-id)
     (do
       (log/info :register-subscription!/not-found {})
-      (let [params          {}
+      (let [code            "adhoc"
+            params          {::m.n.subscriptions/code  code
+                             ::m.n.subscriptions/relay relay-id}
             subscription-id (q.n.subscriptions/create-record params)]
         (log/info :register-subscription!/created {:subscription-id subscription-id})
         subscription-id))))
