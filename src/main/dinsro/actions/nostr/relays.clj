@@ -186,11 +186,20 @@
   (log/info :connect!/starting {:relay-id relay-id})
   (let [response (q.n.relays/set-connected relay-id true)]
     (log/info :connect!/finished {:response response})
-
     ;; initialize client
-    (let [client (get-client-for-id relay-id)]
-      (log/info :connect!/got-client {:client client}))
-
+    (let [relay   (q.n.relays/read-record relay-id)
+          address (::m.n.relays/address relay)
+          client  (get-client-for-id relay-id)
+          channel (get-channel address)]
+      (log/info :connect!/got-client {:client client})
+      (async/go-loop []
+        (if-let [msg (async/<! channel)]
+          (do
+            (log/info :connect!/got-message {:msg msg})
+            (recur))
+          (do
+            (log/info :connect!/no-message {})
+            nil))))
     response))
 
 (>defn disconnect!
