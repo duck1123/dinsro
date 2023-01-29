@@ -18,25 +18,22 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.subscriptions/code]
-   ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
-                        ::refresh      u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/source-attribute ::j.n.subscriptions/index
-   ro/title            "Subscriptions"
-   ro/row-pk           m.n.subscriptions/id
-   ro/run-on-mount?    true})
-
-(def ui-report (comp/factory Report))
+  {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)}
+   ro/columns           [m.n.subscriptions/code]
+   ro/controls          {::m.c.nodes/id {:type :uuid :label "id"}
+                         ::refresh      u.links/refresh-control}
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/source-attribute  ::j.n.subscriptions/index
+   ro/title             "Subscriptions"
+   ro/row-pk            m.n.subscriptions/id
+   ro/run-on-mount?     true})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["subscriptions"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
+   :route-segment     ["subscriptions"]}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))

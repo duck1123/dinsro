@@ -13,6 +13,7 @@
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]))
 
 ;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
+;; [[../../model/nostr/subscriptions.cljc][Subscriptions Model]]
 
 (report/defsc-report Report
   [_this _props]
@@ -41,14 +42,18 @@
     :route "dinsro.ui.nostr.subscription-pubkeys/SubPage"}])
 
 (defsc Show
-  [_this {::m.n.subscriptions/keys [id]
+  [_this {::m.n.subscriptions/keys [id code relay]
           :ui/keys                 [router]
           :as                      props}]
   {:ident         ::m.n.subscriptions/id
-   :initial-state {::m.n.subscriptions/id nil
-                   :ui/router             {}}
+   :initial-state {::m.n.subscriptions/id    nil
+                   ::m.n.subscriptions/code  ""
+                   ::m.n.subscriptions/relay {}
+                   :ui/router                {}}
    :pre-merge     (u.links/page-merger ::m.n.subscriptions/id {:ui/router Router})
    :query         [::m.n.subscriptions/id
+                   ::m.n.subscriptions/code
+                   {::m.n.subscriptions/relay (comp/get-query u.links/RelayLinkForm)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["subscription" :id]
    :will-enter    (partial u.links/page-loader ::m.n.subscriptions/id ::Show)}
@@ -56,7 +61,11 @@
     (let [{:keys [main _sub]} (css/get-classnames Show)]
       (dom/div {:classes [main]}
         (dom/div :.ui.segment
-          (dom/dl {}))
+          (dom/dl {}
+            (dom/dt {} "code")
+            (dom/dd {} code)
+            (dom/dt {} "relay")
+            (dom/dd {} (u.links/ui-relay-link relay))))
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (eb/error-boundary
          (if router

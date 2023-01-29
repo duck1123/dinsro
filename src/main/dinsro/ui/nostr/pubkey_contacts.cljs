@@ -19,6 +19,7 @@
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
    ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Contacts"
    ro/row-pk           m.n.pubkeys/id
@@ -31,7 +32,7 @@
   {:query             [{:ui/report (comp/get-query Report)}
                        [::dr/id router-key]]
    :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["relays"]
+   :route-segment     ["contacts"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))
