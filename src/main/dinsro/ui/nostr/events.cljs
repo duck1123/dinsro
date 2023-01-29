@@ -45,7 +45,7 @@
    ro/title            "Events Report"})
 
 (defsc Show
-  [_this {:as _props}]
+  [_this _props]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id nil}
    :query         [::m.n.events/id]

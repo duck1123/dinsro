@@ -38,8 +38,8 @@
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]}
   ((comp/factory Report) report))
 
