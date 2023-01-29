@@ -23,6 +23,10 @@
     (log/info :register-subscription!/created {:subscription-id subscription-id})
     subscription-id))
 
+(defn fetch!
+  [subscription-id]
+  (log/info :fetch!/starting {:subscription-id subscription-id}))
+
 (comment
   (q.n.relays/delete-all)
 

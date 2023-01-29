@@ -4,9 +4,11 @@
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
+   [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
@@ -240,12 +242,20 @@
 
 (>defn do-fetch!
   "Handler for fetch! mutation"
-  [{::m.n.relays/keys [id]}]
+  [{relay-id ::m.n.relays/id}]
   [::m.n.relays/ident => ::m.n.relays/item]
-  (log/info :do-fetch!/starting {:id id})
-  (let [updated-node (q.n.relays/read-record id)]
-    (connect! id)
-    updated-node))
+  (log/info :do-fetch!/starting {:relay-id relay-id})
+  (let [updated-node (q.n.relays/read-record relay-id)]
+    (connect! relay-id)
+    (let [subscription-ids (q.n.subscriptions/index-ids)]
+      (doseq [subscription-id subscription-ids]
+        (log/info :do-fetch!/processing-subscription {:subscription-id subscription-id})
+        (if-let [subscription (q.n.subscriptions/read-record subscription-id)]
+          (do
+            (log/info :do-fetch!/subscription-read {:subscription subscription})
+            (a.n.subscriptions/fetch! subscription-id))
+          (throw (RuntimeException. "Failed to find subscription"))))
+      updated-node)))
 
 (comment
 
