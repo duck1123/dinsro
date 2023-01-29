@@ -9,6 +9,7 @@
    [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
@@ -16,6 +17,14 @@
 
 (def ident-key ::m.n.subscriptions/id)
 (def router-key :dinsro.ui.nostr.subscriptions/Router)
+
+(def delete-action-button
+  {:type   :button
+   :local? true
+   :label  "Delete"
+   :action (fn [this props]
+             (let [subscription-id (::m.n.subscriptions/id props)]
+               (comp/transact! this [(mu.n.subscription-pubkeys/delete! {::m.n.subscriptions/id subscription-id})])))})
 
 (report/defsc-report Report
   [_this _props]
@@ -28,6 +37,7 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/route             "subscription-pubkeys"
+   ro/row-actions       [delete-action-button]
    ro/row-pk            m.n.subscription-pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.subscription-pubkeys/index
