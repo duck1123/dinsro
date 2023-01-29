@@ -25,12 +25,14 @@
 (>defn find-by-hex
   [hex]
   [::m.n.pubkeys/hex => (? ::m.n.pubkeys/id)]
-  (let [db    (c.xtdb/main-db)
-        query '[:find ?e
-                :in [[?hex]]
-                :where [?e ::m.n.pubkeys/hex ?hex]]
+  (log/info :find-by-hex/starting {:hex hex})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?id]
+                 :in    [[?hex]]
+                 :where [[?id ::m.n.pubkeys/hex ?hex]]}
         result (xt/q db query [hex])
-        id (ffirst result)]
+        id     (ffirst result)]
+    (log/info :find-by-hex/finished {:id id})
     id))
 
 (>defn register-pubkey

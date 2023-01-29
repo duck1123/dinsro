@@ -52,12 +52,12 @@
   [address]
   [::m.n.relays/address => (? ::m.n.relays/id)]
   (log/info :find-by-address/starting {:address address})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?relay-id]
-                :in [[?address]]
-                :where [[?relay-id ::m.n.relays/address ?address]]}
+  (let [db      (c.xtdb/main-db)
+        query   '{:find  [?relay-id]
+                  :in    [[?address]]
+                  :where [[?relay-id ::m.n.relays/address ?address]]}
         results (xt/q db query [address])
-        id   (ffirst results)]
+        id      (ffirst results)]
     (log/info :find-by-address/finished {:id id :results results})
     id))
 
