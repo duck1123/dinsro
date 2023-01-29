@@ -34,6 +34,7 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -441,6 +442,15 @@
   (form-link this id address :dinsro.ui.nostr.relays/Show))
 
 (def ui-relay-link (comp/factory RelayLinkForm {:keyfn ::m.n.relays/id}))
+
+(form/defsc-form SubscriptionLinkForm [this {::m.n.subscriptions/keys [id code] :as props}]
+  {fo/id           m.n.subscriptions/id
+   fo/route-prefix "subscription-link"
+   fo/attributes   [m.n.subscriptions/code]}
+  (log/info :SubscriptionLinkForm/starting {:props props})
+  (form-link this id code :dinsro.ui.nostr.subscriptions/Show))
+
+(def ui-subscription-link (comp/factory RelayLinkForm {:keyfn ::m.n.subscriptions/id}))
 
 (form/defsc-form TransactionLinkForm [this {::m.transactions/keys [id description]}]
   {fo/id         m.transactions/id

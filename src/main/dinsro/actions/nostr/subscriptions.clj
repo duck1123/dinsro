@@ -10,6 +10,7 @@
 ;; [[../../actions/nostr/relays.clj][Relay Actions]]
 ;; [[../../model/nostr/subscriptions.cljc][Subscriptions Model]]
 ;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
+;; [[../../ui/nostr/subscriptions.cljs][Subscription UI]]
 
 
 (>defn register-subscription!

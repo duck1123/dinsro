@@ -14,19 +14,19 @@
 
 ;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
 
-
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.subscriptions/id
-                        m.n.subscriptions/code
-                        m.n.subscriptions/relay]
-   ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::refresh u.links/refresh-control}
-   ro/route            "subscriptions"
-   ro/row-pk           m.n.subscriptions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.subscriptions/index
-   ro/title            "Subscriptions"})
+  {ro/column-formatters {::m.n.subscriptions/code  #(u.links/ui-subscription-link %3)
+                         ::m.n.subscriptions/relay #(u.links/ui-relay-link %2)}
+   ro/columns           [m.n.subscriptions/code
+                         m.n.subscriptions/relay]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/route             "subscriptions"
+   ro/row-pk            m.n.subscriptions/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.subscriptions/index
+   ro/title             "Subscriptions"})
 
 (defrouter Router
   [_this _props]
@@ -57,7 +57,6 @@
       (dom/div {:classes [main]}
         (dom/div :.ui.segment
           (dom/dl {}))
-
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (eb/error-boundary
          (if router
