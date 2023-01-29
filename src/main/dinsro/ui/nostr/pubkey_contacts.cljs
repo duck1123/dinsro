@@ -15,7 +15,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/hex]
+  {ro/columns          [m.n.pubkeys/hex m.n.pubkeys/name m.n.pubkeys/picture]
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}

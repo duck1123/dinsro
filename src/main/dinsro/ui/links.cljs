@@ -444,21 +444,18 @@
 
 (def ui-relay-link (comp/factory RelayLinkForm {:keyfn ::m.n.relays/id}))
 
-(form/defsc-form SubscriptionLinkForm [this {::m.n.subscriptions/keys [id code] :as props}]
+(form/defsc-form SubscriptionLinkForm [this {::m.n.subscriptions/keys [id code]}]
   {fo/id           m.n.subscriptions/id
    fo/route-prefix "subscription-link"
    fo/attributes   [m.n.subscriptions/code]}
-  (log/info :SubscriptionLinkForm/starting {:props props})
   (form-link this id code :dinsro.ui.nostr.subscriptions/Show))
 
 (def ui-subscription-link (comp/factory SubscriptionLinkForm {:keyfn ::m.n.subscriptions/id}))
 
-(form/defsc-form SubscriptionPubkeyLinkForm [this {::m.n.subscription-pubkeys/keys
-                                                   [id] :as props}]
+(form/defsc-form SubscriptionPubkeyLinkForm [this {::m.n.subscription-pubkeys/keys [id]}]
   {fo/id           m.n.subscription-pubkeys/id
    fo/route-prefix "subscription-pubkey-link"
    fo/attributes   [m.n.subscription-pubkeys/id]}
-  (log/info :SubscriptionLinkForm/starting {:props props})
   (form-link this id (str id) :dinsro.ui.nostr.subscription-pubkeys/Show))
 
 (def ui-subscription-pubkey-link

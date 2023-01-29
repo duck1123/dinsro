@@ -102,7 +102,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/hex]
+  {ro/columns          [m.n.pubkeys/hex m.n.pubkeys/name m.n.pubkeys/picture]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}

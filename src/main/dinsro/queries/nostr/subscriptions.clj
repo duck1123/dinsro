@@ -75,3 +75,15 @@
         id    (ffirst (xt/q db query [relay-id code]))]
     (log/info :find-by-relay-and-code/finished {:id id})
     id))
+
+(>defn find-by-relay
+  [relay-id]
+  [::m.n.relays/id => (? ::m.n.subscriptions/id)]
+  (log/info :find-by-relay/starting {:relay-id relay-id})
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?id]
+                :in    [[?relay-id]]
+                :where [[?id ::m.n.subscriptions/relay ?relay-id]]}
+        ids    (map first (xt/q db query [relay-id]))]
+    (log/info :find-by-relay/finished {:ids ids})
+    ids))
