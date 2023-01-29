@@ -6,24 +6,21 @@
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
-   [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys]
-   [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
-   [dinsro.queries.nostr.subscription-pubkeys :as q.n.subscription-pubkeys]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
-;; [[../../joins/nostr/pubkeys.cljc][Joins]]
-;; [[../../model/nostr/pubkeys.cljc][Model]]
-;; [[../../queries/nostr/pubkeys.clj][Queries]]
-;; [[../../ui/nostr/pubkeys.cljs][UI]]
+;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
+;; [[../../model/nostr/pubkeys.cljc][Pubkey Model]]
+;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
+;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
+;; [[../../ui/nostr/pubkeys.cljs][Pubkey UI]]
 
 
 (>defn fetch-pubkey!
@@ -112,19 +109,25 @@
         (log/info :register-subscription!/created {:subscription-id subscription-id})
         subscription-id))))
 
-(defn do-subscribe!
-  [props]
-  (log/info :do-subscribe!/starting {:props props})
-  (let [relay-id        (::m.n.relays/id props)
-        pubkey-id       (::m.n.pubkeys/id props)
-        subscription-id (a.n.subscriptions/register-subscription! relay-id "adhoc")]
-    (log/info :do-subscribe!/subscription-registered {:subscription-id subscription-id})
-    (let [sp-id (a.n.subscription-pubkeys/register-subscription! subscription-id pubkey-id)]
-      (log/info :do-subscribe!/sp-registered {:sp-id sp-id})
-      (let [item (q.n.subscription-pubkeys/read-record sp-id)]
-        (log/info :do-subscribe!/parsed {:subscription-id subscription-id :sp-id sp-id})
-        {:status                         "ok"
-         ::m.n.subscription-pubkeys/item item}))))
+(defn start-pubkey-listener!
+  [channel]
+  (log/info :start-pubkey-listener!/starting {})
+  (async/go-loop []
+    (if-let [msg (async/<! channel)]
+      (do
+        (log/info :start-pubkey-listener!/got-message {:msg msg})
+        (let [[event-type code body] msg]
+          (log/info :start-pubkey-listener!/parsed {:event-type event-type
+                                                    :code       code
+                                                    :body       body})
+          (let [content (get body "content")]
+            (log/info :start-pubkey-listener!/content {:content content})
+            (let [parsed (parse-content content)]
+              (log/info :start-pubkey-listener!/parsed {:parsed parsed}))))
+        (recur))
+      (do
+        (log/info :start-pubkey-listener!/no-message {})
+        nil))))
 
 (comment
 

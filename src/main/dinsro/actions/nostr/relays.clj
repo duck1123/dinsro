@@ -4,19 +4,18 @@
    [clojure.data.json :as json]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
-   [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
-   [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
-;; [[../../joins/nostr/relays.cljc][Joins]]
-;; [[../../model/nostr/relays.cljc][Model]]
-;; [[../../queries/nostr/relays.clj][Queries]]
-;; [[../../ui/nostr/relays.cljs][UI]]
+;; [[../../joins/nostr/relays.cljc][Relay Joins]]
+;; [[../../model/nostr/relays.cljc][Relay Models]]
+;; [[../../mutations/nostr/relays.cljc][Relay Mutations]]
+;; [[../../queries/nostr/relays.clj][Relay Queries]]
+;; [[../../ui/nostr/relays.cljs][Relay UI]]
 
 (>def ::client any?)
 
@@ -66,7 +65,6 @@
       "EOSE"  (handle-eose req-id evt)
       (do
         (log/warn :parse-message/unknown-type {:type type})
-        #_(throw (RuntimeException. "Unknown type"))
         nil))))
 
 (defn process-messages
@@ -130,24 +128,8 @@
   (let [response (q.n.relays/set-connected relay-id true)]
     (log/info :connect!/finished {:response response})
     ;; initialize client
-    (let [relay   (q.n.relays/read-record relay-id)
-          address (::m.n.relays/address relay)
-          client  (get-client-for-id relay-id)
-          channel (a.n.relay-client/get-channel address)]
-      (log/info :connect!/got-client {:client client})
-      (async/go-loop []
-        (if-let [msg (async/<! channel)]
-          (do
-            (log/info :connect!/got-message {:msg msg})
-            (let [[event-type code body] msg]
-              (log/info :connect!/parsed {:event-type event-type
-                                          :code       code
-                                          :body       body}))
-
-            (recur))
-          (do
-            (log/info :connect!/no-message {})
-            nil))))
+    (let [client  (get-client-for-id relay-id)]
+      (log/info :connect!/got-client {:client client}))
     response))
 
 (>defn disconnect!
@@ -197,23 +179,6 @@
       {::mu/status       :ok
        ::m.n.relays/item relay})))
 
-(>defn do-fetch!
-  "Handler for fetch! mutation"
-  [{relay-id ::m.n.relays/id}]
-  [::m.n.relays/ident => ::m.n.relays/item]
-  (log/info :do-fetch!/starting {:relay-id relay-id})
-  (let [updated-node (q.n.relays/read-record relay-id)]
-    (connect! relay-id)
-    (let [subscription-ids (q.n.subscriptions/index-ids)]
-      (doseq [subscription-id subscription-ids]
-        (log/info :do-fetch!/processing-subscription {:subscription-id subscription-id})
-        (if-let [subscription (q.n.subscriptions/read-record subscription-id)]
-          (do
-            (log/info :do-fetch!/subscription-read {:subscription subscription})
-            (a.n.subscriptions/fetch! subscription-id))
-          (throw (RuntimeException. "Failed to find subscription"))))
-      updated-node)))
-
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
@@ -231,9 +196,5 @@
    (q.n.relays/index-ids)
    first
    q.n.relays/read-record)
-
-  ;; (async/<!! chan)
-
-  ;; (def content "")
 
   nil)

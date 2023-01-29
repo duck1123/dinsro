@@ -1,7 +1,9 @@
 (ns dinsro.actions.nostr.subscription-pubkeys
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
+   [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.queries.nostr.subscription-pubkeys :as q.n.subscription-pubkeys]
@@ -34,3 +36,17 @@
     (do
       (log/info :register-subscription!/not-exists {})
       (throw (RuntimeException. "Not exists")))))
+
+(defn do-subscribe!
+  [props]
+  (log/info :do-subscribe!/starting {:props props})
+  (let [relay-id        (::m.n.relays/id props)
+        pubkey-id       (::m.n.pubkeys/id props)
+        subscription-id (a.n.subscriptions/register-subscription! relay-id "adhoc")]
+    (log/info :do-subscribe!/subscription-registered {:subscription-id subscription-id})
+    (let [sp-id (register-subscription! subscription-id pubkey-id)]
+      (log/info :do-subscribe!/sp-registered {:sp-id sp-id})
+      (let [item (q.n.subscription-pubkeys/read-record sp-id)]
+        (log/info :do-subscribe!/parsed {:subscription-id subscription-id :sp-id sp-id})
+        {:status                         "ok"
+         ::m.n.subscription-pubkeys/item item}))))

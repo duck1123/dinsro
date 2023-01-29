@@ -7,11 +7,14 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
+   #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
+   ;; #?(:clj [dinsro.actions.nostr.subscriptions :as a.n.subscriptions])
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../model/nostr/relays.cljc][Relay Model]]
 ;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
 
@@ -100,7 +103,7 @@
      {::pc/params #{::m.n.pubkeys/id}
       ::pc/output [::status ::errors ::m.n.pubkeys/item]}
      (log/info :subscribe/starting {:props props})
-     (a.n.pubkeys/do-subscribe! props))
+     (a.n.subscription-pubkeys/do-subscribe! props))
 
    :cljs
    (fm/defmutation subscribe! [_props]

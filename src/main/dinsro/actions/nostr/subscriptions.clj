@@ -1,7 +1,7 @@
 (ns dinsro.actions.nostr.subscriptions
   (:require
-   ;; [clojure.data.json :as json]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
+   [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
@@ -12,6 +12,7 @@
 
 ;; [[../../actions/nostr/relays.clj][Relay Actions]]
 ;; [[../../model/nostr/subscriptions.cljc][Subscriptions Model]]
+;; [[../../mutations/nostr/subscriptions.cljc][Subscription Mutations]]
 ;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
 ;; [[../../ui/nostr/subscriptions.cljs][Subscription UI]]
 
@@ -39,7 +40,9 @@
             (log/info :fetch!/relay-found {:relay relay})
             (let [address (::m.n.relays/address relay)]
               (log/info :fetch!/relay-found2 {:address address})
-              (let [client (a.n.relay-client/get-client-for-address address)]
+              (let [client  (a.n.relay-client/get-client-for-address address)
+                    channel (a.n.relay-client/get-channel address)]
+                (a.n.pubkeys/start-pubkey-listener! channel)
                 (log/info :fetch!/client-found {:client client})
                 (let [pubkeys (q.n.subscription-pubkeys/find-pubkeys-by-subscription subscription-id)]
                   (log/info :fetch!/pubkeys-read {:pubkeys pubkeys})
