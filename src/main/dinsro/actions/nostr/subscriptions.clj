@@ -2,11 +2,15 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.queries.nostr.subscription-pubkeys :as q.n.subscription-pubkeys]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/relays.clj][Relay Actions]]
 ;; [[../../model/nostr/subscriptions.cljc][Subscriptions Model]]
 ;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
+
 
 (>defn register-subscription!
   [relay-id code]
@@ -19,10 +23,13 @@
     subscription-id))
 
 (comment
+  (def relay-id (first (q.n.relays/index-ids)))
+  relay-id
 
   (def subscription-id (first (q.n.subscriptions/index-ids)))
   subscription-id
 
   (q.n.subscriptions/read-record subscription-id)
+  (q.n.subscription-pubkeys/index-by-relay relay-id)
 
   nil)
