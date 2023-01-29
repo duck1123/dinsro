@@ -30,9 +30,9 @@
    ao/pc-input   #{::m.n.subscriptions/id}
    ao/pc-resolve
    (fn [env params]
-     (log/info :pubkey-count/query {:query (:query-params env)})
-     (log/info :pubkey-count/s {:keys (keys env)})
      (log/info :pubkey-count/starting {:params params})
-     {::pubkey-count 1})})
+     (let [subscription-id (::m.n.subscriptions/id params)
+           pubkeys         (q.n.pubkeys/find-by-subscription subscription-id)]
+       {::pubkey-count (count pubkeys)}))})
 
 (def attributes [admin-index index pubkey-count])

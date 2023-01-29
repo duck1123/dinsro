@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
@@ -78,3 +79,16 @@
         tx     (xt/submit-tx node [[::xt/put params]])]
     (xt/await-tx node tx)
     id))
+
+(defn find-by-subscription
+  [subscription-id]
+  (log/info :find-by-subscription/starting {:subscription-id subscription-id})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?pubkey-id]
+                 :in    [[?subscription-id]]
+                 :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
+                         [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]]}
+        result (xt/q db query [subscription-id])
+        ids    (map first result)]
+    (log/info :find-by-subscription/finished {:ids ids})
+    ids))
