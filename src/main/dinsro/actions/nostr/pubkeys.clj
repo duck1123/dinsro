@@ -97,7 +97,7 @@
 
 (>defn register-subscription!
   [relay-id pubkey-id]
-  [::m.n.relays/id ::m.n.pubkeys/id => any?]
+  [::m.n.relays/id ::m.n.pubkeys/id => ::m.n.subscriptions/id]
   (log/info :register-subscription!/starting {:relay-id relay-id :pubkey-id pubkey-id})
   (if-let [subscription-id (q.n.subscriptions/find-by-relay-and-pubkey relay-id pubkey-id)]
     (do
