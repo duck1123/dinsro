@@ -99,7 +99,8 @@
    (pc/defmutation subscribe! [_env props]
      {::pc/params #{::m.n.pubkeys/id}
       ::pc/output [::status ::errors ::m.n.pubkeys/item]}
-     (do-fetch! props))
+     (log/info :subscribe/starting {:props props})
+     (a.n.pubkeys/do-subscribe! props))
 
    :cljs
    (fm/defmutation subscribe! [_props]

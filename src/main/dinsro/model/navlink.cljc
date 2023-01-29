@@ -10,59 +10,47 @@
 (comment ::pc/_)
 
 (def links
-  {:accounts              ["Accounts"          "/accounts"         :dinsro.ui.accounts/Report]
-   :admin                 ["Admin"             "/admin/users"      :dinsro.ui.admin/AdminPage]
-   :categories            ["Categories"        "/categories"       :dinsro.ui.categories/Report]
-   :channels              ["Channels"          "/ln/channels"      :dinsro.ui.ln.channels/Report]
-   :core-addresses        ["Core Address"      "/core/addresses"   :dinsro.ui.core.addresses/Report]
-   :core-blocks           ["Core Blocks"       "/core/blocks"      :dinsro.ui.core.blocks/Report]
-   :core-chains           ["Chains"            "/core/chains"      :dinsro.ui.core.chains/Report]
-   :core-menu             ["Core"              "/core"             nil
-                           [:core-nodes
-                            :core-peers
-                            :core-blocks
-                            :core-transactions
-                            :core-addresses
-                            :core-chains
-                            :core-networks
-                            :wallets
-                            :words]]
-   :core-node-connections ["Connections"       "/core/connections"  :dinsro.ui.core.connections/Report]
-   :core-networks         ["Networks"          "/core/networks"     :dinsro.ui.core.networks/Report]
-   :core-nodes            ["Nodes"             "/core/nodes"        :dinsro.ui.core.nodes/Report]
-   :core-peers            ["Peers"             "/core/peers"        :dinsro.ui.core.peers/Report]
-   :core-transactions     ["Transactions"      "/core/transactions" :dinsro.ui.core.tx/Report]
-   :currencies            ["Currencies"        "/currencies"        :dinsro.ui.currencies/Report]
-   :home                  ["Home"              "/"                  :dinsro.ui.home/HomePage]
-   :invoices              ["Invoices"          "/ln/invoices"       :dinsro.ui.ln.invoices/Report]
-   :lightning-nodes       ["Lightning Nodes"   "/ln/nodes"          :dinsro.ui.ln.nodes/Report]
-   :ln-menu               ["LN"                "/ln"                nil
-                           [:lightning-nodes
-                            :ln-remote-nodes
-                            :peers
-                            :channels
-                            :invoices
-                            :payreqs
-                            :payments]]
-   :ln-remote-nodes       ["Remote Nodes"      "/ln/remote-nodes"  :dinsro.ui.ln.remote-nodes/Report]
-   :login                 ["Login"             "/login"            :dinsro.ui.login/LoginPage]
-   :nostr                 ["Nostr"             "/nostr"            nil
-                           [:nostr-relays :nostr-pubkeys :nostr-events]]
-   :nostr-pubkeys         ["Pubkeys"           "/pubkeys"          :dinsro.ui.nostr.pubkeys/Report]
-   :nostr-events          ["Events"            "/events"           :dinsro.ui.nostr.events/Report]
-   :nostr-relays          ["Relays"            "/relays"           :dinsro.ui.nostr.relays/Report]
-   :payments              ["Payments"          "/payments"         :dinsro.ui.ln.payments/Report]
-   :payreqs               ["Payreqs"           "/payreqs"          :dinsro.ui.ln.payreqs/Report]
-   :peers                 ["Peers"             "/ln/peers"         :dinsro.ui.ln.peers/Report]
-   :rates                 ["Rates"             "/rates"            :dinsro.ui.rates/Report]
-   :rate-sources          ["Rate Sources"      "/rate-sources"     :dinsro.ui.rate-sources/Report]
-   :registration          ["Registration"      "/register"         :dinsro.ui.registration/RegistrationPage]
-   :settings              ["Settings"          "/settings"         :dinsro.ui.settings/SettingsPage]
-   :transactions          ["Transactions"      "/transactions"     :dinsro.ui.transactions/Report]
-   :users                 ["Users"             "/users"            :dinsro.ui.users/Report]
-   :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/Report]
-   :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/Report]
-   :words                 ["Words"             "/core/words"       :dinsro.ui.core.words/Report]})
+  {:accounts              ["Accounts"         :dinsro.ui.accounts/Report]
+   :admin                 ["Admin"            :dinsro.ui.admin/AdminPage]
+   :categories            ["Categories"       :dinsro.ui.categories/Report]
+   :channels              ["Channels"         :dinsro.ui.ln.channels/Report]
+   :core-addresses        ["Core Address"     :dinsro.ui.core.addresses/Report]
+   :core-blocks           ["Core Blocks"      :dinsro.ui.core.blocks/Report]
+   :core-chains           ["Chains"           :dinsro.ui.core.chains/Report]
+   :core-menu             ["Core"             nil
+                           [:core-nodes :core-peers :core-blocks :core-transactions
+                            :core-addresses :core-chains :core-networks :wallets :words]]
+   :core-node-connections ["Connections"      :dinsro.ui.core.connections/Report]
+   :core-networks         ["Networks"         :dinsro.ui.core.networks/Report]
+   :core-nodes            ["Nodes"            :dinsro.ui.core.nodes/Report]
+   :core-peers            ["Peers"            :dinsro.ui.core.peers/Report]
+   :core-transactions     ["Transactions"     :dinsro.ui.core.tx/Report]
+   :currencies            ["Currencies"       :dinsro.ui.currencies/Report]
+   :home                  ["Home"             :dinsro.ui.home/HomePage]
+   :invoices              ["Invoices"         :dinsro.ui.ln.invoices/Report]
+   :lightning-nodes       ["Lightning Nodes"  :dinsro.ui.ln.nodes/Report]
+   :ln-menu               ["LN"               nil
+                           [:lightning-nodes :ln-remote-nodes :peers :channels :invoices :payreqs :payments]]
+   :ln-remote-nodes       ["Remote Nodes"     :dinsro.ui.ln.remote-nodes/Report]
+   :login                 ["Login"            :dinsro.ui.login/LoginPage]
+   :nostr                 ["Nostr"            nil
+                           [:nostr-relays :nostr-pubkeys :nostr-events :nostr-subscriptions]]
+   :nostr-pubkeys         ["Pubkeys"          :dinsro.ui.nostr.pubkeys/Report]
+   :nostr-events          ["Events"           :dinsro.ui.nostr.events/Report]
+   :nostr-relays          ["Relays"           :dinsro.ui.nostr.relays/Report]
+   :nostr-subscriptions   ["Subscriptions"    :dinsro.ui.nostr.subscriptions/Report]
+   :payments              ["Payments"         :dinsro.ui.ln.payments/Report]
+   :payreqs               ["Payreqs"          :dinsro.ui.ln.payreqs/Report]
+   :peers                 ["Peers"            :dinsro.ui.ln.peers/Report]
+   :rates                 ["Rates"            :dinsro.ui.rates/Report]
+   :rate-sources          ["Rate Sources"     :dinsro.ui.rate-sources/Report]
+   :registration          ["Registration"     :dinsro.ui.registration/RegistrationPage]
+   :settings              ["Settings"         :dinsro.ui.settings/SettingsPage]
+   :transactions          ["Transactions"     :dinsro.ui.transactions/Report]
+   :users                 ["Users"            :dinsro.ui.users/Report]
+   :wallets               ["Wallets"          :dinsro.ui.core.wallets/Report]
+   :wallet-addresses      ["Wallet Addresses" :dinsro.ui.core.wallet-addresses/Report]
+   :words                 ["Words"            :dinsro.ui.core.words/Report]})
 
 #?(:clj
    (pc/defresolver id
@@ -77,17 +65,11 @@
    ao/pc-output  [::name]
    ao/pc-resolve (fn [_env {::keys [id]}] {::name (nth (get links id) 0)})})
 
-(defattr href ::href :string
-  {ao/identities #{::id}
-   ao/pc-input   #{::id}
-   ao/pc-output  [::href]
-   ao/pc-resolve (fn [_env {::keys [id]}] {::href (nth (get links id) 1)})})
-
 (defattr target ::target :keyword
   {ao/identities #{::id}
    ao/pc-input   #{::id}
    ao/pc-output  [::target]
-   ao/pc-resolve (fn [_env {::keys [id]}] {::target (nth (get links id) 2)})})
+   ao/pc-resolve (fn [_env {::keys [id]}] {::target (nth (get links id) 1)})})
 
 (defattr auth-link? ::auth-link? :keyword
   {ao/identities #{::id}
@@ -106,7 +88,7 @@
    ao/pc-output        [::children]
    ao/pc-resolve       (fn [_env {::keys [id]}]
                          (let [link (get links id)
-                               ids  (or (when (> (count link) 3) (nth link 3)) [])]
+                               ids  (or (when (> (count link) 2) (nth link 2)) [])]
                            {::children (idents ids)}))
    ::report/column-EQL {::children [::id ::name]}})
 
@@ -116,12 +98,6 @@
    ao/pc-resolve
    (fn [_env _props] {::index (idents (keys links))})})
 
-(def attributes
-  [children
-   name
-   href
-   target
-   auth-link?
-   index])
+(def attributes [children name target auth-link? index])
 
 #?(:clj (def resolvers [id]))

@@ -5,6 +5,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.actions.nostr.relays :as a.n.relays]
+   [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
@@ -86,6 +87,22 @@
   [pubkey-id]
   [::m.n.pubkeys/id => ds/channel?]
   (update-pubkey! pubkey-id))
+
+(defn register-subscription!
+  [relay-id pubkey-id]
+  (log/info :register-subscription!/starting {:relay-id relay-id :pubkey-id pubkey-id}))
+
+(defn do-subscribe!
+  [props]
+  (log/info :do-subscribe!/starting {:props props})
+
+  (let [relay-id        (::m.n.relays/id props)
+        pubkey-id       (::m.n.pubkeys/id props)
+        subscription-id (a.n.subscriptions/register-subscription! relay-id "adhoc")
+        ps-id           (register-subscription! relay-id pubkey-id)]
+    (log/info :do-subscribe!/parsed {:subscription-id subscription-id :ps-id ps-id})
+    {:status            "ok"
+     ::m.n.pubkeys/item nil}))
 
 (comment
 
