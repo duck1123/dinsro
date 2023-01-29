@@ -118,10 +118,10 @@
         pubkey-id       (::m.n.pubkeys/id props)
         subscription-id (a.n.subscriptions/register-subscription! relay-id "adhoc")]
     (log/info :do-subscribe!/subscription-registered {:subscription-id subscription-id})
-    (let [ps-id (a.n.subscription-pubkeys/register-subscription! relay-id pubkey-id)]
-      (log/info :do-subscribe!/sp-registered {:ps-id ps-id})
-      (let [item (q.n.subscription-pubkeys/read-record ps-id)]
-        (log/info :do-subscribe!/parsed {:subscription-id subscription-id :ps-id ps-id})
+    (let [sp-id (a.n.subscription-pubkeys/register-subscription! subscription-id pubkey-id)]
+      (log/info :do-subscribe!/sp-registered {:sp-id sp-id})
+      (let [item (q.n.subscription-pubkeys/read-record sp-id)]
+        (log/info :do-subscribe!/parsed {:subscription-id subscription-id :sp-id sp-id})
         {:status                         "ok"
          ::m.n.subscription-pubkeys/item item}))))
 
