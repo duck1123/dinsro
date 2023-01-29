@@ -21,11 +21,13 @@
   [relay-id code]
   [any? any? => any?]
   (log/info :register-subscription!/starting {:relay-id relay-id :code code})
-  (let [params          {::m.n.subscriptions/code  code
-                         ::m.n.subscriptions/relay relay-id}
-        subscription-id (q.n.subscriptions/create-record params)]
-    (log/info :register-subscription!/created {:subscription-id subscription-id})
-    subscription-id))
+  (if-let [subscription-id (q.n.subscriptions/find-by-relay-and-code relay-id code)]
+    subscription-id
+    (let [params          {::m.n.subscriptions/code  code
+                           ::m.n.subscriptions/relay relay-id}
+          subscription-id (q.n.subscriptions/create-record params)]
+      (log/info :register-subscription!/created {:subscription-id subscription-id})
+      subscription-id)))
 
 (>defn fetch!
   [subscription-id]

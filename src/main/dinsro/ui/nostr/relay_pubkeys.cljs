@@ -39,13 +39,10 @@
 (defn subscribe-action
   [report-instance {pubkey-id ::m.n.pubkeys/id}]
   (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
-    (log/info :connect-action/starting {:relay-id relay-id :pubkey-id pubkey-id})
+    (log/info :subscribe-action/starting {:relay-id relay-id :pubkey-id pubkey-id})
     (if relay-id
-      (comp/transact!
-       report-instance
-       [(mu.n.pubkeys/subscribe!
-         {::m.n.relays/id  relay-id
-          ::m.n.pubkeys/id pubkey-id})])
+      (let [props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
+        (comp/transact! report-instance [(mu.n.pubkeys/subscribe! props)]))
       (throw (js/Error. "no id")))))
 
 (def subscribe-action-button
@@ -54,7 +51,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/hex]
+  {ro/columns          [m.n.pubkeys/hex
+                        m.n.pubkeys/name
+                        m.n.pubkeys/picture]
    ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
                         ::new           new-button
                         ::refresh       u.links/refresh-control}
