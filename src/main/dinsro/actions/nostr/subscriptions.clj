@@ -23,6 +23,8 @@
     subscription-id))
 
 (comment
+  (q.n.relays/delete-all)
+
   (def relay-id (first (q.n.relays/index-ids)))
   relay-id
 

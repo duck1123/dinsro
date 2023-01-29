@@ -5,12 +5,15 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.actions.nostr.relays :as a.n.relays]
+   [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys]
    [dinsro.actions.nostr.subscriptions :as a.n.subscriptions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.queries.nostr.subscription-pubkeys :as q.n.subscription-pubkeys]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
@@ -20,6 +23,7 @@
 ;; [[../../model/nostr/pubkeys.cljc][Model]]
 ;; [[../../queries/nostr/pubkeys.clj][Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][UI]]
+
 
 (>defn fetch-pubkey!
   "Fetch info about pubkey from relay"
@@ -110,14 +114,14 @@
 (defn do-subscribe!
   [props]
   (log/info :do-subscribe!/starting {:props props})
-
   (let [relay-id        (::m.n.relays/id props)
         pubkey-id       (::m.n.pubkeys/id props)
         subscription-id (a.n.subscriptions/register-subscription! relay-id "adhoc")
-        ps-id           (register-subscription! relay-id pubkey-id)]
+        ps-id           (a.n.subscription-pubkeys/register-subscription! relay-id pubkey-id)
+        item            (q.n.subscription-pubkeys/read-record ps-id)]
     (log/info :do-subscribe!/parsed {:subscription-id subscription-id :ps-id ps-id})
-    {:status            "ok"
-     ::m.n.pubkeys/item nil}))
+    {:status                         "ok"
+     ::m.n.subscription-pubkeys/item item}))
 
 (comment
 
