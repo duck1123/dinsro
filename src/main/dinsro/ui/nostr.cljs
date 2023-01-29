@@ -5,6 +5,7 @@
    [dinsro.ui.nostr.events :as u.n.events]
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
    [dinsro.ui.nostr.relays :as u.n.relays]
+   [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
    [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]))
 
 (defrouter Router
@@ -15,6 +16,7 @@
     u.n.pubkeys/Report
     u.n.pubkeys/Show
     u.n.subscriptions/Report
+    u.n.subscription-pubkeys/Report
     u.n.events/Report]})
 
 (def ui-router (comp/factory Router))

@@ -9,6 +9,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]))
 
 ;; [[../../actions/nostr/relays.clj][Relay Actions]]
+;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
 ;; [[../../model/nostr/relays.cljc][Relays Model]]
 
 (>def ::id uuid?)
@@ -26,7 +27,7 @@
   {ao/identities       #{::id}
    ao/target           ::m.n.relays/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.relays/id ::m.n.relays/address]}})
+   ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
 
 (>def ::params (s/keys :req [::code ::relay]))
 (>def ::item (s/keys :req [::id ::code ::relay]))

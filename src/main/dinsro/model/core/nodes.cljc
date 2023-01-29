@@ -10,6 +10,8 @@
    [dinsro.model.core.networks :as m.c.networks]
    [lambdaisland.glogc :as log]))
 
+;; [[../../ui/core/nodes.cljs][Nodes UI]]
+
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

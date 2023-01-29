@@ -1,6 +1,6 @@
 (ns dinsro.queries.nostr.subscriptions
   (:require
-   ;; [clojure.spec.alpha :as s]
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
@@ -11,6 +11,8 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
+
+;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
 
 (>defn create-record
   [params]
@@ -39,3 +41,22 @@
         id      (ffirst results)]
     (log/info :find-by-relay-and-pubkey/finished {:id id :results results})
     id))
+
+(>defn index-ids
+  []
+  [=> (s/coll-of ::m.n.subscriptions/id)]
+  (log/info :index-ids/starting {})
+  (let [db    (c.xtdb/main-db)
+        query '{:find [?id] :where [[?id ::m.n.subscriptions/id _]]}
+        ids   (map first (xt/q db query))]
+    (log/info :index-ids/finished {:ids ids})
+    ids))
+
+(>defn read-record
+  [id]
+  [::m.n.subscriptions/id => (? ::m.n.subscriptions/item)]
+  (let [db     (c.xtdb/main-db)
+        record (xt/pull db '[*] id)]
+    (log/info :read-record/starting {:record record})
+    (when (get record ::m.n.subscriptions/id)
+      (dissoc record :xt/id))))

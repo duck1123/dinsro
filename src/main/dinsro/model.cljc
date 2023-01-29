@@ -29,6 +29,8 @@
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
+   [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
+   [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.transactions :as j.transactions]
@@ -69,6 +71,8 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
+   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.settings :as m.settings]
@@ -94,6 +98,8 @@
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
+   #?(:clj [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys])
+   #?(:clj [dinsro.mutations.nostr.subscriptions :as mu.n.subscriptions])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
@@ -129,6 +135,8 @@
         j.n.events/attributes
         j.n.pubkeys/attributes
         j.n.relays/attributes
+        j.n.subscription-pubkeys/attributes
+        j.n.subscriptions/attributes
         j.rates/attributes
         j.rate-sources/attributes
         j.transactions/attributes
@@ -167,6 +175,8 @@
         m.n.events/attributes
         m.n.pubkeys/attributes
         m.n.relays/attributes
+        m.n.subscription-pubkeys/attributes
+        m.n.subscriptions/attributes
         m.navbar/attributes
         m.navlink/attributes
         m.rates/attributes
@@ -202,6 +212,8 @@
            mu.n.events/resolvers
            mu.n.pubkeys/resolvers
            mu.n.relays/resolvers
+           mu.n.subscription-pubkeys/resolvers
+           mu.n.subscriptions/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers
