@@ -34,6 +34,7 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -450,7 +451,18 @@
   (log/info :SubscriptionLinkForm/starting {:props props})
   (form-link this id code :dinsro.ui.nostr.subscriptions/Show))
 
-(def ui-subscription-link (comp/factory RelayLinkForm {:keyfn ::m.n.subscriptions/id}))
+(def ui-subscription-link (comp/factory SubscriptionLinkForm {:keyfn ::m.n.subscriptions/id}))
+
+(form/defsc-form SubscriptionPubkeyLinkForm [this {::m.n.subscription-pubkeys/keys
+                                                   [id] :as props}]
+  {fo/id           m.n.subscription-pubkeys/id
+   fo/route-prefix "subscription-pubkey-link"
+   fo/attributes   [m.n.subscription-pubkeys/id]}
+  (log/info :SubscriptionLinkForm/starting {:props props})
+  (form-link this id (str id) :dinsro.ui.nostr.subscription-pubkeys/Show))
+
+(def ui-subscription-pubkey-link
+  (comp/factory SubscriptionPubkeyLinkForm {:keyfn ::m.n.subscription-pubkeys/id}))
 
 (form/defsc-form TransactionLinkForm [this {::m.transactions/keys [id description]}]
   {fo/id         m.transactions/id

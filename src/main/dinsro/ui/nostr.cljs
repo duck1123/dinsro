@@ -11,13 +11,16 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.relays/Report
-    u.n.relays/Show
+   [u.n.events/Report
+    u.n.events/Show
     u.n.pubkeys/Report
     u.n.pubkeys/Show
-    u.n.subscriptions/Report
+    u.n.relays/Report
+    u.n.relays/Show
     u.n.subscription-pubkeys/Report
-    u.n.events/Report]})
+    u.n.subscription-pubkeys/Show
+    u.n.subscriptions/Report
+    u.n.subscriptions/Show]})
 
 (def ui-router (comp/factory Router))
 
