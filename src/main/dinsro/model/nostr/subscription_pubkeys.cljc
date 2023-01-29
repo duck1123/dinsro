@@ -9,6 +9,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]))
 
+;; [[../../actions/nostr/subscription_pubkeys.clj][Subscription Pubkey Actions]]
 ;; [[./pubkeys.cljc][Pubkeys Model]]
 ;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
 ;; [[./subscriptions.cljc][Subscriptions Model]]

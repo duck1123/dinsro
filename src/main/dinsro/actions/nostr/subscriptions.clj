@@ -40,9 +40,11 @@
               (log/info :fetch!/relay-found2 {:address address})
               (let [client (a.n.relay-client/get-client-for-address address)]
                 (log/info :fetch!/client-found {:client client})
-                (let [pubkeys (q.n.subscription-pubkeys/find-pubkeys-by-subscription subscription-id)
-                      message (a.n.relay-client/adhoc-request pubkeys)]
-                  (a.n.relay-client/send! client "adhoc" message)))))
+                (let [pubkeys (q.n.subscription-pubkeys/find-pubkeys-by-subscription subscription-id)]
+                  (log/info :fetch!/pubkeys-read {:pubkeys pubkeys})
+                  (let [message (a.n.relay-client/adhoc-request pubkeys)]
+                    (log/info :fetch!/message-prepared {:message message})
+                    (a.n.relay-client/send! client "adhoc" message))))))
           (throw (RuntimeException. "failed to find relay")))))
     (throw (RuntimeException. "failed to find subscription"))))
 
