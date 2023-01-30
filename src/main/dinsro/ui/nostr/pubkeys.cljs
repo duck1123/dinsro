@@ -16,6 +16,7 @@
    [dinsro.ui.nostr.pubkey-relays :as u.n.pubkey-relays]
    [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]))
 
+;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 
 (defrouter Router

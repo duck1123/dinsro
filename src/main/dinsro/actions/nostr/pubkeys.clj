@@ -109,38 +109,56 @@
         (log/info :register-subscription!/created {:subscription-id subscription-id})
         subscription-id))))
 
+(>defn register-pubkey!
+  [pubkey-hex]
+  [::m.n.pubkeys/hex => ::m.n.pubkeys/id]
+  (log/info :register-pubkey!/starting {:pubkey-hex pubkey-hex})
+  (if-let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
+    pubkey-id
+    (q.n.pubkeys/create-record {::m.n.pubkeys/hex pubkey-hex})))
+
+(>defn process-pubkey-message!
+  [msg]
+  [string? => nil]
+  (log/info :process-pubkey-message!/got-message {:msg msg})
+  (let [[event-type code body] msg]
+    (when body
+      (log/info :process-pubkey-message!/parsed {:event-type event-type
+                                                 :code       code
+                                                 :body       body})
+      (let [content    (get body "content")
+            id         (get body "id")
+            sig        (get body "sig")
+            created-at (get body "created_at")
+            kind       (get body "kind")
+            pubkey-hex (get body "pubkey")
+            tags       (get body "tags")]
+        (log/info :process-pubkey-message!/content {:id         id
+                                                    :sig        sig
+                                                    :created-at created-at
+                                                    :kind       kind
+                                                    :pubkey     pubkey-hex
+                                                    :tags       tags
+                                                    :content    content})
+        (doseq [tag tags]
+          (log/info :process-pubkey-message!/tag {:tag tag})
+          (let [[_ pubkey-hex relay-address] tag]
+            (log/info :process-pubkey-message!/parsed {:pubkey-hex pubkey-hex :relay-address relay-address})
+            (register-pubkey! pubkey-hex)
+            (a.n.relays/register-relay! relay-address)))
+        (if-let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
+          (let [parsed (parse-content content)]
+            (log/info :process-pubkey-message!/parsed {:parsed parsed})
+            (q.n.pubkeys/update! pubkey-id parsed))
+          (throw (RuntimeException. "failed to find pubkey")))))))
+
 (defn start-pubkey-listener!
   [channel]
   (log/info :start-pubkey-listener!/starting {})
   (async/go-loop []
     (if-let [msg (async/<! channel)]
       (do
-        (log/info :start-pubkey-listener!/got-message {:msg msg})
-        (let [[event-type code body] msg]
-          (when body
-            (log/info :start-pubkey-listener!/parsed {:event-type event-type
-                                                      :code       code
-                                                      :body       body})
-            (let [content    (get body "content")
-                  id         (get body "id")
-                  sig        (get body "sig")
-                  created-at (get body "created_at")
-                  kind       (get body "kind")
-                  pubkey-hex     (get body "pubkey")
-                  tags       (get body "tags")]
-              (log/info :start-pubkey-listener!/content {:id         id
-                                                         :sig        sig
-                                                         :created-at created-at
-                                                         :kind       kind
-                                                         :pubkey     pubkey-hex
-                                                         :tags       tags
-                                                         :content    content})
-              (if-let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
-                (let [parsed (parse-content content)]
-                  (log/info :start-pubkey-listener!/parsed {:parsed parsed})
-                  (q.n.pubkeys/update! pubkey-id parsed))
-                (throw (RuntimeException. "failed to find pubkey"))))))
-
+        (process-pubkey-message! msg)
         (recur))
       (do
         (log/info :start-pubkey-listener!/no-message {})

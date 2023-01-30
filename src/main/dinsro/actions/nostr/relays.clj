@@ -179,9 +179,17 @@
       {::mu/status       :ok
        ::m.n.relays/item relay})))
 
+(defn register-relay!
+  [address]
+  (log/info :register-relay/starting {:address address}))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
+
+  (send! relay-id
+         {:kinds [3]
+          :authors ["6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"]})
 
   (q.n.relays/create-connected-toggle)
 

@@ -16,6 +16,9 @@
   ;; https://github.com/fulcrologic/fulcro-garden-css
   com.fulcrologic/fulcro-garden-css         {:mvn/version "3.0.9"}
 
+  ;; https://github.com/fulcrologic/fulcro-i18n
+  com.fulcrologic/fulcro-i18n               {:mvn/version "1.0.0"}
+
   ;; https://github.com/fulcrologic/fulcro-rad
   com.fulcrologic/fulcro-rad                {:mvn/version "1.4.2"}
 
