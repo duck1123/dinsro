@@ -27,6 +27,7 @@
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.joins.nostr.events :as j.n.events]
+   [dinsro.joins.nostr.pubkey-contacts :as j.n.pubkey-contacts]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
@@ -69,6 +70,7 @@
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
@@ -87,6 +89,9 @@
    #?(:clj [dinsro.mutations.core.nodes :as mu.c.nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.c.peers])
    #?(:clj [dinsro.mutations.core.tx :as mu.c.tx])
+   #?(:clj [dinsro.mutations.core.wallets :as mu.c.wallets])
+   #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
+   #?(:clj [dinsro.mutations.core.words :as mu.c.words])
    #?(:clj [dinsro.mutations.debits :as mu.debits])
    #?(:clj [dinsro.mutations.ln.accounts :as mu.ln.accounts])
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
@@ -96,16 +101,14 @@
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
+   #?(:clj [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts])
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
    #?(:clj [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys])
    #?(:clj [dinsro.mutations.nostr.subscriptions :as mu.n.subscriptions])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
-   #?(:clj [dinsro.mutations.settings :as mu.settings])
-   #?(:clj [dinsro.mutations.core.wallets :as mu.c.wallets])
-   #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
-   #?(:clj [dinsro.mutations.core.words :as mu.c.words])))
+   #?(:clj [dinsro.mutations.settings :as mu.settings])))
 
 (def all-attributes
   (vec (concat
@@ -133,6 +136,7 @@
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
         j.n.events/attributes
+        j.n.pubkey-contacts/attributes
         j.n.pubkeys/attributes
         j.n.relays/attributes
         j.n.subscription-pubkeys/attributes
@@ -173,6 +177,7 @@
         m.ln.remote-nodes/attributes
         m.n.contact-relays/attributes
         m.n.events/attributes
+        m.n.pubkey-contacts/attributes
         m.n.pubkeys/attributes
         m.n.relays/attributes
         m.n.subscription-pubkeys/attributes
@@ -210,6 +215,7 @@
            mu.ln.nodes/resolvers
            mu.ln.remote-nodes/resolvers
            mu.n.events/resolvers
+           mu.n.pubkey-contacts/resolvers
            mu.n.pubkeys/resolvers
            mu.n.relays/resolvers
            mu.n.subscription-pubkeys/resolvers
