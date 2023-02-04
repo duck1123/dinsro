@@ -18,6 +18,8 @@
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
+;; [[../../mutations/nostr/pubkey_contacts.cljc][Pubkey Contact Mutations]]
+;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
 
 (defrouter Router
   [_this _props]
@@ -35,8 +37,7 @@
 
 (defsc Show
   "Show a core node"
-  [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website
-                             banner]
+  [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website banner]
          :ui/keys           [router]
          :as                props}]
   {:route-segment ["pubkey" :id]
@@ -53,10 +54,10 @@
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/hex     ""
                    ::m.n.pubkeys/name    ""
-                   ::m.n.pubkeys/nip05 ""
-                   ::m.n.pubkeys/lud06 ""
-                   ::m.n.pubkeys/banner ""
-                   ::m.n.pubkeys/about ""
+                   ::m.n.pubkeys/nip05   ""
+                   ::m.n.pubkeys/lud06   ""
+                   ::m.n.pubkeys/banner  ""
+                   ::m.n.pubkeys/about   ""
                    ::m.n.pubkeys/website ""
                    ::m.n.pubkeys/picture ""
                    :ui/router            {}}
@@ -82,16 +83,19 @@
             (dom/dd {} (str lud06))
             (dom/dt {} "banner")
             (dom/dd {} (str banner))
-
             (dom/dt {} "Picture")
             (dom/dd {} (when picture
-                         (dom/img {:src (str picture)
-                                   :width 200
+                         (dom/img {:src    (str picture)
+                                   :width  200
                                    :height 200}))))
           (dom/button
             {:classes [:.ui.button]
              :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
-            "Fetch"))
+            "Fetch")
+          (dom/button
+            {:classes [:.ui.button]
+             :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch-contacts! {::m.n.pubkeys/id id})]))}
+            "Fetch Contacts"))
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (if router
           (ui-router router)

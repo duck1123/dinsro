@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]))
 
+;; [[../../actions/nostr/pubkey_contacts.clj][Pubkey Contact Actions]]
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkey Models]]
