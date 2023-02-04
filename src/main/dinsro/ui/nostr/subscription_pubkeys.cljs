@@ -53,11 +53,8 @@
    :route-segment     ["pubkeys"]}
   ((comp/factory Report) report))
 
-(def ui-sub-page (comp/factory SubPage))
-
 (defsc Show
-  [_this {::m.n.subscription-pubkeys/keys [id subscription pubkey]
-          :as                             props}]
+  [_this {::m.n.subscription-pubkeys/keys [subscription pubkey]}]
   {:ident         ::m.n.subscription-pubkeys/id
    :initial-state {::m.n.subscription-pubkeys/id           nil
                    ::m.n.subscription-pubkeys/pubkey       {}
@@ -67,15 +64,11 @@
                    ::m.n.subscription-pubkeys/pubkey]
    :route-segment ["subscription-pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.subscription-pubkeys/id ::Show)}
-  (if id
-    (let [{:keys [main _sub]} (css/get-classnames Show)]
-      (dom/div {:classes [main]}
-        (dom/div :.ui.segment
-          (dom/dl {}
-            (dom/dt {} "subscription")
-            (dom/dd {} (u.links/ui-subscription-link subscription))
-            (dom/dt {} "pubkey")
-            (dom/dd {} (u.links/ui-pubkey-link pubkey))))))
-    (dom/div :.ui.segment
-      (dom/h3 {} "Item not loaded")
-      (u.links/ui-props-logger props))))
+  (let [{:keys [main _sub]} (css/get-classnames Show)]
+    (dom/div {:classes [main]}
+      (dom/div :.ui.segment
+        (dom/dl {}
+          (dom/dt {} "subscription")
+          (dom/dd {} (u.links/ui-subscription-link subscription))
+          (dom/dt {} "pubkey")
+          (dom/dd {} (u.links/ui-pubkey-link pubkey)))))))

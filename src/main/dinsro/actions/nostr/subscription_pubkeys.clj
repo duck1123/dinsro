@@ -12,19 +12,18 @@
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
 ;; [[../../queries/nostr/subscription_pubkeys.clj][Subscription Pubkey Queries]]
+;; [[../../ui/nostr/subscription_pubkeys.cljs][Subscription Pubkeys UI]]
 
 (>defn register-subscription!
   [subscription-id pubkey-id]
   [::m.n.subscriptions/id ::m.n.pubkeys/id => ::m.n.subscription-pubkeys/id]
-  (log/info :register-subscription!/starting
-            {:subscription-id subscription-id
-             :pubkey-id       pubkey-id})
+  (log/info :register-subscription!/starting {:subscription-id subscription-id :pubkey-id pubkey-id})
   (if-let [subscription (q.n.subscriptions/read-record subscription-id)]
     (do
       (log/info :register-subscription!/exists {:subscription subscription})
-      (if-let [sp-id (q.n.subscription-pubkeys/find-by-subscription-and-pubkey
-                      subscription-id pubkey-id)]
+      (if-let [sp-id (q.n.subscription-pubkeys/find-by-subscription-and-pubkey subscription-id pubkey-id)]
         (do
           (log/info :register-subscription!/sp-exists {:sp-id sp-id})
           sp-id)
