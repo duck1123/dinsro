@@ -10,6 +10,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.pubkey-contacts :as u.n.pubkey-contacts]
@@ -94,7 +95,7 @@
             "Fetch")
           (dom/button
             {:classes [:.ui.button]
-             :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch-contacts! {::m.n.pubkeys/id id})]))}
+             :onClick (fn [_e] (comp/transact! this [(mu.n.pubkey-contacts/fetch-contacts! {::m.n.pubkeys/id id})]))}
             "Fetch Contacts"))
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (if router

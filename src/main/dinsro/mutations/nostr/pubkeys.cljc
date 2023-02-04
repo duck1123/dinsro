@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    #?(:cljs [com.fulcrologic.fulcro.algorithms.merge :as merge])
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   #?(:clj  [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+      :cljs [com.fulcrologic.guardrails.core :refer [>def =>]])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
@@ -111,22 +112,4 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
-(>defn do-fetch-contacts!
-  [_props]
-  [any? => nil?]
-  nil)
-
-#?(:clj
-   (pc/defmutation fetch-contacts! [_env props]
-     {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
-     (log/info :subscribe/starting {:props props})
-     (a.n.subscription-pubkeys/do-fetch-contacts! props))
-
-   :cljs
-   (fm/defmutation fetch-contacts! [_props]
-     (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchResponse))
-     (ok-action [env]  (handle-fetch env))))
-
-#?(:clj (def resolvers [fetch! fetch-contacts! subscribe!]))
+#?(:clj (def resolvers [fetch! subscribe!]))
