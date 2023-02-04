@@ -57,23 +57,6 @@
        ::m.n.pubkeys/picture picture
        ::m.n.pubkeys/website website})))
 
-(>defn update-pubkey!
-  [pubkey-id]
-  [::m.n.pubkeys/id => any?]
-  (log/info :update-pubkey!/starting {:pubkey-id pubkey-id})
-  (async/go
-    (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
-      (let [hex      (::m.n.pubkeys/hex pubkey)
-            response (async/<! (fetch-pubkey! hex))]
-        (log/info :update-pubkey!/finished {:response response})
-        response)
-      (throw (RuntimeException. "No pubkey")))))
-
-(>defn fetch-contact!
-  [pubkey-id]
-  [::m.n.pubkeys/id => ds/channel?]
-  (update-pubkey! pubkey-id))
-
 (>defn register-subscription!
   [relay-id pubkey-id]
   [::m.n.relays/id ::m.n.pubkeys/id => ::m.n.subscriptions/id]
@@ -144,9 +127,38 @@
            chan    (a.n.relays/send! relay-id body)
            message (async/<! (a.n.relays/process-messages chan))]
        (log/info :fetch-pubkey!/fetched {:message message})
-       (let [[event-type code body] message]
+       (let [{:keys [req-id tags id pow notified sig content]} message
+             event-type                                        "EVENT"
+             code                                              req-id
+             body                                              (json/read-str content)]
+         (log/info :fetch-pubkey!/parsed {:req-id   req-id
+                                          :tags     tags
+                                          :id       id
+                                          :pow      pow
+                                          :notified notified
+                                          :sig      sig
+                                          ;; :content  content
+                                          :body     body
+                                          })
          (process-pubkey-message! event-type code body)
          message)))))
+
+(>defn update-pubkey!
+  [pubkey-id]
+  [::m.n.pubkeys/id => any?]
+  (log/info :update-pubkey!/starting {:pubkey-id pubkey-id})
+  (async/go
+    (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
+      (let [hex      (::m.n.pubkeys/hex pubkey)
+            response (async/<! (fetch-pubkey! hex))]
+        (log/info :update-pubkey!/finished {:response response})
+        response)
+      (throw (RuntimeException. "No pubkey")))))
+
+(>defn fetch-contact!
+  [pubkey-id]
+  [::m.n.pubkeys/id => ds/channel?]
+  (update-pubkey! pubkey-id))
 
 (defn start-pubkey-listener!
   [channel]

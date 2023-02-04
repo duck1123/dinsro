@@ -18,7 +18,8 @@
    (uncaughtException [_ thread ex]
      (log/error {:what      :uncaught-exception
                  :exception ex
-                 :where     (str "Uncaught exception on" (.getName thread))} ex))))
+                 :where     (str "Uncaught exception on" (.getName thread))} ex)
+     (println ex))))
 
 (def cli-options
   [["-p" "--port PORT" "Port number"

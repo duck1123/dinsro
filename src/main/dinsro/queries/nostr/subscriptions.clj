@@ -78,7 +78,7 @@
 
 (>defn find-by-relay
   [relay-id]
-  [::m.n.relays/id => (? ::m.n.subscriptions/id)]
+  [::m.n.relays/id => (s/coll-of ::m.n.subscriptions/id)]
   (log/info :find-by-relay/starting {:relay-id relay-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?id]
