@@ -15,6 +15,7 @@
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 ;; [[../../mutations/nostr/pubkey_contacts.cljc][Pubkey Contact Mutations]]
 ;; [[../../queries/nostr/pubkey_contacts.clj][Pubkey Contact Queries]]
+;; [[../../ui/nostr/pubkey_contacts.cljs][Pubkey Contacts UI]]
 
 (defn register-contact!
   [actor-id target-id]
@@ -58,3 +59,9 @@
       (log/info :do-fetch-contacts!/finished {:response response})
       {:status "ok"})
     (throw (RuntimeException. "Failed to find pubkey"))))
+
+(comment
+
+  (q.n.pubkey-contacts/read-record (first (q.n.pubkey-contacts/index-ids)))
+
+  nil)

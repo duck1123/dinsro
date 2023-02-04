@@ -55,7 +55,7 @@
 
 (>defn find-by-actor-and-target
   [actor-id target-id]
-  [::m.n.pubkeys/id ::m.n.pubkeys/id => ::m.n.pubkey-contacts/id]
+  [::m.n.pubkeys/id ::m.n.pubkeys/id => (? ::m.n.pubkey-contacts/id)]
   (log/info :find-by-actor-and-target/starting {:actor-id actor-id :target-id target-id})
   (let [db      (c.xtdb/main-db)
         query   '{:find  [?contact-id]

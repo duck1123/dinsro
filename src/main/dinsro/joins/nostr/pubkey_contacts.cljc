@@ -18,6 +18,7 @@
    (fn [_env _]
      (log/info :index/starting {})
      (let [ids #?(:clj (q.n.pubkey-contacts/index-ids) :cljs [])]
+       (log/info :index/finished {:ids ids})
        {::index (m.n.pubkey-contacts/idents ids)}))})
 
 (defattr admin-index ::admin-index :ref

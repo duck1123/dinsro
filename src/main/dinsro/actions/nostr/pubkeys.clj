@@ -152,18 +152,19 @@
            chan    (a.n.relays/send! relay-id body)
            message (async/<! (a.n.relays/process-messages chan))]
        (log/info :fetch-pubkey!/fetched {:message message})
-       (let [{:keys [req-id tags id pow notified sig content]} message
-             body                                              (json/read-str content)]
-         (log/info :fetch-pubkey!/parsed {:req-id   req-id
-                                          :tags     tags
-                                          :id       id
-                                          :pow      pow
-                                          :notified notified
-                                          :sig      sig
-                                          ;; :content  content
-                                          :body     body})
-         (process-pubkey-data! pubkey-hex body tags)
-         message)))))
+       (let [{:keys [req-id tags id pow notified sig content]} message]
+         (if content
+           (let [body                                              (json/read-str content)]
+             (log/info :fetch-pubkey!/parsed {:req-id   req-id
+                                              :tags     tags
+                                              :id       id
+                                              :pow      pow
+                                              :notified notified
+                                              :sig      sig
+                                              :body     body})
+             (process-pubkey-data! pubkey-hex body tags)
+             message)
+           (throw (RuntimeException. "No content"))))))))
 
 (>defn update-pubkey!
   [pubkey-id]
