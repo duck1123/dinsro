@@ -11,6 +11,9 @@
   {ao/identity? true
    ao/schema    :production})
 
+;; note-id
+;; sig
+
 (>def ::required-params (s/keys :req []))
 
 (>def ::params (s/keys :req []))

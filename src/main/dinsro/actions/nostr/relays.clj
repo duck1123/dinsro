@@ -20,6 +20,15 @@
 (>def ::client any?)
 
 (def req-id "5022")
+(defonce topic-channels (atom {}))
+
+(defn get-channel
+  [relay-id request-id]
+  (if-let [chan (get-in @topic-channels [relay-id request-id])]
+    chan
+    (let [output-chan (async/chan)]
+      (swap! topic-channels assoc-in [relay-id request-id] output-chan)
+      output-chan)))
 
 (defn handle-event
   [req-id evt]
@@ -70,11 +79,15 @@
 (defn process-messages
   [chan]
   (log/info :process-messages/starting {})
-  (async/go
-    (let [raw-message (async/<! chan)
-          message     (parse-message raw-message)]
-      (log/finer :process-messages/finished {:message message})
-      message)))
+  (let [output-chan (async/chan)]
+    (async/go-loop []
+      (log/info :process-messages/looping {})
+      (let [raw-message (async/<! chan)
+            message     (parse-message raw-message)]
+        (log/finer :process-messages/finished {:message message})
+        (when message (async/put! output-chan message))
+        (recur)))
+    output-chan))
 
 (>defn get-client-for-id
   ([relay-id]
@@ -113,15 +126,12 @@
   [relay-id body]
   [::m.n.relays/id any? => ds/channel?]
   (log/info :send!/starting {:relay-id relay-id :body body})
-  (if-let [relay (q.n.relays/read-record relay-id)]
-    (let [address     (::m.n.relays/address relay)
-          client      (connect! relay-id)
-          chan        (a.n.relay-client/get-channel address)
-          request-id  (str "adhoc " @request-counter)]
-      (swap! request-counter inc)
-      (a.n.relay-client/send! client request-id body)
-      chan)
-    (throw (RuntimeException. "Failed to find relay"))))
+  (let [client        (connect! relay-id)
+        request-id    (str "adhoc " @request-counter)
+        topic-channel (get-channel relay-id request-id)]
+    (swap! request-counter inc)
+    (a.n.relay-client/send! client request-id body)
+    topic-channel))
 
 (>defn disconnect!
   "Disconnect from relay and clear connection information"
@@ -170,9 +180,14 @@
       {::mu/status       :ok
        ::m.n.relays/item relay})))
 
-(defn register-relay!
+(>defn register-relay!
   [address]
-  (log/info :register-relay/starting {:address address}))
+  [::m.n.relays/address => ::m.n.relays/id]
+  (log/info :register-relay/starting {:address address})
+  (if-let [relay-id (q.n.relays/find-by-address address)]
+    relay-id
+    (let [params {::m.n.relays/address address}]
+      (q.n.relays/create-record params))))
 
 (comment
 
