@@ -93,3 +93,7 @@
         ids    (map first result)]
     (log/info :find-by-subscription/finished {:ids ids})
     ids))
+
+(defn find-contacts
+  [pubkey-id]
+  (log/info :find-contacts/starting {:pubkey-id pubkey-id}))

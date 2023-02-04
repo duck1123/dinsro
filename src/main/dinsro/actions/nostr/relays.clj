@@ -69,9 +69,11 @@
 
 (defn process-messages
   [chan]
+  (log/info :process-messages/starting {})
   (async/go
-    (let [message (parse-message (async/<! chan))]
-      (log/info :process-messages/finished {:message message})
+    (let [raw-message (async/<! chan)
+          message     (parse-message raw-message)]
+      (log/finer :process-messages/finished {:message message})
       message)))
 
 (>defn get-client-for-id
@@ -108,6 +110,8 @@
 
 ;; body is a map that will be turned into a message
 
+(defonce request-counter (atom 0))
+
 (>defn send!
   "Send a message to a relay"
   [relay-id body]
@@ -116,7 +120,8 @@
         address    (::m.n.relays/address relay)
         client     (get-client-for-id relay-id)
         chan       (a.n.relay-client/get-channel address)
-        request-id "adhoc1"]
+        request-id (str "adhoc " @request-counter)]
+    (swap! request-counter inc)
     (a.n.relay-client/send! client request-id body)
     chan))
 

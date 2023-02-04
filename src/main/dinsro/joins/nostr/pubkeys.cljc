@@ -30,4 +30,15 @@
      (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
        {::admin-index (m.n.pubkeys/idents ids)}))})
 
-(def attributes [admin-index index])
+(defattr contact-count ::contact-count :int
+  {ao/identities #{::m.n.pubkeys/id}
+   ao/pc-input   #{::m.n.pubkeys/id}
+   ao/pc-resolve
+   (fn [_env params]
+     (log/info :contact-count/starting {:params params})
+     (let [pubkey-id (::m.n.pubkeys/id params)
+           pubkeys   #?(:clj (q.n.pubkeys/find-contacts pubkey-id)
+                        :cljs (do (comment pubkey-id) []))]
+       {::contact-count (count pubkeys)}))})
+
+(def attributes [admin-index index contact-count])
