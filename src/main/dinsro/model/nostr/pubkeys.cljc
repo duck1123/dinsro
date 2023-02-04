@@ -27,7 +27,8 @@
 
 ;; name
 
-(>def ::name string?)
+
+(>def ::name (? string?))
 (defattr name ::name :string
   {ao/identities #{::id}
    ao/schema     :production})

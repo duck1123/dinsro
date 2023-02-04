@@ -58,8 +58,8 @@
 (defn parse-message
   "Parse a response message"
   [message]
-  (log/info :parse-message/starting {:message message})
   (let [[type req-id evt] message]
+    (log/info :parse-message/starting {:req-id req-id :type type})
     (condp = type
       "EVENT" (handle-event req-id evt)
       "EOSE"  (handle-eose req-id evt)
@@ -112,30 +112,30 @@
 
 (defonce request-counter (atom 0))
 
-(>defn send!
-  "Send a message to a relay"
-  [relay-id body]
-  [::m.n.relays/id any? => ds/channel?]
-  (let [relay      (q.n.relays/read-record relay-id)
-        address    (::m.n.relays/address relay)
-        client     (get-client-for-id relay-id)
-        chan       (a.n.relay-client/get-channel address)
-        request-id (str "adhoc " @request-counter)]
-    (swap! request-counter inc)
-    (a.n.relay-client/send! client request-id body)
-    chan))
-
 (>defn connect!
   "Connect to relay and store connection information"
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :connect!/starting {:relay-id relay-id})
-  (let [response (q.n.relays/set-connected relay-id true)]
-    (log/info :connect!/finished {:response response})
-    ;; initialize client
-    (let [client  (get-client-for-id relay-id)]
-      (log/info :connect!/got-client {:client client}))
-    response))
+  (q.n.relays/set-connected relay-id true)
+  (let [client   (get-client-for-id relay-id)]
+    (log/finer :connect!/finished {:client client})
+    client))
+
+(>defn send!
+  "Send a message to a relay"
+  [relay-id body]
+  [::m.n.relays/id any? => ds/channel?]
+  (log/info :send!/starting {:relay-id relay-id :body body})
+  (if-let [relay (q.n.relays/read-record relay-id)]
+    (let [address (::m.n.relays/address relay)
+          client     (connect! relay-id)
+          chan       (a.n.relay-client/get-channel address)
+          request-id (str "adhoc " @request-counter)]
+      (swap! request-counter inc)
+      (a.n.relay-client/send! client request-id body)
+      chan)
+    (throw (RuntimeException. "Failed to find relay"))))
 
 (>defn disconnect!
   "Disconnect from relay and clear connection information"
