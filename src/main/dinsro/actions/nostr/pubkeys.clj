@@ -4,7 +4,6 @@
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [dinsro.actions.contacts :as a.contacts]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -14,7 +13,6 @@
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
-   [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
@@ -22,20 +20,6 @@
 ;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
 ;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkey UI]]
-
-(>defn send-adhoc-request
-  [client hex]
-  [any? ::m.n.pubkeys/hex => any?]
-  (let [msg (json/json-str (a.n.relay-client/adhoc-request [hex]))]
-    (ws/send! client msg)))
-
-(>defn poll!
-  [relay-id]
-  [::m.n.relays/id => any?]
-  (let [relay   (q.n.relays/read-record relay-id)
-        address (::m.n.relays/address relay)
-        chan    (a.n.relay-client/get-channel address)]
-    (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
 
 (>defn parse-content-parsed
   [data]
@@ -205,8 +189,6 @@
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
   (q.n.relays/read-record relay-id)
 
-  (def duck-content "{\"name\":\"dinsro\",\"about\":\"sats-first budget management\\n\\nhttps://github.com/duck1123/dinsro\",\"nip05\":\"dinsro@detbtc.com\",\"lud06\":\"lnurl1dp68gurn8ghj7cm0d9hx7uewd9hj7tnhv4kxctttdehhwm30d3h82unvwqhkgatrdvrwrevc\",\"lud16\":\"duck@coinos.io\",\"picture\":\"https://void.cat/d/JpoHXq8TQNpB7H6oCpTz6J\",\"website\":\"https://dinsro.com/\"}")
-
   a.n.relay-client/connections
 
   (a.n.relays/disconnect! relay-id)
@@ -217,31 +199,15 @@
   (q.n.pubkeys/read-record pubkey-id)
 
   (def contact (fetch-contact! pubkey-id))
-
   contact
 
-  (poll! relay-id)
-
   (def response (a.n.relays/get-client-for-id relay-id))
-
   response
+
   (def chan (:chan response))
-  (def client (:client response))
-  client
-
-  (send-adhoc-request client a.contacts/duck)
-  (send-adhoc-request client a.contacts/matt-odell)
-
-  (ws/send! client (json/json-str (a.n.relay-client/adhoc-request [a.contacts/duck])))
-
-  (async/poll! (a.n.relays/process-messages chan))
-
-  (fetch-pubkey! a.contacts/duck)
-
-  (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))
-
   chan
 
-  a.n.relay-client/connections
+  (def client (:client response))
+  client
 
   nil)

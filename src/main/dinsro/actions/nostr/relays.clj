@@ -94,20 +94,6 @@
            (throw (RuntimeException. "Failed to find client")))))
      (throw (RuntimeException. "Failed to find relay")))))
 
-(def timeout-time 10000)
-
-(>defn take-timeout
-  "Read from a channel with a timeout"
-  [chan]
-  [ds/channel? => ds/channel?]
-  (async/go
-    (let [[v c] (async/alts! [chan (async/timeout timeout-time)])]
-      (if (= c chan)
-        v
-        (do
-          (comment (async/close! chan))
-          :timeout)))))
-
 ;; body is a map that will be turned into a message
 
 (defonce request-counter (atom 0))
@@ -128,10 +114,10 @@
   [::m.n.relays/id any? => ds/channel?]
   (log/info :send!/starting {:relay-id relay-id :body body})
   (if-let [relay (q.n.relays/read-record relay-id)]
-    (let [address (::m.n.relays/address relay)
-          client     (connect! relay-id)
-          chan       (a.n.relay-client/get-channel address)
-          request-id (str "adhoc " @request-counter)]
+    (let [address     (::m.n.relays/address relay)
+          client      (connect! relay-id)
+          chan        (a.n.relay-client/get-channel address)
+          request-id  (str "adhoc " @request-counter)]
       (swap! request-counter inc)
       (a.n.relay-client/send! client request-id body)
       chan)

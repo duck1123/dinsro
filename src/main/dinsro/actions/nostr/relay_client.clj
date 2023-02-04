@@ -2,7 +2,6 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
@@ -10,6 +9,20 @@
 
 (defonce connections (atom {}))
 (def req-id "5022")
+
+(def timeout-time 10000)
+
+(>defn take-timeout
+  "Read from a channel with a timeout"
+  [chan]
+  [ds/channel? => ds/channel?]
+  (async/go
+    (let [[v c] (async/alts! [chan (async/timeout timeout-time)])]
+      (if (= c chan)
+        v
+        (do
+          (comment (async/close! chan))
+          :timeout)))))
 
 (>defn handle-message
   [chan _ws msg _last?]
@@ -31,14 +44,6 @@
   (fn [_ws _status _reason]
     (log/info :on-closed/received {})
     (async/close! chan)))
-
-(>defn adhoc-request
-  [author-ids]
-  [(s/coll-of string?) => any?]
-  (let [id req-id]
-    ["REQ" (str "adhoc " id)
-     {:authors author-ids
-      :kinds   [0]}]))
 
 (>defn get-client
   [chan url]
