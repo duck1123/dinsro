@@ -9,6 +9,7 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
 
 (>defn create-record
