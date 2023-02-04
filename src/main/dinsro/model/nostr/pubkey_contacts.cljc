@@ -11,6 +11,7 @@
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkey Models]]
+;; [[../../queries/nostr/pubkey_contacts.clj][Pubkey Contact Queries]]
 ;; [[../../ui/nostr/pubkey_contacts.cljs][Pubkey Contacts UI]]
 
 ;; https://github.com/nostr-protocol/nips/blob/master/02.md
