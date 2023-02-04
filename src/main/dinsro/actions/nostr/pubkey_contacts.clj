@@ -4,6 +4,9 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [lambdaisland.glogc :as log]))
 
+;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
+;; [[../../mutations/nostr/pubkey_contacts.cljc][Pubkey Contact Mutations]]
+
 (>defn fetch-contacts!
   [pubkey-id]
   [::m.n.pubkeys/id => any?]
