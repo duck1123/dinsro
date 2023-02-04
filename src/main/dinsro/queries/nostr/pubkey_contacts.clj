@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
@@ -51,3 +52,17 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
+
+(>defn find-by-actor-and-target
+  [actor-id target-id]
+  [::m.n.pubkeys/id ::m.n.pubkeys/id => ::m.n.pubkey-contacts/id]
+  (log/info :find-by-actor-and-target/starting {:actor-id actor-id :target-id target-id})
+  (let [db      (c.xtdb/main-db)
+        query   '{:find  [?contact-id]
+                  :in    [[?actor ?target]]
+                  :where [[?contact-id ::m.n.pubkey-contacts/actor ?actor]
+                          [?contact-id ::m.n.pubkey-contacts/target ?target]]}
+        results (xt/q db query [actor-id target-id])
+        id      (ffirst results)]
+    (log/info :find-by-actor-and-target/finished {:id id})
+    id))
