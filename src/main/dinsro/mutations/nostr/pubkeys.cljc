@@ -14,6 +14,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
+;; [[../../actions/nostr/subscription_pubkeys.clj][Subscription Pubkey Actions]]
 ;; [[../../model/nostr/relays.cljc][Relay Model]]
 ;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
@@ -120,7 +121,7 @@
      {::pc/params #{::m.n.pubkeys/id}
       ::pc/output [::status ::errors ::m.n.pubkeys/item]}
      (log/info :subscribe/starting {:props props})
-     (do-fetch-contacts! props))
+     (a.n.subscription-pubkeys/do-fetch-contacts! props))
 
    :cljs
    (fm/defmutation fetch-contacts! [_props]

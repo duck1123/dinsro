@@ -69,3 +69,7 @@
             (a.n.subscriptions/fetch! subscription-id))
           (throw (RuntimeException. "Failed to find subscription"))))
       updated-node)))
+
+(defn do-fetch-contacts!
+  [x]
+  (log/info :do-fetch-contacts!/starting {:x x}))
