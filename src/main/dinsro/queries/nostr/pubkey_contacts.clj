@@ -8,6 +8,7 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/pubkey_contacts.clj][Pubkey Contact Actions]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 
 
