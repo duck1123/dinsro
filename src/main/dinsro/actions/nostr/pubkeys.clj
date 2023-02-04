@@ -2,6 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.contacts :as a.contacts]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
@@ -78,9 +79,33 @@
   [pubkey-hex]
   [::m.n.pubkeys/hex => ::m.n.pubkeys/id]
   (log/info :register-pubkey!/starting {:pubkey-hex pubkey-hex})
-  (if-let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
-    pubkey-id
-    (q.n.pubkeys/create-record {::m.n.pubkeys/hex pubkey-hex})))
+  (let [pubkey-id (if-let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
+                    pubkey-id
+                    (q.n.pubkeys/create-record {::m.n.pubkeys/hex pubkey-hex}))]
+    (log/info :register-pubkey!/registered {:pubkey-id pubkey-id})
+    pubkey-id))
+
+(>defn process-pubkey-tags!
+  [tags]
+  [(s/coll-of any?) => any?]
+  (log/info :process-pubkey-tags!/starting {:tags tags})
+  (doseq [tag tags]
+    (log/info :process-pubkey-tags!/tag {:tag tag})
+    (let [[_ pubkey-hex relay-address] tag]
+      (log/info :process-pubkey-tags!/parsed {:pubkey-hex pubkey-hex :relay-address relay-address})
+      (register-pubkey! pubkey-hex)
+      (a.n.relays/register-relay! relay-address))))
+
+(>defn process-pubkey-data!
+  [pubkey-hex content tags]
+  [string? any? any? => any?]
+  (log/info :process-pubkey-data!/starting {:content content :tags tags})
+  (process-pubkey-tags! tags)
+  (if-let [pubkey-id (register-pubkey! pubkey-hex)]
+    (let [parsed (parse-content content)]
+      (log/info :process-pubkey-data!/parsed {:parsed parsed})
+      (q.n.pubkeys/update! pubkey-id parsed))
+    (throw (RuntimeException. "failed to find pubkey"))))
 
 (>defn process-pubkey-message!
   [event-type code body]
@@ -100,17 +125,7 @@
                                                 :pubkey     pubkey-hex
                                                 :tags       tags
                                                 :content    content})
-    (doseq [tag tags]
-      (log/info :process-pubkey-message!/tag {:tag tag})
-      (let [[_ pubkey-hex relay-address] tag]
-        (log/info :process-pubkey-message!/parsed {:pubkey-hex pubkey-hex :relay-address relay-address})
-        (register-pubkey! pubkey-hex)
-        (a.n.relays/register-relay! relay-address)))
-    (if-let [pubkey-id (register-pubkey! pubkey-hex)]
-      (let [parsed (parse-content content)]
-        (log/info :process-pubkey-message!/parsed {:parsed parsed})
-        (q.n.pubkeys/update! pubkey-id parsed))
-      (throw (RuntimeException. "failed to find pubkey")))))
+    (process-pubkey-data! pubkey-hex content tags)))
 
 (>defn fetch-pubkey!
   "Fetch info about pubkey from relay"
@@ -119,17 +134,15 @@
    (if-let [relay-id (first (q.n.relays/index-ids))]
      (fetch-pubkey! pubkey relay-id)
      (throw (RuntimeException. "No relays"))))
-  ([hex relay-id]
+  ([pubkey-hex relay-id]
    [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
    (async/go
-     (log/info :fetch-pubkey!/starting {:hex hex :relay-id relay-id})
-     (let [body    {:authors [hex] :kinds [0]}
+     (log/info :fetch-pubkey!/starting {:pubkey-hex pubkey-hex :relay-id relay-id})
+     (let [body    {:authors [pubkey-hex] :kinds [0]}
            chan    (a.n.relays/send! relay-id body)
            message (async/<! (a.n.relays/process-messages chan))]
        (log/info :fetch-pubkey!/fetched {:message message})
        (let [{:keys [req-id tags id pow notified sig content]} message
-             event-type                                        "EVENT"
-             code                                              req-id
              body                                              (json/read-str content)]
          (log/info :fetch-pubkey!/parsed {:req-id   req-id
                                           :tags     tags
@@ -138,9 +151,8 @@
                                           :notified notified
                                           :sig      sig
                                           ;; :content  content
-                                          :body     body
-                                          })
-         (process-pubkey-message! event-type code body)
+                                          :body     body})
+         (process-pubkey-data! pubkey-hex body tags)
          message)))))
 
 (>defn update-pubkey!
