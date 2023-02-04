@@ -22,24 +22,6 @@
 ;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkey UI]]
 
-
-(>defn fetch-pubkey!
-  "Fetch info about pubkey from relay"
-  ([pubkey]
-   [::m.n.pubkeys/hex => ds/channel?]
-   (if-let [relay-id (first (q.n.relays/index-ids))]
-     (fetch-pubkey! pubkey relay-id)
-     (throw (RuntimeException. "No relays"))))
-  ([hex relay-id]
-   [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
-   (async/go
-     (log/info :fetch-pubkey!/starting {:hex hex :relay-id relay-id})
-     (let [body    {:authors [hex] :kinds [0]}
-           chan    (a.n.relays/send! relay-id body)
-           message (async/<! (a.n.relays/process-messages chan))]
-       (log/info :fetch-pubkey!/fetched {:message message})
-       message))))
-
 (>defn send-adhoc-request
   [client hex]
   [any? ::m.n.pubkeys/hex => any?]
@@ -146,6 +128,25 @@
         (log/info :process-pubkey-message!/parsed {:parsed parsed})
         (q.n.pubkeys/update! pubkey-id parsed))
       (throw (RuntimeException. "failed to find pubkey")))))
+
+(>defn fetch-pubkey!
+  "Fetch info about pubkey from relay"
+  ([pubkey]
+   [::m.n.pubkeys/hex => ds/channel?]
+   (if-let [relay-id (first (q.n.relays/index-ids))]
+     (fetch-pubkey! pubkey relay-id)
+     (throw (RuntimeException. "No relays"))))
+  ([hex relay-id]
+   [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
+   (async/go
+     (log/info :fetch-pubkey!/starting {:hex hex :relay-id relay-id})
+     (let [body    {:authors [hex] :kinds [0]}
+           chan    (a.n.relays/send! relay-id body)
+           message (async/<! (a.n.relays/process-messages chan))]
+       (log/info :fetch-pubkey!/fetched {:message message})
+       (let [[event-type code body] message]
+         (process-pubkey-message! event-type code body)
+         message)))))
 
 (defn start-pubkey-listener!
   [channel]
