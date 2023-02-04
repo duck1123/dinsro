@@ -137,6 +137,20 @@
                                                 :content    content})
     (process-pubkey-data! pubkey-hex content tags)))
 
+(defn process-fetch-pubkey-message
+  [output-chan pubkey-hex message]
+  (log/info :process-fetch-pubkey-message/fetched {:message message})
+  (let [{:keys [req-id tags content]} message]
+    (if content
+      (let [body (json/read-str content)]
+        (log/info :process-fetch-pubkey-message/parsed {:req-id req-id})
+        (let [response (process-pubkey-data! pubkey-hex body tags)]
+          (log/info :process-fetch-pubkey-message/processed {:response response})))
+      (do
+        (log/info :process-fetch-pubkey-message/no-content {})
+        (async/close! output-chan)
+        nil))))
+
 (>defn fetch-pubkey!
   "Fetch info about pubkey from relay"
   ([pubkey]
@@ -146,25 +160,15 @@
      (throw (RuntimeException. "No relays"))))
   ([pubkey-hex relay-id]
    [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
-   (async/go
+   (let [output-chan (async/chan)]
      (log/info :fetch-pubkey!/starting {:pubkey-hex pubkey-hex :relay-id relay-id})
-     (let [body    {:authors [pubkey-hex] :kinds [0]}
-           chan    (a.n.relays/send! relay-id body)
-           message (async/<! (a.n.relays/process-messages chan))]
-       (log/info :fetch-pubkey!/fetched {:message message})
-       (let [{:keys [req-id tags id pow notified sig content]} message]
-         (if content
-           (let [body                                              (json/read-str content)]
-             (log/info :fetch-pubkey!/parsed {:req-id   req-id
-                                              :tags     tags
-                                              :id       id
-                                              :pow      pow
-                                              :notified notified
-                                              :sig      sig
-                                              :body     body})
-             (process-pubkey-data! pubkey-hex body tags)
-             message)
-           (throw (RuntimeException. "No content"))))))))
+     (let [body {:authors [pubkey-hex] :kinds [0]}
+           chan (a.n.relays/send! relay-id body)]
+       (async/go-loop []
+         (let [message (async/<! (a.n.relays/process-messages chan))]
+           (process-fetch-pubkey-message output-chan pubkey-hex message)
+           (recur)))
+       output-chan))))
 
 (>defn update-pubkey!
   [pubkey-id]
