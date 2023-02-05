@@ -5,7 +5,9 @@
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log])
+  (:import
+   java.nio.HeapCharBuffer))
 
 (defonce connections (atom {}))
 (def req-id "5022")
@@ -23,17 +25,6 @@
         (do
           (comment (async/close! chan))
           :timeout)))))
-
-(>defn handle-message
-  [chan _ws msg last?]
-  [ds/channel? any? any? any? => any?]
-  (log/debug :handle-message/started {:msg   msg
-                                      :last? last?
-                                      :k     (class msg)})
-  (let [msg-str (str msg)
-        o       (json/read-str msg-str)]
-    (log/finer :handle-message/received {:o o})
-    (async/put! chan o)))
 
 (defn merge-strings []
   (fn stepper [step]
@@ -83,11 +74,25 @@
                           :msg  msg})
                (step head (str tail msg))))))))))
 
+(>defn handle-message
+  [result-atom chan _ws msg last?]
+  [ds/atom? ds/channel? any? (ds/instance? HeapCharBuffer) boolean? => any?]
+  (log/debug :handle-message/started {:msg msg :last? last? :k (class msg)})
+  (if last?
+    (let [msg-str (str @result-atom (str msg))
+          o       (json/read-str msg-str)]
+      (log/finer :handle-message/received {:o o})
+      (async/put! chan o)
+      (reset-vals! result-atom ""))
+    (let [msg-str (str @result-atom (str msg))]
+      (log/finer :handle-message/enqueueing {:msg-str msg-str})
+      (reset-vals! result-atom msg-str))))
+
 (>defn on-message
   "Takes a chan, returns a message handler"
-  [chan]
-  [ds/channel? => any?]
-  (partial handle-message chan))
+  [result-atom chan]
+  [ds/atom? ds/channel? => any?]
+  (partial handle-message result-atom chan))
 
 (>defn on-close
   [chan]
@@ -105,9 +110,10 @@
       (:client existing-connection))
     (do
       (log/info :get-client/opening {:url url})
-      (let [params {:on-message (on-message chan)
-                    :on-close   (on-close chan)}
-            client @(ws/websocket url params)]
+      (let [result-atom (atom "")
+            params      {:on-message (on-message result-atom chan)
+                         :on-close   (on-close chan)}
+            client      @(ws/websocket url params)]
         (swap! connections assoc url {:client client :chan chan})
         client))))
 

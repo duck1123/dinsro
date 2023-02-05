@@ -6,9 +6,9 @@
    [clojure.spec.gen.alpha :as gen]
    [clojure.test.check.generators]
    [tick.alpha.api :as tick])
-  #?(:clj
-     (:import
-      clojure.core.async.impl.channels.ManyToManyChannel)))
+  (:import
+   #?(:clj clojure.core.async.impl.channels.ManyToManyChannel)
+   #?(:clj clojure.lang.Atom)))
 
 (def default-timezone "America/Detroit")
 
@@ -24,6 +24,8 @@
    (defn channel?
      [c]
      (clojure.core/instance? ManyToManyChannel c)))
+
+#?(:clj (defn atom? [a] (= (type a) Atom)))
 
 (defn ->inst
   [s]

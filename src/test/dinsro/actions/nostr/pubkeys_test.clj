@@ -44,18 +44,18 @@
 (def tags [])
 
 (deftest parse-content-parsed
-  (let [data {"name"    "bob"
-              "about"   about
-              "nip05"   nip05
-              "lud06"   lud06
-              "lud16"   lud16
-              "picture" picture
-              "website" nil}]
+  (let [data {"name"  "bob" "about"   about   "nip05"   nip05 "lud06" lud06
+              "lud16" lud16 "picture" picture "website" nil}]
     (assertions
      (a.n.pubkeys/parse-content-parsed data) =check=>
      (_/embeds?*
-      #::m.n.pubkeys{:name "bob" :about about :nip05 nip05 :lud06 lud06 :lud16 lud16
-                     :picture picture :website nil}))))
+      #::m.n.pubkeys{:name    "bob"
+                     :about   about
+                     :nip05   nip05
+                     :lud06   lud06
+                     :lud16   lud16
+                     :picture picture
+                     :website nil}))))
 
 (deftest process-pubkey-data!
   (assertions
