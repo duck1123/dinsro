@@ -25,13 +25,63 @@
           :timeout)))))
 
 (>defn handle-message
-  [chan _ws msg _last?]
+  [chan _ws msg last?]
   [ds/channel? any? any? any? => any?]
-  (log/debug :handle-message/started {:msg msg})
+  (log/debug :handle-message/started {:msg   msg
+                                      :last? last?
+                                      :k     (class msg)})
   (let [msg-str (str msg)
         o       (json/read-str msg-str)]
     (log/finer :handle-message/received {:o o})
     (async/put! chan o)))
+
+(defn merge-strings []
+  (fn stepper [step]
+    (fn inner
+      ([] [])
+      ([r]
+       (log/info :merge-strings/inner1 {:r r})
+       r)
+      ([r [msg last]]
+       (log/info :merge-strings/inner2 {:r r :msg msg :last last})
+       (let [n (count r)
+             h (dec n)]
+         (if last
+           (condp = n
+             0
+             (do
+               (log/info :merge-strings/last-empty {})
+               (step r msg))
+
+             (let [head (subvec r 0 h)
+                   tail (nth r h)]
+               (log/info :merge-strings/last-not-last
+                         {:head head
+                          :tail tail
+                          :r    r
+                          :msg  msg
+                          :last last})
+               (step head (str tail msg))))
+           (condp = n
+             0
+             (do
+               (log/info :merge-strings/empty {})
+               (step r msg))
+
+             1
+             (do
+               (log/info :merge-strings/single {})
+               (step r msg))
+
+             ;; > 1
+             (let [head (subvec r 0 h)
+                   tail (nth r h)]
+               (log/info :merge-strings/not-last
+                         {:head head
+                          :tail tail
+                          :r    r
+                          :msg  msg})
+               (step head (str tail msg))))))))))
 
 (>defn on-message
   "Takes a chan, returns a message handler"
@@ -55,9 +105,9 @@
       (:client existing-connection))
     (do
       (log/info :get-client/opening {:url url})
-      (let [client @(ws/websocket url
-                                  {:on-message (on-message chan)
-                                   :on-close   (on-close chan)})]
+      (let [params {:on-message (on-message chan)
+                    :on-close   (on-close chan)}
+            client @(ws/websocket url params)]
         (swap! connections assoc url {:client client :chan chan})
         client))))
 
