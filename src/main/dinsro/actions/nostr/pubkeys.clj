@@ -13,16 +13,21 @@
    [lambdaisland.glogc :as log]))
 
 (>defn fetch-pubkey!
+  "Fetch info about pubkey from relay"
   ([pubkey]
    [::m.n.pubkeys/pubkey => any?]
-   (fetch-pubkey! pubkey (first (q.n.relays/index-ids))))
+   (if-let [relay-id (first (q.n.relays/index-ids))]
+     (fetch-pubkey! pubkey relay-id)
+     (throw (RuntimeException. "No relays"))))
   ([pubkey relay-id]
    [::m.n.pubkeys/pubkey ::m.n.relays/id => any?]
    (do
      (log/info :fetch-pubkey!/starting {:pubkey pubkey :relay-id relay-id})
-     (let [body {:authors [pubkey] :kinds [0]}
-           chan (a.n.relays/send! relay-id body)]
-       (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))))
+     (let [body         {:authors [pubkey] :kinds [0]}
+           chan         (a.n.relays/send! relay-id body)
+           message-chan (a.n.relays/process-messages chan)
+           timeout-chan (a.n.relays/take-timeout message-chan)]
+       (async/<!! timeout-chan)))))
 
 (>defn fetch-contact!
   [pubkey-id]
