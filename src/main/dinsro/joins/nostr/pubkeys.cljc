@@ -36,7 +36,8 @@
    ao/pc-resolve
    (fn [_env params]
      (let [pubkey-id (::m.n.pubkeys/id params)
-           ids       #?(:clj (q.n.pubkeys/find-contacts pubkey-id) :cljs (do (comment pubkey-id) []))]
+           ids       #?(:clj (q.n.pubkeys/find-contacts pubkey-id)
+                        :cljs (do (comment pubkey-id) []))]
        {::contacts (m.n.pubkeys/idents ids)}))})
 
 (defattr contact-count ::contact-count :int
