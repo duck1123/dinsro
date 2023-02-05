@@ -129,6 +129,8 @@
       (log/info :process-relay-messages/looping {:relay-id relay-id})
       (let [msg (async/<! chan)]
         (log/info :process-relay-messages/received {:msg msg})
+        (let [parsed-message (parse-message msg)]
+          (log/info :process-relay-messages/parsed {:parsed-message parsed-message}))
         (recur)))))
 
 (>defn connect!
