@@ -10,8 +10,9 @@
    [xtdb.api :as xt]))
 
 ;; [[../../actions/nostr/pubkey_contacts.clj][Pubkey Contact Actions]]
+;; [[../../joins/nostr/pubkey_contacts.cljc][Pubkey Contact Joins]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
-
+;; [[../../ui/nostr/pubkey_contacts.cljs][Pubkey Contacts UI]]
 
 (>defn create-record
   [params]
@@ -56,7 +57,7 @@
 (>defn find-by-actor-and-target
   [actor-id target-id]
   [::m.n.pubkeys/id ::m.n.pubkeys/id => (? ::m.n.pubkey-contacts/id)]
-  (log/info :find-by-actor-and-target/starting {:actor-id actor-id :target-id target-id})
+  (log/fine :find-by-actor-and-target/starting {:actor-id actor-id :target-id target-id})
   (let [db      (c.xtdb/main-db)
         query   '{:find  [?contact-id]
                   :in    [[?actor ?target]]
@@ -64,5 +65,5 @@
                           [?contact-id ::m.n.pubkey-contacts/target ?target]]}
         results (xt/q db query [actor-id target-id])
         id      (ffirst results)]
-    (log/info :find-by-actor-and-target/finished {:id id})
+    (log/fine :find-by-actor-and-target/finished {:id id})
     id))

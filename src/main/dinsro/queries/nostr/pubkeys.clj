@@ -4,6 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [lambdaisland.glogc :as log]
@@ -21,7 +22,7 @@
         params (assoc params ::m.n.pubkeys/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/info :create-record/finished {:id id})
+    (log/finer :create-record/finished {:id id})
     id))
 
 (>defn find-by-hex
@@ -94,6 +95,16 @@
     (log/info :find-by-subscription/finished {:ids ids})
     ids))
 
-(defn find-contacts
+(>defn find-contacts
   [pubkey-id]
-  (log/info :find-contacts/starting {:pubkey-id pubkey-id}))
+  [::m.n.pubkeys/id => (s/coll-of ::m.n.pubkeys/id)]
+  (log/info :find-contacts/starting {:pubkey-id pubkey-id})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?target-id]
+                 :in    [[?pubkey-id]]
+                 :where [[?pc-id ::m.n.pubkey-contacts/actor ?pubkey-id]
+                         [?pc-id ::m.n.pubkey-contacts/target ?target-id]]}
+        result (xt/q db query [pubkey-id])
+        ids    (map first result)]
+    (log/info :find-by-subscription/finished {:ids ids})
+    ids))
