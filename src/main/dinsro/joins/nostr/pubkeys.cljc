@@ -34,10 +34,11 @@
   {ao/target    ::m.n.pubkeys/id
    ao/pc-output [{::contacts [::m.n.pubkeys/id]}]
    ao/pc-resolve
-   (fn [_env params]
-     (if-let [pubkey-id (::m.n.pubkeys/id params)]
-       (let [ids       #?(:clj  (q.n.pubkeys/find-contacts pubkey-id)
-                          :cljs (do (comment pubkey-id) []))]
+   (fn [{:keys [query-params]} params]
+     (log/info :contacts/starting {:params params :query-params query-params})
+     (if-let [pubkey-id (::m.n.pubkeys/id query-params)]
+       (let [ids #?(:clj  (q.n.pubkeys/find-contacts pubkey-id)
+                    :cljs (do (comment pubkey-id) []))]
          {::contacts (m.n.pubkeys/idents ids)})
        #?(:clj (throw (RuntimeException. "No pubkey supplied"))
           :cljs (throw (js/Error. "No pubkey supplied")))))})
