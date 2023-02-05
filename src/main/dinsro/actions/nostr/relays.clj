@@ -30,6 +30,15 @@
       (swap! topic-channels assoc-in [relay-id request-id] output-chan)
       output-chan)))
 
+(defn get-relay-channel
+  "Returns the main channel for messages from a relay"
+  [relay-id]
+  (log/info :get-relay-channel/starting {})
+  (if-let [relay (q.n.relays/read-record relay-id)]
+    (let [address (::m.n.relays/address relay)]
+      (a.n.relay-client/get-channel address))
+    (throw (RuntimeException. "Failed to find relay"))))
+
 (defn handle-event
   [req-id evt]
   (log/info :handle-event/starting {:evt evt})
@@ -77,11 +86,11 @@
         nil))))
 
 (defn process-messages
-  [chan]
-  (log/info :process-messages/starting {})
+  [request-id chan]
+  (log/info :process-messages/starting {:request-id request-id})
   (let [output-chan (async/chan)]
     (async/go-loop []
-      (log/info :process-messages/looping {})
+      (log/info :process-messages/looping {:request-id request-id})
       (let [raw-message (async/<! chan)
             message     (parse-message raw-message)]
         (log/finer :process-messages/finished {:message message})
@@ -111,15 +120,30 @@
 
 (defonce request-counter (atom 0))
 
+(defn process-relay-messages
+  [relay-id]
+  (let [chan (get-relay-channel relay-id)]
+    (async/go-loop []
+      (log/info :process-relay-messages/looping {:relay-id relay-id})
+      (let [msg (async/<! chan)]
+        (log/info :process-relay-messages/received {:msg msg})
+        (recur)))))
+
 (>defn connect!
   "Connect to relay and store connection information"
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :connect!/starting {:relay-id relay-id})
   (q.n.relays/set-connected relay-id true)
-  (let [client   (get-client-for-id relay-id)]
-    (log/finer :connect!/finished {:client client})
-    client))
+  (if-let [client   (get-client-for-id relay-id false)]
+    (do
+      (log/finer :connect!/finished {:client client})
+      client)
+    (do
+      (log/info :connect!/creating {})
+      (let [client (get-client-for-id relay-id true)]
+        (process-relay-messages relay-id)
+        client))))
 
 (>defn send!
   "Send a message to a relay"

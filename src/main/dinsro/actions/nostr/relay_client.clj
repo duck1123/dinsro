@@ -29,7 +29,7 @@
   [ds/channel? any? any? any? => any?]
   (let [msg-str (str msg)
         o       (json/read-str msg-str)]
-    (log/finer :handle-message/received {:o o})
+    (log/fine :handle-message/received {:o o})
     (async/put! chan o)))
 
 (>defn on-message

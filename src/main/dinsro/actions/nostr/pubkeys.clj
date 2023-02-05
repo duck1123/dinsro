@@ -149,7 +149,8 @@
      (let [body {:authors [pubkey-hex] :kinds [0]}
            chan (a.n.relays/send! relay-id body)]
        (async/go-loop []
-         (let [message (async/<! (a.n.relays/process-messages chan))]
+         (let [message (async/<! chan)]
+           (log/info :fetch-pubkey!/processing {:message message})
            (process-fetch-pubkey-message output-chan pubkey-hex message)
            (recur)))
        output-chan))))
