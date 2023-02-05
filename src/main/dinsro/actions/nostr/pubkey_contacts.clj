@@ -40,8 +40,7 @@
          (async/go-loop []
            (let [msg (async/<! ch)]
              (log/info :fetch-contacts!/received {:msg msg})
-             (let [[_msg-type _request-id body] msg
-                   tags                         (get body "tags")]
+             (let [tags (:tags msg)]
                (doseq [tag tags]
                  (log/info :fetch-contacts!/tag {:tag tag})
                  (let [[_p hex _relay] tag
