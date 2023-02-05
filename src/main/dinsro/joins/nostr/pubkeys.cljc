@@ -50,4 +50,4 @@
                         :cljs (do (comment pubkey-id) []))]
        {::contact-count (count pubkeys)}))})
 
-(def attributes [admin-index index contact-count])
+(def attributes [admin-index index contact-count contacts])
