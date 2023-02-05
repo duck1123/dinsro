@@ -100,7 +100,7 @@
 
 (>defn get-client-for-id
   ([relay-id]
-   [::m.n.relays/id => any?]
+   [::m.n.relays/id => ::client]
    (get-client-for-id relay-id true))
   ([relay-id create-if-missing?]
    [::m.n.relays/id boolean? => (? ::client)]
@@ -113,15 +113,17 @@
              (throw (RuntimeException. "Failed to create client"))))
          (if-let [client (a.n.relay-client/get-client-for-address address)]
            client
-           (throw (RuntimeException. "Failed to find client")))))
+           nil
+           #_(throw (RuntimeException. "Failed to find client")))))
      (throw (RuntimeException. "Failed to find relay")))))
 
 ;; body is a map that will be turned into a message
 
 (defonce request-counter (atom 0))
 
-(defn process-relay-messages
+(>defn process-relay-messages
   [relay-id]
+  [::m.n.relays/id => any?]
   (let [chan (get-relay-channel relay-id)]
     (async/go-loop []
       (log/info :process-relay-messages/looping {:relay-id relay-id})
@@ -132,7 +134,7 @@
 (>defn connect!
   "Connect to relay and store connection information"
   [relay-id]
-  [::m.n.relays/id => any?]
+  [::m.n.relays/id => (? ::client)]
   (log/info :connect!/starting {:relay-id relay-id})
   (q.n.relays/set-connected relay-id true)
   (if-let [client   (get-client-for-id relay-id false)]
