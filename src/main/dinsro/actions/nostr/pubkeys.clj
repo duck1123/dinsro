@@ -37,26 +37,36 @@
         chan    (a.n.relay-client/get-channel address)]
     (async/<!! (a.n.relays/take-timeout (a.n.relays/process-messages chan)))))
 
+(>defn parse-content-parsed
+  [data]
+  [map? => (s/keys)]
+  (log/info :parse-content-parsed/starting {:data data})
+  (let [{name    "name"
+         about   "about"
+         nip05   "nip05"
+         lud06   "lud06"
+         lud16   "lud16"
+         picture "picture"
+         website "website"} data
+        content             {::m.n.pubkeys/name    name
+                             ::m.n.pubkeys/about   about
+                             ::m.n.pubkeys/nip05   nip05
+                             ::m.n.pubkeys/lud06   lud06
+                             ::m.n.pubkeys/lud16   lud16
+                             ::m.n.pubkeys/picture picture
+                             ::m.n.pubkeys/website website}]
+    (log/info :parse-content-parsed/finished {:content content})
+    content))
+
 (>defn parse-content
   [content]
   [string? => any?]
   (log/info :parse-content/starting {:content content})
   (let [data (json/read-str content)]
-    (log/info :parse-content/parsed {:data data})
-    (let [{name    "name"
-           about   "about"
-           nip05   "nip05"
-           lud06   "lud06"
-           lud16   "lud16"
-           picture "picture"
-           website "website"} data]
-      {::m.n.pubkeys/name    name
-       ::m.n.pubkeys/about   about
-       ::m.n.pubkeys/nip05   nip05
-       ::m.n.pubkeys/lud06   lud06
-       ::m.n.pubkeys/lud16   lud16
-       ::m.n.pubkeys/picture picture
-       ::m.n.pubkeys/website website})))
+    (log/info :parse-content/read {:data data})
+    (let [parsed (parse-content-parsed data)]
+      (log/info :parse-content/parsed {:parsed parsed})
+      parsed)))
 
 (>defn register-subscription!
   [relay-id pubkey-id]
@@ -98,18 +108,18 @@
 
 (>defn process-pubkey-data!
   [pubkey-hex content tags]
-  [string? any? any? => any?]
+  [string? string? (s/coll-of any?) => any?]
   (log/info :process-pubkey-data!/starting {:content content :tags tags})
   (process-pubkey-tags! tags)
   (if-let [pubkey-id (register-pubkey! pubkey-hex)]
-    (let [parsed (parse-content content)]
+    (let [parsed (parse-content-parsed (json/read-str content))]
       (log/info :process-pubkey-data!/parsed {:parsed parsed})
       (q.n.pubkeys/update! pubkey-id parsed))
     (throw (RuntimeException. "failed to find pubkey"))))
 
 (>defn process-pubkey-message!
   [event-type code body]
-  [string? string? any? => nil?]
+  [string? string? map? => nil?]
   (log/info :process-pubkey-message!/starting {:event-type event-type :code code :body body})
   (let [content    (get body "content")
         id         (get body "id")
