@@ -92,11 +92,11 @@
 
 (>defn process-pubkey-data!
   [pubkey-hex content tags]
-  [string? string? (s/coll-of any?) => any?]
+  [string? (s/keys) (s/coll-of any?) => any?]
   (log/info :process-pubkey-data!/starting {:content content :tags tags})
   (process-pubkey-tags! tags)
   (if-let [pubkey-id (register-pubkey! pubkey-hex)]
-    (let [parsed (parse-content-parsed (json/read-str content))]
+    (let [parsed (parse-content-parsed content)]
       (log/info :process-pubkey-data!/parsed {:parsed parsed})
       (q.n.pubkeys/update! pubkey-id parsed))
     (throw (RuntimeException. "failed to find pubkey"))))
@@ -119,7 +119,8 @@
                                                 :pubkey     pubkey-hex
                                                 :tags       tags
                                                 :content    content})
-    (process-pubkey-data! pubkey-hex content tags)))
+    (let [content-data (json/read-str content)]
+      (process-pubkey-data! pubkey-hex content-data tags))))
 
 (>def ::req-id string?)
 (>def ::tags (s/coll-of any?))

@@ -1,12 +1,10 @@
 (ns dinsro.actions.nostr.pubkeys-test
   (:require
+   [clojure.data.json :as json]
    [clojure.test :refer [deftest use-fixtures]]
-   ;; [dinsro.actions.authentication :as a.authentication]
    [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   ;; [dinsro.model.users :as m.users]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
-   ;; [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.check :as _]
    [fulcro-spec.core :refer [assertions]]))
@@ -42,6 +40,7 @@
   (str "{\"name\":\"bob\",\"about\":\"" about "\",\"nip05\":\"" nip05
        "\",\"lud06\":\"" lud06 "\",\"lud16\":\"" lud16
        "\",\"picture\":\"" picture "\"}"))
+(def content-data (json/read-str content))
 (def tags [])
 
 (deftest parse-content-parsed
@@ -61,7 +60,7 @@
 (deftest process-pubkey-data!
   (assertions
    "Should return an id"
-   (a.n.pubkeys/process-pubkey-data! pubkey-hex content tags) =check=> (_/is?* uuid?))
+   (a.n.pubkeys/process-pubkey-data! pubkey-hex content-data tags) =check=> (_/is?* uuid?))
 
   (let [id     (q.n.pubkeys/find-by-hex pubkey-hex)
         pubkey (q.n.pubkeys/read-record id)]
