@@ -37,8 +37,10 @@
        (let [pubkey-hex (::m.n.pubkeys/hex pubkey)
              body       {:authors [pubkey-hex] :kinds [3]}
              ch         (a.n.relays/send! relay-id body)]
+         (log/info :fetch-contact!/sent {:ch ch})
          (async/go-loop []
-           (let [msg (async/<! ch)]
+           (log/info :fetch-contact!/looping {:ch ch})
+           (when-let [msg (async/<! ch)]
              (log/info :fetch-contacts!/received {:msg msg})
              (let [tags (:tags msg)]
                (doseq [tag tags]
