@@ -9,7 +9,7 @@
    [dinsro.model.timezone :as timezone]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
-   [io.pedestal.log :as log]
+   [lambdaisland.glogc :as log]
    [taoensso.encore :as enc]))
 
 (>defn get-user-id
@@ -91,14 +91,14 @@
 (defn check-session!
   "get session from env"
   [env]
-  (log/info :check-session!/starting {})
+  (log/finer :check-session!/starting {})
   (if-let [session (some-> env :ring/request :session)]
     (do
-      (log/info :check-session!/existing-session {:session session})
+      (log/finest :check-session!/existing-session {:session session})
       (if-let [identity (:identity session)]
         (if-let [current-user (q.users/read-record identity)]
           (do
-            (log/info :check-session!/has-identity {})
+            (log/finest :check-session!/has-identity {})
             (assoc session :session/current-user current-user))
           {::auth/provider :local
            ::auth/status   :not-logged-in})

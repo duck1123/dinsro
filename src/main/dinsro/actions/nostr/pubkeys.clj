@@ -24,7 +24,7 @@
 (>defn parse-content-parsed
   [data]
   [map? => (s/keys)]
-  (log/info :parse-content-parsed/starting {:data data})
+  (log/finer :parse-content-parsed/starting {:data data})
   (let [{name    "name"
          about   "about"
          nip05   "nip05"
@@ -39,17 +39,17 @@
                              ::m.n.pubkeys/lud16   lud16
                              ::m.n.pubkeys/picture picture
                              ::m.n.pubkeys/website website}]
-    (log/info :parse-content-parsed/finished {:content content})
+    (log/finer :parse-content-parsed/finished {:content content})
     content))
 
 (>defn parse-content
   [content]
   [string? => any?]
-  (log/info :parse-content/starting {:content content})
+  (log/finer :parse-content/starting {:content content})
   (let [data (json/read-str content)]
-    (log/info :parse-content/read {:data data})
+    (log/finer :parse-content/read {:data data})
     (let [parsed (parse-content-parsed data)]
-      (log/info :parse-content/parsed {:parsed parsed})
+      (log/finer :parse-content/parsed {:parsed parsed})
       parsed)))
 
 (>defn register-subscription!
@@ -170,12 +170,12 @@
 (>defn update-pubkey!
   [pubkey-id]
   [::m.n.pubkeys/id => any?]
-  (log/info :update-pubkey!/starting {:pubkey-id pubkey-id})
+  (log/finer :update-pubkey!/starting {:pubkey-id pubkey-id})
   (async/go
     (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
       (let [hex      (::m.n.pubkeys/hex pubkey)
             response (async/<! (fetch-pubkey! hex))]
-        (log/info :update-pubkey!/finished {:response response})
+        (log/finer :update-pubkey!/finished {:response response})
         response)
       (throw (RuntimeException. "No pubkey")))))
 

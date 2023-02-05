@@ -55,9 +55,9 @@
      "Handler for fetch! mutation"
      [{::m.n.pubkeys/keys [id]}]
      [::fetch!-request => ::fetch!-response]
-     (log/info :do-fetch!/started {:id id})
+     (log/finer :do-fetch!/started {:id id})
      (try
-       (log/info :do-fetch!/starting {:id id})
+       (log/finer :do-fetch!/starting {:id id})
        (a.n.pubkeys/fetch-contact! id)
        {::mu/status :ok}
        (catch Exception ex

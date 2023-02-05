@@ -81,7 +81,7 @@
   (if last?
     (let [msg-str (str @result-atom (str msg))
           o       (json/read-str msg-str)]
-      (log/debug :handle-message/received {:o o})
+      (log/debug :handle-message/received {:o o :chan chan})
       (async/put! chan o)
       (reset-vals! result-atom ""))
     (let [msg-str (str @result-atom (str msg))]

@@ -10,6 +10,7 @@
    [dinsro.queries.nostr.pubkey-contacts :as q.n.pubkey-contacts]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
@@ -26,11 +27,11 @@
 
 (>defn fetch-contacts!
   ([pubkey-id]
-   [::m.n.pubkeys/id => any?]
+   [::m.n.pubkeys/id => ds/channel?]
    (let [relay-id (first (q.n.relays/index-ids))]
      (fetch-contacts! pubkey-id relay-id)))
   ([pubkey-id relay-id]
-   [::m.n.pubkeys/id ::m.n.relays/id => any?]
+   [::m.n.pubkeys/id ::m.n.relays/id => ds/channel?]
    (do
      (log/info :fetch-contacts!/starting {:pubkey-id pubkey-id :relay-id relay-id})
      (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
@@ -38,6 +39,7 @@
              body       {:authors [pubkey-hex] :kinds [3]}
              ch         (a.n.relays/send! relay-id body)]
          (log/info :fetch-contact!/sent {:ch ch})
+
          (async/go-loop []
            (log/info :fetch-contact!/looping {:ch ch})
            (when-let [msg (async/<! ch)]
@@ -48,7 +50,9 @@
                  (let [[_p hex _relay] tag
                        target-id       (a.n.pubkeys/register-pubkey! hex)]
                    (register-contact! pubkey-id target-id))))
-             (recur))))
+             (recur)))
+
+         ch)
        (throw (RuntimeException. "Failed to find pubkey"))))))
 
 (>defn do-fetch-contacts!

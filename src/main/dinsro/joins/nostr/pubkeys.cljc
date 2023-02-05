@@ -17,7 +17,7 @@
    ao/pc-output [{::index [::m.n.pubkeys/id]}]
    ao/pc-resolve
    (fn [_env _]
-     (log/info :index/starting {})
+     (log/finer :index/starting {})
      (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
        {::index (m.n.pubkeys/idents ids)}))})
 
