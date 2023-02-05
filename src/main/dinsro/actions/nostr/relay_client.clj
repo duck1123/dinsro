@@ -27,6 +27,7 @@
 (>defn handle-message
   [chan _ws msg _last?]
   [ds/channel? any? any? any? => any?]
+  (log/debug :handle-message/started {:msg msg})
   (let [msg-str (str msg)
         o       (json/read-str msg-str)]
     (log/finer :handle-message/received {:o o})

@@ -76,6 +76,7 @@
 (defn parse-message
   "Parse a response message"
   [message]
+  (log/info :parse-message/starting {:message message})
   (let [[type req-id evt] message]
     (log/info :parse-message/starting {:req-id req-id :type type})
     (condp = type
@@ -91,11 +92,12 @@
   (let [output-chan (async/chan)]
     (async/go-loop []
       (log/info :process-messages/looping {:request-id request-id})
-      (let [raw-message (async/<! chan)
-            message     (parse-message raw-message)]
-        (log/finer :process-messages/finished {:message message})
-        (when message (async/put! output-chan message))
-        (recur)))
+      (let [raw-message (async/<! chan)]
+        (log/info :process-messages/raw {:raw-message raw-message})
+        (let [message (parse-message raw-message)]
+          (log/finer :process-messages/finished {:message message})
+          (when message (async/put! output-chan message))
+          (recur))))
     output-chan))
 
 (>defn get-client-for-id
