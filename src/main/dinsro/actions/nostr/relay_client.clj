@@ -77,21 +77,22 @@
 (>defn handle-message
   [result-atom chan _ws msg last?]
   [ds/atom? ds/channel? any? (ds/instance? HeapCharBuffer) boolean? => any?]
-  (log/debug :handle-message/started {:msg msg :last? last? :k (class msg)})
+  (log/finer :handle-message/started {:msg msg :last? last?})
   (if last?
     (let [msg-str (str @result-atom (str msg))
           o       (json/read-str msg-str)]
-      (log/finer :handle-message/received {:o o})
+      (log/debug :handle-message/received {:o o})
       (async/put! chan o)
       (reset-vals! result-atom ""))
     (let [msg-str (str @result-atom (str msg))]
-      (log/finer :handle-message/enqueueing {:msg-str msg-str})
+      (log/debug :handle-message/enqueueing {:msg-str msg-str})
       (reset-vals! result-atom msg-str))))
 
 (>defn on-message
   "Takes a chan, returns a message handler"
   [result-atom chan]
   [ds/atom? ds/channel? => any?]
+  (log/info :on-message/starting {:chan chan})
   (partial handle-message result-atom chan))
 
 (>defn on-close
@@ -130,14 +131,14 @@
   [string? => (? ds/channel?)]
   (if-let [client (get-in @connections [address :client])]
     (do
-      (log/info :get-client-for-id/cached {:client client})
+      (log/finer :get-client-for-address/cached {:client client})
       client)
     (do
-      (log/info :get-client-for-id/missing {})
+      (log/finer :get-client-for-address/missing {})
       nil)))
 
 (defn send!
   [client request-id body]
-  (log/info :send!/starting {:client client :request-id request-id :body body})
+  (log/finer :send!/starting {:client client :request-id request-id :body body})
   (let [message    (json/json-str ["REQ" request-id body])]
     (ws/send! client message)))

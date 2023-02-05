@@ -96,8 +96,10 @@
         (log/info :process-messages/raw {:raw-message raw-message})
         (let [message (parse-message raw-message)]
           (log/finer :process-messages/finished {:message message})
-          (when message (async/put! output-chan message))
-          (recur))))
+          (when message
+            (async/put! output-chan message)
+            (recur)))))
+
     output-chan))
 
 (>defn get-client-for-id
@@ -137,15 +139,14 @@
             (log/info :process-relay-messages/parsed {:relay-id       relay-id
                                                       :request-id     request-id
                                                       :parsed-message parsed-message})
-            (async/put! channel parsed-message)))
-
-        (recur)))))
+            (async/put! channel parsed-message)
+            (recur)))))))
 
 (>defn connect!
   "Connect to relay and store connection information"
   [relay-id]
   [::m.n.relays/id => (? ::client)]
-  (log/info :connect!/starting {:relay-id relay-id})
+  (log/finer :connect!/starting {:relay-id relay-id})
   (q.n.relays/set-connected relay-id true)
   (if-let [client   (get-client-for-id relay-id false)]
     (do
@@ -165,6 +166,7 @@
   (let [client        (connect! relay-id)
         request-id    (str "adhoc " @request-counter)
         topic-channel (get-channel relay-id request-id)]
+    (log/info :send!/topic {:topic-channel topic-channel})
     (swap! request-counter inc)
     (a.n.relay-client/send! client request-id body)
     topic-channel))

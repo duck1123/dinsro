@@ -40,12 +40,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.relays/id)]
-  (log/info :index-ids/starting {})
+  (log/finer :index-ids/starting {})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?relay-id]
                 :where [[?relay-id ::m.n.relays/id _]]}
         ids   (map first (xt/q db query))]
-    (log/info :index-ids/finished {:ids ids})
+    (log/finer :index-ids/finished {:ids ids})
     ids))
 
 (>defn find-by-address
@@ -106,7 +106,7 @@
   (log/info :set-connected/starting {:relay-id relay-id :connected connected})
   (let [node     (c.xtdb/main-node)
         response (xt/submit-tx node [[::xt/fn :toggle-connected relay-id connected]])]
-    (log/info :set-connected/finished {:response response})
+    (log/finer :set-connected/finished {:response response})
     response))
 
 (defn initialize-queries!

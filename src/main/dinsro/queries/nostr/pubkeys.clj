@@ -98,7 +98,7 @@
 (>defn find-contacts
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.pubkeys/id)]
-  (log/info :find-contacts/starting {:pubkey-id pubkey-id})
+  (log/finer :find-contacts/starting {:pubkey-id pubkey-id})
   (let [db     (c.xtdb/main-db)
         query  '{:find  [?target-id]
                  :in    [[?pubkey-id]]
@@ -106,5 +106,5 @@
                          [?pc-id ::m.n.pubkey-contacts/target ?target-id]]}
         result (xt/q db query [pubkey-id])
         ids    (map first result)]
-    (log/info :find-by-subscription/finished {:ids ids})
+    (log/finer :find-by-subscription/finished {:ids ids})
     ids))
