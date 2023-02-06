@@ -10,8 +10,6 @@
    java.nio.HeapCharBuffer))
 
 (defonce connections (atom {}))
-(def req-id "5022")
-
 (def timeout-time 10000)
 
 (>defn take-timeout
