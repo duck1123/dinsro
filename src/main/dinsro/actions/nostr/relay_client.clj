@@ -132,7 +132,7 @@
 
 (>defn get-client-for-address
   [address]
-  [string? => (? ds/channel?)]
+  [string? => (? ::client)]
   (if-let [client (get-in @connections [address :client])]
     (do
       (log/finer :get-client-for-address/cached {:client client})

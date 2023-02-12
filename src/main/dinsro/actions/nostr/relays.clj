@@ -1,7 +1,7 @@
 (ns dinsro.actions.nostr.relays
   (:require
    [clojure.core.async :as async]
-   [clojure.data.json :as json]
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -39,16 +39,19 @@
       (a.n.relay-client/get-channel address))
     (throw (RuntimeException. "Failed to find relay"))))
 
-(defn handle-event
+(>def ::incoming-event (s/keys))
+(>def ::outgoing-event (s/keys))
+
+(>defn handle-event
   [req-id evt]
+  [string? ::incoming-event => ::outgoing-event]
   (log/info :handle-event/starting {:evt evt})
   (let [{tags     "tags"
          id       "id"
          pow      "pow"
          notified "notified"
          sig      "sig"
-         content  "content"} evt
-        parsed-content       (json/read-str content)]
+         content  "content"} evt]
     (log/info :parse-message/parsed
               {:evt            evt
                :req-id         req-id
@@ -57,16 +60,14 @@
                :pow            pow
                :notified       notified
                :sig            sig
-               :content        content
-               :parsed-content parsed-content})
+               :content        content})
     {:req-id         req-id
      :tags           tags
      :id             id
      :pow            pow
      :notified       notified
      :sig            sig
-     :content        content
-     :parsed-content parsed-content}))
+     :content        content}))
 
 (defn handle-eose
   [req-id evt]

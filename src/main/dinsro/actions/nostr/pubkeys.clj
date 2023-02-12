@@ -129,8 +129,7 @@
 (>def ::notified nil?)
 (>def ::sig string?)
 (>def ::content string?)
-(>def ::parsed-content (s/keys))
-(>def ::message (s/keys :req-un [::req-id ::tags ::id ::pow ::notified ::sig ::content ::parsed-content]))
+(>def ::message (s/keys :req-un [::req-id ::tags ::id ::pow ::notified ::sig ::content]))
 
 (>defn process-fetch-pubkey-message
   [output-chan pubkey-hex message]
