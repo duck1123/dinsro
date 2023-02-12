@@ -356,6 +356,10 @@ deployments:
           tag: ${runtime.images.dinsro.tag}
         persistence:
           enabled: ${USE_PERSISTENCE}
+        ingress:
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+            ingress.kubernetes.io/force-ssl-redirect: "true"
   nostr-rs-relay:
     helm:
       chart:
