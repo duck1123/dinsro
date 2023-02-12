@@ -2,6 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [clojure.data.json :as json]
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
@@ -11,6 +12,7 @@
 
 (defonce connections (atom {}))
 (def timeout-time 10000)
+(s/def ::client any?)
 
 (>defn take-timeout
   "Read from a channel with a timeout"
@@ -77,9 +79,13 @@
   [ds/atom? ds/channel? any? (ds/instance? HeapCharBuffer) boolean? => any?]
   (log/finer :handle-message/started {:msg msg :last? last?})
   (if last?
-    (let [msg-str (str @result-atom (str msg))
-          o       (json/read-str msg-str)]
-      (log/debug :handle-message/received {:o o :chan chan})
+    (let [msg-str                      (str @result-atom (str msg))
+          o                            (json/read-str msg-str)
+          [event-type request-id body] o]
+      (log/debug :handle-message/received {:event-type event-type
+                                           :body       body
+                                           :request-id request-id
+                                           :chan       chan})
       (async/put! chan o)
       (reset-vals! result-atom ""))
     (let [msg-str (str @result-atom (str msg))]
@@ -102,7 +108,7 @@
 
 (>defn get-client
   [chan url]
-  [ds/channel? string? => any?]
+  [ds/channel? string? => ::client]
   (if-let [existing-connection (get @connections url)]
     (do
       (log/info :get-client/cached {:url url})
@@ -138,5 +144,7 @@
 (defn send!
   [client request-id body]
   (log/finer :send!/starting {:client client :request-id request-id :body body})
-  (let [message    (json/json-str ["REQ" request-id body])]
-    (ws/send! client message)))
+  (let [chan (async/chan)]
+    (let [message (json/json-str ["REQ" request-id body])]
+      (ws/send! client message))
+    chan))

@@ -108,18 +108,39 @@
    (get-client-for-id relay-id true))
   ([relay-id create-if-missing?]
    [::m.n.relays/id boolean? => (? ::client)]
-   (if-let [relay (q.n.relays/read-record relay-id)]
-     (let [address (::m.n.relays/address relay)]
-       (if create-if-missing?
-         (let [chan (async/chan)]
-           (if-let [client (a.n.relay-client/get-client chan address)]
+   (do
+     (log/info :get-client-for-id/starting {:relay-id          relay-id
+                                            :create-if-missing create-if-missing?})
+     (if-let [relay (q.n.relays/read-record relay-id)]
+       (let [address (::m.n.relays/address relay)]
+         (if create-if-missing?
+           (let [chan (async/chan)]
+             (if-let [client (a.n.relay-client/get-client chan address)]
+               (do
+                 (log/info :get-client-for-id/created {})
+                 (async/go-loop []
+                   (log/info :get-client-for-id/looping {})
+                   (if-let [msg                          (async/<! chan)]
+                     (let [[event-type request-id body] msg
+                           topic-channel                (get-channel relay-id request-id)]
+                       (log/info :get-client-for-id/received {:event-type    event-type
+                                                              :request-id    request-id
+                                                              :body          body
+                                                              :topic-channel topic-channel})
+                       (if-let [parsed-message (parse-message msg)]
+                         (async/put! topic-channel parsed-message)
+                         (log/info :get-client-for-id/no-msg {:msg msg}))
+                       topic-channel
+                       (recur))
+                     (log/info :get-client-for-id/closed {})))
+
+                 client)
+               (throw (RuntimeException. "Failed to create client"))))
+           (if-let [client (a.n.relay-client/get-client-for-address address)]
              client
-             (throw (RuntimeException. "Failed to create client"))))
-         (if-let [client (a.n.relay-client/get-client-for-address address)]
-           client
-           nil
-           #_(throw (RuntimeException. "Failed to find client")))))
-     (throw (RuntimeException. "Failed to find relay")))))
+             nil
+             #_(throw (RuntimeException. "Failed to find client")))))
+       (throw (RuntimeException. "Failed to find relay"))))))
 
 ;; body is a map that will be turned into a message
 
@@ -155,7 +176,7 @@
     (do
       (log/info :connect!/creating {})
       (let [client (get-client-for-id relay-id true)]
-        (process-relay-messages relay-id)
+        ;; (process-relay-messages relay-id)
         client))))
 
 (>defn send!
@@ -168,10 +189,8 @@
         topic-channel (get-channel relay-id request-id)]
     (log/info :send!/topic {:topic-channel topic-channel})
     (swap! request-counter inc)
-    (let [send-channel (a.n.relay-client/send! client request-id body)]
-      (async/pipe send-channel topic-channel)
-      (log/info :send!/sent {:topic-channel topic-channel :send-channel send-channel})
-      topic-channel)))
+    (a.n.relay-client/send! client request-id body)
+    topic-channel))
 
 (>defn disconnect!
   "Disconnect from relay and clear connection information"
