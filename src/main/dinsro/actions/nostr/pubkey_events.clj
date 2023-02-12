@@ -2,6 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
+   [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts]
    [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -9,10 +10,6 @@
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [lambdaisland.glogc :as log]))
-
-(defn register-contact!
-  [pubkey-id target-id]
-  (log/info :register-contact!/starting {:pubkey-id pubkey-id :target-id target-id}))
 
 (>defn fetch-events!
   ([pubkey-id]
@@ -37,8 +34,9 @@
                  (log/info :fetch-contacts!/tag {:tag tag})
                  (let [[_p hex _relay] tag
                        target-id       (a.n.pubkeys/register-pubkey! hex)]
-                   (register-contact! pubkey-id target-id))))
+                   (a.n.pubkey-contacts/register-contact! pubkey-id target-id))))
              (recur)))
+
          ch)
        (throw (RuntimeException. "Failed to find pubkey"))))))
 
