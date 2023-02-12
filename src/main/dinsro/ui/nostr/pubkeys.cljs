@@ -14,6 +14,7 @@
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.pubkey-contacts :as u.n.pubkey-contacts]
+   [dinsro.ui.nostr.pubkey-events :as u.n.pubkey-events]
    [dinsro.ui.nostr.pubkey-relays :as u.n.pubkey-relays]
    [dinsro.ui.nostr.pubkey-users :as u.n.pubkey-users]))
 
@@ -27,14 +28,16 @@
   {:router-targets
    [u.n.pubkey-users/SubPage
     u.n.pubkey-relays/SubPage
-    u.n.pubkey-contacts/SubPage]})
+    u.n.pubkey-contacts/SubPage
+    u.n.pubkey-events/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (def menu-items
   [{:key "contacts" :name "Contacts" :route "dinsro.ui.nostr.pubkey-contacts/SubPage"}
    {:key "users" :name "Users" :route "dinsro.ui.nostr.pubkey-users/SubPage"}
-   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkey-relays/SubPage"}])
+   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkey-relays/SubPage"}
+   {:key "events" :name "Events" :route "dinsro.ui.nostr.pubkey-events/SubPage"}])
 
 (defsc Show
   "Show a core node"

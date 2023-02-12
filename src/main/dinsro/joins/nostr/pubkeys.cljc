@@ -2,7 +2,9 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   #?(:clj [dinsro.queries.nostr.events :as q.n.events])
    #?(:clj [dinsro.queries.nostr.pubkeys :as q.n.pubkeys])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -54,4 +56,17 @@
                         :cljs (do (comment pubkey-id) []))]
        {::contact-count (count pubkeys)}))})
 
-(def attributes [admin-index index contact-count contacts])
+(defattr events ::events :ref
+  {ao/target    ::m.n.pubkeys/id
+   ao/pc-output [{::events [::m.n.events/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params]} params]
+     (log/info :events/starting {:params params :query-params query-params})
+     (if-let [pubkey-id (::m.n.pubkeys/id query-params)]
+       (let [ids #?(:clj  (q.n.events/find-by-author pubkey-id)
+                    :cljs (do (comment pubkey-id) []))]
+         {::contacts (m.n.events/idents ids)})
+       #?(:clj (throw (RuntimeException. "No pubkey supplied"))
+          :cljs (throw (js/Error. "No pubkey supplied")))))})
+
+(def attributes [admin-index index contact-count contacts events])

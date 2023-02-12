@@ -26,6 +26,7 @@
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
+   [dinsro.joins.nostr.event-tags :as j.n.event-tags]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.joins.nostr.pubkey-contacts :as j.n.pubkey-contacts]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
@@ -69,6 +70,7 @@
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
+   [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -100,6 +102,7 @@
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
+   #?(:clj [dinsro.mutations.nostr.event-tags :as mu.n.event-tags])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
    #?(:clj [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts])
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
@@ -135,6 +138,7 @@
         j.ln.payreqs/attributes
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
+        j.n.event-tags/attributes
         j.n.events/attributes
         j.n.pubkey-contacts/attributes
         j.n.pubkeys/attributes
@@ -176,6 +180,7 @@
         m.ln.peers/attributes
         m.ln.remote-nodes/attributes
         m.n.contact-relays/attributes
+        m.n.event-tags/attributes
         m.n.events/attributes
         m.n.pubkey-contacts/attributes
         m.n.pubkeys/attributes
@@ -214,6 +219,7 @@
            mu.ln.peers/resolvers
            mu.ln.nodes/resolvers
            mu.ln.remote-nodes/resolvers
+           mu.n.event-tags/resolvers
            mu.n.events/resolvers
            mu.n.pubkey-contacts/resolvers
            mu.n.pubkeys/resolvers

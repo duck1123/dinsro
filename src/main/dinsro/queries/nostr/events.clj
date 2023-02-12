@@ -5,9 +5,12 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
+
+;; [[../../model/nostr/events.cljc][Event Model]]
 
 (>defn create-record
   "Create a relay record"
@@ -39,6 +42,19 @@
                 :where [[?relay-id ::m.n.events/id _]]}
         ids   (map first (xt/q db query))]
     (log/info :index-ids/finished {:ids ids})
+    ids))
+
+(>defn find-by-author
+  [pubkey-id]
+  [::m.n.pubkeys/id => (s/coll-of ::m.n.events/id)]
+  (log/finer :find-by-author/starting {:pubkey-id pubkey-id})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?event-id]
+                 :in    [[?pubkey-id]]
+                 :where [[?pc-id ::m.n.events/pubkey ?pubkey-id]]}
+        result (xt/q db query [pubkey-id])
+        ids    (map first result)]
+    (log/finer :find-by-subscription/finished {:ids ids})
     ids))
 
 (comment
