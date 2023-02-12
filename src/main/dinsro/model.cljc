@@ -105,6 +105,7 @@
    #?(:clj [dinsro.mutations.nostr.event-tags :as mu.n.event-tags])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
    #?(:clj [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts])
+   #?(:clj [dinsro.mutations.nostr.pubkey-events :as mu.n.pubkey-events])
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
    #?(:clj [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys])
@@ -222,6 +223,7 @@
            mu.n.event-tags/resolvers
            mu.n.events/resolvers
            mu.n.pubkey-contacts/resolvers
+           mu.n.pubkey-events/resolvers
            mu.n.pubkeys/resolvers
            mu.n.relays/resolvers
            mu.n.subscription-pubkeys/resolvers
