@@ -168,8 +168,9 @@
         topic-channel (get-channel relay-id request-id)]
     (log/info :send!/topic {:topic-channel topic-channel})
     (swap! request-counter inc)
-    (a.n.relay-client/send! client request-id body)
-    topic-channel))
+    (let [send-channel (a.n.relay-client/send! client request-id body)]
+      (log/info :send!/sent {:topic-channel topic-channel :send-channel send-channel})
+      topic-channel)))
 
 (>defn disconnect!
   "Disconnect from relay and clear connection information"

@@ -160,6 +160,7 @@
      (log/info :fetch-pubkey!/starting {:pubkey-hex pubkey-hex :relay-id relay-id})
      (let [body {:authors [pubkey-hex] :kinds [0]}
            chan (a.n.relays/send! relay-id body)]
+       (log/info :fetch-pubkey!/sent {:chan chan})
        (async/go-loop []
          (let [message (async/<! chan)]
            (log/info :fetch-pubkey!/processing {:message message})
