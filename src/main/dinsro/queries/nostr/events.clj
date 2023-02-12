@@ -51,11 +51,15 @@
   (let [db     (c.xtdb/main-db)
         query  '{:find  [?event-id]
                  :in    [[?pubkey-id]]
-                 :where [[?pc-id ::m.n.events/pubkey ?pubkey-id]]}
+                 :where [[?event-id ::m.n.events/pubkey ?pubkey-id]]}
         result (xt/q db query [pubkey-id])
         ids    (map first result)]
     (log/finer :find-by-subscription/finished {:ids ids})
     ids))
+
+(defn register-event!
+  [params]
+  (log/info :register-event/starting {:params params}))
 
 (comment
 

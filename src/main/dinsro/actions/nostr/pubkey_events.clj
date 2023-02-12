@@ -2,11 +2,11 @@
   (:require
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts]
-   [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
    [dinsro.actions.nostr.relays :as a.n.relays]
+   [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.queries.nostr.events :as q.n.events]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [lambdaisland.glogc :as log]))
@@ -29,15 +29,23 @@
            (log/info :fetch-events!/looping {:ch ch})
            (when-let [msg (async/<! ch)]
              (log/info :fetch-events!/received {:msg msg})
-             (let [tags (:tags msg)]
+             (let [{:keys [tags id
+                           created-at pubkey
+                           kind sig content]} msg
+                   params                     {::m.n.events/note-id    id
+                                               ::m.n.events/pubkey     pubkey
+                                               ::m.n.events/kind       kind
+                                               ::m.n.events/sig        sig
+                                               ::m.n.events/content    content
+                                               ::m.n.events/created-at created-at}
+                   event-id                   (q.n.events/register-event! params)]
+               (log/info :fetch-events!/registered {:event-id event-id})
                (doseq [tag tags]
-                 (log/info :fetch-contacts!/tag {:tag tag})
-                 (let [[_p hex _relay] tag
-                       target-id       (a.n.pubkeys/register-pubkey! hex)]
-                   (a.n.pubkey-contacts/register-contact! pubkey-id target-id))))
-             (recur)))
-
-         ch)
+                 (log/info :fetch-events!/processing-tag {:tag tag})
+                 (let [[p hex relay] tag]
+                   (log/info :fetch-events!/parsed-tag {:p p :hex hex :relay relay})))
+               (recur)))
+           ch))
        (throw (RuntimeException. "Failed to find pubkey"))))))
 
 (>defn do-fetch!

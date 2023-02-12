@@ -46,28 +46,23 @@
   [req-id evt]
   [string? ::incoming-event => ::outgoing-event]
   (log/info :handle-event/starting {:evt evt})
-  (let [{tags     "tags"
-         id       "id"
-         pow      "pow"
-         notified "notified"
-         sig      "sig"
-         content  "content"} evt]
-    (log/info :parse-message/parsed
-              {:evt            evt
-               :req-id         req-id
-               :tags           tags
-               :id             id
-               :pow            pow
-               :notified       notified
-               :sig            sig
-               :content        content})
-    {:req-id         req-id
-     :tags           tags
-     :id             id
-     :pow            pow
-     :notified       notified
-     :sig            sig
-     :content        content}))
+  (let [{id         "id"
+         kind       "kind"
+         pubkey     "pubkey"
+         created-at "created_at"
+         content    "content"
+         tags       "tags"
+         sig        "sig"} evt
+        parsed-event       {:req-id     req-id
+                            :tags       tags
+                            :id         id
+                            :created-at created-at
+                            :pubkey     pubkey
+                            :kind       kind
+                            :sig        sig
+                            :content    content}]
+    (log/info :handle-event/finished {:parsed-event parsed-event})
+    parsed-event))
 
 (defn handle-eose
   [req-id evt]
