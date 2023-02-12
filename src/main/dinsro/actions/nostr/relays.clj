@@ -169,6 +169,7 @@
     (log/info :send!/topic {:topic-channel topic-channel})
     (swap! request-counter inc)
     (let [send-channel (a.n.relay-client/send! client request-id body)]
+      (async/pipe send-channel topic-channel)
       (log/info :send!/sent {:topic-channel topic-channel :send-channel send-channel})
       topic-channel)))
 
