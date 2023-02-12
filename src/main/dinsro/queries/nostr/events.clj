@@ -57,9 +57,28 @@
     (log/finer :find-by-subscription/finished {:ids ids})
     ids))
 
-(defn register-event!
+(>defn find-by-note-id
+  [note-id]
+  [::m.n.events/note-id => (? ::m.n.events/id)]
+  (log/finer :find-by-note-id/starting {:note-id note-id})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?event-id]
+                 :in    [[?note-id]]
+                 :where [[?event-id ::m.n.events/note-id ?note-id]]}
+        result (xt/q db query [note-id])
+        id    (ffirst result)]
+    (log/finer :find-by-note-id/finished {:id id})
+    id))
+
+(>defn register-event!
   [params]
-  (log/info :register-event/starting {:params params}))
+  [::m.n.events/params => ::m.n.events/id]
+  (let [note-id (::m.n.events/note-id params)]
+    (if-let [event-id (find-by-note-id note-id)]
+      event-id
+      (do
+        (log/info :register-event!/creating {})
+        (create-record params)))))
 
 (comment
 
