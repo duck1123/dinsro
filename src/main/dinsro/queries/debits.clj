@@ -22,7 +22,7 @@
         params (assoc params ::m.debits/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/info :create-record/finished {:id id})
+    (log/finer :create-record/finished {:id id})
     id))
 
 (>defn read-record

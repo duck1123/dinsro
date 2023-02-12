@@ -8,7 +8,7 @@
   "fakecoin" ["mainnet"]}
 
  :relays ["wss://nostream.dev.kronkltd.net"
-          "wss://relay.kronkltd.net"]
+          #_"wss://relay.kronkltd.net"]
 
  :nodes
  [{:name    "bitcoin-alice"

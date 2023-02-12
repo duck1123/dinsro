@@ -9,7 +9,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.relays :as j.n.relays]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
@@ -78,7 +77,7 @@
    ro/row-actions       [fetch-action-button
                          toggle-action-button
                          delete-action-button]
-   ro/row-pk            m.c.nodes/id
+   ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
    ro/title             "Relays Report"})
