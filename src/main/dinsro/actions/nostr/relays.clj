@@ -82,22 +82,6 @@
         (log/warn :parse-message/unknown-type {:type type})
         nil))))
 
-(defn process-messages
-  [request-id chan]
-  (log/info :process-messages/starting {:request-id request-id})
-  (let [output-chan (async/chan)]
-    (async/go-loop []
-      (log/info :process-messages/looping {:request-id request-id})
-      (let [raw-message (async/<! chan)]
-        (log/info :process-messages/raw {:raw-message raw-message})
-        (let [message (parse-message raw-message)]
-          (log/finer :process-messages/finished {:message message})
-          (when message
-            (async/put! output-chan message)
-            (recur)))))
-
-    output-chan))
-
 (>defn get-client-for-id
   ([relay-id]
    [::m.n.relays/id => ::client]
@@ -105,30 +89,30 @@
   ([relay-id create-if-missing?]
    [::m.n.relays/id boolean? => (? ::client)]
    (do
-     (log/info :get-client-for-id/starting {:relay-id          relay-id
-                                            :create-if-missing create-if-missing?})
+     (log/finest :get-client-for-id/starting {:relay-id          relay-id
+                                              :create-if-missing create-if-missing?})
      (if-let [relay (q.n.relays/read-record relay-id)]
        (let [address (::m.n.relays/address relay)]
          (if create-if-missing?
            (let [chan (async/chan)]
              (if-let [client (a.n.relay-client/get-client chan address)]
                (do
-                 (log/info :get-client-for-id/created {})
+                 (log/finest :get-client-for-id/created {})
                  (async/go-loop []
-                   (log/info :get-client-for-id/looping {})
-                   (if-let [msg                          (async/<! chan)]
+                   (log/finest :get-client-for-id/looping {})
+                   (if-let [msg (async/<! chan)]
                      (let [[event-type request-id body] msg
                            topic-channel                (get-channel relay-id request-id)]
-                       (log/info :get-client-for-id/received {:event-type    event-type
-                                                              :request-id    request-id
-                                                              :body          body
-                                                              :topic-channel topic-channel})
+                       (log/finest :get-client-for-id/received {:event-type    event-type
+                                                                :request-id    request-id
+                                                                :body          body
+                                                                :topic-channel topic-channel})
                        (if-let [parsed-message (parse-message msg)]
                          (async/put! topic-channel parsed-message)
-                         (log/info :get-client-for-id/no-msg {:msg msg}))
+                         (log/finest :get-client-for-id/no-msg {:msg msg}))
                        topic-channel
                        (recur))
-                     (log/info :get-client-for-id/closed {})))
+                     (log/finest :get-client-for-id/closed {})))
 
                  client)
                (throw (RuntimeException. "Failed to create client"))))

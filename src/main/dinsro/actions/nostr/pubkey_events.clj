@@ -3,6 +3,7 @@
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.nostr.event-tags :as a.n.event-tags]
+   [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -30,16 +31,17 @@
            (log/info :fetch-events!/looping {:ch ch})
            (when-let [msg (async/<! ch)]
              (log/info :fetch-events!/received {:msg msg})
-             (let [{:keys [tags id created-at
-                           pubkey kind sig
-                           content]} msg
-                   params            {::m.n.events/note-id    id
-                                      ::m.n.events/pubkey     pubkey
-                                      ::m.n.events/kind       kind
-                                      ::m.n.events/sig        sig
-                                      ::m.n.events/content    content
-                                      ::m.n.events/created-at created-at}
-                   event-id          (q.n.events/register-event! params)]
+             (let [{:keys      [tags id created-at
+                                kind sig content]
+                    pubkey-hex :pubkey} msg
+                   pubkey               (a.n.pubkeys/register-pubkey! pubkey-hex)
+                   params               {::m.n.events/note-id    id
+                                         ::m.n.events/pubkey     pubkey
+                                         ::m.n.events/kind       kind
+                                         ::m.n.events/sig        sig
+                                         ::m.n.events/content    content
+                                         ::m.n.events/created-at created-at}
+                   event-id             (q.n.events/register-event! params)]
                (doseq [tag tags]
                  (log/info :fetch-events!/processing-tag {:tag tag :event-id event-id})
                  (a.n.event-tags/register-tag! event-id tag))

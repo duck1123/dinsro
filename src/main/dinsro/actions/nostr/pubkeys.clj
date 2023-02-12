@@ -125,11 +125,10 @@
 (>def ::req-id string?)
 (>def ::tags (s/coll-of any?))
 (>def ::id string?)
-(>def ::pow nil?)
-(>def ::notified nil?)
 (>def ::sig string?)
 (>def ::content string?)
-(>def ::message (s/keys :req-un [::req-id ::tags ::id ::pow ::notified ::sig ::content]))
+(>def ::message (s/keys :req-un [::req-id ::tags ::id
+                                 ::sig ::content]))
 
 (>defn process-fetch-pubkey-message
   [output-chan pubkey-hex message]

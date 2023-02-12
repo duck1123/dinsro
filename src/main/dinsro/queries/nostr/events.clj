@@ -77,7 +77,7 @@
     (if-let [event-id (find-by-note-id note-id)]
       event-id
       (do
-        (log/info :register-event!/creating {})
+        (log/info :register-event!/creating {:params params})
         (create-record params)))))
 
 (comment
