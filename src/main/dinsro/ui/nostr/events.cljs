@@ -33,12 +33,16 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.events/id]
+  {ro/columns          [m.n.events/note-id
+                        m.n.events/pubkey
+                        m.n.events/content
+                        m.n.events/created-at]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}
+   ro/field-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
+                        ::m.n.events/note-id #(u.links/ui-event-link %3)}
    ro/route            "events"
-   ro/row-actions      [delete-action-button]
    ro/row-pk           m.n.events/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.events/index

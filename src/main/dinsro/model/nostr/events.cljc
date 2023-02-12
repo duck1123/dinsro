@@ -23,7 +23,9 @@
   {ao/identities       #{::id}
    ao/target           ::m.n.pubkeys/id
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
+   ::report/column-EQL {::pubkey [::m.n.pubkeys/id
+                                  ::m.n.pubkeys/hex
+                                  ::m.n.pubkeys/name]}})
 
 (>def ::created-at number?)
 (defattr created-at ::created-at :number

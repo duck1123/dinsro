@@ -32,6 +32,7 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
@@ -350,6 +351,14 @@
 
 (def ui-debit-link (comp/factory DebitLinkForm {:keyfn ::m.debits/name}))
 
+(form/defsc-form EventLinkForm [this {::m.n.events/keys [id note-id]}]
+  {fo/id           m.n.events/id
+   fo/route-prefix "event-link"
+   fo/attributes   [m.n.events/note-id]}
+  (form-link this id note-id :dinsro.ui.nostr.events/Show))
+
+(def ui-event-link (comp/factory EventLinkForm {:keyfn ::m.n.events/note-id}))
+
 (form/defsc-form InvoiceLinkForm [this {::m.ln.invoices/keys [id r-preimage]}]
   {fo/id         m.ln.invoices/id
    fo/route-prefix "invoice-link"
@@ -412,11 +421,12 @@
 
 (def ui-payreq-link (comp/factory PayReqLinkForm {:keyfn ::m.ln.payreqs/id}))
 
-(form/defsc-form PubkeyLinkForm [this {::m.n.pubkeys/keys [id hex]}]
+(form/defsc-form PubkeyLinkForm [this {::m.n.pubkeys/keys [id name hex]}]
   {fo/id           m.n.pubkeys/id
    fo/route-prefix "pubkey-link"
-   fo/attributes   [m.n.pubkeys/hex]}
-  (form-link this id hex :dinsro.ui.nostr.pubkeys/Show))
+   fo/attributes   [m.n.pubkeys/hex
+                    m.n.pubkeys/name]}
+  (form-link this id (or name hex) :dinsro.ui.nostr.pubkeys/Show))
 
 (def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 
