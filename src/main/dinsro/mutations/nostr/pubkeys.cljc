@@ -7,6 +7,7 @@
       :cljs [com.fulcrologic.guardrails.core :refer [>def =>]])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
+   #?(:clj [dinsro.actions.nostr.events :as a.n.events])
    #?(:clj [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts])
    #?(:clj [dinsro.actions.nostr.pubkey-events :as a.n.pubkey-events])
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
@@ -104,6 +105,7 @@
 
 ;; Fetch Contacts
 
+
 (>def ::fetch-contacts!-request
   (s/keys :req [::m.n.pubkeys/id]))
 
@@ -153,7 +155,7 @@
      [::fetch-contacts!-request => ::fetch-contacts!-response]
      (log/finer :do-fetch-contacts!/starting {:id id})
      (try
-       (a.n.pubkeys/fetch-events! id)
+       (a.n.events/fetch-events! id)
        {::mu/status :ok}
        (catch Exception ex
          (log/error :do-fetch-contacts!/failed {:exception ex})
@@ -224,7 +226,7 @@
      (log/finer :do-fetch-events!/started {:id id})
      (try
        (log/finer :do-fetch-events!/starting {:id id})
-       (a.n.pubkey-events/fetch-events! id)
+       (a.n.events/fetch-events! id)
        {::mu/status :ok}
        (catch Exception ex
          (log/error :do-fetch-events!/failed {:exception ex})
