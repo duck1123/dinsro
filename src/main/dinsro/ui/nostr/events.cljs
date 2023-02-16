@@ -52,5 +52,5 @@
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id nil}
    :query         [::m.n.events/id]
-   :route-segment ["relay" :id]
+   :route-segment ["event" :id]
    :will-enter    (partial u.links/page-loader ::m.n.events/id ::Show)})

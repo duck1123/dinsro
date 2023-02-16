@@ -7,6 +7,8 @@
       :cljs [com.fulcrologic.guardrails.core :refer [>def =>]])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
+   #?(:clj [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts])
+   #?(:clj [dinsro.actions.nostr.pubkey-events :as a.n.pubkey-events])
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
    #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -99,6 +101,105 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
+(defsc FetchContactsResponse
+  [_ _]
+  {:initial-state {::mu/status :initial
+                   ::mu/errors {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status
+                   ::m.c.nodes/item]})
+
+#?(:cljs
+   (defn handle-fetch-contacts
+     [{:keys [state] :as env}]
+     (let [body                                        (get-in env [:result :body])
+           response                                    (get body `fetch!)
+           {:com.fulcrologic.rad.pathom/keys [errors]} response]
+       (if errors
+         (do
+           (log/error :handle-fetch/errored {:errors errors})
+           {})
+         (let [status (:dinsro.mutations/status response)]
+           (if (= status :error)
+             (let [errors (:dinsro.mutations/errors response)]
+               (log/info :handle-fetch/errored {:response response :errors errors})
+               {})
+             (do
+               (log/info :handle-fetch/completed {:response response})
+               (let [{::m.c.nodes/keys [item]} response
+                     {::m.c.nodes/keys [id]}   item]
+                 (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
+                 {}))))))))
+
+#?(:clj
+   (pc/defmutation fetch-contacts!
+     [_env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+     (a.n.pubkey-contacts/do-fetch-contacts! props))
+
+   :cljs
+   (fm/defmutation fetch-contacts! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env FetchContactsResponse))
+     (ok-action [env]  (handle-fetch-contacts env))))
+
+(defsc FetchEventsResponse
+  [_ _]
+  {:initial-state {::mu/status :initial
+                   ::mu/errors {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status
+                   ::m.c.nodes/item]})
+
+#?(:cljs
+   (defn handle-fetch-events
+     [{:keys [state] :as env}]
+     (let [body                                        (get-in env [:result :body])
+           response                                    (get body `fetch!)
+           {:com.fulcrologic.rad.pathom/keys [errors]} response]
+       (if errors
+         (do
+           (log/error :handle-fetch-events/errored {:errors errors})
+           {})
+         (let [status (:dinsro.mutations/status response)]
+           (if (= status :error)
+             (let [errors (:dinsro.mutations/errors response)]
+               (log/info :handle-fetch-events/errored {:response response :errors errors})
+               {})
+             (do
+               (log/info :handle-fetch-events/completed {:response response})
+               (let [{::m.c.nodes/keys [item]} response
+                     {::m.c.nodes/keys [id]}   item]
+                 (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
+                 {}))))))))
+
+#?(:clj
+   (>defn do-fetch-events!
+     [{::m.n.pubkeys/keys [id]}]
+     [::fetch-events!-request => ::fetch-events!-response]
+     (log/finer :do-fetch-events!/started {:id id})
+     (try
+       (log/finer :do-fetch-events!/starting {:id id})
+       (a.n.pubkey-events/fetch-events! id)
+       {::mu/status :ok}
+       (catch Exception ex
+         (log/error :do-fetch-events!/failed {:exception ex})
+         (mu/exception-response ex)))))
+
+#?(:clj
+   (pc/defmutation fetch-events!
+     [_env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+     (a.n.pubkey-events/do-fetch-events! props))
+
+   :cljs
+   (fm/defmutation fetch-events! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env FetchEventsResponse))
+     (ok-action [env]  (handle-fetch-events env))))
+
 #?(:clj
    (pc/defmutation subscribe! [_env props]
      {::pc/params #{::m.n.pubkeys/id}
@@ -112,4 +213,4 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
-#?(:clj (def resolvers [fetch! subscribe!]))
+#?(:clj (def resolvers [fetch! fetch-contacts! fetch-events! subscribe!]))

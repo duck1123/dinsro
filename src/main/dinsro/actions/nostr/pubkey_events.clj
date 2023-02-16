@@ -58,3 +58,7 @@
       (log/info :do-fetch-contacts!/finished {:response response})
       {:status "ok"})
     (throw (RuntimeException. "Failed to find pubkey"))))
+
+(defn do-fetch-events!
+  [props]
+  (log/info :do-fetch-events!/starting {:props props}))

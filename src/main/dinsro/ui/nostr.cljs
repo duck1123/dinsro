@@ -15,6 +15,7 @@
     u.n.events/Show
     u.n.pubkeys/Report
     u.n.pubkeys/Show
+    u.n.relays/NewRelayForm
     u.n.relays/Report
     u.n.relays/Show
     u.n.subscription-pubkeys/Report

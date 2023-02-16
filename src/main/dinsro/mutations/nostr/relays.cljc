@@ -129,6 +129,20 @@
      (remote    [env]  (fm/returning env ConnectResponse))
      (ok-action [env]  (handle-connect env))))
 
+#?(:clj
+   (pc/defmutation delete!
+     [_env props]
+     {::pc/params #{::m.n.relays/id}
+      ::pc/output [::status
+                   ::errors
+                   ::m.n.relays/item]}
+     (a.n.relays/do-delete! props))
+
+   :cljs
+   (fm/defmutation delete! [_props]
+     (action    [_env] true)
+     (remote    [_env]  true)))
+
 ;; Toggle
 
 #?(:clj
@@ -146,4 +160,4 @@
            (fm/returning ConnectResponse)
            (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))))
 
-#?(:clj (def resolvers [connect! fetch! toggle!]))
+#?(:clj (def resolvers [connect! delete! fetch! toggle!]))

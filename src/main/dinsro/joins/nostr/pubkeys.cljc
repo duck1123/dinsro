@@ -69,4 +69,15 @@
        #?(:clj (throw (RuntimeException. "No pubkey supplied"))
           :cljs (throw (js/Error. "No pubkey supplied")))))})
 
-(def attributes [admin-index index contact-count contacts events])
+(defattr event-count ::event-count :int
+  {ao/identities #{::m.n.pubkeys/id}
+   ao/pc-input   #{::m.n.pubkeys/id}
+   ao/pc-resolve
+   (fn [_env params]
+     (log/info :contact-count/starting {:params params})
+     (let [pubkey-id (::m.n.pubkeys/id params)
+           pubkeys   #?(:clj (q.n.events/find-by-author pubkey-id)
+                        :cljs (do (comment pubkey-id) []))]
+       {::event-count (count pubkeys)}))})
+
+(def attributes [admin-index index contact-count contacts events event-count])

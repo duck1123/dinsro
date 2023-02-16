@@ -7,7 +7,7 @@
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.ui.core.tx :as u.c.tx]
+   [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../model/nostr/relays.cljc][Relays Model]]
@@ -22,7 +22,8 @@
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
    ro/field-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]
+   ro/row-actions      [(u.links/subrow-action-button "Fetch" ::m.n.relays/id ident-key mu.n.relays/fetch!)
+                        (u.links/subrow-action-button "Delete" ::m.n.relays/id ident-key mu.n.relays/delete!)]
    ro/row-pk           m.n.relays/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.relays/index

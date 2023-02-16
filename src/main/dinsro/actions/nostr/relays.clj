@@ -207,6 +207,10 @@
     (log/info :toggle!/finished {:response response})
     response))
 
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props}))
+
 (>defn do-toggle!
   "Handler for toggle! mutation"
   [props]
