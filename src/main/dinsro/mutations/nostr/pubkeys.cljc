@@ -101,6 +101,22 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
+
+;; Fetch Contacts
+
+(>def ::fetch-contacts!-request
+  (s/keys :req [::m.n.pubkeys/id]))
+
+(>def ::fetch-contacts!-response-success
+  (s/keys :req [::mu/status]))
+
+(>def ::fetch-contacts!-response-error
+  (s/keys :req [::mu/status]))
+
+(>def ::fetch-contacts!-response
+  (s/or :success ::fetch-contacts!-response-success
+        :error ::fetch-contacts!-response-error))
+
 (defsc FetchContactsResponse
   [_ _]
   {:initial-state {::mu/status :initial
@@ -155,6 +171,21 @@
      (action    [_env] true)
      (remote    [env]  (fm/returning env FetchContactsResponse))
      (ok-action [env]  (handle-fetch-contacts env))))
+
+;; Fetch Events
+
+(>def ::fetch-events!-request
+  (s/keys :req [::m.n.pubkeys/id]))
+
+(>def ::fetch-events!-response-success
+  (s/keys :req [::mu/status]))
+
+(>def ::fetch-events!-response-error
+  (s/keys :req [::mu/status]))
+
+(>def ::fetch-events!-response
+  (s/or :success ::fetch-events!-response-success
+        :error ::fetch-events!-response-error))
 
 (defsc FetchEventsResponse
   [_ _]
