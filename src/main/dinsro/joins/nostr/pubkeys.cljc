@@ -11,6 +11,7 @@
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
+;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
 ;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 

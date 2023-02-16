@@ -132,6 +132,18 @@
                  {}))))))))
 
 #?(:clj
+   (>defn do-fetch-contacts!
+     [{::m.n.pubkeys/keys [id]}]
+     [::fetch-contacts!-request => ::fetch-contacts!-response]
+     (log/finer :do-fetch-contacts!/starting {:id id})
+     (try
+       (a.n.pubkeys/fetch-events! id)
+       {::mu/status :ok}
+       (catch Exception ex
+         (log/error :do-fetch-contacts!/failed {:exception ex})
+         (mu/exception-response ex)))))
+
+#?(:clj
    (pc/defmutation fetch-contacts!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
