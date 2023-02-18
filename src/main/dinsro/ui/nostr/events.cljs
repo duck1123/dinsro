@@ -9,6 +9,8 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../queries/nostr/events.clj][Event Queries]]
+
 (defn delete-action
   [report-instance {::m.n.events/keys [id]}]
   (form/delete! report-instance ::m.n.events/id id))

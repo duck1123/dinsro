@@ -92,8 +92,10 @@
 
 (>defn process-pubkey-data!
   [pubkey-hex content tags]
-  [string? (s/keys) (s/coll-of any?) => any?]
-  (log/info :process-pubkey-data!/starting {:content content :tags tags})
+  [string? map? (s/coll-of any?) => any?]
+  (log/info :process-pubkey-data!/starting {:pubkey-hex pubkey-hex
+                                            :content    content
+                                            :tags       tags})
   (process-pubkey-tags! tags)
   (if-let [pubkey-id (register-pubkey! pubkey-hex)]
     (let [parsed (parse-content-parsed content)]

@@ -66,7 +66,7 @@
      (if-let [pubkey-id (::m.n.pubkeys/id query-params)]
        (let [ids #?(:clj  (q.n.events/find-by-author pubkey-id)
                     :cljs (do (comment pubkey-id) []))]
-         {::contacts (m.n.events/idents ids)})
+         {::events (m.n.events/idents ids)})
        #?(:clj (throw (RuntimeException. "No pubkey supplied"))
           :cljs (throw (js/Error. "No pubkey supplied")))))})
 

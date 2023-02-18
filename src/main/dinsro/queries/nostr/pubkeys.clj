@@ -108,3 +108,15 @@
         ids    (map first result)]
     (log/finer :find-by-subscription/finished {:ids ids})
     ids))
+
+(defn find-by-name
+  [name]
+  (log/finer :find-by-name/starting {:name name})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?pubkey-id]
+                 :in    [[?name]]
+                 :where [[?pubkey-id ::m.n.pubkeys/name ?name]]}
+        result (xt/q db query [name])
+        ids    (map first result)]
+    (log/finer :find-by-name/finished {:ids ids})
+    ids))

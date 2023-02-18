@@ -10,7 +10,9 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/events.clj][Event Actions]]
 ;; [[../../model/nostr/events.cljc][Event Model]]
+;; [[../../joins/nostr/events.cljc][Event Joins]]
 
 (>defn create-record
   "Create a relay record"
@@ -47,7 +49,7 @@
 (>defn find-by-author
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.events/id)]
-  (log/finer :find-by-author/starting {:pubkey-id pubkey-id})
+  (log/fine :find-by-author/starting {:pubkey-id pubkey-id})
   (let [db     (c.xtdb/main-db)
         query  '{:find  [?event-id]
                  :in    [[?pubkey-id]]

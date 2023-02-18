@@ -82,7 +82,7 @@
     (let [msg-str                      (str @result-atom (str msg))
           o                            (json/read-str msg-str)
           [event-type request-id body] o]
-      (log/debug :handle-message/received {:event-type event-type
+      (log/finer :handle-message/received {:event-type event-type
                                            :body       body
                                            :request-id request-id
                                            :chan       chan})
