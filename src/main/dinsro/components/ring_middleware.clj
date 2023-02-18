@@ -5,16 +5,19 @@
    [clojure.string :as str]
    [cognitect.transit :as ct]
    [com.fulcrologic.fulcro.networking.file-upload :as file-upload]
+   [com.fulcrologic.fulcro.networking.websockets :as fws]
    [com.fulcrologic.fulcro.server.api-middleware :as server]
    [com.fulcrologic.rad.blob :as blob]
    [dinsro.components.blob-store :as bs]
    [dinsro.components.config :as config :refer [secret]]
    [dinsro.components.parser :as parser]
    [hiccup.page :refer [html5]]
+   [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.session.cookie :refer [cookie-store]]
-   [ring.util.response :as resp]))
+   [ring.util.response :as resp]
+   [taoensso.sente.server-adapters.immutant :refer [get-sch-adapter]]))
 
 (def minimal false)
 
@@ -63,25 +66,36 @@
        (resp/response (index anti-forgery-token))
        "text/html"))))
 
+(defn nip05-response
+  []
+  (let [props
+        {:names
+         {"_"      "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
+          "alice"  "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a"
+          "bob"    "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
+          "dinsro" "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
+          "duck"   "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"}
+         :relays
+         {"6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
+          ["wss://relay.kronkltd.net"]
+
+          "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a"
+          ["wss://relay.kronkltd.net"]
+
+          "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
+          ["wss://relay.kronkltd.net"]
+
+          "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"
+          ["wss://relay.kronkltd.net"]}}]
+    (json/json-str props)))
+
 (defn wrap-well-known-routes
   [ring-handler]
   (fn [req]
     (let [{:keys [uri]} req]
       (if (str/starts-with? uri "/.well-known")
         (if (str/starts-with? uri "/.well-known/nostr.json")
-          {:status 200 :body
-           (json/json-str
-            {:names
-             {"_"           "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
-              "alice"       "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a"
-              "bob"         "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
-              "dinsro"      "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
-              "duck"        "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"}
-             :relays {"6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec" ["wss://relay.kronkltd.net"]
-                      "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a" ["wss://relay.kronkltd.net"]
-                      "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28" ["wss://relay.kronkltd.net"]
-                      "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88" ["wss://relay.kronkltd.net"]}})}
-
+          {:status 200 :body (nip05-response)}
           {:status 200 :body "Well known"})
         (ring-handler req)))))
 
@@ -100,14 +114,25 @@
        (com.cognitect.transit.impl.AbstractParser/getDateTimeFormat)
        (java.util.Date/from inst))))})
 
+(defn query-parser
+  [_env query]
+  (log/info :query-parser/starting {:query query}))
+
 (defstate middleware
   :start
   (let [defaults-config (:ring.middleware/defaults-config config/config {})
         session-store   (cookie-store {:key (b/slice secret 0 16)})
         defaults-config (assoc-in defaults-config [:session :store] session-store)
-        defaults-config (merge site-defaults defaults-config)]
+        defaults-config (merge site-defaults defaults-config)
+        _websocket      (fws/start! (fws/make-websockets
+                                     query-parser
+                                     {:http-server-adapter (get-sch-adapter)
+                                      :parser-accepts-env? true
+                                      :sente-options       {:csrf-token nil}}))]
+
     (-> not-found-handler
         (wrap-api "/api")
+        ;; (fws/wrap-api websockets)
         (file-upload/wrap-mutation-file-uploads {})
         (blob/wrap-blob-service "/images" bs/image-blob-store)
         (blob/wrap-blob-service "/files" bs/file-blob-store)

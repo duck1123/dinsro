@@ -386,6 +386,9 @@ deployments:
           passwordSecret: "postgresql"
           name: nostream
 
+        persistence:
+          seed: false
+
         ingress:
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt-prod

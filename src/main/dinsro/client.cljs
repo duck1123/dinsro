@@ -7,6 +7,7 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as m]
+   [com.fulcrologic.fulcro.networking.websockets :as fws]
    [com.fulcrologic.fulcro.react.error-boundaries :as eb]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
@@ -53,11 +54,11 @@
   The argument is the same one as supplied to Fulcro's `remote-error?`"
   [result]
   ;; TODO Handle RAD reports - their query is `{:some/global-resolver ..}` and it lacks any metadata
-  (let [load-errs (:com.wsscode.pathom.core/errors (:body result))
-        query (extract-query-from-transaction (:original-transaction result))
-        mutation-sym (as-> (-> query keys first) x
-                       (when (sequential? x) (first x))
-                       (when (symbol? x) x)) ; join query => keyword
+  (let [load-errs     (:com.wsscode.pathom.core/errors (:body result))
+        query         (extract-query-from-transaction (:original-transaction result))
+        mutation-sym  (as-> (-> query keys first) x
+                        (when (sequential? x) (first x))
+                        (when (symbol? x) x)) ; join query => keyword
         mutation-errs (when mutation-sym
                         (get-in result [:body mutation-sym :com.fulcrologic.rad.pathom/errors]))]
     (cond
@@ -70,7 +71,7 @@
              unhandled-errs)
            (conj unhandled-errs entry)))
        {}
-        ;; errors is a map of `path` to error details
+       ;; errors is a map of `path` to error details
        load-errs)
 
       mutation-errs
@@ -142,9 +143,10 @@
 
 (defonce app
   (rad-app/fulcro-rad-app
-   {:props-middleware (comp/wrap-update-extra-props
-                       (fn [cls extra-props]
-                         (merge extra-props (css/get-classnames cls))))
+   {:props-middleware    (comp/wrap-update-extra-props
+                          (fn [cls extra-props]
+                            (merge extra-props (css/get-classnames cls))))
+    :remotes             {:remote (fws/fulcro-websocket-remote {})}
     :remote-error?       (fn [result]
                            (or
                             (app/default-remote-error? result)
