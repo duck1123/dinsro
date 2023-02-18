@@ -16,8 +16,8 @@
 (>defn fetch-events!
   ([pubkey-id]
    [::m.n.pubkeys/id => any?]
-   (let [relay-id (first (q.n.relays/index-ids))]
-     (fetch-events! pubkey-id relay-id)))
+   (let [channels (map #(fetch-events! pubkey-id %) (q.n.relays/index-ids))]
+     (first channels)))
   ([pubkey-id relay-id]
    [::m.n.pubkeys/id ::m.n.relays/id  => any?]
    (do

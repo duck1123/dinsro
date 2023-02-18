@@ -167,7 +167,7 @@
   (let [client        (connect! relay-id)
         request-id    (str "adhoc " @request-counter)
         topic-channel (get-channel relay-id request-id)]
-    (log/info :send!/topic {:topic-channel topic-channel})
+    ;; (log/info :send!/topic {:topic-channel topic-channel})
     (swap! request-counter inc)
     (a.n.relay-client/send! client request-id body)
     topic-channel))

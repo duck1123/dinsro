@@ -151,9 +151,9 @@
   "Fetch info about pubkey from relay"
   ([pubkey]
    [::m.n.pubkeys/hex => ds/channel?]
-   (if-let [relay-id (first (q.n.relays/index-ids))]
+   (doseq [relay-id (q.n.relays/index-ids)]
      (fetch-pubkey! pubkey relay-id)
-     (throw (RuntimeException. "No relays"))))
+     #_(throw (RuntimeException. "No relays"))))
   ([pubkey-hex relay-id]
    [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
    (let [output-chan (async/chan)]
