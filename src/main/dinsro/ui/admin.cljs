@@ -6,6 +6,10 @@
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.ui.accounts :as u.accounts]
+   [dinsro.ui.admin.core :as u.a.core]
+   [dinsro.ui.admin.ln :as u.a.ln]
+   [dinsro.ui.admin.nostr :as u.a.nostr]
+   [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.currencies :as u.currencies]
@@ -18,7 +22,7 @@
 
 (defrouter AdminRouter
   [_this {:keys [current-state]}]
-  {:router-targets [u.users/AdminReport
+  {:router-targets [u.a.users/AdminReport
                     u.c.blocks/AdminReport
                     u.categories/AdminReport
                     u.currencies/AdminIndexCurrenciesReport
@@ -26,7 +30,10 @@
                     u.rate-sources/AdminIndexRateSourcesReport
                     u.transactions/AdminReport
                     u.debits/AdminReport
-                    u.accounts/AdminReport]}
+                    u.accounts/AdminReport
+                    u.a.core/Page
+                    u.a.ln/Page
+                    u.a.nostr/Page]}
   (dom/div :.admin-router
     (dom/h2 {} "Admin Router")
     (case current-state
