@@ -1,7 +1,8 @@
 (ns dinsro.components.seed.ln-node
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def]]))
+   [com.fulcrologic.guardrails.core :refer [>def]]
+   [dinsro.components.seed.remote-nodes :as cs.remote-nodes]))
 
 (>def ::name string?)
 (>def ::host string?)
@@ -9,8 +10,7 @@
 (>def ::port string?)
 (>def ::node string?)
 (>def ::mnemonic (s/coll-of string?))
-(>def ::peers any?)
-(>def ::txes any?)
+(>def ::remote-nodes (s/coll-of ::cs.remote-nodes/item))
 
 (>def ::item
   (s/keys
@@ -21,6 +21,5 @@
     ::port
     ::node
     ::mnemonic
-    ::peers
-    ::txes]))
+    ::remote-nodes]))
 (def item ::item)

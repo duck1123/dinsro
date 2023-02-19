@@ -6,7 +6,7 @@
    [dinsro.components.seed.currencies :as cs.currencies]
    [dinsro.components.seed.networks :as cs.networks]
    [dinsro.components.seed.rate-sources :as cs.rate-sources]
-   [dinsro.components.seed.user :as cs.user]))
+   [dinsro.components.seed.users :as cs.users]))
 
 (>def ::default-chains (s/coll-of string?))
 (>def ::currencies (s/coll-of ::cs.currencies/item))
@@ -15,7 +15,7 @@
 (>def ::default-timezone string?)
 (>def ::nodes (s/coll-of ::cs.core-nodes/item))
 (>def ::category-names (s/coll-of string?))
-(>def ::users (s/coll-of ::cs.user/item))
+(>def ::users (s/coll-of ::cs.users/item))
 (>def ::addresses (s/coll-of string?))
 
 (>def ::seed-data
