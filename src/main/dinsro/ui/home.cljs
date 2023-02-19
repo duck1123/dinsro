@@ -34,4 +34,6 @@
                    (if username
                      (str "Welcome, " username)
                      "Home Page"))
-           (dom/h2 {} "TODO: put stuff here")))))))
+           (dom/h2 {} "TODO: put stuff here")
+           (dom/div :.ui.segment
+             (dom/h3 "Recent Transactions"))))))))
