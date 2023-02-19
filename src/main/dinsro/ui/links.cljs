@@ -141,17 +141,17 @@
         ident          [key id]
         parent-control (comp/registry-key->class control-key)
         state          (-> (app/current-state app) (get-in ident))]
-    (log/info :page-loader/starting {:key key :control-key control-key :id id :state state})
+    (log/finer :page-loader/starting {:key key :control-key control-key :id id :state state})
     (if (and skip-loaded (:ui/page-merged state))
       (do
-        (log/info :page-loader/routing-immediate {:ident ident})
+        (log/finer :page-loader/routing-immediate {:ident ident})
         (dr/route-immediate ident))
       (do
-        (log/info :page-loader/deferring {:ident ident})
+        (log/finer :page-loader/deferring {:ident ident})
         (dr/route-deferred
          ident
          (fn []
-           (log/info :page-loader/routing {:key key :id id :parent-control parent-control})
+           (log/finer :page-loader/routing {:key key :id id :parent-control parent-control})
            (df/load!
             app ident parent-control
             {:marker               :ui/selected-node
@@ -167,9 +167,9 @@
 
 (defn page-merger
   [k mappings]
-  (log/info :page-merger/starting {:k k :mappings mappings})
+  (log/finer :page-merger/starting {:k k :mappings mappings})
   (fn [ctx]
-    (log/info :page-merger/merging {:k k :mappings mappings :ctx ctx})
+    (log/finer :page-merger/merging {:k k :mappings mappings :ctx ctx})
     (merge-pages ctx k mappings)))
 
 (def blacklisted-keys

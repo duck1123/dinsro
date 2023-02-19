@@ -152,8 +152,9 @@
    {:client-did-mount    (fn [app] (restore-route-ensuring-leaf! app))
     :global-error-action global-error-action
     :props-middleware    (comp/wrap-update-extra-props (fn [cls extra-props] (merge extra-props (css/get-classnames cls))))
-    :remotes             {:remote    (net/fulcro-http-remote {:url "/api" :request-middleware secured-request-middleware})
-                          :ws-remote (fws/fulcro-websocket-remote {:uri "/api2"})}
+    :remotes             (do
+                           (comment :ws-remote (fws/fulcro-websocket-remote {:uri "/api2"}))
+                           {:remote (net/fulcro-http-remote {:url "/api" :request-middleware secured-request-middleware})})
     :remote-error?       (fn [result] (or (app/default-remote-error? result) (contains-error? result)))}))
 
 (m/defmutation fix-route

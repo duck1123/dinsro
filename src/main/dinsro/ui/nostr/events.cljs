@@ -36,7 +36,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.events/pubkey
+  {ro/columns          [m.n.events/note-id
+                        m.n.events/pubkey
                         m.n.events/content
                         j.n.events/tag-count
                         m.n.events/created-at]
