@@ -33,8 +33,6 @@
     u.n.pubkey-contacts/SubPage
     u.n.pubkey-events/SubPage]})
 
-(def ui-router (comp/factory Router))
-
 (def menu-items
   [{:key "contacts" :name "Contacts" :route "dinsro.ui.nostr.pubkey-contacts/SubPage"}
    {:key "users" :name "Users" :route "dinsro.ui.nostr.pubkey-users/SubPage"}
@@ -133,7 +131,8 @@
                         ::refresh u.links/refresh-control}
    ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
    ro/route            "pubkeys"
-   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.n.pubkeys/id mu.n.pubkeys/fetch!)
+   ro/row-actions      [(u.links/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)
+                        (u.links/row-action-button "Fetch" ::m.n.pubkeys/id mu.n.pubkeys/fetch!)
                         (u.links/row-action-button "Fetch Contacts" ::m.n.pubkeys/id mu.n.pubkeys/fetch-contacts!)]
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true

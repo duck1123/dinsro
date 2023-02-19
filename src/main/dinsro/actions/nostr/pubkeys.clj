@@ -198,6 +198,10 @@
         (log/info :start-pubkey-listener!/no-message {})
         nil))))
 
+(defn add-contact!
+  [props]
+  (log/info :add-contact!/starting {:props props}))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))

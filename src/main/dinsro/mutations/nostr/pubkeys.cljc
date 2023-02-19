@@ -12,6 +12,7 @@
    #?(:clj [dinsro.actions.nostr.pubkey-events :as a.n.pubkey-events])
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
    #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
+   [dinsro.model.contacts :as m.contacts]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
@@ -27,6 +28,42 @@
 
 (>def ::item ::m.n.pubkeys/item)
 (>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.n.pubkeys/item]))
+
+;; Add Contact
+
+(>def ::add-contact!-request
+  (s/keys :req [::m.n.pubkeys/id]))
+
+(>def ::add-contact!-response-success
+  (s/keys :req [::mu/status]))
+
+(>def ::add-contact!-response-error
+  (s/keys :req [::mu/status]))
+
+(>def ::add-contact!-response
+  (s/or :success ::add-contact!-response-success
+        :error ::add-contact!-response-error))
+
+(defsc AddContactResponse
+  [_ _]
+  {:initial-state {::mu/status :initial
+                   ::mu/errors {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status
+                   ::m.contacts/item]})
+
+#?(:clj
+   (pc/defmutation add-contact!
+     [_env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.contacts/item]}
+     (a.n.pubkeys/add-contact! props))
+
+   :cljs
+   (fm/defmutation add-contact! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env AddContactResponse))))
+
 
 
 ;; Fetch
