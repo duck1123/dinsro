@@ -38,9 +38,9 @@
                     u.c.peers/NewCorePeerForm
                     u.c.peers/ShowPeer
                     u.c.tx/Report
-                    u.c.tx/ShowTransaction
-                    u.c.wallets/NewWalletForm
-                    u.c.wallets/ShowWallet
+                    u.c.tx/Show
+                    u.c.wallets/NewForm
+                    u.c.wallets/Show
                     u.c.wallets/Report
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm

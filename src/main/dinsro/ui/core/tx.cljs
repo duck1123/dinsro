@@ -32,7 +32,7 @@
    :action delete-action
    :style  :delete-button})
 
-(defsc ShowTransaction
+(defsc Show
   "Show a core tx"
   [this {::m.c.tx/keys [id tx-id hash fetched? block size]
          :ui/keys      [inputs outputs]

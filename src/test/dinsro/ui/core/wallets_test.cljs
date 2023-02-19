@@ -37,7 +37,19 @@
   []
   {})
 
-(defn NewWalletForm-data
+(defn WalletForm-data
+  []
+  {::m.c.wallets/id         (ds/gen-key ::m.c.wallets/id)
+   ::m.c.wallets/name       (ds/gen-key ::m.c.wallets/name)
+   ::m.c.wallets/derivation (ds/gen-key ::m.c.wallets/derivation)
+   ::m.c.wallets/node       (WalletForm-node-data)
+   ::m.c.wallets/words      []
+
+   :com.fulcrologic.fulcro.application/active-remotes   #{}
+   :com.fulcrologic.fulcro.ui-state-machines/asm-id     {}
+   :com.fulcrologic.fulcro.algorithms.form-state/config {}})
+
+(defn NewForm-data
   []
   (let [idents      [[:dinsro.model.core.nodes/id (ds/gen-key ::m.c.nodes/id)]]
         nodes       (mapv
@@ -94,10 +106,10 @@
       :com.fulcrologic.fulcro.algorithms.form-state/pristine-state {}}}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard NewWalletForm
+(ws/defcard NewForm
   {::wsm/card-width 6 ::wsm/card-height 12}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.c.wallets/NewWalletForm
+   {::ct.fulcro3/root u.c.wallets/NewForm
     ::ct.fulcro3/app
     {:client-will-mount
      (fn [app]
@@ -111,7 +123,7 @@
      (fn [app tx]
        (log/info :submit-transaction!/creating {:app app
                                                 :env tx}))}
-    ::ct.fulcro3/initial-state NewWalletForm-data}))
+    ::ct.fulcro3/initial-state NewForm-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard Report

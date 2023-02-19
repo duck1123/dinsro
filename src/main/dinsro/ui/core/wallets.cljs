@@ -19,6 +19,8 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../../test/dinsro/ui/core/wallets_test.cljs][Wallets Test]]
+
 (def create-button
   {:type   :button
    :local? true
@@ -27,7 +29,7 @@
              (let [props (comp/props this)]
                (comp/transact! this [(mu.c.wallets/create! props)])))})
 
-(form/defsc-form NewWalletForm [this props]
+(form/defsc-form NewForm [this props]
   {fo/id             m.c.wallets/id
    fo/action-buttons (concat [::create] form/standard-action-buttons)
    fo/attributes     [m.c.wallets/name
@@ -72,9 +74,9 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewWalletForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
-(defsc ShowWallet
+(defsc Show
   "Show a wallet"
   [this {::m.c.wallets/keys [id name derivation key network user
                              ext-public-key ext-private-key]
