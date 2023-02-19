@@ -8,6 +8,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as m]
    [com.fulcrologic.fulcro.networking.http-remote :as net]
+   [com.fulcrologic.fulcro.networking.websocket-remote :as fws]
    [com.fulcrologic.fulcro.react.error-boundaries :as eb]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
@@ -30,8 +31,10 @@
    [lambdaisland.glogi.console :as glogi-console]
    [taoensso.timbre :as timbre]))
 
-(defn target-component-requests-errors [query path]
-  (some->> (when (vector? path) (butlast path)) ; path can be a single keyword -> ignore
+(defn target-component-requests-errors
+  [query path]
+  ;; path can be a single keyword -> ignore
+  (some->> (when (vector? path) (butlast path))
            (get-in query)
            meta
            :component
@@ -89,13 +92,12 @@
 (defn global-error-action
   "Run when app's :remote-error? returns true"
   [{:keys [component state], {:keys [body status-code error-text]} :result}]
-  (log/error
-   :global-error-action/starting
-   {:component   component
-    :state       state
-    :body        body
-    :status-code status-code
-    :error-text  error-text})
+  (log/error :global-error-action/starting
+             {:component   component
+              :state       state
+              :body        body
+              :status-code status-code
+              :error-text  error-text})
   (when-not (component-handles-mutation-errors? component)
     (let [msg (first
                (map
@@ -103,19 +105,13 @@
                   (let [pathom-errs (:com.fulcrologic.rad.pathom/errors body)]
                     (cond
                       (and (string? error-text) status-code (> status-code 299))
-                      (cond-> error-text
-                        (and status-code (> status-code 299))
-                        (str " - " body))
+                      (cond-> error-text (and status-code (> status-code 299)) (str " - " body))
 
                       pathom-errs
                       (->> pathom-errs
                            (map (fn [[query {{:keys [message data]} :com.fulcrologic.rad.pathom/errors :as val}]]
-                                  (str query
-                                       " failed with "
-                                       (or (and message
-                                                (str message (when (seq data)
-                                                               (str ", extra data: " data))))
-                                           val))))
+                                  (str query " failed with "
+                                       (or (and message (str message (when (seq data) (str ", extra data: " data)))) val))))
                            (string/join " | "))
 
                       :else
@@ -153,21 +149,12 @@
 
 (defonce app
   (rad-app/fulcro-rad-app
-   {:props-middleware    (comp/wrap-update-extra-props
-                          (fn [cls extra-props]
-                            (merge extra-props (css/get-classnames cls))))
-    :remotes             {:remote
-                          (net/fulcro-http-remote
-                           {:url                "/api"
-                            :request-middleware secured-request-middleware})}
-    :remote-error?       (fn [result]
-                           (or
-                            (app/default-remote-error? result)
-                            (contains-error? result)))
+   {:client-did-mount    (fn [app] (restore-route-ensuring-leaf! app))
     :global-error-action global-error-action
-    :client-did-mount
-    (fn [app]
-      (restore-route-ensuring-leaf! app))}))
+    :props-middleware    (comp/wrap-update-extra-props (fn [cls extra-props] (merge extra-props (css/get-classnames cls))))
+    :remotes             {:remote    (net/fulcro-http-remote {:url "/api" :request-middleware secured-request-middleware})
+                          :ws-remote (fws/fulcro-websocket-remote {:uri "/api2"})}
+    :remote-error?       (fn [result] (or (app/default-remote-error? result) (contains-error? result)))}))
 
 (m/defmutation fix-route
   "Mutation. Called after auth startup. Looks at the session. If the user is not logged in, it triggers authentication"
@@ -187,18 +174,10 @@
 
 (def my-auth-machine
   (-> auth/auth-machine
-      (assoc-in
-       [::uism/states
-        :state/gathering-credentials
-        ::uism/events
-        :event/cancel]
-       {::uism/target-state :state/idle})
-      (assoc-in
-       [::uism/states
-        :state/idle
-        ::uism/events
-        :event/cancel]
-       {::uism/target-state :state/idle})))
+      (assoc-in [::uism/states :state/gathering-credentials ::uism/events :event/cancel]
+                {::uism/target-state :state/idle})
+      (assoc-in [::uism/states :state/idle ::uism/events :event/cancel]
+                {::uism/target-state :state/idle})))
 
 (uism/register-state-machine! `auth/auth-machine my-auth-machine)
 

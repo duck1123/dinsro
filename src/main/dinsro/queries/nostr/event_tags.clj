@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
+   [dinsro.model.nostr.events :as m.n.events]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -37,4 +38,17 @@
                 :where [[?relay-id ::m.n.event-tags/id _]]}
         ids   (map first (xt/q db query))]
     (log/info :index-ids/finished {:ids ids})
+    ids))
+
+(>defn find-by-event
+  [event-id]
+  [::m.n.events/id => (s/coll-of ::m.n.event-tags/id)]
+  (log/fine :find-by-event/starting {:event-id event-id})
+  (let [db     (c.xtdb/main-db)
+        query  '{:find  [?event-tag-id]
+                 :in    [[?event-id]]
+                 :where [[?event-tag-id ::m.n.event-tags/event ?event-id]]}
+        result (xt/q db query [event-id])
+        ids    (map first result)]
+    (log/finer :find-by-event/finished {:ids ids})
     ids))

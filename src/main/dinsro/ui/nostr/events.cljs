@@ -10,6 +10,7 @@
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../queries/nostr/events.clj][Event Queries]]
+;; [[../../joins/nostr/events.cljc][Event Joins]]
 
 (defn delete-action
   [report-instance {::m.n.events/keys [id]}]
@@ -37,6 +38,7 @@
   [_this _props]
   {ro/columns          [m.n.events/pubkey
                         m.n.events/content
+                        j.n.events/tag-count
                         m.n.events/created-at]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
