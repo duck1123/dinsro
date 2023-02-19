@@ -3,7 +3,7 @@
    [clojure.core.async :as async]
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -121,9 +121,20 @@
                                                 :content    content})
     (process-pubkey-data! pubkey-hex content tags)))
 
-(defn process-fetch-pubkey-message
+(>def ::req-id string?)
+(>def ::tags (s/coll-of any?))
+(>def ::id string?)
+(>def ::pow nil?)
+(>def ::notified nil?)
+(>def ::sig string?)
+(>def ::content string?)
+(>def ::parsed-content (s/keys))
+(>def ::message (s/keys :req-un [::req-id ::tags ::id ::pow ::notified ::sig ::content ::parsed-content]))
+
+(>defn process-fetch-pubkey-message
   [output-chan pubkey-hex message]
-  (log/info :process-fetch-pubkey-message/fetched {:message message})
+  [ds/channel? ::m.n.pubkeys/hex ::message => nil?]
+  (log/info :process-fetch-pubkey-message/fetched {:pubkey-hex pubkey-hex :message message})
   (let [{:keys [req-id tags content]} message]
     (if content
       (let [body (json/read-str content)]
