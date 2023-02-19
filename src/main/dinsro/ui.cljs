@@ -23,6 +23,7 @@
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
    [dinsro.ui.categories :as u.categories]
+   [dinsro.ui.contacts :as u.contacts]
    [dinsro.ui.core :as u.core]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.debits :as u.debits]
@@ -61,6 +62,7 @@
                     u.categories/CategoryForm
                     u.categories/Report
                     u.categories/NewCategoryForm
+                    u.contacts/Report
                     u.core/CorePage
                     u.currencies/Report
                     u.currencies/NewCurrencyForm

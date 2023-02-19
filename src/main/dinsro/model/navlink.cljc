@@ -14,6 +14,7 @@
    :admin                      ["Admin"                 :dinsro.ui.admin/AdminPage]
    :categories                 ["Categories"            :dinsro.ui.categories/Report]
    :channels                   ["Channels"              :dinsro.ui.ln.channels/Report]
+   :contacts                   ["Contacts"              :dinsro.ui.contacts/Report]
    :core-addresses             ["Core Address"          :dinsro.ui.core.addresses/Report]
    :core-blocks                ["Core Blocks"           :dinsro.ui.core.blocks/Report]
    :core-chains                ["Chains"                :dinsro.ui.core.chains/Report]

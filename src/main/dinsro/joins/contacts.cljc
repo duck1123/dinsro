@@ -7,6 +7,9 @@
    #?(:clj [dinsro.queries.contacts :as q.contacts])
    [dinsro.specs]))
 
+;; [[../model/contacts.cljc][Contacts Model]]
+;; [[../ui/contacts.cljs][Contacts UI]]
+
 (defattr index ::index :ref
   {ao/target    ::m.contacts/id
    ao/pc-output [{::index [::m.contacts/id]}]

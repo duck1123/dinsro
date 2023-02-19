@@ -9,6 +9,8 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
+;; [[../ui/contacts.cljs][Contacts UI]]
+
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
