@@ -29,7 +29,7 @@
                (log/info :submit-action/clicked props)
                (comp/transact! this [(mu.ln.peers/create! props)])))})
 
-(form/defsc-form NewPeerForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/id             m.ln.peers/id
    fo/action-buttons [::submit]
    fo/attributes     [m.ln.peers/node
@@ -66,7 +66,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewPeerForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
   [this _props]

@@ -41,7 +41,7 @@
                                                                               :controls   controls
                                                                               :id-control id-control
                                                                               :node-id    node-id})
-                                                   (form/create! this u.ln.peers/NewPeerForm
+                                                   (form/create! this u.ln.peers/NewForm
                                                                  {:initial-state {::m.ln.peers/address ""}})))}}
    ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)

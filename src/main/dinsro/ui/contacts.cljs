@@ -9,6 +9,7 @@
 
 ;; [[../joins/contacts.cljc][Contact Joins]]
 
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          []

@@ -42,7 +42,7 @@
                                                                  :controls   controls
                                                                  :id-control id-control
                                                                  :node-id    node-id})
-                                   (form/create! this u.ln.channels/NewChannelForm
+                                   (form/create! this u.ln.channels/NewForm
                                                  {:initial-state {::m.ln.channels/address "foo"}})))}}
    ro/field-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
                         ::m.ln.channels/node  #(u.links/ui-core-node-link %2)}

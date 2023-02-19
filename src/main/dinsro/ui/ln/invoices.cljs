@@ -21,7 +21,7 @@
                (log/info :submit-button/starting {:props props})
                (comp/transact! this [(mu.ln.invoices/submit! props)])))})
 
-(form/defsc-form NewInvoiceForm [this props]
+(form/defsc-form NewForm [this props]
   {fo/id             m.ln.invoices/id
    fo/action-buttons [::submit]
    fo/attributes     [m.ln.invoices/memo
@@ -36,7 +36,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewInvoiceForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
   [this _props]
@@ -58,7 +58,7 @@
     (dom/h1 {} "Invoices")
     (report/render-layout this)))
 
-(defsc ShowInvoice
+(defsc Show
   [_this _props]
   {:ident ::m.ln.invoices/id
    :query [::m.ln.invoices/id]

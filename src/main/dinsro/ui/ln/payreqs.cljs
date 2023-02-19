@@ -21,12 +21,12 @@
                (log/info :decode-button/clicked {:props props})
                (comp/transact! this [(mu.ln.payreqs/decode props)])))})
 
-(form/defsc-form NewPaymentForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/id             m.ln.payreqs/id
    fo/action-buttons [::decode]
    fo/controls       {::decode decode-button}
    fo/attributes     [m.ln.payreqs/payment-request]
-   fo/route-prefix   "new-payment"
+   fo/route-prefix   "new-request"
    fo/title          "New Payreqs"})
 
 (report/defsc-report Report
@@ -38,16 +38,16 @@
                         m.ln.payreqs/node]
    ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)
                         ::m.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
-   ro/route            "payreqs"
+   ro/route            "requests"
    ro/row-pk           m.ln.payreqs/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.payreqs/index
-   ro/title            "Lightning Payreqs"}
+   ro/title            "Payment Request"}
   (dom/div {}
     (dom/h1 {} "Payreqs")
     (report/render-layout this)))
 
-(defsc ShowPayreq
+(defsc Show
   [_this _props]
   {:ident ::m.ln.payreqs/id
    :query [::m.ln.payreqs/id]

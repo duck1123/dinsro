@@ -92,7 +92,7 @@
 
 (def override-create-form false)
 
-(form/defsc-form CreateLightningNodeForm
+(form/defsc-form NewForm
   [this props]
   {fo/id            m.ln.nodes/id
    fo/attributes    [m.ln.nodes/name

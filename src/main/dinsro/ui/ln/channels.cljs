@@ -10,7 +10,7 @@
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.ui.links :as u.links]))
 
-(form/defsc-form NewChannelForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/id           m.ln.channels/id
    fo/attributes   [m.ln.channels/id
                     m.ln.channels/active
@@ -34,12 +34,11 @@
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.channels/index
-   ro/title            "Lightning Channels Report"}
+   ro/title            "Channels"}
   (dom/div {}
-    (dom/h1 {} "Channels")
     (report/render-layout this)))
 
-(defsc ShowChannel
+(defsc Show
   [_this _props]
   {:ident ::m.ln.channels/id
    :query [::m.ln.channels/id]

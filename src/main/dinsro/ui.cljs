@@ -133,12 +133,12 @@
          [loaded? initialized?]}                site-config
         root                                    (uism/get-active-state this ::auth/auth-machine)
         gathering-credentials?                  (#{:state/gathering-credentials} root)]
-    (dom/div {:classes [:.ui.segment container]}
+    (dom/div {:classes [:.ui.container container]}
       (if loaded?
         (if initialized?
           (comp/fragment
            (u.navbar/ui-navbar navbar)
-           (dom/div {:classes [top]}
+           (dom/div {:classes [:.ui.container top]}
              (ui-sidebar-pushable
               {:className (string/join " " [pushable])}
               (u.navbar/ui-navbar-sidebar navbar)

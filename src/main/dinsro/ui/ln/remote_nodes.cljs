@@ -11,7 +11,7 @@
    [dinsro.ui.ln.remote-node-peers :as u.ln.remote-node-peers]
    [lambdaisland.glogc :as log]))
 
-(defsc ShowRemoteNode
+(defsc Show
   [_this {:ui/keys                 [peers]
           ::m.ln.remote-nodes/keys [id pubkey]}]
   {:route-segment ["remote-nodes" :id]

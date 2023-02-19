@@ -15,23 +15,23 @@
 (defrouter LnRouter
   [_this _props]
   {:router-targets [u.ln.accounts/Report
-                    u.ln.channels/NewChannelForm
+                    u.ln.channels/NewForm
                     u.ln.channels/Report
-                    u.ln.channels/ShowChannel
-                    u.ln.invoices/NewInvoiceForm
+                    u.ln.channels/Show
                     u.ln.invoices/Report
-                    u.ln.nodes/CreateLightningNodeForm
+                    u.ln.invoices/NewForm
+                    u.ln.nodes/NewForm
                     u.ln.nodes/Report
                     u.ln.nodes/Show
                     u.ln.payments/Report
-                    u.ln.payments/ShowPayment
-                    u.ln.payreqs/NewPaymentForm
+                    u.ln.payments/Show
+                    u.ln.payreqs/NewForm
                     u.ln.payreqs/Report
-                    u.ln.payreqs/ShowPayreq
-                    u.ln.peers/NewPeerForm
+                    u.ln.payreqs/NewForm
                     u.ln.peers/Report
-                    u.ln.remote-nodes/Report
-                    u.ln.remote-nodes/ShowRemoteNode]}
+                    u.ln.peers/NewForm
+                    u.ln.remote-nodes/Show
+                    u.ln.remote-nodes/Report]}
 
   (dom/div {} "Ln router"))
 

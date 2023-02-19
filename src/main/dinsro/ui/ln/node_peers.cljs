@@ -38,7 +38,7 @@
                                 :controls   controls
                                 :id-control id-control
                                 :node-id    node-id})
-    (form/create! this u.ln.peers/NewPeerForm
+    (form/create! this u.ln.peers/NewForm
                   {:initial-state {::m.ln.peers/address "foo"}})))
 
 (def new-button

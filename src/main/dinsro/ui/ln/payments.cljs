@@ -19,12 +19,11 @@
    ro/row-pk           m.ln.payments/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.payments/index
-   ro/title            "Lightning Payments"}
+   ro/title            "Payments"}
   (dom/div {}
-    (dom/h1 {} "Payments")
     (report/render-layout this)))
 
-(defsc ShowPayment
+(defsc Show
   [_this _props]
   {:ident ::m.ln.payments/id
    :query [::m.ln.payments/id]
