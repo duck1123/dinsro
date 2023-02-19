@@ -18,32 +18,28 @@
 (defrouter CoreRouter
   [_this {:keys [current-state pending-path-segment]
           :as props}]
-  {:router-targets [u.c.addresses/CoreAddressForm
+  {:router-targets [u.c.addresses/NewForm
                     u.c.addresses/Report
-                    u.c.blocks/ShowBlock
+                    u.c.blocks/Show
                     u.c.blocks/Report
-                    u.c.chains/CoreChainForm
+                    u.c.chains/NewForm
                     u.c.chains/Report
-                    u.c.chains/ShowChain
+                    u.c.chains/Show
                     u.c.connections/Report
-                    u.c.connections/NewConnectionForm
+                    u.c.connections/NewForm
                     u.c.networks/Report
-                    u.c.networks/ShowNetwork
-                    u.c.nodes/NewCoreNodeForm
+                    u.c.networks/Show
+                    u.c.nodes/NewForm
                     u.c.nodes/Report
                     u.c.nodes/Show
-                    u.c.nodes/NodeContainer
                     u.c.peers/Report
-                    u.c.peers/CorePeers2Report
-                    u.c.peers/NewCorePeerForm
-                    u.c.peers/ShowPeer
+                    u.c.peers/NewForm
                     u.c.tx/Report
                     u.c.tx/Show
                     u.c.wallets/NewForm
                     u.c.wallets/Show
                     u.c.wallets/Report
-                    u.c.wallet-addresses/NewWalletAddressForm
-                    u.c.wallet-addresses/WalletAddressForm
+                    u.c.wallet-addresses/NewForm
                     u.c.words/Report]}
   (case current-state
     :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))

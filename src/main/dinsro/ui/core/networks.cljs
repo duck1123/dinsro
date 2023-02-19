@@ -40,7 +40,7 @@
     :key   "wallets"
     :route "dinsro.ui.core.network-wallets/SubPage"}])
 
-(defsc ShowNetwork
+(defsc Show
   [_this {::m.c.networks/keys [id chain name]
           :ui/keys            [router]}]
   {:ident         ::m.c.networks/id

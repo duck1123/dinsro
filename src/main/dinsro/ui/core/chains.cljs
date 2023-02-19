@@ -14,7 +14,7 @@
 
 (def override-form false)
 
-(form/defsc-form CoreChainForm
+(form/defsc-form NewForm
   [this props]
   {fo/attributes     [m.c.chains/name]
    fo/cancel-route   ["chains"]
@@ -38,7 +38,7 @@
     :name  "Networks"
     :route "dinsro.ui.core.chain-networks/SubPage"}])
 
-(defsc ShowChain
+(defsc Show
   [_this {::m.c.chains/keys [id name]
           :ui/keys          [router]
           :as               props}]
@@ -64,6 +64,8 @@
      (dom/div :.ui.segment
        (dom/h3 {} "Chain Router not loaded")
        (u.links/ui-props-logger props)))))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]

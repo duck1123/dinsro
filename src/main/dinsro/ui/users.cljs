@@ -53,7 +53,7 @@
 
 (def ui-router (comp/factory Router))
 
-(defsc ShowUser
+(defsc Show
   [_this {::m.users/keys [id name]
           :ui/keys       [router]}]
   {:route-segment ["users" :id]

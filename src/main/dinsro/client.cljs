@@ -130,9 +130,9 @@
   (let [{:keys [route params]} (hist5/url->route)
         target0                (dr/resolve-target app route)
         target                 (condp = target0
-                                 nil                      u.home/HomePage
-                                 u.admin/AdminPage        u.users/AdminReport
-                                 u.c.networks/ShowNetwork u.c.network-addresses/SubPage
+                                 nil               u.home/HomePage
+                                 u.admin/AdminPage u.users/AdminReport
+                                 u.c.networks/Show u.c.network-addresses/SubPage
                                  target0)]
     (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})
     (routing/route-to! app target (or params {}))))

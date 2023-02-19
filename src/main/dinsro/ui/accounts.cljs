@@ -25,7 +25,7 @@
 
 (def override-form true)
 
-(form/defsc-form NewAccountForm
+(form/defsc-form NewForm
   [this {::m.accounts/keys [currency name initial-value user]
          :as               props}]
   {fo/attributes    [m.accounts/name
@@ -68,7 +68,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewAccountForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
   [_this _props]

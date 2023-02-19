@@ -7,7 +7,7 @@
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.model.core.addresses :as m.c.addresses]))
 
-(form/defsc-form CoreAddressForm
+(form/defsc-form NewForm
   [_this _props]
   {fo/attributes   [m.c.addresses/address]
    fo/id           m.c.addresses/id
@@ -18,7 +18,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this CoreAddressForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
   [_this _props]

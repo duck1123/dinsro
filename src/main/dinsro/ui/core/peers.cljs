@@ -28,7 +28,7 @@
                                                         ::m.c.peers/node node-id}]
                (comp/transact! this [(mu.c.peers/create! props)])))})
 
-(form/defsc-form NewCorePeerForm
+(form/defsc-form NewForm
   [this props]
   {fo/id             m.c.peers/id
    fo/action-buttons [::submit]
@@ -84,7 +84,7 @@
                                                                                :controls   controls
                                                                                :id-control id-control
                                                                                :node-id    node-id})
-                                                    (form/create! this NewCorePeerForm
+                                                    (form/create! this NewForm
                                                                   {:initial-state {::m.c.peers/addr "foo"}})))}}
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
@@ -111,7 +111,7 @@
    ro/run-on-mount?    true
    ro/route            "peers2"})
 
-(defsc ShowPeer
+(defsc Show
   [_this _props]
   {:ident ::m.c.peers/id
    :query [::m.c.peers/id]

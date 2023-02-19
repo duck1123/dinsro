@@ -18,7 +18,7 @@
   {:query [::m.accounts/id ::m.accounts/name]
    :ident ::m.accounts/id})
 
-(form/defsc-form NewTransactionForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/id            m.transactions/id
    fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]
@@ -42,7 +42,7 @@
                         m.transactions/date]
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
-                                           :action (fn [this] (form/create! this NewTransactionForm))}
+                                           :action (fn [this] (form/create! this NewForm))}
                         ::refresh         u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
@@ -59,7 +59,7 @@
                         j.transactions/user]
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
-                                           :action (fn [this] (form/create! this NewTransactionForm))}
+                                           :action (fn [this] (form/create! this NewForm))}
                         ::refresh         u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
@@ -70,7 +70,7 @@
    ro/source-attribute ::j.transactions/admin-index
    ro/title            "Admin Transaction Report"})
 
-(defsc ShowTransaction
+(defsc Show
   [_this {::m.transactions/keys [description date]
           :ui/keys              [debits]}]
   {:route-segment ["transactions" :id]

@@ -14,7 +14,7 @@
 ;; [[../joins/categories.cljc][Category Joins]]
 ;; [[../model/categories.cljc][Categories Model]]
 
-(form/defsc-form NewCategoryForm
+(form/defsc-form NewForm
   [_this _props]
   {fo/attributes   [m.categories/name]
    fo/cancel-route ["categories"]
@@ -62,7 +62,7 @@
     (dom/div {} (dom/p {} "Category"))))
 
 (def new-button
-  {:action (fn [this _] (form/create! this NewCategoryForm))
+  {:action (fn [this _] (form/create! this NewForm))
    :label  "New"
    :local? true
    :type   :button})

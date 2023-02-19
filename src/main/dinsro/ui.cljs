@@ -26,7 +26,6 @@
    [dinsro.ui.contacts :as u.contacts]
    [dinsro.ui.core :as u.core]
    [dinsro.ui.currencies :as u.currencies]
-   [dinsro.ui.debits :as u.debits]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
    [dinsro.ui.ln :as u.ln]
@@ -55,33 +54,29 @@
   [_this {:keys [current-state route-factory route-props]}]
   {:css            [[:.rootrouter {:height "100%"}]]
    :router-targets [u.accounts/Report
-                    u.accounts/NewAccountForm
+                    u.accounts/NewForm
                     u.accounts/Show
                     u.admin/AdminPage
-                    u.categories/AdminCategoryForm
-                    u.categories/CategoryForm
                     u.categories/Report
-                    u.categories/NewCategoryForm
+                    u.categories/NewForm
                     u.contacts/Report
                     u.core/CorePage
                     u.currencies/Report
-                    u.currencies/NewCurrencyForm
-                    u.currencies/ShowCurrency
-                    u.debits/ShowDebits
+                    u.currencies/NewForm
+                    u.currencies/Show
                     u.home/HomePage
                     u.login/LoginPage
                     u.ln/LnPage
                     u.nostr/Page
-                    u.rate-sources/ShowRateSource
+                    u.rate-sources/Show
                     u.rate-sources/Report
                     u.rates/Report
-                    u.rates/ShowRate
+                    u.rates/Show
                     u.registration/RegistrationPage
-                    u.transactions/NewTransactionForm
-                    u.transactions/ShowTransaction
+                    u.transactions/NewForm
+                    u.transactions/Show
                     u.transactions/Report
-                    u.users/AdminUserForm
-                    u.users/ShowUser
+                    u.users/Show
                     u.users/Report]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
@@ -155,3 +150,5 @@
         (dom/div {}
           (dom/p "Not loaded")))
       (inj/style-element {:component Root}))))
+
+(def ui-root (comp/factory Root))

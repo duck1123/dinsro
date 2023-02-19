@@ -9,7 +9,7 @@
    [dinsro.model.core.connections :as m.c.connections]
    [dinsro.mutations.core.connections :as mu.c.connections]))
 
-(form/defsc-form NewConnectionForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.c.connections/host
                     m.c.connections/port
                     m.c.connections/rpcuser

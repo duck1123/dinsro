@@ -52,7 +52,7 @@
          ::m.c.blocks/height
          ::m.c.blocks/fetched?]))
 
-(defsc ShowBlock
+(defsc Show
   "Show a core block"
   [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight network]
          :ui/keys          [transactions]

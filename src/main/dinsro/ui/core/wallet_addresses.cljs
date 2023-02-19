@@ -14,7 +14,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-(form/defsc-form NewWalletAddressForm
+(form/defsc-form NewForm
   [_this _props]
   {fo/id         m.c.wallet-addresses/id
    fo/attributes [m.c.wallet-addresses/address
@@ -70,7 +70,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewWalletAddressForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
 (def calculate-action-button
   {:type   :button

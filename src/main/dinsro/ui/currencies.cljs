@@ -11,7 +11,7 @@
    [dinsro.ui.currency-accounts :as u.currency-accounts]
    [dinsro.ui.links :as u.links]))
 
-(form/defsc-form NewCurrencyForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/id           m.currencies/id
    fo/attributes   [m.currencies/name
                     m.currencies/code]
@@ -28,7 +28,7 @@
 (def new-button
   {:label  "New"
    :type   :button
-   :action #(form/create! % NewCurrencyForm)})
+   :action #(form/create! % NewForm)})
 
 (report/defsc-report Report
   [_this _props]
@@ -53,7 +53,7 @@
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true})
 
-(defsc ShowCurrency
+(defsc Show
   [_this {::m.currencies/keys [name]
           :ui/keys       [accounts]}]
   {:route-segment ["currency" :id]

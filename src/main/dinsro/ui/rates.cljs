@@ -25,7 +25,7 @@
    ro/source-attribute ::j.rates/index
    ro/title            "Rates Report"})
 
-(defsc ShowRate
+(defsc Show
   [_this _props]
   {:ident         ::m.rates/id
    :query         [::m.rates/id]

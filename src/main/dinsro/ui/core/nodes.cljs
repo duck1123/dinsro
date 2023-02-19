@@ -4,9 +4,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.container :as container :refer [defsc-container]]
-   [com.fulcrologic.rad.container-options :as co]
-   [com.fulcrologic.rad.control-options :as copt]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -103,7 +100,7 @@
       (dom/h3 {} "Node not loaded")
       (u.links/ui-props-logger props))))
 
-(form/defsc-form NewCoreNodeForm [_this _props]
+(form/defsc-form NewForm [_this _props]
   {fo/id           m.c.nodes/id
    fo/attributes   [m.c.nodes/name
                     m.c.nodes/host
@@ -118,7 +115,7 @@
   {:type   :button
    :local? true
    :label  "New Node"
-   :action (fn [this _] (form/create! this NewCoreNodeForm))})
+   :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
   [_this _props]
@@ -137,14 +134,3 @@
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/route             "nodes"})
-
-(defsc-container NodeContainer
-  [_this _props]
-  {co/children         {:node  Show
-                        :nodes Report}
-   co/layout           [[{:id :nodes :width 16}]
-                        [{:id :node :width 16}]]
-   co/route            "node-container"
-   co/title            "Node"
-   copt/controls       {::refresh u.links/refresh-control}
-   copt/control-layout {:action-buttons [::refresh]}})

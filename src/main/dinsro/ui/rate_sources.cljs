@@ -21,7 +21,7 @@
      (let [{::m.rate-sources/keys [id]} (comp/props this)]
        (comp/transact! this [(mu.rate-sources/run-query! {::m.rate-sources/id id})])))})
 
-(form/defsc-form NewRateSourceForm
+(form/defsc-form NewForm
   [_this _props]
   {fo/id             m.rate-sources/id
    fo/action-buttons (concat [::run] form/standard-action-buttons)
@@ -41,7 +41,7 @@
                         m.rate-sources/active?]
    ro/controls         {::new-rate-source {:label  "New Source"
                                            :type   :button
-                                           :action (fn [this] (form/create! this NewRateSourceForm))}}
+                                           :action (fn [this] (form/create! this NewForm))}}
    ro/control-layout   {:action-buttons [::new-rate-source]}
    ro/field-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)
                         ::m.rate-sources/name     #(u.links/ui-rate-source-link %3)}
@@ -59,7 +59,7 @@
    ro/row-pk           m.rate-sources/id
    ro/run-on-mount?    true})
 
-(defsc ShowRateSource
+(defsc Show
   [_this {::m.rate-sources/keys [name url]
           :ui/keys              [accounts]}]
   {:route-segment ["rate-sources" :id]

@@ -53,7 +53,7 @@
                                                            :controls   controls
                                                            :id-control id-control
                                                            :node-id    node-id})
-                                (form/create! this u.c.peers/NewCorePeerForm
+                                (form/create! this u.c.peers/NewForm
                                               {:initial-state {::m.c.peers/addr "foo"}})))}}
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
