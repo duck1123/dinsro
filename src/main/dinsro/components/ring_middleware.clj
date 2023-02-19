@@ -9,7 +9,6 @@
    [com.fulcrologic.fulcro.server.api-middleware :as server]
    [com.fulcrologic.rad.blob :as blob]
    [compojure.core :refer [defroutes GET POST]]
-   [compojure.route :as route]
    [dinsro.components.blob-store :as bs]
    [dinsro.components.config :as config :refer [secret]]
    [dinsro.components.parser :as parser]
@@ -20,7 +19,7 @@
    [ring.middleware.session.cookie :refer [cookie-store]]
    [ring.util.response :as resp]
    [taoensso.sente :as sente]
-   [taoensso.sente.server-adapters.immutant :refer [get-sch-adapter]]))
+   [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]))
 
 (def minimal false)
 
@@ -134,22 +133,16 @@
   (def connected-uids                connected-uids))
 
 (defroutes base-app
-  (GET "/" {:keys [anti-forgery-token]}
-    (resp/content-type
-     (resp/response (index anti-forgery-token))
-     "text/html"))
   (GET "/.well-known/nostr.json" []
     (resp/content-type
      (resp/response (nip05-response))
      "application/json"))
   (GET  "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req (ring-ajax-post                req))
-  (GET "/*" []
-    (route/not-found
-     (resp/content-type
-      (resp/response (index "foo"))
-      "text/html")))
-  (route/not-found "missing"))
+  (GET "/" {:keys [anti-forgery-token]}
+    (resp/content-type
+     (resp/response (index anti-forgery-token))
+     "text/html")))
 
 (defstate middleware
   :start
@@ -171,4 +164,5 @@
         (blob/wrap-blob-service "/files" bs/file-blob-store)
         (server/wrap-transit-params {})
         (server/wrap-transit-response {:opts {:handlers transit-write-handlers}})
+        (wrap-html-routes)
         (wrap-defaults defaults-config))))
