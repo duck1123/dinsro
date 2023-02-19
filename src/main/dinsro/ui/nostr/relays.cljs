@@ -70,7 +70,6 @@
    ro/columns           [m.n.relays/id
                          m.n.relays/address
                          m.n.relays/connected
-                         j.n.relays/contact-count
                          j.n.relays/subscription-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button

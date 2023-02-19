@@ -2,9 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.relays :as m.n.relays]
-   #?(:clj [dinsro.queries.nostr.contact-relays :as q.n.contact-relays])
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
    [dinsro.specs]
@@ -22,30 +20,6 @@
    (fn [_env _]
      (let [ids #?(:clj (q.n.relays/index-ids) :cljs [])]
        {::admin-index (m.n.relays/idents ids)}))})
-
-(defattr contact-count ::contact-count :int
-  {ao/identities #{::m.n.contact-relays/id}
-   ao/pc-input   #{::m.n.contact-relays/id}
-   ao/pc-resolve
-   (fn [_env params]
-     (log/info :contact-count/starting {:params params})
-     (let [relay-id (::m.n.relays/id params)
-           ids      #?(:clj  (q.n.contact-relays/find-by-relay relay-id)
-                       :cljs (do (comment relay-id) []))]
-       {::contact-count (count ids)}))})
-
-(defattr contacts ::contacts :int
-  {ao/identities #{::m.n.contact-relays/id}
-   ao/pc-input   #{::m.n.contact-relays/id}
-   ao/pc-output  [{::contacts [::m.n.contact-relays/id]}]
-   ao/pc-resolve
-   (fn [_env params]
-     (log/info :contacts/starting {:params params})
-     (let [relay-id (::m.n.relays/id params)
-           ids      #?(:clj  (q.n.contact-relays/find-by-relay relay-id)
-                       :cljs (do (comment relay-id) []))
-           idents   (m.n.contact-relays/idents ids)]
-       {::contacts idents}))})
 
 (defattr index ::index :ref
   {ao/target    ::m.n.relays/id
@@ -68,4 +42,4 @@
                    :cljs (do (comment relay-id) []))]
        {::subscription-count (count ids)}))})
 
-(def attributes [admin-index contact-count contacts index subscription-count])
+(def attributes [admin-index index subscription-count])
