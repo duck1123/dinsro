@@ -39,6 +39,9 @@
   com.xtdb/xtdb-jdbc                        {:mvn/version "1.23.0"}
   com.xtdb/xtdb-rocksdb                     {:mvn/version "1.23.0"}
 
+  ;; https://github.com/weavejester/compojure
+  compojure/compojure                       {:mvn/version "1.7.0"}
+
   ;; https://github.com/djblue/portal
   djblue/portal                             {:mvn/version "0.35.1"}
 

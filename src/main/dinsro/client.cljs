@@ -7,7 +7,7 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.mutations :as m]
-   [com.fulcrologic.fulcro.networking.websockets :as fws]
+   [com.fulcrologic.fulcro.networking.http-remote :as net]
    [com.fulcrologic.fulcro.react.error-boundaries :as eb]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
@@ -141,12 +141,25 @@
     (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})
     (routing/route-to! app target (or params {}))))
 
+(def secured-request-middleware
+  ;; The CSRF token is embedded via server_components/html.clj
+  (->
+   (net/wrap-csrf-token (or js/fulcro_network_csrf_token "TOKEN-NOT-IN-HTML!"))
+   (net/wrap-fulcro-request)))
+
+(def secured-request-ws-params
+  ;; The CSRF token is embedded via server_components/html.clj
+  {:csrf-token (or js/fulcro_network_csrf_token "TOKEN-NOT-IN-HTML!")})
+
 (defonce app
   (rad-app/fulcro-rad-app
    {:props-middleware    (comp/wrap-update-extra-props
                           (fn [cls extra-props]
                             (merge extra-props (css/get-classnames cls))))
-    :remotes             {:remote (fws/fulcro-websocket-remote {})}
+    :remotes             {:remote
+                          (net/fulcro-http-remote
+                           {:url                "/api"
+                            :request-middleware secured-request-middleware})}
     :remote-error?       (fn [result]
                            (or
                             (app/default-remote-error? result)

@@ -8,6 +8,8 @@
    [com.fulcrologic.fulcro.networking.websockets :as fws]
    [com.fulcrologic.fulcro.server.api-middleware :as server]
    [com.fulcrologic.rad.blob :as blob]
+   [compojure.core :refer [defroutes GET POST]]
+   [compojure.route :as route]
    [dinsro.components.blob-store :as bs]
    [dinsro.components.config :as config :refer [secret]]
    [dinsro.components.parser :as parser]
@@ -17,6 +19,7 @@
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.session.cookie :refer [cookie-store]]
    [ring.util.response :as resp]
+   [taoensso.sente :as sente]
    [taoensso.sente.server-adapters.immutant :refer [get-sch-adapter]]))
 
 (def minimal false)
@@ -36,6 +39,7 @@
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
     [:body {}
+     [:div#sente-csrf-token {:data-csrf-token csrf-token}]
      [:div#app {}]
      [:script {:src "/js/main.js"}]]]))
 
@@ -54,7 +58,7 @@
      :body   {}}))
 
 (defn wrap-html-routes [ring-handler]
-  (fn [{:keys [uri anti-forgery-token] :as req}]
+  (fn [{:keys [uri] :as req}]
     (if (or (str/starts-with? uri "/api")
             (str/starts-with? uri "/css")
             (str/starts-with? uri "/images")
@@ -62,9 +66,7 @@
             (str/starts-with? uri "/js")
             (str/starts-with? uri "/.well-known"))
       (ring-handler req)
-      (resp/content-type
-       (resp/response (index anti-forgery-token))
-       "text/html"))))
+      nil)))
 
 (defn nip05-response
   []
@@ -118,26 +120,55 @@
   [_env query]
   (log/info :query-parser/starting {:query query}))
 
+(let [{:keys [ch-recv send-fn connected-uids
+              ajax-post-fn ajax-get-or-ws-handshake-fn]}
+      (sente/make-channel-socket! (get-sch-adapter) {})]
+
+  (def ring-ajax-post                ajax-post-fn)
+  (def ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
+  ;; ChannelSocket's receive channel
+  (def ch-chsk                       ch-recv)
+  ;; ChannelSocket's send API fn
+  (def chsk-send!                    send-fn)
+  ;; Watchable, read-only atom
+  (def connected-uids                connected-uids))
+
+(defroutes base-app
+  (GET "/" {:keys [anti-forgery-token]}
+    (resp/content-type
+     (resp/response (index anti-forgery-token))
+     "text/html"))
+  (GET "/.well-known/nostr.json" []
+    (resp/content-type
+     (resp/response (nip05-response))
+     "application/json"))
+  (GET  "/chsk" req (ring-ajax-get-or-ws-handshake req))
+  (POST "/chsk" req (ring-ajax-post                req))
+  (GET "/*" []
+    (route/not-found
+     (resp/content-type
+      (resp/response (index "foo"))
+      "text/html")))
+  (route/not-found "missing"))
+
 (defstate middleware
   :start
   (let [defaults-config (:ring.middleware/defaults-config config/config {})
         session-store   (cookie-store {:key (b/slice secret 0 16)})
         defaults-config (assoc-in defaults-config [:session :store] session-store)
         defaults-config (merge site-defaults defaults-config)
-        _websocket      (fws/start! (fws/make-websockets
-                                     query-parser
-                                     {:http-server-adapter (get-sch-adapter)
-                                      :parser-accepts-env? true
-                                      :sente-options       {:csrf-token nil}}))]
-
-    (-> not-found-handler
+        websockets
+        (fws/start! (fws/make-websockets
+                     parser/parser
+                     {:http-server-adapter (get-sch-adapter)
+                      :parser-accepts-env? true
+                      :websockets-uri      "/api2"}))]
+    (-> base-app
         (wrap-api "/api")
-        ;; (fws/wrap-api websockets)
+        (fws/wrap-api websockets)
         (file-upload/wrap-mutation-file-uploads {})
         (blob/wrap-blob-service "/images" bs/image-blob-store)
         (blob/wrap-blob-service "/files" bs/file-blob-store)
         (server/wrap-transit-params {})
         (server/wrap-transit-response {:opts {:handlers transit-write-handlers}})
-        (wrap-html-routes)
-        (wrap-well-known-routes)
         (wrap-defaults defaults-config))))
