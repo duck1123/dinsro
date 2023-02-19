@@ -1,11 +1,11 @@
-(ns dinsro.joins.core.tx
+(ns dinsro.joins.core.transactions
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])

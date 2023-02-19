@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.specs]
    [xtdb.api :as xt]))

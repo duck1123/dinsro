@@ -5,7 +5,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx-out :as j.c.tx-out]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))

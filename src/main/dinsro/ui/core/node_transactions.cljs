@@ -4,9 +4,9 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.tx :as j.c.tx]
+   [dinsro.joins.core.transactions :as j.c.tx]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.c.nodes/id)

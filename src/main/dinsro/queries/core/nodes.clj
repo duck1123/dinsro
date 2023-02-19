@@ -7,7 +7,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]

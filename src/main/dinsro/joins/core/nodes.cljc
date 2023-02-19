@@ -5,7 +5,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])

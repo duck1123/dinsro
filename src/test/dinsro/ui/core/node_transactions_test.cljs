@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [dinsro.ui.core.node-transactions :as u.c.node-transactions]

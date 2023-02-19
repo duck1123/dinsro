@@ -1,4 +1,4 @@
-(ns dinsro.model.core.tx
+(ns dinsro.model.core.transactions
   (:refer-clojure :exclude [hash sequence time])
   (:require
    [clojure.spec.alpha :as s]

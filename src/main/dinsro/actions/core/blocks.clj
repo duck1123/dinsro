@@ -9,7 +9,7 @@
    [dinsro.client.converters.get-blockchain-info-result :as c.c.get-blockchain-info-result]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]

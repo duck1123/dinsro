@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [next])
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [lambdaisland.glogc :as log]))

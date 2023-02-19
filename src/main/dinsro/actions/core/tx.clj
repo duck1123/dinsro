@@ -6,7 +6,7 @@
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    [dinsro.queries.core.blocks :as q.c.blocks]
@@ -130,8 +130,7 @@
         (if-let [network-id (::m.c.blocks/network block)]
           (if-let [node-id (first (q.c.nodes/find-by-network network-id))]
             (let [{::m.c.tx/keys [tx-id]} tx
-
-                  returned-id (update-tx node-id block-id tx-id)]
+                  returned-id             (update-tx node-id block-id tx-id)]
               {:status       :passed
                ::m.c.tx/item (q.c.tx/read-record returned-id)
                :id           returned-id})

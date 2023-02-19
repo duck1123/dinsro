@@ -4,9 +4,13 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]))
 
+(def router-key :dinsro.ui.admin/Router)
+
 (defsc Dashboard
   [_this _props]
-  {}
+  {:query         [[::dr/id router-key]]
+   :initial-state {}
+   :route-segment ["dashboard"]}
   (dom/div {}
     (dom/h1 "Dashboard")))
 

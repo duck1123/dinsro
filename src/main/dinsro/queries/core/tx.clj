@@ -6,7 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
@@ -105,8 +105,7 @@
   ;;                       []
   ;;                       [?id ::m.c.tx/tx-id ?tx-id]
 
-
-  ;;                       ]}]
+;;                       ]}]
   ;;   (ffirst (xt/q db query [ln-node-id]))
 
   ;;   )

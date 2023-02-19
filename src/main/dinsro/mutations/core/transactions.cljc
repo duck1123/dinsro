@@ -1,4 +1,4 @@
-(ns dinsro.mutations.core.tx
+(ns dinsro.mutations.core.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
@@ -6,7 +6,7 @@
    #?(:clj [dinsro.actions.core.tx :as a.c.tx])
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
    #?(:clj [dinsro.queries.core.tx :as q.c.tx])
    [lambdaisland.glogc :as log]))

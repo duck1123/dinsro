@@ -3,7 +3,7 @@
   (:require
    [dinsro.actions.core.tx :as a.c.tx]
    [dinsro.lnd-notebook :as n.lnd]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.blocks :as q.c.blocks]

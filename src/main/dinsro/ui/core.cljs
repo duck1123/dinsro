@@ -10,7 +10,7 @@
    [dinsro.ui.core.networks :as u.c.networks]
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.peers :as u.c.peers]
-   [dinsro.ui.core.tx :as u.c.tx]
+   [dinsro.ui.core.transactions :as u.c.transactions]
    [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.core.words :as u.c.words]))
@@ -34,8 +34,8 @@
                     u.c.nodes/Show
                     u.c.peers/Report
                     u.c.peers/NewForm
-                    u.c.tx/Report
-                    u.c.tx/Show
+                    u.c.transactions/Report
+                    u.c.transactions/Show
                     u.c.wallets/NewForm
                     u.c.wallets/Show
                     u.c.wallets/Report

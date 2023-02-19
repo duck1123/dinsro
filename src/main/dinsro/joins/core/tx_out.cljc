@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.tx-out :as m.c.tx-out]
    #?(:clj [dinsro.queries.core.tx-out :as q.c.tx-out])
    [dinsro.specs]

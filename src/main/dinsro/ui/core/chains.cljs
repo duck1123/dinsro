@@ -65,8 +65,6 @@
        (dom/h3 {} "Chain Router not loaded")
        (u.links/ui-props-logger props)))))
 
-(def ui-show (comp/factory Show))
-
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.chains/name #(u.links/ui-chain-link %3)}

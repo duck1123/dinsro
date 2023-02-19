@@ -19,7 +19,7 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.tx :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.tx]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -244,13 +244,16 @@
    {:items menu-items
     :onItemClick
     (fn [_e d]
-      (let [route-name (get (js->clj d) "route")
-            route-kw   (keyword route-name)
-            route      (comp/registry-key->class route-kw)]
-        (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
-        (if id
-          (rroute/route-to! this route {:id (str id)})
-          (log/info :onItemClick/no-id {}))))}))
+      (if-let [route-name (get (js->clj d) "route")]
+        (let [route-kw   (keyword route-name)
+              route      (comp/registry-key->class route-kw)]
+          (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
+          (if id
+            (rroute/route-to! this route {:id (str id)})
+            (do
+              (log/info :onItemClick/no-id {})
+              (rroute/route-to! this route {}))))
+        (throw (js/Error. "no route"))))}))
 
 (def ui-nav-menu (comp/factory NavMenu))
 
