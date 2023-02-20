@@ -1,48 +1,31 @@
 (ns dinsro.ui.core.transaction-outputs
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx-out :as j.c.tx-out]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-out :as m.c.tx-out]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
-
-(def override-form false)
+   [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.c.tx-out/n
                         m.c.tx-out/value
                         m.c.tx-out/hex
                         m.c.tx-out/type]
-   ro/controls         {::refresh   u.links/refresh-control
-                        ::m.c.tx/id {:type :uuid :label "TX"}}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/source-attribute ::j.c.tx-out/index
-   ro/title            "Outputs"
+   ro/controls         {::refresh   u.links/refresh-control
+                        ::m.c.transactions/id {:type :uuid :label "TX"}}
    ro/row-pk           m.c.tx-out/id
-   ro/run-on-mount?    true}
-  (log/info :Report/starting {:props props})
-  (if override-form
-    (report/render-layout this)
-    (dom/div :.ui.segment
-      (report/render-layout this))))
-
-(def ui-report (comp/factory Report))
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.c.tx-out/index
+   ro/title            "Outputs"})
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
-  {:query             [::m.c.tx/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :initial-state     {::m.c.tx/id nil
-                       :ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/creating {:props props})
-  (when report
-    (ui-report report)))
-
-(def ui-sub-page (comp/factory SubPage))
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
+   :initial-state     {:ui/report {}}
+   :query             [{:ui/report (comp/get-query Report)}]}
+  ((comp/factory Report) report))

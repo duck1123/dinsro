@@ -3,45 +3,45 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.core.tx :as a.c.tx])
+   #?(:clj [dinsro.actions.core.transactions :as a.c.transactions])
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
-   #?(:clj [dinsro.queries.core.tx :as q.c.tx])
+   #?(:clj [dinsro.queries.core.transactions :as q.c.transactions])
    [lambdaisland.glogc :as log]))
 
 (comment
   ::m.c.blocks/_
   ::m.c.nodes/_
-  ::m.c.tx/_
+  ::m.c.transactions/_
   ::pc/_)
 
 (defsc FetchResponse
   [_ _]
-  {:initial-state {::m.c.tx/item {}}
+  {:initial-state {::m.c.transactions/item {}}
    :query [:status
-           ::m.c.tx/item]})
+           ::m.c.transactions/item]})
 
 (defsc SearchResponse
   [_ _]
-  {:initial-state {:status :initial
-                   :tx-id nil
-                   :node nil
-                   :tx nil
-                   ::m.c.tx/item {}}
+  {:initial-state {:status                 :initial
+                   :tx-id                  nil
+                   :node                   nil
+                   :tx                     nil
+                   ::m.c.transactions/item {}}
    :query         [:status
                    :tx-id
                    :node
                    :tx
-                   ::m.c.tx/item]})
+                   ::m.c.transactions/item]})
 
 #?(:clj
    (pc/defmutation fetch!
      [_env props]
-     {::pc/params #{::m.c.tx/id}
+     {::pc/params #{::m.c.transactions/id}
       ::pc/output [:status]}
-     (a.c.tx/do-fetch! props))
+     (a.c.transactions/do-fetch! props))
 
    :cljs
    (defmutation fetch! [_props]
@@ -53,10 +53,10 @@
    (defn do-search!
      [props]
      (log/info :do-search!/starting {:props props})
-     (let [{tx-id   ::m.c.tx/tx-id
-            node-id ::m.c.tx/node} props]
+     (let [{tx-id   ::m.c.transactions/tx-id
+            node-id ::m.c.transactions/node} props]
        (log/info :search/started {:tx-id tx-id :node-id node-id})
-       (let [result (a.c.tx/search! props)]
+       (let [result (a.c.transactions/search! props)]
          (log/info :search/result {:result result})
          (if result
            {:status  :passed
@@ -71,7 +71,7 @@
 #?(:clj
    (pc/defmutation search!
      [_env props]
-     {::pc/params #{::m.c.tx/id}
+     {::pc/params #{::m.c.transactions/id}
       ::pc/output [:status]}
      (do-search! props))
 
@@ -99,13 +99,11 @@
    (comment
      (def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
      node-alice
-     (def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
-     node-bob
-     (def tx-id2 (::m.c.tx/tx-id (first (q.c.tx/index-records))))
+     (def tx-id2 (::m.c.transactions/tx-id (first (q.c.transactions/index-records))))
 
      (q.c.nodes/index-ids)
 
-     (do-search! {::m.c.tx/tx-id "foo" ::m.c.tx/node (::m.c.nodes/id node-alice)})
-     (tap> (do-search! {::m.c.tx/tx-id tx-id2 ::m.c.tx/node (::m.c.nodes/id node-alice)}))
+     (do-search! {::m.c.transactions/tx-id "foo" ::m.c.transactions/node (::m.c.nodes/id node-alice)})
+     (tap> (do-search! {::m.c.transactions/tx-id tx-id2 ::m.c.transactions/node (::m.c.nodes/id node-alice)}))
 
      nil))

@@ -4,7 +4,7 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.specs]
    [xtdb.api :as xt]))
@@ -19,7 +19,7 @@
 
 (>defn find-by-tx
   [tx-id]
-  [::m.c.tx/id => (s/coll-of ::m.c.tx-in/id)]
+  [::m.c.transactions/id => (s/coll-of ::m.c.tx-in/id)]
   (let [db    (c.xtdb/main-db)
         query '{:find  [?tx-in-id]
                 :in    [?tx-id]

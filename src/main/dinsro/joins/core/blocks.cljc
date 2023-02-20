@@ -4,9 +4,9 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])
-   #?(:clj [dinsro.queries.core.tx :as q.c.tx])
+   #?(:clj [dinsro.queries.core.transactions :as q.c.transactions])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
@@ -61,11 +61,11 @@
 (defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.c.blocks/id}
-   ao/pc-output   [{::transactions [::m.c.tx/id]}]
-   ao/target      ::m.c.tx/id
+   ao/pc-output   [{::transactions [::m.c.transactions/id]}]
+   ao/target      ::m.c.transactions/id
    ao/pc-resolve
    (fn [_env {::m.c.blocks/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.tx/find-by-block id) :cljs []) [])]
-       {::transactions (m.c.tx/idents ids)}))})
+     (let [ids (if id #?(:clj (q.c.transactions/find-by-block id) :cljs []) [])]
+       {::transactions (m.c.transactions/idents ids)}))})
 
 (def attributes [index admin-index transactions])

@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [lambdaisland.glogc :as log]))
 
 (s/def ::id uuid?)
@@ -42,9 +42,9 @@
 (s/def ::transaction uuid?)
 (defattr transaction ::transaction :ref
   {ao/identities #{::id}
-   ao/target     ::m.c.tx/id
+   ao/target     ::m.c.transactions/id
    ao/schema     :production
-   ::report/column-EQL {::transaction [::m.c.tx/id ::m.c.tx/name]}})
+   ::report/column-EQL {::transaction [::m.c.transactions/id ::m.c.transactions/name]}})
 
 (s/def ::txid (s/or :string string? :nil nil?))
 (defattr txid ::txid :string

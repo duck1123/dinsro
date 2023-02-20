@@ -25,7 +25,7 @@
    :core-networks              ["Networks"              :dinsro.ui.core.networks/Report]
    :core-nodes                 ["Nodes"                 :dinsro.ui.core.nodes/Report]
    :core-peers                 ["Peers"                 :dinsro.ui.core.peers/Report]
-   :core-transactions          ["Transactions"          :dinsro.ui.core.tx/Report]
+   :core-transactions          ["Transactions"          :dinsro.ui.core.transactions/Report]
    :currencies                 ["Currencies"            :dinsro.ui.currencies/Report]
    :home                       ["Home"                  :dinsro.ui.home/HomePage]
    :invoices                   ["Invoices"              :dinsro.ui.ln.invoices/Report]

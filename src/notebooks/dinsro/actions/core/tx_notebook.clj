@@ -1,14 +1,14 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.tx-notebook
   (:require
-   [dinsro.actions.core.tx :as a.c.tx]
+   [dinsro.actions.core.transactions :as a.c.tx]
    [dinsro.lnd-notebook :as n.lnd]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.transactions :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.tx-out :as q.c.tx-out]
    [dinsro.viewers :as dv]
@@ -24,11 +24,11 @@
 ^{::clerk/viewer clerk/code}
 (def tx (q.c.tx/read-record transaction-id))
 
-(def block-id (::m.c.tx/block tx))
+(def block-id (::m.c.transactions/block tx))
 
 ^{::clerk/viewer clerk/table}
 (when-let [ids (q.c.tx/index-ids)]
-  ;; (sort-by ::m.c.tx/transaction
+  ;; (sort-by ::m.c.transactions/transaction
   (map q.c.tx/read-record ids)
 
            ;; )
@@ -61,12 +61,12 @@
   (q.c.nodes/find-by-tx transaction-id)
 
   (q.c.tx/index-ids)
-  (def tx-id2 (::m.c.tx/tx-id (first (q.c.tx/index-records))))
+  (def tx-id2 (::m.c.transactions/tx-id (first (q.c.tx/index-records))))
   tx-id2
 
-  (a.c.tx/search! {::m.c.tx/tx-id tx-id2})
-  (a.c.tx/search! {::m.c.tx/tx-id "foo"})
-  (tap> (a.c.tx/search! {::m.c.tx/tx-id tx-id2}))
+  (a.c.tx/search! {::m.c.transactions/tx-id tx-id2})
+  (a.c.tx/search! {::m.c.transactions/tx-id "foo"})
+  (tap> (a.c.tx/search! {::m.c.transactions/tx-id tx-id2}))
 
   (q.c.tx-in/index-records)
   (q.c.tx-out/index-ids)

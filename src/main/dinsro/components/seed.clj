@@ -31,7 +31,7 @@
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -51,7 +51,7 @@
    [dinsro.queries.core.mnemonics :as q.c.mnemonics]
    [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.transactions :as q.c.transactions]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.wallets :as q.c.wallets]
    [dinsro.queries.core.words :as q.c.words]
@@ -375,8 +375,8 @@
            :keys     [in]
            node-name :node} core-txes]
     (if-let [node-id (q.c.nodes/find-by-name node-name)]
-      (let [tx    (assoc tx ::m.c.tx/node node-id)
-            tx-id (q.c.tx/create-record tx)]
+      (let [tx    (assoc tx ::m.c.transactions/node node-id)
+            tx-id (q.c.transactions/create-record tx)]
         (doseq [tx-in in]
           (let [tx-in (assoc tx-in ::m.c.tx-in/transaction tx-id)]
             (q.c.tx-in/create-record tx-in))))

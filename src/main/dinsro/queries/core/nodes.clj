@@ -7,7 +7,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
@@ -112,7 +112,7 @@
   (let [db    (c.xtdb/main-db)
         query '{:find  [?node-id]
                 :in    [[?tx-id]]
-                :where [[?tx-id ::m.c.tx/block ?block-id]
+                :where [[?tx-id ::m.c.transactions/block ?block-id]
                         [?block-id ::m.c.blocks/network ?network-id]
                         [?node-id ::m.c.nodes/network ?network-id]]}]
     (ffirst (xt/q db query [tx-id]))))

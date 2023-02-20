@@ -16,22 +16,21 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name]
-   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh      u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::refresh]}
+   ro/source-attribute ::j.users/index-by-pubkey
+   ro/title            "Users"
    ro/row-actions      [u.c.transactions/fetch-action-button u.c.transactions/delete-action-button]
    ro/row-pk           m.users/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.users/index-by-pubkey
-   ro/title            "Users"})
+   ro/run-on-mount?    true})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
-
-   :query             [{:ui/report (comp/get-query Report)}
+  {:query             [{:ui/report (comp/get-query Report)}
                        [::dr/id router-key]]
-   :route-segment     ["users"]}
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :route-segment     ["users"]
+   :initial-state     {:ui/report {}}
+   :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))

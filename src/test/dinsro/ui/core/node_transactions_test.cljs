@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [dinsro.ui.core.node-transactions :as u.c.node-transactions]
@@ -15,10 +15,10 @@
                ::m.c.nodes/name (ds/gen-key ::m.c.nodes/name)}]
      (SubPage-row node)))
   ([node]
-   {::m.c.tx/id       (ds/gen-key ::m.c.tx/id)
-    ::m.c.tx/fetched? (ds/gen-key ::m.c.tx/fetched?)
-    ::m.c.tx/tx-id    (ds/gen-key ::m.c.tx/tx-id)
-    ::m.c.tx/node     node}))
+   {::m.c.transactions/id       (ds/gen-key ::m.c.transactions/id)
+    ::m.c.transactions/fetched? (ds/gen-key ::m.c.transactions/fetched?)
+    ::m.c.transactions/tx-id    (ds/gen-key ::m.c.transactions/tx-id)
+    ::m.c.transactions/node     node}))
 
 (defn SubPage-report-data
   []

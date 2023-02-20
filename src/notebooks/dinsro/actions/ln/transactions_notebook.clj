@@ -7,7 +7,7 @@
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.transactions :as q.c.transactions]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.tx-out :as q.c.tx-out]
    [dinsro.viewers :as dv]
@@ -20,10 +20,10 @@
 
 (comment
   (q.c.blocks/index-ids)
-  (q.c.tx/index-ids)
+  (q.c.transactions/index-ids)
 
   (map q.c.blocks/delete (q.c.blocks/index-ids))
-  (map q.c.tx/delete (q.c.tx/index-ids))
+  (map q.c.transactions/delete (q.c.transactions/index-ids))
   (map q.c.tx-out/delete! (q.c.tx-out/index-ids))
   (map q.c.tx-in/delete! (q.c.tx-in/index-ids))
 

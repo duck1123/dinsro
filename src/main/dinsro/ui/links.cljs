@@ -19,7 +19,7 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -330,13 +330,13 @@
 (def ui-core-peer-link (comp/factory CorePeerLinkForm {:keyfn ::m.c.peers/id}))
 
 (form/defsc-form CoreTxLinkForm
-  [this {::m.c.tx/keys [id tx-id]}]
-  {fo/id         m.c.tx/id
+  [this {::m.c.transactions/keys [id tx-id]}]
+  {fo/id         m.c.transactions/id
    fo/route-prefix "tx-link"
-   fo/attributes [m.c.tx/id m.c.tx/tx-id]}
-  (form-link this id tx-id :dinsro.ui.core.tx/Show))
+   fo/attributes [m.c.transactions/id m.c.transactions/tx-id]}
+  (form-link this id tx-id :dinsro.ui.core.transactions/Show))
 
-(def ui-core-tx-link (comp/factory CoreTxLinkForm {:keyfn ::m.c.tx/id}))
+(def ui-core-tx-link (comp/factory CoreTxLinkForm {:keyfn ::m.c.transactions/id}))
 
 (form/defsc-form CurrencyLinkForm [this {::m.currencies/keys [id name]}]
   {fo/id         m.currencies/id

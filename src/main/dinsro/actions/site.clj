@@ -6,7 +6,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.transactions :as q.c.tx]
    [dinsro.site :as site]
    [ring.util.codec :as codec]))
 

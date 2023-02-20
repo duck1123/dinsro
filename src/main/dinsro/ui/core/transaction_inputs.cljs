@@ -1,48 +1,32 @@
 (ns dinsro.ui.core.transaction-inputs
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
-
-(def override-form false)
+   [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.c.tx-in/vout
                         m.c.tx-in/tx-id
                         m.c.tx-in/sequence
                         m.c.tx-in/transaction]
-   ro/controls         {::refresh   u.links/refresh-control
-                        ::m.c.tx/id {:type :uuid :label "TX"}}
    ro/control-layout   {:action-buttons [::refresh]
-                        :inputs [[::m.c.tx/id]]}
-   ro/source-attribute ::j.c.tx-in/index
-   ro/title            "Inputs"
+                        :inputs         [[::m.c.transactions/id]]}
+   ro/controls         {::refresh             u.links/refresh-control
+                        ::m.c.transactions/id {:type :uuid :label "TX"}}
    ro/row-pk           m.c.tx-in/id
-   ro/run-on-mount?    true}
-  (log/info :Report/starting {:props props})
-  (if override-form
-    (report/render-layout this)
-    (dom/div :.ui.segment
-      (report/render-layout this))))
-
-(def ui-report (comp/factory Report))
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.c.tx-in/index
+   ro/title            "Inputs"})
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
-  {:query             [::m.c.tx/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :initial-state     {::m.c.tx/id nil
-                       :ui/report  {}}
-   :ident             (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/creating {:props props})
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
+   :initial-state     {:ui/report            {}}
+   :query             [{:ui/report (comp/get-query Report)}]}
+  ((comp/factory Report) report))

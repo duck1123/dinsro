@@ -13,7 +13,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -52,7 +52,7 @@
          category-id    ::m.categories/id
          block-id       ::m.c.blocks/id
          core-node-id   ::m.c.nodes/id
-         core-tx-id     ::m.c.tx/id
+         core-tx-id     ::m.c.transactions/id
          currency-id    ::m.currencies/id
          channel-id     ::m.ln.channels/id
          invoice-id     ::m.ln.invoices/id

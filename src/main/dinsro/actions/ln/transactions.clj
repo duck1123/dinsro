@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [next])
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn => ?]]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [lambdaisland.glogc :as log]))
@@ -17,13 +17,13 @@
 
 (>defn handle-get-transactions-response
   [node-id transaction]
-  [::m.ln.nodes/id any? => ::m.c.tx/id]
+  [::m.ln.nodes/id any? => ::m.c.transactions/id]
   (comment node-id transaction)
   (not-implemented))
 
 (>defn update-transaction!
   [node data]
-  [::m.ln.nodes/item any? => (? ::m.c.tx/id)]
+  [::m.ln.nodes/item any? => (? ::m.c.transactions/id)]
   (log/info :update-transaction!/starting {})
   (comment node data)
   (not-implemented))

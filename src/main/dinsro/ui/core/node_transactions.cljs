@@ -4,9 +4,10 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.core.transactions :as j.c.tx]
+   [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
+   [dinsro.ui.core.transactions :as u.c.transactions]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.c.nodes/id)
@@ -14,19 +15,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.tx/tx-id
-                        j.c.tx/node
-                        m.c.tx/fetched?
-                        m.c.tx/block]
+  {ro/columns          [m.c.transactions/tx-id
+                        j.c.transactions/node
+                        m.c.transactions/fetched?
+                        m.c.transactions/block]
    ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
                         ::refresh      u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/field-formatters {::m.c.tx/block #(u.links/ui-block-height-link %2)
-                        ::m.c.tx/node  #(u.links/ui-core-node-link %2)
+   ro/field-formatters {::m.c.transactions/block #(u.links/ui-block-height-link %2)
+                        ::m.c.transactions/node  #(u.links/ui-core-node-link %2)
                         ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
-   ro/source-attribute ::j.c.tx/index
+   ro/source-attribute ::j.c.transactions/index
    ro/title            "Node Transactions"
-   ro/row-pk           m.c.tx/id
+   ro/row-actions      [u.c.transactions/fetch-action-button u.c.transactions/delete-action-button]
+   ro/row-pk           m.c.transactions/id
    ro/run-on-mount?    true})
 
 (defsc SubPage

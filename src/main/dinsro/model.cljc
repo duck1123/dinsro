@@ -10,7 +10,7 @@
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.joins.core.peers :as j.c.peers]
-   [dinsro.joins.core.transactions :as j.c.tx]
+   [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
    [dinsro.joins.core.tx-out :as j.c.tx-out]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
@@ -49,9 +49,9 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.core.script-sigs :as m.c.script-sigs]
-   [dinsro.model.core.transactions :as m.c.tx]
-   [dinsro.model.core.tx-in :as m.c.tx-in]
-   [dinsro.model.core.tx-out :as m.c.tx-out]
+   [dinsro.model.core.transactions :as m.c.transactions]
+   [dinsro.model.core.tx-in :as m.c.transactions-in]
+   [dinsro.model.core.tx-out :as m.c.transactions-out]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -90,7 +90,7 @@
    #?(:clj [dinsro.mutations.core.connections :as mu.c.connections])
    #?(:clj [dinsro.mutations.core.nodes :as mu.c.nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.c.peers])
-   #?(:clj [dinsro.mutations.core.transactions :as mu.c.tx])
+   #?(:clj [dinsro.mutations.core.transactions :as mu.c.transactions])
    #?(:clj [dinsro.mutations.core.wallets :as mu.c.wallets])
    #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
    #?(:clj [dinsro.mutations.core.words :as mu.c.words])
@@ -126,7 +126,7 @@
         j.c.networks/attributes
         j.c.nodes/attributes
         j.c.peers/attributes
-        j.c.tx/attributes
+        j.c.transactions/attributes
         j.c.tx-in/attributes
         j.c.tx-out/attributes
         j.currencies/attributes
@@ -165,9 +165,9 @@
         m.c.nodes/attributes
         m.c.peers/attributes
         m.c.script-sigs/attributes
-        m.c.tx/attributes
-        m.c.tx-in/attributes
-        m.c.tx-out/attributes
+        m.c.transactions/attributes
+        m.c.transactions-in/attributes
+        m.c.transactions-out/attributes
         m.currencies/attributes
         m.debits/attributes
         m.ln.accounts/attributes
@@ -211,7 +211,7 @@
            mu.c.blocks/resolvers
            mu.c.nodes/resolvers
            mu.c.peers/resolvers
-           mu.c.tx/resolvers
+           mu.c.transactions/resolvers
            mu.debits/resolvers
            mu.ln.accounts/resolvers
            mu.ln.invoices/resolvers

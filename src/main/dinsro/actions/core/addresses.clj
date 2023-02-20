@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.blocks :as a.c.blocks]
-   [dinsro.actions.core.tx :as a.c.tx]
+   [dinsro.actions.core.transactions :as a.c.tx]
    [dinsro.actions.nbxplorer :as a.nbxplorer]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.queries.core.addresses :as q.c.addresses]

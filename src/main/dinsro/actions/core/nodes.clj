@@ -9,9 +9,9 @@
    [dinsro.client.scala :as cs]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.transactions :as q.c.transactions]
    [lambdaisland.glogc :as log]))
 
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
@@ -78,8 +78,8 @@
     (doseq [txes (list-transactions client)]
       (log/debug :fetch-transactions!/processing {:txes txes})
       (let [params (assoc txes ::m.c.peers/node node-id)
-            params (m.c.tx/prepare-params params)]
-        (q.c.tx/create-record params)))))
+            params (m.c.transactions/prepare-params params)]
+        (q.c.transactions/create-record params)))))
 
 (>defn generate!
   "Generate a block for the node."

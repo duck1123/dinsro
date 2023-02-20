@@ -3,17 +3,17 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.actions.core.node-base :as a.c.node-base]
-   [dinsro.actions.core.tx :as a.c.tx]
+   [dinsro.actions.core.transactions :as a.c.tx]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.client.converters.get-block-result :as c.c.get-block-result]
    [dinsro.client.converters.get-blockchain-info-result :as c.c.get-blockchain-info-result]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.networks :as q.c.networks]
    [dinsro.queries.core.nodes :as q.c.nodes]
-   [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.queries.core.transactions :as q.c.transactions]
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
@@ -157,8 +157,8 @@
       (let [client (a.c.node-base/get-client node)]
              ;; FIXME: Does not fetch transactions for block
         (doseq [tx (c.bitcoin-s/list-transactions client)]
-          (let [params (m.c.tx/prepare-params tx)]
-            (q.c.tx/create-record params))))
+          (let [params (m.c.transactions/prepare-params tx)]
+            (q.c.transactions/create-record params))))
       (throw (RuntimeException. "Failed to find node")))))
 
 (>defn search!

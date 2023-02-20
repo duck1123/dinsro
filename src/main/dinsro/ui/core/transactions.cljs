@@ -81,8 +81,8 @@
 
     (if id
       (comp/fragment
-       (when inputs (u.c.transaction-inputs/ui-sub-page inputs))
-       (when outputs (u.c.transaction-outputs/ui-sub-page outputs)))
+       (when inputs ((comp/factory u.c.transaction-inputs/SubPage) inputs))
+       (when outputs ((comp/factory u.c.transaction-outputs/SubPage) outputs)))
       (dom/p {} "id not set"))))
 
 (report/defsc-report Report

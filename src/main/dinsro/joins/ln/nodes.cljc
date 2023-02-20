@@ -3,14 +3,14 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    #?(:clj [dinsro.actions.authentication :as a.authentication])
-   [dinsro.model.core.transactions :as m.c.tx]
+   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
-   #?(:clj [dinsro.queries.core.tx :as q.c.tx])
+   #?(:clj [dinsro.queries.core.transactions :as q.c.transactions])
    #?(:clj [dinsro.queries.ln.channels :as q.ln.channels])
    #?(:clj [dinsro.queries.ln.invoices :as q.ln.invoices])
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
@@ -107,11 +107,11 @@
 (defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
-   ao/pc-output   [{::transactions [::m.c.tx/id]}]
-   ao/target      ::m.c.tx/id
+   ao/pc-output   [{::transactions [::m.c.transactions/id]}]
+   ao/target      ::m.c.transactions/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.tx/find-by-ln-node id) :cljs []) [])]
-       {::transactions (m.c.tx/idents (take 3 ids))}))})
+     (let [ids (if id #?(:clj (q.c.transactions/find-by-ln-node id) :cljs []) [])]
+       {::transactions (m.c.transactions/idents (take 3 ids))}))})
 
 (def attributes [admin-index index channels invoices payments payreqs peers transactions])
