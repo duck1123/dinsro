@@ -10,6 +10,9 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/event_tags.clj][Event Tag Actions]]
+;; [[../../model/nostr/event_tags.cljc][Event Tags Model]]
+
 (>defn create-record
   [params]
   [::m.n.event-tags/params => :xt/id]

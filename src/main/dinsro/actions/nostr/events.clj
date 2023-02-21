@@ -5,10 +5,15 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/events.cljc][Event Model]]
+;; [[../../queries/nostr/events.clj][Event Queries]]
 
 (defn fetch-events!
   [pubkey-id]
   (log/info :fetch-events!/starting {:pubkey-id pubkey-id}))
+
+(defn do-fetch!
+  [props]
+  (log/info :do-fetch!/starting {:props props}))
 
 (comment
 
