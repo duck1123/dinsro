@@ -19,31 +19,31 @@
   [_this {:keys [current-state pending-path-segment]
           :as props}]
   {:router-targets [u.c.addresses/CoreAddressForm
-                    u.c.addresses/CoreAddressReport
+                    u.c.addresses/Report
                     u.c.blocks/ShowBlock
-                    u.c.blocks/CoreBlockReport
+                    u.c.blocks/Report
                     u.c.chains/CoreChainForm
                     u.c.chains/Report
                     u.c.chains/ShowChain
-                    u.c.connections/CoreNodeConnectionsReport
+                    u.c.connections/Report
                     u.c.connections/NewConnectionForm
-                    u.c.networks/CoreNetworksReport
+                    u.c.networks/Report
                     u.c.networks/ShowNetwork
                     u.c.nodes/NewCoreNodeForm
-                    u.c.nodes/CoreNodesReport
+                    u.c.nodes/Report
                     u.c.nodes/Show
                     u.c.nodes/NodeContainer
-                    u.c.peers/CorePeersReport
+                    u.c.peers/Report
                     u.c.peers/CorePeers2Report
                     u.c.peers/NewCorePeerForm
-                    u.c.tx/CoreTxReport
+                    u.c.tx/Report
                     u.c.tx/ShowTransaction
                     u.c.wallets/NewWalletForm
                     u.c.wallets/ShowWallet
-                    u.c.wallets/WalletsReport
+                    u.c.wallets/Report
                     u.c.wallet-addresses/NewWalletAddressForm
                     u.c.wallet-addresses/WalletAddressForm
-                    u.c.words/WordsReport]}
+                    u.c.words/Report]}
   (case current-state
     :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))
     :failed (dom/div :.ui.segment "Route Failed "  (pr-str pending-path-segment))

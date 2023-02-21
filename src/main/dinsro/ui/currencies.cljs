@@ -31,7 +31,7 @@
    :type   :button
    :action #(form/create! % NewCurrencyForm)})
 
-(report/defsc-report CurrenciesReport
+(report/defsc-report Report
   [_this _props]
   {ro/field-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
    ro/columns          [m.currencies/name

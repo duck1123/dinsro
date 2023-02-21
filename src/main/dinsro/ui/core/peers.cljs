@@ -66,7 +66,7 @@
              (log/info :delete-action/clicked {:id id})
              (comp/transact! this [(mu.c.peers/delete! {::m.c.peers/id id})]))})
 
-(report/defsc-report CorePeersReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.peers/addr
                         m.c.peers/address-bind
@@ -118,7 +118,7 @@
    ro/run-on-mount?    true
    ro/route            "peers2"})
 
-(def ui-peers-report (comp/factory CorePeersReport))
+(def ui-peers-report (comp/factory Report))
 
 (defsc ShowPeer
   [_this _props]

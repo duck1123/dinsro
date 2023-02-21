@@ -36,7 +36,7 @@
    fo/route-prefix  "transaction-form"
    fo/title         "Transaction"})
 
-(report/defsc-report TransactionsReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.transactions/description
                         m.transactions/date]

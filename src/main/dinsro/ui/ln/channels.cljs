@@ -22,7 +22,7 @@
    fo/route-prefix "new-channel"
    fo/title        "New Lightning Channels"})
 
-(report/defsc-report LNChannelsReport
+(report/defsc-report Report
   [this _props]
   {ro/columns          [m.ln.channels/id
                         m.ln.channels/channel-point

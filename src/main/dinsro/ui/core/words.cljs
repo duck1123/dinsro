@@ -7,7 +7,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-(report/defsc-report WordsReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.c.words/word
                         m.c.words/position
@@ -19,5 +19,5 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.words/index
    ro/title            "Word Report"}
-  (log/info :WordsReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))

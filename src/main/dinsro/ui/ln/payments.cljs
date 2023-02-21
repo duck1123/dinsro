@@ -7,7 +7,7 @@
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.ui.links :as u.links]))
 
-(report/defsc-report LNPaymentsReport
+(report/defsc-report Report
   [this _props]
   {ro/columns          [m.ln.payments/payment-hash
                         m.ln.payments/node

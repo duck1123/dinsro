@@ -7,7 +7,7 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.ui.links :as u.links]))
 
-(report/defsc-report RatesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.rates/rate
                         m.rates/source

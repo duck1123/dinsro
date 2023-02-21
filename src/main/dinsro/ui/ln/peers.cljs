@@ -67,7 +67,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewPeerForm))})
 
-(report/defsc-report LNPeersReport
+(report/defsc-report Report
   [this _props]
   {ro/columns          [m.ln.peers/node
                         m.ln.peers/remote-node

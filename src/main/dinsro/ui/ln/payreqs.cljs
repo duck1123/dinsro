@@ -64,7 +64,7 @@
    fo/route-prefix   "new-payment"
    fo/title          "New Payreqs"})
 
-(report/defsc-report LNPayreqsReport
+(report/defsc-report Report
   [this _props]
   {ro/columns          [m.ln.payreqs/payment-hash
                         m.ln.payreqs/description

@@ -11,7 +11,7 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(defn WalletsReport-row
+(defn Report-row
   []
   {::m.c.wallets/id         (ds/gen-key ::m.c.wallets/id)
    ::m.c.wallets/name       (ds/gen-key ::m.c.wallets/name)
@@ -22,13 +22,13 @@
    ::m.c.wallets/node       {::m.c.nodes/id   (ds/gen-key ::m.c.nodes/id)
                              ::m.c.nodes/name (ds/gen-key ::m.c.nodes/name)}})
 
-(defn WalletsReport-data
+(defn Report-data
   []
   {:ui/busy?        false
    :ui/cache        {}
    :ui/controls     []
    :ui/current-page 1
-   :ui/current-rows (map (fn [_] (WalletsReport-row)) (range 3))
+   :ui/current-rows (map (fn [_] (Report-row)) (range 3))
    :ui/loaded-data  []
    :ui/page-count   1
    :ui/parameters   {}})
@@ -126,10 +126,10 @@
     ::ct.fulcro3/initial-state NewWalletForm-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard WalletsReport
+(ws/defcard Report
   {::wsm/card-width 6 ::wsm/card-height 12}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.c.wallets/WalletsReport
+   {::ct.fulcro3/root u.c.wallets/Report
     ::ct.fulcro3/app  {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state
-    (fn [] (WalletsReport-data))}))
+    (fn [] (Report-data))}))

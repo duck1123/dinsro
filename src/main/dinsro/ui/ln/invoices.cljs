@@ -89,7 +89,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewInvoiceForm))})
 
-(report/defsc-report LNInvoicesReport
+(report/defsc-report Report
   [this _props]
   {ro/columns          [m.ln.invoices/id
                         m.ln.invoices/memo

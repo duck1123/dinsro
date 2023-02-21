@@ -25,7 +25,7 @@
    :action (fn [this {::m.c.connections/keys [id]}]
              (comp/transact! this [(mu.c.connections/create! {::m.c.connections/id id})]))})
 
-(report/defsc-report CoreNodeConnectionsReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.connections/host
                         m.c.connections/port]

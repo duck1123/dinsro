@@ -194,7 +194,7 @@
        (when outputs (u.c.transaction-outputs/ui-sub-page outputs)))
       (dom/p {} "id not set"))))
 
-(report/defsc-report CoreTxReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.tx/tx-id
                         j.c.tx/node
@@ -212,4 +212,4 @@
    ro/run-on-mount?    true
    ro/route            "transactions"})
 
-(def ui-tx-report (comp/factory CoreTxReport))
+(def ui-tx-report (comp/factory Report))

@@ -66,7 +66,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewAccountForm))})
 
-(report/defsc-report AccountsReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.accounts/name
                         m.accounts/currency

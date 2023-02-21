@@ -30,7 +30,7 @@
    :action    fetch-action
    :disabled? (fn [_ row-props] (:account/active? row-props))})
 
-(report/defsc-report CoreAddressReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.addresses/address]
    ro/control-layout   {:action-buttons [::new]}

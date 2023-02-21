@@ -76,7 +76,7 @@
       (dom/h3 {} "Network Not loaded")
       (u.links/ui-props-logger props))))
 
-(report/defsc-report CoreNetworksReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.networks/name
                         m.c.networks/chain]
@@ -90,4 +90,4 @@
    ro/run-on-mount?    true
    ro/route            "networks"})
 
-(def ui-tx-report (comp/factory CoreNetworksReport))
+(def ui-tx-report (comp/factory Report))

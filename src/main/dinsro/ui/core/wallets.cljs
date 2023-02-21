@@ -160,7 +160,7 @@
 
       (dom/p {} "id not set"))))
 
-(report/defsc-report WalletsReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.c.wallets/name
                         m.c.wallets/user
@@ -178,7 +178,7 @@
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index
    ro/title            "Wallet Report"}
-  (log/info :WalletsReport/creating {:props props})
+  (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-wallets-report (comp/factory WalletsReport))
+(def ui-wallets-report (comp/factory Report))

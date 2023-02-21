@@ -16,19 +16,19 @@
   [_this _props]
   {:router-targets [u.ln.accounts/Report
                     u.ln.channels/NewChannelForm
-                    u.ln.channels/LNChannelsReport
+                    u.ln.channels/Report
                     u.ln.channels/ShowChannel
-                    u.ln.invoices/LNInvoicesReport
+                    u.ln.invoices/Report
                     u.ln.invoices/NewInvoiceForm
                     u.ln.nodes/CreateLightningNodeForm
-                    u.ln.nodes/LightningNodesReport
+                    u.ln.nodes/Report
                     u.ln.nodes/Show
-                    u.ln.payments/LNPaymentsReport
+                    u.ln.payments/Report
                     u.ln.payments/ShowPayment
                     u.ln.payreqs/NewPaymentForm
-                    u.ln.payreqs/LNPayreqsReport
+                    u.ln.payreqs/Report
                     u.ln.payreqs/NewPaymentForm
-                    u.ln.peers/LNPeersReport
+                    u.ln.peers/Report
                     u.ln.peers/NewPeerForm
                     u.ln.remote-nodes/ShowRemoteNode
                     u.ln.remote-nodes/Report]}

@@ -209,7 +209,7 @@
    :label  "New Node"
    :action (fn [this _] (form/create! this NewCoreNodeForm))})
 
-(report/defsc-report CoreNodesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns           [m.c.nodes/name
                          m.c.nodes/host
@@ -229,7 +229,7 @@
 (defsc-container NodeContainer
   [_this _props]
   {co/children         {:node  Show
-                        :nodes CoreNodesReport}
+                        :nodes Report}
    co/layout           [[{:id :nodes :width 16}]
                         [{:id :node :width 16}]]
    co/route            "node-container"

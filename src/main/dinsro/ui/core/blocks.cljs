@@ -221,7 +221,7 @@
       (dom/div {}
         (dom/p {} "No id")))))
 
-(report/defsc-report CoreBlockReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.blocks/hash
                         m.c.blocks/height
@@ -236,7 +236,7 @@
    ro/run-on-mount?    true
    ro/route            "blocks"})
 
-(def ui-blocks-report (comp/factory CoreBlockReport))
+(def ui-blocks-report (comp/factory Report))
 
 (report/defsc-report AdminReport
   [_this _props]

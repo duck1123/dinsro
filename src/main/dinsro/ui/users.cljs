@@ -77,7 +77,7 @@
    fo/route-prefix "admin-user"
    fo/title        "Admin User"})
 
-(report/defsc-report UsersReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name]
    ro/source-attribute ::m.users/index

@@ -10,12 +10,12 @@
 (comment ::pc/_)
 
 (def links
-  {:accounts              ["Accounts"          "/accounts"         :dinsro.ui.accounts/AccountsReport]
+  {:accounts              ["Accounts"          "/accounts"         :dinsro.ui.accounts/Report]
    :admin                 ["Admin"             "/admin/users"      :dinsro.ui.admin/AdminPage]
-   :categories            ["Categories"        "/categories"       :dinsro.ui.categories/CategoriesReport]
-   :channels              ["Channels"          "/ln/channels"      :dinsro.ui.ln.channels/LNChannelsReport]
-   :core-addresses        ["Core Address"      "/core/addresses"   :dinsro.ui.core.addresses/CoreAddressReport]
-   :core-blocks           ["Core Blocks"       "/core/blocks"      :dinsro.ui.core.blocks/CoreBlockReport]
+   :categories            ["Categories"        "/categories"       :dinsro.ui.categories/Report]
+   :channels              ["Channels"          "/ln/channels"      :dinsro.ui.ln.channels/Report]
+   :core-addresses        ["Core Address"      "/core/addresses"   :dinsro.ui.core.addresses/Report]
+   :core-blocks           ["Core Blocks"       "/core/blocks"      :dinsro.ui.core.blocks/Report]
    :core-chains           ["Chains"            "/core/chains"      :dinsro.ui.core.chains/Report]
    :core-menu             ["Core"              "/core"             nil
                            [:core-nodes
@@ -27,15 +27,15 @@
                             :core-networks
                             :wallets
                             :words]]
-   :core-node-connections ["Connections"       "/core/connections"  :dinsro.ui.core.connections/CoreNodeConnectionsReport]
-   :core-networks         ["Networks"          "/core/networks"     :dinsro.ui.core.networks/CoreNetworksReport]
-   :core-nodes            ["Nodes"             "/core/nodes"        :dinsro.ui.core.nodes/CoreNodesReport]
-   :core-peers            ["Peers"             "/core/peers"        :dinsro.ui.core.peers/CorePeers2Report]
-   :core-transactions     ["Transactions"      "/core/transactions" :dinsro.ui.core.tx/CoreTxReport]
-   :currencies            ["Currencies"        "/currencies"        :dinsro.ui.currencies/CurrenciesReport]
+   :core-node-connections ["Connections"       "/core/connections"  :dinsro.ui.core.connections/Report]
+   :core-networks         ["Networks"          "/core/networks"     :dinsro.ui.core.networks/Report]
+   :core-nodes            ["Nodes"             "/core/nodes"        :dinsro.ui.core.nodes/Report]
+   :core-peers            ["Peers"             "/core/peers"        :dinsro.ui.core.peers/Report]
+   :core-transactions     ["Transactions"      "/core/transactions" :dinsro.ui.core.tx/Report]
+   :currencies            ["Currencies"        "/currencies"        :dinsro.ui.currencies/Report]
    :home                  ["Home"              "/"                  :dinsro.ui.home/HomePage]
-   :invoices              ["Invoices"          "/ln/invoices"       :dinsro.ui.ln.invoices/LNInvoicesReport]
-   :lightning-nodes       ["Lightning Nodes"   "/ln/nodes"          :dinsro.ui.ln.nodes/LightningNodesReport]
+   :invoices              ["Invoices"          "/ln/invoices"       :dinsro.ui.ln.invoices/Report]
+   :lightning-nodes       ["Lightning Nodes"   "/ln/nodes"          :dinsro.ui.ln.nodes/Report]
    :ln-menu               ["LN"                "/ln"                nil
                            [:lightning-nodes
                             :ln-remote-nodes
@@ -46,18 +46,18 @@
                             :payments]]
    :ln-remote-nodes       ["Remote Nodes"      "/ln/remote-nodes"  :dinsro.ui.ln.remote-nodes/Report]
    :login                 ["Login"             "/login"            :dinsro.ui.login/LoginPage]
-   :payments              ["Payments"          "/payments"         :dinsro.ui.ln.payments/LNPaymentsReport]
-   :payreqs               ["Payreqs"           "/payreqs"          :dinsro.ui.ln.payreqs/LNPayreqsReport]
-   :peers                 ["Peers"             "/ln/peers"         :dinsro.ui.ln.peers/LNPeersReport]
-   :rates                 ["Rates"             "/rates"            :dinsro.ui.rates/RatesReport]
-   :rate-sources          ["Rate Sources"      "/rate-sources"     :dinsro.ui.rate-sources/RateSourcesReport]
+   :payments              ["Payments"          "/payments"         :dinsro.ui.ln.payments/Report]
+   :payreqs               ["Payreqs"           "/payreqs"          :dinsro.ui.ln.payreqs/Report]
+   :peers                 ["Peers"             "/ln/peers"         :dinsro.ui.ln.peers/Report]
+   :rates                 ["Rates"             "/rates"            :dinsro.ui.rates/Report]
+   :rate-sources          ["Rate Sources"      "/rate-sources"     :dinsro.ui.rate-sources/Report]
    :registration          ["Registration"      "/register"         :dinsro.ui.registration/RegistrationPage]
    :settings              ["Settings"          "/settings"         :dinsro.ui.settings/SettingsPage]
-   :transactions          ["Transactions"      "/transactions"     :dinsro.ui.transactions/TransactionsReport]
-   :users                 ["Users"             "/users"            :dinsro.ui.users/UsersReport]
-   :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/WalletsReport]
-   :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/WalletAddressesReport]
-   :words                 ["Words"             "/core/words"       :dinsro.ui.core.words/WordsReport]})
+   :transactions          ["Transactions"      "/transactions"     :dinsro.ui.transactions/Report]
+   :users                 ["Users"             "/users"            :dinsro.ui.users/Report]
+   :wallets               ["Wallets"           "/wallets"          :dinsro.ui.core.wallets/Report]
+   :wallet-addresses      ["Wallet Addresses"  "/wallet-addresses" :dinsro.ui.core.wallet-addresses/Report]
+   :words                 ["Words"             "/core/words"       :dinsro.ui.core.words/Report]})
 
 #?(:clj
    (pc/defresolver id

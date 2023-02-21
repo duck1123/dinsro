@@ -51,32 +51,32 @@
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]
   {:css            [[:.rootrouter {:height "100%"}]]
-   :router-targets [u.accounts/AccountsReport
+   :router-targets [u.accounts/Report
                     u.accounts/NewAccountForm
                     u.accounts/Show
                     u.admin/AdminPage
                     u.categories/AdminCategoryForm
                     u.categories/CategoryForm
-                    u.categories/CategoriesReport
+                    u.categories/Report
                     u.categories/NewCategoryForm
                     u.core/CorePage
-                    u.currencies/CurrenciesReport
+                    u.currencies/Report
                     u.currencies/NewCurrencyForm
                     u.currencies/ShowCurrency
                     u.home/HomePage
                     u.login/LoginPage
                     u.ln/LnPage
                     u.rate-sources/ShowRateSource
-                    u.rate-sources/RateSourcesReport
-                    u.rates/RatesReport
+                    u.rate-sources/Report
+                    u.rates/Report
                     u.rates/ShowRate
                     u.registration/RegistrationPage
                     u.transactions/NewTransactionForm
                     u.transactions/ShowTransaction
-                    u.transactions/TransactionsReport
+                    u.transactions/Report
                     u.users/AdminUserForm
                     u.users/ShowUser
-                    u.users/UsersReport]}
+                    u.users/Report]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
       :pending (dom/div "Loading...")

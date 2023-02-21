@@ -63,7 +63,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewCategoryForm))})
 
-(report/defsc-report CategoriesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.categories/name
                         m.categories/user]

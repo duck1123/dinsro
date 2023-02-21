@@ -33,7 +33,7 @@
    fo/route-prefix   "rate-source"
    fo/title          "New Rate Source"})
 
-(report/defsc-report RateSourcesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.rate-sources/name
                         m.rate-sources/url

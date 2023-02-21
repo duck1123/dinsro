@@ -268,7 +268,7 @@
         (dom/h3 {} "Network Router not loaded")
         (u.links/ui-props-logger props)))))
 
-(report/defsc-report LightningNodesReport
+(report/defsc-report Report
   [this props]
   {ro/columns          [m.ln.nodes/name
                         m.ln.nodes/network
@@ -289,7 +289,7 @@
    ro/source-attribute ::m.ln.nodes/index
    ro/title            "Lightning Node Report"}
   (do
-    (log/info :LightningNodesReport/starting {:props props})
+    (log/info :Report/starting {:props props})
     (report/render-layout this)))
 
 (report/defsc-report AdminReport

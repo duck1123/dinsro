@@ -18,7 +18,7 @@
             ::m.c.blocks/height   6
             ::m.c.blocks/hash     "yes"})}))
 
-(defn CoreBlockReport-data
+(defn Report-data
   []
   {:ui/busy?        false
    :ui/cache        {}
@@ -29,9 +29,9 @@
    :ui/page-count   1
    :ui/parameters   {}})
 
-(ws/defcard CoreBlockReport
+(ws/defcard Report
   {::wsm/card-width 6 ::wsm/card-height 13}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.blocks/CoreBlockReport
+   {::ct.fulcro3/root          u.c.blocks/Report
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state CoreBlockReport-data}))
+    ::ct.fulcro3/initial-state Report-data}))
