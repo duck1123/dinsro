@@ -226,7 +226,7 @@
   {fo/id         m.accounts/id
    fo/route-prefix "account-link"
    fo/attributes [m.accounts/name]}
-  (form-link this id name :dinsro.ui.accounts/ShowAccount))
+  (form-link this id name :dinsro.ui.accounts/Show))
 
 (def ui-account-link (comp/factory AccountLinkForm {:keyfn ::m.accounts/id}))
 

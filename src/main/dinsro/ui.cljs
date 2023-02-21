@@ -53,7 +53,7 @@
   {:css            [[:.rootrouter {:height "100%"}]]
    :router-targets [u.accounts/AccountsReport
                     u.accounts/NewAccountForm
-                    u.accounts/ShowAccount
+                    u.accounts/Show
                     u.admin/AdminPage
                     u.categories/AdminCategoryForm
                     u.categories/CategoryForm

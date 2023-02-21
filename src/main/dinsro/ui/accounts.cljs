@@ -131,7 +131,7 @@
    ro/source-attribute ::m.accounts/index
    ro/title            "Accounts"})
 
-(defsc ShowAccount
+(defsc Show
   [_this {::m.accounts/keys [name currency source user wallet]
           :ui/keys          [transactions]}]
   {:route-segment ["accounts" :id]
@@ -150,7 +150,7 @@
                    ::m.accounts/wallet   {}
                    :ui/transactions      {}}
    :ident         ::m.accounts/id
-   :will-enter    (partial u.links/page-loader ::m.accounts/id ::ShowAccount)
+   :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)
    :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})}
   (comp/fragment
    (dom/div :.ui.segment
