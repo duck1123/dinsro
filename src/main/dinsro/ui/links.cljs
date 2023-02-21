@@ -290,7 +290,7 @@
    fo/route-prefix "core-node-link"
    fo/attributes [m.c.nodes/id m.c.nodes/name]}
   (log/info :CoreNodeLinkForm/starting {:id id :name name :props props})
-  (form-link this id (or name (str id)) :dinsro.ui.core.nodes/ShowNode))
+  (form-link this id (or name (str id)) :dinsro.ui.core.nodes/Show))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
@@ -361,7 +361,7 @@
    fo/route-prefix "ln-node-link"
    fo/attributes [m.ln.nodes/name]}
   (log/finer :NodeLinkForm/starting {:id id :name name :props props})
-  (form-link this id name :dinsro.ui.ln.nodes/ShowNode))
+  (form-link this id name :dinsro.ui.ln.nodes/Show))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
 

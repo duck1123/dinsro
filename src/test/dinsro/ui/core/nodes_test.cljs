@@ -11,7 +11,7 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(defn ShowNode-data
+(defn Show-data
   []
   (let [data {::m.c.nodes/id          (ds/gen-key ::m.c.nodes/id)
               ::m.c.nodes/chain       "regtest"
@@ -21,7 +21,7 @@
               ::m.c.nodes/height      6
               ::m.c.nodes/hash        "yes"
               :peers                  (u.c.node-peers-test/SubPage-data)}]
-    (log/info :ShowNode-data/response {:data data})
+    (log/info :Show-data/response {:data data})
     data))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
@@ -43,9 +43,9 @@
     ::ct.fulcro3/initial-state u.c.node-peers-test/SubPage-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard ShowNode
+(ws/defcard Show
   {::wsm/card-width 7 ::wsm/card-height 14}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.nodes/ShowNode
+   {::ct.fulcro3/root          u.c.nodes/Show
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state ShowNode-data}))
+    ::ct.fulcro3/initial-state Show-data}))

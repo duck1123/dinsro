@@ -31,7 +31,7 @@
                     u.c.networks/ShowNetwork
                     u.c.nodes/NewCoreNodeForm
                     u.c.nodes/CoreNodesReport
-                    u.c.nodes/ShowNode
+                    u.c.nodes/Show
                     u.c.nodes/NodeContainer
                     u.c.peers/CorePeersReport
                     u.c.peers/CorePeers2Report

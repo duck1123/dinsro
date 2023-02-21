@@ -22,7 +22,7 @@
                     u.ln.invoices/NewInvoiceForm
                     u.ln.nodes/CreateLightningNodeForm
                     u.ln.nodes/LightningNodesReport
-                    u.ln.nodes/ShowNode
+                    u.ln.nodes/Show
                     u.ln.payments/LNPaymentsReport
                     u.ln.payments/ShowPayment
                     u.ln.payreqs/NewPaymentForm

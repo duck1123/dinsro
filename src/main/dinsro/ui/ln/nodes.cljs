@@ -200,7 +200,7 @@
     :name  "Remote Nodes"
     :route "dinsro.ui.ln.node-remote-nodes/SubPage"}])
 
-(defsc ShowNode
+(defsc Show
   "Show a ln node"
   [this {:ui/keys          [router]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
@@ -226,7 +226,7 @@
                    :ui/router                {}}
    :ident         ::m.ln.nodes/id
    :pre-merge     (u.links/page-merger ::m.ln.nodes/id {:ui/router Router})
-   :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::ShowNode)}
+   :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
       (ui-actions-menu

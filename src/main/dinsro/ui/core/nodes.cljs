@@ -142,7 +142,7 @@
     :name  "Blocks"
     :route "dinsro.ui.core.node-blocks/SubPage"}])
 
-(defsc ShowNode
+(defsc Show
   "Show a core node"
   [_this {::m.c.nodes/keys [id name network]
           :ui/keys         [router]
@@ -158,9 +158,9 @@
                    :ui/router          {}}
    :ident         ::m.c.nodes/id
    :pre-merge (u.links/page-merger ::m.c.nodes/id {:ui/router Router})
-   :will-enter    (partial u.links/page-loader ::m.c.nodes/id ::ShowNode)}
+   :will-enter    (partial u.links/page-loader ::m.c.nodes/id ::Show)}
   (if id
-    (let [{:keys [main _sub]} (css/get-classnames ShowNode)]
+    (let [{:keys [main _sub]} (css/get-classnames Show)]
       (dom/div {:classes [main]}
         (dom/div :.ui.segment
           (ui-actions-menu {::m.c.nodes/id id})
@@ -228,7 +228,7 @@
 
 (defsc-container NodeContainer
   [_this _props]
-  {co/children         {:node  ShowNode
+  {co/children         {:node  Show
                         :nodes CoreNodesReport}
    co/layout           [[{:id :nodes :width 16}]
                         [{:id :node :width 16}]]
