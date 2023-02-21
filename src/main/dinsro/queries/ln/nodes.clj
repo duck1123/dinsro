@@ -42,7 +42,7 @@
   [=> (s/coll-of ::m.ln.nodes/item)]
   (map read-record (index-ids)))
 
-(defn update!
+(>defn update!
   [id data]
   [::m.ln.nodes/id any? => any?]
   (let [node   (c.xtdb/main-node)

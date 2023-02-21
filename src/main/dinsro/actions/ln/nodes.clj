@@ -222,7 +222,7 @@
   (let [client     (get-client node)]
     (async/<!! (c.lnd-s/get-new-address client))))
 
-(defn generate!
+(>defn generate!
   "Request an address and generate a block to it"
   [node]
   [::m.ln.nodes/item => any?]

@@ -111,7 +111,7 @@
                 :where [[?tx-id ::m.c.tx/block ?block-id]]}]
     (ffirst (xt/q db query tx-id))))
 
-(defn find-by-node
+(>defn find-by-node
   "Returns all blocks belonging to the network this node belongs to"
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.blocks/id)]

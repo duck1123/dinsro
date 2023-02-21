@@ -449,7 +449,7 @@
         (log/warn :seed-networks!/not-found {:chain-name chain-name})
         nil))))
 
-(defn seed-core-nodes!
+(>defn seed-core-nodes!
   "Create core nodes"
   [core-node-data]
   [::cs.core/nodes => any?]

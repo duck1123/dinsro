@@ -7,16 +7,17 @@
 
 (defn merge-defaults
   [options]
-  (let [local-devtools        false
-        {:keys       [devcards devtools docs
-                      logLevel
-                      notebooks portal workspaces]
-         base-url    :baseUrl
-         production? :useProduction
+  (let [{:keys          [devcards devtools docs
+                         logLevel
+                         notebooks portal workspaces]
+         base-url       :baseUrl
+         local-devtools :localDevtools
+         production?    :useProduction
          :or
-         {base-url    default-base-url
-          logLevel   :fine
-          production? false}} options
+         {base-url       default-base-url
+          local-devtools false
+          logLevel       :fine
+          production?    false}} options
 
         ;; devcards
         {devcards-enabled                :enabled
@@ -73,7 +74,7 @@
       :devcards-enabled       devcards-enabled
       :devcards-host          devcards-host
       :devcards-devtools-host devcards-devtools-host
-      :devtools-enabled?       devtools-enabled?
+      :devtools-enabled?      devtools-enabled?
       :devtools-host          devtools-host
       :docs-enabled           docs-enabled?
       :log-level              (str logLevel)
