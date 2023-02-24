@@ -187,6 +187,7 @@
          use-guardrails? (or (System/getenv "USE_GUARDRAILS") false)
          data            {:devtools {:devtools-url devtools-url}}
          aliases         (filter identity ["dev"
+                                           "devcards"
                                            (when use-guardrails? "guardrails")
                                            "shadow-cljs"])
          alias-str       (str "-M:" (string/join ":" aliases))
