@@ -7,6 +7,7 @@
    [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.tx :as q.c.tx]
+   [dinsro.site :as site]
    [ring.util.codec :as codec]))
 
 (defn load-edn
@@ -47,20 +48,24 @@
       ::m.c.nodes/rpcuser rpcuser
       ::m.c.nodes/rpcpass rpcpass})))
 
+(defn load-site-config
+  []
+  (site/load-edn "site.edn"))
+
 (comment
-  (edn/read-string (slurp (io/file "site.edn")))
+  (def site-config (load-site-config))
 
-  (slurp (io/file "site.edn"))
+  site-config
 
-  (tap> (first (get-in (load-edn "site.edn") [:seeds :core-nodes :lnd-uris])))
+  (tap> (first (get-in site-config [:seeds :core-nodes :lnd-uris])))
 
-  (def ln-url (first (get-in (load-edn "site.edn") [:seeds :core-nodes :lnd-uris])))
+  (def ln-url (first (get-in site-config [:seeds :core-nodes :lnd-uris])))
   ln-url
   (tap> ln-url)
 
-  (get-lnuris (load-edn "site.edn"))
+  (get-lnuris site-config)
 
-  (first (get-in (load-edn "site.edn") [:seeds :core-nodes :nodes]))
+  (first (get-in site-config [:seeds :core-nodes :nodes]))
 
   (q.c.nodes/index-records)
 
@@ -73,7 +78,7 @@
   (doseq [id (q.c.tx/index-ids)]
     (q.c.tx/delete id))
 
-  (create-core-nodes (load-edn "site.edn"))
+  (create-core-nodes site-config)
 
   (tap> (parse-lnurl ln-url))
 

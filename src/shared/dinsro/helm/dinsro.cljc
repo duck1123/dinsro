@@ -7,17 +7,20 @@
 
 (defn merge-defaults
   [options]
-  (let [{:keys          [devcards devtools docs
-                         logLevel
-                         notebooks portal workspaces]
-         base-url       :baseUrl
-         local-devtools :localDevtools
-         production?    :useProduction
+  (let [{:keys       [devcards devtools docs
+                      logLevel ingress
+                      notebooks portal workspaces
+                      local-devtools]
+         base-url    :baseUrl
+         production? :useProduction
          :or
          {base-url       default-base-url
           local-devtools false
           logLevel       :fine
           production?    false}} options
+
+        {ingress-enabled? :enabled
+         :or              {ingress-enabled? true}} ingress
 
         ;; devcards
         {devcards-enabled                :enabled
@@ -71,59 +74,61 @@
     (merge
      options
      {:base-url               base-url
-      :devcards-enabled       devcards-enabled
+      :devcards-enabled?      devcards-enabled
       :devcards-host          devcards-host
       :devcards-devtools-host devcards-devtools-host
       :devtools-enabled?      devtools-enabled?
       :devtools-host          devtools-host
-      :docs-enabled           docs-enabled?
+      :docs-enabled?          docs-enabled?
       :log-level              (str logLevel)
       :image-tag              image-tag
-      :notebooks-enabled      notebooks-enabled?
+      :ingress-enabled?       ingress-enabled?
+      :notebooks-enabled?     notebooks-enabled?
       :notebooks-inherit-host notebooks-inherit-host
       :notebooks-host         notebooks-url
-      :portal-enabled         portal-enabled
+      :portal-enabled?        portal-enabled
       :production             production?
       :webtools-url           webtools-url
-      :workspaces-enabled     workspaces-enabled
+      :workspaces-enabled?    workspaces-enabled
       :workspaces-host        workspaces-host})))
 
 (defn ->dinsro-config
   [site-config]
   (let [{:keys
          [base-url
-          devcards-enabled
+          devcards-enabled?
           devcards-host
           devcards-devtools-host
           devtools-enabled?
           devtools-host
-          docs-enabled
+          docs-enabled?
           image-tag
+          ingress-enabled?
           log-level
-          notebooks-enabled
+          notebooks-enabled?
           notebooks-host
-          portal-enabled
+          portal-enabled?
           webtools-url
-          workspaces-enabled
+          workspaces-enabled?
           workspaces-host]
          local-devtools :localDevtools
          portal-host    :portalHost
          seed           :seedDatabase
-         nrepl          :useNrepl
+         nrepl-enabled? :useNrepl
          persistence    :usePersistence} (merge-defaults site-config)]
     {:replicaCount 1
+     :logLevel     log-level
 
      :database
      {:enabled persistence}
 
      :devcards
-     {:enabled devcards-enabled
+     {:enabled devcards-enabled?
       :devtools
       {:enabled true
        :ingress
        {:enabled true
-        :hosts
-        [{:host devcards-devtools-host :paths [{:path "/"}]}]}}
+        :hosts   [{:host devcards-devtools-host :paths [{:path "/"}]}]}}
 
       :ingress
       {:hosts
@@ -137,42 +142,44 @@
                     [{:host devtools-host :paths [{:path "/"}]}]}}
 
      :docs
-     {:enabled docs-enabled}
+     {:enabled docs-enabled?}
 
      :image
      {:tag image-tag}
 
      :ingress
-     {:hosts [{:host  base-url
-               :paths [{:path "/"}]}]}
-
-     :logLevel log-level
+     {:enabled     ingress-enabled?
+      :annotations {"cert-manager.io/cluster-issuer"           "letsencrypt-prod"
+                    "ingress.kubernetes.io/force-ssl-redirect" "true"}
+      :hosts       [{:host base-url :paths [{:path "/"}]}]
+      :tls         [{:hosts [base-url] :secretName "dinsro-tls"}]}
 
      :notebooks
-     {:enabled notebooks-enabled
+     {:enabled notebooks-enabled?
       :ingress
       {:enabled true
-       :hosts
-       [{:host notebooks-host :paths [{:path "/"}]}]}}
+       :hosts   [{:host notebooks-host :paths [{:path "/"}]}]
+       :tls     [{:hosts [notebooks-host] :secretName "dinsro-notebooks-tls"}]}}
 
      :nrepl
-     {:enabled nrepl}
+     {:enabled nrepl-enabled?}
 
      :persistence
      {:enabled persistence
       :seed    seed}
 
      :portal
-     {:enabled portal-enabled
+     {:enabled portal-enabled?
       :service {:type "ClusterIP" :port 5678}
-      :ingress {:enabled portal-enabled
-                :hosts
-                [{:host portal-host :paths [{:path "/"}]}]}}
+      :ingress {:enabled portal-enabled?
+                :hosts   [{:host portal-host :paths [{:path "/"}]}]}}
 
      :workspaces
-     {:enabled workspaces-enabled
-      :ingress {:hosts
-                [{:host workspaces-host :paths [{:path "/"}]}]}}}))
+     {:enabled workspaces-enabled?
+      :ingress
+      {:enabled true
+       :hosts   [{:host workspaces-host :paths [{:path "/"}]}]
+       :tls     [{:hosts [workspaces-host] :secretName "dinsro-workspaces-tls"}]}}}))
 
 (defn ->values-yaml
   [options]

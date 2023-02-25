@@ -2,17 +2,29 @@ version: v2beta1
 name: dinsro
 
 vars:
+  BASE_HOST:
+    default: localtest.me
+  BASE_PUBLIC_DOMAIN:
+    default: localtest.me
   REPO:
     default: duck1123
   PROJECT:
     default: dinsro
+  DEVCARDS_PROJECT:
+    default: devcards
   DEVIMAGE_PROJECT:
     default: devimage
+  NOSTREAM_PROJECT:
+    default: nostream
+  POSTGRESQL_ROOT_PASSWORD:
+    default: "bbyKm52sL6"
   REGISTRY:
     question: Where is the registry used by you local cluster
-    default: "k3d-myregistry.localtest.me:12345"
+    default: "k3d-myregistry.${BASE_HOST}:12345"
   USE_PERSISTENCE:
     default: false
+  USE_NODES:
+    default: true
 
 pipelines:
   build-devimage: |-
@@ -32,6 +44,8 @@ pipelines:
   deploy-all: |-
     run_dependencies --all
     run_pipelines deploy-all-bitcoin
+    run_pipelines deploy-nostream
+    run_pipelines deploy-nostr-rs-relay
     run_pipelines deploy-dinsro
 
   deploy-all-bitcoin: |-
@@ -55,10 +69,9 @@ pipelines:
     YAML_PATH=target/charts/${NAME}_bitcoind.yaml
     bb helm-bitcoin ${NAME} > ${YAML_PATH}
     kubectl apply -f ${YAML_PATH}
-    # kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
   deploy-database: |-
-    run_pipelines deploy-postgres
+    run_pipelines deploy-postgresql
 
   deploy-dinsro: |-
     echo ""
@@ -77,7 +90,6 @@ pipelines:
     YAML_PATH=target/charts/${NAME}_fileserver.yaml
     bb helm-fileserver ${NAME} > ${YAML_PATH}
     kubectl apply -f ${YAML_PATH}
-    # kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
   deploy-lnd: |-
     echo ""
@@ -88,13 +100,41 @@ pipelines:
     YAML_PATH=target/charts/${NAME}_lnd.yaml
     bb helm-lnd ${NAME} > ${YAML_PATH}
     kubectl apply -f ${YAML_PATH}
-    # kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
-  deploy-postgres: |-
+  deploy-nostr-rs-relay: |-
     echo ""
-    echo "--- Deploying Postgres ---"
+    echo "--- Deploying nostr-rs-relay ---"
     echo ""
-    create_deployments postgres
+    run_pipelines create-chart-directories
+    YAML_PATH=target/charts/nostr-rs-relay.yaml
+    bb helm-nostr-rs-relay ${NAME} > ${YAML_PATH}
+    kubectl apply -f ${YAML_PATH}
+
+  deploy-nostream: |-
+    echo ""
+    echo "--- Deploying Nostream ---"
+    echo ""
+    build_images nostream
+    run_pipelines deploy-redis
+    create_deployments nostream
+
+  deploy-postgresql: |-
+    echo ""
+    echo "--- Deploying Postgresql ---"
+    echo ""
+    create_deployments postgresql
+
+  deploy-sqlpad: |-
+    echo ""
+    echo "--- Deploying SQLpad ---"
+    echo ""
+    create_deployments sqlpad
+
+  deploy-redis: |-
+    echo ""
+    echo "--- Deploying Redis ---"
+    echo ""
+    create_deployments redis
 
   deploy-rtl: |-
     echo ""
@@ -106,7 +146,6 @@ pipelines:
     bb generate-rtl-values ${NAME}
     bb helm-rtl ${NAME} > ${YAML_PATH}
     kubectl apply -f ${YAML_PATH}
-    # kubectl apply --namespace ${NAME} -f ${YAML_PATH}
 
   dev: |-
     echo "Starting dev"
@@ -127,10 +166,14 @@ pipelines:
     run_pipelines purge
     run_pipelines purge-devimage
     run_pipelines purge-all-bitcoin
+    run_pipelines purge-all-relays
 
   purge-all-bitcoin: |-
     NAME=alice run_pipelines purge-bitcoin
     NAME=bob run_pipelines purge-bitcoin
+
+  purge-all-relays: |-
+    run_pipelines purge-nostream purge-nostr-rs-relay
 
   purge-bitcoin: |-
     echo ""
@@ -146,12 +189,14 @@ pipelines:
     echo ""
     YAML_PATH=target/charts/${NAME?}_bitcoind.yaml
     kubectl delete -f ${YAML_PATH} || true
-    # kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
+
+  purge-data: |-
+    echo "Purging Data:"
 
   purge-database: |-
     echo ""
     echo "=== Purging Database ==="
-    purge_deployments postgres
+    run_pipelines purge-postgresql
 
   purge-devimage: |-
     echo "=== Purging Devimage ==="
@@ -168,7 +213,6 @@ pipelines:
     echo ""
     YAML_PATH=target/charts/${NAME?}_fileserver.yaml
     kubectl delete -f ${YAML_PATH} || true
-    # kubectl delete --namespace ${NAME?} -f ${YAML_PATH} || true
 
   purge-lnd: |-
     echo ""
@@ -176,7 +220,47 @@ pipelines:
     echo ""
     YAML_PATH=target/charts/${NAME}_lnd.yaml
     kubectl delete -f ${YAML_PATH} || true
-    # kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
+
+  purge-nostr-rs-relay: |-
+    echo ""
+    echo "--- Purging nostr-rs-relay ---"
+    echo ""
+    YAML_PATH=target/charts/nostr-rs-relay.yaml
+    kubectl delete -f ${YAML_PATH} || true
+
+  purge-nostream: |-
+    echo ""
+    echo "--- Purging Nostream ---"
+    echo ""
+    purge_deployments nostream
+
+  purge-postgresql: |-
+    purge_deployments postgresql
+
+  purge-postgresql-all: |-
+    run_pipelines purge-postgresql
+    run_pipelines purge-postgresql-data
+
+  purge-postgresql-data: |-
+    kubectl delete persistentvolumeclaims data-postgresql-0 || echo "claim does not exist"
+
+  purge-redis: |-
+    echo ""
+    echo "Purge Redis"
+    purge_deployments redis
+
+  purge-redis-all: |-
+    run_pipelines purge-redis
+    run_pipelines purge-redis-data
+
+  purge-redis-data: |-
+    kubectl delete persistentvolumeclaims redis-data-redis-master-0 || echo "claim does not exist"
+    kubectl delete persistentvolumeclaims redis-data-redis-replicas-0 || echo "claim does not exist"
+    kubectl delete persistentvolumeclaims redis-data-redis-replicas-1 || echo "claim does not exist"
+    kubectl delete persistentvolumeclaims redis-data-redis-replicas-2 || echo "claim does not exist"
+
+  purge-relays: |-
+    run_pipelines purge-nostream purge-nostr-rs-relay
 
   purge-rtl: |-
     echo ""
@@ -184,9 +268,24 @@ pipelines:
     echo ""
     YAML_PATH=target/charts/${NAME}_rtl.yaml
     kubectl delete -f ${YAML_PATH} || true
-    # kubectl delete --namespace ${NAME} -f ${YAML_PATH} || true
+
+  purge-sqlpad: |-
+    purge_deployments sqlpad
 
 images:
+  devcards:
+    image: ${REPO}/dinsro-devcards:devcards-latest
+    custom:
+      command: |-
+        set -ex
+        export TAG=${runtime.images.devcards.tag}
+        export IMAGE=${REPO}/${DEVCARDS_PROJECT}
+        echo "Building devcards"
+        earthly +devcards-image --repo ${REPO} --project ${DEVCARDS_PROJECT} --tag ${TAG}
+        docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
+        docker push ${REGISTRY}/${IMAGE}:${TAG}
+        docker image rm ${IMAGE}:${TAG}
+        docker image rm ${REGISTRY}/${IMAGE}:${TAG}
   dinsro:
     image: ${REGISTRY}/${REPO}/${PROJECT}
     custom:
@@ -194,9 +293,19 @@ images:
         set -ex
         export TAG=${runtime.images.dinsro.tag}
         export IMAGE=${REPO}/${PROJECT}
-
         earthly +image --repo ${REPO} --project ${PROJECT} --tag ${TAG}
-
+        docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
+        docker push ${REGISTRY}/${IMAGE}:${TAG}
+        docker image rm ${IMAGE}:${TAG}
+        docker image rm ${REGISTRY}/${IMAGE}:${TAG}
+  nostream:
+    image: ${REGISTRY}/${REPO}/${NOSTREAM_PROJECT}
+    custom:
+      command: |-
+        set -ex
+        export TAG=${runtime.images.nostream.tag}
+        export IMAGE=${REPO}/${NOSTREAM_PROJECT}
+        earthly +nostream-image --repo ${REPO} --project ${NOSTREAM_PROJECT} --tag ${TAG}
         docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
         docker push ${REGISTRY}/${IMAGE}:${TAG}
         docker image rm ${IMAGE}:${TAG}
@@ -208,20 +317,12 @@ images:
         set -ex
         export TAG=${runtime.images.sources.tag}
         export IMAGE=${REPO}/${PROJECT}-sources
-
         earthly +dev-sources-image --REPO ${REPO} --PROJECT ${PROJECT}-sources --TAG ${TAG}
-
         docker tag ${IMAGE}:${TAG} ${REGISTRY}/${IMAGE}:${TAG}
         docker push ${REGISTRY}/${IMAGE}:${TAG}
         docker image rm ${IMAGE}:${TAG}
         docker image rm ${REGISTRY}/${IMAGE}:${TAG}
 
-  devcards:
-    image: ${REPO}/dinsro-devcards:devcards-latest
-    custom:
-      command: |-
-        echo "Building devcards"
-        earthly +devcards-image
   # devimage:
   #   image: ${REPO}/${DEVIMAGE_PROJECT}
   #   custom:
@@ -253,36 +354,116 @@ deployments:
         image:
           repository: ${runtime.images.dinsro.image}
           tag: ${runtime.images.dinsro.tag}
-        devcards:
-          enabled: false
-        devtools:
-          enabled: false
-        docs:
-          enabled: false
-        logLevel: ":trace"
+        persistence:
+          enabled: ${USE_PERSISTENCE}
+  nostr-rs-relay:
+    helm:
+      chart:
+        name: ./resources/helm/nostr-rs-relay
+  nostream:
+    helm:
+      chart:
+        name: ./resources/helm/nostream
+      values:
+        relay:
+          url: wss://nostream.${BASE_PUBLIC_DOMAIN}
+          name: nostream.${BASE_PUBLIC_DOMAIN}
+          description: A nostr relay written in Typescript.
+          pubkey: 6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec
+          contact: duck@kronkltd.net
+
+        image:
+          repository: ${runtime.images.nostream.image}
+          tag: ${runtime.images.nostream.tag}
+
+        db:
+          host: postgresql
+          password: "bbyKm52sL6"
+          passwordSecret: "postgresql"
+          name: nostream
+
         ingress:
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt-prod
-            ingress.kubernetes.io/force-ssl-redirect: "true"
+          debug: true
+          hosts:
+          - host: nostream.${BASE_PUBLIC_DOMAIN}
+            paths:
+            - path: /
           tls:
           - hosts:
-            - dinsro.dev.kronkltd.net
-            secretName: dinsro-tls
-        notebooks:
-          enabled: true
-          ingress:
-            enabled: true
+            - nostream.${BASE_PUBLIC_DOMAIN}
+            secretName: nostream-tls
+  postgresql:
+    helm:
+      chart:
+        name: postgresql
+        repo: https://charts.bitnami.com/bitnami
+        version: 12.1.6
+      values:
+        global:
+          postgresql:
+            auth:
+              database: nostream
+              postgresPassword: ${POSTGRESQL_ROOT_PASSWORD}
+  redis:
+    helm:
+      chart:
+        name: redis
+        repo: https://charts.bitnami.com/bitnami
+        version: 17.7.1
+  sqlpad:
+    helm:
+      chart:
+        # name: ../chart.kronkltd.net/stable/sqlpad
+        name: sqlpad
+        repo: https://chart.kronkltd.net/
+        version: 0.1.0
+      values:
+        environment:
+        - name: SQLPAD_CONNECTIONS__nostream__name
+          value: nostream
+        - name: SQLPAD_CONNECTIONS__nostream__driver
+          value: postgres
+        - name: SQLPAD_CONNECTIONS__nostream__host
+          value: postgresql
+        - name: SQLPAD_CONNECTIONS__nostream__port
+          value: "5432"
+        - name: SQLPAD_CONNECTIONS__nostream__username
+          value: postgres
+        - name: SQLPAD_CONNECTIONS__nostream__password
+          value: ${POSTGRESQL_ROOT_PASSWORD}
+        - name: SQLPAD_CONNECTIONS__nostream__database
+          value: nostream
+
+        - name: SQLPAD_CONNECTIONS__dinsro__name
+          value: "dinsro"
+        - name: SQLPAD_CONNECTIONS__dinsro__driver
+          value: "postgres"
+        - name: SQLPAD_CONNECTIONS__dinsro__host
+          value: "db.dinsro"
+        - name: SQLPAD_CONNECTIONS__dinsro__port
+          value: "5432"
+        - name: SQLPAD_CONNECTIONS__dinsro__username
+          value: "postgresql"
+        - name: SQLPAD_CONNECTIONS__dinsro__password
+          value: "mysecretpassword"
+        - name: SQLPAD_CONNECTIONS__dinsro__database
+          value: "dinsro"
+
+        - name: SQLPAD_DEFAULT_CONNECTION_ID
+          value: nostream
 
 # This is a list of `dev` containers that are based on the containers created by your deployments
 dev:
   app:
-    # imageSelector: duck1123/dinsro
+    imageSelector: ${REGISTRY}/${REPO}/${PROJECT}
     # devImage: ${REGISTRY}/${REPO}/${DEVIMAGE_PROJECT}:${runtime.images.devimage.tag}
     # devImage: ${REGISTRY}/${REPO}/${DEVIMAGE_PROJECT}
     devImage: ${REPO}/${DEVIMAGE_PROJECT}:latest
-    labelSelector:
-      app.kubernetes.io/name: dinsro
-      app.kubernetes.io/instance: dinsro
+    # labelSelector:
+    #   app.kubernetes.io/name: dinsro
+    #   app.kubernetes.io/instance: dinsro
     sync:
     - path: ./
       excludePaths:
@@ -317,45 +498,75 @@ dev:
 
 # Use the `commands` section to define repeatable dev workflows for this project
 commands:
-  build-devimage:
+  alice-deploy:
+    command: NAME=alice devspace run-pipeline deploy-bitcoin || true
+  alice-purge:
+    command: NAME=alice devspace run-pipeline purge-bitcoin || true
+  bitcoin-deploy:
+    command: devspace run-pipeline deploy-all-bitcoin || true
+  bitcoin-purge:
+    command: devspace run-pipeline purge-all-bitcoin
+  bob-deploy:
+    command: NAME=bob devspace run-pipeline deploy-bitcoin || true
+  bob-purge:
+    command: NAME=bob devspace run-pipeline purge-bitcoin || true
+  devimage-build:
     command: earthly --push +devspace-base
+  database-purge:
+    command: devspace run-pipeline purge-database || true
   deploy:
     command: devspace run-pipeline deploy || true
   deploy-all:
     command: devspace run-pipeline deploy-all || true
-  deploy-alice:
-    command: NAME=alice devspace run-pipeline deploy-bitcoin || true
-  deploy-bitcoin:
-    command: devspace run-pipeline deploy-all-bitcoin || true
-  deploy-bob:
-    command: NAME=bob devspace run-pipeline deploy-bitcoin || true
   deploy-database:
     command: devspace run-pipeline deploy-database
-  deploy-postgres:
-    command: devspace run-pipeline deploy-postgres
   dev:
     command: devspace enter -- bash -c 'byobu'
   dev-all:
-    command: devspace run-pipelines dev-all
+    command: devspace run-pipeline dev-all
+  devimage-purge:
+    command: devspace run-pipeline purge-devimage || true
+  dinsro-deploy:
+    command: devspace run-pipeline deploy-dinsro
+  dinsro-purge:
+    command: devspace run-pipeline purge-dinsro
   test:
     command: bb test
   lint:
     command: bb lint
+  nostream-deploy:
+    command: devspace run-pipeline deploy-nostream
+  nostream-purge:
+    command: devspace run-pipeline purge-nostream || true
+  nostr-rs-relay-deploy:
+    command: devspace run-pipeline deploy-nostr-rs-relay
+  nostr-rs-relay-purge:
+    command: devspace run-pipeline purge-nostr-rs-relay || true
+  postgresql-deploy:
+    command: devspace run-pipeline deploy-postgresql || true
+  postgresql-purge:
+    command: devspace run-pipeline purge-postgresql || true
+  postgresql-purge-all:
+    command: devspace run-pipeline purge-postgresql-all || true
+  postgresql-purge-data:
+    command: devspace run-pipeline purge-postgresql-data || true
   purge:
     command: devspace run-pipeline purge
   purge-all:
     command: devspace run-pipeline purge-all
-  purge-bitcoin:
-    command: devspace run-pipeline purge-all-bitcoin
-  purge-dinsro:
-    command: devspace run-pipeline purge-dinsro
-  purge-alice:
-    command: NAME=alice devspace run-pipeline purge-bitcoin || true
-  purge-bob:
-    command: NAME=bob devspace run-pipeline purge-bitcoin || true
-  purge-database:
-    command: devspace run-pipeline purge-database || true
-  purge-devimage:
-    command: devspace run-pipeline purge-devimage || true
+  purge-data:
+    command: devspace run-pipeline purge-data
+  redis-deploy:
+    command: devspace run-pipeline deploy-redis
+  redis-purge:
+    command: devspace run-pipeline purge-redis
+  redis-purge-all:
+    command: devspace run-pipeline purge-redis-all
+  redis-purge-data:
+    command: devspace run-pipeline purge-redis-data
+  sqlpad-deploy:
+    command: devspace run-pipeline deploy-sqlpad
+  sqlpad-purge:
+    command: devspace run-pipeline purge-sqlpad
   start:
     command: devspace enter -- bash -c 'bb clean && bb run'

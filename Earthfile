@@ -8,7 +8,7 @@ ARG clojure_version=1.10.1.727
 ARG kondo_version=2023.01.20
 ARG node_version=18.13.0
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG npm_version=9.3.1
+ARG npm_version=9.4.1
 ARG tilt_version=0.31.1
 
 # ARG repo=duck1123
@@ -95,6 +95,13 @@ INSTALL_NODE:
   # RUN npm install -g yarn
   RUN npm install -g karma-cli
 
+INSTALL_NOSCL:
+  COMMAND
+  RUN curl -LJO "https://github.com/fiatjaf/noscl/releases/download/v0.6.0/noscl"
+  RUN mv noscl /usr/local/bin/noscl
+  RUN chmod +x /usr/local/bin/noscl
+  RUN mkdir -p /root/.config/noscl
+
 INSTALL_TILT:
   COMMAND
   RUN echo ${tilt_version}
@@ -115,6 +122,7 @@ base-builder:
   DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
   DO +INSTALL_KONDO
+  DO +INSTALL_NOSCL
   RUN chown -R ${uid}:${gid} ${src_home}
   RUN apt update && apt install -y \
           sudo \
@@ -242,13 +250,13 @@ devspace-base:
   RUN apt update && apt install -y \
       bash-completion \
       inetutils-ping \
+      zsh \
     && rm -rf /var/lib/apt/lists/*
   DO +IMPORT_JAR_DEPS
   COPY --dir +node-deps/node_modules node_modules
-  # RUN mkdir -p /home/root
-  # ENV GITLIBS=/root/.gitlibs
-  # RUN chown -R root:root .
-  # RUN ls -al
+  RUN chsh -s /bin/zsh
+  RUN mkdir -p /root/.byobu
+  RUN echo "set -g default-shell /usr/bin/zsh\nset -g default-command /usr/bin/zsh" > /root/.byobu/.tmux.conf
   SAVE IMAGE --push ${EXPECTED_REF}
 
 dev-image-sources-base:
@@ -391,9 +399,9 @@ kondo:
   RUN bb kondo
 
 lint:
-  # BUILD +eastwood
-  # BUILD +kibit
   BUILD +kondo
+  BUILD +eastwood
+  # BUILD +kibit
 
 node-deps:
   FROM +base-builder
@@ -401,6 +409,57 @@ node-deps:
   # RUN npx yarn add fomantic-ui --ignore-scripts
   RUN npx yarn install --frozen-lockfile
   SAVE ARTIFACT node_modules
+
+nostream-build:
+  FROM node:18-alpine3.16
+  ARG NOSTREAM_BASE=resources/nostream/
+  WORKDIR /build
+  COPY \
+    ${NOSTREAM_BASE}package.json \
+    ${NOSTREAM_BASE}package-lock.json \
+    ${NOSTREAM_BASE}knexfile.js \
+    .
+  COPY --dir ${NOSTREAM_BASE}migrations /build
+  RUN npm install -g knex@2.3.0
+  RUN npm install knex --quiet
+  RUN npm install --quiet
+  COPY ${NOSTREAM_BASE} .
+  RUN npm run build
+  SAVE ARTIFACT dist
+
+nostream-image:
+  FROM node:18
+  ARG NOSTREAM_BASE=resources/nostream/
+  ARG NOSTREAM_IMAGE_BASE=resources/nostream-image/
+  ARG NOSTR_CONFIG_DIR=/home/node/.nostr
+  ARG repo=duck1123
+  ARG project=nostream
+  ARG tag=latest
+  ARG EXPECTED_REF=${repo}/${project}:${tag}
+  LABEL org.opencontainers.image.title="Nostr Typescript Relay"
+  LABEL org.opencontainers.image.source=https://github.com/Cameri/nostr-ts-relay
+  LABEL org.opencontainers.image.description="nostr-ts-relay"
+  LABEL org.opencontainers.image.authors="Ricardo Arturo Cabral Mejía"
+  LABEL org.opencontainers.image.licenses=MIT
+  WORKDIR /app
+  RUN apt update && apt install -y \
+        curl \
+        gnupg2 \
+        jq \
+        postgresql-client \
+        tree \
+        wait-for-it \
+        wget \
+    && rm -rf /var/lib/apt/lists/*
+  COPY +nostream-build/dist .
+  RUN npm install --omit=dev --quiet
+  USER 1000:1000
+  COPY ${NOSTREAM_IMAGE_BASE}bootstrap.sh ${NOSTREAM_IMAGE_BASE}check-connection .
+  COPY --dir ${NOSTREAM_BASE}resources ${NOSTREAM_BASE}migrations ${NOSTREAM_BASE}knexfile.js .
+  RUN mkdir -p $NOSTR_CONFIG_DIR
+  CMD ["./bootstrap.sh"]
+  ENTRYPOINT ["./bootstrap.sh"]
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 portal:
   FROM +babashka-base

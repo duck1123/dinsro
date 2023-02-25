@@ -38,7 +38,7 @@
                          :privileged  true})}
 
   ci-local
-  {:depends [kondo check test]}
+  {:depends [kondo check test eastwood]}
 
   clean
   {:doc  "Clean all the things"
@@ -116,7 +116,8 @@
   {:task (shell "bb watch-devcards")}
 
   dinsro-values
-  {:task (do (h.dinsro/->dinsro-config (site/get-site-config)))}
+  {:doc  "Display site config"
+   :task (do (println (h.dinsro/->dinsro-config (site/get-site-config))))}
 
   dispatch
   {:doc  "Send a signal over nrepl"
@@ -154,7 +155,8 @@
      (spit (format "target/conf/%s/bitcoind_values.yaml" name) yaml))}
 
   generate-dinsro-values
-  {:task (c/generate-dinsro-values)}
+  {:doc  "generate a dinsro values file"
+   :task (c/generate-dinsro-values)}
 
   generate-fileserver-values
   {:doc  "generate a fileserver values file"
@@ -167,6 +169,14 @@
   generate-nbxplorer-values
   {:doc  "generate a nbxplorer values file"
    :task (let [name (or (first *command-line-args*) "3")] (c/generate-nbxplorer-values name))}
+
+  generate-nostr-rs-relay-values
+  {:doc  "generate a nostr-rs-relay values file"
+   :task (c/generate-nostr-rs-relay-values)}
+
+  generate-nostream-values
+  {:doc  "generate a nostream values file"
+   :task (c/generate-nostream-values)}
 
   generate-rtl-values
   {:doc  "generate a rtl values file"
@@ -199,6 +209,14 @@
   helm-nbxplorer
   {:depends [generate-nbxplorer-values]
    :task    (let [name (or (first *command-line-args*) "3")] (c/helm-nbxplorer name))}
+
+  helm-nostr-rs-relay
+  {:depends [generate-nostr-rs-relay-values]
+   :task    (c/helm-nostr-rs-relay)}
+
+  helm-nostream
+  {:depends [generate-nostream-values]
+   :task    (c/helm-nostream)}
 
   helm-rtl
   {:depends [generate-rtl-values]

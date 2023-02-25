@@ -1,4 +1,4 @@
-(ns dinsro.components.seed.ln-node
+(ns dinsro.components.seed.ln-nodes
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def]]

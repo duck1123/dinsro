@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nostr-rs-relay
+description: A minimal and fast relay for the Nostr decentralized chat protocol.
+type: application
+version: 0.1.0
+appVersion: 0.8.2

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "Checking Postgres connection"
+PGPASSWORD=${DB_PASSWORD?}
+databaseExistsQuery="select count(1) from pg_catalog.pg_database where datname = '${DB_NAME?}'"
+cmd="PGPASSWORD=${DB_PASSWORD?} psql -q -t -h ${DB_HOST?} -U ${DB_USER?} -c \"$databaseExistsQuery\""
+eval $cmd

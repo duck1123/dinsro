@@ -30,11 +30,22 @@ https://earthly.dev/get-earthly
 
 *** Devspace
 
+**** Install
+
 https://www.devspace.sh/docs/getting-started/installation
 
 #+BEGIN_SRC shell
   curl -L -o devspace "https://github.com/loft-sh/devspace/releases/latest/download/devspace-linux-amd64" \
       && sudo install -c -m 0755 devspace /usr/local/bin
+#+END_SRC
+
+**** Set Aliases
+
+This is an optional step.
+
+#+BEGIN_SRC shell
+  alias d="devspace"
+  alias dr="devspace run"
 #+END_SRC
 
 *** Clojure

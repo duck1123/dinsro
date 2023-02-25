@@ -11,13 +11,14 @@
 
 (defn merge-defaults
   [options]
-  (let [{:keys [name alias auto-unlock chain ingress rpc tls]
+  (let [{:keys [name alias auto-unlock chain ingress p2p-port rpc tls]
          :or
          {name        "one"
           alias       "Node One"
           auto-unlock {}
           chain       :regtest
           ingress     {}
+          p2p-port    9735
           rpc         {}
           tls         {}}}                                                      options
         {auto-unlock-password :password
@@ -55,6 +56,7 @@
      :auto-unlock {:password auto-unlock-password}
      :chain       chain
      :ingress     {:host ingress-host}
+     :p2p-port    p2p-port
      :rpc         {:host           rpc-host
                    :port           rpc-port
                    :user           rpc-user
@@ -124,16 +126,18 @@
     (ao-section options)]))
 
 (defn ->value-options
-  [{:keys [name]}]
-  (let [alias           (str "Node " name)
-        external-host   (str name "-lnd-external." name ".svc.cluster.local")
-        internal-host   (str name "-lnd-internal." name ".svc.cluster.local")
-        bitcoin-host    (str name "-bitcoind." name)
-        unlock-password "unlockpassword"]
+  [options]
+  (let [{:keys [name p2p-port]} options
+        alias                   (str "Node " name)
+        external-host           (str name "-lnd-external." name ".svc.cluster.local")
+        internal-host           (str name "-lnd-internal." name ".svc.cluster.local")
+        bitcoin-host            (str name "-bitcoind." name)
+        unlock-password         "unlockpassword"]
     {:alias       alias
      :auto-unlock {:password unlock-password}
      :chain       :regtest
      :ingress     {:host external-host}
+     :p2p-port    p2p-port
      :name        name
      :rpc         {:host bitcoin-host}
      :tls         {:domains [internal-host external-host]}}))
@@ -141,19 +145,20 @@
 (defn ->values
   "Produce a lnd helm values file"
   [options]
-  (let [options                                     (merge-defaults options)
-        {:keys [auto-unlock chain ingress]}         options
-        {ingress-host :host}                        ingress
+  (let [options                                      (merge-defaults options)
+        {:keys [auto-unlock chain ingress p2p-port]} options
+        {ingress-host :host}                         ingress
         {auto-unlock-password :password
          :or
-         {auto-unlock-password "password12345678"}} auto-unlock
-        conf                                        (->lnd-config options)]
+         {auto-unlock-password "password12345678"}}  auto-unlock
+        conf                                         (->lnd-config options)]
     {:configurationFile  {:lnd.conf conf}
      :loop               {:enable false}
      :pool               {:enable false}
      :persistence        {:enabled true}
      :autoUnlock         false
      :autoUnlockPassword auto-unlock-password
+     :externalServices   {:p2pPort p2p-port}
      :network            (name chain)
      :ingress            {:host ingress-host}}))
 

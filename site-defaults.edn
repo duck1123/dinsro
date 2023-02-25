@@ -37,7 +37,8 @@
    :fileserver true
    :rtl        true
    :specter    false
-   :lnbits     false}
+   :lnbits     false
+   :external-port 9736}
 
   "bob"
   {:bitcoin    true
@@ -45,7 +46,8 @@
    :fileserver true
    :rtl        false
    :specter    false
-   :lnbits     false}}
+   :lnbits     false
+   :external-port 9737}}
 
  :notebooks
  {
@@ -90,6 +92,8 @@
  :useProduction false
 
  :useSqlpad false
+
+ :tls { :enabled true }
 
  ;; Should testing resources be run?
  :useTests false

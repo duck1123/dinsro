@@ -13,15 +13,17 @@
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.actions.users :as a.users]
    [dinsro.components.config :as config]
+   [dinsro.components.database-queries]
    [dinsro.components.seed.accounts :as cs.accounts]
    [dinsro.components.seed.categories]
    [dinsro.components.seed.core :as cs.core]
    [dinsro.components.seed.core-nodes :as cs.core-nodes]
    [dinsro.components.seed.currencies :as cs.currencies]
    [dinsro.components.seed.debits :as cs.debits]
-   [dinsro.components.seed.ln-node :as cs.ln-node]
+   [dinsro.components.seed.ln-nodes :as cs.ln-nodes]
    [dinsro.components.seed.rate-sources :as cs.rate-sources]
    [dinsro.components.seed.transactions :as cs.transactions]
+   [dinsro.components.seed.users :as cs.users]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -126,13 +128,13 @@
 (>defn seed-rate-sources!
   [currencies]
   [::cs.core/currencies => any?]
-  (log/finer :seed/rate-sources {:currencies currencies})
+  (log/finer :seed-rate-sources!/starting {:currencies currencies})
   (doseq [currency currencies]
     (seed-rate-sources!-currency currency)))
 
 (defn seed-rates!
   [default-rate-sources]
-  (log/finer :seed/rates {})
+  (log/finer :seed-rates!/starting {:default-rate-sources default-rate-sources})
   (doseq [{:keys [name code rates]} default-rate-sources]
     (if-let [currency-id (q.currencies/find-by-code code)]
       (if-let [source-id (q.rate-sources/find-by-currency-and-name currency-id name)]
@@ -145,15 +147,21 @@
         (throw (RuntimeException. "Failed to find source")))
       (throw (RuntimeException. "Failed to find currency")))))
 
+(>defn seed-user!
+  [user]
+  [::cs.users/item => any?]
+  (log/finer :seed-user!/starting {:user user})
+  (let [{:keys [username password role]} user
+        user                             (a.authentication/do-register username password)
+        user-id                          (::m.users/id user)]
+    (log/info :seed-users!/registered {:user-id user-id})
+    (a.users/set-role! user-id role)))
+
 (>defn seed-users!
   [users]
   [::cs.core/users => any?]
-  (log/finer :seed/users {})
-  (doseq [{:keys [username password role]} users]
-    (let [user (a.authentication/do-register username password)
-          user-id (::m.users/id user)]
-      (log/info :seed-users!/registered {:user-id user-id})
-      (a.users/set-role! user-id role))))
+  (log/finer :seed/users {:users users})
+  (doseq [user users] (seed-user! user)))
 
 (>defn seed-categories!
   [users]
@@ -191,10 +199,10 @@
 
 (>defn seed-ln-node!
   ([user-id node-info]
-   [::m.users/id ::cs.ln-node/item => any?]
+   [::m.users/id ::cs.ln-nodes/item => any?]
    (seed-ln-node! user-id node-info false))
   ([user-id node-info initialize-node]
-   [::m.users/id ::cs.ln-node/item boolean? => any?]
+   [::m.users/id ::cs.ln-nodes/item boolean? => any?]
    (let [{:keys     [name fileserver-host host port mnemonic]
           node-name :node} node-info]
      (log/finer :seed-ln-node!/starting {:node-name node-name})
@@ -529,8 +537,8 @@
    {:user-id          user-id
     :node-id          node-id
     :remote-node-data remote-node-data})
-  (let [{:keys [pubKey host]} remote-node-data]
-    (a.ln.remote-nodes/register-node! node-id pubKey host)))
+  (let [{:keys [pubkey host]} remote-node-data]
+    (a.ln.remote-nodes/register-node! node-id pubkey host)))
 
 (defn seed-remote-nodes-node!
   [user-id ln-node-data]
@@ -560,15 +568,7 @@
 (>defn seed-db!
   [seed-data]
   [::cs.core/seed-data => any?]
-  (let [{:keys [timezone
-                nodes
-                users
-                ;; default-chains
-                currencies
-                networks
-                ;; default-rate-sources
-                ]}seed-data]
-
+  (let [{:keys [currencies networks nodes timezone users]} seed-data]
     (create-navlinks!)
     (dt/set-timezone! timezone)
 
@@ -617,8 +617,10 @@
           (let [seed-data (get-seed-data)]
             (seed-db! seed-data))
           (catch Exception ex
+            (println ex)
             (log/error :seed!/failed {:ex ex})
-            (when strict (throw (RuntimeException. "seed failed" ex)))))
+            (when strict
+              (throw (RuntimeException. "seed failed" ex)))))
         (q.settings/set-setting seeded-key true)))
     (log/finer :seed!/not-enabled {})))
 

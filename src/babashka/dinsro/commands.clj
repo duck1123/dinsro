@@ -9,6 +9,8 @@
    [dinsro.helm.fileserver :as h.fileserver]
    [dinsro.helm.lnd :as h.lnd]
    [dinsro.helm.nbxplorer :as h.nbxplorer]
+   [dinsro.helm.nostr-rs-relay :as h.nostr-rs-relay]
+   [dinsro.helm.nostream :as h.nostream]
    [dinsro.helm.rtl :as h.rtl]
    [dinsro.helm.specter :as h.specter]
    [dinsro.site :as site]))
@@ -215,11 +217,26 @@
 
 (defn generate-lnd-values
   [name]
-  (let [options (h.lnd/->value-options {:name name
-                                        :port 9735})
-        yaml    (yaml/generate-string (h.lnd/->values options))]
+  (let [port-map {"alice" 9736 "bob" 9737}
+        p2p-port (get port-map name 9735)
+        options  (h.lnd/->value-options {:name name :p2p-port p2p-port})
+        yaml     (yaml/generate-string (h.lnd/->values options))]
     (mkdir (str conf-dir name))
     (spit (str conf-dir name "/lnd_values.yaml") yaml)))
+
+(defn generate-nostr-rs-relay-values
+  []
+  (let [options {}
+        yaml    (yaml/generate-string (h.nostr-rs-relay/->values options))]
+    (mkdir (str conf-dir))
+    (spit (str conf-dir "/nostr-rs-relay_values.yaml") yaml)))
+
+(defn generate-nostream-values
+  []
+  (let [options {}
+        yaml    (yaml/generate-string (h.nostream/->values options))]
+    (mkdir (str conf-dir))
+    (spit (str conf-dir "/nostream_values.yaml") yaml)))
 
 (defn generate-rtl-values
   [name]
@@ -354,6 +371,46 @@
                   (str "--values " filename)
                   (str "--version " version)]
         cmd      (string/join " " (concat ["helm template "] args [path]))]
+    ;; (println cmd)
+    (shell cmd)))
+
+(def relay-use-prefix true)
+
+(defn helm-nostr-rs-relay
+  []
+  (let [use-local relay-use-prefix
+        prefix    (if use-local "resources/helm/" "")
+        repo      "https://chart.kronkltd.net/"
+        chart     "nostr-rs-relay"
+        path      (str prefix chart)
+        version   "0.1.0"
+        filename  "target/conf/nostr-rs-relay_values.yaml"
+        args      (filter identity
+                          [(when-not use-local (str "--repo " repo))
+                           (when-not use-local (str "--version " version))
+                           "--name-template=nostr-rs-relay"
+                           (str "--values " filename)])
+        cmd       (string/join " " (concat ["helm template "] args [path]))]
+    ;; (println cmd)
+    (shell cmd)))
+
+(def nostream-use-prefix true)
+
+(defn helm-nostream
+  []
+  (let [use-local nostream-use-prefix
+        prefix    (if use-local "resources/helm/" "")
+        repo      "https://chart.kronkltd.net/"
+        chart     "nostream"
+        path      (str prefix chart)
+        version   "0.1.0"
+        filename  "target/conf/nostream_values.yaml"
+        args      (filter identity
+                          [(when-not use-local (str "--repo " repo))
+                           (when-not use-local (str "--version " version))
+                           "--name-template=nostream"
+                           (str "--values " filename)])
+        cmd       (string/join " " (concat ["helm template "] args [path]))]
     ;; (println cmd)
     (shell cmd)))
 

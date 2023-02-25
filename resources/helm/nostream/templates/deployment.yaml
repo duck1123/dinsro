@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nostream.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "nostream.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nostream.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "nostream.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nostream.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DEBUG
+          value: "knex:*,worker:*"
+        - name: REDIS_HOST
+          value: redis-master
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_USER
+          value: default
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.passwordSecret | quote }}
+              key: "redis-password"
+        # - name: DB_URI
+        #   value: "postgresql://postgres:postgres@localhost:5432/nostr_ts_relay_test"
+        - name: DB_HOST
+          value: {{ .Values.db.host | quote }}
+        - name: DB_PORT
+          value: {{ .Values.db.port | quote }}
+        - name: DB_USER
+          value: {{ .Values.db.user | quote }}
+        - name: DB_PASSWORD
+          value: {{ .Values.db.password | quote }}
+        - name: DB_NAME
+          value: {{ .Values.db.name | quote }}
+        # - name: REDIS_URI
+        #   value: "redis://default:nostr_ts_relay@redis-master:6379"
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 20
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: data
+          mountPath: /usr/src/app/db
+        - name: config
+          mountPath: /app/.nostr/settings.yaml
+          readOnly: true
+          subPath: settings.yaml
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "nostream.fullname" . }}-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "nostream.fullname" . }}-data

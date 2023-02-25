@@ -17,7 +17,7 @@ base_url              = config_get('baseUrl')
 project_id            = config_get('projectId')
 repo                  = config_get('repo')
 version               = config_get('version')
-docs_enabled          = config_get('docs-enabled')
+docs_enabled          = config_get('docs-enabled?')
 local_devtools        = config_get('localDevtools')
 use_linting           = config_get('useLinting')
 use_nrepl             = config_get('useNrepl')
@@ -97,16 +97,15 @@ local_resource(
   labels = [ 'compile' ],
 )
 
-# if use_linting:
-#   local_resource(
-#     'eastwood',
-#     allow_parallel = True,
-#     auto_init = False,
-#     cmd = 'bb eastwood',
-#     deps = [ 'src' ],
-#     trigger_mode = TRIGGER_MODE_MANUAL,
-#     labels = [ 'lint' ],
-#   )
+local_resource(
+  'eastwood',
+  allow_parallel = True,
+  auto_init = False,
+  cmd = 'bb eastwood',
+  deps = [ 'src' ],
+  trigger_mode = TRIGGER_MODE_MANUAL,
+  labels = [ 'lint' ],
+)
 
 local_resource(
   'kondo',

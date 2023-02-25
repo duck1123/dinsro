@@ -3,6 +3,8 @@
   (:require
    [dinsro.helm.dinsro :as h.dinsro]
    [dinsro.notebook-utils :as nu]
+   [dinsro.site :as site]
+   [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
@@ -11,11 +13,15 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
+(ds/gen-key ::site/site)
+
 (def inputs
   {:log-level :finest
-   :portal {:enabled true}})
+   :portal    {:enabled true}
+   :tls       {:enabled true}})
 
 ;; ## merge-defaults
+
 
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
 (def merged-defaults (h.dinsro/merge-defaults inputs))

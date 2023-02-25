@@ -1,3 +1,6 @@
 [submodule "fold"]
 	path = resources/helm/fold
 	url = git@github.com:duck1123/helm-charts.git
+[submodule "nostream"]
+	path = resources/nostream
+	url = git@github.com:duck1123/nostream.git

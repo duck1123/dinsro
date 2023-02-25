@@ -127,7 +127,7 @@
 
   :eastwood
   {:extra-deps
-   {jonase/eastwood {:mvn/version "1.2.3"}}
+   {jonase/eastwood {:mvn/version "1.3.0"}}
    :main-opts ["-m" "eastwood.lint" {:exclude-linters [:reflection]}]}
 
   :kibit

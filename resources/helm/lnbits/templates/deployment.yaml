@@ -37,7 +37,7 @@ spec:
             # - name: LNBITS_BACKEND_WALLET_CLASS
             #   value: LndWallet
             - name: LND_GRPC_ENDPOINT
-              value: lnd.alice.svc.cluster.local
+              value: lnd-alice.dinsro.svc.cluster.local
             - name: LND_GRPC_PORT
               value: "5000"
             - name: LND_GRPC_CERT

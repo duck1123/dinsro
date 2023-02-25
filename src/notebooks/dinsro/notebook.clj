@@ -1,9 +1,11 @@
 ^{:nextjournal.clerk/visibility #{:code :hide}}
 (ns dinsro.notebook
   (:require
+   [dinsro.actions.site :as a.site]
    [dinsro.notebook-utils :as nu]
+   [dinsro.site :as site]
+   [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
-   [lambdaisland.glogc :as log]
    [nextjournal.clerk :as clerk]))
 
 ;; # Dinsro Notebooks
@@ -16,35 +18,21 @@
 ^{::clerk/viewer clerk/table ::clerk/visibility {:code :hide}}
 (nu/x2)
 
-^{::clerk/visibility {:code :hide}
-  ::clerk/viewer
-  {:render-fn
-   '(fn display-file-links
-      [props]
-      (v/html
-       [:ul
-        (map
-         (fn [{pair-values :nextjournal/value :nextjournal/keys [value] :as row}]
-           (let [f (:nextjournal/value (second (:nextjournal/value (first (filter #(= (:nextjournal/value (first (:nextjournal/value %))) :f) value)))))
-                 n (:nextjournal/value (second (:nextjournal/value (first (filter #(= (:nextjournal/value (first (:nextjournal/value %))) :n) value)))))]
-             [:li {:style {:border "1px green solid"}}
-              [:a {:on-click
-                   (fn [e]
-                     (js/console.log (str "Click: " f))
-                     (v/clerk-eval `(do
-                                      (log/info :clicked {})
-                                      (clerk/show! ~f))))}
-               n]]))
-         props)]))}}
-(nu/x2)
-
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/x2)
 
-^{::clerk/visibility {:code :hide :result :hide}}
-(comment
+(ds/gen-key ::site/site)
 
-  4
+^{::clerk/no-cache true}
+(ds/gen-key ::site/site-defaults)
+
+(ds/gen-key :dinsro.site.devcards/devcards)
+
+^{::clerk/viewer clerk/code}
+(a.site/load-site-config)
+
+^{::clerk/visibility {:result :hide}}
+(comment
 
   (clerk/show! "src/notebooks/dinsro/index.md")
   (clerk/show! "src/notebooks/dinsro/notebook.clj")

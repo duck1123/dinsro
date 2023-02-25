@@ -1,0 +1,99 @@
+# Default values for relay.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/cameri/nostream
+  pullPolicy: Always
+  # -- Overrides the image tag whose default is the chart appVersion.
+  tag: "main"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  runAsUser: 0
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8008
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ingress:
+  enabled: true
+  hosts:
+  - name: nostream.localtest.me
+
+relay:
+  url: wss://nostream.localtest.me
+  name: nostream.localtest.me
+  description: A nostr relay written in Typescript.
+  pubkey: 6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec
+  contact: duck@kronkltd.net
+
+persistence:
+  enabled: true
+  ## Set storageClassName if you have no default defined. For geth you need an fast (ssd) disk to keep up
+  #storageClassName: ""
+  size: 1Gi
+  config:
+    enabled: false
+
+redis:
+  passwordSecret: redis
+
+db:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  passwordSecret: ""
+  passwordSecretKey: "postgres-password"
+  name: nostr_ts_relay

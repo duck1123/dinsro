@@ -186,7 +186,9 @@ database:
   # -- Deploy postgres backend
   enabled: false
   # -- postgres username
-  user: postges
+  user: postgres
+  host: db
+  name: dinsro
   # -- postgres password
   password: mysecretpassword
   service:

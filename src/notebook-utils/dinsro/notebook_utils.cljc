@@ -15,8 +15,7 @@
   [o]
   (clerk/code o))
 
-^{::clerk/viewer     clerk/hide-result
-  ::clerk/visibility :hide}
+^{::clerk/visibility {:code :hide :result :hide}}
 (def text-input
   {:pred         ::clerk/var-from-def
    :fetch-fn     (fn [_ x] x)
@@ -38,12 +37,12 @@
           :on-click
           #(v/clerk-eval `(reset! ~var-name ~(str/join "." (drop-last (str/split value #"\.")))))} "⏮"]]))})
 
-^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide :result :hide}}
 (defn x
   []
   (n.find/find-ns-decls [(File. "src/notebooks")]))
 
-^{::clerk/visibility :hide ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide :result :hide}}
 (defn x2
   []
   (map

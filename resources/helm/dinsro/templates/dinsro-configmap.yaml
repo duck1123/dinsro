@@ -5,9 +5,9 @@ metadata:
   namespace: "{{ .Release.Namespace }}"
 data:
   config.edn: |-
-{{ if not (eq .Values.dinsroConfig "-") }}
-{{ .Values.dinsroConfig | indent 4 }}
-{{- else }}
+  {{ if not (eq .Values.dinsroConfig "-") }}
+  {{ .Values.dinsroConfig | indent 4 }}
+  {{- else }}
     {:com.fulcrologic.rad.pathom/config {:trace? false :log-requests? false :log-responses? false}
      :dinsro.components.config/secret-path "/mnt/certs/secret"
      :dinsro.components.notebooks/config {:enabled {{ .Values.notebooks.enabled }}}
@@ -17,9 +17,9 @@ data:
       {:main
         {:xtdb.jdbc/connection-pool
          {:dialect #:xtdb{:module "xtdb.jdbc.psql/->dialect"}
-          :db-spec {:dbname   "dinsro"
-                    :host     "db"
-                    :user     "postgres"
+          :db-spec {:dbname   "{{ .Values.database.name }}"
+                    :host     "{{ .Values.database.host }}"
+                    :user     "{{ .Values.database.user }}"
                     :password "mysecretpassword"}}
          :xtdb/tx-log         {:xtdb/module     "xtdb.jdbc/->tx-log"
                                :connection-pool :xtdb.jdbc/connection-pool}
@@ -32,4 +32,4 @@ data:
                   [#{"dinsro.*"} {{ .Values.logLevel }} ]
                   [#{"*"}        :info ]]
       :level {{ .Values.logLevel }} }}
-{{- end}}
+  {{- end}}

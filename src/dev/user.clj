@@ -2,8 +2,6 @@
   (:require
    [clojure.tools.namespace.repl :as tools-ns :refer [set-refresh-dirs]]
    [dinsro.components.nrepl :as c.nrepl]
-   [dinsro.components.seed :as c.seed]
-   [dinsro.seed :as seed]
    [lambdaisland.glogc :as log]
    [mount.core :as mount]
    [shadow.cljs.devtools.api :as shadow]
@@ -13,10 +11,6 @@
 
 (defmacro jit [sym]
   `(requiring-resolve '~sym))
-
-(defn seed!
-  []
-  (c.seed/seed-db! (seed/get-seed-data)))
 
 (defn cljs-repl
   ([]
