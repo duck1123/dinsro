@@ -6,6 +6,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    #?(:clj [dinsro.queries.nostr.events :as q.n.events])
    #?(:clj [dinsro.queries.nostr.pubkeys :as q.n.pubkeys])
+   #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -89,8 +90,9 @@
    (fn [_env params]
      (log/info :subscription-count/starting {:params params})
      (let [pubkey-id (::m.n.pubkeys/id params)
-           ids       #?(:clj (q.n.subscriptions/find-by-pubkey pubkey-id)
-                        :cljs (do (comment pubkey-id) []))]
+           relay-id  #?(:clj (first (q.n.relays/index-ids)) :cljs nil)
+           ids       #?(:clj (q.n.subscriptions/find-by-relay-and-pubkey relay-id pubkey-id)
+                        :cljs (do (comment relay-id pubkey-id) []))]
        {::subscription-count (count ids)}))})
 
 (def attributes [admin-index index contact-count contacts events event-count subscription-count])

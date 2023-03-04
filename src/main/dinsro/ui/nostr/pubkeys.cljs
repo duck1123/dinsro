@@ -14,7 +14,6 @@
    [dinsro.mutations.nostr.pubkey-events :as mu.n.pubkey-events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.pubkey.contacts :as u.n.pubkey-contacts]
    [dinsro.ui.nostr.pubkey.events :as u.n.pubkey-events]
    [dinsro.ui.nostr.pubkey.relays :as u.n.pubkey-relays]
    [dinsro.ui.nostr.pubkey.users :as u.n.pubkey-users]))
