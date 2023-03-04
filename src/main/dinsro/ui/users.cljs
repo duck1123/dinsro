@@ -68,7 +68,7 @@
    :pre-merge     (u.links/page-merger
                    ::m.users/id
                    {:ui/router Router})
-   :will-enter    (partial u.links/page-loader ::m.users/id ::ShowUser)}
+   :will-enter    (partial u.links/page-loader ::m.users/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show User " (str name)))

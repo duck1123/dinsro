@@ -39,7 +39,7 @@
    ao/pc-resolve
    (fn [_env {::m.transactions/keys [id]}]
      (let [user-id (if id #?(:clj (q.users/find-by-transaction id) :cljs nil) nil)]
-       {::user (m.users/ident user-id)}))
+       {::user (when user-id (m.users/ident user-id))}))
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
 (def attributes [admin-index index user])

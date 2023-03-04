@@ -100,10 +100,11 @@
                    ::m.users/name ""}
    :query         [::m.users/id
                    ::m.users/name]}
-  (let [component (comp/registry-key->class :dinsro.ui.users/ShowUser)]
+  (if-let [component (comp/registry-key->class :dinsro.ui.users/Show)]
     (dom/a :.ui.item
       {:onClick (fn [_e] (form/view! this component id))}
-      name)))
+      name)
+    (throw (js/Error. "Failed to find component"))))
 
 (def ui-navbar-auth-link (comp/factory NavbarAuthLink))
 
