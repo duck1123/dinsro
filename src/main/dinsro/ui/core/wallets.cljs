@@ -112,7 +112,7 @@
                    {:ui/accounts  u.c.wallet-accounts/SubPage
                     :ui/addresses u.c.wallet-addresses/SubPage
                     :ui/words     u.c.wallet-words/SubPage})
-   :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::ShowWallet)}
+   :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::Show)}
   (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment

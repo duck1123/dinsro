@@ -1,4 +1,4 @@
-(ns dinsro.ui.user-transactions
+(ns dinsro.ui.users.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -24,13 +24,13 @@
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.transactions/index
-   ro/title            "User Transactions"})
+   ro/title            "Transactions"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :route-segment     ["transactions"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}

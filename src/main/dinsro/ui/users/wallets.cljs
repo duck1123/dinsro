@@ -24,7 +24,7 @@
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.wallets/index
-   ro/title            "User Wallets"})
+   ro/title            "Wallets"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

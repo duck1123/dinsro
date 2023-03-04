@@ -73,12 +73,16 @@
 (>defn find-by-transaction
   [transaction-id]
   [::m.transactions/id => (? ::m.users/id)]
+  (log/info :find-by-transaction/starting {:transaction-id transaction-id})
   (let [db    (c.xtdb/main-db)
         query '{:find  [?user-id]
                 :in    [[?transaction-id]]
                 :where [[?transaction-id ::m.transactions/account ?account-id]
-                        [?account-id ::m.accounts/user ?user-id]]}]
-    (ffirst (xt/q db query [transaction-id]))))
+                        [?account-id ::m.accounts/user ?user-id]]}
+        result (xt/q db query [transaction-id])
+        id    (ffirst result)]
+    (log/info :find-by-transaction/finished {:id id})
+    id))
 
 (>defn create-record
   "Create a user record"

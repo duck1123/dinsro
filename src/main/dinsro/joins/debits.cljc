@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [com.fulcrologic.rad.report :as report]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
@@ -60,6 +61,7 @@
                           :cljs (do (comment debit-id) nil))
            ident       (when currency-id (m.currencies/ident currency-id))]
        (log/info :currency/id {:debit-id debit-id :ident ident})
-       {::currency ident}))})
+       {::currency ident}))
+   ::report/column-EQL {::currency [::m.currencies/id ::m.currencies/name]}})
 
 (def attributes [index admin-index currency])

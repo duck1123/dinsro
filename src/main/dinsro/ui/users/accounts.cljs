@@ -24,13 +24,13 @@
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.accounts/index
-   ro/title            "User Accounts"})
+   ro/title            "Accounts"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :route-segment     ["accounts"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
