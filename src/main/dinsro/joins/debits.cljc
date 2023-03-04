@@ -13,6 +13,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../model/debits.cljc][Debits Model]]
+;; [[../ui/debits.cljs][Debits UI]]
 
 ;; "All debits regardless of user"
 (defattr admin-index ::admin-index :ref
@@ -50,15 +51,15 @@
 
 (defattr currency ::currency :ref
   {ao/target    ::m.debits/id
+   ao/pc-input  #{::m.debits/account ::m.debits/id}
    ao/pc-output [{::currency [::m.currencies/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} a]
-     (if-let [debit-id (::m.debits/id query-params)]
-       (do
-         (log/info :currency/id {:debit-id debit-id :a a})
-         (let [currency-id #?(:clj (q.currencies/find-by-debit debit-id)
-                              :cljs (do (comment debit-id) nil))]
-           {::currency (when currency-id (m.currencies/ident currency-id))}))
-       {:error "no id"}))})
+   (fn [_ {debit-id ::m.debits/id}]
+     (log/info :currency/starting {:debit-id debit-id})
+     (let [currency-id #?(:clj (when debit-id (q.currencies/find-by-debit debit-id))
+                          :cljs (do (comment debit-id) nil))
+           ident       (when currency-id (m.currencies/ident currency-id))]
+       (log/info :currency/id {:debit-id debit-id :ident ident})
+       {::currency ident}))})
 
 (def attributes [index admin-index currency])

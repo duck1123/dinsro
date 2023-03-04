@@ -13,27 +13,28 @@
 (def router-key :dinsro.ui.users/Router)
 
 (report/defsc-report Report
+  ;; "Debits belonging to a user"
   [_this _props]
   {ro/columns          [m.debits/account
                         m.debits/transaction
                         m.debits/value
                         j.debits/currency]
    ro/controls         {::m.users/id {:type :uuid :label "id"}
-                        ::refresh u.links/refresh-control}
+                        ::refresh    u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.debits/description #(u.links/ui-transaction-link %3)
-                        ::m.debits/account #(u.links/ui-account-link %2)
+                        ::m.debits/account     #(u.links/ui-account-link %2)
                         ::m.debits/transaction #(u.links/ui-transaction-link %2)}
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.debits/index
-   ro/title            "User Debits"})
+   ro/title            "Debits"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :route-segment     ["debits"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
