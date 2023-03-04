@@ -21,6 +21,9 @@
 ;; [[../joins/users.cljc][User Joins]]
 ;; [[../model/users.cljc][User Models]]
 
+
+(def override-form true)
+
 (def menu-items
   [{:key   "accounts"
     :name  "Accounts"
