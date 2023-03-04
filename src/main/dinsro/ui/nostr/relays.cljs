@@ -14,6 +14,7 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.relay.pubkeys :as u.n.relay-pubkeys]
    [dinsro.ui.nostr.relay.subscriptions :as u.n.relay-subscriptions]
+   [dinsro.ui.nostr.relay.topics :as u.n.relay-topics]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
@@ -87,15 +88,19 @@
   [_this _props]
   {:router-targets
    [u.n.relay-pubkeys/SubPage
-    u.n.relay-subscriptions/SubPage]})
+    u.n.relay-subscriptions/SubPage
+    u.n.relay-topics/SubPage]})
 
 (def menu-items
   [{:key   "subscriptions"
     :name  "Subscriptions"
-    :route "dinsro.ui.nostr.relay-subscriptions/SubPage"}
+    :route "dinsro.ui.nostr.relay.subscriptions/SubPage"}
    {:key   "pubkeys"
     :name  "Pubkeys"
-    :route "dinsro.ui.nostr.relay-pubkeys/SubPage"}])
+    :route "dinsro.ui.nostr.relay.pubkeys/SubPage"}
+   {:key   "topics"
+    :name  "Topics"
+    :route "dinsro.ui.nostr.relay.topics/SubPage"}])
 
 (defsc Show
   [this {::m.n.relays/keys [id address connected]

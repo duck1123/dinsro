@@ -30,7 +30,7 @@
   {:router-targets
    [u.n.pubkey-users/SubPage
     u.n.pubkey-relays/SubPage
-    u.n.pubkey-contacts/SubPage
+    ;; u.n.pubkey-contacts/SubPage
     u.n.pubkey-events/SubPage]})
 
 (defn img-formatter
@@ -40,10 +40,9 @@
     ""))
 
 (def menu-items
-  [{:key "contacts" :name "Contacts" :route "dinsro.ui.nostr.pubkey-contacts/SubPage"}
-   {:key "users" :name "Users" :route "dinsro.ui.nostr.pubkey-users/SubPage"}
-   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkey-relays/SubPage"}
-   {:key "events" :name "Events" :route "dinsro.ui.nostr.pubkey-events/SubPage"}])
+  [{:key "users" :name "Users" :route "dinsro.ui.nostr.pubkey.users/SubPage"}
+   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkey.relays/SubPage"}
+   {:key "events" :name "Events" :route "dinsro.ui.nostr.pubkey.events/SubPage"}])
 
 (defsc Show
   "Show a core node"

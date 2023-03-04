@@ -81,4 +81,15 @@
                         :cljs (do (comment pubkey-id) []))]
        {::event-count (count pubkeys)}))})
 
-(def attributes [admin-index index contact-count contacts events event-count])
+(defattr subscription-count ::subscription-count :int
+  {ao/identities #{::m.n.pubkeys/id}
+   ao/pc-input   #{::m.n.pubkeys/id}
+   ao/pc-resolve
+   (fn [_env params]
+     (log/info :subscription-count/starting {:params params})
+     (let [pubkey-id (::m.n.pubkeys/id params)
+           ids       #?(:clj (q.n.subscriptions/find-by-pubkey pubkey-id)
+                        :cljs (do (comment pubkey-id) []))]
+       {::subscription-count (count ids)}))})
+
+(def attributes [admin-index index contact-count contacts events event-count subscription-count])

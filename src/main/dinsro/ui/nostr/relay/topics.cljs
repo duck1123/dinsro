@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.relay.pubkeys
+(ns dinsro.ui.nostr.relay.topics
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -14,41 +14,21 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-;; [[../../joins/nostr/pubkeys.cljc][Pubkeys Join]]
-;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
-;; [[../../model/nostr/relays.cljc][Relay Model]]
-;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
-;; [[../../mutations/nostr/pubkeys.cljc][Pubkeys Mutations]]
-;; [[../../ui/nostr/relays.cljs][Relays UI]]
-
 (def ident-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
 
 (form/defsc-form AddForm
   [_this _props]
   {fo/id           m.n.pubkeys/id
-   fo/title        "Pubkey"
+   fo/title        "Topic"
    fo/attributes   [m.n.pubkeys/hex]
-   fo/route-prefix "new-pubkey"})
+   fo/route-prefix "new-topic"})
 
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
    :action (fn [this _] (form/create! this AddForm))})
-
-(defn subscribe-action
-  [report-instance {pubkey-id ::m.n.pubkeys/id}]
-  (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
-    (log/info :subscribe-action/starting {:relay-id relay-id :pubkey-id pubkey-id})
-    (if relay-id
-      (let [props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
-        (comp/transact! report-instance [(mu.n.pubkeys/subscribe! props)]))
-      (throw (js/Error. "no id")))))
-
-(def subscribe-action-button
-  {:label  "Subscribe"
-   :action subscribe-action})
 
 (report/defsc-report Report
   [_this _props]
@@ -60,27 +40,19 @@
                         ::new           new-button
                         ::refresh       u.links/refresh-control}
    ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/field-formatters {::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
-                        ::m.n.pubkeys/picture
-                        (fn [_ picture] (if picture
-                                          (dom/img {:src picture :width 100 :height 100})
-                                          ""))}
-   ro/row-actions      [subscribe-action-button]
+   ro/field-formatters {::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)}
+   ;; ro/row-actions      [subscribe-action-button]
    ro/source-attribute ::j.n.pubkeys/index
-   ro/title            "Pubkeys"
+   ro/title            "Topics"
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true})
-
-(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [{:ui/report (comp/get-query Report)}
                        [::dr/id router-key]]
    :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["pubkeys"]
+   :route-segment     ["topics"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))
