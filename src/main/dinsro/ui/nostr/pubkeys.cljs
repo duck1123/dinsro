@@ -22,7 +22,6 @@
 ;; [[../../mutations/nostr/pubkey_contacts.cljc][Pubkey Contact Mutations]]
 ;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
 
-
 (defrouter Router
   [_this _props]
   {:router-targets
@@ -48,9 +47,7 @@
   "Show a core node"
   [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website]
          :ui/keys           [router]}]
-  {:css           [[:.info-box {:border "1px solid red"}]
-                   [:.picture-box {:border "1px solid green"}]
-                   [:.display-name {:border "1px solid blue"}]]
+  {:css           []
    :ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/hex     ""
@@ -76,32 +73,31 @@
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
   (let [avatar-size                        200
-        {:keys [main _sub info-box control-box
-                picture-box display-name]} (css/get-classnames Show)]
+        {:keys [main _sub info-box picture-box display-name]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
-        (dom/div {:classes [:.ui.segment info-box]}
-          (dom/div {:classes [picture-box]}
-            (when picture
-              (dom/img {:src    (str picture)
-                        :width  avatar-size
-                        :height avatar-size})))
-          (dom/div :.ui.segment
-            (dom/div {:classes [display-name]} (str name) " " (str nip05))
-            (dom/dl {}
-              (dom/dt {} "Pubkey Hex")
-              (dom/dd {} (str hex))
-              (dom/dt {} "About")
-              (dom/dd {} (str about))
-              (dom/dt {} "Website")
-              (dom/dd {} (str website))
-              (dom/dt {} "lud06")
-              (dom/dd {} (str lud06)))))
-        (dom/div {:classes [:.ui.segment control-box]}
-          (dom/button
-            {:classes [:.ui.button]
-             :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
-            "Fetch Info")))
+        (dom/div :.ui.items
+          (dom/div {:classes [:.item info-box]}
+            (dom/div {:classes [:.ui.tiny.image picture-box]}
+              (when picture
+                (dom/img {:src    (str picture)
+                          :width  avatar-size
+                          :height avatar-size})))
+            (dom/div :.content
+              (dom/div :.header (str name))
+              (dom/div :.meta (str nip05))
+              (dom/div :.ui.description
+                (dom/div {:classes [display-name]} " ")
+                (dom/div {}
+                  (dom/p {} (str hex))
+                  (dom/p {} (str about))
+                  (dom/p {} (str website))
+                  (dom/p {} (str lud06))))
+              (dom/div :.extra
+                (dom/button
+                  {:classes [:.ui.right.floated.button.secondary]
+                   :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
+                  "Fetch Info"))))))
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))
 

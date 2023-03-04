@@ -102,7 +102,6 @@
      (uism/begin! this machines/hideable ::mu.navbar/navbarsm
                   {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
    :css           [[:.container {:height "100%"
-                                 :border "1px solid red"
                                  :overflow "hidden"}]
                    [:.pusher {:height   "100%"
                               :overflow "auto !important"}]

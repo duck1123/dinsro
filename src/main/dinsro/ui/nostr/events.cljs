@@ -18,6 +18,7 @@
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
 ;; [[../../mutations/nostr/events.cljc][Event Mutations]]
 
+
 (defn delete-action
   [report-instance {::m.n.events/keys [id]}]
   (form/delete! report-instance ::m.n.events/id id))
@@ -84,48 +85,23 @@
                    ::m.n.events/created-at 0}
    :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}]}
-  (let [name (::m.n.pubkeys/name pubkey)]
-    (dom/div :.comment
-      (dom/div :.avatar
-        (ui-event-author-image pubkey))
-      (dom/div :.content
-        (dom/a {:classes [:.author]} name)
-        (dom/div {:classes [:.metadata]}
-          (dom/span {:classes [:.date]} (str created-at)))
-        (dom/div {:classes [:.text]}
-          (str content))
-        (dom/div {:classes [:.actions]}
-          (dom/a {:classes [:.reply]} "Reply"))))))
+  (dom/div :.item
+    (dom/div :.ui.tiny.image
+      (ui-event-author-image pubkey))
+    (dom/div :.content
+      (dom/a {:classes [:.header]} (u.links/ui-pubkey-name-link pubkey))
+      (dom/div {:classes [:.meta]}
+        (dom/span {:classes [:.date]} (str created-at)))
+      (dom/div {:classes [:.description]}
+        (str content))
+      (dom/div {:classes [:.actions]}
+        (dom/a {:classes [:.reply]} "Reply")))))
 
 (def ui-event-box (comp/factory EventBox))
 
-(defsc EventItem
-  [_this {::m.n.events/keys [id content created-at pubkey] :as event}]
-  {:ident         ::m.n.events/id
-   :initial-state {::m.n.events/id         nil
-                   ::m.n.events/pubkey     {}
-                   ::m.n.events/content    ""
-                   ::m.n.events/created-at 0}
-   :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at
-                   {::m.n.events/pubkey (comp/get-query EventAuthor)}]}
-  (dom/tr {}
-    (dom/td {}
-            (dom/div :.ui.grid
-              (dom/div :.ui.grid
-                (ui-event-author pubkey))
-              (dom/div :.ui.grid
-
-                (u.links/ui-event-link event)
-                (dom/p {} (str id))
-                (dom/div {:classes [:.text]} (str content))
-                (dom/p {} (str created-at))
-                (dom/div {}))))))
-
-(def ui-event-item (comp/factory EventItem))
-
 (report/defsc-report Report
   [_this {:ui/keys [current-rows]}]
-  {ro/BodyItem EventItem
+  {ro/BodyItem EventBox
    ro/columns          [m.n.events/content]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
@@ -139,7 +115,7 @@
    ro/title            "Events Report"}
   (dom/div :.ui.segment
     (dom/div :.ui.container
-      (dom/div :.ui.comments
+      (dom/div :.ui.items
         (map ui-event-box current-rows)))))
 
 (defrouter Router
