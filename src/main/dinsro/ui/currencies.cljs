@@ -72,5 +72,5 @@
    :will-enter    (partial u.links/page-loader ::m.currencies/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
-     (dom/p {} "Show Currency " (str name)))
+     (dom/h1 {} (str name)))
    (u.currency-accounts/ui-sub-page accounts)))

@@ -12,7 +12,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
-   [dinsro.ui.account-transactions :as u.account-transactions]
+   [dinsro.ui.accounts.transactions :as u.a.transactions]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../joins/accounts.cljc][Account Joins]]
@@ -141,7 +141,7 @@
                    {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
                    {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
                    {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                   {:ui/transactions (comp/get-query u.account-transactions/SubPage)}]
+                   {:ui/transactions (comp/get-query u.a.transactions/SubPage)}]
    :initial-state {::m.accounts/name     ""
                    ::m.accounts/id       nil
                    ::m.accounts/currency {}
@@ -151,12 +151,11 @@
                    :ui/transactions      {}}
    :ident         ::m.accounts/id
    :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)
-   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})}
+   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.a.transactions/SubPage})}
   (comp/fragment
    (dom/div :.ui.segment
+     (dom/h1 {} (str name))
      (dom/dl {}
-       (dom/dt {} "Name")
-       (dom/dd {} (str name))
        (dom/dt {} "Currency")
        (dom/dd {} (u.links/ui-currency-link currency))
        (dom/dt {} "Source")
@@ -167,5 +166,5 @@
        (dom/dd {} (u.links/ui-wallet-link wallet))))
    (dom/div :.ui.segment
      (if transactions
-       (u.account-transactions/ui-sub-page transactions)
+       (u.a.transactions/ui-sub-page transactions)
        (dom/p {} "Account transactions not loaded")))))

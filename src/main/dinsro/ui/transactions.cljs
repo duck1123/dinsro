@@ -88,7 +88,7 @@
    :will-enter    (partial u.links/page-loader ::m.transactions/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
-     (dom/p {} "Show Transaction: " (str description))
+     (dom/h1 {} (str description))
      (dom/p {} "Date: " (str date)))
    (dom/div  :.ui.segment
      (if debits

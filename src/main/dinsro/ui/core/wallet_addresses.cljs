@@ -89,7 +89,6 @@
    ro/control-layout   {:inputs         [[::m.c.wallets/id]]
                         :action-buttons [::new ::calculate ::refresh]}
    ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
-   ro/form-links       {::m.c.wallet-addresses/address WalletAddressForm}
    ro/route            "wallets-addresses"
    ro/row-actions      [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
    ro/row-pk           m.c.wallet-addresses/id

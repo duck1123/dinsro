@@ -1,4 +1,4 @@
-(ns dinsro.ui.account-transactions
+(ns dinsro.ui.accounts.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -28,7 +28,7 @@
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.transactions/index
-   ro/title            "Account Transactions"})
+   ro/title            "Transactions"})
 
 (def ui-report (comp/factory Report))
 

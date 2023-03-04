@@ -7,20 +7,20 @@
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
-   ;; [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.debits/value
-                        m.debits/account
-                        j.debits/currency]
+                        j.debits/currency
+                        m.debits/account]
    ro/controls         {::m.transactions/id {:type :uuid :label "Block"}
                         ::refresh           u.links/refresh-control}
    ro/control-layout   {:inputs         [[::m.transactions/id]]
                         :action-buttons [::refresh]}
-   ro/field-formatters {::m.debits/value   #(u.links/ui-debit-link %3)
-                        ::m.debits/account #(u.links/ui-account-link %2)}
+   ro/field-formatters {::m.debits/value    #(u.links/ui-debit-link %3)
+                        ::m.debits/account  #(u.links/ui-account-link %2)
+                        ::j.debits/currency #(u.links/ui-currency-link %2)}
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.debits/index
