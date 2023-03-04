@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
    [dinsro.ui.nostr.events :as u.n.events]
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
@@ -12,7 +13,8 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.badge-definitions/Report
+   [u.n.badge-awards/Report
+    u.n.badge-definitions/Report
     u.n.events/Report
     u.n.events/Show
     u.n.pubkeys/Report

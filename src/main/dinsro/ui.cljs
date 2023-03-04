@@ -98,14 +98,11 @@
   {:componentDidMount
    (fn [this]
      (df/load! this ::m.settings/site-config mu.settings/Config)
-
      (df/load! this :root/navbar u.navbar/NavbarUnion)
-
      (uism/begin! this machines/hideable ::mu.navbar/navbarsm
-                  {:actor/navbar
-                   (uism/with-actor-class [::m.navbar/id :main]
-                     u.navbar/Navbar)}))
-   :css           [[:.container {:height "100%"}]
+                  {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
+   :css           [[:.container {:height "100%"
+                                 :border "1px solid red"}]
                    [:.pusher {:height   "100%"
                               :overflow "auto !important"}]
                    [:.top {:height "100%"}]]

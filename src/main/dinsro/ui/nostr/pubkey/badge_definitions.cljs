@@ -21,7 +21,7 @@
    ro/row-pk           m.n.badge-definitions/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.badge-definitions/index
-   ro/title            "Badge Definitions"})
+   ro/title            "Badges Created"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

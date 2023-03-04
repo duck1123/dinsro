@@ -95,4 +95,18 @@
                         :cljs (do (comment relay-id pubkey-id) []))]
        {::subscription-count (count ids)}))})
 
-(def attributes [admin-index index contact-count contacts events event-count subscription-count])
+(defattr npub ::npub :string
+  {ao/identities #{::m.n.pubkeys/id}
+   ao/pc-input   #{::m.n.pubkeys/id ::m.n.pubkeys/hex}
+   ao/pc-resolve
+   (fn [_env params]
+     (log/info :npub/starting {:params params})
+     (let [pubkey-id (::m.n.pubkeys/id params)
+           relay-id  #?(:clj (first (q.n.relays/index-ids)) :cljs nil)
+           ids       #?(:clj (q.n.subscriptions/find-by-relay-and-pubkey relay-id pubkey-id)
+                        :cljs (do (comment relay-id pubkey-id) []))]
+       {::subscription-count (count ids)}))})
+
+(def attributes [admin-index index contact-count contacts
+                 events event-count subscription-count
+                 npub])
