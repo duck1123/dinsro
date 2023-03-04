@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.pubkey-relays
+(ns dinsro.ui.nostr.pubkey.relays
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]

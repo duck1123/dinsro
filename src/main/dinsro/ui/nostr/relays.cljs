@@ -12,8 +12,8 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.relay-pubkeys :as u.n.relay-pubkeys]
-   [dinsro.ui.nostr.relay-subscriptions :as u.n.relay-subscriptions]
+   [dinsro.ui.nostr.relay.pubkeys :as u.n.relay-pubkeys]
+   [dinsro.ui.nostr.relay.subscriptions :as u.n.relay-subscriptions]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]

@@ -1,43 +1,32 @@
-(ns dinsro.ui.nostr.pubkey-contacts
+(ns dinsro.ui.nostr.pubkey.events
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+   [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]))
-
-
-;; [[../../joins/nostr/pubkey_contacts.cljc][Pubkey Contacts Joins]]
-;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
-
 
 (def ident-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/picture
-                        m.n.pubkeys/name
-                        j.n.pubkeys/contact-count
-                        j.n.pubkeys/event-count]
+  {ro/columns          [m.n.events/note-id
+                        m.n.events/content
+                        m.n.events/created-at]
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)
-                        ::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
-                        ::m.n.pubkeys/picture
-                        (fn [_ picture]
-                          (when picture
-                            (dom/img {:src    (str picture)
-                                      :width  100
-                                      :height 100})))}
-   ro/row-pk           m.n.pubkeys/id
+   ro/field-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
+                        ::m.n.events/note-id #(u.links/ui-event-link %3)
+                        ::m.n.pubkeys/hex    #(u.links/ui-pubkey-link %3)}
+   ro/row-pk           m.n.events/id
    ro/run-on-mount?    true
-   ro/source-attribute ::j.n.pubkeys/contacts
-   ro/title            "Contacts"})
+   ro/source-attribute ::j.n.pubkeys/events
+   ro/title            "Events"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
@@ -46,5 +35,5 @@
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["contacts"]}
+   :route-segment     ["events"]}
   ((comp/factory Report) report))
