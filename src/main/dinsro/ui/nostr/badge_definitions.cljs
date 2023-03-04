@@ -2,6 +2,8 @@
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
+   [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
@@ -10,7 +12,7 @@
                         m.n.badge-definitions/code
                         m.n.badge-definitions/description
                         m.n.badge-definitions/image-url
-                        m.n.badge-definitions/thumbnail-urls]
+                        m.n.badge-definitions/thumbnail-url]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
    ro/route            "badge-definitions"
