@@ -1,4 +1,4 @@
-(ns dinsro.ui.user-wallets
+(ns dinsro.ui.users.wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -30,7 +30,7 @@
   [_this {:ui/keys [report]}]
   {:query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :route-segment     ["wallets"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}

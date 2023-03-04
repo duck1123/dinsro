@@ -13,9 +13,9 @@
    [dinsro.ui.user-ln-nodes :as u.user-ln-nodes]
    [dinsro.ui.user-pubkeys :as u.user-pubkeys]
    [dinsro.ui.user-transactions :as u.user-transactions]
-   [dinsro.ui.user-wallets :as u.user-wallets]
    [dinsro.ui.users.accounts :as u.u.accounts]
-   [dinsro.ui.users.debits :as u.u.debits]))
+   [dinsro.ui.users.debits :as u.u.debits]
+   [dinsro.ui.users.wallets :as u.u.wallets]))
 
 ;; [[../actions/users.clj][User Actions]]
 ;; [[../joins/users.cljc][User Joins]]
@@ -42,7 +42,7 @@
     :route "dinsro.ui.user-transactions/SubPage"}
    {:key   "wallets"
     :name  "Wallets"
-    :route "dinsro.ui.user-wallets/SubPage"}])
+    :route "dinsro.ui.users.wallets/SubPage"}])
 
 (defrouter Router
   [_this _props]
@@ -52,7 +52,7 @@
     u.user-ln-nodes/SubPage
     u.user-pubkeys/SubPage
     u.user-transactions/SubPage
-    u.user-wallets/SubPage]})
+    u.u.wallets/SubPage]})
 
 (def ui-router (comp/factory Router))
 
