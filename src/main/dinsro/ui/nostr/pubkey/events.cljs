@@ -14,7 +14,7 @@
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (defsc EventListItem
-  [_this {::m.n.events/keys [id content created-at]}]
+  [_this {::m.n.events/keys [id content created-at] :as event}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id         nil
                    ::m.n.events/content    ""
@@ -23,7 +23,8 @@
   (dom/tr {}
     (dom/td {}
             (dom/div :.ui.segment
-              (dom/p {} "id" (str id))
+              (u.links/ui-event-link event)
+              (dom/p {} (str id))
               (dom/p {} (str content))
               (dom/p {} (str created-at))))))
 

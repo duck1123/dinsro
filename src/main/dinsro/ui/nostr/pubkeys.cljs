@@ -46,9 +46,11 @@
 
 (defsc Show
   "Show a core node"
-  [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website banner]
+  [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website]
          :ui/keys           [router]}]
-  {:css           [[:.info-box {:border "1px solid red"}]]
+  {:css           [[:.info-box {:border "1px solid red"}]
+                   [:.picture-box {:border "1px solid green"}]
+                   [:.display-name {:border "1px solid blue"}]]
    :ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/hex     ""
@@ -73,31 +75,28 @@
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
-  (let [{:keys [main _sub info-box control-box]} (css/get-classnames Show)]
+  (let [avatar-size                        200
+        {:keys [main _sub info-box control-box
+                picture-box display-name]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
         (dom/div {:classes [:.ui.segment info-box]}
-          (dom/dl {}
-            (dom/dt {} "Pubkey Hex")
-            (dom/dd {} (str hex))
-            (dom/dt {} "Name")
-            (dom/dd {} (str name))
-            (dom/dt {} "About")
-            (dom/dd {} (str about))
-            (dom/dt {} "Nip 05")
-            (dom/dd {} (str nip05))
-            (dom/dt {} "Website")
-            (dom/dd {} (str website))
-            (dom/dt {} "lud06")
-            (dom/dd {} (str lud06))
-            (dom/dt {} "banner")
-            (dom/dd {} (str banner))
-            (dom/dt {} "Picture")
-            (dom/dd {}
-              (when picture
-                (dom/img {:src    (str picture)
-                          :width  200
-                          :height 200})))))
+          (dom/div {:classes [picture-box]}
+            (when picture
+              (dom/img {:src    (str picture)
+                        :width  avatar-size
+                        :height avatar-size})))
+          (dom/div :.ui.segment
+            (dom/div {:classes [display-name]} (str name) " " (str nip05))
+            (dom/dl {}
+              (dom/dt {} "Pubkey Hex")
+              (dom/dd {} (str hex))
+              (dom/dt {} "About")
+              (dom/dd {} (str about))
+              (dom/dt {} "Website")
+              (dom/dd {} (str website))
+              (dom/dt {} "lud06")
+              (dom/dd {} (str lud06)))))
         (dom/div {:classes [:.ui.segment control-box]}
           (dom/button
             {:classes [:.ui.button]
@@ -108,11 +107,11 @@
 
 (form/defsc-form CreateForm
   [_this _props]
-  {fo/attributes    [m.n.pubkeys/hex]
-   fo/cancel-route  ["pubkeys"]
-   fo/id            m.n.pubkeys/id
-   fo/route-prefix  "create-pubkey"
-   fo/title         "Create A Pubkey"})
+  {fo/attributes   [m.n.pubkeys/hex]
+   fo/cancel-route ["pubkeys"]
+   fo/id           m.n.pubkeys/id
+   fo/route-prefix "create-pubkey"
+   fo/title        "Create A Pubkey"})
 
 (def new-button
   {:type   :button
