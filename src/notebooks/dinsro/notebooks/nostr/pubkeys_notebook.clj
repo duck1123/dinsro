@@ -53,7 +53,8 @@
 
 ^{::clerk/visibility {:result :hide}}
 (defn update-pubkey-run []
-  (let [result (nu/try-await (a.n.pubkeys/update-pubkey! pubkey-id))]
+  (let [relay-id (first (q.n.relays/index-ids))
+        result (nu/try-await (a.n.pubkeys/update-pubkey! pubkey-id relay-id))]
     (reset! last-update-result result)
     result))
 

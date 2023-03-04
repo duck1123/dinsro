@@ -12,6 +12,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkey_contacts.clj][Pubkey Contact Actions]]
+;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 
 
 (comment ::pc/_ ::m.n.pubkey-contacts/_)

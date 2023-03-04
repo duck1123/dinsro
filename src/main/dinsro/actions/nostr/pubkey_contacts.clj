@@ -27,8 +27,8 @@
 
 (>defn fetch-contacts!
   ([pubkey-id]
-   [::m.n.pubkeys/id => ds/channel?]
-   (let [relay-id (first (q.n.relays/index-ids))]
+   [::m.n.pubkeys/id => nil?]
+   (doseq [relay-id (q.n.relays/index-ids)]
      (fetch-contacts! pubkey-id relay-id)))
   ([pubkey-id relay-id]
    [::m.n.pubkeys/id ::m.n.relays/id => ds/channel?]

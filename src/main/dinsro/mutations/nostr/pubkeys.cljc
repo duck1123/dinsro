@@ -16,6 +16,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
+   #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
@@ -98,7 +99,8 @@
      (log/finer :do-fetch!/started {:id id})
      (try
        (log/finer :do-fetch!/starting {:id id})
-       (a.n.pubkeys/fetch-contact! id)
+       (doseq [relay-id (q.n.relays/index-ids)]
+         (a.n.pubkeys/fetch-contact! id relay-id))
        {::mu/status :ok}
        (catch Exception ex
          (log/error :do-fetch!/failed {:exception ex})
