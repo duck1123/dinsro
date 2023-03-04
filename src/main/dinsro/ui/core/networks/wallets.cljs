@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.network-wallets
+(ns dinsro.ui.core.networks.wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]

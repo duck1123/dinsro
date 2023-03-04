@@ -22,8 +22,8 @@
    [dinsro.ui :as ui]
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.controls :as u.controls]
-   [dinsro.ui.core.network-addresses :as u.c.network-addresses]
    [dinsro.ui.core.networks :as u.c.networks]
+   [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.users :as u.users]
@@ -138,7 +138,7 @@
         target                 (condp = target0
                                  nil               u.home/HomePage
                                  u.admin/AdminPage u.users/AdminReport
-                                 u.c.networks/Show u.c.network-addresses/SubPage
+                                 u.c.networks/Show u.c.n.addresses/SubPage
                                  target0)]
     (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})
     (routing/route-to! app target (or params {}))))
