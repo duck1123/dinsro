@@ -59,6 +59,7 @@
                     u.admin/AdminPage
                     u.categories/Report
                     u.categories/NewForm
+                    u.contacts/NewContactForm
                     u.contacts/Report
                     u.core/CorePage
                     u.currencies/Report
