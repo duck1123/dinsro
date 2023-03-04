@@ -432,6 +432,15 @@
 
 (def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 
+(form/defsc-form PubkeyNameLinkForm [this {::m.n.pubkeys/keys [id name]}]
+  {fo/id           m.n.pubkeys/id
+   fo/route-prefix "pubkey-name-link"
+   fo/attributes   [m.n.pubkeys/hex
+                    m.n.pubkeys/name]}
+  (form-link this id (or name "") :dinsro.ui.nostr.pubkeys/Show))
+
+(def ui-pubkey-name-link (comp/factory PubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
+
 (form/defsc-form RateLinkForm [this {::m.rates/keys [id date]}]
   {fo/id         m.rates/id
    fo/route-prefix "rate-link"

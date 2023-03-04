@@ -107,11 +107,11 @@
 
 (form/defsc-form CreateForm
   [_this _props]
-  {fo/attributes   [m.n.pubkeys/hex]
-   fo/cancel-route ["pubkeys"]
-   fo/id           m.n.pubkeys/id
-   fo/route-prefix "create-pubkey"
-   fo/title        "Create A Pubkey"})
+  {fo/attributes    [m.n.pubkeys/hex]
+   fo/cancel-route  ["pubkeys"]
+   fo/id            m.n.pubkeys/id
+   fo/route-prefix  "create-pubkey"
+   fo/title         "Create A Pubkey"})
 
 (def new-button
   {:type   :button
@@ -119,17 +119,24 @@
    :label  "New"
    :action (fn [this _] (form/create! this CreateForm))})
 
+(defn img-formatter
+  [pubkey]
+  (if-let [picture (::m.n.pubkeys/picture pubkey)]
+    (dom/img {:src picture :height 100 :width 100})
+    ""))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/hex
-                        m.n.pubkeys/name
+  {ro/columns          [m.n.pubkeys/name
                         m.n.pubkeys/picture
                         j.n.pubkeys/contact-count
                         j.n.pubkeys/event-count]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
+   ro/field-formatters {::m.n.pubkeys/hex     #(u.links/ui-pubkey-link %3)
+                        ::m.n.pubkeys/name    #(u.links/ui-pubkey-name-link %3)
+                        ::m.n.pubkeys/picture #(img-formatter %3)}
    ro/route            "pubkeys"
    ro/row-actions      [(u.links/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)
                         (u.links/row-action-button "Fetch" ::m.n.pubkeys/id mu.n.pubkeys/fetch!)
