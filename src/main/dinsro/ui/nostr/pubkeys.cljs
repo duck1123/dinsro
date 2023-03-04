@@ -33,6 +33,12 @@
     u.n.pubkey-contacts/SubPage
     u.n.pubkey-events/SubPage]})
 
+(defn img-formatter
+  [pubkey]
+  (if-let [picture (::m.n.pubkeys/picture pubkey)]
+    (dom/img {:src picture :height 100 :width 100})
+    ""))
+
 (def menu-items
   [{:key "contacts" :name "Contacts" :route "dinsro.ui.nostr.pubkey-contacts/SubPage"}
    {:key "users" :name "Users" :route "dinsro.ui.nostr.pubkey-users/SubPage"}
@@ -86,10 +92,11 @@
           (dom/dt {} "banner")
           (dom/dd {} (str banner))
           (dom/dt {} "Picture")
-          (dom/dd {} (when picture
-                       (dom/img {:src    (str picture)
-                                 :width  200
-                                 :height 200}))))
+          (dom/dd {}
+            (when picture
+              (dom/img {:src    (str picture)
+                        :width  200
+                        :height 200}))))
         (dom/button
           {:classes [:.ui.button]
            :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
@@ -119,16 +126,10 @@
    :label  "New"
    :action (fn [this _] (form/create! this CreateForm))})
 
-(defn img-formatter
-  [pubkey]
-  (if-let [picture (::m.n.pubkeys/picture pubkey)]
-    (dom/img {:src picture :height 100 :width 100})
-    ""))
-
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/name
-                        m.n.pubkeys/picture
+  {ro/columns          [m.n.pubkeys/picture
+                        m.n.pubkeys/name
                         j.n.pubkeys/contact-count
                         j.n.pubkeys/event-count]
    ro/control-layout   {:action-buttons [::new ::refresh]}
