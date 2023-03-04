@@ -52,11 +52,11 @@
   {ao/target    ::m.debits/id
    ao/pc-output [{::currency [::m.currencies/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]}]
+   (fn [{:keys [query-params]} _]
      (if-let [debit-id (::m.debits/id query-params)]
-       (let [currency #?(:clj (q.currencies/find-by-debit debit-id)
-                         :cljs (do (comment debit-id) nil))]
-         {::currency (when currency (m.currencies/ident currency))})
+       (let [currency-id #?(:clj (q.currencies/find-by-debit debit-id)
+                            :cljs (do (comment debit-id) nil))]
+         {::currency (when currency-id (m.currencies/ident currency-id))})
        {:error "no id"}))})
 
 (def attributes [index admin-index currency])

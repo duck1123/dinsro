@@ -1,4 +1,4 @@
-(ns dinsro.ui.user-accounts
+(ns dinsro.ui.users.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -14,11 +14,13 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.accounts/name]
+  {ro/columns          [m.accounts/name
+                        m.accounts/currency]
    ro/controls         {::m.users/id {:type :uuid :label "id"}
                         ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)}
+   ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)
+                        ::m.accounts/currency #(u.links/ui-currency-link %2)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.accounts/index

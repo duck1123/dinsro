@@ -55,7 +55,6 @@
   {ro/columns          [m.n.pubkeys/picture
                         m.n.pubkeys/name
                         j.n.pubkeys/subscription-count]
-
    ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
                         ::new           new-button
                         ::refresh       u.links/refresh-control}

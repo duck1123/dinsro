@@ -10,12 +10,12 @@
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.user-accounts :as u.user-accounts]
-   [dinsro.ui.user-debits :as u.user-debits]
    [dinsro.ui.user-ln-nodes :as u.user-ln-nodes]
    [dinsro.ui.user-pubkeys :as u.user-pubkeys]
    [dinsro.ui.user-transactions :as u.user-transactions]
-   [dinsro.ui.user-wallets :as u.user-wallets]))
+   [dinsro.ui.user-wallets :as u.user-wallets]
+   [dinsro.ui.users.accounts :as u.u.accounts]
+   [dinsro.ui.users.debits :as u.u.debits]))
 
 ;; [[../actions/users.clj][User Actions]]
 ;; [[../joins/users.cljc][User Joins]]
@@ -24,10 +24,10 @@
 (def menu-items
   [{:key   "accounts"
     :name  "Accounts"
-    :route "dinsro.ui.user-accounts/SubPage"}
+    :route "dinsro.ui.users.accounts/SubPage"}
    {:key   "debits"
     :name  "Debits"
-    :route "dinsro.ui.user-debits/SubPage"}
+    :route "dinsro.ui.users.debits/SubPage"}
    {:key   "ln-nodes"
     :name  "LN Nodes"
     :route "dinsro.ui.user-ln-nodes/SubPage"}
@@ -44,8 +44,8 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.user-accounts/SubPage
-    u.user-debits/SubPage
+   [u.u.accounts/SubPage
+    u.u.debits/SubPage
     u.user-ln-nodes/SubPage
     u.user-pubkeys/SubPage
     u.user-transactions/SubPage

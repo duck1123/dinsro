@@ -1,4 +1,4 @@
-(ns dinsro.ui.user-debits
+(ns dinsro.ui.users.debits
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -16,7 +16,8 @@
   [_this _props]
   {ro/columns          [m.debits/account
                         m.debits/transaction
-                        m.debits/value]
+                        m.debits/value
+                        j.debits/currency]
    ro/controls         {::m.users/id {:type :uuid :label "id"}
                         ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
