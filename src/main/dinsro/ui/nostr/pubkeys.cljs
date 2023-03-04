@@ -10,8 +10,6 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts]
-   [dinsro.mutations.nostr.pubkey-events :as mu.n.pubkey-events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.pubkey.contacts :as u.n.pubkey-contacts]
@@ -49,7 +47,8 @@
   "Show a core node"
   [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website banner]
          :ui/keys           [router]}]
-  {:ident         ::m.n.pubkeys/id
+  {:css           [[:.info-box {:border "1px solid red"}]]
+   :ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/hex     ""
                    ::m.n.pubkeys/name    ""
@@ -73,42 +72,36 @@
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
-  (let [{:keys [main _sub]} (css/get-classnames Show)]
+  (let [{:keys [main _sub info-box control-box]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
-        (dom/dl {}
-          (dom/dt {} "Pubkey Hex")
-          (dom/dd {} (str hex))
-          (dom/dt {} "Name")
-          (dom/dd {} (str name))
-          (dom/dt {} "About")
-          (dom/dd {} (str about))
-          (dom/dt {} "Nip 05")
-          (dom/dd {} (str nip05))
-          (dom/dt {} "Website")
-          (dom/dd {} (str website))
-          (dom/dt {} "lud06")
-          (dom/dd {} (str lud06))
-          (dom/dt {} "banner")
-          (dom/dd {} (str banner))
-          (dom/dt {} "Picture")
-          (dom/dd {}
-            (when picture
-              (dom/img {:src    (str picture)
-                        :width  200
-                        :height 200}))))
-        (dom/button
-          {:classes [:.ui.button]
-           :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
-          "Fetch")
-        (dom/button
-          {:classes [:.ui.button]
-           :onClick (fn [_e] (comp/transact! this [(mu.n.pubkey-contacts/fetch-contacts! {::m.n.pubkeys/id id})]))}
-          "Fetch Contacts")
-        (dom/button
-          {:classes [:.ui.button]
-           :onClick (fn [_e] (comp/transact! this [(mu.n.pubkey-events/fetch! {::m.n.pubkeys/id id})]))}
-          "Fetch Events"))
+        (dom/div {:classes [:.ui.segment info-box]}
+          (dom/dl {}
+            (dom/dt {} "Pubkey Hex")
+            (dom/dd {} (str hex))
+            (dom/dt {} "Name")
+            (dom/dd {} (str name))
+            (dom/dt {} "About")
+            (dom/dd {} (str about))
+            (dom/dt {} "Nip 05")
+            (dom/dd {} (str nip05))
+            (dom/dt {} "Website")
+            (dom/dd {} (str website))
+            (dom/dt {} "lud06")
+            (dom/dd {} (str lud06))
+            (dom/dt {} "banner")
+            (dom/dd {} (str banner))
+            (dom/dt {} "Picture")
+            (dom/dd {}
+              (when picture
+                (dom/img {:src    (str picture)
+                          :width  200
+                          :height 200})))))
+        (dom/div {:classes [:.ui.segment control-box]}
+          (dom/button
+            {:classes [:.ui.button]
+             :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
+            "Fetch Info")))
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))
 
