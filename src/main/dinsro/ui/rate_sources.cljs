@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -10,7 +11,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.rate-source-accounts :as u.rate-source-accounts]))
+   [dinsro.ui.rate-sources.accounts :as u.rs.accounts]))
 
 (def run-button
   {:type   :button
@@ -33,6 +34,16 @@
    fo/cancel-route   ["new-rate-source"]
    fo/route-prefix   "rate-source"
    fo/title          "New Rate Source"})
+
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.rs.accounts/SubPage]})
+
+(def menu-items
+  [{:key   "accounts"
+    :name  "Accounts"
+    :route "dinsro.ui.nostr.rate-sources.accounts/SubPage"}])
 
 (report/defsc-report Report
   [_this _props]
@@ -60,25 +71,37 @@
    ro/run-on-mount?    true})
 
 (defsc Show
-  [_this {::m.rate-sources/keys [name url]
+  [_this {::m.rate-sources/keys [name url active currency]
+          ::j.rate-sources/keys [rate-count]
           :ui/keys              [accounts]}]
   {:route-segment ["rate-sources" :id]
    :query         [::m.rate-sources/name
                    ::m.rate-sources/url
+                   {::m.rate-sources/currency (comp/get-query u.links/CurrencyLinkForm)}
+                   ::m.rate-sources/active
                    ::m.rate-sources/id
-                   {:ui/accounts (comp/get-query u.rate-source-accounts/SubPage)}]
-   :initial-state {::m.rate-sources/name ""
-                   ::m.rate-sources/id   nil
-                   ::m.rate-sources/url  ""
-                   :ui/accounts          {}}
+                   ::j.rate-sources/rate-count
+                   {:ui/accounts (comp/get-query u.rs.accounts/SubPage)}]
+   :initial-state {::m.rate-sources/name       ""
+                   ::m.rate-sources/id         nil
+                   ::m.rate-sources/active     false
+                   ::m.rate-sources/currency   {}
+                   ::m.rate-sources/url        ""
+                   ::j.rate-sources/rate-count []
+                   :ui/accounts                {}}
    :ident         ::m.rate-sources/id
-   :will-enter    (partial u.links/page-loader ::m.rate-sources/id ::ShowRateSource)
-   :pre-merge     (u.links/page-merger ::m.rate-sources/id {:ui/accounts u.rate-source-accounts/SubPage})}
+   :will-enter    (partial u.links/page-loader ::m.rate-sources/id ::Show)
+   :pre-merge     (u.links/page-merger ::m.rate-sources/id {:ui/accounts u.rs.accounts/SubPage})}
   (comp/fragment
    (dom/div :.ui.segment
-     (dom/p {} "Show Rate Source " (str name))
-     (dom/p {} "Url: " (str url)))
+     (dom/a {:href "/rate-sources"} "Rate Sources"))
+   (dom/div :.ui.segment
+     (dom/h1 {} (str name))
+     (dom/p {} "Url: " (str url))
+     (dom/p {} "Active: " (str active))
+     (dom/p {} "Currency: " (u.links/ui-currency-link currency))
+     (dom/p {} "Rate Count: " (str rate-count)))
    (dom/div  :.ui.segment
      (if accounts
-       (u.rate-source-accounts/ui-sub-page accounts)
+       (u.rs.accounts/ui-sub-page accounts)
        (dom/p {} "Rate Source accounts not loaded")))))

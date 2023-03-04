@@ -3,12 +3,16 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
+   #?(:clj [dinsro.queries.currencies :as q.currencies])
    #?(:clj [dinsro.queries.debits :as q.debits])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
+
+;; [[../model/debits.cljc][Debits Model]]
 
 ;; "All debits regardless of user"
 (defattr admin-index ::admin-index :ref
@@ -44,4 +48,15 @@
                     :cljs [])]
          {::index (m.debits/idents ids)})))})
 
-(def attributes [index admin-index])
+(defattr currency ::currency :ref
+  {ao/target    ::m.debits/id
+   ao/pc-output [{::currency [::m.currencies/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params]}]
+     (if-let [debit-id (::m.debits/id query-params)]
+       (let [currency #?(:clj (q.currencies/find-by-debit debit-id)
+                         :cljs (do (comment debit-id) nil))]
+         {::currency (when currency (m.currencies/ident currency))})
+       {:error "no id"}))})
+
+(def attributes [index admin-index currency])

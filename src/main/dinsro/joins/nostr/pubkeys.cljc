@@ -6,6 +6,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    #?(:clj [dinsro.queries.nostr.events :as q.n.events])
    #?(:clj [dinsro.queries.nostr.pubkeys :as q.n.pubkeys])
+   #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 

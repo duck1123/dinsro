@@ -6,6 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [io.pedestal.log :as log]
@@ -21,6 +22,16 @@
                 :in    [[?code]]
                 :where [[?id ::m.currencies/code ?code]]}]
     (ffirst (xt/q db query [code]))))
+
+(>defn find-by-debit
+  [debit-id]
+  [::m.debits/id => (? ::m.currencies/id)]
+  (let [db    (c.xtdb/main-db)
+        query '{:find  [?currency-id]
+                :in    [[?debit-id]]
+                :where [[?debit-id ::m.debits/account ?account-id]
+                        [?account-id ::m.accounts/currency ?currency-id]]}]
+    (ffirst (xt/q db query [debit-id]))))
 
 (>defn find-name-by-id
   [id]

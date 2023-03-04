@@ -13,7 +13,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.debits/value
-                        m.debits/account]
+                        m.debits/account
+                        j.debits/currency]
    ro/controls         {::m.transactions/id {:type :uuid :label "Block"}
                         ::refresh           u.links/refresh-control}
    ro/control-layout   {:inputs         [[::m.transactions/id]]

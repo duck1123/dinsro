@@ -73,7 +73,7 @@
 (defsc Show
   [_this {::m.transactions/keys [description date]
           :ui/keys              [debits]}]
-  {:route-segment ["transactions" :id]
+  {:route-segment ["transaction" :id]
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
@@ -83,10 +83,9 @@
                    ::m.transactions/date        ""
                    :ui/debits                   {}}
    :ident         ::m.transactions/id
-   :pre-merge     (u.links/page-merger
-                   ::m.transactions/id
-                   {:ui/debits u.transaction-debits/SubPage})
-   :will-enter    (partial u.links/page-loader ::m.transactions/id ::ShowTransaction)}
+   :pre-merge     (u.links/page-merger ::m.transactions/id
+                                       {:ui/debits u.transaction-debits/SubPage})
+   :will-enter    (partial u.links/page-loader ::m.transactions/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show Transaction: " (str description))

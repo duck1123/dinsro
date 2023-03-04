@@ -6,6 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))

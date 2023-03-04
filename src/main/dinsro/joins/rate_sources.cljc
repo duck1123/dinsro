@@ -38,4 +38,16 @@
          {::rates (m.rates/idents ids)})
        {:errors "no id"}))})
 
-(def attributes [current-rate index rates])
+(defattr rate-count ::rate-count :ref
+  {ao/cardinality :many
+   ao/target      ::m.rates/id
+   ao/pc-input    #{::m.rate-sources/id}
+   ao/pc-output   [{::rate-count [::m.rates/id]}]
+   ao/pc-resolve
+   (fn [_env {::m.rate-sources/keys [id]}]
+     (if id
+       (let [ids #?(:clj (q.rates/find-by-rate-source id) :cljs [])]
+         {::rate-count (count ids)})
+       {:errors "no id"}))})
+
+(def attributes [current-rate index rates rate-count])

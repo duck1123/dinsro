@@ -69,7 +69,7 @@
    :pre-merge     (u.links/page-merger
                    ::m.currencies/id
                    {:ui/accounts u.currency-accounts/SubPage})
-   :will-enter    (partial u.links/page-loader ::m.currencies/id ::ShowCurrency)}
+   :will-enter    (partial u.links/page-loader ::m.currencies/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show Currency " (str name)))

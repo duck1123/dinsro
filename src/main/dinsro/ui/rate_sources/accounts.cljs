@@ -1,4 +1,4 @@
-(ns dinsro.ui.rate-source-accounts
+(ns dinsro.ui.rate-sources.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
