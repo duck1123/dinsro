@@ -10,6 +10,7 @@
 
 ;; [[../../model/nostr/events.cljc][Event Model]]
 ;; [[../../queries/nostr/events.clj][Event Queries]]
+;; [[../../ui/nostr/events.cljs][Event UI]]
 
 (>defn fetch-events!
   [pubkey-id]
@@ -28,7 +29,7 @@
           (log/info :fetch-event!/relay {:relay-id relay-id})
           (let [note-id ""
                 body    {:kinds [0] :ids [note-id]}]
-           (a.n.relays/send! relay-id body)))))
+            (a.n.relays/send! relay-id body)))))
     (throw (RuntimeException. "Failed to find event"))))
 
 (defn do-fetch!

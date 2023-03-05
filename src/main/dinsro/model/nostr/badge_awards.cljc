@@ -19,15 +19,17 @@
 
 (>def ::badge uuid?)
 (defattr badge ::badge :ref
-  {ao/identities #{::id}
-   ao/schema     :production
-   ::report/column-EQL {::node [::m.n.badge-definitions/id ::m.n.badge-definitions/code]}})
+  {ao/identities       #{::id}
+   ao/target           ::m.n.badge-definitions/id
+   ao/schema           :production
+   ::report/column-EQL {::badge [::m.n.badge-definitions/id ::m.n.badge-definitions/code]}})
 
 (>def ::target uuid?)
 (defattr target ::target :ref
   {ao/identities       #{::id}
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
+   ao/target           ::m.n.pubkeys/id
+   ::report/column-EQL {::target [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
 
 (>def ::required-params (s/keys :req [::badge]))
 

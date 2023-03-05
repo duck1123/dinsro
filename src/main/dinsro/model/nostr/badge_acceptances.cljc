@@ -17,7 +17,8 @@
 (defattr badge ::badge :ref
   {ao/identities       #{::id}
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.badge-definitions/id ::m.n.badge-definitions/code]}})
+   ao/target           ::m.n.badge-definitions/id
+   ::report/column-EQL {::badge [::m.n.badge-definitions/id ::m.n.badge-definitions/code]}})
 
 (>def ::required-params (s/keys :req [::badge]))
 

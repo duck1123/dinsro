@@ -82,19 +82,18 @@
                    ::m.n.events/created-at 0}
    :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}]}
-  (dom/div :.item
+  (dom/div :.item.segment
     (dom/div :.ui.tiny.image
       (ui-event-author-image pubkey))
     (dom/div :.content
-      (dom/a {:classes [:.header]} (u.links/ui-pubkey-name-link pubkey))
+      (dom/div {:classes [:.header]}
+        (u.links/ui-pubkey-name-link pubkey))
       (dom/div {:classes [:.meta]}
         (dom/span {:classes [:.date]} (str created-at)))
       (dom/div {:classes [:.description]}
-        (str content))
-      (dom/div {:classes [:.actions]}
-        (dom/a {:classes [:.reply]} "Reply")))))
+        (str content)))))
 
-(def ui-event-box (comp/factory EventBox))
+(def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
 (report/defsc-report Report
   [_this props]
@@ -113,7 +112,7 @@
   (let [{:ui/keys [current-rows]} props]
     (dom/div {:classes [:.ui :.segment]}
       (dom/div {:classes [:.ui :.container]}
-        (dom/div {:classes [:.ui :.items]}
+        (dom/div {:classes [:.ui :.items :.unstackable]}
           (map ui-event-box current-rows))))))
 
 (defrouter Router

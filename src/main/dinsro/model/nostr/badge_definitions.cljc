@@ -37,7 +37,8 @@
 (defattr pubkey ::pubkey :ref
   {ao/identities       #{::id}
    ao/schema           :production
-   ::report/column-EQL {::node [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
+   ao/target           ::m.n.pubkeys/id
+   ::report/column-EQL {::pubkey [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
 
 (>def ::required-params (s/keys :req [::code ::description ::image-url ::thumbnail-url ::pubkey]))
 
