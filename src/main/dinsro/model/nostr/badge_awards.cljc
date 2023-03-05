@@ -9,6 +9,9 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.specs]))
 
+;; [[../../ui/nostr/badge_awards.cljs][Badge Awards UI]]
+
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

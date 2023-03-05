@@ -14,6 +14,7 @@
    #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
    [dinsro.model.contacts :as m.contacts]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
@@ -139,6 +140,29 @@
    (fm/defmutation fetch! [_props]
      (action    [_env] true)
      (remote    [env]  (fm/returning env FetchResponse))
+     (ok-action [env]  (handle-fetch env))))
+
+;; Fetch Awards
+
+(defsc FetchAwardsResponse
+  [_ _]
+  {:initial-state {::mu/status :initial
+                   ::mu/errors {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status
+                   ::m.n.badge-awards/items]})
+
+#?(:clj
+   (pc/defmutation fetch-awards!
+     [_env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.n.badge-awards/items]}
+     (do-fetch! props))
+
+   :cljs
+   (fm/defmutation fetch-awards! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env FetchAwardsResponse))
      (ok-action [env]  (handle-fetch env))))
 
 
