@@ -12,6 +12,8 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.pubkeys.badge-acceptances :as u.n.p.badge-acceptances]
+   [dinsro.ui.nostr.pubkeys.badge-awards :as u.n.p.badge-awards]
    [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
    [dinsro.ui.nostr.pubkeys.contacts :as u.n.p.contacts]
    [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
@@ -26,12 +28,12 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.p.badge-definitions/SubPage
+   [u.n.p.badge-acceptances/SubPage
+    u.n.p.badge-awards/SubPage
+    u.n.p.badge-definitions/SubPage
     u.n.p.relays/SubPage
     u.n.p.contacts/SubPage
     u.n.p.events/SubPage]})
-
-(def ui-router (comp/factory Router))
 
 (defn img-formatter
   [pubkey]
@@ -43,17 +45,19 @@
   [{:key "events"          :name "Events"          :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
    {:key "contacts"        :name "Contacts"        :route "dinsro.ui.nostr.pubkeys.contacts/SubPage"}
    {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
-   {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
-   {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
+   {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-awards/SubPage"}
+   {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-acceptances/SubPage"}
    {:key "relays"          :name "Relays"          :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}])
+
+(def show-border false)
 
 (defsc Show
   "Show a core node"
   [this {::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]
          :ui/keys           [router]}]
-  {:css           [[:.info                   {:border "1px solid red"}]
-                   [:.picture-container      {:border "1px solid green"}]
-                   [:.display-name-container {:border "1px solid blue"}]]
+  {:css           [[:.content-box (merge {:overflow "hidden"} (when show-border {:border "1px solid green !important"}))]
+                   [:.info (merge {} (when show-border {:border "1px solid red"}))]
+                   [:.picture-container (merge {} (when show-border {:border "1px solid purple"}))]]
    :ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/about        ""
                    ::m.n.pubkeys/display-name ""
@@ -76,10 +80,11 @@
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website
                    {:ui/router (comp/get-query Router)}]
+
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
-  (let [avatar-size                                                  200
-        {:keys [display-name-container info main picture-container]} (css/get-classnames Show)]
+  (let [avatar-size                                       200
+        {:keys [content-box info main picture-container]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
         (dom/div :.ui.items
@@ -87,16 +92,14 @@
             (dom/div {:classes [:.ui :.tiny :.image picture-container]}
               (when picture
                 (dom/img {:src (str picture) :width avatar-size :height avatar-size})))
-            (dom/div :.content
+            (dom/div {:classes [:.content content-box]}
               (dom/div :.header (str (or display-name name)))
               (dom/div :.meta (str nip05))
               (dom/div :.ui.description
-                (dom/div {:classes [display-name-container]} " ")
-                (dom/div {}
-                  (dom/p {} (str hex))
-                  (dom/p {} (str about))
-                  (dom/p {} (str website))
-                  (dom/p {} (str lud06))))
+                (dom/div {} (str hex))
+                (dom/div {} (str about))
+                (dom/div {} (str website))
+                (dom/div {} (str lud06)))
               (dom/div :.extra
                 (dom/button
                   {:classes [:.ui.right.floated.button.secondary]
