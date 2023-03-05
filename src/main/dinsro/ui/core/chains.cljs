@@ -51,7 +51,7 @@
                    ::m.c.chains/name
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["chain" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.chains/id ::ShowChain)}
+   :will-enter    (partial u.links/page-loader ::m.c.chains/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} "Show Chain")

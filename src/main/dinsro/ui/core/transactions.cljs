@@ -28,8 +28,8 @@
    :disabled? (fn [_ row-props] (:account/active? row-props))})
 
 (def delete-action-button
-  {:label  "Delete"
-   :action delete-action
+  {:action delete-action
+   :label  "Delete"
    :style  :delete-button})
 
 (defsc Show
@@ -60,7 +60,7 @@
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]
    :route-segment ["tx" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.transactions/id ::ShowTransaction)}
+   :will-enter    (partial u.links/page-loader ::m.c.transactions/id ::Show)}
   (log/finer :ShowTransaction/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment

@@ -81,8 +81,8 @@
                    {:ui/transactions (comp/get-query u.c.block-transactions/SubPage)}
                    [df/marker-table '_]]
    :route-segment ["blocks" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::ShowBlock)}
-  (log/finer :ShowBlock/creating {:id id :props props :this this})
+   :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::Show)}
+  (log/finer :Show/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {}
@@ -131,10 +131,10 @@
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
-   ro/source-attribute ::j.c.blocks/index
    ro/route            "blocks"
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
+   ro/source-attribute ::j.c.blocks/index
    ro/title            "Core Blocks"})
 
 (report/defsc-report AdminReport
