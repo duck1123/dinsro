@@ -18,6 +18,11 @@
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
 ;; [[../../mutations/nostr/events.cljc][Event Mutations]]
 
+(def menu-items
+  [{:key   "tags"
+    :name  "Tags"
+    :route "dinsro.ui.nostr.event-tags/SubPage"}])
+
 (defn delete-action
   [report-instance {::m.n.events/keys [id]}]
   (form/delete! report-instance ::m.n.events/id id))
@@ -99,7 +104,7 @@
 (def ui-event-box (comp/factory EventBox))
 
 (report/defsc-report Report
-  [_this {:ui/keys [current-rows]}]
+  [_this props]
   {ro/BodyItem         EventBox
    ro/columns          [m.n.events/content]
    ro/control-layout   {:action-buttons [::new ::refresh]}
@@ -112,10 +117,11 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.events/index
    ro/title            "Events Report"}
-  (dom/div :.ui.segment
-    (dom/div :.ui.container
-      (dom/div :.ui.items
-        (map ui-event-box current-rows)))))
+  (let [{:ui/keys [current-rows]} props]
+    (dom/div {:classes [:.ui :.segment]}
+      (dom/div {:classes [:.ui :.container]}
+        (dom/div {:classes [:.ui :.items]}
+          (map ui-event-box current-rows))))))
 
 (defrouter Router
   [_this _props]
@@ -123,11 +129,6 @@
    [u.n.event-tags/SubPage]})
 
 (def ui-router (comp/factory Router))
-
-(def menu-items
-  [{:key   "tags"
-    :name  "Tags"
-    :route "dinsro.ui.nostr.event-tags/SubPage"}])
 
 (defsc Show
   [this {::m.n.events/keys [id note-id content pubkey kind sig]
