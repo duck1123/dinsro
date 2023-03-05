@@ -9,6 +9,7 @@
    [dinsro.queries.nostr.events :as q.n.events]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/events.cljc][Event Model]]
@@ -47,10 +48,11 @@
                          ::m.n.events/kind       kind
                          ::m.n.events/sig        sig
                          ::m.n.events/content    content
+                         ::m.n.events/created    (ds/ms->inst (* created-at 1000))
                          ::m.n.events/created-at created-at})))]
-      (doseq [tag tags]
+      (doseq [[idx tag] (map-indexed vector tags)]
         (log/info :update-event!/tag {:tag tag :event-id event-id})
-        (a.n.event-tags/register-tag! event-id tag)))))
+        (a.n.event-tags/register-tag! event-id tag idx)))))
 
 (comment
 

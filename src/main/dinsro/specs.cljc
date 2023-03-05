@@ -8,7 +8,8 @@
    [tick.alpha.api :as tick])
   (:import
    #?(:clj clojure.core.async.impl.channels.ManyToManyChannel)
-   #?(:clj clojure.lang.Atom)))
+   #?(:clj clojure.lang.Atom)
+   #?(:clj java.util.Date)))
 
 (def default-timezone "America/Detroit")
 
@@ -30,6 +31,11 @@
 (defn ->inst
   [s]
   (tick/instant (tick/in (tick/date-time s) default-timezone)))
+
+(defn ms->inst
+  [ms]
+  ;; [number? => tick/instant?]
+  (Date. ms))
 
 (s/def ::id uuid?)
 (s/def :xt/id ::id)

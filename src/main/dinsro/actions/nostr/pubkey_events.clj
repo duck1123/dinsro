@@ -42,9 +42,9 @@
                                          ::m.n.events/content    content
                                          ::m.n.events/created-at created-at}
                    event-id             (q.n.events/register-event! params)]
-               (doseq [tag tags]
+               (doseq [[idx tag] (map-indexed vector tags)]
                  (log/info :fetch-events!/processing-tag {:tag tag :event-id event-id})
-                 (a.n.event-tags/register-tag! event-id tag))
+                 (a.n.event-tags/register-tag! event-id tag idx))
                (recur))))
          ch)
        (throw (RuntimeException. "Failed to find pubkey"))))))
