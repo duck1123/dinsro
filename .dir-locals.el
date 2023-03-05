@@ -39,6 +39,7 @@
            (specification 1)
            (table 1)
            (tbody 1)
+           (td 1)
            (thead 1)
            (tr 1)
            (ui-form 1)

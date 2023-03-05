@@ -22,15 +22,17 @@
    :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at]}
   (dom/tr {}
     (dom/td {}
-            (dom/div :.ui.segment
-              (u.links/ui-event-link event)
-              (dom/p {} (str id))
-              (dom/p {} (str content))
-              (dom/p {} (str created-at))))))
+      (dom/div :.ui.segment
+        (u.links/ui-event-link event)
+        (dom/p {} (str id))
+        (dom/p {} (str content))
+        (dom/p {} (str created-at))))))
+
+(def ui-event-list-item (comp/factory EventListItem {:keyfn ::m.n.events/id}))
 
 (report/defsc-report Report
-  [this _props]
-  {ro/BodyItem EventListItem
+  [_this props]
+  {ro/BodyItem         EventListItem
    ro/columns          [m.n.events/content]
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
@@ -42,8 +44,11 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.pubkeys/events
    ro/title            "Events"}
-  (dom/div {:css {:width "500px" :overflow "hidden" :outline "1px solid red"}}
-    (report/render-layout this)))
+  (let [{:ui/keys [current-rows]} props]
+    (dom/div {:css {:width "500px" :overflow "hidden" :outline "1px solid red"}}
+      (map ui-event-list-item current-rows))))
+
+(def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
@@ -54,3 +59,5 @@
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["events"]}
   ((comp/factory Report) report))
+
+(def ui-sub-page (comp/factory SubPage))

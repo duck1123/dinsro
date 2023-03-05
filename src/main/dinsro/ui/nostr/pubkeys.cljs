@@ -43,7 +43,6 @@
 
 (def menu-items
   [{:key "events"          :name "Events"          :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
-   {:key "contacts"        :name "Contacts"        :route "dinsro.ui.nostr.pubkeys.contacts/SubPage"}
    {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
    {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-awards/SubPage"}
    {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-acceptances/SubPage"}
@@ -80,14 +79,13 @@
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website
                    {:ui/router (comp/get-query Router)}]
-
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
   (let [avatar-size                                       200
         {:keys [content-box info main picture-container]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
-        (dom/div :.ui.items
+        (dom/div :.ui.items.unstackable
           (dom/div {:classes [:.item info]}
             (dom/div {:classes [:.ui :.tiny :.image picture-container]}
               (when picture

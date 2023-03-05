@@ -17,9 +17,10 @@
   {:type   :button
    :local? true
    :label  "Fetch"
-   :action (fn [report-instance {::m.n.pubkeys/keys [id]}]
-             (comp/transact! report-instance
-                             [(mu.n.pubkeys/fetch-definitions! {::m.n.pubkeys/id id})]))})
+   :action (fn [report-instance _]
+             (let [id (u.links/get-control-value report-instance ::m.n.pubkeys/id)]
+               (comp/transact! report-instance
+                               [(mu.n.pubkeys/fetch-definitions! {::m.n.pubkeys/id id})])))})
 
 (report/defsc-report Report
   [_this _props]
