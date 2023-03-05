@@ -26,7 +26,7 @@
    :pre-merge     (u.links/page-merger
                    ::m.ln.remote-nodes/id
                    {:ui/peers u.ln.remote-node-peers/SubPage})
-   :will-enter    (partial u.links/page-loader ::m.ln.remote-nodes/id ::ShowRemoteNode)}
+   :will-enter    (partial u.links/page-loader ::m.ln.remote-nodes/id ::Show)}
   (dom/div {}
     (dom/div {:classes [:.ui.segment]}
       (dom/h1 {} "Remote Node")
