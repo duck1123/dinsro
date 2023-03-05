@@ -20,8 +20,7 @@
                    ::m.n.events/content    ""
                    ::m.n.events/note-id ""
                    ::m.n.events/created-at 0}
-   :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at ::m.n.events/note-id]
-}
+   :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at ::m.n.events/note-id]}
   (dom/div :.ui.item
     (dom/div :.content
       (dom/div :.ui.segment

@@ -57,7 +57,7 @@
   (when picture (dom/img {:src picture :width 100 :height 100})))
 
 (defsc EventAuthor
-  [_this {::m.n.pubkeys/keys [name picture hex nip05]}]
+  [_this {::m.n.pubkeys/keys [picture]}]
   {:ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/name    ""
@@ -69,11 +69,8 @@
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/hex
                    ::m.n.pubkeys/nip05]}
-  (dom/div :.ui.grid
-    (dom/div :.ui.grid
-      (when picture (dom/img {:src picture :width 100 :height 100})))))
+  (when picture (dom/img {:src picture :width 100 :height 100})))
 
-(def ui-event-author (comp/factory EventAuthor))
 (def ui-event-author-image (comp/factory EventAuthorImage))
 
 (defsc EventBox
@@ -127,9 +124,8 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [this {::m.n.events/keys [id note-id content pubkey kind sig created-at]
-         :ui/keys          [router]
-         :as               props}]
+  [this {::m.n.events/keys [id content pubkey kind sig created-at]
+         :ui/keys          [router]}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id         nil
                    ::m.n.events/note-id    ""
@@ -143,7 +139,7 @@
    :query         [::m.n.events/id
                    ::m.n.events/note-id
                    ::m.n.events/content
-                   {::m.n.events/pubkey (comp/get-query EventAuthor)}
+                   {::m.n.events/pubkey (comp/get-query EventAuthorImage)}
                    ::m.n.events/kind
                    ::m.n.events/created-at
                    ::m.n.events/sig
@@ -155,7 +151,7 @@
       (dom/div :.ui.items.unstackable
         (dom/div :.item
           (dom/div :.ui.tiny.image
-            ((comp/factory EventAuthor) pubkey))
+            (ui-event-author-image pubkey))
           (dom/div :.content
             (dom/div {:classes [:.header]}
               (u.links/ui-pubkey-name-link pubkey))
