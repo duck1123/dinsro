@@ -1,6 +1,8 @@
 (ns dinsro.actions.nostr.events
   (:require
+   [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [dinsro.actions.nostr.event-tags :as a.n.event-tags]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -18,6 +20,44 @@
   [::m.n.pubkeys/id => any?]
   (log/info :fetch-events!/starting {:pubkey-id pubkey-id}))
 
+(defn update-event!
+  [m]
+  (log/info :update-pubkey!/starting {:m m})
+  (let [{:keys      [req-id tags id created-at
+                     kind sig content]
+         pubkey-hex :pubkey} m]
+    (log/info :update-pubkey!/parsed
+              {:req-id     req-id
+               :tags       tags
+               :id         id
+               :created-at created-at
+               :pubkey     pubkey-hex
+               :kind       kind
+               :sig        sig
+               :content    content})
+    (let [event-id (if-let [existing-event (q.n.events/find-by-note-id id)]
+                     (do
+                       (log/info :update-pubkey!/existing {:existing-event existing-event})
+                       existing-event)
+                     (let [pubkey-id (q.n.pubkeys/find-by-hex pubkey-hex)]
+                       (log/info :update-pubkey!/missing {})
+                       (q.n.events/register-event!
+                        {::m.n.events/note-id    id
+                         ::m.n.events/pubkey     pubkey-id
+                         ::m.n.events/kind       kind
+                         ::m.n.events/sig        sig
+                         ::m.n.events/content    content
+                         ::m.n.events/created-at created-at})))]
+      (doseq [tag tags]
+        (log/info :update-event!/tag {:tag tag :event-id event-id})
+        (a.n.event-tags/register-tag! event-id tag)))))
+
+(comment
+
+  (q.n.events/find-by-note-id "9cc6eacf2a4b7672dbcc18e653ade0c36c000b817886f50cb8474b28cda1fc76")
+
+  nil)
+
 (>defn fetch-event!
   [event-id]
   [::m.n.events/id => any?]
@@ -28,9 +68,18 @@
       (let [relay-ids (q.n.relays/index-ids)]
         (doseq [relay-id relay-ids]
           (log/info :fetch-event!/relay {:relay-id relay-id})
-          (let [note-id ""
-                body    {:kinds [0] :ids [note-id]}]
-            (a.n.relays/send! relay-id body)))))
+          (let [note-id (::m.n.events/note-id event)
+                body    {:ids [note-id]}
+                c       (a.n.relays/send! relay-id body)]
+            (async/go-loop []
+              (if-let [m (async/<! c)]
+                (do
+                  (log/info :fetch-event!/received {:m m})
+                  (update-event! m)
+                  (recur))
+                (do
+                  (log/info :fetch-event!/empty {})
+                  nil)))))))
     (throw (RuntimeException. "Failed to find event"))))
 
 (defn do-fetch!
