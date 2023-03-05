@@ -6,6 +6,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.queries.nostr.events :as q.n.events]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
+   [dinsro.queries.nostr.relays :as q.n.relays]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/events.cljc][Event Model]]
@@ -24,7 +25,7 @@
   (if-let [event (q.n.events/read-record event-id)]
     (do
       (log/info :fetch-event!/fetched {:event event})
-      (let [relay-ids (q.n.events/index-ids)]
+      (let [relay-ids (q.n.relays/index-ids)]
         (doseq [relay-id relay-ids]
           (log/info :fetch-event!/relay {:relay-id relay-id})
           (let [note-id ""
