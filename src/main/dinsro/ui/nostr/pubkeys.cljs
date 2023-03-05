@@ -12,9 +12,10 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.pubkey.contacts :as u.n.pubkey-contacts]
-   [dinsro.ui.nostr.pubkey.events :as u.n.pubkey-events]
-   [dinsro.ui.nostr.pubkey.relays :as u.n.pubkey-relays]))
+   [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
+   [dinsro.ui.nostr.pubkeys.contacts :as u.n.p.contacts]
+   [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
+   [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
@@ -25,9 +26,10 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.pubkey-relays/SubPage
-    u.n.pubkey-contacts/SubPage
-    u.n.pubkey-events/SubPage]})
+   [u.n.p.badge-definitions/SubPage
+    u.n.p.relays/SubPage
+    u.n.p.contacts/SubPage
+    u.n.p.events/SubPage]})
 
 (defn img-formatter
   [pubkey]
@@ -36,12 +38,10 @@
     ""))
 
 (def menu-items
-  [{:key "events" :name "Events" :route "dinsro.ui.nostr.pubkey.events/SubPage"}
-   {:key "contacts" :name "Contacts" :route "dinsro.ui.nostr.pubkey.contacts/SubPage"}
-   {:key "badges-created" :name "Badges Created" :route "dinsro.ui.nostr.badge-definitions/SubPage"}
-   {:key "badges-awarded" :name "Badges Awarded" :route "dinsro.ui.nostr.badge-definitions/SubPage"}
-   {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.badge-definitions/SubPage"}
-   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkey.relays/SubPage"}])
+  [{:key "events"          :name "Events"          :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
+   {:key "contacts"        :name "Contacts"        :route "dinsro.ui.nostr.pubkeys.contacts/SubPage"}
+   {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
+   {:key "relays"          :name "Relays"          :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}])
 
 (defsc Show
   "Show a core node"

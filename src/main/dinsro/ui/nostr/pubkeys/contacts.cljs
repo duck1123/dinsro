@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.pubkey.contacts
+(ns dinsro.ui.nostr.pubkeys.contacts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]

@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.pubkey.users
+(ns dinsro.ui.nostr.pubkeys.users
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]

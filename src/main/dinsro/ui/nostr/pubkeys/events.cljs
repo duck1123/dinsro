@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.pubkey.events
+(ns dinsro.ui.nostr.pubkeys.events
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
