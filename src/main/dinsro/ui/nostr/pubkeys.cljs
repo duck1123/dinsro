@@ -49,45 +49,49 @@
 
 (defsc Show
   "Show a core node"
-  [this {::m.n.pubkeys/keys [about id hex name nip05 lud06 website]
+  [this {::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]
          :ui/keys           [router]}]
-  {:css           [[:.info {:border "1px solid red"}]
-                   [:.picture {:border "1px solid green"}]
-                   [:.display-name {:border "1px solid blue"}]]
+  {:css           [[:.info                   {:border "1px solid red"}]
+                   [:.picture-container      {:border "1px solid green"}]
+                   [:.display-name-container {:border "1px solid blue"}]]
    :ident         ::m.n.pubkeys/id
-   :initial-state {::m.n.pubkeys/about   ""
-                   ::m.n.pubkeys/hex     ""
-                   ::m.n.pubkeys/id      nil
-                   ::m.n.pubkeys/lud06   ""
-                   ::m.n.pubkeys/name    ""
-                   ::m.n.pubkeys/nip05   ""
-                   ::m.n.pubkeys/website ""
-                   :ui/router            {}}
+   :initial-state {::m.n.pubkeys/about        ""
+                   ::m.n.pubkeys/display-name ""
+                   ::m.n.pubkeys/hex          ""
+                   ::m.n.pubkeys/id           nil
+                   ::m.n.pubkeys/lud06        ""
+                   ::m.n.pubkeys/name         ""
+                   ::m.n.pubkeys/nip05        ""
+                   ::m.n.pubkeys/picture      ""
+                   ::m.n.pubkeys/website      ""
+                   :ui/router                 {}}
    :pre-merge     (u.links/page-merger ::m.n.pubkeys/id {:ui/router Router})
    :query         [::m.n.pubkeys/about
+                   ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
                    ::m.n.pubkeys/id
                    ::m.n.pubkeys/lud06
                    ::m.n.pubkeys/name
                    ::m.n.pubkeys/nip05
+                   ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
-  (let [avatar-size                                           200
-        {:keys [main info picture display-name]} (css/get-classnames Show)]
+  (let [avatar-size                                                  200
+        {:keys [display-name-container info main picture-container]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
         (dom/div :.ui.items
           (dom/div {:classes [:.item info]}
-            (dom/div {:classes [:.ui.tiny.image picture]}
+            (dom/div {:classes [:.ui :.tiny :.image picture-container]}
               (when picture
                 (dom/img {:src (str picture) :width avatar-size :height avatar-size})))
             (dom/div :.content
               (dom/div :.header (str (or display-name name)))
               (dom/div :.meta (str nip05))
               (dom/div :.ui.description
-                (dom/div {:classes [display-name]} " ")
+                (dom/div {:classes [display-name-container]} " ")
                 (dom/div {}
                   (dom/p {} (str hex))
                   (dom/p {} (str about))
