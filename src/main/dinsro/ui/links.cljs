@@ -354,6 +354,14 @@
 
 (def ui-debit-link (comp/factory DebitLinkForm {:keyfn ::m.debits/name}))
 
+(form/defsc-form EventCreatedLinkForm [this {::m.n.events/keys [id created-at]}]
+  {fo/id           m.n.events/id
+   fo/route-prefix "event-created-link"
+   fo/attributes   [m.n.events/created-at]}
+  (form-link this id created-at :dinsro.ui.nostr.events/Show))
+
+(def ui-event-created-link (comp/factory EventCreatedLinkForm {:keyfn ::m.n.events/note-id}))
+
 (form/defsc-form EventLinkForm [this {::m.n.events/keys [id note-id]}]
   {fo/id           m.n.events/id
    fo/route-prefix "event-link"

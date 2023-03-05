@@ -18,15 +18,17 @@
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id         nil
                    ::m.n.events/content    ""
+                   ::m.n.events/note-id ""
                    ::m.n.events/created-at 0}
-   :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at]}
-  (dom/tr {}
-    (dom/td {}
+   :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at ::m.n.events/note-id]
+}
+  (dom/div :.ui.item
+    (dom/div :.content
       (dom/div :.ui.segment
         (u.links/ui-event-link event)
-        (dom/p {} (str id))
-        (dom/p {} (str content))
-        (dom/p {} (str created-at))))))
+        (dom/div {} (str id))
+        (dom/div {} (str content))
+        (dom/div {} (str created-at))))))
 
 (def ui-event-list-item (comp/factory EventListItem {:keyfn ::m.n.events/id}))
 
@@ -46,7 +48,8 @@
    ro/title            "Events"}
   (let [{:ui/keys [current-rows]} props]
     (dom/div {:css {:width "500px" :overflow "hidden" :outline "1px solid red"}}
-      (map ui-event-list-item current-rows))))
+      (dom/div :.ui.items.unstackable
+        (map ui-event-list-item current-rows)))))
 
 (def ui-report (comp/factory Report))
 

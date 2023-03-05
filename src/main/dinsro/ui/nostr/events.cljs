@@ -33,9 +33,9 @@
    :style  :delete-button})
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id           m.n.events/id
-   fo/attributes   [m.n.events/id]
+  {fo/attributes   [m.n.events/id]
    fo/cancel-route ["events"]
+   fo/id           m.n.events/id
    fo/route-prefix "new-event"
    fo/title        "Event"})
 
@@ -71,11 +71,7 @@
                    ::m.n.pubkeys/nip05]}
   (dom/div :.ui.grid
     (dom/div :.ui.grid
-      (when picture (dom/img {:src picture :width 100 :height 100})))
-    (dom/div :.ui.grid
-      (dom/div {} (str name))
-      (dom/p {} (str nip05))
-      (dom/p {} (str hex)))))
+      (when picture (dom/img {:src picture :width 100 :height 100})))))
 
 (def ui-event-author (comp/factory EventAuthor))
 (def ui-event-author-image (comp/factory EventAuthorImage))
@@ -131,36 +127,48 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [this {::m.n.events/keys [id note-id content pubkey kind sig]
-         :ui/keys          [router]}]
+  [this {::m.n.events/keys [id note-id content pubkey kind sig created-at]
+         :ui/keys          [router]
+         :as               props}]
   {:ident         ::m.n.events/id
-   :initial-state {::m.n.events/id      nil
-                   ::m.n.events/note-id ""
-                   ::m.n.events/content ""
-                   ::m.n.events/pubkey  {}
-                   ::m.n.events/kind    nil
-                   ::m.n.events/sig     ""
-                   :ui/router           {}}
+   :initial-state {::m.n.events/id         nil
+                   ::m.n.events/note-id    ""
+                   ::m.n.events/content    ""
+                   ::m.n.events/pubkey     {}
+                   ::m.n.events/kind       nil
+                   ::m.n.events/created-at 0
+                   ::m.n.events/sig        ""
+                   :ui/router              {}}
    :pre-merge     (u.links/page-merger ::m.n.events/id {:ui/router Router})
    :query         [::m.n.events/id
                    ::m.n.events/note-id
                    ::m.n.events/content
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
                    ::m.n.events/kind
+                   ::m.n.events/created-at
                    ::m.n.events/sig
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["event" :id]
    :will-enter    (partial u.links/page-loader ::m.n.events/id ::Show)}
   (dom/div :.ui.segment
     (dom/div :.ui.segment
-      (dom/p ((comp/factory EventAuthor) pubkey))
-      (dom/p "Content: " content)
-      (dom/p "Kind: " (str kind))
-      (dom/p "Note Id: " note-id)
-      (dom/p "Sig: " (str sig))
-      (dom/button
-        {:classes [:.ui.button]
-         :onClick #(comp/transact! this [(mu.n.events/fetch! {::m.n.events/id id})])}
-        "Fetch"))
+      (dom/div :.ui.items.unstackable
+        (dom/div :.item
+          (dom/div :.ui.tiny.image
+            ((comp/factory EventAuthor) pubkey))
+          (dom/div :.content
+            (dom/div {:classes [:.header]}
+              (u.links/ui-pubkey-name-link pubkey))
+            (dom/div {:classes [:.meta]}
+              (dom/span {:classes [:.date]}
+                        (str created-at) " - " (str kind)))
+            (dom/div {:classes [:.description]}
+              (str content))
+            (dom/div {} "Sig: " (str sig))
+            (dom/div :.actions
+              (dom/a
+                {:classes [:.ui.reply]
+                 :onClick #(comp/transact! this [(mu.n.events/fetch! {::m.n.events/id id})])}
+                "Fetch"))))))
     (u.links/ui-nav-menu {:menu-items menu-items :id id})
     ((comp/factory Router) router)))
