@@ -18,7 +18,6 @@
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
 ;; [[../../mutations/nostr/events.cljc][Event Mutations]]
 
-
 (defn delete-action
   [report-instance {::m.n.events/keys [id]}]
   (form/delete! report-instance ::m.n.events/id id))
@@ -46,12 +45,10 @@
   {:ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/id      nil
                    ::m.n.pubkeys/name    ""
-                   ::m.n.pubkeys/picture ""
-                   ::m.n.pubkeys/hex     ""
-                   ::m.n.pubkeys/nip05   ""}
-   :query         [::m.n.pubkeys/id ::m.n.pubkeys/name ::m.n.pubkeys/picture
-                   ::m.n.pubkeys/hex
-                   ::m.n.pubkeys/nip05]}
+                   ::m.n.pubkeys/picture ""}
+   :query         [::m.n.pubkeys/id
+                   ::m.n.pubkeys/name
+                   ::m.n.pubkeys/picture]}
   (when picture (dom/img {:src picture :width 100 :height 100})))
 
 (defsc EventAuthor
@@ -62,7 +59,9 @@
                    ::m.n.pubkeys/picture ""
                    ::m.n.pubkeys/hex     ""
                    ::m.n.pubkeys/nip05   ""}
-   :query         [::m.n.pubkeys/id ::m.n.pubkeys/name ::m.n.pubkeys/picture
+   :query         [::m.n.pubkeys/id
+                   ::m.n.pubkeys/name
+                   ::m.n.pubkeys/picture
                    ::m.n.pubkeys/hex
                    ::m.n.pubkeys/nip05]}
   (dom/div :.ui.grid
@@ -101,7 +100,7 @@
 
 (report/defsc-report Report
   [_this {:ui/keys [current-rows]}]
-  {ro/BodyItem EventBox
+  {ro/BodyItem         EventBox
    ro/columns          [m.n.events/content]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new     new-button

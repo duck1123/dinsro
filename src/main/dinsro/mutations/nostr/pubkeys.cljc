@@ -7,6 +7,7 @@
       :cljs [com.fulcrologic.guardrails.core :refer [>def =>]])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
+   #?(:clj [dinsro.actions.nostr.badge-definitions :as a.n.badge-definitions])
    #?(:clj [dinsro.actions.nostr.events :as a.n.events])
    #?(:clj [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts])
    #?(:clj [dinsro.actions.nostr.pubkey-events :as a.n.pubkey-events])
@@ -15,6 +16,7 @@
    [dinsro.model.contacts :as m.contacts]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
+   [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
@@ -237,6 +239,27 @@
      (remote    [env]  (fm/returning env FetchContactsResponse))
      (ok-action [env]  (handle-fetch-contacts env))))
 
+;; Fetch Definitions
+
+(defsc FetchDefinitionsResponse
+  [_ _]
+  {:initial-state {::mu/status :initial
+                   ::mu/errors {}}
+   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status ::m.n.badge-definitions/items]})
+
+#?(:clj
+   (pc/defmutation fetch-definitions!
+     [_env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+     (a.n.badge-definitions/do-fetch-definitions! props))
+
+   :cljs
+   (fm/defmutation fetch-definitions! [_props]
+     (action    [_env] true)
+     (remote    [env]  (fm/returning env FetchDefinitionsResponse))))
+
 ;; Fetch Events
 
 (>def ::fetch-events!-request
@@ -321,4 +344,10 @@
      (remote    [env]  (fm/returning env FetchResponse))
      (ok-action [env]  (handle-fetch env))))
 
-#?(:clj (def resolvers [fetch! fetch-contacts! fetch-events! subscribe!]))
+#?(:clj
+   (def resolvers
+     [fetch!
+      fetch-contacts!
+      fetch-definitions!
+      fetch-events!
+      subscribe!]))

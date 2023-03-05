@@ -52,7 +52,8 @@
 
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]
-  {:css            [[:.rootrouter {:height "100%"}]]
+  {:css            [[:.rootrouter {:height "100%"
+                                   :border "1px solid pink"}]]
    :router-targets [u.accounts/Report
                     u.accounts/NewForm
                     u.accounts/Show
@@ -126,12 +127,12 @@
          [loaded? initialized?]}                site-config
         root                                    (uism/get-active-state this ::auth/auth-machine)
         gathering-credentials?                  (#{:state/gathering-credentials} root)]
-    (dom/div {:classes [:.ui.container container]}
+    (dom/div {:classes [:.ui :.container container]}
       (if loaded?
         (if initialized?
           (comp/fragment
            (u.navbar/ui-navbar navbar)
-           (dom/div {:classes [:.ui.container top]}
+           (dom/div {:classes [:.ui :.container :.fluid top]}
              (ui-sidebar-pushable
               {:className (string/join " " [pushable])}
               (u.navbar/ui-navbar-sidebar navbar)

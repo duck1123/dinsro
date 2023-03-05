@@ -15,20 +15,20 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.badge-awards/badge]
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/source-attribute ::j.n.badge-awards/index
-   ro/title            "Badges Awarded"
    ro/row-pk           m.n.badge-awards/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.n.badge-awards/index
+   ro/title            "Badges Awarded"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
+   :query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
    :route-segment     ["badge-awards"]}
   ((comp/factory Report) report))

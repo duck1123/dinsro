@@ -1,6 +1,8 @@
 (ns dinsro.ui.nostr
   (:require
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
@@ -27,12 +29,13 @@
     u.n.subscriptions/Report
     u.n.subscriptions/Show]})
 
-(def ui-router (comp/factory Router))
-
 (defsc Page
   [_this {:ui/keys [router]}]
-  {:query         [{:ui/router (comp/get-query Router)}]
-   :initial-state {:ui/router {}}
+  {:css [[:.router-wrapper {:border "1px solid purple"}]]
    :ident         (fn [] [:component/id ::Page])
+   :initial-state {:ui/router {}}
+   :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  (ui-router router))
+  (let [{:keys [router-wrapper]} (css/get-classnames Page)]
+    (dom/div {:classes [:.nostr-page router-wrapper]}
+      ((comp/factory Router) router))))

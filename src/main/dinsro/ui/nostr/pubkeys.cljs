@@ -31,6 +31,8 @@
     u.n.p.contacts/SubPage
     u.n.p.events/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defn img-formatter
   [pubkey]
   (if-let [picture (::m.n.pubkeys/picture pubkey)]
@@ -41,50 +43,48 @@
   [{:key "events"          :name "Events"          :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
    {:key "contacts"        :name "Contacts"        :route "dinsro.ui.nostr.pubkeys.contacts/SubPage"}
    {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
+   {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
+   {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
    {:key "relays"          :name "Relays"          :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}])
 
 (defsc Show
   "Show a core node"
-  [this {::m.n.pubkeys/keys [id hex name picture about nip05 lud06 website]
+  [this {::m.n.pubkeys/keys [about id hex name nip05 lud06 website]
          :ui/keys           [router]}]
-  {:css           []
+  {:css           [[:.info {:border "1px solid red"}]
+                   [:.picture {:border "1px solid green"}]
+                   [:.display-name {:border "1px solid blue"}]]
    :ident         ::m.n.pubkeys/id
-   :initial-state {::m.n.pubkeys/id      nil
+   :initial-state {::m.n.pubkeys/about   ""
                    ::m.n.pubkeys/hex     ""
+                   ::m.n.pubkeys/id      nil
+                   ::m.n.pubkeys/lud06   ""
                    ::m.n.pubkeys/name    ""
                    ::m.n.pubkeys/nip05   ""
-                   ::m.n.pubkeys/lud06   ""
-                   ::m.n.pubkeys/banner  ""
-                   ::m.n.pubkeys/about   ""
                    ::m.n.pubkeys/website ""
-                   ::m.n.pubkeys/picture ""
                    :ui/router            {}}
    :pre-merge     (u.links/page-merger ::m.n.pubkeys/id {:ui/router Router})
-   :query         [::m.n.pubkeys/id
+   :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/hex
+                   ::m.n.pubkeys/id
+                   ::m.n.pubkeys/lud06
                    ::m.n.pubkeys/name
-                   ::m.n.pubkeys/about
                    ::m.n.pubkeys/nip05
                    ::m.n.pubkeys/website
-                   ::m.n.pubkeys/lud06
-                   ::m.n.pubkeys/banner
-                   ::m.n.pubkeys/picture
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
-  (let [avatar-size                        200
-        {:keys [main _sub info-box picture-box display-name]} (css/get-classnames Show)]
+  (let [avatar-size                                           200
+        {:keys [main info picture display-name]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
         (dom/div :.ui.items
-          (dom/div {:classes [:.item info-box]}
-            (dom/div {:classes [:.ui.tiny.image picture-box]}
+          (dom/div {:classes [:.item info]}
+            (dom/div {:classes [:.ui.tiny.image picture]}
               (when picture
-                (dom/img {:src    (str picture)
-                          :width  avatar-size
-                          :height avatar-size})))
+                (dom/img {:src (str picture) :width avatar-size :height avatar-size})))
             (dom/div :.content
-              (dom/div :.header (str name))
+              (dom/div :.header (str (or display-name name)))
               (dom/div :.meta (str nip05))
               (dom/div :.ui.description
                 (dom/div {:classes [display-name]} " ")

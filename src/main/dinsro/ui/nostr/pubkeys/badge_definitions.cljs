@@ -7,16 +7,26 @@
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
+(def fetch-button
+  {:type   :button
+   :local? true
+   :label  "Fetch"
+   :action (fn [report-instance {::m.n.pubkeys/keys [id]}]
+             (comp/transact! report-instance
+                             [(mu.n.pubkeys/fetch-definitions! {::m.n.pubkeys/id id})]))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.badge-definitions/code]
-   ro/control-layout   {:action-buttons [::refresh]}
+   ro/control-layout   {:action-buttons [::fetch ::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
+                        ::fetch          fetch-button
                         ::refresh        u.links/refresh-control}
    ro/row-pk           m.n.badge-definitions/id
    ro/run-on-mount?    true
