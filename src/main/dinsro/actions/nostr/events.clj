@@ -6,6 +6,7 @@
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.queries.nostr.events :as q.n.events]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
@@ -60,29 +61,38 @@
 
   nil)
 
+(>defn fetch-by-note-id
+  ([note-id]
+   [::m.n.events/note-id => any?]
+   (log/info :fetch-by-note-id/starting {:note-id note-id})
+   (let [relay-ids (q.n.relays/index-ids)]
+     (doseq [relay-id relay-ids]
+       (fetch-by-note-id note-id relay-id))))
+  ([note-id relay-id]
+   [::m.n.events/note-id ::m.n.relays/id => any?]
+   (log/info :fetch-by-note-id/starting {:note-id note-id :relay-id relay-id})
+   (let [body {:ids [note-id]}
+         c    (a.n.relays/send! relay-id body)]
+     (async/go-loop []
+       (if-let [m (async/<! c)]
+         (do
+           (log/info :fetch-event!/received {:m m})
+           (update-event! m)
+           (recur))
+         (do
+           (log/info :fetch-event!/empty {})
+           nil))))))
+
 (>defn fetch-event!
   [event-id]
   [::m.n.events/id => any?]
   (log/info :fetch-event!/starting {:event-id event-id})
   (if-let [event (q.n.events/read-record event-id)]
-    (do
+    (let [note-id (::m.n.events/note-id event)]
       (log/info :fetch-event!/fetched {:event event})
-      (let [relay-ids (q.n.relays/index-ids)]
-        (doseq [relay-id relay-ids]
-          (log/info :fetch-event!/relay {:relay-id relay-id})
-          (let [note-id (::m.n.events/note-id event)
-                body    {:ids [note-id]}
-                c       (a.n.relays/send! relay-id body)]
-            (async/go-loop []
-              (if-let [m (async/<! c)]
-                (do
-                  (log/info :fetch-event!/received {:m m})
-                  (update-event! m)
-                  (recur))
-                (do
-                  (log/info :fetch-event!/empty {})
-                  nil)))))))
+      (fetch-by-note-id note-id))
     (throw (RuntimeException. "Failed to find event"))))
+
 
 (defn do-fetch!
   [props]

@@ -32,10 +32,11 @@
   [s]
   (tick/instant (tick/in (tick/date-time s) default-timezone)))
 
-(defn ms->inst
-  [ms]
-  ;; [number? => tick/instant?]
-  (Date. ms))
+#?(:clj
+   (defn ms->inst
+     [ms]
+     ;; [number? => tick/instant?]
+     (Date. ms)))
 
 (s/def ::id uuid?)
 (s/def :xt/id ::id)
