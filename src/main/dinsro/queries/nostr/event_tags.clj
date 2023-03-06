@@ -55,3 +55,16 @@
         ids    (map first result)]
     (log/finer :find-by-event/finished {:ids ids})
     ids))
+
+(>defn delete!
+  [id]
+  [::m.n.events/id => nil?]
+  (let [node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
+    nil))
+
+;; (defn delete!
+;;   [event-id]
+;;   (log/info :delete!/starting {:event-id event-id})
+
+;;   )

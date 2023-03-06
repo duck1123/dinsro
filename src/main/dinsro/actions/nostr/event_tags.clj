@@ -19,7 +19,7 @@
       "p"
       (if-let [pubkey-id (q.n.pubkeys/find-by-hex value)]
         (q.n.event-tags/create-record
-         {::m.n.event-tags/idx    idx
+         {::m.n.event-tags/index  idx
           ::m.n.event-tags/parent event-id
           ::m.n.event-tags/pubkey pubkey-id
           ::m.n.event-tags/extra  extra})
@@ -28,17 +28,23 @@
       "e"
       (if-let [target-id (q.n.events/find-by-note-id value)]
         (q.n.event-tags/create-record
-         {::m.n.event-tags/idx    idx
+         {::m.n.event-tags/index  idx
           ::m.n.event-tags/parent event-id
           ::m.n.event-tags/event  target-id
           ::m.n.event-tags/extra  extra})
-        (throw (RuntimeException "Failed to find note")))
+        (throw (RuntimeException. "Failed to find note")))
 
       (throw (RuntimeException. "unknown key")))))
 
 (comment
 
   (q.n.events/find-by-note-id "e4f5b8f980885e5f013d1b0549ce871c42d892e744da3e4a611a65202a227472")
-  (q.n.event-tags/index-ids)
+
+  (q.n.events/index-ids)
+
+  (doseq [event-id (q.n.event-tags/index-ids)]
+    (q.n.event-tags/delete! event-id))
+
+  (q.n.events/find-by-note-id "36df49af7fe181520beee31644f121ea2bb8e4ff99468d08f56040e5b792bea5")
 
   nil)

@@ -2,6 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.actions.nostr.event-tags :as a.n.event-tags]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.model.nostr.events :as m.n.events]
@@ -106,6 +107,17 @@
 
   (def alice-id (first (q.n.pubkeys/find-by-name "alice")))
   (def duck-id (first (q.n.pubkeys/find-by-name "duck")))
+
+  (fetch-by-note-id "e4f5b8f980885e5f013d1b0549ce871c42d892e744da3e4a611a65202a227472")
+  (fetch-by-note-id "36df49af7fe181520beee31644f121ea2bb8e4ff99468d08f56040e5b792bea5")
+
+  (def event (q.n.events/read-record (new-uuid "0186ae78-ae3d-8ab5-8af2-907aa8716e04")))
+  event
+
+  (def relay-id (first (q.n.relays/index-ids)))
+  relay-id
+
+  (fetch-by-note-id (::m.n.events/note-id event) relay-id)
 
   (q.n.pubkeys/read-record alice-id)
   (q.n.pubkeys/read-record duck-id)

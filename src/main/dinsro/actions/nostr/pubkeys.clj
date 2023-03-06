@@ -147,33 +147,45 @@
         (async/close! output-chan)
         nil))))
 
+;;   "Fetch info about pubkey from relay"
+
 (>defn fetch-pubkey!
-  "Fetch info about pubkey from relay"
-  [pubkey-hex relay-id]
-  [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
-  (let [output-chan (async/chan)]
-    (log/info :fetch-pubkey!/starting {:pubkey-hex pubkey-hex :relay-id relay-id})
-    (let [body {:authors [pubkey-hex] :kinds [0]}
-          chan (a.n.relays/send! relay-id body)]
-      (log/info :fetch-pubkey!/sent {:chan chan})
-      (async/go-loop []
-        (let [message (async/<! chan)]
-          (log/info :fetch-pubkey!/processing {:message message})
-          (process-fetch-pubkey-message output-chan pubkey-hex message)
-          (recur)))
-      output-chan)))
+  ([pubkey-hex ]
+   [::m.n.pubkeys/hex => ds/channel?]
+   (let [relay-ids (q.n.relays/index-ids)]
+     (doseq [relay-id relay-ids]
+       (fetch-pubkey! pubkey-hex relay-id))))
+  ([pubkey-hex relay-id]
+   [::m.n.pubkeys/hex ::m.n.relays/id => ds/channel?]
+   (let [output-chan (async/chan)]
+     (log/info :fetch-pubkey!/starting {:pubkey-hex pubkey-hex :relay-id relay-id})
+     (let [body {:authors [pubkey-hex] :kinds [0]}
+           chan (a.n.relays/send! relay-id body)]
+       (log/info :fetch-pubkey!/sent {:chan chan})
+       (async/go-loop []
+         (let [message (async/<! chan)]
+           (log/info :fetch-pubkey!/processing {:message message})
+           (process-fetch-pubkey-message output-chan pubkey-hex message)
+           (recur)))
+       output-chan))))
 
 (>defn update-pubkey!
-  [pubkey-id relay-id]
-  [::m.n.pubkeys/id ::m.n.relays/id => any?]
-  (log/finer :update-pubkey!/starting {:pubkey-id pubkey-id :relay-id relay-id})
-  (async/go
-    (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
-      (let [hex      (::m.n.pubkeys/hex pubkey)
-            response (async/<! (fetch-pubkey! hex relay-id))]
-        (log/finer :update-pubkey!/finished {:response response})
-        response)
-      (throw (RuntimeException. "No pubkey")))))
+  ([pubkey-id]
+   [::m.n.pubkeys/id => any?]
+   (let [relay-ids (q.n.relays/index-ids)]
+     (doseq [relay-id relay-ids]
+       (update-pubkey! pubkey-id relay-id))))
+  ([pubkey-id relay-id]
+   [::m.n.pubkeys/id ::m.n.relays/id => any?]
+   (do
+     (log/finer :update-pubkey!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+     (async/go
+       (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
+         (let [hex      (::m.n.pubkeys/hex pubkey)
+               response (async/<! (fetch-pubkey! hex relay-id))]
+           (log/finer :update-pubkey!/finished {:response response})
+             response)
+           (throw (RuntimeException. "No pubkey")))))))
 
 (>defn fetch-contact!
   [pubkey-id relay-id]
@@ -210,6 +222,8 @@
   pubkey-id
 
   (q.n.pubkeys/read-record pubkey-id)
+
+  (fetch-pubkey! "3d842afecd5e293f28b6627933704a3fb8ce153aa91d790ab11f6a752d44a42d")
 
   (def contact (fetch-contact! pubkey-id relay-id))
   contact

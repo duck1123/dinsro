@@ -45,7 +45,7 @@
 (>defn handle-event
   [req-id evt]
   [string? ::incoming-event => ::outgoing-event]
-  (log/info :handle-event/starting {:evt evt})
+  (log/finer :handle-event/starting {:evt evt})
   (let [{id         "id"
          kind       "kind"
          pubkey     "pubkey"
@@ -72,9 +72,9 @@
 (defn parse-message
   "Parse a response message"
   [message]
-  (log/info :parse-message/starting {:message message})
+  (log/finer :parse-message/starting {:message message})
   (let [[type req-id evt] message]
-    (log/info :parse-message/starting {:req-id req-id :type type})
+    (log/finer :parse-message/starting {:req-id req-id :type type})
     (condp = type
       "EVENT" (handle-event req-id evt)
       "EOSE"  (handle-eose req-id evt)
