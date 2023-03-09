@@ -94,7 +94,6 @@
       (fetch-by-note-id note-id))
     (throw (RuntimeException. "Failed to find event"))))
 
-
 (defn do-fetch!
   [props]
   (log/info :do-fetch!/starting {:props props})

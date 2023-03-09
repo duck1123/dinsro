@@ -150,7 +150,7 @@
 ;;   "Fetch info about pubkey from relay"
 
 (>defn fetch-pubkey!
-  ([pubkey-hex ]
+  ([pubkey-hex]
    [::m.n.pubkeys/hex => ds/channel?]
    (let [relay-ids (q.n.relays/index-ids)]
      (doseq [relay-id relay-ids]
@@ -184,8 +184,8 @@
          (let [hex      (::m.n.pubkeys/hex pubkey)
                response (async/<! (fetch-pubkey! hex relay-id))]
            (log/finer :update-pubkey!/finished {:response response})
-             response)
-           (throw (RuntimeException. "No pubkey")))))))
+           response)
+         (throw (RuntimeException. "No pubkey")))))))
 
 (>defn fetch-contact!
   [pubkey-id relay-id]
