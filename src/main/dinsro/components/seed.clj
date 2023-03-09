@@ -17,7 +17,7 @@
    [dinsro.components.seed.accounts :as cs.accounts]
    [dinsro.components.seed.categories]
    [dinsro.components.seed.core :as cs.core]
-   [dinsro.components.seed.core-nodes :as cs.core-nodes]
+   ;; [dinsro.components.seed.core-nodes :as cs.core-nodes]
    [dinsro.components.seed.currencies :as cs.currencies]
    [dinsro.components.seed.debits :as cs.debits]
    [dinsro.components.seed.ln-nodes :as cs.ln-nodes]
@@ -134,19 +134,23 @@
   (doseq [currency currencies]
     (seed-rate-sources!-currency currency)))
 
-(defn seed-rates!
-  [default-rate-sources]
-  (log/finer :seed-rates!/starting {:default-rate-sources default-rate-sources})
-  (doseq [{:keys [name code rates]} default-rate-sources]
+(>defn seed-rates!
+  [currencies]
+  [::cs.core/currencies => any?]
+  (log/finer :seed-rates!/starting {:currencies currencies})
+  (doseq [{:keys [code sources]} currencies]
+    (log/info :seed-rates!/currency {:code code})
     (if-let [currency-id (q.currencies/find-by-code code)]
-      (if-let [source-id (q.rate-sources/find-by-currency-and-name currency-id name)]
-        (doseq [{:keys [date rate]} rates]
-          (let [rate {::m.rates/currency currency-id
-                      ::m.rates/date     date
-                      ::m.rates/source   source-id
-                      ::m.rates/rate     rate}]
-            (q.rates/create-record rate)))
-        (throw (RuntimeException. "Failed to find source")))
+      (doseq [{:keys [name rates]} sources]
+        (log/info :seed-rates!/source {:name name  :code code})
+        (if-let [source-id (q.rate-sources/find-by-currency-and-name currency-id name)]
+          (doseq [{:keys [date rate]} rates]
+            (q.rates/create-record
+             {::m.rates/currency currency-id
+              ::m.rates/date     (ds/->inst date)
+              ::m.rates/source   source-id
+              ::m.rates/rate     (double rate)}))
+          (throw (RuntimeException. "Failed to find source"))))
       (throw (RuntimeException. "Failed to find currency")))))
 
 (>defn seed-user-pubkey!
@@ -517,17 +521,6 @@
           (log/error :seed-core-peers!/no-peer-failed {:ex ex})
           (when strict (throw (RuntimeException. "Failed to add peer" ex))))))))
 
-(>defn seed-core-peers!-node
-  [node-data]
-  [::cs.core-nodes/item => any?]
-  (log/info :seed-core-peers!-node/starting {:node-data node-data})
-  (let [peers       (:peers node-data)
-        target-name (:name node-data)
-        target-peer (q.c.nodes/read-record (q.c.nodes/find-by-name target-name))]
-    (a.c.peers/fetch-peers! target-peer)
-    (doseq [peer-name peers]
-      (seed-core-peers!-peer peer-name target-peer))))
-
 (>defn seed-core-peers!
   "Create peers between core nodes"
   [core-node-data]
@@ -535,7 +528,13 @@
   (log/fine :seed-core-peers!/starting {:core-node-data core-node-data})
   (try
     (doseq [node-data core-node-data]
-      (seed-core-peers!-node node-data))
+      (log/info :seed-core-peers!/node {:node-data node-data})
+      (let [peers       (:peers node-data)
+            target-name (:name node-data)
+            target-peer (q.c.nodes/read-record (q.c.nodes/find-by-name target-name))]
+        (a.c.peers/fetch-peers! target-peer)
+        (doseq [peer-name peers]
+          (seed-core-peers!-peer peer-name target-peer))))
     (catch Exception ex
       (println ex)
       (log/error :seed-core-peers!/failed {:ex ex}))))
@@ -601,7 +600,7 @@
 
     (seed-currencies! currencies)
     (seed-rate-sources! currencies)
-    ;; (seed-rates! default-rate-sources)
+    (seed-rates! currencies)
 
     (seed-users! users)
     (seed-categories! users)

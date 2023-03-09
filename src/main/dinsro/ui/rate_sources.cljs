@@ -11,7 +11,8 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.rate-sources.accounts :as u.rs.accounts]))
+   [dinsro.ui.rate-sources.accounts :as u.rs.accounts]
+   [dinsro.ui.rate-sources.rates :as u.rs.rates]))
 
 (def run-button
   {:type   :button
@@ -38,12 +39,18 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.rs.accounts/SubPage]})
+   [u.rs.accounts/SubPage
+    u.rs.rates/SubPage]})
+
+(def ui-router (comp/factory Router))
 
 (def menu-items
   [{:key   "accounts"
     :name  "Accounts"
-    :route "dinsro.ui.nostr.rate-sources.accounts/SubPage"}])
+    :route "dinsro.ui.rate-sources.accounts/SubPage"}
+   {:key   "rates"
+    :name  "Rates"
+    :route "dinsro.ui.rate-sources.rates/SubPage"}])
 
 (report/defsc-report Report
   [_this _props]
@@ -71,9 +78,10 @@
    ro/run-on-mount?    true})
 
 (defsc Show
-  [_this {::m.rate-sources/keys [name url active currency]
+  [_this {::m.rate-sources/keys [name url active currency id]
           ::j.rate-sources/keys [rate-count]
-          :ui/keys              [accounts]}]
+          :ui/keys              [router]
+          :as                   props}]
   {:route-segment ["rate-sources" :id]
    :query         [::m.rate-sources/name
                    ::m.rate-sources/url
@@ -81,17 +89,17 @@
                    ::m.rate-sources/active
                    ::m.rate-sources/id
                    ::j.rate-sources/rate-count
-                   {:ui/accounts (comp/get-query u.rs.accounts/SubPage)}]
+                   {:ui/router (comp/get-query Router)}]
    :initial-state {::m.rate-sources/name       ""
                    ::m.rate-sources/id         nil
                    ::m.rate-sources/active     false
                    ::m.rate-sources/currency   {}
                    ::m.rate-sources/url        ""
                    ::j.rate-sources/rate-count []
-                   :ui/accounts                {}}
+                   :ui/router                  {}}
    :ident         ::m.rate-sources/id
-   :will-enter    (partial u.links/page-loader ::m.rate-sources/id ::Show)
-   :pre-merge     (u.links/page-merger ::m.rate-sources/id {:ui/accounts u.rs.accounts/SubPage})}
+   :pre-merge     (u.links/page-merger ::m.rate-sources/id {:ui/router Router})
+   :will-enter    (partial u.links/page-loader ::m.rate-sources/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/a {:href "/rate-sources"} "Rate Sources"))
@@ -101,7 +109,9 @@
      (dom/p {} "Active: " (str active))
      (dom/p {} "Currency: " (u.links/ui-currency-link currency))
      (dom/p {} "Rate Count: " (str rate-count)))
-   (dom/div  :.ui.segment
-     (if accounts
-       (u.rs.accounts/ui-sub-page accounts)
-       (dom/p {} "Rate Source accounts not loaded")))))
+   (u.links/ui-nav-menu {:menu-items menu-items :id id})
+   (if router
+     (ui-router router)
+     (dom/div :.ui.segment
+       (dom/h3 {} "Router not loaded")
+       (u.links/ui-props-logger props)))))

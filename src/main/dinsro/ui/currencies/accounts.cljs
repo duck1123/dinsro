@@ -1,4 +1,4 @@
-(ns dinsro.ui.currency-accounts
+(ns dinsro.ui.currencies.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
@@ -7,6 +7,9 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.ui.links :as u.links]))
+
+(def ident-key ::m.currencies/id)
+(def router-key :dinsro.ui.currencies/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -18,18 +21,14 @@
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.accounts/index
-   ro/title            "Currency Accounts"})
-
-(def ui-report (comp/factory Report))
+   ro/title            "Accounts"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [::m.currencies/id
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params %})
-   :initial-state     {::m.currencies/id nil
-                       :ui/report        {}}
+   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :route-segment     ["accounts"]
+   :initial-state     {:ui/report        {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+  ((comp/factory Report) report))

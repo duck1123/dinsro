@@ -2,13 +2,15 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.ui.currency-accounts :as u.currency-accounts]
+   [dinsro.ui.currencies.accounts :as u.c.accounts]
+   [dinsro.ui.currencies.rate-sources :as u.c.rate-sources]
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm [_this _props]
@@ -29,6 +31,22 @@
   {:label  "New"
    :type   :button
    :action #(form/create! % NewForm)})
+
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.c.accounts/SubPage
+    u.c.rate-sources/SubPage]})
+
+(def ui-router (comp/factory Router))
+
+(def menu-items
+  [{:key   "accounts"
+    :name  "Accounts"
+    :route "dinsro.ui.currencies.accounts/SubPage"}
+   {:key   "rates"
+    :name  "Rates"
+    :route "dinsro.ui.currencies.rate-sources/SubPage"}])
 
 (report/defsc-report Report
   [_this _props]
@@ -54,23 +72,22 @@
    ro/run-on-mount?    true})
 
 (defsc Show
-  [_this {::m.currencies/keys [name]
-          :ui/keys       [accounts]}]
-  {:route-segment ["currency" :id]
-   :query         [::m.currencies/name
-                   ::m.currencies/code
-                   ::m.currencies/id
-                   {:ui/accounts (comp/get-query u.currency-accounts/SubPage)}]
+  [_this {::m.currencies/keys [id name]
+          :ui/keys            [router]}]
+  {:ident         ::m.currencies/id
    :initial-state {::m.currencies/name ""
                    ::m.currencies/code ""
                    ::m.currencies/id   nil
-                   :ui/accounts        {}}
-   :ident         ::m.currencies/id
-   :pre-merge     (u.links/page-merger
+                   :ui/router          {}}
+   :pre-merge     (u.links/page-merger ::m.currencies/id {:ui/router Router})
+   :query         [::m.currencies/name
+                   ::m.currencies/code
                    ::m.currencies/id
-                   {:ui/accounts u.currency-accounts/SubPage})
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["currency" :id]
    :will-enter    (partial u.links/page-loader ::m.currencies/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str name)))
-   (u.currency-accounts/ui-sub-page accounts)))
+   (u.links/ui-nav-menu {:menu-items menu-items :id id})
+   ((comp/factory Router) router)))
