@@ -26,7 +26,7 @@
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)
+   ro/field-formatters {::m.n.pubkeys/hex  #(u.links/ui-pubkey-link %3)
                         ::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
                         ::m.n.pubkeys/picture
                         (fn [_ picture]

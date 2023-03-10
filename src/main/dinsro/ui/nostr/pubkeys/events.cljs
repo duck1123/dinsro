@@ -50,8 +50,6 @@
       (dom/div :.ui.items.unstackable
         (map ui-event-list-item current-rows)))))
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
@@ -61,5 +59,3 @@
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["events"]}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))

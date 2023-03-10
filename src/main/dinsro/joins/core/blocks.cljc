@@ -25,7 +25,7 @@
                       (q.c.blocks/index-ids))
              idents (m.c.blocks/idents ids)]
          (log/info :do-index/results {:idents idents})
-         {::m.c.blocks/index idents}))))
+         {::index idents}))))
 
 #?(:clj
    (defn do-admin-index
