@@ -36,8 +36,7 @@
       (dom/div {:classes [main]}
         (dom/div :.ui.segment
           (dom/div "Request")
-          (dom/div {} (str code))
-          (dom/dl {}))
+          (dom/div {} (str code)))
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (eb/error-boundary
          (if router

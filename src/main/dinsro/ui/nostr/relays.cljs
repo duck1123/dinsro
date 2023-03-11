@@ -12,10 +12,10 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.relay.pubkeys :as u.n.r.pubkeys]
-   [dinsro.ui.nostr.relay.requests :as u.n.r.requests]
-   [dinsro.ui.nostr.relay.subscriptions :as u.n.r.subscriptions]
-   [dinsro.ui.nostr.relay.topics :as u.n.r.topics]
+   [dinsro.ui.nostr.relays.pubkeys :as u.n.r.pubkeys]
+   [dinsro.ui.nostr.relays.requests :as u.n.r.requests]
+   [dinsro.ui.nostr.relays.subscriptions :as u.n.r.subscriptions]
+   [dinsro.ui.nostr.relays.topics :as u.n.r.topics]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
@@ -111,16 +111,16 @@
 (def menu-items
   [{:key   "requests"
     :name  "Requests"
-    :route "dinsro.ui.nostr.relay.requests/SubPage"}
+    :route "dinsro.ui.nostr.relays.requests/SubPage"}
    {:key   "subscriptions"
     :name  "Subscriptions"
-    :route "dinsro.ui.nostr.relay.subscriptions/SubPage"}
+    :route "dinsro.ui.nostr.relays.subscriptions/SubPage"}
    {:key   "pubkeys"
     :name  "Pubkeys"
-    :route "dinsro.ui.nostr.relay.pubkeys/SubPage"}
+    :route "dinsro.ui.nostr.relays.pubkeys/SubPage"}
    {:key   "topics"
     :name  "Topics"
-    :route "dinsro.ui.nostr.relay.topics/SubPage"}])
+    :route "dinsro.ui.nostr.relays.topics/SubPage"}])
 
 (defsc Show
   [this {::m.n.relays/keys [id address connected]
