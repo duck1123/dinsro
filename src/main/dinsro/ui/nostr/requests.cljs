@@ -25,8 +25,7 @@
           :ui/keys            [router]
           :as                 props}]
   {:ident         ::m.n.requests/id
-   :initial-state {::m.n.requests/id nil
-                   :ui/router        {}}
+   :initial-state {::m.n.requests/id nil}
    :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
    :query         [::m.n.requests/id
                    {:ui/router (comp/get-query Router)}]
