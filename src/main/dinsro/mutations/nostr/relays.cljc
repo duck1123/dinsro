@@ -160,4 +160,21 @@
            (fm/returning ConnectResponse)
            (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))))
 
-#?(:clj (def resolvers [connect! delete! fetch! toggle!]))
+;; Submit
+
+#?(:clj
+   (pc/defmutation submit!
+     [_env props]
+     {::pc/params #{::m.n.relays/id}
+      ::pc/output [::status ::errors ::m.n.relays/item]}
+     (a.n.relays/do-submit! props))
+
+   :cljs
+   (fm/defmutation submit! [_props]
+     (action    [_env] true)
+     (remote    [env]
+       (-> env
+           (fm/returning ConnectResponse)
+           (fm/with-target (targeting/append-to [:responses/id ::SubmitReponse]))))))
+
+#?(:clj (def resolvers [connect! delete! fetch! toggle! submit!]))

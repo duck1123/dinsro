@@ -53,12 +53,27 @@
    :action toggle-action
    :style  :toggle-button})
 
+(def submit-button
+  {:type   :button
+   :local? true
+   :label  "Submit"
+   :action (fn [this _]
+             (let [props (comp/props this)
+                   address (::m.n.relays/address props)]
+               (log/info :submit-button/clicked {:address address})
+               (comp/transact!
+                this
+                [(mu.n.relays/submit!
+                  {::m.n.relays/address address})])))})
+
 (form/defsc-form NewRelayForm [_this _props]
-  {fo/id           m.n.relays/id
-   fo/attributes   [m.n.relays/address]
-   fo/cancel-route ["relays"]
-   fo/route-prefix "new-relay"
-   fo/title        "Relay"})
+  {fo/id             m.n.relays/id
+   fo/action-buttons [::submit]
+   fo/attributes     [m.n.relays/address]
+   fo/cancel-route   ["relays"]
+   fo/controls       {::submit submit-button}
+   fo/route-prefix   "new-relay"
+   fo/title          "Relay"})
 
 (def new-button
   {:type   :button

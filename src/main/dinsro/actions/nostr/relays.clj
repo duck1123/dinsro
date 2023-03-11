@@ -232,6 +232,10 @@
     (let [params {::m.n.relays/address address}]
       (q.n.relays/create-record params))))
 
+(defn do-submit!
+  [props]
+  (log/info :do-submit!/starting {:props props}))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
