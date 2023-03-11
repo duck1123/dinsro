@@ -114,7 +114,7 @@
     ::ct.fulcro3/initial-state NewForm-data}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard Report
+(ws/defcard WalletReport
   {::wsm/card-width 6 ::wsm/card-height 12}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.c.wallets/Report

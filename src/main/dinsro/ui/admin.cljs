@@ -16,7 +16,7 @@
    [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.links :as u.links]))
 
-(defrouter AdminRouter
+(defrouter Router
   [_this {:keys [current-state]}]
   {:router-targets [u.a.users/AdminReport
                     u.a.currencies/AdminIndexCurrenciesReport
@@ -38,61 +38,36 @@
       (dom/div {}
         (dom/div "No route selected.")))))
 
-(def ui-admin-router (comp/factory AdminRouter))
-
 (def menu-items
   [{:key   "users"
     :name  "users"
-    :route "u.users/AdminReport"}
+    :route "dinsro.ui.admin.users/AdminReport"}
    {:key   "categories"
     :name  "Categories"
-    :route "u.categories/AdminReport"}
+    :route "dinsro.ui.admin.categories/AdminReport"}
    {:key   "ln-nodes"
     :name  "LN Nodes"
-    :route "u.ln.nodes/AdminReport"}
+    :route "dinsro.ui.admin.ln.nodes/AdminReport"}
    {:key   "accounts"
     :name  "Accounts"
-    :route "u.accounts/AdminReport"}
+    :route "dinsro.ui.admin.accounts/AdminReport"}
    {:key   "transactions"
     :name  "Transactions"
-    :route "u.transactions/AdminReport"}
+    :route "dinsro.ui.admin.transactions/AdminReport"}
    {:key   "debits"
     :name  "Debits"
-    :route "u.debits/AdminReport"}
+    :route "dinsro.ui.admin.debits/AdminReport"}
    {:key   "blocks"
     :name  "Blocks"
-    :route "u.c.blocks/AdminReport"}])
-
-(def menu-items2
-  [{:key   "users"
-    :name  "users"
-    :route u.a.users/AdminReport}
-   {:key   "categories"
-    :name  "Categories"
-    :route u.a.categories/AdminReport}
-   {:key   "ln-nodes"
-    :name  "LN Nodes"
-    :route u.a.ln.nodes/AdminReport}
-   {:key   "accounts"
-    :name  "Accounts"
-    :route u.a.accounts/AdminReport}
-   {:key   "transactions"
-    :name  "Transactions"
-    :route u.a.transactions/AdminReport}
-   {:key   "debits"
-    :name  "Debits"
-    :route u.a.debits/AdminReport}
-   {:key   "blocks"
-    :name  "Blocks"
-    :route u.a.c.blocks/AdminReport}])
+    :route "dinsro.ui.admin.core.blocks/AdminReport"}])
 
 (defsc AdminPage
-  [_this {:ui/keys [admin-router]}]
+  [_this {:ui/keys [router]}]
   {:ident         (fn [] [:component/id ::AdminPage])
-   :initial-state {:ui/admin-router {}}
-   :query         [{:ui/admin-router (comp/get-query AdminRouter)}]
+   :initial-state {:ui/router {}}
+   :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["admin"]}
   (dom/div :.admin-page
     (dom/h1 "Admin Page")
     (u.links/ui-nav-menu {:menu-items menu-items :id nil})
-    (ui-admin-router admin-router)))
+    ((comp/factory Router) router)))

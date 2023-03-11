@@ -13,6 +13,7 @@
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.relay.pubkeys :as u.n.relay-pubkeys]
+   [dinsro.ui.nostr.relay.requests :as u.n.r.requests]
    [dinsro.ui.nostr.relay.subscriptions :as u.n.relay-subscriptions]
    [dinsro.ui.nostr.relay.topics :as u.n.relay-topics]
    [lambdaisland.glogc :as log]))
@@ -68,8 +69,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/columns           [m.n.relays/id
-                         m.n.relays/address
+   ro/columns           [m.n.relays/address
                          m.n.relays/connected
                          j.n.relays/subscription-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
@@ -89,10 +89,14 @@
   {:router-targets
    [u.n.relay-pubkeys/SubPage
     u.n.relay-subscriptions/SubPage
-    u.n.relay-topics/SubPage]})
+    u.n.relay-topics/SubPage
+    u.n.r.requests/SubPage]})
 
 (def menu-items
-  [{:key   "subscriptions"
+  [{:key   "requests"
+    :name  "Requests"
+    :route "dinsro.ui.nostr.relay.requests/SubPage"}
+   {:key   "subscriptions"
     :name  "Subscriptions"
     :route "dinsro.ui.nostr.relay.subscriptions/SubPage"}
    {:key   "pubkeys"

@@ -11,8 +11,7 @@
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm [_this _props]
-  {
-   fo/attributes    [m.transactions/description]
+  {fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]
    fo/field-styles  {::m.transactions/account :pick-one}
    fo/field-options {::m.transactions/account

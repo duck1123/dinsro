@@ -20,6 +20,7 @@
    ro/controls         {::new {:label  "New Currency"
                                :type   :button
                                :action #(form/create! % NewAdminCurrencyForm)}}
+   ro/route            ["currencies"]
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.currencies/index

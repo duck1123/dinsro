@@ -15,8 +15,7 @@
 
 (form/defsc-form AdminCategoryForm
   [this props]
-  {
-   fo/attributes    [m.categories/name m.categories/user]
+  {fo/attributes    [m.categories/name m.categories/user]
    fo/cancel-route  ["admin"]
    fo/field-options {::m.categories/user {::picker-options/query-key       ::m.users/index
                                           ::picker-options/query-component u.links/UserLinkForm

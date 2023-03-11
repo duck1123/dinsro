@@ -31,6 +31,7 @@
    [dinsro.joins.nostr.pubkey-contacts :as j.n.pubkey-contacts]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
+   [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
    [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
    [dinsro.joins.rate-sources :as j.rate-sources]
@@ -75,6 +76,7 @@
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -108,6 +110,7 @@
    #?(:clj [dinsro.mutations.nostr.pubkey-events :as mu.n.pubkey-events])
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
+   #?(:clj [dinsro.mutations.nostr.requests :as mu.n.requests])
    #?(:clj [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys])
    #?(:clj [dinsro.mutations.nostr.subscriptions :as mu.n.subscriptions])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
@@ -144,6 +147,7 @@
         j.n.pubkey-contacts/attributes
         j.n.pubkeys/attributes
         j.n.relays/attributes
+        j.n.requests/attributes
         j.n.subscription-pubkeys/attributes
         j.n.subscriptions/attributes
         j.rates/attributes
@@ -186,6 +190,7 @@
         m.n.pubkey-contacts/attributes
         m.n.pubkeys/attributes
         m.n.relays/attributes
+        m.n.requests/attributes
         m.n.subscription-pubkeys/attributes
         m.n.subscriptions/attributes
         m.navbar/attributes
@@ -226,6 +231,7 @@
            mu.n.pubkey-events/resolvers
            mu.n.pubkeys/resolvers
            mu.n.relays/resolvers
+           mu.n.requests/resolvers
            mu.n.subscription-pubkeys/resolvers
            mu.n.subscriptions/resolvers
            mu.rate-sources/resolvers
