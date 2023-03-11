@@ -11,8 +11,8 @@
   (if-let [request-id (q.n.requests/find-by-relay-and-code relay-id code)]
     (throw (RuntimeException. (str "request already exists - " request-id)))
     (let [request-id (q.n.requests/create-record
-                      {::m.n.requests/relay      relay-id
-                       ::m.n.requests/code       code})]
+                      {::m.n.requests/relay relay-id
+                       ::m.n.requests/code  code})]
       (log/info :create-request/finished {:request-id request-id})
       request-id)))
 

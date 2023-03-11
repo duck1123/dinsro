@@ -2,6 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.requests :as j.n.requests]
@@ -23,19 +25,37 @@
   {:action stop-action
    :label  "Subscribe"})
 
+(form/defsc-form NewForm
+  [this {:as props}]
+  {fo/attributes   [m.n.requests/id
+                    m.n.requests/start-time
+                    m.n.requests/status
+                    m.n.requests/end-time]
+   fo/cancel-route ["requests"]
+   fo/id           m.n.requests/id
+   fo/route-prefix "new-request"
+   fo/title        "Create Request"})
+
+(def new-button
+  {:type   :button
+   :local? true
+   :label  "New"
+   :action (fn [this _] (form/create! this NewForm))})
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters   {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)}
-   ro/columns          [m.n.requests/start-time
-                        m.n.requests/status
-                        m.n.requests/end-time]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh      u.links/refresh-control}
-   ro/row-actions [stop-action-button]
-   ro/row-pk           m.n.requests/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.requests/index
-   ro/title            "Requests"})
+  {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)}
+   ro/columns           [m.n.requests/start-time
+                         m.n.requests/status
+                         m.n.requests/end-time]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/row-actions       [stop-action-button]
+   ro/row-pk            m.n.requests/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.requests/index
+   ro/title             "Requests"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
