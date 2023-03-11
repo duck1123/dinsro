@@ -9,6 +9,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   [dinsro.mutations :as mu]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
@@ -208,6 +209,21 @@
 (defn add-contact!
   [props]
   (log/info :add-contact!/starting {:props props}))
+
+(>defn do-fetch!
+  "Handler for fetch! mutation"
+  [{pubkey-id ::m.n.pubkeys/id relay-id  ::m.n.relays/id}]
+  [::fetch!-request => ::fetch!-response]
+  (log/finer :do-fetch!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+  (try
+    (or relay-id
+        (fetch-contact! pubkey-id relay-id)
+        (doseq [relay-id (q.n.relays/index-ids)]
+          (fetch-contact! pubkey-id relay-id)))
+    {::mu/status :ok}
+    (catch Exception ex
+      (log/error :do-fetch!/failed {:exception ex})
+      (mu/exception-response ex))))
 
 (comment
 

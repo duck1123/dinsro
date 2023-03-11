@@ -18,8 +18,8 @@
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
-   #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
@@ -28,7 +28,7 @@
 ;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
-(comment ::pc/_)
+(comment ::m.n.relays/_  ::pc/_)
 
 (>def ::item ::m.n.pubkeys/item)
 (>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.n.pubkeys/item]))
@@ -94,21 +94,6 @@
                    ::mu/status
                    ::m.c.nodes/item]})
 
-#?(:clj
-   (>defn do-fetch!
-     "Handler for fetch! mutation"
-     [{::m.n.pubkeys/keys [id]}]
-     [::fetch!-request => ::fetch!-response]
-     (log/finer :do-fetch!/started {:id id})
-     (try
-       (log/finer :do-fetch!/starting {:id id})
-       (doseq [relay-id (q.n.relays/index-ids)]
-         (a.n.pubkeys/fetch-contact! id relay-id))
-       {::mu/status :ok}
-       (catch Exception ex
-         (log/error :do-fetch!/failed {:exception ex})
-         (mu/exception-response ex)))))
-
 #?(:cljs
    (defn handle-fetch
      [{:keys [state] :as env}]
@@ -134,9 +119,9 @@
 #?(:clj
    (pc/defmutation fetch!
      [_env props]
-     {::pc/params #{::m.n.pubkeys/id}
+     {::pc/params #{::m.n.pubkeys/id ::m.n.relays/id}
       ::pc/output [::status ::errors ::m.n.pubkeys/item]}
-     (do-fetch! props))
+     (a.n.pubkeys/do-fetch! props))
 
    :cljs
    (fm/defmutation fetch! [_props]
@@ -159,7 +144,7 @@
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
       ::pc/output [::status ::errors ::m.n.badge-awards/items]}
-     (do-fetch! props))
+     (a.n.pubkeys/do-fetch! props))
 
    :cljs
    (fm/defmutation fetch-awards! [_props]

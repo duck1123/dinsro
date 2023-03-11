@@ -37,6 +37,19 @@
    :label  "New"
    :action (fn [this _] (form/create! this AddForm))})
 
+(defn fetch-action
+  [report-instance {pubkey-id ::m.n.pubkeys/id
+                    :as props}]
+  (log/info :fetch-action/starting {:report-instance report-instance
+                                    :props props
+                                    :p (comp/props report-instance)})
+  (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
+    (log/info :subscribe-action/starting {:relay-id relay-id :pubkey-id pubkey-id})
+    (if relay-id
+      (let [props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
+        (comp/transact! report-instance [(mu.n.pubkeys/fetch! props)]))
+      (throw (js/Error. "no id")))))
+
 (defn subscribe-action
   [report-instance {pubkey-id ::m.n.pubkeys/id}]
   (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
@@ -45,6 +58,10 @@
       (let [props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
         (comp/transact! report-instance [(mu.n.pubkeys/subscribe! props)]))
       (throw (js/Error. "no id")))))
+
+(def fetch-action-button
+  {:label  "Fetch"
+   :action fetch-action})
 
 (def subscribe-action-button
   {:label  "Subscribe"
@@ -64,7 +81,8 @@
                         (fn [_ picture] (if picture
                                           (dom/img {:src picture :width 100 :height 100})
                                           ""))}
-   ro/row-actions      [subscribe-action-button]
+   ro/row-actions      [fetch-action-button
+                        subscribe-action-button]
    ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Pubkeys"
    ro/row-pk           m.n.pubkeys/id
