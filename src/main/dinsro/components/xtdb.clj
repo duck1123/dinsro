@@ -67,3 +67,10 @@
          ids (map first (c.api/q db query params))]
      (log/info :query-ids/finished {:ids ids})
      ids)))
+
+(defn submit-tx!
+  [k params]
+  (let [node     (main-node)
+        response (c.api/submit-tx node [[::c.api/fn k params]])]
+    (log/finer :submit-tx!/finished {:response response})
+    response))

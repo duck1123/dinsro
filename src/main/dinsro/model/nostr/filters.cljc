@@ -1,4 +1,4 @@
-(ns dinsro.model.nostr.requests
+(ns dinsro.model.nostr.filters
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn => ?]]
@@ -13,40 +13,30 @@
   {ao/identity? true
    ao/schema    :production})
 
-(>def ::code string?)
-(defattr code ::code :string
-  {ao/identities #{::id}
-   ao/schema     :production})
-
-;; initial started stopped
-(>def ::status string?)
-(defattr status ::status :string
-  {ao/identities #{::id}
-   ao/schema     :production})
-
-(>def ::relay uuid?)
-(defattr relay ::relay :ref
+(>def ::request uuid?)
+(defattr request ::request :ref
   {ao/identities       #{::id}
-   ao/target           ::m.n.relays/id
+   ao/target           ::m.n.requests/id
    ao/schema           :production
-   ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
+   ::report/column-EQL {::request
+                        [::m.n.requests/id ::m.n.requests/address]}})
 
-(s/def ::start-time (? ::ds/date))
-(defattr start-time ::start-time :date
+(>def ::since int?)
+(defattr since ::since :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::end-time (? ::ds/date))
-(defattr end-time ::end-time :date
+(>def ::until int?)
+(defattr until ::until :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::params (s/keys :req [::relay ::code]))
-(>def ::item (s/keys :req [::id ::relay ::start-time ::end-time ::code ::status]))
+(>def ::params (s/keys :req [::request ::since ::until]))
+(>def ::item (s/keys :req [::id ::request ::since ::until]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn ident-item [item] [::item => ::ident] (select-keys item [::id]))
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id status relay start-time end-time code])
+(def attributes [id request since until])

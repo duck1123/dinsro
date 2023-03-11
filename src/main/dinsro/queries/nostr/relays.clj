@@ -80,26 +80,21 @@
 (defn create-connected-toggle
   []
   (log/info :create-connected-toggle/starting {})
-  (let [node (c.xtdb/main-node)]
-    (xt/await-tx
-     node
-     (xt/submit-tx
-      node
-      [[::xt/put
-        {:xt/id :toggle-connected
-         :xt/fn '(fn [ctx eid connected]
-                   (let [;; connected true
-                         db           (xtdb.api/db ctx)
-                         entity       (xtdb.api/entity db eid)
-                         updated-data (assoc entity ::m.n.relays/connected connected)]
-                     [[::xt/put updated-data]]))}]]))))
+  (let [toggle-connected {:xt/id ::toggle-connected
+                          :xt/fn '(fn [ctx eid connected]
+                                    (let [db           (xtdb.api/db ctx)
+                                          entity       (xtdb.api/entity db eid)
+                                          updated-data (assoc entity ::m.n.relays/connected connected)]
+                                      [[::xt/put updated-data]]))}
+        node (c.xtdb/main-node)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put toggle-connected]]))))
 
 (>defn set-connected
   [relay-id connected]
   [::m.n.relays/id ::m.n.relays/connected => any?]
   (log/info :set-connected/starting {:relay-id relay-id :connected connected})
   (let [node     (c.xtdb/main-node)
-        response (xt/submit-tx node [[::xt/fn :toggle-connected relay-id connected]])]
+        response (xt/submit-tx node [[::xt/fn ::toggle-connected relay-id connected]])]
     (log/finer :set-connected/finished {:response response})
     response))
 
