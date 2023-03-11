@@ -234,7 +234,11 @@
 
 (defn do-submit!
   [props]
-  (log/info :do-submit!/starting {:props props}))
+  (log/info :do-submit!/starting {:props props})
+  (let [address (::m.n.relays/address props)
+        relay-id (register-relay! address)]
+    {::mu/status       :ok
+     ::m.n.relays/item (q.n.relays/read-record relay-id)}))
 
 (comment
 
