@@ -8,12 +8,22 @@
 
 (defn create-request
   [relay-id code]
-  (let [start-time (ds/->inst)]
-    (q.n.requests/create-record
-     {::m.n.requests/relay      relay-id
-      ::m.n.requests/start-time start-time
-      ::m.n.requests/end-time   nil
-      ::m.n.requests/code       code})))
+  (if-let [request-id (q.n.requests/find-by-relay-and-code relay-id code)]
+    (throw (RuntimeException. (str "request already exists - " request-id)))
+    (let [start-time (ds/->inst)
+          request-id (q.n.requests/create-record
+                      {::m.n.requests/relay      relay-id
+                       ::m.n.requests/start-time start-time
+                       ::m.n.requests/end-time   nil
+                       ::m.n.requests/code       code})]
+      (log/info :create-request/finished {:request-id request-id})
+      request-id)))
+
+(defn start!
+  [request-id]
+  (log/info :start!/starting {:request-id request-id})
+  (let [relay-id (q.n.requests/find-relay request-id)]
+    relay-id))
 
 (defn do-stop!
   [params]
@@ -37,9 +47,14 @@
 
   (ds/gen-key ::m.n.requests/item)
 
-  (q.n.requests/find-by-relay-and-code relay-id code)
+  (def request-id (q.n.requests/find-by-relay-and-code relay-id code))
+  request-id
+
+  (q.n.relays/read-record (q.n.requests/find-relay request-id))
 
   (q.n.requests/delete-all!)
+
+  (some-> relay-id q.n.requests/find-relay q.n.relays/read-record)
 
   ds/date
 

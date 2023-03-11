@@ -28,7 +28,9 @@
   []
   [=> (s/coll-of ::m.n.requests/id)]
   (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.requests/id _]]}))
+  (let [ids (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.requests/id _]]})]
+    (log/info :index-ids/finished {:ids ids})
+    ids))
 
 (>defn read-record
   [id]
@@ -43,22 +45,26 @@
   [relay-id]
   [::m.n.relays/id => (s/coll-of ::m.n.requests/id)]
   (log/info :find-by-relay/starting {:relay-id relay-id})
-  (c.xtdb/query-ids
-   '{:find  [?id]
-     :in    [[?relay-id]]
-     :where [[?id ::m.n.requests/relay ?relay-id]]}
-   [relay-id]))
+  (let [ids (c.xtdb/query-ids
+             '{:find  [?id]
+               :in    [[?relay-id]]
+               :where [[?id ::m.n.requests/relay ?relay-id]]}
+             [relay-id])]
+    (log/info :find-by-relay/finished {:ids ids})
+    ids))
 
 (>defn find-by-relay-and-code
   [relay-id code]
   [::m.n.relays/id  ::m.n.requests/code => (? ::m.n.requests/id)]
-  (log/info :find-by-relay/starting {:relay-id relay-id})
-  (c.xtdb/query-id
-   '{:find  [?id]
-     :in    [[?relay-id ?code]]
-     :where [[?id ::m.n.requests/relay ?relay-id]
-             [?id ::m.n.requests/code ?code]]}
-   [relay-id code]))
+  (log/info :find-by-relay-and-code/starting {:relay-id relay-id})
+  (let [id (c.xtdb/query-id
+            '{:find  [?id]
+              :in    [[?relay-id ?code]]
+              :where [[?id ::m.n.requests/relay ?relay-id]
+                      [?id ::m.n.requests/code ?code]]}
+            [relay-id code])]
+    (log/info :find-by-relay-and-code/finished {:id id})
+    id))
 
 (>defn delete!
   [id]
@@ -72,3 +78,15 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
+
+(>defn find-relay
+  [request-id]
+  [::m.n.requests/id => ::m.n.requests/relay]
+  (log/info :find-relay/starting {:request-id request-id})
+  (let [id (c.xtdb/query-id
+            '{:find  [?relay-id]
+              :in    [[?request-id]]
+              :where [[?request-id ::m.n.requests/relay ?relay-id]]}
+            [request-id])]
+    (log/info :find-relay/finished {:id id})
+    id))
