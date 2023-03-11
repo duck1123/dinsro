@@ -12,10 +12,10 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.relay.pubkeys :as u.n.relay-pubkeys]
+   [dinsro.ui.nostr.relay.pubkeys :as u.n.r.pubkeys]
    [dinsro.ui.nostr.relay.requests :as u.n.r.requests]
-   [dinsro.ui.nostr.relay.subscriptions :as u.n.relay-subscriptions]
-   [dinsro.ui.nostr.relay.topics :as u.n.relay-topics]
+   [dinsro.ui.nostr.relay.subscriptions :as u.n.r.subscriptions]
+   [dinsro.ui.nostr.relay.topics :as u.n.r.topics]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
@@ -87,9 +87,9 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.relay-pubkeys/SubPage
-    u.n.relay-subscriptions/SubPage
-    u.n.relay-topics/SubPage
+   [u.n.r.pubkeys/SubPage
+    u.n.r.subscriptions/SubPage
+    u.n.r.topics/SubPage
     u.n.r.requests/SubPage]})
 
 (def menu-items

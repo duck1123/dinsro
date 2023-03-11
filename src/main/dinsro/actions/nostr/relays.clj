@@ -249,6 +249,8 @@
   (connect! relay-id)
   (disconnect! relay-id)
 
+  (map q.n.relays/read-record (q.n.relays/index-ids))
+
   (some->
    (q.n.relays/index-ids)
    first
