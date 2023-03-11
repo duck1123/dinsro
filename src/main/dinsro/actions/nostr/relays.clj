@@ -4,6 +4,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
@@ -159,18 +160,27 @@
         ;; (process-relay-messages relay-id)
         client))))
 
+(defn get-next-code!
+  []
+  (let [code (str "adhoc " @request-counter)]
+    (swap! request-counter inc)
+    code))
+
 (>defn send!
   "Send a message to a relay"
-  [relay-id body]
-  [::m.n.relays/id any? => ds/channel?]
-  (log/info :send!/starting {:relay-id relay-id :body body})
-  (let [client        (connect! relay-id)
-        request-id    (str "adhoc " @request-counter)
-        topic-channel (get-channel relay-id request-id)]
-    ;; (log/info :send!/topic {:topic-channel topic-channel})
-    (swap! request-counter inc)
-    (a.n.relay-client/send! client request-id body)
-    topic-channel))
+  ([relay-id body]
+   [::m.n.relays/id any? => ds/channel?]
+   (let [code (get-next-code!)]
+     (send! relay-id code body)))
+  ([relay-id code body]
+   [::m.n.relays/id string? any? => ds/channel?]
+   (do
+     (log/info :send!/starting {:relay-id relay-id :body body})
+     (let [client        (connect! relay-id)
+           topic-channel (get-channel relay-id code)]
+       ;; (log/info :send!/topic {:topic-channel topic-channel})
+       (a.n.relay-client/send! client code body)
+       topic-channel))))
 
 (>defn disconnect!
   "Disconnect from relay and clear connection information"
@@ -181,7 +191,9 @@
         relay    (q.n.relays/read-record relay-id)
         url      (::m.n.relays/address relay)
         client   (get-client-for-id relay-id false)]
-    (ws/close! client)
+    (if client
+      (ws/close! client)
+      (log/warn :disconnect/no-connection {}))
     (swap! a.n.relay-client/connections dissoc url)
     (log/info :disconnect!/finished {:response response :client client})
     response))
@@ -239,6 +251,14 @@
         relay-id (register-relay! address)]
     {::mu/status       :ok
      ::m.n.relays/item (q.n.relays/read-record relay-id)}))
+
+(defn do-fetch-events!
+  [props]
+  (log/info :do-fetch-events!/starting {:props props})
+  (let [{relay-id  ::m.n.relays/id
+         pubkey-id ::m.n.pubkeys/id} props]
+    (log/info :do-fetch-events!/starting {:relay-id  relay-id
+                                          :pubkey-id pubkey-id})))
 
 (comment
 

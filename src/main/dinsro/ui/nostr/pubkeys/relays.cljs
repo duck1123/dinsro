@@ -7,7 +7,7 @@
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.mutations.nostr.relays :as mu.n.relays]
+   [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../model/nostr/relays.cljc][Relays Model]]
@@ -22,8 +22,7 @@
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
    ro/field-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/row-actions      [(u.links/subrow-action-button "Fetch" ::m.n.relays/id ident-key mu.n.relays/fetch!)
-                        (u.links/subrow-action-button "Delete" ::m.n.relays/id ident-key mu.n.relays/delete!)]
+   ro/row-actions      [(u.links/subrow-action-button "Fetch Events" ::m.n.relays/id ident-key mu.n.events/fetch-events!)]
    ro/row-pk           m.n.relays/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.relays/index
@@ -34,7 +33,7 @@
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
    :route-segment     ["relays"]}
   ((comp/factory Report) report))

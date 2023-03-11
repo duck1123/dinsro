@@ -7,16 +7,16 @@
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def =>] :cljs [>def])]
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.events :as a.n.events])
-
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
-
    #?(:clj [lambdaisland.glogc :as log])))
 
 ;; [[../../actions/nostr/events.clj][Event Actions]]
 
 
-(comment ::pc/_)
+#?(:cljs (comment ::m.n.pubkeys/_ ::m.n.relays/_  ::pc/_))
 
 ;; Fetch
 
@@ -62,4 +62,16 @@
            (fm/returning FetchResponse)
            (fm/with-target (targeting/append-to [:responses/id ::FetchReponse]))))))
 
-#?(:clj (def resolvers [fetch!]))
+#?(:clj
+   (pc/defmutation fetch-events!
+     [_env props]
+     {::pc/params #{::m.n.relays/id ::m.n.pubkeys/id}
+      ::pc/output [::mu/status ::mu/errors]}
+     (a.n.events/do-fetch-events! props))
+
+   :cljs
+   (fm/defmutation fetch-events! [_props]
+     (action    [_env] true)
+     (remote    [_env] true)))
+
+#?(:clj (def resolvers [fetch! fetch-events!]))

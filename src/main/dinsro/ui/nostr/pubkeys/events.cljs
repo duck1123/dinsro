@@ -31,8 +31,10 @@
 
 (def ui-event-list-item (comp/factory EventListItem {:keyfn ::m.n.events/id}))
 
+(def override-form true)
+
 (report/defsc-report Report
-  [_this props]
+  [this props]
   {ro/BodyItem         EventListItem
    ro/columns          [m.n.events/content]
    ro/control-layout   {:action-buttons [::refresh]}
@@ -45,10 +47,12 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.pubkeys/events
    ro/title            "Events"}
-  (let [{:ui/keys [current-rows]} props]
-    (dom/div {:css {:width "500px" :overflow "hidden" :outline "1px solid red"}}
-      (dom/div :.ui.items.unstackable
-        (map ui-event-list-item current-rows)))))
+  (if override-form
+    (report/render-layout this)
+    (let [{:ui/keys [current-rows]} props]
+      (dom/div {:css {:width "500px" :overflow "hidden" :outline "1px solid red"}}
+        (dom/div :.ui.items.unstackable
+          (map ui-event-list-item current-rows))))))
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

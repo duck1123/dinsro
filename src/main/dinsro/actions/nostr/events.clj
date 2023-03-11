@@ -5,9 +5,11 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.actions.nostr.event-tags :as a.n.event-tags]
    [dinsro.actions.nostr.relays :as a.n.relays]
+   [dinsro.actions.nostr.requests :as a.n.requests]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.mutations :as mu]
    [dinsro.queries.nostr.events :as q.n.events]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
@@ -19,9 +21,13 @@
 ;; [[../../ui/nostr/events.cljs][Event UI]]
 
 (>defn fetch-events!
-  [pubkey-id]
-  [::m.n.pubkeys/id => any?]
-  (log/info :fetch-events!/starting {:pubkey-id pubkey-id}))
+  [pubkey-id relay-id]
+  [::m.n.pubkeys/id ::m.n.relays/id => any?]
+  (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+  (let [code (a.n.relays/get-next-code!)]
+    (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id :code code})
+    (let [request-id (a.n.requests/register-request relay-id code)]
+      (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id :code code :request-id request-id}))))
 
 (defn update-event!
   [m]
@@ -99,6 +105,14 @@
   (log/info :do-fetch!/starting {:props props})
   (let [event-id (::m.n.events/id props)]
     (fetch-event! event-id)))
+
+(defn do-fetch-events!
+  [props]
+  (log/info :do-fetch-events!/starting {:props props})
+  (let [{pubkey-id ::m.n.pubkeys/id relay-id ::m.n.relays/id} props]
+    (log/info :do-fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+    (fetch-events! pubkey-id relay-id)
+    {::mu/status :ok}))
 
 (comment
 

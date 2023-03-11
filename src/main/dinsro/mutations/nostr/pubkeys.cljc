@@ -20,6 +20,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
+   #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
@@ -72,19 +73,6 @@
 
 ;; Fetch
 
-
-(>def ::fetch!-request
-  (s/keys :req [::m.n.pubkeys/id]))
-
-(>def ::fetch!-response-success
-  (s/keys :req [::mu/status]))
-
-(>def ::fetch!-response-error
-  (s/keys :req [::mu/status]))
-
-(>def ::fetch!-response
-  (s/or :success ::fetch!-response-success
-        :error ::fetch!-response-error))
 
 (defsc FetchResponse
   [_ _]
@@ -205,7 +193,8 @@
      [::fetch-contacts!-request => ::fetch-contacts!-response]
      (log/finer :do-fetch-contacts!/starting {:id id})
      (try
-       (a.n.events/fetch-events! id)
+       (doseq [relay-id (q.n.relays/index-ids)]
+         (a.n.events/fetch-events! id relay-id))
        {::mu/status :ok}
        (catch Exception ex
          (log/error :do-fetch-contacts!/failed {:exception ex})
@@ -297,7 +286,8 @@
      (log/finer :do-fetch-events!/started {:id id})
      (try
        (log/finer :do-fetch-events!/starting {:id id})
-       (a.n.events/fetch-events! id)
+       (doseq [relay-id (q.n.relays/index-ids)]
+         (a.n.events/fetch-events! id relay-id))
        {::mu/status :ok}
        (catch Exception ex
          (log/error :do-fetch-events!/failed {:exception ex})

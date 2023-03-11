@@ -6,6 +6,7 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
+   [dinsro.actions.nostr.requests :as a.n.requests]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
@@ -14,6 +15,7 @@
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
    [dinsro.specs :as ds]
+   [dinsro.specs.nostr.pubkeys :as s.n.pubkeys]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
@@ -161,8 +163,9 @@
    (let [output-chan (async/chan)]
      (log/info :fetch-pubkey!/starting {:pubkey-hex pubkey-hex :relay-id relay-id})
      (let [body {:authors [pubkey-hex] :kinds [0]}
-           chan (a.n.relays/send! relay-id body)]
-       (log/info :fetch-pubkey!/sent {:chan chan})
+           code (a.n.relays/get-next-code!)
+           chan (a.n.relays/send! relay-id code body)]
+       (a.n.requests/register-request relay-id code)
        (async/go-loop []
          (let [message (async/<! chan)]
            (log/info :fetch-pubkey!/processing {:message message})
@@ -179,7 +182,7 @@
   ([pubkey-id relay-id]
    [::m.n.pubkeys/id ::m.n.relays/id => any?]
    (do
-     (log/finer :update-pubkey!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+     (log/info :update-pubkey!/starting {:pubkey-id pubkey-id :relay-id relay-id})
      (async/go
        (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
          (let [hex      (::m.n.pubkeys/hex pubkey)
@@ -213,13 +216,12 @@
 (>defn do-fetch!
   "Handler for fetch! mutation"
   [{pubkey-id ::m.n.pubkeys/id relay-id  ::m.n.relays/id}]
-  [::fetch!-request => ::fetch!-response]
-  (log/finer :do-fetch!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+  [::s.n.pubkeys/fetch!-request => ::s.n.pubkeys/fetch!-response]
+  (log/info :do-fetch!/starting {:pubkey-id pubkey-id :relay-id relay-id})
   (try
-    (or relay-id
-        (fetch-contact! pubkey-id relay-id)
-        (doseq [relay-id (q.n.relays/index-ids)]
-          (fetch-contact! pubkey-id relay-id)))
+    (if relay-id
+      (update-pubkey! pubkey-id relay-id)
+      (update-pubkey! pubkey-id))
     {::mu/status :ok}
     (catch Exception ex
       (log/error :do-fetch!/failed {:exception ex})

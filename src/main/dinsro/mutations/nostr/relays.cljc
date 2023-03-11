@@ -63,6 +63,18 @@
            (fm/returning FetchResponse)
            (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))))
 
+#?(:clj
+   (pc/defmutation fetch-events!
+     [_env props]
+     {::pc/params #{::m.n.relays/id}
+      ::pc/output [::mu/status ::mu/errors]}
+     (a.n.relays/do-fetch-events! props))
+
+   :cljs
+   (fm/defmutation fetch-events! [_props]
+     (action    [_env] true)
+     (remote    [_env] true)))
+
 ;; Connect
 
 (>def ::connect!-request
@@ -177,4 +189,4 @@
            (fm/returning ConnectResponse)
            (fm/with-target (targeting/append-to [:responses/id ::SubmitReponse]))))))
 
-#?(:clj (def resolvers [connect! delete! fetch! toggle! submit!]))
+#?(:clj (def resolvers [connect! delete! fetch! fetch-events! submit! toggle!]))
