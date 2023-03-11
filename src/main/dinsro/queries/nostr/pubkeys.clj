@@ -29,14 +29,11 @@
   [hex]
   [::m.n.pubkeys/hex => (? ::m.n.pubkeys/id)]
   (log/finer :find-by-hex/starting {:hex hex})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?id]
-                 :in    [[?hex]]
-                 :where [[?id ::m.n.pubkeys/hex ?hex]]}
-        result (xt/q db query [hex])
-        id     (ffirst result)]
-    (log/finer :find-by-hex/finished {:id id})
-    id))
+  (c.xtdb/query-id
+   '{:find  [?id]
+     :in    [[?hex]]
+     :where [[?id ::m.n.pubkeys/hex ?hex]]}
+   [hex]))
 
 (>defn register-pubkey
   [hex]
@@ -54,9 +51,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.pubkeys/id)]
-  (let [db    (c.xtdb/main-db)
-        query '[:find ?e :where [?e ::m.n.pubkeys/id _]]]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.pubkeys/id _]]}))
 
 (>defn delete!
   [id]
@@ -82,41 +77,34 @@
     (xt/await-tx node tx)
     id))
 
-(defn find-by-subscription
+(>defn find-by-subscription
   [subscription-id]
+  [::m.n.subscription-pubkeys/subscription => (s/coll-of ::m.n.subscription-pubkeys/id)]
   (log/info :find-by-subscription/starting {:subscription-id subscription-id})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?pubkey-id]
-                 :in    [[?subscription-id]]
-                 :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
-                         [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]]}
-        result (xt/q db query [subscription-id])
-        ids    (map first result)]
-    (log/info :find-by-subscription/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?pubkey-id]
+     :in    [[?subscription-id]]
+     :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
+             [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]]}
+   [subscription-id]))
 
 (>defn find-contacts
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.pubkeys/id)]
   (log/finer :find-contacts/starting {:pubkey-id pubkey-id})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?target-id]
-                 :in    [[?pubkey-id]]
-                 :where [[?pc-id ::m.n.pubkey-contacts/actor ?pubkey-id]
-                         [?pc-id ::m.n.pubkey-contacts/target ?target-id]]}
-        result (xt/q db query [pubkey-id])
-        ids    (map first result)]
-    (log/finer :find-by-subscription/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?target-id]
+     :in    [[?pubkey-id]]
+     :where [[?pc-id ::m.n.pubkey-contacts/actor ?pubkey-id]
+             [?pc-id ::m.n.pubkey-contacts/target ?target-id]]}
+   [pubkey-id]))
 
-(defn find-by-name
+(>defn find-by-name
   [name]
+  [::m.n.pubkeys/name => ::m.n.pubkeys/id]
   (log/finer :find-by-name/starting {:name name})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?pubkey-id]
-                 :in    [[?name]]
-                 :where [[?pubkey-id ::m.n.pubkeys/name ?name]]}
-        result (xt/q db query [name])
-        ids    (map first result)]
-    (log/finer :find-by-name/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?pubkey-id]
+     :in    [[?name]]
+     :where [[?pubkey-id ::m.n.pubkeys/name ?name]]}
+   [name]))

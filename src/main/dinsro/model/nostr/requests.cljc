@@ -1,7 +1,7 @@
 (ns dinsro.model.nostr.requests
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn => ?]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -12,6 +12,11 @@
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
+
+(>def ::code string?)
+(defattr code ::code :string
+  {ao/identities #{::id}
+   ao/schema     :production})
 
 (>def ::status string?)
 (defattr status ::status :string
@@ -30,17 +35,17 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::end-time ::ds/date)
+(s/def ::end-time (? ::ds/date))
 (defattr end-time ::end-time :date
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::params (s/keys :req [::code ::relay]))
-(>def ::item (s/keys :req [::id ::code ::relay]))
+(>def ::params (s/keys :req [::relay ::code]))
+(>def ::item (s/keys :req [::id ::relay ::start-time ::end-time ::code ::status]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn ident-item [item] [::item => ::ident] (select-keys item [::id]))
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id status relay])
+(def attributes [id status relay start-time end-time code])

@@ -36,35 +36,22 @@
   []
   [=> (s/coll-of ::m.n.event-tags/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?relay-id]
-                :where [[?relay-id ::m.n.event-tags/id _]]}
-        ids   (map first (xt/q db query))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids '{:find  [?relay-id] :where [[?relay-id ::m.n.event-tags/id _]]}))
 
 (>defn find-by-event
   [event-id]
   [::m.n.events/id => (s/coll-of ::m.n.event-tags/id)]
   (log/fine :find-by-event/starting {:event-id event-id})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?event-tag-id]
-                 :in    [[?event-id]]
-                 :where [[?event-tag-id ::m.n.event-tags/event ?event-id]]}
-        result (xt/q db query [event-id])
-        ids    (map first result)]
-    (log/finer :find-by-event/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?event-tag-id]
+     :in    [[?event-id]]
+     :where [[?event-tag-id ::m.n.event-tags/event ?event-id]]}
+   [event-id]))
 
 (>defn delete!
   [id]
   [::m.n.events/id => nil?]
+  (log/info :delete!/starting {:id id})
   (let [node (c.xtdb/main-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
-
-;; (defn delete!
-;;   [event-id]
-;;   (log/info :delete!/starting {:event-id event-id})
-
-;;   )

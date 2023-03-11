@@ -71,7 +71,8 @@
   {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
    ro/columns           [m.n.relays/address
                          m.n.relays/connected
-                         j.n.relays/subscription-count]
+                         j.n.relays/subscription-count
+                         j.n.relays/request-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}

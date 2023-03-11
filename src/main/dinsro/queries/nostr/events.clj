@@ -39,38 +39,27 @@
   []
   [=> (s/coll-of ::m.n.events/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?relay-id]
-                :where [[?relay-id ::m.n.events/id _]]}
-        ids   (map first (xt/q db query))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids '{:find [?relay-id] :where [[?relay-id ::m.n.events/id _]]}))
 
 (>defn find-by-author
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.events/id)]
   (log/fine :find-by-author/starting {:pubkey-id pubkey-id})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?event-id]
-                 :in    [[?pubkey-id]]
-                 :where [[?event-id ::m.n.events/pubkey ?pubkey-id]]}
-        result (xt/q db query [pubkey-id])
-        ids    (map first result)]
-    (log/finer :find-by-subscription/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?event-id]
+     :in    [[?pubkey-id]]
+     :where [[?event-id ::m.n.events/pubkey ?pubkey-id]]}
+   [pubkey-id]))
 
 (>defn find-by-note-id
   [note-id]
   [::m.n.events/note-id => (? ::m.n.events/id)]
   (log/finer :find-by-note-id/starting {:note-id note-id})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?event-id]
-                 :in    [[?note-id]]
-                 :where [[?event-id ::m.n.events/note-id ?note-id]]}
-        result (xt/q db query [note-id])
-        id    (ffirst result)]
-    (log/finer :find-by-note-id/finished {:id id})
-    id))
+  (c.xtdb/query-id
+   '{:find  [?event-id]
+     :in    [[?note-id]]
+     :where [[?event-id ::m.n.events/note-id ?note-id]]}
+   [note-id]))
 
 (>defn register-event!
   [params]

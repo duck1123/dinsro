@@ -32,11 +32,7 @@
   []
   [=> (s/coll-of ::m.n.subscription-pubkeys/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find [?id] :where [[?id ::m.n.subscription-pubkeys/id _]]}
-        ids   (map first (xt/q db query))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.subscription-pubkeys/id _]]}))
 
 (>defn read-record
   [id]
@@ -51,13 +47,11 @@
   [relay-id]
   [::m.n.relays/id => (s/coll-of ::m.n.subscription-pubkeys/id)]
   (log/info :index-by-relay/starting {:relay-id relay-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [[?relay-id]]
-                :where [[?id ::m.n.subscription-pubkeys/relay ?relay-id]]}
-        ids   (map first (xt/q db query [relay-id]))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?id]
+     :in    [[?relay-id]]
+     :where [[?id ::m.n.subscription-pubkeys/relay ?relay-id]]}
+   [relay-id]))
 
 (>defn delete!
   [id]
@@ -78,25 +72,20 @@
    => (? ::m.n.subscription-pubkeys/id)]
   (log/info :find-by-relay-and-code/starting {:subscription-id subscription-id
                                               :pubkey-id       pubkey-id})
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [?sp-id]
-                 :in    [[?subscription-id ?pubkey-id]]
-                 :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
-                         [?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]]}
-        result (xt/q db query [subscription-id pubkey-id])
-        id     (ffirst result)]
-    (log/info :find-by-relay-and-code/finished {:id id})
-    id))
+  (c.xtdb/query-id
+   '{:find  [?sp-id]
+     :in    [[?subscription-id ?pubkey-id]]
+     :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
+             [?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]]}
+   [subscription-id pubkey-id]))
 
 (defn find-pubkeys-by-subscription
   [subscription-id]
   (log/info :find-pubkeys-by-subscription/starting {:subscription-id subscription-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?pubkey]
-                :in    [[?subscription-id]]
-                :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
-                        [?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
-                        [?pubkey-id ::m.n.pubkeys/hex ?pubkey]]}
-        pubkeys   (map first (xt/q db query [subscription-id]))]
-    (log/info :find-pubkeys-by-subscription/finished {:pubkeys pubkeys})
-    pubkeys))
+  (c.xtdb/query-ids
+   '{:find  [?pubkey]
+     :in    [[?subscription-id]]
+     :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
+             [?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
+             [?pubkey-id ::m.n.pubkeys/hex ?pubkey]]}
+   [subscription-id]))

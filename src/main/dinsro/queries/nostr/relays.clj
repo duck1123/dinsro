@@ -41,25 +41,19 @@
   []
   [=> (s/coll-of ::m.n.relays/id)]
   (log/finer :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?relay-id]
-                :where [[?relay-id ::m.n.relays/id _]]}
-        ids   (map first (xt/q db query))]
-    (log/finer :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?relay-id]
+     :where [[?relay-id ::m.n.relays/id _]]}))
 
 (>defn find-by-address
   [address]
   [::m.n.relays/address => (? ::m.n.relays/id)]
   (log/info :find-by-address/starting {:address address})
-  (let [db      (c.xtdb/main-db)
-        query   '{:find  [?relay-id]
-                  :in    [[?address]]
-                  :where [[?relay-id ::m.n.relays/address ?address]]}
-        results (xt/q db query [address])
-        id      (ffirst results)]
-    (log/info :find-by-address/finished {:id id :results results})
-    id))
+  (c.xtdb/query-id
+   '{:find  [?relay-id]
+     :in    [[?address]]
+     :where [[?relay-id ::m.n.relays/address ?address]]}
+   [address]))
 
 (>defn delete-record
   [id]

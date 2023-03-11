@@ -41,3 +41,29 @@
         db (c.api/db node)]
     #_(log/finer :db/read {:db db :node node})
     db))
+
+(defn query-id
+  ([query]
+   (let [db      (main-db)
+         results (c.api/q db query)
+         id      (ffirst results)]
+     (log/info :find-by-address/finished {:id id :results results})
+     id))
+  ([query params]
+   (let [db      (main-db)
+         results (c.api/q db query params)
+         id      (ffirst results)]
+     (log/info :find-by-address/finished {:id id :results results})
+     id)))
+
+(defn query-ids
+  ([query]
+   (let [db  (main-db)
+         ids (map first (c.api/q db query))]
+     (log/info :query-ids/finished {:ids ids})
+     ids))
+  ([query params]
+   (let [db  (main-db)
+         ids (map first (c.api/q db query params))]
+     (log/info :query-ids/finished {:ids ids})
+     ids)))

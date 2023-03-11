@@ -29,8 +29,10 @@
 #?(:clj (defn atom? [a] (= (type a) Atom)))
 
 (defn ->inst
-  [s]
-  (tick/instant (tick/in (tick/date-time s) default-timezone)))
+  ([]
+   (tick/instant))
+  ([s]
+   (tick/instant (tick/in (tick/date-time s) default-timezone))))
 
 #?(:clj
    (defn ms->inst

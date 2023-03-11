@@ -37,9 +37,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.pubkey-contacts/id)]
-  (let [db    (c.xtdb/main-db)
-        query '[:find ?e :where [?e ::m.n.pubkey-contacts/id _]]]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.pubkey-contacts/id _]]}))
 
 (>defn delete!
   [id]
@@ -58,12 +56,9 @@
   [actor-id target-id]
   [::m.n.pubkeys/id ::m.n.pubkeys/id => (? ::m.n.pubkey-contacts/id)]
   (log/fine :find-by-actor-and-target/starting {:actor-id actor-id :target-id target-id})
-  (let [db      (c.xtdb/main-db)
-        query   '{:find  [?contact-id]
-                  :in    [[?actor ?target]]
-                  :where [[?contact-id ::m.n.pubkey-contacts/actor ?actor]
-                          [?contact-id ::m.n.pubkey-contacts/target ?target]]}
-        results (xt/q db query [actor-id target-id])
-        id      (ffirst results)]
-    (log/fine :find-by-actor-and-target/finished {:id id})
-    id))
+  (c.xtdb/query-id
+   '{:find  [?contact-id]
+     :in    [[?actor ?target]]
+     :where [[?contact-id ::m.n.pubkey-contacts/actor ?actor]
+             [?contact-id ::m.n.pubkey-contacts/target ?target]]}
+   [actor-id target-id]))

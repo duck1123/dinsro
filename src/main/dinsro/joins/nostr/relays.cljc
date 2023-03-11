@@ -4,6 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.nostr.relays :as m.n.relays]
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
+   #?(:clj [dinsro.queries.nostr.requests :as q.n.requests])
    #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -31,6 +32,17 @@
        (log/info :index/starting {:ids ids})
        {::index (m.n.relays/idents ids)}))})
 
+(defattr request-count ::request-count :int
+  {ao/identities #{::m.n.relays/id}
+   ao/pc-input   #{::m.n.relays/id}
+   ao/pc-resolve
+   (fn [_env params]
+     (log/info :request-count/starting {:params params})
+     (let [relay-id (::m.n.relays/id params)
+           ids      #?(:clj  (q.n.requests/find-by-relay relay-id)
+                       :cljs (do (comment relay-id) []))]
+       {::subscription-count (count ids)}))})
+
 (defattr subscription-count ::subscription-count :int
   {ao/identities #{::m.n.relays/id}
    ao/pc-input   #{::m.n.relays/id}
@@ -42,4 +54,4 @@
                    :cljs (do (comment relay-id) []))]
        {::subscription-count (count ids)}))})
 
-(def attributes [admin-index index subscription-count])
+(def attributes [admin-index index request-count subscription-count])
