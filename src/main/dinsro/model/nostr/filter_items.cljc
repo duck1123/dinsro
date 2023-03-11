@@ -1,4 +1,5 @@
 (ns dinsro.model.nostr.filter-items
+  (:refer-clojure :exclude [filter type])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn => ?]]
@@ -7,9 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.filters :as m.n.filters]
-   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.specs :as ds]))
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]))
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

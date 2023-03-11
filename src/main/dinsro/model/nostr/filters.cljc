@@ -5,8 +5,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.specs :as ds]))
+   [dinsro.model.nostr.requests :as m.n.requests]))
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

@@ -21,14 +21,16 @@
     :route "dinsro.ui.nostr.requests.filters/SubPage"}])
 
 (defsc Show
-  [this {::m.n.requests/keys [code]
-         :ui/keys          [router]
-         :as               props}]
-  {:route-segment ["request" :id]
-   :query         [{:ui/router (comp/get-query Router)}]
-   :initial-state {:ui/router {}}
-   :ident         ::m.n.requests/id
+  [_this {::m.n.requests/keys [code id]
+          :ui/keys            [router]
+          :as                 props}]
+  {:ident         ::m.n.requests/id
+   :initial-state {::m.n.requests/id nil
+                   :ui/router        {}}
    :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
+   :query         [::m.n.requests/id
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["request" :id]
    :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
   (if id
     (let [{:keys [main _sub]} (css/get-classnames Show)]
@@ -40,7 +42,7 @@
         (u.links/ui-nav-menu {:menu-items menu-items :id id})
         (eb/error-boundary
          (if router
-           (ui-router router)
+           ((comp/factory Router) router)
            (dom/div :.ui.segment
              (dom/h3 {} "Router not loaded")
              (u.links/ui-props-logger props))))))

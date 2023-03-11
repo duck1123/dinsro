@@ -6,7 +6,6 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
-   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 

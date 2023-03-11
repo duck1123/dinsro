@@ -26,7 +26,7 @@
    :label  "Subscribe"})
 
 (form/defsc-form NewForm
-  [this {:as props}]
+  [_this _props]
   {fo/attributes   [m.n.requests/id
                     m.n.requests/start-time
                     m.n.requests/status
