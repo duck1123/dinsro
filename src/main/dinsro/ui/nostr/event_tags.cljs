@@ -15,7 +15,6 @@
 ;; [[../../actions/nostr/event_tags.clj][Event Tag Actions]]
 ;; [[../../model/nostr/event_tags.cljc][Event Tags Model]]
 
-
 (def ident-key ::m.n.events/id)
 (def router-key :dinsro.ui.nostr.events/Router)
 
@@ -47,8 +46,6 @@
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [{:ui/report (comp/get-query Report)}
@@ -58,5 +55,3 @@
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))

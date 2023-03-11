@@ -37,5 +37,3 @@
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))

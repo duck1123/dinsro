@@ -52,24 +52,6 @@
    ro/source-attribute ::j.transactions/index
    ro/title            "Transaction Report"})
 
-(report/defsc-report AdminReport
-  [_this _props]
-  {ro/columns          [m.transactions/description
-                        m.transactions/date
-                        j.transactions/user]
-   ro/controls         {::new-transaction {:label  "New Transaction"
-                                           :type   :button
-                                           :action (fn [this] (form/create! this NewForm))}
-                        ::refresh         u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
-   ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
-   ro/route            "transactions"
-   ro/row-actions      []
-   ro/row-pk           m.transactions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.transactions/admin-index
-   ro/title            "Admin Transaction Report"})
-
 (defsc Show
   [_this {::m.transactions/keys [description date]
           :ui/keys              [debits]}]

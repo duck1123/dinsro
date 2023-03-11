@@ -70,8 +70,6 @@
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [{:ui/report (comp/get-query Report)}
@@ -81,5 +79,3 @@
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))
-
-(def ui-sub-page (comp/factory SubPage))

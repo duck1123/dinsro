@@ -1,22 +1,12 @@
 (ns dinsro.ui.admin.users
   (:require
-   ;; [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   ;; [com.fulcrologic.fulcro.dom :as dom]
-   ;; [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
-   [dinsro.ui.links :as u.links]
-   ;; [dinsro.ui.user-accounts :as u.user-accounts]
-   ;; [dinsro.ui.user-debits :as u.user-debits]
-   ;; [dinsro.ui.user-ln-nodes :as u.user-ln-nodes]
-   ;; [dinsro.ui.user-pubkeys :as u.user-pubkeys]
-   ;; [dinsro.ui.user-transactions :as u.user-transactions]
-   ;; [dinsro.ui.user-wallets :as u.user-wallets]
-   ))
+   [dinsro.ui.links :as u.links]))
 
 (form/defsc-form AdminUserForm
   [_this _props]

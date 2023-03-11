@@ -44,15 +44,15 @@
                    ::m.navlink/name       ""
                    ::m.navlink/auth-link? false
                    ::m.navlink/target     nil
-                   :root/router           {}}
+                   :ui/router           {}}
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
-                    (let [defaults {:root/router (comp/get-initial-state RouteQuery)}]
+                    (let [defaults {:ui/router (comp/get-initial-state RouteQuery)}]
                       (merge current-normalized data-tree defaults)))
    :query         [::m.navlink/auth-link?
                    ::m.navlink/id
                    ::m.navlink/name
                    ::m.navlink/target
-                   {[:root/router '_] (comp/get-query RouteQuery)}]}
+                   {[:ui/router '_] (comp/get-query RouteQuery)}]}
   (log/fine :Navlink/starting {:props props})
   (dom/a :.item
     {:onClick (fn [e]
@@ -72,16 +72,16 @@
                    ::m.navlink/auth-link? false
                    ::m.navlink/target     nil
                    ::m.navlink/children   []
-                   :root/router           {}}
+                   :ui/router           {}}
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
-                    (let [defaults {:root/router (comp/get-initial-state RouteQuery)}]
+                    (let [defaults {:ui/router (comp/get-initial-state RouteQuery)}]
                       (merge current-normalized data-tree defaults)))
    :query         [::m.navlink/auth-link?
                    ::m.navlink/id
                    ::m.navlink/name
                    ::m.navlink/target
                    {::m.navlink/children (comp/get-query NavLink)}
-                   {[:root/router '_] (comp/get-query RouteQuery)}]}
+                   {[:ui/router '_] (comp/get-query RouteQuery)}]}
   (log/debug :top-nav-link/rendered {:props props})
   (if (seq children)
     (dom/div :.ui.simple.dropdown.item

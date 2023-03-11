@@ -94,7 +94,8 @@
 (def ui-root-router (comp/factory RootRouter))
 
 (defsc Root
-  [this {:root/keys        [authenticator global-error init-form navbar router]
+  [this {:root/keys        [authenticator global-error init-form navbar]
+         :ui/keys          [router]
          ::m.settings/keys [site-config]}]
   {:componentDidMount
    (fn [this]
@@ -102,23 +103,22 @@
      (df/load! this :root/navbar u.navbar/NavbarUnion)
      (uism/begin! this machines/hideable ::mu.navbar/navbarsm
                   {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
-   :css           [[:.container {:height "100%"
+   :css           [[:.container {:height   "100%"
                                  :overflow "hidden"}]
                    [:.pusher {:height   "100%"
                               :overflow "auto !important"}]
                    [:.top {:height "100%"}]]
-   :query
-   [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
-    {:root/navbar (comp/get-query u.navbar/Navbar)}
-    {:root/init-form (comp/get-query u.initialize/InitForm)}
-    {:root/global-error (comp/get-query GlobalErrorDisplay)}
-    {:root/router (comp/get-query RootRouter)}
-    ::auth/authorization
-    {::m.settings/site-config (comp/get-query mu.settings/Config)}]
+   :query         [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
+                   {:root/navbar (comp/get-query u.navbar/Navbar)}
+                   {:root/init-form (comp/get-query u.initialize/InitForm)}
+                   {:root/global-error (comp/get-query GlobalErrorDisplay)}
+                   {:ui/router (comp/get-query RootRouter)}
+                   ::auth/authorization
+                   {::m.settings/site-config (comp/get-query mu.settings/Config)}]
    :initial-state {:root/navbar             {}
                    :root/authenticator      {}
                    :root/init-form          {}
-                   :root/router             {}
+                   :ui/router               {}
                    :root/global-error       {}
                    ::m.settings/site-config {}}}
   (let [{:keys [container pushable pusher top]} (css/get-classnames Root)

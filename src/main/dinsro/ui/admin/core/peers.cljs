@@ -49,14 +49,6 @@
    fo/title          "New Core Peer"}
   (form/render-layout this props))
 
-(def delete-button
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this _]
-             (let [{::m.c.peers/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.peers/delete! {::m.c.peers/id id})])))})
-
 (def delete-action-button
   "Delete button for reports"
   {:type   :button

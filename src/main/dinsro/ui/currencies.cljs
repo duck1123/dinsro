@@ -20,13 +20,6 @@
    fo/route-prefix "new-currency"
    fo/title        "New Currency"})
 
-(form/defsc-form NewAdminCurrencyForm [_this _props]
-  {fo/id           m.currencies/id
-   fo/attributes   [m.currencies/name
-                    m.currencies/code]
-   fo/route-prefix "new-admin-currency"
-   fo/title        "New Currency"})
-
 (def new-button
   {:label  "New"
    :type   :button
@@ -59,17 +52,6 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.currencies/index
    ro/title            "Currencies Report"})
-
-(report/defsc-report AdminIndexCurrenciesReport
-  [_this _props]
-  {ro/columns          [m.currencies/name m.currencies/code]
-   ro/controls         {::new {:label  "New Currency"
-                               :type   :button
-                               :action #(form/create! % NewAdminCurrencyForm)}}
-   ro/source-attribute ::j.currencies/index
-   ro/title            "Currencies"
-   ro/row-pk           m.currencies/id
-   ro/run-on-mount?    true})
 
 (defsc Show
   [_this {::m.currencies/keys [id name]

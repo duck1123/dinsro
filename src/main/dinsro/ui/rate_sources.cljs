@@ -69,14 +69,6 @@
    ro/source-attribute ::j.rate-sources/index
    ro/title            "Rate Sources Report"})
 
-(report/defsc-report AdminIndexRateSourcesReport
-  [_this _props]
-  {ro/columns          [m.rate-sources/name]
-   ro/source-attribute ::j.rate-sources/index
-   ro/title            "Rate Sources"
-   ro/row-pk           m.rate-sources/id
-   ro/run-on-mount?    true})
-
 (defsc Show
   [_this {::m.rate-sources/keys [name url active currency id]
           ::j.rate-sources/keys [rate-count]

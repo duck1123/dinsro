@@ -27,8 +27,6 @@
    ro/source-attribute ::j.rates/index
    ro/title            "Rate Sources Rates"})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [{:ui/report (comp/get-query Report)}
@@ -37,6 +35,4 @@
    :route-segment     ["rates"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+  ((comp/factory Report) report))

@@ -3,8 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.users :as j.users]
@@ -20,9 +18,6 @@
 ;; [[../actions/users.clj][User Actions]]
 ;; [[../joins/users.cljc][User Joins]]
 ;; [[../model/users.cljc][User Models]]
-
-
-(def override-form true)
 
 (def menu-items
   [{:key   "accounts"
@@ -78,16 +73,6 @@
    (u.links/ui-nav-menu {:id id :menu-items menu-items})
    (ui-router router)))
 
-(form/defsc-form AdminUserForm
-  [_this _props]
-  {fo/id           m.users/id
-   fo/attributes   [m.users/name
-                    m.users/role
-                    m.users/password]
-   fo/cancel-route ["admin"]
-   fo/route-prefix "admin-user"
-   fo/title        "Admin User"})
-
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name]
@@ -95,18 +80,4 @@
    ro/title            "Users"
    ro/route            "users"
    ro/row-pk           m.users/id
-   ro/run-on-mount?    true})
-
-(report/defsc-report AdminReport
-  [_this _props]
-  {ro/columns          [m.users/name m.users/role]
-   ro/controls         {::new-user {:label  "New User"
-                                    :type   :button
-                                    :action (fn [this] (form/create! this AdminUserForm))}
-                        ::refresh  u.links/refresh-control}
-   ro/form-links       {::m.users/name AdminUserForm}
-   ro/source-attribute ::j.users/index
-   ro/title            "Admin Users"
-   ro/row-pk           m.users/id
-   ro/route            "users"
    ro/run-on-mount?    true})

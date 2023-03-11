@@ -21,21 +21,21 @@
             ::m.navlink/name       (ds/gen-key ::m.navlink/name)
             ::m.navlink/auth-link? false
             ::m.navlink/target     nil
-            :root/router           {}})}))
+            :ui/router           {}})}))
 
 (def unauth-links
   [{::m.navlink/id         :foo
     ::m.navlink/name       (ds/gen-key ::m.navlink/name)
     ::m.navlink/auth-link? false
     ::m.navlink/target     nil
-    :root/router           {}}])
+    :ui/router           {}}])
 
 (def menu-links
   [#_{::m.navlink/id         :foo
       ::m.navlink/name       (ds/gen-key ::m.navlink/name)
       ::m.navlink/auth-link? false
       ::m.navlink/target     nil
-      :root/router           {}}])
+      :ui/router           {}}])
 
 (def nav-state {::uism/asm-id                                          :dinsro.mutations.navbar/navbarsm,
                 ::uism/state-machine-id                                dinsro.machines/hideable,

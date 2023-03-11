@@ -21,12 +21,12 @@
    [dinsro.formatters.date-time :as fmt.date-time]
    [dinsro.ui :as ui]
    [dinsro.ui.admin :as u.admin]
+   [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.core.networks :as u.c.networks]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.login :as u.login]
-   [dinsro.ui.users :as u.users]
    [lambdaisland.glogi :as log]
    [lambdaisland.glogi.console :as glogi-console]
    [taoensso.timbre :as timbre]))
@@ -137,7 +137,7 @@
         target0                (dr/resolve-target app route)
         target                 (condp = target0
                                  nil               u.home/HomePage
-                                 u.admin/AdminPage u.users/AdminReport
+                                 u.admin/AdminPage u.a.users/AdminReport
                                  u.c.networks/Show u.c.n.addresses/SubPage
                                  target0)]
     (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})

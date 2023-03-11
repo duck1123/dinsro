@@ -14,7 +14,9 @@
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
+   [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.links :as u.links]
@@ -31,6 +33,36 @@
    :local? true
    :label  "New Node"
    :action (fn [this _] (form/create! this CreateLightningNodeForm))})
+
+(def new-invoice-button
+  {:type   :button
+   :local? true
+   :label  "New Invoice"
+   :action
+   (fn [this _kw]
+     (let [{::m.ln.nodes/keys [id name]} (comp/props this)
+           component                     (comp/registry-key->class :dinsro.ui.ln.invoices/NewInvoiceForm)
+           node                          {::m.ln.nodes/id   id
+                                          ::m.ln.nodes/name name}
+           state                         {::m.ln.invoices/memo "This is a memo"
+                                          ::m.ln.invoices/node node}
+           options                       {:initial-state state}]
+       (form/create! this component options)))})
+
+(def new-payment-button
+  {:type   :button
+   :local? true
+   :label  "New Payment"
+   :action
+   (fn [this _kw]
+     (let [{::m.ln.nodes/keys [id name]} (comp/props this)
+           component                     (comp/registry-key->class :dinsro.ui.ln.payreqs/NewPaymentForm)
+           node                          {::m.ln.nodes/id   id
+                                          ::m.ln.nodes/name name}
+           state                         {::m.ln.payreqs/memo "This is a memo"
+                                          ::m.ln.payreqs/node node}
+           options                       {:initial-state state}]
+       (form/create! this component options)))})
 
 (def button-info
   [{:label            "Unlock"
@@ -248,21 +280,3 @@
   (do
     (log/info :Report/starting {:props props})
     (report/render-layout this)))
-
-(report/defsc-report AdminReport
-  [_this _props]
-  {ro/columns          [m.ln.nodes/name
-                        m.ln.info/alias-attr
-                        m.ln.nodes/core-node
-                        m.ln.info/color
-                        m.ln.nodes/user]
-   ro/control-layout   {:action-buttons [::new-node]}
-   ro/controls         {::new-node new-node-button}
-   ro/field-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
-                        ::m.ln.nodes/user      #(u.links/ui-user-link %2)
-                        ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
-   ro/route            "nodes"
-   ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.nodes/admin-index
-   ro/title            "Lightning Node Report"})

@@ -160,6 +160,7 @@
              :post-mutation-params {:target ident}})))))))
 
 (defn subpage-loader
+  "componentDidMount handler for SubPage components that load a report"
   [ident-key router-key Report this]
   (let [props    (comp/props this)
         chain-id (get-in props [[::dr/id router-key] ident-key])]
@@ -173,6 +174,7 @@
     (merge-pages ctx k mappings)))
 
 (def blacklisted-keys
+  "Keys that will not be logged by log-props"
   #{:com.fulcrologic.fulcro.ui-state-machines/asm-id
     :com.fulcrologic.fulcro.application/active-remotes
     :com.fulcrologic.fulcro.ui-state-machines/ident->actor
@@ -182,6 +184,7 @@
     :com.fulcrologic.fulcro.ui-state-machines/actor->ident})
 
 (defn log-props
+  "Display a map for debugging purposes"
   [props]
   (dom/dl :.ui.segment
     (->> (keys props)
@@ -255,7 +258,9 @@
               (rroute/route-to! this route {}))))
         (throw (js/Error. "no route"))))}))
 
-(def ui-nav-menu (comp/factory NavMenu))
+(def ui-nav-menu
+  "Display a nav menu for controlling subpages"
+  (comp/factory NavMenu))
 
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
@@ -264,7 +269,9 @@
    fo/attributes [m.accounts/name]}
   (form-link this id name :dinsro.ui.accounts/Show))
 
-(def ui-account-link (comp/factory AccountLinkForm {:keyfn ::m.accounts/id}))
+(def ui-account-link
+  "Display account as a link"
+  (comp/factory AccountLinkForm {:keyfn ::m.accounts/id}))
 
 (form/defsc-form BlockLinkForm
   [this {::m.c.blocks/keys [id hash]}]

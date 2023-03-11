@@ -23,15 +23,6 @@
     :name  "Tags"
     :route "dinsro.ui.nostr.event-tags/SubPage"}])
 
-(defn delete-action
-  [report-instance {::m.n.events/keys [id]}]
-  (form/delete! report-instance ::m.n.events/id id))
-
-(def delete-action-button
-  {:label  "Delete"
-   :action delete-action
-   :style  :delete-button})
-
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.n.events/id]
    fo/cancel-route ["events"]

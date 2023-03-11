@@ -37,18 +37,6 @@
   []
   {})
 
-(defn WalletForm-data
-  []
-  {::m.c.wallets/id         (ds/gen-key ::m.c.wallets/id)
-   ::m.c.wallets/name       (ds/gen-key ::m.c.wallets/name)
-   ::m.c.wallets/derivation (ds/gen-key ::m.c.wallets/derivation)
-   ::m.c.wallets/node       (WalletForm-node-data)
-   ::m.c.wallets/words      []
-
-   :com.fulcrologic.fulcro.application/active-remotes   #{}
-   :com.fulcrologic.fulcro.ui-state-machines/asm-id     {}
-   :com.fulcrologic.fulcro.algorithms.form-state/config {}})
-
 (defn NewForm-data
   []
   (let [idents      [[:dinsro.model.core.nodes/id (ds/gen-key ::m.c.nodes/id)]]

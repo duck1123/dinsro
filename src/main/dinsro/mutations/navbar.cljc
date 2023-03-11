@@ -17,7 +17,7 @@
    (defmutation navigate! [props]
      (action [{:keys [app state]}]
        (let [{::m.navlink/keys [auth-link? target]} props]
-         (when-let [ident (get-in props [:root/router ::dr/current-route ::fs/config ::fs/id])]
+         (when-let [ident (get-in props [:ui/router ::dr/current-route ::fs/config ::fs/id])]
            (swap! state #(assoc-in % [::uism/asm-id ident ::uism/local-storage :abandoned?] true)))
          (if-let [component (comp/registry-key->class target)]
            (do
