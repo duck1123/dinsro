@@ -8,6 +8,7 @@
    [taoensso.encore :as enc]
    [xtdb.api :as xt]))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defstate ^{:on-reload :noop} queries
   "A collection of started xtdb nodes"
   :start (do

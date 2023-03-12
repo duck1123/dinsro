@@ -29,11 +29,6 @@
             Instant       (LocalDateTime/ofInstant date UTC)
             LocalDateTime date)))
 
-#?(:clj (defn ->instant ^Instant [date]
-          (condp instance? date
-            Date    (.toInstant date)
-            Instant date)))
-
 (defn format-date [^Instant instant]
   (if instant
     (let [date #?(:clj (->local-date instant)
@@ -42,9 +37,6 @@
       (cond-> (.format fmt date)
         (not= year (current-year)) (str ", " year)))
     "N/A"))
-
-(defn format-period [from to]
-  (str (format-date from) " - " (format-date to)))
 
 (defn date-formatter
   "RAD report formatter that can be set on a RAD attribute (`::report/field-formatter`)"

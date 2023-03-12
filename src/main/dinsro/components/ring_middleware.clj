@@ -14,7 +14,6 @@
    [dinsro.components.parser :as parser]
    [dinsro.components.socket :as socket]
    [hiccup.page :refer [html5]]
-   [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.session.cookie :refer [cookie-store]]
@@ -50,11 +49,6 @@
        (fn [query]
          (parser/parser {:ring/request request} query)))
       (handler request))))
-
-(def not-found-handler
-  (fn [_req]
-    {:status 404
-     :body   {}}))
 
 (defn wrap-html-routes [ring-handler]
   (fn [{:keys [uri anti-forgery-token] :as req}]
@@ -116,10 +110,6 @@
       (.format
        (com.cognitect.transit.impl.AbstractParser/getDateTimeFormat)
        (java.util.Date/from inst))))})
-
-(defn query-parser
-  [_env query]
-  (log/info :query-parser/starting {:query query}))
 
 (defstate websockets
   :start

@@ -50,5 +50,3 @@
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id code description image-url thumbnail-url pubkey])
-
-#?(:clj (def resolvers []))

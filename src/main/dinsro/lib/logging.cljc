@@ -2,23 +2,10 @@
   "Some helpers to make logging a bit nicer."
   (:require
    ;; IMPORTANT: No explicit require for pprint in cljs. It bloats builds.
-   #?@(:clj [[clojure.pprint :refer [pprint]]
-             [clojure.string :as str]
+   #?@(:clj [[clojure.string :as str]
              [taoensso.encore :as enc]])
    #?(:clj [taoensso.timbre :as log])
    #?(:clj [lambdaisland.glogc :as glog])))
-
-(defn pretty-middleware
-  "Returns timbre logging middleware that will reformat items marked with `pretty` as pretty-printed strings using `data->string`."
-  [data->string]
-  (fn [data]
-    (update data :vargs (fn [args]
-                          (mapv
-                           (fn [v]
-                             (if (and (coll? v) (-> v meta :pretty))
-                               (data->string v)
-                               v))
-                           args)))))
 
 #?(:clj
    (defn custom-output-fn
@@ -56,6 +43,4 @@
      [config]
      (let [{::log/keys [logging-config]} config]
        (glog/debug :configure-logging!/starting {:logging-config logging-config})
-       (log/merge-config! (assoc logging-config
-                                 :middleware [(pretty-middleware #(with-out-str (pprint %)))]
-                                 :output-fn custom-output-fn)))))
+       (log/merge-config! (assoc logging-config :output-fn custom-output-fn)))))

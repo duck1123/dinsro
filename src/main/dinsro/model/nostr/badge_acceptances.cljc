@@ -30,5 +30,3 @@
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id badge])
-
-#?(:clj (def resolvers []))
