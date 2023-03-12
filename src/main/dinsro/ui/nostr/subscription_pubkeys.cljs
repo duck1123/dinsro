@@ -18,14 +18,6 @@
 (def ident-key ::m.n.subscriptions/id)
 (def router-key :dinsro.ui.nostr.subscriptions/Router)
 
-(def delete-action-button
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this props]
-             (let [subscription-id (::m.n.subscriptions/id props)]
-               (comp/transact! this [(mu.n.subscription-pubkeys/delete! {::m.n.subscriptions/id subscription-id})])))})
-
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.subscription-pubkeys/id           #(u.links/ui-subscription-pubkey-link %3)

@@ -16,15 +16,6 @@
 (def ident-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
 
-(defn stop-action
-  [report-instance _]
-  (let [id (u.links/get-control-value report-instance ::m.n.requests/id)]
-    (comp/transact! report-instance [(mu.n.requests/stop! {::m.n.requests/id id})])))
-
-(def stop-action-button
-  {:label  "Stop"
-   :action stop-action})
-
 (form/defsc-form NewForm
   [_this _props]
   {fo/id           m.n.requests/id

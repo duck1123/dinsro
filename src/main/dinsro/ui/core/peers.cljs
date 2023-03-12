@@ -50,15 +50,6 @@
    fo/title          "New Core Peer"}
   (form/render-layout this props))
 
-(def delete-action-button
-  "Delete button for reports"
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this {::m.c.peers/keys [id]}]
-             (log/info :delete-action/clicked {:id id})
-             (comp/transact! this [(mu.c.peers/delete! {::m.c.peers/id id})]))})
-
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.peers/addr

@@ -130,7 +130,6 @@
                      :onClick (fn [_e]
                                 (log/info :click {})
                                 (comp/transact! this [(mu.n.relays/toggle! {::m.n.relays/id id})]))}
-
           "Toggle"))
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))

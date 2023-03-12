@@ -12,8 +12,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.links :as u.links]))
 
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkeys Join]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
@@ -37,49 +36,6 @@
    :local? true
    :label  "New"
    :action (fn [this _] (form/create! this AddForm))})
-
-(defn fetch-action
-  [report-instance {pubkey-id ::m.n.pubkeys/id
-                    :as props}]
-  (log/info :fetch-action/starting {:report-instance report-instance
-                                    :props props
-                                    :p (comp/props report-instance)})
-  (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
-    (log/info :subscribe-action/starting {:relay-id relay-id :pubkey-id pubkey-id})
-    (if relay-id
-      (let [props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
-        (comp/transact! report-instance [(mu.n.pubkeys/fetch! props)]))
-      (throw (js/Error. "no id")))))
-
-(defn fetch-events-action
-  [report-instance {pubkey-id ::m.n.pubkeys/id
-                    :as       props}]
-  (log/info :fetch-action/starting {:report-instance report-instance
-                                    :props           props})
-  (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)
-        props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
-    (comp/transact! report-instance [(mu.n.events/fetch-events! props)])))
-
-(defn subscribe-action
-  [report-instance {pubkey-id ::m.n.pubkeys/id}]
-  (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
-    (log/info :subscribe-action/starting {:relay-id relay-id :pubkey-id pubkey-id})
-    (if relay-id
-      (let [props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
-        (comp/transact! report-instance [(mu.n.pubkeys/subscribe! props)]))
-      (throw (js/Error. "no id")))))
-
-(def fetch-action-button
-  {:label  "Fetch"
-   :action fetch-action})
-
-(def fetch-events-button
-  {:label  "Fetch Events"
-   :action fetch-events-action})
-
-(def subscribe-action-button
-  {:label  "Subscribe"
-   :action subscribe-action})
 
 (report/defsc-report Report
   [_this _props]

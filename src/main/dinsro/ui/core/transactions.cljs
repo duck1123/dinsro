@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.transactions :as j.c.transactions]
@@ -12,24 +11,6 @@
    [dinsro.ui.core.transaction-inputs :as u.c.transaction-inputs]
    [dinsro.ui.core.transaction-outputs :as u.c.transaction-outputs]
    [dinsro.ui.links :as u.links]))
-
-(defn fetch-action
-  [report-instance {::m.c.transactions/keys [id]}]
-  (comp/transact! report-instance [(mu.c.transactions/fetch! {::m.c.transactions/id id})]))
-
-(defn delete-action
-  [report-instance {::m.c.transactions/keys [id]}]
-  (form/delete! report-instance ::m.c.transactions/id id))
-
-(def fetch-action-button
-  {:label     "Fetch"
-   :action    fetch-action
-   :disabled? (fn [_ row-props] (:account/active? row-props))})
-
-(def delete-action-button
-  {:label  "Delete"
-   :action delete-action
-   :style  :delete-button})
 
 (defsc Show
   "Show a core tx"
