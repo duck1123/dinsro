@@ -33,9 +33,9 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {:ui/report {}}
    :route-segment     ["nodes"]
    :ident             (fn [] [:component/id ::SubPage])}

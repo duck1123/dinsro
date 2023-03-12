@@ -7,19 +7,19 @@
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.currencies :as m.currencies]))
 
-(form/defsc-form NewAdminCurrencyForm [_this _props]
-  {fo/attributes   [m.currencies/name
+(form/defsc-form NewForm [_this _props]
+  {fo/id           m.currencies/id
+   fo/attributes   [m.currencies/name
                     m.currencies/code]
-   fo/id           m.currencies/id
-   fo/route-prefix "new-admin-currency"
+   fo/route-prefix "new-currency"
    fo/title        "New Currency"})
 
-(report/defsc-report AdminIndexCurrenciesReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.currencies/name m.currencies/code]
    ro/controls         {::new {:label  "New Currency"
                                :type   :button
-                               :action #(form/create! % NewAdminCurrencyForm)}}
+                               :action #(form/create! % NewForm)}}
    ro/route            ["currencies"]
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true

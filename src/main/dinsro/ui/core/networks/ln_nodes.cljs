@@ -9,6 +9,9 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.ui.links :as u.links]))
 
+(def ident-key ::m.c.networks/id)
+(def router-key :dinsro.ui.core.networks/Router)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.ln.nodes/name
@@ -25,10 +28,10 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query         [[::dr/id :dinsro.ui.core.networks/Router]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :query         [[::dr/id router-key]
                    {:ui/report (comp/get-query Report)}]
    :initial-state {:ui/report {}}
    :route-segment ["ln-nodes"]
    :ident         (fn [] [:component/id ::SubPage])}
   ((comp/factory Report) report))
-

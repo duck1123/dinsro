@@ -15,8 +15,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.transactions/description
-                        m.transactions/date
-                        j.transactions/user]
+                        m.transactions/date]
    ro/controls         {::m.users/id {:type :uuid :label "id"}
                         ::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}

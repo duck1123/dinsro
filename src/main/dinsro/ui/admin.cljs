@@ -7,6 +7,7 @@
    [dinsro.ui.admin.categories :as u.a.categories]
    [dinsro.ui.admin.core :as u.a.core]
    [dinsro.ui.admin.core.blocks :as u.a.c.blocks]
+   [dinsro.ui.admin.core.peers :as u.a.c.peers]
    [dinsro.ui.admin.currencies :as u.a.currencies]
    [dinsro.ui.admin.debits :as u.a.debits]
    [dinsro.ui.admin.ln :as u.a.ln]
@@ -19,8 +20,9 @@
 (defrouter Router
   [_this {:keys [current-state]}]
   {:router-targets [u.a.users/AdminReport
-                    u.a.currencies/AdminIndexCurrenciesReport
+                    u.a.currencies/Report
                     u.a.c.blocks/AdminReport
+                    u.a.c.peers/Report
                     u.a.categories/AdminReport
                     u.a.ln.nodes/AdminReport
                     u.a.transactions/AdminReport
