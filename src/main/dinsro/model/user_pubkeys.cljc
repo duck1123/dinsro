@@ -15,7 +15,6 @@
 ;; [[../model/nostr/pubkeys.cljc][Pubkeys Model]]
 ;; [[../model/users.cljc][Users Model]]
 
-
 (s/def ::id        uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

@@ -14,7 +14,7 @@
 
 (>defn create-record
   [params]
-  [params-key => :xt/id]
+  [::m.n.filters/params => :xt/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
         node   (c.xtdb/main-node)
@@ -26,7 +26,7 @@
 
 (>defn read-record
   [id]
-  [ident-key => (? item-key)]
+  [::m.n.filters/id => (? ::m.n.filters/item)]
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
@@ -39,7 +39,7 @@
 
 (>defn delete!
   [id]
-  [ident-key => nil?]
+  [::m.n.filters/id => nil?]
   (let [node (c.xtdb/main-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))

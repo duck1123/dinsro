@@ -16,6 +16,10 @@
    :cljs
    (fm/defmutation add-filter! [_props]
      (action    [_env] true)
-     (remote    [_env] true)))
+     (remote    [_env]
+       ;; (fm/returning env FetchResponse)
+       true)
+     ;; (ok-action [env]  (handle-fetch env))
+     ))
 
 #?(:clj (def resolvers [add-filter!]))

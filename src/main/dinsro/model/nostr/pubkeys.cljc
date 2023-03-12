@@ -11,72 +11,50 @@
 ;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
-;; id
-
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
-
-;; hex
 
 (>def ::hex string?)
 (defattr hex ::hex :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-;; name
-
-
 (>def ::name (? string?))
 (defattr name ::name :string
   {ao/identities #{::id}
    ao/schema     :production})
-
-;; picture
-
 
 (>def ::picture (? string?))
 (defattr picture ::picture :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-;; about
-
 (>def ::about (? string?))
 (defattr about ::about :string
   {ao/identities #{::id}
    ao/schema     :production})
-
-;; nip05
 
 (>def ::nip05 (? string?))
 (defattr nip05 ::nip05 :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-;; website
-
 (>def ::website (? string?))
 (defattr website ::website :string
   {ao/identities #{::id}
    ao/schema     :production})
-
-;; lud16
 
 (>def ::lud16 (? string?))
 (defattr lud16 ::lud16 :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-;; lud06
-
 (>def ::lud06 (? string?))
 (defattr lud06 ::lud06 :string
   {ao/identities #{::id}
    ao/schema     :production})
-
-;; banner
 
 (>def ::banner (? string?))
 (defattr banner ::banner :string

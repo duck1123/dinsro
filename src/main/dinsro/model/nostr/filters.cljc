@@ -35,7 +35,6 @@
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
-(>defn ident-item [item] [::item => ::ident] (select-keys item [::id]))
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id request since until])
