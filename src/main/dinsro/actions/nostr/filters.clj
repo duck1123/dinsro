@@ -26,6 +26,11 @@
     {::mu/status :fail
      ::mu/errors ["No request id"]}))
 
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props})
+  {::mu/status :ok})
+
 (comment
 
   (def relay-id (first (q.n.relays/index-ids)))

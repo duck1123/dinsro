@@ -35,6 +35,7 @@
                         ::refresh         u.links/refresh-control}
    ro/control-layout   {:action-buttons [::add-filter ::new ::refresh]}
    ro/field-formatters {::m.n.filters/index #(u.links/ui-filter-link %3)}
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.n.filters/id mu.n.filters/delete!)]
    ro/source-attribute ::j.n.filters/index
    ro/title            "Filters"
    ro/row-pk           m.n.filters/id
