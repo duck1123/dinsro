@@ -37,16 +37,16 @@
    fo/title        "Create Request"})
 
 (def new-button
-  {:type   :button
-   :local? true
+  {:action (fn [this _] (form/create! this NewForm))
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :local? true
+   :type   :button})
 
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)
-                         ::m.n.requests/id        #(u.links/ui-request-link %3)}
-   ro/columns           [m.n.requests/id
+                         ::m.n.requests/code      #(u.links/ui-request-link %3)}
+   ro/columns           [m.n.requests/code
                          m.n.requests/start-time
                          m.n.requests/status
                          m.n.requests/end-time]

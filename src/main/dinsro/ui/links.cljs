@@ -423,11 +423,11 @@
 
 (def ui-remote-node-link (comp/factory RemoteNodeLinkForm {:keyfn ::m.ln.remote-nodes/id}))
 
-(form/defsc-form RequestLinkForm [this {::m.n.requests/keys [id]}]
+(form/defsc-form RequestLinkForm [this {::m.n.requests/keys [id code]}]
   {fo/id           m.n.requests/id
    fo/route-prefix "request-link"
-   fo/attributes   [m.n.requests/status]}
-  (form-link this id (str id) :dinsro.ui.nostr.requests/Show))
+   fo/attributes   [m.n.requests/code]}
+  (form-link this id (str code) :dinsro.ui.nostr.requests/Show))
 
 (def ui-request-link (comp/factory RequestLinkForm {:keyfn ::m.n.requests/id}))
 
