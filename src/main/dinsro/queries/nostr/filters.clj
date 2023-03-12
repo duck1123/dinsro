@@ -34,8 +34,8 @@
 
 (>defn index-ids
   []
-  [=> (s/coll-of ident-key)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ident-key _]]}))
+  [=> (s/coll-of ::m.n.filters/id)]
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.filters/id _]]}))
 
 (>defn delete!
   [id]
@@ -49,3 +49,19 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
+
+(defn get-greatest-index
+  "Returns the largest index of all filters matching this request"
+  [request-id]
+  (let [db (c.xtdb/main-db)
+        query '{:find [?index]
+                :in [[?request-id]]
+                :where [[?filter-id ::m.n.filters/index ?index]
+                        [?filter-id ::m.n.filters/request ?request-id]
+                        (not-join [?index]
+                                  [?other-filter ::m.n.filters/index ?other-index]
+                                  [?other-filter ::m.n.filters/request ?request-id]
+                                  [(> ?other-index ?index)])]}
+        result (xt/q db query [request-id])]
+    (log/info :get-greatest-index/result {:result result})
+    (or (ffirst result) -1)))

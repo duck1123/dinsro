@@ -20,21 +20,28 @@
    ::report/column-EQL {::request
                         [::m.n.requests/id ::m.n.requests/address]}})
 
-(>def ::since int?)
+(>def ::index int?)
+(defattr index ::index :int
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(>def ::since (? string?))
 (defattr since ::since :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::until int?)
+(>def ::until (? string?))
 (defattr until ::until :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::params (s/keys :req [::request ::since ::until]))
-(>def ::item (s/keys :req [::id ::request ::since ::until]))
+(>def ::params (s/keys :req [::request ::index]
+                       :opt [::since ::until]))
+(>def ::item (s/keys :req [::id ::request ::index]
+                     :opt [::since ::until]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id request since until])
+(def attributes [id request since until index])

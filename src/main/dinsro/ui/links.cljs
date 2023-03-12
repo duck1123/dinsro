@@ -33,6 +33,7 @@
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
@@ -377,6 +378,14 @@
   (form-link this id note-id :dinsro.ui.nostr.events/Show))
 
 (def ui-event-link (comp/factory EventLinkForm {:keyfn ::m.n.events/note-id}))
+
+(form/defsc-form FilterLinkForm [this {::m.n.filters/keys [id index]}]
+  {fo/id           m.n.filters/id
+   fo/route-prefix "filter-link"
+   fo/attributes   [m.n.filters/index]}
+  (form-link this id (str index) :dinsro.ui.nostr.filters/Show))
+
+(def ui-filter-link (comp/factory FilterLinkForm {:keyfn ::m.n.filters/id}))
 
 (form/defsc-form InvoiceLinkForm [this {::m.ln.invoices/keys [id r-preimage]}]
   {fo/id         m.ln.invoices/id
