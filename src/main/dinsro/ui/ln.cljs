@@ -28,7 +28,7 @@
                     u.ln.payments/Show
                     u.ln.payreqs/NewForm
                     u.ln.payreqs/Report
-                    u.ln.payreqs/NewForm
+                    u.ln.payreqs/Show
                     u.ln.peers/Report
                     u.ln.peers/NewForm
                     u.ln.remote-nodes/Show

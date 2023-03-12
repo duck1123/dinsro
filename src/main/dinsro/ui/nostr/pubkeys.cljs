@@ -17,7 +17,8 @@
    [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
    [dinsro.ui.nostr.pubkeys.contacts :as u.n.p.contacts]
    [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
-   [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]))
+   [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]
+   [dinsro.ui.nostr.pubkeys.users :as u.n.p.users]))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
@@ -33,7 +34,8 @@
     u.n.p.badge-definitions/SubPage
     u.n.p.relays/SubPage
     u.n.p.contacts/SubPage
-    u.n.p.events/SubPage]})
+    u.n.p.events/SubPage
+    u.n.p.users/SubPage]})
 
 (defn img-formatter
   [pubkey]
