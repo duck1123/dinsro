@@ -53,7 +53,6 @@
    ao/schema     :production})
 
 (>def ::required-params (s/keys :req []))
-
 (>def ::params (s/keys :req []))
 (>def ::item (s/keys :req [::id]))
 

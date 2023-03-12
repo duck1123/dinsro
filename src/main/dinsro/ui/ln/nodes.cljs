@@ -14,16 +14,15 @@
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
-   [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.ln.node-accounts :as u.ln.node-accounts]
-   [dinsro.ui.ln.node-channels :as u.ln.node-channels]
-   [dinsro.ui.ln.node-peers :as u.ln.node-peers]
-   [dinsro.ui.ln.node-remote-nodes :as u.ln.node-remote-nodes]
+   [dinsro.ui.ln.nodes.accounts :as u.ln.n.accounts]
+   [dinsro.ui.ln.nodes.channels :as u.ln.n.channels]
+   [dinsro.ui.ln.nodes.peers :as u.ln.n.peers]
+   [dinsro.ui.ln.nodes.remote-nodes :as u.ln.n.remote-nodes]
+   [dinsro.ui.ln.nodes.transactions :as u.ln.n.transactions]
    [lambdaisland.glogi :as log]))
 
 (declare CreateLightningNodeForm)
@@ -33,36 +32,6 @@
    :local? true
    :label  "New Node"
    :action (fn [this _] (form/create! this CreateLightningNodeForm))})
-
-(def new-invoice-button
-  {:type   :button
-   :local? true
-   :label  "New Invoice"
-   :action
-   (fn [this _kw]
-     (let [{::m.ln.nodes/keys [id name]} (comp/props this)
-           component                     (comp/registry-key->class :dinsro.ui.ln.invoices/NewInvoiceForm)
-           node                          {::m.ln.nodes/id   id
-                                          ::m.ln.nodes/name name}
-           state                         {::m.ln.invoices/memo "This is a memo"
-                                          ::m.ln.invoices/node node}
-           options                       {:initial-state state}]
-       (form/create! this component options)))})
-
-(def new-payment-button
-  {:type   :button
-   :local? true
-   :label  "New Payment"
-   :action
-   (fn [this _kw]
-     (let [{::m.ln.nodes/keys [id name]} (comp/props this)
-           component                     (comp/registry-key->class :dinsro.ui.ln.payreqs/NewPaymentForm)
-           node                          {::m.ln.nodes/id   id
-                                          ::m.ln.nodes/name name}
-           state                         {::m.ln.payreqs/memo "This is a memo"
-                                          ::m.ln.payreqs/node node}
-           options                       {:initial-state state}]
-       (form/create! this component options)))})
 
 (def button-info
   [{:label            "Unlock"
@@ -168,26 +137,27 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.ln.node-accounts/SubPage
-    u.ln.node-channels/SubPage
-    u.ln.node-peers/SubPage
-    u.ln.node-remote-nodes/SubPage]})
+   [u.ln.n.accounts/SubPage
+    u.ln.n.channels/SubPage
+    u.ln.n.peers/SubPage
+    u.ln.n.remote-nodes/SubPage
+    u.ln.n.transactions/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (def menu-items
   [{:key   "accounts"
     :name  "Accounts"
-    :route "dinsro.ui.ln.node-accounts/SubPage"}
+    :route "dinsro.ui.ln.nodes.accounts/SubPage"}
    {:key   "channels"
     :name  "Channels"
-    :route "dinsro.ui.ln.node-channels/SubPage"}
+    :route "dinsro.ui.ln.nodes.channels/SubPage"}
    {:key   "peers"
     :name  "Peers"
-    :route "dinsro.ui.ln.node-peers/SubPage"}
+    :route "dinsro.ui.ln.nodes.peers/SubPage"}
    {:key   "remote-nodes"
     :name  "Remote Nodes"
-    :route "dinsro.ui.ln.node-remote-nodes/SubPage"}])
+    :route "dinsro.ui.ln.nodes.remote-nodes/SubPage"}])
 
 (defsc Show
   "Show a ln node"

@@ -18,6 +18,15 @@
 (def ident-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
+(def delete-action-button
+  "Delete button for reports"
+  {:type   :button
+   :local? true
+   :label  "Delete"
+   :action (fn [this {::m.ln.peers/keys [id]}]
+             (log/info :delete-action/clicked {:id id})
+             (comp/transact! this [(mu.ln.peers/delete! {::m.ln.peers/id id})]))})
+
 (def fetch-button
   {:type   :button
    :label  "Fetch"

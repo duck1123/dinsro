@@ -8,6 +8,17 @@
 (comment ::m.n.requests/_  ::pc/_)
 
 #?(:clj
+   (pc/defmutation start! [_env props]
+     {::pc/params #{::m.n.requests/id}
+      ::pc/output [::status ::errors]}
+     (a.n.requests/do-start! props))
+
+   :cljs
+   (fm/defmutation start! [_props]
+     (action    [_env] true)
+     (remote    [_env]  true)))
+
+#?(:clj
    (pc/defmutation stop! [_env props]
      {::pc/params #{::m.n.requests/id}
       ::pc/output [::status ::errors]}
@@ -20,4 +31,4 @@
 
 #?(:clj
    (def resolvers
-     [stop!]))
+     [start! stop!]))

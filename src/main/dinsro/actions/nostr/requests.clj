@@ -1,6 +1,7 @@
 (ns dinsro.actions.nostr.requests
   (:require
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.requests :as q.n.requests]
    [dinsro.specs :as ds]
@@ -27,6 +28,14 @@
   (log/info :start!/starting {:request-id request-id})
   (let [relay-id (q.n.requests/find-relay request-id)]
     relay-id))
+
+(defn do-start!
+  [params]
+  (if-let [request-id (::m.n.requests/id params)]
+    (do
+      (start! request-id)
+      {::mu/status :ok})
+    (throw (RuntimeException. "No request id"))))
 
 (defn do-stop!
   [params]

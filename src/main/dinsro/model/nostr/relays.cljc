@@ -26,9 +26,7 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::required-params
-  (s/keys :req [::address]))
-
+(>def ::required-params (s/keys :req [::address]))
 (s/def ::params (s/keys :req [::address] :opt [::connected]))
 (s/def ::item (s/keys :req [::id ::address ::connected]))
 

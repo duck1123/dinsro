@@ -37,10 +37,8 @@
    ao/schema           :production
    ::report/column-EQL {::wallet [::m.c.wallets/id ::m.c.wallets/name]}})
 
-(s/def ::params
-  (s/keys :req [::node ::wallet]))
-(s/def ::item
-  (s/keys :req [::id ::node ::wallet]))
+(s/def ::params (s/keys :req [::node ::wallet]))
+(s/def ::item (s/keys :req [::id ::node ::wallet]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})

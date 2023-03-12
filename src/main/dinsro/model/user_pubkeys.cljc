@@ -34,7 +34,6 @@
    ao/schema           :production
    ::report/column-EQL {::currency [::m.currencies/id ::m.currencies/name]}})
 
-(s/def ::required-params (s/keys :req [::name ::url ::active? ::path ::identity?]))
 (s/def ::params (s/keys :req [::name ::url ::currency ::active? ::path ::identity?]))
 (s/def ::item (s/keys :req [::id ::name ::url ::currency ::active? ::path ::identity?]))
 (s/def ::items (s/coll-of ::item))

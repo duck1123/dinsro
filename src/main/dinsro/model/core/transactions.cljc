@@ -120,4 +120,5 @@
 (def attributes
   [id fetched? block
    hash hex lock-time tx-id
-   size time version])
+   size time version confirmations
+   block-time])

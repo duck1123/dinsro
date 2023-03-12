@@ -20,7 +20,6 @@
 
 (s/def ::date ds/date)
 (s/def ::date-ms pos-int?)
-(s/def ::date-inst inst?)
 
 (defattr date ::date :date
   {ao/identities #{::id}
