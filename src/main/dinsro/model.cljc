@@ -28,6 +28,7 @@
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.joins.nostr.event-tags :as j.n.event-tags]
    [dinsro.joins.nostr.events :as j.n.events]
+   [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.joins.nostr.pubkey-contacts :as j.n.pubkey-contacts]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
@@ -73,6 +74,7 @@
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -106,6 +108,7 @@
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
    #?(:clj [dinsro.mutations.nostr.event-tags :as mu.n.event-tags])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
+   #?(:clj [dinsro.mutations.nostr.filters :as mu.n.filters])
    #?(:clj [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts])
    #?(:clj [dinsro.mutations.nostr.pubkey-events :as mu.n.pubkey-events])
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
@@ -132,6 +135,9 @@
         j.c.transactions/attributes
         j.c.tx-in/attributes
         j.c.tx-out/attributes
+        j.c.wallet-addresses/attributes
+        j.c.wallets/attributes
+        j.c.words/attributes
         j.currencies/attributes
         j.debits/attributes
         j.ln.accounts/attributes
@@ -144,6 +150,7 @@
         j.ln.remote-nodes/attributes
         j.n.event-tags/attributes
         j.n.events/attributes
+        j.n.filters/attributes
         j.n.pubkey-contacts/attributes
         j.n.pubkeys/attributes
         j.n.relays/attributes
@@ -154,9 +161,6 @@
         j.rate-sources/attributes
         j.transactions/attributes
         j.users/attributes
-        j.c.wallet-addresses/attributes
-        j.c.wallets/attributes
-        j.c.words/attributes
         m.accounts/attributes
         m.categories/attributes
         m.contacts/attributes
@@ -172,6 +176,9 @@
         m.c.transactions/attributes
         m.c.transactions-in/attributes
         m.c.transactions-out/attributes
+        m.c.wallets/attributes
+        m.c.wallet-addresses/attributes
+        m.c.words/attributes
         m.currencies/attributes
         m.debits/attributes
         m.ln.accounts/attributes
@@ -187,6 +194,7 @@
         m.n.contact-relays/attributes
         m.n.event-tags/attributes
         m.n.events/attributes
+        m.n.filters/attributes
         m.n.pubkey-contacts/attributes
         m.n.pubkeys/attributes
         m.n.relays/attributes
@@ -200,10 +208,7 @@
         m.settings/attributes
         m.timezone/attributes
         m.transactions/attributes
-        m.users/attributes
-        m.c.wallets/attributes
-        m.c.wallet-addresses/attributes
-        m.c.words/attributes)))
+        m.users/attributes)))
 
 #?(:clj
    (def all-resolvers
@@ -217,6 +222,9 @@
            mu.c.nodes/resolvers
            mu.c.peers/resolvers
            mu.c.transactions/resolvers
+           mu.c.wallets/resolvers
+           mu.c.wallet-addresses/resolvers
+           mu.c.words/resolvers
            mu.debits/resolvers
            mu.ln.accounts/resolvers
            mu.ln.invoices/resolvers
@@ -227,6 +235,7 @@
            mu.ln.remote-nodes/resolvers
            mu.n.event-tags/resolvers
            mu.n.events/resolvers
+           mu.n.filters/resolvers
            mu.n.pubkey-contacts/resolvers
            mu.n.pubkey-events/resolvers
            mu.n.pubkeys/resolvers
@@ -236,7 +245,4 @@
            mu.n.subscriptions/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
-           mu.settings/resolvers
-           mu.c.wallets/resolvers
-           mu.c.wallet-addresses/resolvers
-           mu.c.words/resolvers))))
+           mu.settings/resolvers))))

@@ -9,16 +9,33 @@
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.mutations.nostr.filters :as mu.n.filters]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.n.requests/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
+
+(defn sub-page-action-button
+  [options]
+  (let [{:keys [label mutation parent-key]} options]
+    {:type :button
+     :label label
+     :action
+     (fn [report-instance]
+       (let [parent-id (u.links/get-control-value report-instance parent-key)
+             props {parent-key parent-id}]
+         (comp/transact! report-instance [(mutation props)])))}))
 
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.filters/id]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::m.n.requests/id {:type :uuid :label "id"}
+                        ::add-filter
+                        (sub-page-action-button
+                         {:label      "Add Filter"
+                          :mutation   ::mu.n.filters/add-filter!
+                          :parent-key ident-key})
                         ::refresh         u.links/refresh-control}
    ro/field-formatters {::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
                         ::m.n.pubkeys/picture
@@ -33,8 +50,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

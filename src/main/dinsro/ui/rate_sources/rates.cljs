@@ -25,7 +25,7 @@
    ro/row-pk           m.rates/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.rates/index
-   ro/title            "Rate Sources Rates"})
+   ro/title            "Rates"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
