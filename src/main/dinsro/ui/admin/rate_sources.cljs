@@ -5,7 +5,7 @@
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.model.rate-sources :as m.rate-sources]))
 
-(report/defsc-report AdminIndexRateSourcesReport
+(report/defsc-report AdminReport
   [_this _props]
   {ro/columns          [m.rate-sources/name]
    ro/source-attribute ::j.rate-sources/index

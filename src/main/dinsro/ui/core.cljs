@@ -33,6 +33,7 @@
                     u.c.nodes/Report
                     u.c.nodes/Show
                     u.c.peers/Report
+                    u.c.peers/Show
                     u.c.peers/NewForm
                     u.c.transactions/Report
                     u.c.transactions/Show
@@ -40,6 +41,7 @@
                     u.c.wallets/Show
                     u.c.wallets/Report
                     u.c.wallet-addresses/NewForm
+                    u.c.wallet-addresses/WalletAddressForm
                     u.c.words/Report]}
   (case current-state
     :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))

@@ -95,25 +95,10 @@
    ro/run-on-mount?    true
    ro/route            "peers"})
 
-(report/defsc-report CorePeers2Report
-  [_this _props]
-  {ro/columns          [m.c.peers/addr
-                        m.c.peers/address-bind
-                        m.c.peers/subver
-                        m.c.peers/peer-id
-                        m.c.peers/node]
-   ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
-                        ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
-   ro/row-actions      [delete-action-button]
-   ro/source-attribute ::j.c.peers/index
-   ro/title            "Core Peers 2"
-   ro/row-pk           m.c.peers/id
-   ro/run-on-mount?    true
-   ro/route            "peers2"})
-
 (defsc Show
   [_this _props]
   {:ident ::m.c.peers/id
    :query [::m.c.peers/id]
+   :route-segment ["peer" :id]
    :initial-state {::m.c.peers/id nil}}
   (dom/div {}))

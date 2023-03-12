@@ -13,6 +13,7 @@
    [dinsro.ui.admin.ln :as u.a.ln]
    [dinsro.ui.admin.ln.nodes :as u.a.ln.nodes]
    [dinsro.ui.admin.nostr :as u.a.nostr]
+   [dinsro.ui.admin.rate-sources :as u.a.rate-sources]
    [dinsro.ui.admin.transactions :as u.a.transactions]
    [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.links :as u.links]))
@@ -26,6 +27,7 @@
                     u.a.categories/AdminReport
                     u.a.ln.nodes/AdminReport
                     u.a.transactions/AdminReport
+                    u.a.rate-sources/AdminReport
                     u.a.debits/AdminReport
                     u.a.accounts/AdminReport
                     u.a.core/Page

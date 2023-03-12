@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.addresses :as j.c.addresses]
@@ -13,24 +12,6 @@
 
 (def ident-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
-
-(defn delete-action
-  [report-instance {::m.c.addresses/keys [id]}]
-  (form/delete! report-instance ::m.c.addresses/id id))
-
-(defn fetch-action
-  [report-instance {::m.c.addresses/keys [id]}]
-  (comp/transact! report-instance [(mu.c.addresses/fetch! {::m.c.addresses/id id})]))
-
-(def delete-action-button
-  {:label  "Delete"
-   :action delete-action
-   :style  :delete-button})
-
-(def fetch-action-button
-  {:label  "Fetch"
-   :action fetch-action
-   :style  :fetch-button})
 
 (report/defsc-report Report
   [_this _props]

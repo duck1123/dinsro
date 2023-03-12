@@ -47,7 +47,6 @@
 (def valid-double ::valid-double)
 
 (s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
-
 (s/def ::date (s/with-gen any? #(gen/fmap tick/instant (s/gen ::date-string))))
 (def date ::date)
 

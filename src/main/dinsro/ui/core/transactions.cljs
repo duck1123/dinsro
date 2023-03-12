@@ -11,8 +11,7 @@
    [dinsro.mutations.core.transactions :as mu.c.transactions]
    [dinsro.ui.core.transaction-inputs :as u.c.transaction-inputs]
    [dinsro.ui.core.transaction-outputs :as u.c.transaction-outputs]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (defn fetch-action
   [report-instance {::m.c.transactions/keys [id]}]
@@ -28,28 +27,15 @@
    :disabled? (fn [_ row-props] (:account/active? row-props))})
 
 (def delete-action-button
-  {:action delete-action
-   :label  "Delete"
+  {:label  "Delete"
+   :action delete-action
    :style  :delete-button})
 
 (defsc Show
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]
-         :ui/keys                [inputs outputs]
-         :as                     props}]
-  {:ident         ::m.c.transactions/id
-   :initial-state {::m.c.transactions/id       nil
-                   ::m.c.transactions/tx-id    nil
-                   ::m.c.transactions/hash     ""
-                   ::m.c.transactions/block    {}
-                   ::m.c.transactions/size     0
-                   :ui/inputs                  {}
-                   :ui/outputs                 {}
-                   ::m.c.transactions/fetched? false}
-   :pre-merge     (u.links/page-merger
-                   ::m.c.transactions/id
-                   {:ui/inputs  u.c.transaction-inputs/SubPage
-                    :ui/outputs u.c.transaction-outputs/SubPage})
+         :ui/keys      [inputs outputs]}]
+  {:route-segment ["tx" :id]
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
@@ -59,9 +45,20 @@
                    {:ui/outputs (comp/get-query u.c.transaction-outputs/SubPage)}
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]
-   :route-segment ["tx" :id]
+   :initial-state {::m.c.transactions/id       nil
+                   ::m.c.transactions/tx-id    nil
+                   ::m.c.transactions/hash     ""
+                   ::m.c.transactions/block    {}
+                   ::m.c.transactions/size     0
+                   :ui/inputs        {}
+                   :ui/outputs       {}
+                   ::m.c.transactions/fetched? false}
+   :ident         ::m.c.transactions/id
+   :pre-merge     (u.links/page-merger
+                   ::m.c.transactions/id
+                   {:ui/inputs  u.c.transaction-inputs/SubPage
+                    :ui/outputs u.c.transaction-outputs/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.transactions/id ::Show)}
-  (log/finer :ShowTransaction/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {} "Transaction")
@@ -78,7 +75,6 @@
                      (str fetched?)))
         (dom/dt {} "Size")
         (dom/dd {} (str size))))
-
     (if id
       (comp/fragment
        (when inputs ((comp/factory u.c.transaction-inputs/SubPage) inputs))

@@ -38,6 +38,8 @@
   (log/finer :Report/creating {:props props})
   (report/render-layout this))
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [[::dr/id router-key]

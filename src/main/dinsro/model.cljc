@@ -31,6 +31,7 @@
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
    [dinsro.joins.nostr.event-tags :as j.n.event-tags]
    [dinsro.joins.nostr.events :as j.n.events]
+   [dinsro.joins.nostr.filter-items :as j.n.filter-items]
    [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.joins.nostr.pubkey-contacts :as j.n.pubkey-contacts]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
@@ -92,6 +93,7 @@
    [dinsro.model.settings :as m.settings]
    [dinsro.model.timezone :as m.timezone]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.user-pubkeys :as m.user-pubkeys]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
    #?(:clj [dinsro.mutations.contacts :as mu.contacts])
@@ -117,6 +119,7 @@
    #?(:clj [dinsro.mutations.nostr.bagde-definitions :as mu.n.badge-definitons])
    #?(:clj [dinsro.mutations.nostr.event-tags :as mu.n.event-tags])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
+   #?(:clj [dinsro.mutations.nostr.filter-items :as mu.n.filter-items])
    #?(:clj [dinsro.mutations.nostr.filters :as mu.n.filters])
    #?(:clj [dinsro.mutations.nostr.pubkey-contacts :as mu.n.pubkey-contacts])
    #?(:clj [dinsro.mutations.nostr.pubkey-events :as mu.n.pubkey-events])
@@ -162,6 +165,7 @@
         j.n.badge-definitions/attributes
         j.n.event-tags/attributes
         j.n.events/attributes
+        j.n.filter-items/attributes
         j.n.filters/attributes
         j.n.pubkey-contacts/attributes
         j.n.pubkeys/attributes
@@ -223,6 +227,7 @@
         m.settings/attributes
         m.timezone/attributes
         m.transactions/attributes
+        m.user-pubkeys/attributes
         m.users/attributes)))
 
 #?(:clj
@@ -253,6 +258,7 @@
            mu.n.badge-definitons/resolvers
            mu.n.event-tags/resolvers
            mu.n.events/resolvers
+           mu.n.filter-items/resolvers
            mu.n.filters/resolvers
            mu.n.pubkey-contacts/resolvers
            mu.n.pubkey-events/resolvers

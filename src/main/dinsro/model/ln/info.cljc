@@ -118,8 +118,7 @@
     ]))
 
 (def attributes
-  [;; alias-attr identity-pubkey version block-hash color commit-hash
-   ;; testnet synced-to-graph num-inactive-channels block-height
-   ;; num-active-channels num-pending-channels num-peers uris features
-   ;; best-header-timestamp synced-to-chain
-   ])
+  [alias-attr identity-pubkey version block-hash color commit-hash
+   testnet synced-to-graph num-inactive-channels block-height
+   num-active-channels num-pending-channels num-peers uris features
+   best-header-timestamp synced-to-chain])

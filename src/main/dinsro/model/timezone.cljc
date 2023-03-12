@@ -1,7 +1,6 @@
 (ns dinsro.model.timezone
   (:require
    [clojure.spec.alpha :as s]
-   [clojure.string :as str]
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [com.fulcrologic.rad.attributes :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
@@ -614,15 +613,6 @@
    :WET                              "WET"
    :Zulu                             "Zulu"})
 
-(>defn namespaced-time-zone-labels
-  "Returns a time zone map with all keys prefixed properly for Datomic enumerated names. `ns` should be something like
-  \"account.timezone\"."
-  [ns]
-  [string? => (s/map-of qualified-keyword? string?)]
-  (into {}
-        (map (fn [[k v]] [(keyword ns (name k)) (str/replace v "_" " ")]))
-        time-zones))
-
 (>defn namespaced-time-zone-ids
   "Returns a time zone map with all keys prefixed properly for Datomic enumerated names. `ns` should be something like
   \"account.timezone\"."
@@ -646,34 +636,5 @@
    fo/field-options     {:autocomplete/search-key    :autocomplete/time-zone-options
                          :autocomplete/debounce-ms   100
                          :autocomplete/minimum-input 1}})
-
-#?(:clj
-   (defn- format-time-zone [time-zone-name]
-     (str/replace time-zone-name "_" " ")))
-
-#?(:clj
-   (pc/defresolver all-time-zones [{:keys [query-params]} _]
-     {::pc/output [{:autocomplete/time-zone-options [:text :value]}]}
-     (let [{:keys [only search-string]} query-params]
-       {:autocomplete/time-zone-options
-        (cond
-          (keyword? only)
-          [{:text (format-time-zone (name only)) :value only}]
-
-          (seq search-string)
-          (let [search-string (str/lower-case search-string)]
-            (into []
-                  (comp
-                   (map (fn [[k v]] (array-map :text (format-time-zone v) :value k)))
-                   (filter (fn [{:keys [text]}] (str/includes? (str/lower-case text) search-string)))
-                   (take 10))
-                  datomic-time-zones))
-
-          :else
-          (mapv (fn [[k v]]
-                  (array-map
-                   :value k
-                   :text (format-time-zone v)))
-                time-zones))})))
 
 (def attributes [zone-id])

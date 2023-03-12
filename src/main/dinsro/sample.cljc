@@ -24,3 +24,4 @@
    "settings"     (navlink-line "settings"     "Settings"     "/settings")
    "transactions" (navlink-line "transactions" "Transactions" "/transactions")
    "users"        (navlink-line "users"        "User"         "/users")})
+
