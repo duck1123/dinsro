@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln.node-remote-nodes
+(ns dinsro.ui.ln.nodes.remote-nodes
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -26,18 +26,18 @@
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.ln.remote-nodes/block #(u.links/ui-block-link %2)
                         ::m.ln.remote-nodes/node  #(u.links/ui-core-node-link %2)}
-   ro/source-attribute ::j.ln.remote-nodes/index
-   ro/title            "Node Remote-Nodes"
    ro/row-actions      [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
    ro/row-pk           m.ln.remote-nodes/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.ln.remote-nodes/index
+   ro/title            "Node Remote-Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["remote-nodes"]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["remote-nodes"]}
   ((comp/factory Report) report))

@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln.node-peers
+(ns dinsro.ui.ln.nodes.peers
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -47,7 +47,7 @@
    :action new-button-action})
 
 (report/defsc-report Report
-  [_this _props]
+  [this props]
   {ro/columns          [m.ln.peers/remote-node
                         m.ln.peers/sat-recv
                         m.ln.peers/sat-sent
@@ -65,7 +65,9 @@
    ro/source-attribute ::j.ln.peers/index
    ro/title            "Node Peers"
    ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true}
+  (log/finer :Report/creating {:props props})
+  (report/render-layout this))
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

@@ -1,4 +1,4 @@
-(ns dinsro.ui.ln.node-transactions
+(ns dinsro.ui.ln.nodes.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
