@@ -3,8 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [lambdaisland.glogc :as log]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (def rename-map
   {:blockHeight         ::block-height
@@ -117,13 +116,6 @@
     ;; ::best-header-timestamp
     ;; ::synced-to-chain
     ]))
-
-(defn prepare-params
-  [params]
-  (log/info :prepare-params/starting {:params params})
-  (let [prepared {}]
-    (log/info :prepare-params/finished {:prepared prepared})
-    prepared))
 
 (def attributes
   [;; alias-attr identity-pubkey version block-hash color commit-hash

@@ -26,6 +26,9 @@
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
+   [dinsro.joins.nostr.badge-acceptances :as j.n.badge-acceptances]
+   [dinsro.joins.nostr.badge-awards :as j.n.badge-awards]
+   [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
    [dinsro.joins.nostr.event-tags :as j.n.event-tags]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.joins.nostr.filters :as j.n.filters]
@@ -71,6 +74,9 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
+   [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
+   [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
+   [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
@@ -106,6 +112,9 @@
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
+   #?(:clj [dinsro.mutations.nostr.bagde-acceptances :as mu.n.badge-acceptances])
+   #?(:clj [dinsro.mutations.nostr.bagde-awards :as mu.n.badge-awards])
+   #?(:clj [dinsro.mutations.nostr.bagde-definitions :as mu.n.badge-definitons])
    #?(:clj [dinsro.mutations.nostr.event-tags :as mu.n.event-tags])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
    #?(:clj [dinsro.mutations.nostr.filters :as mu.n.filters])
@@ -148,6 +157,9 @@
         j.ln.payreqs/attributes
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
+        j.n.badge-acceptances/attributes
+        j.n.badge-awards/attributes
+        j.n.badge-definitions/attributes
         j.n.event-tags/attributes
         j.n.events/attributes
         j.n.filters/attributes
@@ -191,6 +203,9 @@
         m.ln.payreqs/attributes
         m.ln.peers/attributes
         m.ln.remote-nodes/attributes
+        m.n.badge-acceptances/attributes
+        m.n.badge-awards/attributes
+        m.n.badge-definitions/attributes
         m.n.contact-relays/attributes
         m.n.event-tags/attributes
         m.n.events/attributes
@@ -233,6 +248,9 @@
            mu.ln.peers/resolvers
            mu.ln.nodes/resolvers
            mu.ln.remote-nodes/resolvers
+           mu.n.badge-acceptances/resolvers
+           mu.n.badge-awards/resolvers
+           mu.n.badge-definitons/resolvers
            mu.n.event-tags/resolvers
            mu.n.events/resolvers
            mu.n.filters/resolvers
