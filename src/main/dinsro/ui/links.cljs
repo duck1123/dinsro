@@ -35,6 +35,7 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -421,6 +422,14 @@
   (form-link this id pubkey :dinsro.ui.ln.remote-nodes/Show))
 
 (def ui-remote-node-link (comp/factory RemoteNodeLinkForm {:keyfn ::m.ln.remote-nodes/id}))
+
+(form/defsc-form RequestLinkForm [this {::m.n.requests/keys [id]}]
+  {fo/id           m.n.requests/id
+   fo/route-prefix "request-link"
+   fo/attributes   [m.n.requests/status]}
+  (form-link this id (str id) :dinsro.ui.nostr.requests/Show))
+
+(def ui-request-link (comp/factory RequestLinkForm {:keyfn ::m.n.requests/id}))
 
 (form/defsc-form PaymentsLinkForm [this {::m.ln.payments/keys [id payment-hash]}]
   {fo/id         m.ln.payments/id

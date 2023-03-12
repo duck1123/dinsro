@@ -44,8 +44,10 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)}
-   ro/columns           [m.n.requests/start-time
+  {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)
+                         ::m.n.requests/id        #(u.links/ui-request-link %3)}
+   ro/columns           [m.n.requests/id
+                         m.n.requests/start-time
                          m.n.requests/status
                          m.n.requests/end-time]
    ro/control-layout    {:action-buttons [::refresh]}

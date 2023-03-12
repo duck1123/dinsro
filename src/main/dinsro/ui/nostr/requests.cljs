@@ -24,12 +24,15 @@
   [_this {::m.n.requests/keys [code id]
           :ui/keys            [router]
           :as                 props}]
-  {:ident         ::m.n.requests/id
-   :initial-state {::m.n.requests/id nil}
-   :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
+  {:route-segment ["request" :id]
    :query         [::m.n.requests/id
+                   ::m.n.requests/code
                    {:ui/router (comp/get-query Router)}]
-   :route-segment ["request" :id]
+   :initial-state {::m.n.requests/id   nil
+                   ::m.n.requests/code ""
+                   :ui/router          {}}
+   :ident         ::m.n.requests/id
+   :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
   (if id
     (let [{:keys [main _sub]} (css/get-classnames Show)]
