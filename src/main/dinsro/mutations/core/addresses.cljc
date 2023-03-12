@@ -3,9 +3,22 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.addresses :as a.c.addresses])
-   [dinsro.model.core.addresses :as m.c.addresses]))
+   [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.mutations :as mu]))
 
-(comment ::pc/_ ::m.c.addresses/_)
+#?(:cljs (comment ::pc/_ ::m.c.addresses/_ ::mu/_))
+
+#?(:clj
+   (pc/defmutation delete!
+     [_env props]
+     {::pc/params #{::m.c.addresses/id}
+      ::pc/output [::mu/status]}
+     (a.c.addresses/do-delete! props))
+
+   :cljs
+   (defmutation delete! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation fetch!
@@ -23,4 +36,4 @@
          (get body `fetch!)
          {}))))
 
-#?(:clj (def resolvers [fetch!]))
+#?(:clj (def resolvers [delete! fetch!]))

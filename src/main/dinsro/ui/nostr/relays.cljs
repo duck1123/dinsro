@@ -24,36 +24,6 @@
 ;; [[../../mutations/nostr/relays.cljc][Mutations]]
 ;; [[../../queries/nostr/relays.clj][Queries]]
 
-(defn delete-action
-  [report-instance {::m.n.relays/keys [id]}]
-  (form/delete! report-instance ::m.n.relays/id id))
-
-(defn fetch-action
-  [report-instance {::m.n.relays/keys [id]}]
-  (comp/transact! report-instance [(mu.n.relays/fetch! {::m.n.relays/id id})]))
-
-(defn toggle-action
-  [report-instance {::m.n.relays/keys [id] :as props}]
-  (log/info :connect-action/starting {:props props})
-  (if id
-    (comp/transact! report-instance [(mu.n.relays/toggle! {::m.n.relays/id id})])
-    (throw (js/Error. "no id"))))
-
-(def delete-action-button
-  {:label  "Delete"
-   :action delete-action
-   :style  :delete-button})
-
-(def fetch-action-button
-  {:label  "Fetch"
-   :action fetch-action
-   :style  :fetch-button})
-
-(def toggle-action-button
-  {:label  "Toggle"
-   :action toggle-action
-   :style  :toggle-button})
-
 (def submit-button
   {:type   :button
    :local? true
@@ -93,9 +63,9 @@
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
    ro/route             "relays"
-   ro/row-actions       [fetch-action-button
-                         toggle-action-button
-                         delete-action-button]
+   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.n.relays/id mu.n.relays/fetch!)
+                         (u.links/row-action-button "Toggle" ::m.n.relays/id mu.n.relays/toggle!)
+                         (u.links/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index

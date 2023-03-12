@@ -158,3 +158,7 @@
           network        (c.bitcoin-s/regtest-network)
           address        (Bech32Address/apply script-pub-key network)]
       (.value address))))
+
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props}))

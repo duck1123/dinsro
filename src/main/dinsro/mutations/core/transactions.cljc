@@ -4,18 +4,14 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.transactions :as a.c.transactions])
-   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
+   [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
    #?(:clj [dinsro.queries.core.transactions :as q.c.transactions])
    [lambdaisland.glogc :as log]))
 
-(comment
-  ::m.c.blocks/_
-  ::m.c.nodes/_
-  ::m.c.transactions/_
-  ::pc/_)
+#?(:cljs (comment ::m.c.nodes/_ ::mu/_ ::pc/_))
 
 (defsc FetchResponse
   [_ _]
@@ -93,7 +89,19 @@
      (remote [env]
        (fm/returning env SearchResponse))))
 
-#?(:clj (def resolvers [fetch! search!]))
+#?(:clj
+   (pc/defmutation delete!
+     [_env props]
+     {::pc/params #{::m.c.transactions/id}
+      ::pc/output [::mu/status]}
+     (a.c.transactions/do-delete! props))
+
+   :cljs
+   (defmutation delete! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
+#?(:clj (def resolvers [delete! fetch! search!]))
 
 #?(:clj
    (comment

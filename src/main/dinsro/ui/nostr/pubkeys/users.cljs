@@ -7,7 +7,6 @@
    [dinsro.joins.users :as j.users]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.users :as m.users]
-   [dinsro.ui.core.transactions :as u.c.transactions]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.n.pubkeys/id)
@@ -21,7 +20,6 @@
    ro/control-layout   {:action-buttons [::refresh]}
    ro/source-attribute ::j.users/index-by-pubkey
    ro/title            "Users"
-   ro/row-actions      [u.c.transactions/fetch-action-button u.c.transactions/delete-action-button]
    ro/row-pk           m.users/id
    ro/run-on-mount?    true})
 

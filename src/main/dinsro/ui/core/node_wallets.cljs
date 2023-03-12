@@ -7,6 +7,7 @@
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
@@ -27,6 +28,7 @@
                         ::m.c.wallets/name #(u.links/ui-wallet-link %3)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/route            "wallets"
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.wallets/index

@@ -36,7 +36,6 @@
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/route            "contacts"
-   ro/row-actions      []
    ro/row-pk           m.contacts/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.contacts/index

@@ -37,7 +37,7 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/route             "subscription-pubkeys"
-   ro/row-actions       [delete-action-button]
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.n.subscription-pubkeys/id mu.n.subscription-pubkeys/delete!)]
    ro/row-pk            m.n.subscription-pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.subscription-pubkeys/index

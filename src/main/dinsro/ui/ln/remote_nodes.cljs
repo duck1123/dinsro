@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.remote-nodes.peers :as u.ln.rn.peers]
    [lambdaisland.glogc :as log]))
@@ -61,6 +62,7 @@
                                                                ::m.ln.remote-nodes/pubkey pubkey})))
                                                          (dom/p {} "not found"))))}
    ro/route            "remote-nodes"
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.remote-nodes/index

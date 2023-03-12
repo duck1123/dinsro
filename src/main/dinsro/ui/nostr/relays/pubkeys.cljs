@@ -95,9 +95,9 @@
                         (fn [_ picture] (if picture
                                           (dom/img {:src picture :width 100 :height 100})
                                           ""))}
-   ro/row-actions      [fetch-action-button
-                        subscribe-action-button
-                        fetch-events-button]
+   ro/row-actions      [(u.links/subrow-action-button "Fetch" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch!)
+                        (u.links/subrow-action-button "Subscribe" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/subscribe!)
+                        (u.links/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)]
    ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Pubkeys"
    ro/row-pk           m.n.pubkeys/id

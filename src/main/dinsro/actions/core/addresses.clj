@@ -25,3 +25,7 @@
       (log/error :fetch!/no-address {})
       {:status  :failed
        :message "No address"})))
+
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props}))

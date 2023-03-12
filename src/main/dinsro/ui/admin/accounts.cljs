@@ -10,6 +10,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
+   [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.ui.links :as u.links]))
 
 (def override-form true)
@@ -71,11 +72,7 @@
                         ::m.accounts/user     #(u.links/ui-user-link %2)
                         ::m.accounts/name     #(u.links/ui-account-link %3)}
    ro/route            "accounts"
-   ro/row-actions      [{:action
-                         (fn [report-instance row-props]
-                           (let [{::m.accounts/keys [id]} row-props]
-                             (form/delete! report-instance ::m.accounts/id id)))
-                         :label "delete"}]
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.accounts/admin-index

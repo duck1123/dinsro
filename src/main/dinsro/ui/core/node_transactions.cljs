@@ -7,7 +7,7 @@
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
-   [dinsro.ui.core.transactions :as u.c.transactions]
+   [dinsro.mutations.core.transactions :as mu.c.transactions]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.c.nodes/id)
@@ -27,7 +27,8 @@
                         ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
    ro/source-attribute ::j.c.transactions/index
    ro/title            "Node Transactions"
-   ro/row-actions      [u.c.transactions/fetch-action-button u.c.transactions/delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                        (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk           m.c.transactions/id
    ro/run-on-mount?    true})
 

@@ -35,3 +35,7 @@
   (log/info :get-node-info/starting {:node node :pubkey pubkey})
   (let [client (a.ln.nodes/get-client node)]
     (c.lnd-s/get-node-info client pubkey)))
+
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props}))

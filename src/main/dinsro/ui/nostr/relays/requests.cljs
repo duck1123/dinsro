@@ -53,7 +53,7 @@
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/row-actions       [stop-action-button]
+   ro/row-actions       [(u.links/row-action-button "Stop" ::m.n.requests/id mu.n.requests/stop!)]
    ro/source-attribute  ::j.n.requests/index
    ro/title             "Requests"
    ro/row-pk            m.n.requests/id

@@ -15,7 +15,6 @@
    ro/field-formatters {::m.debits/account     #(u.links/ui-account-link %2)
                         ::m.debits/transaction #(u.links/ui-transaction-link %2)}
    ro/route            "debits"
-   ro/row-actions      []
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.debits/admin-index

@@ -221,3 +221,7 @@
          :tx      result
          :hash    hash
          :node-id node-id}))))
+
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props}))

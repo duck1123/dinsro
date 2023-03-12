@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.blocks :as j.c.blocks]
@@ -14,24 +13,6 @@
 (def ident-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
-(defn delete-action
-  [report-instance {::m.c.blocks/keys [id]}]
-  (form/delete! report-instance ::m.c.blocks/id id))
-
-(defn fetch-action
-  [report-instance {::m.c.blocks/keys [id]}]
-  (comp/transact! report-instance [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))
-
-(def delete-action-button
-  {:action delete-action
-   :label  "Delete"
-   :style  :delete-button})
-
-(def fetch-action-button
-  {:action fetch-action
-   :label  "Fetch"
-   :style  :fetch-button})
-
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.blocks/height
@@ -42,7 +23,8 @@
    ro/controls         {::refresh      u.links/refresh-control
                         ::m.c.networks/id {:type :uuid :label "Nodes"}}
    ro/field-formatters {::m.c.blocks/height #(u.links/ui-block-height-link %3)}
-   ro/row-actions      [fetch-action-button delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
+                        (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.blocks/index

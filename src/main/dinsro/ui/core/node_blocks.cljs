@@ -41,7 +41,8 @@
                         ::m.c.blocks/network #(u.links/ui-network-link %2)}
    ro/source-attribute ::j.c.blocks/index
    ro/title            "Node Blocks"
-   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
+                        (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
    ro/route            "blocks"})

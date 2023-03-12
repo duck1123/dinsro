@@ -93,7 +93,8 @@
                         ::m.c.transactions/tx-id (u.links/report-link ::m.c.transactions/tx-id u.links/ui-core-tx-link)
                         ::m.c.transactions/node  #(u.links/ui-core-node-link %2)}
    ro/route            "transactions"
-   ro/row-actions      [fetch-action-button delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                        (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk           m.c.transactions/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.transactions/index

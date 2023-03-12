@@ -18,9 +18,9 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.relays/address j.n.relays/subscription-count]
-   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
    ro/row-actions      [(u.links/subrow-action-button "Fetch Events" ::m.n.relays/id ident-key mu.n.events/fetch-events!)]
    ro/row-pk           m.n.relays/id
@@ -33,7 +33,7 @@
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
+   :query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
    :route-segment     ["relays"]}
   ((comp/factory Report) report))

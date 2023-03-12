@@ -165,3 +165,7 @@
       (do
         (log/info :search!/not-cached {:tx-id tx-id})
         nil))))
+
+(defn do-delete!
+  [props]
+  (log/info :do-delete!/starting {:props props}))

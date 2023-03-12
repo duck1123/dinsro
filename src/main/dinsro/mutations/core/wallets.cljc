@@ -7,12 +7,12 @@
    #?(:clj [dinsro.actions.authentication :as a.authentication])
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
    #?(:clj [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses])
-   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
+   [dinsro.mutations :as mu]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.c.wallets/_ ::m.c.wallet-addresses/_)
+#?(:cljs (comment ::pc/_ ::m.c.wallets/_ ::mu/_))
 
 (defsc CreationResponse
   [_this _props]
@@ -126,5 +126,19 @@
      (action [_env] true)
      (remote [env] (fm/returning env CalculateAddressesResponse))))
 
+#?(:clj
+   (pc/defmutation delete!
+     [_env props]
+     {::pc/params #{::m.c.wallets/id}
+      ::pc/output [::mu/status]}
+     (a.c.wallets/do-delete! props))
+
+   :cljs
+   (fm/defmutation delete! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
+
 #?(:clj (def resolvers [calculate-addresses!
-                        create! derive! roll!]))
+                        create!
+                        delete!
+                        derive! roll!]))

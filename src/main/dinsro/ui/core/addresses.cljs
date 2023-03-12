@@ -5,14 +5,16 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.addresses :as j.c.addresses]
-   [dinsro.model.core.addresses :as m.c.addresses]))
+   [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.mutations.core.addresses :as mu.c.addresses]
+   [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm
   [_this _props]
-  {fo/attributes   [m.c.addresses/address]
-   fo/id           m.c.addresses/id
-   fo/route-prefix "address"
-   fo/title        "Address"})
+  {fo/id           m.c.addresses/id
+   fo/title        "Address"
+   fo/attributes   [m.c.addresses/address]
+   fo/route-prefix "address"})
 
 (def new-button
   {:type   :button
@@ -27,6 +29,7 @@
    ro/controls         {::new new-button}
    ro/source-attribute ::j.c.addresses/index
    ro/title            "Core Addresses"
-   ro/route            "addresses"
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/delete!)]
    ro/row-pk           m.c.addresses/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/route            "addresses"})
