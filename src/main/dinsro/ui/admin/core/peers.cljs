@@ -49,15 +49,6 @@
    fo/title          "New Core Peer"}
   (form/render-layout this props))
 
-(def delete-action-button
-  "Delete button for reports"
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this {::m.c.peers/keys [id]}]
-             (log/info :delete-action/clicked {:id id})
-             (comp/transact! this [(mu.c.peers/delete! {::m.c.peers/id id})]))})
-
 (def new-peer-control
   {:type   :button
    :label  "New Peer"
@@ -90,7 +81,7 @@
                         ::new-peer     new-peer-control}
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
-   ro/row-actions      [delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
    ro/source-attribute ::j.c.peers/index
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
