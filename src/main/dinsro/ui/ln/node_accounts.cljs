@@ -32,19 +32,17 @@
    ro/field-formatters {::m.ln.accounts/wallet #(u.links/ui-wallet-link %2)
                         ::m.ln.accounts/node   #(u.links/ui-node-link %2)}
    ro/source-attribute ::j.ln.accounts/index
-   ro/title            "Node Accounts"
+   ro/title            "Accounts"
    ro/row-pk           m.ln.accounts/id
    ro/run-on-mount?    true}
   (log/finer :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :route-segment     ["accounts"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
