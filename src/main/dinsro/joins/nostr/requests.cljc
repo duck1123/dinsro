@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    #?(:clj [dinsro.queries.nostr.requests :as q.n.requests])
    [dinsro.specs]
@@ -17,6 +16,6 @@
      (let [ids #?(:clj (q.n.requests/index-ids)
                   :cljs [])]
        (log/info :index/starting {:ids ids})
-       {::index (m.n.relays/idents ids)}))})
+       {::index (m.n.requests/idents ids)}))})
 
 (def attributes [index])

@@ -86,8 +86,10 @@
 
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
+(def override-report true)
+
 (report/defsc-report Report
-  [_this props]
+  [this props]
   {ro/BodyItem         EventBox
    ro/columns          [m.n.events/content]
    ro/control-layout   {:action-buttons [::new ::refresh]}
@@ -100,11 +102,13 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.events/index
    ro/title            "Events Report"}
-  (let [{:ui/keys [current-rows]} props]
-    (dom/div {:classes [:.ui :.segment]}
-      (dom/div {:classes [:.ui :.container]}
-        (dom/div {:classes [:.ui :.items :.unstackable]}
-          (map ui-event-box current-rows))))))
+  (if override-report
+    (report/render-layout this)
+    (let [{:ui/keys [current-rows]} props]
+      (dom/div {:classes [:.ui :.segment]}
+        (dom/div {:classes [:.ui :.container]}
+          (dom/div {:classes [:.ui :.items :.unstackable]}
+            (map ui-event-box current-rows)))))))
 
 (defrouter Router
   [_this _props]

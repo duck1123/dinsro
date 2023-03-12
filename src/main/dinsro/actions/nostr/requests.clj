@@ -61,6 +61,8 @@
 
   (q.n.requests/delete-all!)
 
+  (q.n.requests/read-record (first (q.n.requests/index-ids)))
+
   (some-> relay-id q.n.requests/find-relay q.n.relays/read-record)
 
   ds/date

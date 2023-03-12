@@ -10,6 +10,7 @@
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
@@ -50,6 +51,15 @@
         (comp/transact! report-instance [(mu.n.pubkeys/fetch! props)]))
       (throw (js/Error. "no id")))))
 
+(defn fetch-events-action
+  [report-instance {pubkey-id ::m.n.pubkeys/id
+                    :as       props}]
+  (log/info :fetch-action/starting {:report-instance report-instance
+                                    :props           props})
+  (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)
+        props {::m.n.relays/id relay-id ::m.n.pubkeys/id pubkey-id}]
+    (comp/transact! report-instance [(mu.n.events/fetch-events! props)])))
+
 (defn subscribe-action
   [report-instance {pubkey-id ::m.n.pubkeys/id}]
   (let [relay-id (u.links/get-control-value report-instance ::m.n.relays/id)]
@@ -62,6 +72,10 @@
 (def fetch-action-button
   {:label  "Fetch"
    :action fetch-action})
+
+(def fetch-events-button
+  {:label  "Fetch Events"
+   :action fetch-events-action})
 
 (def subscribe-action-button
   {:label  "Subscribe"
@@ -82,7 +96,8 @@
                                           (dom/img {:src picture :width 100 :height 100})
                                           ""))}
    ro/row-actions      [fetch-action-button
-                        subscribe-action-button]
+                        subscribe-action-button
+                        fetch-events-button]
    ro/source-attribute ::j.n.pubkeys/index
    ro/title            "Pubkeys"
    ro/row-pk           m.n.pubkeys/id

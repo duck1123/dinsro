@@ -12,6 +12,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.relays.events :as u.n.r.events]
    [dinsro.ui.nostr.relays.pubkeys :as u.n.r.pubkeys]
    [dinsro.ui.nostr.relays.requests :as u.n.r.requests]
    [dinsro.ui.nostr.relays.subscriptions :as u.n.r.subscriptions]
@@ -106,12 +107,16 @@
    [u.n.r.pubkeys/SubPage
     u.n.r.subscriptions/SubPage
     u.n.r.topics/SubPage
-    u.n.r.requests/SubPage]})
+    u.n.r.requests/SubPage
+    u.n.r.events/SubPage]})
 
 (def menu-items
   [{:key   "requests"
     :name  "Requests"
     :route "dinsro.ui.nostr.relays.requests/SubPage"}
+   {:key   "events"
+    :name  "Events"
+    :route "dinsro.ui.nostr.relays.events/SubPage"}
    {:key   "subscriptions"
     :name  "Subscriptions"
     :route "dinsro.ui.nostr.relays.subscriptions/SubPage"}
