@@ -18,8 +18,9 @@
                     u.ln.channels/NewForm
                     u.ln.channels/Report
                     u.ln.channels/Show
-                    u.ln.invoices/Report
                     u.ln.invoices/NewForm
+                    u.ln.invoices/Report
+                    u.ln.invoices/Show
                     u.ln.nodes/NewForm
                     u.ln.nodes/Report
                     u.ln.nodes/Show

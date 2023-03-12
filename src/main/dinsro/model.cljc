@@ -81,6 +81,7 @@
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -213,6 +214,7 @@
         m.n.contact-relays/attributes
         m.n.event-tags/attributes
         m.n.events/attributes
+        m.n.filter-items/attributes
         m.n.filters/attributes
         m.n.pubkey-contacts/attributes
         m.n.pubkeys/attributes

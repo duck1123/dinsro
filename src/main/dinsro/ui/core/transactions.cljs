@@ -34,7 +34,7 @@
 (defsc Show
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]
-         :ui/keys      [inputs outputs]}]
+         :ui/keys                [inputs outputs]}]
   {:route-segment ["tx" :id]
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
@@ -50,8 +50,8 @@
                    ::m.c.transactions/hash     ""
                    ::m.c.transactions/block    {}
                    ::m.c.transactions/size     0
-                   :ui/inputs        {}
-                   :ui/outputs       {}
+                   :ui/inputs                  {}
+                   :ui/outputs                 {}
                    ::m.c.transactions/fetched? false}
    :ident         ::m.c.transactions/id
    :pre-merge     (u.links/page-merger
