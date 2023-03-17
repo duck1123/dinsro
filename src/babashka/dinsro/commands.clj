@@ -17,12 +17,14 @@
 
 (def target-dir "target")
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn cljfmt
   [paths]
   (clojure
    (format "-M:cljfmt check %s --indents indentation.edn"
            (string/join " " paths))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn earthly
   ([cmd]
    (earthly cmd {}))
@@ -36,6 +38,7 @@
      (shell
       (format "earthly %s +%s" flags (name cmd))))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn eight
   []
   (shell
@@ -55,6 +58,7 @@
       "`    | □=□ ´´"
       " `--_____--´  "]))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn get-docker-status
   [container-name]
   (:out (shell
@@ -76,6 +80,7 @@
   #_(println (str "mkdir " path))
   (shell (str "mkdir -p " path)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn display-env
   []
   (shell "sh -c \"env | sort\""))
@@ -86,10 +91,12 @@
        (map (fn [name] (when-let [v (System/getenv name)] (str name "=" v))))
        (filter identity)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn create-namespace
   [name]
   (shell (format "sh -c \"kubectl create namespace %s | true\"" name)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn delete-namespace
   [name]
   (shell (format "sh -c \"kubectl delete namespace %s | true\"" name)))
@@ -112,6 +119,7 @@
   (let [config-string (->tilt-config)]
     (spit "target/tilt_config.json" config-string)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tap
   [data]
   (let [data (or data :true)]
@@ -126,6 +134,7 @@
     (mkdir target-dir)
     (spit filename value-yaml)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn clean-semantic
   []
   (shell "rm -rf semantic/dist")
@@ -143,6 +152,7 @@
   (shell "rm -rf semantic/src/themes")
   (shell "rm -rf semantic/tasks"))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn compile-cljs
   []
   (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
@@ -151,6 +161,7 @@
                              (pr-str data))]
     (clojure args)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn dev-bootstrap
   []
   (let [user          "circleci"
@@ -166,6 +177,7 @@
     (chown user group cert-path)
     (sudo bootstrap-cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn dev-bootstrap-user
   []
   (let [watch-sources (boolean (System/getenv "WATCH_SOURCES"))]
@@ -199,6 +211,7 @@
      (println (str "clojure " args))
      (clojure args))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn workspaces
   "Starts and watches for workspaces"
   []
@@ -224,6 +237,7 @@
     (mkdir (str conf-dir name))
     (spit (str conf-dir name "/lnd_values.yaml") yaml)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn generate-nostr-rs-relay-values
   []
   (let [options {}
@@ -231,6 +245,7 @@
     (mkdir (str conf-dir))
     (spit (str conf-dir "/nostr-rs-relay_values.yaml") yaml)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn generate-nostream-values
   []
   (let [options {}
@@ -252,6 +267,7 @@
     (mkdir (str conf-dir name))
     (spit (str conf-dir name "/bitcoind_values.yaml") yaml)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn generate-nbxplorer-values
   [name]
   (let [options (h.nbxplorer/->value-options {:name name})
@@ -266,6 +282,7 @@
     (mkdir (str conf-dir name))
     (spit (str conf-dir name "/specter_values.yaml") yaml)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn generate-values
   "generate-all-values"
   []
@@ -298,6 +315,7 @@
 
 (def use-prefix false)
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-bitcoin
   [name]
   (let [repo     "https://chart.kronkltd.net/"
@@ -314,6 +332,7 @@
         cmd      (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-dinsro
   []
   (let [repo     "https://chart.kronkltd.net/"
@@ -331,6 +350,7 @@
         cmd      (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-fileserver
   [name]
   (let [use-prefix true
@@ -344,6 +364,7 @@
         cmd        (string/join " " (concat ["helm template "] args [path]))]
     (shell cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-nbxplorer
   [name]
   (let [path     "resources/helm/nbxplorer"
@@ -359,6 +380,7 @@
                    path])]
     (shell cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-lnd
   [name]
   (let [repo     "https://charts.foldapp.com"
@@ -376,6 +398,7 @@
 
 (def relay-use-prefix true)
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-nostr-rs-relay
   []
   (let [use-local relay-use-prefix
@@ -396,6 +419,7 @@
 
 (def nostream-use-prefix true)
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-nostream
   []
   (let [use-local nostream-use-prefix
@@ -414,6 +438,7 @@
     ;; (println cmd)
     (shell cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-rtl
   [name]
   (let [use-local-rtl #_use-prefix true
@@ -432,6 +457,7 @@
     ;; (println cmd)
     (shell cmd)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-specter
   [name]
   (let [path     "specter-desktop"
