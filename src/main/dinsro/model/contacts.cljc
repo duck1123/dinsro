@@ -36,8 +36,8 @@
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
 (>def ::required-params
-      (s/keys :req [::name
-                    ::pubkey]))
+  (s/keys :req [::name
+                ::pubkey]))
 
 (s/def ::params (s/keys :req [::name ::pubkey ::user]))
 (s/def ::item (s/keys :req [::id ::name ::pubkey ::user]))
