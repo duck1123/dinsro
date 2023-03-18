@@ -1,6 +1,5 @@
 (ns dinsro.mutations.ln.nodes
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
@@ -16,8 +15,6 @@
    #?(:clj [lambdaisland.glogc :as log])))
 
 (comment ::m.ln.info/_ ::m.ln.nodes/_ ::m.ln.remote-nodes/_ ::pc/_)
-
-(s/def ::creation-response (s/keys))
 
 #?(:clj
    (pc/defmutation create-peer!

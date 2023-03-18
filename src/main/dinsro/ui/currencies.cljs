@@ -31,8 +31,6 @@
    [u.c.accounts/SubPage
     u.c.rate-sources/SubPage]})
 
-(def ui-router (comp/factory Router))
-
 (def menu-items
   [{:key   "accounts"
     :name  "Accounts"

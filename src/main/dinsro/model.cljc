@@ -10,6 +10,7 @@
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.joins.core.peers :as j.c.peers]
+   [dinsro.joins.core.script-sigs :as j.c.script-sigs]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
    [dinsro.joins.core.tx-out :as j.c.tx-out]
@@ -145,6 +146,7 @@
         j.c.networks/attributes
         j.c.nodes/attributes
         j.c.peers/attributes
+        j.c.script-sigs/attributes
         j.c.transactions/attributes
         j.c.tx-in/attributes
         j.c.tx-out/attributes
