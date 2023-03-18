@@ -64,8 +64,6 @@
        (dom/h3 {} "Chain Router not loaded")
        (u.links/ui-props-logger props)))))
 
-(def ui-show-chain (comp/factory ShowChain))
-
 (report/defsc-report Report
   [_this _props]
   {ro/columns           [m.c.chains/name]
@@ -78,4 +76,3 @@
    ro/run-on-mount?     true
    ro/route             "chains"})
 
-(def ui-tx-report (comp/factory Report))

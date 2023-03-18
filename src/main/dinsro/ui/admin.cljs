@@ -8,8 +8,10 @@
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.core.blocks :as u.c.blocks]
+   [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.debits :as u.debits]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
+   [dinsro.ui.rate-sources :as u.rate-sources]
    [dinsro.ui.transactions :as u.transactions]
    [dinsro.ui.users :as u.users]
    [lambdaisland.glogc :as log]))
@@ -19,7 +21,9 @@
   {:router-targets [u.users/AdminReport
                     u.c.blocks/AdminReport
                     u.categories/AdminReport
+                    u.currencies/AdminIndexCurrenciesReport
                     u.ln.nodes/AdminReport
+                    u.rate-sources/AdminIndexRateSourcesReport
                     u.transactions/AdminReport
                     u.debits/AdminReport
                     u.accounts/AdminReport]}

@@ -294,16 +294,6 @@
 
 (def ui-chain-link (comp/factory ChainLinkForm {:keyfn ::m.c.chains/id}))
 
-(defsc ChainLink
-  [_this _props]
-  {:ident ::m.c.chains/id
-   :query [::m.c.chains/id ::m.c.chains/name]
-   :initial-state {::m.c.chains/id nil
-                   ::m.c.chains/name ""}}
-  (dom/div "Chain Link"))
-
-(def ui-chain-link2 (comp/factory ChainLink {:keyfn ::m.c.chains/id}))
-
 (form/defsc-form ChannelLinkForm [this {::m.ln.channels/keys [id channel-point]}]
   {fo/id         m.ln.channels/id
    fo/route-prefix "channel-link"

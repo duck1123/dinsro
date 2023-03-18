@@ -1,31 +1,12 @@
 (ns dinsro.sample
   (:require
-   [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.navlink :as m.navlink]
-   [dinsro.model.users :as m.users]))
-
-(defn account-line
-  [id initial-value name currency-id user-id]
-  {::m.accounts/id            id
-   ::m.accounts/initial-value initial-value
-   ::m.accounts/name          name
-   ::m.accounts/currency      {::m.currencies/id currency-id}
-   ::m.accounts/user          {::m.users/id user-id}})
+   [dinsro.model.navlink :as m.navlink]))
 
 (defn navlink-line
   [id name href]
   {::m.navlink/id   id
    ::m.navlink/name name
    ::m.navlink/href href})
-
-(defn user-line
-  [user-id]
-  {::m.users/user-id user-id})
-
-(def account-map
-  {1 (account-line 1 1  "Savings Account" 2 1)
-   2 (account-line 2 20 "Fun Money"       1 2)})
 
 (def navlink-map
   {"accounts"     (navlink-line "accounts"     "Accounts"     "/accounts")
@@ -43,7 +24,3 @@
    "settings"     (navlink-line "settings"     "Settings"     "/settings")
    "transactions" (navlink-line "transactions" "Transactions" "/transactions")
    "users"        (navlink-line "users"        "User"         "/users")})
-
-(def user-map
-  {1 (user-line "foo")
-   2 (user-line "bar")})

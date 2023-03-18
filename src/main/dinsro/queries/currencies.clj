@@ -11,10 +11,6 @@
    [io.pedestal.log :as log]
    [xtdb.api :as xt]))
 
-(def attribute-list
-  '[:xt/id
-    ::m.currencies/id
-    ::m.currencies/name])
 (def record-limit 1000)
 
 (>defn find-by-code

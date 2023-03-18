@@ -5,95 +5,15 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx :as j.c.tx]
-   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.tx :as m.c.tx]
-   [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.mutations.core.tx :as mu.c.tx]
    [dinsro.ui.core.transaction-inputs :as u.c.transaction-inputs]
    [dinsro.ui.core.transaction-outputs :as u.c.transaction-outputs]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
-
-(defsc RefRow
-  [this {::m.c.tx/keys [fetched? id]
-         :as           props}]
-  {:ident         ::m.c.tx/id
-   :query         [::m.c.tx/id
-                   ::m.c.tx/fetched?]
-   :initial-state {::m.c.tx/id       nil
-                   ::m.c.tx/fetched? false}}
-
-  (dom/tr {}
-    (dom/td {} (u.links/ui-core-tx-link props))
-    (dom/td {} (str fetched?))
-    (dom/td {} (dom/button {:classes [:.ui.button]
-                            :onClick (fn [event]
-                                       (log/info :fetch-button/clicked {:event event})
-                                       (comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})]))}
-                 "Fetch"))))
-
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.tx/id}))
-
-(defn ref-row
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "txid")
-         (dom/th {} "fetched")
-         (dom/th {} "Actions")))
-     (dom/tbody {}
-       (for [tx value]
-         (ui-ref-row tx))))))
-
-(def render-ref-row (render-field-factory ref-row))
-
-(def fetch-button
-  {:type   :button
-   :local? true
-   :label  "Fetch"
-   :action (fn [this _key]
-             (let [{::m.c.tx/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.tx/fetch! {::m.c.tx/id id})])))})
-
-(def override-input true)
-
-(form/defsc-form CoreTxInput
-  [this props]
-  {fo/id           m.c.tx-in/id
-   fo/route-prefix "tx-in"
-   fo/attributes   [m.c.tx-in/coinbase
-                    m.c.tx-in/txinwitness
-                    m.c.tx-in/sequence
-                    m.c.tx-in/txid]
-   fo/title        "Input"}
-  (if override-input
-    (form/render-layout this props)
-    (let [{::m.c.tx-in/keys [sequence txid vout script-pub-key]} props]
-      (dom/div {}
-        (when sequence
-          (dom/p "sequence " sequence))
-        (when txid
-          (dom/p {} "txid: " txid))
-        (when vout
-          (dom/p {} "vout" vout))
-        (when script-pub-key
-          (dom/p {} "pub " script-pub-key))))))
-
-(form/defsc-form CoreTxBlock
-  [_this _props]
-  {fo/id           m.c.blocks/id
-   fo/route-prefix "tx-block"
-   fo/attributes   [m.c.blocks/height m.c.blocks/hash]
-   fo/title        "Block"})
-
-(def override-form false)
 
 (defn fetch-action
   [report-instance {::m.c.tx/keys [id]}]
@@ -135,11 +55,6 @@
                       {::m.c.tx/block block-id
                        ::m.c.tx/tx-id txid-value})])
     (control/run! this)))
-
-(def search-control
-  {:type   :button
-   :label  "Search"
-   :action search-control-action})
 
 (defsc ShowTransaction
   "Show a core tx"
@@ -211,5 +126,3 @@
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true
    ro/route            "transactions"})
-
-(def ui-tx-report (comp/factory Report))

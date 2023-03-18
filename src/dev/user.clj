@@ -12,6 +12,7 @@
 (defmacro jit [sym]
   `(requiring-resolve '~sym))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn cljs-repl
   ([]
    (cljs-repl :main))
@@ -34,6 +35,7 @@
   []
   (mount/stop-except #'c.nrepl/repl-server))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (def go start)
 
 (defn restart
@@ -43,4 +45,5 @@
   (stop)
   (tools-ns/refresh :after 'user/start))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (def reset #'restart)

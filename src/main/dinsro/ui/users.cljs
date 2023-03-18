@@ -15,8 +15,6 @@
    [dinsro.ui.user-transactions :as u.user-transactions]
    [dinsro.ui.user-wallets :as u.user-wallets]))
 
-(def override-form true)
-
 (def menu-items
   [{:key   "accounts"
     :name  "Accounts"

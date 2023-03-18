@@ -1,6 +1,5 @@
 (ns dinsro.ui.navbar-test
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    dinsro.machines
    [dinsro.model.navbar :as m.navbar]
@@ -13,15 +12,7 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(defn navlink-idents
-  [kws]
-  (map (partial vector ::m.navlink/id)
-       kws))
-
-(defn map-links
-  [links]
-  (map #(comp/get-initial-state u.navbar/NavLink (sample/navlink-map %)) links))
-
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard NavLink
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.navbar/NavLink
@@ -52,6 +43,7 @@
                 :com.fulcrologic.fulcro.ui-state-machines/ident->actor {:actor/navbar {}}
                 :com.fulcrologic.fulcro.ui-state-machines/actor->ident {:actor/navbar {}}})
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard NavbarLogoutLink
   {}
   (ct.fulcro3/fulcro-card
@@ -60,6 +52,7 @@
     ::ct.fulcro3/initial-state
     (fn [] {})}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard NavbarSidebar
   {}
   (ct.fulcro3/fulcro-card
@@ -69,6 +62,7 @@
             ::m.navbar/dropdown-links []
             :inverted                 true})}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard Navbar
   {::wsm/align       {:flex 1}
    ::wsm/card-height 5

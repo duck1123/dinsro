@@ -13,8 +13,6 @@
    [dinsro.ui.core.network-wallets :as u.c.network-wallets]
    [dinsro.ui.links :as u.links]))
 
-(def override-form false)
-
 (defrouter Router
   [_this _props]
   {:router-targets [u.c.network-addresses/SubPage
@@ -22,8 +20,6 @@
                     u.c.network-nodes/SubPage
                     u.c.network-ln-nodes/SubPage
                     u.c.network-wallets/SubPage]})
-
-(def ui-router (comp/factory Router))
 
 (def menu-items
   [{:key   "addresses"
@@ -49,7 +45,7 @@
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
-                   {::m.c.networks/chain (comp/get-query u.links/ChainLink)}
+                   {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
                    {:ui/router (comp/get-query Router)}]
    :initial-state {::m.c.networks/id    nil
                    ::m.c.networks/name  ""
@@ -67,11 +63,7 @@
          (dom/dt {} "Chain")
          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
      (u.links/ui-nav-menu {:id id :menu-items menu-items})
-     (if router
-       (ui-router router)
-       (dom/div :.ui.segment
-         (dom/h3 {} "Network Router not loaded")
-         (u.links/ui-props-logger props))))
+     ((comp/factory Router) router))
     (dom/div :.ui.segment
       (dom/h3 {} "Network Not loaded")
       (u.links/ui-props-logger props))))
@@ -89,5 +81,3 @@
    ro/row-pk           m.c.networks/id
    ro/run-on-mount?    true
    ro/route            "networks"})
-
-(def ui-tx-report (comp/factory Report))

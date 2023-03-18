@@ -9,6 +9,7 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard RefRow
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.c.blocks/RefRow
@@ -29,6 +30,7 @@
    :ui/page-count   1
    :ui/parameters   {}})
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard Report
   {::wsm/card-width 6 ::wsm/card-height 13}
   (ct.fulcro3/fulcro-card

@@ -4,9 +4,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -37,98 +35,14 @@
                                     (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
               "Fetch"))))
 
-(def ui-ref-row (comp/factory RefRow {:keyfn ::m.c.blocks/id}))
-
-(defn ref-row
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "Fetched")
-         (dom/th {} "Hash")
-         (dom/th {} "Height")))
-     (dom/tbody {}
-       (for [tx value]
-         (ui-ref-row tx))))))
-
-(def render-ref-row (render-field-factory ref-row))
-
-(def fetch-button
-  {:type   :button
-   :local? true
-   :label  "Fetch"
-   :action (fn [this _key] (let [props (comp/props this)]
-                             (comp/transact! this [(mu.c.blocks/fetch! props)])))})
-
-(def fetch-transactions-button
-  {:type   :button
-   :local? true
-   :label  "Fetch Transactions"
-   :action (fn [this _key]
-             (let [{::m.c.blocks/keys [id]} (comp/props this)]
-               (comp/transact!
-                this
-                [(mu.c.blocks/fetch-transactions! {::m.c.blocks/id id})])))})
-
-(defn find-control
-  [controls key]
-  (->> controls
-       (map (fn [control]
-              (let [control-id (::control/id control)]
-                (log/debug :mapping {:control-id control-id})
-                (when (= control-id key) control))))
-       (filter identity)
-       first))
-
-(defn search-control-action
-  [this]
-  (let [props                              (comp/props this)
-        {:ui/keys [controls current-rows]} props
-        [current-row]                      current-rows
-
-        values     (map (fn [control]
-                          (let [control-id (::control/id control)]
-                            (log/debug :mapping {:control-id control-id})
-                            (when (= control-id ::tx-id)
-                              (::control/value control))))
-                        controls)
-        txid-value (first (filter identity values))
-        block-id   (::control/value (find-control controls ::block-id))
-        network-id (::control/value (find-control controls ::network-id))
-        _node-id   (second (::control/value (find-control controls ::node-id)))]
-    (log/info :tx/searching {:props       props
-                             :current-row current-row
-                             :txid-value  txid-value
-                             :values      values})
-    (comp/transact! this
-                    [(mu.c.blocks/search!
-                      {::m.c.blocks/block   block-id
-                       ::m.c.blocks/network network-id})])
-    (control/run! this)))
-
-(def search-control
-  {:type   :button
-   :label  "Search"
-   :action search-control-action})
-
 (defn delete-action
   [report-instance {::m.c.nodes/keys [id]}]
   (form/delete! report-instance ::m.c.blocks/id id))
-
-(defn fetch-action
-  [report-instance {::m.c.nodes/keys [id]}]
-  (comp/transact! report-instance [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))
 
 (def delete-action-button
   {:label  "Delete"
    :action delete-action
    :style  :delete-button})
-
-(def fetch-action-button
-  {:label  "Fetch"
-   :action delete-action
-   :style  :fetch-button})
 
 (s/def ::row
   (s/keys
@@ -136,17 +50,6 @@
          ::m.c.blocks/hash
          ::m.c.blocks/height
          ::m.c.blocks/fetched?]))
-(s/def ::row-keywords #{::m.c.blocks/id
-                        ::m.c.blocks/hash
-                        ::m.c.blocks/height
-                        ::m.c.blocks/fetched?})
-(s/def ::row2
-  (s/and
-   (s/every-kv
-    ::row-keywords ::m.c.blocks/id)
-   (s/every (fn [[k v]] (= (:id v) k)))))
-
-(s/def ::rows (s/coll-of ::row))
 
 (defsc ShowBlock
   "Show a core block"
@@ -234,8 +137,6 @@
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
    ro/route            "blocks"})
-
-(def ui-blocks-report (comp/factory Report))
 
 (report/defsc-report AdminReport
   [_this _props]

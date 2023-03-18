@@ -25,6 +25,7 @@
    [dinsro.ui.categories :as u.categories]
    [dinsro.ui.core :as u.core]
    [dinsro.ui.currencies :as u.currencies]
+   [dinsro.ui.debits :as u.debits]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
    [dinsro.ui.ln :as u.ln]
@@ -63,6 +64,7 @@
                     u.currencies/Report
                     u.currencies/NewCurrencyForm
                     u.currencies/ShowCurrency
+                    u.debits/ShowDebits
                     u.home/HomePage
                     u.login/LoginPage
                     u.ln/LnPage
@@ -149,5 +151,3 @@
         (dom/div {}
           (dom/p "Not loaded")))
       (inj/style-element {:component Root}))))
-
-(def ui-root (comp/factory Root))

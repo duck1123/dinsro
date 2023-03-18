@@ -10,15 +10,7 @@
    [dinsro.specs]
    [xtdb.api :as xt]))
 
-(def attributes-list
-  '[:xt/id
-    ::m.rate-sources/id
-    ::m.rate-sources/name])
 (def record-limit 1000)
-
-(def find-dbid-by-id-query
-  '[:find ?dbid
-    :where [?dbid ::m.rate-sources/id _]])
 
 (>defn find-by-name
   [name]

@@ -15,8 +15,6 @@
    [tick.alpha.api :as tick]
    [xtdb.api :as xt]))
 
-(def record-limit 75)
-
 (>defn find-by-account
   [id]
   [::m.accounts/id => (s/coll-of ::m.transactions/id)]

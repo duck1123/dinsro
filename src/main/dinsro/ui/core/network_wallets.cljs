@@ -1,7 +1,6 @@
 (ns dinsro.ui.core.network-wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -24,20 +23,12 @@
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this {:ui/keys [report]}]
   {:query             [{:ui/report (comp/get-query Report)}
                        [::dr/id :dinsro.ui.core.networks/Router]]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :initial-state     {:ui/report {}}
    :route-segment     ["wallets"]
    :ident             (fn [] [:component/id ::SubPage])}
-  (let [router-info (get props [::dr/id :dinsro.ui.core.networks/Router])]
-    (if (::m.c.networks/id router-info)
-      (ui-report report)
-      (dom/p {} "Network ID not set"))))
-
-(def ui-sub-page (comp/factory SubPage))
+  ((comp/factory Report) report))

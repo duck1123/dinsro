@@ -1,20 +1,16 @@
 (ns dinsro.actions.authentication
   (:require
-   [buddy.hashers :as hashers]
-   [buddy.sign.jwt :as jwt]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.server.api-middleware :as fmw]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.attributes :as attr]
    [com.fulcrologic.rad.authorization :as auth]
-   [dinsro.components.config :refer [secret]]
    [dinsro.components.database-queries :as queries]
    [dinsro.model.timezone :as timezone]
    [dinsro.model.users :as m.users]
    [dinsro.queries.users :as q.users]
    [io.pedestal.log :as log]
-   [taoensso.encore :as enc]
-   [tick.core :as t]))
+   [taoensso.encore :as enc]))
 
 (>defn get-user-id
   [env]
@@ -89,39 +85,6 @@
    (some-> env :ring/request :session)
    {::auth/provider :local
     ::auth/status   :not-logged-in}))
-
-(s/def ::login-response (s/keys))
-
-(>defn authenticate
-  "Check user authentication"
-  [username password]
-  [string? string? => (? (s/keys))]
-  (if-let [user-id (q.users/find-by-name username)]
-    (if-let [user (q.users/read-record user-id)]
-      (if-let [password-hash (::m.users/password-hash user)]
-        (if (hashers/check password password-hash)
-          (let [username (::m.users/id user)
-                claims   {:user username
-                          :exp  (t/>> (t/now) (t/new-duration 1 :days))}]
-            {:identity username
-             :token    (jwt/sign claims secret)})
-          ;; Password does not match
-          (do
-            (log/info :password/not-matched {})
-            nil))
-        (do
-          ;; No password, invalid user
-          (log/info :password/missing {})
-          nil))
-
-      (do
-        ;; User cannot be read
-        (log/info :user/not-read {})
-        nil))
-    (do
-      ;; User not found
-      (log/info :user/not-found {})
-      nil)))
 
 (>defn register
   "Register user with params"

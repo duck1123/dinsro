@@ -113,21 +113,6 @@
    ro/source-attribute ::m.accounts/admin-index
    ro/title            "Accounts"})
 
-(def ui-admin-report (comp/factory AdminReport))
-
-(report/defsc-report AccountsSubReport
-  [_this _props]
-  {ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                        ::m.accounts/user     #(u.links/ui-user-link %2)
-                        ::m.accounts/name     #(u.links/ui-account-link %3)}
-   ro/columns          [m.accounts/name
-                        m.accounts/currency
-                        m.accounts/initial-value]
-   ro/row-pk           m.accounts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::m.accounts/index
-   ro/title            "Accounts"})
-
 (defsc Show
   [_this {::m.accounts/keys [name currency source user wallet]
           :ui/keys          [transactions]}]

@@ -1,6 +1,5 @@
 (ns dinsro.model
   (:require
-   [com.fulcrologic.rad.attributes :as attr]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.core.addresses :as j.c.addresses]
@@ -78,6 +77,7 @@
    #?(:clj [dinsro.mutations.ln.accounts :as mu.ln.accounts])
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
    #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
+   #?(:clj [dinsro.mutations.ln.payments :as mu.ln.payments])
    #?(:clj [dinsro.mutations.ln.payreqs :as mu.ln.payreqs])
    #?(:clj [dinsro.mutations.ln.peers :as mu.ln.peers])
    #?(:clj [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes])
@@ -157,8 +157,6 @@
         m.c.wallet-addresses/attributes
         m.c.words/attributes)))
 
-(def all-attribute-validator (attr/make-attribute-validator all-attributes))
-
 #?(:clj
    (def all-resolvers
      (vec (concat
@@ -173,6 +171,7 @@
            mu.debits/resolvers
            mu.ln.accounts/resolvers
            mu.ln.invoices/resolvers
+           mu.ln.payments/resolvers
            mu.ln.payreqs/resolvers
            mu.ln.peers/resolvers
            mu.ln.nodes/resolvers

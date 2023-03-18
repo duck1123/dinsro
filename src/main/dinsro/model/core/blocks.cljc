@@ -12,7 +12,6 @@
    [tick.alpha.api :as tick]))
 
 (s/def ::id uuid?)
-(s/def ::id-kw (s/with-gen (constantly ::id) #(s/gen #{::id})))
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
@@ -43,7 +42,6 @@
    ao/schema     :production})
 
 (s/def ::hash string?)
-(s/def ::hash-kw (s/with-gen (constantly ::hash) #(s/gen #{::hash})))
 (defattr hash ::hash :string
   {ao/identities #{::id}
    ao/schema     :production})

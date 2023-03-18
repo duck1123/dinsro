@@ -63,26 +63,14 @@
    ao/identities        #{::id}
    ao/schema            :production})
 
-(s/def ::input-params-valid (s/keys :req [::password ::id]))
 (s/def ::input-params (s/keys :opt [::password ::name]))
 (s/def ::params (s/keys :req [::hashed-value ::name ::salt ::iterations ::role]))
 (s/def ::item (s/keys :req [::hashed-value ::id ::name  ::salt ::iterations ::role]))
 (s/def ::id-key (s/with-gen keyword? #(s/gen #{::id})))
 (s/def ::ident (s/tuple ::id-key ::id))
 
-(>defn ident
-  [id]
-  [::id => any?]
-  {::id id})
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => any?]
-  (ident id))
-
-(defn idents
-  [ids]
-  (mapv ident ids))
+(>defn ident [id] [::id => any?] {::id id})
+(defn idents [ids] (mapv ident ids))
 
 (def attributes
   [id
@@ -92,5 +80,3 @@
    password-salt
    password-iterations
    role])
-
-#?(:clj (def resolvers []))

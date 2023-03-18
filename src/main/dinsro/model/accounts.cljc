@@ -16,18 +16,6 @@
 
 (comment ::auth/_ ::pc/_)
 
-(s/def ::ident (s/tuple keyword? ::id))
-
-(>defn ident
-  [id]
-  [::id => ::ident]
-  [::id id])
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => ::ident]
-  (ident id))
-
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
@@ -95,8 +83,9 @@
 (s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::user]
                       :opt [::source ::wallet]))
 
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(s/def ::ident (s/tuple keyword? ::id))
+
+(>defn ident [id] [::id => ::ident] [::id id])
+(defn idents [ids] (mapv (fn [id] {::id id}) ids))
 
 (def attributes [currency id initial-value name source user wallet])

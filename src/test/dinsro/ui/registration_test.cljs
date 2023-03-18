@@ -5,6 +5,7 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard RegistrationPage
   {::wsm/card-height 12
    ::wsm/card-width  4}

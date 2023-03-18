@@ -6,6 +6,7 @@
    [mount.core :refer [defstate]]
    [org.httpkit.server :refer [run-server]]))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defstate http-server
   "The main web server for the application"
   :start

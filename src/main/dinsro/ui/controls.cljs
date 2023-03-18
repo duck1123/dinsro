@@ -31,11 +31,8 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
-(def ui-victory-bar (interop/react-factory victory/VictoryBar))
 (def ui-victory-chart (interop/react-factory victory/VictoryChart))
 (def ui-victory-line (interop/react-factory victory/VictoryLine))
-(def ui-victory-axis  (interop/react-factory victory/VictoryAxis))
-(def ui-victory-tooltip  (interop/react-factory victory/VictoryTooltip))
 
 (def matchers
   {::m.accounts/id u.links/ui-account-link
@@ -112,16 +109,6 @@
     (for [item value] (ui-link-control-list-item {:attribute attribute :item item}))))
 
 (def render-link-list-control (render-field-factory link-list-control))
-
-(defn link-subform-control
-  [{:keys [value]} attribute]
-  (dom/div {}
-    (dom/ul {}
-      (for [item value]
-        (dom/li {}
-          (link-control {:value item} attribute))))))
-
-(def render-link-subform-control (render-field-factory link-subform-control))
 
 (defn ref-control
   [{:keys [value]} _attribute]

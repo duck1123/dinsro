@@ -15,12 +15,6 @@
    ::m.ln.peers/node    {::m.ln.nodes/id   (ds/gen-key ::m.ln.nodes/id)
                          ::m.ln.nodes/name (ds/gen-key ::m.ln.nodes/name)}})
 
-(defn LNPeerForm-data
-  []
-  {::m.ln.peers/id      (ds/gen-key ::m.ln.peers/id)
-   ::m.ln.peers/address (ds/gen-key ::m.ln.peers/address)
-   ::m.ln.peers/pubkey  (ds/gen-key ::m.ln.peers/pubkey)})
-
 (defn NewPeerForm-data
   []
   {::m.ln.peers/id      (ds/gen-key ::m.ln.peers/id)
@@ -40,8 +34,10 @@
    :ui/page-count   1
    :ui/parameters   {}})
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard Report
   (th/fulcro-card u.ln.peers/Report Report-data {}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard NewPeerForm
   (th/fulcro-card u.ln.peers/NewPeerForm NewPeerForm-data {}))

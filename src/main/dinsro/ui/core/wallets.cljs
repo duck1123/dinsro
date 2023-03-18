@@ -67,21 +67,6 @@
   (dom/div {}
     "word list"))
 
-(def roll-button
-  {:type   :button
-   :local? true
-   :label  "Roll"
-   :action (fn [this _key]
-             (let [{::m.c.wallets/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.wallets/roll! {::m.c.wallets/id id})])))})
-
-(def delete-action-button
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this {::m.c.wallets/keys [id]}]
-             (form/delete! this ::m.c.wallets/id id))})
-
 (def new-action-button
   {:type   :button
    :local? true

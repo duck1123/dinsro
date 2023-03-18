@@ -4,48 +4,12 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
-
-(defsc LnPayreqRow
-  [_this {::m.ln.payreqs/keys [description
-                               num-satoshis
-                               payment-request]}]
-  {}
-  (dom/tr {}
-    (dom/td (str description))
-    (dom/td (str num-satoshis))
-    (dom/td (str (apply str (take 80 payment-request)) "..."))))
-
-(def ui-ln-payreq-row (comp/factory LnPayreqRow {:keyfn ::m.ln.payreqs/id}))
-
-(defn ref-ln-payreq-row
-  [{:keys [value]} _attribute]
-  (comp/fragment
-   (dom/table :.ui.table
-     (dom/thead {}
-       (dom/tr {}
-         (dom/th {} "description")
-         (dom/th {} "num satoshis")
-         (dom/th {} "payment request")))
-     (dom/tbody {}
-       (for [tx value]
-         (ui-ln-payreq-row tx))))))
-
-(def render-ref-ln-payreq-row (render-field-factory ref-ln-payreq-row))
-
-(def pay-button
-  {:type   :button
-   :local? true
-   :label  "Pay"
-   :action (fn [this _]
-             (let [props (comp/props this)]
-               (comp/transact! this [(mu.ln.payreqs/submit! props)])))})
 
 (def decode-button
   {:type   :button

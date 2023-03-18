@@ -26,6 +26,7 @@
     (catch FileNotFoundException _ex
       (log/warn :read-secret/no-secret {}))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defstate secret
   "A secret value used to encrypt session state"
   :start

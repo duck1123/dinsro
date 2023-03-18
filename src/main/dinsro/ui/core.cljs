@@ -36,6 +36,7 @@
                     u.c.peers/Report
                     u.c.peers/CorePeers2Report
                     u.c.peers/NewCorePeerForm
+                    u.c.peers/ShowPeer
                     u.c.tx/Report
                     u.c.tx/ShowTransaction
                     u.c.wallets/NewWalletForm

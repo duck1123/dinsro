@@ -16,4 +16,5 @@
   (client/setup-RAD app)
   (ws/mount))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defonce init (start!))

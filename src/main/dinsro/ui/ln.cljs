@@ -18,8 +18,8 @@
                     u.ln.channels/NewChannelForm
                     u.ln.channels/Report
                     u.ln.channels/ShowChannel
-                    u.ln.invoices/Report
                     u.ln.invoices/NewInvoiceForm
+                    u.ln.invoices/Report
                     u.ln.nodes/CreateLightningNodeForm
                     u.ln.nodes/Report
                     u.ln.nodes/Show
@@ -27,11 +27,11 @@
                     u.ln.payments/ShowPayment
                     u.ln.payreqs/NewPaymentForm
                     u.ln.payreqs/Report
-                    u.ln.payreqs/NewPaymentForm
-                    u.ln.peers/Report
+                    u.ln.payreqs/ShowPayreq
                     u.ln.peers/NewPeerForm
-                    u.ln.remote-nodes/ShowRemoteNode
-                    u.ln.remote-nodes/Report]}
+                    u.ln.peers/Report
+                    u.ln.remote-nodes/Report
+                    u.ln.remote-nodes/ShowRemoteNode]}
 
   (dom/div {} "Ln router"))
 
