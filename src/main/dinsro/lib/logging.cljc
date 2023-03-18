@@ -8,20 +8,6 @@
    #?(:clj [taoensso.timbre :as log])
    #?(:clj [lambdaisland.glogc :as glog])))
 
-#?(:clj
-   (defmacro p
-     "Convert a data structure to a visually-delimited pretty-printed string block."
-     [v]
-     `(str
-       ~(str "\n" v "\n================================================================================\n")
-       (with-out-str (pprint ~v))
-       "================================================================================")))
-
-(defn pretty
-  "Marks a data item for pretty formatting when logging it (requires installing logging middleware)."
-  [v]
-  (with-meta v {:pretty true}))
-
 (defn pretty-middleware
   "Returns timbre logging middleware that will reformat items marked with `pretty` as pretty-printed strings using `data->string`."
   [data->string]

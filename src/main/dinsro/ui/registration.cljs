@@ -20,5 +20,3 @@
 
     (dom/div {}
       (dom/p {} "Registrations are not enabled"))))
-
-(def ui-page (comp/factory RegistrationPage))

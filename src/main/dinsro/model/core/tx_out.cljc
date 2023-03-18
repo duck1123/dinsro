@@ -9,10 +9,6 @@
    [dinsro.model.core.tx :as m.c.tx]
    [lambdaisland.glogc :as log]))
 
-(def rename-map
-  {:value ::value
-   :n     ::n})
-
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

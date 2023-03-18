@@ -64,8 +64,6 @@
     (ui-report report)
     (dom/p :.ui.segment "report not loaded")))
 
-(def ui-report-block (comp/factory ReportBlock))
-
 (def ident-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
@@ -82,5 +80,3 @@
     (dom/div  :.ui.segment
       (dom/h3 {} "Node ID not set")
       (u.links/log-props props))))
-
-(def ui-sub-page (comp/factory SubPage))

@@ -100,5 +100,3 @@
   (mapv (fn [id] {::id id}) ids))
 
 (def attributes [currency id initial-value name source user wallet])
-
-#?(:clj (def resolvers []))

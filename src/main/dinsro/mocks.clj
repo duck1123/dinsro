@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -10,7 +9,6 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
-   [dinsro.queries.categories :as q.categories]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.rate-sources :as q.rate-sources]
@@ -67,17 +65,6 @@
                     (assoc ::m.accounts/currency currency-id))
          id     (q.accounts/create-record params)]
      (q.accounts/read-record id))))
-
-(defn mock-category
-  ([]
-   (let [user    (mock-user)
-         user-id (::m.users/id user)]
-     (mock-category user-id)))
-  ([user-id]
-   (let [params (ds/gen-key ::m.categories/params)
-         params (assoc-in params [::m.categories/user ::m.users/id] user-id)
-         id     (q.categories/create-record params)]
-     (q.categories/read-record id))))
 
 (>defn mock-rate
   ([]

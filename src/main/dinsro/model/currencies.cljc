@@ -22,23 +22,10 @@
    ao/schema     :production})
 
 (s/def ::params (s/keys :req [::code ::name]))
-(s/def ::item-opt (s/keys :opt [::code ::name]))
 (s/def ::item (s/keys :req [::id ::code ::name]))
 (s/def ::ident (s/tuple keyword? ::id))
 
-(>defn ident
-  [id]
-  [::id => any?]
-  {::id id})
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => any?]
-  (ident id))
-
-(>defn idents
-  [ids]
-  [(s/coll-of ::id) => any?]
-  (mapv ident ids))
+(>defn ident [id] [::id => any?] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => any?] (mapv ident ids))
 
 (def attributes [code id name])

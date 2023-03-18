@@ -32,7 +32,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::account ::transaction ::value]))
 (s/def ::params (s/keys :req [::account ::transaction ::value]))
 
 (def attributes [id account transaction value])

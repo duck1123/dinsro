@@ -88,8 +88,6 @@
    #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
    #?(:clj [dinsro.mutations.core.words :as mu.c.words])))
 
-(def schemata [])
-
 (def all-attributes
   (vec (concat
         j.accounts/attributes

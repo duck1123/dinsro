@@ -58,5 +58,3 @@
             :onClick
             (fn [_ev]
               (uism/trigger! this ::auth/auth-machine :event/cancel))}))))))
-
-(def ui-login-page (comp/factory LoginPage))

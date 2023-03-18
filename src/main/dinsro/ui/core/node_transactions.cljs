@@ -39,5 +39,3 @@
    :ident         (fn [] [:component/id ::SubPage])}
   (dom/div :.ui.segment
     (ui-report report)))
-
-(def ui-sub-page (comp/factory SubPage))

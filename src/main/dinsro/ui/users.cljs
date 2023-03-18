@@ -99,5 +99,3 @@
    ro/row-pk           m.users/id
    ro/route            "users"
    ro/run-on-mount?    true})
-
-(def ui-admin-index-users (comp/factory AdminReport))

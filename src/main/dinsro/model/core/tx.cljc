@@ -9,22 +9,6 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [lambdaisland.glogc :as log]))
 
-(def rename-map
-  {:blockhash     ::block-hash
-   :blocktime     ::block-time
-   :confirmations ::confirmations
-   :hash          ::hash
-   :hex           ::hex
-   :locktime      ::lock-time
-   :size          ::size
-   :time          ::time
-   :txid          ::tx-id
-   :vsize         ::vsize
-   :version       ::version
-   :vout          ::vout
-   :vin           ::vin
-   :weight        ::weight})
-
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

@@ -8,29 +8,8 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.client.converters.get-block-result :as c.c.get-block-result]
    [dinsro.model.core.networks :as m.c.networks]
-   ;; [dinsro.model.core.nodes :as m.c.nodes]
    [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]))
-
-(def rename-map
-  {:bits              ::bits
-   :chainwork         ::chainwork
-   :confirmations     ::confirmations
-   :difficulty        ::difficlty
-   :hash              ::hash
-   :height            ::height
-   :merkleroot        ::merkle-root
-   :nonce             ::nonce
-   :previousblockhash ::previous-block-hash
-   :size              ::size
-   :time              ::time
-   :tx                ::tx
-   :mediantime        ::median-time
-   :strippedsize      ::stripped-size
-   :weight            ::weight
-   :version           ::version
-   :versionHex        ::version-hex
-   :nTx               ::transaction-count})
 
 (s/def ::id uuid?)
 (s/def ::id-kw (s/with-gen (constantly ::id) #(s/gen #{::id})))

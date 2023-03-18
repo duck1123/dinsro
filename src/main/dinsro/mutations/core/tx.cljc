@@ -98,8 +98,9 @@
 #?(:clj
    (comment
      (def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
-     (def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
      node-alice
+     (def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
+     node-bob
      (def tx-id2 (::m.c.tx/tx-id (first (q.c.tx/index-records))))
 
      (q.c.nodes/index-ids)

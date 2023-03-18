@@ -28,18 +28,7 @@
 (s/def ::item (s/keys :req [::id ::chain ::name]))
 (s/def ::items (s/coll-of ::item))
 
-(def link-query [::id ::name])
-
-(defn ident
-  [id]
-  {::id id})
-
-(defn ident-item
-  [{::keys [id]}]
-  (ident id))
-
-(defn idents
-  [ids]
-  (mapv ident ids))
+(defn ident [id] {::id id})
+(defn idents [ids] (mapv ident ids))
 
 (def attributes [id chain name])

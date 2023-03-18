@@ -78,5 +78,3 @@
     (dom/div  :.ui.segment
       (dom/h3 {} "Node ID not set")
       (u.links/ui-props-logger props))))
-
-(def ui-sub-page (comp/factory SubPage))

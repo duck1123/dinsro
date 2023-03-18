@@ -22,8 +22,6 @@
    ro/source-attribute ::m.c.words/index
    ro/title            "Words"})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:query             [::m.c.wallets/id

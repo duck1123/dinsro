@@ -118,8 +118,6 @@
    ro/run-on-mount?    true
    ro/route            "peers2"})
 
-(def ui-peers-report (comp/factory Report))
-
 (defsc ShowPeer
   [_this _props]
   {:ident ::m.c.peers/id

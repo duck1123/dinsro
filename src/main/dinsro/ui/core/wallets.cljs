@@ -180,5 +180,3 @@
    ro/title            "Wallet Report"}
   (log/info :Report/creating {:props props})
   (report/render-layout this))
-
-(def ui-wallets-report (comp/factory Report))

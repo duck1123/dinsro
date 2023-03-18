@@ -9,11 +9,6 @@
    [dinsro.model.core.tx :as m.c.tx]
    [lambdaisland.glogc :as log]))
 
-(def rename-map
-  {:coinbase    ::coinbase
-   :txinwitness ::txinwitness
-   :sequence    ::sequence})
-
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

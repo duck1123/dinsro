@@ -35,9 +35,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params
-  (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass]))
-
 (s/def ::params
   (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass]
           :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
@@ -50,19 +47,8 @@
                 ::chainwork ::chain ::block-count]))
 (s/def ::items (s/coll-of ::item))
 
-(def link-query [::id ::name])
-
-(defn ident
-  [id]
-  {::id id})
-
-(defn ident-item
-  [{::keys [id]}]
-  (ident id))
-
-(defn idents
-  [ids]
-  (mapv ident ids))
+(defn ident [id] {::id id})
+(defn idents [ids] (mapv ident ids))
 
 (def attributes
   [id name host port rpcuser rpcpass])

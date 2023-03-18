@@ -65,18 +65,9 @@
 
                 ::node]))
 
-(def rename-map
-  {:addrbind ::address-bind
-   :subver ::subver
-   :connection_type ::connection-type
-   :addr ::addr
-   :id ::peer-id})
-
 (>defn prepare-params
   [params]
   [any? => ::params]
-  ;; (-> params
-  ;;     (set/rename-keys rename-map))
   (log/info :prepare-params/starting {:params params})
   (let [address-bind (get-in params [:network-info :addr-bind])
         prepared     {::address-bind    address-bind

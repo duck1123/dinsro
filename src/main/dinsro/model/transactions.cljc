@@ -21,25 +21,11 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req [::date ::description]))
 (s/def ::params (s/keys :req [::date ::description]))
 (s/def ::item (s/keys :req [::id ::date ::description]))
 (s/def ::ident (s/tuple keyword? ::id))
 
-(>defn ident
-  [id]
-  [::id => ::ident]
-  [::id id])
-
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => ::ident]
-  (ident id))
-
-(defn idents
-  [ids]
-  (mapv (fn [id] {::id id}) ids))
+(>defn ident [id] [::id => ::ident] [::id id])
+(defn idents [ids] (mapv (fn [id] {::id id}) ids))
 
 (def attributes [date description id])
-
-#?(:clj (def resolvers []))

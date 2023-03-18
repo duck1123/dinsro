@@ -48,5 +48,3 @@
     (if node-id
       (ui-report report)
       (dom/div {} "Node ID not set"))))
-
-(def ui-sub-page (comp/factory SubPage))

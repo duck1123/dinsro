@@ -37,15 +37,8 @@
   [::id => ::ident]
   [::id id])
 
-(>defn ident-item
-  [{::keys [id]}]
-  [::item => ::ident]
-  (ident id))
-
 (defn idents
   [ids]
   (mapv (fn [id] {::id id}) ids))
 
 (def attributes [id name user])
-
-#?(:clj (def resolvers []))
