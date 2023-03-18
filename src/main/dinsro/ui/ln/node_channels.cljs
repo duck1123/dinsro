@@ -1,7 +1,6 @@
 (ns dinsro.ui.ln.node-channels
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
@@ -14,22 +13,8 @@
    [dinsro.ui.ln.channels :as u.ln.channels]
    [lambdaisland.glogi :as log]))
 
-(def delete-button
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this _]
-             (let [{::m.ln.channels/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.ln.channels/delete! {::m.ln.channels/id id})])))})
-
-(def delete-action-button
-  "Delete button for reports"
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this {::m.ln.channels/keys [id]}]
-             (log/info :delete-action/clicked {:id id})
-             (comp/transact! this [(mu.ln.channels/delete! {::m.ln.channels/id id})]))})
+(def ident-key ::m.ln.nodes/id)
+(def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report
   [this props]
@@ -69,21 +54,12 @@
   (log/info :Report/creating {:props props})
   (report/render-layout this))
 
-(def ui-report (comp/factory Report))
-
-(def ident-key ::m.ln.nodes/id)
-(def router-key :dinsro.ui.ln.nodes/Router)
-
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+  [_this {:ui/keys [report]}]
+  {:query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :route-segment     ["channels"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (if (get-in props [[::dr/id router-key] ident-key])
-    (ui-report report)
-    (dom/div  :.ui.segment
-      (dom/h3 {} "Node ID not set")
-      (u.links/log-props props))))
+  ((comp/factory Report) report))

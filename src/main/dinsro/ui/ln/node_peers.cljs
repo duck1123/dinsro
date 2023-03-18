@@ -1,7 +1,6 @@
 (ns dinsro.ui.ln.node-peers
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
@@ -15,22 +14,8 @@
    [dinsro.ui.ln.peers :as u.ln.peers]
    [lambdaisland.glogi :as log]))
 
-(def delete-button
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this _]
-             (let [{::m.ln.peers/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.ln.peers/delete! {::m.ln.peers/id id})])))})
-
-(def delete-action-button
-  "Delete button for reports"
-  {:type   :button
-   :local? true
-   :label  "Delete"
-   :action (fn [this {::m.ln.peers/keys [id]}]
-             (log/info :delete-action/clicked {:id id})
-             (comp/transact! this [(mu.ln.peers/delete! {::m.ln.peers/id id})]))})
+(def ident-key ::m.ln.nodes/id)
+(def router-key :dinsro.ui.ln.nodes/Router)
 
 (def fetch-button
   {:type   :button
@@ -61,7 +46,7 @@
    :action new-button-action})
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.ln.peers/remote-node
                         m.ln.peers/sat-recv
                         m.ln.peers/sat-sent
@@ -79,25 +64,14 @@
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Node Peers"
    ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true}
-  (log/finer :Report/creating {:props props})
-  (report/render-layout this))
-
-(def ui-report (comp/factory Report))
-
-(def ident-key ::m.ln.nodes/id)
-(def router-key :dinsro.ui.ln.nodes/Router)
+   ro/run-on-mount?    true})
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+  [_this {:ui/keys [report]}]
+  {:query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
    :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :route-segment     ["peers"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  (if (get-in props [[::dr/id router-key] ident-key])
-    (ui-report report)
-    (dom/div  :.ui.segment
-      (dom/h3 {} "Node ID not set")
-      (u.links/log-props props))))
+  ((comp/factory Report) report))
