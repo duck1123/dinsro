@@ -84,7 +84,7 @@
                       :opt [::source ::wallet]))
 (s/def ::ident (s/tuple keyword? ::id))
 
-(>defn ident [id] [::id => ::ident] [::id id])
-(defn idents [ids] (mapv (fn [id] {::id id}) ids))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [currency id initial-value name source user wallet])

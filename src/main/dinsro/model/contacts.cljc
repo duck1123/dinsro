@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -36,12 +36,13 @@
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
 (>def ::required-params
-  (s/keys :req [::name
-                ::pubkey]))
+      (s/keys :req [::name
+                    ::pubkey]))
 
 (s/def ::params (s/keys :req [::name ::pubkey ::user]))
 (s/def ::item (s/keys :req [::id ::name ::pubkey ::user]))
 
-(defn idents [ids] (mapv (fn [id] {::id id}) ids))
+(>defn ident [id] [::id => ::ident] {::id id})
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [id name pubkey user])
