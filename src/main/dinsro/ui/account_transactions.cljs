@@ -14,10 +14,10 @@
   [_this _props]
   {ro/columns          [m.transactions/description
                         m.transactions/date]
+   ro/control-layout   {:inputs         [[::m.accounts/id]]
+                        :action-buttons [::refresh]}
    ro/controls         {::m.accounts/id {:type :uuid :label "id"}
                         ::refresh u.links/refresh-control}
-   ro/control-layout   {:inputs [[::m.accounts/id]]
-                        :action-buttons [::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
@@ -29,12 +29,12 @@
 (defsc SubPage
   [_this {:ui/keys   [report]
           account-id ::m.accounts/id}]
-  {:query             [::m.accounts/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params %})
+  {:componentDidMount #(report/start-report! % Report {:route-params %})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {::m.accounts/id nil
                        :ui/report      {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [::m.accounts/id
+                       {:ui/report (comp/get-query Report)}]}
   (comp/fragment
    (when debug-page
      (dom/p {} (pr-str account-id)))

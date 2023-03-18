@@ -24,7 +24,11 @@
 (form/defsc-form NewAccountForm
   [this {::m.accounts/keys [currency name initial-value user]
          :as               props}]
-  {fo/id            m.accounts/id
+  {fo/attributes    [m.accounts/name
+                     m.accounts/currency
+                     m.accounts/user
+                     m.accounts/initial-value]
+   fo/cancel-route  ["accounts"]
    fo/field-options {::m.accounts/currency {::picker-options/query-key       ::m.currencies/index
                                             ::picker-options/query-component CurrencyQuery
                                             ::picker-options/options-xform
@@ -43,16 +47,11 @@
                                                  {:text  (str name)
                                                   :value [::m.users/id id]})
                                                (sort-by ::m.users/name options)))}}
-
-   fo/field-styles {::m.accounts/currency :pick-one
-                    ::m.accounts/user     :pick-one}
-   fo/attributes   [m.accounts/name
-                    m.accounts/currency
-                    m.accounts/user
-                    m.accounts/initial-value]
-   fo/cancel-route ["accounts"]
-   fo/route-prefix "new-account"
-   fo/title        "Create Account"}
+   fo/field-styles  {::m.accounts/currency :pick-one
+                     ::m.accounts/user     :pick-one}
+   fo/id            m.accounts/id
+   fo/route-prefix  "new-account"
+   fo/title         "Create Account"}
   (if override-form
     (form/render-layout this props)
     (dom/div :.ui
@@ -116,14 +115,7 @@
 (defsc Show
   [_this {::m.accounts/keys [name currency source user wallet]
           :ui/keys          [transactions]}]
-  {:route-segment ["accounts" :id]
-   :query         [::m.accounts/name
-                   ::m.accounts/id
-                   {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
-                   {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
-                   {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
-                   {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                   {:ui/transactions (comp/get-query u.account-transactions/SubPage)}]
+  {:ident         ::m.accounts/id
    :initial-state {::m.accounts/name     ""
                    ::m.accounts/id       nil
                    ::m.accounts/currency {}
@@ -131,9 +123,16 @@
                    ::m.accounts/user     {}
                    ::m.accounts/wallet   {}
                    :ui/transactions      {}}
-   :ident         ::m.accounts/id
-   :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)
-   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})}
+   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.account-transactions/SubPage})
+   :query         [::m.accounts/name
+                   ::m.accounts/id
+                   {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
+                   {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
+                   {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
+                   {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
+                   {:ui/transactions (comp/get-query u.account-transactions/SubPage)}]
+   :route-segment ["accounts" :id]
+   :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/dl {}

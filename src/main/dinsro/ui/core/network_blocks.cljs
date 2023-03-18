@@ -19,13 +19,13 @@
   (comp/transact! report-instance [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))
 
 (def delete-action-button
-  {:label  "Delete"
-   :action delete-action
+  {:action delete-action
+   :label  "Delete"
    :style  :delete-button})
 
 (def fetch-action-button
-  {:label  "Fetch"
-   :action fetch-action
+  {:action fetch-action
+   :label  "Fetch"
    :style  :fetch-button})
 
 (report/defsc-report Report
@@ -33,22 +33,23 @@
   {ro/columns          [m.c.blocks/height
                         m.c.blocks/hash
                         m.c.blocks/fetched?]
+   ro/control-layout   {:inputs         [[::m.c.networks/id]]
+                        :action-buttons [::refresh]}
    ro/controls         {::refresh      u.links/refresh-control
                         ::m.c.networks/id {:type :uuid :label "Nodes"}}
-   ro/control-layout   {:inputs [[::m.c.networks/id]]
-                        :action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/height #(u.links/ui-block-height-link %3)}
-   ro/source-attribute ::m.c.blocks/index
-   ro/title            "Blocks"
    ro/row-actions      [fetch-action-button delete-action-button]
    ro/row-pk           m.c.blocks/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::m.c.blocks/index
+   ro/title            "Blocks"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id :dinsro.ui.core.networks/Router]
-                       {:ui/report (comp/get-query Report)}]
+  {:ident (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :route-segment     ["blocks"]
-   :ident (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id :dinsro.ui.core.networks/Router]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["blocks"]}
+
   ((comp/factory Report) report))

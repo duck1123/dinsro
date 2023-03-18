@@ -40,8 +40,7 @@
 
 (defsc ShowNetwork
   [_this {::m.c.networks/keys [id chain name]
-          :ui/keys            [router]
-          :as                 props}]
+          :ui/keys            [router]}]
   {:ident         ::m.c.networks/id
    :query         [::m.c.networks/id
                    ::m.c.networks/name
@@ -54,19 +53,15 @@
    :route-segment ["network" :id]
    :pre-merge     (u.links/page-merger ::m.c.networks/id {:ui/router Router})
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::ShowNetwork)}
-  (if id
-    (comp/fragment
-     (dom/div :.ui.segment
-       (dom/dl {}
-         (dom/dt {} "Name")
-         (dom/dd {} (str name))
-         (dom/dt {} "Chain")
-         (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
-     (u.links/ui-nav-menu {:id id :menu-items menu-items})
-     ((comp/factory Router) router))
-    (dom/div :.ui.segment
-      (dom/h3 {} "Network Not loaded")
-      (u.links/ui-props-logger props))))
+  (comp/fragment
+   (dom/div :.ui.segment
+     (dom/dl {}
+       (dom/dt {} "Name")
+       (dom/dd {} (str name))
+       (dom/dt {} "Chain")
+       (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
+   (u.links/ui-nav-menu {:id id :menu-items menu-items})
+   ((comp/factory Router) router)))
 
 (report/defsc-report Report
   [_this _props]

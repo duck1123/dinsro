@@ -40,8 +40,8 @@
   (form/delete! report-instance ::m.c.blocks/id id))
 
 (def delete-action-button
-  {:label  "Delete"
-   :action delete-action
+  {:action delete-action
+   :label  "Delete"
    :style  :delete-button})
 
 (s/def ::row
@@ -56,7 +56,20 @@
   [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight network]
          :ui/keys          [transactions]
          :as               props}]
-  {:route-segment ["blocks" :id]
+  {:ident         ::m.c.blocks/id
+   :initial-state {::m.c.blocks/id             nil
+                   ::m.c.blocks/height         ""
+                   ::m.c.blocks/hash           ""
+                   ::m.c.blocks/previous-block {}
+                   ::m.c.blocks/next-block     {}
+                   ::m.c.blocks/weight         0
+                   ::m.c.blocks/nonce          ""
+                   ::m.c.blocks/fetched?       false
+                   ::m.c.blocks/network        {}
+                   :ui/transactions            {}}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.blocks/id
+                   {:ui/transactions u.c.block-transactions/SubPage})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -68,20 +81,7 @@
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {:ui/transactions (comp/get-query u.c.block-transactions/SubPage)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.blocks/id             nil
-                   ::m.c.blocks/height         ""
-                   ::m.c.blocks/hash           ""
-                   ::m.c.blocks/previous-block {}
-                   ::m.c.blocks/next-block     {}
-                   ::m.c.blocks/weight         0
-                   ::m.c.blocks/nonce          ""
-                   ::m.c.blocks/fetched?       false
-                   ::m.c.blocks/network        {}
-                   :ui/transactions            {}}
-   :ident         ::m.c.blocks/id
-   :pre-merge     (u.links/page-merger
-                   ::m.c.blocks/id
-                   {:ui/transactions u.c.block-transactions/SubPage})
+   :route-segment ["blocks" :id]
    :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::ShowBlock)}
   (log/finer :ShowBlock/creating {:id id :props props :this this})
   (dom/div {}
@@ -132,23 +132,23 @@
    ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
-   ro/source-attribute ::m.c.blocks/index
-   ro/title            "Core Blocks"
+   ro/route            "blocks"
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/route            "blocks"})
+   ro/source-attribute ::m.c.blocks/index
+   ro/title            "Core Blocks"})
 
 (report/defsc-report AdminReport
   [_this _props]
   {ro/columns          [m.c.blocks/hash
                         m.c.blocks/height
                         m.c.blocks/fetched?]
-   ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/controls         {::refresh u.links/refresh-control}
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
-   ro/source-attribute ::m.c.blocks/admin-index
-   ro/title            "Admin Core Blocks"
+   ro/route            "blocks"
    ro/row-actions      [delete-action-button]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/route            "blocks"})
+   ro/source-attribute ::m.c.blocks/admin-index
+   ro/title            "Admin Core Blocks"})

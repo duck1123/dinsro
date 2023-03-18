@@ -8,10 +8,10 @@
 
 (form/defsc-form CoreAddressForm
   [_this _props]
-  {fo/id           m.c.addresses/id
-   fo/title        "Address"
-   fo/attributes   [m.c.addresses/address]
-   fo/route-prefix "address"})
+  {fo/attributes   [m.c.addresses/address]
+   fo/id           m.c.addresses/id
+   fo/route-prefix "address"
+   fo/title        "Address"})
 
 (def new-button
   {:type   :button
@@ -26,6 +26,6 @@
    ro/controls         {::new new-button}
    ro/source-attribute ::m.c.addresses/index
    ro/title            "Core Addresses"
+   ro/route            "addresses"
    ro/row-pk           m.c.addresses/id
-   ro/run-on-mount?    true
-   ro/route            "addresses"})
+   ro/run-on-mount?    true})

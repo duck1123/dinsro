@@ -8,26 +8,27 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.ui.links :as u.links]))
 
+(def router-key :dinsro.ui.core.networks/Router)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.ln.nodes/name
                         m.ln.nodes/user]
-   ro/controls         {::refresh         u.links/refresh-control
-                        ::m.c.networks/id {:type :uuid :label "Network"}}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/controls         {::m.c.networks/id {:type :uuid :label "Network"}
+                        ::refresh         u.links/refresh-control}
    ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
                         ::m.ln.nodes/user #(u.links/ui-user-link %2)}
-   ro/source-attribute ::m.ln.nodes/index
-   ro/title            "Lightning Nodes"
    ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::m.ln.nodes/index
+   ro/title            "Lightning Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query         [[::dr/id :dinsro.ui.core.networks/Router]
-                   {:ui/report (comp/get-query Report)}]
+  {:ident         (fn [] [:component/id ::SubPage])
    :initial-state {:ui/report {}}
-   :route-segment ["ln-nodes"]
-   :ident         (fn [] [:component/id ::SubPage])}
+   :query         [[::dr/id router-key]
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["ln-nodes"]}
   ((comp/factory Report) report))
-

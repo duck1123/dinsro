@@ -19,17 +19,17 @@
    ro/controls         {::m.c.chains/id {:type :uuid :label "Chains"}
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.c.networks/name #(u.links/ui-network-link %3)}
-   ro/source-attribute ::m.c.networks/index
-   ro/title            "Chain Networks"
    ro/row-pk           m.c.networks/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::m.c.networks/index
+   ro/title            "Chain Networks"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["remote-nodes"]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["remote-nodes"]}
   ((comp/factory Report) report))

@@ -11,10 +11,10 @@
 
 (defsc LocalData
   [_ _]
-  {:query         [{[:com.fulcrologic.rad.authorization/authorization :local] (comp/get-query mu.session/Session)}]
-   :initial-state {}})
+  {:initial-state {}
+   :query         [{[:com.fulcrologic.rad.authorization/authorization :local] (comp/get-query mu.session/Session)}]})
 
 (defsc UserAuthenticator
   [_ _]
-  {:query         [{:local (comp/get-query LocalData)}]
-   :initial-state {:local {}}})
+  {:initial-state {:local {}}
+   :query         [{:local (comp/get-query LocalData)}]})

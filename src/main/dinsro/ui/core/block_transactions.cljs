@@ -17,16 +17,16 @@
   [this props]
   {ro/columns          [m.c.tx/tx-id
                         m.c.tx/fetched?]
+   ro/control-layout   {:action-buttons [::fetch ::refresh]}
    ro/controls         {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
                         ::refresh       u.links/refresh-control
                         ::m.c.blocks/id {:type :uuid :label "Block"}}
-   ro/control-layout   {:action-buttons [::fetch ::refresh]}
    ro/field-formatters {::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)}
-   ro/source-attribute ::m.c.tx/index
-   ro/title            "Transactions"
    ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.tx/id mu.c.transactions/fetch!)]
    ro/row-pk           m.c.tx/id
-   ro/run-on-mount?    true}
+   ro/run-on-mount?    true
+   ro/source-attribute ::m.c.tx/index
+   ro/title            "Transactions"}
   (log/finer :Report/starting {:props props})
   (if override-form
     (report/render-layout this)
@@ -37,12 +37,12 @@
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
-  {:query             [::m.c.blocks/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {::m.c.blocks/id nil
                        :ui/report      {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [::m.c.blocks/id
+                       {:ui/report (comp/get-query Report)}]}
   (log/finer :SubPage/creating {:props props})
   (ui-report report))
 

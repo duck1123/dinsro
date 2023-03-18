@@ -15,9 +15,9 @@
 
 (form/defsc-form CoreChainForm
   [this props]
-  {fo/id             m.c.chains/id
-   fo/attributes     [m.c.chains/name]
+  {fo/attributes     [m.c.chains/name]
    fo/cancel-route   ["chains"]
+   fo/id             m.c.chains/id
    fo/route-prefix   "chain"
    fo/title          "Chain"}
   (if override-form
@@ -42,14 +42,14 @@
           :ui/keys          [router]
           :as               props}]
   {:ident         ::m.c.chains/id
-   :query         [::m.c.chains/id
-                   ::m.c.chains/name
-                   {:ui/router (comp/get-query Router)}]
    :initial-state {::m.c.chains/id   nil
                    ::m.c.chains/name ""
                    :ui/router        {}}
-   :route-segment ["chain" :id]
    :pre-merge     (u.links/page-merger ::m.c.chains/id {:ui/router Router})
+   :query         [::m.c.chains/id
+                   ::m.c.chains/name
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["chain" :id]
    :will-enter    (partial u.links/page-loader ::m.c.chains/id ::ShowChain)}
   (comp/fragment
    (dom/div :.ui.segment
@@ -66,13 +66,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns           [m.c.chains/name]
-   ro/column-formatters {::m.c.chains/name #(u.links/ui-chain-link %3)}
-   ro/controls          {::refresh u.links/refresh-control}
+  {ro/column-formatters {::m.c.chains/name #(u.links/ui-chain-link %3)}
+   ro/columns           [m.c.chains/name]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/source-attribute  ::m.c.chains/index
-   ro/title             "Chains"
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/route             "chains"
    ro/row-pk            m.c.chains/id
    ro/run-on-mount?     true
-   ro/route             "chains"})
-
+   ro/source-attribute  ::m.c.chains/index
+   ro/title             "Chains"})

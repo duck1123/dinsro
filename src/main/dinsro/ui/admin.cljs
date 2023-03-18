@@ -40,9 +40,9 @@
 
 (defsc AdminPage
   [this {:ui/keys [admin-router]}]
-  {:query         [{:ui/admin-router (comp/get-query AdminRouter)}]
+  {:ident         (fn [] [:component/id ::AdminPage])
    :initial-state {:ui/admin-router {}}
-   :ident         (fn [] [:component/id ::AdminPage])
+   :query         [{:ui/admin-router (comp/get-query AdminRouter)}]
    :route-segment ["admin"]}
   (dom/div :.admin-page
     (dom/h1 "Admin Page")

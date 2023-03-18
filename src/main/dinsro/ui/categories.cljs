@@ -12,24 +12,24 @@
 
 (form/defsc-form NewCategoryForm
   [_this _props]
-  {fo/id           m.categories/id
-   fo/attributes   [m.categories/name]
+  {fo/attributes   [m.categories/name]
    fo/cancel-route ["categories"]
+   fo/field-styles {::m.categories/user :link}
+   fo/id           m.categories/id
    fo/route-prefix "new-category"
-   fo/title        "New Category"
-   fo/field-styles {::m.categories/user :link}})
+   fo/title        "New Category"})
 
 (def override-form true)
 
 (form/defsc-form CategoryForm
   [this props]
-  {fo/id           m.categories/id
-   fo/attributes   [m.categories/name
+  {fo/attributes   [m.categories/name
                     m.categories/user]
    fo/cancel-route ["categories"]
+   fo/field-styles {::m.categories/user :link}
+   fo/id           m.categories/id
    fo/route-prefix "category"
-   fo/title        "Edit Category"
-   fo/field-styles {::m.categories/user :link}}
+   fo/title        "Edit Category"}
   (if override-form
     (form/render-layout this props)
     (dom/div {} (dom/p {} "Category"))))
@@ -38,8 +38,8 @@
 
 (form/defsc-form AdminCategoryForm
   [this props]
-  {fo/id            m.categories/id
-   fo/attributes    [m.categories/name m.categories/user]
+  {fo/attributes    [m.categories/name m.categories/user]
+   fo/cancel-route  ["admin"]
    fo/field-options {::m.categories/user {::picker-options/query-key       ::m.users/index
                                           ::picker-options/query-component u.links/UserLinkForm
                                           ::picker-options/options-xform
@@ -49,19 +49,19 @@
                                                {:text  (str name)
                                                 :value [::m.users/id id]})
                                              (sort-by ::m.users/name options)))}}
-   fo/cancel-route  ["admin"]
-   fo/route-prefix  "admin/category"
    fo/field-styles  {::m.categories/user :pick-one}
+   fo/id            m.categories/id
+   fo/route-prefix  "admin/category"
    fo/title         "Category"}
   (if override-admin-form
     (form/render-layout this props)
     (dom/div {} (dom/p {} "Category"))))
 
 (def new-button
-  {:type   :button
-   :local? true
+  {:action (fn [this _] (form/create! this NewCategoryForm))
    :label  "New"
-   :action (fn [this _] (form/create! this NewCategoryForm))})
+   :local? true
+   :type   :button})
 
 (report/defsc-report Report
   [_this _props]
