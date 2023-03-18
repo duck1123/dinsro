@@ -6,7 +6,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.remote-node-peers :as u.ln.remote-node-peers]
    [lambdaisland.glogc :as log]))
@@ -34,15 +33,6 @@
       (dom/p {} "pubkey: " (str pubkey)))
     (u.ln.remote-node-peers/ui-sub-page peers)))
 
-(def fetch-action-button
-  "Delete button for reports"
-  {:type   :button
-   :local? true
-   :label  "Fetch"
-   :action (fn [this {::m.ln.remote-nodes/keys [id] :as props}]
-             (log/info :fetch-action-button/clicked {:id id :props props})
-             (comp/transact! this [(mu.ln.remote-nodes/fetch! {::m.ln.remote-nodes/id id})]))})
-
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.ln.remote-nodes/pubkey
@@ -60,7 +50,6 @@
                                                                ::m.ln.remote-nodes/pubkey pubkey})))
                                                          (dom/p {} "not found"))))}
    ro/route            "remote-nodes"
-   ro/row-actions      [fetch-action-button]
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.remote-nodes/index

@@ -72,7 +72,6 @@
    ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
    ro/form-links       {::m.categories/name CategoryForm}
    ro/route            "categories"
-   ro/row-actions      []
    ro/row-pk           m.categories/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.categories/index

@@ -47,7 +47,6 @@
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/route            "transactions"
-   ro/row-actions      []
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.transactions/index

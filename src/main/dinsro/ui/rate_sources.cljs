@@ -45,7 +45,6 @@
    ro/field-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)
                         ::m.rate-sources/name     #(u.links/ui-rate-source-link %3)}
    ro/route            "rate-sources"
-   ro/row-actions      []
    ro/row-pk           m.rate-sources/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.rate-sources/index

@@ -3,31 +3,12 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
    [dinsro.ui.links :as u.links]))
-
-(defn delete-action
-  [report-instance {::m.c.addresses/keys [id]}]
-  (form/delete! report-instance ::m.c.addresses/id id))
-
-(defn fetch-action
-  [report-instance {::m.c.addresses/keys [id]}]
-  (comp/transact! report-instance [(mu.c.addresses/fetch! {::m.c.addresses/id id})]))
-
-(def delete-action-button
-  {:label  "Delete"
-   :action delete-action
-   :style  :delete-button})
-
-(def fetch-action-button
-  {:label  "Fetch"
-   :action fetch-action
-   :style  :fetch-button})
 
 (report/defsc-report Report
   [_this _props]
@@ -39,7 +20,7 @@
    ro/field-formatters {::m.c.addresses/height #(u.links/ui-block-height-link %3)}
    ro/source-attribute ::m.c.addresses/index-by-network
    ro/title            "Addresses"
-   ro/row-actions      [fetch-action-button delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/fetch!)]
    ro/row-pk           m.c.addresses/id
    ro/run-on-mount?    true})
 
@@ -56,5 +37,3 @@
     (if (::m.c.networks/id router-info)
       (ui-report report)
       (dom/p {} "Network Addresses: Node ID not set"))))
-
-(def ui-sub-page (comp/factory SubPage))

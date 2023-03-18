@@ -7,7 +7,6 @@
    [dinsro.joins.core.tx :as j.c.tx]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.tx :as m.c.tx]
-   [dinsro.ui.core.tx :as u.c.tx]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
@@ -24,7 +23,6 @@
                         ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Node Transactions"
-   ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true})
 

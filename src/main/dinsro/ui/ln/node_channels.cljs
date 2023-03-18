@@ -60,7 +60,7 @@
                                                  {:initial-state {::m.ln.channels/address "foo"}})))}}
    ro/field-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
                         ::m.ln.channels/node  #(u.links/ui-core-node-link %2)}
-   ro/row-actions      [delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
    ro/source-attribute ::m.ln.channels/index
    ro/title            "Node Channels"
    ro/row-pk           m.ln.channels/id

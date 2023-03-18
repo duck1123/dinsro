@@ -9,18 +9,8 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
-   [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
-
-(defn fetch-action
-  [report-instance {::m.c.blocks/keys [id]}]
-  (comp/transact! report-instance [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))
-
-(def fetch-action-button
-  {:label  "Fetch"
-   :action fetch-action
-   :style  :fetch-button})
 
 (def generate-button
   {:label "Generate"
@@ -46,8 +36,7 @@
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Node Blocks"
-   ro/row-actions      [fetch-action-button
-                        u.c.blocks/delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
    ro/route            "blocks"})

@@ -173,7 +173,6 @@
                         ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/route            "wallets"
-   ro/row-actions      [delete-action-button]
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.c.wallets/index

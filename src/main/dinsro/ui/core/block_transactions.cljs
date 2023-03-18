@@ -7,7 +7,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.tx :as m.c.tx]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
-   [dinsro.ui.core.tx :as u.c.tx]
+   [dinsro.mutations.core.tx :as mu.c.transactions]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
@@ -24,7 +24,7 @@
    ro/field-formatters {::m.c.tx/tx-id (u.links/report-link ::m.c.tx/tx-id u.links/ui-core-tx-link)}
    ro/source-attribute ::m.c.tx/index
    ro/title            "Transactions"
-   ro/row-actions      [u.c.tx/fetch-action-button u.c.tx/delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.tx/id mu.c.transactions/fetch!)]
    ro/row-pk           m.c.tx/id
    ro/run-on-mount?    true}
   (log/finer :Report/starting {:props props})

@@ -77,7 +77,6 @@
                         ::m.ln.peers/pubkey #(u.links/ui-ln-peer-link %3)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
    ro/route            "peers"
-   ro/row-actions      []
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.ln.peers/index

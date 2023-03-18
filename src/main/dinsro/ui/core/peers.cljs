@@ -95,7 +95,7 @@
                                                                   {:initial-state {::m.c.peers/addr "foo"}})))}}
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
-   ro/row-actions      [delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
    ro/source-attribute ::m.c.peers/index
    ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id

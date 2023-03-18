@@ -99,6 +99,34 @@
                       (into {}))]
       (merge data-tree states {:ui/page-merged true}))))
 
+(defn row-action-button
+  [label id-key mutation]
+  {:label  label
+   :action (fn [report-instance p]
+             (let [id    (get p id-key)
+                   props {id-key id}]
+               (comp/transact! report-instance [(mutation props)])))})
+
+(defn subrow-action-button
+  [label id-key parent-key mutation]
+  {:label  label
+   :action (fn [report-instance p]
+             (let [id    (get p id-key)
+                   parent-id (get-control-value report-instance parent-key)
+                   props {id-key id parent-key parent-id}]
+               (comp/transact! report-instance [(mutation props)])))})
+
+(defn sub-page-action-button
+  [options]
+  (let [{:keys [label mutation parent-key]} options]
+    {:type  :button
+     :label label
+     :action
+     (fn [report-instance]
+       (let [parent-id (get-control-value report-instance parent-key)
+             props     {parent-key parent-id}]
+         (comp/transact! report-instance [(mutation props)])))}))
+
 (def skip-loaded true)
 
 (defn page-loader

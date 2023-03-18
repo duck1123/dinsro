@@ -75,7 +75,7 @@
    ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
-   ro/row-actions      [delete-action-button]
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.peers/id mu.ln.peers/delete!)]
    ro/source-attribute ::m.ln.peers/index
    ro/title            "Node Peers"
    ro/row-pk           m.ln.peers/id

@@ -38,7 +38,6 @@
                         m.currencies/code]
    ro/controls         {::new new-button}
    ro/route            "currencies"
-   ro/row-actions      []
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true
    ro/source-attribute ::m.currencies/index

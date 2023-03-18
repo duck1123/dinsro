@@ -231,7 +231,6 @@
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
    ro/source-attribute ::m.c.blocks/index
    ro/title            "Core Blocks"
-   ro/row-actions      [delete-action-button]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
    ro/route            "blocks"})

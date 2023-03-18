@@ -15,88 +15,15 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.node-blocks :as u.c.node-blocks]
    [dinsro.ui.core.node-peers :as u.c.node-peers]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
-
-(defn connect-action
-  [report-instance {::m.c.nodes/keys [id]}]
-  (comp/transact! report-instance [(mu.c.nodes/connect! {::m.c.nodes/id id})]))
-
-(defn fetch-action
-  [report-instance {::m.c.nodes/keys [id]}]
-  (comp/transact! report-instance [(mu.c.nodes/fetch! {::m.c.nodes/id id})]))
-
-(defn delete-action
-  [report-instance {::m.c.nodes/keys [id]}]
-  (form/delete! report-instance ::m.c.nodes/id id))
-
-(def connect-button
-  {:label     "Connect"
-   :action    connect-action
-   :disabled? (fn [_ row-props] (:account/active? row-props))})
-
-(def fetch-button
-  {:type   :button
-   :local? true
-   :label  "Fetch"
-   :action (fn [this _]
-             (let [{::m.c.nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.nodes/fetch! {::m.c.nodes/id id})])))})
-
-(def fetch-peers-button
-  {:type   :button
-   :local? true
-   :label  "Fetch Peers"
-   :action (fn [this _]
-             (let [{::m.c.nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.nodes/fetch-peers! {::m.c.nodes/id id})])))})
-
-(def generate-button
-  {:type   :button
-   :local? true
-   :label  "Generate"
-   :action (fn [this _]
-             (let [{::m.c.nodes/keys [id]} (comp/props this)]
-               (comp/transact! this [(mu.c.nodes/generate! {::m.c.nodes/id id})])))})
-
-(def new-wallet-button
-  {:type   :button
-   :local? true
-   :label  "New Wallet"
-   :action (fn [this _]
-             (let [{::m.c.nodes/keys [id name]} (comp/props this)
-                   component                    (comp/registry-key->class :dinsro.ui.core.wallets/NewWalletForm)
-                   state                        {::m.c.wallets/name "new wallet"
-                                                 ::m.c.wallets/node {::m.c.nodes/id   id
-                                                                     ::m.c.nodes/name name}}
-                   options                      {:initial-state state}]
-               (form/create! this component options)))})
-
-(def new-peer-button
-  {:type   :button
-   :local? true
-   :label  "New Peer"
-   :action (fn [this _]
-             (let [{::m.c.nodes/keys [id name]} (comp/props this)
-                   component                    (comp/registry-key->class :dinsro.ui.core.peers/NewCorePeerForm)
-                   state                        {::m.c.nodes/node {::m.c.nodes/id   id
-                                                                   ::m.c.nodes/name name}}
-                   options                      {:initial-state state}]
-               (form/create! this component options)))})
-
-(def override-form false)
+   [dinsro.ui.links :as u.links]))
 
 (def button-info
-  [{:label  "fetch"
-    :action mu.c.nodes/fetch!}
-   {:label  "fetch peers"
-    :action mu.c.nodes/fetch-peers!}
-   {:label  "generate"
-    :action mu.c.nodes/generate!}])
+  [{:label "fetch" :action mu.c.nodes/fetch!}
+   {:label "fetch peers" :action mu.c.nodes/fetch-peers!}
+   {:label "generate" :action mu.c.nodes/generate!}])
 
 (defsc ActionsMenuItem
   [this {:keys [label mutation id]}]
@@ -122,10 +49,6 @@
 (def ui-actions-menu
   "node actions menu"
   (comp/factory ActionsMenu))
-
-(def show-peers true)
-(def show-blocks true)
-(def show-transactions false)
 
 (defrouter Router
   [_this _props]
@@ -190,19 +113,6 @@
    fo/route-prefix "new-core-node"
    fo/title        "Core Node"})
 
-(def fetch-action-button
-  {:label     "Fetch"
-   :action    fetch-action
-   :disabled? (fn [_ row-props] (:account/active? row-props))})
-
-(def delete-action-button
-  {:label  "Delete"
-   :action delete-action
-   :style  :delete-button
-   :class  (fn []
-             (log/info :class/calculating {})
-             "red")})
-
 (def new-button
   {:type   :button
    :local? true
@@ -219,7 +129,8 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ro/row-actions       [fetch-action-button delete-action-button]
+   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
+                         (u.links/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
    ro/source-attribute  ::m.c.nodes/index
    ro/title             "Core Node Report"
    ro/row-pk            m.c.nodes/id
