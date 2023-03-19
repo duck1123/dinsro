@@ -99,7 +99,34 @@
   (a.ln.nodes/has-cert? n.lnd/node)
   (catch Exception ex ex))
 
-(a.ln.nodes/get-cert-text n.lnd/node)
+;; ## Certs
+
+;; ### Cert Text
+
+^{::clerk/viewer clerk/code ::clerk/visibility {:code :hide} ::clerk/no-cache true}
+(try
+  (a.ln.nodes/get-cert-text n.lnd/node)
+  (catch Exception ex ex))
+
+;; ### Download
+
+(comment
+
+  (a.ln.nodes/download-cert! n.lnd/node)
+
+  nil)
+
+;; ### Has cert
+
+(a.ln.nodes/has-cert? n.lnd/node)
+
+;; ### Delete
+
+(comment
+
+  (a.ln.nodes/delete-cert n.lnd/node)
+
+  nil)
 
 ;; ## initialize!
 

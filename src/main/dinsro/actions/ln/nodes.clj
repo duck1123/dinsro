@@ -85,7 +85,7 @@
 (>defn delete-cert
   "Delete the cert file"
   [{::m.ln.nodes/keys [id]}]
-  [::m.ln.nodes/item => nil?]
+  [::m.ln.nodes/item => boolean?]
   (let [path (m.ln.nodes/cert-path id)
         f    (io/file path)]
     (.delete f)))
