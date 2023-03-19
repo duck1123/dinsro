@@ -6,15 +6,17 @@
    [clojure.java.io :as io]))
 
 (def default-base-path "/mnt/data")
-(def fileserver-service-name "fileserver")
-
+(def fileserver-service-name "alice-fileserver")
+(def fileserver-namespace "dinsro")
+(def scheme "http")
+(def base-url "localtest.me")
 
 (defn download-file!
   ([name data-path file-name]
    (download-file! name data-path file-name file-name))
-  ([name data-path file-name dest-file-name]
+  ([instance-name data-path file-name dest-file-name]
    (try
-     (let [url  (format "http://%s.%s/%s" fileserver-service-name name file-name)
+     (let [url  (str scheme "://" "fileserver.lnd." instance-name "/")
            path (format "%s/%s" data-path dest-file-name)]
        (println (str "Downloading: " url))
        (io/copy (:body (curl/get url {:as :bytes})) (io/file path)))

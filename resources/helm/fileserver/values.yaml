@@ -28,5 +28,5 @@ network: testnet
 # network: mainnet
 
 ingress:
-  host: lnd.localtest.me
+  host: fileserver.lnd.instancename.localtest.me
   port: 80

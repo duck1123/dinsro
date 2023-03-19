@@ -16,7 +16,7 @@
   {:name        "notebooktest"
    :alias       "Notebook Test"
    :auto-unlock {:password "hunter2"}
-   :ingress     {:host "fileserver.lnd.localtest.me"}
+   :ingress     {:host "fileserver.lnd.alice.localtest.me"}
    :chain       :mainnet})
 
 ;; ## merge-defaults

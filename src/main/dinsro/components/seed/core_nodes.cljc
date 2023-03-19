@@ -10,6 +10,7 @@
 (>def ::port integer?)
 (>def ::rpcuser string?)
 (>def ::rpcpass string?)
+(>def ::peers (s/coll-of string?))
 
 (>def ::item
   (s/keys
@@ -20,4 +21,5 @@
     ::rpcuser
     ::rpcpass
     ::chain
-    ::network]))
+    ::network
+    ::peers]))

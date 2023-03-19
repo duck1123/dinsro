@@ -1,4 +1,4 @@
-(ns dinsro.components.seed.wallet
+(ns dinsro.components.seed.wallets
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def]]))

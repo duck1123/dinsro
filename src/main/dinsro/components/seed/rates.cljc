@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def]]))
 
-(>def ::item
-  (s/keys
-   :req-un [;; ::name ::url ::code ::isActive? ::isIdentity ::rates ::path
-            ]))
+(>def ::date string?)
+(>def ::rate number?)
+
+(>def ::item (s/keys :req-un [::date ::rate]))
