@@ -383,15 +383,19 @@
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn helm-lnd
   [name]
-  (let [repo     "https://charts.foldapp.com"
-        path     "lnd"
+  (let [use-prefix true
+        prefix (if use-prefix "resources/helm/fold/charts/" "")
+        repo     "https://charts.foldapp.com"
+        path     (str prefix "lnd")
         version  "0.3.12"
+        ;; local-path "resources/helm/fold/charts/lnd"
         filename (str "target/conf/" name "/lnd_values.yaml")
-        args     [(str "-n " name)
-                  (str "--name-template=" name)
-                  (str "--repo " repo)
-                  (str "--values " filename)
-                  (str "--version " version)]
+        args     (keep identity
+                         [(str "-n " name)
+                          (str "--name-template=" name)
+                          (when-not use-prefix (str "--repo " repo))
+                          (str "--values " filename)
+                          (str "--version " version)])
         cmd      (string/join " " (concat ["helm template "] args [path]))]
     ;; (println cmd)
     (shell cmd)))

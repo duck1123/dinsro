@@ -7,8 +7,8 @@
         node-name     (str "Node " name)
         macaroon-path (str "/mnt/data/" name)
         backup-path   (str "/mnt/data/" name "/backups")
-        scheme        "http"
-        port          "10009"
+        scheme        "https"
+        port          "8080"
         namespace     "dinsro"
         service-name  (str name "-lnd-internal")
         server-url    (str scheme "://" service-name "." namespace ".svc.cluster.local:" port)]

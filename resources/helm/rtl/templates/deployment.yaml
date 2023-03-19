@@ -11,6 +11,13 @@ spec:
       labels:
         {{- include "rtl.selectorLabels" . | nindent 8 }}
     spec:
+      initContainers:
+      - name: download-certs
+        image: "{{ .Values.certDownloader.image.repository }}:{{ .Values.certDownloader.image.tag }}"
+        imagePullPolicy: {{ .Values.certDownloader.image.pullPolicy }}
+        volumeMounts:
+        - name: certs
+          mountPath: /mnt/data
       containers:
       - name: rtl
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
