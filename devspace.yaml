@@ -29,6 +29,11 @@ vars:
     default: true
 
 pipelines:
+  build-cert-downloader: |-
+    set -ex
+    earthly +cert-downloader --tag dev
+    docker image tag duck1123/cert-downloader:dev k3d-myregistry.localtest.me:12345/duck1123/cert-downloader:dev
+
   build-devimage: |-
     build_images devimage
 
@@ -145,7 +150,7 @@ pipelines:
     run_pipelines create-namespace
     run_pipelines create-chart-directories
     YAML_PATH=target/charts/${NAME}_rtl.yaml
-    bb generate-rtl-values ${NAME}
+    RTL_VERSION=dev bb generate-rtl-values ${NAME}
     bb helm-rtl ${NAME} > ${YAML_PATH}
     kubectl apply -f ${YAML_PATH}
 
@@ -582,6 +587,10 @@ commands:
     command: devspace run-pipeline purge-redis-all
   redis-purge-data:
     command: devspace run-pipeline purge-redis-data
+  rtl-deploy-alice:
+    command: NAME=alice devspace run-pipeline deploy-rtl
+  rtl-purge-alice:
+    command: NAME=alice devspace run-pipeline purge-rtl
   sqlpad-deploy:
     command: devspace run-pipeline deploy-sqlpad
   sqlpad-purge:

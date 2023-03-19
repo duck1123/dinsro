@@ -16,7 +16,7 @@
    (download-file! name data-path file-name file-name))
   ([instance-name data-path file-name dest-file-name]
    (try
-     (let [url  (str scheme "://" "fileserver.lnd." instance-name "/")
+     (let [url  (str scheme "://" instance-name "-fileserver" "/")
            path (format "%s/%s" data-path dest-file-name)]
        (println (str "Downloading: " url))
        (io/copy (:body (curl/get url {:as :bytes})) (io/file path)))

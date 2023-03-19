@@ -49,7 +49,8 @@
   (let [options      (merge-defaults options)
         config       (->config options)
         {name :name} options]
-    {:certDownloader    {:image {:repository "duck1123/cert-downloader"
+    {:certDownloader    {:image {:repository "k3d-myregistry.localtest.me:12345/duck1123/cert-downloader"
+                                 :tag "dev"
                                  :pullPolicy "Always"}}
      :image             {:tag "0.13.1"}
      ;; :image             {:tag "0.12.2"}
