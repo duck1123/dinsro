@@ -185,10 +185,10 @@ pipelines:
   purge-bitcoin: |-
     echo ""
     echo "=== Purging Bitcoin stack for ${NAME?name not set} ==="
-    run_pipelines purge-bitcoind
     run_pipelines purge-fileserver
-    run_pipelines purge-lnd
     run_pipelines purge-rtl
+    run_pipelines purge-lnd
+    run_pipelines purge-bitcoind
 
   purge-bitcoind: |-
     echo ""
