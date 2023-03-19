@@ -165,7 +165,7 @@
      :persistence        {:enabled true}
      :autoUnlock         false
      :autoUnlockPassword auto-unlock-password
-     :externalServices   {:p2pPort p2p-port}
+     :externalServices   {:p2pExternalPort p2p-port}
      :network            (name chain)
      :ingress            {:host ingress-host}}))
 
