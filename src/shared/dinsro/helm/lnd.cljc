@@ -11,7 +11,7 @@
 
 (defn merge-defaults
   [options]
-  (let [{:keys [name alias auto-unlock chain ingress p2p-port rpc tls]
+  (let [{:keys [name namespace alias auto-unlock chain ingress p2p-port rpc tls]
          :or
          {name        "one"
           alias       "Node One"
@@ -20,13 +20,15 @@
           ingress     {}
           p2p-port    9735
           rpc         {}
-          tls         {}}}                                                      options
+          namespace   "dinsro"
+          tls         {}}}                          options
         {auto-unlock-password :password
          :or
-         {auto-unlock-password "password12345678"}}                             auto-unlock
+         {auto-unlock-password "password12345678"}} auto-unlock
+        ingress-hostname                            (str "lnd." name ".locahost")
         {ingress-host :host
          :or
-         {ingress-host (str "lnd." name ".locahost")}}                          ingress
+         {ingress-host ingress-hostname}}           ingress
         {rpc-host     :host
          rpc-port     :port
          rpc-user     :user
@@ -38,20 +40,21 @@
           rpc-user       "rpcuser"
           rpc-password   "rpcpassword"
           zmqpubrawblock {}
-          zmqpubrawtx    {}}}                                                   rpc
+          zmqpubrawtx    {}}}                       rpc
         {zmqpubrawblock-host :host
          zmqpubrawblock-port :port
          :or
          {zmqpubrawblock-host rpc-host
-          zmqpubrawblock-port 28332}}                                           zmqpubrawblock
+          zmqpubrawblock-port 28332}}               zmqpubrawblock
         {zmqpubrawtx-host :host
          zmqpubrawtx-port :port
          :or
          {zmqpubrawtx-host rpc-host
-          zmqpubrawtx-port 28333}}                                              zmqpubrawtx
+          zmqpubrawtx-port 28333}}                  zmqpubrawtx
+        tls-domain                                  (str name "-lnd-internal." namespace ".svc.cluster.local")
         {tls-domains :domains
          :or
-         {tls-domains [(str name "-lnd-internal." name ".svc.cluster.local")]}} tls]
+         {tls-domains [tls-domain]}}                tls]
     {:alias       alias
      :auto-unlock {:password auto-unlock-password}
      :chain       chain
@@ -127,12 +130,16 @@
 
 (defn ->value-options
   [options]
-  (let [{:keys [name p2p-port]} options
-        alias                   (str "Node " name)
-        external-host           (str name "-lnd-external." name ".svc.cluster.local")
-        internal-host           (str name "-lnd-internal." name ".svc.cluster.local")
-        bitcoin-host            (str name "-bitcoind." name)
-        unlock-password         "unlockpassword"]
+  (let [{:keys [name p2p-port namespace]
+         :or
+         {name      "nodeuser"
+          namespace "dinsro"
+          p2p-port  9735}}              options
+        alias           (str "Node " name)
+        external-host   (str name "-lnd-external." namespace ".svc.cluster.local")
+        internal-host   (str name "-lnd-internal." namespace ".svc.cluster.local")
+        bitcoin-host    (str name "-bitcoind." namespace)
+        unlock-password "unlockpassword"]
     {:alias       alias
      :auto-unlock {:password unlock-password}
      :chain       :regtest

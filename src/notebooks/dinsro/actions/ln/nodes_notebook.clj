@@ -94,6 +94,22 @@
 
 ;; ## other
 
+
+(try
+  (a.ln.nodes/has-cert? n.lnd/node)
+  (catch Exception ex ex))
+
+(a.ln.nodes/get-cert-text n.lnd/node)
+
+;; ## initialize!
+
+(comment
+
+  (a.ln.nodes/initialize! n.lnd/node)
+  (a.ln.nodes/get-info n.lnd/node)
+
+  nil)
+
 (comment
   n.lnd/node
 

@@ -14,6 +14,8 @@ vars:
     default: devcards
   DEVIMAGE_PROJECT:
     default: devimage
+  DINSRO_LOG_LEVEL:
+    default: debug
   NOSTREAM_PROJECT:
     default: nostream
   POSTGRESQL_ROOT_PASSWORD:
@@ -351,6 +353,7 @@ deployments:
       valuesFiles:
       - "target/dinsro_values.yaml"
       values:
+        logLevel: ":${DINSRO_LOG_LEVEL}"
         image:
           repository: ${runtime.images.dinsro.image}
           tag: ${runtime.images.dinsro.tag}

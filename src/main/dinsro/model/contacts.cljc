@@ -41,6 +41,7 @@
 
 (s/def ::params (s/keys :req [::name ::pubkey ::user]))
 (s/def ::item (s/keys :req [::id ::name ::pubkey ::user]))
+(>def ::ident (s/keys :req [::id]))
 
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
