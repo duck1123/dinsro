@@ -174,8 +174,13 @@ pipelines:
     NAME=alice run_pipelines purge-bitcoin
     NAME=bob run_pipelines purge-bitcoin
 
+  purge-all-data: |-
+    run_pipelines purge-all
+    run_pipelines purge-data
+
   purge-all-relays: |-
     run_pipelines purge-nostream purge-nostr-rs-relay
+    run_pipelines purge-redis
 
   purge-bitcoin: |-
     echo ""
@@ -194,6 +199,7 @@ pipelines:
 
   purge-data: |-
     echo "Purging Data:"
+    run_pipelines purge-redis-data
 
   purge-database: |-
     echo ""
@@ -564,6 +570,8 @@ commands:
     command: devspace run-pipeline purge
   purge-all:
     command: devspace run-pipeline purge-all
+  purge-all-data:
+    command: devspace run-pipeline purge-all-data
   purge-data:
     command: devspace run-pipeline purge-data
   redis-deploy:
