@@ -34,7 +34,7 @@
   (report/render-layout this))
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
+  [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report      {}}
