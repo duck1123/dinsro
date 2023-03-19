@@ -49,7 +49,8 @@
 
 (defsc Show
   [_this _props]
-  {:ident ::m.ln.payreqs/id
-   :query [::m.ln.payreqs/id]
-   :initial-state {::m.ln.payreqs/id nil}}
+  {:ident         ::m.ln.payreqs/id
+   :initial-state {::m.ln.payreqs/id nil}
+   :query         [::m.ln.payreqs/id]
+   :route-segment ["payreqs" :id]}
   (dom/div {}))

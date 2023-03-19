@@ -60,7 +60,8 @@
 
 (defsc Show
   [_this _props]
-  {:ident ::m.ln.invoices/id
-   :query [::m.ln.invoices/id]
-   :initial-state {::m.ln.invoices/id nil}}
+  {:ident         ::m.ln.invoices/id
+   :initial-state {::m.ln.invoices/id nil}
+   :query         [::m.ln.invoices/id]
+   :route-segment ["invoices" :id]}
   (dom/div {}))
