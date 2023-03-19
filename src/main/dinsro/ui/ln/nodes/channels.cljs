@@ -57,10 +57,10 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["channels"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["channels"]}
   ((comp/factory Report) report))

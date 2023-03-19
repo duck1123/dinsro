@@ -1,7 +1,6 @@
 (ns dinsro.ui.ln.peers
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -69,20 +68,16 @@
    :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
-  [this _props]
+  [_this _props]
   {ro/columns          [m.ln.peers/node
                         m.ln.peers/remote-node
                         m.ln.peers/inbound?]
-   ro/controls {::new new-button}
-   ro/field-formatters {::m.ln.peers/node #(u.links/ui-node-link %2)
-                        ::m.ln.peers/pubkey #(u.links/ui-ln-peer-link %3)
+   ro/controls         {::new new-button}
+   ro/field-formatters {::m.ln.peers/node        #(u.links/ui-node-link %2)
+                        ::m.ln.peers/pubkey      #(u.links/ui-ln-peer-link %3)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
    ro/route            "peers"
    ro/row-pk           m.ln.peers/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.peers/index
-   ro/title            "Lightning Peers"}
-  (if override-report
-    (report/render-layout this)
-    (dom/div :.ui
-      (report/render-layout this))))
+   ro/title            "Lightning Peers"})

@@ -25,7 +25,7 @@
    ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.ln.remote-nodes/block #(u.links/ui-block-link %2)
-                        ::m.ln.remote-nodes/node  #(u.links/ui-core-node-link %2)}
+                        ::m.ln.remote-nodes/node  #(when %2 (u.links/ui-core-node-link %2))}
    ro/row-actions      [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true
@@ -34,7 +34,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

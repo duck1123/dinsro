@@ -47,7 +47,7 @@
    :action new-button-action})
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.ln.peers/remote-node
                         m.ln.peers/sat-recv
                         m.ln.peers/sat-sent
@@ -61,20 +61,18 @@
    ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.peers/id mu.ln.peers/delete!)]
-   ro/source-attribute ::j.ln.peers/index
-   ro/title            "Node Peers"
+   ro/row-actions      [(u.links/subrow-action-button "Delete" ::m.ln.peers/id ident-key mu.ln.peers/delete!)]
    ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true}
-  (log/finer :Report/creating {:props props})
-  (report/render-layout this))
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.ln.peers/index
+   ro/title            "Node Peers"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["peers"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["peers"]}
   ((comp/factory Report) report))
