@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: {{ template "fileserver.fullname" . }}
 spec:
   rules:
   - host: {{ .Values.ingress.host }}
@@ -11,6 +11,6 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: fileserver
+            name: {{ template "fileserver.fullname" . }}
             port:
               number: {{ .Values.ingress.port }}
