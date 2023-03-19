@@ -89,19 +89,11 @@
   {:query [:status]})
 
 #?(:clj
-   (defn do-derive!
-     [props]
-     (log/info :do-derive!/starting {:props props})))
-
-#?(:clj
    (pc/defmutation derive!
      [env props]
      {::pc/params #{::m.c.wallets/id}
       ::pc/output [:status]}
-
-     (let [user-id (a.authentication/get-user-id env)
-           props   (assoc props ::m.c.wallets/user user-id)]
-       (do-derive! props)))
+     (a.c.wallets/do-derive! env props))
 
    :cljs
    (fm/defmutation derive! [_props]

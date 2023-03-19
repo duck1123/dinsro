@@ -1,7 +1,7 @@
 (ns dinsro.client.bitcoin-s
   (:require
    [clojure.core.async :as async]
-   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   [com.fulcrologic.guardrails.core :refer [=> >def >defn]]
    dinsro.client.converters
    [dinsro.client.scala :as cs]
    [dinsro.specs :as ds]
@@ -11,24 +11,24 @@
    java.net.URI
    org.bitcoins.commons.jsonmodels.bitcoind.GetRawTransactionResult
    org.bitcoins.commons.jsonmodels.bitcoind.RpcOpts$AddNodeArgument$Add$
-   org.bitcoins.core.hd.BIP32Path
-   org.bitcoins.core.hd.SegWitHDPath
-   org.bitcoins.core.hd.HDPurpose
-   org.bitcoins.core.hd.SegWitHDPath
-   org.bitcoins.crypto.ECPrivateKeyBytes
-   org.bitcoins.core.crypto.ECPrivateKeyUtil
-   org.bitcoins.core.crypto.MnemonicCode
+   [org.bitcoins.core.config BitcoinNetworks NetworkParameters]
    org.bitcoins.core.crypto.BIP39Seed
-   org.bitcoins.core.crypto.ExtPrivateKey
-   org.bitcoins.core.crypto.ExtPublicKey
+   org.bitcoins.core.crypto.ECPrivateKeyUtil
    org.bitcoins.core.crypto.ExtKeyPrivVersion
    org.bitcoins.core.crypto.ExtKeyPubVersion
+   org.bitcoins.core.crypto.ExtPrivateKey
+   org.bitcoins.core.crypto.ExtPublicKey
+   org.bitcoins.core.crypto.MnemonicCode
+   org.bitcoins.core.hd.BIP32Path
+   org.bitcoins.core.hd.HDPurpose
+   org.bitcoins.core.hd.SegWitHDPath
+   org.bitcoins.core.hd.SegWitHDPath
    org.bitcoins.core.protocol.Bech32Address
    org.bitcoins.core.protocol.BitcoinAddress
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
    org.bitcoins.core.protocol.script.WitnessScriptPubKey
-   org.bitcoins.core.config.BitcoinNetworks
    org.bitcoins.core.util.HDUtil
+   [org.bitcoins.crypto ECPrivateKey ECPrivateKeyBytes]
    org.bitcoins.rpc.client.v22.BitcoindV22RpcClient
    org.bitcoins.rpc.config.BitcoindAuthCredentials$PasswordBased
    org.bitcoins.rpc.config.BitcoindInstanceRemote
@@ -63,7 +63,7 @@
    (cs/vector->vec (.words mnemonic))))
 
 (defn words->mnemonic
-  [words]
+  ^MnemonicCode [words]
   (let [word-vector (cs/create-vector words)]
     (MnemonicCode/fromWords word-vector)))
 
@@ -84,6 +84,7 @@
 (defn get-xpub-version
   ^ExtKeyPubVersion
   [purpose network]
+  (log/info :get-xpriv-version/starting {:purpose purpose :network network})
   (HDUtil/getXpubVersion
    (HDPurpose. purpose)
    (BitcoinNetworks/fromString network)))
@@ -91,9 +92,9 @@
 (defn get-xpriv-version
   "See: https://bitcoin-s.org/api/org/bitcoins/core/util/HDUtil$.html#getXprivVersion(hdPurpose:org.bitcoins.core.hd.HDPurpose,network:org.bitcoins.core.config.NetworkParameters):org.bitcoins.core.crypto.ExtKeyPrivVersion"
   ^ExtKeyPrivVersion
-  [purpose network-name]
-  (let [hd-purpose (HDPurpose. purpose)
-        network    (BitcoinNetworks/fromString network-name)]
+  [^HDPurpose purpose  ^NetworkParameters network-name]
+  (let [hd-purpose ^HDPurpose (HDPurpose. purpose)
+        network    ^BitcoinNetworks (BitcoinNetworks/fromString network-name)]
     (HDUtil/getXprivVersion hd-purpose network)))
 
 (defn get-remote-instance
@@ -108,26 +109,37 @@
    (ActorSystem/apply)))
 
 (defn get-client
-  ^BitcoindV22RpcClient [remote-instance]
+  ^BitcoindV22RpcClient
+  [remote-instance]
   (BitcoindV22RpcClient/apply remote-instance))
+
+(defn string->network
+  ^BitcoinNetworks [^String network-string]
+  (BitcoinNetworks/fromString network-string))
 
 (defn get-address
   [^WitnessScriptPubKey script-pub-key
-   network]
-  (.value (Bech32Address/apply script-pub-key (BitcoinNetworks/fromString network))))
+   ^String network-string]
+  (let [network ^BitcoinNetworks (string->network network-string)]
+    (.value (Bech32Address/apply script-pub-key network))))
 
 (defn get-ext-pubkey
   [xpriv account-path]
-  (.extPublicKey (.deriveChildPrivKey xpriv account-path)))
+  (let [child-priv-key (.deriveChildPrivKey xpriv account-path)]
+    (.extPublicKey child-priv-key)))
 
 (defn parse-ext-priv-key
-  [key]
+  [^String key]
   (ExtPrivateKey/fromString key))
+
+(defn string->bip32path
+  ^BIP32Path [^String path]
+  (BIP32Path/fromString path))
 
 (defn get-child-key
   [xpriv wallet-path child-path]
   (log/info :get-child-key/starting {:xpriv xpriv :wallet-path wallet-path :child-path child-path})
-  (let [account-path (BIP32Path/fromString wallet-path)
+  (let [account-path (string->bip32path wallet-path)
         account-xpub (get-ext-pubkey xpriv account-path)
         segwit-path  (SegWitHDPath/fromString child-path)
         path-diff    (.get (.diff account-path segwit-path))
@@ -136,20 +148,20 @@
     ext-pub-key))
 
 (defn get-child-key-pub
-  [account-xpub wallet-path child-path]
+  ^ExtPublicKey [^ExtPublicKey account-xpub ^String wallet-path ^String child-path]
   (log/info :get-child-key/starting {:account-xpub account-xpub
                                      :wallet-path  wallet-path
                                      :child-path   child-path})
-  (let [account-path (BIP32Path/fromString wallet-path)
-        segwit-path  (BIP32Path/fromString child-path)
-        path-diff    (.get (.diff account-path segwit-path))
+  (let [account-path ^BIP32Path (BIP32Path/fromString wallet-path)
+        segwit-path  ^BIP32Path (BIP32Path/fromString child-path)
+        path-diff ^BIP32Path (.get (.diff account-path segwit-path))
         ext-pub-key  (.get (.deriveChildPubKey account-xpub path-diff))]
     (log/info :get-child-key/finished {:ext-public-key ext-pub-key})
     ext-pub-key))
 
 (defn get-script-pub-key
   "https://bitcoin-s.org/api/org/bitcoins/core/protocol/script/P2WPKHWitnessSPKV0$.html#apply(pubKey:org.bitcoins.crypto.ECPublicKey):org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0"
-  [^ExtPublicKey ext-pub-key]
+  ^P2WPKHWitnessSPKV0 [^ExtPublicKey ext-pub-key]
   (let [pub-key (.key ext-pub-key)]
     (P2WPKHWitnessSPKV0/apply pub-key)))
 
@@ -157,13 +169,15 @@
   "https://bitcoin-s.org/api/org/bitcoins/core/crypto/BIP39Seed.html#toExtPrivateKey(keyVersion:org.bitcoins.core.crypto.ExtKeyPrivVersion):org.bitcoins.core.crypto.ExtPrivateKey"
   ^ExtPrivateKey [^BIP39Seed bip39-seed purpose network]
   (let [priv-version (get-xpriv-version purpose network)]
+    (log/info :get-xpriv/versioned {:priv-version priv-version})
     (.toExtPrivateKey bip39-seed priv-version)))
 
 (defn ->wif
   "https://bitcoin-s.org/api/org/bitcoins/core/crypto/ECPrivateKeyUtil$.html#toWIF(privKey:org.bitcoins.crypto.ECPrivateKeyBytes,network:org.bitcoins.core.config.NetworkParameters):String"
-  [key]
+  ^String [^ECPrivateKey key]
   (let [pk-bv (.bytes key)
-        pk-bytes (ECPrivateKeyBytes. pk-bv false)
+        compressed false
+        pk-bytes (ECPrivateKeyBytes. pk-bv compressed)
         network (regtest-network)]
     (ECPrivateKeyUtil/toWIF pk-bytes network)))
 
@@ -174,16 +188,16 @@
 
 (defn get-zmq-config
   "https://bitcoin-s.org/api/org/bitcoins/rpc/config/ZmqConfig$.html#empty:org.bitcoins.rpc.config.ZmqConfig"
-  []
+  ^ZmqConfig []
   (ZmqConfig/empty))
 
 (defn ->bitcoin-address
-  [address-s]
+  ^BitcoinAddress [address-s]
   (BitcoinAddress/apply address-s))
 
 (defn generate-to-address!
   "https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#generateToAddress(blocks:Int,address:org.bitcoins.core.protocol.BitcoinAddress,maxTries:Int):scala.concurrent.Future[Vector[org.bitcoins.crypto.DoubleSha256DigestBE]]"
-  [client address-s]
+  [^BitcoindV22RpcClient client address-s]
   (log/info :generate-to-address!/starting {:address-s address-s})
   (let [blocks    (int 1)
         address   (->bitcoin-address address-s)
@@ -205,7 +219,7 @@
             (throw ex)))))))
 
 (defn get-peer-info
-  [client]
+  [^BitcoindV22RpcClient client]
   (let [fut      (.getPeerInfo client)
         response (async/<!! (cs/await-future fut))]
     (log/finer :get-peer-info/response {:response response})
@@ -219,11 +233,11 @@
           (throw ex))))))
 
 (defn ->segwit-path
-  [path]
+  ^BIP32Path [path]
   (SegWitHDPath/fromString path))
 
 (defn ->bip32-path
-  [path]
+  ^BIP32Path [path]
   (BIP32Path/fromString path))
 
 ;; https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#getBlockChainInfo:scala.concurrent.Future[org.bitcoins.commons.jsonmodels.bitcoind.GetBlockChainInfoResult]

@@ -51,7 +51,7 @@
   [wallet index]
   (log/info :calculate-address!/starting {:wallet wallet :index index})
   (let [ext-public-key  (::m.c.wallets/ext-public-key wallet)
-        ext-public-key2 (ExtPublicKey/fromString ext-public-key)]
+        ext-public-key2 ^ExtPublicKey (ExtPublicKey/fromString ext-public-key)]
     (log/info :calculate-addresses!/read-key {:ext-public-key  ext-public-key
                                               :ext-public-key2 ext-public-key2})
     (let [wallet-path (::m.c.wallets/derivation wallet)

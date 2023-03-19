@@ -65,6 +65,16 @@
                         [?wallet-id ::m.c.wallets/name ?name]]}]
     (ffirst (xt/q db query [user-id name]))))
 
+(>defn find-by-user-and-wallet-id
+  [user-id wallet-id]
+  [::m.users/id ::m.c.wallets/id => (? ::m.c.wallets/id)]
+  (c.xtdb/query-id
+   '{:find [?wallet-id]
+     :in [[?user-id ?input-wallet-id]]
+     :where [[?wallet-id ::m.c.wallets/id ?input-wallet-id]
+             [?wallet-id ::m.c.wallets/user ?user-id]]}
+   [user-id wallet-id]))
+
 (>defn find-by-core-node
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.wallets/id)]

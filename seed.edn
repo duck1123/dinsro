@@ -127,7 +127,8 @@
                    "enter"    "green"  "scout"  "brother" "worry"    "fancy"
                    "olive"    "salmon" "chef"   "repair"  "hospital" "milk"]
      :node        "bitcoin-alice"
-     :path        "m/84'/0'/0'"}]}
+     :path        "m/84'/0'/0'"
+     :tpub        ""}]}
 
   {:username "bob"
    :password "hunter2"
@@ -188,7 +189,8 @@
                     "bone"   "luxury" "list" "flash"   "music"   "impulse"
                     "naive"  "type"   "wet"  "reform"  "panic"   "expand"]
      :node         "bitcoin-alice"
-     :path         "m/84'/0'/0'"}]}]
+     :path         "m/84'/0'/0'"
+     :wif          "92uc3cEZDSiWzcmK9dfXniiV2Yoo51HLwbkAdqQbvKF2zt3o4tb"}]}]
 
  :currencies
  [{:name "Sats"
