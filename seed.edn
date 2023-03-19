@@ -106,7 +106,7 @@
    :ln-nodes
    [{:name            "lnd-alice"
      :host            "alice-lnd-internal.dinsro.svc.cluster.local"
-     :fileserver-host "fileserver"
+     :fileserver-host "fileserver.alice.localtest.me"
      :port            "10009"
      :node            "bitcoin-alice"
      :mnemonic        ["abandon" "horror"  "because" "buddy"  "jump"  "satisfy"
@@ -163,7 +163,7 @@
    [{:name            "lnd-bob"
      :node            "bitcoin-bob"
      :host            "bob-lnd-internal.dinsro.svc.cluster.local"
-     :fileserver-host "fileserver"
+     :fileserver-host "fileserver.alice.localtest.me"
      :port            "10009"
      :mnemonic
      ["absorb"  "impulse"  "slide" "trumpet" "garage" "happy"
