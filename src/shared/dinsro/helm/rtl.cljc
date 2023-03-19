@@ -7,7 +7,11 @@
         node-name     (str "Node " name)
         macaroon-path (str "/mnt/data/" name)
         backup-path   (str "/mnt/data/" name "/backups")
-        server-url    (str "https://" name "-lnd-internal." name ".svc.cluster.local:10009")]
+        scheme        "http"
+        port          "10009"
+        namespace     "dinsro"
+        service-name  (str name "-lnd-internal")
+        server-url    (str scheme "://" service-name "." namespace ".svc.cluster.local:" port)]
     {:index            1
      :lnNode           node-name
      :lnImplementation "LND"
@@ -56,9 +60,11 @@
      ;; :image             {:tag "0.12.2"}
      ;; :image             {:tag "0.11.1"}
      :ingress           {:hosts [{:host  (str "rtl." name ".localtest.me")
+                                  :paths [{:path "/"}]}
+                                 {:host  (str "rtl." name ".dinsro.dev.kronkltd.net")
                                   :paths [{:path "/"}]}]}
      :configurationFile #?(:clj (json2/encode config) :cljs (do (comment config) ""))
-     :bitcoin           {:host (str name "-bitcoind." name)}}))
+     :bitcoin           {:host (str name "-bitcoind")}}))
 
 (comment
   (->values {})
