@@ -391,11 +391,11 @@
         ;; local-path "resources/helm/fold/charts/lnd"
         filename (str "target/conf/" name "/lnd_values.yaml")
         args     (keep identity
-                         [(str "-n " name)
-                          (str "--name-template=" name)
-                          (when-not use-prefix (str "--repo " repo))
-                          (str "--values " filename)
-                          (str "--version " version)])
+                       [(str "-n " name)
+                        (str "--name-template=" name)
+                        (when-not use-prefix (str "--repo " repo))
+                        (str "--values " filename)
+                        (str "--version " version)])
         cmd      (string/join " " (concat ["helm template "] args [path]))]
     ;; (println cmd)
     (shell cmd)))
