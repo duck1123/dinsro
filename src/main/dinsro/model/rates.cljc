@@ -1,7 +1,7 @@
 (ns dinsro.model.rates
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [=> >def >defn]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -35,7 +35,7 @@
 
 (s/def ::params (s/keys :req [::rate ::date ::source]))
 (s/def ::item (s/keys :req [::id ::rate ::date ::source]))
-(s/def ::ident (s/tuple keyword? ::id))
+(>def ::ident (s/keys :req [::id]))
 
 (>defn ident [id] [::id => any?] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => any?] (mapv ident ids))

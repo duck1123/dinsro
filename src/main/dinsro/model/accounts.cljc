@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [=> >def >defn]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.authorization :as auth]
@@ -82,7 +82,7 @@
                         :opt [::source ::wallet]))
 (s/def ::item (s/keys :req [::id ::currency ::initial-value ::name ::user]
                       :opt [::source ::wallet]))
-(s/def ::ident (s/tuple keyword? ::id))
+(>def ::ident (s/keys :req [::id]))
 
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))

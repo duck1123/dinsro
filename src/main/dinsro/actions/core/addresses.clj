@@ -9,6 +9,13 @@
    [dinsro.queries.core.nodes :as q.c.nodes]
    [lambdaisland.glogc :as log]))
 
+(defn register-address!
+  [address]
+  (if-let [address-id (q.c.addresses/find-by-address address)]
+    address-id
+    (q.c.addresses/create-record
+     {::m.c.addresses/address address})))
+
 (>defn fetch!
   [id]
   [::m.c.addresses/id => any?]

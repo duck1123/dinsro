@@ -55,6 +55,14 @@
 
    [node-id]))
 
+(defn find-by-address
+  [address]
+  (c.xtdb/query-id
+   '{:find [?address-id]
+     :in [[?address]]
+     :where [[?address-id ::m.c.addresses/address ?address]]}
+   [address]))
+
 (comment
   2
   :the

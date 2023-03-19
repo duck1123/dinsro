@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.wallets :as m.c.wallets]))
 
 (>def ::id uuid?)
@@ -18,10 +19,12 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::address string?)
-(defattr address ::address :string
+(>def ::address uuid?)
+(defattr address ::address :ref
   {ao/identities #{::id}
-   ao/schema     :production})
+   ao/target     ::m.c.addresses/id
+   ao/schema     :production
+   ::report/column-EQL {::address [::m.c.addresses/id ::m.c.addresses/address]}})
 
 (>def ::wallet uuid?)
 (defattr wallet ::wallet :ref

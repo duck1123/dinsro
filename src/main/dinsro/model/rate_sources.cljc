@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [=> >def >defn]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -49,10 +49,9 @@
 (s/def ::required-params (s/keys :req [::name ::url ::active? ::path ::identity?]))
 (s/def ::params (s/keys :req [::name ::url ::currency ::active? ::path ::identity?]))
 (s/def ::item (s/keys :req [::id ::name ::url ::currency ::active? ::path ::identity?]))
-(s/def ::items (s/coll-of ::item))
-(s/def ::ident (s/tuple keyword? ::id))
+(>def ::ident (s/keys :req [::id]))
 
 (>defn ident [id] [::id => any?] {::id id})
-(>defn idents [ids] [(s/coll-of ::id) => any?] (mapv ident ids))
+(>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes [currency id name url active? path identity?])

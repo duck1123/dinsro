@@ -1,7 +1,6 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.actions.core.wallet-addresses-notebook
   (:require
-   [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses]
    [dinsro.actions.nbxplorer :as a.nbxplorer]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
@@ -25,8 +24,6 @@
 (q.c.wallet-addresses/find-by-wallet wallet-id)
 
 (comment
-
-  (a.c.wallet-addresses/register-addresses! wallet 20)
 
   (tap> (q.c.wallets/index-ids))
 

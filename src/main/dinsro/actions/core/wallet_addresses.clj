@@ -1,8 +1,8 @@
 (ns dinsro.actions.core.wallet-addresses
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [dinsro.actions.core.addresses :as a.c.addresses]
    [dinsro.actions.core.node-base :as a.c.node-base]
-   [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -18,25 +18,18 @@
   [::m.c.wallets/item ::m.c.wallet-addresses/address ::m.c.wallet-addresses/path-index => any?]
   (let [{::m.c.wallets/keys [id]} wallet]
     (log/info :register-address! {:id id :address address :path-index path-index})
-    (let [address-id (q.c.wallet-addresses/find-by-wallet-and-index id path-index)]
-      (if address-id
+    (let [wallet-address-id (q.c.wallet-addresses/find-by-wallet-and-index id path-index)]
+      (if wallet-address-id
         (do
           (log/finer :register-address!/found {})
-          address-id)
+          wallet-address-id)
         (do
           (log/finer :register-address!/not-found {})
-          (q.c.wallet-addresses/create-record
-           {::m.c.wallet-addresses/address    address
-            ::m.c.wallet-addresses/wallet     id
-            ::m.c.wallet-addresses/path-index path-index}))))))
-
-(>defn register-addresses!
-  [wallet n]
-  [::m.c.wallets/item ::m.c.wallet-addresses/path-index => any?]
-  (log/info :register-addresses!/starting {:wallet wallet :n n})
-  (dotimes [index n]
-    (let [address (a.c.wallets/get-address wallet index)]
-      (register-address! wallet address index))))
+          (let [address-id (a.c.addresses/register-address! address)]
+            (q.c.wallet-addresses/create-record
+             {::m.c.wallet-addresses/address    address-id
+              ::m.c.wallet-addresses/wallet     id
+              ::m.c.wallet-addresses/path-index path-index})))))))
 
 (>defn generate!
   [{wallet-id                   ::m.c.wallet-addresses/wallet

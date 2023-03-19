@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
+   [com.fulcrologic.guardrails.core :refer [=> >def >defn]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.authorization :as auth]))
@@ -66,8 +66,7 @@
 (s/def ::input-params (s/keys :opt [::password ::name]))
 (s/def ::params (s/keys :req [::hashed-value ::name ::salt ::iterations ::role]))
 (s/def ::item (s/keys :req [::hashed-value ::id ::name  ::salt ::iterations ::role]))
-(s/def ::id-key (s/with-gen keyword? #(s/gen #{::id})))
-(s/def ::ident (s/tuple ::id-key ::id))
+(>def ::ident (s/keys :req [::id]))
 
 (>defn ident [id] [::id => any?] {::id id})
 (defn idents [ids] (mapv ident ids))
