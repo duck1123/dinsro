@@ -19,10 +19,12 @@
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.nodes.accounts :as u.ln.n.accounts]
+   [dinsro.ui.ln.nodes.addresses :as u.ln.n.addresses]
    [dinsro.ui.ln.nodes.channels :as u.ln.n.channels]
    [dinsro.ui.ln.nodes.peers :as u.ln.n.peers]
    [dinsro.ui.ln.nodes.remote-nodes :as u.ln.n.remote-nodes]
    [dinsro.ui.ln.nodes.transactions :as u.ln.n.transactions]
+   [dinsro.ui.ln.nodes.wallet-addresses :as u.ln.n.wallet-addresses]
    [lambdaisland.glogi :as log]))
 
 (declare CreateLightningNodeForm)
@@ -138,10 +140,12 @@
   [_this _props]
   {:router-targets
    [u.ln.n.accounts/SubPage
+    u.ln.n.addresses/SubPage
     u.ln.n.channels/SubPage
     u.ln.n.peers/SubPage
     u.ln.n.remote-nodes/SubPage
-    u.ln.n.transactions/SubPage]})
+    u.ln.n.transactions/SubPage
+    u.ln.n.wallet-addresses/SubPage]})
 
 (def ui-router (comp/factory Router))
 
@@ -149,6 +153,9 @@
   [{:key   "accounts"
     :name  "Accounts"
     :route "dinsro.ui.ln.nodes.accounts/SubPage"}
+   {:key   "addresses"
+    :name  "Addresses"
+    :route "dinsro.ui.ln.nodes.addresses/SubPage"}
    {:key   "channels"
     :name  "Channels"
     :route "dinsro.ui.ln.nodes.channels/SubPage"}
@@ -157,7 +164,10 @@
     :route "dinsro.ui.ln.nodes.peers/SubPage"}
    {:key   "remote-nodes"
     :name  "Remote Nodes"
-    :route "dinsro.ui.ln.nodes.remote-nodes/SubPage"}])
+    :route "dinsro.ui.ln.nodes.remote-nodes/SubPage"}
+   {:key   "wallet-addresses"
+    :name  "Wallet Addresses"
+    :route "dinsro.ui.ln.nodes.wallet-addresses/SubPage"}])
 
 (defsc Show
   "Show a ln node"

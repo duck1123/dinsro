@@ -6,7 +6,9 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
@@ -40,6 +42,19 @@
   []
   [=> (s/coll-of ::m.c.wallet-addresses/item)]
   (map read-record (index-ids)))
+
+(defn find-by-ln-node
+  [ln-node-id]
+  (log/debug :find-by-ln-node/starting {:ln-node-id ln-node-id})
+  (let [ids (c.xtdb/query-ids
+             '{:find  [?wallet-address-id]
+               :in    [[?ln-node-id]]
+               :where [[?account-id ::m.ln.accounts/node ?ln-node-id]
+                       [?account-id ::m.ln.accounts/wallet ?wallet-id]
+                       [?wallet-address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
+             [ln-node-id])]
+    (log/finer :find-by-ln-node/finished {:ids ids})
+    ids))
 
 (>defn find-by-wallet
   [wallet-id]

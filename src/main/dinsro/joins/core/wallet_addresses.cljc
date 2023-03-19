@@ -4,6 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -14,8 +15,14 @@
   {ao/target    ::m.c.wallet-addresses/id
    ao/pc-output [{::index [::m.c.wallet-addresses/id]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.c.wallet-addresses/index-ids) :cljs [])]
+   (fn [{:keys [query-params]} _]
+     (let [{ln-node-id ::m.ln.nodes/id} query-params
+           ids                          #?(:clj (if ln-node-id
+                                                  (q.c.wallet-addresses/find-by-ln-node ln-node-id)
+                                                  (q.c.wallet-addresses/index-ids))
+                                           :cljs (do
+                                                   (comment ln-node-id)
+                                                   []))]
        {::index (m.c.wallet-addresses/idents ids)}))})
 
 (defattr index-by-wallet ::index-by-wallet :ref

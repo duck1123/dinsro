@@ -5,6 +5,8 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
+   [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.specs]
    [xtdb.api :as xt]))
 
@@ -40,6 +42,18 @@
   []
   [=> (s/coll-of ::m.c.addresses/item)]
   (map read-record (index-ids)))
+
+(defn find-by-ln-node
+  [node-id]
+  []
+  (c.xtdb/query-ids
+   '{:find [?address-id]
+     :in [[?node-id]]
+     :where [[?account-id ::m.ln.accounts/node ?node-id]
+             [?account-id ::m.ln.accounts/wallet ?wallet-id]
+             [?wallet-address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
+
+   [node-id]))
 
 (comment
   2
