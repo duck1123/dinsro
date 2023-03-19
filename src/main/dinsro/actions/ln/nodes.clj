@@ -234,3 +234,17 @@
       (let [params (set/rename-keys record m.ln.info/rename-map)]
         (log/finer :update-info!/saving {:id id :params params})
         (q.ln.nodes/update! id params)))))
+
+(defn list-unspent!
+  [node]
+  (let [client   (get-client node)
+        response (c.lnd-s/list-unspent client)]
+    (log/info :list-unspent!/received {:response response})
+    (async/go
+      (let [m (async/<! response)]
+        (log/info :list-unspent!/received {:m m})
+        (let [results (cs/vector->vec (:result m))]
+          (log/info :list-unspent!/results {:results results})
+          (doseq [utxo-result results]
+            (let [record (cs/->record utxo-result)]
+              (log/info :update-info!/converted {:record record}))))))))

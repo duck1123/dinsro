@@ -199,3 +199,7 @@
   (log/info :get-node-info/starting {:pubkey-hex pubkey-hex})
   (let [_response nil]
     (throw (RuntimeException. "not implemented"))))
+
+(defn list-unspent
+  [client]
+  (cs/await-future (.listUnspent client)))

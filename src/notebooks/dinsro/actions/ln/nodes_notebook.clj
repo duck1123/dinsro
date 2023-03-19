@@ -5,6 +5,7 @@
    [clj-commons.byte-streams :as bs]
    [clojure.core.async :as async :refer [<!!]]
    [dinsro.actions.core.nodes :as a.c.nodes]
+   [dinsro.actions.ln.accounts :as a.ln.accounts]
    [dinsro.actions.ln.nodes :as a.ln.nodes]
    [dinsro.client.lnd-s :as c.lnd-s]
    [dinsro.client.scala :as cs]
@@ -31,7 +32,6 @@
   (catch Exception ex ex))
 
 ;; ## get-client
-
 
 (def client (a.ln.nodes/get-client n.lnd/node))
 
@@ -94,7 +94,6 @@
 
 ;; ## other
 
-
 (try
   (a.ln.nodes/has-cert? n.lnd/node)
   (catch Exception ex ex))
@@ -148,9 +147,13 @@
 
   (a.ln.nodes/new-address n.lnd/node)
 
+  (a.ln.accounts/fetch! n.lnd/node)
+
   n.lnd/client
 
   (.unlocker n.lnd/client)
+
+  (a.ln.nodes/list-unspent! n.lnd/node)
 
   (def a (a.ln.nodes/new-address n.lnd/node))
   a
