@@ -8,10 +8,10 @@
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.user-ln-nodes :as u.user-ln-nodes]
-   [dinsro.ui.user-pubkeys :as u.user-pubkeys]
    [dinsro.ui.users.accounts :as u.u.accounts]
    [dinsro.ui.users.debits :as u.u.debits]
+   [dinsro.ui.users.ln-nodes :as u.u.ln-nodes]
+   [dinsro.ui.users.pubkeys :as u.u.pubkeys]
    [dinsro.ui.users.transactions :as u.u.transactions]
    [dinsro.ui.users.wallets :as u.u.wallets]))
 
@@ -44,8 +44,8 @@
   {:router-targets
    [u.u.accounts/SubPage
     u.u.debits/SubPage
-    u.user-ln-nodes/SubPage
-    u.user-pubkeys/SubPage
+    u.u.ln-nodes/SubPage
+    u.u.pubkeys/SubPage
     u.u.transactions/SubPage
     u.u.wallets/SubPage]})
 

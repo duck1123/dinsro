@@ -11,8 +11,8 @@
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.core.transactions :as u.c.transactions]
-   [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
    [dinsro.ui.core.wallets :as u.c.wallets]
+   [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
    [dinsro.ui.core.words :as u.c.words]))
 
 (defrouter CoreRouter
@@ -40,8 +40,8 @@
                     u.c.wallets/NewForm
                     u.c.wallets/Show
                     u.c.wallets/Report
-                    u.c.wallet-addresses/NewForm
-                    u.c.wallet-addresses/WalletAddressForm
+                    u.c.w.addresses/NewForm
+                    u.c.w.addresses/WalletAddressForm
                     u.c.words/Report]}
   (case current-state
     :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))

@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.node-peers
+(ns dinsro.ui.core.nodes.peers
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]

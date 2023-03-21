@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.transaction-inputs
+(ns dinsro.ui.core.transactions.inputs
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]

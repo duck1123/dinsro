@@ -14,8 +14,8 @@
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
-   [dinsro.ui.core.node-blocks :as u.c.node-blocks]
-   [dinsro.ui.core.node-peers :as u.c.node-peers]
+   [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
+   [dinsro.ui.core.nodes.peers :as u.c.n.peers]
    [dinsro.ui.links :as u.links]))
 
 (def button-info
@@ -50,18 +50,18 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets [u.c.node-blocks/SubPage
-                    u.c.node-peers/SubPage]})
+  {:router-targets [u.c.n.blocks/SubPage
+                    u.c.n.peers/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (def menu-items
   [{:key   "peers"
     :name  "Peers"
-    :route "dinsro.ui.core.node-peers/SubPage"}
+    :route "dinsro.ui.core.nodes.peers/SubPage"}
    {:key   "blocks"
     :name  "Blocks"
-    :route "dinsro.ui.core.node-blocks/SubPage"}])
+    :route "dinsro.ui.core.nodes.blocks/SubPage"}])
 
 (defsc Show
   "Show a core node"

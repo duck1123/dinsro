@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.wallet-accounts
+(ns dinsro.ui.core.wallets.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    ;; [com.fulcrologic.fulcro.dom :as dom]

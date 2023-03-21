@@ -13,9 +13,9 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
-   [dinsro.ui.core.wallet-accounts :as u.c.wallet-accounts]
-   [dinsro.ui.core.wallet-addresses :as u.c.wallet-addresses]
-   [dinsro.ui.core.wallet-words :as u.c.wallet-words]
+   [dinsro.ui.core.wallets.accounts :as u.c.w.accounts]
+   [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
+   [dinsro.ui.core.wallets.words :as u.c.w.words]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
@@ -91,9 +91,9 @@
                    ::m.c.wallets/key
                    ::m.c.wallets/ext-private-key
                    ::m.c.wallets/ext-public-key
-                   {:ui/accounts (comp/get-query u.c.wallet-accounts/SubPage)}
-                   {:ui/addresses (comp/get-query u.c.wallet-addresses/SubPage)}
-                   {:ui/words (comp/get-query u.c.wallet-words/SubPage)}
+                   {:ui/accounts (comp/get-query u.c.w.accounts/SubPage)}
+                   {:ui/addresses (comp/get-query u.c.w.addresses/SubPage)}
+                   {:ui/words (comp/get-query u.c.w.words/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.wallets/id              nil
                    ::m.c.wallets/name            ""
@@ -109,9 +109,9 @@
    :ident         ::m.c.wallets/id
    :pre-merge     (u.links/page-merger
                    ::m.c.wallets/id
-                   {:ui/accounts  u.c.wallet-accounts/SubPage
-                    :ui/addresses u.c.wallet-addresses/SubPage
-                    :ui/words     u.c.wallet-words/SubPage})
+                   {:ui/accounts  u.c.w.accounts/SubPage
+                    :ui/addresses u.c.w.addresses/SubPage
+                    :ui/words     u.c.w.words/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::Show)}
   (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
@@ -140,11 +140,11 @@
     (if id
       (comp/fragment
        (dom/div :.ui.segment
-         (u.c.wallet-words/ui-sub-page words))
+         (u.c.w.words/ui-sub-page words))
        (dom/div :.ui.segment
-         (u.c.wallet-accounts/ui-sub-page accounts))
+         (u.c.w.accounts/ui-sub-page accounts))
        (dom/div :.ui.segment
-         (u.c.wallet-addresses/ui-sub-page addresses)))
+         (u.c.w.addresses/ui-sub-page addresses)))
 
       (dom/p {} "id not set"))))
 

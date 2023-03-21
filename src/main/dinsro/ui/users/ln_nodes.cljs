@@ -1,4 +1,4 @@
-(ns dinsro.ui.user-ln-nodes
+(ns dinsro.ui.users.ln-nodes
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]

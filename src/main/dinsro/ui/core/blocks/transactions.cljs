@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.block-transactions
+(ns dinsro.ui.core.blocks.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]

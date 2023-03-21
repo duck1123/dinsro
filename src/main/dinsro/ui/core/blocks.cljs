@@ -9,7 +9,7 @@
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
-   [dinsro.ui.core.block-transactions :as u.c.block-transactions]
+   [dinsro.ui.core.blocks.transactions :as u.c.b.transactions]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
@@ -56,7 +56,7 @@
                    {::m.c.blocks/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
-                   {:ui/transactions (comp/get-query u.c.block-transactions/SubPage)}
+                   {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
                    [df/marker-table '_]]
    :initial-state {::m.c.blocks/id             nil
                    ::m.c.blocks/height         ""
@@ -69,7 +69,7 @@
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
    :ident         ::m.c.blocks/id
-   :pre-merge     (u.links/page-merger ::m.c.blocks/id {:ui/transactions u.c.block-transactions/SubPage})
+   :pre-merge     (u.links/page-merger ::m.c.blocks/id {:ui/transactions u.c.b.transactions/SubPage})
    :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::Show)}
   (log/finer :Show/creating {:id id :props props :this this})
   (dom/div {}
@@ -108,7 +108,7 @@
           "Fetch")))
     (if id
       (dom/div {}
-        ((comp/factory u.c.block-transactions/SubPage) transactions))
+        ((comp/factory u.c.b.transactions/SubPage) transactions))
       (dom/div {}
         (dom/p {} "No id")))))
 

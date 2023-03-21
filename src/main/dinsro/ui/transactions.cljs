@@ -11,7 +11,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.transaction-debits :as u.transaction-debits]))
+   [dinsro.ui.transactions.debits :as u.t.debits]))
 
 (defsc AccountQuery
   [_this _props]
@@ -59,14 +59,14 @@
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
-                   {:ui/debits (comp/get-query u.transaction-debits/SubPage)}]
+                   {:ui/debits (comp/get-query u.t.debits/SubPage)}]
    :initial-state {::m.transactions/description ""
                    ::m.transactions/id          nil
                    ::m.transactions/date        ""
                    :ui/debits                   {}}
    :ident         ::m.transactions/id
    :pre-merge     (u.links/page-merger ::m.transactions/id
-                                       {:ui/debits u.transaction-debits/SubPage})
+                                       {:ui/debits u.t.debits/SubPage})
    :will-enter    (partial u.links/page-loader ::m.transactions/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
@@ -74,5 +74,5 @@
      (dom/p {} "Date: " (str date)))
    (dom/div  :.ui.segment
      (if debits
-       (u.transaction-debits/ui-sub-page debits)
+       (u.t.debits/ui-sub-page debits)
        (dom/p {} "Transaction debits not loaded")))))

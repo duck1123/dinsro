@@ -9,7 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.chains :as j.c.chains]
    [dinsro.model.core.chains :as m.c.chains]
-   [dinsro.ui.core.chain-networks :as u.c.chain-networks]
+   [dinsro.ui.core.chains.networks :as u.c.c.networks]
    [dinsro.ui.links :as u.links]))
 
 (def override-form false)
@@ -29,7 +29,7 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets [u.c.chain-networks/SubPage]})
+  {:router-targets [u.c.c.networks/SubPage]})
 
 (def ui-router (comp/factory Router))
 

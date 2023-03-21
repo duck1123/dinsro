@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.wallet-addresses
+(ns dinsro.ui.core.wallets.addresses
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.form :as form]
