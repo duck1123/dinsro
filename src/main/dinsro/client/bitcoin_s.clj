@@ -93,7 +93,7 @@
   "See: https://bitcoin-s.org/api/org/bitcoins/core/util/HDUtil$.html#getXprivVersion(hdPurpose:org.bitcoins.core.hd.HDPurpose,network:org.bitcoins.core.config.NetworkParameters):org.bitcoins.core.crypto.ExtKeyPrivVersion"
   ^ExtKeyPrivVersion
   [^HDPurpose purpose  ^NetworkParameters network-name]
-  (let [hd-purpose ^HDPurpose (HDPurpose. purpose)
+  (let [hd-purpose (HDPurpose. purpose)
         network    ^BitcoinNetworks (BitcoinNetworks/fromString network-name)]
     (HDUtil/getXprivVersion hd-purpose network)))
 
