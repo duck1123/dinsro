@@ -12,10 +12,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.invoices/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :where [[?id ::m.ln.invoices/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.ln.invoices/id _]]}))
 
 (>defn read-record
   [id]
@@ -39,26 +36,21 @@
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.invoices/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?invoice-id]
-                :in    [?node-id]
-                :where [[?invoice-id ::m.ln.invoices/node ?node-id]]}]
-    (map first (xt/q db query node-id))))
+  (c.xtdb/query-ids
+   '{:find  [?invoice-id]
+     :in    [[?node-id]]
+     :where [[?invoice-id ::m.ln.invoices/node ?node-id]]}
+   [node-id]))
 
 (>defn find-by-node-and-index
   [node-id index]
   [::m.ln.nodes/id number? => (? ::m.ln.invoices/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?invoice-id]
-                :in    [[?node-id ?index]]
-                :where [[?invoice-id ::m.ln.invoices/node ?node-id]
-                        [?invoice-id ::m.ln.invoices/add-index ?index]]}]
-    (ffirst (xt/q db query [node-id index]))))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.ln.invoices/item)]
-  (map read-record (index-ids)))
+  (c.xtdb/query-id
+   '{:find  [?invoice-id]
+     :in    [[?node-id ?index]]
+     :where [[?invoice-id ::m.ln.invoices/node ?node-id]
+             [?invoice-id ::m.ln.invoices/add-index ?index]]}
+   [node-id index]))
 
 (>defn delete!
   [id]
@@ -76,10 +68,3 @@
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
     (throw (RuntimeException. "Failed to find id"))))
-
-(comment
-
-  (index-records)
-  (map delete! (index-ids))
-
-  nil)

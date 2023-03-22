@@ -48,9 +48,6 @@
 
 (comment
 
-  (tap> (q.c.blocks/index-records))
-
-  (q.c.blocks/index-records)
   (q.c.blocks/find-by-node (::m.c.nodes/id node-bob))
 
   (q.c.blocks/fetch-by-node-and-height (::m.c.nodes/id node-alice) 97)

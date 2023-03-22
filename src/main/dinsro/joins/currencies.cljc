@@ -59,7 +59,7 @@
    ao/target      ::m.rate-sources/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
-     (let [ids (if id  #?(:clj (q.rate-sources/index-ids-by-currency id) :cljs []) [])]
+     (let [ids (if id  #?(:clj (q.rate-sources/find-by-currency id) :cljs []) [])]
        {::sources (m.rate-sources/idents ids)}))})
 
 (defattr transactions ::transactions :ref

@@ -49,7 +49,6 @@
 
 ;; ## add-peer!
 
-
 (comment
 
   (a.c.peers/add-peer! node1 remote-host-url)
@@ -65,11 +64,9 @@
 
   (::m.c.nodes/host (q.c.nodes/read-record node2))
 
-  (def peer (first (q.c.peers/index-records)))
+  (def peer (q.c.peers/read-record (first (q.c.peers/index-ids))))
   (a.c.peers/delete! peer)
   (tap> peer)
-
-  (tap> (q.c.peers/index-records))
 
   node2
 

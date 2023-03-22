@@ -13,10 +13,7 @@
   []
   [=> (s/coll-of ::m.c.mnemonics/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.mnemonics/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.mnemonics/id _]]}))
 
 (>defn read-record
   [id]
@@ -39,7 +36,3 @@
     (log/finer :create-record/finished {:id id})
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.mnemonics/item)]
-  (map read-record (index-ids)))

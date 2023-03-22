@@ -11,10 +11,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.accounts/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.ln.accounts/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.ln.accounts/id _]]}))
 
 (>defn read-record
   [id]
@@ -34,11 +31,6 @@
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.ln.accounts/item)]
-  (map read-record (index-ids)))
 
 (>defn delete!
   [id]

@@ -13,10 +13,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.addresses/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.addresses/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.addresses/id _]]}))
 
 (>defn read-record
   [id]
@@ -62,10 +59,3 @@
      :in [[?address]]
      :where [[?address-id ::m.c.addresses/address ?address]]}
    [address]))
-
-(comment
-  2
-  :the
-  (first (index-records))
-
-  nil)

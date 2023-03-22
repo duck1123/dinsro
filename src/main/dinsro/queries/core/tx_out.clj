@@ -12,19 +12,16 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.tx-out/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.tx-out/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.tx-out/id _]]}))
 
 (>defn find-by-tx
   [tx-id]
   [::m.c.transactions/id => (s/coll-of ::m.c.tx-out/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?tx-in-id]
-                :in [?tx-id]
-                :where [[?tx-in-id ::m.c.tx-out/transaction ?tx-id]]}]
-    (map first (xt/q db query tx-id))))
+  (c.xtdb/query-ids
+   '{:find  [?tx-in-id]
+     :in    [[?tx-id]]
+     :where [[?tx-in-id ::m.c.tx-out/transaction ?tx-id]]}
+   [tx-id]))
 
 (>defn read-record
   [id]
@@ -46,11 +43,6 @@
     (xt/await-tx node resp)
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.tx-out/item)]
-  (map read-record (index-ids)))
-
 (>defn delete!
   [id]
   [::m.c.tx-out/id => any?]
@@ -61,23 +53,23 @@
 (>defn find-by-tx-and-index
   [tx-id n]
   [::m.c.tx-out/transaction ::m.c.tx-out/n => (? ::m.c.tx-out/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?tx-out-id]
-                :in    [[?tx-id ?n]]
-                :where [[?tx-out-id ::m.c.tx-out/transaction ?tx-id]
-                        [?tx-out-id ::m.c.tx-out/n ?n]]}]
-    (ffirst (xt/q db query [tx-id n]))))
+  (c.xtdb/query-id
+   '{:find  [?tx-out-id]
+     :in    [[?tx-id ?n]]
+     :where [[?tx-out-id ::m.c.tx-out/transaction ?tx-id]
+             [?tx-out-id ::m.c.tx-out/n ?n]]}
+   [tx-id n]))
 
 (>defn find-by-tx-id-and-index
   [tx-id n]
   [::m.c.transactions/tx-id ::m.c.tx-out/n => (? ::m.c.tx-out/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?tx-out-id]
-                :in    [[?tx-id ?n]]
-                :where [[?transaction-id ::m.c.transactions/tx-id           ?tx-id]
-                        [?tx-out-id      ::m.c.tx-out/transaction ?transaction-id]
-                        [?tx-out-id      ::m.c.tx-out/n           ?n]]}]
-    (ffirst (xt/q db query [tx-id n]))))
+  (c.xtdb/query-id
+   '{:find  [?tx-out-id]
+     :in    [[?tx-id ?n]]
+     :where [[?transaction-id ::m.c.transactions/tx-id           ?tx-id]
+             [?tx-out-id      ::m.c.tx-out/transaction ?transaction-id]
+             [?tx-out-id      ::m.c.tx-out/n           ?n]]}
+   [tx-id n]))
 
 (>defn update!
   [id params]

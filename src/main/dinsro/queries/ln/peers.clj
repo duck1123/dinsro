@@ -14,10 +14,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.peers/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.ln.peers/id _]]}]
-    (map first  (xt/q db query))))
+  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.ln.peers/id _]]}))
 
 (>defn read-record
   [id]
@@ -48,12 +45,12 @@
   [node-id pubkey]
   [::m.ln.nodes/id ::m.ln.info/identity-pubkey => (? ::m.ln.peers/id)]
   (log/info :find-peer/starting {:node-id node-id :pubkey pubkey})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?peer-id]
-                :in    [[?node-id ?pubkey]]
-                :where [[?peer-id ::m.ln.peers/node ?node-id]
-                        [?peer-id ::m.ln.peers/pubkey ?pubkey]]}]
-    (ffirst (xt/q db query [node-id pubkey]))))
+  (c.xtdb/query-id
+   '{:find  [?peer-id]
+     :in    [[?node-id ?pubkey]]
+     :where [[?peer-id ::m.ln.peers/node ?node-id]
+             [?peer-id ::m.ln.peers/pubkey ?pubkey]]}
+   [node-id pubkey]))
 
 (>defn add-peer!
   [node-id peer]
@@ -65,20 +62,19 @@
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.peers/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?peer-id]
-                :in    [?node-id]
-                :where [[?peer-id ::m.ln.peers/node ?node-id]]}]
-    (map first (xt/q db query node-id))))
+  (c.xtdb/query-ids '{:find  [?peer-id]
+                      :in    [[?node-id]]
+                      :where [[?peer-id ::m.ln.peers/node ?node-id]]}
+                    [node-id]))
 
 (>defn find-by-remote-node
   [remote-node-id]
   [::m.ln.peers/remote-node => (s/coll-of ::m.ln.peers/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?peer-id]
-                :in    [?remote-node-id]
-                :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]]}]
-    (map first (xt/q db query remote-node-id))))
+  (c.xtdb/query-ids
+   '{:find  [?peer-id]
+     :in    [[?remote-node-id]]
+     :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]]}
+   [remote-node-id]))
 
 (>defn delete
   [id]
@@ -98,12 +94,10 @@
 
 (>defn find-by-node-and-remote-node
   [node-id remote-node-id]
-  [::m.ln.nodes/id
-   ::m.ln.peers/remote-node => (? ::m.ln.peers/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?peer-id]
-                :in    [[?node-id
-                         ?remote-node-id]]
-                :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]
-                        [?peer-id ::m.ln.peers/node ?node-id]]}]
-    (ffirst (xt/q db query [node-id remote-node-id]))))
+  [::m.ln.nodes/id ::m.ln.peers/remote-node => (? ::m.ln.peers/id)]
+  (c.xtdb/query-id
+   '{:find  [?peer-id]
+     :in    [[?node-id ?remote-node-id]]
+     :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]
+             [?peer-id ::m.ln.peers/node ?node-id]]}
+   [node-id remote-node-id]))

@@ -21,8 +21,5 @@
 
 (comment
   (q.ln.channels/index-ids)
-  (first (q.ln.channels/index-records))
-
-  (q.ln.channels/index-records)
 
   nil)

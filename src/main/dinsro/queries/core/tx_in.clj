@@ -12,19 +12,16 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.tx-in/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.tx-in/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.tx-in/id _]]}))
 
 (>defn find-by-tx
   [tx-id]
   [::m.c.transactions/id => (s/coll-of ::m.c.tx-in/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?tx-in-id]
-                :in    [?tx-id]
-                :where [[?tx-in-id ::m.c.tx-in/transaction ?tx-id]]}]
-    (map first (xt/q db query tx-id))))
+  (c.xtdb/query-ids
+   '{:find  [?tx-in-id]
+     :in    [[?tx-id]]
+     :where [[?tx-in-id ::m.c.tx-in/transaction ?tx-id]]}
+   [tx-id]))
 
 (>defn read-record
   [id]
@@ -57,8 +54,3 @@
   (let [node (c.xtdb/main-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
-
-(comment
-  (index-records)
-
-  nil)

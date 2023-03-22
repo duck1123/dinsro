@@ -13,9 +13,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (let [db    (c.xtdb/main-db)
-        query '[:find ?e :where [?e ::id _]]]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::id _]]}))
 
 (defn find-by-key
   [key]
@@ -64,11 +62,3 @@
   {;; Enable Registration if there are no users
    :allow-registration (not (seq (q.users/index-ids)))
    :first-run          (not (seq (q.users/index-ids)))})
-
-(comment
-
-  (get-setting :foo)
-  (find-by-key :foo)
-  (set-setting :foo "bar")
-
-  nil)

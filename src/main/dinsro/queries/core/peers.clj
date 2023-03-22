@@ -13,10 +13,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.peers/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.peers/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.peers/id _]]}))
 
 (>defn read-record
   [id]
@@ -38,12 +35,6 @@
     (xt/await-tx node resp)
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.peers/item)]
-  (log/debug :index-records/starting {})
-  (map read-record (index-ids)))
-
 (>defn delete!
   [id]
   [::m.c.peers/id => any?]
@@ -56,25 +47,19 @@
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.peers/id)]
   (log/debug :find-by-core-node/starting {:node-id node-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?peer-id]
-                :in    [?node-id]
-                :where [[?peer-id ::m.c.peers/node ?node-id]]}
-        raw (xt/q db query node-id)]
-    (log/info :find-by-core-node/raw {:raw raw})
-    (let [ids (map first raw)]
-      (log/finer :find-by-core-node/finished {:ids ids})
-      ids)))
+  (c.xtdb/query-ids
+   '{:find  [?peer-id]
+     :in    [[?node-id]]
+     :where [[?peer-id ::m.c.peers/node ?node-id]]}
+   [node-id]))
 
 (>defn find-by-node-and-peer-id
   [node-id peer-id]
   [::m.c.peers/node ::m.c.peers/peer-id => (? ::m.c.peers/id)]
   (log/debug :find-by-node-and-peer-id/starting {:node-id node-id :peer-id peer-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [[?node-id ?peer-id]]
-                :where [[?id ::m.c.peers/node ?node-id]
-                        [?id ::m.c.peers/peer-id ?peer-id]]}
-        result (ffirst (xt/q db query [node-id peer-id]))]
-    (log/finer :find-by-node-and-peer-id/finished {:result result})
-    result))
+  (c.xtdb/query-id
+   '{:find  [?id]
+     :in    [[?node-id ?peer-id]]
+     :where [[?id ::m.c.peers/node ?node-id]
+             [?id ::m.c.peers/peer-id ?peer-id]]}
+   [node-id peer-id]))

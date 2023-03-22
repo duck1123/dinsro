@@ -38,10 +38,7 @@
   "Return the id of every node"
   []
   [=> (s/coll-of :xt/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.nodes/name _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.nodes/name _]]}))
 
 (>defn index-records
   "Read all node records"
@@ -52,30 +49,30 @@
 (>defn find-by-name
   [name]
   [::m.c.nodes/name => (? ::m.c.nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?node-id]
-                :in    [?name]
-                :where [[?node-id ::m.c.nodes/name ?name]]}]
-    (ffirst (xt/q db query name))))
+  (c.xtdb/query-id
+   '{:find  [?node-id]
+     :in    [[?name]]
+     :where [[?node-id ::m.c.nodes/name ?name]]}
+   [name]))
 
 (>defn find-by-network
   "Find all nodes associated with a network"
   [network-id]
   [::m.c.networks/id => (s/coll-of ::m.c.nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?node-id]
-                :in    [[?network-id]]
-                :where [[?node-id ::m.c.nodes/network ?network-id]]}]
-    (map first (xt/q db query [network-id]))))
+  (c.xtdb/query-ids
+   '{:find  [?node-id]
+     :in    [[?network-id]]
+     :where [[?node-id ::m.c.nodes/network ?network-id]]}
+   [network-id]))
 
 (>defn find-by-ln-node
   [ln-node-id]
   [::m.ln.nodes/id => (? ::m.c.nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?core-node-id]
-                :in    [?ln-node-id]
-                :where [[?ln-node-id ::m.ln.nodes/core-node ?core-node-id]]}]
-    (ffirst (xt/q db query ln-node-id))))
+  (c.xtdb/query-id
+   '{:find  [?core-node-id]
+     :in    [[?ln-node-id]]
+     :where [[?ln-node-id ::m.ln.nodes/core-node ?core-node-id]]}
+   [ln-node-id]))
 
 (>defn update-blockchain-info
   [id props]
@@ -109,13 +106,13 @@
 
 (defn find-by-tx
   [tx-id]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?node-id]
-                :in    [[?tx-id]]
-                :where [[?tx-id ::m.c.transactions/block ?block-id]
-                        [?block-id ::m.c.blocks/network ?network-id]
-                        [?node-id ::m.c.nodes/network ?network-id]]}]
-    (ffirst (xt/q db query [tx-id]))))
+  (c.xtdb/query-id
+   '{:find  [?node-id]
+     :in    [[?tx-id]]
+     :where [[?tx-id ::m.c.transactions/block ?block-id]
+             [?block-id ::m.c.blocks/network ?network-id]
+             [?node-id ::m.c.nodes/network ?network-id]]}
+   [tx-id]))
 
 (defn find-by-user
   [_user-id]

@@ -12,10 +12,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.payments/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :where [[?id ::m.ln.payments/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find  [?id] :where [[?id ::m.ln.payments/id _]]}))
 
 (>defn read-record
   [id]
@@ -39,16 +36,10 @@
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.payments/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?payment-id]
-                :in    [?node-id]
-                :where [[?payment-id ::m.ln.payments/node ?node-id]]}]
-    (map first (xt/q db query node-id))))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.ln.payments/item)]
-  (map read-record (index-ids)))
+  (c.xtdb/query-ids '{:find  [?payment-id]
+                      :in    [[?node-id]]
+                      :where [[?payment-id ::m.ln.payments/node ?node-id]]}
+                    [node-id]))
 
 (>defn delete!
   [id]

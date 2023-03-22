@@ -15,10 +15,7 @@
   []
   [=> (s/coll-of ::m.c.wallets/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.wallets/name _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.wallets/name _]]}))
 
 (>defn read-record
   [id]
@@ -49,21 +46,21 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.c.wallets/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?wallet-id]
-                :in    [?user-id]
-                :where [[?wallet-id ::m.c.wallets/user ?user-id]]}]
-    (map first (xt/q db query user-id))))
+  (c.xtdb/query-ids
+   '{:find  [?wallet-id]
+     :in    [[?user-id]]
+     :where [[?wallet-id ::m.c.wallets/user ?user-id]]}
+   [user-id]))
 
 (>defn find-by-user-and-name
   [user-id name]
   [::m.users/id string? => (? ::m.c.wallets/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?wallet-id]
-                :in    [[?user-id ?name]]
-                :where [[?wallet-id ::m.c.wallets/user ?user-id]
-                        [?wallet-id ::m.c.wallets/name ?name]]}]
-    (ffirst (xt/q db query [user-id name]))))
+  (c.xtdb/query-id
+   '{:find  [?wallet-id]
+     :in    [[?user-id ?name]]
+     :where [[?wallet-id ::m.c.wallets/user ?user-id]
+             [?wallet-id ::m.c.wallets/name ?name]]}
+   [user-id name]))
 
 (>defn find-by-user-and-wallet-id
   [user-id wallet-id]
@@ -79,11 +76,11 @@
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.wallets/id)]
   (log/info :find-by-core-node/starting {:node-id node-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?wallet-id]
-                :in    [?node-id]
-                :where [[?wallet-id ::m.c.wallets/node ?node-id]]}]
-    (map first (xt/q db query node-id))))
+  (c.xtdb/query-ids
+   '{:find  [?wallet-id]
+     :in    [[?node-id]]
+     :where [[?wallet-id ::m.c.wallets/node ?node-id]]}
+   [node-id]))
 
 (defn update!
   [wallet-id new-props]

@@ -16,45 +16,30 @@
   []
   [=> (s/coll-of ::m.c.blocks/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?block-id]
-                :where [[?block-id ::m.c.blocks/id _]]}
-        ids   (map first (xt/q db query))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids '{:find  [?block-id] :where [[?block-id ::m.c.blocks/id _]]}))
 
 (>defn fetch-by-node-and-height
   [node-id height]
   [::m.c.nodes/id ::m.c.blocks/height => (? ::m.c.blocks/id)]
   (log/info :fetch-by-node-and-height/starting {:node-id node-id :height height})
-  (let [db       (c.xtdb/main-db)
-        query    '{:find  [?block-id]
-                   :in    [[?nnode-id ?height]]
-                   :where [[?node-id ::m.c.nodes/network ?network-id]
-                           [?block-id ::m.c.blocks/network ?network-id]
-                           [?block-id ::m.c.blocks/height ?height]]}
-        block-id (ffirst (xt/q db query [node-id height]))]
-    (log/info :fetch-by-network-and-height/finished
-              {:node-id  node-id
-               :height   height
-               :block-id block-id})
-    block-id))
+  (c.xtdb/query-id
+   '{:find  [?block-id]
+     :in    [[?nnode-id ?height]]
+     :where [[?node-id ::m.c.nodes/network ?network-id]
+             [?block-id ::m.c.blocks/network ?network-id]
+             [?block-id ::m.c.blocks/height ?height]]}
+   [node-id height]))
 
 (>defn fetch-by-network-and-height
   [network-id height]
   [::m.c.networks/id ::m.c.blocks/height => (? ::m.c.blocks/id)]
   (log/info :fetch-by-network-and-height/starting {:network-id network-id :height height})
-  (let [db       (c.xtdb/main-db)
-        query    '{:find  [?id]
-                   :in    [[?network-id ?height]]
-                   :where [[?id ::m.c.blocks/network ?network-id]
-                           [?id ::m.c.blocks/height ?height]]}
-        block-id (ffirst (xt/q db query [network-id height]))]
-    (log/info :fetch-by-network-and-height/finished
-              {:network-id network-id
-               :height     height
-               :block-id   block-id})
-    block-id))
+  (c.xtdb/query-id
+   '{:find  [?id]
+     :in    [[?network-id ?height]]
+     :where [[?id ::m.c.blocks/network ?network-id]
+             [?id ::m.c.blocks/height ?height]]}
+   [network-id height]))
 
 (>defn read-record
   [id]
@@ -79,11 +64,6 @@
     (log/info :create-record/finished {:id id})
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.blocks/item)]
-  (map read-record (index-ids)))
-
 (>defn update-block
   [id data]
   [::m.c.blocks/id any? => ::m.c.blocks/id]
@@ -105,31 +85,20 @@
 (>defn find-by-tx
   [tx-id]
   [::m.c.transactions/id => (? ::m.c.blocks/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?block-id]
-                :in    [?tx-id]
-                :where [[?tx-id ::m.c.transactions/block ?block-id]]}]
-    (ffirst (xt/q db query tx-id))))
+  (c.xtdb/query-id
+   '{:find  [?block-id]
+     :in    [[?tx-id]]
+     :where [[?tx-id ::m.c.transactions/block ?block-id]]}
+   [tx-id]))
 
 (>defn find-by-node
   "Returns all blocks belonging to the network this node belongs to"
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.blocks/id)]
   (log/info :find-by-node/starting {:node-id node-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?block-id]
-                :in    [[?node-id]]
-                :where [[?node-id ::m.c.nodes/network ?network-id]
-                        [?block-id ::m.c.blocks/network ?network-id]]}
-        ids   (map first (xt/q db query [node-id]))]
-    (log/info :find-by-node/finished {:ids ids})
-    ids))
-
-(comment
-  2
-  :the
-  (first (index-records))
-
-  (map delete (index-ids))
-
-  nil)
+  (c.xtdb/query-ids
+   '{:find  [?block-id]
+     :in    [[?node-id]]
+     :where [[?node-id ::m.c.nodes/network ?network-id]
+             [?block-id ::m.c.blocks/network ?network-id]]}
+   [node-id]))

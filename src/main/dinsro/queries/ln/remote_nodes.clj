@@ -7,16 +7,12 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.specs]
-   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.remote-nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.ln.remote-nodes/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.ln.remote-nodes/id _]]}))
 
 (>defn read-record
   [id]
@@ -37,41 +33,34 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.ln.remote-nodes/item)]
-  (map read-record (index-ids)))
-
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.remote-nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?channel-id]
-                :in    [?node-id]
-                :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]]}]
-    (map first (xt/q db query node-id))))
+  (c.xtdb/query-ids
+   '{:find  [?channel-id]
+     :in    [[?node-id]]
+     :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]]}
+   [node-id]))
 
 (>defn find-by-node-and-pubkey
   [node-id pubkey]
   [::m.ln.remote-nodes/node ::m.ln.remote-nodes/pubkey => (? ::m.ln.remote-nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?remote-node-id]
-                :in    [[?node-id ?pubkey]]
-                :where [[?remote-node-id ::m.ln.remote-nodes/pubkey ?pubkey]
-                        [?remote-node-id ::m.ln.remote-nodes/node ?node-id]]}
-        id (ffirst (xt/q db query [node-id pubkey]))]
-    (log/info :find-by-network-and-pubkey/finished {:id id :node-id node-id :pubkey pubkey})
-    id))
+  (c.xtdb/query-id
+   '{:find  [?remote-node-id]
+     :in    [[?node-id ?pubkey]]
+     :where [[?remote-node-id ::m.ln.remote-nodes/pubkey ?pubkey]
+             [?remote-node-id ::m.ln.remote-nodes/node ?node-id]]}
+   [node-id pubkey]))
 
 (>defn find-channel
   [node-id channel-point]
   [::m.ln.remote-nodes/node ::m.ln.remote-nodes/channel-point => (? ::m.ln.remote-nodes/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?channel-id]
-                :in    [[?node-id ?channel-point]]
-                :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]
-                        [?channel-id ::m.ln.remote-nodes/channel-point ?channel-point]]}]
-    (ffirst (xt/q db query [node-id channel-point]))))
+  (c.xtdb/query-ids
+   '{:find  [?channel-id]
+     :in    [[?node-id ?channel-point]]
+     :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]
+             [?channel-id ::m.ln.remote-nodes/channel-point ?channel-point]]}
+   [node-id channel-point]))
 
 (>defn delete!
   [id]

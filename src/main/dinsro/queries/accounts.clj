@@ -16,31 +16,31 @@
 (>defn find-by-user-and-name
   [user-id name]
   [::m.accounts/user ::m.accounts/name => ::m.accounts/id]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-id]
-                :in    [?user-id ?name]
-                :where [[?account-id ::m.accounts/name ?name]
-                        [?account-id ::m.accounts/user ?user-id]]}]
-    (ffirst (xt/q db query user-id name))))
+  (c.xtdb/query-id
+   '{:find  [?account-id]
+     :in    [[?user-id ?name]]
+     :where [[?account-id ::m.accounts/name ?name]
+             [?account-id ::m.accounts/user ?user-id]]}
+   [user-id name]))
 
 (>defn find-by-currency
   [currency-id]
   [::m.currencies/id => (s/coll-of ::m.accounts/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-id]
-                :in    [[?currency-id]]
-                :where [[?account-id ::m.accounts/currency ?currency-id]]}]
-    (map first (xt/q db query [currency-id]))))
+  (c.xtdb/query-ids
+   '{:find  [?account-id]
+     :in    [[?currency-id]]
+     :where [[?account-id ::m.accounts/currency ?currency-id]]}
+   [currency-id]))
 
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.accounts/id)]
   (log/debug :accounts/find-by-user {:user-id user-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-id]
-                :in    [?user-id]
-                :where [[?account-id ::m.accounts/user ?user-id]]}]
-    (map first (xt/q db query user-id))))
+  (c.xtdb/query-ids
+   '{:find  [?account-id]
+     :in    [[?user-id]]
+     :where [[?account-id ::m.accounts/user ?user-id]]}
+   [user-id]))
 
 (>defn create-record
   [params]
@@ -63,39 +63,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (let [db    (c.xtdb/main-db)
-        query '[:find ?e :where [?e ::m.accounts/name _]]]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.accounts/name _]]}))
 
 (>defn index-records
   []
   [=> (s/coll-of ::m.accounts/item)]
   (map read-record (index-ids)))
-
-(>defn index-records-by-currency
-  [currency-id]
-  [:xt/id => (s/coll-of ::m.accounts/item)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id ?currency-id]
-                :keys  [xt/id name]
-                :in    [?currency-id]
-                :where [[?id ::m.accounts/currency ?currency-id]]}]
-    (->> (xt/q db query currency-id)
-         (map :xt/id)
-         (map read-record)
-         (take record-limit))))
-
-(>defn index-records-by-user
-  [user-id]
-  [::m.users/id => (s/coll-of ::m.accounts/item)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-id]
-                :in    [?user-id]
-                :where [[?account-id ::m.accounts/user ?user-id]]}]
-    (->> (xt/q db query user-id)
-         (map first)
-         (map read-record)
-         (take record-limit))))
 
 (>defn delete!
   [id]
@@ -104,30 +77,20 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
-(>defn delete-all
-  []
-  [=> nil?]
-  (doseq [id (index-ids)]
-    (delete! id)))
-
 (defn find-by-rate-source
   [rate-source-id]
-  (log/info :find-by-rate-source/starting {:rate-source-id rate-source-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-id]
-                :in    [[?rate-source-id]]
-                :where [[?account-id ::m.accounts/source ?rate-source-id]]}
-        ids   (map first (xt/q db query [rate-source-id]))]
-    (log/finer :find-by-rate-source/finished {:ids ids})
-    ids))
+  (log/finer :find-by-rate-source/starting {:rate-source-id rate-source-id})
+  (c.xtdb/query-ids
+   '{:find  [?account-id]
+     :in    [[?rate-source-id]]
+     :where [[?account-id ::m.accounts/source ?rate-source-id]]}
+   [rate-source-id]))
 
 (defn find-by-wallet
   [wallet-id]
-  (log/info :find-by-wallet/starting {:wallet-id wallet-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?account-id]
-                :in    [[?wallet-id]]
-                :where [[?account-id ::m.accounts/wallet ?wallet-id]]}
-        ids (map first (xt/q db query [wallet-id]))]
-    (log/finer :find-by-wallet/finished {:ids ids})
-    ids))
+  (log/finer :find-by-wallet/starting {:wallet-id wallet-id})
+  (c.xtdb/query-ids
+   '{:find  [?account-id]
+     :in    [[?wallet-id]]
+     :where [[?account-id ::m.accounts/wallet ?wallet-id]]}
+   [wallet-id]))

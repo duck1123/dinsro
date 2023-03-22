@@ -21,7 +21,6 @@
 
 (comment
   (q.ln.invoices/index-ids)
-  (q.ln.invoices/index-records)
 
   (map q.ln.invoices/delete!  (q.ln.invoices/index-ids))
 

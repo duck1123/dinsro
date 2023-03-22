@@ -33,27 +33,17 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.chains/id _]]}]
-    (map first (xt/q db query))))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.chains/item)]
-  (map read-record (index-ids)))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.chains/id _]]}))
 
 (>defn find-by-name
   [name]
   [::m.c.chains/name => (? ::m.c.chains/id)]
   (log/info :find-by-name/starting {:name name})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?node-id]
-                :in    [?name]
-                :where [[?node-id ::m.c.chains/name ?name]]}
-        result (ffirst (xt/q db query name))]
-    (log/info :find-by-name/finished {:result result})
-    result))
+  (c.xtdb/query-id
+   '{:find  [?node-id]
+     :in    [[?name]]
+     :where [[?node-id ::m.c.chains/name ?name]]}
+   [name]))
 
 (>defn delete!
   [id]

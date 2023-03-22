@@ -17,40 +17,31 @@
 (>defn find-by-code
   [code]
   [::m.currencies/code => ::m.currencies/id]
-  (let [db (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [[?code]]
-                :where [[?id ::m.currencies/code ?code]]}]
-    (ffirst (xt/q db query [code]))))
+  (c.xtdb/query-id
+   '{:find  [?id]
+     :in    [[?code]]
+     :where [[?id ::m.currencies/code ?code]]}
+   [code]))
 
 (>defn find-by-debit
   [debit-id]
   [::m.debits/id => (? ::m.currencies/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?currency-id]
-                :in    [[?debit-id]]
-                :where [[?debit-id ::m.debits/account ?account-id]
-                        [?account-id ::m.accounts/currency ?currency-id]]}]
-    (ffirst (xt/q db query [debit-id]))))
-
-(>defn find-name-by-id
-  [id]
-  [:xt/id => ::m.currencies/name]
-  (let [db (c.xtdb/main-db)
-        query '{:find  [?name]
-                :in    [[?id]]
-                :where [[?id ::m.currencies/name ?name]]}]
-    (ffirst (xt/q db query [id]))))
+  (c.xtdb/query-id
+   '{:find  [?currency-id]
+     :in    [[?debit-id]]
+     :where [[?debit-id ::m.debits/account ?account-id]
+             [?account-id ::m.accounts/currency ?currency-id]]}
+   [debit-id]))
 
 (>defn find-by-user-and-name
   [user-id name]
   [::m.users/id ::m.currencies/name => (? ::m.currencies/id)]
-  (let [db (c.xtdb/main-db)
-        query '{:find  [?currency-id]
-                :in    [[?user-id ?name]]
-                :where [[?currency-id ::m.currencies/user ?user-id]
-                        [?currency-id ::m.currencies/name ?name]]}]
-    (ffirst (xt/q db query [user-id name]))))
+  (c.xtdb/query-ids
+   '{:find  [?currency-id]
+     :in    [[?user-id ?name]]
+     :where [[?currency-id ::m.currencies/user ?user-id]
+             [?currency-id ::m.currencies/name ?name]]}
+   [user-id name]))
 
 (>defn create-record
   [params]
@@ -69,10 +60,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.currencies/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.currencies/name _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.currencies/name _]]}))
 
 (>defn read-record
   [id]
@@ -86,23 +74,6 @@
   []
   [=> (s/coll-of ::m.currencies/item)]
   (map read-record (index-ids)))
-
-(>defn index-by-user
-  [_id]
-  [::m.users/id => (s/coll-of ::m.currencies/item)]
-  (map read-record (index-ids)))
-
-(defn index-records-by-account
-  [currency-id]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id ?currency-id]
-                :keys  [xt/id name]
-                :in    [?currency-id]
-                :where [[?id ::m.accounts/currency ?currency-id]]}]
-    (->> (xt/q db query currency-id)
-         (map :xt/id)
-         (map read-record)
-         (take record-limit))))
 
 (>defn delete-record
   [id]

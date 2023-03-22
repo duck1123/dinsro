@@ -13,7 +13,6 @@
 
 (comment
 
-  (q.ln.payments/index-records)
   (q.ln.payments/index-ids)
 
   (map q.ln.payments/delete!

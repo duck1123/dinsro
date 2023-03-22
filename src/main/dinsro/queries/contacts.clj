@@ -25,12 +25,8 @@
   []
   [=> (s/coll-of ::m.contacts/id)]
   (log/info :index-ids/starting {})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :where [[?id ::m.contacts/id _]]}
-        ids   (map first (xt/q db query))]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids '{:find  [?id]
+                      :where [[?id ::m.contacts/id _]]}))
 
 (>defn read-record
   [id]
@@ -43,17 +39,8 @@
 (>defn find-by-user
   [user-id]
   [::m.contacts/user => (s/coll-of ::m.contacts/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [[?user-id ?name]]
-                :where [[?id ::m.contacts/user ?user-id]]}
-        response (xt/q db query [user-id])
-        ids (map first response)]
-    (log/finer :find-by-user/finished {:ids ids})
-    ids))
-
-(comment
-
-  (read-record (first (index-ids)))
-
-  nil)
+  (c.xtdb/query-ids
+   '{:find  [?id]
+     :in    [[?user-id]]
+     :where [[?id ::m.contacts/user ?user-id]]}
+   [user-id]))

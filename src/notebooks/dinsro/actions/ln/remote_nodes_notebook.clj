@@ -6,7 +6,6 @@
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.networks :as q.c.networks]
-   [dinsro.queries.ln.remote-nodes :as q.ln.remote-nodes]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
@@ -16,8 +15,6 @@
 (nu/display-file-links)
 
 (comment
-  (q.ln.remote-nodes/index-records)
-
   (def network-id (q.c.networks/find-by-chain-and-network "bitcoin" "regtest"))
   network-id
 

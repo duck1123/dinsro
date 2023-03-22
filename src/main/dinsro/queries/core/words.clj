@@ -13,10 +13,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.words/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.words/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.words/id _]]}))
 
 (>defn read-record
   [id]
@@ -40,22 +37,15 @@
     (log/finer :create-record/finished {:id id})
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.wallets/item)]
-  (map read-record (index-ids)))
-
 (>defn find-by-wallet
   [wallet-id]
   [::m.c.wallets/id => (s/coll-of ::m.c.words/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?word-id]
-                :in    [?wallet-id]
-                :where [[?word-id ::m.c.words/mnemonic ?mnemonic-id]
-                        [?wallet-id ::m.c.wallets/mnemonic ?mnemonic-id]]}
-        ids   (map first (xt/q db query wallet-id))]
-    (log/finer :find-by-wallet/finished {:ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?word-id]
+     :in    [[?wallet-id]]
+     :where [[?word-id ::m.c.words/mnemonic ?mnemonic-id]
+             [?wallet-id ::m.c.wallets/mnemonic ?mnemonic-id]]}
+   [wallet-id]))
 
 (>defn delete!
   [id]

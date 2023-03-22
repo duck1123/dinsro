@@ -30,8 +30,6 @@
   (q.ln.peers/index-ids)
   (q.ln.peers/index-records)
 
-  (map ::m.ln.info/identity-pubkey (q.ln.nodes/index-records))
-
   (a.ln.nodes/download-cert! n.lnd/node-alice)
   (a.ln.nodes/download-macaroon! n.lnd/node-alice)
 
@@ -47,8 +45,6 @@
   node
   (def pubkey (::m.ln.info/identity-pubkey node))
   pubkey
-
-  (first (q.ln.nodes/index-records))
 
   (q.ln.peers/find-peer node-id pubkey)
 

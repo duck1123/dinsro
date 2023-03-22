@@ -15,41 +15,36 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.transactions/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.transactions/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.transactions/id _]]}))
 
 (>defn find-by-node
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.transactions/id)]
   (log/info :find-by-node/starting {:node-id node-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?tx-id]
-                :in    [?node-id]
-                :where [[?tx-id ::m.c.transactions/node ?node-id]]}]
-    (map first (xt/q db query node-id))))
+  (c.xtdb/query-ids
+   '{:find  [?tx-id]
+     :in    [[?node-id]]
+     :where [[?tx-id ::m.c.transactions/node ?node-id]]}
+   [node-id]))
 
 (>defn find-by-block
   [block-id]
   [::m.c.blocks/id => (s/coll-of ::m.c.transactions/id)]
   (log/info :find-by-block/starting {:block-id block-id})
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?tx-id]
-                :in    [[?block-id]]
-                :where [[?tx-id ::m.c.transactions/block ?block-id]]}
-        ids   (map first (xt/q db query [block-id]))]
-    (log/fine :find-by-block/finished {:block-id block-id :ids ids})
-    ids))
+  (c.xtdb/query-ids
+   '{:find  [?tx-id]
+     :in    [[?block-id]]
+     :where [[?tx-id ::m.c.transactions/block ?block-id]]}
+   [block-id]))
 
 (>defn fetch-by-txid
   [tx-id]
   [::m.c.transactions/tx-id => (? ::m.c.transactions/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?id]
-                :in    [?tx-id]
-                :where [[?id ::m.c.transactions/tx-id ?tx-id]]}]
-    (ffirst (xt/q db query tx-id))))
+  (c.xtdb/query-id
+   '{:find  [?id]
+     :in    [[?tx-id]]
+     :where [[?id ::m.c.transactions/tx-id ?tx-id]]}
+   [tx-id]))
 
 (>defn read-record
   [id]
@@ -98,25 +93,10 @@
   [ln-node-id]
   [::m.ln.nodes/id => (? ::m.c.transactions/id)]
   (comment ln-node-id)
-  ;; (let [db    (c.xtdb/main-db)
-  ;;       query '{:find  [?id]
-  ;;               :in    [[?ln-node-id]]
-  ;;               :where [
-  ;;                       []
-  ;;                       [?id ::m.c.transactions/tx-id ?tx-id]
-
-;;                       ]}]
-  ;;   (ffirst (xt/q db query [ln-node-id]))
-
-  ;;   )
+  ;;  (c.xtdb/query-id
+  ;;   '{:find  [?id]
+  ;;     :in    [[?ln-node-id]]
+  ;;     :where [[]
+  ;;             [?id ::m.c.transactions/tx-id ?tx-id]]}
+  ;;   [ln-node-id])
   (throw (RuntimeException. "not implemented")))
-
-(comment
-  2
-  :the
-  (first (index-records))
-
-  (index-ids)
-  (map delete (index-ids))
-
-  nil)

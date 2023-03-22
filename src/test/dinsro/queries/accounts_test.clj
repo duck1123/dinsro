@@ -49,17 +49,6 @@
   (assertions
    (q.accounts/index-records) => []))
 
-(deftest index-records-by-user-not-found
-  (let [user-id (ds/gen-key uuid?)]
-    (assertions
-     (q.accounts/index-records-by-user user-id) => [])))
-
-(deftest index-records-by-user-found
-  (let [record  (mocks/mock-account)
-        user-id (::m.accounts/user record)]
-    (assertions
-     (q.accounts/index-records-by-user user-id) => [record])))
-
 (deftest read-record-not-found
   (let [id (ds/gen-key :xt/id)]
     (is (nil? (q.accounts/read-record id)))))

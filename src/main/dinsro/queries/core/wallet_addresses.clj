@@ -14,10 +14,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.wallet-addresses/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.c.wallet-addresses/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.wallet-addresses/id _]]}))
 
 (>defn read-record
   [id]
@@ -59,18 +56,18 @@
 (>defn find-by-wallet
   [wallet-id]
   [::m.c.wallets/id => (s/coll-of ::m.c.wallet-addresses/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?address-id]
-                :in    [?wallet-id]
-                :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}]
-    (map first (xt/q db query wallet-id))))
+  (c.xtdb/query-ids
+   '{:find  [?address-id]
+     :in    [?wallet-id]
+     :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
+   [wallet-id]))
 
 (>defn find-by-wallet-and-index
   [wallet-id index]
   [::m.c.wallets/id ::m.c.wallet-addresses/path-index => (? ::m.c.wallet-addresses/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?address-id]
-                :in    [[?wallet-id ?index]]
-                :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]
-                        [?address-id ::m.c.wallet-addresses/path-index ?index]]}]
-    (ffirst (xt/q db query [wallet-id index]))))
+  (c.xtdb/query-id
+   '{:find  [?address-id]
+     :in    [[?wallet-id ?index]]
+     :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]
+             [?address-id ::m.c.wallet-addresses/path-index ?index]]}
+   [wallet-id index]))

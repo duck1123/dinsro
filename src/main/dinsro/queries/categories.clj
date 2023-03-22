@@ -12,11 +12,11 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.categories/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?category-id]
-                :in    [[?user-id]]
-                :where [[?category-id ::m.categories/user ?user-id]]}]
-    (map first (xt/q db query [user-id]))))
+  (c.xtdb/query-ids
+   '{:find  [?category-id]
+     :in    [[?user-id]]
+     :where [[?category-id ::m.categories/user ?user-id]]}
+   [user-id]))
 
 (>defn create-record
   [params]
@@ -43,16 +43,8 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (let [db      (c.xtdb/main-db)
-        query   '{:find  [?e]
-                  :where [[?e ::m.categories/name _]]}
-        results (xt/q db query)]
-    (map first results)))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.categories/item)]
-  (map read-record (index-ids)))
+  (c.xtdb/query-ids '{:find  [?e]
+                      :where [[?e ::m.categories/name _]]}))
 
 (>defn delete-record
   [id]
@@ -61,8 +53,3 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
   nil)
 
-(>defn delete-all
-  []
-  [=> nil?]
-  (doseq [id (index-ids)]
-    (delete-record id)))

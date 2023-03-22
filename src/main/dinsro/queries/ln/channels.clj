@@ -12,10 +12,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.channels/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?e]
-                :where [[?e ::m.ln.channels/id _]]}]
-    (map first (xt/q db query))))
+  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.ln.channels/id _]]}))
 
 (>defn read-record
   [id]
@@ -36,29 +33,24 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.ln.channels/item)]
-  (map read-record (index-ids)))
-
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.channels/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?channel-id]
-                :in    [[?node-id]]
-                :where [[?channel-id ::m.ln.channels/node [?node-id]]]}]
-    (map first (xt/q db query node-id))))
+  (c.xtdb/query-ids
+   '{:find  [?channel-id]
+     :in    [[?node-id]]
+     :where [[?channel-id ::m.ln.channels/node [?node-id]]]}
+   [node-id]))
 
 (>defn find-channel
   [node-id channel-point]
   [::m.ln.channels/node ::m.ln.channels/channel-point => (? ::m.ln.channels/id)]
-  (let [db    (c.xtdb/main-db)
-        query '{:find  [?channel-id]
-                :in    [[?node-id ?channel-point]]
-                :where [[?channel-id ::m.ln.channels/node ?node-id]
-                        [?channel-id ::m.ln.channels/channel-point ?channel-point]]}]
-    (ffirst (xt/q db query [node-id channel-point]))))
+  (c.xtdb/query-id
+   '{:find  [?channel-id]
+     :in    [[?node-id ?channel-point]]
+     :where [[?channel-id ::m.ln.channels/node ?node-id]
+             [?channel-id ::m.ln.channels/channel-point ?channel-point]]}
+   [node-id channel-point]))
 
 (>defn delete!
   [id]
