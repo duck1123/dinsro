@@ -46,7 +46,7 @@
 
 (defsc SubPage
   [_this props]
-  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {o.navlinks/id  index-page-id
