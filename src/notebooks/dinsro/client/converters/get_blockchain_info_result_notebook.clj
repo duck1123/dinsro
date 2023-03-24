@@ -16,7 +16,7 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
-^{::clerk/visibility {:code :hide} ::clerk/viewer clerk/hide-result}
+^{::clerk/visibility {:code :hide :result :hide}}
 (def result
   (let [chain                   (c.bitcoin-s/regtest-network)
         blocks                  (int 1)
