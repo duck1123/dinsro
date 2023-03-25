@@ -118,6 +118,13 @@ local_resource(
   labels = [ 'lint' ],
 )
 
+local_resource(
+  'funnel',
+  allow_parallel = True,
+  serve_cmd='bb funnel',
+  labels = [ 'compile' ],
+)
+
 # if use_tests:
 #   local_resource(
 #     'test-clj',

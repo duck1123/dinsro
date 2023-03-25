@@ -173,6 +173,10 @@
    {jonase/eastwood {:mvn/version "1.3.0"}}
    :main-opts ["-m" "eastwood.lint" {:exclude-linters [:reflection]}]}
 
+  :funnel
+  {:replace-deps {lambdaisland/funnel {:mvn/version "1.4.71"}}
+   :main-opts    ["-m" "lambdaisland.funnel"]}
+
   :kibit
   {:extra-deps
    {tvaughan/kibit-runner {:mvn/version "1.0.1"}}
