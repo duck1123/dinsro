@@ -98,7 +98,7 @@
 
   dev
   {:doc     "Build and start development server via docker"
-   :depends [build-dev-image start-dev]}
+   :depends [purge-dev-image build-dev-image start-dev]}
 
   dev2
   {:depends [generate-dinsro-values]
@@ -304,6 +304,10 @@
      (c/earthly :image-dev)
      (shell "docker run -it -p 3000:3000 duck1123/dinsro:dev-latest bash"))}
 
+  purge-dev-image
+  {:doc  "Purge the current devimage"
+   :task (shell "devspace run devimage-purge")}
+
   run-production
   {:doc  "Run server from jar"
    :task (shell "clojure -T:build run")}
@@ -318,7 +322,7 @@
 
   start-dev
   {:doc  "Start development"
-   :task (shell "tilt up")}
+   :task (shell "devspace run dev-all")}
 
   start-production
   {:doc     "Start development"
