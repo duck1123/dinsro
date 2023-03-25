@@ -157,8 +157,10 @@
   []
   (let [devtools-url "http://devtools2.dinsro.dev.kronkltd.net"
         data         {:devtools {:devtools-url devtools-url}}
-        args         (format "-M:dev:notebooks:guardrails:shadow-cljs compile main --config-merge '%s'"
-                             (pr-str data))]
+        aliases      ["dev" "notebooks" "guardrails" "test" "shadow-cljs"]
+        args         (str "-M:" (clojure.string/join ":" aliases)
+                          " compile main --config-merge '"
+                          (pr-str data) "'")]
     (clojure args)))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
@@ -202,6 +204,7 @@
          data            {:devtools {:devtools-url devtools-url}}
          aliases         (filter identity ["dev"
                                            "devcards"
+                                           "test"
                                            (when use-guardrails? "guardrails")
                                            "shadow-cljs"])
          alias-str       (str "-M:" (string/join ":" aliases))

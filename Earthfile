@@ -70,6 +70,12 @@ INSTALL_BYOBU:
       byobu \
     && rm -rf /var/lib/apt/lists/*
 
+INSTALL_FIREFOX:
+  COMMAND
+  RUN apt update && apt install -y \
+      firefox-geckodriver \
+    && rm -rf /var/lib/apt/lists/*
+
 INSTALL_KONDO:
   COMMAND
   RUN curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo \
@@ -475,6 +481,7 @@ src:
 
 test:
   BUILD +test-clj
+  BUILD +test-cljs
 
 test-clj:
   FROM +test-sources
@@ -486,6 +493,9 @@ test-cljs:
 
 test-sources:
   FROM +src
-  COPY tests.edn .
+  USER root
+  DO +INSTALL_FIREFOX
+  USER ${uid}:${gid}
+  COPY --dir tests.edn bin .
   COPY --dir src/test src
   DO +IMPORT_JAR_DEPS

@@ -514,6 +514,7 @@ dev:
     - port: "9630"
     # Tilt
     - port: "10350"
+    - port: "1818"
     open:
     - url: http://localhost:10350
 

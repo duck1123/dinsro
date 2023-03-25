@@ -1,7 +1,43 @@
 #kaocha/v1
-{:tests    [{:id           :unit
-             :focus-meta   [:focus]
-             :source-paths ["src/main" "src/shared"]
-             :test-paths   ["src/test"]
-             :ns-patterns  [".*"]}]
- :reporter [kaocha.report/documentation]}
+{:reporter        #profile {:default [kaocha.report/documentation]
+                            :ci      [kaocha.report/dots]}
+ ;; Make sure no information gets hidden, since this kind of setup can take a
+ ;; bit of debugging to get it right
+ :capture-output? #profile {:default true
+                            :verbose false}
+ :bindings        {kaocha.stacktrace/*stacktrace-filters* []}
+ :plugins         #profile {:default     [:print-invocations :hooks :notifier]
+                            :ci          [:print-invocations :hooks :junit-xml]
+                            :ci-coverage [:print-invocations :hooks
+                                          :cloverage :profiling :junit-xml]}
+
+ :kaocha.plugin.junit-xml/target-file "junit/unit.xml"
+
+ :tests
+ [{:id           :cljs
+   :type         :kaocha.type/cljs2
+   :source-paths ["src/main" "src/shared" "src/test"]
+   :test-paths   ["src/test"]
+   ;; :ns-patterns  [".*"]
+   ;; :ns-patterns  [".*test$"]
+   ;; :ns-patterns  ["dinsro.all-tests"]
+   ;; This is used in our own hooks to select the right shadow build to compile
+   :shadow/build :test
+
+   ;; Hooks to ensure funnel is running, ensure the shadow-server is
+   ;; started, and to run the compilation
+   :kaocha.hooks/pre-load-test dinsro.kaocha-hooks/pre-load
+
+   ;; The client hook is responsible for finding JS environments (via
+   ;; funnel) that we can talk to. In our case it checks if any valid
+   ;; clients are already connected to funnel, if not it opens a browser.
+   ;; This way we can reuse the browser tab
+   :kaocha.cljs2/clients-hook
+   #profile {:default dinsro.kaocha-hooks/launch-browser-and-wait
+             :ci      dinsro.kaocha-hooks/launch-headless-browser-and-wait}}
+
+  {:id           :clj
+   :focus-meta   [:focus]
+   :source-paths ["src/main" "src/shared"]
+   :test-paths   ["src/test"]
+   :ns-patterns  [".*"]}]}

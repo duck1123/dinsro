@@ -24,7 +24,7 @@
      (::m.rate-sources/name params) => (::m.rate-sources/name item))))
 
 (deftest read-record-not-found
-  (let [id (ds/gen-key :xt/id)]
+  (let [id (ds/gen-key ::m.rate-sources/id)]
     (assertions
      (q.rate-sources/read-record id) => nil)))
 

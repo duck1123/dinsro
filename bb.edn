@@ -131,7 +131,7 @@
            (shell (str "clojure -A:" alias " -Stree")))}
 
   docs
-  {:task (clojure "-X:codox:notebooks")}
+  {:task (clojure "-X:codox:notebooks:test")}
 
   e2e
   {:doc  "Run end to end testing"
@@ -139,7 +139,7 @@
 
   eastwood
   {:doc  "Lint source code with eastwood"
-   :task (clojure "-M:dev:eastwood '{:source-paths [\"src/main\" \"src/test\"]}'")}
+   :task (clojure "-M:dev:test:eastwood '{:source-paths [\"src/main\" \"src/test\"]}'")}
 
   format
   {:doc  "Format source files"
@@ -340,13 +340,11 @@
 
   test-clj
   {:doc  "Run clojure tests"
-   :task (clojure "-M:dev:test")}
+   :task (shell "bin/kaocha clj")}
 
   test-cljs
   {:doc  "Run clojurescript tests"
-   :task (do
-           (clojure "-M:dev:test:notebooks:shadow-cljs compile ci")
-           (shell "echo \"Not Implemented\""))}
+   :task (shell "bin/kaocha cljs --profile ci")}
 
   tilt-config
   {:doc  "generates a config file for Tilt"
@@ -375,7 +373,7 @@
 
   watch-cljs
   {:do   "watch and compile css"
-   :task (c/watch-cljs ["main" "workspaces" "notebooks"])}
+   :task (c/watch-cljs ["main" "workspaces" "notebooks" "test"])}
 
   workspaces
   {:doc  "Starts and watches for workspaces"

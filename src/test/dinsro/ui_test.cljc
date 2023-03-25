@@ -6,4 +6,5 @@
 (deftest ui
   (assertions
    "placeholder"
-   true => true))
+   true => true
+   2 => 2))

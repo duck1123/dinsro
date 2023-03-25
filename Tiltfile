@@ -52,21 +52,39 @@ local_resource(
   'format',
   allow_parallel = True,
   auto_init = False,
-  cmd='bb format',
-  trigger_mode = TRIGGER_MODE_MANUAL,
+  cmd = 'bb format',
   labels = [ 'lint' ],
+  trigger_mode = TRIGGER_MODE_MANUAL,
 )
 
-# local_resource(
-#   'compile-docs',
-#   allow_parallel = True,
-#   cmd='bb docs',
-#   deps = [
-#     'src/babashka',
-#     'src/main',
-#   ],
-#   labels = [ 'compile' ],
-# )
+local_resource(
+  'test-clj',
+  allow_parallel = True,
+  auto_init = False,
+  cmd = 'bb test-clj',
+  labels = [ 'test' ],
+  trigger_mode = TRIGGER_MODE_MANUAL,
+)
+
+local_resource(
+  'test-cljs',
+  allow_parallel = True,
+  auto_init = False,
+  cmd = 'bb test-cljs',
+  labels = [ 'test' ],
+  trigger_mode = TRIGGER_MODE_MANUAL,
+)
+
+local_resource(
+  'compile-docs',
+  allow_parallel = True,
+  cmd='bb docs',
+  deps = [
+    'src/babashka',
+    'src/main',
+  ],
+  labels = [ 'compile' ],
+)
 
 local_resource(
   'devtools',

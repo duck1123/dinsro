@@ -3,7 +3,7 @@
                   :roots ["resources/main/public"]}}
  :http     {:host "0.0.0.0" :port 9630}
  :nrepl    {:host "0.0.0.0" :port 3333}
- :deps     {:aliases [:dev :clerk]}
+ :deps     {:aliases [:dev :clerk :test]}
 
  :builds
  {:devcards
@@ -37,12 +37,12 @@
    :target     :browser}
 
   :test
-  {:devtools  {:http-port 3692
-               :http-root "target/tests"}
-   :output-to "target/tests/test.js",
-   :ns-regexp "-test$"
-   :target    :browser-test
-   :test-dir  "target/tests"}
+  {:target           :browser-test
+   :runner-ns        dinsro.shadow-runner
+   :test-dir         "target/kaocha-test"
+   :devtools         {:http-port 1818
+                      :http-root "target/kaocha-test"
+                      :preloads  [lambdaisland.chui.remote]}}
 
   :workspaces
   {:asset-path "/js"
