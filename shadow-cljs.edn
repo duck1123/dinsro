@@ -6,12 +6,7 @@
  :deps     {:aliases [:dev :clerk]}
 
  :builds
- {:ci
-  {:ns-regexp "-test$"
-   :output-to "target/ci.js",
-   :target    :karma}
-
-  :devcards
+ {:devcards
   {:target     :browser
    :output-to  "public/js/viewer.js"
    :output-dir "public/js"

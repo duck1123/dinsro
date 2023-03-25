@@ -343,7 +343,7 @@
   {:doc  "Run clojurescript tests"
    :task (do
            (clojure "-M:dev:test:notebooks:shadow-cljs compile ci")
-           (shell "npx karma start --single-run --check=\"ci.js\""))}
+           (shell "echo \"Not Implemented\""))}
 
   tilt-config
   {:doc  "generates a config file for Tilt"

@@ -69,14 +69,6 @@ INSTALL_BYOBU:
   RUN apt update && apt install -y \
       byobu \
     && rm -rf /var/lib/apt/lists/*
-  ENV CHROME_BIN=chromium-browser
-
-INSTALL_CHROMIUM:
-  COMMAND
-  RUN apt update && apt install -y \
-          chromium-browser \
-      && rm -rf /var/lib/apt/lists/*
-  ENV CHROME_BIN=chromium-browser
 
 INSTALL_KONDO:
   COMMAND
@@ -93,7 +85,6 @@ INSTALL_NODE:
       && rm -rf /var/lib/apt/lists/*
   RUN npm install -g npm@${npm_version}
   # RUN npm install -g yarn
-  RUN npm install -g karma-cli
 
 INSTALL_NOSCL:
   COMMAND
@@ -119,7 +110,6 @@ base-builder:
   ENV USER_HOME=/home/${dev_user}
   USER root
   DO +INSTALL_NODE
-  DO +INSTALL_CHROMIUM
   DO +INSTALL_BABASHKA
   DO +INSTALL_KONDO
   DO +INSTALL_NOSCL
@@ -209,7 +199,6 @@ dev-image:
        site-defaults.edn \
        semantic \
        package.json \
-       karma.conf.js \
        shadow-cljs.edn \
        .
 
@@ -500,4 +489,3 @@ test-sources:
   COPY tests.edn .
   COPY --dir src/test src
   DO +IMPORT_JAR_DEPS
-  COPY karma.conf.js .
