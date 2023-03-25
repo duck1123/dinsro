@@ -26,54 +26,6 @@
           (comment (async/close! chan))
           :timeout)))))
 
-(defn merge-strings []
-  (fn stepper [step]
-    (fn inner
-      ([] [])
-      ([r]
-       (log/info :merge-strings/inner1 {:r r})
-       r)
-      ([r [msg last]]
-       (log/info :merge-strings/inner2 {:r r :msg msg :last last})
-       (let [n (count r)
-             h (dec n)]
-         (if last
-           (condp = n
-             0
-             (do
-               (log/info :merge-strings/last-empty {})
-               (step r msg))
-
-             (let [head (subvec r 0 h)
-                   tail (nth r h)]
-               (log/info :merge-strings/last-not-last
-                         {:head head
-                          :tail tail
-                          :r    r
-                          :msg  msg
-                          :last last})
-               (step head (str tail msg))))
-           (condp = n
-             0
-             (do
-               (log/info :merge-strings/empty {})
-               (step r msg))
-
-             1
-             (do
-               (log/info :merge-strings/single {})
-               (step r msg))
-
-             ;; > 1
-             (let [head (subvec r 0 h)
-                   tail (nth r h)]
-               (log/info :merge-strings/not-last
-                         {:head head
-                          :tail tail
-                          :r    r
-                          :msg  msg})
-               (step head (str tail msg))))))))))
-
 (>defn handle-message
   [result-atom chan _ws msg last?]
   [ds/atom? ds/channel? any? (ds/instance? HeapCharBuffer) boolean? => any?]

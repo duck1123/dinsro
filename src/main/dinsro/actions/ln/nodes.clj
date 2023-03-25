@@ -147,10 +147,6 @@
   [node]
   (slurp (download-macaroon! node)))
 
-(defn next-address
-  [_client]
-  (throw (RuntimeException. "not implemented")))
-
 (defn initialize!
   ([node] (initialize! node "password12345678"))
   ([node password]

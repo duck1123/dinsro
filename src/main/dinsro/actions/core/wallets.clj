@@ -19,7 +19,7 @@
    [org.bitcoins.core.hd BIP32Path]
    org.bitcoins.core.protocol.Bech32Address
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
-   [org.bitcoins.crypto ECPrivateKeyBytes ECPublicKey]))
+   [org.bitcoins.crypto ECPublicKey]))
 
 ;; FIXME: Use a proper parser
 (defn parse-descriptor
@@ -115,13 +115,6 @@
         bip39-seed   ^BIP39Seed (mnemonic->seed mnemonic)
         purpose      84]
     (c.bitcoin-s/get-xpriv bip39-seed purpose network-name)))
-
-(defn get-bip39-seed
-  ^ECPrivateKeyBytes [wallet]
-  (log/info :get-bip39-seed/starting {:wallet wallet})
-  (let [{::m.c.wallets/keys [key]} wallet
-        private-key-bytes          (c.bitcoin-s/wif->pk key)]
-    private-key-bytes))
 
 (defn get-wif
   "Get the wallet's private key wif formatted"

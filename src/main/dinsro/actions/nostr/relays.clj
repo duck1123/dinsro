@@ -20,7 +20,6 @@
 
 (>def ::client any?)
 
-(def req-id "5022")
 (defonce topic-channels (atom {}))
 
 (defn get-channel
