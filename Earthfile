@@ -9,7 +9,7 @@ ARG kondo_version=2023.01.20
 ARG node_version=18.13.0
 # https://www.npmjs.com/package/npm?activeTab=versions
 ARG npm_version=9.6.2
-ARG tilt_version=0.31.1
+ARG tilt_version=0.32.0
 
 # ARG repo=duck1123
 # ARG project=dinsro
