@@ -43,8 +43,12 @@
   [_this _props]
   {ro/field-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
    ro/columns          [m.currencies/name
-                        m.currencies/code]
-   ro/controls         {::new new-button}
+                        m.currencies/code
+                        j.currencies/source-count
+                        j.currencies/transaction-count
+                        j.currencies/rate-count]
+   ro/controls         {::new     new-button
+                        ::refresh u.links/refresh-control}
    ro/route            "currencies"
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true

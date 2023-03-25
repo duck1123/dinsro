@@ -32,7 +32,7 @@
   [_this _props]
   {ro/columns          [m.transactions/description
                         m.transactions/date
-                        j.transactions/user]
+                        j.transactions/debit-count]
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
