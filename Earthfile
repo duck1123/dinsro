@@ -8,7 +8,7 @@ ARG clojure_version=1.10.1.727
 ARG kondo_version=2023.01.20
 ARG node_version=18.13.0
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG npm_version=9.6.1
+ARG npm_version=9.6.2
 ARG tilt_version=0.31.1
 
 # ARG repo=duck1123
