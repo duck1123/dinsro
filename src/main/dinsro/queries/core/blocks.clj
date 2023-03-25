@@ -16,7 +16,7 @@
   []
   [=> (s/coll-of ::m.c.blocks/id)]
   (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find  [?block-id] :where [[?block-id ::m.c.blocks/id _]]}))
+  (c.xtdb/query-ids '{:find [?block-id] :where [[?block-id ::m.c.blocks/id _]]}))
 
 (>defn fetch-by-node-and-height
   [node-id height]
@@ -24,7 +24,7 @@
   (log/info :fetch-by-node-and-height/starting {:node-id node-id :height height})
   (c.xtdb/query-id
    '{:find  [?block-id]
-     :in    [[?nnode-id ?height]]
+     :in    [[?node-id ?height]]
      :where [[?node-id ::m.c.nodes/network ?network-id]
              [?block-id ::m.c.blocks/network ?network-id]
              [?block-id ::m.c.blocks/height ?height]]}
