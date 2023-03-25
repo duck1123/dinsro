@@ -9,10 +9,8 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]))
 
-
 ;; [[../../joins/nostr/pubkey_contacts.cljc][Pubkey Contacts Joins]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
-
 
 (def ident-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)

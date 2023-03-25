@@ -55,7 +55,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/crypto/DoubleSha256DigestBE.html
 
-
 (>defn double-sha256-digest-be
   "creates a double sha256 digest from hex"
   [v]

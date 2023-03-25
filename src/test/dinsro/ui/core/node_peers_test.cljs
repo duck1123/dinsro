@@ -4,7 +4,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.specs :as ds]
-   [dinsro.ui.core.node-peers :as u.c.node-peers]))
+   [dinsro.ui.core.nodes.peers :as u.c.node-peers]))
 
 (defn SubPage-row
   []

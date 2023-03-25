@@ -20,9 +20,7 @@
 ^{::clerk/viewer clerk/html ::clerk/no-cache true}
 (nu/x3)
 
-
 ;; The id we're working with
-
 
 ^{::clerk/viewer clerk/code ::clerk/visibility {:code :hide}}
 (def pubkey-id (first (q.n.pubkeys/index-ids)))

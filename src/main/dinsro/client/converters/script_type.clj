@@ -7,9 +7,7 @@
   (:import
    org.bitcoins.core.script.ScriptType))
 
-
 ;; https://bitcoin-s.org/api/org/bitcoins/core/script/ScriptType.html
-
 
 (>def ::record string?)
 

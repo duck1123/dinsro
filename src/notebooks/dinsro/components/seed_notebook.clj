@@ -42,9 +42,7 @@
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
 (ds/gen-key ::cs.rates/item)
 
-
 ;; ## Category Names
-
 
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
 (ds/gen-key ::cs.core/category-names)
@@ -89,7 +87,6 @@
 ^{::clerk/viewer clerk/code ::clerk/no-cache true}
 (ds/gen-key ::cs.wallets/item)
 
-
 ;; ^{::clerk/viewer clerk/code}
 ;; (ds/gen-key ::c.seed/default-rate-sources)
 
@@ -100,15 +97,12 @@
 
 ;; ## timezone
 
-
 (ds/gen-key ::cs.core/timezone)
-
 
 ;; ## seed-data
 
 ;; ^{::clerk/viewer clerk/code}
 ;; (ds/gen-key ::cs.core/seed-data)
-
 
 ^{::clerk/no-cache true}
 (expound/expound-str

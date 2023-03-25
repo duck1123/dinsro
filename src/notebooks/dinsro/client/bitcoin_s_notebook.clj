@@ -43,7 +43,6 @@
 
 ;; ## get blockchain info result [link](https://bitcoin-s.org/api/org/bitcoins/rpc/client/v22/BitcoindV22RpcClient.html#getBlockChainInfo:scala.concurrent.Future[org.bitcoins.commons.jsonmodels.bitcoind.GetBlockChainInfoResult])
 
-
 ;; (:result (async/<!! (c.bitcoin-s/get-block-hash client 0)))
 
 (comment

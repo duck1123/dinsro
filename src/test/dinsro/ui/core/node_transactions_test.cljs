@@ -5,7 +5,7 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [dinsro.ui.core.node-transactions :as u.c.node-transactions]
+   [dinsro.ui.core.nodes.transactions :as u.c.node-transactions]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 

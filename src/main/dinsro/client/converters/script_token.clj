@@ -8,7 +8,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/core/script/constant/ScriptToken.html
 
-
 (>def ::record string?)
 
 (>defn ScriptToken->record

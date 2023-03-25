@@ -11,7 +11,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetRawTransactionScriptSig.html
 
-
 (>def ::asm string?)
 (>def ::hex ::cc.script-signature/record)
 (>def ::product-element-names (s/coll-of string?))

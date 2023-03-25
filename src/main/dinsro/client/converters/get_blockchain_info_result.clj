@@ -49,7 +49,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockChainInfoResultPostV19.html
 
-
 (>defn GetBlockChainInfoResultPostV19->record
   [this]
   [::instance => ::record]

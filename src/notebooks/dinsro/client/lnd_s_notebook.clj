@@ -18,9 +18,7 @@
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
-
 ;; [client](https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html)
-
 
 (def bob-cert
   "-----BEGIN CERTIFICATE-----

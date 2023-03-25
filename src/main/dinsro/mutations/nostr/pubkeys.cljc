@@ -69,10 +69,7 @@
      (action    [_env] true)
      (remote    [env]  (fm/returning env AddContactResponse))))
 
-
-
 ;; Fetch
-
 
 (defsc FetchResponse
   [_ _]
@@ -140,9 +137,7 @@
      (remote    [env]  (fm/returning env FetchAwardsResponse))
      (ok-action [env]  (handle-fetch env))))
 
-
 ;; Fetch Contacts
-
 
 (>def ::fetch-contacts!-request
   (s/keys :req [::m.n.pubkeys/id]))

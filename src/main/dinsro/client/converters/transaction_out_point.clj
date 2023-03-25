@@ -10,9 +10,7 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/core/protocol/transaction/TransactionOutPoint.html
 
-
 ;; little endian
-
 
 (>def ::tx-id string?)
 

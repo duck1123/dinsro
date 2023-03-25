@@ -12,7 +12,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/core/protocol/script/ScriptSignature.html
 
-
 (>def ::asm (s/coll-of ::cc.script-token/record))
 (>def ::signatures (s/coll-of ::cc.ec-digital-signature/record))
 

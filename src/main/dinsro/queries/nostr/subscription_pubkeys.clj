@@ -14,7 +14,6 @@
 ;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
 ;; [[../../model/nostr/subscriptions.cljc][Subscriptions Model]]
 
-
 (>defn create-record
   [params]
   [::m.n.subscription-pubkeys/params => ::m.n.subscription-pubkeys/id]

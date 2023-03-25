@@ -11,7 +11,6 @@
 
 ;; [[../joins/contacts.cljc][Contact Joins]]
 
-
 (form/defsc-form NewContactForm
   [_this _props]
   {fo/id           m.contacts/id

@@ -13,7 +13,6 @@
 ;; [[../model/accounts.cljc][Accounts Model]]
 ;; [[../model/transactions.cljc][Transactions Model]]
 
-
 (def debug-page false)
 
 (report/defsc-report Report

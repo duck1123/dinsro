@@ -10,7 +10,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/core/protocol/script/ScriptPubKey.html
 
-
 (>def ::hex string?)
 
 (>def ::record

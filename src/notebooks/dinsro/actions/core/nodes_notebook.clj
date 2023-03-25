@@ -22,7 +22,6 @@
 
 ;; Alice
 
-
 ^{::clerk/viewer clerk/code ::clerk/visibility {:code :hide}}
 (def node-alice (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-alice")))
 

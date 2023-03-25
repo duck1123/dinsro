@@ -9,7 +9,6 @@
 
 ;; https://bitcoin-s.org/api/org/bitcoins/crypto/ECDigitalSignature.html
 
-
 (>def ::record string?)
 
 (>defn ECDigitalSignature->record

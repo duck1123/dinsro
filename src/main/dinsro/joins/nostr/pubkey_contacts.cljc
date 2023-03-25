@@ -10,7 +10,6 @@
 ;; [[../../actions/nostr/pubkey_contacts.clj][Pubkey Contact Actions]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 
-
 (defattr index ::index :ref
   {ao/target    ::m.n.pubkey-contacts/id
    ao/pc-output [{::index [::m.n.pubkey-contacts/id]}]

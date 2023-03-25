@@ -16,7 +16,6 @@
 ;; [[../../queries/nostr/subscriptions.clj][Subscription Queries]]
 ;; [[../../ui/nostr/subscriptions.cljs][Subscription UI]]
 
-
 (>defn register-subscription!
   [relay-id code]
   [any? any? => any?]

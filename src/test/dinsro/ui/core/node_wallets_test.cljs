@@ -6,7 +6,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [dinsro.ui.core.node-wallets :as u.c.node-wallets]
+   [dinsro.ui.core.nodes.wallets :as u.c.node-wallets]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
