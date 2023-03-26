@@ -59,8 +59,6 @@
    fo/route-prefix   "new-peer"
    fo/title          "New Peer"})
 
-(def override-report true)
-
 (def new-button
   {:type   :button
    :local? true

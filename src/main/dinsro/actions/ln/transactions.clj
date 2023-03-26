@@ -9,23 +9,10 @@
 
 (defn not-implemented [] (throw (RuntimeException. "not-implemented")))
 
-(>defn fetch-transactions
-  [node]
-  [::m.ln.nodes/item => any?]
-  (comment node)
-  (not-implemented))
-
 (>defn handle-get-transactions-response
   [node-id transaction]
   [::m.ln.nodes/id any? => ::m.c.transactions/id]
   (comment node-id transaction)
-  (not-implemented))
-
-(>defn update-transaction!
-  [node data]
-  [::m.ln.nodes/item any? => (? ::m.c.transactions/id)]
-  (log/info :update-transaction!/starting {})
-  (comment node data)
   (not-implemented))
 
 (>defn update-transactions!

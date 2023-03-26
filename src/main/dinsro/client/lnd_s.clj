@@ -193,13 +193,6 @@
     (log/info :list-channels!/finished {:o o})
     o))
 
-(>defn get-node-info
-  [_client pubkey-hex]
-  [::client string? => any?]
-  (log/info :get-node-info/starting {:pubkey-hex pubkey-hex})
-  (let [_response nil]
-    (throw (RuntimeException. "not implemented"))))
-
 (defn list-unspent
   [client]
   (cs/await-future (.listUnspent client)))
