@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -14,6 +15,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
+   [dinsro.ui.accounts.debits :as u.a.debits]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
    [dinsro.ui.links :as u.links]))
 
@@ -56,10 +58,10 @@
    fo/title          "Create Account"}
   (if override-form
     (form/render-layout this props)
-    (dom/div :.ui
+    (dom/div :.ui.segment
       (dom/p {} (str "Account: " name))
       (dom/p {} (str "Initial Value: " initial-value))
-      (dom/p {} (str "Currency: " currency))
+      (dom/p {} "Currency: " (u.links/ui-currency-link currency))
       (dom/p {} (str "User: " user)))))
 
 (def new-button
@@ -93,9 +95,23 @@
    ro/source-attribute ::j.accounts/index
    ro/title            "Accounts"})
 
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.a.transactions/SubPage
+    u.a.debits/SubPage]})
+
+(def menu-items
+  [{:key "transactions"
+    :name "Transactions"
+    :route "dinsro.ui.accounts.transactions/SubPage"}
+   {:key   "debits"
+    :name  "Debits"
+    :route "dinsro.ui.accounts.debits/SubPage"}])
+
 (defsc Show
-  [_this {::m.accounts/keys [name currency source user wallet]
-          :ui/keys          [transactions]}]
+  [_this {::m.accounts/keys [id name currency source user wallet]
+          :ui/keys          [router]}]
   {:ident         ::m.accounts/id
    :initial-state {::m.accounts/name     ""
                    ::m.accounts/id       nil
@@ -103,15 +119,16 @@
                    ::m.accounts/source   {}
                    ::m.accounts/user     {}
                    ::m.accounts/wallet   {}
-                   :ui/transactions      {}}
-   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.a.transactions/SubPage})
+                   :ui/router            {}
+                   }
+   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/router Router})
    :query         [::m.accounts/name
                    ::m.accounts/id
                    {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
                    {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
                    {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
                    {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                   {:ui/transactions (comp/get-query u.a.transactions/SubPage)}]
+                   {:ui/router (comp/get-query Router)}]
    :route-segment ["accounts" :id]
    :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)}
   (comp/fragment
@@ -126,7 +143,5 @@
        (dom/dd {} (u.links/ui-user-link user))
        (dom/dt {} "Wallet")
        (dom/dd {} (u.links/ui-wallet-link wallet))))
-   (dom/div :.ui.segment
-     (if transactions
-       (u.a.transactions/ui-sub-page transactions)
-       (dom/p {} "Account transactions not loaded")))))
+   (u.links/ui-nav-menu {:menu-items menu-items :id id})
+   ((comp/factory Router) router)))
