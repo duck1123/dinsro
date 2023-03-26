@@ -35,8 +35,8 @@
   [{:key   "accounts"
     :name  "Accounts"
     :route "dinsro.ui.currencies.accounts/SubPage"}
-   {:key   "rates"
-    :name  "Rates"
+   {:key   "rates-sources"
+    :name  "Rates Sources"
     :route "dinsro.ui.currencies.rate-sources/SubPage"}])
 
 (report/defsc-report Report
