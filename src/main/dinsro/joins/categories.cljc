@@ -28,10 +28,10 @@
                   :cljs [])]
        {::index (m.categories/idents ids)}))})
 
-(defattr transactions ::m.categories/transactions :ref
+(defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.categories/id}
-   ao/pc-output   [{::m.categories/transactions [::m.transactions/id]}]
+   ao/pc-output   [{::transactions [::m.transactions/id]}]
    ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.categories/keys [id]}]
