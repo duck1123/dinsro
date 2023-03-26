@@ -20,19 +20,20 @@
 
 (defrouter Router
   [_this {:keys [current-state]}]
-  {:router-targets [u.a.users/AdminReport
-                    u.a.currencies/Report
+  {:router-targets [u.a.accounts/AdminReport
                     u.a.c.blocks/AdminReport
                     u.a.c.peers/Report
                     u.a.categories/AdminReport
-                    u.a.ln.nodes/AdminReport
-                    u.a.transactions/AdminReport
-                    u.a.rate-sources/AdminReport
-                    u.a.debits/AdminReport
-                    u.a.accounts/AdminReport
                     u.a.core/Page
+                    u.a.currencies/Report
+                    u.a.debits/AdminReport
                     u.a.ln/Page
-                    u.a.nostr/Page]}
+                    u.a.ln.nodes/AdminReport
+                    u.a.nostr/Page
+                    u.a.rate-sources/AdminReport
+                    u.a.transactions/AdminReport
+                    u.a.users/AdminReport
+                    u.a.users/AdminUserForm]}
   (dom/div :.admin-router
     (dom/h2 {} "Admin Router")
     (case current-state
@@ -63,7 +64,10 @@
     :route "dinsro.ui.admin.debits/AdminReport"}
    {:key   "blocks"
     :name  "Blocks"
-    :route "dinsro.ui.admin.core.blocks/AdminReport"}])
+    :route "dinsro.ui.admin.core.blocks/AdminReport"}
+   {:key   "rate-sources"
+    :name  "Rate Sources"
+    :route "dinsro.ui.admin.rate-sources/AdminReport"}])
 
 (defsc AdminPage
   [_this {:ui/keys [router]}]
