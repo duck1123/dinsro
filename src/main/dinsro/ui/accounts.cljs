@@ -119,8 +119,7 @@
                    ::m.accounts/source   {}
                    ::m.accounts/user     {}
                    ::m.accounts/wallet   {}
-                   :ui/router            {}
-                   }
+                   :ui/router            {}}
    :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/router Router})
    :query         [::m.accounts/name
                    ::m.accounts/id

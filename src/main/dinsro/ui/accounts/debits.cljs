@@ -14,7 +14,6 @@
 (def ident-key ::m.accounts/id)
 (def router-key :dinsro.ui.accounts/Router)
 
-
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.debits/value]
