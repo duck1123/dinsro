@@ -100,3 +100,13 @@
   [=> nil?]
   (doseq [id (index-ids)]
     (delete-record id)))
+
+(defn find-by-account-and-user
+  [account-id user-id]
+  (c.xtdb/query-ids
+   '{:find  [?transaction-id]
+     :in    [[?account-id ?user-id]]
+     :where [[?account-id ::m.accounts/user ?user-id]
+             [?debit-id ::m.debits/account ?account-id]
+             [?debit-id ::m.debits/transaction ?transaction-id]]}
+   [account-id user-id]))

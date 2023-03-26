@@ -3,7 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   #?(:clj [dinsro.actions.authentication :as a.authentication])
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
@@ -39,17 +39,23 @@
   {ao/pc-input   #{::debits}
    ao/pc-resolve (fn [_ {::keys [debits]}] {::debit-count (count debits)})})
 
+(defn do-index
+  [{:keys [query-params] actor-id ::m.users/id} _]
+  (log/info :index/starting {:actor-id actor-id :query-params query-params})
+  (let [{account-id ::m.accounts/id} query-params
+        ids #?(:clj
+               (cond
+                 account-id (q.transactions/find-by-account-and-user account-id actor-id)
+                 :else      (q.transactions/find-by-user actor-id))
+               :cljs (do
+                       (comment actor-id account-id)
+                       []))]
+    {::index (m.transactions/idents ids)}))
+
 (defattr index ::index :ref
   {ao/target    ::m.transactions/id
    ao/pc-output [{::index [::m.transactions/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     (log/info :index/starting {:query-params query-params})
-     (comment env)
-     (let [ids #?(:clj (let [user-id (a.authentication/get-user-id env)]
-                         (q.transactions/find-by-user user-id))
-                  :cljs [])]
-       {::index (m.transactions/idents ids)}))})
+   ao/pc-resolve #(do-index %1 %2)})
 
 (defattr user ::user :ref
   {ao/cardinality      :one
