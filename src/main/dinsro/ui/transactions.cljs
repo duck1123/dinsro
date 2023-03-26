@@ -39,7 +39,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.transactions/description
-                        m.transactions/date]
+                        m.transactions/date
+                        j.transactions/debit-count]
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
@@ -54,22 +55,26 @@
 
 (defsc Show
   [_this {::m.transactions/keys [description date]
+          debit-count ::j.transactions/debit-count
           :ui/keys              [debits]}]
   {:ident         ::m.transactions/id
    :initial-state {::m.transactions/description ""
                    ::m.transactions/id          nil
                    ::m.transactions/date        ""
+                   ::j.transactions/debit-count 0
                    :ui/debits                   {}}
    :pre-merge     (u.links/page-merger ::m.transactions/id {:ui/debits u.t.debits/SubPage})
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
+                   ::j.transactions/debit-count
                    {:ui/debits (comp/get-query u.t.debits/SubPage)}]
    :route-segment ["transaction" :id]
    :will-enter    (partial u.links/page-loader ::m.transactions/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str description))
+     (dom/div {} (str "Debit Count: " debit-count))
      (dom/p {} "Date: " (str date)))
    (dom/div  :.ui.segment
      (if debits

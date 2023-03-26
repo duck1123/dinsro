@@ -32,11 +32,11 @@
                   :cljs (do
                           (comment transaction-id)
                           []))]
-       {::admin-index (m.transactions/idents ids)}))
+       {::debits (m.transactions/idents ids)}))
    ::report/column-EQL {::debits [::m.debits/id ::m.debits/value]}})
 
 (defattr debit-count ::debit-count :number
-  {ao/pc-input #{::debits}
+  {ao/pc-input   #{::debits}
    ao/pc-resolve (fn [_ {::keys [debits]}] {::debit-count (count debits)})})
 
 (defattr index ::index :ref

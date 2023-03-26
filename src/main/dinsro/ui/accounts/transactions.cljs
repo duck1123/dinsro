@@ -15,6 +15,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.transactions/description
+                        j.transactions/debit-count
                         m.transactions/date]
    ro/control-layout   {:inputs         [[::m.accounts/id]]
                         :action-buttons [::refresh]}

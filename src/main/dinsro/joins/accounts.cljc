@@ -5,15 +5,32 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
+   #?(:clj [dinsro.queries.debits :as q.debits])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
 (comment ::m.c.wallets/_ ::m.rate-sources/_)
+
+(defattr debit-count ::debit-count :ref
+  {ao/pc-input #{::debits}
+   ao/pc-resolve (fn [_ {::keys [debits]}] {::debit-count (count debits)})})
+
+(defattr debits ::debits :ref
+  {ao/cardinality :many
+   ao/pc-input #{::m.accounts/id}
+   ao/pc-output [{::debits [::m.debits/id]}]
+   ao/target ::m.debits/id
+   ao/pc-resolve
+   (fn [_env {::m.accounts/keys [id]}]
+     (let [ids #?(:clj (q.debits/find-by-account id)
+                  :cljs (do (comment id) []))]
+       {::debits (m.debits/idents ids)}))})
 
 (defattr transactions ::transactions :ref
   {ao/cardinality :many
@@ -71,4 +88,4 @@
    ao/pc-resolve #(do-index %1 %2)})
 
 (def attributes
-  [admin-index index transaction-count transactions])
+  [admin-index debits debit-count index transaction-count transactions])

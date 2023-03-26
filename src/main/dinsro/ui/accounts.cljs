@@ -75,7 +75,8 @@
                         m.accounts/user
                         m.accounts/initial-value
                         m.accounts/wallet
-                        m.accounts/source]
+                        m.accounts/source
+                        j.accounts/debit-count]
 
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new new-button
