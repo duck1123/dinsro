@@ -19,8 +19,8 @@
                         m.accounts/wallet]
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.rate-sources/id {:type :uuid :label "id"}
-                        ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)
+                        ::refresh           u.links/refresh-control}
+   ro/field-formatters {::m.accounts/name     #(u.links/ui-account-link %3)
                         ::m.accounts/currency #(u.links/ui-currency-link %2)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
