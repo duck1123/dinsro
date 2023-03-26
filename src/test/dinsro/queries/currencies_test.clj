@@ -39,10 +39,10 @@
     (assertions
      (q.currencies/index-records) => [currency])))
 
-(deftest delete-record-success
+(deftest delete!-success
   (let [record                     (mocks/mock-currency)
         {::m.currencies/keys [id]} record]
     (assertions
      (q.currencies/read-record id) => record
-     (q.currencies/delete-record id) => nil
+     (q.currencies/delete! id) => nil
      (q.currencies/read-record id) => nil)))

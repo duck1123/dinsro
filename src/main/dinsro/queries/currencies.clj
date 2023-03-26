@@ -75,7 +75,7 @@
   [=> (s/coll-of ::m.currencies/item)]
   (map read-record (index-ids)))
 
-(>defn delete-record
+(>defn delete!
   [id]
   [:xt/id => nil?]
   (let [node (c.xtdb/main-node)]
@@ -86,4 +86,4 @@
   []
   [=> nil?]
   (doseq [id (index-ids)]
-    (delete-record id)))
+    (delete! id)))

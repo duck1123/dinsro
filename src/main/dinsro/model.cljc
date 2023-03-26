@@ -108,6 +108,7 @@
    #?(:clj [dinsro.mutations.core.wallets :as mu.c.wallets])
    #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
    #?(:clj [dinsro.mutations.core.words :as mu.c.words])
+   #?(:clj [dinsro.mutations.currencies :as mu.currencies])
    #?(:clj [dinsro.mutations.debits :as mu.debits])
    #?(:clj [dinsro.mutations.ln.accounts :as mu.ln.accounts])
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
@@ -249,6 +250,7 @@
            mu.c.wallets/resolvers
            mu.c.wallet-addresses/resolvers
            mu.c.words/resolvers
+           mu.currencies/resolvers
            mu.debits/resolvers
            mu.ln.accounts/resolvers
            mu.ln.invoices/resolvers
