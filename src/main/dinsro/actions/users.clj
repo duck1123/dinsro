@@ -1,6 +1,7 @@
 (ns dinsro.actions.users
   (:require
    [dinsro.model.users :as m.users]
+   [dinsro.mutations :as mu]
    [dinsro.queries.users :as q.users]
    [lambdaisland.glogc :as log]))
 
@@ -14,3 +15,16 @@
     (do
       (log/error :set-role!/user-not-read {:user-id user-id})
       (throw (RuntimeException. "user not found")))))
+
+(defn delete!
+  [id]
+  (q.users/delete! id))
+
+(defn do-delete!
+  [_env props]
+  (log/info :do-delete!/starting {:props props})
+  (let [{::m.users/keys [id]} props
+        ids [id]]
+    (delete! id)
+    {::mu/status        :ok
+     ::mu/deleted-items (m.users/idents ids)}))

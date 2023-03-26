@@ -17,7 +17,7 @@
 
 (comment ::m.c.wallets/_ ::m.rate-sources/_)
 
-(defattr debit-count ::debit-count :ref
+(defattr debit-count ::debit-count :number
   {ao/pc-input #{::debits}
    ao/pc-resolve (fn [_ {::keys [debits]}] {::debit-count (count debits)})})
 

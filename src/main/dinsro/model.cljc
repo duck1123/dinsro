@@ -133,7 +133,8 @@
    #?(:clj [dinsro.mutations.nostr.subscriptions :as mu.n.subscriptions])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
-   #?(:clj [dinsro.mutations.settings :as mu.settings])))
+   #?(:clj [dinsro.mutations.settings :as mu.settings])
+   #?(:clj [dinsro.mutations.users :as mu.users])))
 
 (def all-attributes
   (vec (concat
@@ -275,4 +276,5 @@
            mu.n.subscriptions/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
-           mu.settings/resolvers))))
+           mu.settings/resolvers
+           mu.users/resolvers))))

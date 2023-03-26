@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.users :as j.users]
    [dinsro.model.users :as m.users]
+   [dinsro.mutations.users :as mu.users]
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form AdminUserForm
@@ -27,6 +28,7 @@
                         ::refresh  u.links/refresh-control}
    ro/form-links       {::m.users/name AdminUserForm}
    ro/route            "users"
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.users/id mu.users/delete!)]
    ro/row-pk           m.users/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.users/index

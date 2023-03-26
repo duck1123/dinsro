@@ -98,7 +98,7 @@
   [=> (s/coll-of ::m.users/item)]
   (read-records (index-ids)))
 
-(>defn delete-record
+(>defn delete!
   "delete user by id"
   [id]
   [:xt/id => nil?]
