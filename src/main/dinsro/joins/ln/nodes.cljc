@@ -64,6 +64,10 @@
      (let [ids (if id #?(:clj (q.ln.channels/find-by-node id) :cljs []) [])]
        {::channels (m.ln.channels/idents ids)}))})
 
+(defattr channel-count ::channel-count :number
+  {ao/pc-input   #{::channels}
+   ao/pc-resolve (fn [_ {::keys [channels]}] {::channel-count (count channels)})})
+
 (defattr invoices ::invoices :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
@@ -74,6 +78,10 @@
      (let [ids (if id #?(:clj (q.ln.invoices/find-by-node id) :cljs []) [])]
        {::invoices (m.ln.invoices/idents ids)}))})
 
+(defattr invoice-count ::invoice-count :number
+  {ao/pc-input   #{::invoices}
+   ao/pc-resolve (fn [_ {::keys [invoices]}] {::invoice-count (count invoices)})})
+
 (defattr payments ::payments :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.ln.nodes/id}
@@ -83,6 +91,10 @@
    (fn [_env {::m.ln.nodes/keys [id]}]
      (let [ids (if id #?(:clj (q.ln.payments/find-by-node id) :cljs []) [])]
        {::payments (m.ln.payments/idents ids)}))})
+
+(defattr payment-count ::payment-count :number
+  {ao/pc-input   #{::payments}
+   ao/pc-resolve (fn [_ {::keys [payments]}] {::payment-count (count payments)})})
 
 (defattr payreqs ::payreqs :ref
   {ao/cardinality :many
@@ -114,4 +126,15 @@
      (let [ids (if id #?(:clj (q.c.transactions/find-by-ln-node id) :cljs []) [])]
        {::transactions (m.c.transactions/idents (take 3 ids))}))})
 
-(def attributes [admin-index index channels invoices payments payreqs peers transactions])
+(def attributes
+  [admin-index
+   index
+   channel-count
+   channels
+   invoice-count
+   invoices
+   payment-count
+   payments
+   payreqs
+   peers
+   transactions])

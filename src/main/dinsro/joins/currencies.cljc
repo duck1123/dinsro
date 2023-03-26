@@ -52,6 +52,10 @@
      (let [ids (if id #?(:clj (q.rates/find-by-currency id) :cljs []) [])]
        {::rates (m.rates/idents ids)}))})
 
+(defattr rate-count ::rate-count :number
+  {ao/pc-input    #{::rates}
+   ao/pc-resolve  (fn [_ {::keys [rates]}] {::rate-count (count rates)})})
+
 (defattr sources ::sources :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.currencies/id}
@@ -61,6 +65,10 @@
    (fn [_env {::m.currencies/keys [id]}]
      (let [ids (if id  #?(:clj (q.rate-sources/find-by-currency id) :cljs []) [])]
        {::sources (m.rate-sources/idents ids)}))})
+
+(defattr source-count ::source-count :number
+  {ao/pc-input    #{::sources}
+   ao/pc-resolve  (fn [_ {::keys [sources]}] {::source-count (count sources)})})
 
 (defattr transactions ::transactions :ref
   {ao/cardinality :many
@@ -72,4 +80,12 @@
      (let [ids (if id #?(:clj (q.transactions/find-by-currency id) :cljs []) [])]
        {::transactions (m.transactions/ident ids)}))})
 
-(def attributes [current-rate index accounts rates sources transactions])
+(defattr transaction-count ::transaction-count :number
+  {ao/pc-input    #{::transactions}
+   ao/pc-resolve  (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
+
+(def attributes
+  [accounts current-rate index
+   rate-count rates
+   transactions transaction-count
+   source-count sources])

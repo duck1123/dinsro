@@ -27,6 +27,10 @@
                 {::transactions []})
         :cljs (comment id)))})
 
+(defattr transaction-count ::transaction-count :number
+  {ao/pc-input   #{::transactions}
+   ao/pc-resolve (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
+
 ;; "All accounts regardless of user"
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.accounts/id
@@ -68,7 +72,5 @@
       :cljs (fn [] {::index-by-rate-source []}))})
 
 (def attributes
-  [transactions
-   index
-   index-by-rate-source
-   admin-index])
+  [admin-index index index-by-rate-source
+   transaction-count transactions])

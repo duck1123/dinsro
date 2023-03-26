@@ -38,7 +38,12 @@
      (let [ids (if id #?(:clj (q.transactions/find-by-category id) :cljs []) [])]
        {::transactions (m.categories/idents ids)}))})
 
+(defattr transaction-count ::transaction-count :number
+  {ao/pc-input   #{::transactions}
+   ao/pc-resolve (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
+
 (def attributes
   [admin-index
    index
+   transaction-count
    transactions])
