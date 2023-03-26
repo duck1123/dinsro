@@ -78,12 +78,14 @@ local_resource(
 local_resource(
   'compile-docs',
   allow_parallel = True,
+  auto_init = False,
   cmd='bb docs',
   deps = [
     'src/babashka',
     'src/main',
   ],
   labels = [ 'compile' ],
+  trigger_mode = TRIGGER_MODE_MANUAL,
 )
 
 local_resource(
