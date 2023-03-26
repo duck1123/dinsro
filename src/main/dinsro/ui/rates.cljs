@@ -28,7 +28,7 @@
 (defsc Show
   [_this _props]
   {:ident         ::m.rates/id
-   :query         [::m.rates/id]
    :initial-state {::m.rates/id nil}
+   :query         [::m.rates/id]
    :route-segment ["rates" :id]}
   (dom/div {}))

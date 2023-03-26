@@ -11,13 +11,13 @@
 
 (defsc InitForm
   [this {::keys [password username]} _ {:keys [container header]}]
-  {:ident         (fn [_] [:component/id ::InitForm])
-   :query         [::password
-                   ::username]
-   :css           [[:.container {}]
+  {:css           [[:.container {}]
                    [:.header {:color "red !important"}]]
+   :ident         (fn [_] [:component/id ::InitForm])
    :initial-state {::password ""
                    ::username "admin"}
+   :query         [::password
+                   ::username]
    :route-segment ["first-run"]}
   (dom/div {}
     (dom/div :.ui.inverted.vertical.masthead.center.aligned.segment

@@ -33,9 +33,9 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]}
   ((comp/factory Report) report))

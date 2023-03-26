@@ -22,15 +22,15 @@
                (comp/transact! this [(mu.ln.payreqs/decode props)])))})
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id             m.ln.payreqs/id
-   fo/action-buttons [::decode]
-   fo/controls       {::decode decode-button}
+  {fo/action-buttons [::decode]
    fo/attributes     [m.ln.payreqs/payment-request]
+   fo/controls       {::decode decode-button}
+   fo/id             m.ln.payreqs/id
    fo/route-prefix   "new-request"
    fo/title          "New Payreqs"})
 
 (report/defsc-report Report
-  [this _props]
+  [_this _props]
   {ro/columns          [m.ln.payreqs/payment-hash
                         m.ln.payreqs/description
                         m.ln.payreqs/payment-request
@@ -42,10 +42,7 @@
    ro/row-pk           m.ln.payreqs/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.payreqs/index
-   ro/title            "Payment Request"}
-  (dom/div {}
-    (dom/h1 {} "Payreqs")
-    (report/render-layout this)))
+   ro/title            "Payment Request"})
 
 (defsc Show
   [_this _props]

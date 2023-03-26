@@ -21,13 +21,7 @@
 (defsc Show
   [_this {:ui/keys                 [peers router]
           ::m.ln.remote-nodes/keys [id pubkey]}]
-  {:route-segment ["remote-nodes" :id]
-   :ident         ::m.ln.remote-nodes/id
-   :query         [::m.ln.remote-nodes/id
-                   ::m.ln.remote-nodes/pubkey
-                   {:ui/peers (comp/get-query u.ln.rn.peers/SubPage)}
-                   {:ui/router (comp/get-query Router)}
-                   [df/marker-table '_]]
+  {:ident         ::m.ln.remote-nodes/id
    :initial-state {::m.ln.remote-nodes/id     nil
                    ::m.ln.remote-nodes/pubkey ""
                    :ui/peers                  {}
@@ -36,6 +30,12 @@
                    ::m.ln.remote-nodes/id
                    {:ui/peers  u.ln.rn.peers/SubPage
                     :ui/router Router})
+   :query         [::m.ln.remote-nodes/id
+                   ::m.ln.remote-nodes/pubkey
+                   {:ui/peers (comp/get-query u.ln.rn.peers/SubPage)}
+                   {:ui/router (comp/get-query Router)}
+                   [df/marker-table '_]]
+   :route-segment ["remote-nodes" :id]
    :will-enter    (partial u.links/page-loader ::m.ln.remote-nodes/id ::Show)}
   (dom/div {}
     (dom/div {:classes [:.ui.segment]}

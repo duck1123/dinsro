@@ -19,8 +19,7 @@
    :ident ::m.accounts/id})
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id            m.transactions/id
-   fo/attributes    [m.transactions/description]
+  {fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]
    fo/field-styles  {::m.transactions/account :pick-one}
    fo/field-options {::m.transactions/account
@@ -33,6 +32,7 @@
                            {:text  (str name)
                             :value [::m.accounts/id id]})
                          (sort-by ::m.accounts/name options)))}}
+   fo/id            m.transactions/id
    fo/route-prefix  "transaction-form"
    fo/title         "Transaction"})
 
@@ -40,11 +40,11 @@
   [_this _props]
   {ro/columns          [m.transactions/description
                         m.transactions/date]
+   ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
                                            :action (fn [this] (form/create! this NewForm))}
                         ::refresh         u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/route            "transactions"
    ro/row-pk           m.transactions/id
@@ -55,18 +55,17 @@
 (defsc Show
   [_this {::m.transactions/keys [description date]
           :ui/keys              [debits]}]
-  {:route-segment ["transaction" :id]
-   :query         [::m.transactions/description
-                   ::m.transactions/id
-                   ::m.transactions/date
-                   {:ui/debits (comp/get-query u.t.debits/SubPage)}]
+  {:ident         ::m.transactions/id
    :initial-state {::m.transactions/description ""
                    ::m.transactions/id          nil
                    ::m.transactions/date        ""
                    :ui/debits                   {}}
-   :ident         ::m.transactions/id
-   :pre-merge     (u.links/page-merger ::m.transactions/id
-                                       {:ui/debits u.t.debits/SubPage})
+   :pre-merge     (u.links/page-merger ::m.transactions/id {:ui/debits u.t.debits/SubPage})
+   :query         [::m.transactions/description
+                   ::m.transactions/id
+                   ::m.transactions/date
+                   {:ui/debits (comp/get-query u.t.debits/SubPage)}]
+   :route-segment ["transaction" :id]
    :will-enter    (partial u.links/page-loader ::m.transactions/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment

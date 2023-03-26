@@ -8,8 +8,8 @@
 
 (defsc Dashboard
   [_this _props]
-  {:query         [[::dr/id router-key]]
-   :initial-state {}
+  {:initial-state {}
+   :query         [[::dr/id router-key]]
    :route-segment ["dashboard"]}
   (dom/div {}
     (dom/h1 "Dashboard")))
@@ -19,12 +19,10 @@
   {:router-targets
    [Dashboard]})
 
-(def ui-router (comp/factory Router))
-
 (defsc Page
   [_this {:ui/keys [router]}]
-  {:query         [{:ui/router (comp/get-query Router)}]
+  {:ident         (fn [] [:component/id ::Page])
    :initial-state {:ui/router {}}
-   :ident         (fn [] [:component/id ::Page])
+   :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  (ui-router router))
+  ((comp/factory Router) router))

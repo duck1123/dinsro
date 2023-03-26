@@ -10,6 +10,7 @@
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk])
   (:import
+   java.net.URI
    org.bitcoins.core.crypto.ExtKeyVersion$SegWitMainNetPriv$
    org.bitcoins.core.crypto.ExtPrivateKey
    org.bitcoins.crypto.ECPrivateKey

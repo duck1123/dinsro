@@ -29,8 +29,7 @@
                (comp/transact! this [(mu.ln.peers/create! props)])))})
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id             m.ln.peers/id
-   fo/action-buttons [::submit]
+  {fo/action-buttons [::submit]
    fo/attributes     [m.ln.peers/node
                       m.ln.peers/remote-node]
    fo/controls       {::submit submit-button}
@@ -56,6 +55,7 @@
                           (sort-by ::m.ln.remote-nodes/pubkey options)))}}
    fo/field-styles   {::m.ln.peers/node        :pick-one
                       ::m.ln.peers/remote-node :pick-one}
+   fo/id             m.ln.peers/id
    fo/route-prefix   "new-peer"
    fo/title          "New Peer"})
 

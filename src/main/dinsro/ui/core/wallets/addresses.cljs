@@ -16,24 +16,22 @@
 
 (form/defsc-form NewForm
   [_this _props]
-  {fo/id         m.c.wallet-addresses/id
-   fo/attributes [m.c.wallet-addresses/address
-
-                  m.c.wallet-addresses/wallet]
-   fo/field-styles {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options
-   {::m.c.wallet-addresses/wallet
-    {::picker-options/query-key       ::m.c.wallets/index
-     ::picker-options/query-component u.links/WalletLinkForm
-     ::picker-options/options-xform
-     (fn [_ options]
-       (mapv
-        (fn [{::m.c.wallets/keys [id name]}]
-          {:text  (str name)
-           :value [::m.c.wallets/id id]})
-        (sort-by ::m.c.wallets/name options)))}}
-   fo/route-prefix "new-wallet-address"
-   fo/title        "New Wallet Address"})
+  {fo/attributes    [m.c.wallet-addresses/address
+                     m.c.wallet-addresses/wallet]
+   fo/field-styles  {::m.c.wallet-addresses/wallet :pick-one}
+   fo/field-options {::m.c.wallet-addresses/wallet
+                     {::picker-options/query-key       ::m.c.wallets/index
+                      ::picker-options/query-component u.links/WalletLinkForm
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.c.wallets/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.c.wallets/id id]})
+                         (sort-by ::m.c.wallets/name options)))}}
+   fo/id            m.c.wallet-addresses/id
+   fo/route-prefix  "new-wallet-address"
+   fo/title         "New Wallet Address"})
 
 (def generate-button
   {:type   :button
@@ -46,23 +44,22 @@
 
 (form/defsc-form WalletAddressForm
   [_this _props]
-  {fo/id             m.c.wallet-addresses/id
-   fo/action-buttons [::generate]
+  {fo/action-buttons [::generate]
    fo/attributes     [m.c.wallet-addresses/address
                       m.c.wallet-addresses/wallet]
    fo/controls       {::generate generate-button}
    fo/field-styles   {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options
-   {::m.c.wallet-addresses/wallet
-    {::picker-options/query-key       ::m.c.wallets/index
-     ::picker-options/query-component u.links/WalletLinkForm
-     ::picker-options/options-xform
-     (fn [_ options]
-       (mapv
-        (fn [{::m.c.wallets/keys [id name]}]
-          {:text  (str name)
-           :value [::m.c.wallets/id id]})
-        (sort-by ::m.c.wallets/name options)))}}
+   fo/field-options  {::m.c.wallet-addresses/wallet
+                      {::picker-options/query-key       ::m.c.wallets/index
+                       ::picker-options/query-component u.links/WalletLinkForm
+                       ::picker-options/options-xform
+                       (fn [_ options]
+                         (mapv
+                          (fn [{::m.c.wallets/keys [id name]}]
+                            {:text  (str name)
+                             :value [::m.c.wallets/id id]})
+                          (sort-by ::m.c.wallets/name options)))}}
+   fo/id             m.c.wallet-addresses/id
    fo/route-prefix   "wallet-address"
    fo/title          "Wallet Address"})
 
@@ -82,12 +79,12 @@
   [_this _props]
   {ro/columns          [m.c.wallet-addresses/path-index
                         m.c.wallet-addresses/address]
+   ro/control-layout   {:inputs         [[::m.c.wallets/id]]
+                        :action-buttons [::new ::calculate ::refresh]}
    ro/controls         {::m.c.wallets/id {:type :uuid :label "id"}
                         ::new            new-action-button
                         ::refresh        u.links/refresh-control
                         ::calculate      calculate-action-button}
-   ro/control-layout   {:inputs         [[::m.c.wallets/id]]
-                        :action-buttons [::new ::calculate ::refresh]}
    ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
    ro/route            "wallets-addresses"
    ro/row-actions      [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
@@ -96,17 +93,14 @@
    ro/source-attribute ::j.c.wallet-addresses/index-by-wallet
    ro/title            "Addresses"})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
-  {:query             [::m.c.wallets/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {::m.c.wallets/id nil
                        :ui/report       {}}
-   :ident             (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/creating {:props props})
-  (ui-report report))
+   :query             [::m.c.wallets/id
+                       {:ui/report (comp/get-query Report)}]}
+  ((comp/factory Report) report))
 
 (def ui-sub-page (comp/factory SubPage))

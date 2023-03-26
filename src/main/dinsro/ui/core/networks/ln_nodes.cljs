@@ -16,22 +16,22 @@
   [_this _props]
   {ro/columns          [m.ln.nodes/name
                         m.ln.nodes/user]
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::refresh         u.links/refresh-control
                         ::m.c.networks/id {:type :uuid :label "Network"}}
-   ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
                         ::m.ln.nodes/user #(u.links/ui-user-link %2)}
-   ro/source-attribute ::j.ln.nodes/index
-   ro/title            "Lightning Nodes"
    ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.ln.nodes/index
+   ro/title            "Lightning Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident         (fn [] [:component/id ::SubPage])
+   :initial-state {:ui/report {}}
    :query         [[::dr/id router-key]
                    {:ui/report (comp/get-query Report)}]
-   :initial-state {:ui/report {}}
-   :route-segment ["ln-nodes"]
-   :ident         (fn [] [:component/id ::SubPage])}
+   :route-segment ["ln-nodes"]}
   ((comp/factory Report) report))

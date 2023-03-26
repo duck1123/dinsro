@@ -25,14 +25,14 @@
 
 (form/defsc-form NewForm
   [_this _props]
-  {fo/id             m.rate-sources/id
-   fo/action-buttons (concat [::run] form/standard-action-buttons)
-   fo/controls       (merge form/standard-controls {::run run-button})
+  {fo/action-buttons (concat [::run] form/standard-action-buttons)
    fo/attributes     [m.rate-sources/name
                       m.rate-sources/url
                       m.rate-sources/active?
                       m.rate-sources/path]
    fo/cancel-route   ["new-rate-source"]
+   fo/controls       (merge form/standard-controls {::run run-button})
+   fo/id             m.rate-sources/id
    fo/route-prefix   "rate-source"
    fo/title          "New Rate Source"})
 
@@ -57,10 +57,10 @@
   {ro/columns          [m.rate-sources/name
                         m.rate-sources/url
                         m.rate-sources/active?]
+   ro/control-layout   {:action-buttons [::new-rate-source]}
    ro/controls         {::new-rate-source {:label  "New Source"
                                            :type   :button
                                            :action (fn [this] (form/create! this NewForm))}}
-   ro/control-layout   {:action-buttons [::new-rate-source]}
    ro/field-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)
                         ::m.rate-sources/name     #(u.links/ui-rate-source-link %3)}
    ro/route            "rate-sources"
@@ -72,16 +72,8 @@
 (defsc Show
   [_this {::m.rate-sources/keys [name url active currency id]
           ::j.rate-sources/keys [rate-count]
-          :ui/keys              [router]
-          :as                   props}]
-  {:route-segment ["rate-sources" :id]
-   :query         [::m.rate-sources/name
-                   ::m.rate-sources/url
-                   {::m.rate-sources/currency (comp/get-query u.links/CurrencyLinkForm)}
-                   ::m.rate-sources/active
-                   ::m.rate-sources/id
-                   ::j.rate-sources/rate-count
-                   {:ui/router (comp/get-query Router)}]
+          :ui/keys              [router]}]
+  {:ident         ::m.rate-sources/id
    :initial-state {::m.rate-sources/name       ""
                    ::m.rate-sources/id         nil
                    ::m.rate-sources/active     false
@@ -89,8 +81,15 @@
                    ::m.rate-sources/url        ""
                    ::j.rate-sources/rate-count []
                    :ui/router                  {}}
-   :ident         ::m.rate-sources/id
    :pre-merge     (u.links/page-merger ::m.rate-sources/id {:ui/router Router})
+   :query         [::m.rate-sources/name
+                   ::m.rate-sources/url
+                   {::m.rate-sources/currency (comp/get-query u.links/CurrencyLinkForm)}
+                   ::m.rate-sources/active
+                   ::m.rate-sources/id
+                   ::j.rate-sources/rate-count
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["rate-sources" :id]
    :will-enter    (partial u.links/page-loader ::m.rate-sources/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
@@ -102,8 +101,4 @@
      (dom/p {} "Currency: " (u.links/ui-currency-link currency))
      (dom/p {} "Rate Count: " (str rate-count)))
    (u.links/ui-nav-menu {:menu-items menu-items :id id})
-   (if router
-     (ui-router router)
-     (dom/div :.ui.segment
-       (dom/h3 {} "Router not loaded")
-       (u.links/ui-props-logger props)))))
+   ((comp/factory Router) router)))

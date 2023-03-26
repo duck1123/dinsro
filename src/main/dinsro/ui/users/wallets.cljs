@@ -16,9 +16,9 @@
   [_this _props]
   {ro/columns          [m.c.wallets/name
                         m.c.wallets/user]
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.users/id {:type :uuid :label "id"}
                         ::refresh    u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.c.wallets/name #(u.links/ui-wallet-link %3)
                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
    ro/row-pk           m.c.wallets/id
@@ -28,10 +28,10 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["wallets"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["wallets"]}
   ((comp/factory Report) report))

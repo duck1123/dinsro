@@ -16,26 +16,27 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.filters/index]
+   ro/control-layout   {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls         {::m.n.requests/id {:type :uuid :label "id"}
                         ::add-filter      (u.links/sub-page-action-button
                                            {:label      "Add Filter"
                                             :mutation   mu.n.filters/add-filter!
                                             :parent-key ident-key})
                         ::refresh         u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::add-filter ::new ::refresh]}
    ro/field-formatters {::m.n.filters/index #(u.links/ui-filter-link %3)}
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.n.filters/id mu.n.filters/delete!)]
-   ro/source-attribute ::j.n.filters/index
-   ro/title            "Filters"
+
    ro/row-pk           m.n.filters/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.n.filters/index
+   ro/title            "Filters"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["filters"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["filters"]}
   ((comp/factory Report) report))

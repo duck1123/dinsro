@@ -1,7 +1,6 @@
 (ns dinsro.ui.core.nodes.wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.wallets :as j.c.wallets]
@@ -9,11 +8,10 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.core.wallets :as u.c.wallets]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.c.wallets/name
                         m.c.wallets/derivation
                         m.c.wallets/key
@@ -32,23 +30,14 @@
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.wallets/index
-   ro/title            "Wallets"}
-  (log/info :Report/creating {:props props})
-  (report/render-layout this))
-
-(def ui-report (comp/factory Report))
+   ro/title            "Wallets"})
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props
-          node-id  ::m.c.nodes/id}]
-  {:query             [::m.c.nodes/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {::m.c.nodes/id nil
                        :ui/report     {}}
-   :ident             (fn [] [:component/id ::SubPage])}
-  (log/info :SubPage/creating {:props props})
-  (dom/div :.ui.segment
-    (if node-id
-      (ui-report report)
-      (dom/p {} "Node ID not set"))))
+   :query             [::m.c.nodes/id
+                       {:ui/report (comp/get-query Report)}]}
+  ((comp/factory Report) report))

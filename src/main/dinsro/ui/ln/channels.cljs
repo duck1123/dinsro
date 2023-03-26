@@ -11,8 +11,7 @@
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id           m.ln.channels/id
-   fo/attributes   [m.ln.channels/id
+  {fo/attributes   [m.ln.channels/id
                     m.ln.channels/active
                     m.ln.channels/capacity
                     m.ln.channels/chan-id
@@ -20,6 +19,7 @@
                     m.ln.channels/chan-status-flags
                     m.ln.channels/close-address
                     m.ln.channels/commit-fee]
+   fo/id           m.ln.channels/id
    fo/route-prefix "new-channel"
    fo/title        "New Lightning Channels"})
 
@@ -40,8 +40,8 @@
 
 (defsc Show
   [_this _props]
-  {:ident ::m.ln.channels/id
-   :query [::m.ln.channels/id]
+  {:ident         ::m.ln.channels/id
    :initial-state {::m.ln.channels/id nil}
+   :query         [::m.ln.channels/id]
    :route-segment ["channels" :id]}
   (dom/div {}))

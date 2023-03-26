@@ -20,10 +20,10 @@
 
 (form/defsc-form AddForm
   [_this _props]
-  {fo/id           m.n.event-tags/id
-   fo/title        "Tags"
-   fo/attributes   [m.n.event-tags/index]
-   fo/route-prefix "new-tag"})
+  {fo/attributes   [m.n.event-tags/index]
+   fo/id           m.n.event-tags/id
+   fo/route-prefix "new-tag"
+   fo/title        "Tags"})
 
 (def new-button
   {:type   :button
@@ -37,21 +37,21 @@
                         m.n.event-tags/parent
                         m.n.event-tags/event
                         m.n.event-tags/pubkey]
+   ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::new           new-button
                         ::refresh       u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
-   ro/source-attribute ::j.n.event-tags/index
-   ro/title            "Tags"
    ro/row-pk           m.n.pubkeys/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.n.event-tags/index
+   ro/title            "Tags"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["tags"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["tags"]}
   ((comp/factory Report) report))

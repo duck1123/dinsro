@@ -8,14 +8,13 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.c.transactions/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.c.transactions/block-hash]
    ro/control-layout   {:action-buttons [::fetch ::refresh]
                         :inputs         [[::m.ln.nodes/id]]}
@@ -26,12 +25,10 @@
                         ::refresh       u.links/refresh-control}
    ro/field-formatters {::m.c.transactions/block #(u.links/ui-block-link %2)
                         ::m.c.transactions/tx-id #(u.links/ui-core-tx-link %3)}
-   ro/source-attribute ::j.c.transactions/index
-   ro/title            "Node Transactions"
    ro/row-pk           m.c.transactions/id
-   ro/run-on-mount?    true}
-  (log/info :Report/creating {:props props})
-  (report/render-layout this))
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.c.transactions/index
+   ro/title            "Node Transactions"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

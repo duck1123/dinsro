@@ -29,9 +29,8 @@
                (comp/transact! this [(mu.c.peers/create! props)])))})
 
 (form/defsc-form NewForm
-  [this props]
-  {fo/id             m.c.peers/id
-   fo/action-buttons [::submit]
+  [_this _props]
+  {fo/action-buttons [::submit]
    fo/attributes     [m.c.peers/addr
                       m.c.peers/node]
    fo/controls       {::submit submit-button}
@@ -46,9 +45,9 @@
                              :value [::m.c.nodes/id id]})
                           (sort-by ::m.c.nodes/name options)))}}
    fo/field-styles   {::m.c.peers/node :pick-one}
+   fo/id             m.c.peers/id
    fo/route-prefix   "new-peer"
-   fo/title          "New Core Peer"}
-  (form/render-layout this props))
+   fo/title          "New Core Peer"})
 
 (report/defsc-report Report
   [_this _props]
@@ -79,17 +78,17 @@
                                                                   {:initial-state {::m.c.peers/addr "foo"}})))}}
    ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
+   ro/route            "peers"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
-   ro/source-attribute ::j.c.peers/index
-   ro/title            "Core Peers"
    ro/row-pk           m.c.peers/id
    ro/run-on-mount?    true
-   ro/route            "peers"})
+   ro/source-attribute ::j.c.peers/index
+   ro/title            "Core Peers"})
 
 (defsc Show
   [_this _props]
-  {:ident ::m.c.peers/id
-   :query [::m.c.peers/id]
-   :route-segment ["peer" :id]
-   :initial-state {::m.c.peers/id nil}}
+  {:ident         ::m.c.peers/id
+   :initial-state {::m.c.peers/id nil}
+   :query         [::m.c.peers/id]
+   :route-segment ["peer" :id]}
   (dom/div {}))

@@ -40,8 +40,8 @@
 
 (defsc LnPage
   [_this {:keys [ln-router]}]
-  {:query         [{:ln-router (comp/get-query LnRouter)}]
+  {:ident         (fn [] [:component/id ::LnPage])
    :initial-state {:ln-router {}}
-   :ident         (fn [] [:component/id ::LnPage])
+   :query         [{:ln-router (comp/get-query LnRouter)}]
    :route-segment ["ln"]}
   (ui-ln-router ln-router))

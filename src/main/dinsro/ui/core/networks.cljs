@@ -45,16 +45,16 @@
           :ui/keys            [router]
           :as                 props}]
   {:ident         ::m.c.networks/id
-   :query         [::m.c.networks/id
-                   ::m.c.networks/name
-                   {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
-                   {:ui/router (comp/get-query Router)}]
    :initial-state {::m.c.networks/id    nil
                    ::m.c.networks/name  ""
                    ::m.c.networks/chain {}
                    :ui/router           {}}
-   :route-segment ["network" :id]
    :pre-merge     (u.links/page-merger ::m.c.networks/id {:ui/router Router})
+   :query         [::m.c.networks/id
+                   ::m.c.networks/name
+                   {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["network" :id]
    :will-enter    (partial u.links/page-loader ::m.c.networks/id ::Show)}
   (if id
     (comp/fragment
@@ -74,12 +74,12 @@
   [_this _props]
   {ro/columns          [m.c.networks/name
                         m.c.networks/chain]
-   ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/controls         {::refresh u.links/refresh-control}
    ro/field-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
                         ::m.c.networks/name  #(u.links/ui-network-link %3)}
-   ro/source-attribute ::j.c.networks/index
-   ro/title            "Networks"
+   ro/route            "networks"
    ro/row-pk           m.c.networks/id
    ro/run-on-mount?    true
-   ro/route            "networks"})
+   ro/source-attribute ::j.c.networks/index
+   ro/title            "Networks"})

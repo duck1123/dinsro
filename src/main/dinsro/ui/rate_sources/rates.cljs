@@ -17,9 +17,9 @@
   {ro/columns          [m.rates/rate
                         m.rates/date
                         m.rates/source]
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.rate-sources/id {:type :uuid :label "id"}
                         ::refresh           u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::refresh]}
    ro/field-formatters {::m.rates/date   #(u.links/ui-rate-link %3)
                         ::m.rates/source #(u.links/ui-rate-source-link %2)}
    ro/row-pk           m.rates/id
@@ -29,10 +29,10 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["rates"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["rates"]}
   ((comp/factory Report) report))

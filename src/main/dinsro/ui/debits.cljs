@@ -7,14 +7,14 @@
 
 (defsc Show
   [_this {::m.debits/keys [value]}]
-  {:route-segment ["debits" :id]
-   :query         [::m.debits/value
-                   ::m.debits/id]
+  {:ident         ::m.debits/id
    :initial-state {::m.debits/value 0
                    ::m.debits/id    nil}
-   :ident         ::m.debits/id
-   :will-enter    (partial u.links/page-loader ::m.debits/id ::Show)
-   :pre-merge     (u.links/page-merger ::m.debits/id {})}
+   :pre-merge     (u.links/page-merger ::m.debits/id {})
+   :query         [::m.debits/value
+                   ::m.debits/id]
+   :route-segment ["debits" :id]
+   :will-enter    (partial u.links/page-loader ::m.debits/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show Debit " (str value)))))

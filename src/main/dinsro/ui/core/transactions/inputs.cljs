@@ -1,7 +1,6 @@
 (ns dinsro.ui.core.transactions.inputs
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
@@ -9,25 +8,19 @@
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.ui.links :as u.links]))
 
-(def override-form false)
-
 (report/defsc-report Report
-  [this _props]
+  [_this _props]
   {ro/columns          [m.c.tx-in/vout
                         m.c.tx-in/tx-id
                         m.c.tx-in/sequence]
    ro/control-layout   {:action-buttons [::refresh]
                         :inputs         [[::m.c.transactions/id]]}
-   ro/controls         {::refresh   u.links/refresh-control
+   ro/controls         {::refresh             u.links/refresh-control
                         ::m.c.transactions/id {:type :uuid :label "TX"}}
    ro/row-pk           m.c.tx-in/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.tx-in/index
-   ro/title            "Inputs"}
-  (if override-form
-    (report/render-layout this)
-    (dom/div :.ui.segment
-      (report/render-layout this))))
+   ro/title            "Inputs"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

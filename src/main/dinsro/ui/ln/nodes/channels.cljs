@@ -18,7 +18,7 @@
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns        [m.ln.channels/node]
    ro/control-layout {:action-buttons [::new ::refresh]
                       :inputs         [[::m.ln.nodes/id]]}
@@ -46,14 +46,12 @@
                                                  {:initial-state {::m.ln.channels/address "foo"}})))}}
    ro/field-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
                         ::m.ln.channels/node  #(u.links/ui-core-node-link %2)}
+   ro/route            "node-channels"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
-   ro/source-attribute ::j.ln.channels/index
-   ro/title            "Node Channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
-   ro/route            "node-channels"}
-  (log/info :Report/creating {:props props})
-  (report/render-layout this))
+   ro/source-attribute ::j.ln.channels/index
+   ro/title            "Node Channels"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

@@ -33,26 +33,26 @@
                         m.c.blocks/height
                         m.c.blocks/fetched?
                         m.c.blocks/network]
+   ro/control-layout   {:action-buttons [::generate ::refresh]}
    ro/controls         {::refresh      u.links/refresh-control
                         ::generate     generate-button
                         ::m.c.nodes/id {:type :uuid :label "Nodes"}}
-   ro/control-layout   {:action-buttons [::generate ::refresh]}
    ro/field-formatters {::m.c.blocks/hash    #(u.links/ui-block-link %3)
                         ::m.c.blocks/network #(u.links/ui-network-link %2)}
-   ro/source-attribute ::j.c.blocks/index
-   ro/title            "Node Blocks"
+   ro/route            "blocks"
    ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
                         (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/route            "blocks"})
+   ro/source-attribute ::j.c.blocks/index
+   ro/title            "Node Blocks"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["blocks"]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["blocks"]}
   ((comp/factory Report) report))

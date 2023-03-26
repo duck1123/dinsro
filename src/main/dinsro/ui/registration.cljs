@@ -17,6 +17,5 @@
       (dom/h4 :.ui.center.aligned.top.attached.header "Register")
       (dom/div :.ui.center.aligned.attached.segment
         (u.f.registration/ui-registration-form form)))
-
     (dom/div {}
       (dom/p {} "Registrations are not enabled"))))

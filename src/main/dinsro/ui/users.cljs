@@ -54,18 +54,15 @@
 (defsc Show
   [_this {::m.users/keys [id name]
           :ui/keys       [router]}]
-  {:route-segment ["users" :id]
+  {:ident         ::m.users/id
+   :initial-state {::m.users/name ""
+                   ::m.users/id   nil
+                   :ui/router     {}}
+   :pre-merge     (u.links/page-merger ::m.users/id {:ui/router Router})
    :query         [::m.users/name
                    ::m.users/id
                    {:ui/router (comp/get-query Router)}]
-   :initial-state {::m.users/name   ""
-                   ::m.users/id     nil
-                   :ui/router {}}
-
-   :ident         ::m.users/id
-   :pre-merge     (u.links/page-merger
-                   ::m.users/id
-                   {:ui/router Router})
+   :route-segment ["users" :id]
    :will-enter    (partial u.links/page-loader ::m.users/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
@@ -76,8 +73,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name]
-   ro/source-attribute ::j.users/index
-   ro/title            "Users"
    ro/route            "users"
    ro/row-pk           m.users/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.users/index
+   ro/title            "Users"})

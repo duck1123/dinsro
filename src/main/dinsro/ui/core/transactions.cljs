@@ -16,7 +16,19 @@
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]
          :ui/keys                [inputs outputs]}]
-  {:route-segment ["tx" :id]
+  {:ident         ::m.c.transactions/id
+   :initial-state {::m.c.transactions/id       nil
+                   ::m.c.transactions/tx-id    nil
+                   ::m.c.transactions/hash     ""
+                   ::m.c.transactions/block    {}
+                   ::m.c.transactions/size     0
+                   :ui/inputs                  {}
+                   :ui/outputs                 {}
+                   ::m.c.transactions/fetched? false}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.transactions/id
+                   {:ui/inputs  u.c.t.inputs/SubPage
+                    :ui/outputs u.c.t.outputs/SubPage})
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
@@ -26,19 +38,7 @@
                    {:ui/outputs (comp/get-query u.c.t.outputs/SubPage)}
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.transactions/id       nil
-                   ::m.c.transactions/tx-id    nil
-                   ::m.c.transactions/hash     ""
-                   ::m.c.transactions/block    {}
-                   ::m.c.transactions/size     0
-                   :ui/inputs                  {}
-                   :ui/outputs                 {}
-                   ::m.c.transactions/fetched? false}
-   :ident         ::m.c.transactions/id
-   :pre-merge     (u.links/page-merger
-                   ::m.c.transactions/id
-                   {:ui/inputs  u.c.t.inputs/SubPage
-                    :ui/outputs u.c.t.outputs/SubPage})
+   :route-segment ["tx" :id]
    :will-enter    (partial u.links/page-loader ::m.c.transactions/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment

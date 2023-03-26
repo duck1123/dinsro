@@ -6,8 +6,7 @@
    [com.fulcrologic.rad.authorization :as auth]
    [dinsro.model.users :as m.users]
    [dinsro.ui.authenticator :as u.authenticator]
-   [dinsro.ui.transactions :as u.transactions]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.transactions :as u.transactions]))
 
 (defn get-username
   [authenticator]
@@ -20,18 +19,17 @@
 (defsc HomePage
   [_this {:root/keys [authenticator]
           :ui/keys   [recent-transactions]}]
-  {:route-segment [""]
-   :query         [:component/id
-                   :ui/recent-transactions
-                   {:root/authenticator (comp/get-query u.authenticator/UserAuthenticator)}]
+  {:css           [[:.container {:background-color "white"}]
+                   [:.title {:color       "blue"
+                             :font-weight "bold"}]]
+   :ident         (fn [] [:component/id ::HomePage])
    :initial-state {:component/id           ::HomePage
                    :ui/recent-transactions (comp/get-query u.transactions/Report)
                    :root/authenticator     {}}
-   :css           [[:.container {:background-color "white"}]
-                   [:.title {:color       "blue"
-                             :font-weight "bold"}]]
-   :ident         (fn [] [:component/id ::HomePage])}
-  (log/info :home-page/rendered {:authenticator authenticator})
+   :query         [:component/id
+                   :ui/recent-transactions
+                   {:root/authenticator (comp/get-query u.authenticator/UserAuthenticator)}]
+   :route-segment [""]}
   (let [{:keys [container title]} (css/get-classnames HomePage)
         username                  (get-username authenticator)]
     (comp/fragment

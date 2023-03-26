@@ -16,10 +16,10 @@
 
 (form/defsc-form AddForm
   [_this _props]
-  {fo/id           m.n.pubkeys/id
-   fo/title        "Topic"
-   fo/attributes   [m.n.pubkeys/hex]
-   fo/route-prefix "new-topic"})
+  {fo/attributes   [m.n.pubkeys/hex]
+   fo/id           m.n.pubkeys/id
+   fo/route-prefix "new-topic"
+   fo/title        "Topic"})
 
 (def new-button
   {:type   :button
@@ -33,22 +33,22 @@
                         m.n.pubkeys/name
                         j.n.pubkeys/subscription-count]
 
+   ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
                         ::new           new-button
                         ::refresh       u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/field-formatters {::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)}
-   ro/source-attribute ::j.n.pubkeys/index
-   ro/title            "Topics"
    ro/row-pk           m.n.pubkeys/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.n.pubkeys/index
+   ro/title            "Topics"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
-   :componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :route-segment     ["topics"]
+  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [[::dr/id router-key]
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["topics"]}
   ((comp/factory Report) report))

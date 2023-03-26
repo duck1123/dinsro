@@ -8,9 +8,9 @@
    [dinsro.model.currencies :as m.currencies]))
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id           m.currencies/id
-   fo/attributes   [m.currencies/name
+  {fo/attributes   [m.currencies/name
                     m.currencies/code]
+   fo/id           m.currencies/id
    fo/route-prefix "new-currency"
    fo/title        "New Currency"})
 

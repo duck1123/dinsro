@@ -22,11 +22,11 @@
                (comp/transact! this [(mu.ln.invoices/submit! props)])))})
 
 (form/defsc-form NewForm [this props]
-  {fo/id             m.ln.invoices/id
-   fo/action-buttons [::submit]
+  {fo/action-buttons [::submit]
    fo/attributes     [m.ln.invoices/memo
                       m.ln.invoices/value]
    fo/controls       {::submit submit-button}
+   fo/id             m.ln.invoices/id
    fo/route-prefix   "new-invoice"
    fo/title          "New Invoice"}
   (dom/div {}
@@ -39,7 +39,7 @@
    :action (fn [this _] (form/create! this NewForm))})
 
 (report/defsc-report Report
-  [this _props]
+  [_this _props]
   {ro/columns          [m.ln.invoices/id
                         m.ln.invoices/memo
                         m.ln.invoices/settled?
@@ -53,10 +53,7 @@
    ro/row-pk           m.ln.invoices/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.invoices/index
-   ro/title            "Lightning Invoices Report"}
-  (dom/div {}
-    (dom/h1 {} "Invoices")
-    (report/render-layout this)))
+   ro/title            "Lightning Invoices Report"})
 
 (defsc Show
   [_this _props]

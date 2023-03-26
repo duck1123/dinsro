@@ -14,9 +14,9 @@
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm [_this _props]
-  {fo/id           m.currencies/id
-   fo/attributes   [m.currencies/name
+  {fo/attributes   [m.currencies/name
                     m.currencies/code]
+   fo/id           m.currencies/id
    fo/route-prefix "new-currency"
    fo/title        "New Currency"})
 
@@ -41,14 +41,14 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/field-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
-   ro/columns          [m.currencies/name
+  {ro/columns          [m.currencies/name
                         m.currencies/code
                         j.currencies/source-count
                         j.currencies/transaction-count
                         j.currencies/rate-count]
    ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}
+   ro/field-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
    ro/route            "currencies"
    ro/row-pk           m.currencies/id
    ro/run-on-mount?    true

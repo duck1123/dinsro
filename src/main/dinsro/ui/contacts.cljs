@@ -13,10 +13,10 @@
 
 (form/defsc-form NewContactForm
   [_this _props]
-  {fo/id           m.contacts/id
-   fo/attributes   [m.contacts/name
+  {fo/attributes   [m.contacts/name
                     m.contacts/pubkey]
    fo/cancel-route ["contacts"]
+   fo/id           m.contacts/id
    fo/route-prefix "new-contact"
    fo/title        "Edit Contact"})
 
@@ -30,9 +30,9 @@
   [_this _props]
   {ro/columns          [m.contacts/name
                         m.contacts/pubkey]
+   ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::refresh u.links/refresh-control
                         ::new     new-button}
-   ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/route            "contacts"
    ro/row-pk           m.contacts/id

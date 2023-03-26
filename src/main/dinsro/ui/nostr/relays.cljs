@@ -38,11 +38,11 @@
                   {::m.n.relays/address address})])))})
 
 (form/defsc-form NewRelayForm [_this _props]
-  {fo/id             m.n.relays/id
-   fo/action-buttons [::submit]
+  {fo/action-buttons [::submit]
    fo/attributes     [m.n.relays/address]
    fo/cancel-route   ["relays"]
    fo/controls       {::submit submit-button}
+   fo/id             m.n.relays/id
    fo/route-prefix   "new-relay"
    fo/title          "Relay"})
 

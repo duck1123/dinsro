@@ -10,11 +10,11 @@
 
 (form/defsc-form AdminUserForm
   [_this _props]
-  {fo/id           m.users/id
-   fo/attributes   [m.users/name
+  {fo/attributes   [m.users/name
                     m.users/role
                     m.users/password]
    fo/cancel-route ["admin"]
+   fo/id           m.users/id
    fo/route-prefix "admin-user"
    fo/title        "Admin User"})
 
@@ -26,8 +26,8 @@
                                     :action (fn [this] (form/create! this AdminUserForm))}
                         ::refresh  u.links/refresh-control}
    ro/form-links       {::m.users/name AdminUserForm}
-   ro/source-attribute ::j.users/index
-   ro/title            "Admin Users"
-   ro/row-pk           m.users/id
    ro/route            "users"
-   ro/run-on-mount?    true})
+   ro/row-pk           m.users/id
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.users/index
+   ro/title            "Admin Users"})

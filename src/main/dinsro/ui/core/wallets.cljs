@@ -30,37 +30,35 @@
                (comp/transact! this [(mu.c.wallets/create! props)])))})
 
 (form/defsc-form NewForm [this props]
-  {fo/id             m.c.wallets/id
-   fo/action-buttons (concat [::create] form/standard-action-buttons)
+  {fo/action-buttons (concat [::create] form/standard-action-buttons)
    fo/attributes     [m.c.wallets/name
                       m.c.wallets/user]
-
-   fo/controls     (merge form/standard-controls {::create create-button})
-   fo/field-styles {::m.c.wallets/node :pick-one
-                    ::m.c.wallets/user :pick-one}
-   fo/field-options
-   {::m.c.wallets/node
-    {::picker-options/query-key       ::m.c.nodes/index
-     ::picker-options/query-component u.links/CoreNodeLinkForm
-     ::picker-options/options-xform
-     (fn [_ options]
-       (mapv
-        (fn [{::m.c.nodes/keys [id name]}]
-          {:text  (str name)
-           :value [::m.c.nodes/id id]})
-        (sort-by ::m.c.nodes/name options)))}
-    ::m.c.wallets/user
-    {::picker-options/query-key       ::m.users/index
-     ::picker-options/query-component u.links/UserLinkForm
-     ::picker-options/options-xform
-     (fn [_ options]
-       (mapv
-        (fn [{::m.users/keys [id name]}]
-          {:text  (str name)
-           :value [::m.users/id id]})
-        (sort-by ::m.users/name options)))}}
-   fo/route-prefix "new-wallet"
-   fo/title        "New Wallet"}
+   fo/controls       (merge form/standard-controls {::create create-button})
+   fo/field-styles   {::m.c.wallets/node :pick-one
+                      ::m.c.wallets/user :pick-one}
+   fo/field-options  {::m.c.wallets/node
+                      {::picker-options/query-key       ::m.c.nodes/index
+                       ::picker-options/query-component u.links/CoreNodeLinkForm
+                       ::picker-options/options-xform
+                       (fn [_ options]
+                         (mapv
+                          (fn [{::m.c.nodes/keys [id name]}]
+                            {:text  (str name)
+                             :value [::m.c.nodes/id id]})
+                          (sort-by ::m.c.nodes/name options)))}
+                      ::m.c.wallets/user
+                      {::picker-options/query-key       ::m.users/index
+                       ::picker-options/query-component u.links/UserLinkForm
+                       ::picker-options/options-xform
+                       (fn [_ options]
+                         (mapv
+                          (fn [{::m.users/keys [id name]}]
+                            {:text  (str name)
+                             :value [::m.users/id id]})
+                          (sort-by ::m.users/name options)))}}
+   fo/id             m.c.wallets/id
+   fo/route-prefix   "new-wallet"
+   fo/title          "New Wallet"}
   (log/info :NewWalletForm/creating {:props props})
   (form/render-layout this props))
 
@@ -82,7 +80,23 @@
                              ext-public-key ext-private-key]
          :ui/keys           [addresses words accounts]
          :as                props}]
-  {:route-segment ["wallets" :id]
+  {:ident         ::m.c.wallets/id
+   :initial-state {::m.c.wallets/id              nil
+                   ::m.c.wallets/name            ""
+                   ::m.c.wallets/derivation      ""
+                   ::m.c.wallets/key             ""
+                   ::m.c.wallets/ext-private-key ""
+                   ::m.c.wallets/ext-public-key  ""
+                   ::m.c.wallets/network         {}
+                   ::m.c.wallets/user            {}
+                   :ui/accounts                  {}
+                   :ui/addresses                 {}
+                   :ui/words                     {}}
+   :pre-merge     (u.links/page-merger
+                   ::m.c.wallets/id
+                   {:ui/accounts  u.c.w.accounts/SubPage
+                    :ui/addresses u.c.w.addresses/SubPage
+                    :ui/words     u.c.w.words/SubPage})
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
                    ::m.c.wallets/derivation
@@ -95,23 +109,7 @@
                    {:ui/addresses (comp/get-query u.c.w.addresses/SubPage)}
                    {:ui/words (comp/get-query u.c.w.words/SubPage)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.wallets/id              nil
-                   ::m.c.wallets/name            ""
-                   ::m.c.wallets/derivation      ""
-                   ::m.c.wallets/key             ""
-                   ::m.c.wallets/ext-private-key ""
-                   ::m.c.wallets/ext-public-key  ""
-                   ::m.c.wallets/network         {}
-                   ::m.c.wallets/user            {}
-                   :ui/accounts                  {}
-                   :ui/addresses                 {}
-                   :ui/words                     {}}
-   :ident         ::m.c.wallets/id
-   :pre-merge     (u.links/page-merger
-                   ::m.c.wallets/id
-                   {:ui/accounts  u.c.w.accounts/SubPage
-                    :ui/addresses u.c.w.addresses/SubPage
-                    :ui/words     u.c.w.words/SubPage})
+   :route-segment ["wallets" :id]
    :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::Show)}
   (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
@@ -145,11 +143,10 @@
          (u.c.w.accounts/ui-sub-page accounts))
        (dom/div :.ui.segment
          (u.c.w.addresses/ui-sub-page addresses)))
-
       (dom/p {} "id not set"))))
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.c.wallets/name
                         m.c.wallets/user
                         m.c.wallets/derivation
@@ -165,6 +162,4 @@
    ro/row-pk           m.c.wallets/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.wallets/index
-   ro/title            "Wallet Report"}
-  (log/info :Report/creating {:props props})
-  (report/render-layout this))
+   ro/title            "Wallet Report"})

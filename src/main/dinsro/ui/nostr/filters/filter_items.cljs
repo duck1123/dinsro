@@ -15,13 +15,13 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.filter-items/id]
+   ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::m.n.filters/id {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/source-attribute ::j.n.filter-items/index
-   ro/title            "Filter Items"
    ro/row-pk           m.n.filter-items/id
-   ro/run-on-mount?    true})
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.n.filter-items/index
+   ro/title            "Filter Items"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

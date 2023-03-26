@@ -46,7 +46,18 @@
   [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight network]
          :ui/keys          [transactions]
          :as               props}]
-  {:route-segment ["blocks" :id]
+  {:ident         ::m.c.blocks/id
+   :initial-state {::m.c.blocks/id             nil
+                   ::m.c.blocks/height         ""
+                   ::m.c.blocks/hash           ""
+                   ::m.c.blocks/previous-block {}
+                   ::m.c.blocks/next-block     {}
+                   ::m.c.blocks/weight         0
+                   ::m.c.blocks/nonce          ""
+                   ::m.c.blocks/fetched?       false
+                   ::m.c.blocks/network        {}
+                   :ui/transactions            {}}
+   :pre-merge     (u.links/page-merger ::m.c.blocks/id {:ui/transactions u.c.b.transactions/SubPage})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -58,18 +69,7 @@
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
                    [df/marker-table '_]]
-   :initial-state {::m.c.blocks/id             nil
-                   ::m.c.blocks/height         ""
-                   ::m.c.blocks/hash           ""
-                   ::m.c.blocks/previous-block {}
-                   ::m.c.blocks/next-block     {}
-                   ::m.c.blocks/weight         0
-                   ::m.c.blocks/nonce          ""
-                   ::m.c.blocks/fetched?       false
-                   ::m.c.blocks/network        {}
-                   :ui/transactions            {}}
-   :ident         ::m.c.blocks/id
-   :pre-merge     (u.links/page-merger ::m.c.blocks/id {:ui/transactions u.c.b.transactions/SubPage})
+   :route-segment ["blocks" :id]
    :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::Show)}
   (log/finer :Show/creating {:id id :props props :this this})
   (dom/div {}
@@ -117,12 +117,12 @@
   {ro/columns          [m.c.blocks/hash
                         m.c.blocks/height
                         m.c.blocks/fetched?]
-   ro/controls         {::refresh u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
+   ro/controls         {::refresh u.links/refresh-control}
    ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
    ro/source-attribute ::j.c.blocks/index
-   ro/title            "Core Blocks"
+   ro/route            "blocks"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk           m.c.blocks/id
    ro/run-on-mount?    true
-   ro/route            "blocks"})
+   ro/title            "Core Blocks"})

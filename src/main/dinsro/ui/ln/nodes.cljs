@@ -24,8 +24,7 @@
    [dinsro.ui.ln.nodes.peers :as u.ln.n.peers]
    [dinsro.ui.ln.nodes.remote-nodes :as u.ln.n.remote-nodes]
    [dinsro.ui.ln.nodes.transactions :as u.ln.n.transactions]
-   [dinsro.ui.ln.nodes.wallet-addresses :as u.ln.n.wallet-addresses]
-   [lambdaisland.glogi :as log]))
+   [dinsro.ui.ln.nodes.wallet-addresses :as u.ln.n.wallet-addresses]))
 
 (declare CreateLightningNodeForm)
 
@@ -97,12 +96,12 @@
 
 (form/defsc-form NewForm
   [this props]
-  {fo/id            m.ln.nodes/id
-   fo/attributes    [m.ln.nodes/name
+  {fo/attributes    [m.ln.nodes/name
                      m.ln.nodes/host
                      m.ln.nodes/port
                      m.ln.nodes/core-node
                      m.ln.nodes/user]
+   fo/cancel-route  ["nodes"]
    fo/field-options {::m.ln.nodes/core-node
                      {::picker-options/query-key       ::m.c.nodes/index
                       ::picker-options/query-component u.links/CoreNodeLinkForm
@@ -125,7 +124,7 @@
                          (sort-by ::m.users/name options)))}}
    fo/field-styles  {::m.ln.nodes/core-node :pick-one
                      ::m.ln.nodes/user      :pick-one}
-   fo/cancel-route  ["nodes"]
+   fo/id            m.ln.nodes/id
    fo/route-prefix  "create-node"
    fo/title         "Create Lightning Node"}
   (if override-create-form
@@ -174,16 +173,7 @@
   [this {:ui/keys          [router]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
          :as               props}]
-  {:route-segment ["nodes" :id]
-   :query         [::m.ln.nodes/id
-                   ::m.ln.nodes/host
-                   ::m.ln.nodes/port
-                   ::m.ln.nodes/hasCert?
-                   ::m.ln.nodes/hasMacaroon?
-                   {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
-                   {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
-                   {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
-                   {:ui/router (comp/get-query Router)}]
+  {:ident         ::m.ln.nodes/id
    :initial-state {::m.ln.nodes/id           nil
                    ::m.ln.nodes/user         {}
                    ::m.ln.nodes/network      {}
@@ -193,8 +183,17 @@
                    ::m.ln.nodes/hasCert?     false
                    ::m.ln.nodes/hasMacaroon? false
                    :ui/router                {}}
-   :ident         ::m.ln.nodes/id
    :pre-merge     (u.links/page-merger ::m.ln.nodes/id {:ui/router Router})
+   :query         [::m.ln.nodes/id
+                   ::m.ln.nodes/host
+                   ::m.ln.nodes/port
+                   ::m.ln.nodes/hasCert?
+                   ::m.ln.nodes/hasMacaroon?
+                   {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
+                   {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
+                   {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
+                   {:ui/router (comp/get-query Router)}]
+   :route-segment ["nodes" :id]
    :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
@@ -238,7 +237,7 @@
         (u.links/ui-props-logger props)))))
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns          [m.ln.nodes/name
                         m.ln.nodes/network
                         m.ln.info/alias-attr
@@ -256,7 +255,4 @@
    ro/row-pk           m.ln.nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.nodes/index
-   ro/title            "Lightning Node Report"}
-  (do
-    (log/info :Report/starting {:props props})
-    (report/render-layout this)))
+   ro/title            "Lightning Node Report"})

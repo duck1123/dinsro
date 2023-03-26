@@ -1,7 +1,6 @@
 (ns dinsro.ui.accounts.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.transactions :as j.transactions]
@@ -12,8 +11,6 @@
 ;; [[../joins/transactions.cljc][Transaction Joins]]
 ;; [[../model/accounts.cljc][Accounts Model]]
 ;; [[../model/transactions.cljc][Transactions Model]]
-
-(def debug-page false)
 
 (report/defsc-report Report
   [_this _props]
@@ -29,20 +26,14 @@
    ro/source-attribute ::j.transactions/index
    ro/title            "Transactions"})
 
-(def ui-report (comp/factory Report))
-
 (defsc SubPage
-  [_this {:ui/keys   [report]
-          account-id ::m.accounts/id}]
+  [_this {:ui/keys   [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params %})
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {::m.accounts/id nil
                        :ui/report      {}}
    :query             [::m.accounts/id
                        {:ui/report (comp/get-query Report)}]}
-  (comp/fragment
-   (when debug-page
-     (dom/p {} (pr-str account-id)))
-   (ui-report report)))
+  ((comp/factory Report) report))
 
 (def ui-sub-page (comp/factory SubPage))

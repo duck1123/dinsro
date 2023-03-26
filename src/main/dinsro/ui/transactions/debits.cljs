@@ -14,10 +14,10 @@
   {ro/columns          [m.debits/value
                         j.debits/currency
                         m.debits/account]
-   ro/controls         {::m.transactions/id {:type :uuid :label "Block"}
-                        ::refresh           u.links/refresh-control}
    ro/control-layout   {:inputs         [[::m.transactions/id]]
                         :action-buttons [::refresh]}
+   ro/controls         {::m.transactions/id {:type :uuid :label "Block"}
+                        ::refresh           u.links/refresh-control}
    ro/field-formatters {::m.debits/value    #(u.links/ui-debit-link %3)
                         ::m.debits/account  #(u.links/ui-account-link %2)
                         ::j.debits/currency #(u.links/ui-currency-link %2)}
@@ -31,12 +31,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           ::m.transactions/keys [id]}]
-  {:query             [::m.transactions/id
-                       {:ui/report (comp/get-query Report)}]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {::m.transactions/id nil
-                       :ui/report   {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+                       :ui/report          {}}
+   :query             [::m.transactions/id
+                       {:ui/report (comp/get-query Report)}]}
   (if id
     (ui-report report)
     (dom/p "No id set")))

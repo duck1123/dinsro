@@ -17,7 +17,7 @@
 (def router-key :dinsro.ui.ln.remote-nodes/Router)
 
 (report/defsc-report Report
-  [this props]
+  [_this _props]
   {ro/columns        [m.ln.peers/remote-node
                       m.ln.peers/sat-recv
                       m.ln.peers/sat-sent
@@ -51,16 +51,14 @@
    ro/source-attribute ::j.ln.peers/index
    ro/title            "Remote Node Peers"
    ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true}
-  (log/info :Report/creating {:props props})
-  (report/render-layout this))
+   ro/run-on-mount?    true})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
-   :query             [{:ui/report (comp/get-query Report)}]
-   :initial-state     {:ui/report             {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :ident             (fn [] [:component/id ::SubPage])
+   :initial-state     {:ui/report {}}
+   :query             [{:ui/report (comp/get-query Report)}]}
   ((comp/factory Report) report))
 
 (def ui-sub-page (comp/factory SubPage))
