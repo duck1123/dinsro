@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    #?(:clj [dinsro.queries.rates :as q.rates])
@@ -22,8 +23,14 @@
   {ao/target    ::m.rate-sources/id
    ao/pc-output [{::index [::m.rate-sources/id]}]
    ao/pc-resolve
-   (fn [_ _]
-     (let [ids #?(:clj (q.rate-sources/index-ids) :cljs [])]
+   (fn [{:keys [query-params]} _]
+     (let [currency-id (::m.currencies/id query-params)
+           ids #?(:clj (if currency-id
+                         (q.rate-sources/find-by-currency currency-id)
+                         (q.rate-sources/index-ids))
+                  :cljs (do
+                          (comment currency-id)
+                          []))]
        {::index (m.rate-sources/idents ids)}))})
 
 (defattr rates ::rates :ref
