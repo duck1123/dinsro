@@ -4,6 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
@@ -40,24 +41,34 @@
      (let [ids (if user-id #?(:clj (q.accounts/index-ids) :cljs []) [])]
        {::admin-index (m.accounts/idents ids)}))})
 
+(defn do-index
+  [{:keys    [query-params] :as env
+    actor-id ::m.users/id} params]
+  (log/info :index/starting {:query-params query-params :params params})
+  (comment env)
+  (let [{wallet-id      ::m.c.wallets/id
+         user-id        ::m.users/id
+         currency-id    ::m.currencies/id
+         rate-source-id ::m.rate-sources/id} query-params
+        ids
+        #?(:clj
+           (cond
+             rate-source-id        (q.accounts/find-by-rate-source rate-source-id)
+             wallet-id             (q.accounts/find-by-wallet wallet-id)
+             (or user-id actor-id) (q.accounts/find-by-user (or user-id actor-id))
+             currency-id           (q.accounts/find-by-currency currency-id)
+             :else                 (do (log/warn :index/no-user {}) []))
+           :cljs
+           (do
+             (comment wallet-id user-id currency-id rate-source-id actor-id)
+             []))]
+    {::index (m.accounts/idents ids)}))
+
 ;; "All accounts belonging to authenticated user"
 (defattr index ::index :ref
-  {ao/target    ::m.accounts/id
-   ao/pc-output [{::index [::m.accounts/id]}]
-   ao/pc-resolve
-   (fn [{:keys   [query-params] :as env} _]
-     (log/info :index/starting {:query-params query-params})
-     (comment env)
-     (let [ids #?(:clj
-                  (if-let [wallet-id (::m.c.wallets/id query-params)]
-                    (q.accounts/find-by-wallet wallet-id)
-                    (if-let [user-id (::m.users/id env)]
-                      (q.accounts/find-by-user user-id)
-                      (do
-                        (log/warn :index/no-user {})
-                        [])))
-                  :cljs [])]
-       {::index (m.accounts/idents ids)}))})
+  {ao/target     ::m.accounts/id
+   ao/pc-output  [{::index [::m.accounts/id]}]
+   ao/pc-resolve #(do-index %1 %2)})
 
 (defattr index-by-rate-source ::index-by-rate-source :ref
   {ao/target    ::m.accounts/id
