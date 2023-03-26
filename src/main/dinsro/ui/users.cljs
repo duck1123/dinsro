@@ -28,10 +28,10 @@
     :route "dinsro.ui.users.debits/SubPage"}
    {:key   "ln-nodes"
     :name  "LN Nodes"
-    :route "dinsro.ui.user-ln-nodes/SubPage"}
+    :route "dinsro.ui.users.ln-nodes/SubPage"}
    {:key   "pubkeys"
     :name  "Pubkeys"
-    :route "dinsro.ui.user-pubkeys/SubPage"}
+    :route "dinsro.ui.users.pubkeys/SubPage"}
    {:key   "transactions"
     :name  "Transactions"
     :route "dinsro.ui.users.transactions/SubPage"}
