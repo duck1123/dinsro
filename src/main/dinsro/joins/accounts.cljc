@@ -70,18 +70,5 @@
    ao/pc-output  [{::index [::m.accounts/id]}]
    ao/pc-resolve #(do-index %1 %2)})
 
-(defattr index-by-rate-source ::index-by-rate-source :ref
-  {ao/target    ::m.accounts/id
-   ao/pc-output [{::index-by-rate-source [::m.accounts/id]}]
-   ao/pc-resolve
-   #?(:clj (fn [{:keys [query-params]} _]
-             (log/info :index-by-rate-source/starting {:query-params query-params})
-             (let [ids (if-let [rate-source-id (::m.rate-sources/id query-params)]
-                         (q.accounts/find-by-rate-source rate-source-id)
-                         [])]
-               {::index-by-rate-source (m.accounts/idents ids)}))
-      :cljs (fn [] {::index-by-rate-source []}))})
-
 (def attributes
-  [admin-index index index-by-rate-source
-   transaction-count transactions])
+  [admin-index index transaction-count transactions])

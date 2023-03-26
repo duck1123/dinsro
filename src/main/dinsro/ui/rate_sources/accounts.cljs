@@ -25,7 +25,7 @@
                         ::m.accounts/currency #(u.links/ui-currency-link %2)}
    ro/row-pk           m.accounts/id
    ro/run-on-mount?    true
-   ro/source-attribute ::j.accounts/index-by-rate-source
+   ro/source-attribute ::j.accounts/index
    ro/title            "Accounts"})
 
 (defsc SubPage
