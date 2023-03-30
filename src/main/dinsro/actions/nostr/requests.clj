@@ -2,6 +2,8 @@
   (:require
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations :as mu]
+   [dinsro.queries.nostr.filter-items :as q.n.filter-items]
+   [dinsro.queries.nostr.filters :as q.n.filters]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.requests :as q.n.requests]
    [dinsro.specs :as ds]
@@ -26,8 +28,22 @@
 (defn start!
   [request-id]
   (log/info :start!/starting {:request-id request-id})
-  (let [relay-id (q.n.requests/find-relay request-id)]
-    relay-id))
+  (if-let [relay-id (q.n.requests/find-relay request-id)]
+    (if-let [filters (q.n.filters/find-by-request request-id)]
+      (do
+        (log/info :start!/filters {:filters filters :relay-id relay-id})
+        (doseq [filter-id filters]
+          (let [items (q.n.filter-items/find-by-filter filter-id)]
+            (log/info :start!/items {:items items}))))
+      (throw (RuntimeException. "No Filters")))
+    (throw (RuntimeException. "No Relay"))))
+
+(defn stop!
+  [request-id]
+  (log/info :start!/starting {:request-id request-id})
+  (if-let [relay-id (q.n.requests/find-relay request-id)]
+    relay-id
+    (throw (RuntimeException. "No Relay"))))
 
 (defn do-start!
   [params]
@@ -42,8 +58,11 @@
   (if-let [request-id (::m.n.requests/id params)]
     (do
       (log/info :do-stop!/starting {:request-id request-id})
-      {:status "ok"})
-    (throw (RuntimeException. "No request id"))))
+      (try
+        (stop! request-id)
+        {:status "ok"}
+        (catch Exception ex (mu/exception-response ex))))
+    (mu/error-response "No Request id")))
 
 (comment
 

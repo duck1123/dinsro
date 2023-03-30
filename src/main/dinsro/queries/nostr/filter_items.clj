@@ -1,9 +1,10 @@
-(ns dinsro.queries.nostr.filters
+(ns dinsro.queries.nostr.filter-items
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -44,32 +45,10 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
-(>defn delete-all
-  []
-  [=> nil?]
-  (doseq [id (index-ids)]
-    (delete! id)))
-
-(defn get-greatest-index
-  "Returns the largest index of all filters matching this request"
-  [request-id]
-  (let [db (c.xtdb/main-db)
-        query '{:find [?index]
-                :in [[?request-id]]
-                :where [[?filter-id ::m.n.filters/index ?index]
-                        [?filter-id ::m.n.filters/request ?request-id]
-                        (not-join [?index]
-                                  [?other-filter ::m.n.filters/index ?other-index]
-                                  [?other-filter ::m.n.filters/request ?request-id]
-                                  [(> ?other-index ?index)])]}
-        result (xt/q db query [request-id])]
-    (log/info :get-greatest-index/result {:result result})
-    (or (ffirst result) -1)))
-
-(defn find-by-request
-  [request-id]
+(defn find-by-filter
+  [filter-id]
   (c.xtdb/query-ids
-   '{:find [?filter-id]
-     :in [[?request-id]]
-     :where [[?filter-id ::m.n.filters/request ?request-id]]}
-   [request-id]))
+   '{:find [?item-id]
+     :in [[?filter-id]]
+     :where [[?item-id ::m.n.filter-items/filter ?filter-id]]}
+   [filter-id]))

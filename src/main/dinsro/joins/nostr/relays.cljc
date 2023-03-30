@@ -37,11 +37,11 @@
    ao/pc-input   #{::m.n.relays/id}
    ao/pc-resolve
    (fn [_env params]
-     (log/info :request-count/starting {:params params})
-     (let [relay-id (::m.n.relays/id params)
-           ids      #?(:clj  (q.n.requests/find-by-relay relay-id)
-                       :cljs (do (comment relay-id) []))]
-       {::subscription-count (count ids)}))})
+     (let [relay-id (::m.n.relays/id params)]
+       (log/info :request-count/starting {:relay-id relay-id})
+       (let [ids      #?(:clj  (q.n.requests/find-by-relay relay-id)
+                         :cljs (do (comment relay-id) []))]
+         {::subscription-count (count ids)})))})
 
 (defattr subscription-count ::subscription-count :int
   {ao/identities #{::m.n.relays/id}

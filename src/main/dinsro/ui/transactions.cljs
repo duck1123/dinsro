@@ -75,8 +75,8 @@
 
 (defsc Show
   [this {::m.transactions/keys [description date]
-          debit-count ::j.transactions/debit-count
-          :ui/keys              [debits]}]
+         debit-count           ::j.transactions/debit-count
+         :ui/keys              [debits]}]
   {:ident         ::m.transactions/id
    :initial-state {::m.transactions/description ""
                    ::m.transactions/id          nil
@@ -97,7 +97,7 @@
      (dom/div {} (str "Debit Count: " debit-count))
      (dom/p {} "Date: " (str date))
      (dom/button {:classes [:.ui :.button]
-                  :onClick (fn [e]
+                  :onClick (fn [_e]
                              (let [props (comp/props this)]
                                (log/info :Show/clicked {:props props})
                                (let [id (::m.transactions/id props)]

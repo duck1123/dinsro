@@ -4,6 +4,8 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.actions.nostr.event-tags :as a.n.event-tags]
+   [dinsro.actions.nostr.filter-items :as a.n.filter-items]
+   [dinsro.actions.nostr.filters :as a.n.filters]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.actions.nostr.requests :as a.n.requests]
    [dinsro.model.nostr.events :as m.n.events]
@@ -23,11 +25,15 @@
 (>defn fetch-events!
   [pubkey-id relay-id]
   [::m.n.pubkeys/id ::m.n.relays/id => any?]
-  (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id})
   (let [code (a.n.relays/get-next-code!)]
     (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id :code code})
     (let [request-id (a.n.requests/register-request relay-id code)]
-      (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id :code code :request-id request-id}))))
+      (log/info :fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id :code code :request-id request-id})
+      (let [filter-id (a.n.filters/register-filter! request-id)
+            item-id   (a.n.filter-items/register-pubkey! filter-id pubkey-id)]
+        (log/info :fetch-events!/starting {:filter-id filter-id :item-id item-id})
+        (a.n.requests/start! request-id))
+      (throw (RuntimeException. "Not Implemented")))))
 
 (defn update-event!
   [m]
@@ -111,8 +117,11 @@
   (log/info :do-fetch-events!/starting {:props props})
   (let [{pubkey-id ::m.n.pubkeys/id relay-id ::m.n.relays/id} props]
     (log/info :do-fetch-events!/starting {:pubkey-id pubkey-id :relay-id relay-id})
-    (fetch-events! pubkey-id relay-id)
-    {::mu/status :ok}))
+    (try
+      (fetch-events! pubkey-id relay-id)
+      {::mu/status :ok}
+      (catch Exception ex
+        (mu/exception-response ex)))))
 
 (comment
 

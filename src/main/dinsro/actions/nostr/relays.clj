@@ -240,7 +240,8 @@
   (log/info :register-relay/starting {:address address})
   (if-let [relay-id (q.n.relays/find-by-address address)]
     relay-id
-    (let [params {::m.n.relays/address address}]
+    (let [params {::m.n.relays/address   address
+                  ::m.n.relays/connected false}]
       (q.n.relays/create-record params))))
 
 (defn do-submit!

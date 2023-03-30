@@ -16,6 +16,10 @@
      {::m.n.filters/index   (inc n)
       ::m.n.filters/request request-id})))
 
+(defn register-filter!
+  [request-id]
+  (add-filter! request-id))
+
 (defn do-add-filters!
   [props]
   (log/info :do-add-filters!/starting {:props props})
