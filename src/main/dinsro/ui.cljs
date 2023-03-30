@@ -99,36 +99,32 @@
   [this {:root/keys        [authenticator global-error init-form navbar]
          :ui/keys          [router]
          ::m.settings/keys [site-config]}]
-  {:componentDidMount
-   (fn [this]
-     (df/load! this ::m.settings/site-config mu.settings/Config)
-     (df/load! this :root/navbar u.navbar/NavbarUnion)
-     (uism/begin! this machines/hideable ::mu.navbar/navbarsm
-                  {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
-   :css           [[:.container {:height   "100%"
-                                 :overflow "hidden"}]
-                   [:.pusher {:height   "100%"
-                              :overflow "auto !important"}]
-                   [:.top {:height "100%"}]]
-   :query         [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
-                   {:root/navbar (comp/get-query u.navbar/Navbar)}
-                   {:root/init-form (comp/get-query u.initialize/InitForm)}
-                   {:root/global-error (comp/get-query GlobalErrorDisplay)}
-                   {:ui/router (comp/get-query RootRouter)}
-                   ::auth/authorization
-                   {::m.settings/site-config (comp/get-query mu.settings/Config)}]
-   :initial-state {:root/navbar             {}
-                   :root/authenticator      {}
-                   :root/init-form          {}
-                   :ui/router               {}
-                   :root/global-error       {}
-                   ::m.settings/site-config {}}}
-  (let [{:keys [container pushable pusher top]} (css/get-classnames Root)
-        top-router-state                        (or (uism/get-active-state this ::RootRouter) :initial)
-        {::m.settings/keys
-         [loaded? initialized?]}                site-config
-        root                                    (uism/get-active-state this ::auth/auth-machine)
-        gathering-credentials?                  (#{:state/gathering-credentials} root)]
+  {:componentDidMount (fn [this]
+                        (df/load! this ::m.settings/site-config mu.settings/Config)
+                        (df/load! this :root/navbar u.navbar/NavbarUnion)
+                        (uism/begin! this machines/hideable ::mu.navbar/navbarsm
+                                     {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
+   :css               [[:.container {:height "100%" :overflow "hidden"}]
+                       [:.pusher {:height "100%" :overflow "auto !important"}]
+                       [:.top {:height "100%"}]]
+   :query             [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
+                       {:root/navbar (comp/get-query u.navbar/Navbar)}
+                       {:root/init-form (comp/get-query u.initialize/InitForm)}
+                       {:root/global-error (comp/get-query GlobalErrorDisplay)}
+                       {:ui/router (comp/get-query RootRouter)}
+                       ::auth/authorization
+                       {::m.settings/site-config (comp/get-query mu.settings/Config)}]
+   :initial-state     {:root/navbar             {}
+                       :root/authenticator      {}
+                       :root/init-form          {}
+                       :ui/router               {}
+                       :root/global-error       {}
+                       ::m.settings/site-config {}}}
+  (let [{:keys [container pushable pusher top]}    (css/get-classnames Root)
+        top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
+        {::m.settings/keys [loaded? initialized?]} site-config
+        root                                       (uism/get-active-state this ::auth/auth-machine)
+        gathering-credentials?                     (#{:state/gathering-credentials} root)]
     (dom/div {:classes [:.ui :.container container]}
       (if loaded?
         (if initialized?
