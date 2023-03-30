@@ -1,27 +1,22 @@
 #!/usr/bin/env bb
-(ns cert-downloader.bootstrap
+(ns bootstrap
   (:require
    [babashka.curl :as curl]
    [babashka.fs :as fs]
    [clojure.java.io :as io]))
 
 (def default-base-path "/mnt/data")
-(def fileserver-service-name "alice-fileserver")
-(def fileserver-namespace "dinsro")
 (def scheme "http")
-(def base-url "localtest.me")
 
 (defn download-file!
-  ([name data-path file-name]
-   (download-file! name data-path file-name file-name))
-  ([instance-name data-path file-name dest-file-name]
-   (try
-     (let [url  (str scheme "://" instance-name "-fileserver" "/")
-           path (format "%s/%s" data-path dest-file-name)]
-       (println (str "Downloading: " url))
-       (io/copy (:body (curl/get url {:as :bytes})) (io/file path)))
-     (catch Exception ex
-       (println (str "failed to download file: " ex))))))
+  [instance-name data-path dest-file-name]
+  (try
+    (let [url  (str scheme "://" instance-name "-fileserver" "/")
+          path (format "%s/%s" data-path dest-file-name)]
+      (println (str "Downloading: " url))
+      (io/copy (:body (curl/get url {:as :bytes})) (io/file path)))
+    (catch Exception ex
+      (println (str "failed to download file: " ex)))))
 
 (defn initialize-cert!
   [name path data-path]
@@ -29,7 +24,7 @@
   (try
     (let [backup-path (str path ".bak")]
       (fs/delete-if-exists (format "%s/%s" data-path backup-path))
-      (download-file! name data-path path backup-path)
+      (download-file! name data-path backup-path)
       (let [src  (format "%s/%s" data-path backup-path)
             dest (format "%s/%s" data-path path)]
         (fs/delete-if-exists dest)
