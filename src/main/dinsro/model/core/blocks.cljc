@@ -27,7 +27,7 @@
    ao/schema     :production})
 
 (s/def ::median-time inst?)
-(defattr median-time ::median-time :date
+(defattr median-time ::median-time :instant
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -67,7 +67,7 @@
    ao/schema     :production})
 
 (s/def ::time inst?)
-(defattr time ::time :date
+(defattr time ::time :instant
   {ao/identities #{::id}
    ao/schema     :production})
 

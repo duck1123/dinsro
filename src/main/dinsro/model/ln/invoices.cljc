@@ -143,7 +143,7 @@
    ao/schema     :production})
 
 (s/def ::creation-date inst?)
-(defattr creation-date ::creation-date :date
+(defattr creation-date ::creation-date :instant
   {ao/identities #{::id}
    ao/schema     :production})
 

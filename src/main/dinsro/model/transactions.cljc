@@ -17,7 +17,7 @@
    ao/schema     :production})
 
 (s/def ::date ::ds/date)
-(defattr date ::date :date
+(defattr date ::date :instant
   {ao/identities #{::id}
    ao/schema     :production})
 

@@ -4,6 +4,10 @@
    [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.fulcro.mutations :as fm]
+   ;; [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
+   [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
+   [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.rendering.semantic-ui.field :refer [render-field-factory]]
@@ -121,8 +125,26 @@
 (def render-ref (render-field-factory ref-control))
 
 (defn date-control
-  [{:keys [value] :as _env} _attribute]
-  (dom/div {} (str value)))
+  [{:keys [value] :as env} attribute]
+  (log/info :date-control/starting {:env env :attribute attribute})
+  (let [this nil
+        iso-string (.toISOString value)
+        date-string (.substring iso-string 0 10)
+        time-string (.substring iso-string 11 19)]
+    (dom/div {}
+      (ui-form-field {}
+        (dom/div {} (str value))
+        (dom/div {} (str iso-string))
+        (dom/div {} (str date-string))
+        (dom/div {} (str time-string))
+        (ui-form-input
+         {:value    date-string
+          :type     "date"
+          :onChange (fn [evt _] (fm/set-string! this :user/username :event evt))})
+        (ui-form-input
+         {:value    time-string
+          :type     "time"
+          :onChange (fn [evt _] (fm/set-string! this :user/username :event evt))})))))
 
 (def render-date (render-field-factory date-control))
 

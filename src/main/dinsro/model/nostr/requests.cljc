@@ -32,12 +32,12 @@
    ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
 
 (s/def ::start-time (? ::ds/date))
-(defattr start-time ::start-time :date
+(defattr start-time ::start-time :instant
   {ao/identities #{::id}
    ao/schema     :production})
 
 (s/def ::end-time (? ::ds/date))
-(defattr end-time ::end-time :date
+(defattr end-time ::end-time :instant
   {ao/identities #{::id}
    ao/schema     :production})
 

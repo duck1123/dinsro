@@ -54,7 +54,7 @@
    ao/schema     :production})
 
 (s/def ::timestamp inst?)
-(defattr timestamp ::timestamp :date
+(defattr timestamp ::timestamp :instant
   {ao/identities #{::id}
    ao/schema     :production})
 

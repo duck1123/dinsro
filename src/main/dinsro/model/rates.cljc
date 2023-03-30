@@ -21,7 +21,7 @@
 (s/def ::date ds/date)
 (s/def ::date-ms pos-int?)
 
-(defattr date ::date :date
+(defattr date ::date :instant
   {ao/identities #{::id}
    ao/schema     :production})
 

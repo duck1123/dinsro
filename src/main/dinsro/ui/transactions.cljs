@@ -11,7 +11,8 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.transactions.debits :as u.t.debits]))
+   [dinsro.ui.transactions.debits :as u.t.debits]
+   [lambdaisland.glogc :as log]))
 
 (defsc AccountQuery
   [_this _props]
@@ -19,7 +20,8 @@
    :ident ::m.accounts/id})
 
 (form/defsc-form NewForm [_this _props]
-  {fo/attributes    [m.transactions/description]
+  {fo/attributes    [m.transactions/description
+                     m.transactions/date]
    fo/cancel-route  ["transactions"]
    fo/field-styles  {::m.transactions/account :pick-one}
    fo/field-options {::m.transactions/account
@@ -34,6 +36,24 @@
                          (sort-by ::m.accounts/name options)))}}
    fo/id            m.transactions/id
    fo/route-prefix  "transaction-form"
+   fo/title         "Transaction"})
+
+(form/defsc-form EditForm [_this _props]
+  {fo/attributes    [m.transactions/description]
+   fo/cancel-route  ["transactions"]
+   fo/field-styles  {::m.transactions/account :pick-one}
+   fo/field-options {::m.transactions/account
+                     {::picker-options/query-key       ::m.accounts/index
+                      ::picker-options/query-component AccountQuery
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.accounts/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.accounts/id id]})
+                         (sort-by ::m.accounts/name options)))}}
+   fo/id            m.transactions/id
+   fo/route-prefix  "edit-transaction-form"
    fo/title         "Transaction"})
 
 (report/defsc-report Report
@@ -54,7 +74,7 @@
    ro/title            "Transaction Report"})
 
 (defsc Show
-  [_this {::m.transactions/keys [description date]
+  [this {::m.transactions/keys [description date]
           debit-count ::j.transactions/debit-count
           :ui/keys              [debits]}]
   {:ident         ::m.transactions/id
@@ -75,7 +95,14 @@
    (dom/div :.ui.segment
      (dom/h1 {} (str description))
      (dom/div {} (str "Debit Count: " debit-count))
-     (dom/p {} "Date: " (str date)))
+     (dom/p {} "Date: " (str date))
+     (dom/button {:classes [:.ui :.button]
+                  :onClick (fn [e]
+                             (let [props (comp/props this)]
+                               (log/info :Show/clicked {:props props})
+                               (let [id (::m.transactions/id props)]
+                                 (form/edit! this NewForm id))))}
+       "Edit"))
    (dom/div  :.ui.segment
      (if debits
        (u.t.debits/ui-sub-page debits)
