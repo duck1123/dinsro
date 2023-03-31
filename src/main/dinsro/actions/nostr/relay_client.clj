@@ -52,10 +52,10 @@
   (partial handle-message result-atom chan))
 
 (>defn on-close
-  [chan]
-  [ds/channel? => any?]
+  [url chan]
+  [string? ds/channel? => any?]
   (fn [_ws _status _reason]
-    (log/info :on-closed/received {})
+    (log/info :on-closed/received {:url url})
     (async/close! chan)))
 
 (>defn get-client
@@ -69,7 +69,7 @@
       (log/info :get-client/opening {:url url})
       (let [result-atom (atom "")
             params      {:on-message (on-message result-atom chan)
-                         :on-close   (on-close chan)}
+                         :on-close   (on-close url chan)}
             client      @(ws/websocket url params)]
         (swap! connections assoc url {:client client :chan chan})
         client))))

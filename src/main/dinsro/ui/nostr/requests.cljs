@@ -4,22 +4,39 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.requests.filters :as u.n.rq.filters]))
+   [dinsro.ui.nostr.requests.connections :as u.n.rq.connections]
+   [dinsro.ui.nostr.requests.filter-items :as u.n.rq.filter-items]
+   [dinsro.ui.nostr.requests.filters :as u.n.rq.filters]
+   [dinsro.ui.nostr.requests.runs :as u.n.rq.runs]))
 
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.rq.filters/SubPage]})
+   [u.n.rq.connections/SubPage
+    u.n.rq.filter-items/SubPage
+    u.n.rq.filters/SubPage
+    u.n.rq.runs/SubPage]})
 
 (def menu-items
   [{:key   "filters"
     :name  "Filters"
-    :route "dinsro.ui.nostr.requests.filters/SubPage"}])
+    :route "dinsro.ui.nostr.requests.filters/SubPage"}
+   {:key   "items"
+    :name  "Items"
+    :route "dinsro.ui.nostr.requests.filter-items/SubPage"}
+   {:key   "runs"
+    :name  "Runs"
+    :route "dinsro.ui.nostr.requests.runs/SubPage"}
+   {:key   "connections"
+    :name  "Connections"
+    :route "dinsro.ui.nostr.requests.connections/SubPage"}])
 
 (defsc Show
   [_this {::m.n.requests/keys [code id start-time end-time relay]
+          ::j.n.requests/keys [query-string]
           :ui/keys            [router]}]
   {:ident         ::m.n.requests/id
    :initial-state {::m.n.requests/id         nil
@@ -27,12 +44,14 @@
                    ::m.n.requests/code       ""
                    ::m.n.requests/start-time nil
                    ::m.n.requests/end-time   nil
-                   ::m.n.requests/relay      {}}
+                   ::m.n.requests/relay      {}
+                   ::j.n.requests/query-string ""}
    :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
    :query         [::m.n.requests/id
                    ::m.n.requests/code
                    ::m.n.requests/start-time
                    ::m.n.requests/end-time
+                   ::j.n.requests/query-string
                    {::m.n.requests/relay (comp/get-query u.links/RelayLinkForm)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["request" :id]
@@ -44,6 +63,7 @@
         (dom/div {} (str code))
         (dom/div {} (str start-time))
         (dom/div {} (str end-time))
+        (dom/div {} (str "Query String: " query-string))
         (dom/div {} (u.links/ui-relay-link relay)))
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))

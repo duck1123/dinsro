@@ -4,6 +4,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
+   [dinsro.model.nostr.requests :as m.n.requests]
    #?(:clj [dinsro.queries.nostr.filter-items :as q.n.filter-items])
    #?(:clj [dinsro.queries.nostr.filters :as q.n.filters])
    [dinsro.specs]
@@ -15,21 +16,29 @@
   {ao/target    ::m.n.filters/id
    ao/pc-output [{::index [::m.n.filters/id]}]
    ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (q.n.filters/index-ids) :cljs [])]
-       (log/info :index/starting {:ids ids})
+   (fn [{:keys [query-params]} props]
+     (log/info :index/starting {:query-params query-params :props props})
+     (let [request-id (::m.n.requests/id query-params)
+           ids        #?(:clj (cond
+                                request-id (q.n.filters/find-by-request request-id)
+                                :else      (q.n.filters/index-ids))
+                         :cljs (do
+                                 (comment request-id)
+                                 []))]
+       (log/trace :index/finished {:ids ids})
        {::index (m.n.filters/idents ids)}))})
 
 (defattr items ::items :ref
   {ao/target     ::m.n.filter-items/id
    ao/identities #{::m.n.filters/id}
+   ao/pc-input   #{::m.n.filters/id}
    ao/pc-output  [{::items [::m.n.filter-items/id]}]
    ao/pc-resolve
-   (fn [_ {::m.n.filters/keys [id]}]
+   (fn [{:keys [query-params]} {::m.n.filters/keys [id] :as props}]
+     (log/info :index/starting {:query-params query-params :props props})
      (let [ids #?(:clj (q.n.filter-items/find-by-filter id)
                   :cljs (do (comment id) []))]
-       (log/info :index/starting {:ids ids})
+       (log/trace :index/finished {:ids ids})
        {::items (m.n.filter-items/idents ids)}))})
 
 (defattr item-count ::item-count :int

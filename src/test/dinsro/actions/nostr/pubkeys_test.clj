@@ -40,12 +40,12 @@
   (str "{\"name\":\"bob\",\"about\":\"" about "\",\"nip05\":\"" nip05
        "\",\"lud06\":\"" lud06 "\",\"lud16\":\"" lud16
        "\",\"picture\":\"" picture "\"}"))
-(def content-data (json/read-str content))
+(def content-data (json/read-str content :key-fn keyword))
 (def tags [])
 
 (deftest parse-content-parsed
-  (let [data {"name"  "bob" "about"   about   "nip05"   nip05 "lud06" lud06
-              "lud16" lud16 "picture" picture "website" nil}]
+  (let [data {:name  "bob" :about   about   :nip05   nip05 :lud06 lud06
+              :lud16 lud16 :picture picture :website nil}]
     (assertions
      (a.n.pubkeys/parse-content-parsed data) =check=>
      (_/embeds?*
@@ -72,9 +72,7 @@
                      :picture picture :website nil}))))
 
 (deftest process-pubkey-message!
-  (let [event-type "EVENT"
-        code       "adhoc"
-        id         note-id
+  (let [id         note-id
         body       {"content"    content
                     "created_at" 1674661591
                     "id"         id
@@ -84,7 +82,7 @@
                     "tags"       tags}]
     (assertions
      "Should return an id"
-     (a.n.pubkeys/process-pubkey-message! event-type code body) =check=> (_/is?* uuid?))
+     (a.n.pubkeys/process-pubkey-message! body) =check=> (_/is?* uuid?))
 
     (let [id (q.n.pubkeys/find-by-hex pubkey-hex)]
       (assertions

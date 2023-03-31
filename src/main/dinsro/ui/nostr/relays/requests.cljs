@@ -9,7 +9,6 @@
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
-   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
    [dinsro.ui.links :as u.links]))
 
@@ -35,16 +34,24 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.subscriptions/code #(u.links/ui-subscription-link %3)
-                         ::m.n.requests/code      #(u.links/ui-request-link %3)}
+  {ro/column-formatters {::m.n.requests/code         #(u.links/ui-request-link %3)
+                         ::m.n.requests/relay        #(u.links/ui-relay-link %2)
+                         ::j.n.requests/filter-count #(u.links/ui-request-filter-count-link %3)
+                         ::j.n.requests/run-count    #(u.links/ui-request-run-count-link %3)}
    ro/columns           [m.n.requests/code
-                         m.n.requests/status
-                         m.n.requests/start-time
-                         m.n.requests/end-time]
+                         m.n.requests/relay
+                         ;; m.n.requests/status
+                         ;; m.n.requests/start-time
+                         ;; m.n.requests/end-time
+                         j.n.requests/filter-count
+                         j.n.requests/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::new     new-button
-                         ::refresh u.links/refresh-control}
-   ro/row-actions       [(u.links/row-action-button "Stop" ::m.n.requests/id mu.n.requests/stop!)]
+   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
+                         ::new           new-button
+                         ::refresh       u.links/refresh-control}
+   ro/row-actions       [(u.links/row-action-button "Run" ::m.n.requests/id mu.n.requests/run!)
+                         ;; (u.links/row-action-button "Stop" ::m.n.requests/id mu.n.requests/stop!)
+                         ]
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/index

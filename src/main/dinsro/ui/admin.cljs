@@ -50,9 +50,6 @@
    {:key   "categories"
     :name  "Categories"
     :route "dinsro.ui.admin.categories/AdminReport"}
-   {:key   "ln-nodes"
-    :name  "LN Nodes"
-    :route "dinsro.ui.admin.ln.nodes/AdminReport"}
    {:key   "accounts"
     :name  "Accounts"
     :route "dinsro.ui.admin.accounts/AdminReport"}
@@ -62,9 +59,15 @@
    {:key   "debits"
     :name  "Debits"
     :route "dinsro.ui.admin.debits/AdminReport"}
-   {:key   "blocks"
-    :name  "Blocks"
-    :route "dinsro.ui.admin.core.blocks/AdminReport"}
+   {:key   "nostr"
+    :name  "Nostr"
+    :route "dinsro.ui.admin.nostr/Page"}
+   {:key   "core"
+    :name  "Core"
+    :route "dinsro.ui.admin.core/Page"}
+   {:key   "ln"
+    :name  "LN"
+    :route "dinsro.ui.admin.ln/Page"}
    {:key   "rate-sources"
     :name  "Rate Sources"
     :route "dinsro.ui.admin.rate-sources/AdminReport"}])

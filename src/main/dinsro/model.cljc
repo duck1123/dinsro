@@ -30,6 +30,7 @@
    [dinsro.joins.nostr.badge-acceptances :as j.n.badge-acceptances]
    [dinsro.joins.nostr.badge-awards :as j.n.badge-awards]
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
+   [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.joins.nostr.event-tags :as j.n.event-tags]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.joins.nostr.filter-items :as j.n.filter-items]
@@ -38,8 +39,10 @@
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.nostr.requests :as j.n.requests]
+   [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
    [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
+   [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.transactions :as j.transactions]
@@ -79,6 +82,7 @@
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
+   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.contact-relays :as m.n.contact-relays]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
@@ -88,8 +92,10 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.settings :as m.settings]
@@ -120,6 +126,7 @@
    #?(:clj [dinsro.mutations.nostr.badge-acceptances :as mu.n.badge-acceptances])
    #?(:clj [dinsro.mutations.nostr.badge-awards :as mu.n.badge-awards])
    #?(:clj [dinsro.mutations.nostr.badge-definitions :as mu.n.badge-definitons])
+   #?(:clj [dinsro.mutations.nostr.connections :as mu.n.connections])
    #?(:clj [dinsro.mutations.nostr.event-tags :as mu.n.event-tags])
    #?(:clj [dinsro.mutations.nostr.events :as mu.n.events])
    #?(:clj [dinsro.mutations.nostr.filter-items :as mu.n.filter-items])
@@ -129,8 +136,10 @@
    #?(:clj [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys])
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
    #?(:clj [dinsro.mutations.nostr.requests :as mu.n.requests])
+   #?(:clj [dinsro.mutations.nostr.runs :as mu.n.runs])
    #?(:clj [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys])
    #?(:clj [dinsro.mutations.nostr.subscriptions :as mu.n.subscriptions])
+   #?(:clj [dinsro.mutations.nostr.witnesses :as mu.n.witnesses])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
@@ -168,6 +177,7 @@
         j.n.badge-acceptances/attributes
         j.n.badge-awards/attributes
         j.n.badge-definitions/attributes
+        j.n.connections/attributes
         j.n.event-tags/attributes
         j.n.events/attributes
         j.n.filter-items/attributes
@@ -176,8 +186,10 @@
         j.n.pubkeys/attributes
         j.n.relays/attributes
         j.n.requests/attributes
+        j.n.runs/attributes
         j.n.subscription-pubkeys/attributes
         j.n.subscriptions/attributes
+        j.n.witnesses/attributes
         j.rates/attributes
         j.rate-sources/attributes
         j.transactions/attributes
@@ -215,6 +227,7 @@
         m.n.badge-acceptances/attributes
         m.n.badge-awards/attributes
         m.n.badge-definitions/attributes
+        m.n.connections/attributes
         m.n.contact-relays/attributes
         m.n.event-tags/attributes
         m.n.events/attributes
@@ -224,8 +237,10 @@
         m.n.pubkeys/attributes
         m.n.relays/attributes
         m.n.requests/attributes
+        m.n.runs/attributes
         m.n.subscription-pubkeys/attributes
         m.n.subscriptions/attributes
+        m.n.witnesses/attributes
         m.navbar/attributes
         m.navlink/attributes
         m.rates/attributes
@@ -263,6 +278,7 @@
            mu.n.badge-acceptances/resolvers
            mu.n.badge-awards/resolvers
            mu.n.badge-definitons/resolvers
+           mu.n.connections/resolvers
            mu.n.event-tags/resolvers
            mu.n.events/resolvers
            mu.n.filter-items/resolvers
@@ -272,8 +288,10 @@
            mu.n.pubkeys/resolvers
            mu.n.relays/resolvers
            mu.n.requests/resolvers
+           mu.n.runs/resolvers
            mu.n.subscription-pubkeys/resolvers
            mu.n.subscriptions/resolvers
+           mu.n.witnesses/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers

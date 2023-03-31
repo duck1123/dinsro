@@ -2,8 +2,8 @@
 (ns dinsro.notebooks.nostr.pubkeys_notebook
   (:require
    [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
-   [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.notebook-utils :as nu]
+   [dinsro.processors.nostr.pubkeys :as p.n.pubkeys]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.viewers :as dv]
@@ -52,7 +52,7 @@
 ^{::clerk/visibility {:result :hide}}
 (defn update-pubkey-run []
   (let [relay-id (first (q.n.relays/index-ids))
-        result (nu/try-await (a.n.pubkeys/update-pubkey! pubkey-id relay-id))]
+        result (nu/try-await (p.n.pubkeys/update-pubkey! pubkey-id relay-id))]
     (reset! last-update-result result)
     result))
 
@@ -63,18 +63,3 @@
 
 ^{::clerk/visibility {:result :hide}}
 (comment (update-pubkey-run))
-
-(comment
-
-  (def relay-id (first (q.n.relays/index-ids)))
-  relay-id
-  (def relay (q.n.relays/read-record relay-id))
-
-  (a.n.relays/connect! relay-id)
-  (a.n.relays/disconnect! relay-id)
-
-  relay
-
-  (a.n.relays/get-client-for-id relay-id false)
-
-  nil)

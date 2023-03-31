@@ -1,4 +1,5 @@
 (ns dinsro.model.nostr.event-tags
+  (:refer-clojure :exclude [type])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
@@ -27,6 +28,21 @@
    ao/schema           :production
    ::report/column-EQL {::parent [::m.n.events/id ::m.n.events/note-id]}})
 
+(>def ::type string?)
+(defattr type ::type :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(>def ::raw-value string?)
+(defattr raw-value ::raw-value :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(>def ::extra (? string?))
+(defattr extra ::extra :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
 (>def ::event (? uuid?))
 (defattr event ::event :ref
   {ao/identities       #{::id}
@@ -43,9 +59,9 @@
 
 (>def ::required-params (s/keys :req [::index ::parent]
                                 :opt [::event ::pubkey]))
-(>def ::params (s/keys :req [::index ::parent]
+(>def ::params (s/keys :req [::index ::parent ::raw-value ::type ::extra]
                        :opt [::event ::pubkey]))
-(>def ::item (s/keys :req [::id ::index ::parent]
+(>def ::item (s/keys :req [::id ::index ::parent ::raw-value ::type ::extra]
                      :opt [::event ::pubkey]))
 (>def ::items (s/coll-of ::item))
 
@@ -53,4 +69,4 @@
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id index parent event pubkey])
+(def attributes [id index parent event pubkey type raw-value extra])

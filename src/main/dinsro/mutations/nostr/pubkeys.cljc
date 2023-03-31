@@ -1,27 +1,23 @@
 (ns dinsro.mutations.nostr.pubkeys
   (:require
    [clojure.spec.alpha :as s]
-   #?(:cljs [com.fulcrologic.fulcro.algorithms.merge :as merge])
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:clj  [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
-      :cljs [com.fulcrologic.guardrails.core :refer [>def =>]])
+   [com.fulcrologic.guardrails.core :refer [>def =>]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.nostr.badge-definitions :as a.n.badge-definitions])
-   #?(:clj [dinsro.actions.nostr.events :as a.n.events])
    #?(:clj [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts])
    #?(:clj [dinsro.actions.nostr.pubkey-events :as a.n.pubkey-events])
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
    #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
+   #?(:cljs [dinsro.handlers.nostr.pubkeys :as h.n.pubkeys])
    [dinsro.model.contacts :as m.contacts]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
-   [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
-   #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
-   [lambdaisland.glogc :as log]))
+   #?(:clj [dinsro.processors.nostr.badge-awards :as p.n.badge-awards])
+   #?(:clj [dinsro.processors.nostr.badge-definitions :as p.n.badge-definitions])
+   #?(:clj [dinsro.processors.nostr.pubkeys :as p.n.pubkeys])
+   #?(:cljs [dinsro.responses.nostr.pubkeys :as r.n.pubkeys])))
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../actions/nostr/subscription_pubkeys.clj][Subscription Pubkey Actions]]
@@ -29,290 +25,110 @@
 ;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
-(comment ::m.n.relays/_  ::pc/_)
+#?(:cljs (comment ::m.contacts/_ ::m.n.badge-awards/id ::m.n.relays/_ ::pc/_))
 
 (>def ::item ::m.n.pubkeys/item)
 (>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.n.pubkeys/item]))
 
 ;; Add Contact
 
-(>def ::add-contact!-request
-  (s/keys :req [::m.n.pubkeys/id]))
-
-(>def ::add-contact!-response-success
-  (s/keys :req [::mu/status]))
-
-(>def ::add-contact!-response-error
-  (s/keys :req [::mu/status]))
-
-(>def ::add-contact!-response
-  (s/or :success ::add-contact!-response-success
-        :error ::add-contact!-response-error))
-
-(defsc AddContactResponse
-  [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::m.contacts/item]})
-
 #?(:clj
    (pc/defmutation add-contact!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.contacts/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.contacts/item]}
      (a.n.pubkeys/add-contact! props))
 
    :cljs
    (fm/defmutation add-contact! [_props]
-     (action    [_env] true)
-     (remote    [env]  (fm/returning env AddContactResponse))))
+     (action [_env] true)
+     (remote [env]  (fm/returning env r.n.pubkeys/AddContactResponse))))
 
 ;; Fetch
-
-(defsc FetchResponse
-  [_ _]
-  {:initial-state {::mu/status      :initial
-                   ::mu/errors      {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::m.c.nodes/item]})
-
-#?(:cljs
-   (defn handle-fetch
-     [{:keys [state] :as env}]
-     (let [body                                        (get-in env [:result :body])
-           response                                    (get body `fetch!)
-           {:com.fulcrologic.rad.pathom/keys [errors]} response]
-       (if errors
-         (do
-           (log/error :handle-fetch/errored {:errors errors})
-           {})
-         (let [status (:dinsro.mutations/status response)]
-           (if (= status :error)
-             (let [errors (:dinsro.mutations/errors response)]
-               (log/info :handle-fetch/errored {:response response :errors errors})
-               {})
-             (do
-               (log/info :handle-fetch/completed {:response response})
-               (let [{::m.c.nodes/keys [item]} response
-                     {::m.c.nodes/keys [id]}   item]
-                 (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
-                 {}))))))))
 
 #?(:clj
    (pc/defmutation fetch!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id ::m.n.relays/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
-     (a.n.pubkeys/do-fetch! props))
+      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
+     (p.n.pubkeys/fetch! props))
 
    :cljs
    (fm/defmutation fetch! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchResponse))
-     (ok-action [env]  (handle-fetch env))))
+     (remote    [env]  (fm/returning env r.n.pubkeys/FetchResponse))
+     (ok-action [env]  (h.n.pubkeys/handle-fetch env))))
 
 ;; Fetch Awards
-
-(defsc FetchAwardsResponse
-  [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::m.n.badge-awards/items]})
 
 #?(:clj
    (pc/defmutation fetch-awards!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.badge-awards/items]}
-     (a.n.pubkeys/do-fetch! props))
+      ::pc/output [::mu/status ::mu/errors ::m.n.badge-awards/items]}
+     (p.n.badge-awards/fetch! props))
 
    :cljs
    (fm/defmutation fetch-awards! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchAwardsResponse))
-     (ok-action [env]  (handle-fetch env))))
+     (remote    [env]  (fm/returning env r.n.pubkeys/FetchAwardsResponse))
+     (ok-action [env]  (h.n.pubkeys/handle-fetch env))))
 
 ;; Fetch Contacts
-
-(>def ::fetch-contacts!-request
-  (s/keys :req [::m.n.pubkeys/id]))
-
-(>def ::fetch-contacts!-response-success
-  (s/keys :req [::mu/status]))
-
-(>def ::fetch-contacts!-response-error
-  (s/keys :req [::mu/status]))
-
-(>def ::fetch-contacts!-response
-  (s/or :success ::fetch-contacts!-response-success
-        :error ::fetch-contacts!-response-error))
-
-(defsc FetchContactsResponse
-  [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::m.c.nodes/item]})
-
-#?(:cljs
-   (defn handle-fetch-contacts
-     [{:keys [state] :as env}]
-     (let [body                                        (get-in env [:result :body])
-           response                                    (get body `fetch!)
-           {:com.fulcrologic.rad.pathom/keys [errors]} response]
-       (if errors
-         (do
-           (log/error :handle-fetch/errored {:errors errors})
-           {})
-         (let [status (:dinsro.mutations/status response)]
-           (if (= status :error)
-             (let [errors (:dinsro.mutations/errors response)]
-               (log/info :handle-fetch/errored {:response response :errors errors})
-               {})
-             (do
-               (log/info :handle-fetch/completed {:response response})
-               (let [{::m.c.nodes/keys [item]} response
-                     {::m.c.nodes/keys [id]}   item]
-                 (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
-                 {}))))))))
-
-#?(:clj
-   (>defn do-fetch-contacts!
-     [{::m.n.pubkeys/keys [id]}]
-     [::fetch-contacts!-request => ::fetch-contacts!-response]
-     (log/trace :do-fetch-contacts!/starting {:id id})
-     (try
-       (doseq [relay-id (q.n.relays/index-ids)]
-         (a.n.events/fetch-events! id relay-id))
-       {::mu/status :ok}
-       (catch Exception ex
-         (log/error :do-fetch-contacts!/failed {:exception ex})
-         (mu/exception-response ex)))))
 
 #?(:clj
    (pc/defmutation fetch-contacts!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
      (a.n.pubkey-contacts/do-fetch-contacts! props))
 
    :cljs
    (fm/defmutation fetch-contacts! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchContactsResponse))
-     (ok-action [env]  (handle-fetch-contacts env))))
+     (remote    [env]  (fm/returning env r.n.pubkeys/FetchContactsResponse))
+     (ok-action [env]  (h.n.pubkeys/handle-fetch-contacts env))))
 
 ;; Fetch Definitions
-
-(defsc FetchDefinitionsResponse
-  [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status ::m.n.badge-definitions/items]})
 
 #?(:clj
    (pc/defmutation fetch-definitions!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
-     (a.n.badge-definitions/do-fetch-definitions! props))
+      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
+     (p.n.badge-definitions/do-fetch-definitions! props))
 
    :cljs
    (fm/defmutation fetch-definitions! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchDefinitionsResponse))))
+     (remote    [env]  (fm/returning env r.n.pubkeys/FetchDefinitionsResponse))))
 
 ;; Fetch Events
-
-(>def ::fetch-events!-request
-  (s/keys :req [::m.n.pubkeys/id]))
-
-(>def ::fetch-events!-response-success
-  (s/keys :req [::mu/status]))
-
-(>def ::fetch-events!-response-error
-  (s/keys :req [::mu/status]))
-
-(>def ::fetch-events!-response
-  (s/or :success ::fetch-events!-response-success
-        :error ::fetch-events!-response-error))
-
-(defsc FetchEventsResponse
-  [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::m.c.nodes/item]})
-
-#?(:cljs
-   (defn handle-fetch-events
-     [{:keys [state] :as env}]
-     (let [body                                        (get-in env [:result :body])
-           response                                    (get body `fetch!)
-           {:com.fulcrologic.rad.pathom/keys [errors]} response]
-       (if errors
-         (do
-           (log/error :handle-fetch-events/errored {:errors errors})
-           {})
-         (let [status (:dinsro.mutations/status response)]
-           (if (= status :error)
-             (let [errors (:dinsro.mutations/errors response)]
-               (log/info :handle-fetch-events/errored {:response response :errors errors})
-               {})
-             (do
-               (log/info :handle-fetch-events/completed {:response response})
-               (let [{::m.c.nodes/keys [item]} response
-                     {::m.c.nodes/keys [id]}   item]
-                 (swap! state #(merge/merge-ident % [::m.c.nodes/id id] item))
-                 {}))))))))
-
-#?(:clj
-   (>defn do-fetch-events!
-     [{::m.n.pubkeys/keys [id]}]
-     [::fetch-events!-request => ::fetch-events!-response]
-     (log/trace :do-fetch-events!/started {:id id})
-     (try
-       (log/trace :do-fetch-events!/starting {:id id})
-       (doseq [relay-id (q.n.relays/index-ids)]
-         (a.n.events/fetch-events! id relay-id))
-       {::mu/status :ok}
-       (catch Exception ex
-         (log/error :do-fetch-events!/failed {:exception ex})
-         (mu/exception-response ex)))))
 
 #?(:clj
    (pc/defmutation fetch-events!
      [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
      (a.n.pubkey-events/do-fetch-events! props))
 
    :cljs
    (fm/defmutation fetch-events! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchEventsResponse))
-     (ok-action [env]  (handle-fetch-events env))))
+     (remote    [env]  (fm/returning env r.n.pubkeys/FetchEventsResponse))
+     (ok-action [env]  (h.n.pubkeys/handle-fetch-events env))))
 
 #?(:clj
    (pc/defmutation subscribe! [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
-     (log/info :subscribe/starting {:props props})
+      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
      (a.n.subscription-pubkeys/do-subscribe! props))
 
    :cljs
    (fm/defmutation subscribe! [_props]
      (action    [_env] true)
-     (remote    [env]  (fm/returning env FetchResponse))
-     (ok-action [env]  (handle-fetch env))))
+     (remote    [env]  (fm/returning env r.n.pubkeys/FetchResponse))
+     (ok-action [env]  (h.n.pubkeys/handle-fetch env))))
 
 #?(:clj
    (def resolvers

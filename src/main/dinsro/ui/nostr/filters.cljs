@@ -10,7 +10,8 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.f.filter-items/SubPage]})
+   [u.n.f.filter-items/SubPage
+    u.n.f.filter-items/NewForm]})
 
 (def menu-items
   [{:key "items" :name "Items" :route "dinsro.ui.nostr.filters.filter-items/SubPage"}])
@@ -23,6 +24,7 @@
                    ::m.n.filters/index   nil
                    ::m.n.filters/request {}
                    :ui/router            {}}
+   :pre-merge     (u.links/page-merger ::m.n.filters/id {:ui/router Router})
    :query         [::m.n.filters/id
                    ::m.n.filters/index
                    {::m.n.filters/request (comp/get-query u.links/RequestLinkForm)}

@@ -49,9 +49,25 @@
       (dissoc record :xt/id))))
 
 (>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.pubkeys/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.pubkeys/id _]]}))
+  ([]
+   [=>  (s/coll-of ::m.n.pubkeys/id)]
+   (index-ids {}))
+  ([query-params]
+   [any? => (s/coll-of ::m.n.pubkeys/id)]
+   (let [{:indexed-access/keys [options]} query-params
+         {:keys [limit offset]
+          :or   {limit 20 offset 0}}        options
+         query                            {:find   ['?pubkey-id]
+                                           :where  [['?pubkey-id ::m.n.pubkeys/id '_]]
+                                           :limit  limit
+                                           :offset offset}
+         ;; query '{:find  [?pubkey-id]
+         ;;         :where [[?pubkey-id ::m.n.pubkeys/id _]]
+         ;;         :limit 20}
+         ]
+     (log/info :index-ids/query {:query query})
+     (let [ids (c.xtdb/query-ids query)]
+       ids))))
 
 (>defn delete!
   [id]

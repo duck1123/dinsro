@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.filters :as m.n.filters]
+   [dinsro.model.nostr.requests :as m.n.requests]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
@@ -50,9 +51,10 @@
   (doseq [id (index-ids)]
     (delete! id)))
 
-(defn get-greatest-index
+(>defn get-greatest-index
   "Returns the largest index of all filters matching this request"
   [request-id]
+  [::m.n.requests/id => number?]
   (let [db (c.xtdb/main-db)
         query '{:find [?index]
                 :in [[?request-id]]
@@ -66,8 +68,9 @@
     (log/info :get-greatest-index/result {:result result})
     (or (ffirst result) -1)))
 
-(defn find-by-request
+(>defn find-by-request
   [request-id]
+  [::m.n.requests/id => (s/coll-of ::m.n.filters/id)]
   (c.xtdb/query-ids
    '{:find [?filter-id]
      :in [[?request-id]]

@@ -17,6 +17,7 @@
    [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
    [dinsro.ui.nostr.pubkeys.contacts :as u.n.p.contacts]
    [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
+   [dinsro.ui.nostr.pubkeys.items :as u.n.p.items]
    [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]
    [dinsro.ui.nostr.pubkeys.users :as u.n.p.users]))
 
@@ -32,6 +33,7 @@
    [u.n.p.badge-acceptances/SubPage
     u.n.p.badge-awards/SubPage
     u.n.p.badge-definitions/SubPage
+    u.n.p.items/SubPage
     u.n.p.relays/SubPage
     u.n.p.contacts/SubPage
     u.n.p.events/SubPage
@@ -48,18 +50,65 @@
    {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
    {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-awards/SubPage"}
    {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-acceptances/SubPage"}
+   {:key "items"           :name "Filter Items"           :route "dinsro.ui.nostr.pubkeys.items/SubPage"}
    {:key "relays"          :name "Relays"          :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}])
 
 (def show-border false)
 
-(defsc Show
-  "Show a core node"
-  [this {::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]
-         :ui/keys           [router]}]
+(defsc PubkeyInfo
+  [this {::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]}]
   {:css           [[:.content-box (merge {:overflow "hidden"} (when show-border {:border "1px solid green !important"}))]
                    [:.info (merge {} (when show-border {:border "1px solid red"}))]
                    [:.picture-container (merge {} (when show-border {:border "1px solid purple"}))]]
    :ident         ::m.n.pubkeys/id
+   :initial-state {::m.n.pubkeys/about        ""
+                   ::m.n.pubkeys/display-name ""
+                   ::m.n.pubkeys/hex          ""
+                   ::m.n.pubkeys/id           nil
+                   ::m.n.pubkeys/lud06        ""
+                   ::m.n.pubkeys/name         ""
+                   ::m.n.pubkeys/nip05        ""
+                   ::m.n.pubkeys/picture      ""
+                   ::m.n.pubkeys/website      ""}
+   :query         [::m.n.pubkeys/about
+                   ::m.n.pubkeys/display-name
+                   ::m.n.pubkeys/hex
+                   ::m.n.pubkeys/id
+                   ::m.n.pubkeys/lud06
+                   ::m.n.pubkeys/name
+                   ::m.n.pubkeys/nip05
+                   ::m.n.pubkeys/picture
+                   ::m.n.pubkeys/website]}
+  (let [avatar-size                                       200
+        {:keys [content-box info picture-container]} (css/get-classnames PubkeyInfo)]
+    (dom/div :.ui.segment
+      (dom/div :.ui.items.unstackable
+        (dom/div {:classes [:.item info]}
+          (dom/div {:classes [:.ui :.tiny :.image picture-container]}
+            (when picture
+              (dom/img {:src (str picture) :width avatar-size :height avatar-size})))
+          (dom/div {:classes [:.content content-box]}
+            (dom/div :.header (str (or display-name name)))
+            (dom/div :.meta (str nip05))
+            (dom/div :.ui.description
+              (dom/div {} (str hex))
+              (dom/div {} (str about))
+              (dom/div {} (str website))
+              (dom/div {} (str lud06)))
+            (dom/div :.extra
+              (dom/button
+                {:classes [:.ui.right.floated.button.secondary]
+                 :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
+                "Fetch Info"))))))))
+
+(def ui-pubkey-info (comp/factory PubkeyInfo))
+
+(defsc Show
+  "Show a core node"
+  [_this {::m.n.pubkeys/keys [id]
+          :ui/keys           [router]
+          :as props}]
+  {:ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/about        ""
                    ::m.n.pubkeys/display-name ""
                    ::m.n.pubkeys/hex          ""
@@ -83,28 +132,9 @@
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["pubkey" :id]
    :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
-  (let [avatar-size                                       200
-        {:keys [content-box info main picture-container]} (css/get-classnames Show)]
+  (let [{:keys [main]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
-      (dom/div :.ui.segment
-        (dom/div :.ui.items.unstackable
-          (dom/div {:classes [:.item info]}
-            (dom/div {:classes [:.ui :.tiny :.image picture-container]}
-              (when picture
-                (dom/img {:src (str picture) :width avatar-size :height avatar-size})))
-            (dom/div {:classes [:.content content-box]}
-              (dom/div :.header (str (or display-name name)))
-              (dom/div :.meta (str nip05))
-              (dom/div :.ui.description
-                (dom/div {} (str hex))
-                (dom/div {} (str about))
-                (dom/div {} (str website))
-                (dom/div {} (str lud06)))
-              (dom/div :.extra
-                (dom/button
-                  {:classes [:.ui.right.floated.button.secondary]
-                   :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
-                  "Fetch Info"))))))
+      (ui-pubkey-info props)
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))
 
@@ -136,8 +166,9 @@
                         ::m.n.pubkeys/picture #(img-formatter %3)}
    ro/route            "pubkeys"
    ro/row-actions      [(u.links/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)
-                        (u.links/row-action-button "Fetch" ::m.n.pubkeys/id mu.n.pubkeys/fetch!)
-                        (u.links/row-action-button "Fetch Contacts" ::m.n.pubkeys/id mu.n.pubkeys/fetch-contacts!)]
+                        ;; (u.links/row-action-button "Fetch" ::m.n.pubkeys/id mu.n.pubkeys/fetch!)
+                        ;; (u.links/row-action-button "Fetch Contacts" ::m.n.pubkeys/id mu.n.pubkeys/fetch-contacts!)
+                        ]
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.pubkeys/index

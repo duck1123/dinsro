@@ -40,8 +40,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.pubkeys/picture
-                        m.n.pubkeys/name
-                        j.n.pubkeys/subscription-count]
+                        m.n.pubkeys/name]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
                         ::new           new-button
@@ -52,8 +51,8 @@
                                           (dom/img {:src picture :width 100 :height 100})
                                           ""))}
    ro/row-actions      [(u.links/subrow-action-button "Fetch" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch!)
-                        (u.links/subrow-action-button "Subscribe" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/subscribe!)
-                        (u.links/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)]
+                        (u.links/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)
+                        (u.links/subrow-action-button "Fetch Contacts" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch-contacts!)]
    ro/row-pk           m.n.pubkeys/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.pubkeys/index

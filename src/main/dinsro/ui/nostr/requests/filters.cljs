@@ -15,7 +15,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.filters/index]
+  {ro/columns          [m.n.filters/index
+                        m.n.filters/request
+                        j.n.filters/item-count]
    ro/control-layout   {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls         {::m.n.requests/id {:type :uuid :label "id"}
                         ::add-filter      (u.links/sub-page-action-button
@@ -23,9 +25,10 @@
                                             :mutation   mu.n.filters/add-filter!
                                             :parent-key ident-key})
                         ::refresh         u.links/refresh-control}
-   ro/field-formatters {::m.n.filters/index #(u.links/ui-filter-link %3)}
+   ro/field-formatters {::m.n.filters/index      #(u.links/ui-filter-link %3)
+                        ::m.n.filters/request    #(u.links/ui-request-link %2)
+                        ::j.n.filters/item-count #(u.links/ui-filter-item-count-link %3)}
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.n.filters/id mu.n.filters/delete!)]
-
    ro/row-pk           m.n.filters/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.filters/index

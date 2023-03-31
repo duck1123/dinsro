@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
@@ -23,6 +24,24 @@
    (fn [_env _]
      (let [ids #?(:clj (q.n.relays/index-ids) :cljs [])]
        {::admin-index (m.n.relays/idents ids)}))})
+
+(defattr connection-count ::connection-count :int
+  {ao/identities #{::m.n.relays/id}
+   ao/pc-input   #{::connections}
+   ao/pc-resolve (fn [_ {::keys [connections]}] {::connection-count (count connections)})})
+
+(defattr connections ::connections :ref
+  {ao/cardinality :many
+   ao/identities #{::m.n.relays/id}
+   ao/pc-input #{::m.n.relays/id}
+   ao/target ::m.n.connections/id
+   ao/pc-resolve
+   (fn [_env params]
+     (let [relay-id (::m.n.relays/id params)]
+       (log/info :request-count/starting {:relay-id relay-id})
+       (let [ids #?(:clj  (q.n.requests/find-by-relay relay-id)
+                    :cljs (do (comment relay-id) []))]
+         {::connections (m.n.requests/idents ids)})))})
 
 (defattr index ::index :ref
   {ao/target    ::m.n.relays/id
@@ -57,6 +76,7 @@
    ao/identities  #{::m.n.relays/id}
    ao/pc-input    #{::m.n.relays/id}
    ao/target      ::m.n.subscriptions/id
+   ao/pc-output   {::subscriptions [::m.n.subscriptions/id]}
    ao/pc-resolve
    (fn [_env params]
      (log/info :subscription-count/starting {:params params})
@@ -70,4 +90,6 @@
    ao/pc-input   #{::subscriptions}
    ao/pc-resolve (fn [_ {::keys [subscriptions]}] {::subscription-count (count subscriptions)})})
 
-(def attributes [admin-index index request-count requests subscription-count subscriptions])
+(def attributes
+  [admin-index connection-count connections
+   index request-count requests subscription-count subscriptions])

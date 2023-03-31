@@ -4,7 +4,10 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -103,6 +106,41 @@
   (log/info :initialize-queries!/starting {})
   (create-connected-toggle)
   (log/info :initialize-queries!/finished {}))
+
+(defn find-by-connection
+  [connection-id]
+  (log/debug :find-by-connection/starting {:connection-id connection-id})
+  (let [id (c.xtdb/query-id
+            '{:find  [?relay-id]
+              :in    [[?connection-id]]
+              :where [[?connection-id ::m.n.connections/relay ?relay-id]]}
+            [connection-id])]
+    (log/trace :find-by-connection/finished {:id id})
+    id))
+
+(defn find-by-request
+  [request-id]
+  (log/debug :find-by-request/starting {:request-id request-id})
+  (let [id (c.xtdb/query-id
+            '{:find  [?relay-id]
+              :in    [[?request-id]]
+              :where [[?request-id ::m.n.requests/relay ?relay-id]]}
+            [request-id])]
+    (log/trace :find-by-request/finished {:id id})
+    id))
+
+(>defn find-by-run
+  [run-id]
+  [::m.n.runs/id => (? ::m.n.relays/id)]
+  (log/debug :find-by-run/starting {:run-id run-id})
+  (let [id (c.xtdb/query-id
+            '{:find  [?relay-id]
+              :in    [[?run-id]]
+              :where [[?run-id ::m.n.runs/request ?request-id]
+                      [?request-id ::m.n.requests/relay ?relay-id]]}
+            [run-id])]
+    (log/trace :find-by-request/finished {:id id})
+    id))
 
 (comment
 

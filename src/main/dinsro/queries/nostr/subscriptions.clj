@@ -17,7 +17,7 @@
 (>defn create-record
   [params]
   [::m.n.subscriptions/params => ::m.n.subscriptions/id]
-  (log/info :create-record/starting {:params params})
+  (log/debug :create-record/starting {:params params})
   (let [node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (-> params
@@ -30,7 +30,7 @@
 (>defn find-by-relay-and-pubkey
   [relay-id pubkey-id]
   [::m.n.relays/id ::m.n.pubkeys/id => (? ::m.n.subscriptions/id)]
-  (log/info :find-by-relay-and-pubkey/starting {:relay-id relay-id :pubkey-id pubkey-id})
+  (log/debug :find-by-relay-and-pubkey/starting {:relay-id relay-id :pubkey-id pubkey-id})
   (c.xtdb/query-id
    '{:find  [?subscription-id]
      :in    [[?relay-id ?pubkey-id]]
@@ -40,27 +40,26 @@
    [relay-id pubkey-id]))
 
 (>defn find-by-pubkey
-  [relay-id pubkey-id]
-  [::m.n.relays/id ::m.n.pubkeys/id => (? ::m.n.subscriptions/id)]
-  (log/info :find-by-relay-and-pubkey/starting {:relay-id relay-id :pubkey-id pubkey-id})
+  [pubkey-id]
+  [::m.n.pubkeys/id => (s/coll-of ::m.n.subscriptions/id)]
+  (log/debug :find-by-pubkey/starting {:pubkey-id pubkey-id})
   (c.xtdb/query-ids
    '{:find  [?subscription-id]
-     :in    [[?relay-id ?pubkey-id]]
+     :in    [[?pubkey-id]]
      :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
-             [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
-             [?subscription-id ::m.n.subscriptions/relay ?relay-id]]}
-   [relay-id pubkey-id]))
+             [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]]}
+   [pubkey-id]))
 
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.subscriptions/id)]
-  (log/info :index-ids/starting {})
+  (log/debug :index-ids/starting {})
   (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.subscriptions/id _]]}))
 
 (>defn read-record
   [id]
   [::m.n.subscriptions/id => (? ::m.n.subscriptions/item)]
-  (log/info :read-record/starting {:id id})
+  (log/debug :read-record/starting {:id id})
   (let [db     (c.xtdb/main-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.subscriptions/id)
@@ -71,7 +70,7 @@
 (>defn find-by-relay-and-code
   [relay-id code]
   [::m.n.relays/id ::m.n.subscriptions/code => (? ::m.n.subscriptions/id)]
-  (log/info :find-by-relay-and-code/starting {:relay-id relay-id :code code})
+  (log/debug :find-by-relay-and-code/starting {:relay-id relay-id :code code})
   (c.xtdb/query-id
    '{:find  [?id]
      :in    [[?relay-id ?code]]
@@ -82,7 +81,7 @@
 (>defn find-by-relay
   [relay-id]
   [::m.n.relays/id => (s/coll-of ::m.n.subscriptions/id)]
-  (log/info :find-by-relay/starting {:relay-id relay-id})
+  (log/debug :find-by-relay/starting {:relay-id relay-id})
   (c.xtdb/query-ids
    '{:find  [?id]
      :in    [[?relay-id]]

@@ -17,8 +17,7 @@
   {ao/identities       #{::id}
    ao/target           ::m.n.requests/id
    ao/schema           :production
-   ::report/column-EQL {::request
-                        [::m.n.requests/id ::m.n.requests/address]}})
+   ::report/column-EQL {::request [::m.n.requests/id ::m.n.requests/code]}})
 
 (>def ::index int?)
 (defattr index ::index :int
@@ -35,10 +34,8 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::params (s/keys :req [::request ::index]
-                       :opt [::since ::until]))
-(>def ::item (s/keys :req [::id ::request ::index]
-                     :opt [::since ::until]))
+(>def ::params (s/keys :req [::request ::index] :opt [::since ::until]))
+(>def ::item (s/keys :req [::id ::request ::index] :opt [::since ::until]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})

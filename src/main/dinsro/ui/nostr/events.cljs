@@ -12,7 +12,10 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.nostr.event-tags :as u.n.event-tags]))
+   [dinsro.ui.nostr.event-tags :as u.n.event-tags]
+   [nextjournal.markdown :as md]
+   [nextjournal.markdown.transform :as transform]
+   [sablono.core :as html :refer-macros [html]]))
 
 ;; [[../../queries/nostr/events.clj][Event Queries]]
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
@@ -51,7 +54,6 @@
   [_this {::m.n.pubkeys/keys [picture]}]
   {:ident         ::m.n.pubkeys/id
    :initial-state {::m.n.pubkeys/id      nil
-                   ::m.n.pubkeys/name    ""
                    ::m.n.pubkeys/picture ""
                    ::m.n.pubkeys/hex     ""
                    ::m.n.pubkeys/nip05   ""}
@@ -63,6 +65,10 @@
   (when picture (dom/img {:src picture :width 100 :height 100})))
 
 (def ui-event-author-image (comp/factory EventAuthorImage))
+
+(def transform-markup true)
+(def convert-html true)
+(def show-ast false)
 
 (defsc EventBox
   [_this {::m.n.events/keys [content created-at pubkey]}]
@@ -82,11 +88,19 @@
       (dom/div {:classes [:.meta]}
         (dom/span {:classes [:.date]} (str created-at)))
       (dom/div {:classes [:.description]}
-        (str content)))))
+        (let [ast (md/parse content)]
+          (if show-ast
+            (u.links/log-props ast)
+            (if transform-markup
+              (let [hiccup (transform/->hiccup ast)]
+                (if convert-html
+                  (html hiccup)
+                  (str hiccup)))
+              (str content))))))))
 
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
-(def override-report true)
+(def override-report false)
 
 (report/defsc-report Report
   [this props]

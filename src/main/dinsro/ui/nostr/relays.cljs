@@ -12,11 +12,11 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.relays.connections :as u.n.r.connections]
    [dinsro.ui.nostr.relays.events :as u.n.r.events]
    [dinsro.ui.nostr.relays.pubkeys :as u.n.r.pubkeys]
    [dinsro.ui.nostr.relays.requests :as u.n.r.requests]
-   [dinsro.ui.nostr.relays.subscriptions :as u.n.r.subscriptions]
-   [dinsro.ui.nostr.relays.topics :as u.n.r.topics]
+   [dinsro.ui.nostr.relays.runs :as u.n.r.runs]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
@@ -54,18 +54,17 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
+  {ro/column-formatters {::j.n.relays/connection-count #(u.links/ui-relay-connection-count-link %3)
+                         ::j.n.relays/request-count    #(u.links/ui-relay-request-count-link %3)
+                         ::m.n.relays/address          #(u.links/ui-relay-link %3)}
    ro/columns           [m.n.relays/address
-                         m.n.relays/connected
-                         j.n.relays/subscription-count
-                         j.n.relays/request-count]
+                         j.n.relays/request-count
+                         j.n.relays/connection-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
    ro/route             "relays"
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.n.relays/id mu.n.relays/fetch!)
-                         (u.links/row-action-button "Toggle" ::m.n.relays/id mu.n.relays/toggle!)
-                         (u.links/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
@@ -74,41 +73,42 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.r.pubkeys/SubPage
-    u.n.r.subscriptions/SubPage
-    u.n.r.topics/SubPage
+   [u.n.r.connections/SubPage
+    u.n.r.pubkeys/SubPage
     u.n.r.requests/SubPage
+    u.n.r.runs/SubPage
     u.n.r.events/SubPage]})
 
 (def menu-items
-  [{:key   "requests"
+  [{:key   "connections"
+    :name  "Connections"
+    :route "dinsro.ui.nostr.relays.connections/SubPage"}
+   {:key   "requests"
     :name  "Requests"
     :route "dinsro.ui.nostr.relays.requests/SubPage"}
    {:key   "events"
     :name  "Events"
     :route "dinsro.ui.nostr.relays.events/SubPage"}
-   {:key   "subscriptions"
-    :name  "Subscriptions"
-    :route "dinsro.ui.nostr.relays.subscriptions/SubPage"}
    {:key   "pubkeys"
     :name  "Pubkeys"
     :route "dinsro.ui.nostr.relays.pubkeys/SubPage"}
-   {:key   "topics"
-    :name  "Topics"
-    :route "dinsro.ui.nostr.relays.topics/SubPage"}])
+   {:key   "runs"
+    :name  "Runs"
+    :route "dinsro.ui.nostr.relays.runs/SubPage"}])
 
 (defsc Show
-  [this {::m.n.relays/keys [id address connected]
-         :ui/keys          [router]}]
+  [_this {::m.n.relays/keys [id address]
+          ::j.n.relays/keys [connection-count]
+          :ui/keys          [router]}]
   {:ident         ::m.n.relays/id
-   :initial-state {::m.n.relays/id        nil
-                   ::m.n.relays/address   ""
-                   ::m.n.relays/connected false
-                   :ui/router             {}}
+   :initial-state {::m.n.relays/id               nil
+                   ::m.n.relays/address          ""
+                   ::j.n.relays/connection-count 0
+                   :ui/router                    {}}
    :pre-merge     (u.links/page-merger ::m.n.relays/id {:ui/router Router})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
-                   ::m.n.relays/connected
+                   ::j.n.relays/connection-count
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["relay" :id]
    :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
@@ -118,18 +118,7 @@
         (dom/dl {}
           (dom/dt {} "Address")
           (dom/dd {} (str address))
-          (dom/dt {} "Connected")
-          (dom/dd {} (str connected)))
-        (dom/button {:classes [:.ui.button]
-                     :onClick (fn [_e]
-                                (log/info :click {})
-                                (comp/transact! this [(mu.n.relays/fetch! {::m.n.relays/id id})]))}
-
-          "Fetch")
-        (dom/button {:classes [:.ui.button]
-                     :onClick (fn [_e]
-                                (log/info :click {})
-                                (comp/transact! this [(mu.n.relays/toggle! {::m.n.relays/id id})]))}
-          "Toggle"))
+          (dom/dt {} "Connections")
+          (dom/dd {} (str connection-count))))
       (u.links/ui-nav-menu {:menu-items menu-items :id id})
       ((comp/factory Router) router))))

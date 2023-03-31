@@ -20,11 +20,16 @@
   {ao/identities       #{::id}
    ao/target           ::m.n.filters/id
    ao/schema           :production
-   ::report/column-EQL {::filter [::m.n.filters/id ::m.n.filters/address]}})
+   ::report/column-EQL {::filter [::m.n.filters/id ::m.n.filters/index]}})
 
 ;; ids authors kinds #e #p
 (>def ::type string?)
-(defattr type ::typs :string
+(defattr type ::type :string
+  {ao/identities #{::id}
+   ao/schema     :production})
+
+(>def ::index number?)
+(defattr index ::index :string
   {ao/identities #{::id}
    ao/schema     :production})
 
@@ -45,15 +50,15 @@
   {ao/identities       #{::id}
    ao/target           ::m.n.pubkeys/id
    ao/schema           :production
-   ::report/column-EQL {::pubkey [::m.n.pubkeys/id ::m.n.pubkeys/address]}})
+   ::report/column-EQL {::pubkey [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
 
-(>def ::params (s/keys :req [::filter ::type]
-                       :opt [::kind ::event ::pubkey]))
-(>def ::item (s/keys :req [::id ::filter ::type]
-                     :opt [::kind ::event ::pubkey]))
+(>def ::params (s/keys :req [::filter ::index]
+                       :opt [::kind ::event ::pubkey ::type]))
+(>def ::item (s/keys :req [::id ::filter ::index]
+                     :opt [::kind ::event ::pubkey  ::type]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id filter type kind event pubkey])
+(def attributes [id filter index type kind event pubkey])

@@ -3,10 +3,12 @@
    [dinsro.components.config :as config  :refer [secret]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.specs :as ds]
+   [lambdaisland.glogc :as log]
    [mount.core :as mount]))
 
 (defn start-db
-  [f _schemata]
+  [f schemata]
+  (log/info :start-db/starting {:f f :schemata schemata})
   (mount/stop #'c.xtdb/xtdb-nodes)
   (mount/start
    #'config/config

@@ -21,6 +21,7 @@
    [dinsro.formatters.date-time :as fmt.date-time]
    [dinsro.ui :as ui]
    [dinsro.ui.admin :as u.admin]
+   [dinsro.ui.admin.nostr :as u.a.nostr]
    [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.core.networks :as u.c.networks]
@@ -138,6 +139,7 @@
         target                 (condp = target0
                                  nil               u.home/HomePage
                                  u.admin/AdminPage u.a.users/AdminReport
+                                 u.a.nostr/Page    u.a.nostr/Dashboard
                                  u.c.networks/Show u.c.n.addresses/SubPage
                                  target0)]
     (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})

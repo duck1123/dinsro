@@ -54,6 +54,8 @@
 
   ;; https://github.com/erp12/fijit
   io.github.erp12/fijit                     {:mvn/version "1.0.8"}
+
+  io.github.nextjournal/markdown            {:mvn/version "0.5.144"}
   io.pedestal/pedestal.log                  {:mvn/version "0.5.9"}
 
   ;; https://github.com/dainiusjocas/clj-jq
@@ -100,6 +102,8 @@
   ring/ring-defaults                        {:mvn/version "0.3.3"}
   ring/ring-devel                           {:mvn/version "1.9.5"}
   ring/ring-mock                            {:mvn/version "0.4.0"}
+
+  sablono/sablono                           {:mvn/version "0.8.6"}
 
   ;; https://github.com/thheller/shadow-cljs
   thheller/shadow-cljs                      {:mvn/version "2.15.12"}

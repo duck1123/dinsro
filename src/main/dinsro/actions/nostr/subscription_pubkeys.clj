@@ -7,6 +7,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.subscription-pubkeys :as q.n.subscription-pubkeys]
    [dinsro.queries.nostr.subscriptions :as q.n.subscriptions]
@@ -52,7 +53,7 @@
         {:status                         "ok"
          ::m.n.subscription-pubkeys/item item}))))
 
-(>defn do-fetch!
+(>defn do-fetch!2
   "Handler for fetch! mutation"
   [{relay-id ::m.n.relays/id}]
   [::m.n.relays/ident => ::m.n.relays/item]
@@ -68,3 +69,12 @@
             (a.n.subscriptions/fetch! subscription-id))
           (throw (ex-info "Failed to find subscription" {}))))
       updated-node)))
+
+(defn do-fetch!
+  [_env props]
+  (try
+    (let [updated-node (do-fetch!2 props)]
+      {::mu/status       :ok
+       ::m.n.relays/item updated-node})
+    (catch Exception ex
+      (log/error :fetch!/errored {:ex ex}))))

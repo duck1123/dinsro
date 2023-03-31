@@ -1,17 +1,29 @@
 (ns dinsro.mutations.nostr.requests
+  (:refer-clojure :exclude [run!])
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.nostr.requests :as a.n.requests])
-   [dinsro.model.nostr.requests :as m.n.requests]))
+   [dinsro.model.nostr.requests :as m.n.requests]
+   #?(:clj [dinsro.processors.nostr.requests :as p.n.requests])))
 
 (comment ::m.n.requests/_  ::pc/_)
+
+#?(:clj
+   (pc/defmutation run! [_env props]
+     {::pc/params #{::m.n.requests/id}
+      ::pc/output [::status ::errors]}
+     (p.n.requests/run! props))
+
+   :cljs
+   (fm/defmutation run! [_props]
+     (action    [_env] true)
+     (remote    [_env]  true)))
 
 #?(:clj
    (pc/defmutation start! [_env props]
      {::pc/params #{::m.n.requests/id}
       ::pc/output [::status ::errors]}
-     (a.n.requests/do-start! props))
+     (p.n.requests/start! props))
 
    :cljs
    (fm/defmutation start! [_props]
@@ -22,7 +34,7 @@
    (pc/defmutation stop! [_env props]
      {::pc/params #{::m.n.requests/id}
       ::pc/output [::status ::errors]}
-     (a.n.requests/do-stop! props))
+     (p.n.requests/stop! props))
 
    :cljs
    (fm/defmutation stop! [_props]
@@ -31,4 +43,4 @@
 
 #?(:clj
    (def resolvers
-     [start! stop!]))
+     [run! start! stop!]))

@@ -1,11 +1,11 @@
 (ns dinsro.actions.nostr.event-tags
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.queries.nostr.event-tags :as q.n.event-tags]
    [dinsro.queries.nostr.events :as q.n.events]
-   [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../queries/nostr/event_tags.clj][Event Tag Queries]]
@@ -14,26 +14,38 @@
   [event-id tag idx]
   [::m.n.events/id any? number? => any?]
   (log/info :register-tag!/start {:event-id event-id :tag tag})
-  (let [[key value extra] tag]
-    (condp = key
+  (let [[type value extra] tag]
+    (condp = type
       "p"
-      (if-let [pubkey-id (q.n.pubkeys/find-by-hex value)]
+      (if-let [pubkey-id (a.n.pubkeys/register-pubkey! value)]
         (q.n.event-tags/create-record
-         {::m.n.event-tags/index  idx
-          ::m.n.event-tags/parent event-id
-          ::m.n.event-tags/pubkey pubkey-id
-          ::m.n.event-tags/extra  extra})
+         {::m.n.event-tags/index     idx
+          ::m.n.event-tags/parent    event-id
+          ::m.n.event-tags/type      type
+          ::m.n.event-tags/pubkey    pubkey-id
+          ::m.n.event-tags/raw-value value
+          ::m.n.event-tags/extra     extra})
         (throw (ex-info "Failed to find pubkey" {})))
 
       "e"
       (if-let [target-id (q.n.events/find-by-note-id value)]
         (q.n.event-tags/create-record
-         {::m.n.event-tags/index  idx
-          ::m.n.event-tags/parent event-id
-          ::m.n.event-tags/event  target-id
-          ::m.n.event-tags/extra  extra})
-        (throw (ex-info "Failed to find note" {})))
-      (throw (ex-info "unknown key" {})))))
+         {::m.n.event-tags/index     idx
+          ::m.n.event-tags/parent    event-id
+          ::m.n.event-tags/type      type
+          ::m.n.event-tags/raw-value value
+          ::m.n.event-tags/event     target-id
+          ::m.n.event-tags/extra     extra})
+        (do
+          (comment)
+          #_(throw (ex-info "Failed to find note" {}))
+          nil))
+      (q.n.event-tags/create-record
+       {::m.n.event-tags/index     idx
+        ::m.n.event-tags/parent    event-id
+        ::m.n.event-tags/type      type
+        ::m.n.event-tags/raw-value value
+        ::m.n.event-tags/extra     extra}))))
 
 (comment
 

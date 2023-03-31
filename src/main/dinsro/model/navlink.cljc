@@ -39,12 +39,14 @@
                                  :nostr-subscription-pubkeys
                                  :nostr-badge-definitions
                                  :nostr-badge-acceptance
-                                 :nostr-badge-awards]]
+                                 :nostr-badge-awards
+                                 :nostr-connections]]
    :nostr-badge-acceptance     ["Badge Acceptance"      :dinsro.ui.nostr.badge-acceptance/Report]
    :nostr-badge-awards         ["Badge Awards"          :dinsro.ui.nostr.badge-awards/Report]
    :nostr-badge-definitions    ["Badge Definitions"     :dinsro.ui.nostr.badge-definitions/Report]
-   :nostr-pubkeys              ["Pubkeys"               :dinsro.ui.nostr.pubkeys/Report]
+   :nostr-connections          ["Connections"           :dinsro.ui.nostr.connections/Report]
    :nostr-events               ["Events"                :dinsro.ui.nostr.events/Report]
+   :nostr-pubkeys              ["Pubkeys"               :dinsro.ui.nostr.pubkeys/Report]
    :nostr-relays               ["Relays"                :dinsro.ui.nostr.relays/Report]
    :nostr-subscriptions        ["Subscriptions"         :dinsro.ui.nostr.subscriptions/Report]
    :nostr-subscription-pubkeys ["Subscriptions Pubkeys" :dinsro.ui.nostr.subscription-pubkeys/Report]

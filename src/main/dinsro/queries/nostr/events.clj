@@ -35,11 +35,52 @@
     (when (get record ::m.n.events/id)
       (dissoc record :xt/id))))
 
+(defn get-index-query
+  [query-params]
+  (let [{pubkey-id ::m.n.pubkeys/id} query-params]
+    {:find   ['?event-id]
+     :in     [['?pubkey-id]]
+     :where  (->> [['?event-id ::m.n.events/id '_]]
+                  (concat (when pubkey-id [['?event-id ::m.n.events/pubkey '?pubkey-id]]))
+                  (filter identity)
+                  (into []))}))
+
+(>defn count-ids
+  ([]
+   [=> number?]
+   (count-ids {}))
+  ([query-params]
+   [any? => number?]
+   (do
+     (log/info :index-ids/starting {:query-params query-params})
+     (let [{pubkey-id ::m.n.pubkeys/id} query-params
+           query                        (merge (get-index-query query-params)
+                                               {:find  ['(count ?event-id)]})]
+       (log/info :index-ids/query {:query query})
+       (let [id (c.xtdb/query-id query [pubkey-id])]
+         (log/trace :index-ids/finished {:id id})
+         id)))))
+
 (>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.events/id)]
-  (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find [?relay-id] :where [[?relay-id ::m.n.events/id _]]}))
+  ([]
+   [=> (s/coll-of ::m.n.events/id)]
+   (index-ids {}))
+  ([query-params]
+   [any? => (s/coll-of ::m.n.events/id)]
+   (do
+     (log/info :index-ids/starting {:query-params query-params})
+     (let [{:indexed-access/keys [options]
+            pubkey-id            ::m.n.pubkeys/id} query-params
+           {:keys [limit offset]}                  options
+           query (merge (get-index-query query-params)
+                        {:limit  limit :offset offset})]
+       (log/info :index-ids/query {:query query})
+
+       (let [ids                                     (c.xtdb/query-ids query
+
+                                                                       [pubkey-id])]
+         (log/trace :index-ids/finished {:ids ids})
+         ids)))))
 
 (>defn find-by-author
   [pubkey-id]

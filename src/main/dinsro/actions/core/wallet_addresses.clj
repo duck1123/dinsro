@@ -4,6 +4,7 @@
    [dinsro.actions.core.addresses :as a.c.addresses]
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
+   [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.queries.core.nodes :as q.c.nodes]
@@ -15,7 +16,7 @@
 
 (>defn register-address!
   [wallet address path-index]
-  [::m.c.wallets/item ::m.c.wallet-addresses/address ::m.c.wallet-addresses/path-index => any?]
+  [::m.c.wallets/item ::m.c.addresses/address ::m.c.wallet-addresses/path-index => any?]
   (let [{::m.c.wallets/keys [id]} wallet]
     (log/info :register-address! {:id id :address address :path-index path-index})
     (let [wallet-address-id (q.c.wallet-addresses/find-by-wallet-and-index id path-index)]

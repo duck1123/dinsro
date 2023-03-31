@@ -12,6 +12,10 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
+   [dinsro.joins.nostr.connections :as j.n.connections]
+   [dinsro.joins.nostr.filters :as j.n.filters]
+   [dinsro.joins.nostr.relays :as j.n.relays]
+   [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -32,11 +36,13 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -207,7 +213,7 @@
                          (map
                           (fn [vi]
                             ^{:key (str k vi)}
-                            (dom/li {} (str vi)))
+                            (dom/li {} (log-props vi)))
                           v))
                        (dom/div :.ui.segment (str v)))))))))))))
 
@@ -319,6 +325,26 @@
 
 (def ui-channel-link (comp/factory ChannelLinkForm {:keyfn ::m.ln.channels/id}))
 
+(form/defsc-form ConnectionLinkForm
+  [this {::m.n.connections/keys [id status]}]
+  {fo/id           m.n.connections/id
+   fo/route-prefix "nostr-connection-link"
+   fo/attributes   [m.n.connections/id m.n.connections/status]}
+  (form-link this id (name status) :dinsro.ui.nostr.connections/Show))
+
+(def ui-connection-link (comp/factory ConnectionLinkForm {:keyfn ::m.n.connections/id}))
+
+(form/defsc-form ConnectionRunCountLinkForm
+  [this {::m.n.connections/keys [id]
+         ::j.n.connections/keys [run-count]}]
+  {fo/id           m.n.connections/id
+   fo/route-prefix "nostr-connection-run-count-link"
+   fo/attributes   [m.n.connections/id j.n.connections/run-count]}
+  (form-link this id run-count :dinsro.ui.nostr.connections.runs/SubPage))
+
+(def ui-connection-run-count-link
+  (comp/factory ConnectionRunCountLinkForm {:keyfn ::m.n.connections/id}))
+
 (form/defsc-form CoreNodeLinkForm
   [this {::m.c.nodes/keys [id name] :as props}]
   {fo/id         m.c.nodes/id
@@ -378,6 +404,14 @@
   (form-link this id note-id :dinsro.ui.nostr.events/Show))
 
 (def ui-event-link (comp/factory EventLinkForm {:keyfn ::m.n.events/note-id}))
+
+(form/defsc-form FilterItemCountLinkForm [this {::m.n.filters/keys [id] ::j.n.filters/keys [item-count]}]
+  {fo/id           m.n.filters/id
+   fo/route-prefix "filter-link"
+   fo/attributes   [j.n.filters/item-count]}
+  (form-link this id item-count :dinsro.ui.nostr.filters.filter-items/SubPage))
+
+(def ui-filter-item-count-link (comp/factory FilterItemCountLinkForm {:keyfn ::m.n.filters/id}))
 
 (form/defsc-form FilterLinkForm [this {::m.n.filters/keys [id index]}]
   {fo/id           m.n.filters/id
@@ -497,6 +531,58 @@
   (form-link this id address :dinsro.ui.nostr.relays/Show))
 
 (def ui-relay-link (comp/factory RelayLinkForm {:keyfn ::m.n.relays/id}))
+
+(form/defsc-form RelayConnectionCountLinkForm
+  [this {::m.n.relays/keys [id]
+         ::j.n.relays/keys [connection-count]}]
+  {fo/id           m.n.relays/id
+   fo/route-prefix "relay-connection-count-link"
+   fo/attributes   [j.n.relays/connection-count]}
+  (form-link this id connection-count :dinsro.ui.nostr.relays.connections/SubPage))
+
+(def ui-relay-connection-count-link
+  (comp/factory RelayConnectionCountLinkForm {:keyfn ::m.n.relays/id}))
+
+(form/defsc-form RelayRequestCountLinkForm
+  [this {::m.n.relays/keys [id]
+         ::j.n.relays/keys [request-count]}]
+  {fo/id           m.n.relays/id
+   fo/route-prefix "relay-request-count-link"
+   fo/attributes   [j.n.relays/request-count]}
+  (form-link this id request-count :dinsro.ui.nostr.relays.requests/SubPage))
+
+(def ui-relay-request-count-link
+  (comp/factory RelayRequestCountLinkForm {:keyfn ::m.n.relays/id}))
+
+(form/defsc-form RequestFilterCountLinkForm
+  [this {::j.n.requests/keys [filter-count]
+         ::m.n.requests/keys [id]}]
+  {fo/id           m.n.requests/id
+   fo/route-prefix "request-filter-count-link"
+   fo/attributes   [j.n.requests/filter-count]}
+  (form-link this id filter-count :dinsro.ui.nostr.requests.filters/SubPage))
+
+(def ui-request-filter-count-link
+  (comp/factory RequestFilterCountLinkForm {:keyfn ::m.n.requests/id}))
+
+(form/defsc-form RequestRunCountLinkForm
+  [this {::j.n.requests/keys [run-count]
+         ::m.n.requests/keys [id]}]
+  {fo/id           m.n.requests/id
+   fo/route-prefix "request-run-count-link"
+   fo/attributes   [j.n.requests/run-count]}
+  (form-link this id run-count :dinsro.ui.nostr.requests.runs/SubPage))
+
+(def ui-request-run-count-link
+  (comp/factory RequestRunCountLinkForm {:keyfn ::m.n.requests/id}))
+
+(form/defsc-form RunLinkForm [this {::m.n.runs/keys [id status]}]
+  {fo/id           m.n.runs/id
+   fo/route-prefix "run-link"
+   fo/attributes   [m.n.runs/status]}
+  (form-link this id (name status) :dinsro.ui.nostr.runs/Show))
+
+(def ui-run-link (comp/factory RunLinkForm {:keyfn ::m.n.runs/id}))
 
 (form/defsc-form SubscriptionLinkForm [this {::m.n.subscriptions/keys [id code]}]
   {fo/id           m.n.subscriptions/id

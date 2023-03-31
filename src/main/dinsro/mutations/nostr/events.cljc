@@ -6,11 +6,11 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.fulcrologic.guardrails.core :refer #?(:clj [>def =>] :cljs [>def])]
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.nostr.events :as a.n.events])
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
+   #?(:clj [dinsro.processors.nostr.events :as p.n.events])
    #?(:clj [lambdaisland.glogc :as log])))
 
 ;; [[../../actions/nostr/events.clj][Event Actions]]
@@ -47,7 +47,7 @@
                    ::errors
                    ::m.n.events/item]}
      (try
-       (let [updated-item (a.n.events/do-fetch! props)]
+       (let [updated-item (p.n.events/fetch! props)]
          {::mu/status       :ok
           ::m.n.events/item updated-item})
        (catch Exception ex
@@ -66,7 +66,7 @@
      [_env props]
      {::pc/params #{::m.n.relays/id ::m.n.pubkeys/id}
       ::pc/output [::mu/status ::mu/errors]}
-     (a.n.events/do-fetch-events! props))
+     (p.n.events/fetch-events! props))
 
    :cljs
    (fm/defmutation fetch-events! [_props]

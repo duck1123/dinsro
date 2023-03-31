@@ -16,24 +16,28 @@
 
 (defattr index ::index :ref
   {ao/target    ::m.n.events/id
-   ao/pc-output [{::index [::m.n.events/id]}]
+   ao/pc-output [{::index [:total {:results [::m.n.events/id]}]}]
    ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (q.n.events/index-ids) :cljs [])]
-       (log/info :index/starting {:ids ids})
-       {::index (m.n.events/idents ids)}))})
+   (fn [{:keys [query-params]} _]
+     (let [ids #?(:clj (q.n.events/index-ids query-params)
+                  :cljs (do
+                          (comment query-params)
+                          []))]
+       (log/trace :index/finished {:ids ids})
+       {::index {:total #?(:clj (q.n.events/count-ids query-params) :cljs 0)
+                 :results (m.n.events/idents ids)}}))})
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.events/id
-   ao/pc-output [{::admin-index [::m.n.events/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.n.events/id]}]}]
    ao/pc-resolve
    (fn [_env _]
      (let [ids #?(:clj (q.n.events/index-ids) :cljs [])]
-       {::admin-index (m.n.events/idents ids)}))})
+       {::admin-index {:total 21
+                       :results (m.n.events/idents ids)}}))})
 
 (defattr tags ::tags :ref
-  {ao/target    ::m.n.events/id
+  {ao/target    ::m.n.event-tags/id
    ao/pc-output [{::tags [::m.n.event-tags/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} params]
@@ -45,14 +49,7 @@
        (throw (ex-info "No pubkey supplied" {}))))})
 
 (defattr tag-count ::tag-count :int
-  {ao/identities #{::m.n.events/id}
-   ao/pc-input   #{::m.n.events/id}
-   ao/pc-resolve
-   (fn [_env params]
-     (log/info :event-count/starting {:params params})
-     (let [event-id (::m.n.events/id params)
-           tags   #?(:clj  (q.n.event-tags/find-by-event event-id)
-                     :cljs (do (comment event-id) []))]
-       {::tag-count (count tags)}))})
+  {ao/pc-input   #{::tags}
+   ao/pc-resolve (fn [_ {::keys [tags]}] {::tag-count (count tags)})})
 
 (def attributes [admin-index index tags tag-count])
