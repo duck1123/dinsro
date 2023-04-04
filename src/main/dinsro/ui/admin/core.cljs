@@ -8,7 +8,8 @@
 
 (defsc Dashboard
   [_this _props]
-  {:initial-state {}
+  {:ident         (fn [] [:component/id ::Dashboard])
+   :initial-state {}
    :query         [[::dr/id router-key]]
    :route-segment ["dashboard"]}
   (dom/div {}
@@ -23,5 +24,5 @@
   {:ident         (fn [] [:component/id ::Page])
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
-   :route-segment ["nostr"]}
+   :route-segment ["core"]}
   ((comp/factory Router) router))

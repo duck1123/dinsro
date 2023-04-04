@@ -8,7 +8,8 @@
 
 (defsc Dashboard
   [_this _props]
-  {:initial-state {}
+  {:ident         (fn [] [:component/id ::Dashboard])
+   :initial-state {}
    :query         [[::dr/id router-key]]
    :route-segment ["dashboard"]}
   (dom/div {}
