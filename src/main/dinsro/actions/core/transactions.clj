@@ -84,11 +84,11 @@
           (log/info :update-tx/old-output-found {:old-output-id old-output-id})
           (if-let [old-output (q.c.tx-out/read-record old-output-id)]
             (update-tx-out tx-id old-output output)
-            (throw (RuntimeException. "Failed to find old output id"))))
+            (throw (ex-info "Failed to find old output id" {}))))
         (do
           (log/info :update-tx/old-output-not-found {})
           (create-tx-out tx-id output))))
-    (throw (RuntimeException. "failed to find n"))))
+    (throw (ex-info "failed to find n" {}))))
 
 (>defn update-tx
   [node-id block-id tx-id]
@@ -113,10 +113,10 @@
               (doseq [input vin]
                 (update-tx-in existing-tx-id input))
               existing-tx-id)
-            (throw (RuntimeException. "failed to find tx")))
+            (throw (ex-info "failed to find tx" {})))
           (q.c.tx/create-record tx-params)))
-      (throw (RuntimeException. "failed to find tx")))
-    (throw (RuntimeException. "failed to find node"))))
+      (throw (ex-info "failed to find tx" {})))
+    (throw (ex-info "failed to find node" {}))))
 
 (>def ::fetch-result (s/keys))
 

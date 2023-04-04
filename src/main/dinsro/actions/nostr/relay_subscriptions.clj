@@ -22,5 +22,5 @@
           (do
             (log/info :do-fetch!/subscription-read {:subscription subscription})
             (a.n.subscriptions/fetch! subscription-id))
-          (throw (RuntimeException. "Failed to find subscription"))))
+          (throw (ex-info "Failed to find subscription" {}))))
       updated-node)))

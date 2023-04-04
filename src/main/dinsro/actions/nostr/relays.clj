@@ -37,7 +37,7 @@
   (if-let [relay (q.n.relays/read-record relay-id)]
     (let [address (::m.n.relays/address relay)]
       (a.n.relay-client/get-channel address))
-    (throw (RuntimeException. "Failed to find relay"))))
+    (throw (ex-info "Failed to find relay" {}))))
 
 (>def ::incoming-event (s/keys))
 (>def ::outgoing-event (s/keys))
@@ -113,14 +113,10 @@
                        topic-channel
                        (recur))
                      (log/finest :get-client-for-id/closed {})))
-
                  client)
-               (throw (RuntimeException. "Failed to create client"))))
-           (if-let [client (a.n.relay-client/get-client-for-address address)]
-             client
-             nil
-             #_(throw (RuntimeException. "Failed to find client")))))
-       (throw (RuntimeException. "Failed to find relay"))))))
+               (throw (ex-info "Failed to create client" {}))))
+           (a.n.relay-client/get-client-for-address address)))
+       (throw (ex-info "Failed to find relay" {}))))))
 
 ;; body is a map that will be turned into a message
 

@@ -2,8 +2,8 @@
 
 (defn decode
   [_props]
-  (throw (RuntimeException. "not implemented")))
+  (throw (ex-info "not implemented" {})))
 
 (defn submit!
   [_props]
-  (throw (RuntimeException. "not implemented")))
+  (throw (ex-info "not implemented" {})))

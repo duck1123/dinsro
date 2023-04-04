@@ -67,4 +67,4 @@
           params (assoc params :xt/id id)]
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
-    (throw (RuntimeException. "Failed to find id"))))
+    (throw (ex-info "Failed to find id" {}))))

@@ -14,7 +14,7 @@
 (defn delete!
   [id]
   (log/info :delete!/starting {:id id})
-  (throw (RuntimeException. "Not implemented")))
+  (throw (ex-info "Not implemented" {})))
 
 (defn fetch!
   [node]
@@ -70,10 +70,10 @@
                 (process-fetched-account! user-id network-id node-id account)))))
         (do
           (log/error :do-fetch-accounts!/user-not-found {:node node})
-          (throw (RuntimeException. "no user id"))))
+          (throw (ex-info "no user id" {}))))
       (do
         (log/error :do-fetch-accounts!/network-not-found {:node node})
-        (throw (RuntimeException. "no network id"))))
+        (throw (ex-info "no network id" {}))))
     (do
       (log/error :do-fetch-accounts!/node-not-found {:node-id node-id})
       {:status :fail})))

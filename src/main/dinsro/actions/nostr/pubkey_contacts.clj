@@ -53,7 +53,7 @@
              (recur)))
 
          ch)
-       (throw (RuntimeException. "Failed to find pubkey"))))))
+       (throw (ex-info "Failed to find pubkey" {}))))))
 
 (>defn do-fetch-contacts!
   [ident]
@@ -63,7 +63,7 @@
     (let [response (fetch-contacts! pubkey-id)]
       (log/info :do-fetch-contacts!/finished {:response response})
       {:status "ok"})
-    (throw (RuntimeException. "Failed to find pubkey"))))
+    (throw (ex-info "Failed to find pubkey" {}))))
 
 (comment
 

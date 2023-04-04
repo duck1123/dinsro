@@ -150,8 +150,8 @@
               ::m.rates/date     (ds/->inst date)
               ::m.rates/source   source-id
               ::m.rates/rate     (double rate)}))
-          (throw (RuntimeException. "Failed to find source"))))
-      (throw (RuntimeException. "Failed to find currency")))))
+          (throw (ex-info "Failed to find source" {}))))
+      (throw (ex-info "Failed to find currency" {})))))
 
 (>defn seed-user-pubkey!
   [user-id pubkey-info]
@@ -238,9 +238,9 @@
                  (initialize-ln-node! node-id)
                  (catch Exception ex
                    (log/error :seed-ln-node!/init-node-failed {:msg (.getMessage ex)})
-                   (when strict (throw (RuntimeException. "init node failed" ex))))))))
-         (throw (RuntimeException. "Failed to determine network id")))
-       (throw (RuntimeException. (str "Failed to find node: " node-name)))))))
+                   (when strict (throw (ex-info "init node failed" {} ex))))))))
+         (throw (ex-info "Failed to determine network id" {})))
+       (throw (ex-info (str "Failed to find node: " node-name) {}))))))
 
 (>defn seed-ln-nodes!
   [users]
@@ -276,7 +276,7 @@
                             ::m.accounts/source source-id}
                            (when wallet-id {::m.accounts/wallet wallet-id}))]
           (q.accounts/create-record params))
-        (throw (RuntimeException. "failed to find source"))))))
+        (throw (ex-info "failed to find source" {}))))))
 
 (>defn seed-accounts!
   [users]
@@ -286,7 +286,7 @@
     (if-let [user-id (q.users/find-by-name username)]
       (doseq [account-data accounts]
         (seed-account! user-id account-data))
-      (throw (RuntimeException. "Failed to find user")))))
+      (throw (ex-info "Failed to find user" {})))))
 
 (>defn seed-debit!
   [user-id transaction-id debit-data]
@@ -304,7 +304,7 @@
               debit-id (q.debits/create-record params)]
           (log/finer :seed-debit!/finished {:debit-id debit-id})
           debit-id))
-      (throw (RuntimeException. "no account")))))
+      (throw (ex-info "no account" {})))))
 
 (>defn seed-transaction!
   [user-id transaction-data]
@@ -327,7 +327,7 @@
     (if-let [user-id (q.users/find-by-name username)]
       (doseq [transaction transactions]
         (seed-transaction! user-id transaction))
-      (throw (RuntimeException. "Failed to find user")))))
+      (throw (ex-info "Failed to find user" {})))))
 
 (defn item-report
   []
@@ -384,7 +384,7 @@
         (doseq [tx-in in]
           (let [tx-in (assoc tx-in ::m.c.tx-in/transaction tx-id)]
             (q.c.tx-in/create-record tx-in))))
-      (throw (RuntimeException. "Can't find node")))))
+      (throw (ex-info "Can't find node" {})))))
 
 (comment
   (seed-core-txes!))
@@ -495,15 +495,15 @@
               (a.c.nodes/fetch! node)
               (catch Exception ex
                 (log/error :seed-core-nodes!/failed {:ex ex})
-                (when strict (throw (RuntimeException. "seed core nodes failed"))))))
+                (when strict (throw (ex-info "seed core nodes failed" {}))))))
           (do
             (log/error :seed-core-nodes!/network-not-found {:chain-name chain-name :network-name network-name})
-            (throw (RuntimeException. "Failed to find chain"))))))
+            (throw (ex-info "Failed to find chain" {}))))))
     (log/fine :seed-core-nodes!/finished {})
     (catch Exception ex
       (println ex)
       (log/error :seed-core-nodes!/failed {:ex ex})
-      (when strict (throw (RuntimeException. "seed core nodes failed"))))))
+      (when strict (throw (ex-info "seed core nodes failed" {}))))))
 
 (>defn seed-core-peers!-peer
   [peer-name target-peer]
@@ -519,7 +519,7 @@
         (a.c.peers/fetch-peers! target-peer)
         (catch Exception ex
           (log/error :seed-core-peers!/no-peer-failed {:ex ex})
-          (when strict (throw (RuntimeException. "Failed to add peer" ex))))))))
+          (when strict (throw (ex-info "Failed to add peer" {} ex))))))))
 
 (>defn seed-core-peers!
   "Create peers between core nodes"
@@ -596,7 +596,7 @@
       (seed-core-peers! nodes)
       (catch Exception ex
         (log/error :seed-db!/core-nodes-failed {:ex ex})
-        (when strict (throw (RuntimeException. "seed core nodes failed" ex)))))
+        (when strict (throw (ex-info "seed core nodes failed" {} ex)))))
 
     (seed-currencies! currencies)
     (seed-rate-sources! currencies)
@@ -636,7 +636,7 @@
             (println ex)
             (log/error :seed!/failed {:ex ex})
             (when strict
-              (throw (RuntimeException. "seed failed" ex)))))
+              (throw (ex-info "seed failed" {} ex)))))
         (q.settings/set-setting seeded-key true)))
     (log/finer :seed!/not-enabled {})))
 

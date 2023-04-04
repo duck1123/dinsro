@@ -23,7 +23,7 @@
    (defn cert-base
      []
      (or (config ::cert-base)
-         (throw (RuntimeException. "Cert base not defined")))))
+         (throw (ex-info "Cert base not defined" {})))))
 
 #?(:clj
    (>defn data-path

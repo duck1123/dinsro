@@ -42,8 +42,7 @@
        (let [ids #?(:clj  (q.n.event-tags/find-by-event event-id)
                     :cljs (do (comment event-id) []))]
          {::tags (m.n.events/idents ids)})
-       #?(:clj (throw (RuntimeException. "No pubkey supplied"))
-          :cljs (throw (js/Error. "No pubkey supplied")))))})
+       (throw (ex-info "No pubkey supplied" {}))))})
 
 (defattr tag-count ::tag-count :int
   {ao/identities #{::m.n.events/id}

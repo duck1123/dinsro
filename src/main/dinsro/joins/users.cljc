@@ -61,8 +61,7 @@
        (let [ids #?(:clj (q.users/find-by-pubkey-id pubkey-id) :cljs [])]
          (comment env query-params pubkey-id)
          {::index-by-pubkey (m.users/idents ids)})
-       #?(:clj (throw (RuntimeException. "Missing pubkey"))
-          :cljs (throw (js/Error. "Missing pubkey")))))})
+       (throw (ex-info "Missing pubkey" {}))))})
 
 (defattr ln-nodes ::m.users/ln-nodes :ref
   {ao/cardinality :many

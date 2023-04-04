@@ -26,7 +26,7 @@
 (defn fetch!
   [id]
   (log/info :fetch!/starting {:id id})
-  (throw (RuntimeException. "Not Implemented")))
+  (throw (ex-info "Not Implemented" {})))
 
 (defn do-delete!
   [props]

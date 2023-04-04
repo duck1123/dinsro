@@ -110,8 +110,8 @@
               (if (instance? Failure result)
                 (let [o (.get result)]
                   (log/finer :await-throwable/failure {:o o})
-                  (throw (RuntimeException. (pr-str o))))
-                (throw (RuntimeException. (pr-str result)))))))))))
+                  (throw (ex-info (pr-str o) {})))
+                (throw (ex-info (pr-str result) {}))))))))))
 
 (defn get-new-address
   "See: https://bitcoin-s.org/api/org/bitcoins/lnd/rpc/LndRpcClient.html#getNewAddress:scala.concurrent.Future[org.bitcoins.core.protocol.BitcoinAddress]"
@@ -169,7 +169,7 @@
                 records (map cs/->record peers)]
             (log/info :list-peers/finished {:records records})
             records))
-        (throw (RuntimeException. "did not pass"))))))
+        (throw (ex-info "did not pass" {}))))))
 
 (>defn list-wallet-accounts
   [client]

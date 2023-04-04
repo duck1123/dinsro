@@ -33,10 +33,10 @@
                         ::m.n.subscription-pubkeys/subscription subscription-id}]
             (if-let [sp-id (q.n.subscription-pubkeys/create-record params)]
               sp-id
-              (throw (RuntimeException. "failed")))))))
+              (throw (ex-info "failed" {})))))))
     (do
       (log/info :register-subscription!/not-exists {})
-      (throw (RuntimeException. "Not exists")))))
+      (throw (ex-info "Not exists" {})))))
 
 (defn do-subscribe!
   [props]
@@ -66,5 +66,5 @@
           (do
             (log/info :do-fetch!/subscription-read {:subscription subscription})
             (a.n.subscriptions/fetch! subscription-id))
-          (throw (RuntimeException. "Failed to find subscription"))))
+          (throw (ex-info "Failed to find subscription" {}))))
       updated-node)))

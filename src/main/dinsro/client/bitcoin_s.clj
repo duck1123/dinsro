@@ -215,7 +215,7 @@
         (do
           (log/info :generate-to-address!/not-passed {:result result})
           (let [result-obj (.get result)
-                ex         (or result-obj (RuntimeException. "did not pass"))]
+                ex         (or result-obj (ex-info "did not pass" {}))]
             (throw ex)))))))
 
 (defn get-peer-info
@@ -229,7 +229,7 @@
           (log/finer :get-peer-info/parsed-response {:parsed-response parsed-response})
           parsed-response)
         (let [result-obj (.get result)
-              ex         (or result-obj (RuntimeException. "Did not pass"))]
+              ex         (or result-obj (ex-info "Did not pass" {}))]
           (throw ex))))))
 
 (defn ->segwit-path
@@ -252,7 +252,7 @@
       (if passed
         result
         (let [result-obj (.get result)
-              ex (or result-obj (RuntimeException. "Did not pass"))]
+              ex (or result-obj (ex-info "Did not pass" {}))]
           (throw ex))))))
 
 (defn get-blockchain-info

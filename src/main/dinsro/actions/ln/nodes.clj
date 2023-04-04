@@ -53,7 +53,7 @@
       (let [instance (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
         (log/finer :get-client/creating {:url url :cert-file cert-file :macaroon macaroon})
         (c.lnd-s/get-remote-client instance))
-      (throw (RuntimeException. "No macaroon")))))
+      (throw (ex-info "No macaroon" {})))))
 
 (>defn download-file
   "Download a file from a remote uri"
@@ -120,7 +120,7 @@
           (do
             (log/info :download-cert!/downloaded {:response response})
             response)
-          (throw (RuntimeException. "Failed to download cert")))))))
+          (throw (ex-info "Failed to download cert" {})))))))
 
 (>defn download-macaroon!
   "Download the macaroon from the fileserver"
@@ -160,7 +160,7 @@
            (catch Exception ex
              (log/error :initialize!/error {:ex ex})
              (throw ex))))
-       (throw (RuntimeException. "no mnemonic"))))))
+       (throw (ex-info "no mnemonic" {}))))))
 
 (defn get-info
   "Fetch info for the node"

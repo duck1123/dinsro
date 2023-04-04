@@ -12,7 +12,7 @@
 (defn create-request
   [relay-id code]
   (if-let [request-id (q.n.requests/find-by-relay-and-code relay-id code)]
-    (throw (RuntimeException. (str "request already exists - " request-id)))
+    (throw (ex-info (str "request already exists - " request-id) {}))
     (let [request-id (q.n.requests/create-record
                       {::m.n.requests/relay relay-id
                        ::m.n.requests/code  code})]
@@ -35,15 +35,15 @@
         (doseq [filter-id filters]
           (let [items (q.n.filter-items/find-by-filter filter-id)]
             (log/info :start!/items {:items items}))))
-      (throw (RuntimeException. "No Filters")))
-    (throw (RuntimeException. "No Relay"))))
+      (throw (ex-info "No Filters" {})))
+    (throw (ex-info "No Relay" {}))))
 
 (defn stop!
   [request-id]
   (log/info :start!/starting {:request-id request-id})
   (if-let [relay-id (q.n.requests/find-relay request-id)]
     relay-id
-    (throw (RuntimeException. "No Relay"))))
+    (throw (ex-info "No Relay" {}))))
 
 (defn do-start!
   [params]
@@ -51,7 +51,7 @@
     (do
       (start! request-id)
       {::mu/status :ok})
-    (throw (RuntimeException. "No request id"))))
+    (throw (ex-info "No request id" {}))))
 
 (defn do-stop!
   [params]

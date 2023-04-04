@@ -23,7 +23,7 @@
           ::m.n.event-tags/parent event-id
           ::m.n.event-tags/pubkey pubkey-id
           ::m.n.event-tags/extra  extra})
-        (throw (RuntimeException. "Failed to find pubkey")))
+        (throw (ex-info "Failed to find pubkey" {})))
 
       "e"
       (if-let [target-id (q.n.events/find-by-note-id value)]
@@ -32,9 +32,8 @@
           ::m.n.event-tags/parent event-id
           ::m.n.event-tags/event  target-id
           ::m.n.event-tags/extra  extra})
-        (throw (RuntimeException. "Failed to find note")))
-
-      (throw (RuntimeException. "unknown key")))))
+        (throw (ex-info "Failed to find note" {})))
+      (throw (ex-info "unknown key" {})))))
 
 (comment
 

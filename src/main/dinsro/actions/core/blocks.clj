@@ -34,7 +34,7 @@
                       ::m.c.blocks/network  network-id
                       ::m.c.blocks/fetched? false}]
           (q.c.blocks/create-record params))))
-    (throw (RuntimeException. "Failed to find network id"))))
+    (throw (ex-info "Failed to find network id" {}))))
 
 (>defn fetch-block-by-height
   "Fetch a block from the node"
@@ -57,7 +57,7 @@
           [id params])
         (do
           (log/error :update-block!/block-not-found {})
-          (throw (RuntimeException. "cannot find existing block"))))
+          (throw (ex-info "cannot find existing block" {}))))
       (if-let [network-id (q.c.networks/find-by-node-id core-node-id)]
         (let [params (assoc params ::m.c.blocks/network network-id)
               params (assoc params ::m.c.blocks/fetched? true)
@@ -66,10 +66,10 @@
           [id params])
         (do
           (log/error :update-block!/network-not-found {})
-          (throw (RuntimeException. "Failed to find network")))))
+          (throw (ex-info "Failed to find network" {})))))
     (do
       (log/error :update-block!/network-not-found2 {})
-      (throw (RuntimeException. "Failed to find network")))))
+      (throw (ex-info "Failed to find network" {})))))
 
 (>defn update-neighbors
   [core-node-id block-id block height]
@@ -115,7 +115,7 @@
                   (doseq [tx-id (::c.c.get-block-result/tx block)]
                     (a.c.tx/register-tx core-node-id updated-id tx-id))
                   updated-id)
-                (throw (RuntimeException. "Failed to read record")))
+                (throw (ex-info "Failed to read record" {})))
               (if-let [update-response (update-block! core-node-id height block)]
                 (let [[updated-id] update-response]
                   (log/info :update-block-by-height/updated-block-record
@@ -125,10 +125,10 @@
                   (doseq [tx-id (::c.c.get-block-result/tx block)]
                     (a.c.tx/register-tx core-node-id updated-id tx-id))
                   updated-id)
-                (throw (RuntimeException. "Updated record returned nil")))))
-          (throw (RuntimeException. "Failed to fetch block from node"))))
-      (throw (RuntimeException. "Failed to find node")))
-    (throw (RuntimeException. "Node does not contain an id."))))
+                (throw (ex-info "Updated record returned nil" {})))))
+          (throw (ex-info "Failed to fetch block from node" {}))))
+      (throw (ex-info "Failed to find node" {})))
+    (throw (ex-info "Node does not contain an id." {}))))
 
 (>defn fetch-blocks
   "Fetch the latest block for a node"
@@ -143,7 +143,7 @@
         (log/info :fetch-blocks/fetched {:info info})
         (update-block-by-height node tip)
         tip)
-      (throw (RuntimeException. "Failed to determine tip")))))
+      (throw (ex-info "Failed to determine tip" {})))))
 
 (>defn fetch-transactions!
   "Fetch all transactions for a block"
@@ -159,7 +159,7 @@
         (doseq [tx (c.bitcoin-s/list-transactions client)]
           (let [params (m.c.transactions/prepare-params tx)]
             (q.c.transactions/create-record params))))
-      (throw (RuntimeException. "Failed to find node")))))
+      (throw (ex-info "Failed to find node" {})))))
 
 (>defn search!
   "Find a block. (not implemented)"

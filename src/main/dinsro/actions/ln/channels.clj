@@ -25,7 +25,7 @@
             (log/info :update-channel!/found {})
             (let [params (merge channel params)]
               (q.ln.channels/update! params)))
-          (throw (RuntimeException. "Can't find channel"))))
+          (throw (ex-info "Can't find channel" {}))))
       (do
         (log/error :update-channel!/no-channel {})
         (q.ln.channels/create-record params)))))
@@ -33,7 +33,7 @@
 (defn delete!
   [id]
   (log/info :delete!/starting {:id id})
-  (throw (RuntimeException. "Not implemented")))
+  (throw (ex-info "Not implemented" {})))
 
 (>defn fetch-channels
   [node]

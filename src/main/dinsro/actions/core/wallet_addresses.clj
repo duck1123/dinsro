@@ -42,10 +42,10 @@
         (if-let [node (q.c.nodes/read-record node-id)]
           (let [client (a.c.node-base/get-client node)]
             (c.bitcoin-s/generate-to-address! client address))
-          (throw (RuntimeException. "Failed to find node")))
-        (throw (RuntimeException. "Failed to find node id")))
-      (throw (RuntimeException. "no network id")))
-    (throw (RuntimeException. "Failed to find wallet"))))
+          (throw (ex-info "Failed to find node" {})))
+        (throw (ex-info "Failed to find node id" {})))
+      (throw (ex-info "no network id" {})))
+    (throw (ex-info "Failed to find wallet" {}))))
 
 (defn calculate-address!
   [wallet index]
@@ -81,4 +81,4 @@
       (calculate-address! wallet n))
     (do
       (log/error :calculate-addresses!/no-wallet {:wallet-id wallet-id})
-      (throw (RuntimeException. "Failed to find wallet")))))
+      (throw (ex-info "Failed to find wallet" {})))))

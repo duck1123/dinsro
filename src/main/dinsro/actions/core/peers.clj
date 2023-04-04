@@ -50,7 +50,7 @@
             (q.c.peers/create-record params)))))
     (do
       (log/error :update-peer!/peer-index-missing {:node-id node-id :peer peer})
-      (throw (RuntimeException. "Failed to find peer id")))))
+      (throw (ex-info "Failed to find peer id" {})))))
 
 (>defn fetch-peers!
   "Fetch and update peers for node"
@@ -82,7 +82,7 @@
     (do
       (add-peer! node addr)
       (fetch-peers! node))
-    (throw (RuntimeException. (str "Failed to find node: " node-id)))))
+    (throw (ex-info (str "Failed to find node: " node-id) {}))))
 
 (>defn delete!
   "Remove node and delete record"

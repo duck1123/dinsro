@@ -172,7 +172,7 @@
          {:status :ok})
        (do
          (log/error :fetch-peers!/missing-id {})
-         (throw (RuntimeException. "Missing id")))))
+         (throw (ex-info "Missing id" {})))))
 
    :cljs
    (defmutation fetch-peers! [_props]
@@ -244,7 +244,7 @@
      (if-let [node (q.ln.nodes/read-record id)]
        (do
          (comment node)
-         (throw (RuntimeException. "not implemented"))
+         (throw (ex-info "not implemented" {}))
          {:status "ok"})
        (do (log/error :update-transactions!/no-node {})
            {:status "fail"})))

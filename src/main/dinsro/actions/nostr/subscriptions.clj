@@ -50,8 +50,8 @@
                   (let [message {:authors pubkeys :kinds [0]}]
                     (log/info :fetch!/message-prepared {:message message})
                     (a.n.relay-client/send! client "adhoc" message))))))
-          (throw (RuntimeException. "failed to find relay")))))
-    (throw (RuntimeException. "failed to find subscription"))))
+          (throw (ex-info "failed to find relay" {})))))
+    (throw (ex-info "failed to find subscription" {}))))
 
 (comment
   (q.n.relays/delete-all)

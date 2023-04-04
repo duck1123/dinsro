@@ -84,7 +84,7 @@
           params (assoc params ::m.users/id id)]
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
-    (throw (RuntimeException. "User already exists"))))
+    (throw (ex-info "User already exists" {}))))
 
 (>defn index-ids
   "list all user ids"

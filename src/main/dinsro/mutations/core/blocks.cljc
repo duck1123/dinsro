@@ -62,7 +62,7 @@
       ::pc/output [:status]}
      (if-let [node-id (first (q.c.nodes/find-by-user user-id))]
        (a.c.blocks/do-fetch! node-id block-id)
-       (throw (RuntimeException. "no node id"))))
+       (throw (ex-info "no node id" {}))))
 
    :cljs
    (defmutation fetch! [_props]

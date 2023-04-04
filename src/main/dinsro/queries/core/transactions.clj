@@ -99,4 +99,4 @@
   ;;     :where [[]
   ;;             [?id ::m.c.transactions/tx-id ?tx-id]]}
   ;;   [ln-node-id])
-  (throw (RuntimeException. "not implemented")))
+  (throw (ex-info "not implemented" {})))

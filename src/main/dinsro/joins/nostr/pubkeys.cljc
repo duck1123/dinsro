@@ -45,8 +45,7 @@
        (let [ids #?(:clj  (q.n.pubkeys/find-contacts pubkey-id)
                     :cljs (do (comment pubkey-id) []))]
          {::contacts (m.n.pubkeys/idents ids)})
-       #?(:clj (throw (RuntimeException. "No pubkey supplied"))
-          :cljs (throw (js/Error. "No pubkey supplied")))))})
+       (throw (ex-info "No pubkey supplied" {}))))})
 
 (defattr contact-count ::contact-count :int
   {ao/identities #{::m.n.pubkeys/id}
@@ -69,8 +68,7 @@
        (let [ids #?(:clj  (q.n.events/find-by-author pubkey-id)
                     :cljs (do (comment pubkey-id) []))]
          {::events (m.n.events/idents ids)})
-       #?(:clj (throw (RuntimeException. "No pubkey supplied"))
-          :cljs (throw (js/Error. "No pubkey supplied")))))})
+       (throw (ex-info "No pubkey supplied" {}))))})
 
 (defattr event-count ::event-count :int
   {ao/identities #{::m.n.pubkeys/id}

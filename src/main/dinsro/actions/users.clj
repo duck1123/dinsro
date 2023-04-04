@@ -14,7 +14,7 @@
       (q.users/update! user-id {::m.users/role role}))
     (do
       (log/error :set-role!/user-not-read {:user-id user-id})
-      (throw (RuntimeException. "user not found")))))
+      (throw (ex-info "user not found" {})))))
 
 (defn delete!
   [id]

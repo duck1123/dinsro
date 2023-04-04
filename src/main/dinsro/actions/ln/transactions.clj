@@ -7,7 +7,7 @@
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [lambdaisland.glogc :as log]))
 
-(defn not-implemented [] (throw (RuntimeException. "not-implemented")))
+(defn not-implemented [] (throw (ex-info "not-implemented" {})))
 
 (>defn handle-get-transactions-response
   [node-id transaction]

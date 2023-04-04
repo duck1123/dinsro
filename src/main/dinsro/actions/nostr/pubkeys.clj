@@ -104,7 +104,7 @@
     (let [parsed (parse-content-parsed content)]
       (log/info :process-pubkey-data!/parsed {:parsed parsed})
       (q.n.pubkeys/update! pubkey-id parsed))
-    (throw (RuntimeException. "failed to find pubkey"))))
+    (throw (ex-info "failed to find pubkey" {}))))
 
 (>defn process-pubkey-message!
   [event-type code body]
@@ -189,7 +189,7 @@
                response (async/<! (fetch-pubkey! hex relay-id))]
            (log/finer :update-pubkey!/finished {:response response})
            response)
-         (throw (RuntimeException. "No pubkey")))))))
+         (throw (ex-info "No pubkey" {})))))))
 
 (>defn fetch-contact!
   [pubkey-id relay-id]

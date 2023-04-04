@@ -80,7 +80,7 @@
   [string? => ds/channel?]
   (if-let [item (get @connections address)]
     (:chan item)
-    (throw (RuntimeException. "No channel"))))
+    (throw (ex-info "No channel" {}))))
 
 (>defn get-client-for-address
   [address]

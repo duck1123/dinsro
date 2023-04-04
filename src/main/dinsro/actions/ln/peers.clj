@@ -34,7 +34,7 @@
           (let [params (merge peer params)]
             (q.ln.peers/update! peer-id params))
           nil)
-        (throw (RuntimeException. "Can't find peer")))
+        (throw (ex-info "Can't find peer" {})))
       (let [network-id (q.c.networks/find-by-chain-and-network "bitcoin" "regtest")]
         (log/error :update-peer!/no-peer {:network-id network-id :params params})
         (let [remote-node-id (a.ln.remote-nodes/register-node! network-id pubkey nil)

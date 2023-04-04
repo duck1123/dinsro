@@ -33,7 +33,7 @@
             item-id   (a.n.filter-items/register-pubkey! filter-id pubkey-id)]
         (log/info :fetch-events!/starting {:filter-id filter-id :item-id item-id})
         (a.n.requests/start! request-id))
-      (throw (RuntimeException. "Not Implemented")))))
+      (throw (ex-info "Not Implemented" {})))))
 
 (defn update-event!
   [m]
@@ -104,7 +104,7 @@
     (let [note-id (::m.n.events/note-id event)]
       (log/info :fetch-event!/fetched {:event event})
       (fetch-by-note-id note-id))
-    (throw (RuntimeException. "Failed to find event"))))
+    (throw (ex-info "Failed to find event" {}))))
 
 (defn do-fetch!
   [props]

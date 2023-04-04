@@ -187,5 +187,5 @@
           (let [xpriv (get-xpriv wallet-id)]
             (log/info :do-derive!/derived {:xpriv xpriv}))
           {:status :ok})
-        (throw (RuntimeException. "no wallet")))
-      (throw (RuntimeException. "no wallet")))))
+        (throw (ex-info "no wallet" {})))
+      (throw (ex-info "no wallet" {})))))

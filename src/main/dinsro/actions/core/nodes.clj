@@ -98,4 +98,4 @@
 (defn do-delete!
   [props]
   (log/info :do-delete!/starting {:props props})
-  (throw (RuntimeException. "no implemented")))
+  (throw (ex-info "no implemented" {})))

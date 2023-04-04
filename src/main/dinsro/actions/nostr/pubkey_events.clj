@@ -47,7 +47,7 @@
                  (a.n.event-tags/register-tag! event-id tag idx))
                (recur))))
          ch)
-       (throw (RuntimeException. "Failed to find pubkey"))))))
+       (throw (ex-info "Failed to find pubkey" {}))))))
 
 (>defn do-fetch!
   [ident]
@@ -57,7 +57,7 @@
     (let [response (fetch-events! pubkey-id)]
       (log/info :do-fetch-contacts!/finished {:response response})
       {:status "ok"})
-    (throw (RuntimeException. "Failed to find pubkey"))))
+    (throw (ex-info "Failed to find pubkey" {}))))
 
 (defn do-fetch-events!
   [props]

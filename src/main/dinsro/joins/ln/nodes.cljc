@@ -31,7 +31,7 @@
            (q.ln.nodes/find-by-user user-id))
          (do
            (log/warn :do-index/user-not-found {:user-id user-id})
-           (throw (RuntimeException. "user not found"))))
+           (throw (ex-info "user not found" {}))))
        (do
          (log/warn :do-index/no-user {:env env})
          []))))
