@@ -11,7 +11,7 @@
                             :ci-coverage [:print-invocations :hooks
                                           :cloverage :profiling :junit-xml]}
 
- :kaocha.plugin.junit-xml/target-file "junit/unit.xml"
+ :kaocha.plugin.junit-xml/target-file "target/junit/unit.xml"
 
  :tests
  [{:id           :cljs
