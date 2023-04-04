@@ -19,6 +19,7 @@
 .rebel_readline_history
 .secret
 .shadow-cljs
+.store
 .vscode
 cosign.key
 data
