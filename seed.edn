@@ -7,8 +7,13 @@
  {"bitcoin"  ["mainnet" "testnet" "regtest"]
   "fakecoin" ["mainnet"]}
 
- :relays ["wss://nostream.dev.kronkltd.net"
-          #_"wss://relay.kronkltd.net"]
+ :relays ["wss://nostr-pub.wellorder.net"
+          "wss://nostr.bitcoiner.social"
+          "wss://nostr.zebedee.cloud"
+          "wss://relay.damus.io"
+          "wss://relay.orangepill.dev"
+          "wss://eden.nostr.land"
+          "wss://nostream.dev.kronkltd.net"]
 
  :nodes
  [{:name    "bitcoin-alice"
