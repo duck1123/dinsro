@@ -374,6 +374,7 @@ deployments:
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt-prod
             ingress.kubernetes.io/force-ssl-redirect: "true"
+            traefik.ingress.kubernetes.io/router.middlewares: "dinsro-redirect@kubernetescrd"
   nostr-rs-relay:
     helm:
       chart:
