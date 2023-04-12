@@ -53,8 +53,8 @@
    ao/schema     :production})
 
 (>def ::required-params (s/keys :req []))
-(>def ::params (s/keys :req []))
-(>def ::item (s/keys :req [::id]))
+(>def ::params (s/keys :req [::note-id ::pubkey ::created-at ::kind ::content ::sig]))
+(>def ::item (s/keys :req [::id ::note-id ::pubkey ::created-at ::kind ::content ::sig]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
