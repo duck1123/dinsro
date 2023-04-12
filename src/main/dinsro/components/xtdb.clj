@@ -44,33 +44,39 @@
 
 (defn query-id
   ([query]
+   (log/trace :query-id/starting {:query query})
    (let [db      (main-db)
          results (c.api/q db query)
          id      (ffirst results)]
-     (log/info :find-by-address/finished {:id id :results results})
+     (log/trace :query-id/finished {:id id :results results})
      id))
   ([query params]
+   (log/trace :query-id/starting {:query query :params params})
    (let [db      (main-db)
          results (c.api/q db query params)
          id      (ffirst results)]
-     (log/info :find-by-address/finished {:id id :results results})
+     (log/trace :query-id/finished {:id id :results results})
      id)))
 
 (defn query-ids
   ([query]
+   (log/trace :query-ids/starting {:query query})
    (let [db  (main-db)
          ids (map first (c.api/q db query))]
-     (log/info :query-ids/finished {:ids ids})
+     (log/trace :query-ids/finished {:ids ids})
      ids))
   ([query params]
+   (log/trace :query-ids/starting {:query query :params params})
    (let [db  (main-db)
          ids (map first (c.api/q db query params))]
-     (log/info :query-ids/finished {:ids ids})
+     (log/trace :query-ids/finished {:ids ids})
      ids)))
 
 (defn submit-tx!
   [k params]
-  (let [node     (main-node)
-        response (c.api/submit-tx node [[::c.api/fn k params]])]
-    (log/trace :submit-tx!/finished {:response response})
-    response))
+  (let [ops      [(concat [::c.api/fn k] params)]]
+    (log/trace :submit-tx/starting {:ops ops})
+    (let [node     (main-node)
+          response (c.api/submit-tx node ops)]
+      (log/trace :submit-tx!/finished {:response response})
+      response)))
