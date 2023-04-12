@@ -1,3 +1,8 @@
+# export USE_PERSISTENCE=true
+
+# export DINSRO_LOG_LEVEL=trace
+# export DINSRO_LOG_LEVEL=debug
+
 use_nix
 
 # Used by karma
