@@ -19,7 +19,7 @@
 (>defn WitnessTransaction->record
   [this]
   [(ds/instance? WitnessTransaction) => ::record]
-  (log/finer :WitnessTransaction->record/starting {:this this})
+  (log/trace :WitnessTransaction->record/starting {:this this})
   (let [inputs  (if-let [inputs (some-> this .inputs cs/vector->vec)]
                   (doall (map cs/->record inputs))
                   [])
@@ -32,7 +32,7 @@
                  ::outputs  outputs
                  ::version  (some-> this .version .toLong)
                  ::weight   (some-> this .weight)}]
-    (log/finer :WitnessTransaction->record/finished {:record record})
+    (log/trace :WitnessTransaction->record/finished {:record record})
     record))
 
 (extend-type WitnessTransaction

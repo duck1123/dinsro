@@ -51,7 +51,7 @@
         macaroon  (or (get-macaroon-hex node) "")]
     (if macaroon
       (let [instance (c.lnd-s/get-remote-instance url macaroon (Option/empty) cert-file)]
-        (log/finer :get-client/creating {:url url :cert-file cert-file :macaroon macaroon})
+        (log/trace :get-client/creating {:url url :cert-file cert-file :macaroon macaroon})
         (c.lnd-s/get-remote-client instance))
       (throw (ex-info "No macaroon" {})))))
 
@@ -228,7 +228,7 @@
     (let [record (cs/->record response)]
       (log/info :update-info!/converted {:record record})
       (let [params (set/rename-keys record m.ln.info/rename-map)]
-        (log/finer :update-info!/saving {:id id :params params})
+        (log/trace :update-info!/saving {:id id :params params})
         (q.ln.nodes/update! id params)))))
 
 (defn list-unspent!

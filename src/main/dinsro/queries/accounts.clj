@@ -79,7 +79,7 @@
 
 (defn find-by-rate-source
   [rate-source-id]
-  (log/finer :find-by-rate-source/starting {:rate-source-id rate-source-id})
+  (log/trace :find-by-rate-source/starting {:rate-source-id rate-source-id})
   (c.xtdb/query-ids
    '{:find  [?account-id]
      :in    [[?rate-source-id]]
@@ -88,7 +88,7 @@
 
 (defn find-by-wallet
   [wallet-id]
-  (log/finer :find-by-wallet/starting {:wallet-id wallet-id})
+  (log/trace :find-by-wallet/starting {:wallet-id wallet-id})
   (c.xtdb/query-ids
    '{:find  [?account-id]
      :in    [[?wallet-id]]

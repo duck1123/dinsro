@@ -40,7 +40,7 @@
 (>defn find-by-name
   [network-name]
   [::m.c.networks/name => (? ::m.c.networks/id)]
-  (log/finer :find-by-name/starting {:network-name network-name})
+  (log/trace :find-by-name/starting {:network-name network-name})
   (c.xtdb/query-id
    '{:find  [?network-id]
      :in    [[?network-name]]
@@ -50,7 +50,7 @@
 (>defn find-by-chain-id
   [chain-id]
   [::m.c.chains/id => (s/coll-of ::m.c.networks/id)]
-  (log/finer :find-by-chain/starting {:chain-id chain-id})
+  (log/trace :find-by-chain/starting {:chain-id chain-id})
   (c.xtdb/query-ids
    '{:find  [?network-id]
      :in    [[?chain-id]]
@@ -61,7 +61,7 @@
   "Returns the id of the network the node with the provided id belongs to."
   [node-id]
   [::m.c.nodes/id => (? ::m.c.networks/id)]
-  (log/finer :find-by-node/starting {:node-id node-id})
+  (log/trace :find-by-node/starting {:node-id node-id})
   (c.xtdb/query-id
    '{:find  [?network-id]
      :in    [[?node-id]]
@@ -71,7 +71,7 @@
 (>defn find-by-chain-and-network
   [chain-name network-name]
   [::m.c.chains/name ::m.c.networks/name => (? ::m.c.networks/id)]
-  (log/finer :find-by-chain-and-network/starting {:chain-name chain-name :network-name network-name})
+  (log/trace :find-by-chain-and-network/starting {:chain-name chain-name :network-name network-name})
   (c.xtdb/query-id
    '{:find  [?network-id]
      :in    [[?chain-name ?network-name]]
@@ -90,7 +90,7 @@
 (>defn find-by-core-node
   [core-node-id]
   [::m.c.nodes/id => (? ::m.c.networks/id)]
-  (log/finer :find-by-core-node/starting {:core-node-id core-node-id})
+  (log/trace :find-by-core-node/starting {:core-node-id core-node-id})
   (c.xtdb/query-id
    '{:find  [?network-id]
      :in    [[?core-node-id]]

@@ -96,7 +96,7 @@
 (defn merge-pages
   [{:keys [data-tree state-map]} id-key page-map]
   (let [id (get data-tree id-key)]
-    (log/finer :merge-pages/starting {:id-key id-key :id id :page-map page-map})
+    (log/trace :merge-pages/starting {:id-key id-key :id id :page-map page-map})
     (let [states (->> page-map
                       (map
                        (fn [[key page]]
@@ -143,17 +143,17 @@
         ident          [key id]
         parent-control (comp/registry-key->class control-key)
         state          (-> (app/current-state app) (get-in ident))]
-    (log/finer :page-loader/starting {:key key :control-key control-key :id id :state state})
+    (log/trace :page-loader/starting {:key key :control-key control-key :id id :state state})
     (if (and skip-loaded (:ui/page-merged state))
       (do
-        (log/finer :page-loader/routing-immediate {:ident ident})
+        (log/trace :page-loader/routing-immediate {:ident ident})
         (dr/route-immediate ident))
       (do
-        (log/finer :page-loader/deferring {:ident ident})
+        (log/trace :page-loader/deferring {:ident ident})
         (dr/route-deferred
          ident
          (fn []
-           (log/finer :page-loader/routing {:key key :id id :parent-control parent-control})
+           (log/trace :page-loader/routing {:key key :id id :parent-control parent-control})
            (df/load!
             app ident parent-control
             {:marker               :ui/selected-node
@@ -170,9 +170,9 @@
 
 (defn page-merger
   [k mappings]
-  (log/finer :page-merger/starting {:k k :mappings mappings})
+  (log/trace :page-merger/starting {:k k :mappings mappings})
   (fn [ctx]
-    (log/finer :page-merger/merging {:k k :mappings mappings :ctx ctx})
+    (log/trace :page-merger/merging {:k k :mappings mappings :ctx ctx})
     (merge-pages ctx k mappings)))
 
 (def blacklisted-keys
@@ -408,7 +408,7 @@
   {fo/id         m.c.networks/id
    fo/route-prefix "network-link"
    fo/attributes [m.c.networks/name]}
-  (log/finer :NetworkLinkForm/starting {:id id :name name :props props})
+  (log/trace :NetworkLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.core.networks/Show))
 
 (def ui-network-link (comp/factory NetworkLinkForm {:keyfn ::m.c.networks/id}))
@@ -418,7 +418,7 @@
   {fo/id         m.ln.nodes/id
    fo/route-prefix "ln-node-link"
    fo/attributes [m.ln.nodes/name]}
-  (log/finer :NodeLinkForm/starting {:id id :name name :props props})
+  (log/trace :NodeLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.ln.nodes/Show))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
@@ -427,7 +427,7 @@
   {fo/id         m.ln.remote-nodes/id
    fo/route-prefix "remote-node-link"
    fo/attributes [m.ln.remote-nodes/pubkey]}
-  (log/finer :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
+  (log/trace :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
   (form-link this id pubkey :dinsro.ui.ln.remote-nodes/Show))
 
 (def ui-remote-node-link (comp/factory RemoteNodeLinkForm {:keyfn ::m.ln.remote-nodes/id}))

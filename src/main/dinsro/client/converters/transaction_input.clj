@@ -22,7 +22,7 @@
   (let [record {::previous-output  (some-> this .previousOutput cs/->record)
                 ::script-signature (some-> this .scriptSignature cs/->record)
                 ::sequence         (some-> this .sequence .toLong)}]
-    (log/finer :TransactionInput->record/finished {:record record})
+    (log/trace :TransactionInput->record/finished {:record record})
     record))
 
 (extend-type TransactionInput

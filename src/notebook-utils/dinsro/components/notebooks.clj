@@ -17,7 +17,7 @@
        {:watch-paths ["src/main" "src/notebooks" "src/shared"]
         :show-filter-fn
         (fn [path]
-          (log/finer :show-filter-fn/starting {:path path})
+          (log/trace :show-filter-fn/starting {:path path})
           (let [matched (string/starts-with? path "src/notebooks")]
             (log/fine :show-filter-fn/tested {:path path :matched matched})
             matched))})

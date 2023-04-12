@@ -93,7 +93,7 @@
     keep-alive-time
     ^TimeUnit unit
     ^BlockingQueue work-queue]
-   (log/finer :get-executor/starting
+   (log/trace :get-executor/starting
               {:pool-size       pool-size
                :max-pool-size   max-pool-size
                :keep-alive-time keep-alive-time
@@ -116,19 +116,19 @@
          handler
          (reify Function1
            (apply [_this try-obj]
-             (log/finer :await-future/applied {:try-obj try-obj})
+             (log/trace :await-future/applied {:try-obj try-obj})
              (if (instance? Success try-obj)
                (do
-                 (log/finer :await-future/success-instance {:try-obj try-obj})
+                 (log/trace :await-future/success-instance {:try-obj try-obj})
                  (let [response (try (.get try-obj) (catch Exception ex ex))]
-                   (log/finer :await-future/got {:response response})
+                   (log/trace :await-future/got {:response response})
                    (let [data {:passed true :result response}]
                      (>!! ch data))))
                (let [data {:passed false :result try-obj}]
-                 (log/finer :await-future/not-success {:data data})
+                 (log/trace :await-future/not-success {:data data})
                  (>!! ch data)))))]
 
-     (log/finer :await-future/awaiting {:f f})
+     (log/trace :await-future/awaiting {:f f})
      (.onComplete f handler context)
      ch)))
 

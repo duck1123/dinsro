@@ -186,7 +186,7 @@
    (>defn do-fetch-contacts!
      [{::m.n.pubkeys/keys [id]}]
      [::fetch-contacts!-request => ::fetch-contacts!-response]
-     (log/finer :do-fetch-contacts!/starting {:id id})
+     (log/trace :do-fetch-contacts!/starting {:id id})
      (try
        (doseq [relay-id (q.n.relays/index-ids)]
          (a.n.events/fetch-events! id relay-id))
@@ -278,9 +278,9 @@
    (>defn do-fetch-events!
      [{::m.n.pubkeys/keys [id]}]
      [::fetch-events!-request => ::fetch-events!-response]
-     (log/finer :do-fetch-events!/started {:id id})
+     (log/trace :do-fetch-events!/started {:id id})
      (try
-       (log/finer :do-fetch-events!/starting {:id id})
+       (log/trace :do-fetch-events!/starting {:id id})
        (doseq [relay-id (q.n.relays/index-ids)]
          (a.n.events/fetch-events! id relay-id))
        {::mu/status :ok}

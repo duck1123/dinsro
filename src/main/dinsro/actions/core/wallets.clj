@@ -41,13 +41,13 @@
   (let [props {::m.c.wallets/name name
                ::m.c.wallets/user user
                ::m.c.wallets/node node}]
-    (log/finer :wallet/create {:props props})
+    (log/trace :wallet/create {:props props})
     (q.c.wallets/create-record props)))
 
 (defn get-word-list
   [wallet-id]
   (let [ids (q.c.words/find-by-wallet wallet-id)]
-    (log/finer :get-word-list/ids-read {:ids ids})
+    (log/trace :get-word-list/ids-read {:ids ids})
     (->> ids
          (map q.c.words/read-record)
          (sort-by ::m.c.words/position)
@@ -93,7 +93,7 @@
 
 (defn get-mnemonic
   ^MnemonicCode [wallet-id]
-  (log/finer :get-mnemonic/starting {:wallet-id wallet-id})
+  (log/trace :get-mnemonic/starting {:wallet-id wallet-id})
   (let [word-list (get-word-list wallet-id)]
     (c.bitcoin-s/words->mnemonic word-list)))
 
@@ -108,7 +108,7 @@
 (defn get-xpriv
   "Calculate the xpriv for a wallet from its mnemonic words"
   ^ExtPrivateKey [wallet-id]
-  (log/finer :get-xpriv/starting {:wallet-id wallet-id})
+  (log/trace :get-xpriv/starting {:wallet-id wallet-id})
   (let [;; ^MnemonicCode
         mnemonic     ^MnemonicCode (get-mnemonic wallet-id)
         network-name "testnet"
@@ -141,7 +141,7 @@
   "Calculate the pubkey for an address for the wallet at the given index"
   ^ExtPublicKey [wallet index]
   [::m.c.wallets/item number? => (ds/instance? ExtPublicKey)]
-  (log/finer :get-ext-pub-key/starting {:wallet wallet :index index})
+  (log/trace :get-ext-pub-key/starting {:wallet wallet :index index})
   (let [wallet-id          (::m.c.wallets/id wallet)
         xpriv              ^ExtPrivateKey (get-xpriv wallet-id)
         prefix             "m/84'/1'/0'"
@@ -162,7 +162,7 @@
   [wallet index]
   [::m.c.wallets/item number? => string?]
   (let [wallet-id (::m.c.wallets/id wallet)]
-    (log/finer :get-address/starting {:wallet-id wallet-id :index index})
+    (log/trace :get-address/starting {:wallet-id wallet-id :index index})
     (let [ext-pub-key    ^ExtPublicKey (get-ext-pub-key wallet index)
           pubkey         ^ECPublicKey (.key ext-pub-key)
           script-pub-key ^P2WPKHWitnessSPKV0 (P2WPKHWitnessSPKV0/apply pubkey)

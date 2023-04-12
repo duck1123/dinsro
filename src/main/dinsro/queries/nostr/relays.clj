@@ -40,7 +40,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.relays/id)]
-  (log/finer :index-ids/starting {})
+  (log/trace :index-ids/starting {})
   (c.xtdb/query-ids
    '{:find  [?relay-id]
      :where [[?relay-id ::m.n.relays/id _]]}))
@@ -95,7 +95,7 @@
   (log/info :set-connected/starting {:relay-id relay-id :connected connected})
   (let [node     (c.xtdb/main-node)
         response (xt/submit-tx node [[::xt/fn ::toggle-connected relay-id connected]])]
-    (log/finer :set-connected/finished {:response response})
+    (log/trace :set-connected/finished {:response response})
     response))
 
 (defn initialize-queries!

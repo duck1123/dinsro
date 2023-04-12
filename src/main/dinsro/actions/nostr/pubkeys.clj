@@ -27,7 +27,7 @@
 (>defn parse-content-parsed
   [data]
   [map? => (s/keys)]
-  (log/finer :parse-content-parsed/starting {:data data})
+  (log/trace :parse-content-parsed/starting {:data data})
   (let [{name    "name"
          about   "about"
          nip05   "nip05"
@@ -42,17 +42,17 @@
                              ::m.n.pubkeys/lud16   lud16
                              ::m.n.pubkeys/picture picture
                              ::m.n.pubkeys/website website}]
-    (log/finer :parse-content-parsed/finished {:content content})
+    (log/trace :parse-content-parsed/finished {:content content})
     content))
 
 (>defn parse-content
   [content]
   [string? => any?]
-  (log/finer :parse-content/starting {:content content})
+  (log/trace :parse-content/starting {:content content})
   (let [data (json/read-str content)]
-    (log/finer :parse-content/read {:data data})
+    (log/trace :parse-content/read {:data data})
     (let [parsed (parse-content-parsed data)]
-      (log/finer :parse-content/parsed {:parsed parsed})
+      (log/trace :parse-content/parsed {:parsed parsed})
       parsed)))
 
 (>defn register-subscription!
@@ -187,7 +187,7 @@
        (if-let [pubkey (q.n.pubkeys/read-record pubkey-id)]
          (let [hex      (::m.n.pubkeys/hex pubkey)
                response (async/<! (fetch-pubkey! hex relay-id))]
-           (log/finer :update-pubkey!/finished {:response response})
+           (log/trace :update-pubkey!/finished {:response response})
            response)
          (throw (ex-info "No pubkey" {})))))))
 

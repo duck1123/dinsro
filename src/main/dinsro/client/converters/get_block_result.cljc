@@ -56,7 +56,7 @@
                    ::version             (.version this)
                    ::version-hex         (some-> this .versionHex .hex)
                    ::weight              (.weight this)}]
-       (log/finer :GetBlockResult->record/finished {:record record})
+       (log/trace :GetBlockResult->record/finished {:record record})
        record)))
 
 ;; https://bitcoin-s.org/api/org/bitcoins/commons/jsonmodels/bitcoind/GetBlockResult.html

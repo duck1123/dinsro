@@ -15,7 +15,7 @@
   [this]
   [(ds/instance? ScriptType) => ::record]
   (let [record (str this)]
-    (log/finer :ScriptType->record/finished {:record record})
+    (log/trace :ScriptType->record/finished {:record record})
     record))
 
 (extend-type ScriptType

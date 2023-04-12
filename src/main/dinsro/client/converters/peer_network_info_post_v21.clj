@@ -30,7 +30,7 @@
                        :services         (some-> this .services)
                        :services-names   service-names
                        :time-offset      (some-> this .timeoffset)}]
-    (log/finer :PeerNetworkInfoPostV21->record/finished {:record record})
+    (log/trace :PeerNetworkInfoPostV21->record/finished {:record record})
     record))
 
 (extend-type PeerNetworkInfoPostV21

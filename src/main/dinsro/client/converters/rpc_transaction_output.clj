@@ -25,7 +25,7 @@
   (let [record {::n              (some-> this .n)
                 ::script-pub-key (some-> this .scriptPubKey cs/->record)
                 ::value          (some-> this .value cs/->record)}]
-    (log/finer :RpcTransactionOutput->record/finished {:record record})
+    (log/trace :RpcTransactionOutput->record/finished {:record record})
     record))
 
 (extend-type RpcTransactionOutput

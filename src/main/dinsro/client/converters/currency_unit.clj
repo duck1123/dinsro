@@ -16,9 +16,9 @@
 (>defn CurrencyUnit->record
   [this]
   [(ds/instance? CurrencyUnit) => ::record]
-  (log/finer :CurrencyUnit->record/starting {:this this})
+  (log/trace :CurrencyUnit->record/starting {:this this})
   (let [record {::value (some-> this .toBigDecimal .toLong)}]
-    (log/finer :CurrencyUnit->record/finished {:record record})
+    (log/trace :CurrencyUnit->record/finished {:record record})
     record))
 
 (extend-type CurrencyUnit

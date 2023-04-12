@@ -34,7 +34,7 @@
                                    (when (= id id-key) c)))
                                controls)
         node-id (::control/value id-control)]
-    (log/finer :peers/creating {:props      props
+    (log/trace :peers/creating {:props      props
                                 :controls   controls
                                 :id-control id-control
                                 :node-id    node-id})

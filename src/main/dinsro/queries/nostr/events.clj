@@ -54,7 +54,7 @@
 (>defn find-by-note-id
   [note-id]
   [::m.n.events/note-id => (? ::m.n.events/id)]
-  (log/finer :find-by-note-id/starting {:note-id note-id})
+  (log/trace :find-by-note-id/starting {:note-id note-id})
   (c.xtdb/query-id
    '{:find  [?event-id]
      :in    [[?note-id]]

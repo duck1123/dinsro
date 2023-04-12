@@ -57,7 +57,7 @@
   (let [block-response (a.c.blocks/fetch-blocks node)
         peer-response  (a.c.peers/fetch-peers! node)
         updated-node   (q.c.nodes/read-record id)]
-    (log/finer
+    (log/trace
      :fetch!/finished
      {:block-response block-response
       :peer-response  peer-response

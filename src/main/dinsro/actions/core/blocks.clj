@@ -74,7 +74,7 @@
 (>defn update-neighbors
   [core-node-id block-id block height]
   [::m.c.nodes/id ::m.c.blocks/id  any? ::m.c.blocks/height => any?]
-  (log/finer :update-neighbors/statring {:block-id block-id :block block :height height})
+  (log/trace :update-neighbors/statring {:block-id block-id :block block :height height})
   (let [previous-hash (:dinsro.client.converters.get-block-result/previous-block-hash block)
         next-hash     (:dinsro.client.converters.get-block-result/next-block-hash block)]
     (log/info :update-neighbors/parsing-neighbors {:previous previous-hash :next next-hash})

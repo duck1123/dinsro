@@ -23,7 +23,7 @@
   [(ds/instance? TransactionOutPoint) => ::record]
   (let [record {::tx-id (some-> this .txId .hex)
                 ::vout  (some-> this .vout .toLong)}]
-    (log/finer :TransactionOutPoint->record/finished {:record record})
+    (log/trace :TransactionOutPoint->record/finished {:record record})
     record))
 
 (extend-type TransactionOutPoint

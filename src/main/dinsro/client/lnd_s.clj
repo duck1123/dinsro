@@ -29,7 +29,7 @@
          cert-opt  (Option/empty)]
      (get-remote-instance url macaroon cert-file cert-opt)))
   ([url macaroon cert-file cert-opt]
-   (log/finer :get-remote-instance/creating
+   (log/trace :get-remote-instance/creating
               {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
    (LndInstanceRemote. url macaroon cert-file cert-opt)))
 
@@ -51,11 +51,11 @@
   ^GetInfoResponse [^LndRpcClient client]
   (log/info :get-info/starting {})
   (let [response (.getInfo client)]
-    (log/finer :get-info/response {:response response})
+    (log/trace :get-info/response {:response response})
     (let [f (cs/await-future response)]
-      (log/finer :get-info/awaited {:f f})
+      (log/trace :get-info/awaited {:f f})
       (let [result-data (async/<!! f)]
-        (log/finer :get-info/results {:result-data result-data})
+        (log/trace :get-info/results {:result-data result-data})
         (if (instance? Throwable result-data)
           (do
             (log/info :get-info/throwable {:result-data result-data})
@@ -63,10 +63,10 @@
           (let [{:keys [passed result]} result-data]
             (if passed
               (do
-                (log/finer :get-info/passed {})
+                (log/trace :get-info/passed {})
                 result)
               (do
-                (log/finer :get-info/failed {:result result})
+                (log/trace :get-info/failed {:result result})
                 (let [_ex (eft/get result)]
                   (throw result))))))))))
 
@@ -92,24 +92,24 @@
 (defn await-throwable
   "Return the results of a throwable future"
   [response]
-  (log/finer :await-throwable/starting {:response response})
+  (log/trace :await-throwable/starting {:response response})
   (let [f (cs/await-future response)]
-    (log/finer :await-throwable/awaited {:f f})
+    (log/trace :await-throwable/awaited {:f f})
     (let [result-data (async/<!! f)]
       (if (instance? Throwable result-data)
         (do
-          (log/finer :await-throwable/throwable {:result-data result-data})
+          (log/trace :await-throwable/throwable {:result-data result-data})
           (throw result-data))
         (let [{:keys [passed result]} result-data]
           (if passed
             (do
-              (log/finer :await-throwable/passed {:passed passed :result result})
+              (log/trace :await-throwable/passed {:passed passed :result result})
               result)
             (do
-              (log/finer :await-throwable/not-passed {:passed passed :result result})
+              (log/trace :await-throwable/not-passed {:passed passed :result result})
               (if (instance? Failure result)
                 (let [o (.get result)]
-                  (log/finer :await-throwable/failure {:o o})
+                  (log/trace :await-throwable/failure {:o o})
                   (throw (ex-info (pr-str o) {})))
                 (throw (ex-info (pr-str result) {}))))))))))
 

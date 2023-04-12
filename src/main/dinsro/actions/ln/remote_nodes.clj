@@ -10,7 +10,7 @@
   [::m.ln.remote-nodes/node
    ::m.ln.remote-nodes/pubkey
    ::m.ln.remote-nodes/host => ::m.ln.remote-nodes/id]
-  (log/finer :register-node!/starting {:node-id node-id :pubkey pubkey})
+  (log/trace :register-node!/starting {:node-id node-id :pubkey pubkey})
   (if-let [remote-node-id (q.ln.remote-nodes/find-by-node-and-pubkey node-id pubkey)]
     (do
       (log/info :register-node!/found {:pubkey pubkey :remote-node-id remote-node-id})

@@ -17,7 +17,7 @@
                 :xthin           (some-> this .nodeXthin)
                 :network-limited (some-> this .nodeNetworkLimited)}]
 
-    (log/finer :ServiceIdentifier->record/record {:record record})
+    (log/trace :ServiceIdentifier->record/record {:record record})
     record))
 
 (extend-type ServiceIdentifier

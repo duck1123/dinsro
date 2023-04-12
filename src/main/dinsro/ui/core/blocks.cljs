@@ -71,7 +71,7 @@
                    [df/marker-table '_]]
    :route-segment ["blocks" :id]
    :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::Show)}
-  (log/finer :Show/creating {:id id :props props :this this})
+  (log/trace :Show/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {}

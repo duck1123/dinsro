@@ -23,9 +23,9 @@
   [node address]
   (log/info :has-peer?/starting {:node node :address address})
   (let [peer-info (get-peer-info node)]
-    (log/finer :has-peer?/got-info {:peer-info peer-info})
+    (log/trace :has-peer?/got-info {:peer-info peer-info})
     (let [hosts (map (fn [x] (:addr (:network-info x))) peer-info)]
-      (log/finer :has-peer?/got-info {:hosts hosts})
+      (log/trace :has-peer?/got-info {:hosts hosts})
       (some (fn [x] (= x address)) hosts))))
 
 (>defn update-peer!
@@ -34,19 +34,19 @@
   (log/info :update-peer!/starting {:node-id node-id :peer peer})
   (if-let [peer-index (:id peer)]
     (do
-      (log/finer :update-peer!/got-index {:peer-index peer-index :node-id node-id :peer peer})
+      (log/trace :update-peer!/got-index {:peer-index peer-index :node-id node-id :peer peer})
       (if-let [existing-peer (q.c.peers/find-by-node-and-peer-id node-id peer-index)]
         (let [peer-id (::m.c.peers/id existing-peer)]
-          (log/finer :update-peer!/record-exists
+          (log/trace :update-peer!/record-exists
                      {:node-id    node-id
                       :peer-index peer-index
                       :peer-id    peer-id})
           peer-id)
         (do
-          (log/finer :update-peer!/record-not-exists {:node-id node-id :peer-index peer-index})
+          (log/trace :update-peer!/record-not-exists {:node-id node-id :peer-index peer-index})
           (let [params (assoc peer ::m.c.peers/node node-id)
                 params (m.c.peers/prepare-params params)]
-            (log/finer :update-peer!/params-prepared {:params params})
+            (log/trace :update-peer!/params-prepared {:params params})
             (q.c.peers/create-record params)))))
     (do
       (log/error :update-peer!/peer-index-missing {:node-id node-id :peer peer})
@@ -69,7 +69,7 @@
   (log/info :add-peer!/starting {:node-id (::m.c.nodes/id node) :address address})
   (let [client   (a.c.node-base/get-client node)
         response (c.bitcoin-s/add-node client address)]
-    (log/finer :add-peer!/finished {:response response})
+    (log/trace :add-peer!/finished {:response response})
     response))
 
 (>defn create!

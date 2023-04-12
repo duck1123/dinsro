@@ -21,7 +21,7 @@
   [(ds/instance? TransactionOutput) => ::record]
   (let [record {::script-pub-key (some-> this .scriptPubKey .hex)
                 ::value          (some-> this .value cs/->record)}]
-    (log/finer :TransactionOutput->record/finished {:record record})
+    (log/trace :TransactionOutput->record/finished {:record record})
     record))
 
 (extend-type TransactionOutput

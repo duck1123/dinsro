@@ -52,7 +52,7 @@
 (>defn GetBlockChainInfoResultPostV19->record
   [this]
   [::instance => ::record]
-  (log/finer :GetBlockChainInfoResultPostV19->record/starting {:this this})
+  (log/trace :GetBlockChainInfoResultPostV19->record/starting {:this this})
   (let [response {::best-block-hash         (some-> this .bestblockhash .hex)
                   ::blocks                  (.blocks this)
                   ::chain                   (some-> this .chain .name)

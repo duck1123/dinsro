@@ -83,7 +83,7 @@
                 ::vin                   vin
                 ::vout                  vout
                 ::vsize                 (some-> this .vsize)}]
-    (log/finer :GetRawTransactionResult->record {:record record})
+    (log/trace :GetRawTransactionResult->record {:record record})
     record))
 
 (extend-type GetRawTransactionResult

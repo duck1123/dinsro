@@ -14,7 +14,7 @@
   (let [conf (xt/symbolize-xtdb-modules config)]
     (log/finest :db/starting {:conf conf})
     (let [node (xt/start-databases conf)]
-      (log/finer :db/started {:conf conf :node node})
+      (log/trace :db/started {:conf conf :node node})
       node)))
 
 (defn stop-database!
@@ -31,7 +31,7 @@
 (defn main-node
   "Returns the main xtdb node"
   []
-  #_(log/finer :nodes/read {:nodes xtdb-nodes})
+  #_(log/trace :nodes/read {:nodes xtdb-nodes})
   (:main xtdb-nodes))
 
 (defn main-db
@@ -39,7 +39,7 @@
   []
   (let [node (main-node)
         db (c.api/db node)]
-    #_(log/finer :db/read {:db db :node node})
+    #_(log/trace :db/read {:db db :node node})
     db))
 
 (defn query-id
@@ -72,5 +72,5 @@
   [k params]
   (let [node     (main-node)
         response (c.api/submit-tx node [[::c.api/fn k params]])]
-    (log/finer :submit-tx!/finished {:response response})
+    (log/trace :submit-tx!/finished {:response response})
     response))

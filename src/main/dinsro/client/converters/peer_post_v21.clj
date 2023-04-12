@@ -31,7 +31,7 @@
   [this]
   [(ds/instance? PeerPostV21) => ::record]
   (let [network-info (.networkInfo this)]
-    (log/finer :PeerPostV21->record/network {:network-info network-info})
+    (log/trace :PeerPostV21->record/network {:network-info network-info})
     (let [record {:add-node        (.addnode this)
                   :connection-type (.connection_type this)
                   :id              (.id this)
@@ -42,7 +42,7 @@
                   :synced-blocks   (.synced_blocks this)
                   :synced-headers  (.synced_headers this)
                   :version         (.version this)}]
-      (log/finer :PeerPostV21->record/finished {:record record})
+      (log/trace :PeerPostV21->record/finished {:record record})
       record)))
 
 (extend-type PeerPostV21

@@ -22,13 +22,13 @@
         params (assoc params ::m.n.pubkeys/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/finer :create-record/finished {:id id})
+    (log/trace :create-record/finished {:id id})
     id))
 
 (>defn find-by-hex
   [hex]
   [::m.n.pubkeys/hex => (? ::m.n.pubkeys/id)]
-  (log/finer :find-by-hex/starting {:hex hex})
+  (log/trace :find-by-hex/starting {:hex hex})
   (c.xtdb/query-id
    '{:find  [?id]
      :in    [[?hex]]
@@ -85,7 +85,7 @@
 (>defn find-contacts
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.pubkeys/id)]
-  (log/finer :find-contacts/starting {:pubkey-id pubkey-id})
+  (log/trace :find-contacts/starting {:pubkey-id pubkey-id})
   (c.xtdb/query-ids
    '{:find  [?target-id]
      :in    [[?pubkey-id]]
@@ -96,7 +96,7 @@
 (>defn find-by-name
   [name]
   [::m.n.pubkeys/name => ::m.n.pubkeys/id]
-  (log/finer :find-by-name/starting {:name name})
+  (log/trace :find-by-name/starting {:name name})
   (c.xtdb/query-ids
    '{:find  [?pubkey-id]
      :in    [[?name]]

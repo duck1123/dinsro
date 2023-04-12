@@ -28,7 +28,7 @@
                      [])
         record     {::asm        asm
                     ::signatures signatures}]
-    (log/finer :ScriptSignature->record/finished {:record record})
+    (log/trace :ScriptSignature->record/finished {:record record})
     record))
 
 (extend-type ScriptSignature

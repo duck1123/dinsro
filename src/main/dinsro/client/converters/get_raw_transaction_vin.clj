@@ -38,7 +38,7 @@
                 ::tx-id                 (some-> this .txid cs/get-or-nil cs/->record)
                 ::tx-in-witness         tx-in-witness
                 ::vout                  (some-> this .vout cs/get-or-nil)}]
-    (log/finer :GetRawTransactionVin->record/finished {:record record})
+    (log/trace :GetRawTransactionVin->record/finished {:record record})
     record))
 
 (extend-type GetRawTransactionVin

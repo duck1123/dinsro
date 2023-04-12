@@ -21,7 +21,7 @@
         params (assoc params ident-key id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/finer :create-record/finished {:id id})
+    (log/trace :create-record/finished {:id id})
     id))
 
 (>defn read-record

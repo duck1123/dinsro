@@ -222,11 +222,11 @@
   [^BitcoindV22RpcClient client]
   (let [fut      (.getPeerInfo client)
         response (async/<!! (cs/await-future fut))]
-    (log/finer :get-peer-info/response {:response response})
+    (log/trace :get-peer-info/response {:response response})
     (let [{:keys [passed result]} response]
       (if passed
         (let [parsed-response (map cs/->record (cs/vector->vec result))]
-          (log/finer :get-peer-info/parsed-response {:parsed-response parsed-response})
+          (log/trace :get-peer-info/parsed-response {:parsed-response parsed-response})
           parsed-response)
         (let [result-obj (.get result)
               ex         (or result-obj (ex-info "Did not pass" {}))]
@@ -244,7 +244,7 @@
 
 (defn get-blockchain-info-raw
   [client]
-  (log/finer :get-blockchain-info-raw/starting {:client client})
+  (log/trace :get-blockchain-info-raw/starting {:client client})
   (let [fut (.getBlockChainInfo client)
         response (async/<!! (cs/await-future fut))]
     (log/info :get-blockchain-info-raw/response {:response response})
@@ -268,7 +268,7 @@
         skip                (int 0)
         include-watch-only? false
         response (async/<!! (cs/await-future (.listTransactions client account count skip include-watch-only?)))]
-    (log/finer :list-transactions-raw/finished {:response response})
+    (log/trace :list-transactions-raw/finished {:response response})
     response))
 
 (>defn list-transactions
@@ -284,13 +284,13 @@
 (>defn fetch-block-by-height
   [client height]
   [::client number? => any?]
-  (log/finer :fetch-block-by-height/starting {:height height})
+  (log/trace :fetch-block-by-height/starting {:height height})
   (let [hash (:result (async/<!! (get-block-hash client height)))]
     (log/fine :fetch-block-by-height/located {:hash hash})
     (let [response (:result (async/<!! (cs/await-future (.getBlock client hash))))]
-      (log/finer :fetch-block-by-height/read {:response response})
+      (log/trace :fetch-block-by-height/read {:response response})
       (let [converted-response (cs/->record response)]
-        (log/finer :fetch-block-by-height/converted {:converted-response converted-response})
+        (log/trace :fetch-block-by-height/converted {:converted-response converted-response})
         converted-response))))
 
 (>defn add-node
@@ -301,11 +301,11 @@
   (let [address  (URI. address-s)
         command  (RpcOpts$AddNodeArgument$Add$.)
         p        (.addNode client address command)]
-    (log/finer :add-node/sent {:p p :address address :command command})
+    (log/trace :add-node/sent {:p p :address address :command command})
     (let [ch (cs/await-future p)]
-      (log/finer :add-node/awaited {:ch ch})
+      (log/trace :add-node/awaited {:ch ch})
       (let [response (async/<!! ch)]
-        (log/finer :add-node/finished {:response response})
+        (log/trace :add-node/finished {:response response})
         response))))
 
 (>defn disconnect-node
@@ -332,5 +332,5 @@
   [client tx-id-s]
   [::client string? => any?]
   (let [record (cs/->record (get-raw-transaction-raw client tx-id-s))]
-    (log/finer :get-raw-transaction/finished {:record record})
+    (log/trace :get-raw-transaction/finished {:record record})
     record))

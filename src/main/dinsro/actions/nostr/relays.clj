@@ -45,7 +45,7 @@
 (>defn handle-event
   [req-id evt]
   [string? ::incoming-event => ::outgoing-event]
-  (log/finer :handle-event/starting {:evt evt})
+  (log/trace :handle-event/starting {:evt evt})
   (let [{id         "id"
          kind       "kind"
          pubkey     "pubkey"
@@ -72,9 +72,9 @@
 (defn parse-message
   "Parse a response message"
   [message]
-  (log/finer :parse-message/starting {:message message})
+  (log/trace :parse-message/starting {:message message})
   (let [[type req-id evt] message]
-    (log/finer :parse-message/starting {:req-id req-id :type type})
+    (log/trace :parse-message/starting {:req-id req-id :type type})
     (condp = type
       "EVENT" (handle-event req-id evt)
       "EOSE"  (handle-eose req-id evt)
@@ -143,11 +143,11 @@
   "Connect to relay and store connection information"
   [relay-id]
   [::m.n.relays/id => (? ::client)]
-  (log/finer :connect!/starting {:relay-id relay-id})
+  (log/trace :connect!/starting {:relay-id relay-id})
   (q.n.relays/set-connected relay-id true)
   (if-let [client   (get-client-for-id relay-id false)]
     (do
-      (log/finer :connect!/finished {:client client})
+      (log/trace :connect!/finished {:client client})
       client)
     (do
       (log/info :connect!/creating {})

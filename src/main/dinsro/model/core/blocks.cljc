@@ -140,7 +140,7 @@
 (>defn prepare-params
   [params]
   [::unprepared-params => ::params]
-  (log/finer :prepare-params/preparing {:params params})
+  (log/trace :prepare-params/preparing {:params params})
   (let [{:dinsro.client.converters.get-block-result/keys
          [bits hash height chainwork difficulty merkle-root
           nonce size time tx median-time weight version-hex
@@ -167,7 +167,7 @@
                                      ::version-hex       version-hex
                                      ::stripped-size     stripped-size
                                      ::version           version}]
-    (log/finer :prepare-params/finished {:record record})
+    (log/trace :prepare-params/finished {:record record})
     record))
 
 (s/def ::item

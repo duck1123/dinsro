@@ -21,10 +21,10 @@
     (let [wallet-address-id (q.c.wallet-addresses/find-by-wallet-and-index id path-index)]
       (if wallet-address-id
         (do
-          (log/finer :register-address!/found {})
+          (log/trace :register-address!/found {})
           wallet-address-id)
         (do
-          (log/finer :register-address!/not-found {})
+          (log/trace :register-address!/not-found {})
           (let [address-id (a.c.addresses/register-address! address)]
             (q.c.wallet-addresses/create-record
              {::m.c.wallet-addresses/address    address-id

@@ -13,7 +13,7 @@
   [this]
   [(ds/instance? ByteVector) => ::record]
   (let [record (.toHex this)]
-    (log/finer :ByteVector->record/finished {:record record})
+    (log/trace :ByteVector->record/finished {:record record})
     record))
 
 (extend-type ByteVector

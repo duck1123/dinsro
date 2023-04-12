@@ -35,7 +35,7 @@
   [k]
   (log/debug :setting/get {:key k})
   (let [value (::value (find-by-key k))]
-    (log/finer :setting/get-response {:key k :value value})
+    (log/trace :setting/get-response {:key k :value value})
     value))
 
 (defn set-setting

@@ -27,7 +27,7 @@
                    ::asm         (some-> this .asm)
                    ::hex         (some-> this .hex)
                    ::script-type (some-> this .scriptType cs/->record)}]
-    (log/finer :RpcScriptPubKey->record/finished {:record record})
+    (log/trace :RpcScriptPubKey->record/finished {:record record})
     record))
 
 (extend-type RpcScriptPubKey

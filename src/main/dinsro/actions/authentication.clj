@@ -91,7 +91,7 @@
 (defn check-session!
   "get session from env"
   [env]
-  (log/finer :check-session!/starting {})
+  (log/trace :check-session!/starting {})
   (if-let [session (some-> env :ring/request :session)]
     (do
       (log/finest :check-session!/existing-session {:session session})

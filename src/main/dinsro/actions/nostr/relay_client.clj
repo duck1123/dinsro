@@ -29,12 +29,12 @@
 (>defn handle-message
   [result-atom chan _ws msg last?]
   [ds/atom? ds/channel? any? (ds/instance? HeapCharBuffer) boolean? => any?]
-  (log/finer :handle-message/started {:msg msg :last? last?})
+  (log/trace :handle-message/started {:msg msg :last? last?})
   (if last?
     (let [msg-str                      (str @result-atom (str msg))
           o                            (json/read-str msg-str)
           [event-type request-id body] o]
-      (log/finer :handle-message/received {:event-type event-type
+      (log/trace :handle-message/received {:event-type event-type
                                            :body       body
                                            :request-id request-id
                                            :chan       chan})
@@ -87,15 +87,15 @@
   [string? => (? ::client)]
   (if-let [client (get-in @connections [address :client])]
     (do
-      (log/finer :get-client-for-address/cached {:client client})
+      (log/trace :get-client-for-address/cached {:client client})
       client)
     (do
-      (log/finer :get-client-for-address/missing {})
+      (log/trace :get-client-for-address/missing {})
       nil)))
 
 (defn send!
   [client request-id body]
-  (log/finer :send!/starting {:client client :request-id request-id :body body})
+  (log/trace :send!/starting {:client client :request-id request-id :body body})
   (let [chan (async/chan)]
     (let [message (json/json-str ["REQ" request-id body])]
       (ws/send! client message))

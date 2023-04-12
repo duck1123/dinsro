@@ -50,7 +50,7 @@
                        [?account-id ::m.ln.accounts/wallet ?wallet-id]
                        [?wallet-address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
              [ln-node-id])]
-    (log/finer :find-by-ln-node/finished {:ids ids})
+    (log/trace :find-by-ln-node/finished {:ids ids})
     ids))
 
 (>defn find-by-wallet
