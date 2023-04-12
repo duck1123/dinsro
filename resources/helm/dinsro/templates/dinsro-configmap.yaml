@@ -29,6 +29,8 @@ data:
      :dinsro.core/modules [{{ if .Values.notebooks.enabled }}"dinsro.components.notebooks"{{- end }}]
      :taoensso.timbre/logging-config
      {:min-level [[#{"_rad.resolvers" "roterski.fulcro.rad.database-adapters.xtdb.generate-resolvers"} :fatal]
+                  [#{"dinsro.components.xtdb"} :debug ]
+                  [#{"dinsro.queries.*"} :info ]
                   [#{"dinsro.*"} {{ .Values.logLevel }} ]
                   [#{"*"}        :info ]]
       :level {{ .Values.logLevel }} }}
