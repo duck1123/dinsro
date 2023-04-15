@@ -59,7 +59,7 @@
        (log/info :index-ids/query {:query query})
        (let [id (c.xtdb/query-id query [pubkey-id])]
          (log/trace :index-ids/finished {:id id})
-         id)))))
+         (or id 0))))))
 
 (>defn index-ids
   ([]
@@ -71,14 +71,19 @@
      (log/info :index-ids/starting {:query-params query-params})
      (let [{:indexed-access/keys [options]
             pubkey-id            ::m.n.pubkeys/id} query-params
-           {:keys [limit offset]}                  options
-           query (merge (get-index-query query-params)
-                        {:limit  limit :offset offset})]
+           base-params                             (get-index-query query-params)
+           {:keys [limit offset]
+            :or   {limit 20 offset 0}}             options
+           limit-params
+           {:limit    limit
+            :offset   offset
+            :order-by [['?created-at :desc]]
+            :find     (vec (concat (:find base-params) ['?created-at]))
+            :where    (vec (concat (:where base-params)
+                                   [['?event-id ::m.n.events/created-at '?created-at]]))}
+           query                                   (merge base-params limit-params)]
        (log/info :index-ids/query {:query query})
-
-       (let [ids                                     (c.xtdb/query-ids query
-
-                                                                       [pubkey-id])]
+       (let [ids (c.xtdb/query-ids query [pubkey-id])]
          (log/trace :index-ids/finished {:ids ids})
          ids)))))
 

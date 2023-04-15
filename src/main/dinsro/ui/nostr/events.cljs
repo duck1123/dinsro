@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -112,6 +113,9 @@
    ro/field-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
                         ::m.n.events/note-id #(u.links/ui-event-link %3)}
    ro/route            "events"
+   ro/machine             spr/machine
+   ro/page-size           10
+   ro/paginate?           true
    ro/row-pk           m.n.events/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.events/index
@@ -121,6 +125,7 @@
     (let [{:ui/keys [current-rows]} props]
       (dom/div {:classes [:.ui :.segment]}
         (dom/div {:classes [:.ui :.container]}
+          ((report/control-renderer this) this)
           (dom/div {:classes [:.ui :.items :.unstackable]}
             (map ui-event-box current-rows)))))))
 
