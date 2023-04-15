@@ -1,7 +1,7 @@
 (ns dinsro.components.notebooks
   (:require
    [clojure.string :as string]
-   [dinsro.components.config :as config]
+   [dinsro.components.config :as c.config]
    [lambdaisland.glogc :as log]
    [mount.core :as mount]
    [nextjournal.clerk :as clerk]))
@@ -10,7 +10,7 @@
 
 (defn start!
   []
-  (if (get-in config/config [::config :enabled])
+  (if (get-in (c.config/get-config) [::config :enabled])
     (do
       (log/info :start!/enabled {})
       (clerk/serve!

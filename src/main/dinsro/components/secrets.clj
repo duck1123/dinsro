@@ -30,9 +30,11 @@
 (defstate secret
   "A secret value used to encrypt session state"
   :start
-  (or (:secret config/config)
-      (if-let [stored-secret (read-secret)]
-        stored-secret
-        (do
-          (write-secret)
-          (read-secret)))))
+  (do
+    (log/info :secret/starting {})
+    (or (:secret (config/get-config))
+        (if-let [stored-secret (read-secret)]
+          stored-secret
+          (do
+            (write-secret)
+            (read-secret))))))

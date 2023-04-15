@@ -25,10 +25,8 @@
                                            (.exists file))) files))]
     (first files)))
 
-(defstate config
-  "The overrides option in args is for overriding
-   configuration in tests."
-  :start
+(defn start-config!
+  []
   (let [{:keys [config overrides]} (args)
         config-path                (or config (get-config-path) "config/prod.edn")
         loaded-config              (fserver/load-config! {:config-path config-path})
@@ -36,6 +34,15 @@
     (logging/configure-logging! merged-config)
     (log/info :config/starting {:config-path config-path})
     merged-config))
+
+(defstate config-map
+  "The overrides option in args is for overriding
+   configuration in tests."
+  :start (start-config!))
+
+(defn get-config
+  []
+  @config-map)
 
 (def default-secret-path ".secret")
 
@@ -56,9 +63,10 @@
 
 (defstate secret
   :start
-  (or (config :secret)
-      (let [secret-path (or (config ::secret-path) default-secret-path)]
-        (or (read-secret secret-path)
-            (do
-              (write-secret secret-path)
-              (read-secret secret-path))))))
+  (let [resolved-config (get-config)]
+    (or (resolved-config :secret)
+        (let [secret-path (or (resolved-config ::secret-path) default-secret-path)]
+          (or (read-secret secret-path)
+              (do
+                (write-secret secret-path)
+                (read-secret secret-path)))))))

@@ -15,3 +15,6 @@ format:
 
 lint:
 	bb lint
+
+test:
+	bb test

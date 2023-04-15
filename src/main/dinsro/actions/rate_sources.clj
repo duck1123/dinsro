@@ -67,23 +67,26 @@
         (fetch-source item)
         (log/warn :rate/not-active {:source-id (::m.rate-sources/id item)})))))
 
-(defn stop-scheduler
-  []
-  (log/info :scheduler/stopping {})
-  (when *scheduler* (*scheduler*))
-  nil)
-
 (def scheduler-enabled false)
 
-(defn start-scheduler
+(defn start-scheduler!
   []
-  (log/info :scheduler/starting {:enabled scheduler-enabled})
-  (when scheduler-enabled
-    (t/every (t/minutes 5) #'check-rates)))
+  (log/info :start-scheduler!/starting {:enabled scheduler-enabled})
+  (let [scheduler (when scheduler-enabled (t/every (t/minutes 5) #'check-rates))]
+    (log/info :start-scheduler!/finished {:scheduler scheduler})
+    scheduler))
+
+(defn stop-scheduler!
+  []
+  (log/info :stop-scheduler!/starting {})
+  (when-let [stop! @*scheduler*]
+    (stop!))
+  (log/info :stop-scheduler!/finished {})
+  nil)
 
 (mount/defstate ^:dynamic *scheduler*
-  :start (start-scheduler)
-  :stop (stop-scheduler))
+  :start (start-scheduler!)
+  :stop (stop-scheduler!))
 
 (comment
 
@@ -91,8 +94,8 @@
 
   *scheduler*
 
-  (start-scheduler)
-  (stop-scheduler)
+  (start-scheduler!)
+  (stop-scheduler!)
   (check-rates)
 
   nil)

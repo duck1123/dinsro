@@ -31,17 +31,18 @@
 
 (defn start-app [args]
   (log/info :app/starting {:args args})
-  (mount/start #'c.config/config)
-  (log/info :start-app/config-loaded {:config c.config/config})
-  (let [modules (c.config/config ::modules)]
-    (doseq [module modules]
-      (log/info :start-app/requiring {:module module})
-      (require (symbol module))))
-
-  (let [options (parse-opts args cli-options)]
-    (doseq [component (-> options mount/start-with-args :started)]
-      (log/debug :component/started {:component component})))
-  (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
+  (mount/in-cljc-mode)
+  (mount/start #'c.config/config-map)
+  (let [config (c.config/get-config)]
+    (log/trace :start-app/config-loaded {:config config})
+    (let [modules (config ::modules)]
+      (doseq [module modules]
+        (log/info :start-app/requiring {:module module})
+        (require (symbol module))))
+    (let [options (parse-opts args cli-options)]
+      (doseq [component (-> options mount/start-with-args :started)]
+        (log/debug :component/started {:component component})))
+    (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app))))
 
 (defn -main
   [& args]

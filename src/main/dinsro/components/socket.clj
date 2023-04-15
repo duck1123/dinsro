@@ -1,5 +1,6 @@
 (ns dinsro.components.socket
   (:require
+   [lambdaisland.glogc :as log]
    [taoensso.sente :as sente]
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente.server-adapters.http-kit :as http-kit]))
@@ -17,7 +18,9 @@
   (def chsk-send!                    send-fn)
   (def connected-uids                connected-uids))
 
-(defn send-data [data]
+(defn send-data
+  [data]
+  (log/info :send-data/starting {:data data})
   (doseq [uid (:any @connected-uids)]
     (chsk-send! uid [:some/broadcast data])))
 

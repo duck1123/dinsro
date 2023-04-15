@@ -9,9 +9,10 @@
 (defn start-db
   [f schemata]
   (log/info :start-db/starting {:f f :schemata schemata})
+  (mount/in-cljc-mode)
   (mount/stop #'c.xtdb/xtdb-nodes)
   (mount/start
-   #'config/config
+   #'config/config-map
    #'secret
    #'c.xtdb/xtdb-nodes)
   (f))

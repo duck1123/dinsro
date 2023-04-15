@@ -1,6 +1,6 @@
 (ns dinsro.components.xtdb
   (:require
-   [dinsro.components.config :refer [config]]
+   [dinsro.components.config :refer [get-config]]
    [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]
@@ -10,18 +10,21 @@
 
 (defn start-database!
   "Start the xtdb database"
-  []
-  (let [conf (xt/symbolize-xtdb-modules config)]
-    (log/finest :db/starting {:conf conf})
-    (let [node (xt/start-databases conf)]
-      (log/trace :db/started {:conf conf :node node})
-      node)))
+  ([]
+   (let [conf (xt/symbolize-xtdb-modules (get-config))]
+     (start-database! conf)))
+  ([conf]
+   (log/info :start-database!/starting {:conf conf})
+   (let [node (xt/start-databases conf)]
+     (log/trace :start-database!/finished {:conf conf :node node})
+     node)))
 
 (defn stop-database!
   "Start the xtdb database"
   []
-  (for [node xtdb-nodes]
-    (.close node)))
+  (log/info :stop-database!/starting {})
+  (let [nodes @xtdb-nodes]
+    (for [node nodes] (.close node))))
 
 (defstate ^{:on-reload :noop} xtdb-nodes
   "A collection of started xtdb nodes"
@@ -31,15 +34,16 @@
 (defn main-node
   "Returns the main xtdb node"
   []
-  #_(log/trace :nodes/read {:nodes xtdb-nodes})
-  (:main xtdb-nodes))
+  (let [nodes @xtdb-nodes]
+    (log/trace :nodes/read {:nodes nodes})
+    (:main nodes)))
 
 (defn main-db
   "Returns the main xtdb database"
   []
   (let [node (main-node)
-        db (c.api/db node)]
-    #_(log/trace :db/read {:db db :node node})
+        db   (c.api/db node)]
+    (log/trace :db/read {:db db :node node})
     db))
 
 (defn query-id

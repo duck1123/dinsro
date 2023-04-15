@@ -10,11 +10,10 @@
    [dinsro.actions.authentication :as a.authentication]
    [dinsro.components.auto-resolvers :refer [automatic-resolvers]]
    [dinsro.components.blob-store :as bs]
-   [dinsro.components.config :refer [config]]
+   [dinsro.components.config :as c.config]
    [dinsro.components.delete-middleware :as delete]
    [dinsro.components.save-middleware :as save]
-   [dinsro.components.xtdb :refer [xtdb-nodes]]
-
+   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model :refer [all-attributes all-resolvers]]
    [dinsro.model.users :as m.users]
    [lambdaisland.glogc :as log]
@@ -36,9 +35,9 @@
 (defn blob-store-plugin
   []
   (blob/pathom-plugin
-   bs/temporary-blob-store
-   {:files         bs/file-blob-store
-    :avatar-images bs/image-blob-store}))
+   @bs/temporary-blob-store
+   {:files         @bs/file-blob-store
+    :avatar-images @bs/image-blob-store}))
 
 (defn timezone-plugin
   []
@@ -71,18 +70,31 @@
        (when use-taps (tap> tx))
        (wrapped-parser env tx)))})
 
-(defstate parser
-  :start
-  (let [plugins   [(attr/pathom-plugin all-attributes)
+(defn start-parser!
+  []
+  (log/info :start-parser!/starting {})
+  (let [config    (c.config/get-config)
+        node      (c.xtdb/main-node)
+        plugins   [(attr/pathom-plugin all-attributes)
                    (form/pathom-plugin save/middleware delete/middleware)
-                   (xt/pathom-plugin (fn [_env] {:production (:main xtdb-nodes)}))
+                   (xt/pathom-plugin (fn [_env] {:production node}))
                    (blob-store-plugin)
                    (timezone-plugin)
                    (auth-user-plugin)
                    (tap-plugin)]
-        resolvers [automatic-resolvers
+        resolvers [@automatic-resolvers
                    form/resolvers
                    (blob/resolvers all-attributes)
                    all-resolvers
                    index-explorer]]
+    (log/info :start-parser!/config {:plugins plugins :resolvers resolvers})
     (pathom/new-parser config plugins resolvers)))
+
+(defn stop-parser!
+  []
+  (log/info :stop-parser!/stopping {})
+  nil)
+
+(defstate parser
+  :start (start-parser!)
+  :stop (stop-parser!))

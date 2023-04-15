@@ -32,14 +32,24 @@
   (nrepl/stop-server server)
   (log/info :stop/finished {}))
 
+(declare repl-server)
+
+(defn start-repl-server!
+  []
+  (log/info :repl-server/starting {})
+  (let [config                                         (config/get-config)
+        {:keys [nrepl-port nrepl-bind]
+         :or   {nrepl-port 7000 nrepl-bind "0.0.0.0"}} config]
+    (start {:bind    nrepl-bind
+            :handler (nrepl-handler)
+            :port    nrepl-port})))
+
+(defn stop-repl-server!
+  []
+  (let [server @repl-server]
+    (log/info :repl-serving/stopping {:server server})
+    (when server (stop server))))
+
 (mount/defstate ^{:on-reload :noop} repl-server
-  :start
-  (when (config/config :nrepl-port)
-    (let [bind (or (config/config :nrepl-bind) "0.0.0.0")
-          port (config/config :nrepl-port)]
-      (start {:bind    bind
-              :handler (nrepl-handler)
-              :port    port})))
-  :stop
-  (when repl-server
-    (stop repl-server)))
+  :start (start-repl-server!)
+  :stop (stop-repl-server!))

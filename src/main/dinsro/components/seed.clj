@@ -624,7 +624,7 @@
 
 (defn seed!
   []
-  (if (config/config ::enabled)
+  (if ((config/get-config) ::enabled)
     (if (q.settings/get-setting seeded-key)
       (log/trace :seed!/seeded {})
       (do

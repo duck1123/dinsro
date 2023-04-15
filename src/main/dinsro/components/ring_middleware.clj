@@ -10,10 +10,11 @@
    [com.fulcrologic.rad.blob :as blob]
    [compojure.core :refer [defroutes GET POST]]
    [dinsro.components.blob-store :as bs]
-   [dinsro.components.config :as config :refer [secret]]
-   [dinsro.components.parser :as parser]
-   [dinsro.components.socket :as socket]
+   [dinsro.components.config :as c.config]
+   [dinsro.components.parser :as c.parser]
+   [dinsro.components.socket :as c.socket]
    [hiccup.page :refer [html5]]
+   [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.session.cookie :refer [cookie-store]]
@@ -47,7 +48,7 @@
       (server/handle-api-request
        (:transit-params request)
        (fn [query]
-         (parser/parser {:ring/request request} query)))
+         (@c.parser/parser {:ring/request request} query)))
       (handler request))))
 
 (defn wrap-html-routes [ring-handler]
@@ -111,20 +112,31 @@
        (com.cognitect.transit.impl.AbstractParser/getDateTimeFormat)
        (java.util.Date/from inst))))})
 
-(defstate websockets
-  :start
-  (fws/start!
-   (fws/make-websockets
-    parser/parser
-    {:http-server-adapter (get-sch-adapter)
-     :parser-accepts-env? true
-     ;; I'm not going to cover how to handle CSRF well, if this is a toy project
-     ;;  this bit doesn't matter as much, if it isn't please sit down and read about it.
-     ;;  I've added some notes at the end.
-     :sente-options       {:csrf-token-fn nil}}))
+(declare websockets)
 
-  :stop
-  (fws/stop! websockets))
+(defn start-websockets!
+  []
+  (log/info :start-websockets!/starting {})
+  (let [parser     @c.parser/parser
+        token-fn   nil
+        ws-options {:http-server-adapter (get-sch-adapter)
+                    :parser-accepts-env? true
+                    :sente-options       {:csrf-token-fn token-fn}}
+        config     (fws/make-websockets parser ws-options)
+        response   (fws/start! config)]
+    (log/trace :start-websockets!/finished {:response response})
+    response))
+
+(defn stop-websockets!
+  []
+  (log/info :stop-websockets!/starting {})
+  (let [response (fws/stop! @websockets)]
+    (log/trace :stop-websockets!/finished {:response response})
+    response))
+
+(defstate websockets
+  :start (start-websockets!)
+  :stop (stop-websockets!))
 
 (defn wrap-websockets [handler]
   (fws/wrap-api handler websockets))
@@ -135,26 +147,48 @@
      (resp/response (nip05-response))
      "application/json"))
   (GET  "/chsk" req
-    (socket/ring-ajax-get-or-ws-handshake req))
+    (c.socket/ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req
-    (socket/ring-ajax-post req))
+    (c.socket/ring-ajax-post req))
   (GET "/" {:keys [anti-forgery-token]}
     (resp/content-type
      (resp/response (index anti-forgery-token))
      "text/html")))
-(defstate middleware
-  :start
-  (let [defaults-config (:ring.middleware/defaults-config config/config {})
-        session-store   (cookie-store {:key (b/slice secret 0 16)})
+
+(defn get-session-store
+  []
+  (log/info :get-session-store/starting {})
+  (let [store (cookie-store {:key (b/slice @c.config/secret 0 16)})]
+    (log/info :get-session-store/finished {:store store})
+    store))
+
+(defn get-middleware-config
+  []
+  (log/info :get-middleware-config/starting {})
+  (let [defaults-config (:ring.middleware/defaults-config (c.config/get-config) {})
+        session-store   (get-session-store)
         defaults-config (assoc-in defaults-config [:session :store] session-store)
         defaults-config (merge site-defaults defaults-config)]
-    (-> base-app
-        (wrap-api "/api")
-        (wrap-websockets)
-        (file-upload/wrap-mutation-file-uploads {})
-        (blob/wrap-blob-service "/images" bs/image-blob-store)
-        (blob/wrap-blob-service "/files" bs/file-blob-store)
-        (server/wrap-transit-params {})
-        (server/wrap-transit-response {:opts {:handlers transit-write-handlers}})
-        (wrap-html-routes)
-        (wrap-defaults defaults-config))))
+    (log/info :get-middleware-config/finished {:defaults-config defaults-config})
+    defaults-config))
+
+(defn start-middleware!
+  []
+  (log/info :start-middleware!/starting {})
+  (let [defaults-config (get-middleware-config)]
+    (log/info :start-middleware!/config {:defaults-config defaults-config})
+    (let [middleware (-> base-app
+                         (wrap-api "/api")
+                         (wrap-websockets)
+                         (file-upload/wrap-mutation-file-uploads {})
+                         (blob/wrap-blob-service "/images" @bs/image-blob-store)
+                         (blob/wrap-blob-service "/files" @bs/file-blob-store)
+                         (server/wrap-transit-params {})
+                         (server/wrap-transit-response {:opts {:handlers transit-write-handlers}})
+                         (wrap-html-routes)
+                         (wrap-defaults defaults-config))]
+      (log/info :start-middleware!/finished {:middleware middleware})
+      middleware)))
+
+(defstate middleware
+  :start (start-middleware!))

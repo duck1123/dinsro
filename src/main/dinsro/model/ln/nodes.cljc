@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   #?(:clj [dinsro.components.config :refer [config]])
+   #?(:clj [dinsro.components.config :as c.config])
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.users :as m.users]
@@ -22,7 +22,7 @@
 #?(:clj
    (defn cert-base
      []
-     (or (config ::cert-base)
+     (or ((c.config/get-config) ::cert-base)
          (throw (ex-info "Cert base not defined" {})))))
 
 #?(:clj
