@@ -73,6 +73,22 @@
    ro/source-attribute  ::j.transactions/index
    ro/title             "Transaction Report"})
 
+(report/defsc-report RecentReport
+  [_this _props]
+  {ro/columns          [m.transactions/description
+                        m.transactions/date
+                        j.transactions/debit-count]
+   ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
+   ro/controls         {::new-transaction {:label  "New Transaction"
+                                           :type   :button
+                                           :action (fn [this] (form/create! this NewForm))}
+                        ::refresh         u.links/refresh-control}
+   ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+   ro/row-pk           m.transactions/id
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.transactions/index
+   ro/title            "Recent Transactions"})
+
 (defsc Show
   [this {::m.transactions/keys [description date]
          debit-count           ::j.transactions/debit-count

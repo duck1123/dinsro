@@ -221,7 +221,7 @@
         {:classes [:.item site-button]
          :onClick (fn []
                     (uism/trigger! this auth/machine-id :event/cancel {})
-                    (rroute/route-to! this u.home/HomePage {}))}
+                    (rroute/route-to! this u.home/Page {}))}
         "dinsro")
       (if logged-in?
         (comp/fragment

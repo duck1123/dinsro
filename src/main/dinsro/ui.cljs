@@ -69,7 +69,7 @@
                     u.currencies/NewForm
                     u.currencies/Show
                     u.debits/Show
-                    u.home/HomePage
+                    u.home/Page
                     u.login/LoginPage
                     u.ln/LnPage
                     u.nostr/Page

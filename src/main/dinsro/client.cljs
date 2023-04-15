@@ -137,7 +137,7 @@
   (let [{:keys [route params]} (hist5/url->route)
         target0                (dr/resolve-target app route)
         target                 (condp = target0
-                                 nil               u.home/HomePage
+                                 nil               u.home/Page
                                  u.admin/AdminPage u.a.users/AdminReport
                                  u.a.nostr/Page    u.a.nostr/Dashboard
                                  u.c.networks/Show u.c.n.addresses/SubPage
@@ -171,8 +171,8 @@
   (action [{:keys [app]}]
     (let [logged-in (auth/verified-authorities app)]
       (if (empty? logged-in)
-        (hist5/restore-route! app u.home/HomePage {})
-        (hist5/restore-route! app u.home/HomePage {})))))
+        (hist5/restore-route! app u.home/Page {})
+        (hist5/restore-route! app u.home/Page {})))))
 
 (defn setup-RAD [app]
   (let [all-controls (u.controls/all-controls)]
