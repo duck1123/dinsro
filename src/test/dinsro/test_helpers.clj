@@ -16,6 +16,10 @@
   (mount/stop #'c.xtdb/xtdb-nodes)
   (mount/start
    #'c.xtdb/xtdb-nodes)
+  ;; (mount/swap-states
+  ;;  {#'c.xtdb/xtdb-nodes
+  ;;   {:start (fn [] (log/info :start-db/starting {}))
+  ;;    :stop (fn [] (log/info :start-db/stopping {}))}})
   (f))
 
 (defmacro key-card [kw]
