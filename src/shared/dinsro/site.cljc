@@ -22,7 +22,6 @@
 (s/def ::version string?)
 (s/def ::projectId string?)
 (s/def ::useDocs boolean?)
-(s/def ::portalHost string?)
 (s/def ::localDevtools boolean?)
 (s/def ::useCards boolean?)
 (s/def ::seedDatabase boolean?)
@@ -30,7 +29,6 @@
 (s/def ::useLinting boolean?)
 (s/def ::useNrepl boolean?)
 (s/def ::usePersistence boolean?)
-(s/def ::usePortal boolean?)
 (s/def ::useProduction boolean?)
 (s/def ::useSqlpad boolean?)
 (s/def ::useTests boolean?)
@@ -46,7 +44,6 @@
     ::version
     ::projectId
     ::useDocs
-    ::portalHost
     ::localDevtools
     ::useCards
     ::seedDatabase
@@ -71,7 +68,6 @@
     ::site.notebooks/notebooks
     ::site.workspaces/workspaces
     ::useDocs
-    ::portalHost
     ::localDevtools
     ::useCards
     ::seedDatabase
@@ -79,7 +75,6 @@
     ::useLinting
     ::useNrepl
     ::usePersistence
-    ::usePortal
     ::useProduction
     ::useSqlpad
     ::useTests]))

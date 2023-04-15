@@ -65,8 +65,6 @@
 
  :useDocs true
 
- :portalHost "portal.dinsro.localtest.me"
-
  ;; If true, devtools will be run on the host, otherwise the dev image will launch
  ;; a devtools watcher on startup and will pre-compile the js resources
  :localDevtools true
@@ -85,8 +83,6 @@
 
  ;; If true, a database will be launched and set as the db backend
  :usePersistence false
-
- :usePortal true
 
  ;; If true, production image will be deployed
  :useProduction false

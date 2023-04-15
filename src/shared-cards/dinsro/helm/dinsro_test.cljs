@@ -15,7 +15,6 @@
                     :inheritHost true
                     :host        "devcards.dinsro.localtest.me"}
    :useDocs        true
-   :portalHost     "portal.dinsro.localtest.me"
    :localDevtools  true
    :useCards       true
    :seedDatabase   false
@@ -23,7 +22,6 @@
    :useLinting     true
    :useNrepl       false
    :usePersistence false
-   :usePortal      true
    :useProduction  false
    :useTests       false})
 

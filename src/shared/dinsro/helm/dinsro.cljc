@@ -9,7 +9,7 @@
   [options]
   (let [{:keys       [devcards devtools docs
                       logLevel ingress
-                      notebooks portal workspaces
+                      notebooks workspaces
                       local-devtools]
          base-url    :baseUrl
          production? :useProduction
@@ -52,11 +52,6 @@
           notebooks-inherit-host  true
           notebooks-declared-host (str "notebooks." base-url)}} notebooks
 
-        ;; portal
-        {portal-enabled :enabled
-         :or
-         {portal-enabled false}} portal
-
         ;; workspaces
         {workspaces-enabled :enabled
          workspaces-host    :host
@@ -86,7 +81,6 @@
       :notebooks-enabled?     notebooks-enabled?
       :notebooks-inherit-host notebooks-inherit-host
       :notebooks-host         notebooks-url
-      :portal-enabled?        portal-enabled
       :production             production?
       :webtools-url           webtools-url
       :workspaces-enabled?    workspaces-enabled
@@ -107,12 +101,10 @@
           log-level
           notebooks-enabled?
           notebooks-host
-          portal-enabled?
           webtools-url
           workspaces-enabled?
           workspaces-host]
          local-devtools :localDevtools
-         portal-host    :portalHost
          seed           :seedDatabase
          nrepl-enabled? :useNrepl
          persistence    :usePersistence} (merge-defaults site-config)]
@@ -167,12 +159,6 @@
      :persistence
      {:enabled persistence
       :seed    seed}
-
-     :portal
-     {:enabled portal-enabled?
-      :service {:type "ClusterIP" :port 5678}
-      :ingress {:enabled portal-enabled?
-                :hosts   [{:host portal-host :paths [{:path "/"}]}]}}
 
      :workspaces
      {:enabled workspaces-enabled?

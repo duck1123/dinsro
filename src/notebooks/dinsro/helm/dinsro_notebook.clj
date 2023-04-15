@@ -17,7 +17,6 @@
 
 (def inputs
   {:log-level :finest
-   :portal    {:enabled true}
    :tls       {:enabled true}})
 
 ;; ## merge-defaults

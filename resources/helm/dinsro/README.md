@@ -75,12 +75,6 @@ A Helm chart for Kubernetes
 | persistence.storageClass | string | `"local-path"` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
-| portal.enabled | bool | `false` | Deploy Portal |
-| portal.ingress.enabled | bool | `true` | Deploy Portal ingress |
-| portal.ingress.hosts[0].host | string | `"portal.dinsro.localhost"` |  |
-| portal.ingress.hosts[0].paths[0].path | string | `"/"` |  |
-| portal.service.port | int | `5678` |  |
-| portal.service.type | string | `"ClusterIP"` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |

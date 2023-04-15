@@ -152,7 +152,6 @@ check:
 ci:
   BUILD +cert-downloader
   BUILD +fileserver
-  BUILD +portal
   BUILD +check
   BUILD +lint
   BUILD +test
@@ -454,19 +453,6 @@ nostream-image:
   RUN mkdir -p $NOSTR_CONFIG_DIR
   CMD ["./bootstrap.sh"]
   ENTRYPOINT ["./bootstrap.sh"]
-  SAVE IMAGE --push ${EXPECTED_REF}
-
-portal:
-  FROM +babashka-base
-  ARG repo=duck1123
-  ARG project=portal
-  ARG tag=latest
-  ARG EXPECTED_REF=${repo}/${project}:${tag}
-  # RUN apk add java
-  COPY resources/portal .
-  ENTRYPOINT ["bb", "portal.clj"]
-  CMD ["bb", "portal.clj"]
-  RUN bb portal.clj --dry-run
   SAVE IMAGE --push ${EXPECTED_REF}
 
 script-builder:

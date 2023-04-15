@@ -69,14 +69,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Portal Selector labels
-*/}}
-{{- define "dinsro.portalSelectorLabels" -}}
-app.kubernetes.io/name: {{ include "dinsro.name" . }}-portal
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
 Create the name of the service account to use
 */}}
 {{- define "dinsro.serviceAccountName" -}}
