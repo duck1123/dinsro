@@ -1,21 +1,25 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.chains-notebook
+(ns dinsro.notebooks.ln.channels-notebook
   (:require
-   [dinsro.model.core.chains :as m.c.chains]
    [dinsro.notebook-utils :as nu]
-   [dinsro.queries.core.chains :as q.c.chains]
+   [dinsro.queries.ln.channels :as q.ln.channels]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-;; # Core Chain Actions
+;; # LND Channel Actions
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
+;; ## delete!
+
 (comment
 
-  (q.c.chains/create-record {::m.c.chains/name "bitcoin"})
+  (map q.ln.channels/delete! (q.ln.channels/index-ids))
 
-  (q.c.chains/find-by-name "bitcoin")
+  nil)
+
+(comment
+  (q.ln.channels/index-ids)
 
   nil)

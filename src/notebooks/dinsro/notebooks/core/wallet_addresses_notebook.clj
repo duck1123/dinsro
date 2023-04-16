@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.wallet-addresses-notebook
+(ns dinsro.notebooks.core.wallet-addresses-notebook
   (:require
    [dinsro.actions.nbxplorer :as a.nbxplorer]
    [dinsro.notebook-utils :as nu]

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.ln.transactions-notebook
+(ns dinsro.notebooks.ln.transactions-notebook
   (:refer-clojure :exclude [next])
   (:require
    [dinsro.lnd-notebook :as n.lnd]

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.transactions-notebook
+(ns dinsro.notebooks.transactions-notebook
   (:require
    [dinsro.model.transactions :as m.transactions]
    [dinsro.notebook-utils :as nu]
@@ -25,6 +25,6 @@
 
   (q.transactions/create-record
    {::m.transactions/description "test"
-    ::m.transactions/date (tick/now)})
+    ::m.transactions/date        (tick/now)})
 
   nil)

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.networks-notebook
+(ns dinsro.notebooks.core.networks-notebook
   (:require
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]

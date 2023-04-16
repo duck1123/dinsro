@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.ln.remote-nodes-notebook
+(ns dinsro.notebooks.ln.remote-nodes-notebook
   (:require
    [dinsro.actions.ln.remote-nodes :as a.ln.remote-nodes]
    [dinsro.lnd-notebook :as n.lnd]

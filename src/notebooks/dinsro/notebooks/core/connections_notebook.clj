@@ -1,21 +1,18 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.ln.payments-notebook
+(ns dinsro.notebooks.core.connections-notebook
   (:require
    [dinsro.notebook-utils :as nu]
-   [dinsro.queries.ln.payments :as q.ln.payments]
+   [dinsro.queries.core.connections :as q.c.connections]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-;; # LND Payment Actions
+;; # Core Connection Actions
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
 (comment
 
-  (q.ln.payments/index-ids)
-
-  (map q.ln.payments/delete!
-       (q.ln.payments/index-ids))
+  (q.c.connections/index-ids)
 
   nil)

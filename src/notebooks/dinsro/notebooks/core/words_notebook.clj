@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.words-notebook
+(ns dinsro.notebooks.core.words-notebook
   (:require
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.notebook-utils :as nu]

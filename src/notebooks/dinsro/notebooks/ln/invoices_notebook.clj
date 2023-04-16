@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.ln.invoices-notebook
+(ns dinsro.notebooks.ln.invoices-notebook
   (:require
    [dinsro.actions.ln.invoices :as a.ln.invoices]
    [dinsro.lnd-notebook :as n.lnd]

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.nodes-notebook
+(ns dinsro.notebooks.core.nodes-notebook
   (:require
    [clojure.core.async :as async]
    [dinsro.actions.core.node-base :as a.c.node-base]
@@ -10,15 +10,38 @@
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.peers :as q.c.peers]
+   [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-;; # Core Node Actions
+;; # Core Nodes
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
 
-;; ## Setup users
+;; ## Model
+
+;; ### Required Params
+
+^{::clerk/viewer clerk/code}
+(ds/gen-key ::m.c.nodes/required-params)
+
+;; ### Params
+
+^{::clerk/viewer clerk/code}
+(ds/gen-key ::m.c.nodes/params)
+
+;; ### Item
+
+^{::clerk/viewer clerk/code}
+(ds/gen-key ::m.c.nodes/item)
+
+^{::clerk/viewer clerk/table}
+m.c.nodes/attributes
+
+;; ## Actions
+
+;; ### Setup users
 
 ;; Alice
 
@@ -38,7 +61,7 @@
 
 (def client (a.c.node-base/get-client node))
 
-;; ## Generate to address
+;; ### Generate to address
 
 (def address "bcrt1qpe5thhr9p582w0ymg99ea5ql9e5y5lqsxm5527")
 (def address2 "bcrt1qasndfxduf6ap94hkpn3kde0mcvdrqvs95e8adz")

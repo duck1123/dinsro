@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.wallets-notebook
+(ns dinsro.notebooks.core.wallets-notebook
   (:require
    [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]

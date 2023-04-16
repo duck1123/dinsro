@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility #{:hide-ns}}
-(ns dinsro.actions.nostr.events-notebook
+(ns dinsro.notebooks.nostr.events-notebook
   (:require
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.notebook-utils :as nu]

@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.actions.core.peers-notebook
+(ns dinsro.notebooks.core.peers-notebook
   (:require
    [dinsro.actions.core.peers :as a.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
