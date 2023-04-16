@@ -8,9 +8,11 @@
    [dinsro.queries.nostr.witnesses :as q.n.witnesses]
    [lambdaisland.glogc :as log]))
 
+;; [../../joins/nostr/witnesses.cljc]
 ;; [../../model/nostr/witnesses.cljc]
 ;; [../../queries/nostr/witnesses.clj]
 ;; [../../ui/admin/nostr/witnesses.cljs]
+;; [../../ui/nostr/events/witnesses.cljs]
 ;; [../../ui/nostr/witnesses.cljs]
 
 (>defn register-witness!

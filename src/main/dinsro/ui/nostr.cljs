@@ -14,7 +14,8 @@
    [dinsro.ui.nostr.relays :as u.n.relays]
    [dinsro.ui.nostr.requests :as u.n.requests]
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
-   [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]))
+   [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]
+   [dinsro.ui.nostr.witnesses :as u.n.witnesses]))
 
 (defrouter Router
   [_this _props]
@@ -36,7 +37,8 @@
     u.n.subscription-pubkeys/Report
     u.n.subscription-pubkeys/Show
     u.n.subscriptions/Report
-    u.n.subscriptions/Show]})
+    u.n.subscriptions/Show
+    u.n.witnesses/Report]})
 
 (defsc Page
   [_this {:ui/keys [router]}]

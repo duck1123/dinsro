@@ -14,6 +14,7 @@
    [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.event-tags :as u.n.event-tags]
+   [dinsro.ui.nostr.events.witnesses :as u.n.e.witnesses]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as transform]
    [sablono.core :as html :refer-macros [html]]))
@@ -25,7 +26,10 @@
 (def menu-items
   [{:key   "tags"
     :name  "Tags"
-    :route "dinsro.ui.nostr.event-tags/SubPage"}])
+    :route "dinsro.ui.nostr.event-tags/SubPage"}
+   {:key   "witnesses"
+    :name  "Witnesses"
+    :route "dinsro.ui.nostr.events.witnesses/SubPage"}])
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.n.events/id]
@@ -132,7 +136,8 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.n.event-tags/SubPage]})
+   [u.n.event-tags/SubPage
+    u.n.e.witnesses/SubPage]})
 
 (def ui-router (comp/factory Router))
 

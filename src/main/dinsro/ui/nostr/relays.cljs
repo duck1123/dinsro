@@ -18,6 +18,7 @@
    [dinsro.ui.nostr.relays.pubkeys :as u.n.r.pubkeys]
    [dinsro.ui.nostr.relays.requests :as u.n.r.requests]
    [dinsro.ui.nostr.relays.runs :as u.n.r.runs]
+   [dinsro.ui.nostr.relays.witnesses :as u.n.r.witnesses]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
@@ -81,7 +82,8 @@
     u.n.r.pubkeys/SubPage
     u.n.r.requests/SubPage
     u.n.r.runs/SubPage
-    u.n.r.events/SubPage]})
+    u.n.r.events/SubPage
+    u.n.r.witnesses/SubPage]})
 
 (def menu-items
   [{:key   "connections"
@@ -98,7 +100,10 @@
     :route "dinsro.ui.nostr.relays.pubkeys/SubPage"}
    {:key   "runs"
     :name  "Runs"
-    :route "dinsro.ui.nostr.relays.runs/SubPage"}])
+    :route "dinsro.ui.nostr.relays.runs/SubPage"}
+   {:key   "witnesses"
+    :name  "Witnesses"
+    :route "dinsro.ui.nostr.relays.witnesses/SubPage"}])
 
 (defsc Show
   [_this {::m.n.relays/keys [id address]

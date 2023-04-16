@@ -45,6 +45,7 @@
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    [dinsro.model.transactions :as m.transactions]
@@ -653,6 +654,14 @@
   (form-link this id name :dinsro.ui.core.wallets/Show))
 
 (def ui-wallet-link (comp/factory WalletLinkForm {:keyfn ::m.c.wallets/id}))
+
+(form/defsc-form WitnessLinkForm [this {::m.n.witnesses/keys [id]}]
+  {fo/id           m.n.witnesses/id
+   fo/route-prefix "witnesses-link"
+   fo/attributes   [m.n.witnesses/id]}
+  (form-link this id (str id) :dinsro.ui.nostr.witnesses/Show))
+
+(def ui-witness-link (comp/factory WitnessLinkForm {:keyfn ::m.n.witnesses/id}))
 
 (form/defsc-form WordLinkForm [this {::m.c.words/keys [id word]}]
   {fo/id         m.c.words/id
