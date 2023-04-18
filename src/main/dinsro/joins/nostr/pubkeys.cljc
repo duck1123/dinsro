@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
    [dinsro.model.contacts :as m.contacts]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -95,12 +96,10 @@
    ao/pc-resolve (fn [_ {::keys [subscriptions]}] {::subscription-count (count subscriptions)})})
 
 (defattr npub ::npub :string
-  {ao/identities #{::m.n.pubkeys/hex}
-   ao/pc-input   #{::m.n.pubkeys/id ::m.n.pubkeys/hex}
+  {ao/pc-input   #{::m.n.pubkeys/id ::m.n.pubkeys/hex}
    ao/pc-resolve (fn [_env {::m.n.pubkeys/keys [hex]}]
-                   {::npub (str "npubNOTCORRECT1"
-                                ;; TODO: bech32
-                                hex)})})
+                   {::npub #?(:clj (a.n.pubkeys/calculate-npub hex)
+                              :cljs (do (comment hex) "npub1NOTIMPLEMENTED"))})})
 
 (def attributes [admin-index index
                  contact-count contacts

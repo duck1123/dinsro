@@ -56,12 +56,14 @@
 (def show-border false)
 
 (defsc PubkeyInfo
-  [this {::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]}]
+  [this {::j.n.pubkeys/keys [npub]
+         ::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]}]
   {:css           [[:.content-box (merge {:overflow "hidden"} (when show-border {:border "1px solid green !important"}))]
                    [:.info (merge {} (when show-border {:border "1px solid red"}))]
                    [:.picture-container (merge {} (when show-border {:border "1px solid purple"}))]]
    :ident         ::m.n.pubkeys/id
-   :initial-state {::m.n.pubkeys/about        ""
+   :initial-state {::j.n.pubkeys/npub        ""
+                   ::m.n.pubkeys/about        ""
                    ::m.n.pubkeys/display-name ""
                    ::m.n.pubkeys/hex          ""
                    ::m.n.pubkeys/id           nil
@@ -70,7 +72,8 @@
                    ::m.n.pubkeys/nip05        ""
                    ::m.n.pubkeys/picture      ""
                    ::m.n.pubkeys/website      ""}
-   :query         [::m.n.pubkeys/about
+   :query         [::j.n.pubkeys/npub
+                   ::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
                    ::m.n.pubkeys/id
@@ -91,7 +94,7 @@
             (dom/div :.header (str (or display-name name)))
             (dom/div :.meta (str nip05))
             (dom/div :.ui.description
-              (dom/div {} (str hex))
+              (dom/div {} (str (or npub hex)))
               (dom/div {} (str about))
               (dom/div {} (str website))
               (dom/div {} (str lud06)))
@@ -116,6 +119,7 @@
                    ::m.n.pubkeys/lud06        ""
                    ::m.n.pubkeys/name         ""
                    ::m.n.pubkeys/nip05        ""
+                   ::j.n.pubkeys/npub        ""
                    ::m.n.pubkeys/picture      ""
                    ::m.n.pubkeys/website      ""
                    :ui/router                 {}}
@@ -127,6 +131,7 @@
                    ::m.n.pubkeys/lud06
                    ::m.n.pubkeys/name
                    ::m.n.pubkeys/nip05
+                   ::j.n.pubkeys/npub
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website
                    {:ui/router (comp/get-query Router)}]

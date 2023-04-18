@@ -9,14 +9,17 @@
    [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.actions.nostr.requests :as a.n.requests]
-   ;; [dinsro.actions.nostr.runs :as a.n.runs]
+   [dinsro.client.converters.byte-vector :as cs.byte-vector]
+   [dinsro.client.scala :as cs]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.specs :as ds]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log])
+  (:import org.bitcoins.core.util.Bech32$
+           org.bitcoins.core.util.Bech32Encoding$Bech32$))
 
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkey Model]]
@@ -162,6 +165,20 @@
   [props]
   (log/info :add-contact!/starting {:props props}))
 
+(defn bech32-encode [hex-string prefix]
+  (let [bv            (cs/get-or-nil (cs.byte-vector/->obj hex-string))
+        hrp-5bit      (.hrpExpand Bech32$/MODULE$ "npub")
+        data-5bit     (.from8bitTo5bit Bech32$/MODULE$ bv)
+        data-part     (.encode8bitToString Bech32$/MODULE$ bv)
+        checksum      (.createChecksum Bech32$/MODULE$ (.concat hrp-5bit data-5bit) Bech32Encoding$Bech32$/MODULE$)
+        checksum-part (.encode5bitToString Bech32$/MODULE$ checksum)]
+    (str prefix "1" data-part checksum-part)))
+
+;; https://bitcoin-s.org/api/org/bitcoins/core/util/Bech32.html
+(defn calculate-npub
+  [hex]
+  (bech32-encode hex "npub"))
+
 (comment
 
   (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
@@ -176,7 +193,28 @@
   (def pubkey-id (first (q.n.pubkeys/index-ids)))
   pubkey-id
 
-  (q.n.pubkeys/read-record pubkey-id)
+  (def hex (::m.n.pubkeys/hex (q.n.pubkeys/read-record pubkey-id)))
+
+  ;; https://github.com/nostr-protocol/nips/blob/master/19.md
+  (def hex2 "7e7e9c42a91bfef19fa929e5fda1b72e0ebc1a4c1141673e2794234d86addf4e")
+  (def expected-npub "npub10elfcs4fr0l0r8af98jlmgdh9c8tcxjvz9qkw038js35mp4dma8qzvjptg")
+
+  (def bv (cs/get-or-nil (cs.byte-vector/->obj hex2)))
+  bv
+  (def data-5bit (.from8bitTo5bit Bech32$/MODULE$ bv))
+  (def hrp-5bit (.hrpExpand Bech32$/MODULE$ "npub"))
+
+  org.bitcoins.core.util.Bech32Encoding/Bech32m
+
+  (.concat hrp-5bit data-5bit)
+  (def checksum (.createChecksum Bech32$/MODULE$ (.concat hrp-5bit data-5bit)
+                                 Bech32Encoding$Bech32$/MODULE$))
+
+  (.encode5bitToString Bech32$/MODULE$ checksum)
+
+  (bech32-encode hex2 "npub")
+
+  (calculate-npub hex2)
 
   (fetch-pubkey! "3d842afecd5e293f28b6627933704a3fb8ce153aa91d790ab11f6a752d44a42d")
 
