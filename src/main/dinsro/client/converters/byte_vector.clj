@@ -16,6 +16,11 @@
     (log/trace :ByteVector->record/finished {:record record})
     record))
 
+(defn ->obj
+  ([hex] (->obj hex (ByteVector/fromHexDescriptive$default$2)))
+  ([hex alphabet]
+   (ByteVector/fromHex hex alphabet)))
+
 (extend-type ByteVector
   cs/Recordable
   (->record [this] (ByteVector->record this)))
