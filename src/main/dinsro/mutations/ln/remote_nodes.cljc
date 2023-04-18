@@ -24,9 +24,9 @@
    (pc/defmutation fetch!
      [_env {::m.ln.remote-nodes/keys [id]}]
      {::pc/params #{::m.ln.remote-nodes/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.ln.remote-nodes/fetch! id)
-     {:status :ok})
+     {::mu/status :ok})
    :cljs
    (defmutation fetch! [_props]
      (action [_env] true)

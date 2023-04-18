@@ -16,17 +16,17 @@
 (defsc FetchResponse
   [_ _]
   {:initial-state {::m.c.transactions/item {}}
-   :query [:status
+   :query [::mu/status
            ::m.c.transactions/item]})
 
 (defsc SearchResponse
   [_ _]
-  {:initial-state {:status                 :initial
+  {:initial-state {::mu/status                 :initial
                    :tx-id                  nil
                    :node                   nil
                    :tx                     nil
                    ::m.c.transactions/item {}}
-   :query         [:status
+   :query         [::mu/status
                    :tx-id
                    :node
                    :tx
@@ -36,7 +36,7 @@
    (pc/defmutation fetch!
      [_env props]
      {::pc/params #{::m.c.transactions/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.c.transactions/do-fetch! props))
 
    :cljs
@@ -68,7 +68,7 @@
    (pc/defmutation search!
      [_env props]
      {::pc/params #{::m.c.transactions/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (do-search! props))
 
    :cljs

@@ -4,15 +4,16 @@
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.peers :as a.ln.peers])
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.mutations :as mu]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.ln.peers/_)
+#?(:cljs (comment ::pc/_ ::m.ln.peers/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation create!
      [_env props]
      {::pc/params #{::m.ln.peers/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (log/info :create!/starting {:props props})
      (a.ln.peers/create! props))
 
@@ -25,7 +26,7 @@
    (pc/defmutation delete!
      [_env props]
      {::pc/params #{::m.ln.peers/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (log/debug :delete!/starting {:props props})
      (a.ln.peers/delete! props))
 

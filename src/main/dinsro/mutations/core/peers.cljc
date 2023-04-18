@@ -5,15 +5,16 @@
    #?(:clj [dinsro.actions.core.peers :as a.c.peers])
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.mutations :as mu]
    #?(:clj [lambdaisland.glogc :as log])))
 
-(comment ::pc/_ ::m.c.blocks/_ ::m.c.peers/_)
+#(:cljs (comment ::pc/_ ::m.c.blocks/_ ::m.c.peers/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation create!
      [_env props]
      {::pc/params #{::m.c.peers/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.c.peers/create! props))
 
    :cljs
@@ -25,7 +26,7 @@
    (pc/defmutation delete!
      [_env props]
      {::pc/params #{::m.c.peers/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (log/debug :delete/starting {:props props})
      (a.c.peers/delete! props))
 

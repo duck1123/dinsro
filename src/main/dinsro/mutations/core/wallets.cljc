@@ -16,18 +16,18 @@
 
 (defsc CreationResponse
   [_this _props]
-  {:query [:status :id]})
+  {:query [:mu/status ::m.c.wallets/id]})
 
 #?(:clj
    (pc/defmutation create!
      [env props]
      {::pc/params #{::m.c.wallets/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (let [user-id (a.authentication/get-user-id env)
            props   (assoc props ::m.c.wallets/user user-id)
            id      (a.c.wallets/create! props)]
-       {:status :ok
-        :id     id}))
+       {::mu/status      :ok
+        ::m.c.wallets/id id}))
 
    :cljs
    (fm/defmutation create! [_props]
@@ -56,8 +56,7 @@
 
 (defsc RollResponse
   [_this _props]
-  {:query [:status
-           {:wallet (comp/get-query RollWallet)}]})
+  {:query [::mu/status {::m.c.wallets/item (comp/get-query RollWallet)}]})
 
 #?(:clj
    (defn do-roll!
@@ -65,14 +64,14 @@
      (let [{::m.c.wallets/keys [id]} props
            response                (a.c.wallets/roll! props)]
        (comment id)
-       {:status :ok
-        :wallet response})))
+       {::mu/status :ok
+        ::m.c.wallets/item response})))
 
 #?(:clj
    (pc/defmutation roll!
      [env props]
      {::pc/params #{::m.c.wallets/id}
-      ::pc/output [:status :wallet]}
+      ::pc/output [::mu/status ::m.c.wallets/item]}
      (let [user-id (a.authentication/get-user-id env)
            props   (assoc props ::m.c.wallets/user user-id)]
        (do-roll! props)))
@@ -86,13 +85,13 @@
 
 (defsc DeriveResponse
   [_this _props]
-  {:query [:status]})
+  {:query [::mu/status]})
 
 #?(:clj
    (pc/defmutation derive!
      [env props]
      {::pc/params #{::m.c.wallets/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.c.wallets/do-derive! env props))
 
    :cljs
@@ -102,13 +101,13 @@
 
 (defsc CalculateAddressesResponse
   [_this _props]
-  {:query [:status]})
+  {:query [::mu/status]})
 
 #?(:clj
    (pc/defmutation calculate-addresses!
      [_env props]
      {::pc/params #{::m.c.wallets/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (log/info :calculate-addresses!/starting {})
      (let [wallet-id (::m.c.wallets/id props)]
        (a.c.wallet-addresses/calculate-addresses! wallet-id)))
@@ -130,7 +129,5 @@
      (action [_env] true)
      (remote [_env] true)))
 
-#?(:clj (def resolvers [calculate-addresses!
-                        create!
-                        delete!
-                        derive! roll!]))
+#?(:clj (def resolvers
+          [calculate-addresses! create! delete! derive! roll!]))

@@ -24,7 +24,7 @@
    (pc/defmutation fetch!
      [_env {::m.c.addresses/keys [id]}]
      {::pc/params #{::m.c.addresses/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.c.addresses/fetch! id))
 
    :cljs

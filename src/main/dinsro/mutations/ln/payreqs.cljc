@@ -3,16 +3,16 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.payreqs :as a.ln.payreqs])
-   [dinsro.model.ln.invoices :as m.ln.invoices]))
+   [dinsro.model.ln.invoices :as m.ln.invoices]
+   [dinsro.mutations :as mu]))
 
-(comment ::m.ln.invoices/_ ::pc/_)
+#?(:cljs (comment ::m.ln.invoices/_ ::pc/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation decode
      [_env props]
      {::pc/params #{::m.ln.invoices/payment-request}
-      ::pc/output [:status]}
-
+      ::pc/output [::mu/status]}
      (a.ln.payreqs/decode props))
 
    :cljs
@@ -24,8 +24,7 @@
    (pc/defmutation submit!
      [_env props]
      {::pc/params #{::m.ln.invoices/id}
-      ::pc/output [:status]}
-
+      ::pc/output [::mu/status]}
      (a.ln.payreqs/submit! props))
 
    :cljs

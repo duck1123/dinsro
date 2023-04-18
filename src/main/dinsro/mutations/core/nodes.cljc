@@ -51,7 +51,7 @@
    (pc/defmutation delete!
      [_env props]
      {::pc/params #{::m.c.nodes/id}
-      ::pc/output [::status ::errors ::m.c.nodes/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.c.nodes/item]}
      (a.c.nodes/do-delete! props))
 
    :cljs
@@ -126,8 +126,8 @@
    (pc/defmutation fetch!
      [_env props]
      {::pc/params #{::m.c.nodes/id}
-      ::pc/output [::status
-                   ::errors
+      ::pc/output [::mu/status
+                   ::mu/errors
                    ::m.c.nodes/item]}
      (do-fetch! props))
 
@@ -159,7 +159,7 @@
    (pc/defmutation generate!
      [_env props]
      {::pc/params #{::m.c.nodes/id}
-      ::pc/output [::status ::errors ::m.c.nodes/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.c.nodes/item]}
      (do-generate! props))
 
    :cljs
@@ -179,7 +179,7 @@
    (pc/defmutation fetch-peers!
      [_env params]
      {::pc/params #{::m.c.nodes/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (do-fetch-peers! params))
 
    :cljs

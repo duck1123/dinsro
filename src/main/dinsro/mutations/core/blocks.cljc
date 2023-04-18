@@ -39,7 +39,7 @@
 
 (defsc FetchResponse
   [_this _props]
-  {:query [:status
+  {:query [::mu/status
            {:item (comp/get-query FetchResponseResponse)}
            :message]})
 
@@ -59,7 +59,7 @@
    (pc/defmutation fetch!
      [{user-id ::m.users/id} {block-id ::m.c.blocks/id}]
      {::pc/params #{::m.c.blocks/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (if-let [node-id (first (q.c.nodes/find-by-user user-id))]
        (a.c.blocks/do-fetch! node-id block-id)
        (throw (ex-info "no node id" {}))))
@@ -73,7 +73,7 @@
    (pc/defmutation fetch-transactions!
      [_env {::m.c.blocks/keys [id]}]
      {::pc/params #{::m.c.blocks/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
 
      (if-let [block (q.c.blocks/read-record id)]
        (a.c.blocks/fetch-transactions! block)
@@ -89,12 +89,12 @@
 
 (defsc SearchResponse
   [_ _]
-  {:initial-state {:status          :initial
-                   :tx-id           nil
-                   :node            nil
-                   :tx              nil
+  {:initial-state {::mu/status       :initial
+                   :tx-id            nil
+                   :node             nil
+                   :tx               nil
                    ::m.c.blocks/item {}}
-   :query         [:status
+   :query         [::mu/status
                    :tx-id
                    :node
                    :tx
@@ -104,7 +104,7 @@
    (pc/defmutation search!
      [_env props]
      {::pc/params #{::m.c.blocks/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.c.blocks/do-search! props))
 
    :cljs

@@ -3,15 +3,16 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.accounts :as a.ln.accounts])
-   [dinsro.model.ln.accounts :as m.ln.accounts]))
+   [dinsro.model.ln.accounts :as m.ln.accounts]
+   [dinsro.mutations :as mu]))
 
-(comment ::pc/_ ::m.ln.accounts/_)
+#?(:cljs (comment ::pc/_ ::m.ln.accounts/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation delete!
      [_env {::m.ln.accounts/keys [id]}]
      {::pc/params #{::m.ln.accounts/id}
-      ::pc/output [:status]}
+      ::pc/output [::mu/status]}
      (a.ln.accounts/delete! id)
      {:status :ok})
    :cljs
