@@ -33,39 +33,56 @@
 
 (def use-taps false)
 
+(defn blob-store-plugin
+  []
+  (blob/pathom-plugin
+   bs/temporary-blob-store
+   {:files         bs/file-blob-store
+    :avatar-images bs/image-blob-store}))
+
+(defn timezone-plugin
+  []
+  {::p/wrap-parser
+   (fn transform-parser-out-plugin-external [wrapped-parser]
+     (fn transform-parser-out-plugin-internal [env tx]
+       ;; TASK: This should be taken from account-based setting
+       (dt/with-timezone default-timezone
+         (if (and (map? env) (seq tx))
+           (wrapped-parser env tx)
+           {}))))})
+
+(defn auth-user-plugin
+  []
+  {::p/wrap-parser
+   (fn transform-parser-out-plugin-external [wrapped-parser]
+     (log/info :transform-parser-out-plugin-external/starting {})
+     (fn transform-parser-out-plugin-internal [env tx]
+       (if (and (map? env) (seq tx))
+         (let [user-id (a.authentication/get-user-id env)
+               env     (assoc env ::m.users/id user-id)]
+           (wrapped-parser env tx))
+         {})))})
+
+(defn tap-plugin
+  []
+  {::p/wrap-parser
+   (fn tap-parser-out-plugin-external [wrapped-parser]
+     (fn tap-parser-out-plugin-internal [env tx]
+       (when use-taps (tap> tx))
+       (wrapped-parser env tx)))})
+
 (defstate parser
   :start
-  (pathom/new-parser
-   config
-   [(attr/pathom-plugin all-attributes)
-    (form/pathom-plugin save/middleware delete/middleware)
-    (xt/pathom-plugin (fn [_env] {:production (:main xtdb-nodes)}))
-    (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
-                                                 :avatar-images bs/image-blob-store})
-    {::p/wrap-parser
-     (fn transform-parser-out-plugin-external [wrapped-parser]
-       (fn transform-parser-out-plugin-internal [env tx]
-           ;; TASK: This should be taken from account-based setting
-         (dt/with-timezone default-timezone
-           (if (and (map? env) (seq tx))
-             (wrapped-parser env tx)
-             {}))))}
-    {::p/wrap-parser
-     (fn transform-parser-out-plugin-external [wrapped-parser]
-       (log/info :transform-parser-out-plugin-external/starting {})
-       (fn transform-parser-out-plugin-internal [env tx]
-         (if (and (map? env) (seq tx))
-           (let [user-id (a.authentication/get-user-id env)
-                 env (assoc env ::m.users/id user-id)]
-             (wrapped-parser env tx))
-           {})))}
-    {::p/wrap-parser
-     (fn tap-parser-out-plugin-external [wrapped-parser]
-       (fn tap-parser-out-plugin-internal [env tx]
-         (when use-taps (tap> tx))
-         (wrapped-parser env tx)))}]
-   [automatic-resolvers
-    form/resolvers
-    (blob/resolvers all-attributes)
-    all-resolvers
-    index-explorer]))
+  (let [plugins   [(attr/pathom-plugin all-attributes)
+                   (form/pathom-plugin save/middleware delete/middleware)
+                   (xt/pathom-plugin (fn [_env] {:production (:main xtdb-nodes)}))
+                   (blob-store-plugin)
+                   (timezone-plugin)
+                   (auth-user-plugin)
+                   (tap-plugin)]
+        resolvers [automatic-resolvers
+                   form/resolvers
+                   (blob/resolvers all-attributes)
+                   all-resolvers
+                   index-explorer]]
+    (pathom/new-parser config plugins resolvers)))
