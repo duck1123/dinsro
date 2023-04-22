@@ -13,6 +13,7 @@
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
    [dinsro.ui.nostr.relays :as u.n.relays]
    [dinsro.ui.nostr.requests :as u.n.requests]
+   [dinsro.ui.nostr.runs :as u.n.runs]
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
    [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]
    [dinsro.ui.nostr.witnesses :as u.n.witnesses]))
@@ -34,6 +35,7 @@
     u.n.relays/Report
     u.n.relays/Show
     u.n.requests/Show
+    u.n.runs/Show
     u.n.subscription-pubkeys/Report
     u.n.subscription-pubkeys/Show
     u.n.subscriptions/Report
