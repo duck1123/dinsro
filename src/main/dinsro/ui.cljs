@@ -34,7 +34,6 @@
    [dinsro.ui.navbar :as u.navbar]
    [dinsro.ui.nostr :as u.nostr]
    [dinsro.ui.rate-sources :as u.rate-sources]
-   [dinsro.ui.rates :as u.rates]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.settings :as u.settings]
    [dinsro.ui.transactions :as u.transactions]
@@ -75,8 +74,6 @@
                     u.nostr/Page
                     u.rate-sources/Show
                     u.rate-sources/Report
-                    u.rates/Report
-                    u.rates/Show
                     u.registration/RegistrationPage
                     u.settings/SettingsPage
                     u.transactions/NewForm

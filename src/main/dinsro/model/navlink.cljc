@@ -53,7 +53,6 @@
    :payments                   ["Payments"              :dinsro.ui.ln.payments/Report]
    :payreqs                    ["Payreqs"               :dinsro.ui.ln.payreqs/Report]
    :peers                      ["Peers"                 :dinsro.ui.ln.peers/Report]
-   :rates                      ["Rates"                 :dinsro.ui.rates/Report]
    :rate-sources               ["Rate Sources"          :dinsro.ui.rate-sources/Report]
    :registration               ["Registration"          :dinsro.ui.registration/RegistrationPage]
    :settings                   ["Settings"              :dinsro.ui.settings/SettingsPage]

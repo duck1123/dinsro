@@ -11,7 +11,6 @@
    :transactions
    :currencies
    :categories
-   :rates
    :rate-sources
    :admin])
 (def menu-link-names [:accounts :transactions :contacts :core-menu :ln-menu :nostr :settings])
