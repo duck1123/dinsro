@@ -41,9 +41,9 @@
        (dom/div :.ui.container
          (dom/div :.ui.segment
            (dom/h1 {:classes [:.ui :.header title]}
-                   (if username
-                     (str "Welcome, " username)
-                     "Home Page"))))
+             (if username
+               (str "Welcome, " username)
+               "Home Page"))))
        (when username
          (dom/div :.ui.grid.center
            (dom/div :.two.column.row

@@ -25,7 +25,7 @@
         (dom/h1 :.ui.inverted.header "dinsro")))
     (dom/div {:classes [:.ui.container container]}
       (dom/h1 {:classes [:.ui :.header :.center  :.aligned  header]}
-              "You must create an administrator account in order to continue")
+        "You must create an administrator account in order to continue")
       (dom/div :.ui.middle.aligned.center.aligned.grid
         (dom/div :.column
           (ui-form {}

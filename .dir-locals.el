@@ -23,6 +23,7 @@
            (form 1)
            (HEAD 2)
            (GET 2)
+           (h1 1)
            (h2 1)
            (input 1)
            (it 1)

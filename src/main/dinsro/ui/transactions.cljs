@@ -173,11 +173,11 @@
   (let [{:ui/keys [current-rows]} props]
     (dom/div :.ui.segment
       (dom/h1 :.ui.header
-              (dom/span {} "Transactions")
-              (dom/button {:classes [:.ui :.right]
-                           :onClick (fn [_] (form/create! this NewTransaction))} "New")
-              (dom/button {:classes [:.ui :.right]
-                           :onClick (fn [_] (control/run! this))} "Refresh"))
+        (dom/span {} "Transactions")
+        (dom/button {:classes [:.ui :.right]
+                     :onClick (fn [_] (form/create! this NewTransaction))} "New")
+        (dom/button {:classes [:.ui :.right]
+                     :onClick (fn [_] (control/run! this))} "Refresh"))
 
       (dom/div :.ui.items
         (map ui-body-item  current-rows)))))

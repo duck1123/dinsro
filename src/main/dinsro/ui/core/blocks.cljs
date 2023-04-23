@@ -75,14 +75,14 @@
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {}
-              "Block " height
-              (when-not (and (not force-fetch-button) fetched?)
-                (comp/fragment
-                 " ("
-                 (dom/a {:href    "#"
-                         :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
-                   "unfetched")
-                 ")")))
+        "Block " height
+        (when-not (and (not force-fetch-button) fetched?)
+          (comp/fragment
+           " ("
+           (dom/a {:href    "#"
+                   :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
+             "unfetched")
+           ")")))
       (dom/dl {}
         (dom/dt {} "Hash")
         (dom/dd {} hash)
