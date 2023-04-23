@@ -145,7 +145,6 @@
   (shell "rm -rf semantic/src/site/elements")
   (shell "rm -rf semantic/src/site/globals/reset.overrides")
   (shell "rm -rf semantic/src/site/globals/reset.variables")
-  (shell "rm -rf semantic/src/site/globals/site.variables")
   (shell "rm -rf semantic/src/site/modules")
   (shell "rm -rf semantic/src/site/views")
   (shell "rm -rf semantic/src/theme.less")
