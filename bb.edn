@@ -244,7 +244,7 @@
    :task (shell "yarn install --frozen-lockfile")}
 
   install-style-dependencies
-  {:task (shell "yarn --cwd node_modules/fomantic-ui run install")}
+  {:task (shell "sh -c \"cd node_modules/fomantic-ui; npx gulp install\"")}
 
   kibit
   {:doc  "Lint source code with kibit"
