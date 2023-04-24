@@ -58,6 +58,8 @@
      (log/trace :query-id/finished {:id id :results results})
      id)))
 
+(def query-one query-id)
+
 (defn query-ids
   ([query]
    (log/trace :query-ids/starting {:query query})
@@ -71,6 +73,8 @@
          ids (map first (c.api/q db query params))]
      (log/trace :query-ids/finished {:ids ids})
      ids)))
+
+(def query-many query-ids)
 
 (defn submit-tx!
   [k params]
