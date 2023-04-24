@@ -17,7 +17,9 @@
      (comment env)
      (let [ids #?(:clj (q.n.event-tags/index-ids) :cljs [])]
        (log/info :index/starting {:ids ids})
-       {::index (m.n.event-tags/idents ids)}))})
+       (let [total #?(:clj (q.n.event-tags/count-ids) :cljs 0)
+             results (m.n.event-tags/idents ids)]
+         {::index {:total total :results results}})))})
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.event-tags/id

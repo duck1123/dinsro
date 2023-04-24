@@ -48,6 +48,11 @@
     (when (get record ::m.n.pubkeys/id)
       (dissoc record :xt/id))))
 
+(defn get-index-query
+  [_query-params]
+  {:find  ['?pubkey-id]
+   :where [['?pubkey-id ::m.n.pubkeys/id '_]]})
+
 (>defn index-ids
   ([]
    [=>  (s/coll-of ::m.n.pubkeys/id)]
@@ -56,15 +61,10 @@
    [any? => (s/coll-of ::m.n.pubkeys/id)]
    (let [{:indexed-access/keys [options]} query-params
          {:keys [limit offset]
-          :or   {limit 20 offset 0}}        options
-         query                            {:find   ['?pubkey-id]
-                                           :where  [['?pubkey-id ::m.n.pubkeys/id '_]]
-                                           :limit  limit
-                                           :offset offset}
-         ;; query '{:find  [?pubkey-id]
-         ;;         :where [[?pubkey-id ::m.n.pubkeys/id _]]
-         ;;         :limit 20}
-         ]
+          :or   {limit 20 offset 0}}      options
+         base-query                       (get-index-query query-params)
+         limit-params                     {:limit limit :offset offset}
+         query                            (merge base-query limit-params)]
      (log/info :index-ids/query {:query query})
      (let [ids (c.xtdb/query-ids query)]
        ids))))

@@ -10,6 +10,8 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [../../model/nostr/runs.cljc]
+
 (>defn create-record
   [params]
   [::m.n.runs/params => ::m.n.runs/id]
@@ -28,13 +30,37 @@
     (log/trace :create-record/finished {:id id})
     id))
 
+(defn get-index-query
+  [query-params]
+  (let [request-id (::m.n.requests/id query-params)]
+    {:find  ['?run-id]
+     :in    [['?request-id]]
+     :where (->> [['?run-id ::m.n.runs/id '_]]
+                 (concat (when request-id
+                           [['?run-id ::m.n.runs/request '?request-id]]))
+                 (filter identity)
+                 (into []))}))
+
 (>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.runs/id)]
-  (log/debug :index-ids/starting {})
-  (let [ids (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.runs/id _]]})]
-    (log/trace :index-ids/finished {:ids ids})
-    ids))
+  ([]
+   [=> (s/coll-of ::m.n.runs/id)]
+   (index-ids {}))
+  ([query-params]
+   [(s/keys) => (s/coll-of ::m.n.runs/id)]
+   (do
+     (log/debug :index-ids/starting {})
+     (let [{:indexed-access/keys [options]
+            request-id           ::m.n.requests/id} query-params
+           {:keys [limit offset]
+            :or   {limit 20 offset 0}}              options
+           base-params                              (get-index-query query-params)
+           limit-params                             {:limit limit :offset offset}
+           query                                    (merge base-params limit-params)
+           params                                   [request-id]]
+       (log/info :index-ids/running {:query query :params params})
+       (let [ids (c.xtdb/query-ids query params)]
+         (log/trace :index-ids/finished {:ids ids})
+         ids)))))
 
 (>defn read-record
   [id]

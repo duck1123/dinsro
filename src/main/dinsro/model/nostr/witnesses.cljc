@@ -20,12 +20,13 @@
    ao/schema           :production
    ::report/column-EQL {::event [::m.n.events/id ::m.n.events/note-id]}})
 
+;; [./runs.cljc]
 (>def ::run uuid?)
 (defattr run ::run :ref
   {ao/identities       #{::id}
    ao/target           ::m.n.runs/id
    ao/schema           :production
-   ::report/column-EQL {::runs [::m.n.runs/id ::m.n.runs/status]}})
+   ::report/column-EQL {::run [::m.n.runs/id ::m.n.runs/status]}})
 
 (>def ::params (s/keys :req [::run ::event]))
 (>def ::item (s/keys :req [::id ::run ::event]))

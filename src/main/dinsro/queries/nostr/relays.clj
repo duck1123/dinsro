@@ -5,9 +5,12 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.model.nostr.filter-items :as m.n.filter-items]
+   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
+   [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -40,13 +43,58 @@
     (when (get record ::m.n.relays/id)
       (dissoc record :xt/id))))
 
+(defn get-index-query
+  [query-params]
+  (let [{connection-id ::m.n.connections} query-params]
+    {:find  ['?relay-id]
+     :in    [['?connection-id]]
+     :where (->> [['?relay-id ::m.n.relays/id '_]]
+                 (concat (when connection-id
+                           [['?connection-id ::m.n.connections/relay '?relay-id]]))
+                 (filter identity)
+                 (into []))}))
+
+(defn get-index-params
+  [query-params]
+  (let [{connection-id ::m.n.connections} query-params]
+    [connection-id]))
+
+(>defn count-ids
+  ([]
+   [=> number?]
+   (count-ids {}))
+  ([query-params]
+   [map? => number?]
+   (do
+     (log/info :count-ids/starting {:query-params query-params})
+     (let [base-query  (get-index-query query-params)
+           limit-query {:find ['(count ?relay-id)]}
+           query       (merge base-query limit-query)
+           params      (get-index-params query-params)]
+       (log/info :count-ids/query {:query query :params params})
+       (let [n (c.xtdb/query-one query params)]
+         (log/trace :count-ids/finished {:n n})
+         n)))))
+
 (>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.relays/id)]
-  (log/trace :index-ids/starting {})
-  (c.xtdb/query-ids
-   '{:find  [?relay-id]
-     :where [[?relay-id ::m.n.relays/id _]]}))
+  ([]
+   [=> (s/coll-of ::m.n.relays/id)]
+   (index-ids {}))
+  ([query-params]
+   [map? => (s/coll-of ::m.n.relays/id)]
+   (do
+     (log/trace :index-ids/starting {})
+     (let [base-query                       (get-index-query query-params)
+           {:indexed-access/keys [options]} query-params
+           {:keys [limit offset]
+            :or   {limit 20 offset 0}}      options
+           limit-query                      {:limit limit :offset offset}
+           query                            (merge base-query limit-query)
+           params                           []]
+       (log/info :index-ids/query {:query query :params params})
+       (let [ids (c.xtdb/query-ids query params)]
+         (log/trace :index-ids/finished {:ids ids})
+         ids)))))
 
 (>defn find-by-address
   [address]
@@ -118,6 +166,20 @@
     (log/trace :find-by-connection/finished {:id id})
     id))
 
+(defn find-by-filter-item
+  [filter-item-id]
+  (log/debug :find-by-request/starting {:filter-item-id filter-item-id})
+  (let [id (c.xtdb/query-id
+            '{:find  [?relay-id]
+              :in    [[?filter-item-id]]
+              :where [[?filter-item-id ::m.n.filter-items/filter ?filter-id]
+                      [?filter-id ::m.n.filters/request ?request-id]
+                      [?request-id ::m.n.requests/relay ?relay-id]]}
+
+            [filter-item-id])]
+    (log/trace :find-by-request/finished {:id id})
+    id))
+
 (defn find-by-request
   [request-id]
   (log/debug :find-by-request/starting {:request-id request-id})
@@ -139,6 +201,20 @@
               :where [[?run-id ::m.n.runs/request ?request-id]
                       [?request-id ::m.n.requests/relay ?relay-id]]}
             [run-id])]
+    (log/trace :find-by-request/finished {:id id})
+    id))
+
+(>defn find-by-witness
+  [witness-id]
+  [::m.n.witnesses/id => (? ::m.n.relays/id)]
+  (log/debug :find-by-witness/starting {:witness-id witness-id})
+  (let [query  '{:find  [?relay-id]
+                 :in    [[?witness-id]]
+                 :where [[?witness-id ::m.n.witnesses/run ?run-id]
+                         [?run-id ::m.n.runs/request ?request-id]
+                         [?request-id ::m.n.requests/relay ?relay-id]]}
+        params [witness-id]
+        id     (c.xtdb/query-id query params)]
     (log/trace :find-by-request/finished {:id id})
     id))
 

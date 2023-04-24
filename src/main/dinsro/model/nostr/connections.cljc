@@ -8,6 +8,8 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.specs :as ds]))
 
+;; [../../queries/nostr/connections.clj]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

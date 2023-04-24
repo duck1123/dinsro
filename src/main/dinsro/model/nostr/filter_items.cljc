@@ -10,6 +10,8 @@
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]))
 
+;; [../../joins/nostr/filter_items.cljc]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
@@ -23,7 +25,7 @@
    ::report/column-EQL {::filter [::m.n.filters/id ::m.n.filters/index]}})
 
 ;; ids authors kinds #e #p
-(>def ::type string?)
+(>def ::type (? string?))
 (defattr type ::type :string
   {ao/identities #{::id}
    ao/schema     :production})
@@ -33,24 +35,24 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::kind number?)
+(>def ::kind (? number?))
 (defattr kind ::kind :string
   {ao/identities #{::id}
    ao/schema     :production})
 
-(>def ::event uuid?)
+(>def ::event (? uuid?))
 (defattr event ::event :ref
   {ao/identities       #{::id}
    ao/target           ::m.n.events/id
    ao/schema           :production
    ::report/column-EQL {::event [::m.n.events/id ::m.n.events/address]}})
 
-(>def ::pubkey uuid?)
+(>def ::pubkey (? uuid?))
 (defattr pubkey ::pubkey :ref
   {ao/identities       #{::id}
    ao/target           ::m.n.pubkeys/id
    ao/schema           :production
-   ::report/column-EQL {::pubkey [::m.n.pubkeys/id ::m.n.pubkeys/hex]}})
+   ::report/column-EQL {::pubkey [::m.n.pubkeys/id ::m.n.pubkeys/hex ::m.n.pubkeys/name]}})
 
 (>def ::params (s/keys :req [::filter ::index]
                        :opt [::kind ::event ::pubkey ::type]))

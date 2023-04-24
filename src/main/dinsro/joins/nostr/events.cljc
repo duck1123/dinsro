@@ -4,10 +4,14 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.witnesses :as m.n.witnesses]
    #?(:clj [dinsro.queries.nostr.event-tags :as q.n.event-tags])
    #?(:clj [dinsro.queries.nostr.events :as q.n.events])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   #?(:clj [dinsro.queries.nostr.witnesses :as q.n.witnesses])
+   #?(:clj [dinsro.specs :as ds])
+   [lambdaisland.glogc :as log]
+   [nextjournal.markdown :as md]
+   [nextjournal.markdown.transform :as transform]))
 
 ;; [[../../actions/nostr/events.clj][Event Actions]]
 ;; [[../../model/nostr/events.cljc][Event Model]]
@@ -38,18 +42,59 @@
 
 (defattr tags ::tags :ref
   {ao/target    ::m.n.event-tags/id
+   ao/pc-input  #{::m.n.events/id}
    ao/pc-output [{::tags [::m.n.event-tags/id]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} params]
      (log/info :tags/starting {:params params :query-params query-params})
-     (if-let [event-id (::m.n.events/id query-params)]
-       (let [ids #?(:clj  (q.n.event-tags/find-by-event event-id)
+     (if-let [event-id (or (::m.n.events/id query-params) (::m.n.events/id params))]
+       (let [ids #?(:clj  (q.n.event-tags/find-by-parent event-id)
                     :cljs (do (comment event-id) []))]
-         {::tags (m.n.events/idents ids)})
-       (throw (ex-info "No pubkey supplied" {}))))})
+         {::tags (m.n.event-tags/idents ids)})
+       (throw (ex-info "No event-id supplied" {}))))})
 
 (defattr tag-count ::tag-count :int
   {ao/pc-input   #{::tags}
    ao/pc-resolve (fn [_ {::keys [tags]}] {::tag-count (count tags)})})
 
-(def attributes [admin-index index tags tag-count])
+(defattr content-hiccup ::content-hiccup :string
+  {ao/pc-input  #{::m.n.events/content}
+   ao/pc-output [::content-hiccup]
+   ao/pc-resolve
+   (fn [_env {::m.n.events/keys [content]}]
+     (let [ast            (md/parse content)
+           content-hiccup (transform/->hiccup ast)]
+       {::content-hiccup content-hiccup}))})
+
+(defattr created-date ::created-date :inst
+  {ao/pc-input  #{::m.n.events/created-at}
+   ao/pc-output [::created-date]
+   ao/pc-resolve
+   (fn [_env {::m.n.events/keys [created-at]}]
+     (let [created-date #?(:clj (ds/ms->inst (* created-at 1000))
+                           :cljs (do (comment created-at) nil))]
+       {::created-date created-date}))})
+
+(defattr witness-count ::witness-count :int
+  {ao/pc-input  #{::m.n.events/id}
+   ao/pc-output [::witness-count]
+   ao/pc-resolve
+   (fn [_env props]
+     (let [n #?(:clj (q.n.witnesses/count-ids props)
+                :cljs (do (comment props) 0))]
+       {::witness-count n}))})
+
+(defattr witnesses ::witnesses :ref
+  {ao/pc-input  #{::m.n.events/id}
+   ao/target    ::m.n.witnesses/id
+   ao/pc-output [{::witnesses [::m.n.witnesses/id]}]
+   ao/pc-resolve
+   (fn [_env props]
+     (let [ids #?(:clj (q.n.witnesses/index-ids props)
+                  :cljs (do (comment props) []))]
+       {::witnesses (m.n.witnesses/idents ids)}))})
+
+(def attributes
+  [admin-index index tags tag-count
+   content-hiccup created-date
+   witness-count witnesses])

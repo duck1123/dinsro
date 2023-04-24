@@ -32,7 +32,7 @@
                   :cljs (do
                           (comment transaction-id)
                           []))]
-       {::debits (m.transactions/idents ids)}))
+       {::debits (m.debits/idents ids)}))
    ::report/column-EQL {::debits [::m.debits/id ::m.debits/value]}})
 
 (defattr debit-count ::debit-count :number

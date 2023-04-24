@@ -47,11 +47,12 @@
   {ao/target    ::m.n.relays/id
    ao/pc-output [{::index [::m.n.relays/id]}]
    ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (q.n.relays/index-ids) :cljs [])]
+   (fn [{:keys [query-params]} _]
+     (let [ids #?(:clj (q.n.relays/index-ids query-params)
+                  :cljs (do (comment query-params) []))]
        (log/info :index/starting {:ids ids})
-       {::index (m.n.relays/idents ids)}))})
+       (let [total #?(:clj (q.n.relays/count-ids query-params) :cljs 0)]
+         {::index {:total total :results (m.n.relays/idents ids)}})))})
 
 (defattr requests ::requests :ref
   {ao/cardinality :many

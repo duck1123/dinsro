@@ -13,6 +13,7 @@
 ;; [[../../actions/nostr/events.clj][Event Actions]]
 ;; [[../../model/nostr/events.cljc][Event Model]]
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
+;; [../../ui/nostr/events.cljs]
 
 (>defn create-record
   "Create a relay record"
@@ -52,13 +53,13 @@
   ([query-params]
    [any? => number?]
    (do
-     (log/info :index-ids/starting {:query-params query-params})
+     (log/info :count-ids/starting {:query-params query-params})
      (let [{pubkey-id ::m.n.pubkeys/id} query-params
            query                        (merge (get-index-query query-params)
                                                {:find  ['(count ?event-id)]})]
-       (log/info :index-ids/query {:query query})
+       (log/info :count-ids/query {:query query})
        (let [id (c.xtdb/query-id query [pubkey-id])]
-         (log/trace :index-ids/finished {:id id})
+         (log/trace :count-ids/finished {:id id})
          (or id 0))))))
 
 (>defn index-ids

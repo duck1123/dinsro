@@ -32,11 +32,46 @@
     (when (get record ::m.n.event-tags/id)
       (dissoc record :xt/id))))
 
-(>defn index-ids
+(defn get-index-query
+  [_query-params]
+  {:find ['?event-tag-id]
+   :where [['?event-tag-id ::m.n.event-tags/id '_]]})
+
+(defn count-ids
   []
-  [=> (s/coll-of ::m.n.event-tags/id)]
-  (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find  [?relay-id] :where [[?relay-id ::m.n.event-tags/id _]]}))
+  (or (c.xtdb/query-id
+       '{:find  [(count ?relay-id)]
+         :where [[?relay-id ::m.n.event-tags/id _]]})
+      0))
+
+(>defn index-ids
+  ([]
+   [=> (s/coll-of ::m.n.event-tags/id)]
+   (index-ids {}))
+  ([query-params]
+   [map? => (s/coll-of ::m.n.event-tags/id)]
+   (do
+     (log/info :index-ids/starting {})
+     (let [{:indexed-access/keys [options]} query-params
+           {:keys [limit offset]
+            :or   {limit 20 offset 0}}      options
+           base-params                      (get-index-query query-params)
+           limit-params                     {:limit limit :offset offset}
+           query                            (merge base-params limit-params)]
+       (log/debug :index-ids/running {:query query})
+       (let [ids (c.xtdb/query-ids query)]
+         (log/trace :index-ids/finished {:ids ids})
+         ids)))))
+
+(>defn find-by-parent
+  [event-id]
+  [::m.n.events/id => (s/coll-of ::m.n.event-tags/id)]
+  (log/fine :find-by-event/starting {:event-id event-id})
+  (c.xtdb/query-ids
+   '{:find  [?event-tag-id]
+     :in    [[?event-id]]
+     :where [[?event-tag-id ::m.n.event-tags/parent ?event-id]]}
+   [event-id]))
 
 (>defn find-by-event
   [event-id]

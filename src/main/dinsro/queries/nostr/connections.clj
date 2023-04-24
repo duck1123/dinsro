@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.model.nostr.requests :as m.n.requests]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
@@ -32,10 +33,58 @@
     (when (get record ident-key)
       (dissoc record :xt/id))))
 
+(defn get-index-query
+  [query-params]
+  (let [{request-id ::m.n.requests/id} query-params]
+    {:find  ['?connection-id]
+     :in    [['?request-id]]
+     :where (->> [['?connection-id ::m.n.connections/id '_]]
+                 (concat (when request-id
+                           [['?request-id ::m.n.requests/connection '?connection-id]]))
+                 (filter identity)
+                 (into []))}))
+
+(defn get-index-params
+  [query-params]
+  (let [{request-id ::m.n.requests/id} query-params]
+    [request-id]))
+
+(>defn count-ids
+  ([]
+   [=> number?]
+   (count-ids {}))
+  ([query-params]
+   [map? => number?]
+   (do
+     (log/info :count-ids/starting {:query-params query-params})
+     (let [base-query  (get-index-query query-params)
+           limit-query {:find ['(count ?connection-id)]}
+           query       (merge base-query limit-query)
+           params      (get-index-params query-params)]
+       (log/info :count-ids/query {:query query :params params})
+       (let [n (c.xtdb/query-one query params)]
+         (log/trace :count-ids/finished {:n n})
+         n)))))
+
 (>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.connections/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.connections/id _]]}))
+  ([]
+   [=> (s/coll-of ::m.n.connections/id)]
+   (index-ids {}))
+  ([query-params]
+   [map? => (s/coll-of ::m.n.connections/id)]
+   (do
+     (log/info :index-ids/starting {:query-params query-params})
+     (let [params                           (get-index-params query-params)
+           base-query                       (get-index-query query-params)
+           {:indexed-access/keys [options]} query-params
+           {:keys [limit offset]
+            :or   {limit 20 offset 0}}      options
+           limit-query                      {:limit limit :offset offset}
+           query                            (merge base-query limit-query)]
+       (log/info :index-ids/query {:query query :params params})
+       (let [ids (c.xtdb/query-many query params)]
+         (log/info :index-ids/finished {:ids ids})
+         ids)))))
 
 (>defn delete!
   [id]
