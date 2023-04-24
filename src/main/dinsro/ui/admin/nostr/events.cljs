@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.ui.links :as u.links]))
@@ -15,6 +16,9 @@
    ro/controls         {::refresh u.links/refresh-control}
    ro/field-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
                         ::m.n.events/note-id #(u.links/ui-event-link %3)}
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "events"
    ro/row-pk           m.n.events/id
    ro/run-on-mount?    true

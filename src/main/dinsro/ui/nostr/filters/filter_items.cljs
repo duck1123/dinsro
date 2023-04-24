@@ -6,11 +6,17 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.filter-items :as j.n.filter-items]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
+
+;; [../../../actions/nostr/filter_items.clj]
+;; [../../../model/nostr/filter_items.cljc]
+;; [../../../queries/nostr/filter_items.clj]
+;; [../../../ui/nostr/requests/filter_items.cljs]
 
 (def ident-key ::m.n.filters/id)
 (def router-key :dinsro.ui.nostr.filters/Router)
@@ -52,6 +58,9 @@
 
                         ;; ::m.n.filters/index   #(u.links/ui-filter-link %3)
                         }
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/row-pk           m.n.filter-items/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.filter-items/index
