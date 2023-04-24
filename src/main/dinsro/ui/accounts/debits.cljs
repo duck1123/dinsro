@@ -6,9 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.accounts :as m.accounts]
-   ;; [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
-   ;; [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.accounts/id)
@@ -21,7 +19,6 @@
                         :action-buttons [::refresh]}
    ro/controls         {::m.accounts/id {:type :uuid :label "id"}
                         ::refresh       u.links/refresh-control}
-   ;; ro/field-formatters {::m.debits/description #(u.links/ui-transaction-link %3)}
    ro/row-pk           m.debits/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.debits/index
