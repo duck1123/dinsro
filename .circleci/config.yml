@@ -12,7 +12,6 @@ jobs:
       - run: earthly --version
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +cert-downloader
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +fileserver
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +portal
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +check
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +lint
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +test
