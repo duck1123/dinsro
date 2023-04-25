@@ -5,6 +5,8 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    #?(:clj [dinsro.queries.users :as q.users])))
 
+;; [../ui/settings.cljs]
+
 (s/def ::allow-registration boolean?)
 (s/def ::first-run boolean?)
 

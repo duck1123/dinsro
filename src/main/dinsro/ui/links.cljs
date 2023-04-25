@@ -270,6 +270,27 @@
   "Display a nav menu for controlling subpages"
   (comp/factory NavMenu))
 
+(defsc VerticalMenu
+  [this {:keys [menu-items id]}]
+  (ui-menu
+   {:items menu-items
+    :vertical true
+    :onItemClick
+    (fn [_e d]
+      (if-let [route-name (get (js->clj d) "route")]
+        (let [route-kw (keyword route-name)
+              route    (comp/registry-key->class route-kw)]
+          (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
+          (if id
+            (rroute/route-to! this route {:id (str id)})
+            (do
+              (log/info :onItemClick/no-id {})
+              (rroute/route-to! this route {}))))
+        (throw (js/Error. "no route"))))}))
+
+(def ui-vertical-menu
+  (comp/factory VerticalMenu))
+
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
   {fo/id         m.accounts/id
