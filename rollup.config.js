@@ -24,7 +24,7 @@ export default [
   {
     input: "src/styles/main.js",
     output: {
-      file: "resources/main/public/css/main.min.js",
+      file: "resources/main/public/css/semantic.min.js",
       format: "es",
     },
     plugins: [

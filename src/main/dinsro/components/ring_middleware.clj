@@ -32,8 +32,8 @@
      [:script {:src
                (if minimal "https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"
                    "https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.js")}]
-     [:link {:rel "stylesheet" :type "text/css" :href "/css/main.min.css"}]
-     [:script {:src "/css/main.min.js"}]
+     [:link {:rel "stylesheet" :type "text/css" :href "/css/semantic.min.css"}]
+     [:script {:src "/css/semantic.min.js"}]
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
     [:body {}
