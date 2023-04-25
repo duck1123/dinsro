@@ -40,20 +40,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.invoices/id
-                        m.ln.invoices/memo
-                        m.ln.invoices/settled?
-                        m.ln.invoices/creation-date
-                        m.ln.invoices/node]
-   ro/control-layout   {:action-buttons [::new]}
-   ro/controls         {::new new-button}
-   ro/field-formatters {::m.ln.invoices/node #(u.links/ui-node-link %2)
-                        ::m.ln.invoices/id #(u.links/ui-invoice-link %3)}
-   ro/route            "invoices"
-   ro/row-pk           m.ln.invoices/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.invoices/index
-   ro/title            "Lightning Invoices Report"})
+  {ro/column-formatters {::m.ln.invoices/node #(u.links/ui-node-link %2)
+                         ::m.ln.invoices/id   #(u.links/ui-invoice-link %3)}
+   ro/columns           [m.ln.invoices/id
+                         m.ln.invoices/memo
+                         m.ln.invoices/settled?
+                         m.ln.invoices/creation-date
+                         m.ln.invoices/node]
+   ro/control-layout    {:action-buttons [::new]}
+   ro/controls          {::new new-button}
+   ro/route             "invoices"
+   ro/row-pk            m.ln.invoices/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.invoices/index
+   ro/title             "Lightning Invoices Report"})
 
 (defsc Show
   [_this _props]

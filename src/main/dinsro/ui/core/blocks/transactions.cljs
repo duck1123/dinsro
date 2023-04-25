@@ -12,19 +12,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.transactions/tx-id
-                        m.c.transactions/fetched?]
-   ro/control-layout   {:action-buttons [::fetch ::refresh]}
-   ro/controls         {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
-                        ::refresh       u.links/refresh-control
-                        ::m.c.blocks/id {:type :uuid :label "Block"}}
-   ro/field-formatters {::m.c.transactions/tx-id (u.links/report-link ::m.c.transactions/tx-id u.links/ui-core-tx-link)}
-   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                        (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
-   ro/row-pk           m.c.transactions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.transactions/index
-   ro/title            "Transactions"})
+  {ro/column-formatters {::m.c.transactions/tx-id (u.links/report-link ::m.c.transactions/tx-id u.links/ui-core-tx-link)}
+   ro/columns           [m.c.transactions/tx-id
+                         m.c.transactions/fetched?]
+   ro/control-layout    {:action-buttons [::fetch ::refresh]}
+   ro/controls          {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
+                         ::refresh       u.links/refresh-control
+                         ::m.c.blocks/id {:type :uuid :label "Block"}}
+   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                         (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-pk            m.c.transactions/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.transactions/index
+   ro/title             "Transactions"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

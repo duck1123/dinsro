@@ -14,15 +14,15 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.rate-sources/name]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.currencies/id {:type :uuid :label "id"}
-                        ::refresh         u.links/refresh-control}
-   ro/field-formatters {::m.rate-sources/name #(u.links/ui-rate-source-link %3)}
-   ro/row-pk           m.rate-sources/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.rate-sources/index
-   ro/title            "Rate Sources"})
+  {ro/column-formatters {::m.rate-sources/name #(u.links/ui-rate-source-link %3)}
+   ro/columns           [m.rate-sources/name]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::m.currencies/id {:type :uuid :label "id"}
+                         ::refresh         u.links/refresh-control}
+   ro/row-pk            m.rate-sources/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.rate-sources/index
+   ro/title             "Rate Sources"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

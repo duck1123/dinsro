@@ -18,18 +18,18 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.transactions/description
-                        j.transactions/debit-count
-                        m.transactions/date]
-   ro/control-layout   {:inputs         [[::m.accounts/id]]
-                        :action-buttons [::refresh]}
-   ro/controls         {::m.accounts/id {:type :uuid :label "id"}
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
-   ro/row-pk           m.transactions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.transactions/index
-   ro/title            "Transactions"})
+  {ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+   ro/columns           [m.transactions/description
+                         j.transactions/debit-count
+                         m.transactions/date]
+   ro/control-layout    {:inputs         [[::m.accounts/id]]
+                         :action-buttons [::refresh]}
+   ro/controls          {::m.accounts/id {:type :uuid :label "id"}
+                         ::refresh       u.links/refresh-control}
+   ro/row-pk            m.transactions/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.transactions/index
+   ro/title             "Transactions"})
 
 (defsc SubPage
   [_this {:ui/keys   [report]}]

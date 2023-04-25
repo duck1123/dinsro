@@ -44,14 +44,14 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.categories/name
-                        m.categories/user]
-   ro/control-layout   {:action-buttons [::new]}
-   ro/controls         {::new new-button}
-   ro/field-formatters {::m.categories/user #(u.links/ui-user-link %2)}
-   ro/form-links       {::m.categories/name CategoryForm}
-   ro/route            "categories"
-   ro/row-pk           m.categories/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.categories/index
-   ro/title            "Categories"})
+  {ro/column-formatters {::m.categories/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.categories/name
+                         m.categories/user]
+   ro/control-layout    {:action-buttons [::new]}
+   ro/controls          {::new new-button}
+   ro/form-links        {::m.categories/name CategoryForm}
+   ro/route             "categories"
+   ro/row-pk            m.categories/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.categories/index
+   ro/title             "Categories"})

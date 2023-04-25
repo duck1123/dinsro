@@ -42,29 +42,25 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [;; m.n.filter-items/id
-                        m.n.filter-items/filter
-                        m.n.filter-items/index
-                        m.n.filter-items/kind
-                        m.n.filter-items/type
-                        m.n.filter-items/event
-                        m.n.filter-items/pubkey]
-   ro/control-layout   {:action-buttons [::add ::refresh]}
-   ro/controls         {::m.n.filters/id {:type :uuid :label "id"}
-                        ::add            new-item-button
-                        ::refresh        u.links/refresh-control}
-   ro/field-formatters {::m.n.filter-items/filter #(u.links/ui-filter-link %2)
-                        ::m.n.filter-items/pubkey #(and %2 (u.links/ui-pubkey-link %2))
-
-                        ;; ::m.n.filters/index   #(u.links/ui-filter-link %3)
-                        }
-   ro/machine          spr/machine
-   ro/page-size        10
-   ro/paginate?        true
-   ro/row-pk           m.n.filter-items/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.filter-items/index
-   ro/title            "Filter Items"})
+  {ro/column-formatters {::m.n.filter-items/filter #(u.links/ui-filter-link %2)
+                         ::m.n.filter-items/pubkey #(and %2 (u.links/ui-pubkey-link %2))}
+   ro/columns           [m.n.filter-items/filter
+                         m.n.filter-items/index
+                         m.n.filter-items/kind
+                         m.n.filter-items/type
+                         m.n.filter-items/event
+                         m.n.filter-items/pubkey]
+   ro/control-layout    {:action-buttons [::add ::refresh]}
+   ro/controls          {::m.n.filters/id {:type :uuid :label "id"}
+                         ::add            new-item-button
+                         ::refresh        u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.n.filter-items/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.filter-items/index
+   ro/title             "Filter Items"})
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]

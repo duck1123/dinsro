@@ -25,13 +25,15 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns        [m.c.peers/peer-id
-                      m.c.peers/addr
-                      m.c.peers/subver
-                      m.c.peers/connection-type
-                      m.c.peers/node]
-   ro/control-layout {:action-buttons [::new ::fetch ::refresh]
-                      :inputs         [[::m.c.nodes/id]]}
+  {ro/column-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
+                         ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
+   ro/columns           [m.c.peers/peer-id
+                         m.c.peers/addr
+                         m.c.peers/subver
+                         m.c.peers/connection-type
+                         m.c.peers/node]
+   ro/control-layout    {:action-buttons [::new ::fetch ::refresh]
+                         :inputs         [[::m.c.nodes/id]]}
    ro/controls
    {::m.c.nodes/id {:type :uuid :label "Nodes"}
     ::refresh      u.links/refresh-control
@@ -55,8 +57,6 @@
                                                            :node-id    node-id})
                                 (form/create! this u.c.peers/NewForm
                                               {:initial-state {::m.c.peers/addr "foo"}})))}}
-   ro/field-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
-                        ::m.c.peers/node  #(u.links/ui-core-node-link %2)}
    ro/route            "node-peers"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
    ro/row-pk           m.c.peers/id

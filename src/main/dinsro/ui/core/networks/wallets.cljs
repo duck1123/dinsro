@@ -14,18 +14,18 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.wallets/name
-                        m.c.wallets/user
-                        m.c.wallets/derivation]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh         u.links/refresh-control
-                        ::m.c.networks/id {:type :uuid :label "Network"}}
-   ro/field-formatters {::m.c.wallets/name #(u.links/ui-wallet-link %3)
-                        ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ro/row-pk           m.c.wallets/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.wallets/index
-   ro/title            "Wallets"})
+  {ro/column-formatters {::m.c.wallets/name #(u.links/ui-wallet-link %3)
+                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.c.wallets/name
+                         m.c.wallets/user
+                         m.c.wallets/derivation]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh         u.links/refresh-control
+                         ::m.c.networks/id {:type :uuid :label "Network"}}
+   ro/row-pk            m.c.wallets/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.wallets/index
+   ro/title             "Wallets"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

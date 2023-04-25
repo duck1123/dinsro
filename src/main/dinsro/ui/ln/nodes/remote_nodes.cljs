@@ -15,22 +15,22 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.remote-nodes/pubkey
-                        m.ln.remote-nodes/host
-                        m.ln.remote-nodes/alias
-                        m.ln.remote-nodes/color
-                        m.ln.remote-nodes/node]
-   ro/control-layout   {:action-buttons [::refresh]
-                        :inputs         [[::m.ln.nodes/id]]}
-   ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.remote-nodes/block #(u.links/ui-block-link %2)
-                        ::m.ln.remote-nodes/node  #(when %2 (u.links/ui-core-node-link %2))}
-   ro/row-actions      [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
-   ro/row-pk           m.ln.remote-nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.remote-nodes/index
-   ro/title            "Node Remote-Nodes"})
+  {ro/column-formatters {::m.ln.remote-nodes/block #(u.links/ui-block-link %2)
+                         ::m.ln.remote-nodes/node  #(when %2 (u.links/ui-core-node-link %2))}
+   ro/columns           [m.ln.remote-nodes/pubkey
+                         m.ln.remote-nodes/host
+                         m.ln.remote-nodes/alias
+                         m.ln.remote-nodes/color
+                         m.ln.remote-nodes/node]
+   ro/control-layout    {:action-buttons [::refresh]
+                         :inputs         [[::m.ln.nodes/id]]}
+   ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                         ::refresh       u.links/refresh-control}
+   ro/row-actions       [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
+   ro/row-pk            m.ln.remote-nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.remote-nodes/index
+   ro/title             "Node Remote-Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

@@ -10,18 +10,18 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.accounts/name
-                        m.accounts/user]
-   ro/control-layout   {:inputs         [[::m.c.wallets/id]]
-                        :action-buttons [::refresh]}
-   ro/controls         {::refresh        u.links/refresh-control
-                        ::m.c.wallets/id {:type "uuid"}}
-   ro/field-formatters {::m.accounts/name #(u.links/ui-account-link %3)
-                        ::m.accounts/user #(u.links/ui-user-link %2)}
-   ro/row-pk           m.accounts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.accounts/index
-   ro/title            "Accounts"})
+  {ro/column-formatters {::m.accounts/name #(u.links/ui-account-link %3)
+                         ::m.accounts/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.accounts/name
+                         m.accounts/user]
+   ro/control-layout    {:inputs         [[::m.c.wallets/id]]
+                         :action-buttons [::refresh]}
+   ro/controls          {::refresh        u.links/refresh-control
+                         ::m.c.wallets/id {:type "uuid"}}
+   ro/row-pk            m.accounts/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.accounts/index
+   ro/title             "Accounts"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

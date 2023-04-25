@@ -33,18 +33,18 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.event-tags/index
-                        m.n.event-tags/parent
-                        m.n.event-tags/event
-                        m.n.event-tags/pubkey]
-   ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::new           new-button
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
-   ro/row-pk           m.n.pubkeys/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.event-tags/index
-   ro/title            "Tags"})
+  {ro/column-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
+   ro/columns           [m.n.event-tags/index
+                         m.n.event-tags/parent
+                         m.n.event-tags/event
+                         m.n.event-tags/pubkey]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/row-pk            m.n.pubkeys/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.event-tags/index
+   ro/title             "Tags"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

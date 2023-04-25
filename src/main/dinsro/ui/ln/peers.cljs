@@ -67,15 +67,15 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.peers/node
-                        m.ln.peers/remote-node
-                        m.ln.peers/inbound?]
-   ro/controls         {::new new-button}
-   ro/field-formatters {::m.ln.peers/node        #(u.links/ui-node-link %2)
-                        ::m.ln.peers/pubkey      #(u.links/ui-ln-peer-link %3)
-                        ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
-   ro/route            "peers"
-   ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.peers/index
-   ro/title            "Lightning Peers"})
+  {ro/column-formatters {::m.ln.peers/node        #(u.links/ui-node-link %2)
+                         ::m.ln.peers/pubkey      #(u.links/ui-ln-peer-link %3)
+                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
+   ro/columns           [m.ln.peers/node
+                         m.ln.peers/remote-node
+                         m.ln.peers/inbound?]
+   ro/controls          {::new new-button}
+   ro/route             "peers"
+   ro/row-pk            m.ln.peers/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.peers/index
+   ro/title             "Lightning Peers"})

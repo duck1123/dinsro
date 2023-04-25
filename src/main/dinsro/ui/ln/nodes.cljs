@@ -238,21 +238,21 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.nodes/name
-                        m.ln.nodes/network
-                        m.ln.info/alias-attr
-                        m.ln.nodes/core-node
-                        m.ln.info/color
-                        m.ln.nodes/user]
-   ro/control-layout   {:action-buttons [::new-node ::refresh]}
-   ro/controls         {::new-node new-node-button
-                        ::refresh  u.links/refresh-control}
-   ro/field-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
-                        ::m.ln.nodes/network   #(u.links/ui-network-link %2)
-                        ::m.ln.nodes/user      #(u.links/ui-user-link %2)
-                        ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
-   ro/route            "nodes"
-   ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.nodes/index
-   ro/title            "Lightning Node Report"})
+  {ro/column-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
+                         ::m.ln.nodes/network   #(u.links/ui-network-link %2)
+                         ::m.ln.nodes/user      #(u.links/ui-user-link %2)
+                         ::m.ln.nodes/core-node #(u.links/ui-core-node-link %2)}
+   ro/columns           [m.ln.nodes/name
+                         m.ln.nodes/network
+                         m.ln.info/alias-attr
+                         m.ln.nodes/core-node
+                         m.ln.info/color
+                         m.ln.nodes/user]
+   ro/control-layout    {:action-buttons [::new-node ::refresh]}
+   ro/controls          {::new-node new-node-button
+                         ::refresh  u.links/refresh-control}
+   ro/route             "nodes"
+   ro/row-pk            m.ln.nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.nodes/index
+   ro/title             "Lightning Node Report"})

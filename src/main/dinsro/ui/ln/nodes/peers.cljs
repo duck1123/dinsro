@@ -48,24 +48,24 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.peers/remote-node
-                        m.ln.peers/sat-recv
-                        m.ln.peers/sat-sent
-                        m.ln.peers/inbound?]
-   ro/control-layout   {:action-buttons [::fetch ::new ::refresh]
-                        :inputs         [[::m.ln.nodes/id]]}
-   ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
-                        ::fetch         fetch-button
-                        ::new           new-button
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
-                        ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
-                        ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
-   ro/row-actions      [(u.links/subrow-action-button "Delete" ::m.ln.peers/id ident-key mu.ln.peers/delete!)]
-   ro/row-pk           m.ln.peers/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.peers/index
-   ro/title            "Node Peers"})
+  {ro/column-formatters {::m.ln.peers/block       #(u.links/ui-block-link %2)
+                         ::m.ln.peers/node        #(u.links/ui-core-node-link %2)
+                         ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
+   ro/columns           [m.ln.peers/remote-node
+                         m.ln.peers/sat-recv
+                         m.ln.peers/sat-sent
+                         m.ln.peers/inbound?]
+   ro/control-layout    {:action-buttons [::fetch ::new ::refresh]
+                         :inputs         [[::m.ln.nodes/id]]}
+   ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                         ::fetch         fetch-button
+                         ::new           new-button
+                         ::refresh       u.links/refresh-control}
+   ro/row-actions       [(u.links/subrow-action-button "Delete" ::m.ln.peers/id ident-key mu.ln.peers/delete!)]
+   ro/row-pk            m.ln.peers/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.peers/index
+   ro/title             "Node Peers"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

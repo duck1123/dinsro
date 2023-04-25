@@ -16,20 +16,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.events/content]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
-                        ::refresh        u.links/refresh-control}
-   ro/field-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
-                        ::m.n.events/note-id #(u.links/ui-event-link %3)
-                        ::m.n.pubkeys/hex    #(u.links/ui-pubkey-link %3)}
-   ro/machine          spr/machine
-   ro/page-size        10
-   ro/paginate?        true
-   ro/row-pk           m.n.events/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.events/index
-   ro/title            "Events"})
+  {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
+                         ::m.n.events/note-id #(u.links/ui-event-link %3)
+                         ::m.n.pubkeys/hex    #(u.links/ui-pubkey-link %3)}
+   ro/columns           [m.n.events/content]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
+                         ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.n.events/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.events/index
+   ro/title             "Events"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

@@ -11,16 +11,16 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.words/word
-                        m.c.words/position]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.c.wallets/id {:type :uuid :label "id"}
-                        ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
-   ro/row-pk           m.c.words/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.words/index
-   ro/title            "Words"})
+  {ro/column-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
+   ro/columns           [m.c.words/word
+                         m.c.words/position]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
+   ro/row-pk            m.c.words/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.words/index
+   ro/title             "Words"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

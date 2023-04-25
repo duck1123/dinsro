@@ -14,17 +14,17 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.nodes/name
-                        m.ln.nodes/user]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh         u.links/refresh-control
-                        ::m.c.networks/id {:type :uuid :label "Network"}}
-   ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
-                        ::m.ln.nodes/user #(u.links/ui-user-link %2)}
-   ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.nodes/index
-   ro/title            "Lightning Nodes"})
+  {ro/column-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
+                         ::m.ln.nodes/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.ln.nodes/name
+                         m.ln.nodes/user]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh         u.links/refresh-control
+                         ::m.c.networks/id {:type :uuid :label "Network"}}
+   ro/row-pk            m.ln.nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.nodes/index
+   ro/title             "Lightning Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

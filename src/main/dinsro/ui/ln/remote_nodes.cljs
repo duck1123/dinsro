@@ -47,23 +47,23 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.remote-nodes/pubkey
-                        m.ln.remote-nodes/alias]
-   ro/controls         {::refresh u.links/refresh-control}
-   ro/field-formatters {::m.ln.remote-nodes/pubkey (fn [this value]
-                                                     (let [{:ui/keys [current-rows] :as props} (comp/props this)]
-                                                       (log/info :Report/formatting-name {:value value :props props})
-                                                       (if-let [row (first (filter #(= (::m.ln.remote-nodes/pubkey %) value) current-rows))]
-                                                         (do
-                                                           (log/info :Report/row {:row row})
-                                                           (let [{::m.ln.remote-nodes/keys [id pubkey]} row]
-                                                             (u.links/ui-remote-node-link
-                                                              {::m.ln.remote-nodes/id     id
-                                                               ::m.ln.remote-nodes/pubkey pubkey})))
-                                                         (dom/p {} "not found"))))}
-   ro/route            "remote-nodes"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
-   ro/row-pk           m.ln.remote-nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.remote-nodes/index
-   ro/title            "Remote Nodes"})
+  {ro/column-formatters {::m.ln.remote-nodes/pubkey (fn [this value]
+                                                      (let [{:ui/keys [current-rows] :as props} (comp/props this)]
+                                                        (log/info :Report/formatting-name {:value value :props props})
+                                                        (if-let [row (first (filter #(= (::m.ln.remote-nodes/pubkey %) value) current-rows))]
+                                                          (do
+                                                            (log/info :Report/row {:row row})
+                                                            (let [{::m.ln.remote-nodes/keys [id pubkey]} row]
+                                                              (u.links/ui-remote-node-link
+                                                               {::m.ln.remote-nodes/id     id
+                                                                ::m.ln.remote-nodes/pubkey pubkey})))
+                                                          (dom/p {} "not found"))))}
+   ro/columns           [m.ln.remote-nodes/pubkey
+                         m.ln.remote-nodes/alias]
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/route             "remote-nodes"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
+   ro/row-pk            m.ln.remote-nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.remote-nodes/index
+   ro/title             "Remote Nodes"})

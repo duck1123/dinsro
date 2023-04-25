@@ -12,25 +12,25 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.wallets/name
-                        m.c.wallets/derivation
-                        m.c.wallets/key
-                        m.c.wallets/user
-                        m.c.wallets/network]
-   ro/control-layout   {:inputs         [[::m.c.nodes/id]]
-                        :action-buttons [::new ::refresh]}
-   ro/controls         {::new          u.c.wallets/new-action-button
-                        ::m.c.nodes/id {:type :uuid :label "Nodes"}
-                        ::refresh      u.links/refresh-control}
-   ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
-                        ::m.c.wallets/name #(u.links/ui-wallet-link %3)
-                        ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ro/route            "wallets"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
-   ro/row-pk           m.c.wallets/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.wallets/index
-   ro/title            "Wallets"})
+  {ro/column-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
+                         ::m.c.wallets/name #(u.links/ui-wallet-link %3)
+                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.c.wallets/name
+                         m.c.wallets/derivation
+                         m.c.wallets/key
+                         m.c.wallets/user
+                         m.c.wallets/network]
+   ro/control-layout    {:inputs         [[::m.c.nodes/id]]
+                         :action-buttons [::new ::refresh]}
+   ro/controls          {::new          u.c.wallets/new-action-button
+                         ::m.c.nodes/id {:type :uuid :label "Nodes"}
+                         ::refresh      u.links/refresh-control}
+   ro/route             "wallets"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
+   ro/row-pk            m.c.wallets/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.wallets/index
+   ro/title             "Wallets"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

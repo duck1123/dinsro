@@ -105,21 +105,21 @@
 
 (report/defsc-report Report
   [this props]
-  {ro/BodyItem         EventBox
-   ro/columns          [m.n.events/content]
-   ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::new     new-button
-                        ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
-                        ::m.n.events/note-id #(u.links/ui-event-link %3)}
-   ro/route            "events"
-   ro/machine             spr/machine
-   ro/page-size           10
-   ro/paginate?           true
-   ro/row-pk           m.n.events/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.events/index
-   ro/title            "Events Report"}
+  {ro/BodyItem          EventBox
+   ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
+                         ::m.n.events/note-id #(u.links/ui-event-link %3)}
+   ro/columns           [m.n.events/content]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/route             "events"
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.n.events/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.events/index
+   ro/title             "Events Report"}
   (if override-report
     (report/render-layout this)
     (let [{:ui/keys [current-rows]} props]

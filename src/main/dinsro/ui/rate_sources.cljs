@@ -54,20 +54,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.rate-sources/name
-                        m.rate-sources/url
-                        m.rate-sources/active?]
-   ro/control-layout   {:action-buttons [::new-rate-source]}
-   ro/controls         {::new-rate-source {:label  "New Source"
-                                           :type   :button
-                                           :action (fn [this] (form/create! this NewForm))}}
-   ro/field-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)
-                        ::m.rate-sources/name     #(u.links/ui-rate-source-link %3)}
-   ro/route            "rate-sources"
-   ro/row-pk           m.rate-sources/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.rate-sources/index
-   ro/title            "Rate Sources Report"})
+  {ro/column-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)
+                         ::m.rate-sources/name     #(u.links/ui-rate-source-link %3)}
+   ro/columns           [m.rate-sources/name
+                         m.rate-sources/url
+                         m.rate-sources/active?]
+   ro/control-layout    {:action-buttons [::new-rate-source]}
+   ro/controls          {::new-rate-source {:label  "New Source"
+                                            :type   :button
+                                            :action (fn [this] (form/create! this NewForm))}}
+   ro/route             "rate-sources"
+   ro/row-pk            m.rate-sources/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.rate-sources/index
+   ro/title             "Rate Sources Report"})
 
 (defsc Show
   [_this {::m.rate-sources/keys [name url active currency id]

@@ -17,25 +17,25 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/picture
-                        m.n.pubkeys/name
-                        j.n.pubkeys/contact-count
-                        j.n.pubkeys/event-count]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
-                        ::refresh        u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/hex  #(u.links/ui-pubkey-link %3)
-                        ::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
-                        ::m.n.pubkeys/picture
-                        (fn [_ picture]
-                          (when picture
-                            (dom/img {:src    (str picture)
-                                      :width  100
-                                      :height 100})))}
-   ro/row-pk           m.n.pubkeys/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.pubkeys/contacts
-   ro/title            "Contacts"})
+  {ro/column-formatters {::m.n.pubkeys/hex  #(u.links/ui-pubkey-link %3)
+                         ::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
+                         ::m.n.pubkeys/picture
+                         (fn [_ picture]
+                           (when picture
+                             (dom/img {:src    (str picture)
+                                       :width  100
+                                       :height 100})))}
+   ro/columns           [m.n.pubkeys/picture
+                         m.n.pubkeys/name
+                         j.n.pubkeys/contact-count
+                         j.n.pubkeys/event-count]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::m.n.pubkeys/id {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
+   ro/row-pk            m.n.pubkeys/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.pubkeys/contacts
+   ro/title             "Contacts"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

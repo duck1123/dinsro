@@ -77,21 +77,21 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.wallet-addresses/path-index
-                        m.c.wallet-addresses/address]
-   ro/control-layout   {:inputs         [[::m.c.wallets/id]]
-                        :action-buttons [::new ::calculate ::refresh]}
-   ro/controls         {::m.c.wallets/id {:type :uuid :label "id"}
-                        ::new            new-action-button
-                        ::refresh        u.links/refresh-control
-                        ::calculate      calculate-action-button}
-   ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
-   ro/route            "wallets-addresses"
-   ro/row-actions      [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
-   ro/row-pk           m.c.wallet-addresses/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.wallet-addresses/index-by-wallet
-   ro/title            "Addresses"})
+  {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
+   ro/columns           [m.c.wallet-addresses/path-index
+                         m.c.wallet-addresses/address]
+   ro/control-layout    {:inputs         [[::m.c.wallets/id]]
+                         :action-buttons [::new ::calculate ::refresh]}
+   ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
+                         ::new            new-action-button
+                         ::refresh        u.links/refresh-control
+                         ::calculate      calculate-action-button}
+   ro/route             "wallets-addresses"
+   ro/row-actions       [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
+   ro/row-pk            m.c.wallet-addresses/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.wallet-addresses/index-by-wallet
+   ro/title             "Addresses"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

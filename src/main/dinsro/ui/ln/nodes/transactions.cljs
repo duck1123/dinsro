@@ -15,20 +15,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.transactions/block-hash]
-   ro/control-layout   {:action-buttons [::fetch ::refresh]
-                        :inputs         [[::m.ln.nodes/id]]}
-   ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
-                        ::fetch         {:type   :button
-                                         :label  "Fetch"
-                                         :action (u.links/report-action ::m.ln.nodes/id mu.ln.nodes/fetch-transactions!)}
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.c.transactions/block #(u.links/ui-block-link %2)
-                        ::m.c.transactions/tx-id #(u.links/ui-core-tx-link %3)}
-   ro/row-pk           m.c.transactions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.transactions/index
-   ro/title            "Node Transactions"})
+  {ro/column-formatters {::m.c.transactions/block #(u.links/ui-block-link %2)
+                         ::m.c.transactions/tx-id #(u.links/ui-core-tx-link %3)}
+   ro/columns           [m.c.transactions/block-hash]
+   ro/control-layout    {:action-buttons [::fetch ::refresh]
+                         :inputs         [[::m.ln.nodes/id]]}
+   ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                         ::fetch         {:type   :button
+                                          :label  "Fetch"
+                                          :action (u.links/report-action ::m.ln.nodes/id mu.ln.nodes/fetch-transactions!)}
+                         ::refresh       u.links/refresh-control}
+   ro/row-pk            m.c.transactions/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.transactions/index
+   ro/title             "Node Transactions"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

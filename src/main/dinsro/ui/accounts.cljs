@@ -72,22 +72,22 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.accounts/name
-                        m.accounts/currency
-                        m.accounts/user
-                        m.accounts/initial-value
-                        m.accounts/wallet
-                        m.accounts/source
-                        j.accounts/debit-count]
+  {ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                         ::m.accounts/user     #(u.links/ui-user-link %2)
+                         ::m.accounts/name     #(u.links/ui-account-link %3)
+                         ::m.accounts/wallet   #(when %2 (u.links/ui-wallet-link %2))
+                         ::m.accounts/source   #(u.links/ui-rate-source-link %2)}
+   ro/columns           [m.accounts/name
+                         m.accounts/currency
+                         m.accounts/user
+                         m.accounts/initial-value
+                         m.accounts/wallet
+                         m.accounts/source
+                         j.accounts/debit-count]
 
    ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::new new-button
+   ro/controls         {::new     new-button
                         ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                        ::m.accounts/user     #(u.links/ui-user-link %2)
-                        ::m.accounts/name     #(u.links/ui-account-link %3)
-                        ::m.accounts/wallet   #(when %2 (u.links/ui-wallet-link %2))
-                        ::m.accounts/source   #(u.links/ui-rate-source-link %2)}
    ro/route            "accounts"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
    ro/row-pk           m.accounts/id

@@ -15,22 +15,22 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.transactions/tx-id
-                        j.c.transactions/node
-                        m.c.transactions/fetched?
-                        m.c.transactions/block]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.c.nodes/id {:type :uuid :label "id"}
-                        ::refresh      u.links/refresh-control}
-   ro/field-formatters {::m.c.transactions/block #(u.links/ui-block-height-link %2)
-                        ::m.c.transactions/node  #(u.links/ui-core-node-link %2)
-                        ::m.c.tx-id    #(u.links/ui-core-tx-link %3)}
-   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                        (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
-   ro/row-pk           m.c.transactions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.transactions/index
-   ro/title            "Node Transactions"})
+  {ro/column-formatters {::m.c.transactions/block #(u.links/ui-block-height-link %2)
+                         ::m.c.transactions/node  #(u.links/ui-core-node-link %2)
+                         ::m.c.tx-id              #(u.links/ui-core-tx-link %3)}
+   ro/columns           [m.c.transactions/tx-id
+                         j.c.transactions/node
+                         m.c.transactions/fetched?
+                         m.c.transactions/block]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::m.c.nodes/id {:type :uuid :label "id"}
+                         ::refresh      u.links/refresh-control}
+   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                         (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-pk            m.c.transactions/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.transactions/index
+   ro/title             "Node Transactions"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

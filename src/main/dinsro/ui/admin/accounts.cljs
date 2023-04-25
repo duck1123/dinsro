@@ -62,24 +62,24 @@
 
 (report/defsc-report AdminReport
   [_this _props]
-  {ro/columns          [m.accounts/name
-                        m.accounts/currency
-                        m.accounts/user
-                        m.accounts/initial-value
-                        m.accounts/source
-                        m.accounts/wallet
-                        j.accounts/transaction-count]
-   ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::new     new-button
-                        ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                        ::m.accounts/user     #(u.links/ui-user-link %2)
-                        ::m.accounts/name     #(u.links/ui-account-link %3)
-                        ::m.accounts/source   #(u.links/ui-rate-source-link %2)
-                        ::m.accounts/wallet   #(and %2 (u.links/ui-wallet-link %2))}
-   ro/route            "accounts"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
-   ro/row-pk           m.accounts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.accounts/admin-index
-   ro/title            "Accounts"})
+  {ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+                         ::m.accounts/user     #(u.links/ui-user-link %2)
+                         ::m.accounts/name     #(u.links/ui-account-link %3)
+                         ::m.accounts/source   #(u.links/ui-rate-source-link %2)
+                         ::m.accounts/wallet   #(and %2 (u.links/ui-wallet-link %2))}
+   ro/columns           [m.accounts/name
+                         m.accounts/currency
+                         m.accounts/user
+                         m.accounts/initial-value
+                         m.accounts/source
+                         m.accounts/wallet
+                         j.accounts/transaction-count]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/route             "accounts"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
+   ro/row-pk            m.accounts/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.accounts/admin-index
+   ro/title             "Accounts"})

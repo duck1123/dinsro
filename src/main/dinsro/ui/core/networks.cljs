@@ -72,14 +72,14 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.networks/name
-                        m.c.networks/chain]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh u.links/refresh-control}
-   ro/field-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
-                        ::m.c.networks/name  #(u.links/ui-network-link %3)}
-   ro/route            "networks"
-   ro/row-pk           m.c.networks/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.networks/index
-   ro/title            "Networks"})
+  {ro/column-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
+                         ::m.c.networks/name  #(u.links/ui-network-link %3)}
+   ro/columns           [m.c.networks/name
+                         m.c.networks/chain]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/route             "networks"
+   ro/row-pk            m.c.networks/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.networks/index
+   ro/title             "Networks"})

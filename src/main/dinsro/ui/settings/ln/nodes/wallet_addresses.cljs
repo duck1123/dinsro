@@ -15,19 +15,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.wallet-addresses/address
-                        m.c.wallet-addresses/wallet
-                        m.c.wallet-addresses/path-index]
-   ro/control-layout   {:action-buttons [::refresh]
-                        :inputs         [[::m.ln.nodes/id]]}
-   ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
-   ro/row-actions      [(u.links/subrow-action-button "Generate" ::m.c.wallet-addresses/id ident-key mu.c.wallet-addresses/generate!)]
-   ro/row-pk           m.c.wallet-addresses/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.wallet-addresses/index
-   ro/title            "Wallet Addresses"})
+  {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
+   ro/columns           [m.c.wallet-addresses/address
+                         m.c.wallet-addresses/wallet
+                         m.c.wallet-addresses/path-index]
+   ro/control-layout    {:action-buttons [::refresh]
+                         :inputs         [[::m.ln.nodes/id]]}
+   ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                         ::refresh       u.links/refresh-control}
+   ro/row-actions       [(u.links/subrow-action-button "Generate" ::m.c.wallet-addresses/id ident-key mu.c.wallet-addresses/generate!)]
+   ro/row-pk            m.c.wallet-addresses/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.wallet-addresses/index
+   ro/title             "Wallet Addresses"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

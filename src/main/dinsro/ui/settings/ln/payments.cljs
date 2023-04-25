@@ -10,16 +10,16 @@
 
 (report/defsc-report Report
   [this _props]
-  {ro/columns          [m.ln.payments/payment-hash
-                        m.ln.payments/node
-                        m.ln.payments/status]
-   ro/field-formatters {::m.ln.payments/node         #(u.links/ui-node-link %2)
-                        ::m.ln.payments/payment-hash #(u.links/ui-payment-link %3)}
-   ro/route            "payments"
-   ro/row-pk           m.ln.payments/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.payments/index
-   ro/title            "Payments"}
+  {ro/column-formatters {::m.ln.payments/node         #(u.links/ui-node-link %2)
+                         ::m.ln.payments/payment-hash #(u.links/ui-payment-link %3)}
+   ro/columns           [m.ln.payments/payment-hash
+                         m.ln.payments/node
+                         m.ln.payments/status]
+   ro/route             "payments"
+   ro/row-pk            m.ln.payments/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.payments/index
+   ro/title             "Payments"}
   (dom/div {}
     (report/render-layout this)))
 

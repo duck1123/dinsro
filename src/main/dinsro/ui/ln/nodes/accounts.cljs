@@ -20,20 +20,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.accounts/wallet
-                        m.ln.accounts/address-type
-                        m.ln.accounts/node]
-   ro/control-layout   {:action-buttons [::fetch ::refresh]
-                        :inputs         [[::m.ln.nodes/id]]}
-   ro/controls         {::m.ln.nodes/id {:type :uuid :label "Nodes"}
-                        ::fetch         fetch-button
-                        ::refresh       u.links/refresh-control}
-   ro/field-formatters {::m.ln.accounts/wallet #(u.links/ui-wallet-link %2)
-                        ::m.ln.accounts/node   #(u.links/ui-node-link %2)}
-   ro/row-pk           m.ln.accounts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.accounts/index
-   ro/title            "Accounts"})
+  {ro/column-formatters {::m.ln.accounts/wallet #(u.links/ui-wallet-link %2)
+                         ::m.ln.accounts/node   #(u.links/ui-node-link %2)}
+   ro/columns           [m.ln.accounts/wallet
+                         m.ln.accounts/address-type
+                         m.ln.accounts/node]
+   ro/control-layout    {:action-buttons [::fetch ::refresh]
+                         :inputs         [[::m.ln.nodes/id]]}
+   ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
+                         ::fetch         fetch-button
+                         ::refresh       u.links/refresh-control}
+   ro/row-pk            m.ln.accounts/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.accounts/index
+   ro/title             "Accounts"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

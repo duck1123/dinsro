@@ -114,15 +114,15 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.blocks/hash
-                        m.c.blocks/height
-                        m.c.blocks/fetched?]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh u.links/refresh-control}
-   ro/field-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
-   ro/source-attribute ::j.c.blocks/index
-   ro/route            "blocks"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
-   ro/row-pk           m.c.blocks/id
-   ro/run-on-mount?    true
-   ro/title            "Core Blocks"})
+  {ro/column-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
+   ro/columns           [m.c.blocks/hash
+                         m.c.blocks/height
+                         m.c.blocks/fetched?]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/source-attribute  ::j.c.blocks/index
+   ro/route             "blocks"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-pk            m.c.blocks/id
+   ro/run-on-mount?     true
+   ro/title             "Core Blocks"})

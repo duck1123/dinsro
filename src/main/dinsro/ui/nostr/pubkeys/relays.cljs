@@ -18,17 +18,17 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.relays/address j.n.relays/subscription-count]
-   ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
-                        ::refresh        u.links/refresh-control}
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/field-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/row-actions      [(u.links/subrow-action-button "Fetch" ::m.n.relays/id ident-key  mu.n.pubkeys/fetch!)
-                        (u.links/subrow-action-button "Fetch Events" ::m.n.relays/id ident-key mu.n.events/fetch-events!)]
-   ro/row-pk           m.n.relays/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.relays/index
-   ro/title            "Relays"})
+  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
+   ro/columns           [m.n.relays/address j.n.relays/subscription-count]
+   ro/controls          {::m.n.pubkeys/id {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/row-actions       [(u.links/subrow-action-button "Fetch" ::m.n.relays/id ident-key  mu.n.pubkeys/fetch!)
+                         (u.links/subrow-action-button "Fetch Events" ::m.n.relays/id ident-key mu.n.events/fetch-events!)]
+   ro/row-pk            m.n.relays/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.relays/index
+   ro/title             "Relays"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

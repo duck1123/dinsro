@@ -16,22 +16,22 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.runs/status
-                        m.n.runs/request
-                        m.n.runs/connection
-                        m.n.runs/start-time
-                        m.n.runs/end-time]
-   ro/control-layout   {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls         {::m.n.requests/id {:type :uuid :label "id"}
-                        ::refresh         u.links/refresh-control}
-   ro/field-formatters {::m.n.runs/connection #(u.links/ui-connection-link %2)
-                        ::m.n.runs/request    #(u.links/ui-request-link %2)}
-   ro/row-actions      [(u.links/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)
-                        (u.links/row-action-button "Delete" ::m.n.runs/id mu.n.runs/delete!)]
-   ro/row-pk           m.n.runs/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.runs/index
-   ro/title            "Runs"})
+  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-connection-link %2)
+                         ::m.n.runs/request    #(u.links/ui-request-link %2)}
+   ro/columns           [m.n.runs/status
+                         m.n.runs/request
+                         m.n.runs/connection
+                         m.n.runs/start-time
+                         m.n.runs/end-time]
+   ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
+   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
+                         ::refresh         u.links/refresh-control}
+   ro/row-actions       [(u.links/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)
+                         (u.links/row-action-button "Delete" ::m.n.runs/id mu.n.runs/delete!)]
+   ro/row-pk            m.n.runs/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.runs/index
+   ro/title             "Runs"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

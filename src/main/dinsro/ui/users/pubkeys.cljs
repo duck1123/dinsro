@@ -19,16 +19,16 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.pubkeys/hex]
-   ro/control-layout   {:inputs         [[::m.users/id]]
-                        :action-buttons [::refresh]}
-   ro/controls         {::m.users/id {:type :uuid :label "id"}
-                        ::refresh    u.links/refresh-control}
-   ro/field-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
-   ro/row-pk           m.n.pubkeys/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.pubkeys/index
-   ro/title            "Pubkeys"})
+  {ro/column-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
+   ro/columns           [m.n.pubkeys/hex]
+   ro/control-layout    {:inputs         [[::m.users/id]]
+                         :action-buttons [::refresh]}
+   ro/controls          {::m.users/id {:type :uuid :label "id"}
+                         ::refresh    u.links/refresh-control}
+   ro/row-pk            m.n.pubkeys/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.pubkeys/index
+   ro/title             "Pubkeys"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

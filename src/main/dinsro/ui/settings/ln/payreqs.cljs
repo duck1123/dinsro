@@ -31,18 +31,18 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.payreqs/payment-hash
-                        m.ln.payreqs/description
-                        m.ln.payreqs/payment-request
-                        m.ln.payreqs/num-satoshis
-                        m.ln.payreqs/node]
-   ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)
-                        ::m.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
-   ro/route            "requests"
-   ro/row-pk           m.ln.payreqs/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.payreqs/index
-   ro/title            "Payment Request"})
+  {ro/column-formatters {::m.ln.payreqs/node         #(u.links/ui-node-link %2)
+                         ::m.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
+   ro/columns           [m.ln.payreqs/payment-hash
+                         m.ln.payreqs/description
+                         m.ln.payreqs/payment-request
+                         m.ln.payreqs/num-satoshis
+                         m.ln.payreqs/node]
+   ro/route             "requests"
+   ro/row-pk            m.ln.payreqs/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.payreqs/index
+   ro/title             "Payment Request"})
 
 (defsc Show
   [_this _props]

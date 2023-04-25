@@ -8,11 +8,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.accounts/id
-                        m.ln.accounts/node]
-   ro/field-formatters {::m.ln.accounts/node #(u.links/ui-node-link %2)}
-   ro/route            "accounts"
-   ro/row-pk           m.ln.accounts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.accounts/index
-   ro/title            "Lightning Accounts Report"})
+  {ro/column-formatters {::m.ln.accounts/node #(u.links/ui-node-link %2)}
+   ro/columns           [m.ln.accounts/id
+                         m.ln.accounts/node]
+   ro/route             "accounts"
+   ro/row-pk            m.ln.accounts/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.accounts/index
+   ro/title             "Lightning Accounts Report"})

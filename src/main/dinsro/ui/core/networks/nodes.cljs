@@ -15,21 +15,21 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.nodes/name
-                        m.c.nodes/host
-                        m.c.nodes/initial-block-download?
-                        m.c.nodes/block-count]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh      u.links/refresh-control
-                        ::m.c.networks/id {:type :uuid :label "Nodes"}}
-   ro/field-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
-   ro/route            "nodes"
+  {ro/column-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
+   ro/columns           [m.c.nodes/name
+                         m.c.nodes/host
+                         m.c.nodes/initial-block-download?
+                         m.c.nodes/block-count]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh         u.links/refresh-control
+                         ::m.c.networks/id {:type :uuid :label "Nodes"}}
+   ro/route             "nodes"
    ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
                          (u.links/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
-   ro/row-pk           m.c.nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.nodes/index
-   ro/title            "Core Nodes"})
+   ro/row-pk            m.c.nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.nodes/index
+   ro/title             "Core Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

@@ -147,19 +147,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.wallets/name
-                        m.c.wallets/user
-                        m.c.wallets/derivation
-                        m.c.wallets/ext-public-key
-                        m.c.wallets/ext-private-key]
-   ro/control-layout   {:action-buttons [::new]}
-   ro/controls         {::new new-action-button}
-   ro/field-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
-                        ::m.c.wallets/name (u.links/report-link ::m.c.wallets/name u.links/ui-wallet-link)
-                        ::m.c.wallets/user #(u.links/ui-user-link %2)}
-   ro/route            "wallets"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
-   ro/row-pk           m.c.wallets/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.wallets/index
-   ro/title            "Wallet Report"})
+  {ro/column-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
+                         ::m.c.wallets/name #(u.links/ui-wallet-link %3)
+                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.c.wallets/name
+                         m.c.wallets/user
+                         m.c.wallets/derivation
+                         m.c.wallets/ext-public-key
+                         m.c.wallets/ext-private-key]
+   ro/control-layout    {:action-buttons [::new]}
+   ro/controls          {::new new-action-button}
+   ro/route             "wallets"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
+   ro/row-pk            m.c.wallets/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.wallets/index
+   ro/title             "Wallet Report"})

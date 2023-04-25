@@ -28,14 +28,14 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.contacts/name
-                        m.contacts/pubkey]
-   ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::refresh u.links/refresh-control
-                        ::new     new-button}
-   ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
-   ro/route            "contacts"
-   ro/row-pk           m.contacts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.contacts/index
-   ro/title            "Contacts"})
+  {ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+   ro/columns           [m.contacts/name
+                         m.contacts/pubkey]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::refresh u.links/refresh-control
+                         ::new     new-button}
+   ro/route             "contacts"
+   ro/row-pk            m.contacts/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.contacts/index
+   ro/title             "Contacts"})

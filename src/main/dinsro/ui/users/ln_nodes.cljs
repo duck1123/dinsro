@@ -17,16 +17,16 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.ln.nodes/name m.c.chains/name]
-   ro/control-layout   {:inputs         [[::m.users/id]]
-                        :action-buttons [::refresh]}
-   ro/controls         {::m.users/id {:type :uuid :label "id"}
-                        ::refresh u.links/refresh-control}
-   ro/field-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)}
-   ro/row-pk           m.ln.nodes/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.nodes/index
-   ro/title            "User Ln Nodes"})
+  {ro/column-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)}
+   ro/columns           [m.ln.nodes/name m.c.chains/name]
+   ro/control-layout    {:inputs         [[::m.users/id]]
+                         :action-buttons [::refresh]}
+   ro/controls          {::m.users/id {:type :uuid :label "id"}
+                         ::refresh    u.links/refresh-control}
+   ro/row-pk            m.ln.nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.nodes/index
+   ro/title             "User Ln Nodes"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

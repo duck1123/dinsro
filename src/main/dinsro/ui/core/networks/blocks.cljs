@@ -15,20 +15,20 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.blocks/height
-                        m.c.blocks/hash
-                        m.c.blocks/fetched?]
-   ro/control-layout   {:inputs         [[::m.c.networks/id]]
-                        :action-buttons [::refresh]}
-   ro/controls         {::refresh      u.links/refresh-control
-                        ::m.c.networks/id {:type :uuid :label "Nodes"}}
-   ro/field-formatters {::m.c.blocks/height #(u.links/ui-block-height-link %3)}
-   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
-                        (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
-   ro/row-pk           m.c.blocks/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.blocks/index
-   ro/title            "Blocks"})
+  {ro/column-formatters {::m.c.blocks/height #(u.links/ui-block-height-link %3)}
+   ro/columns           [m.c.blocks/height
+                         m.c.blocks/hash
+                         m.c.blocks/fetched?]
+   ro/control-layout    {:inputs         [[::m.c.networks/id]]
+                         :action-buttons [::refresh]}
+   ro/controls          {::refresh         u.links/refresh-control
+                         ::m.c.networks/id {:type :uuid :label "Nodes"}}
+   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
+                         (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-pk            m.c.blocks/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.blocks/index
+   ro/title             "Blocks"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

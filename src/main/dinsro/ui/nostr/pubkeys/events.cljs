@@ -41,6 +41,9 @@
 (report/defsc-report Report
   [this props]
   {ro/BodyItem            u.n.events/EventBox
+   ro/column-formatters   {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
+                           ::m.n.events/note-id #(u.links/ui-event-link %3)
+                           ::m.n.pubkeys/hex    #(u.links/ui-pubkey-link %3)}
    ro/columns             [;; m.n.events/kind
                            ;; m.n.events/created-at
                            ;; m.n.events/pubkey
@@ -48,9 +51,6 @@
    ro/control-layout      {:action-buttons [::refresh]}
    ro/controls            {::m.n.pubkeys/id {:type :uuid :label "id"}
                            ::refresh        u.links/refresh-control}
-   ro/field-formatters    {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
-                           ::m.n.events/note-id #(u.links/ui-event-link %3)
-                           ::m.n.pubkeys/hex    #(u.links/ui-pubkey-link %3)}
    ro/initial-sort-params {:sort-by    ::m.n.events/created-at
                            :ascending? false}
    ro/machine             spr/machine

@@ -8,12 +8,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.words/word
-                        m.c.words/position
-                        m.c.words/mnemonic]
-   ro/field-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
-   ro/route            "words"
-   ro/row-pk           m.c.words/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.words/index
-   ro/title            "Word Report"})
+  {ro/column-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
+   ro/columns           [m.c.words/word
+                         m.c.words/position
+                         m.c.words/mnemonic]
+   ro/route             "words"
+   ro/row-pk            m.c.words/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.words/index
+   ro/title             "Word Report"})

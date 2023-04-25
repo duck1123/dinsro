@@ -25,16 +25,16 @@
 
 (report/defsc-report Report
   [this _props]
-  {ro/columns          [m.ln.channels/id
-                        m.ln.channels/channel-point
-                        m.ln.channels/node]
-   ro/field-formatters {::m.ln.channels/node #(u.links/ui-node-link %2)
-                        ::m.ln.channels/id   #(u.links/ui-channel-link %3)}
-   ro/route            "channels"
-   ro/row-pk           m.ln.channels/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.channels/index
-   ro/title            "Channels"}
+  {ro/column-formatters {::m.ln.channels/node #(u.links/ui-node-link %2)
+                         ::m.ln.channels/id   #(u.links/ui-channel-link %3)}
+   ro/columns           [m.ln.channels/id
+                         m.ln.channels/channel-point
+                         m.ln.channels/node]
+   ro/route             "channels"
+   ro/row-pk            m.ln.channels/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.channels/index
+   ro/title             "Channels"}
   (dom/div {}
     (report/render-layout this)))
 

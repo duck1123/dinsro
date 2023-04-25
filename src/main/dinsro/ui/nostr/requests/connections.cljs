@@ -15,26 +15,26 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.connections/status
-                        m.n.connections/start-time
-                        m.n.connections/end-time
-                        m.n.connections/relay
-                        j.n.connections/run-count]
-   ro/control-layout   {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls         {::m.n.requests/id {:type :uuid :label "id"}
-                        ::add-filter      (u.links/sub-page-action-button
-                                           {:label      "Connect"
-                                            :mutation   mu.n.connections/connect!
-                                            :parent-key ident-key})
-                        ::refresh         u.links/refresh-control}
-   ro/field-formatters {::m.n.connections/status    #(u.links/ui-connection-link %3)
-                        ::m.n.connections/relay     #(u.links/ui-relay-link %2)
-                        ::j.n.connections/run-count #(u.links/ui-connection-run-count-link %3)}
-   ro/row-actions [(u.links/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
-   ro/row-pk           m.n.connections/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.connections/index
-   ro/title            "Connections"})
+  {ro/column-formatters {::m.n.connections/status    #(u.links/ui-connection-link %3)
+                         ::m.n.connections/relay     #(u.links/ui-relay-link %2)
+                         ::j.n.connections/run-count #(u.links/ui-connection-run-count-link %3)}
+   ro/columns           [m.n.connections/status
+                         m.n.connections/start-time
+                         m.n.connections/end-time
+                         m.n.connections/relay
+                         j.n.connections/run-count]
+   ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
+   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
+                         ::add-filter      (u.links/sub-page-action-button
+                                            {:label      "Connect"
+                                             :mutation   mu.n.connections/connect!
+                                             :parent-key ident-key})
+                         ::refresh         u.links/refresh-control}
+   ro/row-actions       [(u.links/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
+   ro/row-pk            m.n.connections/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.connections/index
+   ro/title             "Connections"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
