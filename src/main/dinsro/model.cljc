@@ -68,7 +68,6 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.ln.accounts :as m.ln.accounts]
-   [dinsro.model.ln.chains :as m.ln.chains]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.invoices :as m.ln.invoices]
@@ -215,7 +214,6 @@
         m.currencies/attributes
         m.debits/attributes
         m.ln.accounts/attributes
-        m.ln.chains/attributes
         m.ln.channels/attributes
         m.ln.info/attributes
         m.ln.invoices/attributes
