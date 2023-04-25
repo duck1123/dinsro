@@ -8,6 +8,11 @@
    [dinsro.queries.nostr.witnesses :as q.n.witnesses]
    [lambdaisland.glogc :as log]))
 
+;; [../../model/nostr/witnesses.cljc]
+;; [../../queries/nostr/witnesses.clj]
+;; [../../ui/admin/nostr/witnesses.cljs]
+;; [../../ui/nostr/witnesses.cljs]
+
 (>defn register-witness!
   [event-id run-id]
   [::m.n.events/id ::m.n.runs/id => ::m.n.witnesses/id]

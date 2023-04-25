@@ -6,6 +6,8 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.queries.nostr.filter-items :as q.n.filter-items]))
 
+;; [../../joins/nostr/filter_items.cljc]
+
 (>defn register-pubkey!
   "Create a filter item for a pubkey"
   ([filter-id pubkey-id]

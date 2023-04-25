@@ -8,6 +8,9 @@
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.specs]))
 
+;; [../../mutations/nostr/badge_acceptances.cljc]
+;; [../../processors/nostr/badge_acceptances.clj]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
