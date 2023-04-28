@@ -8,6 +8,10 @@
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.specs]))
 
+;; https://github.com/nostr-protocol/nips/blob/master/58.md
+
+(def kind 30008)
+
 ;; [../../mutations/nostr/badge_acceptances.cljc]
 ;; [../../processors/nostr/badge_acceptances.clj]
 
