@@ -34,7 +34,6 @@
    [dinsro.ui.navbar :as u.navbar]
    [dinsro.ui.nodes :as u.nodes]
    [dinsro.ui.nostr :as u.nostr]
-   [dinsro.ui.rate-sources :as u.rate-sources]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.settings :as u.settings]
    [dinsro.ui.transactions :as u.transactions]
@@ -74,8 +73,6 @@
                     u.ln/Page
                     u.nodes/Page
                     u.nostr/Page
-                    u.rate-sources/Show
-                    u.rate-sources/Report
                     u.registration/RegistrationPage
                     u.settings/SettingsPage
                     u.transactions/NewTransaction

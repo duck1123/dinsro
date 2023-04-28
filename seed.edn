@@ -262,7 +262,8 @@
       {:date "2023-03-23T18:26:04" :rate 3554}
       {:date "2023-03-30T19:04:27" :rate 3581}
       {:date "2023-04-02T08:02:58" :rate 3528}
-      {:date "2023-04-04T19:50:17" :rate 3556}]}
+      {:date "2023-04-04T19:50:17" :rate 3556}
+      {:date "2023-04-28T20:31:58" :rate 3409}]}
     {:name       "Leviathan"
      :url        "https://www.leviathan.localtest.me/prices"
      :isActive   false

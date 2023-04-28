@@ -49,6 +49,7 @@
     u.s.core/Page
     u.s.ln/Page
     u.s.rate-sources/Report
+    u.s.rate-sources/Show
     u.s.categories/Report]})
 
 (defsc SettingsPage

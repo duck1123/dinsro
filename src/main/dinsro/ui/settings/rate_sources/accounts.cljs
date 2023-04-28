@@ -1,31 +1,31 @@
-(ns dinsro.ui.rate-sources.rates
+(ns dinsro.ui.settings.rate-sources.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.rates :as j.rates]
+   [dinsro.joins.accounts :as j.accounts]
+   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.model.rates :as m.rates]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.rate-sources/id)
-(def router-key :dinsro.ui.rate-sources/Router)
+(def router-key :dinsro.ui.settings.rate-sources/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.rates/date   #(u.links/ui-rate-link %3)
-                         ::m.rates/source #(u.links/ui-rate-source-link %2)}
-   ro/columns           [m.rates/rate
-                         m.rates/date
-                         m.rates/source]
+  {ro/column-formatters {::m.accounts/name     #(u.links/ui-account-link %3)
+                         ::m.accounts/currency #(u.links/ui-currency-link %2)}
+   ro/columns           [m.accounts/name
+                         m.accounts/currency
+                         m.accounts/wallet]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::m.rate-sources/id {:type :uuid :label "id"}
                          ::refresh           u.links/refresh-control}
-   ro/row-pk            m.rates/id
+   ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.rates/index
-   ro/title             "Rates"})
+   ro/source-attribute  ::j.accounts/index
+   ro/title             "Accounts"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
@@ -34,5 +34,5 @@
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["rates"]}
+   :route-segment     ["accounts"]}
   ((comp/factory Report) report))

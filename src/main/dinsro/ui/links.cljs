@@ -551,7 +551,7 @@
   {fo/id         m.rate-sources/id
    fo/route-prefix "rate-source-link"
    fo/attributes [m.rate-sources/name]}
-  (form-link this id name :dinsro.ui.rate-sources/Show))
+  (form-link this id name :dinsro.ui.settings.rate-sources/Show))
 
 (def ui-rate-source-link (comp/factory RateSourceLinkForm {:keyfn ::m.rate-sources/id}))
 

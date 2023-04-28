@@ -14,14 +14,12 @@
 
 (defattr index ::index :ref
   {ao/target    ::m.rates/id
-   ao/pc-output [{::index [::m.rates/id]}]
+   ao/pc-output [{::index [:total {:results [::m.rates/id]}]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} _]
-     (let [ids #?(:clj
-                  (if-let [rate-source-id (::m.rate-sources/id query-params)]
-                    (q.rates/find-by-rate-source rate-source-id)
-                    (q.rates/index-ids))
+     (let [ids #?(:clj (q.rates/index-ids query-params)
                   :cljs (do (comment query-params) []))]
-       {::index (m.rates/idents ids)}))})
+       {::index {:total   #?(:clj (q.rates/count-ids query-params) :cljs 0)
+                 :results (m.rates/idents ids)}}))})
 
 (def attributes [index])

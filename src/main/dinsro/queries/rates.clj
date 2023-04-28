@@ -90,10 +90,57 @@
           (update ::m.rates/date tick/instant)
           (dissoc :xt/id)))))
 
+(defn get-index-query
+  [query-params]
+  (let [{rate-source-id ::m.rate-sources/id} query-params]
+    {:find  ['?rate-id]
+     :in    [['?rate-source-id]]
+     :where (->> [['?rate-id ::m.rates/id '_]]
+                 (concat (when rate-source-id
+                           [['?rate-id ::m.rates/source '?rate-source-id]]))
+                 (filter identity)
+                 (into []))}))
+
+(defn get-index-params
+  [query-params]
+  (let [{rate-source-id ::m.rate-sources/id} query-params]
+    [rate-source-id]))
+
+(>defn count-ids
+  ([]
+   [=> number?]
+   (count-ids {}))
+  ([query-params]
+   [map? => number?]
+   (do
+     (log/debug :count-ids/starting {:query-params query-params})
+     (let [base-params  (get-index-query query-params)
+           limit-params {:find ['(count ?rate-id)]}
+           params       (get-index-params query-params)
+           query        (merge base-params limit-params)]
+       (log/info :count-ids/query {:query query :params params})
+       (let [n (c.xtdb/query-one query params)]
+         (log/info :count-ids/finished {:n n})
+         (or n 0))))))
+
 (>defn index-ids
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.rates/rate _]]}))
+  ([]
+   [=> (s/coll-of ::m.rates/id)]
+   (index-ids {}))
+  ([query-params]
+   [map? => (s/coll-of ::m.rates/id)]
+   (do
+     (log/debug :index-ids/starting {})
+     (let [{:indexed-access/keys [options]}                 query-params
+           {:keys [limit offset] :or {limit 20 offset 0}} options
+           base-params                                      (get-index-query query-params)
+           limit-params                                     {:limit limit :offset offset}
+           query                                            (merge base-params limit-params)
+           params                                           (get-index-params query-params)]
+       (log/info :index-ids/query {:query query :params params})
+       (let [ids (c.xtdb/query-many query params)]
+         (log/info :index-ids/finished {:ids ids})
+         ids)))))
 
 (>defn index-records
   []
