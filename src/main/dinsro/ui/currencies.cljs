@@ -33,12 +33,12 @@
     u.c.rate-sources/SubPage]})
 
 (def menu-items
-  [{:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.currencies.accounts/SubPage"}
-   {:key   "rates-sources"
+  [{:key   "rates-sources"
     :name  "Rates Sources"
-    :route "dinsro.ui.currencies.rate-sources/SubPage"}])
+    :route "dinsro.ui.currencies.rate-sources/SubPage"}
+   {:key   "accounts"
+    :name  "Accounts"
+    :route "dinsro.ui.currencies.accounts/SubPage"}])
 
 (report/defsc-report Report
   [_this _props]

@@ -21,8 +21,7 @@
   [_this _props]
   {ro/column-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
    ro/columns           [m.n.pubkeys/hex]
-   ro/control-layout    {:inputs         [[::m.users/id]]
-                         :action-buttons [::refresh]}
+   ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::m.users/id {:type :uuid :label "id"}
                          ::refresh    u.links/refresh-control}
    ro/row-pk            m.n.pubkeys/id

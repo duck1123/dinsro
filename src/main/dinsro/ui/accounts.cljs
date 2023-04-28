@@ -13,6 +13,7 @@
    [dinsro.joins.users :as j.users]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.ui.accounts.debits :as u.a.debits]
@@ -70,30 +71,78 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewForm))})
 
+(def override-report true)
+(def show-controls true)
+
+(defsc DebitLine
+  [_this {::m.debits/keys [value]}]
+  {:ident         ::m.debits/id
+   :initial-state {::m.debits/id    nil
+                   ::m.debits/value 0}
+   :query         [::m.debits/id
+                   ::m.debits/value]}
+  (dom/div :.ui.item
+    (str value)))
+
+(def ui-debit-line (comp/factory DebitLine {:keyfn ::m.debits/id}))
+
+(defsc BodyItem
+  [_this {::m.accounts/keys [currency initial-value wallet]
+          ::j.accounts/keys [debit-count debits]}]
+  {:ident         ::m.accounts/id
+   :initial-state {::m.accounts/id            nil
+                   ::m.accounts/currency      {}
+                   ::m.accounts/initial-value 0
+                   ::m.accounts/wallet        {}
+                   ::j.accounts/debit-count   0
+                   ::j.accounts/debits        []}
+   :query         [::m.accounts/id
+                   {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
+                   ::m.accounts/initial-value
+                   {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
+                   ::j.accounts/debit-count
+                   {::j.accounts/debits (comp/get-query DebitLine)}]}
+  (dom/div :.ui.item
+    (dom/div :.ui.segment
+      (dom/div {} (u.links/ui-currency-link currency))
+      (dom/div {} (str initial-value))
+      (dom/div {} (when wallet (u.links/ui-wallet-link wallet)))
+      (dom/div {} (str debit-count))
+      (dom/div :.ui.items
+        (map ui-debit-line debits)))))
+
+(def ui-body-item (comp/factory BodyItem {:keyfn ::m.accounts/id}))
+
 (report/defsc-report Report
-  [_this _props]
-  {ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
+  [this props]
+  {;; ro/BodyItem          BodyItem
+   ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
                          ::m.accounts/user     #(u.links/ui-user-link %2)
                          ::m.accounts/name     #(u.links/ui-account-link %3)
                          ::m.accounts/wallet   #(when %2 (u.links/ui-wallet-link %2))
                          ::m.accounts/source   #(u.links/ui-rate-source-link %2)}
    ro/columns           [m.accounts/name
                          m.accounts/currency
-                         m.accounts/user
                          m.accounts/initial-value
                          m.accounts/wallet
-                         m.accounts/source
                          j.accounts/debit-count]
-
-   ro/control-layout   {:action-buttons [::new ::refresh]}
-   ro/controls         {::new     new-button
-                        ::refresh u.links/refresh-control}
-   ro/route            "accounts"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
-   ro/row-pk           m.accounts/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.accounts/index
-   ro/title            "Accounts"})
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/route             "accounts"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
+   ro/row-pk            m.accounts/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.accounts/index
+   ro/title             "Accounts"}
+  (let [{:ui/keys [current-rows]} props]
+    (if override-report
+     (report/render-layout this)
+     (dom/div {}
+       (dom/h1 {} "Accounts")
+       (when show-controls ((report/control-renderer this) this))
+       (dom/div :.ui.items
+         (map ui-body-item current-rows))))))
 
 (defrouter Router
   [_this _props]
