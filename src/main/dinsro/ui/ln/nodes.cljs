@@ -256,3 +256,5 @@
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.nodes/index
    ro/title             "Lightning Node Report"})
+
+(def ui-report (comp/factory Report))

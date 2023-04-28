@@ -34,6 +34,7 @@
                                 [:lightning-nodes :ln-remote-nodes :peers :channels :invoices :payreqs :payments]]
    :ln-remote-nodes            ["Remote Nodes"          :dinsro.ui.ln.remote-nodes/Report]
    :login                      ["Login"                 :dinsro.ui.login/LoginPage]
+   :nodes                      ["Nodes"                 :dinsro.ui.nodes/Dashboard]
    :nostr                      ["Nostr"                 nil
                                 [:nostr-relays :nostr-pubkeys :nostr-events
                                  :nostr-badge-definitions

@@ -32,6 +32,7 @@
    [dinsro.ui.ln :as u.ln]
    [dinsro.ui.login :as u.login]
    [dinsro.ui.navbar :as u.navbar]
+   [dinsro.ui.nodes :as u.nodes]
    [dinsro.ui.nostr :as u.nostr]
    [dinsro.ui.rate-sources :as u.rate-sources]
    [dinsro.ui.registration :as u.registration]
@@ -71,6 +72,7 @@
                     u.home/Page
                     u.login/LoginPage
                     u.ln/Page
+                    u.nodes/Page
                     u.nostr/Page
                     u.rate-sources/Show
                     u.rate-sources/Report
