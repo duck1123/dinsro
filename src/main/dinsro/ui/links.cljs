@@ -14,6 +14,7 @@
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.joins.nostr.filters :as j.n.filters]
+   [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.accounts :as m.accounts]
@@ -527,12 +528,14 @@
 
 (def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 
-(form/defsc-form PubkeyNameLinkForm [this {::m.n.pubkeys/keys [id name]}]
+(form/defsc-form PubkeyNameLinkForm [this {::j.n.pubkeys/keys [npub]
+                                           ::m.n.pubkeys/keys [id name]}]
   {fo/id           m.n.pubkeys/id
    fo/route-prefix "pubkey-name-link"
    fo/attributes   [m.n.pubkeys/hex
-                    m.n.pubkeys/name]}
-  (form-link this id (or name "(unknown)") :dinsro.ui.nostr.pubkeys/Show))
+                    m.n.pubkeys/name
+                    j.n.pubkeys/npub]}
+  (form-link this id (or name npub "(unknown)") :dinsro.ui.nostr.pubkeys/Show))
 
 (def ui-pubkey-name-link (comp/factory PubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
 
