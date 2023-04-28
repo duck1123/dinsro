@@ -36,11 +36,11 @@
       (dom/div {} (str start-time))
       (dom/div {} (str end-time)))
     (u.links/ui-nav-menu {:menu-items menu-items :id id})))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.connections/status #(u.links/ui-connection-link %3)
                          ::m.n.connections/relay  #(u.links/ui-relay-link %2)}
-
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
                          m.n.connections/start-time
