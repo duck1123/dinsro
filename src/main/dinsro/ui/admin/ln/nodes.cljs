@@ -62,7 +62,7 @@
    :label  "New Node"
    :action (fn [this _] (form/create! this NewForm))})
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
                          ::m.ln.nodes/user      #(u.links/ui-user-link %2)

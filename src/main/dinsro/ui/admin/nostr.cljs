@@ -14,6 +14,7 @@
    [dinsro.ui.admin.nostr.relays :as u.a.n.relays]
    [dinsro.ui.admin.nostr.requests :as u.a.n.requests]
    [dinsro.ui.admin.nostr.runs :as u.a.n.runs]
+   [dinsro.ui.admin.nostr.witnesses :as u.a.n.witnesses]
    [dinsro.ui.links :as u.links]))
 
 (def router-key :dinsro.ui.admin/Router)
@@ -24,7 +25,7 @@
    :initial-state {}
    :query         [[::dr/id router-key]]
    :route-segment ["dashboard"]}
-  (dom/div {}
+  (dom/div :.ui.segment
     (dom/h1 "Dashboard")))
 
 (defrouter Router
@@ -35,13 +36,15 @@
     u.a.n.badge-awards/Report
     u.a.n.badge-definitions/Report
     u.a.n.connections/Report
+    u.a.n.connections/Show
     u.a.n.events/Report
     u.a.n.filter-items/Report
     u.a.n.filters/Report
     u.a.n.pubkeys/Report
     u.a.n.relays/Report
     u.a.n.requests/Report
-    u.a.n.runs/Report]})
+    u.a.n.runs/Report
+    u.a.n.witnesses/Report]})
 
 (def menu-items
   [{:key   "dashboard"
@@ -79,7 +82,10 @@
     :route "dinsro.ui.admin.nostr.filter-items/Report"}
    {:key   "runs"
     :name  "Runs"
-    :route "dinsro.ui.admin.nostr.runs/Report"}])
+    :route "dinsro.ui.admin.nostr.runs/Report"}
+   {:key   "witnesses"
+    :name  "Witnesses"
+    :route "dinsro.ui.admin.nostr.witnesses/Report"}])
 
 (defsc Page
   [_this {:ui/keys [router]}]
@@ -87,6 +93,8 @@
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  (comp/fragment
-   (u.links/ui-nav-menu {:menu-items menu-items :id nil})
-   ((comp/factory Router) router)))
+  (dom/div :.ui.grid
+    (dom/div :.ui.four.wide.column
+      (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
+    (dom/div :.ui.twelve.wide.column
+      ((comp/factory Router) router))))

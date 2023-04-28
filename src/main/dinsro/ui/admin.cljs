@@ -6,14 +6,12 @@
    [dinsro.ui.admin.accounts :as u.a.accounts]
    [dinsro.ui.admin.categories :as u.a.categories]
    [dinsro.ui.admin.core :as u.a.core]
-   [dinsro.ui.admin.core.blocks :as u.a.c.blocks]
-   [dinsro.ui.admin.core.peers :as u.a.c.peers]
    [dinsro.ui.admin.currencies :as u.a.currencies]
    [dinsro.ui.admin.debits :as u.a.debits]
    [dinsro.ui.admin.ln :as u.a.ln]
-   [dinsro.ui.admin.ln.nodes :as u.a.ln.nodes]
    [dinsro.ui.admin.nostr :as u.a.nostr]
    [dinsro.ui.admin.rate-sources :as u.a.rate-sources]
+   [dinsro.ui.admin.rates :as u.a.rates]
    [dinsro.ui.admin.transactions :as u.a.transactions]
    [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.links :as u.links]))
@@ -21,21 +19,19 @@
 (defrouter Router
   [_this {:keys [current-state]}]
   {:router-targets [u.a.accounts/AdminReport
-                    u.a.c.blocks/AdminReport
-                    u.a.c.peers/Report
                     u.a.categories/AdminReport
                     u.a.core/Page
                     u.a.currencies/Report
                     u.a.debits/AdminReport
                     u.a.ln/Page
-                    u.a.ln.nodes/AdminReport
                     u.a.nostr/Page
+                    u.a.rates/Show
+                    u.a.rates/Report
                     u.a.rate-sources/AdminReport
                     u.a.transactions/AdminReport
                     u.a.users/AdminReport
                     u.a.users/AdminUserForm]}
   (dom/div :.admin-router
-    (dom/h2 {} "Admin Router")
     (case current-state
       :pending (dom/div {} "Loading...")
       :failed  (dom/div {} "Failed!")
@@ -53,6 +49,9 @@
    {:key   "accounts"
     :name  "Accounts"
     :route "dinsro.ui.admin.accounts/AdminReport"}
+   {:key   "currencies"
+    :name  "Currencies"
+    :route "dinsro.ui.admin.currencies/Report"}
    {:key   "transactions"
     :name  "Transactions"
     :route "dinsro.ui.admin.transactions/AdminReport"}
@@ -70,7 +69,10 @@
     :route "dinsro.ui.admin.ln/Page"}
    {:key   "rate-sources"
     :name  "Rate Sources"
-    :route "dinsro.ui.admin.rate-sources/AdminReport"}])
+    :route "dinsro.ui.admin.rate-sources/AdminReport"}
+   {:key   "rates"
+    :name  "Rates"
+    :route "dinsro.ui.admin.rates/Report"}])
 
 (defsc AdminPage
   [_this {:ui/keys [router]}]
@@ -79,6 +81,5 @@
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["admin"]}
   (dom/div :.admin-page
-    (dom/h1 "Admin Page")
     (u.links/ui-nav-menu {:menu-items menu-items :id nil})
     ((comp/factory Router) router)))

@@ -2,7 +2,16 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]))
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.ui.admin.ln.accounts :as u.a.ln.accounts]
+   [dinsro.ui.admin.ln.channels :as u.a.ln.channels]
+   [dinsro.ui.admin.ln.invoices :as u.a.ln.invoices]
+   [dinsro.ui.admin.ln.nodes :as u.a.ln.nodes]
+   [dinsro.ui.admin.ln.payments :as u.a.ln.payments]
+   [dinsro.ui.admin.ln.payreqs :as u.a.ln.payreqs]
+   [dinsro.ui.admin.ln.peers :as u.a.ln.peers]
+   [dinsro.ui.admin.ln.remote-nodes :as u.a.ln.remote-nodes]
+   [dinsro.ui.links :as u.links]))
 
 (def router-key :dinsro.ui.admin/Router)
 
@@ -15,9 +24,46 @@
   (dom/div {}
     (dom/h1 "Dashboard")))
 
+(def menu-items
+  [{:key   "dashboard"
+    :name  "Dashboard"
+    :route "dinsro.ui.admin.ln/Dashboard"}
+   {:key   "accounts"
+    :name  "Accounts"
+    :route "dinsro.ui.admin.ln.accounts/Report"}
+   {:key   "channels"
+    :name  "Channels"
+    :route "dinsro.ui.admin.ln.channels/Report"}
+   {:key   "invoices"
+    :name  "Invoices"
+    :route "dinsro.ui.admin.ln.invoices/Report"}
+   {:key   "nodes"
+    :name  "Nodes"
+    :route "dinsro.ui.admin.ln.nodes/Report"}
+   {:key   "payments"
+    :name  "Payments"
+    :route "dinsro.ui.admin.ln.payments/Report"}
+   {:key   "payreqs"
+    :name  "Payment Requests"
+    :route "dinsro.ui.admin.ln.payreqs/Report"}
+   {:key   "peers"
+    :name  "Peers"
+    :route "dinsro.ui.admin.ln.peers/Report"}
+   {:key   "remote-nodes"
+    :name  "Remote Nodes"
+    :route "dinsro.ui.admin.ln.remote-nodes/Report"}])
+
 (defrouter Router
   [_this _props]
-  {:router-targets [Dashboard]})
+  {:router-targets [Dashboard
+                    u.a.ln.accounts/Report
+                    u.a.ln.channels/Report
+                    u.a.ln.invoices/Report
+                    u.a.ln.nodes/Report
+                    u.a.ln.payments/Report
+                    u.a.ln.payreqs/Report
+                    u.a.ln.peers/Report
+                    u.a.ln.remote-nodes/Report]})
 
 (defsc Page
   [_this {:ui/keys [router]}]
@@ -25,4 +71,9 @@
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["ln"]}
-  ((comp/factory Router) router))
+  (comp/fragment
+   (dom/div :.ui.grid
+     (dom/div :.ui.four.wide.column
+       (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
+     (dom/div :.ui.twelve.wide.column
+       ((comp/factory Router) router)))))

@@ -540,7 +540,7 @@
   {fo/id         m.rates/id
    fo/route-prefix "rate-link"
    fo/attributes [m.rates/date]}
-  (form-link this id (str date) :dinsro.ui.rates/Show))
+  (form-link this id (str date) :dinsro.ui.admin.rates/Show))
 
 (def ui-rate-link (comp/factory RateLinkForm {:keyfn ::m.rates/id}))
 
