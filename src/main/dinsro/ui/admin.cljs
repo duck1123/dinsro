@@ -61,13 +61,13 @@
     :route "dinsro.ui.admin.debits/Report"}
    {:key   "nostr"
     :name  "Nostr"
-    :route "dinsro.ui.admin.nostr/Page"}
+    :route "dinsro.ui.admin.nostr/Dashboard"}
    {:key   "core"
     :name  "Core"
-    :route "dinsro.ui.admin.core/Page"}
+    :route "dinsro.ui.admin.core/Dashboard"}
    {:key   "ln"
     :name  "LN"
-    :route "dinsro.ui.admin.ln/Page"}
+    :route "dinsro.ui.admin.ln/Dashboard"}
    {:key   "rate-sources"
     :name  "Rate Sources"
     :route "dinsro.ui.admin.rate-sources/Report"}

@@ -11,7 +11,7 @@
 
 (def links
   {:accounts                   ["Accounts"              :dinsro.ui.accounts/Report]
-   :admin                      ["Admin"                 :dinsro.ui.admin/AdminPage]
+   :admin                      ["Admin"                 :dinsro.ui.admin.users/Report]
    :categories                 ["Categories"            :dinsro.ui.categories/Report]
    :channels                   ["Channels"              :dinsro.ui.ln.channels/Report]
    :contacts                   ["Contacts"              :dinsro.ui.contacts/Report]
@@ -52,7 +52,7 @@
    :payreqs                    ["Payreqs"               :dinsro.ui.ln.payreqs/Report]
    :peers                      ["Peers"                 :dinsro.ui.ln.peers/Report]
    :registration               ["Registration"          :dinsro.ui.registration/RegistrationPage]
-   :settings                   ["Settings"              :dinsro.ui.settings/SettingsPage]
+   :settings                   ["Settings"              :dinsro.ui.settings/Dashboard]
    :transactions               ["Transactions"          :dinsro.ui.transactions/Report]
    :users                      ["Users"                 :dinsro.ui.admin.users/Report]
    :wallets                    ["Wallets"               :dinsro.ui.core.wallets/Report]
