@@ -36,7 +36,7 @@
 
 (def ui-event-list-item (comp/factory EventListItem {:keyfn ::m.n.events/id}))
 
-(def override-report true)
+(def override-report false)
 
 (report/defsc-report Report
   [this props]
@@ -65,6 +65,7 @@
     (let [{:ui/keys [current-rows]} props]
       (dom/div {:classes [:.ui :.segment]}
         (dom/div {:classes [:.ui :.container]}
+          ((report/control-renderer this) this)
           (dom/div {:classes [:.ui :.items :.unstackable]}
             #_(report/render-layout this)
             (map u.n.events/ui-event-box current-rows))))))
