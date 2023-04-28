@@ -76,7 +76,7 @@
                     u.rate-sources/Report
                     u.registration/RegistrationPage
                     u.settings/SettingsPage
-                    u.transactions/NewForm
+                    u.transactions/NewTransaction
                     u.transactions/Show
                     u.transactions/Report
                     u.users/Show

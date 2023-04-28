@@ -2,13 +2,17 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.transactions.debits :as u.t.debits]
@@ -19,9 +23,29 @@
   {:query [::m.accounts/id ::m.accounts/name]
    :ident ::m.accounts/id})
 
-(form/defsc-form NewForm [_this _props]
+(form/defsc-form NewDebit
+  [_this _props]
+  {fo/attributes    [m.debits/value
+                     m.debits/account]
+   fo/field-options {::m.debits/account
+                     {::picker-options/query-key       ::j.accounts/index
+                      ::picker-options/query-component u.links/AccountLinkForm
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.accounts/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.accounts/id id]})
+                         (sort-by ::m.accounts/name options)))}}
+   fo/field-styles  {::m.debits/account :pick-one}
+   fo/title         "Debit"
+   fo/route-prefix  "new-debit"
+   fo/id            m.debits/id})
+
+(form/defsc-form NewTransaction [_this _props]
   {fo/attributes    [m.transactions/description
-                     m.transactions/date]
+                     m.transactions/date
+                     j.transactions/debits]
    fo/cancel-route  ["transactions"]
    fo/field-styles  {::m.transactions/account :pick-one}
    fo/field-options {::m.transactions/account
@@ -36,6 +60,7 @@
                          (sort-by ::m.accounts/name options)))}}
    fo/id            m.transactions/id
    fo/route-prefix  "transaction-form"
+   fo/subforms      {::j.transactions/debits {fo/ui NewDebit}}
    fo/title         "Transaction"})
 
 (form/defsc-form EditForm [_this _props]
@@ -56,22 +81,106 @@
    fo/route-prefix  "edit-transaction-form"
    fo/title         "Transaction"})
 
+(defsc CurrencyInfo
+  [_this {::m.currencies/keys [name]}]
+  {:ident         ::m.currencies/id
+   :query         [::m.currencies/id
+                   ::m.currencies/name]
+   :initial-state {::m.currencies/id   nil
+                   ::m.currencies/name ""}}
+  (dom/div {} (str name)))
+
+(def ui-currency-info (comp/factory CurrencyInfo {:keyfn ::m.currencies/id}))
+
+(defsc AccountInfo
+  [_this {::m.accounts/keys                   [name]
+          {currency-name ::m.currencies/name} ::m.accounts/currency}]
+  {:ident         ::m.accounts/id
+   :query         [::m.accounts/id ::m.accounts/name
+                   {::m.accounts/currency (comp/get-query CurrencyInfo)}]
+   :initial-state {::m.accounts/id       nil
+                   ::m.accounts/name     ""
+                   ::m.accounts/currency {}}}
+  (dom/div {}
+    (dom/div {} (str name))
+    (dom/div {} (str currency-name))))
+
+(def ui-account-info (comp/factory AccountInfo {:keyfn ::m.accounts/id}))
+
+(defsc DebitLine
+  [_this {::m.debits/keys    [value]
+          {currency ::m.accounts/currency
+           :as      account} ::m.debits/account}]
+  {:ident         ::m.debits/id
+   :query         [::m.debits/id
+                   ::m.debits/value
+                   {::m.debits/account (comp/get-query AccountInfo)}]
+   :initial-state {::m.debits/id      nil
+                   ::m.debits/value   0
+                   ::m.debits/account {}}}
+  (dom/tr :.ui.item
+    (dom/td :.ui.right (str value))
+    (dom/td {} (u.links/ui-currency-link currency))
+    (dom/td {} (u.links/ui-account-link account))))
+
+(def ui-debit-line (comp/factory DebitLine {:keyfn ::m.debits/id}))
+
+(defsc BodyItem
+  [_this {::m.transactions/keys [description date]
+          ::j.transactions/keys [debits]}]
+  {:ident         ::m.transactions/id
+   :query         [::m.transactions/id
+                   ::m.transactions/date
+                   ::m.transactions/description
+                   {::j.transactions/debits (comp/get-query DebitLine)}]
+   :initial-state {::m.transactions/id          nil
+                   ::m.transactions/date        nil
+                   ::m.transactions/description ""
+                   ::j.transactions/debits      []}}
+  (dom/div :.ui.item
+    (dom/div :.ui.segment
+      (dom/div {} (str description))
+      (dom/div (str date))
+      (dom/table :.wide.table
+        (dom/thead {}
+          (dom/tr {}
+            (dom/th {} "Value")
+            (dom/th {} "Currency")
+            (dom/th {} "Account")))
+        (dom/tbody {}
+          (map ui-debit-line debits))))))
+
+(def ui-body-item (comp/factory BodyItem {:keyfn ::m.transactions/id}))
+
 (report/defsc-report Report
-  [_this _props]
-  {ro/columns           [m.transactions/description
+  [this props]
+  {ro/BodyItem          BodyItem
+   ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+   ro/columns           [m.transactions/description
                          m.transactions/date
                          j.transactions/debit-count]
    ro/control-layout    {:action-buttons [::new-transaction ::refresh]}
    ro/controls          {::new-transaction {:label  "New Transaction"
                                             :type   :button
-                                            :action (fn [this] (form/create! this NewForm))}
+                                            :action (fn [this] (form/create! this NewTransaction))}
                          ::refresh         u.links/refresh-control}
-   ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/route             "transactions"
    ro/row-pk            m.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.transactions/index
-   ro/title             "Transaction Report"})
+   ro/title             "Transaction Report"}
+  (log/info :Report/starting {:props props})
+  (let [{:ui/keys [current-rows]} props]
+    (dom/div :.ui.segment
+      (dom/h1 :.ui.header
+              (dom/span {} "Transactions")
+              (dom/button {:classes [:.ui :.right]
+                           :onClick (fn [_] (form/create! this NewTransaction))} "New")
+              (dom/button {:classes [:.ui :.right]
+                           :onClick (fn [_] (control/run! this))} "Refresh"))
+
+      (dom/div :.ui.items
+        (map ui-body-item  current-rows)))))
 
 (report/defsc-report RecentReport
   [_this _props]
@@ -81,7 +190,7 @@
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
    ro/controls         {::new-transaction {:label  "New Transaction"
                                            :type   :button
-                                           :action (fn [this] (form/create! this NewForm))}
+                                           :action (fn [this] (form/create! this NewTransaction))}
                         ::refresh         u.links/refresh-control}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/row-pk           m.transactions/id
@@ -117,7 +226,7 @@
                              (let [props (comp/props this)]
                                (log/info :Show/clicked {:props props})
                                (let [id (::m.transactions/id props)]
-                                 (form/edit! this NewForm id))))}
+                                 (form/edit! this NewTransaction id))))}
        "Edit"))
    (dom/div  :.ui.segment
      (if debits

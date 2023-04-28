@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -16,7 +15,6 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
-   [dinsro.ui.accounts.debits :as u.a.debits]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
    [dinsro.ui.links :as u.links]))
 
@@ -144,39 +142,25 @@
         (dom/div :.ui.items
           (map ui-body-item current-rows))))))
 
-(defrouter Router
-  [_this _props]
-  {:router-targets
-   [u.a.transactions/SubPage
-    u.a.debits/SubPage]})
-
-(def menu-items
-  [{:key "transactions"
-    :name "Transactions"
-    :route "dinsro.ui.accounts.transactions/SubPage"}
-   {:key   "debits"
-    :name  "Debits"
-    :route "dinsro.ui.accounts.debits/SubPage"}])
-
 (defsc Show
-  [_this {::m.accounts/keys [id name currency source user wallet]
-          :ui/keys          [router]}]
+  [_this {::m.accounts/keys [name currency source wallet]
+          :ui/keys          [transactions]}]
   {:ident         ::m.accounts/id
    :initial-state {::m.accounts/name     ""
                    ::m.accounts/id       nil
                    ::m.accounts/currency {}
                    ::m.accounts/source   {}
-                   ::m.accounts/user     {}
                    ::m.accounts/wallet   {}
-                   :ui/router            {}}
-   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/router Router})
+                   :ui/transactions      {}}
+   :pre-merge     (u.links/page-merger
+                   ::m.accounts/id
+                   {:ui/transactions u.a.transactions/Report})
    :query         [::m.accounts/name
                    ::m.accounts/id
                    {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
                    {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
-                   {::m.accounts/user (comp/get-query u.links/UserLinkForm)}
                    {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                   {:ui/router (comp/get-query Router)}]
+                   {:ui/transactions (comp/get-query u.a.transactions/Report)}]
    :route-segment ["accounts" :id]
    :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)}
   (comp/fragment
@@ -187,9 +171,6 @@
        (dom/dd {} (u.links/ui-currency-link currency))
        (dom/dt {} "Source")
        (dom/dd {} (u.links/ui-rate-source-link source))
-       (dom/dt {} "User")
-       (dom/dd {} (u.links/ui-user-link user))
        (dom/dt {} "Wallet")
        (dom/dd {} (u.links/ui-wallet-link wallet))))
-   (u.links/ui-nav-menu {:menu-items menu-items :id id})
-   ((comp/factory Router) router)))
+   (u.a.transactions/ui-report transactions)))
