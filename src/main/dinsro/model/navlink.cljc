@@ -35,8 +35,7 @@
    :ln-remote-nodes            ["Remote Nodes"          :dinsro.ui.ln.remote-nodes/Report]
    :login                      ["Login"                 :dinsro.ui.login/LoginPage]
    :nostr                      ["Nostr"                 nil
-                                [:nostr-relays :nostr-pubkeys :nostr-events :nostr-subscriptions
-                                 :nostr-subscription-pubkeys
+                                [:nostr-relays :nostr-pubkeys :nostr-events
                                  :nostr-badge-definitions
                                  :nostr-badge-acceptance
                                  :nostr-badge-awards
@@ -48,8 +47,6 @@
    :nostr-events               ["Events"                :dinsro.ui.nostr.events/Report]
    :nostr-pubkeys              ["Pubkeys"               :dinsro.ui.nostr.pubkeys/Report]
    :nostr-relays               ["Relays"                :dinsro.ui.nostr.relays/Report]
-   :nostr-subscriptions        ["Subscriptions"         :dinsro.ui.nostr.subscriptions/Report]
-   :nostr-subscription-pubkeys ["Subscriptions Pubkeys" :dinsro.ui.nostr.subscription-pubkeys/Report]
    :payments                   ["Payments"              :dinsro.ui.ln.payments/Report]
    :payreqs                    ["Payreqs"               :dinsro.ui.ln.payreqs/Report]
    :peers                      ["Peers"                 :dinsro.ui.ln.peers/Report]
