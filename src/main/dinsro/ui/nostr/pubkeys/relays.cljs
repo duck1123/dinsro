@@ -18,8 +18,10 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/columns           [m.n.relays/address j.n.relays/subscription-count]
+  {ro/column-formatters {::m.n.relays/address          #(u.links/ui-relay-link %3)
+                         ::j.n.relays/connection-count #(u.links/ui-relay-connection-count-link %3)}
+   ro/columns           [m.n.relays/address
+                         j.n.relays/connection-count]
    ro/controls          {::m.n.pubkeys/id {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
    ro/control-layout    {:action-buttons [::refresh]}
