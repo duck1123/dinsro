@@ -137,12 +137,12 @@
    ro/title             "Accounts"}
   (let [{:ui/keys [current-rows]} props]
     (if override-report
-     (report/render-layout this)
-     (dom/div {}
-       (dom/h1 {} "Accounts")
-       (when show-controls ((report/control-renderer this) this))
-       (dom/div :.ui.items
-         (map ui-body-item current-rows))))))
+      (report/render-layout this)
+      (dom/div {}
+        (dom/h1 {} "Accounts")
+        (when show-controls ((report/control-renderer this) this))
+        (dom/div :.ui.items
+          (map ui-body-item current-rows))))))
 
 (defrouter Router
   [_this _props]
