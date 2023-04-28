@@ -1,5 +1,6 @@
 (ns dinsro.ui.ln
   (:require
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
@@ -12,7 +13,7 @@
    [dinsro.ui.ln.peers :as u.ln.peers]
    [dinsro.ui.ln.remote-nodes :as u.ln.remote-nodes]))
 
-(defrouter LnRouter
+(defrouter Router
   [_this _props]
   {:router-targets [u.ln.accounts/Report
                     u.ln.channels/NewForm
@@ -36,12 +37,14 @@
 
   (dom/div {} "Ln router"))
 
-(def ui-ln-router (comp/factory LnRouter))
+(def ui-router (comp/factory Router))
 
-(defsc LnPage
-  [_this {:keys [ln-router]}]
-  {:ident         (fn [] [:component/id ::LnPage])
-   :initial-state {:ln-router {}}
-   :query         [{:ln-router (comp/get-query LnRouter)}]
+(defsc Page
+  [_this {:ui/keys [router]}]
+  {:ident         (fn [] [:component/id ::Page])
+   :initial-state {:ui/router {}}
+   :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["ln"]}
-  (ui-ln-router ln-router))
+  (let [{:keys [router-wrapper]} (css/get-classnames Page)]
+    (dom/div {:classes [:.nostr-page router-wrapper]}
+      ((comp/factory Router) router))))

@@ -70,7 +70,7 @@
                     u.debits/Show
                     u.home/Page
                     u.login/LoginPage
-                    u.ln/LnPage
+                    u.ln/Page
                     u.nostr/Page
                     u.rate-sources/Show
                     u.rate-sources/Report
