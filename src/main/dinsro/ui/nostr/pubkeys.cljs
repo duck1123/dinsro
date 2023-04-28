@@ -39,12 +39,6 @@
     u.n.p.events/SubPage
     u.n.p.users/SubPage]})
 
-(defn img-formatter
-  [pubkey]
-  (if-let [picture (::m.n.pubkeys/picture pubkey)]
-    (dom/img {:src picture :height 100 :width 100})
-    ""))
-
 (def menu-items
   [{:key "events"          :name "Events"          :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
    {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
@@ -161,7 +155,7 @@
   [_this _props]
   {ro/column-formatters {::m.n.pubkeys/hex     #(u.links/ui-pubkey-link %3)
                          ::m.n.pubkeys/name    #(u.links/ui-pubkey-name-link %3)
-                         ::m.n.pubkeys/picture #(img-formatter %3)}
+                         ::m.n.pubkeys/picture #(u.links/img-formatter %3)}
    ro/columns           [m.n.pubkeys/picture
                          m.n.pubkeys/name
                          j.n.pubkeys/contact-count

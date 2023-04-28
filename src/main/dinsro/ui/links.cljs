@@ -175,6 +175,12 @@
         chain-id (get-in props [[::dr/id router-key] ident-key])]
     (report/start-report! this Report {:route-params {ident-key chain-id}})))
 
+(defn img-formatter
+  [pubkey]
+  (if-let [picture (::m.n.pubkeys/picture pubkey)]
+    (dom/img {:src picture :height 100 :width 100})
+    ""))
+
 (defn page-merger
   [k mappings]
   (log/trace :page-merger/starting {:k k :mappings mappings})
