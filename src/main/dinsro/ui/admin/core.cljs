@@ -22,10 +22,10 @@
     :route "dinsro.ui.admin.core/Dashboard"}
    {:key   "blocks"
     :name  "Blocks"
-    :route "dinsro.ui.admin.core.blocks/AdminReport"}
+    :route "dinsro.ui.admin.core.blocks/Report"}
    {:key   "peers"
     :name  "Peers"
-    :route "dinsro.ui.admin.core.peers/AdminReport"}])
+    :route "dinsro.ui.admin.core.peers/Report"}])
 
 (defrouter Router
   [_this _props]

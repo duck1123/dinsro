@@ -28,7 +28,7 @@
    fo/route-prefix  "transaction-form"
    fo/title         "Transaction"})
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/columns           [m.transactions/description

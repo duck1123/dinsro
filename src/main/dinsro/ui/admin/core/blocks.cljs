@@ -7,7 +7,7 @@
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.links :as u.links]))
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
    ro/columns           [m.c.blocks/hash

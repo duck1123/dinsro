@@ -6,7 +6,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.ui.links :as u.links]))
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/columns          [m.rate-sources/name
                         j.rate-sources/rate-count]

@@ -18,17 +18,17 @@
 
 (defrouter Router
   [_this {:keys [current-state]}]
-  {:router-targets [u.a.accounts/AdminReport
-                    u.a.categories/AdminReport
+  {:router-targets [u.a.accounts/Report
+                    u.a.categories/Report
                     u.a.core/Page
                     u.a.currencies/Report
-                    u.a.debits/AdminReport
+                    u.a.debits/Report
                     u.a.ln/Page
                     u.a.nostr/Page
                     u.a.rates/Show
                     u.a.rates/Report
-                    u.a.rate-sources/AdminReport
-                    u.a.transactions/AdminReport
+                    u.a.rate-sources/Report
+                    u.a.transactions/Report
                     u.a.users/Report
                     u.a.users/Show
                     u.a.users/UserForm]}
@@ -46,19 +46,19 @@
     :route "dinsro.ui.admin.users/Report"}
    {:key   "categories"
     :name  "Categories"
-    :route "dinsro.ui.admin.categories/AdminReport"}
+    :route "dinsro.ui.admin.categories/Report"}
    {:key   "accounts"
     :name  "Accounts"
-    :route "dinsro.ui.admin.accounts/AdminReport"}
+    :route "dinsro.ui.admin.accounts/Report"}
    {:key   "currencies"
     :name  "Currencies"
     :route "dinsro.ui.admin.currencies/Report"}
    {:key   "transactions"
     :name  "Transactions"
-    :route "dinsro.ui.admin.transactions/AdminReport"}
+    :route "dinsro.ui.admin.transactions/Report"}
    {:key   "debits"
     :name  "Debits"
-    :route "dinsro.ui.admin.debits/AdminReport"}
+    :route "dinsro.ui.admin.debits/Report"}
    {:key   "nostr"
     :name  "Nostr"
     :route "dinsro.ui.admin.nostr/Page"}
@@ -70,7 +70,7 @@
     :route "dinsro.ui.admin.ln/Page"}
    {:key   "rate-sources"
     :name  "Rate Sources"
-    :route "dinsro.ui.admin.rate-sources/AdminReport"}
+    :route "dinsro.ui.admin.rate-sources/Report"}
    {:key   "rates"
     :name  "Rates"
     :route "dinsro.ui.admin.rates/Report"}])

@@ -34,7 +34,7 @@
     (form/render-layout this props)
     (dom/div {} (dom/p {} "Category"))))
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.categories/user #(u.links/ui-user-link %2)}
    ro/columns           [m.categories/name m.categories/user j.categories/transaction-count]

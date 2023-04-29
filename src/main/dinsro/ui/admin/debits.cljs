@@ -6,7 +6,7 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.ui.links :as u.links]))
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.debits/account     #(u.links/ui-account-link %2)
                          ::m.debits/transaction #(u.links/ui-transaction-link %2)}

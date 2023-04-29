@@ -60,7 +60,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewForm))})
 
-(report/defsc-report AdminReport
+(report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
                          ::m.accounts/user     #(u.links/ui-user-link %2)
