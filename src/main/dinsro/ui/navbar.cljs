@@ -1,7 +1,6 @@
 (ns dinsro.ui.navbar
   (:require
    ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu]
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.algorithms.form-state :as fs]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
@@ -16,9 +15,8 @@
    [dinsro.model.navlink :as m.navlink]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.home :as u.home]
+   [dinsro.ui.navlinks :as u.navlinks]
    [lambdaisland.glogc :as log]))
-
-(s/def ::expanded? boolean?)
 
 (defsc FormStateConfigQuery
   [_ _]
@@ -70,7 +68,7 @@
                    ::m.navlink/auth-link? false
                    ::m.navlink/target     nil
                    ::m.navlink/children   []
-                   :ui/router           {}}
+                   :ui/router             {}}
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
                     (let [defaults {:ui/router (comp/get-initial-state RouteQuery)}]
                       (merge current-normalized data-tree defaults)))
@@ -123,12 +121,11 @@
 (def ui-navbar-logout-link (comp/factory NavbarLogoutLink))
 
 (defsc NavbarSidebar
-  [this {::m.navbar/keys [dropdown-links]
-         :as             props}]
-  {:ident         ::m.navbar/id
-   :query         [::m.navbar/id
-                   {::m.navbar/dropdown-links (comp/get-query NavLink)}
-                   :inverted
+  [this {:ui/keys [dropdown-links inverted?]
+         :as      props}]
+  {:ident         (fn [] [:component/id ::NavbarSidebar])
+   :query         [{:ui/dropdown-links (comp/get-query NavLink)}
+                   :ui/inverted?
                    [::auth/authorization :local]
                    [::uism/asm-id ::mu.navbar/navbarsm]]
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
@@ -136,9 +133,10 @@
                           merged-data (merge current-normalized data-tree defaults)]
                       (log/info :sidebar/merged {:defaults defaults :merged-data merged-data})
                       merged-data))
-   :initial-state {:inverted                 true
-                   ::m.navbar/id             :main
-                   ::m.navbar/dropdown-links []}}
+   :initial-state (fn [_]
+                    {:ui/inverted?      true
+                     :ui/dropdown-links u.navlinks/dropdown-links
+                     ::m.navbar/id      :main})}
   (let [authorization (get props [::auth/authorization :local])
         visible       (= (uism/get-active-state this ::mu.navbar/navbarsm) :state/shown)
         logged-in?    (= (::auth/status authorization) :success)]
@@ -146,8 +144,8 @@
     (ui-sidebar
      {:direction "left"
       :as        Menu
-      :animation "push"
-      :inverted  true
+      :animation "overlay"
+      :inverted  inverted?
       :vertical  true
       :width     "thin"
       :visible   visible}
@@ -180,40 +178,73 @@
    :query         [::auth/authorization
                    ::auth/status]})
 
+(defsc MinimalNavbar
+  [this props]
+  {:css           [[:.navbar {:background-color "red"}]]
+   :ident         ::m.navbar/id
+   :initial-state (fn [_]
+                    {:ui/expanded?    false
+                     ::m.navbar/id    :main
+                     :ui/menu-links   u.navlinks/menu-links
+                     :ui/unauth-links u.navlinks/unauth-links})
+   :query         [::m.navbar/id
+                   {:ui/menu-links (comp/get-query TopNavLink)}
+                   {:ui/unauth-links (comp/get-query NavLink)}
+                   {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
+                   :ui/expanded?
+                   [::uism/asm-id ::mu.navbar/navbarsm]]}
+  (let [authorization (get props [::auth/authorization :local])
+        current-user  (:session/current-user authorization)
+        inverted      true
+        logged-in?    (= (::auth/status authorization) :success)]
+    (log/info :navbar/rendering {:authorization authorization
+                                 :current-user  current-user
+                                 :inverted      inverted
+                                 :logged-in?    logged-in?})
+    (dom/div {:classes [:.ui.top.menu.fixed (when inverted :.inverted)]}
+      (ui-menu-menu {}
+        (dom/div {:classes [:.item]
+                  :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
+          (dom/i :.icon.sidebar)))
+      (dom/a :.item
+        {:classes [:.item]
+         :onClick (fn []
+                    (uism/trigger! this auth/machine-id :event/cancel {})
+                    (rroute/route-to! this u.home/Page {}))}
+        "dinsro"))))
+
+(def ui-minimal-navbar (comp/factory MinimalNavbar))
+
 (defsc Navbar
-  [this {::m.navbar/keys [menu-links unauth-links] :as props}]
+  [this {:ui/keys [menu-links unauth-links] :as props}]
   {:css           [[:.navbar {:background-color "red"}]
                    [:.site-button {:font-weight "bold"
                                    :color       "blue !important"}]]
    :ident         ::m.navbar/id
-   :initial-state {::expanded?               false
-                   ::m.navbar/id             :main
-                   ::m.navbar/dropdown-links []
-                   ::m.navbar/menu-links     []
-                   ::m.navbar/unauth-links   []}
+   :initial-state (fn [_]
+                    {:ui/expanded?           false
+                     ::m.navbar/id           :main
+                     :ui/dropdown-links      u.navlinks/menu-links
+                     :ui/menu-links   u.navlinks/menu-links
+                     :ui/unauth-links u.navlinks/unauth-links})
    :query         [::m.navbar/id
-                   {::m.navbar/dropdown-links (comp/get-query NavLink)}
-                   {::m.navbar/menu-links (comp/get-query TopNavLink)}
-                   {::m.navbar/unauth-links (comp/get-query NavLink)}
+                   {:ui/dropdown-links (comp/get-query NavLink)}
+                   {:ui/menu-links (comp/get-query TopNavLink)}
+                   {:ui/unauth-links (comp/get-query NavLink)}
                    {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
-                   ::expanded?
+                   :ui/expanded?
                    [::uism/asm-id ::mu.navbar/navbarsm]]}
-  (log/finest :navbar/pre-rendering {:props props})
+  (log/info :navbar/pre-rendering {:props props})
   (let [{:keys [site-button]} (css/get-classnames Navbar)
         authorization         (get props [::auth/authorization :local])
         current-user          (:session/current-user authorization)
         inverted              true
         logged-in?            (= (::auth/status authorization) :success)]
-    (log/debug :navbar/rendering {:authorization authorization
-                                  :current-user  current-user
-                                  :inverted      inverted
-                                  :logged-in?    logged-in?})
-    (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
-      (ui-menu-menu
-        {}
-        (dom/div {:classes [:.item]
-                  :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
-          (dom/i :.icon.sidebar)))
+    (log/info :navbar/rendering {:authorization authorization
+                                 :current-user  current-user
+                                 :inverted      inverted
+                                 :logged-in?    logged-in?})
+    (dom/div {:classes [:.ui.top.fixed.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]
          :onClick (fn []

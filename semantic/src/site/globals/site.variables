@@ -2,4 +2,5 @@
      User Global Variables
 *******************************/
 
-@pageMinWidth  : 400px;
+@pageMinWidth  : 350px;
+@tabletBreakpoint: 650px;
