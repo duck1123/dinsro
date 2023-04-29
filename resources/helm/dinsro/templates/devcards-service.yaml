@@ -1,4 +1,4 @@
-{{- if .Values.devcards.enabled -}}
+{{- if .Values.devcards.ingress.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,5 +14,5 @@ spec:
     protocol: TCP
     name: devcards
   selector:
-    {{- include "dinsro.devcardsSelectorLabels" . | nindent 4 }}
+    {{- include "dinsro.selectorLabels" . | nindent 4 }}
 {{- end }}

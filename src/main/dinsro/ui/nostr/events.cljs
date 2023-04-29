@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
@@ -103,21 +104,22 @@
                    ::m.n.event-tags/extra     nil
                    ::m.n.event-tags/type      nil}}
   (let [show-labels false]
-    (dom/div :.ui.item
-      (dom/div {:style {:marginRight "5px"}} "[" (str index) "] ")
-      (when pubkey
-        (dom/div {}
-          (when show-labels "Pubkey: ")
-          (u.links/ui-pubkey-name-link pubkey)))
-      (when event
-        (dom/div {}
-          (when show-labels "Event: ")
-          (u.links/ui-event-link event)))
-      (when-not (or pubkey event)
-        (comp/fragment
-         (dom/div {} "Type: " (str type))
-         (dom/div {} "Raw Value: " (str raw-value))))
-      (when extra (dom/div {} "Extra: " (str extra))))))
+    (ui-list-item
+     {}
+     (dom/div {:style {:marginRight "5px"}} "[" (str index) "] ")
+     (when pubkey
+       (dom/div {}
+         (when show-labels "Pubkey: ")
+         (u.links/ui-pubkey-name-link pubkey)))
+     (when event
+       (dom/div {}
+         (when show-labels "Event: ")
+         (u.links/ui-event-link event)))
+     (when-not (or pubkey event)
+       (comp/fragment
+        (dom/div {} "Type: " (str type))
+        (dom/div {} "Raw Value: " (str raw-value))))
+     (when extra (dom/div {} "Extra: " (str extra))))))
 
 (def ui-tag-display (comp/factory TagDisplay {:keyfn ::m.n.event-tags/id}))
 

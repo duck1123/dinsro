@@ -142,7 +142,8 @@
      :ingress
      {:enabled     ingress-enabled?
       :annotations {"cert-manager.io/cluster-issuer"           "letsencrypt-prod"
-                    "ingress.kubernetes.io/force-ssl-redirect" "true"}
+                    ;; "ingress.kubernetes.io/force-ssl-redirect" "true"
+                    }
       :hosts       [{:host base-url :paths [{:path "/"}]}]
       :tls         [{:hosts [base-url] :secretName "dinsro-tls"}]}
 

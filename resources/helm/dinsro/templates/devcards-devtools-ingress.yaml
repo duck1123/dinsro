@@ -1,4 +1,4 @@
-{{- if and .Values.devcards.enabled .Values.devcards.devtools.ingress.enabled -}}
+{{- if .Values.devcards.devtools.ingress.enabled -}}
 {{- $fullName := include "dinsro.fullname" . -}}
 {{- $svcPort := .Values.devcards.devtools.service.port -}}
 apiVersion: networking.k8s.io/v1

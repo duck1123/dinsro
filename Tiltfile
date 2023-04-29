@@ -91,9 +91,9 @@ local_resource(
 local_resource(
   'devtools',
   allow_parallel = True,
-  serve_env = {
-    'DEVTOOLS_URL': 'http://localhost:9630',
-  },
+  # serve_env = {
+  #   'DEVTOOLS_URL': 'http://localhost:9630',
+  # },
   serve_cmd='bb watch-cljs',
   labels = [ 'dinsro' ],
   links = [

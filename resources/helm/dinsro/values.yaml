@@ -86,6 +86,7 @@ devtools:
     enabled: true
     hosts:
     - host: devtools.dinsro.localtest.me
+      service: devtools
       paths:
       - path: /
     # tls: []

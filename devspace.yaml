@@ -362,19 +362,78 @@ deployments:
         # version: 0.1.4
         name: ./resources/helm/dinsro/
       valuesFiles:
-      - "target/dinsro_values.yaml"
+        - "target/dinsro_values.yaml"
       values:
         logLevel: ":${DINSRO_LOG_LEVEL}"
+        devcards:
+          enabled: false
+          ingress:
+            enabled: true
+            hosts:
+              - host: cards.${BASE_PUBLIC_DOMAIN}
+                paths:
+                  - path: /
+                service: dinsro
+            tls:
+              - hosts:
+                  - cards.${BASE_PUBLIC_DOMAIN}
+                secretName: cards-tls
+          devtools:
+            enabled: false
+            ingress:
+              enabled: false
+            hosts:
+              - host: devtools.cards.${BASE_PUBLIC_DOMAIN}
+        devtools:
+          enabled: true
+          webtoolsUrl: devtools.${BASE_PUBLIC_DOMAIN}
+          ingress:
+            enabled: true
+            hosts:
+              - host: devtools.${BASE_PUBLIC_DOMAIN}
+                service: dinsro
+                paths:
+                  - path: /
+              - host: devtools.dinsro.dev.kronkltd.net
+                service: dinsro
+                paths:
+                  - path: /
+            tls:
+              - hosts:
+                  # - devtools.${BASE_PUBLIC_DOMAIN}
+                  - devtools.dinsro.dev.kronkltd.net
+                secretName: devtools-tls
+        workspaces:
+          ingress:
+            enabled: true
+            hosts:
+              - host: workspace.${BASE_PUBLIC_DOMAIN}
+                paths:
+                  - path: /
+                service: dinsro
+            tls:
+              - hosts:
+                  - workspace.${BASE_PUBLIC_DOMAIN}
+                paths:
+                  - path: /
+                secretName: workspace-tls
         image:
           repository: ${runtime.images.dinsro.image}
           tag: ${runtime.images.dinsro.tag}
         persistence:
           enabled: ${USE_PERSISTENCE}
         ingress:
+          hosts:
+            - host: ${BASE_PUBLIC_DOMAIN}
+              paths:
+                - path: /
+            - host: dinsro.dev.kronkltd.net
+              paths:
+                - path: /
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt-prod
-            ingress.kubernetes.io/force-ssl-redirect: "true"
-            traefik.ingress.kubernetes.io/router.middlewares: "dinsro-redirect@kubernetescrd"
+            # ingress.kubernetes.io/force-ssl-redirect: "true"
+            # traefik.ingress.kubernetes.io/router.middlewares: "dinsro-redirect@kubernetescrd"
   nostr-rs-relay:
     helm:
       chart:

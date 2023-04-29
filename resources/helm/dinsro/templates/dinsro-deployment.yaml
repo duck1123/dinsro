@@ -37,11 +37,11 @@ spec:
         env:
         {{- if .Values.devtools.webtoolsUrl }}
         - name: DEVTOOLS_URL
-          value: "http://{{ .Values.devtools.webtoolsUrl }}"
+          value: "https://{{ .Values.devtools.webtoolsUrl }}"
         {{- else -}}
         {{- with (first .Values.devtools.ingress.hosts) }}
         - name: DEVTOOLS_URL
-          value: "http://{{ .host }}"
+          value: "https://{{ .host }}"
         {{- end }}
         {{- end }}
         {{- if .Values.devtools.enabled }}
@@ -73,6 +73,9 @@ spec:
           containerPort: 7777
           protocol: TCP
         {{- end }}
+        - name: devcards
+          containerPort: 7778
+          protocol: TCP
         livenessProbe:
           httpGet:
             path: /
