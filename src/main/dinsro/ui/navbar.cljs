@@ -144,7 +144,7 @@
         logged-in?    (= (::auth/status authorization) :success)]
     (log/debug :sidebar/rendering {:props props :visible visible})
     (ui-sidebar
-     {:direction "right"
+     {:direction "left"
       :as        Menu
       :animation "overlay"
       :inverted  true
@@ -209,6 +209,11 @@
                                   :inverted      inverted
                                   :logged-in?    logged-in?})
     (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
+      (ui-menu-menu
+       {}
+       (dom/div {:classes [:.item]
+                 :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
+         (dom/i :.icon.sidebar)))
       (dom/a :.item
         {:classes [:.item site-button]
          :onClick (fn []
@@ -218,11 +223,6 @@
       (if logged-in?
         (map ui-top-nav-link menu-links)
         (map ui-top-nav-link unauth-links))
-      (ui-menu-menu
-       {:position "right"}
-       (dom/div {:classes [:.item]
-                 :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
-         (dom/i :.icon.sidebar)))
       (when logged-in?
         (ui-logout-nav-link {})))))
 
