@@ -159,6 +159,19 @@
 
 (def ui-navbar-sidebar (comp/factory NavbarSidebar))
 
+(defsc LogoutNavLink
+  [this _props]
+  {}
+  (dom/a :.item.right
+    {:onClick (fn [_evt]
+                (uism/trigger! this ::mu.navbar/navbarsm :event/hide {})
+                (auth/logout! this :local)
+                (let [component (comp/registry-key->class :dinsro.ui.home/HomePage)]
+                  (rroute/route-to! this component {})))}
+    "Logout"))
+
+(def ui-logout-nav-link (comp/factory LogoutNavLink))
+
 (defsc NavbarAuthQuery
   [_this _props]
   {:ident         ::auth/authorization
@@ -190,8 +203,7 @@
         authorization         (get props [::auth/authorization :local])
         current-user          (:session/current-user authorization)
         inverted              true
-        logged-in?            (= (::auth/status authorization) :success)
-        links                 (if logged-in? menu-links unauth-links)]
+        logged-in?            (= (::auth/status authorization) :success)]
     (log/debug :navbar/rendering {:authorization authorization
                                   :current-user  current-user
                                   :inverted      inverted
@@ -203,12 +215,16 @@
                     (uism/trigger! this auth/machine-id :event/cancel {})
                     (rroute/route-to! this u.home/Page {}))}
         "dinsro")
-      (map ui-top-nav-link links)
+      (if logged-in?
+        (map ui-top-nav-link menu-links)
+        (map ui-top-nav-link unauth-links))
       (ui-menu-menu
        {:position "right"}
        (dom/div {:classes [:.item]
                  :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
-         (dom/i :.icon.sidebar))))))
+         (dom/i :.icon.sidebar)))
+      (when logged-in?
+        (ui-logout-nav-link {})))))
 
 (def ui-navbar (comp/factory Navbar))
 
