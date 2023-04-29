@@ -9,13 +9,11 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
-   [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu-menu :refer [ui-menu-menu]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar :refer [ui-sidebar]]
    [dinsro.model.navbar :as m.navbar]
    [dinsro.model.navlink :as m.navlink]
-   [dinsro.model.users :as m.users]
    [dinsro.mutations.navbar :as mu.navbar]
    [dinsro.ui.home :as u.home]
    [lambdaisland.glogc :as log]))
@@ -93,21 +91,6 @@
 
 (def ui-top-nav-link (comp/factory TopNavLink {:keyfn ::m.navlink/id}))
 
-(defsc NavbarAuthLink
-  [this {::m.users/keys [name id]}]
-  {:ident         ::m.users/id
-   :initial-state {::m.users/id   nil
-                   ::m.users/name ""}
-   :query         [::m.users/id
-                   ::m.users/name]}
-  (if-let [component (comp/registry-key->class :dinsro.ui.admin.users/Show)]
-    (dom/a :.ui.item
-      {:onClick (fn [_e] (form/view! this component id))}
-      name)
-    (throw (js/Error. "Failed to find component"))))
-
-(def ui-navbar-auth-link (comp/factory NavbarAuthLink))
-
 (defsc NavbarLoginLink
   [this _ _ {:keys [red]}]
   {:initial-state {}
@@ -179,12 +162,10 @@
 (defsc NavbarAuthQuery
   [_this _props]
   {:ident         ::auth/authorization
-   :initial-state {::auth/authorization  :local
-                   ::auth/status         :initial
-                   :session/current-user {}}
+   :initial-state {::auth/authorization :local
+                   ::auth/status        :initial}
    :query         [::auth/authorization
-                   ::auth/status
-                   {:session/current-user (comp/get-query NavbarAuthLink)}]})
+                   ::auth/status]})
 
 (defsc Navbar
   [this {::m.navbar/keys [menu-links unauth-links] :as props}]
@@ -209,13 +190,12 @@
         authorization         (get props [::auth/authorization :local])
         current-user          (:session/current-user authorization)
         inverted              true
-        logged-in?            (= (::auth/status authorization) :success)]
-
+        logged-in?            (= (::auth/status authorization) :success)
+        links                 (if logged-in? menu-links unauth-links)]
     (log/debug :navbar/rendering {:authorization authorization
                                   :current-user  current-user
                                   :inverted      inverted
                                   :logged-in?    logged-in?})
-
     (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]
@@ -223,11 +203,7 @@
                     (uism/trigger! this auth/machine-id :event/cancel {})
                     (rroute/route-to! this u.home/Page {}))}
         "dinsro")
-      (if logged-in?
-        (comp/fragment
-         (ui-navbar-auth-link current-user)
-         (map ui-top-nav-link menu-links))
-        (map ui-top-nav-link unauth-links))
+      (map ui-top-nav-link links)
       (ui-menu-menu
        {:position "right"}
        (dom/div {:classes [:.item]
@@ -240,7 +216,6 @@
   [_this _props]
   {:ident         ::m.navbar/id
    :query         [::m.navbar/id
-                   {:root/current-user (comp/get-query NavbarAuthLink)}
                    {::m.navbar/dropdown-links (comp/get-query NavLink)}
                    {::m.navbar/unauth-links (comp/get-query NavLink)}
                    {::m.navbar/menu-links (comp/get-query TopNavLink)}
@@ -249,7 +224,6 @@
                    [::uism/asm-id ::mu.navbar/navbarsm]]
    :initial-state {::m.navbar/id             :main
                    :inverted                 true
-                   :root/current-user        {}
                    ::m.navbar/dropdown-links []
                    ::m.navbar/unauth-links   []
                    ::m.navbar/menu-links     []}})
