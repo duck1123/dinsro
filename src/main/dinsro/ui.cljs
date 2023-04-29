@@ -36,8 +36,7 @@
    [dinsro.ui.nostr :as u.nostr]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.settings :as u.settings]
-   [dinsro.ui.transactions :as u.transactions]
-   [dinsro.ui.users :as u.users]))
+   [dinsro.ui.transactions :as u.transactions]))
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
   {:query         [[:ui/global-error '_]]
@@ -77,9 +76,7 @@
                     u.settings/SettingsPage
                     u.transactions/NewTransaction
                     u.transactions/Show
-                    u.transactions/Report
-                    u.users/Show
-                    u.users/Report]}
+                    u.transactions/Report]}
   (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
     (case current-state
       :pending (dom/div "Loading...")

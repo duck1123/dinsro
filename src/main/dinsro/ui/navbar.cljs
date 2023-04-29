@@ -100,7 +100,7 @@
                    ::m.users/name ""}
    :query         [::m.users/id
                    ::m.users/name]}
-  (if-let [component (comp/registry-key->class :dinsro.ui.users/Show)]
+  (if-let [component (comp/registry-key->class :dinsro.ui.admin.users/Show)]
     (dom/a :.ui.item
       {:onClick (fn [_e] (form/view! this component id))}
       name)

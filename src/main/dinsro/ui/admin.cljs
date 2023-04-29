@@ -29,8 +29,9 @@
                     u.a.rates/Report
                     u.a.rate-sources/AdminReport
                     u.a.transactions/AdminReport
-                    u.a.users/AdminReport
-                    u.a.users/AdminUserForm]}
+                    u.a.users/Report
+                    u.a.users/Show
+                    u.a.users/UserForm]}
   (dom/div :.admin-router
     (case current-state
       :pending (dom/div {} "Loading...")
@@ -42,7 +43,7 @@
 (def menu-items
   [{:key   "users"
     :name  "users"
-    :route "dinsro.ui.admin.users/AdminReport"}
+    :route "dinsro.ui.admin.users/Report"}
    {:key   "categories"
     :name  "Categories"
     :route "dinsro.ui.admin.categories/AdminReport"}

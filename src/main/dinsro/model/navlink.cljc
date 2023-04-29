@@ -54,7 +54,7 @@
    :registration               ["Registration"          :dinsro.ui.registration/RegistrationPage]
    :settings                   ["Settings"              :dinsro.ui.settings/SettingsPage]
    :transactions               ["Transactions"          :dinsro.ui.transactions/Report]
-   :users                      ["Users"                 :dinsro.ui.users/Report]
+   :users                      ["Users"                 :dinsro.ui.admin.users/Report]
    :wallets                    ["Wallets"               :dinsro.ui.core.wallets/Report]
    :wallet-addresses           ["Wallet Addresses"      :dinsro.ui.core.wallet-addresses/Report]
    :words                      ["Words"                 :dinsro.ui.core.words/Report]})

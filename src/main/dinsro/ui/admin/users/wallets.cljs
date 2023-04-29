@@ -1,4 +1,4 @@
-(ns dinsro.ui.users.wallets
+(ns dinsro.ui.admin.users.wallets
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -10,7 +10,7 @@
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.users/id)
-(def router-key :dinsro.ui.users/Router)
+(def router-key :dinsro.ui.admin.users/Router)
 
 (report/defsc-report Report
   [_this _props]

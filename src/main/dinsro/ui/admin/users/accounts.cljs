@@ -1,4 +1,4 @@
-(ns dinsro.ui.users.accounts
+(ns dinsro.ui.admin.users.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -12,7 +12,7 @@
    [lambdaisland.glogc :as log]))
 
 (def ident-key ::m.users/id)
-(def router-key :dinsro.ui.users/Router)
+(def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report false)
 (def override-row false)

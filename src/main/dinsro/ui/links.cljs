@@ -644,7 +644,7 @@
   {fo/id         m.users/id
    fo/route-prefix "user-link"
    fo/attributes [m.users/name]}
-  (form-link this id name :dinsro.ui.users/Show))
+  (form-link this id name :dinsro.ui.admin.users/Show))
 
 (def ui-user-link (comp/factory UserLinkForm {:keyfn ::m.users/id}))
 
