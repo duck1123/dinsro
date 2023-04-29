@@ -12,7 +12,7 @@
    :currencies
    :categories
    :admin])
-(def menu-link-names [:accounts :transactions :contacts :core-menu :ln-menu :nostr :nodes :settings])
+(def menu-link-names [:accounts :transactions :nostr-events :contacts :core-menu :ln-menu :nostr :nodes :settings])
 (def unauth-link-names [:login :registration])
 
 (defattr id ::id :symbol

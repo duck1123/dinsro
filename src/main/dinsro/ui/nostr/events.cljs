@@ -104,7 +104,7 @@
                    ::m.n.event-tags/type      nil}}
   (let [show-labels false]
     (dom/div :.ui.item
-      (dom/div {} "[" (str index) "] ")
+      (dom/div {:style {:marginRight "5px"}} "[" (str index) "] ")
       (when pubkey
         (dom/div {}
           (when show-labels "Pubkey: ")
@@ -159,13 +159,12 @@
 (def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
 
 (defsc EventBox
-  [_this {::m.n.events/keys [content pubkey note-id]
+  [_this {::m.n.events/keys [content pubkey]
           ::j.n.events/keys [created-date tags witnesses]
           :as               props}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id           nil
                    ::m.n.events/pubkey       {}
-                   ::m.n.events/note-id      ""
                    ::m.n.events/content      ""
                    ::m.n.events/created-at   0
                    ::j.n.events/created-date nil
@@ -173,23 +172,19 @@
                    ::j.n.events/tags         []}
    :query         [::m.n.events/id
                    ::m.n.events/content
-                   ::m.n.events/note-id
                    ::m.n.events/created-at
                    ::j.n.events/created-date
                    {::j.n.events/witnesses (comp/get-query WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
                    {::j.n.events/tags (comp/get-query TagDisplay)}]}
-  (dom/div :.item.segment
+  (dom/div :.ui.item.segment
     (dom/div :.ui.tiny.image
       (ui-event-author-image pubkey))
     (dom/div :.content
       (dom/div {:classes [:.header]}
         (u.links/ui-pubkey-name-link pubkey))
       (dom/div {:classes [:.meta]}
-        (dom/span {:classes [:.date]}
-                  (u.links/ui-event-created-link props)
-                  (str created-date))
-        (dom/div {} (str note-id)))
+        (dom/span {:classes [:.date]} (str created-date)))
       (dom/div {:classes [:.description]}
         (let [ast (md/parse content)]
           (if show-ast
@@ -210,6 +205,7 @@
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
 (def override-report false)
+(def show-controls true)
 
 (report/defsc-report Report
   [this props]
@@ -218,8 +214,7 @@
                          ::m.n.events/note-id #(u.links/ui-event-link %3)}
    ro/columns           [m.n.events/content]
    ro/control-layout    {:action-buttons [::new ::refresh]}
-   ro/controls          {::new     new-button
-                         ::refresh u.links/refresh-control}
+   ro/controls          {::refresh u.links/refresh-control}
    ro/route             "events"
    ro/machine           spr/machine
    ro/page-size         10
@@ -227,15 +222,22 @@
    ro/row-pk            m.n.events/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.events/index
-   ro/title             "Events Report"}
+   ro/title             ""}
   (if override-report
     (report/render-layout this)
     (let [{:ui/keys [current-rows]} props]
-      (dom/div {:classes [:.ui :.segment]}
-        (dom/div {:classes [:.ui :.container]}
-          ((report/control-renderer this) this)
-          (dom/div {:classes [:.ui :.items :.unstackable]}
-            (map ui-event-box current-rows)))))))
+      (dom/div :.ui.grid.center
+        (dom/div :.ui.row.center.text.align
+          (dom/div :.ui.column
+            (dom/div :.ui.segment
+              (dom/h1 :.ui.header "Events"))))
+        (dom/div :.ui.row
+          (dom/div :.ui.column
+            (dom/div {:classes [:.ui :.container]}
+              (dom/div :.ui.segment
+                (when show-controls ((report/control-renderer this) this))
+                (dom/div {:classes [:.ui :.items :.unstackable :.center :.aligned]}
+                  (map ui-event-box current-rows))))))))))
 
 (defrouter Router
   [_this _props]
