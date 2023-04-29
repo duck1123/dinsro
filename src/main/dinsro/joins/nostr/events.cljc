@@ -1,5 +1,6 @@
 (ns dinsro.joins.nostr.events
   (:require
+   [com.fulcrologic.guardrails.core :refer [>def]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
@@ -8,7 +9,7 @@
    #?(:clj [dinsro.queries.nostr.event-tags :as q.n.event-tags])
    #?(:clj [dinsro.queries.nostr.events :as q.n.events])
    #?(:clj [dinsro.queries.nostr.witnesses :as q.n.witnesses])
-   #?(:clj [dinsro.specs :as ds])
+   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as transform]))
@@ -66,6 +67,7 @@
            content-hiccup (transform/->hiccup ast)]
        {::content-hiccup content-hiccup}))})
 
+(>def ::created-date ::ds/date-string)
 (defattr created-date ::created-date :inst
   {ao/pc-input  #{::m.n.events/created-at}
    ao/pc-output [::created-date]
