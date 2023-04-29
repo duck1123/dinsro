@@ -334,7 +334,7 @@
   {fo/id         m.categories/id
    fo/route-prefix "category-link"
    fo/attributes [m.categories/name]}
-  (form-link this id name :dinsro.ui.categories/NewCategory))
+  (form-link this id name :dinsro.ui.settings.categories/Show))
 
 (def ui-category-link (comp/factory CategoryLinkForm {:keyfn ::m.categories/id}))
 

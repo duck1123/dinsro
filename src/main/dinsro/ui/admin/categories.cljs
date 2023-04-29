@@ -28,7 +28,7 @@
                                              (sort-by ::m.users/name options)))}}
    fo/field-styles  {::m.categories/user :pick-one}
    fo/id            m.categories/id
-   fo/route-prefix  "admin/category"
+   fo/route-prefix  "new-category"
    fo/title         "Category"}
   (if override-admin-form
     (form/render-layout this props)

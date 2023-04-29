@@ -25,7 +25,7 @@
     :route "dinsro.ui.settings.rate-sources/Report"}
    {:name  "Categories"
     :key   "categories"
-    :route "dinsro.ui.settings.categories/Page"}])
+    :route "dinsro.ui.settings.categories/Report"}])
 
 (defsc Dashboard
   [_this _props]
@@ -50,7 +50,8 @@
     u.s.ln/Page
     u.s.rate-sources/Report
     u.s.rate-sources/Show
-    u.s.categories/Report]})
+    u.s.categories/Report
+    u.s.categories/Show]})
 
 (defsc SettingsPage
   [_this {:ui/keys [router]}]
