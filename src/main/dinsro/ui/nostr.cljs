@@ -1,7 +1,6 @@
 (ns dinsro.ui.nostr
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.ui.nostr.badge-acceptance :as u.n.badge-acceptance]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
@@ -47,5 +46,4 @@
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  (dom/div {:classes [:.nostr-page]}
-    ((comp/factory Router) router)))
+  ((comp/factory Router) router))
