@@ -179,7 +179,7 @@
                    {::j.n.events/witnesses (comp/get-query WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
                    {::j.n.events/tags (comp/get-query TagDisplay)}]}
-  (dom/div :.ui.item.segment
+  (dom/div :.ui.item.segment.event-box
     (dom/div :.ui.tiny.image
       (ui-event-author-image pubkey))
     (dom/div :.content
@@ -228,7 +228,7 @@
   (if override-report
     (report/render-layout this)
     (let [{:ui/keys [current-rows]} props]
-      (dom/div :.ui.grid.center
+      (dom/div :.ui.grid.center.event-report
         (dom/div :.ui.row.center.text.align
           (dom/div :.ui.column
             (dom/div :.ui.segment
