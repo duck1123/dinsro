@@ -10,6 +10,9 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
@@ -52,8 +55,7 @@
 
 (defrouter RootRouter
   [_this {:keys [current-state route-factory route-props]}]
-  {:css            [[:.rootrouter {:height "100%"
-                                   :border "1px solid pink"}]]
+  {:css            [[:.root-router {:height "100%"}]]
    :router-targets [u.accounts/Report
                     u.accounts/NewForm
                     u.accounts/Show
@@ -77,12 +79,12 @@
                     u.transactions/NewTransaction
                     u.transactions/Show
                     u.transactions/Report]}
-  (let [{:keys [rootrouter]} (css/get-classnames RootRouter)]
+  (let [{:keys [root-router]} (css/get-classnames RootRouter)]
     (case current-state
       :pending (dom/div "Loading...")
       :failed  (dom/div "Failed!")
       ;; default will be used when the current state isn't yet set
-      (dom/div {:classes [rootrouter]}
+      (dom/div {:classes [root-router]}
         (dom/div "No route selected.")
         (when route-factory
           (comp/fragment
@@ -99,9 +101,10 @@
                         (df/load! this :root/navbar u.navbar/NavbarUnion)
                         (uism/begin! this machines/hideable ::mu.navbar/navbarsm
                                      {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
-   :css               [[:.container {:height "100%" :overflow "hidden"}]
-                       [:.pusher {:height "100%" :overflow "auto !important"}]
-                       [:.top {:height "100%"}]]
+   :css               [[:.pusher {:height "100%" :overflow "auto !important"}]
+                       [:.main-grid {:height "800px" :overflow "auto"}]
+                       [:.root-container {:height "100%"}]
+                       [:.router-wrapper {:overflow "hidden" :height "100%"}]]
    :query             [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
                        {:root/navbar (comp/get-query u.navbar/Navbar)}
                        {:root/init-form (comp/get-query u.initialize/InitForm)}
@@ -115,28 +118,31 @@
                        :ui/router               {}
                        :root/global-error       {}
                        ::m.settings/site-config {}}}
-  (let [{:keys [container pushable pusher top]}    (css/get-classnames Root)
+  (let [{:keys [main-grid pushable pusher
+                root-container router-wrapper]}    (css/get-classnames Root)
         top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
         {::m.settings/keys [loaded? initialized?]} site-config
         root                                       (uism/get-active-state this ::auth/auth-machine)
         gathering-credentials?                     (#{:state/gathering-credentials} root)]
-    (dom/div {:classes [:.ui :.container container]}
+    (dom/div {:classes [:.ui  root-container]}
       (if loaded?
         (if initialized?
           (comp/fragment
-           (u.navbar/ui-navbar navbar)
-           (dom/div {:classes [:.ui :.container :.fluid top]}
-             (ui-sidebar-pushable {:className (string/join " " [pushable])}
-               (u.navbar/ui-navbar-sidebar navbar)
-               (ui-sidebar-pusher {:className (string/join " " [pusher])}
-                 (if (= :initial top-router-state)
-                   (dom/div :.loading "Loading...")
-                   (comp/fragment
-                    (ui-global-error-display global-error)
-                    (u.authenticator/ui-authenticator authenticator)
-                    (when-not gathering-credentials?
-                      (ui-root-router router))))))))
+           (ui-sidebar-pushable {:classes [pushable]}
+             (u.navbar/ui-navbar-sidebar navbar)
+             (ui-sidebar-pusher {:classes [pusher]}
+               (u.navbar/ui-navbar navbar)
+               (ui-grid {:className (string/join " " [main-grid])}
+                 (ui-grid-row {:centered true}
+                   (if (= :initial top-router-state)
+                     (dom/div :.loading "Loading...")
+                     (ui-grid-column {:largeScreen 12 :tablet 16}
+                       (ui-global-error-display global-error)
+                       (u.authenticator/ui-authenticator authenticator)
+                       (when-not gathering-credentials?
+                         (dom/div {:classes [router-wrapper]}
+                           (ui-root-router router))))))))))
           (u.initialize/ui-init-form init-form))
-        (dom/div {}
+        (dom/div :.ui.segment
           (dom/p "Not loaded")))
       (inj/style-element {:component Root}))))

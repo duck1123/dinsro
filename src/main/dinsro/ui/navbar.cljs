@@ -42,7 +42,7 @@
                    ::m.navlink/name       ""
                    ::m.navlink/auth-link? false
                    ::m.navlink/target     nil
-                   :ui/router           {}}
+                   :ui/router             {}}
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
                     (let [defaults {:ui/router (comp/get-initial-state RouteQuery)}]
                       (merge current-normalized data-tree defaults)))
@@ -112,7 +112,7 @@
   {:initial-state {}
    :query         []}
   (log/debug :logout-link/rendering {:props props})
-  (dom/a :.ui.item
+  (dom/a :.ui.item.right
     {:onClick (fn [_evt]
                 (uism/trigger! this ::mu.navbar/navbarsm :event/hide {})
                 (auth/logout! this :local)
@@ -146,7 +146,7 @@
     (ui-sidebar
      {:direction "left"
       :as        Menu
-      :animation "overlay"
+      :animation "push"
       :inverted  true
       :vertical  true
       :width     "thin"
