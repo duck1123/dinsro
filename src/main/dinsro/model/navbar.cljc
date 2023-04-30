@@ -6,13 +6,8 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.navlink :as m.navlink]))
 
-(def dropdown-link-names
-  [:accounts
-   :transactions
-   :currencies
-   :categories
-   :admin])
-(def menu-link-names [:accounts :transactions :nostr-events :contacts :core-menu :ln-menu :nostr :nodes :settings])
+(def dropdown-link-names [:home])
+(def menu-link-names [:transactions :contacts :nostr-events :nodes :settings :admin])
 (def unauth-link-names [:login :registration])
 
 (defattr id ::id :symbol
