@@ -126,18 +126,16 @@
           (comp/fragment
            (u.navbar/ui-navbar navbar)
            (dom/div {:classes [:.ui :.container :.fluid top]}
-             (ui-sidebar-pushable
-              {:className (string/join " " [pushable])}
-              (u.navbar/ui-navbar-sidebar navbar)
-              (ui-sidebar-pusher
-               {:className (string/join " " [pusher])}
-               (if (= :initial top-router-state)
-                 (dom/div :.loading "Loading...")
-                 (comp/fragment
-                  (ui-global-error-display global-error)
-                  (u.authenticator/ui-authenticator authenticator)
-                  (when-not gathering-credentials?
-                    (ui-root-router router))))))))
+             (ui-sidebar-pushable {:className (string/join " " [pushable])}
+               (u.navbar/ui-navbar-sidebar navbar)
+               (ui-sidebar-pusher {:className (string/join " " [pusher])}
+                 (if (= :initial top-router-state)
+                   (dom/div :.loading "Loading...")
+                   (comp/fragment
+                    (ui-global-error-display global-error)
+                    (u.authenticator/ui-authenticator authenticator)
+                    (when-not gathering-credentials?
+                      (ui-root-router router))))))))
           (u.initialize/ui-init-form init-form))
         (dom/div {}
           (dom/p "Not loaded")))
