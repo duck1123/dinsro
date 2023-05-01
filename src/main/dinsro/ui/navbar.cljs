@@ -210,10 +210,10 @@
                                   :logged-in?    logged-in?})
     (dom/div {:classes [:.ui.top.menu (when inverted :.inverted)]}
       (ui-menu-menu
-       {}
-       (dom/div {:classes [:.item]
-                 :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
-         (dom/i :.icon.sidebar)))
+        {}
+        (dom/div {:classes [:.item]
+                  :onClick (fn [] (uism/trigger! this ::mu.navbar/navbarsm :event/toggle {}))}
+          (dom/i :.icon.sidebar)))
       (dom/a :.item
         {:classes [:.item site-button]
          :onClick (fn []
