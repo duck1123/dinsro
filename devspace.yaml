@@ -394,14 +394,9 @@ deployments:
                 service: dinsro
                 paths:
                   - path: /
-              - host: devtools.dinsro.dev.kronkltd.net
-                service: dinsro
-                paths:
-                  - path: /
             tls:
               - hosts:
-                  # - devtools.${BASE_PUBLIC_DOMAIN}
-                  - devtools.dinsro.dev.kronkltd.net
+                  - devtools.${BASE_PUBLIC_DOMAIN}
                 secretName: devtools-tls
         workspaces:
           ingress:
@@ -427,13 +422,10 @@ deployments:
             - host: ${BASE_PUBLIC_DOMAIN}
               paths:
                 - path: /
-            - host: dinsro.dev.kronkltd.net
-              paths:
-                - path: /
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt-prod
-            # ingress.kubernetes.io/force-ssl-redirect: "true"
-            # traefik.ingress.kubernetes.io/router.middlewares: "dinsro-redirect@kubernetescrd"
+            ingress.kubernetes.io/force-ssl-redirect: "true"
+            traefik.ingress.kubernetes.io/router.middlewares: "dinsro-redirect@kubernetescrd"
   nostr-rs-relay:
     helm:
       chart:
