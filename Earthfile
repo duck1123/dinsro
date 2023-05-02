@@ -187,7 +187,7 @@ compile-styles:
   FROM +deps-builder
   COPY --dir src/styles src/styles
   COPY semantic/src/theme.config semantic/src/theme.config
-  COPY semantic/src/site/globals/site.overrides semantic/src/site/globals/site.overrides
+  COPY semantic/src/site/globals/site.* semantic/src/site/globals/
   RUN bb install-style-dependencies
   RUN bb compile-styles
   SAVE ARTIFACT resources/main/public/css/ css/
