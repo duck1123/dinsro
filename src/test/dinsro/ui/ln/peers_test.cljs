@@ -4,7 +4,7 @@
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [dinsro.ui.ln.peers :as u.ln.peers]
+   [dinsro.ui.settings.ln.peers :as u.ln.peers]
    [nubank.workspaces.core :as ws]))
 
 (defn Report-item

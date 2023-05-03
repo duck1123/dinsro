@@ -69,7 +69,7 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewForm))})
 
-(def override-report true)
+(def override-report false)
 (def show-controls true)
 
 (defsc DebitLine
@@ -113,7 +113,7 @@
 
 (report/defsc-report Report
   [this props]
-  {;; ro/BodyItem          BodyItem
+  {ro/BodyItem          BodyItem
    ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
                          ::m.accounts/user     #(u.links/ui-user-link %2)
                          ::m.accounts/name     #(u.links/ui-account-link %3)

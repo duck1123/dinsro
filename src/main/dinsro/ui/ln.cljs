@@ -8,9 +8,6 @@
    [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
-   [dinsro.ui.ln.payments :as u.ln.payments]
-   [dinsro.ui.ln.payreqs :as u.ln.payreqs]
-   [dinsro.ui.ln.peers :as u.ln.peers]
    [dinsro.ui.ln.remote-nodes :as u.ln.remote-nodes]))
 
 (defrouter Router
@@ -25,16 +22,8 @@
                     u.ln.nodes/NewForm
                     u.ln.nodes/Report
                     u.ln.nodes/Show
-                    u.ln.payments/Report
-                    u.ln.payments/Show
-                    u.ln.payreqs/NewForm
-                    u.ln.payreqs/Report
-                    u.ln.payreqs/Show
-                    u.ln.peers/Report
-                    u.ln.peers/NewForm
                     u.ln.remote-nodes/Show
                     u.ln.remote-nodes/Report]}
-
   (dom/div {} "Ln router"))
 
 (def ui-router (comp/factory Router))
