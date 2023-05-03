@@ -11,15 +11,12 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
@@ -137,30 +134,55 @@
 
 (def ui-debit-line (comp/factory DebitLine {:keyfn ::m.debits/id}))
 
+(defsc DebitListLine
+  [_this {::m.debits/keys    [value]
+          {currency ::m.accounts/currency
+           :as      account} ::m.debits/account}]
+  {:ident         ::m.debits/id
+   :query         [::m.debits/id
+                   ::m.debits/value
+                   {::m.debits/account (comp/get-query AccountInfo)}]
+   :initial-state {::m.debits/id      nil
+                   ::m.debits/value   0
+                   ::m.debits/account {}}}
+  (ui-list-item {}
+    (ui-grid {:celled true :doubling true :padded false}
+      (ui-grid-row {}
+        (ui-grid-column {} (u.links/ui-account-link account)))
+      (ui-grid-row {}
+        (ui-grid-column {:width 8 :textAlign "right"} (str value))
+        (ui-grid-column {:width 8} (u.links/ui-currency-link currency))))))
+
+(def ui-debit-list-line (comp/factory DebitListLine {:keyfn ::m.debits/id}))
+
 (defsc BodyItem
   [_this {::m.transactions/keys [description date]
-          ::j.transactions/keys [debits]}]
+          ::j.transactions/keys [positive-debits negative-debits]
+          :as props}]
   {:ident         ::m.transactions/id
    :query         [::m.transactions/id
                    ::m.transactions/date
                    ::m.transactions/description
-                   {::j.transactions/debits (comp/get-query DebitLine)}]
-   :initial-state {::m.transactions/id          nil
-                   ::m.transactions/date        nil
-                   ::m.transactions/description ""
-                   ::j.transactions/debits      []}}
+                   {::j.transactions/positive-debits (comp/get-query DebitLine)}
+                   {::j.transactions/negative-debits (comp/get-query DebitLine)}]
+   :initial-state {::m.transactions/id              nil
+                   ::m.transactions/date            nil
+                   ::m.transactions/description     ""
+                   ::j.transactions/positive-debits []
+                   ::j.transactions/negative-debits []}}
   (dom/div :.ui.item
     (dom/div :.ui.segment
+      (dom/div {} (u.links/ui-transaction-link props))
+      (dom/div {} (str date))
       (dom/div {} (str description))
-      (dom/div (str date))
-      (ui-table {}
-        (ui-table-header {}
-          (ui-table-row {}
-            (ui-table-header-cell {} "Value")
-            (ui-table-header-cell {} "Currency")
-            (ui-table-header-cell {} "Account")))
-        (ui-table-body {}
-          (map ui-debit-line debits))))))
+      (ui-grid {:padded false}
+        (ui-grid-row {}
+          (ui-grid-column {:width 8}
+            (dom/div :.ui.lists
+              (map ui-debit-list-line negative-debits)))
+          (ui-grid-column {:width 8}
+            (dom/div :.ui.lists
+              (map ui-debit-list-line positive-debits))))))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.transactions/id}))
 

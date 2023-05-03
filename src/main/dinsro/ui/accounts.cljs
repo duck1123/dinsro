@@ -7,6 +7,13 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.joins.users :as j.users]
@@ -79,35 +86,36 @@
                    ::m.debits/value 0}
    :query         [::m.debits/id
                    ::m.debits/value]}
-  (dom/div :.ui.item
+  (ui-list-item {}
     (str value)))
 
 (def ui-debit-line (comp/factory DebitLine {:keyfn ::m.debits/id}))
 
 (defsc BodyItem
   [_this {::m.accounts/keys [currency initial-value wallet]
-          ::j.accounts/keys [debit-count debits]}]
+          ::j.accounts/keys [debit-count]
+          :as               props}]
   {:ident         ::m.accounts/id
    :initial-state {::m.accounts/id            nil
+                   ::m.accounts/name          ""
                    ::m.accounts/currency      {}
                    ::m.accounts/initial-value 0
                    ::m.accounts/wallet        {}
                    ::j.accounts/debit-count   0
                    ::j.accounts/debits        []}
    :query         [::m.accounts/id
+                   ::m.accounts/name
                    {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
                    ::m.accounts/initial-value
                    {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
                    ::j.accounts/debit-count
                    {::j.accounts/debits (comp/get-query DebitLine)}]}
-  (dom/div :.ui.item
-    (dom/div :.ui.segment
-      (dom/div {} (u.links/ui-currency-link currency))
-      (dom/div {} (str initial-value))
-      (dom/div {} (when wallet (u.links/ui-wallet-link wallet)))
-      (dom/div {} (str debit-count))
-      (dom/div :.ui.items
-        (map ui-debit-line debits)))))
+  (ui-table-row {}
+    (ui-table-cell {} (u.links/ui-account-link props))
+    (ui-table-cell {} (u.links/ui-currency-link currency))
+    (ui-table-cell {} (str initial-value))
+    (ui-table-cell {} (when wallet (u.links/ui-wallet-link wallet)))
+    (ui-table-cell {} (str debit-count))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.accounts/id}))
 
@@ -139,7 +147,14 @@
       (dom/div {}
         (dom/h1 {} "Accounts")
         (when show-controls ((report/control-renderer this) this))
-        (dom/div :.ui.items
+        (ui-table {}
+          (ui-table-header {}
+            (ui-table-row {}
+              (ui-table-header-cell {} "Name")
+              (ui-table-header-cell {} "Currency")
+              (ui-table-header-cell {} "Initial Value")
+              (ui-table-header-cell {} "Wallet")
+              (ui-table-header-cell {} "Debit Count")))
           (map ui-body-item current-rows))))))
 
 (defsc Show
@@ -152,9 +167,7 @@
                    ::m.accounts/source   {}
                    ::m.accounts/wallet   {}
                    :ui/transactions      {}}
-   :pre-merge     (u.links/page-merger
-                   ::m.accounts/id
-                   {:ui/transactions u.a.transactions/Report})
+   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.a.transactions/Report})
    :query         [::m.accounts/name
                    ::m.accounts/id
                    {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
@@ -173,4 +186,8 @@
        (dom/dd {} (u.links/ui-rate-source-link source))
        (dom/dt {} "Wallet")
        (dom/dd {} (u.links/ui-wallet-link wallet))))
-   (u.a.transactions/ui-report transactions)))
+   (ui-segment {}
+     (if (seq transactions)
+       (u.a.transactions/ui-report transactions)
+       (dom/div {}
+         (dom/p {} "No Transactions"))))))

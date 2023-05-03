@@ -38,12 +38,12 @@
    :query         []
    :route-segment ["dashboard"]}
   (ui-grid {}
-    (ui-grid-row {}
-      (ui-grid-column {:width 8}
+    (ui-grid-row {:centered true}
+      (ui-grid-column {:computer 8 :tablet 8 :mobile 16}
         (ui-container {}
           (dom/div :.ui.segment
             (dom/h1 "Settings"))))
-      (ui-grid-column {:width 8}
+      (ui-grid-column {:computer 8 :tablet 8 :mobile 16}
         (ui-container {}
           (dom/div :.ui.segment
             (dom/h2 "Core Nodes")))))))
@@ -66,11 +66,12 @@
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["settings"]}
   (ui-grid {}
-    (ui-grid-row {:only "mobile"}
-      (ui-grid-column {:width 16 :centered true}
-        (u.links/ui-nav-menu {:id nil :menu-items menu-items})))
+    (ui-grid-row {:only "tablet mobile"}
+      (ui-grid-column {:width 16}
+        (ui-container {:fluid true}
+          (u.links/ui-nav-menu {:id nil :menu-items menu-items}))))
     (ui-grid-row {:centered true}
-      (ui-grid-column {:width 4 :only "tablet computer"}
+      (ui-grid-column {:width 4 :only "computer" :floated "left"}
         (u.links/ui-vertical-menu {:id nil :menu-items menu-items}))
-      (ui-grid-column {:width 12 :mobile 16 :tablet 12 :computer 12}
+      (ui-grid-column {:mobile 16 :tablet 16 :computer 12}
         ((comp/factory Router) router)))))

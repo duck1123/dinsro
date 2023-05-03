@@ -6,6 +6,7 @@
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -33,10 +34,67 @@
     (when (get record ::m.debits/id)
       (dissoc record :xt/id))))
 
+(defn get-index-query
+  [query-params]
+  (let [transaction-id (::m.transactions/id query-params)
+        positive?      (:positive? query-params)]
+    {:find  (as-> ['?debit-id] x
+              (concat x (when-not (nil? positive?) ['?value]))
+              (filter identity x)
+              (into [] x))
+     :in    [['?transaction-id]]
+     :where (->> [['?debit-id ::m.debits/id '_]]
+                 (concat (when transaction-id
+                           [['?debit-id ::m.debits/transaction '?transaction-id]]))
+                 (concat (when (and (not (nil? positive?)) positive?)
+                           [['?debit-id ::m.debits/value '?value]
+                            ['(pos? ?value)]]))
+                 (concat (when (and (not (nil? positive?)) (not positive?))
+                           [['?debit-id ::m.debits/value '?value]
+                            ['(neg? ?value)]]))
+                 (filter identity)
+                 (into []))}))
+
+(defn get-index-params
+  [query-params]
+  (let [transaction-id (::m.transactions/id query-params)]
+    [transaction-id]))
+
+(>defn count-ids
+  ([]
+   [=> number?]
+   (count-ids {}))
+  ([query-params]
+   [any? => number?]
+   (do
+     (log/debug :count-ids/starting {:query-params query-params})
+     (let [base-params  (get-index-query query-params)
+           limit-params {:find ['(count ?witness-id)]}
+           params       (get-index-params query-params)
+           query        (merge base-params limit-params)]
+       (log/info :count-ids/query {:query query :params params})
+       (let [n (c.xtdb/query-one query params)]
+         (log/info :count-ids/finished {:n n})
+         (or n 0))))))
+
 (>defn index-ids
-  []
-  [=> (s/coll-of ::m.debits/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.debits/id _]]}))
+  ([]
+   [=> (s/coll-of ::m.debits/id)]
+   (index-ids {}))
+  ([query-params]
+   [map? => (s/coll-of ::m.debits/id)]
+   (do
+     (log/debug :index-ids/starting {})
+     (let [{:indexed-access/keys [options]}                 query-params
+           {:keys [limit options] :or {limit 20 options 0}} options
+           base-params                                      (get-index-query query-params)
+           limit-params                                     {:limit limit :options options}
+           query                                            (merge base-params limit-params)
+           params                                           (get-index-params query-params)]
+       (log/info :index-ids/query {:query query :params params})
+       (let [ids (c.xtdb/query-many query params)]
+         (log/info :index-ids/finished {:ids ids})
+         ids)))))
 
 (>defn delete!
   [id]

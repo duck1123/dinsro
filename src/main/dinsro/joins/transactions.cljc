@@ -28,12 +28,42 @@
    ao/pc-output        [{::debits [::m.debits/id]}]
    ao/pc-resolve
    (fn [_ {transaction-id ::m.transactions/id}]
-     (let [ids #?(:clj  (q.debits/find-by-transaction transaction-id)
+     (let [ids #?(:clj  (q.debits/index-ids {::m.transactions/id transaction-id})
                   :cljs (do
                           (comment transaction-id)
                           []))]
        {::debits (m.debits/idents ids)}))
    ::report/column-EQL {::debits [::m.debits/id ::m.debits/value]}})
+
+(defattr positive-debits ::positive-debits :ref
+  {ao/cardinality      :many
+   ao/target           ::m.debits/id
+   ao/pc-input         #{::m.transactions/id}
+   ao/pc-output        [{::positive-debits [::m.debits/id]}]
+   ao/pc-resolve
+   (fn [_ {transaction-id ::m.transactions/id}]
+     (let [ids #?(:clj  (q.debits/index-ids {::m.transactions/id transaction-id
+                                             :positive? true})
+                  :cljs (do
+                          (comment transaction-id)
+                          []))]
+       {::positive-debits (m.debits/idents ids)}))
+   ::report/column-EQL {:positive-:debits [::m.debits/id ::m.debits/value]}})
+
+(defattr negative-debits ::negative-debits :ref
+  {ao/cardinality      :many
+   ao/target           ::m.debits/id
+   ao/pc-input         #{::m.transactions/id}
+   ao/pc-output        [{::negative-debits [::m.debits/id]}]
+   ao/pc-resolve
+   (fn [_ {transaction-id ::m.transactions/id}]
+     (let [ids #?(:clj  (q.debits/index-ids {::m.transactions/id transaction-id
+                                             :positive?          false})
+                  :cljs (do
+                          (comment transaction-id)
+                          []))]
+       {::negative-debits (m.debits/idents ids)}))
+   ::report/column-EQL {::negative-debits [::m.debits/id ::m.debits/value]}})
 
 (defattr debit-count ::debit-count :number
   {ao/pc-input   #{::debits}
@@ -68,4 +98,6 @@
        {::user (when user-id (m.users/ident user-id))}))
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})
 
-(def attributes [admin-index debit-count debits index user])
+(def attributes [admin-index debit-count debits
+                 positive-debits negative-debits
+                 index user])

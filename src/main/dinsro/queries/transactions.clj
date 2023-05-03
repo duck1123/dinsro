@@ -79,9 +79,12 @@
           (dissoc :xt/id)))))
 
 (>defn index-ids
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.transactions/id _]]}))
+  ([]
+   [=> (s/coll-of :xt/id)]
+   (index-ids {}))
+  ([_query-params]
+   [map? => (s/coll-of :xt/id)]
+   (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.transactions/id _]]})))
 
 (>defn index-records
   []

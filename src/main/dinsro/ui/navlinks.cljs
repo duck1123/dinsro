@@ -9,6 +9,13 @@
    ::m.navlink/target     :dinsro.ui.admin.users/Report
    ::m.navlink/children   []})
 
+(def accounts
+  {::m.navlink/id         :accounts
+   ::m.navlink/auth-link? false
+   ::m.navlink/name       "Accounts"
+   ::m.navlink/target     :dinsro.ui.accounts/Report
+   ::m.navlink/children   []})
+
 (def contacts
   {::m.navlink/id         :contacts
    ::m.navlink/auth-link? false
@@ -66,19 +73,19 @@
    ::m.navlink/children   []})
 
 (def menu-links
-  [transactions
+  [accounts
+   transactions
    contacts
    nostr-events
-   nodes
    settings
    admin])
 
 (def dropdown-links
   [home
+   accounts
    transactions
    contacts
    nostr-events
-   nodes
    settings
    admin])
 

@@ -44,12 +44,11 @@
   [node-id]
   []
   (c.xtdb/query-ids
-   '{:find [?address-id]
-     :in [[?node-id]]
+   '{:find  [?wallet-address-id]
+     :in    [[?node-id]]
      :where [[?account-id ::m.ln.accounts/node ?node-id]
              [?account-id ::m.ln.accounts/wallet ?wallet-id]
              [?wallet-address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
-
    [node-id]))
 
 (defn find-by-address
