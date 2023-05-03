@@ -97,12 +97,15 @@
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  (ui-grid {}
+  (ui-grid {:centered true}
     (ui-grid-row {:only "tablet mobile"}
-      (ui-grid-column {:centered true :width 16}
+      (ui-grid-column {:width 16}
         (u.links/ui-nav-menu {:menu-items menu-items :id nil})))
     (ui-grid-row {}
-      (ui-grid-column {:width 4 :only "computer"}
+      (ui-grid-column {:only "computer" :width 3}
         (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
-      (ui-grid-column {:centered true :tablet 16 :computer 12}
-        ((comp/factory Router) router)))))
+      (ui-grid-column {:tablet 16 :computer 13 :stretched true}
+        (ui-grid {:centered true}
+          (ui-grid-row {}
+            (ui-grid-column {:computer 16 :tablet 16 :mobile 16}
+              ((comp/factory Router) router))))))))

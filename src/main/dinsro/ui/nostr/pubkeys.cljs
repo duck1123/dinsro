@@ -40,23 +40,19 @@
     u.n.p.users/SubPage]})
 
 (def menu-items
-  [{:key "events"          :name "Events"          :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
-   {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
-   {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-awards/SubPage"}
-   {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-acceptances/SubPage"}
-   {:key "items"           :name "Filter Items"    :route "dinsro.ui.nostr.pubkeys.items/SubPage"}
-   {:key "relays"          :name "Relays"          :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}])
-
+  [{:key "events" :name "Events" :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
+   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}
+   {:key "items" :name "Filter Items" :route "dinsro.ui.nostr.pubkeys.items/SubPage"}])
 (def show-border false)
 
 (defsc PubkeyInfo
-  [this {::j.n.pubkeys/keys [npub]
-         ::m.n.pubkeys/keys [about display-name hex id lud06 name nip05 picture website]}]
-  {:css           [[:.content-box (merge {:overflow "hidden"} (when show-border {:border "1px solid green !important"}))]
-                   [:.info (merge {} (when show-border {:border "1px solid red"}))]
-                   [:.picture-container (merge {} (when show-border {:border "1px solid purple"}))]]
+  [_this {::j.n.pubkeys/keys [npub]
+          ::m.n.pubkeys/keys [about display-name hex lud06 name nip05 picture website]}]
+  {:css           [[:.content-box {:overflow "hidden"}]
+                   [:.info {}]
+                   [:.picture-container {}]]
    :ident         ::m.n.pubkeys/id
-   :initial-state {::j.n.pubkeys/npub        ""
+   :initial-state {::j.n.pubkeys/npub         ""
                    ::m.n.pubkeys/about        ""
                    ::m.n.pubkeys/display-name ""
                    ::m.n.pubkeys/hex          ""
@@ -76,7 +72,7 @@
                    ::m.n.pubkeys/nip05
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website]}
-  (let [avatar-size                                       200
+  (let [avatar-size                                  200
         {:keys [content-box info picture-container]} (css/get-classnames PubkeyInfo)]
     (dom/div :.ui.segment
       (dom/div :.ui.items.unstackable
@@ -90,13 +86,8 @@
             (dom/div :.ui.description
               (dom/div {} (str (or npub hex)))
               (dom/div {} (str about))
-              (dom/div {} (str website))
-              (dom/div {} (str lud06)))
-            (dom/div :.extra
-              (dom/button
-                {:classes [:.ui.right.floated.button.secondary]
-                 :onClick (fn [_e] (comp/transact! this [(mu.n.pubkeys/fetch! {::m.n.pubkeys/id id})]))}
-                "Fetch Info"))))))))
+              (dom/div {} (when website (dom/a {:href website} (str website))))
+              (dom/div {} (str lud06)))))))))
 
 (def ui-pubkey-info (comp/factory PubkeyInfo))
 

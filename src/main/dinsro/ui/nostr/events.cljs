@@ -3,12 +3,18 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
@@ -64,7 +70,8 @@
    :query         [::m.n.pubkeys/id
                    ::m.n.pubkeys/name
                    ::m.n.pubkeys/picture]}
-  (when picture (dom/img {:src picture :width 100 :height 100})))
+  (dom/div :.ui.container
+    (when picture (dom/img {:src picture}))))
 
 (defsc EventAuthor
   [_this {::m.n.pubkeys/keys [picture]}]
@@ -155,14 +162,13 @@
                    {::m.n.witnesses/run (comp/get-query RunDisplay)}]
    :initial-state {::m.n.witnesses/id  nil
                    ::m.n.witnesses/run {}}}
-  (dom/div :.ui.item (ui-run-display run)))
+  (ui-list-item {} (ui-run-display run)))
 
 (def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
 
 (defsc EventBox
   [_this {::m.n.events/keys [content pubkey kind]
-          ::j.n.events/keys [created-date tags witnesses]
-          :as               props}]
+          ::j.n.events/keys [created-date tags witnesses]}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id           nil
                    ::m.n.events/pubkey       {}
@@ -184,16 +190,24 @@
     (dom/div :.ui.tiny.image
       (ui-event-author-image pubkey))
     (dom/div :.content
-      (dom/div {:classes [:.header]}
-        (u.links/ui-pubkey-name-link pubkey))
-      (dom/div {:classes [:.meta]}
-        (dom/div {:classes [:.date]} (str created-date))
-        (dom/div {:classes [:.kind]} (str kind)))
+      (dom/div {:classes [:.header] :style {:width "100%"}}
+        (ui-grid {}
+          (ui-grid-row {}
+            (ui-grid-column {:stretched true :width 10} (u.links/ui-pubkey-name-link pubkey))
+            (ui-grid-column {:textAlign "right" :width 6} (str (::m.n.pubkeys/nip05 pubkey))))))
+      (dom/div {:classes [:.meta] :style {:width "100%"}}
+        (ui-grid {}
+          (ui-grid-row {}
+            (ui-grid-column {:width 13}
+              (str created-date))
+            (ui-grid-column {:floated "right" :textAlign "right" :width 2}
+              (str kind)))))
       (dom/div {:classes [:.description]}
         (condp = kind
           0 (dom/div :.ui.container
-              (dom/code {}
-                (dom/pre {} (str content))))
+              (dom/div {:style {:width "100%" :overflow "auto"}}
+                (dom/code {}
+                  (dom/pre {} content))))
           (let [ast (md/parse content)]
             (if show-ast
               (u.links/log-props ast)
@@ -203,17 +217,20 @@
                     (html hiccup)
                     (str hiccup)))
                 (str content))))))
-      (dom/div :.extra
-        (when log-event-props (u.links/log-props props))
-        (dom/div :.ui.items
-          (map ui-witness-display witnesses))
-        (dom/div :.ui.items
-          (map ui-tag-display  (sort-by ::m.n.event-tags/index tags)))))))
+      (dom/div :.extra.content
+        (when (seq tags)
+          (ui-segment {}
+            (dom/div :.ui.relaxed.divided.list
+              (map ui-tag-display (sort-by ::m.n.event-tags/index tags)))))
+        (when (seq witnesses)
+          (ui-segment {}
+            (dom/div :.ui.relaxed.divided.list
+              (map ui-witness-display witnesses))))))))
 
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
 (def override-report false)
-(def show-controls true)
+(def show-controls false)
 
 (report/defsc-report Report
   [this props]
@@ -243,8 +260,10 @@
           (dom/div :.ui.column
             (dom/div {:classes [:.ui :.container]}
               (dom/div :.ui.segment
+                (ui-button {:icon    "refresh"
+                            :onClick (fn [_] (control/run! this))})
                 (when show-controls ((report/control-renderer this) this))
-                (dom/div {:classes [:.ui :.items :.unstackable :.center :.aligned]}
+                (dom/div {:classes [:.ui :.unstackable :.divided :.items :.center :.aligned]}
                   (map ui-event-box current-rows))))))))))
 
 (defrouter Router

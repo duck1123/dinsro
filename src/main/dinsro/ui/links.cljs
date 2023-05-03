@@ -179,7 +179,7 @@
 (defn img-formatter
   [pubkey]
   (if-let [picture (::m.n.pubkeys/picture pubkey)]
-    (dom/img {:src picture :height 100 :width 100})
+    (dom/img {:src picture})
     ""))
 
 (defn page-merger
