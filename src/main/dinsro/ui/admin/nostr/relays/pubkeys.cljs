@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.relays.pubkeys
+(ns dinsro.ui.admin.nostr.relays.pubkeys
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -22,7 +22,7 @@
 ;; [[../../ui/nostr/relays.cljs][Relays UI]]
 
 (def ident-key ::m.n.relays/id)
-(def router-key :dinsro.ui.nostr.relays/Router)
+(def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (form/defsc-form AddForm
   [_this _props]

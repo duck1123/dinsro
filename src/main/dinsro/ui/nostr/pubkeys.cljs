@@ -44,7 +44,7 @@
    {:key "badges-created"  :name "Badges Created"  :route "dinsro.ui.nostr.pubkeys.badge-definitions/SubPage"}
    {:key "badges-awarded"  :name "Badges Awarded"  :route "dinsro.ui.nostr.pubkeys.badge-awards/SubPage"}
    {:key "badges-accepted" :name "Badges Accepted" :route "dinsro.ui.nostr.pubkeys.badge-acceptances/SubPage"}
-   {:key "items"           :name "Filter Items"           :route "dinsro.ui.nostr.pubkeys.items/SubPage"}
+   {:key "items"           :name "Filter Items"    :route "dinsro.ui.nostr.pubkeys.items/SubPage"}
    {:key "relays"          :name "Relays"          :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}])
 
 (def show-border false)

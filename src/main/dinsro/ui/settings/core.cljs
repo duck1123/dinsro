@@ -10,7 +10,8 @@
    :initial-state {:component/id ::Dashboard}
    :query         [:component/id]
    :route-segment ["dashboard"]}
-  (dom/div {} "Dashboard"))
+  (dom/div :.ui.segment
+    "Core Settings Dashboard"))
 
 (defrouter Router
   [_this {:keys [current-state pending-path-segment]

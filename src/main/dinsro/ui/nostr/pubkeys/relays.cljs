@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -27,6 +28,9 @@
    ro/control-layout    {:action-buttons [::refresh]}
    ro/row-actions       [(u.links/subrow-action-button "Fetch" ::m.n.relays/id ident-key  mu.n.pubkeys/fetch!)
                          (u.links/subrow-action-button "Fetch Events" ::m.n.relays/id ident-key mu.n.events/fetch-events!)]
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index

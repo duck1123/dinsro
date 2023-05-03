@@ -524,7 +524,7 @@
    fo/route-prefix "pubkey-link"
    fo/attributes   [m.n.pubkeys/hex
                     m.n.pubkeys/name]}
-  (form-link this id (or name hex) :dinsro.ui.nostr.pubkeys/Show))
+  (form-link this id (or name hex) :dinsro.ui.nostr.pubkeys.events/SubPage))
 
 (def ui-pubkey-link (comp/factory PubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 
@@ -554,6 +554,14 @@
   (form-link this id name :dinsro.ui.settings.rate-sources/Show))
 
 (def ui-rate-source-link (comp/factory RateSourceLinkForm {:keyfn ::m.rate-sources/id}))
+
+(form/defsc-form AdminRelayLinkForm [this {::m.n.relays/keys [id address]}]
+  {fo/id           m.n.relays/id
+   fo/route-prefix "relay-link"
+   fo/attributes   [m.n.relays/address]}
+  (form-link this id address :dinsro.ui.admin.nostr.relays/Show))
+
+(def ui-admin-relay-link (comp/factory AdminRelayLinkForm {:keyfn ::m.n.relays/id}))
 
 (form/defsc-form RelayLinkForm [this {::m.n.relays/keys [id address]}]
   {fo/id           m.n.relays/id

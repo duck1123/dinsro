@@ -3,6 +3,9 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [dinsro.ui.admin.nostr.badge-acceptances :as u.a.n.badge-acceptances]
    [dinsro.ui.admin.nostr.badge-awards :as u.a.n.badge-awards]
    [dinsro.ui.admin.nostr.badge-definitions :as u.a.n.badge-definitions]
@@ -42,6 +45,7 @@
     u.a.n.filters/Report
     u.a.n.pubkeys/Report
     u.a.n.relays/Report
+    u.a.n.relays/Show
     u.a.n.requests/Report
     u.a.n.runs/Report
     u.a.n.witnesses/Report]})
@@ -93,8 +97,12 @@
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  (dom/div :.ui.grid
-    (dom/div :.ui.four.wide.column
-      (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
-    (dom/div :.ui.twelve.wide.column
-      ((comp/factory Router) router))))
+  (ui-grid {}
+    (ui-grid-row {:only "tablet mobile"}
+      (ui-grid-column {:centered true :width 16}
+        (u.links/ui-nav-menu {:menu-items menu-items :id nil})))
+    (ui-grid-row {}
+      (ui-grid-column {:width 4 :only "computer"}
+        (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
+      (ui-grid-column {:centered true :tablet 16 :computer 12}
+        ((comp/factory Router) router)))))

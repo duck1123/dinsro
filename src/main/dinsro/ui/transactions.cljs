@@ -8,6 +8,18 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
@@ -118,10 +130,10 @@
    :initial-state {::m.debits/id      nil
                    ::m.debits/value   0
                    ::m.debits/account {}}}
-  (dom/tr :.ui.item
-    (dom/td :.ui.right (str value))
-    (dom/td {} (u.links/ui-currency-link currency))
-    (dom/td {} (u.links/ui-account-link account))))
+  (ui-table-row {}
+    (ui-table-cell {} (str value))
+    (ui-table-cell {} (u.links/ui-currency-link currency))
+    (ui-table-cell {} (u.links/ui-account-link account))))
 
 (def ui-debit-line (comp/factory DebitLine {:keyfn ::m.debits/id}))
 
@@ -141,13 +153,13 @@
     (dom/div :.ui.segment
       (dom/div {} (str description))
       (dom/div (str date))
-      (dom/table :.wide.table
-        (dom/thead {}
-          (dom/tr {}
-            (dom/th {} "Value")
-            (dom/th {} "Currency")
-            (dom/th {} "Account")))
-        (dom/tbody {}
+      (ui-table {}
+        (ui-table-header {}
+          (ui-table-row {}
+            (ui-table-header-cell {} "Value")
+            (ui-table-header-cell {} "Currency")
+            (ui-table-header-cell {} "Account")))
+        (ui-table-body {}
           (map ui-debit-line debits))))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.transactions/id}))
@@ -171,20 +183,25 @@
    ro/title             "Transaction Report"}
   (log/info :Report/starting {:props props})
   (let [{:ui/keys [current-rows]} props]
-    (dom/div :.ui.segment
-      (dom/h1 :.ui.header
-        (dom/span {} "Transactions")
-        (dom/button {:classes [:.ui :.right]
-                     :onClick (fn [_] (form/create! this NewTransaction))} "New")
-        (dom/button {:classes [:.ui :.right]
-                     :onClick (fn [_] (control/run! this))} "Refresh"))
-
-      (dom/div :.ui.items
-        (map ui-body-item  current-rows)))))
+    (dom/div :.ui.container.centered
+      (dom/div :.ui.segment
+        (ui-grid {}
+          (ui-grid-row {:centered true}
+            (ui-grid-column {:width 12}
+              (dom/h1 :.ui.header
+                (dom/span {} "Transactions")))
+            (ui-grid-column {:width 4 :floated "right"}
+              (ui-button-group {:compact true :floated "right"}
+                (ui-button {:onClick (fn [_] (form/create! this NewTransaction))} "New")
+                (ui-button {:icon    "refresh"
+                            :onClick (fn [_] (control/run! this))})))))
+        (dom/div :.ui.container.centered
+          (map ui-body-item  current-rows))))))
 
 (report/defsc-report RecentReport
-  [_this _props]
-  {ro/columns          [m.transactions/description
+  [_this props]
+  {ro/BodyItem         BodyItem
+   ro/columns          [m.transactions/description
                         m.transactions/date
                         j.transactions/debit-count]
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
@@ -196,7 +213,10 @@
    ro/row-pk           m.transactions/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.transactions/index
-   ro/title            "Recent Transactions"})
+   ro/title            "Recent Transactions"}
+  (let [{:ui/keys [current-rows]} props]
+    (ui-container {}
+      (map ui-body-item  current-rows))))
 
 (defsc Show
   [this {::m.transactions/keys [description date]

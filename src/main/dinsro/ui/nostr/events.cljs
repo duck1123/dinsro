@@ -161,13 +161,14 @@
 (def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
 
 (defsc EventBox
-  [_this {::m.n.events/keys [content pubkey]
+  [_this {::m.n.events/keys [content pubkey kind]
           ::j.n.events/keys [created-date tags witnesses]
           :as               props}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id           nil
                    ::m.n.events/pubkey       {}
                    ::m.n.events/content      ""
+                   ::m.n.events/kind         0
                    ::m.n.events/created-at   0
                    ::j.n.events/created-date nil
                    ::j.n.events/witnesses    []
@@ -175,6 +176,7 @@
    :query         [::m.n.events/id
                    ::m.n.events/content
                    ::m.n.events/created-at
+                   ::m.n.events/kind
                    ::j.n.events/created-date
                    {::j.n.events/witnesses (comp/get-query WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
@@ -186,17 +188,22 @@
       (dom/div {:classes [:.header]}
         (u.links/ui-pubkey-name-link pubkey))
       (dom/div {:classes [:.meta]}
-        (dom/span {:classes [:.date]} (str created-date)))
+        (dom/div {:classes [:.date]} (str created-date))
+        (dom/div {:classes [:.kind]} (str kind)))
       (dom/div {:classes [:.description]}
-        (let [ast (md/parse content)]
-          (if show-ast
-            (u.links/log-props ast)
-            (if transform-markup
-              (let [hiccup (transform/->hiccup ast)]
-                (if convert-html
-                  (html hiccup)
-                  (str hiccup)))
-              (str content)))))
+        (condp = kind
+          0 (dom/div :.ui.container
+              (dom/code {}
+                (dom/pre {} (str content))))
+          (let [ast (md/parse content)]
+            (if show-ast
+              (u.links/log-props ast)
+              (if transform-markup
+                (let [hiccup (transform/->hiccup ast)]
+                  (if convert-html
+                    (html hiccup)
+                    (str hiccup)))
+                (str content))))))
       (dom/div :.extra
         (when log-event-props (u.links/log-props props))
         (dom/div :.ui.items

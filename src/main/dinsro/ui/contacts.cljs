@@ -1,5 +1,6 @@
 (ns dinsro.ui.contacts
   (:require
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -27,7 +28,7 @@
    :action (fn [this _] (form/create! this NewContactForm))})
 
 (report/defsc-report Report
-  [_this _props]
+  [this _props]
   {ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/columns           [m.contacts/name
                          m.contacts/pubkey]
@@ -38,4 +39,6 @@
    ro/row-pk            m.contacts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.contacts/index
-   ro/title             "Contacts"})
+   ro/title             "Contacts"}
+  (dom/div :.ui.container.centered
+    (report/render-layout this)))

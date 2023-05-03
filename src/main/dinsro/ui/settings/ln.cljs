@@ -54,8 +54,7 @@
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["ln"]}
   (let [{:keys [router-wrapper]} (css/get-classnames Page)]
-    (dom/div {}
-      "Lightning"
-      (u.links/ui-vertical-menu {:id nil :menu-items menu-items})
+    (dom/div :.ui.container
+      (u.links/ui-nav-menu {:id nil :menu-items menu-items})
       (dom/div {:classes [:.nostr-page router-wrapper]}
         ((comp/factory Router) router)))))

@@ -6,7 +6,7 @@
   {::m.navlink/id         :admin
    ::m.navlink/auth-link? false
    ::m.navlink/name       "Admin"
-   ::m.navlink/target     :dinsro.ui.admin/AdminPage
+   ::m.navlink/target     :dinsro.ui.admin.users/Report
    ::m.navlink/children   []})
 
 (def contacts

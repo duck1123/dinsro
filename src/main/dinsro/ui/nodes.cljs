@@ -18,17 +18,16 @@
    :query             [{:ui/core-report (comp/get-query u.no.core/Report)}
                        {:ui/ln-report (comp/get-query u.no.ln/Report)}]
    :route-segment     ["dashboard"]}
-  (dom/div :.ui.segment
-    (dom/div :.ui.grid
-      (dom/div :.two.column.row
-        (dom/div :.ui.column
-          (dom/div :.ui.container
-            (dom/div :.ui.segment
-              (u.no.core/ui-report core-report))))
-        (dom/div :.ui.column
-          (dom/div :.ui.container
-            (dom/div :.ui.segment
-              (u.no.ln/ui-report ln-report))))))))
+  (dom/div :.ui.grid
+    (dom/div :.two.column.row
+      (dom/div :.ui.column
+        (dom/div :.ui.container
+          (dom/div :.ui.segment
+            (u.no.core/ui-report core-report))))
+      (dom/div :.ui.column
+        (dom/div :.ui.container
+          (dom/div :.ui.segment
+            (u.no.ln/ui-report ln-report)))))))
 
 (defrouter Router
   [_this {:keys [route-factory route-props]}]
@@ -43,5 +42,4 @@
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nodes"]}
-  (dom/div {}
-    ((comp/factory Router) router)))
+  ((comp/factory Router) router))

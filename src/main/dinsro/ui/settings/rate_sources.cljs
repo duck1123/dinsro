@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
@@ -87,13 +88,14 @@
                     (report/start-report! this u.s.rs.rates/Report {})
                     (u.links/page-loader ::m.rate-sources/id ::Show this props))}
   (comp/fragment
-   (dom/div :.ui.container
+   (ui-container {:fluid true}
      (dom/div :.ui.segment
        (dom/h1 {} (str name))
        (dom/p {} "Url: " (str url))
        (dom/p {} "Active: " (str (boolean active)))
-       (dom/p {} "Currency: " (u.links/ui-currency-link currency))
+       (dom/p {} "Currency: " (u.links/ui-currency-link currency)))
+     (dom/div :.ui.segment
        (u.s.rs.rates/ui-report rates)))
-   (dom/div :.ui.container
+   (ui-container {}
      (u.links/ui-nav-menu {:menu-items menu-items :id id})
      ((comp/factory Router) router))))
