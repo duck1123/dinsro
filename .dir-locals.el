@@ -52,6 +52,7 @@
            (ui-grid 1)
            (ui-grid-column 1)
            (ui-grid-row 1)
+           (ui-list-item 1)
            (ui-menu-menu 1)
            (ui-modal 1)
            (ui-modal-content 1)
