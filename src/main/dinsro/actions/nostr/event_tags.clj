@@ -25,8 +25,12 @@
           ::m.n.event-tags/pubkey    pubkey-id
           ::m.n.event-tags/raw-value value
           ::m.n.event-tags/extra     extra})
-        (throw (ex-info "Failed to find pubkey" {})))
-
+        (q.n.event-tags/create-record
+         {::m.n.event-tags/index     idx
+          ::m.n.event-tags/parent    event-id
+          ::m.n.event-tags/type      type
+          ::m.n.event-tags/raw-value value
+          ::m.n.event-tags/extra     extra}))
       "e"
       (if-let [target-id (q.n.events/find-by-note-id value)]
         (q.n.event-tags/create-record
@@ -36,10 +40,12 @@
           ::m.n.event-tags/raw-value value
           ::m.n.event-tags/event     target-id
           ::m.n.event-tags/extra     extra})
-        (do
-          (comment)
-          #_(throw (ex-info "Failed to find note" {}))
-          nil))
+        (q.n.event-tags/create-record
+         {::m.n.event-tags/index     idx
+          ::m.n.event-tags/parent    event-id
+          ::m.n.event-tags/type      type
+          ::m.n.event-tags/raw-value value
+          ::m.n.event-tags/extra     extra}))
       (q.n.event-tags/create-record
        {::m.n.event-tags/index     idx
         ::m.n.event-tags/parent    event-id
