@@ -22,13 +22,12 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
-   [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.events.event-tags :as u.n.e.event-tags]
    [dinsro.ui.nostr.events.relays :as u.n.e.relays]
    [dinsro.ui.nostr.events.witnesses :as u.n.e.witnesses]
    [nextjournal.markdown :as md]
-   [nextjournal.markdown.transform :as transform]
+   [nextjournal.markdown.transform :as md.transform]
    [sablono.core :as html :refer-macros [html]]))
 
 ;; [[../../queries/nostr/events.clj][Event Queries]]
@@ -89,10 +88,6 @@
 
 (def ui-event-author-image (comp/factory EventAuthorImage))
 
-(def transform-markup true)
-(def convert-html true)
-(def show-ast false)
-
 (defsc TagDisplay
   [_this {::m.n.event-tags/keys [pubkey event index raw-value extra type]}]
   {:query         [::m.n.event-tags/id
@@ -110,9 +105,12 @@
                    ::m.n.event-tags/raw-value nil
                    ::m.n.event-tags/extra     nil
                    ::m.n.event-tags/type      nil}}
-  (let [show-labels false]
+  (let [show-labels false
+        tag? (= type "t")]
     (ui-list-item {}
       (dom/div {:style {:marginRight "5px"}} "[" (str index) "] ")
+      (when tag?
+        (str "#" raw-value))
       (when pubkey
         (dom/div {}
           (when show-labels "Pubkey: ")
@@ -121,7 +119,7 @@
         (dom/div {}
           (when show-labels "Event: ")
           (u.links/ui-event-link event)))
-      (when-not (or pubkey event)
+      (when-not (or pubkey event tag?)
         (comp/fragment
          (dom/div {} "Type: " (str type))
          (dom/div {} "Raw Value: " (str raw-value))))
@@ -134,37 +132,72 @@
 (def log-connection-props true)
 
 (defsc ConnectionDisplay
-  [_this {::m.n.connections/keys [relay]}]
+  [_this {::m.n.connections/keys [relay] :as props}]
   {:ident         ::m.n.connections/id
-   :initial-state {::m.n.connections/id    nil
-                   ::m.n.connections/relay {}}
+   :initial-state {::m.n.connections/id     nil
+                   ::m.n.connections/status :initial
+                   ::m.n.connections/relay  {}}
    :query         [::m.n.connections/id
+                   ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}]}
+  (dom/div {} "foo")
+  (u.links/ui-relay-link props)
   (u.links/ui-relay-link relay))
 
 (def ui-connection-display (comp/factory ConnectionDisplay {:keyfn ::m.n.connections/id}))
 
 (defsc RunDisplay
-  [_this {::m.n.runs/keys [connection]}]
+  [_this {::m.n.runs/keys [connection] :as props}]
   {:ident         ::m.n.runs/id
    :initial-state {::m.n.runs/id         nil
+                   ::m.n.runs/status {}
                    ::m.n.runs/connection {}}
    :query         [::m.n.runs/id
+                   ::m.n.runs/status
                    {::m.n.runs/connection (comp/get-query ConnectionDisplay)}]}
+  (dom/div {} (u.links/ui-run-link props))
   (ui-connection-display connection))
 
 (def ui-run-display (comp/factory RunDisplay {:keyfn ::m.n.runs/id}))
 
 (defsc WitnessDisplay
-  [_this {::m.n.witnesses/keys [run]}]
+  [_this {::m.n.witnesses/keys [run] :as props}]
   {:ident         ::m.n.witnesses/id
    :query         [::m.n.witnesses/id
                    {::m.n.witnesses/run (comp/get-query RunDisplay)}]
    :initial-state {::m.n.witnesses/id  nil
                    ::m.n.witnesses/run {}}}
-  (ui-list-item {} (ui-run-display run)))
+  (ui-list-item {}
+    (when log-witness-props (dom/div {} (u.links/ui-witness-link props)))
+    (ui-run-display run)))
 
 (def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
+
+(def transform-markup true)
+(def convert-html true)
+(def show-ast false)
+
+(defn replace-images
+  [ast]
+  (let [{:keys [content type]} ast]
+    (if (= type :link)
+      (let [src (get-in ast [:attrs :href])]
+        {:type :image :content [] :attrs {:src src :alt src}})
+      (let [transformed-content (mapv replace-images content)]
+        (assoc ast :content transformed-content)))))
+
+(def transformer
+  (assoc md.transform/default-hiccup-renderers
+         ;; :doc specify a custom container for the whole doc
+         :doc (partial md.transform/into-markup [:div.viewer-markdown])
+         :image (fn [_ctx {{:keys [alt src]} :attrs}]
+                  [:a {:href src} [:img.ui.fluid.image {:alt alt :src src}]])
+         ;; :text is funkier when it's zinc toned
+         :text (fn [_ctx node] [:span {:style {:color "#71717a"}} (:text node)])
+         ;; :plain fragments might be nice, but paragraphs help when no reagent is at hand
+         :plain (partial md.transform/into-markup [:p {:style {:margin-top "-1.2rem"}}])
+         ;; :ruler gets to be funky, too
+         :ruler (constantly [:hr {:style {:border "2px dashed #71717a"}}])))
 
 (defsc EventBox
   [_this {::m.n.events/keys [content pubkey kind]
@@ -203,20 +236,22 @@
             (ui-grid-column {:floated "right" :textAlign "right" :width 2}
               (str kind)))))
       (dom/div {:classes [:.description]}
-        (condp = kind
-          0 (dom/div :.ui.container
-              (dom/div {:style {:width "100%" :overflow "auto"}}
-                (dom/code {}
-                  (dom/pre {} content))))
-          (let [ast (md/parse content)]
-            (if show-ast
-              (u.links/log-props ast)
-              (if transform-markup
-                (let [hiccup (transform/->hiccup ast)]
-                  (if convert-html
-                    (html hiccup)
-                    (str hiccup)))
-                (str content))))))
+        (dom/div :.ui.container
+          (condp = kind
+            0 (dom/div :.ui.container
+                (dom/div {:style {:width "100%" :overflow "auto"}}
+                  (dom/code {}
+                    (dom/pre {} content))))
+            (let [ast (replace-images (md/parse content))]
+              (comp/fragment
+               (if show-ast
+                 (u.links/log-props ast)
+                 (if transform-markup
+                   (let [hiccup (md.transform/->hiccup transformer ast)]
+                     (if convert-html
+                       (html hiccup)
+                       (str hiccup)))
+                   (str content))))))))
       (dom/div :.extra.content
         (when (seq tags)
           (ui-segment {}
@@ -230,7 +265,7 @@
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
 (def override-report false)
-(def show-controls false)
+(def show-controls true)
 
 (report/defsc-report Report
   [this props]
@@ -276,8 +311,8 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [this {::m.n.events/keys [id content pubkey kind sig created-at]
-         :ui/keys          [router]}]
+  [_this {::m.n.events/keys [id content pubkey kind sig created-at note-id]
+          :ui/keys          [router]}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id         nil
                    ::m.n.events/note-id    ""
@@ -313,10 +348,6 @@
             (dom/div {:classes [:.description]}
               (str content))
             (dom/div {} "Sig: " (str sig))
-            (dom/div :.actions
-              (dom/a
-                {:classes [:.ui.reply]
-                 :onClick #(comp/transact! this [(mu.n.events/fetch! {::m.n.events/id id})])}
-                "Fetch"))))))
+            (dom/div {} "Note Id: " (str note-id))))))
     (u.links/ui-nav-menu {:menu-items menu-items :id id})
     ((comp/factory Router) router)))

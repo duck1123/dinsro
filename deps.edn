@@ -53,6 +53,7 @@
   ;; https://github.com/erp12/fijit
   io.github.erp12/fijit                     {:mvn/version "1.0.8"}
 
+  ;; https://github.com/nextjournal/markdown
   io.github.nextjournal/markdown            {:mvn/version "0.5.144"}
   io.pedestal/pedestal.log                  {:mvn/version "0.5.9"}
 
