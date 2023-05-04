@@ -535,7 +535,7 @@
    fo/attributes   [m.n.pubkeys/hex
                     m.n.pubkeys/name
                     j.n.pubkeys/npub]}
-  (form-link this id (or name npub "(unknown)") :dinsro.ui.nostr.pubkeys/Show))
+  (form-link this id (or name npub "(unknown)") :dinsro.ui.nostr.pubkeys.events/SubPage))
 
 (def ui-pubkey-name-link (comp/factory PubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
 
