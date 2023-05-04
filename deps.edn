@@ -91,6 +91,9 @@
   ;; https://github.com/clojure/core.async
   org.clojure/core.async                    {:mvn/version "1.5.648"}
 
+  ;; https://github.com/clojure/data.csv
+  org.clojure/data.csv                      {:mvn/version "1.0.1"}
+
   ;; https://github.com/clojure/spec.alpha
   org.clojure/spec.alpha                    {:mvn/version "0.3.214"}
   org.clojure/test.check                    {:mvn/version "1.1.1"}

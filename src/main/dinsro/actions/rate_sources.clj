@@ -1,6 +1,8 @@
 (ns dinsro.actions.rate-sources
   (:require
+   [clojure.data.csv :as csv]
    [clojure.data.json :as json]
+   [clojure.java.io :as io]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -88,7 +90,30 @@
   :start (start-scheduler!)
   :stop (stop-scheduler!))
 
+(defn read-csv
+  [filename]
+  (with-open [reader (io/reader filename)]
+    (->> (csv/read-csv reader)
+         (drop 2)
+         (mapv (fn [[ts date symbol open high low close volume]]
+                 {:ts     ts
+                  :date   date
+                  :symbol symbol
+                  :open   open
+                  :high   high
+                  :low    low
+                  :close  close
+                  :volume volume})))))
+
 (comment
+
+  (def path "resources/rates/gemini_BTCUSD_day.csv")
+  (def file (io/as-file path))
+
+  (.getAbsolutePath file)
+  (.exists file)
+
+  (read-csv path)
 
   (json/read-str (run-query! 1))
 
