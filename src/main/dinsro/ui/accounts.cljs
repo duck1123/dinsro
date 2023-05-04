@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
@@ -155,27 +156,29 @@
               (ui-table-header-cell {} "Initial Value")
               (ui-table-header-cell {} "Wallet")
               (ui-table-header-cell {} "Debit Count")))
-          (map ui-body-item current-rows))))))
+          (ui-table-body {}
+            (map ui-body-item current-rows)))))))
 
 (defsc Show
   [_this {::m.accounts/keys [name currency source wallet]
           :ui/keys          [transactions]}]
-  {:ident         ::m.accounts/id
-   :initial-state {::m.accounts/name     ""
-                   ::m.accounts/id       nil
-                   ::m.accounts/currency {}
-                   ::m.accounts/source   {}
-                   ::m.accounts/wallet   {}
-                   :ui/transactions      {}}
-   :pre-merge     (u.links/page-merger ::m.accounts/id {:ui/transactions u.a.transactions/Report})
-   :query         [::m.accounts/name
-                   ::m.accounts/id
-                   {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
-                   {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
-                   {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                   {:ui/transactions (comp/get-query u.a.transactions/Report)}]
-   :route-segment ["accounts" :id]
-   :will-enter    (partial u.links/page-loader ::m.accounts/id ::Show)}
+  {:componentDidMount #(report/start-report! % u.a.transactions/Report {:route-params (comp/props %)})
+   :ident             ::m.accounts/id
+   :initial-state     {::m.accounts/name     ""
+                       ::m.accounts/id       nil
+                       ::m.accounts/currency {}
+                       ::m.accounts/source   {}
+                       ::m.accounts/wallet   {}
+                       :ui/transactions      {}}
+   :pre-merge         (u.links/page-merger ::m.accounts/id {:ui/transactions u.a.transactions/Report})
+   :query             [::m.accounts/name
+                       ::m.accounts/id
+                       {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
+                       {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
+                       {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
+                       {:ui/transactions (comp/get-query u.a.transactions/Report)}]
+   :route-segment     ["accounts" :id]
+   :will-enter        (partial u.links/page-loader ::m.accounts/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str name))
