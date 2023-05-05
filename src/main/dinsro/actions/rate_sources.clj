@@ -109,6 +109,10 @@
                   :close  close
                   :volume volume})))))
 
+(defn load-rates!
+  []
+  (log/info :load-rates!/starting {}))
+
 (defn create!
   [props]
   (log/info :create!/starting {:props props})
