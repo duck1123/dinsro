@@ -22,7 +22,9 @@
   (if-let [run-id (::m.n.runs/id props)]
     (try
       (a.n.runs/stop! run-id)
+      (log/info :stop!/finished {})
       {::mu/status :ok}
       (catch Exception ex
+        (log/error :stop!/errored {:ex ex})
         (mu/exception-response ex)))
     (mu/error-response "No run id")))

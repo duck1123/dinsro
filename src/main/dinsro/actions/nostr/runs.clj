@@ -38,14 +38,18 @@
 
 (>defn get-connection*
   ([run-id]
-   [::m.n.runs/id => ::m.n.connections/id]
+   [::m.n.runs/id => (? ::m.n.connections/id)]
    (get-connection* run-id true))
   ([run-id register]
-   [::m.n.runs/id boolean? => ::m.n.connections/id]
+   [::m.n.runs/id boolean? => (? ::m.n.connections/id)]
    (if-let [relay-id (q.n.relays/find-by-run run-id)]
-     (when-let [connection-id (a.n.connections/register-connection!* relay-id register)]
-       (log/info :get-connection/finished {:connection-id connection-id})
-       connection-id)
+     (if-let [connection-id (a.n.connections/register-connection!* relay-id register)]
+       (do
+         (log/info :get-connection/finished {:connection-id connection-id})
+         connection-id)
+       (do
+         (log/info :get-connection/no-connection {:relay-id relay-id})
+         nil))
      (throw (ex-info "No relay" {})))))
 
 (>defn get-connection
@@ -96,7 +100,9 @@
             (log/error :stop/no-channel {:connection-id connection-id})
             (a.n.connections/disconnect! connection-id)))
         (a.n.connections/send! connection-id (json/json-str ["CLOSE" code])))
-      (log/error :stop!/no-connection {}))
+      (do
+        (log/error :stop!/no-connection {})
+        (q.n.runs/set-stopped! run-id)))
     (throw (ex-info "no code" {}))))
 
 (defn delete!

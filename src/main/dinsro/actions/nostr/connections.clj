@@ -105,7 +105,7 @@
 
 (>defn get-topic-channel*
   [run-id]
-  [::m.n.runs/id => ds/channel?]
+  [::m.n.runs/id => (? ds/channel?)]
   (log/info :get-topic-channel*/starting {:run-id run-id})
   (if-let [response (get @topics run-id)]
     response
