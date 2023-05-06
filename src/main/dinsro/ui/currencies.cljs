@@ -13,6 +13,7 @@
    [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.ui.currencies.accounts :as u.c.accounts]
    [dinsro.ui.currencies.rate-sources :as u.c.rate-sources]
+   [dinsro.ui.currencies.rates :as u.c.rates]
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm [_this _props]
@@ -31,7 +32,8 @@
   [_this _props]
   {:router-targets
    [u.c.accounts/SubPage
-    u.c.rate-sources/SubPage]})
+    u.c.rate-sources/SubPage
+    u.c.rates/SubPage]})
 
 (report/defsc-report Report
   [_this _props]

@@ -105,6 +105,11 @@
                   :close  close
                   :volume volume})))))
 
+(defn create!
+  [props]
+  (log/info :create!/starting {:props props})
+  nil)
+
 (comment
 
   (def path "resources/rates/gemini_BTCUSD_day.csv")
@@ -118,6 +123,8 @@
   (json/read-str (run-query! 1))
 
   *scheduler*
+
+  (q.rate-sources/index-ids)
 
   (start-scheduler!)
   (stop-scheduler!)

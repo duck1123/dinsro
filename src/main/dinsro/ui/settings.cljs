@@ -40,6 +40,7 @@
     u.s.ln/Page
     u.s.rate-sources/Report
     u.s.rate-sources/Show
+    u.s.rate-sources/NewForm
     u.s.categories/Report
     u.s.categories/Show]})
 

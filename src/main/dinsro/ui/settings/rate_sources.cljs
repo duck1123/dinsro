@@ -16,6 +16,15 @@
    [dinsro.ui.settings.rate-sources.accounts :as u.s.rs.accounts]
    [dinsro.ui.settings.rate-sources.rates :as u.s.rs.rates]))
 
+(def create-button
+  {:type   :button
+   :local? true
+   :label  "Create"
+   :action
+   (fn [this _key]
+     (let [{::m.rate-sources/keys [id]} (comp/props this)]
+       (comp/transact! this [(mu.rate-sources/create! {::m.rate-sources/id id})])))})
+
 (def run-button
   {:type   :button
    :local? true
@@ -45,13 +54,23 @@
 
 (def ui-router (comp/factory Router))
 
+(def new-action-button
+  {:type   :button
+   :local? true
+   :label  "New"
+   :action (fn [this _] (form/create! this NewForm))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.rate-sources/currency #(u.links/ui-currency-link %2)
                          ::m.rate-sources/name     #(u.links/ui-rate-source-link %3)}
    ro/columns           [m.rate-sources/name
                          m.rate-sources/url
-                         m.rate-sources/active?]
+                         m.rate-sources/active?
+                         j.rate-sources/rate-count]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new new-action-button
+                         ::refresh         u.links/refresh-control}
    ro/route             "rate-sources"
    ro/row-pk            m.rate-sources/id
    ro/run-on-mount?     true
