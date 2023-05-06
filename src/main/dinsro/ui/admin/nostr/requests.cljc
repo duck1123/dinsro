@@ -33,6 +33,7 @@
 ;; [[../../../model/nostr/requests.cljc]]
 ;; [[../../../mutations/nostr/requests.cljc]]
 ;; [[../../../ui/admin/nostr.cljc]]
+;; [[../../../ui/forms/nostr/requests.cljc]]
 ;; [[../../../ui/nostr/requests.cljc]]
 
 (def index-page-id :admin-nostr-requests)
@@ -41,6 +42,9 @@
 (def required-role :admin)
 (def show-page-id :admin-nostr-requests-show)
 (def debug-props false)
+
+(def delete-action
+  (u.links/row-action-button "Delete" model-key mu.n.requests/stop!))
 
 (defsc BodyItem
   [this {::j.n.requests/keys [filters]
@@ -73,9 +77,10 @@
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.requests/id}))
 
 (report/defsc-report Report
-  [this props]
-  {ro/BodyItem BodyItem
-   ro/column-formatters {::m.n.requests/id    #(u.links/ui-admin-request-link %3)}
+  [_this props]
+  {ro/BodyItem          BodyItem
+   ro/column-formatters {::m.n.requests/id    #(u.links/ui-admin-request-link %3)
+                         ::m.n.requests/code  #(u.links/ui-admin-request-link %3)}
    ro/columns           [m.n.requests/id
                          m.n.requests/code
                          j.n.requests/run-count
@@ -86,6 +91,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
+   ro/row-actions       [delete-action]
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/admin-index
