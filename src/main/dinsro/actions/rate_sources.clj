@@ -113,6 +113,14 @@
   (log/info :create!/starting {:props props})
   nil)
 
+(>defn delete!
+  [rate-source-id]
+  [::m.rate-sources/id => nil?]
+  (log/info :delete!/starting {:rate-source-id rate-source-id})
+  (q.rate-sources/delete! rate-source-id)
+  (log/info :delete!/finished {:rate-source-id rate-source-id})
+  nil)
+
 (comment
 
   (def path "resources/rates/gemini_BTCUSD_day.csv")

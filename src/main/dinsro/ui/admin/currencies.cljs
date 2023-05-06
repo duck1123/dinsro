@@ -30,9 +30,10 @@
    ro/columns           [m.currencies/name m.currencies/code
                          j.currencies/source-count
                          j.currencies/rate-count]
-   ro/controls          {::new new-button}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
    ro/route             ["currencies"]
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.currencies/index

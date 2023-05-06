@@ -78,7 +78,7 @@
   [=> (s/coll-of ::m.rate-sources/item)]
   (map read-record (index-ids)))
 
-(>defn delete-record
+(>defn delete!
   [id]
   [:xt/id => any?]
   (let [node (c.xtdb/main-node)]

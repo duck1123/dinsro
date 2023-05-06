@@ -76,10 +76,13 @@
   (map read-record (index-ids)))
 
 (>defn delete!
+  "Delete a currency"
   [id]
   [:xt/id => nil?]
+  (log/info :delete!/starting {:id id})
   (let [node (c.xtdb/main-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
+    (log/info :delete!/finished {:id id})
     nil))
 
 (>defn delete-all
