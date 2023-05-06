@@ -2,14 +2,13 @@
   (:require
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.nostr.connections :as m.n.connections]
-   [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.specs :as ds]
-   [dinsro.ui.nostr.event-tags :as u.n.event-tags]
+   [dinsro.ui.nostr.event-tags-test :as t.u.n.event-tags]
    [dinsro.ui.nostr.events :as u.n.events]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
@@ -42,21 +41,6 @@
    ::m.n.pubkeys/hex     "deadbeef"
    ::m.n.pubkeys/picture "https://duck1123.com/images/duck1123.png"})
 
-(defn make-tag
-  []
-  {::m.n.event-tags/id (ds/gen-key ::m.n.event-tags/id)
-   ::m.n.event-tags/pubkey nil
-   ::m.n.event-tags/event nil
-   ::m.n.event-tags/index (ds/gen-key ::m.n.event-tags/index)
-   ::m.n.event-tags/raw-value (ds/gen-key ::m.n.event-tags/raw-value)
-   ::m.n.event-tags/type "e"})
-
-(ws/defcard TagDisplay
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.n.event-tags/TagDisplay
-    ::ct.fulcro3/initial-state
-    (fn [] (make-tag))}))
-
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard EventBox
   {::wsm/card-height 12
@@ -71,4 +55,4 @@
        ::m.n.events/created-at   0
        ::j.n.events/created-date (ds/gen-key ::j.n.events/created-date)
        ::j.n.events/witnesses    (map (fn [_] (make-witness)) (range 3))
-       ::j.n.events/tags         (map (fn [_] (make-tag)) (range 3))})}))
+       ::j.n.events/tags         (map (fn [_] (t.u.n.event-tags/make-tag)) (range 3))})}))

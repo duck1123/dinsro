@@ -7,7 +7,22 @@
    [dinsro.menus :as me]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.connections :as u.n.connections]
    [dinsro.ui.nostr.runs.witnesses :as u.n.r.witnesses]))
+
+(defsc RunDisplay
+  [_this {::m.n.runs/keys [connection] :as props}]
+  {:ident         ::m.n.runs/id
+   :initial-state {::m.n.runs/id         nil
+                   ::m.n.runs/status     {}
+                   ::m.n.runs/connection {}}
+   :query         [::m.n.runs/id
+                   ::m.n.runs/status
+                   {::m.n.runs/connection (comp/get-query u.n.connections/ConnectionDisplay)}]}
+  (dom/div {} (u.links/ui-run-link props))
+  (u.n.connections/ui-connection-display connection))
+
+(def ui-run-display (comp/factory RunDisplay {:keyfn ::m.n.runs/id}))
 
 (defrouter Router
   [_this _props]

@@ -11,6 +11,20 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.connections.runs :as u.n.c.runs]))
 
+(defsc ConnectionDisplay
+  [_this {::m.n.connections/keys [relay] :as props}]
+  {:ident         ::m.n.connections/id
+   :initial-state {::m.n.connections/id     nil
+                   ::m.n.connections/status :initial
+                   ::m.n.connections/relay  {}}
+   :query         [::m.n.connections/id
+                   ::m.n.connections/status
+                   {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}]}
+  (u.links/ui-relay-link props)
+  (u.links/ui-relay-link relay))
+
+(def ui-connection-display (comp/factory ConnectionDisplay {:keyfn ::m.n.connections/id}))
+
 (defrouter Router
   [_this _props]
   {:router-targets

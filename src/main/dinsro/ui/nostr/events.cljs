@@ -13,21 +13,18 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
-   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.menus :as me]
-   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events.event-tags :as u.n.e.event-tags]
    [dinsro.ui.nostr.events.relays :as u.n.e.relays]
    [dinsro.ui.nostr.events.witnesses :as u.n.e.witnesses]
+   [dinsro.ui.nostr.witnesses :as u.n.witnesses]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as md.transform]
    [sablono.core :as html :refer-macros [html]]))
@@ -82,49 +79,7 @@
 (def debug-tags true)
 
 (def log-run-props false)
-(def log-witness-props false)
 (def log-connection-props true)
-
-(defsc ConnectionDisplay
-  [_this {::m.n.connections/keys [relay] :as props}]
-  {:ident         ::m.n.connections/id
-   :initial-state {::m.n.connections/id     nil
-                   ::m.n.connections/status :initial
-                   ::m.n.connections/relay  {}}
-   :query         [::m.n.connections/id
-                   ::m.n.connections/status
-                   {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}]}
-  (u.links/ui-relay-link props)
-  (u.links/ui-relay-link relay))
-
-(def ui-connection-display (comp/factory ConnectionDisplay {:keyfn ::m.n.connections/id}))
-
-(defsc RunDisplay
-  [_this {::m.n.runs/keys [connection] :as props}]
-  {:ident         ::m.n.runs/id
-   :initial-state {::m.n.runs/id         nil
-                   ::m.n.runs/status {}
-                   ::m.n.runs/connection {}}
-   :query         [::m.n.runs/id
-                   ::m.n.runs/status
-                   {::m.n.runs/connection (comp/get-query ConnectionDisplay)}]}
-  (dom/div {} (u.links/ui-run-link props))
-  (ui-connection-display connection))
-
-(def ui-run-display (comp/factory RunDisplay {:keyfn ::m.n.runs/id}))
-
-(defsc WitnessDisplay
-  [_this {::m.n.witnesses/keys [run] :as props}]
-  {:ident         ::m.n.witnesses/id
-   :query         [::m.n.witnesses/id
-                   {::m.n.witnesses/run (comp/get-query RunDisplay)}]
-   :initial-state {::m.n.witnesses/id  nil
-                   ::m.n.witnesses/run {}}}
-  (ui-list-item {}
-    (when log-witness-props (dom/div {} (u.links/ui-witness-link props)))
-    (ui-run-display run)))
-
-(def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
 
 (def transform-markup true)
 (def convert-html true)
@@ -169,7 +124,7 @@
                    ::m.n.events/created-at
                    ::m.n.events/kind
                    ::j.n.events/created-date
-                   {::j.n.events/witnesses (comp/get-query WitnessDisplay)}
+                   {::j.n.events/witnesses (comp/get-query u.n.witnesses/WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
                    {::j.n.events/tags (comp/get-query u.n.event-tags/TagDisplay)}]}
   (dom/div :.ui.item.segment.event-box
@@ -223,7 +178,7 @@
         (when (seq witnesses)
           (ui-segment {}
             (dom/div :.ui.relaxed.divided.list
-              (map ui-witness-display witnesses))))))))
+              (map u.n.witnesses/ui-witness-display witnesses))))))))
 
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
