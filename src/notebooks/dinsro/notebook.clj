@@ -1,4 +1,5 @@
-^{:nextjournal.clerk/visibility #{:code :hide}}
+^{:nextjournal.clerk/visibility #{:code :hide}
+  :toc true}
 (ns dinsro.notebook
   (:require
    [dinsro.actions.site :as a.site]
