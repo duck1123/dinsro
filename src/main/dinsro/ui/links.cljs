@@ -38,6 +38,7 @@
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -433,6 +434,14 @@
   (form-link this id note-id :dinsro.ui.nostr.events/Show))
 
 (def ui-event-link (comp/factory EventLinkForm {:keyfn ::m.n.events/note-id}))
+
+(form/defsc-form EventTagLinkForm [this {::m.n.event-tags/keys [id index]}]
+  {fo/id           m.n.event-tags/id
+   fo/route-prefix "event-tags-link"
+   fo/attributes   [m.n.event-tags/id]}
+  (form-link this id (str index) :dinsro.ui.nostr.event-tags/Show))
+
+(def ui-event-tag-link (comp/factory EventTagLinkForm {:keyfn ::m.n.event-tags/id}))
 
 (form/defsc-form FilterItemCountLinkForm [this {::m.n.filters/keys [id] ::j.n.filters/keys [item-count]}]
   {fo/id           m.n.filters/id

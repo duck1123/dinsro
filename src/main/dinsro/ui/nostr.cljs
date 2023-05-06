@@ -6,6 +6,7 @@
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
    [dinsro.ui.nostr.connections :as u.n.connections]
+   [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events :as u.n.events]
    [dinsro.ui.nostr.filters :as u.n.filters]
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
@@ -24,6 +25,7 @@
     u.n.badge-definitions/Report
     u.n.connections/Report
     u.n.connections/Show
+    u.n.event-tags/Show
     u.n.events/Report
     u.n.events/Show
     u.n.filters/Show

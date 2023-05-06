@@ -24,6 +24,7 @@
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events.event-tags :as u.n.e.event-tags]
    [dinsro.ui.nostr.events.relays :as u.n.e.relays]
    [dinsro.ui.nostr.events.witnesses :as u.n.e.witnesses]
@@ -78,44 +79,7 @@
 
 (def ui-event-author-image (comp/factory EventAuthorImage))
 
-(defsc TagDisplay
-  [_this {::m.n.event-tags/keys [pubkey event index raw-value extra type]}]
-  {:query         [::m.n.event-tags/id
-                   {::m.n.event-tags/pubkey (comp/get-query u.links/PubkeyNameLinkForm)}
-                   {::m.n.event-tags/event (comp/get-query u.links/ui-event-link)}
-                   ::m.n.event-tags/index
-                   ::m.n.event-tags/raw-value
-                   ::m.n.event-tags/extra
-                   ::m.n.event-tags/type]
-   :ident         ::m.n.event-tags/id
-   :initial-state {::m.n.event-tags/id        nil
-                   ::m.n.event-tags/pubkey    {}
-                   ::m.n.event-tags/event     {}
-                   ::m.n.event-tags/index     0
-                   ::m.n.event-tags/raw-value nil
-                   ::m.n.event-tags/extra     nil
-                   ::m.n.event-tags/type      nil}}
-  (let [show-labels false
-        tag? (= type "t")]
-    (ui-list-item {}
-      (dom/div {:style {:marginRight "5px"}} "[" (str index) "] ")
-      (when tag?
-        (str "#" raw-value))
-      (when pubkey
-        (dom/div {}
-          (when show-labels "Pubkey: ")
-          (u.links/ui-pubkey-name-link pubkey)))
-      (when event
-        (dom/div {}
-          (when show-labels "Event: ")
-          (u.links/ui-event-link event)))
-      (when-not (or pubkey event tag?)
-        (comp/fragment
-         (dom/div {} "Type: " (str type))
-         (dom/div {} "Raw Value: " (str raw-value))))
-      (when extra (dom/div {} "Extra: " (str extra))))))
-
-(def ui-tag-display (comp/factory TagDisplay {:keyfn ::m.n.event-tags/id}))
+(def debug-tags true)
 
 (def log-run-props false)
 (def log-witness-props false)
@@ -130,7 +94,6 @@
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}]}
-  (dom/div {} "foo")
   (u.links/ui-relay-link props)
   (u.links/ui-relay-link relay))
 
@@ -208,7 +171,7 @@
                    ::j.n.events/created-date
                    {::j.n.events/witnesses (comp/get-query WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
-                   {::j.n.events/tags (comp/get-query TagDisplay)}]}
+                   {::j.n.events/tags (comp/get-query u.n.event-tags/TagDisplay)}]}
   (dom/div :.ui.item.segment.event-box
     (dom/div :.ui.tiny.image
       (ui-event-author-image pubkey))
@@ -226,6 +189,13 @@
             (ui-grid-column {:floated "right" :textAlign "right" :width 2}
               (str kind)))))
       (dom/div {:classes [:.description]}
+        (when (seq tags)
+          (ui-segment {}
+            (dom/div :.ui.relaxed.divided.list
+              (let [pubkey-tags (filter
+                                 (fn [tag] (= "p" (::m.n.event-tags/type tag)))
+                                 (sort-by ::m.n.event-tags/index tags))]
+                (map u.n.event-tags/ui-tag-display pubkey-tags)))))
         (dom/div :.ui.container
           (condp = kind
             0 (dom/div :.ui.container
@@ -246,7 +216,10 @@
         (when (seq tags)
           (ui-segment {}
             (dom/div :.ui.relaxed.divided.list
-              (map ui-tag-display (sort-by ::m.n.event-tags/index tags)))))
+              (let [filtered-tags (filter
+                                   (fn [tag] (not= "p" (::m.n.event-tags/type tag)))
+                                   (sort-by ::m.n.event-tags/index tags))]
+                (map u.n.event-tags/ui-tag-display filtered-tags)))))
         (when (seq witnesses)
           (ui-segment {}
             (dom/div :.ui.relaxed.divided.list

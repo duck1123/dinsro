@@ -53,6 +53,18 @@
         ::m.n.event-tags/raw-value value
         ::m.n.event-tags/extra     extra}))))
 
+(>defn fetch!
+  "Fetch the objects associated with this tag"
+  [event-tag-id]
+  [::m.n.event-tags/id => any?]
+  (do
+    (log/info :fetch/starting {:event-tag-id event-tag-id})
+    (if-let [tag (q.n.event-tags/read-record event-tag-id)]
+      (do
+        (log/info :fetch!/read {:tag tag})
+        nil)
+      nil)))
+
 (comment
 
   (q.n.events/find-by-note-id "e4f5b8f980885e5f013d1b0549ce871c42d892e744da3e4a611a65202a227472")

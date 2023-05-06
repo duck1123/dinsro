@@ -9,6 +9,7 @@
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.specs :as ds]
+   [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events :as u.n.events]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
@@ -52,7 +53,7 @@
 
 (ws/defcard TagDisplay
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.n.events/TagDisplay
+   {::ct.fulcro3/root u.n.event-tags/TagDisplay
     ::ct.fulcro3/initial-state
     (fn [] (make-tag))}))
 
