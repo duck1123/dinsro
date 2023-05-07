@@ -147,29 +147,35 @@
         (log/error :download-macaroon!/download-failed {:url url})
         nil))))
 
-(defn get-macaroon-text
+(>defn get-macaroon-text
   [node]
+  [::m.ln.nodes/item => any?]
   (slurp (download-macaroon! node)))
 
-(defn initialize!
-  ([node] (initialize! node "password12345678"))
+(>defn initialize!
+  ([node]
+   [::m.ln.nodes/item => any?]
+   (initialize! node "password12345678"))
   ([node password]
-   (log/info :initialize!/starting {:node node})
-   (let [client   (get-client node)]
-     (if-let [mnemonic (::m.ln.nodes/mnemonic node)]
-       (let [cipher-seed-mnemonic (efc/to-scala-list mnemonic)]
-         (log/info :initialize!/mnemonic {:mnemonic cipher-seed-mnemonic})
-         (try
-           (c.lnd-s/initialize! client password cipher-seed-mnemonic)
-           (catch Exception ex
-             (log/error :initialize!/error {:ex ex})
-             (throw ex))))
-       (throw (ex-info "no mnemonic" {}))))))
+   [::m.ln.nodes/item string? => any?]
+   (do
+     (log/info :initialize!/starting {:node node})
+     (let [client (get-client node)]
+       (if-let [mnemonic (::m.ln.nodes/mnemonic node)]
+         (let [cipher-seed-mnemonic (efc/to-scala-list mnemonic)]
+           (log/info :initialize!/mnemonic {:mnemonic cipher-seed-mnemonic})
+           (try
+             (c.lnd-s/initialize! client password cipher-seed-mnemonic)
+             (catch Exception ex
+               (log/error :initialize!/error {:ex ex})
+               (throw ex))))
+         (throw (ex-info "no mnemonic" {})))))))
 
-(defn get-info
+(>defn get-info
   "Fetch info for the node"
   [node]
-  (let [client (get-client node)
+  [::m.ln.nodes/item => any?]
+  (let [client   (get-client node)
         response (c.lnd-s/get-info client)]
     (log/info :get-info/response {:response response})
     (let [record (cs/->record response)]
