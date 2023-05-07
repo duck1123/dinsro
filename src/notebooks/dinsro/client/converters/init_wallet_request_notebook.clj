@@ -44,4 +44,6 @@
      unknown-fields)
     (catch Exception ex ex)))
 
-(c.c.init-wallet-request/->request wallet-password)
+(try
+  (c.c.init-wallet-request/->request wallet-password)
+  (catch Exception ex ex))

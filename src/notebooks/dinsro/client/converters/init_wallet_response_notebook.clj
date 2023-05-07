@@ -15,4 +15,6 @@
 
 (def unknown-fields nil)
 
-(c.c.init-wallet-response/->response admin-macaroon unknown-fields)
+(try
+  (c.c.init-wallet-response/->response admin-macaroon unknown-fields)
+  (catch Exception ex ex))
