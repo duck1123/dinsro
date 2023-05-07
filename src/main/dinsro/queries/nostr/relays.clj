@@ -43,9 +43,14 @@
     (when (get record ::m.n.relays/id)
       (dissoc record :xt/id))))
 
-(defn get-index-query
+(defn get-index-params
   [query-params]
   (let [{connection-id ::m.n.connections} query-params]
+    [connection-id]))
+
+(defn get-index-query
+  [query-params]
+  (let [[connection-id] (get-index-params query-params)]
     {:find  ['?relay-id]
      :in    [['?connection-id]]
      :where (->> [['?relay-id ::m.n.relays/id '_]]
@@ -53,11 +58,6 @@
                            [['?connection-id ::m.n.connections/relay '?relay-id]]))
                  (filter identity)
                  (into []))}))
-
-(defn get-index-params
-  [query-params]
-  (let [{connection-id ::m.n.connections} query-params]
-    [connection-id]))
 
 (>defn count-ids
   ([]
