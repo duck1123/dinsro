@@ -8,7 +8,7 @@
 
 (defn start-db
   [f schemata]
-  (log/info :start-db/starting {:f f :schemata schemata})
+  (log/info :start-db/starting {:f f :schemata schemata :config (config/get-config)})
   (mount/in-cljc-mode)
   (mount/start-with-args {:config "config/test.edn"}  #'config/config-map)
   (mount/start #'secret)
