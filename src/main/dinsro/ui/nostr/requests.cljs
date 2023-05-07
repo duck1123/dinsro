@@ -22,22 +22,18 @@
     u.n.rq.runs/SubPage]})
 
 (defsc Show
-  [_this {::m.n.requests/keys [code id start-time end-time relay]
+  [_this {::m.n.requests/keys [code id relay]
           ::j.n.requests/keys [query-string]
           :ui/keys            [router]}]
   {:ident         ::m.n.requests/id
    :initial-state {::m.n.requests/id         nil
                    :ui/router                {}
                    ::m.n.requests/code       ""
-                   ::m.n.requests/start-time nil
-                   ::m.n.requests/end-time   nil
                    ::m.n.requests/relay      {}
                    ::j.n.requests/query-string ""}
    :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
    :query         [::m.n.requests/id
                    ::m.n.requests/code
-                   ::m.n.requests/start-time
-                   ::m.n.requests/end-time
                    ::j.n.requests/query-string
                    {::m.n.requests/relay (comp/get-query u.links/RelayLinkForm)}
                    {:ui/router (comp/get-query Router)}]
@@ -48,8 +44,6 @@
       (dom/div :.ui.segment
         (dom/div "Request")
         (dom/div {} (str code))
-        (dom/div {} (str start-time))
-        (dom/div {} (str end-time))
         (dom/div {} (str "Query String: " query-string))
         (dom/div {} (u.links/ui-relay-link relay)))
       (u.links/ui-nav-menu {:menu-items me/nostr-requests-menu-items :id id})

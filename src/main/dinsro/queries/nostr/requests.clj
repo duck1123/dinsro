@@ -20,11 +20,8 @@
   (let [node            (c.xtdb/main-node)
         id              (new-uuid)
         prepared-params (merge
-                         {::m.n.requests/start-time nil
-                          ::m.n.requests/end-time   nil
-                          ::m.n.requests/status     "initial"
-                          ::m.n.requests/id         id
-                          :xt/id                    id}
+                         {::m.n.requests/id id
+                          :xt/id            id}
                          params)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     (log/info :create-record/finished {:id id})
@@ -164,50 +161,3 @@
             [request-id])]
     (log/trace :find-relay/finished {:id id})
     id))
-
-(defn set-started
-  [request-id]
-  (log/debug :set-stopped/starting {:request-id request-id})
-  (c.xtdb/submit-tx! ::set-started request-id))
-
-(defn set-stopped
-  [request-id]
-  (log/debug :set-stopped/starting {:request-id request-id})
-  (c.xtdb/submit-tx! ::set-stopped request-id))
-
-(>defn create-set-started
-  []
-  [=> any?]
-  (log/debug :create-set-started/starting {})
-  (let [node             (c.xtdb/main-node)
-        toggle-connected {:xt/id ::set-started
-                          :xt/fn '(fn [ctx eid]
-                                    (let [entity (some-> ctx xtdb.api/db (xtdb.api/entity eid)
-                                                         (assoc ::m.n.requests/status "started")
-                                                         (assoc ::m.n.requests/start-time (dinsro.specs/->inst)))]
-                                      [[::xt/put entity]]))}]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put toggle-connected]]))
-    (log/trace :create-set-started/finished {})))
-
-(>defn create-set-stopped
-  "create set-stopped transaction"
-  []
-  [=> any?]
-  (log/debug :create-set-stopped/starting {})
-  (let [node             (c.xtdb/main-node)
-        toggle-connected {:xt/id ::set-stopped
-                          :xt/fn '(fn [ctx eid]
-                                    (let [entity (some-> ctx xtdb.api/db (xtdb.api/entity eid)
-                                                         (assoc ::m.n.requests/status "stopped")
-                                                         (assoc ::m.n.requests/end-time (dinsro.specs/->inst)))]
-                                      [[::xt/put entity]]))}]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put toggle-connected]]))
-    (log/trace :create-set-stopped/finished {})))
-
-(>defn initialize-queries!
-  []
-  [=> any?]
-  (log/debug :initialize-queries!/starting {})
-  (create-set-started)
-  (create-set-stopped)
-  (log/trace :initialize-queries!/finished {}))

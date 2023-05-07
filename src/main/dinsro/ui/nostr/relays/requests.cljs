@@ -18,9 +18,7 @@
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes   [m.n.requests/id
-                    m.n.requests/start-time
-                    m.n.requests/status
-                    m.n.requests/end-time]
+                    m.n.requests/code]
    fo/cancel-route ["requests"]
    fo/id           m.n.requests/id
    fo/route-prefix "new-request"
@@ -40,9 +38,6 @@
                          ::j.n.requests/run-count    #(u.links/ui-request-run-count-link %3)}
    ro/columns           [m.n.requests/code
                          m.n.requests/relay
-                         ;; m.n.requests/status
-                         ;; m.n.requests/start-time
-                         ;; m.n.requests/end-time
                          j.n.requests/filter-count
                          j.n.requests/run-count]
    ro/control-layout    {:action-buttons [::refresh]}

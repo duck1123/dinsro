@@ -123,9 +123,6 @@
 
   (q.n.requests/index-ids)
 
-  (q.n.requests/set-started request-id)
-  (q.n.requests/set-stopped request-id)
-
   (get-query-string request-id)
 
   (q.n.relays/read-record (q.n.requests/find-relay request-id))
