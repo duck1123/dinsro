@@ -28,6 +28,11 @@
    fo/route-prefix  "transaction-form"
    fo/title         "Transaction"})
 
+(def new-button
+  {:label  "New Transaction"
+   :type   :button
+   :action (fn [this] (form/create! this NewForm))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
@@ -35,9 +40,7 @@
                          m.transactions/date
                          j.transactions/debit-count]
    ro/control-layout    {:action-buttons [::new-transaction ::refresh]}
-   ro/controls          {::new-transaction {:label  "New Transaction"
-                                            :type   :button
-                                            :action (fn [this] (form/create! this NewForm))}
+   ro/controls          {::new-transaction new-button
                          ::refresh         u.links/refresh-control}
    ro/route             "transactions"
    ro/row-pk            m.transactions/id

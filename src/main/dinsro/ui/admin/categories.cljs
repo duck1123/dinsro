@@ -34,13 +34,16 @@
     (form/render-layout this props)
     (dom/div {} (dom/p {} "Category"))))
 
+(def new-button
+  {:label  "New Category"
+   :type   :button
+   :action #(form/create! % AdminCategoryForm)})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.categories/user #(u.links/ui-user-link %2)}
    ro/columns           [m.categories/name m.categories/user j.categories/transaction-count]
-   ro/controls          {::new {:label  "New Category"
-                                :type   :button
-                                :action #(form/create! % AdminCategoryForm)}}
+   ro/controls          {::new new-button}
    ro/form-links        {::m.categories/name AdminCategoryForm}
    ro/row-pk            m.categories/id
    ro/route             "categories"

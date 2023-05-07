@@ -17,6 +17,27 @@
 (def ident-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
+(def new-button
+  {:type   :button
+   :label  "New"
+   :action (fn [this]
+             (let [props                 (comp/props this)
+                   {:ui/keys [controls]} props
+                   id-control            (some
+                                          (fn [c]
+                                            (let [{::control/keys [id]} c]
+                                              (when (= id ::m.ln.nodes/id)
+                                                c)))
+
+                                          controls)
+                   node-id (::control/value id-control)]
+               (log/info :channels/creating {:props      props
+                                             :controls   controls
+                                             :id-control id-control
+                                             :node-id    node-id})
+               (form/create! this u.ln.channels/NewForm
+                             {:initial-state {::m.ln.channels/address "foo"}})))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.ln.channels/block #(u.links/ui-block-link %2)
@@ -26,26 +47,8 @@
                          :inputs         [[::m.ln.nodes/id]]}
    ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                          ::refresh       u.links/refresh-control
-                         ::new
-                         {:type   :button
-                          :label  "New"
-                          :action (fn [this]
-                                    (let [props                 (comp/props this)
-                                          {:ui/keys [controls]} props
-                                          id-control            (some
-                                                                 (fn [c]
-                                                                   (let [{::control/keys [id]} c]
-                                                                     (when (= id ::m.ln.nodes/id)
-                                                                       c)))
+                         ::new new-button}
 
-                                                                 controls)
-                                          node-id (::control/value id-control)]
-                                      (log/info :channels/creating {:props      props
-                                                                    :controls   controls
-                                                                    :id-control id-control
-                                                                    :node-id    node-id})
-                                      (form/create! this u.ln.channels/NewForm
-                                                    {:initial-state {::m.ln.channels/address "foo"}})))}}
    ro/route            "node-channels"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
    ro/row-pk           m.ln.channels/id

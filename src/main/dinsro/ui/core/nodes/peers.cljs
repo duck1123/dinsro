@@ -23,6 +23,27 @@
    :label  "Fetch"
    :action (u.links/report-action ::m.c.nodes/id mu.c.nodes/fetch!)})
 
+(def new-button
+  {:type   :button
+   :label  "New"
+   :action (fn [this]
+             (let [props                 (comp/props this)
+                   {:ui/keys [controls]} props
+                   id-control            (some
+                                          (fn [c]
+                                            (let [{::control/keys [id]} c]
+                                              (when (= id ::m.c.nodes/id)
+                                                c)))
+
+                                          controls)
+                   node-id (::control/value id-control)]
+               (log/info :peers/creating {:props      props
+                                          :controls   controls
+                                          :id-control id-control
+                                          :node-id    node-id})
+               (form/create! this u.c.peers/NewForm
+                             {:initial-state {::m.c.peers/addr "foo"}})))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.peers/block #(u.links/ui-block-link %2)
@@ -38,31 +59,13 @@
    {::m.c.nodes/id {:type :uuid :label "Nodes"}
     ::refresh      u.links/refresh-control
     ::fetch        fetch-button
-    ::new          {:type   :button
-                    :label  "New"
-                    :action (fn [this]
-                              (let [props                 (comp/props this)
-                                    {:ui/keys [controls]} props
-                                    id-control            (some
-                                                           (fn [c]
-                                                             (let [{::control/keys [id]} c]
-                                                               (when (= id ::m.c.nodes/id)
-                                                                 c)))
-
-                                                           controls)
-                                    node-id (::control/value id-control)]
-                                (log/info :peers/creating {:props      props
-                                                           :controls   controls
-                                                           :id-control id-control
-                                                           :node-id    node-id})
-                                (form/create! this u.c.peers/NewForm
-                                              {:initial-state {::m.c.peers/addr "foo"}})))}}
-   ro/route            "node-peers"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
-   ro/row-pk           m.c.peers/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.peers/index
-   ro/title            "Node Peers"})
+    ::new          new-button}
+   ro/route             "node-peers"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
+   ro/row-pk            m.c.peers/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.peers/index
+   ro/title             "Node Peers"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

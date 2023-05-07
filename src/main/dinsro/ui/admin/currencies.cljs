@@ -15,15 +15,18 @@
    fo/route-prefix "new-currency"
    fo/title        "New Currency"})
 
+(def new-button
+  {:label  "New Currency"
+   :type   :button
+   :action #(form/create! % NewForm)})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
    ro/columns           [m.currencies/name m.currencies/code
                          j.currencies/source-count
                          j.currencies/rate-count]
-   ro/controls          {::new {:label  "New Currency"
-                                :type   :button
-                                :action #(form/create! % NewForm)}}
+   ro/controls          {::new new-button}
    ro/route             ["currencies"]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true

@@ -186,6 +186,11 @@
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.transactions/id}))
 
+(def new-button
+  {:label  "New Transaction"
+   :type   :button
+   :action (fn [this] (form/create! this NewTransaction))})
+
 (report/defsc-report Report
   [this props]
   {ro/BodyItem          BodyItem
@@ -193,11 +198,9 @@
    ro/columns           [m.transactions/description
                          m.transactions/date
                          j.transactions/debit-count]
-   ro/control-layout    {:action-buttons [::new-transaction ::refresh]}
-   ro/controls          {::new-transaction {:label  "New Transaction"
-                                            :type   :button
-                                            :action (fn [this] (form/create! this NewTransaction))}
-                         ::refresh         u.links/refresh-control}
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
    ro/route             "transactions"
    ro/row-pk            m.transactions/id
    ro/run-on-mount?     true
@@ -227,9 +230,7 @@
                         m.transactions/date
                         j.transactions/debit-count]
    ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
-   ro/controls         {::new-transaction {:label  "New Transaction"
-                                           :type   :button
-                                           :action (fn [this] (form/create! this NewTransaction))}
+   ro/controls         {::new-transaction new-button
                         ::refresh         u.links/refresh-control}
    ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/row-pk           m.transactions/id

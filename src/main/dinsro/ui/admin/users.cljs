@@ -60,12 +60,15 @@
    fo/route-prefix "admin-user"
    fo/title        "Admin User"})
 
+(def new-button
+  {:label  "New User"
+   :type   :button
+   :action (fn [this] (form/create! this UserForm))})
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name m.users/role]
-   ro/controls         {::new-user {:label  "New User"
-                                    :type   :button
-                                    :action (fn [this] (form/create! this UserForm))}
+   ro/controls         {::new-user new-button
                         ::refresh  u.links/refresh-control}
    ro/form-links       {::m.users/name UserForm}
    ro/route            "users"
