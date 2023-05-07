@@ -48,7 +48,8 @@
    ro/columns           [m.categories/name
                          m.categories/user]
    ro/control-layout    {:action-buttons [::new]}
-   ro/controls          {::new new-button}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
    ro/form-links        {::m.categories/name CategoryForm}
    ro/route             "categories"
    ro/row-pk            m.categories/id

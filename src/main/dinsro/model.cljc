@@ -103,6 +103,7 @@
    [dinsro.model.user-pubkeys :as m.user-pubkeys]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.mutations.accounts :as mu.accounts])
+   #?(:clj [dinsro.mutations.categories :as mu.categories])
    #?(:clj [dinsro.mutations.contacts :as mu.contacts])
    #?(:clj [dinsro.mutations.core.addresses :as mu.c.addresses])
    #?(:clj [dinsro.mutations.core.blocks :as mu.c.blocks])
@@ -255,6 +256,7 @@
      (vec (concat
            m.navlink/resolvers
            mu.accounts/resolvers
+           mu.categories/resolvers
            mu.contacts/resolvers
            mu.c.addresses/resolvers
            mu.c.connections/resolvers

@@ -20,6 +20,7 @@
 (defrouter Router
   [_this {:keys [current-state]}]
   {:router-targets [u.a.accounts/Report
+                    u.a.categories/NewForm
                     u.a.categories/Report
                     u.a.core/Page
                     u.a.currencies/Report
