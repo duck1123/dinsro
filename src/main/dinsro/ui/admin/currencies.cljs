@@ -6,7 +6,10 @@
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.ui.links :as u.links]))
+
+;; [../../actions/currencies.clj]
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name
@@ -28,6 +31,7 @@
                          j.currencies/rate-count]
    ro/controls          {::new new-button}
    ro/route             ["currencies"]
+   ro/row-actions      [(u.links/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.currencies/index

@@ -1,29 +1,23 @@
 (ns dinsro.mutations.currencies
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
-   #?(:clj [dinsro.actions.currencies :as a.currencies])
    [dinsro.model.currencies :as m.currencies]
    [dinsro.mutations :as mu]
-   [dinsro.specs.currencies :as s.currencies]))
+   #?(:clj [dinsro.processors.currencies :as p.currencies])
+   [dinsro.responses.currencies :as r.currencies]))
 
-#?(:cljs (comment ::pc/_ ::s.currencies/_ ::m.currencies/_))
+;; [../processors/currencies.clj]
+;; [../responses/currencies.cljc]
 
-(defsc DeleteResponse
-  [_ _]
-  {:initial-state {::mu/status          :initial
-                   ::mu/errors          {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::s.currencies/deleted-records]})
+#?(:cljs (comment ::pc/_ ::m.currencies/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation delete!
      [env props]
      {::pc/params #{::m.currencies/id}
-      ::pc/output [::mu/status ::mu/errors ::s.currencies/deleted-records]}
-     (a.currencies/do-delete! env props))
+      ::pc/output [::mu/status ::mu/errors ::r.currencies/deleted-records]}
+     (p.currencies/delete! env props))
 
    :cljs
    (defmutation delete! [_props]
@@ -34,6 +28,6 @@
          response))
 
      (remote [env]
-       (fm/returning env DeleteResponse))))
+       (fm/returning env r.currencies/DeleteResponse))))
 
 #?(:clj (def resolvers [delete!]))
