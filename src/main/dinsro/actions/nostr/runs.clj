@@ -36,16 +36,22 @@
         run-id        (register-run! request-id connection-id)]
     run-id))
 
+(>defn get-connection*
+  ([run-id]
+   [::m.n.runs/id => ::m.n.connections/id]
+   (get-connection* run-id true))
+  ([run-id register]
+   [::m.n.runs/id boolean? => ::m.n.connections/id]
+   (if-let [relay-id (q.n.relays/find-by-run run-id)]
+     (when-let [connection-id (a.n.connections/register-connection!* relay-id register)]
+       (log/info :get-connection/finished {:connection-id connection-id})
+       connection-id)
+     (throw (ex-info "No relay" {})))))
+
 (>defn get-connection
   [run-id]
   [::m.n.runs/id => ::m.n.connections/id]
-  (if-let [relay-id (q.n.relays/find-by-run run-id)]
-    (if-let [connection-id (a.n.connections/register-connection! relay-id)]
-      (do
-        (log/info :get-connection/finished {:connection-id connection-id})
-        connection-id)
-      (throw (ex-info "No connection" {})))
-    (throw (ex-info "No relay" {}))))
+  (get-connection* run-id true))
 
 (>defn start!
   [run-id]
@@ -80,15 +86,18 @@
 (defn stop!
   [run-id]
   (log/info :stop!/starting {:run-id run-id})
-  (if-let [chan (a.n.connections/get-topic-channel run-id)]
-    (do
-      (log/info :stop!/stopping {:chan chan})
-      (async/close! chan)
-      (if-let [code (q.n.requests/find-code-by-run run-id)]
-        (let [connection-id   (get-connection run-id)]
-          (a.n.connections/send! connection-id (json/json-str ["CLOSE" code])))
-        (throw (ex-info "no code" {}))))
-    (throw (ex-info "No run" {}))))
+  (if-let [code (q.n.requests/find-code-by-run run-id)]
+    (if-let [connection-id (get-connection* run-id false)]
+      (do
+        (if-let [chan (a.n.connections/get-topic-channel* run-id)]
+          (do (log/info :stop!/stopping {:chan chan})
+              (async/close! chan))
+          (do
+            (log/error :stop/no-channel {:connection-id connection-id})
+            (a.n.connections/disconnect! connection-id)))
+        (a.n.connections/send! connection-id (json/json-str ["CLOSE" code])))
+      (log/error :stop!/no-connection {}))
+    (throw (ex-info "no code" {}))))
 
 (defn delete!
   [run-id]

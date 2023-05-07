@@ -7,6 +7,7 @@
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.menus :as me]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.links :as u.links]))
 
 (defsc Show
@@ -40,10 +41,12 @@
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
                          m.n.connections/start-time
-                         m.n.connections/end-time]
+                         m.n.connections/end-time
+                         j.n.connections/run-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/route             "connections"
+   ro/row-actions       [(u.links/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index

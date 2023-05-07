@@ -103,16 +103,22 @@
       ;; (async/chan)
       (throw (ex-info "No channel" {})))))
 
+(>defn get-topic-channel*
+  [run-id]
+  [::m.n.runs/id => ds/channel?]
+  (log/info :get-topic-channel*/starting {:run-id run-id})
+  (if-let [response (get @topics run-id)]
+    response
+    (do
+      (log/info :get-topic-channel*/not-found {:run-id run-id})
+      nil)))
+
 (>defn get-topic-channel
   [run-id]
   [::m.n.runs/id => ds/channel?]
   (log/info :get-topic-channel/starting {:run-id run-id})
-  (if-let [response (get @topics run-id)]
-    response
-    (do
-      (log/info :get-topic-channel/not-found {:run-id run-id})
-      ;; (async/chan)
-      (throw (ex-info "No channel" {})))))
+  (or (get-topic-channel* run-id)
+      (throw (ex-info "No channel" {}))))
 
 (defn set-topic-channel
   [run-id ch]
@@ -208,15 +214,29 @@
       (q.n.connections/set-errored! connection-id)
       (throw (ex-info "Failed to create client" {})))))
 
+(>defn register-connection!*
+  ([relay-id]
+   [::m.n.relays/id => (? ::m.n.connections/id)]
+   (register-connection!* relay-id true))
+  ([relay-id register]
+   [::m.n.relays/id boolean? => (? ::m.n.connections/id)]
+   (do
+     (log/info :register-connection!/starting {:relay-id relay-id})
+     (if-let [connection-id (q.n.connections/find-connected-by-relay relay-id)]
+       connection-id
+       (when register
+         (let [connection-id (create-connection! relay-id)]
+           (start! connection-id)
+           connection-id))))))
+
 (>defn register-connection!
-  [relay-id]
-  [::m.n.relays/id => ::m.n.connections/id]
-  (log/info :register-connection!/starting {:relay-id relay-id})
-  (if-let [connection-id (q.n.connections/find-connected-by-relay relay-id)]
-    connection-id
-    (let [connection-id (create-connection! relay-id)]
-      (start! connection-id)
-      connection-id)))
+  ([relay-id]
+   [::m.n.relays/id => ::m.n.connections/id]
+   (register-connection! relay-id true))
+  ([relay-id register]
+   [::m.n.relays/id boolean? => ::m.n.connections/id]
+   (or (register-connection!* relay-id register)
+       (throw (ex-info "Not Registered" {})))))
 
 (defn stop!
   [relay-id]
