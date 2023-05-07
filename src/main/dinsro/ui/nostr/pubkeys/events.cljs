@@ -1,4 +1,5 @@
 (ns dinsro.ui.nostr.pubkeys.events
+  "Events in the context of a pubkey"
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
@@ -19,6 +20,7 @@
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (defsc EventListItem
+  "A single event in a list of events"
   [_this {::m.n.events/keys [id content created-at] :as event}]
   {:ident         ::m.n.events/id
    :initial-state {::m.n.events/id         nil
@@ -38,6 +40,7 @@
 
 (def override-report false)
 
+;; "Events in the context of a pubkey"
 (report/defsc-report Report
   [this props]
   {ro/BodyItem            u.n.events/EventBox
@@ -78,6 +81,7 @@
             (map ui-event-list-item current-rows))))))
 
 (defsc SubPage
+  "Event subpage for events"
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])

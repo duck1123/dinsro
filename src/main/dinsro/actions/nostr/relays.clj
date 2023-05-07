@@ -22,6 +22,7 @@
 (defonce topic-channels (atom {}))
 
 (defn get-channel
+  "Returns an async channel containing the responses from running the request against the relay"
   [relay-id request-id]
   (if-let [chan (get-in @topic-channels [relay-id request-id])]
     chan
@@ -30,6 +31,7 @@
       output-chan)))
 
 (>defn get-client-for-id
+  "Returns a websocket client for the relay"
   ([relay-id]
    [::m.n.relays/id => ::client]
    (get-client-for-id relay-id true))
@@ -117,6 +119,7 @@
     response))
 
 (>defn register-relay!
+  "Register a relay record from an address"
   [address]
   [::m.n.relays/address => ::m.n.relays/id]
   (log/info :register-relay/starting {:address address})
