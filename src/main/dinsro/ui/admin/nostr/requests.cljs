@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.requests :as j.n.requests]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.ui.admin.nostr.requests.connections :as u.a.n.rq.connections]
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
@@ -21,20 +22,6 @@
     u.a.n.rq.filter-items/SubPage
     u.a.n.rq.filters/SubPage
     u.a.n.rq.runs/SubPage]})
-
-(def menu-items
-  [{:key   "filters"
-    :name  "Filters"
-    :route "dinsro.ui.admin.nostr.requests.filters/SubPage"}
-   {:key   "items"
-    :name  "Items"
-    :route "dinsro.ui.admin.nostr.requests.filter-items/SubPage"}
-   {:key   "runs"
-    :name  "Runs"
-    :route "dinsro.ui.admin.nostr.requests.runs/SubPage"}
-   {:key   "connections"
-    :name  "Connections"
-    :route "dinsro.ui.admin.nostr.requests.connections/SubPage"}])
 
 (defsc Show
   [_this {::m.n.requests/keys [code id start-time end-time relay]
@@ -67,7 +54,7 @@
         (dom/div {} (str end-time))
         (dom/div {} (str "Query String: " query-string))
         (dom/div {} (u.links/ui-relay-link relay)))
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/admin-nostr-requests-menu-items :id id})
       ((comp/factory Router) router))))
 
 (report/defsc-report Report

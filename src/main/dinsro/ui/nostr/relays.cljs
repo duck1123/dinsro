@@ -10,6 +10,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.relays :as j.n.relays]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.links :as u.links]
@@ -85,26 +86,6 @@
     u.n.r.events/SubPage
     u.n.r.witnesses/SubPage]})
 
-(def menu-items
-  [{:key   "connections"
-    :name  "Connections"
-    :route "dinsro.ui.nostr.relays.connections/SubPage"}
-   {:key   "requests"
-    :name  "Requests"
-    :route "dinsro.ui.nostr.relays.requests/SubPage"}
-   {:key   "events"
-    :name  "Events"
-    :route "dinsro.ui.nostr.relays.events/SubPage"}
-   {:key   "pubkeys"
-    :name  "Pubkeys"
-    :route "dinsro.ui.nostr.relays.pubkeys/SubPage"}
-   {:key   "runs"
-    :name  "Runs"
-    :route "dinsro.ui.nostr.relays.runs/SubPage"}
-   {:key   "witnesses"
-    :name  "Witnesses"
-    :route "dinsro.ui.nostr.relays.witnesses/SubPage"}])
-
 (defsc Show
   [_this {::m.n.relays/keys [id address]
           ::j.n.relays/keys [connection-count]
@@ -129,5 +110,5 @@
           (dom/dd {} (str address))
           (dom/dt {} "Connections")
           (dom/dd {} (str connection-count))))
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/nostr-relays-menu-items :id id})
       ((comp/factory Router) router))))

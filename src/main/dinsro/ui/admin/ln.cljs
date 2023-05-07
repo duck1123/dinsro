@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.menus :as me]
    [dinsro.ui.admin.ln.accounts :as u.a.ln.accounts]
    [dinsro.ui.admin.ln.channels :as u.a.ln.channels]
    [dinsro.ui.admin.ln.invoices :as u.a.ln.invoices]
@@ -23,35 +24,6 @@
    :route-segment ["dashboard"]}
   (dom/div {}
     (dom/h1 "Dashboard")))
-
-(def menu-items
-  [{:key   "dashboard"
-    :name  "Dashboard"
-    :route "dinsro.ui.admin.ln/Dashboard"}
-   {:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.admin.ln.accounts/Report"}
-   {:key   "channels"
-    :name  "Channels"
-    :route "dinsro.ui.admin.ln.channels/Report"}
-   {:key   "invoices"
-    :name  "Invoices"
-    :route "dinsro.ui.admin.ln.invoices/Report"}
-   {:key   "nodes"
-    :name  "Nodes"
-    :route "dinsro.ui.admin.ln.nodes/Report"}
-   {:key   "payments"
-    :name  "Payments"
-    :route "dinsro.ui.admin.ln.payments/Report"}
-   {:key   "payreqs"
-    :name  "Payment Requests"
-    :route "dinsro.ui.admin.ln.payreqs/Report"}
-   {:key   "peers"
-    :name  "Peers"
-    :route "dinsro.ui.admin.ln.peers/Report"}
-   {:key   "remote-nodes"
-    :name  "Remote Nodes"
-    :route "dinsro.ui.admin.ln.remote-nodes/Report"}])
 
 (defrouter Router
   [_this _props]
@@ -74,6 +46,6 @@
   (comp/fragment
    (dom/div :.ui.grid
      (dom/div :.ui.four.wide.column
-       (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
+       (u.links/ui-vertical-menu {:menu-items me/admin-ln-menu-items :id nil}))
      (dom/div :.ui.twelve.wide.column
        ((comp/factory Router) router)))))

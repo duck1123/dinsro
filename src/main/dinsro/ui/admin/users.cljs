@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.users :as j.users]
+   [dinsro.menus :as me]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.users :as mu.users]
    [dinsro.ui.admin.users.accounts :as u.a.u.accounts]
@@ -17,26 +18,6 @@
    [dinsro.ui.admin.users.transactions :as u.a.u.transactions]
    [dinsro.ui.admin.users.wallets :as u.a.u.wallets]
    [dinsro.ui.links :as u.links]))
-
-(def menu-items
-  [{:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.admin.users.accounts/SubPage"}
-   {:key   "debits"
-    :name  "Debits"
-    :route "dinsro.ui.admin.users.debits/SubPage"}
-   {:key   "ln-nodes"
-    :name  "LN Nodes"
-    :route "dinsro.ui.admin.users.ln-nodes/SubPage"}
-   {:key   "pubkeys"
-    :name  "Pubkeys"
-    :route "dinsro.ui.admin.users.pubkeys/SubPage"}
-   {:key   "transactions"
-    :name  "Transactions"
-    :route "dinsro.ui.admin.users.transactions/SubPage"}
-   {:key   "wallets"
-    :name  "Wallets"
-    :route "dinsro.ui.admin.users.wallets/SubPage"}])
 
 (defrouter Router
   [_this _props]
@@ -66,7 +47,7 @@
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show User " (str name)))
-   (u.links/ui-nav-menu {:id id :menu-items menu-items})
+   (u.links/ui-nav-menu {:id id :menu-items me/admin-users-menu-items})
    (ui-router router)))
 
 (form/defsc-form UserForm

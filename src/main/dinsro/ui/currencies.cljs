@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.currencies :as j.currencies]
+   [dinsro.menus :as me]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.ui.currencies.accounts :as u.c.accounts]
@@ -31,14 +32,6 @@
   {:router-targets
    [u.c.accounts/SubPage
     u.c.rate-sources/SubPage]})
-
-(def menu-items
-  [{:key   "rates-sources"
-    :name  "Rates Sources"
-    :route "dinsro.ui.currencies.rate-sources/SubPage"}
-   {:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.currencies.accounts/SubPage"}])
 
 (report/defsc-report Report
   [_this _props]
@@ -74,5 +67,5 @@
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str name)))
-   (u.links/ui-nav-menu {:menu-items menu-items :id id})
+   (u.links/ui-nav-menu {:menu-items me/currencies-menu-items :id id})
    ((comp/factory Router) router)))

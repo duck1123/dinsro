@@ -16,6 +16,7 @@
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
@@ -35,17 +36,6 @@
 ;; [[../../mutations/nostr/events.cljc][Event Mutations]]
 
 (def log-event-props false)
-
-(def menu-items
-  [{:key   "tags"
-    :name  "Tags"
-    :route "dinsro.ui.nostr.events.event-tags/SubPage"}
-   {:key   "witnesses"
-    :name  "Witnesses"
-    :route "dinsro.ui.nostr.events.witnesses/SubPage"}
-   {:key   "relays"
-    :name  "Relays"
-    :route "dinsro.ui.nostr.events.relays/SubPage"}])
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.n.events/id]
@@ -349,5 +339,5 @@
               (str content))
             (dom/div {} "Sig: " (str sig))
             (dom/div {} "Note Id: " (str note-id))))))
-    (u.links/ui-nav-menu {:menu-items menu-items :id id})
+    (u.links/ui-nav-menu {:menu-items me/nostr-events-menu-items :id id})
     ((comp/factory Router) router)))

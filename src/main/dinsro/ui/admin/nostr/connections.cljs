@@ -5,13 +5,9 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.connections :as j.n.connections]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.ui.links :as u.links]))
-
-(def menu-items
-  [{:key   "runs"
-    :name  "Runs"
-    :route "dinsro.ui.nostr.connections.runs/SubPage"}])
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]}]
@@ -35,7 +31,7 @@
       (dom/div {} (u.links/ui-relay-link relay))
       (dom/div {} (str start-time))
       (dom/div {} (str end-time)))
-    (u.links/ui-nav-menu {:menu-items menu-items :id id})))
+    (u.links/ui-nav-menu {:menu-items me/admin-nostr-connections-menu-items :id id})))
 
 (report/defsc-report Report
   [_this _props]

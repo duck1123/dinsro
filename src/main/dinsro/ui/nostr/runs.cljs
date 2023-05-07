@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.runs.witnesses :as u.n.r.witnesses]))
@@ -12,11 +13,6 @@
   [_this _props]
   {:router-targets
    [u.n.r.witnesses/SubPage]})
-
-(def menu-items
-  [{:key   "witnesses"
-    :name  "Witnesses"
-    :route "dinsro.ui.nostr.runs.witnesses/SubPage"}])
 
 (defsc Show
   [_this {::m.n.runs/keys [id]
@@ -34,5 +30,5 @@
       (dom/div :.ui.segment
         (dom/div "Run")
         (dom/div {} (str id)))
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/nostr-runs-menu-items :id id})
       ((comp/factory Router) router))))

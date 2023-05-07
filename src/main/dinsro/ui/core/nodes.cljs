@@ -12,6 +12,7 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.joins.core.nodes :as j.c.nodes]
+   [dinsro.menus :as me]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
@@ -55,14 +56,6 @@
 
 (def ui-router (comp/factory Router))
 
-(def menu-items
-  [{:key   "peers"
-    :name  "Peers"
-    :route "dinsro.ui.core.nodes.peers/SubPage"}
-   {:key   "blocks"
-    :name  "Blocks"
-    :route "dinsro.ui.core.nodes.blocks/SubPage"}])
-
 (defsc Show
   "Show a core node"
   [_this {::m.c.nodes/keys [id name network]
@@ -88,7 +81,7 @@
           (dom/dd {} (str name))
           (dom/dt {} "Network")
           (dom/dd {} (u.links/ui-network-link network))))
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/core-nodes-menu-items :id id})
       ((comp/factory Router) router))))
 
 (form/defsc-form NewForm [_this _props]

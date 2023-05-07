@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.chains :as j.c.chains]
+   [dinsro.menus :as me]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.ui.core.chains.networks :as u.c.c.networks]
    [dinsro.ui.links :as u.links]))
@@ -33,11 +34,6 @@
 
 (def ui-router (comp/factory Router))
 
-(def menu-items
-  [{:key   "networks"
-    :name  "Networks"
-    :route "dinsro.ui.core.chain-networks/SubPage"}])
-
 (defsc Show
   [_this {::m.c.chains/keys [id name]
           :ui/keys          [router]
@@ -58,7 +54,7 @@
      (dom/dl {}
        (dom/dt {} "Name")
        (dom/dd {} (str name))))
-   (u.links/ui-nav-menu {:id id :menu-items menu-items})
+   (u.links/ui-nav-menu {:id id :menu-items me/core-chains-menu-items})
    (if router
      (ui-router router)
      (dom/div :.ui.segment

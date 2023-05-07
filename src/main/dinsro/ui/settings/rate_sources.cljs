@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.joins.rate-sources :as j.rate-sources]
+   [dinsro.menus :as me]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.ui.links :as u.links]
@@ -43,11 +44,6 @@
    [u.s.rs.accounts/SubPage]})
 
 (def ui-router (comp/factory Router))
-
-(def menu-items
-  [{:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.settings.rate-sources.accounts/SubPage"}])
 
 (report/defsc-report Report
   [_this _props]
@@ -97,5 +93,5 @@
      (dom/div :.ui.segment
        (u.s.rs.rates/ui-report rates)))
    (ui-container {}
-     (u.links/ui-nav-menu {:menu-items menu-items :id id})
+     (u.links/ui-nav-menu {:menu-items me/settings-rate-sources-menu-items :id id})
      ((comp/factory Router) router))))

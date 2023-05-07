@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.core.networks :as j.c.networks]
+   [dinsro.menus :as me]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.core.networks.blocks :as u.c.n.blocks]
@@ -22,23 +23,6 @@
     u.c.n.nodes/SubPage
     u.c.n.ln-nodes/SubPage
     u.c.n.wallets/SubPage]})
-
-(def menu-items
-  [{:key   "addresses"
-    :name  "Addresses"
-    :route "dinsro.ui.core.networks.addresses/SubPage"}
-   {:key   "blocks"
-    :name  "Blocks"
-    :route "dinsro.ui.core.networks.blocks/SubPage"}
-   {:name  "LN Nodes"
-    :key   "ln-nodes"
-    :route "dinsro.ui.core.networks.ln-nodes/SubPage"}
-   {:name  "Core Nodes"
-    :key   "core-nodes"
-    :route "dinsro.ui.core.networks.nodes/SubPage"}
-   {:name  "Wallets"
-    :key   "wallets"
-    :route "dinsro.ui.core.networks.wallets/SubPage"}])
 
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
@@ -64,7 +48,7 @@
          (dom/dd {} (str name))
          (dom/dt {} "Chain")
          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
-     (u.links/ui-nav-menu {:id id :menu-items menu-items})
+     (u.links/ui-nav-menu {:id id :menu-items me/core-networks-menu-items})
      ((comp/factory Router) router))
     (dom/div :.ui.segment
       (dom/h3 {} "Network Not loaded")

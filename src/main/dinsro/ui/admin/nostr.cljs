@@ -6,6 +6,7 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [dinsro.menus :as me]
    [dinsro.ui.admin.nostr.badge-acceptances :as u.a.n.badge-acceptances]
    [dinsro.ui.admin.nostr.badge-awards :as u.a.n.badge-awards]
    [dinsro.ui.admin.nostr.badge-definitions :as u.a.n.badge-definitions]
@@ -50,47 +51,6 @@
     u.a.n.runs/Report
     u.a.n.witnesses/Report]})
 
-(def menu-items
-  [{:key   "dashboard"
-    :name  "dashboard"
-    :route "dinsro.ui.admin.nostr/Dashboard"}
-   {:key   "relays"
-    :name  "Relays"
-    :route "dinsro.ui.admin.nostr.relays/Report"}
-   {:key   "pubkeys"
-    :name  "Pubkeys"
-    :route "dinsro.ui.admin.nostr.pubkeys/Report"}
-   {:key   "events"
-    :name  "Events"
-    :route "dinsro.ui.admin.nostr.events/Report"}
-   {:key   "filters"
-    :name  "Filters"
-    :route "dinsro.ui.admin.nostr.filters/Report"}
-   {:key   "badge-acceptances"
-    :name  "Acceptances"
-    :route "dinsro.ui.admin.nostr.badge-acceptances/Report"}
-   {:key   "badge-awards"
-    :name  "Awards"
-    :route "dinsro.ui.admin.nostr.badge-awards/Report"}
-   {:key   "badge-definitions"
-    :name  "Definitions"
-    :route "dinsro.ui.admin.nostr.badge-definitions/Report"}
-   {:key   "requests"
-    :name  "Requests"
-    :route "dinsro.ui.admin.nostr.requests/Report"}
-   {:key   "connections"
-    :name  "Connections"
-    :route "dinsro.ui.admin.nostr.connections/Report"}
-   {:key   "filter-items"
-    :name  "Items"
-    :route "dinsro.ui.admin.nostr.filter-items/Report"}
-   {:key   "runs"
-    :name  "Runs"
-    :route "dinsro.ui.admin.nostr.runs/Report"}
-   {:key   "witnesses"
-    :name  "Witnesses"
-    :route "dinsro.ui.admin.nostr.witnesses/Report"}])
-
 (defsc Page
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [:component/id ::Page])
@@ -100,10 +60,10 @@
   (ui-grid {:centered true}
     (ui-grid-row {:only "tablet mobile"}
       (ui-grid-column {:width 16}
-        (u.links/ui-nav-menu {:menu-items menu-items :id nil})))
+        (u.links/ui-nav-menu {:menu-items me/admin-nostr-menu-items :id nil})))
     (ui-grid-row {}
       (ui-grid-column {:only "computer" :width 3}
-        (u.links/ui-vertical-menu {:menu-items menu-items :id nil}))
+        (u.links/ui-vertical-menu {:menu-items me/admin-nostr-menu-items :id nil}))
       (ui-grid-column {:tablet 16 :computer 13 :stretched true}
         (ui-grid {:centered true}
           (ui-grid-row {}

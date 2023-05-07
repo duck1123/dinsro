@@ -12,6 +12,7 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
+   [dinsro.menus :as me]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -148,26 +149,6 @@
 
 (def ui-router (comp/factory Router))
 
-(def menu-items
-  [{:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.ln.nodes.accounts/SubPage"}
-   {:key   "addresses"
-    :name  "Addresses"
-    :route "dinsro.ui.ln.nodes.addresses/SubPage"}
-   {:key   "channels"
-    :name  "Channels"
-    :route "dinsro.ui.ln.nodes.channels/SubPage"}
-   {:key   "peers"
-    :name  "Peers"
-    :route "dinsro.ui.ln.nodes.peers/SubPage"}
-   {:key   "remote-nodes"
-    :name  "Remote Nodes"
-    :route "dinsro.ui.ln.nodes.remote-nodes/SubPage"}
-   {:key   "wallet-addresses"
-    :name  "Wallet Addresses"
-    :route "dinsro.ui.ln.nodes.wallet-addresses/SubPage"}])
-
 (defsc Show
   "Show a ln node"
   [this {:ui/keys          [router]
@@ -229,7 +210,7 @@
             (str hasMacaroon?)
             (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
               (str hasMacaroon?))))))
-    (u.links/ui-nav-menu {:id id :menu-items menu-items})
+    (u.links/ui-nav-menu {:id id :menu-items me/ln-nodes-menu-items})
     (if router
       (ui-router router)
       (dom/div :.ui.segment

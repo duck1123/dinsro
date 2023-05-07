@@ -7,29 +7,13 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [dinsro.menus :as me]
    [dinsro.mutations]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.settings.categories :as u.s.categories]
    [dinsro.ui.settings.core :as u.s.core]
    [dinsro.ui.settings.ln :as u.s.ln]
    [dinsro.ui.settings.rate-sources :as u.s.rate-sources]))
-
-(def menu-items
-  [{:key   "dashboard"
-    :name  "Dashboard"
-    :route "dinsro.ui.settings/Dashboard"}
-   {:key   "core"
-    :name  "Core"
-    :route "dinsro.ui.settings.core/Dashboard"}
-   {:name  "Lightning"
-    :key   "ln"
-    :route "dinsro.ui.settings.ln.payments/Report"}
-   {:name  "Rate Sources"
-    :key   "rate-sources"
-    :route "dinsro.ui.settings.rate-sources/Report"}
-   {:name  "Categories"
-    :key   "categories"
-    :route "dinsro.ui.settings.categories/Report"}])
 
 (defsc Dashboard
   [_this _props]
@@ -69,9 +53,9 @@
     (ui-grid-row {:only "tablet mobile"}
       (ui-grid-column {:width 16}
         (ui-container {:fluid true}
-          (u.links/ui-nav-menu {:id nil :menu-items menu-items}))))
+          (u.links/ui-nav-menu {:id nil :menu-items me/settings-menu-items}))))
     (ui-grid-row {:centered true}
       (ui-grid-column {:width 4 :only "computer" :floated "left"}
-        (u.links/ui-vertical-menu {:id nil :menu-items menu-items}))
+        (u.links/ui-vertical-menu {:id nil :menu-items me/settings-menu-items}))
       (ui-grid-column {:mobile 16 :tablet 16 :computer 12}
         ((comp/factory Router) router)))))

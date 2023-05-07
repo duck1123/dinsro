@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.filters.filter-items :as u.n.f.filter-items]))
@@ -12,9 +13,6 @@
   {:router-targets
    [u.n.f.filter-items/SubPage
     u.n.f.filter-items/NewForm]})
-
-(def menu-items
-  [{:key "items" :name "Items" :route "dinsro.ui.nostr.filters.filter-items/SubPage"}])
 
 (defsc Show
   [_this {::m.n.filters/keys [id index request]
@@ -36,5 +34,5 @@
     (dom/div {} (str id))
     (dom/div {} (str index))
     (dom/div {} (u.links/ui-request-link request))
-    (u.links/ui-nav-menu {:menu-items menu-items :id id})
+    (u.links/ui-nav-menu {:menu-items me/nostr-filters-menu-items :id id})
     ((comp/factory Router) router)))

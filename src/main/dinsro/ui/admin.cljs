@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.menus :as me]
    [dinsro.ui.admin.accounts :as u.a.accounts]
    [dinsro.ui.admin.categories :as u.a.categories]
    [dinsro.ui.admin.core :as u.a.core]
@@ -40,41 +41,6 @@
       (dom/div {}
         (dom/div "No route selected.")))))
 
-(def menu-items
-  [{:key   "users"
-    :name  "users"
-    :route "dinsro.ui.admin.users/Report"}
-   {:key   "categories"
-    :name  "Categories"
-    :route "dinsro.ui.admin.categories/Report"}
-   {:key   "accounts"
-    :name  "Accounts"
-    :route "dinsro.ui.admin.accounts/Report"}
-   {:key   "currencies"
-    :name  "Currencies"
-    :route "dinsro.ui.admin.currencies/Report"}
-   {:key   "transactions"
-    :name  "Transactions"
-    :route "dinsro.ui.admin.transactions/Report"}
-   {:key   "debits"
-    :name  "Debits"
-    :route "dinsro.ui.admin.debits/Report"}
-   {:key   "nostr"
-    :name  "Nostr"
-    :route "dinsro.ui.admin.nostr/Dashboard"}
-   {:key   "core"
-    :name  "Core"
-    :route "dinsro.ui.admin.core/Dashboard"}
-   {:key   "ln"
-    :name  "LN"
-    :route "dinsro.ui.admin.ln/Dashboard"}
-   {:key   "rate-sources"
-    :name  "Rate Sources"
-    :route "dinsro.ui.admin.rate-sources/Report"}
-   {:key   "rates"
-    :name  "Rates"
-    :route "dinsro.ui.admin.rates/Report"}])
-
 (defsc AdminPage
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [:component/id ::AdminPage])
@@ -82,5 +48,5 @@
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["admin"]}
   (dom/div :.admin-page
-    (u.links/ui-nav-menu {:menu-items menu-items :id nil})
+    (u.links/ui-nav-menu {:menu-items me/admin-menu-items :id nil})
     ((comp/factory Router) router)))

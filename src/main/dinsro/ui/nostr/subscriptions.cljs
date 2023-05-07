@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
@@ -32,11 +33,6 @@
   [_this _props]
   {:router-targets
    [u.n.subscription-pubkeys/SubPage]})
-
-(def menu-items
-  [{:key   "pubkeys"
-    :name  "Pubkeys"
-    :route "dinsro.ui.nostr.subscription-pubkeys/SubPage"}])
 
 (defsc Show
   [_this {::m.n.subscriptions/keys [id code relay]
@@ -64,5 +60,5 @@
         (dom/button {:classes [:.ui :.button]
                      :onClick (fn [this]
                                 (log/info :a/b {:e (comp/props this)}))} "click"))
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/nostr-subscriptions-menu-items :id id})
       ((comp/factory Router) router))))

@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.joins.nostr.requests :as j.n.requests]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.requests.connections :as u.n.rq.connections]
@@ -19,20 +20,6 @@
     u.n.rq.filter-items/SubPage
     u.n.rq.filters/SubPage
     u.n.rq.runs/SubPage]})
-
-(def menu-items
-  [{:key   "filters"
-    :name  "Filters"
-    :route "dinsro.ui.nostr.requests.filters/SubPage"}
-   {:key   "items"
-    :name  "Items"
-    :route "dinsro.ui.nostr.requests.filter-items/SubPage"}
-   {:key   "runs"
-    :name  "Runs"
-    :route "dinsro.ui.nostr.requests.runs/SubPage"}
-   {:key   "connections"
-    :name  "Connections"
-    :route "dinsro.ui.nostr.requests.connections/SubPage"}])
 
 (defsc Show
   [_this {::m.n.requests/keys [code id start-time end-time relay]
@@ -65,5 +52,5 @@
         (dom/div {} (str end-time))
         (dom/div {} (str "Query String: " query-string))
         (dom/div {} (u.links/ui-relay-link relay)))
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/nostr-requests-menu-items :id id})
       ((comp/factory Router) router))))

@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.links :as u.links]
@@ -39,10 +40,6 @@
     u.n.p.events/SubPage
     u.n.p.users/SubPage]})
 
-(def menu-items
-  [{:key "events" :name "Events" :route "dinsro.ui.nostr.pubkeys.events/SubPage"}
-   {:key "relays" :name "Relays" :route "dinsro.ui.nostr.pubkeys.relays/SubPage"}
-   {:key "items" :name "Filter Items" :route "dinsro.ui.nostr.pubkeys.items/SubPage"}])
 (def show-border false)
 
 (defsc PubkeyInfo
@@ -125,7 +122,7 @@
   (let [{:keys [main]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (ui-pubkey-info props)
-      (u.links/ui-nav-menu {:menu-items menu-items :id id})
+      (u.links/ui-nav-menu {:menu-items me/nostr-pubkeys-menu-items :id id})
       ((comp/factory Router) router))))
 
 (form/defsc-form CreateForm
