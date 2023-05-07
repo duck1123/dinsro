@@ -13,4 +13,6 @@
    dinsro.ui.navbar-test
    dinsro.ui.nostr.events-test
    dinsro.ui.nostr.pubkeys-test
-   dinsro.ui.registration-test))
+   dinsro.ui.registration-test
+   dinsro.ui.transactions-test
+   dinsro.ui.transactions.debits-test))

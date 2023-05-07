@@ -1,5 +1,6 @@
 (ns dinsro.joins.transactions
   (:require
+   [com.fulcrologic.guardrails.core :refer [=> >def]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -65,6 +66,7 @@
        {::negative-debits (m.debits/idents ids)}))
    ::report/column-EQL {::negative-debits [::m.debits/id ::m.debits/value]}})
 
+(>def ::debit-count int?)
 (defattr debit-count ::debit-count :number
   {ao/pc-input   #{::debits}
    ao/pc-resolve (fn [_ {::keys [debits]}] {::debit-count (count debits)})})

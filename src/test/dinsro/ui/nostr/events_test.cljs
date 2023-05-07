@@ -50,6 +50,12 @@
    ::m.n.event-tags/raw-value (ds/gen-key ::m.n.event-tags/raw-value)
    ::m.n.event-tags/type "e"})
 
+(ws/defcard TagDisplay
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root u.n.events/TagDisplay
+    ::ct.fulcro3/initial-state
+    (fn [] (make-tag))}))
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard EventBox
   {::wsm/card-height 12
