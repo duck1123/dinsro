@@ -21,4 +21,6 @@
    fo/title         "Category"}
   (if override-admin-form
     (form/render-layout this props)
-    (dom/div {} (dom/p {} "Category"))))
+    (dom/div :.ui.segment
+      (dom/p {} "Category")
+      (form/render-layout this props))))

@@ -23,8 +23,10 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/categories.cljc]]
+;; [[../../joins/users.cljc]]
 ;; [[../../model/categories.cljc]]
 ;; [[../../ui/categories.cljs]]
+;; [[../../ui/forms/admin/categories.cljc]]
 
 (def index-page-id :admin-categories)
 (def model-key o.categories/id)
@@ -34,6 +36,21 @@
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
+
+(form/defsc-form NewForm
+  [this props]
+  {fo/attributes    [m.categories/name m.categories/user]
+   fo/cancel-route  ["admin"]
+   fo/field-options {o.categories/user u.pickers/admin-user-picker}
+   fo/field-styles  {o.categories/user :pick-one}
+   fo/id            m.categories/id
+   fo/route-prefix  "new-category"
+   fo/title         "Category"}
+  (if override-admin-form
+    (form/render-layout this props)
+    (dom/div :.ui.segment
+      (dom/p {} "Category")
+      (form/render-layout this props))))
 
 (def new-button
   {:label  "New Category"
