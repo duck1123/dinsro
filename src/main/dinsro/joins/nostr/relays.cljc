@@ -6,6 +6,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
+   #?(:clj [dinsro.queries.nostr.connections :as q.n.connections])
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    #?(:clj [dinsro.queries.nostr.requests :as q.n.requests])
    #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
@@ -39,7 +40,7 @@
    (fn [_env params]
      (let [relay-id (::m.n.relays/id params)]
        (log/info :request-count/starting {:relay-id relay-id})
-       (let [ids #?(:clj  (q.n.requests/find-by-relay relay-id)
+       (let [ids #?(:clj  (q.n.connections/index-ids {::m.n.relays/id relay-id})
                     :cljs (do (comment relay-id) []))]
          {::connections (m.n.requests/idents ids)})))})
 

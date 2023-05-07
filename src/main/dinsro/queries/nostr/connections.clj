@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -33,21 +34,24 @@
     (when (get record ident-key)
       (dissoc record :xt/id))))
 
+(defn get-index-params
+  [query-params]
+  (let [{request-id ::m.n.requests/id
+         relay-id   ::m.n.relays/id} query-params]
+    [request-id relay-id]))
+
 (defn get-index-query
   [query-params]
-  (let [{request-id ::m.n.requests/id} query-params]
+  (let [[request-id relay-id] (get-index-params query-params)]
     {:find  ['?connection-id]
-     :in    [['?request-id]]
+     :in    [['?request-id '?relay-id]]
      :where (->> [['?connection-id ::m.n.connections/id '_]]
                  (concat (when request-id
                            [['?request-id ::m.n.requests/connection '?connection-id]]))
+                 (concat (when relay-id
+                           [['?connection-id ::m.n.connections/id '?relay-id]]))
                  (filter identity)
                  (into []))}))
-
-(defn get-index-params
-  [query-params]
-  (let [{request-id ::m.n.requests/id} query-params]
-    [request-id]))
 
 (>defn count-ids
   ([]
