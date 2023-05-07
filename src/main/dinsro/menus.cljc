@@ -144,6 +144,9 @@
 (def admin-users-accounts
   {:key "accounts" :name "Accounts" :route "dinsro.ui.admin.users.accounts/SubPage"})
 
+(def admin-users-categories
+  {:key "categories" :name "Categories" :route "dinsro.ui.admin.users.categories/SubPage"})
+
 (def admin-users-debits
   {:key "debits" :name "Debits" :route "dinsro.ui.admin.users.debits/SubPage"})
 
@@ -391,6 +394,7 @@
 
 (def admin-users-menu-items
   [admin-users-accounts
+   admin-users-categories
    admin-users-debits
    admin-users-ln-nodes
    admin-users-pubkeys

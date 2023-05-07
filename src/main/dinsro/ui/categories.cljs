@@ -11,6 +11,7 @@
 
 ;; [[../joins/categories.cljc][Category Joins]]
 ;; [[../model/categories.cljc][Categories Model]]
+;; [../ui/admin/users/categories.cljs]
 
 (form/defsc-form NewForm
   [_this _props]

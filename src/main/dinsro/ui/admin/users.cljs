@@ -12,6 +12,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.users :as mu.users]
    [dinsro.ui.admin.users.accounts :as u.a.u.accounts]
+   [dinsro.ui.admin.users.categories :as u.a.u.categories]
    [dinsro.ui.admin.users.debits :as u.a.u.debits]
    [dinsro.ui.admin.users.ln-nodes :as u.a.u.ln-nodes]
    [dinsro.ui.admin.users.pubkeys :as u.a.u.pubkeys]
@@ -23,6 +24,7 @@
   [_this _props]
   {:router-targets
    [u.a.u.accounts/SubPage
+    u.a.u.categories/SubPage
     u.a.u.debits/SubPage
     u.a.u.ln-nodes/SubPage
     u.a.u.pubkeys/SubPage
@@ -32,21 +34,24 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [_this {::m.users/keys [id name]
+  [_this {::m.users/keys [id name role]
           :ui/keys       [router]}]
   {:ident         ::m.users/id
    :initial-state {::m.users/name ""
+                   ::m.users/role nil
                    ::m.users/id   nil
                    :ui/router     {}}
    :pre-merge     (u.links/page-merger ::m.users/id {:ui/router Router})
    :query         [::m.users/name
+                   ::m.users/role
                    ::m.users/id
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["users" :id]
    :will-enter    (partial u.links/page-loader ::m.users/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
-     (dom/p {} "Show User " (str name)))
+     (dom/p {} "Show User " (str name))
+     (dom/div {} (str role)))
    (u.links/ui-nav-menu {:id id :menu-items me/admin-users-menu-items})
    (ui-router router)))
 
@@ -67,13 +72,24 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.users/name m.users/role]
-   ro/controls         {::new-user new-button
-                        ::refresh  u.links/refresh-control}
-   ro/form-links       {::m.users/name UserForm}
-   ro/route            "users"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.users/id mu.users/delete!)]
-   ro/row-pk           m.users/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.users/index
-   ro/title            "Users"})
+  {ro/column-formatters {::m.users/name              #(u.links/ui-user-link %3)
+                         ::j.users/account-count     #(u.links/ui-user-accounts-count-link %3)
+                         ::j.users/category-count    #(u.links/ui-user-categories-count-link %3)
+                         ::j.users/ln-node-count     #(u.links/ui-user-ln-nodes-count-link %3)
+                         ::j.users/transaction-count #(u.links/ui-user-transactions-count-link %3)
+                         ::j.users/wallet-count      #(u.links/ui-user-wallets-count-link %3)}
+   ro/columns           [m.users/name
+                         m.users/role
+                         j.users/account-count
+                         j.users/category-count
+                         j.users/ln-node-count
+                         j.users/transaction-count
+                         j.users/wallet-count]
+   ro/controls          {::new-user new-button
+                         ::refresh  u.links/refresh-control}
+   ro/route             "users"
+   ro/row-actions       [(u.links/row-action-button "Delete" ::m.users/id mu.users/delete!)]
+   ro/row-pk            m.users/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.users/index
+   ro/title             "Users"})

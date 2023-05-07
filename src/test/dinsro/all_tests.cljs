@@ -1,6 +1,7 @@
 (ns dinsro.all-tests
   (:require
    dinsro.ui-test
+   dinsro.ui.admin.users.categories-test
    dinsro.ui.core.blocks-test
    dinsro.ui.core.node-peers-test
    dinsro.ui.core.node-transactions-test

@@ -22,6 +22,10 @@
 ;; [[../queries/users.clj][User Queries]]
 ;; [[../ui/users.cljs][Users UI]]
 
+(defattr account-count ::account-count :number
+  {ao/pc-input   #{::accounts}
+   ao/pc-resolve (fn [_ {::keys [accounts]}] {::account-count (count accounts)})})
+
 (defattr accounts ::accounts :ref
   {ao/cardinality :many
    ao/target      ::m.accounts/id
@@ -32,6 +36,10 @@
      #?(:clj  (let [account-ids (if id (q.accounts/find-by-user id) [])]
                 {::accounts (m.accounts/idents account-ids)})
         :cljs (comment id)))})
+
+(defattr category-count ::category-count :number
+  {ao/pc-input   #{::categories}
+   ao/pc-resolve (fn [_ {::keys [categories]}] {::category-count (count categories)})})
 
 (defattr categories ::categories :ref
   {ao/cardinality :many
@@ -44,14 +52,37 @@
                            :cljs (do (comment id) []))]
        {::categories (m.categories/idents category-ids)}))})
 
+;; TODO: The current user must have the admin role
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.users/id
+   ao/pc-output [{::admin-index [::m.users/id]}]
+   ao/pc-resolve
+   (fn [{:keys [query-params]} _]
+     (let [ids #?(:clj (q.users/index-ids query-params)
+                  :cljs (do (comment query-params) []))]
+       {::admin-index (m.users/idents ids)}))})
+
+;; Paginated list of users
+;; TODO: This should only show the authenticated user
 (defattr index ::index :ref
   {ao/target    ::m.users/id
    ao/pc-output [{::index [::m.users/id]}]
    ao/pc-resolve
-   (fn [_ _]
-     (let [ids #?(:clj (q.users/index-ids) :cljs [])]
+   (fn [{:keys [query-params]} _]
+     (let [ids #?(:clj (q.users/index-ids query-params)
+                  :cljs (do (comment query-params) []))]
        {::index (m.users/idents ids)}))})
 
+;; Count of users in system
+(defattr record-count ::record-count :number
+  {ao/pc-output [::record-count]
+   ao/pc-resolve
+   (fn [{:keys [query-params]} _]
+     (let [n #?(:clj (q.users/count-ids query-params)
+                :cljs (do (comment query-params) 0))]
+       {::record-count n}))})
+
+;; Deprecated
 (defattr index-by-pubkey ::index-by-pubkey :ref
   {ao/target    ::m.users/id
    ao/pc-output [{::index-by-pubkey [::m.users/id]}]
@@ -63,41 +94,66 @@
          {::index-by-pubkey (m.users/idents ids)})
        (throw (ex-info "Missing pubkey" {}))))})
 
-(defattr ln-nodes ::m.users/ln-nodes :ref
+;; Count of ln nodes associated with user
+(defattr ln-node-count ::ln-node-count :number
+  {ao/pc-input   #{::ln-nodes}
+   ao/pc-resolve (fn [_ {::keys [ln-nodes]}] {::ln-node-count (count ln-nodes)})})
+
+(defattr ln-nodes ::ln-nodes :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/ln-nodes [::m.ln.nodes/id]}]
+   ao/pc-output   [{::ln-nodes [::m.ln.nodes/id]}]
    ao/target      ::m.ln.nodes/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
-     {::m.users/ln-nodes
-      (let [ids #?(:clj (and id (q.ln.nodes/find-by-user id))
-                   :cljs (do (comment id) []))]
-        (map (fn [id] {::m.ln.nodes/id id}) ids))})})
+     (let [ids #?(:clj (and id (q.ln.nodes/find-by-user id))
+                  :cljs (do (comment id) []))]
+       {::ln-nodes (m.ln.nodes/idents ids)}))})
 
-(defattr transactions ::m.users/transactions :ref
+(defattr transaction-count ::transaction-count :number
+  {ao/pc-input   #{::transactions}
+   ao/pc-resolve (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
+
+(defattr transactions ::transactions :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/transactions [::m.transactions/id]}]
+   ao/pc-output   [{::transactions [::m.transactions/id]}]
    ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      (if id
-       #?(:clj  (let [transaction-ids (q.transactions/find-by-user id)]
-                  {::m.users/transactions (map (fn [id] {::m.transactions/id id}) transaction-ids)})
-          :cljs {::m.users/transactions []})
-       {::m.users/transactions []}))})
+       (let [ids #?(:clj (q.transactions/find-by-user id)
+                    :cljs [])]
+         {::transactions (m.transactions/idents ids)})
+       (throw (ex-info "ID not provided" {}))))})
 
-(defattr wallets ::m.users/wallets :ref
+(defattr wallet-count ::wallet-count :number
+  {ao/pc-input   #{::wallets}
+   ao/pc-resolve (fn [_ {::keys [wallets]}] {::wallet-count (count wallets)})})
+
+(defattr wallets ::wallets :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.users/id}
-   ao/pc-output   [{::m.users/walllets [::m.c.wallets/id]}]
+   ao/pc-output   [{::wallets [::m.c.wallets/id]}]
    ao/target      ::m.c.wallets/id
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      (let [ids (if id
                  #?(:clj (q.c.wallets/find-by-user id) :cljs [])
                  [])]
-       {::m.users/wallets (m.c.wallets/idents ids)}))})
+       {::wallets (m.c.wallets/idents ids)}))})
 
-(def attributes [accounts categories index index-by-pubkey ln-nodes transactions wallets])
+(def attributes [account-count
+                 accounts
+                 admin-index
+                 category-count
+                 categories
+                 record-count
+                 index
+                 index-by-pubkey
+                 ln-node-count
+                 ln-nodes
+                 transaction-count
+                 transactions
+                 wallet-count
+                 wallets])

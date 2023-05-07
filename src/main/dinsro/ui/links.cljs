@@ -17,6 +17,7 @@
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.nostr.requests :as j.n.requests]
+   [dinsro.joins.users :as j.users]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -664,6 +665,61 @@
   (form-link this id name :dinsro.ui.admin.users/Show))
 
 (def ui-user-link (comp/factory UserLinkForm {:keyfn ::m.users/id}))
+
+(form/defsc-form UserAccountsCountLinkForm
+  [this {::m.users/keys [id]
+         ::j.users/keys [account-count]}]
+  {fo/id           m.users/id
+   fo/route-prefix "user-accounts-count-link"
+   fo/attributes   [m.users/id j.users/account-count]}
+  (form-link this id account-count :dinsro.ui.admin.users.accounts/SubPage))
+
+(def ui-user-accounts-count-link
+  (comp/factory UserAccountsCountLinkForm {:keyfn ::m.users/id}))
+
+(form/defsc-form UserCategoriesCountLinkForm
+  [this {::m.users/keys [id]
+         ::j.users/keys [category-count]}]
+  {fo/id           m.users/id
+   fo/route-prefix "user-categories-count-link"
+   fo/attributes   [m.users/id j.users/category-count]}
+  (form-link this id category-count :dinsro.ui.admin.users.categories/SubPage))
+
+(def ui-user-categories-count-link
+  (comp/factory UserCategoriesCountLinkForm {:keyfn ::m.users/id}))
+
+(form/defsc-form UserLnNodesCountLinkForm
+  [this {::m.users/keys [id]
+         ::j.users/keys [ln-node-count]}]
+  {fo/id           m.users/id
+   fo/route-prefix "user-ln-nodes-count-link"
+   fo/attributes   [m.users/id j.users/ln-node-count]}
+  (form-link this id ln-node-count :dinsro.ui.admin.users.ln-nodes/SubPage))
+
+(def ui-user-ln-nodes-count-link
+  (comp/factory UserLnNodesCountLinkForm {:keyfn ::m.users/id}))
+
+(form/defsc-form UserTransactionsCountLinkForm
+  [this {::m.users/keys [id]
+         ::j.users/keys [transaction-count]}]
+  {fo/id           m.users/id
+   fo/route-prefix "user-transactions-count-link"
+   fo/attributes   [m.users/id j.users/transaction-count]}
+  (form-link this id transaction-count :dinsro.ui.admin.users.transactions/SubPage))
+
+(def ui-user-transactions-count-link
+  (comp/factory UserTransactionsCountLinkForm {:keyfn ::m.users/id}))
+
+(form/defsc-form UserWalletsCountLinkForm
+  [this {::m.users/keys [id]
+         ::j.users/keys [wallet-count]}]
+  {fo/id           m.users/id
+   fo/route-prefix "user-wallets-count-link"
+   fo/attributes   [m.users/id j.users/wallet-count]}
+  (form-link this id wallet-count :dinsro.ui.admin.users.wallets/SubPage))
+
+(def ui-user-wallets-count-link
+  (comp/factory UserWalletsCountLinkForm {:keyfn ::m.users/id}))
 
 (form/defsc-form WalletAddressLinkForm [this {::m.c.wallet-addresses/keys [id address]}]
   {fo/id         m.c.wallet-addresses/id

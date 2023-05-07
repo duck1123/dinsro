@@ -266,7 +266,7 @@
               (u.links/ui-pubkey-name-link pubkey))
             (dom/div {:classes [:.meta]}
               (dom/span {:classes [:.date]}
-                        (str created-at) " - " (str kind)))
+                (str created-at) " - " (str kind)))
             (dom/div {:classes [:.description]}
               (str content))
             (dom/div {} "Sig: " (str sig))

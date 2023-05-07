@@ -16,7 +16,7 @@
 (def ident-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
-(def override-report false)
+(def override-report true)
 (def override-row false)
 
 (declare Report)
@@ -42,7 +42,7 @@
 
 (report/defsc-report Report
   [this props]
-  {ro/BodyItem          AccountRow
+  {;; ro/BodyItem          AccountRow
    ro/column-formatters {::m.accounts/name     #(u.links/ui-account-link %3)
                          ::m.accounts/currency #(u.links/ui-currency-link %2)}
    ro/columns           [m.accounts/name

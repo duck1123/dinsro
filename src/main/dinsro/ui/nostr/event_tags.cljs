@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+   [dinsro.menus :as me]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.event-tags.relays :as u.n.et.relays]
@@ -72,11 +73,6 @@
 
 (def ui-router (comp/factory Router))
 
-(def menu-items
-  [{:key   "relays"
-    :name  "Relays"
-    :route "dinsro.ui.nostr.event-tags.relays/SubPage"}])
-
 (defsc Show
   [_this {::m.n.event-tags/keys [id index type raw-value pubkey]
           :ui/keys              [router]}]
@@ -106,7 +102,7 @@
             (dom/p {} (str type))
             (dom/p {} (str raw-value))
             (dom/p {} (u.links/ui-event-tag-link pubkey))))))
-    (u.links/ui-nav-menu {:menu-items menu-items :id id})
+    (u.links/ui-nav-menu {:menu-items me/nostr-event-tags-menu-items :id id})
     ((comp/factory Router) router)))
 
 (def ui-show (comp/factory Show))
