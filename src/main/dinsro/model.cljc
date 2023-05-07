@@ -142,6 +142,7 @@
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
+   #?(:clj [dinsro.mutations.transactions :as mu.transactions])
    #?(:clj [dinsro.mutations.users :as mu.users])))
 
 (def all-attributes
@@ -293,4 +294,5 @@
            mu.rate-sources/resolvers
            mu.session/resolvers
            mu.settings/resolvers
+           mu.transactions/resolvers
            mu.users/resolvers))))
