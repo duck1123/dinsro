@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.runs :as m.n.runs]
@@ -26,6 +27,9 @@
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {::m.n.connections/id {:type :uuid :label "id"}
                          ::refresh            u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)
                          (u.links/row-action-button "Delete" ::m.n.runs/id mu.n.runs/delete!)]
    ro/row-pk            m.n.runs/id

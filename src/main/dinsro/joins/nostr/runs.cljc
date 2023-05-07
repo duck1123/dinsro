@@ -12,14 +12,17 @@
 
 (defattr index ::index :ref
   {ao/target    ::m.n.runs/id
-   ao/pc-output [{::index [::m.n.runs/id]}]
+   ao/pc-output [{::index [:total {:results [::m.n.runs/id]}]}]
    ao/pc-resolve
    (fn [{:keys [query-params]} props]
      (log/info :index/starting {:query-params query-params :props props})
      (let [ids #?(:clj (q.n.runs/index-ids query-params)
                   :cljs [])]
        (log/trace :index/finished {:ids ids})
-       {::index (m.n.runs/idents ids)}))})
+       (let [idents       (m.n.runs/idents ids)
+             record-count #?(:clj (q.n.runs/count-ids query-params) :cljs 0)]
+         {::index {:total   record-count
+                   :results idents}})))})
 
 (defattr relay ::relay :ref
   {ao/target           ::m.n.relays/id
