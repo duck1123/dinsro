@@ -1,7 +1,6 @@
 (ns dinsro.ui.admin.nostr
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
@@ -11,6 +10,7 @@
    [dinsro.ui.admin.nostr.badge-awards :as u.a.n.badge-awards]
    [dinsro.ui.admin.nostr.badge-definitions :as u.a.n.badge-definitions]
    [dinsro.ui.admin.nostr.connections :as u.a.n.connections]
+   [dinsro.ui.admin.nostr.dashboard :as u.a.n.dashboard]
    [dinsro.ui.admin.nostr.events :as u.a.n.events]
    [dinsro.ui.admin.nostr.filter-items :as u.a.n.filter-items]
    [dinsro.ui.admin.nostr.filters :as u.a.n.filters]
@@ -21,21 +21,10 @@
    [dinsro.ui.admin.nostr.witnesses :as u.a.n.witnesses]
    [dinsro.ui.links :as u.links]))
 
-(def router-key :dinsro.ui.admin/Router)
-
-(defsc Dashboard
-  [_this _props]
-  {:ident         (fn [] [:component/id ::Dashboard])
-   :initial-state {}
-   :query         [[::dr/id router-key]]
-   :route-segment ["dashboard"]}
-  (dom/div :.ui.segment
-    (dom/h1 "Dashboard")))
-
 (defrouter Router
   [_this _props]
   {:router-targets
-   [Dashboard
+   [u.a.n.dashboard/Dashboard
     u.a.n.badge-acceptances/Report
     u.a.n.badge-awards/Report
     u.a.n.badge-definitions/Report
