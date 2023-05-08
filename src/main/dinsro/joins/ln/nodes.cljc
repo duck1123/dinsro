@@ -21,6 +21,8 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
+;; [../../queries/ln/nodes.clj]
+
 #?(:clj
    (defn do-index
      [env]

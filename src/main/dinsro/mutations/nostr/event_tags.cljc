@@ -8,6 +8,12 @@
    #?(:clj [dinsro.processors.nostr.event-tags :as p.n.event-tags])
    #?(:cljs [dinsro.responses.nostr.event-tags :as r.n.event-tags])))
 
+;; [[../../actions/nostr/event_tags.clj]]
+;; [[../../model/nostr/event_tags.cljc]]
+;; [[../../processors/nostr/event_tags.clj]]
+;; [[../../queries/nostr/event_tags.clj]]
+;; [[../../responses/nostr/event_tags.cljc]]
+
 #?(:cljs (comment ::m.n.event-tags/id ::mu/_ ::pc/_))
 
 #?(:clj

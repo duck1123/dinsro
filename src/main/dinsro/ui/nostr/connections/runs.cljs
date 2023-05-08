@@ -11,6 +11,9 @@
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/runs.cljc]]
+;; [[../../../model/nostr/runs.cljc]]
+
 (def ident-key ::m.n.connections/id)
 (def router-key :dinsro.ui.nostr.connections/Router)
 

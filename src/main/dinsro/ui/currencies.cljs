@@ -16,6 +16,8 @@
    [dinsro.ui.currencies.rates :as u.c.rates]
    [dinsro.ui.links :as u.links]))
 
+;; [../actions/currencies.clj]
+
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name
                     m.currencies/code]

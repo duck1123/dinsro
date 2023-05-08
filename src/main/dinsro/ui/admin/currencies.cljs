@@ -10,6 +10,7 @@
    [dinsro.ui.links :as u.links]))
 
 ;; [../../actions/currencies.clj]
+;; [../../queries/currencies.clj]
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name

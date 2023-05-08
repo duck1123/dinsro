@@ -10,6 +10,9 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
+;; [[../../model/nostr/runs.cljc]]
+;; [[../../queries/nostr/runs.clj]]
+
 (defattr index ::index :ref
   {ao/target    ::m.n.runs/id
    ao/pc-output [{::index [:total {:results [::m.n.runs/id]}]}]

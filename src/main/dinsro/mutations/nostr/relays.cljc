@@ -12,8 +12,10 @@
    #?(:cljs [dinsro.responses.nostr.relays :as r.n.relays])))
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
+;; [../../joins/nostr/relays.cljc]
 ;; [[../../model/nostr/relays.cljc][Model]]
 ;; [[../../queries/nostr/relays.clj][Queries]]
+;; [[../../ui/nostr/event_tags/relays.cljs]]
 ;; [[../../ui/nostr/relays.cljs][UI]]
 
 #?(:cljs (comment ::pc/_ ::m.n.relays/_ ::mu/_))

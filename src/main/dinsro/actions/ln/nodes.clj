@@ -25,6 +25,9 @@
    org.bitcoins.lnd.rpc.LndRpcClient
    scala.Option))
 
+;; [../../model/ln/nodes.cljc]
+;; [../../queries/ln/nodes.clj]
+
 (def default-passphrase "password12345678")
 
 (>defn get-cert-text

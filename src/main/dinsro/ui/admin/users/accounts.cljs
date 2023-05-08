@@ -11,6 +11,8 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [../../../model/accounts.cljc]
+
 (def ident-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
 

@@ -10,6 +10,9 @@
    [dinsro.ui.nostr.event-tags.relays :as u.n.et.relays]
    [lambdaisland.glogc :as log]))
 
+;; [[../../ui/nostr/event_tags/relays.cljs]]
+;; [[../../../../test/dinsro/ui/nostr/event_tags_test.cljs]]
+
 (def log-tag-props false)
 
 (defsc TagDisplay

@@ -8,7 +8,9 @@
    [dinsro.queries.nostr.events :as q.n.events]
    [lambdaisland.glogc :as log]))
 
+;; [[../../mutations/nostr/event_tags.cljc]]
 ;; [[../../queries/nostr/event_tags.clj][Event Tag Queries]]
+;; [[../../ui/nostr/event_tags.cljs]]
 
 (>defn register-tag!
   [event-id tag idx]

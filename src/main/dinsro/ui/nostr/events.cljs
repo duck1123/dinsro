@@ -32,6 +32,8 @@
 ;; [[../../queries/nostr/events.clj][Event Queries]]
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
 ;; [[../../mutations/nostr/events.cljc][Event Mutations]]
+;; [[../../ui/nostr.cljs]]
+;; [[../../ui/nostr/pubkeys/events.cljs]]
 
 (def log-event-props false)
 

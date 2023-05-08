@@ -15,6 +15,7 @@
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
 ;; [[../../model/nostr/relays.cljc][Model]]
+;; [[../../queries/nostr/connections.clj]]
 ;; [[../../queries/nostr/relays.clj][Queries]]
 ;; [[../../ui/nostr/relays.cljs][UI]]
 

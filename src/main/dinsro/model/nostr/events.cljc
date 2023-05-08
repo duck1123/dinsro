@@ -8,6 +8,10 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.specs]))
 
+;; [[../../mutations/nostr/events.cljc]]
+;; [[../../queries/nostr/events.clj]]
+;; [[../../ui/nostr/events.cljs]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

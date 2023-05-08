@@ -11,6 +11,8 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.connections.runs :as u.n.c.runs]))
 
+;; [[../../ui/nostr/connections/runs.cljs]]
+
 (defsc ConnectionDisplay
   [_this {::m.n.connections/keys [relay] :as props}]
   {:ident         ::m.n.connections/id

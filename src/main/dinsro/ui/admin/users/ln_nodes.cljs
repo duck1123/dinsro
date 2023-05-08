@@ -11,6 +11,8 @@
    [dinsro.ui.links :as u.links]))
 
 ;; [[../actions/users.clj][User Actions]]
+;; [../../../joins/ln/nodes.cljc]
+;; [../../../model/ln/nodes.cljc]
 
 (def ident-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)

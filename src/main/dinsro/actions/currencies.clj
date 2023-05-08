@@ -3,8 +3,12 @@
    [dinsro.queries.currencies :as q.currencies]
    [lambdaisland.glogc :as log]))
 
+;; [../joins/currencies.cljc]
+;; [../model/currencies.cljc]
 ;; [../mutations/currencies.cljc]
 ;; [../processors/currencies.clj]
+;; [../queries/currencies.clj]
+;; [../ui/admin/currencies.cljs]
 
 (defn delete!
   [currency-id]

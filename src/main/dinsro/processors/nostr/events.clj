@@ -12,6 +12,8 @@
    [dinsro.mutations :as mu]
    [lambdaisland.glogc :as log]))
 
+;; [[../../model/nostr/events.cljc]]
+
 (defn fetch!
   [props]
   (log/info :fetch!/starting {:props props})

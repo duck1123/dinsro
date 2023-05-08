@@ -17,6 +17,9 @@
    [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]
    [dinsro.ui.nostr.witnesses :as u.n.witnesses]))
 
+;; [../ui/nostr/connections.cljs]
+;; [../ui/nostr/events.cljs]
+
 (defrouter Router
   [_this _props]
   {:router-targets

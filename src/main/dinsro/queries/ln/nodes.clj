@@ -10,6 +10,10 @@
    [dinsro.specs]
    [xtdb.api :as xt]))
 
+;; [../../actions/ln/nodes.clj]
+;; [../../joins/ln/nodes.cljc]
+;; [../../model/ln/nodes.cljc]
+
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.nodes/id)]

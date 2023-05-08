@@ -10,6 +10,9 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [../../model/nostr/connections.cljc]
+;; [../../processors/nostr/connections.clj]
+
 (def ident-key ::m.n.connections/id)
 (def params-key ::m.n.connections/params)
 (def item-key ::m.n.connections/item)

@@ -7,6 +7,10 @@
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.rate-sources :as p.rate-sources])))
 
+;; [../actions/rate_sources.clj]
+;; [../processors/rate_sources.clj]
+;; [../responses/rate_sources.cljc]
+
 #?(:cljs (comment ::m.rate-sources/_ ::mu/_ ::pc/_))
 
 #?(:clj

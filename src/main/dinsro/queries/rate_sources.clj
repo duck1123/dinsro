@@ -10,6 +10,9 @@
    [dinsro.specs]
    [xtdb.api :as xt]))
 
+;; [../actions/rate_sources.clj]
+;; [../model/rate_sources.cljc]
+
 (>defn find-by-name
   [name]
   [::m.rate-sources/name => ::m.rate-sources/id]

@@ -14,9 +14,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [../../../joins/nostr/relays.cljc]
 ;; [../../../model/nostr/relays.cljc]
 ;; [../../../mutations/nostr/event_tags.cljc]
 ;; [../../../mutations/nostr/relays.cljc]
+;; [../../../ui/nostr.cljs]
 
 (def ident-key ::m.n.event-tags/id)
 (def router-key :dinsro.ui.nostr.event-tags/Router)
