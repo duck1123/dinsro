@@ -18,3 +18,4 @@ jobs:
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +devspace-base
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +devcards-image
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +docs-image
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +image
