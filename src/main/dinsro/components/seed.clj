@@ -17,14 +17,12 @@
    [dinsro.components.seed.accounts :as cs.accounts]
    [dinsro.components.seed.categories]
    [dinsro.components.seed.core :as cs.core]
-   ;; [dinsro.components.seed.core-nodes :as cs.core-nodes]
    [dinsro.components.seed.currencies :as cs.currencies]
    [dinsro.components.seed.debits :as cs.debits]
    [dinsro.components.seed.ln-nodes :as cs.ln-nodes]
    [dinsro.components.seed.rate-sources :as cs.rate-sources]
    [dinsro.components.seed.transactions :as cs.transactions]
    [dinsro.components.seed.users :as cs.users]
-   [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.addresses :as m.c.addresses]
@@ -38,10 +36,8 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.navlink :as m.navlink]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
-   [dinsro.model.seed :as seed]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
@@ -71,8 +67,7 @@
    [expound.alpha :as expound]
    [lambdaisland.glogc :as log]
    [reitit.coercion.spec]
-   [tick.alpha.api :as tick]
-   [xtdb.api :as xt])
+   [tick.alpha.api :as tick])
   (:import
    io.grpc.StatusRuntimeException))
 
