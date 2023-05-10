@@ -78,22 +78,6 @@
 
 (def strict false)
 
-(defn create-navlinks!
-  []
-  (let [node (:main c.xtdb/xtdb-nodes)
-        add  (fnil conj [])
-        data (reduce
-              (fn [data link]
-                (let [[id name href target] link]
-                  (update data :navlinks add (seed/new-navlink id name href target))))
-              {} m.navlink/links)
-        txes (->> data
-                  vals
-                  flatten
-                  (mapv #(vector ::xt/put %)))]
-    (log/trace :navlink/create {:txes txes})
-    (xt/submit-tx node txes)))
-
 (>defn seed-currencies!
   [currencies]
   [::cs.core/currencies => nil?]
@@ -584,7 +568,6 @@
   [seed-data]
   [::cs.core/seed-data => any?]
   (let [{:keys [currencies networks nodes relays timezone users]} seed-data]
-    (create-navlinks!)
     (dt/set-timezone! timezone)
 
     (seed-chains! (keys networks))
