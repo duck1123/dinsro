@@ -115,6 +115,18 @@ spec:
 EOF
 #+END_SRC
 
+
+*** Install Sealed Secrets
+
+https://github.com/bitnami-labs/sealed-secrets#installation
+
+**** Add Helm Repo
+
+#+BEGIN_SRC  shell
+  helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+#+END_SRC
+
+
 *** Create namespace
 
 #+BEGIN_SRC  shell

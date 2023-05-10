@@ -7,11 +7,12 @@
       earthly
       # helm
       helm-docs
-      # kubectl
-      # kustomize
+      kubectl
+      kustomize
+      kubeseal
       nodejs
       openjdk
-      # tilt
+      tilt
       yarn
       yq
     ];
