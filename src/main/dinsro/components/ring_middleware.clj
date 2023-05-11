@@ -143,9 +143,9 @@
 
 (defroutes base-app
   (GET "/.well-known/nostr.json" []
-    (resp/content-type
-     (resp/response (nip05-response))
-     "application/json"))
+    (-> (resp/response (nip05-response))
+        (resp/content-type "application/json")
+        (assoc-in [:headers "Access-Control-Allow-Origin"] "*")))
   (GET  "/chsk" req
     (c.socket/ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req
