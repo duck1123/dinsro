@@ -51,8 +51,6 @@ pipelines:
   deploy-all: |-
     run_dependencies --all
     run_pipelines deploy-all-bitcoin
-    run_pipelines deploy-nostream
-    run_pipelines deploy-nostr-rs-relay
     run_pipelines deploy-dinsro
 
   deploy-all-bitcoin: |-
@@ -173,7 +171,6 @@ pipelines:
     run_pipelines purge
     run_pipelines purge-devimage
     run_pipelines purge-all-bitcoin
-    run_pipelines purge-all-relays
 
   purge-all-bitcoin: |-
     NAME=alice run_pipelines purge-bitcoin
