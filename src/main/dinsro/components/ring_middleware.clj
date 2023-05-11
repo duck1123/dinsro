@@ -73,18 +73,7 @@
           "bob"    "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
           "dinsro" "6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
           "duck"   "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"}
-         :relays
-         {"6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"
-          ["wss://relay.kronkltd.net"]
-
-          "efff8cd00d0fb7477935bfad061d549fc3f84ceec34646d7f526651aab47c00a"
-          ["wss://relay.kronkltd.net"]
-
-          "6bda57c3323ac4d8b4ca32729d07f1707b60df1c0625e7acab3cefefb001cf28"
-          ["wss://relay.kronkltd.net"]
-
-          "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"
-          ["wss://relay.kronkltd.net"]}}]
+         :relays  {}}]
     (json/json-str props)))
 
 (defn wrap-well-known-routes

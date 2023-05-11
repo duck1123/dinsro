@@ -12,8 +12,7 @@
           "wss://nostr.zebedee.cloud"
           "wss://relay.damus.io"
           "wss://relay.orangepill.dev"
-          "wss://eden.nostr.land"
-          "wss://nostream.dev.kronkltd.net"]
+          "wss://eden.nostr.land"]
 
  :nodes
  [{:name    "bitcoin-alice"
