@@ -150,7 +150,7 @@
                      (u.navbar/ui-minimal-navbar navbar)
                      (u.navbar/ui-navbar navbar))))))
            (ui-sidebar-pushable {:className (string/join " " [pushable])}
-             (log/info :Root/navbar {:navbar navbar})
+             (log/trace :Root/navbar {:navbar navbar})
              (u.navbar/ui-navbar-sidebar sidebar)
              (ui-sidebar-pusher {:className (string/join " " [pusher])}
                (dom/div {:className (string/join " " [pushed])}

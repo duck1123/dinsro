@@ -234,16 +234,16 @@
                    {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
                    :ui/expanded?
                    [::uism/asm-id ::mu.navbar/navbarsm]]}
-  (log/info :navbar/pre-rendering {:props props})
+  (log/trace :navbar/pre-rendering {:props props})
   (let [{:keys [site-button]} (css/get-classnames Navbar)
         authorization         (get props [::auth/authorization :local])
         current-user          (:session/current-user authorization)
         inverted              true
         logged-in?            (= (::auth/status authorization) :success)]
-    (log/info :navbar/rendering {:authorization authorization
-                                 :current-user  current-user
-                                 :inverted      inverted
-                                 :logged-in?    logged-in?})
+    (log/trace :navbar/rendering {:authorization authorization
+                                  :current-user  current-user
+                                  :inverted      inverted
+                                  :logged-in?    logged-in?})
     (dom/div {:classes [:.ui.top.fixed.menu (when inverted :.inverted)]}
       (dom/a :.item
         {:classes [:.item site-button]
