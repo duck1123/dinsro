@@ -15,7 +15,8 @@
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.specs :as ds]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log]
+   [manifold.deferred :as d]))
 
 ;; [[../../model/nostr/events.cljc]]
 ;; [[../../queries/nostr/events.clj]]

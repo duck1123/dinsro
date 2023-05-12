@@ -6,6 +6,7 @@
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/streams_notebook.clj]]
 
 (defonce s (st/stream))
+(defonce event-id-stream (s/stream))
 (defonce pubkey-stream (st/stream))
 
 (defn start-consumer!
