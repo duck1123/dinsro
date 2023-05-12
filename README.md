@@ -13,62 +13,9 @@ with connections to a mainnet node.
 
 Use at your own risk!
 
-## Prerequisites
+## Setup
 
-* docker ([install](https://docs.docker.com/get-docker/))
-* earthly ([install](https://earthly.dev/get-earthly))
-* babashka ([install](https://github.com/babashka/babashka#installation))
-
-If building locally, not using docker, you will need:
-
-* clojure cli
-* java
-* yarn
-
-Recommended:
-
-* Tilt ([install](https://docs.tilt.dev/install.html))
-* Helm ([install](https://helm.sh/docs/intro/install/))
-* K3D ([install](https://k3d.io/#install-script))
-
-A large number of requirements are available through nix.
-
-``` shell
-cp .envrc.example .envrc
-```
-
-## Tilt-based development
-
-### Create Kubernetes cluster
-
-You will need a kubernetes server to test with. For local development, I run the following command
-
-``` shell
-k3d cluster create \
-  --api-port 6550 \
-  -p "80:80@loadbalancer" \
-  -p "443:443@loadbalancer" \
-  --servers 1 \
-  --registry-create registry \
-  --kubeconfig-update-default
-```
-Consult my babashka script [here](https://github.com/duck1123/dotfiles/blob/master/bb.edn) for the latest settings.
-
-### Configure Build
-
-Create a file named `site.edn` and set with any desired customizations.
-
-Refer to `site-defaults.edn` for options.
-
-### Running Dev Build
-
-To start tilt, run:
-
-``` shell
-tilt up
-```
-
-and then links to any of the deployed resources can be found at http://localhost:10350/
+For up to date setup information, check the [Runbook](./runbook.org)
 
 ## Running Without Tilt
 
@@ -105,6 +52,12 @@ To view status of frontend, go to http://localhost:9630/
 
 To view workspaces, go to http://localhost:9631/
 
+# Docker
+
+``` shell
+docker run -p 3000:3000 duck1123/dinsro:latest
+```
+
 ## Seeding data
 
 Test data can be loaded by running
@@ -127,10 +80,10 @@ bb test
 
 ## Live Demo
 
-- [server](https://demo.dinsro.com/)
+- [server](https://dinsro.com/)
 - [Docs](https://docs.dinsro.com/)
-- [Notebooks](https://notebooks.demo.dinsro.com/)
+- [Notebooks](https://notebooks.dinsro.com/)
 
 ## License
 
-Copyright © 2019 Duck Nebuchadnezzar <duck@kronkltd.net>
+Copyright © 2023 Duck Nebuchadnezzar <duck@kronkltd.net>
