@@ -87,7 +87,7 @@
                         {::m.navbars/id    (::m.navbars/id props)
                          ::m.navbars/items []
                          :id               nil})}
-  (log/info :VerticalMenu/starting {:props props})
+  (log/trace :VerticalMenu/starting {:props props})
   (let [converted-items (map convert-item items)]
     (ui-menu
       {:items    converted-items

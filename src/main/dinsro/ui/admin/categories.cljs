@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.categories :as j.categories]
+   [dinsro.joins.users :as j.users]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.categories :as mu.categories]
@@ -17,7 +18,7 @@
 (def override-admin-form true)
 
 (def user-picker
-  {::picker-options/query-key       ::m.users/index
+  {::picker-options/query-key       ::j.users/index
    ::picker-options/query-component u.links/UserLinkForm
    ::picker-options/options-xform
    (fn [_ options]

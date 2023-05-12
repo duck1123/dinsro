@@ -8,6 +8,8 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]))
 
+;; [../../../../../main/dinsro/ui/admin/users/categories.cljs]
+
 (defn make-body-item
   []
   {::m.categories/name              (ds/gen-key ::m.categories/name)
@@ -17,5 +19,11 @@
 (ws/defcard BodyItem
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.a.u.categories/BodyItem
+    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
+    ::ct.fulcro3/initial-state (fn [] (make-body-item))}))
+
+(ws/defcard NewForm
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root          u.a.u.categories/NewForm
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state (fn [] (make-body-item))}))

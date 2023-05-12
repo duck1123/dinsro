@@ -42,7 +42,8 @@
     u.s.rate-sources/Show
     u.s.rate-sources/NewForm
     u.s.categories/Report
-    u.s.categories/Show]})
+    u.s.categories/Show
+    u.s.categories/NewForm]})
 
 (defsc SettingsPage
   [_this {:ui/keys [nav-menu router vertical-menu]}]
