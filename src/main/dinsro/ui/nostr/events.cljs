@@ -19,6 +19,7 @@
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.ui.controls :refer [ui-moment]]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events.event-tags :as u.n.e.event-tags]
@@ -142,7 +143,8 @@
         (ui-grid {}
           (ui-grid-row {}
             (ui-grid-column {:width 13}
-              (str created-date))
+              (ui-moment {:fromNow true :withTitle true}
+                (str created-date)))
             (ui-grid-column {:floated "right" :textAlign "right" :width 2}
               (str kind)))))
       (dom/div {:classes [:.description]}

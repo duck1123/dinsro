@@ -23,6 +23,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.ui.controls :refer [ui-moment]]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.transactions.debits :as u.t.debits]
    [lambdaisland.glogc :as log]))
@@ -173,7 +174,9 @@
   (dom/div :.ui.item
     (dom/div :.ui.segment
       (dom/div {} (u.links/ui-transaction-link props))
-      (dom/div {} (str date))
+      (dom/div {}
+        (ui-moment {:fromNow true :withTitle true}
+          (str date)))
       (dom/div {} (str description))
       (ui-grid {:padded false}
         (ui-grid-row {}
@@ -263,7 +266,10 @@
    (dom/div :.ui.segment
      (dom/h1 {} (str description))
      (dom/div {} (str "Debit Count: " debit-count))
-     (dom/p {} "Date: " (str date))
+     (dom/p {}
+       "Date: "
+       (ui-moment {:fromNow true :withTitle true}
+         (str date)))
      (dom/button {:classes [:.ui :.button]
                   :onClick (fn [_e]
                              (let [props (comp/props this)]

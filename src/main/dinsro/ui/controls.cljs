@@ -1,5 +1,6 @@
 (ns dinsro.ui.controls
   (:require
+   ["react-moment" :default Moment]
    ["victory" :as victory]
    [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
@@ -34,6 +35,7 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+(def ui-moment (interop/react-factory Moment))
 (def ui-victory-chart (interop/react-factory victory/VictoryChart))
 (def ui-victory-line (interop/react-factory victory/VictoryLine))
 
