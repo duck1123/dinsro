@@ -175,8 +175,8 @@
   "componentDidMount handler for SubPage components that load a report"
   [ident-key router-key Report this]
   (let [props    (comp/props this)
-        chain-id (get-in props [[::dr/id router-key] ident-key])]
-    (report/start-report! this Report {:route-params {ident-key chain-id}})))
+        parent-id (get-in props [[::dr/id router-key] ident-key])]
+    (report/start-report! this Report {:route-params {ident-key parent-id}})))
 
 (defn img-formatter
   [pubkey]
