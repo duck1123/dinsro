@@ -41,11 +41,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {o.accounts/currency #(u.links/ui-admin-currency-link %2)
-                         o.accounts/user     #(u.links/ui-admin-user-link %2)
+  {ro/column-formatters {o.accounts/currency #(when %2 (u.links/ui-admin-currency-link %2))
+                         o.accounts/user     #(when %2 (u.links/ui-admin-user-link %2))
                          o.accounts/name     #(u.links/ui-admin-account-link %3)
-                         o.accounts/source   #(u.links/ui-admin-rate-source-link %2)
-                         o.accounts/wallet   #(and %2 (u.links/ui-admin-wallet-link %2))}
+                         o.accounts/source   #(when %2 (u.links/ui-admin-rate-source-link %2))
+                         o.accounts/wallet   #(when %2 (u.links/ui-admin-wallet-link %2))}
    ro/columns           [m.accounts/name
                          m.accounts/currency
                          m.accounts/user
