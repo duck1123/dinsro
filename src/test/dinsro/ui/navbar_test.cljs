@@ -66,7 +66,12 @@
 (ws/defcard Navbar
   {::wsm/align       {:flex 1}
    ::wsm/card-height 5
-   ::wsm/card-width  6}
+   ::wsm/card-width  6
+   ::wsm/node-props  {:style
+                      {:position  "absolute"
+                       :width     "100%"
+                       :transform "translate(0px, 69px)"
+                       :height    "40px"}}}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root       u.navbar/Navbar
     ::ct.fulcro3/wrap-root? true
