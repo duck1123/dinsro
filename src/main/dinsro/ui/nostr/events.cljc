@@ -38,6 +38,7 @@
    [nextjournal.markdown.transform :as md.transform]
    [sablono.core :as html :refer-macros [html]]))
 
+;; [[../../actions/nostr/events.clj]]
 ;; [[../../queries/nostr/events.clj]]
 ;; [[../../joins/nostr/events.cljc]]
 ;; [[../../mutations/nostr/events.cljc]]
@@ -220,6 +221,15 @@
           (ui-grid-column {}
             (ui-container {}
               (ui-segment {}
+                (let [page-count (report/page-count this)]
+                  (sui-pagination/ui-pagination
+                   {:activePage   (report/current-page this)
+                    :onPageChange (fn [_ data]
+                                    (report/goto-page! this (comp/isoget data "activePage")))
+                    :totalPages   page-count
+                    :size         "tiny"}))
+                (ui-button {:icon    "refresh"
+                            :onClick (fn [_] (control/run! this))})
                 (when show-controls ((report/control-renderer this) this))
                 (let [page-count (report/page-count this)]
                   (sui-pagination/ui-pagination
