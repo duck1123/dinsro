@@ -1,7 +1,7 @@
 (ns dinsro.queries.ln.nodes
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.networks :as m.c.networks]
@@ -9,6 +9,7 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
+   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 ;; [[../../actions/ln/nodes.clj]]
