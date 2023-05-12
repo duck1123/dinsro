@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
@@ -19,13 +20,25 @@
 ;; [[../../queries/nostr/relays.clj][Queries]]
 ;; [[../../ui/nostr/relays.cljs][UI]]
 
+(def join-info
+  (merge
+   {:idents m.n.relays/idents}
+   #?(:clj {:indexer q.n.relays/index-ids
+            :counter q.n.relays/count-ids})))
+
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.relays/id
-   ao/pc-output [{::admin-index [::m.n.relays/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.n.relays/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.n.relays/index-ids) :cljs [])]
-       {::admin-index (m.n.relays/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.n.relays/id
+   ao/pc-output [{::index [:total {:results [::m.n.relays/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr connection-count ::connection-count :int
   {ao/identities #{::m.n.relays/id}
@@ -44,17 +57,6 @@
        (let [ids #?(:clj  (q.n.connections/index-ids {::m.n.relays/id relay-id})
                     :cljs (do (comment relay-id) []))]
          {::connections (m.n.requests/idents ids)})))})
-
-(defattr index ::index :ref
-  {ao/target    ::m.n.relays/id
-   ao/pc-output [{::index [::m.n.relays/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params]} _]
-     (let [ids #?(:clj (q.n.relays/index-ids query-params)
-                  :cljs (do (comment query-params) []))]
-       (log/info :index/starting {:ids ids})
-       (let [total #?(:clj (q.n.relays/count-ids query-params) :cljs 0)]
-         {::index {:total total :results (m.n.relays/idents ids)}})))})
 
 (defattr requests ::requests :ref
   {ao/cardinality :many

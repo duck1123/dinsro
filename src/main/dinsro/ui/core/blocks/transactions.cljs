@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.transactions :as m.c.transactions]
@@ -19,6 +20,9 @@
    ro/controls          {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
                          ::refresh       u.links/refresh-control
                          ::m.c.blocks/id {:type :uuid :label "Block"}}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
                          (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id

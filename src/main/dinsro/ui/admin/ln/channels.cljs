@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.ui.links :as u.links]))
@@ -30,6 +31,9 @@
                         m.ln.channels/node]
    ro/field-formatters {::m.ln.channels/node #(u.links/ui-node-link %2)
                         ::m.ln.channels/id   #(u.links/ui-channel-link %3)}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route            "channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true

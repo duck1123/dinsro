@@ -78,8 +78,6 @@ m.c.nodes/attributes
 ;; (cs/->record (c.bitcoin-s/get-blockchain-info client))
 
 (comment
-  (tap> (q.c.nodes/index-records))
-
   (c.bitcoin-s/list-transactions client)
 
   (a.c.nodes/fetch! node)

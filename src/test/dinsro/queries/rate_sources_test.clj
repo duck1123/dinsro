@@ -33,12 +33,3 @@
         id   (::m.rate-sources/id item)]
     (assertions
      (q.rate-sources/read-record id) => item)))
-
-(deftest index-records-no-records
-  (assertions
-   (q.rate-sources/index-records) => []))
-
-(deftest index-records-with-records
-  (let [item (mocks/mock-rate-source)]
-    (assertions
-     (q.rate-sources/index-records) => [item])))

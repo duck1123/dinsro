@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
@@ -38,6 +39,9 @@
                         m.ln.payreqs/node]
    ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)
                         ::m.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route            "requests"
    ro/row-pk           m.ln.payreqs/id
    ro/run-on-mount?    true

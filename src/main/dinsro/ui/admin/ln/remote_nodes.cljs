@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
@@ -61,6 +62,9 @@
                                                               {::m.ln.remote-nodes/id     id
                                                                ::m.ln.remote-nodes/pubkey pubkey})))
                                                          (dom/p {} "not found"))))}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route            "remote-nodes"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
    ro/row-pk           m.ln.remote-nodes/id

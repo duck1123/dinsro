@@ -1,19 +1,30 @@
 (ns dinsro.queries.core.mnemonics
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.c.mnemonics/id)]
-  (log/info :index-ids/starting {})
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.mnemonics/id _]]}))
+(def query-info
+  {:ident   ::m.c.mnemonics/id
+   :pk      '?mnemonic-id
+   :clauses [[:actor/id     '?actor-id]
+             [:actor/admin? '?admin?]]
+   :rules   (fn [[_actor-id admin?] rules]
+              (->> rules
+                   (concat-when (not admin?)
+                     [['?mnemonic-id ::m.c.mnemonics/user '?actor-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]

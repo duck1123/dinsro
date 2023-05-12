@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
+   [dinsro.joins :as j]
    [dinsro.model.contacts :as m.contacts]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -19,23 +20,25 @@
 ;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
 ;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
 
-(defattr index ::index :ref
-  {ao/target    ::m.n.pubkeys/id
-   ao/pc-output [{::index [::m.n.pubkeys/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params]} params]
-     (log/trace :index/starting {:query-params query-params :params params})
-     (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
-       {::index (m.n.pubkeys/idents ids)}))})
+(def join-info
+  (merge
+   {:idents m.n.pubkeys/idents}
+   #?(:clj {:indexer q.n.pubkeys/index-ids
+            :counter q.n.pubkeys/count-ids})))
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.pubkeys/id
-   ao/pc-output [{::admin-index [::m.n.pubkeys/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.n.pubkeys/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (log/info :admin-index/starting {})
-     (let [ids #?(:clj (q.n.pubkeys/index-ids) :cljs [])]
-       {::admin-index (m.n.pubkeys/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.n.pubkeys/id
+   ao/pc-output [{::index [:total {:results [::m.n.pubkeys/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr contacts ::contacts :ref
   {ao/identities #{::m.n.pubkeys/id}

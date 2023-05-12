@@ -2,31 +2,31 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    #?(:clj [dinsro.queries.nostr.event-tags :as q.n.event-tags])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   [dinsro.specs]))
 
 ;; [[../../model/nostr/event_tags.cljc][Event Tags Model]]
 
-(defattr index ::index :ref
-  {ao/target    ::m.n.event-tags/id
-   ao/pc-output [{::index [::m.n.event-tags/id]}]
-   ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (q.n.event-tags/index-ids) :cljs [])]
-       (log/info :index/starting {:ids ids})
-       (let [total #?(:clj (q.n.event-tags/count-ids) :cljs 0)
-             results (m.n.event-tags/idents ids)]
-         {::index {:total total :results results}})))})
+(def join-info
+  (merge
+   {:idents m.n.event-tags/idents}
+   #?(:clj {:indexer q.n.event-tags/index-ids
+            :counter q.n.event-tags/count-ids})))
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.event-tags/id
-   ao/pc-output [{::admin-index [::m.n.event-tags/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.n.event-tags/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.n.event-tags/index-ids) :cljs [])]
-       {::admin-index (m.n.event-tags/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.n.event-tags/id
+   ao/pc-output [{::index [:total {:results [::m.n.event-tags/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (def attributes [admin-index index])

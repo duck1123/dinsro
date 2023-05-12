@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
@@ -49,6 +50,9 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-account-button
                          ::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "accounts"
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true

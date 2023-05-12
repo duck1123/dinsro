@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
@@ -24,6 +25,9 @@
    ro/control-layout   {:action-buttons [::new ::fetch ::refresh]}
    ro/controls         {::fetch fetch-button
                         ::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route            "badge-awards"
    ro/row-pk           m.n.badge-definitions/id
    ro/run-on-mount?    true

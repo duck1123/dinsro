@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]
@@ -22,6 +23,9 @@
                          :action-buttons [::refresh]}
    ro/controls          {::m.c.chains/id {:type :uuid :label "Chains"}
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.c.networks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.networks/index

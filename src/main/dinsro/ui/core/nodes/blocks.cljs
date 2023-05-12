@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -39,6 +40,9 @@
    ro/controls          {::refresh      u.links/refresh-control
                          ::generate     generate-button
                          ::m.c.nodes/id {:type :uuid :label "Nodes"}}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "blocks"
    ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
                          (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]

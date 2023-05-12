@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.menus :as me]
    [dinsro.model.currencies :as m.currencies]
@@ -46,6 +47,9 @@
                          j.currencies/rate-count]
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "currencies"
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
    ro/row-pk            m.currencies/id

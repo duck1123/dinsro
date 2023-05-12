@@ -3,11 +3,11 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.model.nostr.user-pubkeys :as m.n.user-pubkeys]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.user-pubkeys :as m.user-pubkeys]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
@@ -17,11 +17,34 @@
 ;; [[../model/users.cljc][Users Model]]
 ;; [[../ui/users.cljs][Users UI]]
 
+(def query-info
+  {:ident        ::m.user-pubkeys/id
+   :pk           '?user-pubkeys-id
+   :clauses      [[:actor/id        '?actor-id]
+                  [:actor/admin?    '?admin?]
+                  [::m.n.pubkeys/id '?pubkey-id]]
+   :sort-columns {}
+   :rules
+   (fn [[actor-id admin? pubkey-id] rules]
+     (->> rules
+          (concat-when (and (not admin?) actor-id)
+            [['?user-pubkeys-id ::m.user-pubkeys/user   '?actor-id]])
+          (concat-when pubkey-id
+            [['?user-pubkeys-id ::m.user-pubkeys/pubkey '?pubkey-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
+
 (>defn read-record
   [user-id]
   [uuid? => (? ::m.users/item)]
   (let [db     (c.xtdb/get-db)
-        query  '{:find  [(pull ?id [*])] :in    [[?id]]}
+        query  '{:find  [(pull ?id [*])] :in [[?id]]}
         result (xt/q db query [user-id])
         record (ffirst result)]
     (when (get record ::m.users/id)
@@ -44,8 +67,8 @@
    '{:find  [?user-id]
      :in    [[?hex]]
      :where [[?pubkey-id ::m.n.pubkeys/hex ?hex]
-             [?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
-             [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
+             [?uk-id ::m.user-pubkeys/pubkey ?pubkey-id]
+             [?uk-id ::m.user-pubkeys/user ?user-id]]}
    [hex]))
 
 (>defn find-by-pubkey-id
@@ -55,8 +78,8 @@
   (c.xtdb/query-values
    '{:find  [?user-id]
      :in    [[?pubkey-id]]
-     :where [[?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
-             [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
+     :where [[?uk-id ::m.user-pubkeys/pubkey ?pubkey-id]
+             [?uk-id ::m.user-pubkeys/user ?user-id]]}
    [pubkey-id]))
 
 (>defn find-by-transaction
@@ -81,12 +104,6 @@
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
     (throw (ex-info "User already exists" {}))))
-
-(>defn index-ids
-  "list all user ids"
-  []
-  [=> (s/coll-of ::m.users/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.users/id _]]}))
 
 (>defn delete-record
   "delete user by id"

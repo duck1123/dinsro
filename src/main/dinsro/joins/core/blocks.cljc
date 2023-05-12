@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
@@ -12,51 +13,25 @@
 
 (comment ::m.c.nodes/_ ::log/_)
 
-#?(:clj
-   (defn do-index
-     [{:keys [query-params]} props]
-     (log/info :do-index/starting
-               {:props        props
-                :query-params query-params})
-     (let [{node-id ::m.c.nodes/id} query-params]
-       (log/info :do-index/params-parsed {:node-id node-id})
-       (let [ids    (if node-id
-                      (q.c.blocks/find-by-node node-id)
-                      (q.c.blocks/index-ids))
-             idents (m.c.blocks/idents ids)]
-         (log/info :do-index/results {:idents idents})
-         {::index idents}))))
-
-#?(:clj
-   (defn do-admin-index
-     [{:keys [query-params]} props]
-     (log/info :do-admin-index/starting
-               {:props        props
-                :query-params query-params})
-     (let [{node-id ::m.c.nodes/id} query-params]
-       (log/info :do-admin-index/params-parsed {:node-id node-id})
-       (let [ids    (if node-id
-                      (q.c.blocks/find-by-node node-id)
-                      (q.c.blocks/index-ids))
-             idents (m.c.blocks/idents ids)]
-         (log/info :do-admin-index/results {:idents idents})
-         {::m.c.blocks/admin-index idents}))))
+(def join-info
+  (merge
+   {:idents m.c.blocks/idents}
+   #?(:clj {:indexer q.c.blocks/index-ids
+            :counter q.c.blocks/count-ids})))
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.c.blocks/id
-   ao/pc-output [{::admin-index [::m.c.blocks/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.c.blocks/id]}]}]
    ao/pc-resolve
    (fn [env props]
-     #?(:clj  (do-admin-index env props)
-        :cljs (let [_ [env props]] {::admin-index []})))})
+     {::admin-index (j/make-admin-indexer join-info env props)})})
 
 (defattr index ::index :ref
   {ao/target    ::m.c.blocks/id
-   ao/pc-output [{::index [::m.c.blocks/id]}]
+   ao/pc-output [{::index [:total {:result [::m.c.blocks/id]}]}]
    ao/pc-resolve
    (fn [env props]
-     #?(:clj  (do-index env props)
-        :cljs (let [_ [env props]] {::index []})))})
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr transactions ::transactions :ref
   {ao/cardinality :many

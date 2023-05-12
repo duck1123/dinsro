@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
@@ -12,6 +12,24 @@
    [dinsro.model.nostr.runs :as m.n.runs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
+
+(def query-info
+  {:ident   ::m.n.requests/id
+   :pk      '?requests-id
+   :clauses [[::m.n.relays/id '?relay-id]]
+   :rules
+   (fn [[relay-id] rules]
+     (->> rules
+          (concat-when relay-id
+            ['?request-id ::m.n.requests/relay '?relay-id])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -26,14 +44,6 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     (log/info :create-record/finished {:id id})
     id))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.requests/id)]
-  (log/debug :index-ids/starting {})
-  (let [ids (c.xtdb/query-values '{:find [?id] :where [[?id ::m.n.requests/id _]]})]
-    (log/info :index-ids/finished {:ids ids})
-    ids))
 
 (>defn read-record
   [id]

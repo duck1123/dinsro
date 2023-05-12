@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.ui.links :as u.links]))
@@ -61,8 +62,12 @@
   [_this _props]
   {ro/column-formatters {::m.categories/name #(u.links/ui-category-link %3)}
    ro/columns           [m.categories/name]
-   ro/control-layout    {:action-buttons [::new]}
-   ro/controls          {::new new-button}
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "categories"
    ro/row-pk            m.categories/id
    ro/run-on-mount?     true

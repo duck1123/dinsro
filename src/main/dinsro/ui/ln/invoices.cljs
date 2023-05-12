@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.invoices :as j.ln.invoices]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.mutations.ln.invoices :as mu.ln.invoices]
@@ -49,6 +50,9 @@
                          m.ln.invoices/node]
    ro/control-layout    {:action-buttons [::new]}
    ro/controls          {::new new-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "invoices"
    ro/row-pk            m.ln.invoices/id
    ro/run-on-mount?     true

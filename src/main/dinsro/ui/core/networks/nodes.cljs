@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -23,6 +24,9 @@
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh         u.links/refresh-control
                          ::m.c.networks/id {:type :uuid :label "Nodes"}}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "nodes"
    ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
                          (u.links/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]

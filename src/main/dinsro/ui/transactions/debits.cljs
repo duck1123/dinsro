@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
@@ -21,6 +22,9 @@
                          :action-buttons [::refresh]}
    ro/controls          {::m.transactions/id {:type :uuid :label "Block"}
                          ::refresh           u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.debits/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.debits/index

@@ -565,6 +565,14 @@
 
 (def ui-rate-source-link (comp/factory RateSourceLinkForm {:keyfn ::m.rate-sources/id}))
 
+(form/defsc-form RateValueLinkForm [this {::m.rates/keys [id rate]}]
+  {fo/id         m.rates/id
+   fo/route-prefix "rate-value-link"
+   fo/attributes [m.rates/rate]}
+  (form-link this id (str rate) :dinsro.ui.admin.rates/Show))
+
+(def ui-rate-value-link (comp/factory RateValueLinkForm {:keyfn ::m.rates/id}))
+
 (form/defsc-form AdminRelayLinkForm [this {::m.n.relays/keys [id address]}]
   {fo/id           m.n.relays/id
    fo/route-prefix "relay-link"

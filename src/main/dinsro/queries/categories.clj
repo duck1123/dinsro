@@ -3,11 +3,36 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [xtdb.api :as xt]))
+
+;; [../actions/categories.clj]
+;; [../model/categories.cljc]
+
+(def query-info
+  {:ident   ::m.categories/id
+   :pk      '?category-id
+   :clauses [[:actor/id     '?actor-id]
+             [:actor/admin? '?admin?]
+             [::m.users/id  '?user-id]]
+   :rules
+   (fn [[actor-id admin? user-id] rules]
+     (->> rules
+          (concat-when (and (not admin?) actor-id)
+            [['?category-id ::m.categories/user '?actor-id]])
+          (concat-when user-id
+            [['?category-id ::m.categories/user '?user-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn find-by-user
   [user-id]
@@ -40,16 +65,7 @@
             (dissoc :xt/id)
             (assoc ::m.categories/user {::m.users/id user-id}))))))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-values '{:find  [?e]
-                         :where [[?e ::m.categories/name _]]}))
-
-(>defn delete-record
+(>defn delete!
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
-  nil)
-
+  (c.xtdb/delete! id))

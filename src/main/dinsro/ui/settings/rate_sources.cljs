@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.menus :as me]
@@ -71,6 +72,9 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new new-action-button
                          ::refresh         u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "rate-sources"
    ro/row-pk            m.rate-sources/id
    ro/run-on-mount?     true

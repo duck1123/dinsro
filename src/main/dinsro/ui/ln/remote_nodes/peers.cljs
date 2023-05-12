@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
@@ -24,6 +25,9 @@
                          :inputs         [[::m.ln.remote-nodes/id]]}
    ro/controls          {::m.ln.remote-nodes/id {:type :uuid :label "Nodes"}
                          ::refresh              u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/source-attribute  ::j.ln.peers/index
    ro/title             "Remote Node Peers"
    ro/row-pk            m.ln.peers/id

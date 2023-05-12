@@ -4,54 +4,48 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.accounts :as m.accounts]
+   [dinsro.joins :as j]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
-   [dinsro.model.transactions :as m.transactions]
-   [dinsro.model.users :as m.users]
+   [dinsro.model.rates :as m.rates]
    #?(:clj [dinsro.queries.currencies :as q.currencies])
    #?(:clj [dinsro.queries.debits :as q.debits])
+   #?(:clj [dinsro.queries.rates :as q.rates])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-;; [[../model/debits.cljc][Debits Model]]
-;; [[../ui/debits.cljs][Debits UI]]
+;; [../actions/debits.clj]
+;; [../model/debits.cljc]
+;; [../queries/debits.clj]
+;; [../ui/debits.cljs]
 
-;; "All debits regardless of user"
-(defattr admin-index ::admin-index :ref
+(def join-info
+  (merge
+   {:idents m.debits/idents}
+   #?(:clj {:indexer q.debits/index-ids
+            :counter q.debits/count-ids})))
+
+(defattr admin-index
+  "All debits regardless of user"
+  ::admin-index :ref
   {ao/target    ::m.debits/id
-   ao/pc-output [{::admin-index [::m.debits/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.debits/id]}]}]
    ao/pc-resolve
-   (fn [{user-id ::m.users/id} _]
-     (log/info :admin-index/starting {})
-     (let [ids (if user-id #?(:clj (q.debits/index-ids) :cljs []) [])]
-       {::admin-index (m.debits/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
 
-;; "All debits belonging to authenticated user"
-(defattr index ::index :ref
+(defattr index
+  "All debits belonging to authenticated user"
+  ::index :ref
   {ao/target    ::m.debits/id
-   ao/pc-output [{::index [::m.debits/id]}]
+   ao/pc-output [{::index [:total {:results [::m.debits/id]}]}]
    ao/pc-resolve
-   (fn [{user-id ::m.users/id
-         :keys   [query-params]
-         :as     _env} _]
-     (log/info :index/starting {})
-     (let [{transaction-id ::m.transactions/id
-            account-id     ::m.accounts/id} query-params]
-       (log/info :index/starting {:user-id        user-id
-                                  :transaction-id transaction-id
-                                  :account-id     account-id
-                                  :query-prams    query-params})
-       (let [ids #?(:clj
-                    (if transaction-id
-                      (q.debits/find-by-transaction transaction-id)
-                      (if account-id
-                        (q.debits/find-by-account account-id)
-                        (if user-id (q.debits/find-by-user user-id) [])))
-                    :cljs [])]
-         {::index (m.debits/idents ids)})))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
-(defattr currency ::currency :ref
+(defattr currency
+  "The currency associatid with this debit"
+  ::currency :ref
   {ao/target    ::m.debits/id
    ao/pc-input  #{::m.debits/account ::m.debits/id}
    ao/pc-output [{::currency [::m.currencies/id]}]
@@ -65,10 +59,45 @@
        {::currency ident}))
    ::report/column-EQL {::currency [::m.currencies/id ::m.currencies/name]}})
 
+(defattr current-rate ::current-rate :ref
+  {ao/target    ::m.rates/id
+   ao/pc-input  #{::m.debits/id}
+   ao/pc-output [{::current-rate [::m.rates/id]}]
+   ao/pc-resolve
+   (fn [_ props]
+     (let [debit-id (::m.debits/id props)
+           id #?(:clj (q.rates/find-for-debit debit-id)
+                 :cljs (do (comment debit-id) nil))]
+       {::current-rate (when id (m.rates/ident id))}))})
+
+(defattr current-rate-value ::current-rate-value :number
+  {ao/pc-input #{::current-rate
+                 ::m.debits/id}
+   ao/pc-output [::current-rate-value]
+   ao/pc-resolve
+   (fn [_ {{::m.rates/keys [rate]} ::current-rate :as props}]
+     (log/info :current-rate-value/starting {:props props})
+     {::current-rate-value rate})})
+
+(>def ::event-value number?)
+(defattr event-value ::event-value :number
+  {ao/pc-input  #{::m.debits/value ::current-rate}
+   ao/pc-output [::event-value]
+   ao/pc-resolve
+   (fn [_ {::m.debits/keys [value] ::keys [current-rate] :as props}]
+     (log/info :event-value/starting {:props props})
+     (let [current-rate-value #?(:clj (some->
+                                       current-rate ::m.rates/id
+                                       q.rates/read-record
+                                       ::m.rates/rate)
+                                 :cljs (do (comment current-rate) nil))]
+       {::event-value (when current-rate-value (* value (or current-rate-value 0)))}))})
+
 (>def ::positive? boolean?)
 (defattr positive? ::positive? :boolean
   {ao/pc-input #{::m.debits/id ::m.debits/value}
    ao/pc-output [::positive?]
    ao/pc-resolve (fn [_ {::m.debits/keys [value]}] {::positive? (pos? value)})})
 
-(def attributes [index admin-index currency positive?])
+(def attributes [current-rate-value event-value index admin-index
+                 currency current-rate positive?])

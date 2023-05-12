@@ -3,18 +3,64 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [[../../../notebooks/dinsro/notebooks/debits.clj]]
-;; [[../model/debits.cljc][Model]]
+;; [../../../notebooks/dinsro/notebooks/debits.clj]
+;; [../actions/debits.clj]
+;; [../joins/debits.cljc]
+;; [../model/debits.cljc]
+
+(def query-info
+  "Query info for Debits"
+  {:ident        ::m.debits/id
+   :pk           '?debit-id
+   :clauses      [[:actor/id           '?actor-id]
+                  [:actor/admin?       '?admin?]
+                  [::m.accounts/id     '?account-id]
+                  [::m.transactions/id '?transaction-id]
+                  [::m.currencies/id   '?currency-id]
+                  [:positive?          '?positive]]
+   :sort-columns {::m.debits/value   '?value
+                  ::m.debits/account '?account}
+   :rules
+   (fn [[actor-id admin? account-id transaction-id currency-id positive?] rules]
+     (->> rules
+          (concat-when (and (not admin?) actor-id)
+            [['?debit-id            ::m.debits/account     '?auth-account-id]
+             ['?auth-account-id     ::m.accounts/user      '?actor-id]])
+          (concat-when account-id
+            [['?debit-id            ::m.debits/account     '?account-id]])
+          (concat-when transaction-id
+            [['?debit-id            ::m.debits/transaction '?transaction-id]])
+          (concat-when currency-id
+            [['?debit-id            ::m.debits/account     '?currency-account-id]
+             ['?currency-account-id ::m.accounts/currency  '?currency-id]])
+          (concat-when (and (not (nil? positive?)) positive?)
+            [['?debit-id            ::m.debits/value       '?value]
+             ['(pos? ?value)]])
+          (concat-when (and (not (nil? positive?)) (not positive?))
+            [['?debit-id            ::m.debits/value       '?value]
+             ['(neg? ?value)]])))})
+
+(defn count-ids
+  "Count debit records"
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  "Index debit records"
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
+  "Create a debit record"
   [params]
   [::m.debits/params => ::m.debits/id]
   (log/info :create-record/starting {:params params})
@@ -34,74 +80,10 @@
     (when (get record ::m.debits/id)
       (dissoc record :xt/id))))
 
-(defn get-index-query
-  [query-params]
-  (let [transaction-id (::m.transactions/id query-params)
-        positive?      (:positive? query-params)]
-    {:find  (as-> ['?debit-id] x
-              (concat x (when-not (nil? positive?) ['?value]))
-              (filter identity x)
-              (into [] x))
-     :in    [['?transaction-id]]
-     :where (->> [['?debit-id ::m.debits/id '_]]
-                 (concat (when transaction-id
-                           [['?debit-id ::m.debits/transaction '?transaction-id]]))
-                 (concat (when (and (not (nil? positive?)) positive?)
-                           [['?debit-id ::m.debits/value '?value]
-                            ['(pos? ?value)]]))
-                 (concat (when (and (not (nil? positive?)) (not positive?))
-                           [['?debit-id ::m.debits/value '?value]
-                            ['(neg? ?value)]]))
-                 (filter identity)
-                 (into []))}))
-
-(defn get-index-params
-  [query-params]
-  (let [transaction-id (::m.transactions/id query-params)]
-    [transaction-id]))
-
-(>defn count-ids
-  ([]
-   [=> number?]
-   (count-ids {}))
-  ([query-params]
-   [any? => number?]
-   (do
-     (log/debug :count-ids/starting {:query-params query-params})
-     (let [base-params  (get-index-query query-params)
-           limit-params {:find ['(count ?witness-id)]}
-           params       (get-index-params query-params)
-           query        (merge base-params limit-params)]
-       (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-value query params)]
-         (log/info :count-ids/finished {:n n})
-         (or n 0))))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.debits/id)]
-   (index-ids {}))
-  ([query-params]
-   [map? => (s/coll-of ::m.debits/id)]
-   (do
-     (log/debug :index-ids/starting {})
-     (let [{:indexed-access/keys [options]}                 query-params
-           {:keys [limit options] :or {limit 20 options 0}} options
-           base-params                                      (get-index-query query-params)
-           limit-params                                     {:limit limit :options options}
-           query                                            (merge base-params limit-params)
-           params                                           (get-index-params query-params)]
-       (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-values query params)]
-         (log/info :index-ids/finished {:ids ids})
-         ids)))))
-
 (>defn delete!
   [id]
   [::m.debits/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
+  (c.xtdb/delete! id))
 
 (>defn find-by-account
   [account-id]

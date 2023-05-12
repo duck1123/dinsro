@@ -4,33 +4,34 @@
    [com.fulcrologic.guardrails.core :refer [>def]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   #?(:clj [dinsro.actions.authentication :as a.authentication])
+   [dinsro.joins :as j]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.transactions :as m.transactions]
    #?(:clj [dinsro.queries.categories :as q.categories])
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    [dinsro.specs]))
 
-(>def ::admin-index (s/coll-of (s/keys :req [::m.categories/id])))
+;; [../queries/categories.clj]
+
+(def join-info
+  (merge
+   {:idents m.categories/idents}
+   #?(:clj {:indexer q.categories/index-ids
+            :counter q.categories/count-ids})))
+
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.categories/id
-   ao/pc-output [{::admin-index [::m.categories/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.categories/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.categories/index-ids) :cljs [])]
-       {::admin-index (m.categories/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
 
-(>def ::index (s/coll-of (s/keys)))
 (defattr index ::index :ref
-  {ao/target    ::m.categories/id
-   ao/pc-output [{::index [::m.categories/id]}]
+  {ao/target    :m.categories/id
+   ao/pc-output [{::index [:total {:results [:m.categories/id]}]}]
    ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (if-let [user-id (a.authentication/get-user-id env)]
-                         (q.categories/find-by-user user-id) [])
-                  :cljs [])]
-       {::index (m.categories/idents ids)}))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (>def ::transactions (s/coll-of (s/keys :req [::m.transactions/id])))
 (defattr transactions ::transactions :ref

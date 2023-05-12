@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
@@ -74,6 +75,9 @@
                          m.ln.nodes/user]
    ro/control-layout    {:action-buttons [::new-node]}
    ro/controls          {::new-node new-node-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "nodes"
    ro/row-pk            m.ln.nodes/id
    ro/run-on-mount?     true

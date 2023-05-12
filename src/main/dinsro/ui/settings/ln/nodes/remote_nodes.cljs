@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
@@ -26,6 +27,9 @@
                          :inputs         [[::m.ln.nodes/id]]}
    ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
    ro/row-pk            m.ln.remote-nodes/id
    ro/run-on-mount?     true

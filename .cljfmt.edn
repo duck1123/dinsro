@@ -5,6 +5,7 @@
   action           [[:inner 0]]
   behavior         [[:inner 0]]
   button           [[:inner 0]]
+  concat-when      [[:inner 0]]
   div              [[:inner 0]]
   dd               [[:inner 0]]
   dl               [[:inner 0]]
@@ -27,6 +28,10 @@
   tr               [[:inner 0]]
   ui-form          [[:inner 0]]
   ui-form-field    [[:inner 0]]
+  ui-grid          [[:inner 0]]
+  ui-grid-column   [[:inner 0]]
+  ui-grid-row      [[:inner 0]]
+  ui-list-item     [[:inner 0]]
   ui-modal         [[:inner 0]]
   ui-modal-content [[:inner 0]]
   ul               [[:inner 0]]}}

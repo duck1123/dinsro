@@ -3,7 +3,9 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
+   [dinsro.model.core.mnemonics :as m.c.mnemonics]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
@@ -11,11 +13,30 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.c.wallets/id)]
-  (log/info :index-ids/starting {})
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.wallets/name _]]}))
+(def query-info
+  {:ident   ::m.c.wallets/id
+   :pk      '?wallet-id
+   :clauses [[:actor/id          '?actor-id]
+             [:actor/admin?      '?admin?]
+             [::m.c.mnemonics/id '?mnemonic-id]
+             [::m.c.networks/id  '?network-id]]
+   :rules
+   (fn [[_actor-id admin? mnemonic-id network-id] rules]
+     (->> rules
+          (concat-when (not admin?)
+            [['?wallet-id        ::m.c.wallets/user     '?actor-id]])
+          (concat-when mnemonic-id
+            [['?wallet-id        ::m.c.wallets/mnemonic '?mnemonic-id]])
+          (concat-when network-id
+            [['?wallet-id        ::m.c.wallets/network  '?network-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]

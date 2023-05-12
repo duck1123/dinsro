@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.currencies :as m.currencies]
@@ -14,6 +14,40 @@
    [lambdaisland.glogc :as log]
    [tick.alpha.api :as tick]
    [xtdb.api :as xt]))
+
+;; [../ui/transactions.cljs]
+
+(def query-info
+  {:ident   ::m.transactions/id
+   :pk      '?transaction-id
+   :clauses [[:actor/id       '?actor-id]
+             [:actor/admin?   '?admin?]
+             [::m.users/id    '?user-id]
+             [::m.accounts/id '?account-id]]
+   :order-by [['?date :desc]]
+   :sort-columns
+   {::m.transactions/date '?sort-date}
+   :rules
+   (fn [[actor-id admin? user-id account-id] rules]
+     (->> rules
+          (concat-when (and (not admin?) actor-id)
+            [['?auth-debit-id    ::m.debits/transaction   '?transaction-id]
+             ['?auth-debit-id    ::m.debits/account       '?auth-account-id]
+             ['?auth-account-id  ::m.accounts/user        '?actor-id]])
+          (concat-when account-id
+            [['?account-debit-id ::m.debits/transaction   '?transaction-id]
+             ['?account-debit-id ::m.debits/account       '?account-id]])
+          (concat-when user-id
+            [['?transaction-id   ::m.transactions/account '?user-account-id]
+             ['?user-account-id  ::m.accounts/user        '?user-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn find-by-account
   [id]
@@ -77,14 +111,6 @@
       (-> record
           (update ::m.transactions/date tick/instant)
           (dissoc :xt/id)))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of :xt/id)]
-   (index-ids {}))
-  ([_query-params]
-   [map? => (s/coll-of :xt/id)]
-   (c.xtdb/query-values '{:find [?e] :where [[?e ::m.transactions/id _]]})))
 
 (>defn index-records
   []

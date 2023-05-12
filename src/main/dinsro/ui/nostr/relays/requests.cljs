@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
@@ -44,6 +45,9 @@
    ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
                          ::new           new-button
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/row-action-button "Run" ::m.n.requests/id mu.n.requests/run!)
                          ;; (u.links/row-action-button "Stop" ::m.n.requests/id mu.n.requests/stop!)
                          ]

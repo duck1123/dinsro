@@ -3,15 +3,31 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 (def ident-key ::m.n.filters/id)
-(def params-key ::m.n.filters/params)
-(def item-key ::m.n.filters/item)
+
+(def query-info
+  {:ident   ::m.n.filters/id
+   :pk      '?filter-id
+   :clauses [[::m.n.requests/id '?request-id]]
+   :rules
+   (fn [[request-id] rules]
+     (->> rules
+          (concat-when request-id
+            [['?filter-id ::m.n.filters/request '?request-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -32,11 +48,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
       (dissoc record :xt/id))))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.filters/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.n.filters/id _]]}))
 
 (>defn delete!
   [id]

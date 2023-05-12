@@ -1,13 +1,25 @@
 (ns dinsro.actions.debits
-  (:require [dinsro.queries.debits :as q.debits]))
+  (:require
+   [dinsro.queries.debits :as q.debits]
+   [dinsro.queries.rates :as q.rates]))
+
+;; [../joins/debits.cljc]
+;; [../model/debits.cljc]
+;; [../queries/debits.clj]
 
 (comment
 
   (def positive? true)
 
-  (q.debits/index-ids {:positive? false})
+  (q.debits/index-ids {:positive? positive?})
 
-  (q.debits/get-index-params {:positive? positive?})
-  (q.debits/get-index-query {:positive? positive?})
+  (q.debits/count-ids {:positive? false})
+  (q.debits/index-ids)
+
+  (def debit-id (first (q.debits/index-ids)))
+
+  (q.debits/read-record debit-id)
+
+  (q.rates/read-record (q.rates/find-for-debit debit-id))
 
   nil)

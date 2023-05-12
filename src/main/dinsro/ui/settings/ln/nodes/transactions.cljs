@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -25,6 +26,9 @@
                                           :label  "Fetch"
                                           :action (u.links/report-action ::m.ln.nodes/id mu.ln.nodes/fetch-transactions!)}
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

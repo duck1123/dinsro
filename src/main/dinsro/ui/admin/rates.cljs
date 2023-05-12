@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.rates :as j.rates]
    [dinsro.model.rates :as m.rates]
    [dinsro.ui.links :as u.links]))
@@ -20,6 +21,9 @@
    ro/columns           [m.rates/rate
                          m.rates/source
                          m.rates/date]
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "rates"
    ro/row-pk            m.rates/id
    ro/run-on-mount?     true

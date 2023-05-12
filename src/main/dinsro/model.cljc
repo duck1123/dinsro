@@ -6,7 +6,7 @@
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.joins.core.chains :as j.c.chains]
-   [dinsro.joins.core.connections :as j.c.connections]
+   [dinsro.joins.core.mnemonics :as j.c.mnemonics]
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.joins.core.peers :as j.c.peers]
@@ -53,7 +53,6 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.chains :as m.c.chains]
-   [dinsro.model.core.connections :as m.c.connections]
    [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -107,7 +106,6 @@
    #?(:clj [dinsro.mutations.contacts :as mu.contacts])
    #?(:clj [dinsro.mutations.core.addresses :as mu.c.addresses])
    #?(:clj [dinsro.mutations.core.blocks :as mu.c.blocks])
-   #?(:clj [dinsro.mutations.core.connections :as mu.c.connections])
    #?(:clj [dinsro.mutations.core.nodes :as mu.c.nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.c.peers])
    #?(:clj [dinsro.mutations.core.transactions :as mu.c.transactions])
@@ -154,7 +152,7 @@
         j.c.addresses/attributes
         j.c.blocks/attributes
         j.c.chains/attributes
-        j.c.connections/attributes
+        j.c.mnemonics/attributes
         j.c.networks/attributes
         j.c.nodes/attributes
         j.c.peers/attributes
@@ -201,7 +199,6 @@
         m.c.addresses/attributes
         m.c.blocks/attributes
         m.c.chains/attributes
-        m.c.connections/attributes
         m.c.mnemonics/attributes
         m.c.networks/attributes
         m.c.nodes/attributes
@@ -259,7 +256,6 @@
            mu.categories/resolvers
            mu.contacts/resolvers
            mu.c.addresses/resolvers
-           mu.c.connections/resolvers
            mu.c.blocks/resolvers
            mu.c.nodes/resolvers
            mu.c.peers/resolvers

@@ -2,28 +2,34 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
 (comment ::m.c.wallets/_)
 
+(def join-info
+  (merge
+   {:idents m.c.wallet-addresses/idents}
+   #?(:clj {:indexer q.c.wallet-addresses/index-ids
+            :counter q.c.wallet-addresses/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.c.wallet-addresses/id
+   ao/pc-output [{::admin-index [:total {:results [::m.c.wallet-addresses/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
 (defattr index ::index :ref
   {ao/target    ::m.c.wallet-addresses/id
-   ao/pc-output [{::index [::m.c.wallet-addresses/id]}]
+   ao/pc-output [{::index [:total {:result [::m.c.wallet-addresses/id]}]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} _]
-     (let [{ln-node-id ::m.ln.nodes/id} query-params
-           ids                          #?(:clj (if ln-node-id
-                                                  (q.c.wallet-addresses/find-by-ln-node ln-node-id)
-                                                  (q.c.wallet-addresses/index-ids))
-                                           :cljs (do
-                                                   (comment ln-node-id)
-                                                   []))]
-       {::index (m.c.wallet-addresses/idents ids)}))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr index-by-wallet ::index-by-wallet :ref
   {ao/target    ::m.c.wallet-addresses/id
@@ -39,4 +45,4 @@
                       [])) :cljs [])]
        {::index-by-wallet (m.c.wallet-addresses/idents ids)}))})
 
-(def attributes [index index-by-wallet])
+(def attributes [admin-index index index-by-wallet])

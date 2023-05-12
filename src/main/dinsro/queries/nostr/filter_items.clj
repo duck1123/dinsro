@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
@@ -18,6 +18,34 @@
 ;; [../../joins/nostr/filter_items.cljc]
 ;; [../../ui/nostr/pubkeys/items.cljs]
 ;; [../../ui/nostr/filters/filter_items.cljs]
+
+(def query-info
+  {:ident   ::m.n.filter-items/id
+   :pk      '?badge-awards-id
+   :clauses [[::m.n.pubkeys/id  '?pubkey-id]
+             [::m.n.events/id   '?event-id]
+             [::m.n.requests/id '?request-id]
+             [:kind             '?kind]]
+   :rules
+   (fn [[pubkey-id event-id request-id kind] rules]
+     (->> rules
+          (concat-when pubkey-id
+            [['?filter-item-id ::m.n.filter-items/pubkey '?pubkey-id]])
+          (concat-when event-id
+            [['?filter-item-id ::m.n.filter-items/event  '?event-id]])
+          (concat-when request-id
+            [['?filter-item-id ::m.n.filter-items/filter '?filter-id]
+             ['?filter-id      ::m.n.filters/request     '?request]])
+          (concat-when kind
+            [['?filter-item-id ::m.n.filter-items/kind   '?kind]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (def ident-key ::m.n.filter-items/id)
 (def params-key ::m.n.filter-items/params)
@@ -42,63 +70,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
       (dissoc record :xt/id))))
-
-(defn get-index-query
-  [query-params]
-  (let [pubkey-id  (::m.n.pubkeys/id query-params)
-        event-id   (::m.n.events/id query-params)
-        request-id (::m.n.requests/id query-params)
-        kind       (:kind query-params)]
-    {:find  ['?filter-item-id]
-     :in    [['?pubkey-id '?event-id '?request-id '?kind]]
-     :where (->> [['?filter-item-id ::m.n.filter-items/id '_]]
-                 (concat (when pubkey-id
-                           [['?filter-item-id ::m.n.filter-items/pubkey '?pubkey-id]]))
-                 (concat (when event-id
-                           [['?filter-item-id ::m.n.filter-items/event '?event-id]]))
-                 (concat (when request-id
-                           [['?filter-item-id ::m.n.filter-items/filter '?filter-id]
-                            ['?filter-id ::m.n.filters/request '?request]]))
-                 (concat (when kind
-                           [['?filter-item-id ::m.n.filter-items/kind '?kind]]))
-                 (filter identity)
-                 (into []))}))
-
-(defn count-ids
-  ([]
-   (count-ids {}))
-  ([query-params]
-   (log/info :count-ids/starting {:query-params query-params})
-   (let [base-params  (get-index-query query-params)
-         limit-params {:find ['(count ?filter-item-id)]}
-         query        (merge base-params limit-params)
-         params       []]
-     (log/info :count-ids/query {:query query :params params})
-     (let [c (c.xtdb/query-value query params)]
-       (or c 0)))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.n.filter-items/id)]
-   (index-ids {}))
-  ([query-params]
-   [map? => (s/coll-of ::m.n.filter-items/id)]
-   (do
-     (log/info :index-ids/starting {:query-params query-params})
-     (let [{:indexed-access/keys [options]
-            pubkey-id            ::m.n.pubkeys/id
-            event-id             ::m.n.events/id
-            request-id           ::m.n.requests/id
-            kind                 ::m.n.filter-items/kind} query-params
-           {:keys [limit offset] :or {limit 20 offset 0}} options
-           base-params                                    (get-index-query query-params)
-           limit-params                                   {:limit limit :offset offset}
-           query                                          (merge base-params limit-params)
-           params                                         [pubkey-id event-id request-id kind]]
-       (log/info :index-ids/running {:query query :params params})
-       (let [ids (c.xtdb/query-values query params)]
-         (log/trace :index-ids/finished {:ids ids})
-         ids)))))
 
 (>defn delete!
   [id]

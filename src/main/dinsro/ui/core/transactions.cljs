@@ -5,6 +5,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
@@ -73,6 +74,9 @@
                          m.c.transactions/block]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "transactions"
    ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
                          (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]

@@ -47,7 +47,7 @@
 
 (ws/defcard DebitListLine
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.transactions/DebitListLine
+   {::ct.fulcro3/root          u.transactions/DebitLine-List
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state (fn [] (make-debit-list-line))}))
 

@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -25,6 +26,9 @@
    ro/controls          {::new          u.c.wallets/new-action-button
                          ::m.c.nodes/id {:type :uuid :label "Nodes"}
                          ::refresh      u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "wallets"
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
    ro/row-pk            m.c.wallets/id

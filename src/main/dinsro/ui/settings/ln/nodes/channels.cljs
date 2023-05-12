@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -49,6 +50,9 @@
                          ::refresh       u.links/refresh-control
                          ::new new-button}
 
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route            "node-channels"
    ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
    ro/row-pk           m.ln.channels/id

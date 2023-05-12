@@ -8,11 +8,14 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.specs]))
 
+;; https://github.com/nostr-protocol/nips/blob/master/58.md
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true
    ao/schema    :production})
 
+;; maps to the name field
 (>def ::code string?)
 (defattr code ::code :string
   {ao/identities #{::id}

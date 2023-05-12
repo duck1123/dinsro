@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -157,6 +158,9 @@
                          m.c.wallets/ext-private-key]
    ro/control-layout    {:action-buttons [::new]}
    ro/controls          {::new new-action-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "wallets"
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
    ro/row-pk            m.c.wallets/id

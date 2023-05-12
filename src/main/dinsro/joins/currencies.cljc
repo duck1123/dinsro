@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -14,6 +15,26 @@
    #?(:clj [dinsro.queries.rates :as q.rates])
    [dinsro.specs]))
 
+(def join-info
+  (merge
+   {:idents m.currencies/idents}
+   #?(:clj {:indexer q.currencies/index-ids
+            :counter q.currencies/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target     ::m.currencies/id
+   ao/pc-output  [{::admin-index [:total {:results [::m.currencies/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.currencies/id
+   ao/pc-output [{::index [:total {:results [::m.currencies/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
+
 (defattr current-rate ::current-rate :ref
   {ao/cardinality :one
    ao/pc-input    #{::m.currencies/id}
@@ -23,14 +44,6 @@
    (fn [_env {::m.currencies/keys [id]}]
      (let [id (if id #?(:clj (q.rates/find-top-by-currency id) :cljs []) [])]
        {::current-rate (m.rates/ident id)}))})
-
-(defattr index ::index :ref
-  {ao/target    ::m.currencies/id
-   ao/pc-output [{::index [::m.currencies/id]}]
-   ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.currencies/index-ids) :cljs [])]
-       {::index (m.currencies/idents ids)}))})
 
 (defattr accounts ::accounts :ref
   {ao/cardinality :many
@@ -63,7 +76,7 @@
    ao/target      ::m.rate-sources/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
-     (let [ids (if id  #?(:clj (q.rate-sources/find-by-currency id) :cljs []) [])]
+     (let [ids (if id  #?(:clj (q.rate-sources/index-ids {::m.currencies/id id}) :cljs []) [])]
        {::sources (m.rate-sources/idents ids)}))})
 
 (defattr source-count ::source-count :number
@@ -85,7 +98,7 @@
    ao/pc-resolve  (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
 
 (def attributes
-  [accounts current-rate index
+  [accounts admin-index current-rate index
    rate-count rates
    transactions transaction-count
    source-count sources])

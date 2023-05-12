@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
@@ -12,6 +12,24 @@
 
 ;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
+
+(def query-info
+  {:ident   ::m.n.pubkeys/id
+   :pk      '?pubkey-id
+   :clauses [[::m.n.pubkeys/hex '?pubkey-hex]]
+   :rules
+   (fn [[pubkey-hex] rules]
+     (->> rules
+          (concat-when pubkey-hex
+            ['?pubkey-id ::m.n.pubkeys/hex '?pubkey-hex])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -52,22 +70,6 @@
   [_query-params]
   {:find  ['?pubkey-id]
    :where [['?pubkey-id ::m.n.pubkeys/id '_]]})
-
-(>defn index-ids
-  ([]
-   [=>  (s/coll-of ::m.n.pubkeys/id)]
-   (index-ids {}))
-  ([query-params]
-   [any? => (s/coll-of ::m.n.pubkeys/id)]
-   (let [{:indexed-access/keys [options]} query-params
-         {:keys [limit offset]
-          :or   {limit 20 offset 0}}      options
-         base-query                       (get-index-query query-params)
-         limit-params                     {:limit limit :offset offset}
-         query                            (merge base-query limit-params)]
-     (log/info :index-ids/query {:query query})
-     (let [ids (c.xtdb/query-values query)]
-       ids))))
 
 (>defn delete!
   [id]

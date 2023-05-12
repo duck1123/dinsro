@@ -66,8 +66,9 @@
 (defn check-rates
   []
   (log/info :rate-checking/started {})
-  (doseq [item (q.rate-sources/index-records)]
-    (let [{::m.rate-sources/keys [active?]} item]
+  (doseq [id (q.rate-sources/index-ids)]
+    (let [item (q.rate-sources/read-record id)
+          {::m.rate-sources/keys [active?]} item]
       (if active?
         (fetch-source item)
         (log/warn :rate/not-active {:source-id (::m.rate-sources/id item)})))))

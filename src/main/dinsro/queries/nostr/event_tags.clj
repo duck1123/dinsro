@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.specs]
@@ -12,6 +12,30 @@
 
 ;; [[../../actions/nostr/event_tags.clj][Event Tag Actions]]
 ;; [[../../model/nostr/event_tags.cljc][Event Tags Model]]
+
+(def query-info
+  {:ident   ::m.n.event-tags/id
+   :pk      '?event-tag-id
+   :clauses [[::m.n.events/id        '?parent-id]
+             [::m.n.events/pubkey    '?pubkey-id]
+             [::m.n.event-tags/event '?event-id]]
+   :rules
+   (fn [[parent-id pubkey-id event-id] rules]
+     (->> rules
+          (concat-when parent-id
+            [['?event-tag-id ::m.n.event-tags/parent '?parent-id]])
+          (concat-when pubkey-id
+            [['?event-tag-id ::m.n.event-tags/pubkey '?pubkey-id]])
+          (concat-when event-id
+            [['?event-tag-id ::m.n.event-tags/event  '?event-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -31,37 +55,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.event-tags/id)
       (dissoc record :xt/id))))
-
-(defn get-index-query
-  [_query-params]
-  {:find ['?event-tag-id]
-   :where [['?event-tag-id ::m.n.event-tags/id '_]]})
-
-(defn count-ids
-  []
-  (or (c.xtdb/query-value
-       '{:find  [(count ?relay-id)]
-         :where [[?relay-id ::m.n.event-tags/id _]]})
-      0))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.n.event-tags/id)]
-   (index-ids {}))
-  ([query-params]
-   [map? => (s/coll-of ::m.n.event-tags/id)]
-   (do
-     (log/info :index-ids/starting {})
-     (let [{:indexed-access/keys [options]} query-params
-           {:keys [limit offset]
-            :or   {limit 20 offset 0}}      options
-           base-params                      (get-index-query query-params)
-           limit-params                     {:limit limit :offset offset}
-           query                            (merge base-params limit-params)]
-       (log/debug :index-ids/running {:query query})
-       (let [ids (c.xtdb/query-values query)]
-         (log/trace :index-ids/finished {:ids ids})
-         ids)))))
 
 (>defn find-by-parent
   [event-id]

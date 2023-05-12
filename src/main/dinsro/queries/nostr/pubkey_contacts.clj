@@ -1,9 +1,8 @@
 (ns dinsro.queries.nostr.pubkey-contacts
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [lambdaisland.glogc :as log]
@@ -13,6 +12,24 @@
 ;; [[../../joins/nostr/pubkey_contacts.cljc][Pubkey Contact Joins]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 ;; [[../../ui/nostr/pubkey_contacts.cljs][Pubkey Contacts UI]]
+
+(def query-info
+  {:ident   ::m.n.pubkey-contacts/id
+   :pk      '?pubkey-contacts-id
+   :clauses [[::m.n.pubkeys/id '?pubkey-actor-id]]
+   :rules
+   (fn [[pubkey-id] rules]
+     (->> rules
+          (concat-when pubkey-id
+            ['?pubkey-contacts-id ::m.n.pubkey-contacts/actor '?pubkey-actor-id])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -33,11 +50,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.pubkey-contacts/id)
       (dissoc record :xt/id))))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.pubkey-contacts/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.n.pubkey-contacts/id _]]}))
 
 (>defn delete!
   [id]

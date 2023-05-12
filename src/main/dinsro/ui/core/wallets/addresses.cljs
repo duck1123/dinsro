@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -86,6 +87,9 @@
                          ::new            new-action-button
                          ::refresh        u.links/refresh-control
                          ::calculate      calculate-action-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "wallets-addresses"
    ro/row-actions       [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
    ro/row-pk            m.c.wallet-addresses/id

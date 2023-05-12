@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -42,6 +43,9 @@
                          m.ln.info/color]
    ro/control-layout    {:action-buttons [::new-node ::refresh]}
    ro/controls          {::refresh  u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.ln.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.nodes/index

@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -21,6 +22,26 @@
 ;; [[../model/users.cljc][Users Model]]
 ;; [[../queries/users.clj][User Queries]]
 ;; [[../ui/users.cljs][Users UI]]
+
+(def join-info
+  (merge
+   {:idents m.users/idents}
+   #?(:clj {:indexer q.users/index-ids
+            :counter q.users/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target     ::m.users/id
+   ao/pc-output  [{::admin-index [:total {:results [::m.users/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.users/id
+   ao/pc-output [{::index [:total {:results [::m.users/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr account-count ::account-count :number
   {ao/pc-input   #{::accounts}
@@ -52,29 +73,9 @@
                            :cljs (do (comment id) []))]
        {::categories (m.categories/idents category-ids)}))})
 
-;; TODO: The current user must have the admin role
-(defattr admin-index ::admin-index :ref
-  {ao/target    ::m.users/id
-   ao/pc-output [{::admin-index [::m.users/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params]} _]
-     (let [ids #?(:clj (q.users/index-ids query-params)
-                  :cljs (do (comment query-params) []))]
-       {::admin-index (m.users/idents ids)}))})
-
-;; Paginated list of users
-;; TODO: This should only show the authenticated user
-(defattr index ::index :ref
-  {ao/target    ::m.users/id
-   ao/pc-output [{::index [::m.users/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params]} _]
-     (let [ids #?(:clj (q.users/index-ids query-params)
-                  :cljs (do (comment query-params) []))]
-       {::index (m.users/idents ids)}))})
-
-;; Count of users in system
-(defattr record-count ::record-count :number
+(defattr record-count
+  "Count of users in system"
+  ::record-count :number
   {ao/pc-output [::record-count]
    ao/pc-resolve
    (fn [{:keys [query-params]} _]

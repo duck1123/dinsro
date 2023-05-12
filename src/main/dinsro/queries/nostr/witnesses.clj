@@ -1,9 +1,8 @@
 (ns dinsro.queries.nostr.witnesses
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -18,6 +17,40 @@
 ;; [../../ui/nostr/events/witnesses.cljs]
 ;; [../../ui/nostr/relays/witnesses.cljs]
 
+(def query-info
+  {:ident   ::m.n.witnesses/id
+   :pk      '?witness-id
+   :clauses [[::m.n.connections/id '?connection-id]
+             [::m.n.events/id      '?event-id]
+             [::m.n.pubkeys/id     '?pubkey-id]
+             [::m.n.relays/id      '?relay-id]
+             [::m.n.runs/id        '?run-id]]
+   :rules
+   (fn [[connection-id event-id pubkey-id relay-id run-id] rules]
+     (->> rules
+          (concat-when event-id
+            [['?witness-id          ::m.n.witnesses/event   '?event-id]])
+          (concat-when pubkey-id
+            [['?witness-id          ::m.n.witnesses/event   '?pubkey-event-id]
+             ['?pubkey-event-id     ::m.n.events/pubkey     '?pubkey-id]])
+          (concat-when run-id
+            [['?witness-id          ::m.n.witnesses/run     '?run-id]])
+          (concat-when connection-id
+            [['?witness-id          ::m.n.witnesses/run     '?connection-run-id]
+             ['?connection-run-id   ::m.n.runs/connection   '?relay-connection-id]])
+          (concat-when relay-id
+            [['?witness-id          ::m.n.witnesses/run     '?relay-run-id]
+             ['?relay-run-id        ::m.n.runs/connection   '?relay-connection-id]
+             ['?relay-connection-id ::m.n.connections/relay '?relay-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
+
 (>defn create-record
   [params]
   [::m.n.witnesses/params => ::m.n.witnesses/id]
@@ -31,78 +64,6 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     (log/info :create-record/finished {:id id})
     id))
-
-(defn get-index-query
-  [query-params]
-  (let [{connection-id ::m.n.connections/id
-         event-id      ::m.n.events/id
-         pubkey-id     ::m.n.pubkeys/id
-         relay-id      ::m.n.relays/id
-         run-id        ::m.n.runs/id} query-params]
-    {:find  ['?witness-id]
-     :in    [['?connection-id '?event-id '?pubkey-id '?relay-id '?run-id]]
-     :where (->> [['?witness-id ::m.n.witnesses/id '_]]
-                 (concat (when event-id
-                           [['?witness-id ::m.n.witnesses/event '?event-id]]))
-                 (concat (when pubkey-id
-                           [['?witness-id ::m.n.witnesses/event '?pubkey-event-id]
-                            ['?pubkey-event-id ::m.n.events/pubkey '?pubkey-id]]))
-                 (concat (when run-id
-                           [['?witness-id ::m.n.witnesses/run '?run-id]]))
-                 (concat (when connection-id
-                           [['?witness-id ::m.n.witnesses/run '?connection-run-id]
-                            ['?connection-run-id ::m.n.runs/connection '?relay-connection-id]]))
-                 (concat (when relay-id
-                           [['?witness-id ::m.n.witnesses/run '?relay-run-id]
-                            ['?relay-run-id ::m.n.runs/connection '?relay-connection-id]
-                            ['?relay-connection-id ::m.n.connections/relay '?relay-id]]))
-                 (filter identity)
-                 (into []))}))
-
-(defn get-index-params
-  [query-params]
-  (let [{connection-id ::m.n.connections/id
-         event-id      ::m.n.events/id
-         pubkey-id     ::m.n.pubkeys/id
-         relay-id      ::m.n.relays/id
-         run-id        ::m.n.runs/id} query-params]
-    [connection-id event-id pubkey-id relay-id run-id]))
-
-(>defn count-ids
-  ([]
-   [=> number?]
-   (count-ids {}))
-  ([query-params]
-   [map? => number?]
-   (do
-     (log/debug :count-ids/starting {:query-params query-params})
-     (let [base-params  (get-index-query query-params)
-           limit-params {:find ['(count ?witness-id)]}
-           params       (get-index-params query-params)
-           query        (merge base-params limit-params)]
-       (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-value query params)]
-         (log/info :count-ids/finished {:n n})
-         (or n 0))))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.n.witnesses/id)]
-   (index-ids {}))
-  ([query-params]
-   [map? => (s/coll-of ::m.n.witnesses/id)]
-   (do
-     (log/debug :index-ids/starting {})
-     (let [{:indexed-access/keys [options]}                 query-params
-           {:keys [limit options] :or {limit 20 options 0}} options
-           base-params                                      (get-index-query query-params)
-           limit-params                                     {:limit limit :options options}
-           query                                            (merge base-params limit-params)
-           params                                           (get-index-params query-params)]
-       (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-values query params)]
-         (log/info :index-ids/finished {:ids ids})
-         ids)))))
 
 (>defn read-record
   [id]

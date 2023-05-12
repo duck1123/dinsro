@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.ui.links :as u.links]))
@@ -14,6 +15,9 @@
                          m.debits/account
                          m.debits/transaction]
    ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "debits"
    ro/row-pk            m.debits/id
    ro/run-on-mount?     true

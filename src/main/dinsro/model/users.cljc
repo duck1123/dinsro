@@ -7,6 +7,8 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.authorization :as auth]))
 
+;; [../queries/users.clj]
+
 (def default-username "alice")
 (def default-password "hunter2")
 

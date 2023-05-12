@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.users :as m.users]
@@ -14,10 +15,23 @@
 ;; [../../joins/ln/nodes.cljc]
 ;; [../../model/ln/nodes.cljc]
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.ln.nodes/id)]
-  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.ln.nodes/id _]]}))
+(def query-info
+  {:ident   ::m.ln.nodes/id
+   :pk      '?node-id
+   :clauses [[::m.c.networks/id '?network-id]]
+   :rules
+   (fn [[network-id] rules]
+     (->> rules
+          (concat-when network-id
+            [['?ln-node-id ::m.ln.nodes/network '?network-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]

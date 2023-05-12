@@ -2,9 +2,9 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
-   [dinsro.model.nostr.requests :as m.n.requests]
    #?(:clj [dinsro.queries.nostr.filter-items :as q.n.filter-items])
    #?(:clj [dinsro.queries.nostr.filters :as q.n.filters])
    [dinsro.specs]
@@ -12,21 +12,25 @@
 
 #?(:cljs (comment ::m.n.filter-items/_))
 
+(def join-info
+  (merge
+   {:idents m.n.filters/idents}
+   #?(:clj {:indexer q.n.filters/index-ids
+            :counter q.n.filters/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.n.filters/id
+   ao/pc-output [{::admin-index [:total {:results [::m.n.filters/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
 (defattr index ::index :ref
   {ao/target    ::m.n.filters/id
-   ao/pc-output [{::index [::m.n.filters/id]}]
+   ao/pc-output [{::index [:total {:results [::m.n.filters/id]}]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} props]
-     (log/info :index/starting {:query-params query-params :props props})
-     (let [request-id (::m.n.requests/id query-params)
-           ids        #?(:clj (cond
-                                request-id (q.n.filters/find-by-request request-id)
-                                :else      (q.n.filters/index-ids))
-                         :cljs (do
-                                 (comment request-id)
-                                 []))]
-       (log/trace :index/finished {:ids ids})
-       {::index (m.n.filters/idents ids)}))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr items ::items :ref
   {ao/target     ::m.n.filter-items/id
@@ -46,4 +50,4 @@
    ao/pc-output  [::item-count]
    ao/pc-resolve (fn [_ {::keys [items]}] {::item-count (count items)})})
 
-(def attributes [index items item-count])
+(def attributes [admin-index index items item-count])

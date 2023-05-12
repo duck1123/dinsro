@@ -23,7 +23,6 @@
                                  :core-addresses :core-chains :core-networks :wallets
                                  :core-mnemonics]]
    :core-mnemonics             ["Mnemonics"             :dinsro.ui.core.mnemonics/Report]
-   :core-node-connections      ["Connections"           :dinsro.ui.core.connections/Report]
    :core-networks              ["Networks"              :dinsro.ui.core.networks/Report]
    :core-nodes                 ["Nodes"                 :dinsro.ui.core.nodes/Report]
    :core-peers                 ["Peers"                 :dinsro.ui.core.peers/Report]

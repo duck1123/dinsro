@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
@@ -33,6 +34,9 @@
    ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                          ::fetch         fetch-button
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/subrow-action-button "Delete" ::m.ln.peers/id ident-key mu.ln.peers/delete!)]
    ro/row-pk            m.ln.peers/id
    ro/run-on-mount?     true

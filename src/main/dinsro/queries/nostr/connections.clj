@@ -1,9 +1,8 @@
 (ns dinsro.queries.nostr.connections
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
@@ -12,6 +11,27 @@
 
 ;; [../../model/nostr/connections.cljc]
 ;; [../../processors/nostr/connections.clj]
+
+(def query-info
+  {:ident   ::m.n.connections/id
+   :pk      '?connection-id
+   :clauses [[::m.n.requests/id '?request-id]
+             [::m.n.relays/id   '?relay-id]]
+   :rules
+   (fn [[request-id relay-id] rules]
+     (->> rules
+          (concat-when request-id
+            [['?request-id    ::m.n.requests/connection '?connection-id]])
+          (concat-when relay-id
+            [['?connection-id ::m.n.connections/id      '?relay-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (def ident-key ::m.n.connections/id)
 (def params-key ::m.n.connections/params)
@@ -36,62 +56,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
       (dissoc record :xt/id))))
-
-(defn get-index-params
-  [query-params]
-  (let [{request-id ::m.n.requests/id
-         relay-id   ::m.n.relays/id} query-params]
-    [request-id relay-id]))
-
-(defn get-index-query
-  [query-params]
-  (let [[request-id relay-id] (get-index-params query-params)]
-    {:find  ['?connection-id]
-     :in    [['?request-id '?relay-id]]
-     :where (->> [['?connection-id ::m.n.connections/id '_]]
-                 (concat (when request-id
-                           [['?request-id ::m.n.requests/connection '?connection-id]]))
-                 (concat (when relay-id
-                           [['?connection-id ::m.n.connections/id '?relay-id]]))
-                 (filter identity)
-                 (into []))}))
-
-(>defn count-ids
-  ([]
-   [=> number?]
-   (count-ids {}))
-  ([query-params]
-   [map? => number?]
-   (do
-     (log/info :count-ids/starting {:query-params query-params})
-     (let [base-query  (get-index-query query-params)
-           limit-query {:find ['(count ?connection-id)]}
-           query       (merge base-query limit-query)
-           params      (get-index-params query-params)]
-       (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-value query params)]
-         (log/trace :count-ids/finished {:n n})
-         n)))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.n.connections/id)]
-   (index-ids {}))
-  ([query-params]
-   [map? => (s/coll-of ::m.n.connections/id)]
-   (do
-     (log/info :index-ids/starting {:query-params query-params})
-     (let [params                           (get-index-params query-params)
-           base-query                       (get-index-query query-params)
-           {:indexed-access/keys [options]} query-params
-           {:keys [limit offset]
-            :or   {limit 20 offset 0}}      options
-           limit-query                      {:limit limit :offset offset}
-           query                            (merge base-query limit-query)]
-       (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-values query params)]
-         (log/info :index-ids/finished {:ids ids})
-         ids)))))
 
 (>defn delete!
   [id]

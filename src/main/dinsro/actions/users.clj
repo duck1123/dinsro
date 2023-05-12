@@ -5,6 +5,9 @@
    [dinsro.queries.users :as q.users]
    [lambdaisland.glogc :as log]))
 
+;; [../model/users.cljc]
+;; [../queries/users.clj]
+
 (defn set-role!
   [user-id role]
   (log/info :set-role!/starting {:user-id user-id :role role})
@@ -28,3 +31,11 @@
     (delete! id)
     {::mu/status        :ok
      ::mu/deleted-items (m.users/idents ids)}))
+
+(comment
+
+  (q.users/index-ids {:actor/admin? true})
+
+  (q.users/read-record (q.users/find-by-name "admin"))
+
+  nil)

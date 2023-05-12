@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -23,6 +24,9 @@
                          :inputs         [[::m.ln.nodes/id]]}
    ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/subrow-action-button "Generate" ::m.c.wallet-addresses/id ident-key mu.c.wallet-addresses/generate!)]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true

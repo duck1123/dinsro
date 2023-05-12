@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -60,6 +61,9 @@
     ::refresh      u.links/refresh-control
     ::fetch        fetch-button
     ::new          new-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "node-peers"
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
    ro/row-pk            m.c.peers/id

@@ -13,6 +13,7 @@
            (behavior 1)
            (button 1)
            (code 1)
+           (concat-when 1)
            (defroutes 'defun)
            (describe 1)
            (div 1)

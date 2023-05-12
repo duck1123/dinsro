@@ -1,9 +1,9 @@
 (ns dinsro.queries.users
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
+   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.user-pubkeys :as m.n.user-pubkeys]
@@ -14,6 +14,30 @@
    [xtdb.api :as xt]))
 
 ;; [../joins/users.cljc]
+
+(def query-info
+  {:ident   ::m.users/id
+   :pk      '?user-id
+   :clauses [[:actor/id       '?actor-id]
+             [:actor/admin?   '?admin?]
+             [::m.accounts/id '?account-id]]
+   :sort-columns
+   {::m.users/name '?user-name}
+   :rules
+   (fn [[actor-id admin? account-id] rules]
+     (->> rules
+          (concat-when (and (not admin?) actor-id)
+            [['?user-id ::m.users/id '?actor-id]])
+          (concat-when account-id
+            [['?account-id ::m.accounts/user '?user-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [user-id]
@@ -86,65 +110,6 @@
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)
     (throw (ex-info "User already exists" {}))))
-
-(def pk '?user-id)
-(def ident-key ::m.users/id)
-(def index-param-syms ['?account-id])
-
-(>def ::query-params (s/keys))
-
-(defn get-index-params
-  [query-params]
-  (let [{account-id ::m.accounts/id} query-params]
-    [account-id]))
-
-(defn get-index-query
-  [query-params]
-  (let [[account-id] (get-index-params query-params)]
-    {:find  [pk]
-     :in    [index-param-syms]
-     :where (->> [['?user-id ident-key '_]]
-                 (concat (when account-id
-                           [['?account-id ::m.accounts/user '?user-id]]))
-                 (filter identity)
-                 (into []))}))
-
-(>defn count-ids
-  ([]
-   [=> number?]
-   (count-ids {}))
-  ([query-params]
-   [::query-params => number?]
-   (do
-     (log/debug :count-ids/starting {:query-params query-params})
-     (let [pk '?user-id
-           base-params  (get-index-query query-params)
-           limit-params {:find [(list 'count pk)]}
-           params       (get-index-params query-params)
-           query        (merge base-params limit-params)]
-       (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-value query params)]
-         (log/info :count-ids/finished {:n n})
-         (or n 0))))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.users/id)]
-   (index-ids {}))
-  ([query-params]
-   [::query-params => (s/coll-of ::m.users/id)]
-   (do
-     (log/debug :index-ids/starting {})
-     (let [{:indexed-access/keys [options]}               query-params
-           {:keys [limit offset] :or {limit 20 offset 0}} options
-           base-params                                    (get-index-query query-params)
-           limit-params                                   {:limit limit :offset offset}
-           query                                          (merge base-params limit-params)
-           params                                         (get-index-params query-params)]
-       (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-values query params)]
-         (log/info :index-ids/finished {:ids ids})
-         ids)))))
 
 (>defn index-records
   "list all users"

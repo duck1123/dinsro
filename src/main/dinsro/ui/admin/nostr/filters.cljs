@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.ui.links :as u.links]))
@@ -18,6 +19,9 @@
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/route             "filters"
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.n.filters/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.filters/index

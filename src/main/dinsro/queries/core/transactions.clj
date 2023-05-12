@@ -3,19 +3,41 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
+   [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.c.transactions/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.transactions/id _]]}))
+(def query-info
+  {:ident   ::m.c.transactions/id
+   :pk      '?transaction-id
+   :clauses [[::m.c.networks/id '?network-id]
+             [::m.c.blocks/id   '?block-id]
+             [::m.c.tx-in/id    '?tx-in-id]]
+   :rules
+   (fn [[network-id block-id tx-in-id] rules]
+     (->> rules
+          (concat-when block-id
+            [['?block-id         ::m.c.blocks/network     '?network-id]])
+          (concat-when network-id
+            [['?network-block-id ::m.c.blocks/network     '?network-id]
+             ['?transaction-id   ::m.c.transactions/block '?network-block-id]])
+          (concat-when tx-in-id
+            [['?tx-in-id         ::m.c.tx-in/transaction  '?transaction-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn find-by-node
   [node-id]

@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
@@ -15,6 +16,9 @@
                          m.c.blocks/fetched?]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "blocks"
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id

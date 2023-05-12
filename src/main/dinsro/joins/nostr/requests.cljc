@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    #?(:clj [dinsro.actions.nostr.requests :as a.n.requests])
+   [dinsro.joins :as j]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
@@ -12,16 +13,25 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-(defattr index ::index :ref
+(def join-info
+  (merge
+   {:idents m.n.requests/idents}
+   #?(:clj {:indexer q.n.requests/index-ids
+            :counter q.n.requests/count-ids})))
+
+(defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.requests/id
-   ao/pc-output [{::index [::m.n.requests/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.n.requests/id]}]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} props]
-     (log/info :index/starting {:query-params query-params :props props})
-     (let [ids #?(:clj (q.n.requests/index-ids)
-                  :cljs [])]
-       (log/trace :index/finished {:ids ids})
-       {::index (m.n.requests/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    :m.n.requests/id
+   ao/pc-output [{::index [:total {:results [:m.n.requests/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr filters ::filters :ref
   {ao/target    ::m.n.filters/id
@@ -50,9 +60,7 @@
      (log/info :runs/starting {:query-params query-params :props props})
      (let [request-id (::m.n.requests/id props)
            ids        #?(:clj (q.n.runs/find-by-request request-id)
-                         :cljs (do
-                                 (comment request-id)
-                                 []))]
+                         :cljs (do (comment request-id) []))]
        (log/trace :runs/finished {:ids ids})
        {::runs (m.n.runs/idents ids)}))})
 
@@ -68,4 +76,4 @@
      {::query-string #?(:clj (a.n.requests/get-query-string id)
                         :cljs (do (comment id) ""))})})
 
-(def attributes [index filters filter-count query-string run-count runs])
+(def attributes [admin-index index filters filter-count query-string run-count runs])

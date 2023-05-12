@@ -3,11 +3,29 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.contacts :as m.contacts]
+   [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
+
+(def query-info
+  {:ident   ::m.contacts/id
+   :pk      '?contacts-id
+   :clauses [[::m.users/id '?user-id]]
+   :rules
+   (fn [[user-id] rules]
+     (->> rules
+          (concat-when user-id
+            [['?category-id ::m.contacts/user '?user-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   "Create a contact record"
@@ -20,13 +38,6 @@
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.contacts/id)]
-  (log/info :index-ids/starting {})
-  (c.xtdb/query-values '{:find  [?id]
-                         :where [[?id ::m.contacts/id _]]}))
 
 (>defn read-record
   [id]

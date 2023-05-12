@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -19,6 +20,9 @@
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::m.currencies/id {:type :uuid :label "id"}
                          ::refresh         u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.rate-sources/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.rate-sources/index

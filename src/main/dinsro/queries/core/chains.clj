@@ -1,13 +1,31 @@
 (ns dinsro.queries.core.chains
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.chains :as m.c.chains]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
+
+(def query-info
+  {:ident   ::m.c.chains/id
+   :pk      '?chain-id
+   :clauses [[::m.c.networks/id    '?network-id]]
+   :rules
+   (fn [[network-id] rules]
+     (->> rules
+          (concat-when network-id
+            ['?network-id ::m.c.networks/chain '?chain-id])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -29,11 +47,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.chains/id)
       (dissoc record :xt/id))))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.chains/id _]]}))
 
 (>defn find-by-name
   [name]

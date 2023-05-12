@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
@@ -13,6 +13,24 @@
    [xtdb.api :as xt]))
 
 ;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
+
+(def query-info
+  {:ident   ::m.n.subscriptions/id
+   :pk      '?subscription-id
+   :clauses [[::m.n.relays '?relay-id]]
+   :rules
+   (fn [[relay-id] rules]
+     (->> rules
+          (concat-when relay-id
+            [['?subscription-id ::m.n.subscriptions/relay '?relay-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   [params]
@@ -49,12 +67,6 @@
      :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
              [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]]}
    [pubkey-id]))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.n.subscriptions/id)]
-  (log/debug :index-ids/starting {})
-  (c.xtdb/query-values '{:find [?id] :where [[?id ::m.n.subscriptions/id _]]}))
 
 (>defn read-record
   [id]

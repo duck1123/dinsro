@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.joins :as j]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
@@ -12,25 +13,29 @@
    #?(:clj [dinsro.queries.core.transactions :as q.c.transactions])
    #?(:clj [dinsro.queries.core.tx-in :as q.c.tx-in])
    #?(:clj [dinsro.queries.core.tx-out :as q.c.tx-out])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   [dinsro.specs]))
 
 (comment ::m.c.blocks/_)
 
+(def join-info
+  (merge
+   {:idents m.c.transactions/idents}
+   #?(:clj {:indexer q.c.transactions/index-ids
+            :counter q.c.transactions/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.c.transactions/id
+   ao/pc-output [{::admin-index [:total {:results [::m.c.transactions/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
 (defattr index ::index :ref
   {ao/target    ::m.c.transactions/id
-   ao/pc-output [{::index [::m.c.transactions/id]}]
+   ao/pc-output [{::index [:total {:result [::m.c.transactions/id]}]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} props]
-     (log/info :index/starting {:query-params query-params :props props})
-     (let [ids
-           #?(:clj
-              (let [{block-id ::m.c.blocks/id} query-params]
-                (if block-id
-                  (q.c.transactions/find-by-block block-id)
-                  (q.c.transactions/index-ids)))
-              :cljs [])]
-       {::index (m.c.transactions/idents ids)}))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr node ::node :ref
   {ao/cardinality      :one
@@ -63,4 +68,4 @@
      (let [ids (if id #?(:clj (q.c.tx-out/find-by-tx id) :cljs []) [])]
        {::outs (m.c.tx-out/idents ids)}))})
 
-(def attributes [index node ins outs])
+(def attributes [admin-index index node ins outs])

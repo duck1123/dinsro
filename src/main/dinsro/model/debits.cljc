@@ -11,6 +11,7 @@
 
 ;; [[../joins/debits.cljc][Joins]]
 ;; [[../queries/debits.clj][Queries]]
+;; [../ui/debits.cljs]
 
 (>def ::id        uuid?)
 (defattr id ::id :uuid

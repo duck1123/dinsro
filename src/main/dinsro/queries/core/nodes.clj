@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -12,6 +12,24 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
+
+(def query-info
+  {:ident   ::m.c.nodes/id
+   :pk      '?node-id
+   :clauses [[::m.c.networks/id    '?network-id]]
+   :rules
+   (fn [[network-id] rules]
+     (->> rules
+          (concat-when network-id
+            [['?node-id ::m.c.nodes/network '?network-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   "Create a node record"
@@ -33,12 +51,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.nodes/id)
       (dissoc record :xt/id))))
-
-(>defn index-ids
-  "Return the id of every node"
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.nodes/name _]]}))
 
 (>defn index-records
   "Read all node records"

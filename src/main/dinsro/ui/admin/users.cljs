@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.users :as j.users]
    [dinsro.menus :as me]
    [dinsro.model.users :as m.users]
@@ -87,9 +88,12 @@
                          j.users/wallet-count]
    ro/controls          {::new-user new-button
                          ::refresh  u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "users"
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.users/id mu.users/delete!)]
    ro/row-pk            m.users/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.users/index
+   ro/source-attribute  ::j.users/admin-index
    ro/title             "Users"})

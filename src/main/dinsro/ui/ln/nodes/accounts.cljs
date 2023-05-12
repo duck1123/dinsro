@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -30,6 +31,9 @@
    ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                          ::fetch         fetch-button
                          ::refresh       u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.ln.accounts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.accounts/index

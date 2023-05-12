@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -12,11 +12,28 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.c.blocks/id)]
-  (log/info :index-ids/starting {})
-  (c.xtdb/query-values '{:find [?block-id] :where [[?block-id ::m.c.blocks/id _]]}))
+(def query-info
+  {:ident   ::m.c.blocks/id
+   :pk      '?block-id
+   :clauses [[:actor/id         '?actor-id]
+             [:height           '?height]
+             [::m.c.nodes/id    '?node-id]
+             [::m.c.networks/id '?network-id]]
+   :rules
+   (fn [[_actor-id height _node-id network-id] rules]
+     (->> rules
+          (concat-when height
+            [['?block-id ::m.c.blocks/height '?height]])
+          (concat-when network-id
+            [['?block-id ::m.c.blocks/network '?network-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn fetch-by-node-and-height
   [node-id height]

@@ -1,9 +1,8 @@
 (ns dinsro.queries.nostr.relays
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
@@ -17,6 +16,24 @@
 
 ;; [[../../actions/nostr/relays.clj][Actions]]
 ;; [[../nostr.clj][Nostr Queries]]
+
+(def query-info
+  {:ident   ::m.n.relays/id
+   :pk      '?relay-id
+   :clauses [[::m.n.connections/id '?connection-id]]
+   :rules
+   (fn [[connection-id] rules]
+     (->> rules
+          (concat-when connection-id
+            [['?connection-id ::m.n.connections/relay '?relay-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   "Create a relay record"
@@ -42,59 +59,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.relays/id)
       (dissoc record :xt/id))))
-
-(defn get-index-params
-  [query-params]
-  (let [{connection-id ::m.n.connections} query-params]
-    [connection-id]))
-
-(defn get-index-query
-  [query-params]
-  (let [[connection-id] (get-index-params query-params)]
-    {:find  ['?relay-id]
-     :in    [['?connection-id]]
-     :where (->> [['?relay-id ::m.n.relays/id '_]]
-                 (concat (when connection-id
-                           [['?connection-id ::m.n.connections/relay '?relay-id]]))
-                 (filter identity)
-                 (into []))}))
-
-(>defn count-ids
-  ([]
-   [=> number?]
-   (count-ids {}))
-  ([query-params]
-   [map? => number?]
-   (do
-     (log/info :count-ids/starting {:query-params query-params})
-     (let [base-query  (get-index-query query-params)
-           limit-query {:find ['(count ?relay-id)]}
-           query       (merge base-query limit-query)
-           params      (get-index-params query-params)]
-       (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-value query params)]
-         (log/trace :count-ids/finished {:n n})
-         n)))))
-
-(>defn index-ids
-  ([]
-   [=> (s/coll-of ::m.n.relays/id)]
-   (index-ids {}))
-  ([query-params]
-   [map? => (s/coll-of ::m.n.relays/id)]
-   (do
-     (log/trace :index-ids/starting {})
-     (let [base-query                       (get-index-query query-params)
-           {:indexed-access/keys [options]} query-params
-           {:keys [limit offset]
-            :or   {limit 20 offset 0}}      options
-           limit-query                      {:limit limit :offset offset}
-           query                            (merge base-query limit-query)
-           params                           []]
-       (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-values query params)]
-         (log/trace :index-ids/finished {:ids ids})
-         ids)))))
 
 (>defn find-by-address
   [address]

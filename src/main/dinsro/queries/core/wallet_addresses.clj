@@ -3,7 +3,9 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
+   [dinsro.model.core.addresses :as m.c.addresses]
+   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.ln.accounts :as m.ln.accounts]
@@ -11,10 +13,36 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.c.wallet-addresses/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.wallet-addresses/id _]]}))
+(def query-info
+  {:ident   ::m.c.wallet-addresses/id
+   :pk      '?wallet-address-id
+   :clauses [[:actor/id          '?actor-id]
+             [:actor/admin?      '?admin?]
+             [::m.c.addresses/id '?address-id]
+             [::m.c.networks/id  '?network-id]
+             [::m.c.wallets/id   '?wallet-id]]
+   :rules
+   (fn [[_actor-id admin? address-id
+         network-id wallet-id] rules]
+     (->> rules
+          (concat-when (not admin?)
+            [['?wallet-address-id ::m.c.wallet-addresses/wallet  '?auth-wallet-id]
+             ['?auth-wallet-id    ::m.c.wallets/user             '?actor-id]])
+          (concat-when address-id
+            [['?wallet-address-id ::m.c.wallet-addresses/address '?address-id]])
+          (concat-when wallet-id
+            [['?wallet-address-id ::m.c.wallet-addresses/wallet  '?wallet-id]])
+          (concat-when network-id
+            [['?wallet-address-id ::m.c.wallet-addresses/wallet  '?network-wallet-id]
+             ['?network-wallet-id ::m.c.wallets/network          '?network-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]

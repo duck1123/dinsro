@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   #?(:clj [dinsro.actions.authentication :as a.authentication])
+   [dinsro.joins :as j]
    [dinsro.model.contacts :as m.contacts]
    #?(:clj [dinsro.queries.contacts :as q.contacts])
    [dinsro.specs]))
@@ -10,23 +10,24 @@
 ;; [[../model/contacts.cljc][Contacts Model]]
 ;; [[../ui/contacts.cljs][Contacts UI]]
 
-(defattr index ::index :ref
-  {ao/target    ::m.contacts/id
-   ao/pc-output [{::index [::m.contacts/id]}]
-   ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (if-let [user-id (a.authentication/get-user-id env)]
-                         (q.contacts/find-by-user user-id) [])
-                  :cljs [])]
-       {::index (m.contacts/idents ids)}))})
+(def join-info
+  (merge
+   {:idents m.contacts/idents}
+   #?(:clj {:indexer q.contacts/index-ids
+            :counter q.contacts/count-ids})))
 
 (defattr admin-index ::admin-index :ref
-  {ao/target    ::m.contacts/id
-   ao/pc-output [{::admin-index [::m.contacts/id]}]
+  {ao/target     ::m.contacts/id
+   ao/pc-output  [{::admin-index [:total {:results [::m.contacts/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.contacts/index-ids) :cljs [])]
-       {::admin-index (m.contacts/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.contacts/id
+   ao/pc-output [{::index [:total {:results [::m.contacts/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (def attributes [admin-index index])

@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -18,6 +19,9 @@
                          :action-buttons [::refresh]}
    ro/controls          {::refresh        u.links/refresh-control
                          ::m.c.wallets/id {:type "uuid"}}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.accounts/index

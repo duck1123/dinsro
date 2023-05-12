@@ -2,7 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   #?(:clj [dinsro.actions.authentication :as a.authentication])
+   [dinsro.joins :as j]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
@@ -17,44 +17,29 @@
    #?(:clj [dinsro.queries.ln.payments :as q.ln.payments])
    #?(:clj [dinsro.queries.ln.payreqs :as q.ln.payreqs])
    #?(:clj [dinsro.queries.ln.peers :as q.ln.peers])
-   #?(:clj [dinsro.queries.users :as q.users])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   [dinsro.specs]))
 
 ;; [../../queries/ln/nodes.clj]
 
-#?(:clj
-   (defn do-index
-     [env]
-     (if-let [user-id (a.authentication/get-user-id env)]
-       (if (q.users/read-record user-id)
-         (do
-           (log/info :do-index/found-user {:user-id user-id})
-           (q.ln.nodes/find-by-user user-id))
-         (do
-           (log/warn :do-index/user-not-found {:user-id user-id})
-           (throw (ex-info "user not found" {}))))
-       (do
-         (log/warn :do-index/no-user {:env env})
-         []))))
-
-(defattr index ::index :ref
-  {ao/target    ::m.ln.nodes/id
-   ao/pc-output [{::index [::m.ln.nodes/id]}]
-   ao/pc-resolve
-   (fn [env _]
-     (comment env)
-     (let [ids #?(:clj (do-index env) :cljs [])]
-       (log/info :index/starting {:ids ids})
-       {::index (m.ln.nodes/idents ids)}))})
+(def join-info
+  (merge
+   {:idents m.ln.nodes/idents}
+   #?(:clj {:indexer q.ln.nodes/index-ids
+            :counter q.ln.nodes/count-ids})))
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.ln.nodes/id
-   ao/pc-output [{::admin-index [::m.ln.nodes/id]}]
+   ao/pc-output [{::admin-index [:total {:results [::m.ln.nodes/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.ln.nodes/index-ids) :cljs [])]
-       {::admin-index (m.ln.nodes/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.ln.nodes/id
+   ao/pc-output [{::index [:total {:result [::m.ln.nodes/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr channels ::channels :ref
   {ao/cardinality :many

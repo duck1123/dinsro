@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
@@ -11,6 +11,24 @@
    [dinsro.specs]
    [io.pedestal.log :as log]
    [xtdb.api :as xt]))
+
+(def query-info
+  {:ident   ::m.currencies/id
+   :pk      '?currencies-id
+   :clauses [[::m.users/id '?user-id]]
+   :rules
+   (fn [[user-id] rules]
+     (->> rules
+          (concat-when user-id
+            [['?category-id ::m.currencies/user '?user-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (def record-limit 1000)
 
@@ -56,11 +74,6 @@
     (catch Exception ex
       (log/error :create/failed {:exception ex})
       nil)))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.currencies/id)]
-  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.currencies/name _]]}))
 
 (>defn read-record
   [id]

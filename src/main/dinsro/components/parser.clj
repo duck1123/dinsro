@@ -15,7 +15,6 @@
    [dinsro.components.save-middleware :as save]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.model :refer [all-attributes all-resolvers]]
-   [dinsro.model.users :as m.users]
    [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [roterski.fulcro.rad.database-adapters.xtdb :as xt]))
@@ -51,14 +50,15 @@
            {}))))})
 
 (defn auth-user-plugin
+  "Pathom plugin. Adds :actor/id to query params"
   []
   {::p/wrap-parser
    (fn transform-parser-out-plugin-external [wrapped-parser]
      (log/info :transform-parser-out-plugin-external/starting {})
      (fn transform-parser-out-plugin-internal [env tx]
        (if (and (map? env) (seq tx))
-         (let [user-id (a.authentication/get-user-id env)
-               env     (assoc env ::m.users/id user-id)]
+         (let [actor-id (a.authentication/get-user-id env)
+               env     (assoc-in env [:query-params :actor/id] actor-id)]
            (wrapped-parser env tx))
          {})))})
 
@@ -87,7 +87,7 @@
                    (blob/resolvers all-attributes)
                    all-resolvers
                    index-explorer]]
-    (log/info :start-parser!/config {:plugins plugins :resolvers resolvers})
+    (log/trace :start-parser!/config {:plugins plugins :resolvers resolvers})
     (pathom/new-parser config plugins resolvers)))
 
 (defn stop-parser!

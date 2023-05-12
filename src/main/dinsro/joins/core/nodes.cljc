@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.joins :as j]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -16,14 +17,25 @@
    #?(:clj [dinsro.queries.core.wallets :as q.c.wallets])
    [dinsro.specs]))
 
-(defattr index ::index :ref
-  {ao/cardinality :many
-   ao/target      ::m.c.nodes/id
-   ao/pc-output   [{::index [::m.c.nodes/id]}]
+(def join-info
+  (merge
+   {:idents m.c.nodes/idents}
+   #?(:clj {:indexer q.c.nodes/index-ids
+            :counter q.c.nodes/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.c.nodes/id
+   ao/pc-output [{::admin-index [:total {:results [::m.c.nodes/id]}]}]
    ao/pc-resolve
-   (fn [_env _]
-     (let [ids #?(:clj (q.c.nodes/index-ids) :cljs [])]
-       {::index (m.c.nodes/idents ids)}))})
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.c.nodes/id
+   ao/pc-output [{::index [:total {:result [::m.c.nodes/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr blocks ::blocks :ref
   {ao/cardinality :many
@@ -75,4 +87,4 @@
      (let [ids (if id #?(:clj (q.c.wallets/find-by-core-node id) :cljs []) [])]
        {::wallets (m.c.wallets/idents ids)}))})
 
-(def attributes [index blocks ln-nodes peers transactions wallets])
+(def attributes [admin-index index blocks ln-nodes peers transactions wallets])

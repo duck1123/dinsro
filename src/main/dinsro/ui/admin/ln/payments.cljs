@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.payments :as j.ln.payments]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.ui.links :as u.links]))
@@ -15,6 +16,9 @@
                         m.ln.payments/status]
    ro/field-formatters {::m.ln.payments/node         #(u.links/ui-node-link %2)
                         ::m.ln.payments/payment-hash #(u.links/ui-payment-link %3)}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route            "payments"
    ro/row-pk           m.ln.payments/id
    ro/run-on-mount?    true

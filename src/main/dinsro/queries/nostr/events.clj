@@ -3,7 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.specs]
@@ -14,6 +14,25 @@
 ;; [[../../model/nostr/events.cljc][Event Model]]
 ;; [[../../joins/nostr/events.cljc][Event Joins]]
 ;; [../../ui/nostr/events.cljs]
+
+(def query-info
+  {:ident    ::m.n.events/id
+   :pk       '?event-id
+   :clauses  [[::m.n.pubkeys/id '?pubkey-id]]
+   :order-by [['?created-at :desc]]
+   :rules
+   (fn [[pubkey-id] rules]
+     (->> rules
+          (concat-when pubkey-id
+            [['?event-id ::m.n.events/pubkey '?pubkey-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+;; (defn index-ids
+;;   ([] (index-ids {}))
+;;   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn create-record
   "Create a relay record"
@@ -36,32 +55,6 @@
     (when (get record ::m.n.events/id)
       (dissoc record :xt/id))))
 
-(defn get-index-query
-  [query-params]
-  (let [{pubkey-id ::m.n.pubkeys/id} query-params]
-    {:find   ['?event-id]
-     :in     [['?pubkey-id]]
-     :where  (->> [['?event-id ::m.n.events/id '_]]
-                  (concat (when pubkey-id [['?event-id ::m.n.events/pubkey '?pubkey-id]]))
-                  (filter identity)
-                  (into []))}))
-
-(>defn count-ids
-  ([]
-   [=> number?]
-   (count-ids {}))
-  ([query-params]
-   [any? => number?]
-   (do
-     (log/info :count-ids/starting {:query-params query-params})
-     (let [{pubkey-id ::m.n.pubkeys/id} query-params
-           query                        (merge (get-index-query query-params)
-                                               {:find  ['(count ?event-id)]})]
-       (log/info :count-ids/query {:query query})
-       (let [id (c.xtdb/query-value query [pubkey-id])]
-         (log/trace :count-ids/finished {:id id})
-         (or id 0))))))
-
 (>defn index-ids
   ([]
    [=> (s/coll-of ::m.n.events/id)]
@@ -70,21 +63,18 @@
    [any? => (s/coll-of ::m.n.events/id)]
    (do
      (log/info :index-ids/starting {:query-params query-params})
-     (let [{:indexed-access/keys [options]
-            pubkey-id            ::m.n.pubkeys/id} query-params
-           base-params                             (get-index-query query-params)
-           {:keys [limit offset]
-            :or   {limit 20 offset 0}}             options
-           limit-params
-           {:limit    limit
-            :offset   offset
-            :order-by [['?created-at :desc]]
+     (let [base-params  (c.xtdb/make-index-query query-info query-params)
+           limit-params (c.xtdb/get-limit-options query-params)
+           merged-params
+           {:order-by [['?created-at :desc]]
             :find     (vec (concat (:find base-params) ['?created-at]))
-            :where    (vec (concat (:where base-params)
-                                   [['?event-id ::m.n.events/created-at '?created-at]]))}
-           query                                   (merge base-params limit-params)]
+            :where    (vec (concat
+                            (:where base-params)
+                            [['?event-id ::m.n.events/created-at '?created-at]]))}
+           query        (merge base-params limit-params merged-params)
+           index-params (c.xtdb/get-index-params query-info query-params)]
        (log/info :index-ids/query {:query query})
-       (let [ids (c.xtdb/query-values [pubkey-id])]
+       (let [ids (c.xtdb/query-values query index-params)]
          (log/trace :index-ids/finished {:ids ids})
          ids)))))
 

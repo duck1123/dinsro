@@ -6,7 +6,6 @@
    [dinsro.ui.core.addresses :as u.c.addresses]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.chains :as u.c.chains]
-   [dinsro.ui.core.connections :as u.c.connections]
    [dinsro.ui.core.mnemonics :as u.c.mnemonics]
    [dinsro.ui.core.networks :as u.c.networks]
    [dinsro.ui.core.nodes :as u.c.nodes]
@@ -26,8 +25,6 @@
                     u.c.chains/NewForm
                     u.c.chains/Report
                     u.c.chains/Show
-                    u.c.connections/Report
-                    u.c.connections/NewForm
                     u.c.mnemonics/Report
                     u.c.networks/Report
                     u.c.networks/Show

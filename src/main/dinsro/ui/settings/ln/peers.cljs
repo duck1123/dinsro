@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
@@ -74,6 +75,9 @@
                          m.ln.peers/remote-node
                          m.ln.peers/inbound?]
    ro/controls          {::new new-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "peers"
    ro/row-pk            m.ln.peers/id
    ro/run-on-mount?     true

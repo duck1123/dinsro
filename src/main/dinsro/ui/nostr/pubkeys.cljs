@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.menus :as me]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -151,6 +152,9 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "pubkeys"
    ro/row-actions       [(u.links/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)]
    ro/row-pk            m.n.pubkeys/id

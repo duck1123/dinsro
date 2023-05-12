@@ -3,29 +3,37 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.joins :as j]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    #?(:clj [dinsro.queries.nostr.witnesses :as q.n.witnesses])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   [dinsro.specs]))
 
 ;; [../../model/nostr/witnesses.cljc]
 ;; [../../queries/nostr/witnesses.clj]
 ;; [../../ui/admin/nostr/witnesses.cljs]
 ;; [../../ui/nostr/events/witnesses.cljs]
 
+(def join-info
+  (merge
+   {:idents m.n.witnesses/idents}
+   #?(:clj {:indexer q.n.witnesses/index-ids
+            :counter q.n.witnesses/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.n.witnesses/id
+   ao/pc-output [{::admin-index [:total {:results [::m.n.witnesses/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
 (defattr index ::index :ref
   {ao/target    ::m.n.witnesses/id
    ao/pc-output [{::index [:total {:results [::m.n.witnesses/id]}]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} props]
-     (log/info :index/starting {:query-params query-params :props props})
-     (let [ids   #?(:clj (q.n.witnesses/index-ids query-params)
-                    :cljs [])
-           total #?(:clj (q.n.witnesses/count-ids query-params) :cljs 0)]
-       (log/trace :index/finished {:ids ids :total total})
-       {::index {:total total :results (m.n.witnesses/idents ids)}}))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr relay ::relay :ref
   {ao/target           ::m.n.relays/id
@@ -39,4 +47,4 @@
        {::relay (when relay-id (m.n.relays/ident relay-id))}))
    ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
 
-(def attributes [index relay])
+(def attributes [admin-index index relay])

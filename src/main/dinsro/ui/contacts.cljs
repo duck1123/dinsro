@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.contacts :as j.contacts]
    [dinsro.model.contacts :as m.contacts]
    [dinsro.model.transactions :as m.transactions]
@@ -35,6 +36,9 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control
                          ::new     new-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "contacts"
    ro/row-pk            m.contacts/id
    ro/run-on-mount?     true

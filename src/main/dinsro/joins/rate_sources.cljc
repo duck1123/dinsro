@@ -2,12 +2,32 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
-   [dinsro.model.currencies :as m.currencies]
+   [dinsro.joins :as j]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
    #?(:clj [dinsro.queries.rates :as q.rates])
    #?(:clj [dinsro.queries.rate-sources :as q.rate-sources])
    [dinsro.specs]))
+
+(def join-info
+  (merge
+   {:idents m.rate-sources/idents}
+   #?(:clj {:indexer q.rate-sources/index-ids
+            :counter q.rate-sources/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target     ::m.rate-sources/id
+   ao/pc-output  [{::admin-index [:total {:results [::m.rate-sources/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    ::m.rate-sources/id
+   ao/pc-output [{::index [:total {:results [::m.rate-sources/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr current-rate ::current-rate :ref
   {ao/cardinality :one
@@ -18,20 +38,6 @@
    (fn [_env {::m.rate-sources/keys [id]}]
      (let [id (when id #?(:clj (q.rates/find-top-by-rate-source id) :cljs nil))]
        {::current-rate (when id (m.rates/ident id))}))})
-
-(defattr index ::index :ref
-  {ao/target    ::m.rate-sources/id
-   ao/pc-output [{::index [::m.rate-sources/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params]} _]
-     (let [currency-id (::m.currencies/id query-params)
-           ids #?(:clj (if currency-id
-                         (q.rate-sources/find-by-currency currency-id)
-                         (q.rate-sources/index-ids))
-                  :cljs (do
-                          (comment currency-id)
-                          []))]
-       {::index (m.rate-sources/idents ids)}))})
 
 (defattr rates ::rates :ref
   {ao/cardinality :many
@@ -57,4 +63,4 @@
          {::rate-count (count ids)})
        {:errors "no id"}))})
 
-(def attributes [current-rate index rates rate-count])
+(def attributes [admin-index current-rate index rates rate-count])

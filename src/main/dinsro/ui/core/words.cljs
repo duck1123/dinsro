@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.ui.links :as u.links]))
@@ -12,6 +13,9 @@
    ro/columns           [m.c.words/word
                          m.c.words/position
                          m.c.words/mnemonic]
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "words"
    ro/row-pk            m.c.words/id
    ro/run-on-mount?     true

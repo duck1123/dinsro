@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
@@ -52,6 +53,9 @@
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
    ro/form-links        {::m.categories/name NewForm}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-actions       [(u.links/row-action-button "Delete" ::m.categories/id mu.categories/delete!)]
    ro/row-pk            m.categories/id
    ro/route             "categories"

@@ -1,9 +1,8 @@
 (ns dinsro.queries.rate-sources
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -13,6 +12,30 @@
 ;; [../actions/rate_sources.clj]
 ;; [../model/rate_sources.cljc]
 
+(def query-info
+  {:ident   ::m.rate-sources/id
+   :pk      '?rate-source-id
+   :clauses [[::m.accounts/id       '?account-id]
+             [::m.currencies/id     '?currency-id]
+             [::m.rate-sources/name '?rate-source-name]]
+   :rules
+   (fn [[account-id currency-id rate-source-name] rules]
+     (->> rules
+          (concat-when account-id
+            [['?rate-source-id ::m.rate-sources/account  '?account-id]])
+          (concat-when currency-id
+            [['?rate-source-id ::m.rate-sources/currency '?currency-id]])
+          (concat-when rate-source-name
+            [['?rate-source-id ::m.rate-sources/name     '?rate-source-name]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
+
 (>defn find-by-name
   [name]
   [::m.rate-sources/name => ::m.rate-sources/id]
@@ -21,24 +44,6 @@
      :in    [[?name]]
      :where [[?id ::m.rate-sources/name ?name]]}
    [name]))
-
-(>defn find-by-account
-  [account-id]
-  [::m.accounts/id => (s/coll-of ::m.rate-sources/id)]
-  (c.xtdb/query-values
-   '{:find  [?rate-source-id]
-     :in    [[?account-id]]
-     :where [[?rate-source-id ::m.rate-sources/account ?account-id]]}
-   [account-id]))
-
-(>defn find-by-currency
-  [currency-id]
-  [::m.currencies/id => (s/coll-of ::m.rate-sources/id)]
-  (c.xtdb/query-values
-   '{:find  [?rate-source-id]
-     :in    [[?currency-id]]
-     :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]]}
-   [currency-id]))
 
 (>defn find-by-currency-and-name
   [currency-id name]
@@ -67,16 +72,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.rate-sources/id)
       record)))
-
-(>defn index-ids
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.rate-sources/id _]]}))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.rate-sources/item)]
-  (map read-record (index-ids)))
 
 (>defn delete!
   [id]

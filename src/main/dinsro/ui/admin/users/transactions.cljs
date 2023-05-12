@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
@@ -20,6 +21,9 @@
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::m.users/id {:type :uuid :label "id"}
                          ::refresh    u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/row-pk            m.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.transactions/index

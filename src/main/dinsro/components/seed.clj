@@ -310,6 +310,7 @@
 
 (defn item-report
   []
+  (log/trace :item-report/starting {})
   (let [users        (count (q.users/index-ids))
         categories   (count (q.categories/index-ids))
         currencies   (count (q.currencies/index-ids))

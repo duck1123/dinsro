@@ -3,16 +3,29 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.ln.invoices/id)]
-  (c.xtdb/query-values '{:find [?id] :where [[?id ::m.ln.invoices/id _]]}))
+(def query-info
+  {:ident   ::m.ln.invoices/id
+   :pk      '?invoice-id
+   :clauses [[::m.ln.nodes/id '?ln-node-id]]
+   :rules
+   (fn [[ln-node-id] rules]
+     (->> rules
+          (concat-when ln-node-id
+            [['?invoice-id ::m.ln.invoices/node '?ln-node-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]

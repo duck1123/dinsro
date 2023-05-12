@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.chains :as j.c.chains]
    [dinsro.menus :as me]
    [dinsro.model.core.chains :as m.c.chains]
@@ -67,6 +68,9 @@
    ro/columns           [m.c.chains/name]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
    ro/route             "chains"
    ro/row-pk            m.c.chains/id
    ro/run-on-mount?     true

@@ -1,17 +1,40 @@
 (ns dinsro.queries.ln.accounts
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
+   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.ln.accounts :as m.ln.accounts]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.ln.accounts/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.ln.accounts/id _]]}))
+(def query-info
+  {:ident   ::m.ln.accounts/id
+   :pk      '?block-id
+   :clauses [[:actor/id        '?actor-id]
+             [:actor/admin?    '?admin?]
+             [::m.c.wallets/id '?wallet-id]
+             [::m.ln.nodes/id  '?network-id]]
+   :rules
+   (fn [[_actor-id admin? wallet-id network-id] rules]
+     (->> rules
+          (concat-when (not admin?)
+            [['?ln-account-id      ::m.ln.accounts/node   '?ln-account-node-id]
+             ['?ln-account-node-id ::m.ln.nodes/user      '?actor-id]])
+          (concat-when wallet-id
+            [['?ln-account-id      ::m.ln.accounts/wallet '?wallet-id]])
+          (concat-when network-id
+            [['?ln-account-id      ::m.ln.accounts/node   '?network-node-id]
+             ['?network-node-id    ::m.ln.nodes/network   '?network-id]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]

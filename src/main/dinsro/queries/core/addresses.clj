@@ -1,19 +1,43 @@
 (ns dinsro.queries.core.addresses
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.ln.accounts :as m.ln.accounts]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
    [xtdb.api :as xt]))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of ::m.c.addresses/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.addresses/id _]]}))
+(def query-info
+  {:ident   ::m.c.addresses/id
+   :pk      '?address-id
+   :clauses [[::m.ln.nodes/id         '?ln-node-id]
+             [::m.ln.accounts/id      '?ln-account-id]
+             [::m.c.addresses/address '?address]]
+   :rules
+   (fn [[ln-node-id ln-account-id address] rules]
+     (->> rules
+          (concat-when ln-node-id
+            [['?ln-node-account-id           ::m.ln.accounts/node           '?ln-node-id]
+             ['?ln-node-account-id           ::m.ln.accounts/wallet         '?ln-node-wallet-id]
+             ['?ln-node-wallet-address-id    ::m.c.wallet-addresses/wallet  '?ln-node-wallet-id]
+             ['?ln-node-wallet-address-id    ::m.c.wallet-addresses/address '?address-id]])
+          (concat-when ln-account-id
+            [['?ln-account-id                ::m.ln.accounts/wallet         '?ln-account-wallet-id]
+             ['?ln-account-wallet-address-id ::m.c.wallet-addresses/wallet  '?ln-account-wallet-id]
+             ['?ln-account-wallet-address-id ::m.c.wallet-addresses/address '?address-id]])
+          (concat-when address
+            [['?address-id                   ::m.c.addresses/address        '?address]])))})
+
+(defn count-ids
+  ([] (count-ids {}))
+  ([query-params] (c.xtdb/count-ids query-info query-params)))
+
+(defn index-ids
+  ([] (index-ids {}))
+  ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
   [id]
@@ -34,11 +58,6 @@
         resp            (xt/submit-tx node [[::xt/put prepared-params]])]
     (xt/await-tx node resp)
     id))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.c.addresses/item)]
-  (map read-record (index-ids)))
 
 (defn find-by-ln-node
   [node-id]

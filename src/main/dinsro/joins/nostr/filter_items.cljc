@@ -3,8 +3,8 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.joins :as j]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
-   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    #?(:clj [dinsro.queries.nostr.filter-items :as q.n.filter-items])
@@ -16,25 +16,25 @@
 ;; [../../model/nostr/filter_items.cljc]
 ;; [../../queries/nostr/filter_items.clj]
 
+(def join-info
+  (merge
+   {:idents m.n.filter-items/idents}
+   #?(:clj {:indexer q.n.filter-items/index-ids
+            :counter q.n.filter-items/count-ids})))
+
+(defattr admin-index ::admin-index :ref
+  {ao/target    ::m.n.filter-items/id
+   ao/pc-output [{::admin-index [:total {:results [::m.n.filter-items/id]}]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index (j/make-admin-indexer join-info env props)})})
+
 (defattr index ::index :ref
   {ao/target    ::m.n.filter-items/id
-   ao/pc-output [{::index {:total {:results [::m.n.filter-items/id]}}}]
+   ao/pc-output [{::index [:total {:results [::m.n.filter-items/id]}]}]
    ao/pc-resolve
-   (fn [{:keys [query-params]} params]
-     (log/info :index/starting {:query-params query-params :params params})
-     (let [{filter-id  ::m.n.filters/id
-            request-id ::m.n.requests/id} query-params]
-       (log/info :index/starting {:filter-id filter-id})
-       (let [ids #?(:clj (cond
-                           filter-id  (q.n.filter-items/find-by-filter filter-id)
-                           request-id (q.n.filter-items/find-by-request request-id)
-                           :else      (q.n.filter-items/index-ids query-params))
-                    :cljs (do
-                            (comment filter-id request-id)
-                            []))]
-         (log/trace :index/finished {:ids ids})
-         {::index {:total #?(:clj (q.n.filter-items/count-ids query-params) :cljs 0)
-                   :results (m.n.filter-items/idents ids)}})))})
+   (fn [env props]
+     {::index (j/make-indexer join-info env props)})})
 
 (defattr relay ::relay :ref
   {ao/target           ::m.n.relays/id
@@ -60,4 +60,4 @@
        {::request (when request-id (m.n.requests/ident request-id))}))
    ::report/column-EQL {::request [::m.n.requests/id ::m.n.requests/code]}})
 
-(def attributes [index request relay])
+(def attributes [admin-index index request relay])
