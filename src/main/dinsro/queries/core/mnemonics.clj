@@ -13,12 +13,12 @@
   []
   [=> (s/coll-of ::m.c.mnemonics/id)]
   (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.mnemonics/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.mnemonics/id _]]}))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.c.mnemonics/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.mnemonics/id)
       (dissoc record :xt/id))))
@@ -26,7 +26,7 @@
 (>defn create-record
   [params]
   [::m.c.mnemonics/params => ::m.c.mnemonics/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.mnemonics/id id)

@@ -12,12 +12,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.remote-nodes/id)]
-  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.ln.remote-nodes/id _]]}))
+  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.ln.remote-nodes/id _]]}))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.ln.remote-nodes/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.ln.remote-nodes/id)
       (dissoc record :xt/id))))
@@ -25,7 +25,7 @@
 (>defn create-record
   [params]
   [::m.ln.remote-nodes/params => ::m.ln.remote-nodes/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.ln.remote-nodes/id id)
@@ -36,7 +36,7 @@
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.remote-nodes/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?channel-id]
      :in    [[?node-id]]
      :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]]}
@@ -45,7 +45,7 @@
 (>defn find-by-node-and-pubkey
   [node-id pubkey]
   [::m.ln.remote-nodes/node ::m.ln.remote-nodes/pubkey => (? ::m.ln.remote-nodes/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?remote-node-id]
      :in    [[?node-id ?pubkey]]
      :where [[?remote-node-id ::m.ln.remote-nodes/pubkey ?pubkey]
@@ -55,7 +55,7 @@
 (>defn find-channel
   [node-id channel-point]
   [::m.ln.remote-nodes/node ::m.ln.remote-nodes/channel-point => (? ::m.ln.remote-nodes/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?channel-id]
      :in    [[?node-id ?channel-point]]
      :where [[?channel-id ::m.ln.remote-nodes/node ?node-id]
@@ -65,7 +65,7 @@
 (>defn delete!
   [id]
   [::m.ln.remote-nodes/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
   nil)
 
@@ -73,7 +73,7 @@
   [params]
   [::m.ln.remote-nodes/item => ::m.ln.remote-nodes/id]
   (if-let [id (::m.ln.remote-nodes/id params)]
-    (let [node   (c.xtdb/main-node)
+    (let [node   (c.xtdb/get-node)
           params (assoc params :xt/id id)]
       (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
       id)

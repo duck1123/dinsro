@@ -11,7 +11,7 @@
 (>defn create-record
   [params]
   [::m.c.connections/params => :xt/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.connections/id id)
@@ -22,7 +22,7 @@
 (>defn read-record
   [id]
   [::m.c.connections/id => (? ::m.c.connections/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.connections/id)
       (dissoc record :xt/id))))
@@ -30,4 +30,4 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.connections/name _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.connections/name _]]}))

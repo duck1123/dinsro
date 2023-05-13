@@ -19,7 +19,7 @@
   [::m.n.pubkey-contacts/params => :xt/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
-        node   (c.xtdb/main-node)
+        node   (c.xtdb/get-node)
         params (assoc params ::m.n.pubkey-contacts/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
@@ -29,7 +29,7 @@
 (>defn read-record
   [id]
   [:xt/id => (? ::m.n.pubkey-contacts/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.pubkey-contacts/id)
       (dissoc record :xt/id))))
@@ -37,12 +37,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.pubkey-contacts/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.pubkey-contacts/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.n.pubkey-contacts/id _]]}))
 
 (>defn delete!
   [id]
   [::m.n.pubkey-contacts/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -56,7 +56,7 @@
   [actor-id target-id]
   [::m.n.pubkeys/id ::m.n.pubkeys/id => (? ::m.n.pubkey-contacts/id)]
   (log/fine :find-by-actor-and-target/starting {:actor-id actor-id :target-id target-id})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?contact-id]
      :in    [[?actor ?target]]
      :where [[?contact-id ::m.n.pubkey-contacts/actor ?actor]

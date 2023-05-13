@@ -11,7 +11,7 @@
 (>defn create-record
   [params]
   [::m.n.badge-acceptances/params => ::m.n.badge-acceptances/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.n.badge-acceptances/id id)
@@ -22,7 +22,7 @@
 (>defn read-record
   [id]
   [::m.n.badge-acceptances/id => (? ::m.n.badge-acceptances/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.badge-acceptances/id)
       (dissoc record :xt/id))))
@@ -30,4 +30,4 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.badge-acceptances/id)]
-  (c.xtdb/query-ids '{:find [?relay-id] :where [[?relay-id ::m.n.badge-acceptances/id _]]}))
+  (c.xtdb/query-values '{:find [?relay-id] :where [[?relay-id ::m.n.badge-acceptances/id _]]}))

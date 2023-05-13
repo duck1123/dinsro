@@ -13,11 +13,11 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::id _]]}))
 
 (defn find-by-key
   [key]
-  (let [db (c.xtdb/main-db)]
+  (let [db (c.xtdb/get-db)]
     (log/debug :record/find-by-key {:key key})
     (let [query        '{:find  [(pull ?sid [*])]
                          :in    [?key]
@@ -40,7 +40,7 @@
 
 (defn set-setting
   [k v]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (if-let [existing-setting (find-by-key k)]
       (let [id     (:xt/id existing-setting)
             params (assoc existing-setting ::value v)]

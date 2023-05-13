@@ -19,7 +19,7 @@
 (>defn find-by-rate-source
   [rate-source-id]
   [::m.rate-sources/id => (s/coll-of ::m.rates/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find [?rate-id]
      :in [[?rate-source-id]]
      :where [[?rate-id ::m.rates/source ?rate-source-id]]}
@@ -28,7 +28,7 @@
 (>defn find-by-currency
   [currency-id]
   [::m.currencies/id => (s/coll-of ::m.rates/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?rate-id]
      :in    [[?currency-id]]
      :where [[?rate-id ::m.rates/source ?rate-source-id]
@@ -38,7 +38,7 @@
 (>defn find-top-by-currency
   [currency-id]
   [::m.currencies/id => (? ::m.rates/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find     [?rate-id ?date]
      :in       [[?currency-id]]
      :where    [[?rate-id ::m.rates/source ?rate-source-id]
@@ -51,7 +51,7 @@
 (>defn find-top-by-rate-source
   [source-id]
   [::m.rate-sources/id => (? ::m.rates/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find     [?rate-id ?date]
      :in       [[?source-id]]
      :where    [[?rate-id ::m.rates/source ?source-id]
@@ -68,7 +68,7 @@
 (>defn create-record
   [params]
   [::m.rates/params => :xt/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> (prepare-record params)
                             (assoc ::m.rates/id id)
@@ -83,7 +83,7 @@
 (>defn read-record
   [id]
   [:xt/id => (? ::m.rates/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.rates/rate)
       (-> record
@@ -119,7 +119,7 @@
            params       (get-index-params query-params)
            query        (merge base-params limit-params)]
        (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-one query params)]
+       (let [n (c.xtdb/query-value query params)]
          (log/info :count-ids/finished {:n n})
          (or n 0))))))
 
@@ -138,7 +138,7 @@
            query                                            (merge base-params limit-params)
            params                                           (get-index-params query-params)]
        (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-many query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/info :index-ids/finished {:ids ids})
          ids)))))
 
@@ -150,7 +150,7 @@
 (>defn index-records-by-currency
   [currency-id]
   [:xt/id => ::m.rates/rate-feed]
-  (let [db    (c.xtdb/main-db)
+  (let [db    (c.xtdb/get-db)
         query '{:find  [?date ?rate]
                 :in    [[?currency-id]]
                 :where [[?rate-id ::m.rates/currency ?currency-id]
@@ -165,6 +165,6 @@
 (>defn delete-record
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/submit-tx node [[:db/retractEntity id]]))
   nil)

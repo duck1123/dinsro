@@ -15,12 +15,12 @@
   []
   [=> (s/coll-of ::m.c.wallets/id)]
   (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.wallets/name _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.wallets/name _]]}))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.c.wallets/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.wallets/id)
       (dissoc record :xt/id))))
@@ -28,7 +28,7 @@
 (>defn create-record
   [params]
   [::m.c.wallets/params => ::m.c.wallets/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.wallets/id id)
@@ -46,7 +46,7 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.c.wallets/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?wallet-id]
      :in    [[?user-id]]
      :where [[?wallet-id ::m.c.wallets/user ?user-id]]}
@@ -55,7 +55,7 @@
 (>defn find-by-user-and-name
   [user-id name]
   [::m.users/id string? => (? ::m.c.wallets/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?wallet-id]
      :in    [[?user-id ?name]]
      :where [[?wallet-id ::m.c.wallets/user ?user-id]
@@ -65,7 +65,7 @@
 (>defn find-by-user-and-wallet-id
   [user-id wallet-id]
   [::m.users/id ::m.c.wallets/id => (? ::m.c.wallets/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find [?wallet-id]
      :in [[?user-id ?input-wallet-id]]
      :where [[?wallet-id ::m.c.wallets/id ?input-wallet-id]
@@ -76,7 +76,7 @@
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.wallets/id)]
   (log/info :find-by-core-node/starting {:node-id node-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?wallet-id]
      :in    [[?node-id]]
      :where [[?wallet-id ::m.c.wallets/node ?node-id]]}
@@ -85,7 +85,7 @@
 (defn update!
   [wallet-id new-props]
   (log/info :update!/starting {:wallet-id wallet-id :new-props new-props})
-  (let [node          (c.xtdb/main-node)
+  (let [node          (c.xtdb/get-node)
         wallet        (read-record wallet-id)
         updated-props (merge wallet
                              {:xt/id wallet-id}

@@ -9,4 +9,4 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.connections/name _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.connections/name _]]}))

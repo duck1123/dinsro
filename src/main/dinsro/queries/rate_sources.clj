@@ -16,7 +16,7 @@
 (>defn find-by-name
   [name]
   [::m.rate-sources/name => ::m.rate-sources/id]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?id]
      :in    [[?name]]
      :where [[?id ::m.rate-sources/name ?name]]}
@@ -25,7 +25,7 @@
 (>defn find-by-account
   [account-id]
   [::m.accounts/id => (s/coll-of ::m.rate-sources/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?rate-source-id]
      :in    [[?account-id]]
      :where [[?rate-source-id ::m.rate-sources/account ?account-id]]}
@@ -34,7 +34,7 @@
 (>defn find-by-currency
   [currency-id]
   [::m.currencies/id => (s/coll-of ::m.rate-sources/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?rate-source-id]
      :in    [[?currency-id]]
      :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]]}
@@ -43,7 +43,7 @@
 (>defn find-by-currency-and-name
   [currency-id name]
   [::m.rate-sources/currency ::m.rate-sources/name => (? ::m.rate-sources/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?rate-source-id]
      :in    [[?currency-id ?name]]
      :where [[?rate-source-id ::m.rate-sources/currency ?currency-id]
@@ -53,7 +53,7 @@
 (>defn create-record
   [params]
   [::m.rate-sources/params => :xt/id]
-  (let [node   (c.xtdb/main-node)
+  (let [node   (c.xtdb/get-node)
         id     (new-uuid)
         params (assoc params ::m.rate-sources/id id)
         params (assoc params :xt/id id)]
@@ -63,7 +63,7 @@
 (>defn read-record
   [id]
   [:xt/id => (? ::m.rate-sources/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.rate-sources/id)
       record)))
@@ -71,7 +71,7 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.rate-sources/id _]]}))
+  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.rate-sources/id _]]}))
 
 (>defn index-records
   []
@@ -81,5 +81,5 @@
 (>defn delete!
   [id]
   [:xt/id => any?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))))

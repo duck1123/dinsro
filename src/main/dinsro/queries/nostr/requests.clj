@@ -17,7 +17,7 @@
   [params]
   [::m.n.requests/params => ::m.n.requests/id]
   (log/debug :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (merge
                          {::m.n.requests/id id
@@ -31,14 +31,14 @@
   []
   [=> (s/coll-of ::m.n.requests/id)]
   (log/debug :index-ids/starting {})
-  (let [ids (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.requests/id _]]})]
+  (let [ids (c.xtdb/query-values '{:find [?id] :where [[?id ::m.n.requests/id _]]})]
     (log/info :index-ids/finished {:ids ids})
     ids))
 
 (>defn read-record
   [id]
   [::m.n.requests/id => (? ::m.n.requests/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (log/debug :read-record/starting {:record record})
     (when (get record ::m.n.requests/id)
@@ -49,7 +49,7 @@
   [relay-id]
   [::m.n.relays/id => (s/coll-of ::m.n.requests/id)]
   (log/debug :find-by-relay/starting {:relay-id relay-id})
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?id]
                :in    [[?relay-id]]
                :where [[?id ::m.n.requests/relay ?relay-id]]}
@@ -61,7 +61,7 @@
   [code]
   [::m.n.requests/code => (s/coll-of ::m.n.requests/id)]
   (log/debug :find-by-relay-and-code/starting {:code code})
-  (let [id (c.xtdb/query-ids
+  (let [id (c.xtdb/query-values
             '{:find  [?request-id]
               :in    [[?code]]
               :where [[?request-id ::m.n.requests/code ?code]]}
@@ -74,7 +74,7 @@
   [relay-id code]
   [::m.n.relays/id  ::m.n.requests/code => (? ::m.n.requests/id)]
   (log/debug :find-by-relay-and-code/starting {:relay-id relay-id :code code})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?request-id]
               :in    [[?relay-id ?code]]
               :where [[?request-id ::m.n.requests/relay ?relay-id]
@@ -86,7 +86,7 @@
 (defn find-by-connection-and-code
   [connection-id code]
   (log/debug :find-by-connection-and-code/starting {:connection-id connection-id :code code})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?request-id]
               :in    [[?connection-id ?code]]
               :where [[?request-id ::m.n.requests/relay ?relay-id]
@@ -100,7 +100,7 @@
   [filter-item-id]
   [::m.n.filter-items/id => (? ::m.n.requests/id)]
   (log/debug :find-by-filter-item/starting {:filter-item-id filter-item-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?request-id]
               :in    [[?filter-item-id]]
               :where [[?filter-id ::m.n.filters/request ?request-id]
@@ -113,7 +113,7 @@
   [run-id]
   [::m.n.runs/id => (? ::m.n.requests/id)]
   (log/debug :find-by-run/starting {:run-id run-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?request-id]
               :in    [[?run-id]]
               :where [[?run-id ::m.n.runs/request ?request-id]]}
@@ -125,7 +125,7 @@
   [run-id]
   [::m.n.runs/id => (? string?)]
   (log/debug :find-code-by-run/starting {:run-id run-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?code]
               :in    [[?run-id]]
               :where [[?run-id ::m.n.runs/request ?request-id]
@@ -138,7 +138,7 @@
   "Delete request by id"
   [id]
   [::m.n.requests/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -154,7 +154,7 @@
   [request-id]
   [::m.n.requests/id => (? ::m.n.requests/relay)]
   (log/debug :find-relay/starting {:request-id request-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?relay-id]
               :in    [[?request-id]]
               :where [[?request-id ::m.n.requests/relay ?relay-id]]}

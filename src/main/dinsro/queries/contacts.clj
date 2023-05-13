@@ -13,7 +13,7 @@
   "Create a contact record"
   [params]
   [::m.contacts/params => :xt/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.contacts/id id)
@@ -25,13 +25,13 @@
   []
   [=> (s/coll-of ::m.contacts/id)]
   (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find  [?id]
-                      :where [[?id ::m.contacts/id _]]}))
+  (c.xtdb/query-values '{:find  [?id]
+                         :where [[?id ::m.contacts/id _]]}))
 
 (>defn read-record
   [id]
   [::m.contacts/id => (? ::m.contacts/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.contacts/id)
       (dissoc record :xt/id))))
@@ -39,7 +39,7 @@
 (>defn find-by-user
   [user-id]
   [::m.contacts/user => (s/coll-of ::m.contacts/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?id]
      :in    [[?user-id]]
      :where [[?id ::m.contacts/user ?user-id]]}

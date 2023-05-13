@@ -13,12 +13,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.peers/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.peers/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.peers/id _]]}))
 
 (>defn read-record
   [id]
   [::m.c.peers/id => (? ::m.c.peers/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.peers/id)
       (dissoc record :xt/id))))
@@ -26,7 +26,7 @@
 (>defn create-record
   [params]
   [::m.c.peers/params => ::m.c.peers/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.peers/id id)
@@ -39,7 +39,7 @@
   [id]
   [::m.c.peers/id => any?]
   (log/debug :delete!/starting {:id id})
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
 
@@ -47,7 +47,7 @@
   [node-id]
   [::m.c.nodes/id => (s/coll-of ::m.c.peers/id)]
   (log/debug :find-by-core-node/starting {:node-id node-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?peer-id]
      :in    [[?node-id]]
      :where [[?peer-id ::m.c.peers/node ?node-id]]}
@@ -57,7 +57,7 @@
   [node-id peer-id]
   [::m.c.peers/node ::m.c.peers/peer-id => (? ::m.c.peers/id)]
   (log/debug :find-by-node-and-peer-id/starting {:node-id node-id :peer-id peer-id})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?id]
      :in    [[?node-id ?peer-id]]
      :where [[?id ::m.c.peers/node ?node-id]

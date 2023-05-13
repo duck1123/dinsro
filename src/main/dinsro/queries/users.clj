@@ -18,11 +18,10 @@
 (>defn read-record
   [user-id]
   [uuid? => (? ::m.users/item)]
-  (let [db     (c.xtdb/main-db)
-        query  '{:find  [(pull ?id [*])]
+  (let [query  '{:find  [(pull ?id [*])]
                  :in    [[?id]]
                  :where [[?id ::m.users/id ?name]]}
-        result (xt/q db query [user-id])
+        result (c.xtdb/run-query query [user-id])
         record (ffirst result)]
     (when (get record ::m.users/id)
       (dissoc record :xt/id))))
@@ -35,7 +34,7 @@
 (>defn find-by-name
   [name]
   [::m.users/name => (? ::m.users/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?id]
      :in    [[?name]]
      :where [[?id ::m.users/name ?name]]}
@@ -45,7 +44,7 @@
   [hex]
   [::m.n.pubkeys/hex => (s/coll-of ::m.users/id)]
   (log/info :find-by-pubkey/starting {:hex hex})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?user-id]
      :in    [[?hex]]
      :where [[?pubkey-id ::m.n.pubkeys/hex ?hex]
@@ -57,7 +56,7 @@
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.users/id)]
   (log/info :find-by-pubkey/starting {:pubkey-id pubkey-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?user-id]
      :in    [[?pubkey-id]]
      :where [[?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
@@ -68,7 +67,7 @@
   [transaction-id]
   [::m.transactions/id => (? ::m.users/id)]
   (log/info :find-by-transaction/starting {:transaction-id transaction-id})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?user-id]
      :in    [[?transaction-id]]
      :where [[?transaction-id ::m.transactions/account ?account-id]
@@ -80,7 +79,7 @@
   [params]
   [::m.users/params => ::m.users/id]
   (if (nil? (find-by-name (::m.users/name params)))
-    (let [node   (c.xtdb/main-node)
+    (let [node   (c.xtdb/get-node)
           id     (new-uuid)
           params (assoc params :xt/id id)
           params (assoc params ::m.users/id id)]
@@ -124,7 +123,7 @@
            params       (get-index-params query-params)
            query        (merge base-params limit-params)]
        (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-one query params)]
+       (let [n (c.xtdb/query-value query params)]
          (log/info :count-ids/finished {:n n})
          (or n 0))))))
 
@@ -143,7 +142,7 @@
            query                                          (merge base-params limit-params)
            params                                         (get-index-params query-params)]
        (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-many query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/info :index-ids/finished {:ids ids})
          ids)))))
 
@@ -157,7 +156,7 @@
   "delete user by id"
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -165,8 +164,8 @@
   [id data]
   [::m.users/id (s/keys) => ::m.users/id]
   (log/info :update!/starting {:id id :data data})
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
+  (let [node   (c.xtdb/get-node)
+        db     (c.xtdb/get-db)
         old    (xt/pull db '[*] id)
         params (merge old data)
         tx     (xt/submit-tx node [[::xt/put params]])]

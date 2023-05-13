@@ -17,7 +17,7 @@
   "Create a node record"
   [params]
   [::m.c.nodes/params => :xt/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.nodes/id id)
@@ -29,7 +29,7 @@
   "Read a node record"
   [id]
   [::m.c.nodes/id => (? ::m.c.nodes/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.nodes/id)
       (dissoc record :xt/id))))
@@ -38,7 +38,7 @@
   "Return the id of every node"
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.nodes/name _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.nodes/name _]]}))
 
 (>defn index-records
   "Read all node records"
@@ -49,7 +49,7 @@
 (>defn find-by-name
   [name]
   [::m.c.nodes/name => (? ::m.c.nodes/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?node-id]
      :in    [[?name]]
      :where [[?node-id ::m.c.nodes/name ?name]]}
@@ -59,7 +59,7 @@
   "Find all nodes associated with a network"
   [network-id]
   [::m.c.networks/id => (s/coll-of ::m.c.nodes/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?node-id]
      :in    [[?network-id]]
      :where [[?node-id ::m.c.nodes/network ?network-id]]}
@@ -68,7 +68,7 @@
 (>defn find-by-ln-node
   [ln-node-id]
   [::m.ln.nodes/id => (? ::m.c.nodes/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?core-node-id]
      :in    [[?ln-node-id]]
      :where [[?ln-node-id ::m.ln.nodes/core-node ?core-node-id]]}
@@ -77,8 +77,8 @@
 (>defn update-blockchain-info
   [id props]
   [::m.c.nodes/id ::m.c.nodes/item => any?]
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
+  (let [node   (c.xtdb/get-node)
+        db     (c.xtdb/get-db)
         old    (xt/pull db '[*] id)
         params (merge  old props)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))))
@@ -88,8 +88,8 @@
     ::m.c.nodes/keys [id]
     :as              params}]
   (log/info :update-wallet-info {:params params})
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
+  (let [node   (c.xtdb/get-node)
+        db     (c.xtdb/get-db)
         old    (xt/pull db '[*] id)
         params (merge
                 old
@@ -100,13 +100,13 @@
 (>defn delete!
   [id]
   [::m.c.nodes/id => any?]
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
 
 (defn find-by-tx
   [tx-id]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?node-id]
      :in    [[?tx-id]]
      :where [[?tx-id ::m.c.transactions/block ?block-id]

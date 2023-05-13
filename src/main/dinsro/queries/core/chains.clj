@@ -13,7 +13,7 @@
   [params]
   [::m.c.chains/params => :xt/id]
   (log/info :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.chains/id id)
@@ -25,7 +25,7 @@
 (>defn read-record
   [id]
   [::m.c.chains/id => (? ::m.c.chains/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.chains/id)
       (dissoc record :xt/id))))
@@ -33,13 +33,13 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.chains/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.chains/id _]]}))
 
 (>defn find-by-name
   [name]
   [::m.c.chains/name => (? ::m.c.chains/id)]
   (log/info :find-by-name/starting {:name name})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?node-id]
      :in    [[?name]]
      :where [[?node-id ::m.c.chains/name ?name]]}
@@ -48,6 +48,6 @@
 (>defn delete!
   [id]
   [::m.c.chains/id => any?]
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))

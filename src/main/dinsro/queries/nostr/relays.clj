@@ -24,7 +24,7 @@
   [::m.n.relays/params => :xt/id]
   (log/info :create-record/starting {:params params})
   (let [connected       (boolean (::m.n.relays/connected params))
-        node            (c.xtdb/main-node)
+        node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.n.relays/connected connected)
@@ -38,7 +38,7 @@
   "Read a relay record"
   [id]
   [::m.n.relays/id => (? ::m.n.relays/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.relays/id)
       (dissoc record :xt/id))))
@@ -72,7 +72,7 @@
            query       (merge base-query limit-query)
            params      (get-index-params query-params)]
        (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-one query params)]
+       (let [n (c.xtdb/query-value query params)]
          (log/trace :count-ids/finished {:n n})
          n)))))
 
@@ -92,7 +92,7 @@
            query                            (merge base-query limit-query)
            params                           []]
        (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-ids query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/trace :index-ids/finished {:ids ids})
          ids)))))
 
@@ -100,7 +100,7 @@
   [address]
   [::m.n.relays/address => (? ::m.n.relays/id)]
   (log/info :find-by-address/starting {:address address})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?relay-id]
      :in    [[?address]]
      :where [[?relay-id ::m.n.relays/address ?address]]}
@@ -109,7 +109,7 @@
 (>defn delete-record
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -137,14 +137,14 @@
                                           entity       (xtdb.api/entity db eid)
                                           updated-data (assoc entity ::m.n.relays/connected connected)]
                                       [[::xt/put updated-data]]))}
-        node (c.xtdb/main-node)]
+        node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put toggle-connected]]))))
 
 (>defn set-connected
   [relay-id connected]
   [::m.n.relays/id ::m.n.relays/connected => any?]
   (log/info :set-connected/starting {:relay-id relay-id :connected connected})
-  (let [node     (c.xtdb/main-node)
+  (let [node     (c.xtdb/get-node)
         response (xt/submit-tx node [[::xt/fn ::toggle-connected relay-id connected]])]
     (log/trace :set-connected/finished {:response response})
     response))
@@ -158,7 +158,7 @@
 (defn find-by-connection
   [connection-id]
   (log/debug :find-by-connection/starting {:connection-id connection-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?relay-id]
               :in    [[?connection-id]]
               :where [[?connection-id ::m.n.connections/relay ?relay-id]]}
@@ -169,7 +169,7 @@
 (defn find-by-filter-item
   [filter-item-id]
   (log/debug :find-by-request/starting {:filter-item-id filter-item-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?relay-id]
               :in    [[?filter-item-id]]
               :where [[?filter-item-id ::m.n.filter-items/filter ?filter-id]
@@ -183,7 +183,7 @@
 (defn find-by-request
   [request-id]
   (log/debug :find-by-request/starting {:request-id request-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?relay-id]
               :in    [[?request-id]]
               :where [[?request-id ::m.n.requests/relay ?relay-id]]}
@@ -195,7 +195,7 @@
   [run-id]
   [::m.n.runs/id => (? ::m.n.relays/id)]
   (log/debug :find-by-run/starting {:run-id run-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?relay-id]
               :in    [[?run-id]]
               :where [[?run-id ::m.n.runs/request ?request-id]
@@ -214,7 +214,7 @@
                          [?run-id ::m.n.runs/request ?request-id]
                          [?request-id ::m.n.requests/relay ?relay-id]]}
         params [witness-id]
-        id     (c.xtdb/query-id query params)]
+        id     (c.xtdb/query-value query params)]
     (log/trace :find-by-request/finished {:id id})
     id))
 

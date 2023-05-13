@@ -17,7 +17,7 @@
   [params]
   [::m.n.runs/params => ::m.n.runs/id]
   (log/debug :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (merge
                          {::m.n.runs/start-time  nil
@@ -57,7 +57,7 @@
          query        (merge base-params limit-params)
          params       []]
      (log/info :count-ids/query {:query query :params params})
-     (let [c (c.xtdb/query-id query params)]
+     (let [c (c.xtdb/query-value query params)]
        (or c 0)))))
 
 (>defn index-ids
@@ -76,14 +76,14 @@
            query                            (merge base-params limit-params)
            params                           (get-index-params query-params)]
        (log/info :index-ids/running {:query query :params params})
-       (let [ids (c.xtdb/query-ids query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/trace :index-ids/finished {:ids ids})
          ids)))))
 
 (>defn read-record
   [id]
   [::m.n.runs/id => (? ::m.n.runs/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (log/debug :read-record/starting {:record record})
     (when (get record ::m.n.runs/id)
@@ -92,7 +92,7 @@
 (>defn delete!
   [id]
   [::m.n.runs/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -100,7 +100,7 @@
   [request-id]
   [::m.n.requests/id => (s/coll-of ::m.n.runs/id)]
   (log/debug :find-by-request/starting {:request-id request-id})
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?run-id]
                :in    [[?request-id]]
                :where [[?run-id ::m.n.runs/request ?request-id]]}
@@ -112,7 +112,7 @@
   [request-id connection-id]
   [::m.n.requests/id ::m.n.connections/id => (? ::m.n.runs/id)]
   (log/debug :find-by-request-and-connection/starting {:request-id request-id :connection-id connection-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?run-id]
               :in    [[?request-id ?connection-id]]
               :where [[?run-id ::m.n.runs/request ?request-id]
@@ -125,7 +125,7 @@
   []
   [=> (s/coll-of ::m.n.runs/id)]
   (log/debug :find-connected/starting {})
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?run-id]
                :where [(or [?run-id ::m.n.runs/status :started]
                            [?run-id ::m.n.runs/status :finished])]})]
@@ -137,7 +137,7 @@
   [connection-id]
   [::m.n.connections/id => (s/coll-of ::m.n.runs/id)]
   (log/debug :find-connected-by-connection/starting {:connection-id connection-id})
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?run-id]
                :in    [[?connection-id]]
                :where [[?run-id ::m.n.runs/connection ?connection-id]
@@ -152,7 +152,7 @@
   [code]
   [::m.n.requests/code => (s/coll-of ::m.n.runs/id)]
   (log/debug :find-active-by-code/starting {:code code})
-  (let [id (c.xtdb/query-ids
+  (let [id (c.xtdb/query-values
             '{:find  [?run-id]
               :in    [[?code]]
               :where [[?run-id ::m.n.runs/request ?request-id]
@@ -168,7 +168,7 @@
   [connection-id code]
   [::m.n.connections/id  ::m.n.requests/code => (? ::m.n.runs/id)]
   (log/debug :find-active-by-connection-and-code/starting {:connection-id connection-id :code code})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?run-id]
               :in    [[?connection-id ?code]]
               :where [[?run-id ::m.n.runs/connection ?connection-id]
@@ -185,7 +185,7 @@
   [connection-id]
   [::m.n.connections/id => (s/coll-of ::m.n.runs/id)]
   (log/debug :find-by-connection/starting {:connection-id connection-id})
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?run-id]
                :in    [[?connection-id]]
                :where [[?run-id ::m.n.runs/connection ?connection-id]]}
@@ -195,7 +195,7 @@
 
 (defn create-set-started!
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-started!
          :xt/fn '(fn [ctx eid]
@@ -209,7 +209,7 @@
 
 (defn create-set-stopped!
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-stopped!
          :xt/fn '(fn [ctx eid]
@@ -223,7 +223,7 @@
 
 (defn create-set-errored!
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-errored!
          :xt/fn '(fn [ctx eid]
@@ -237,7 +237,7 @@
 
 (defn create-set-finished!
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-finished!
          :xt/fn '(fn [ctx eid]

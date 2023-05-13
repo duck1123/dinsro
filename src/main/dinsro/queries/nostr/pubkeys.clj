@@ -18,7 +18,7 @@
   [::m.n.pubkeys/params => :xt/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
-        node   (c.xtdb/main-node)
+        node   (c.xtdb/get-node)
         params (assoc params ::m.n.pubkeys/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
@@ -29,7 +29,7 @@
   [hex]
   [::m.n.pubkeys/hex => (? ::m.n.pubkeys/id)]
   (log/trace :find-by-hex/starting {:hex hex})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?id]
      :in    [[?hex]]
      :where [[?id ::m.n.pubkeys/hex ?hex]]}
@@ -43,7 +43,7 @@
 (>defn read-record
   [id]
   [:xt/id => (? ::m.n.pubkeys/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.pubkeys/id)
       (dissoc record :xt/id))))
@@ -66,21 +66,21 @@
          limit-params                     {:limit limit :offset offset}
          query                            (merge base-query limit-params)]
      (log/info :index-ids/query {:query query})
-     (let [ids (c.xtdb/query-ids query)]
+     (let [ids (c.xtdb/query-values query)]
        ids))))
 
 (>defn delete!
   [id]
   [::m.n.pubkeys/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
 (defn update!
   [id data]
   (log/info :update!/starting {:id id :data data})
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
+  (let [node   (c.xtdb/get-node)
+        db     (c.xtdb/get-db)
         old    (xt/pull db '[*] id)
         params (merge old data)
         tx     (xt/submit-tx node [[::xt/put params]])]
@@ -91,7 +91,7 @@
   [subscription-id]
   [::m.n.subscription-pubkeys/subscription => (s/coll-of ::m.n.subscription-pubkeys/id)]
   (log/info :find-by-subscription/starting {:subscription-id subscription-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?pubkey-id]
      :in    [[?subscription-id]]
      :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
@@ -102,7 +102,7 @@
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.pubkeys/id)]
   (log/trace :find-contacts/starting {:pubkey-id pubkey-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?target-id]
      :in    [[?pubkey-id]]
      :where [[?pc-id ::m.n.pubkey-contacts/actor ?pubkey-id]
@@ -113,7 +113,7 @@
   [name]
   [::m.n.pubkeys/name => ::m.n.pubkeys/id]
   (log/trace :find-by-name/starting {:name name})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?pubkey-id]
      :in    [[?name]]
      :where [[?pubkey-id ::m.n.pubkeys/name ?name]]}

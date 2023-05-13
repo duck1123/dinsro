@@ -17,12 +17,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.nodes/id)]
-  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.ln.nodes/id _]]}))
+  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.ln.nodes/id _]]}))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.ln.nodes/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.ln.nodes/id)
       (dissoc record :xt/id))))
@@ -30,7 +30,7 @@
 (>defn create-record
   [params]
   [::m.ln.nodes/params => ::m.ln.nodes/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.ln.nodes/id id)
@@ -41,8 +41,8 @@
 (>defn update!
   [id data]
   [::m.ln.nodes/id any? => any?]
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
+  (let [node   (c.xtdb/get-node)
+        db     (c.xtdb/get-db)
         entity (xt/entity db id)
         new-data (merge entity data)
         tx     (xt/submit-tx node [[::xt/put new-data]])]
@@ -51,7 +51,7 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.ln.nodes/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?node-id]
      :in    [[?user-id]]
      :where [[?node-id ::m.ln.nodes/user ?user-id]]}
@@ -60,7 +60,7 @@
 (>defn find-by-user-and-name
   [user-id name]
   [::m.users/id ::m.ln.nodes/name => (? ::m.ln.nodes/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?node-id]
      :in    [[?user-id ?name]]
      :where [[?node-id ::m.ln.nodes/user ?user-id]
@@ -70,7 +70,7 @@
 (>defn find-by-core-node
   [core-node-id]
   [::m.c.nodes/id => (s/coll-of ::m.ln.nodes/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?node-id]
      :in    [[?core-node-id]]
      :where [[?node-id ::m.ln.nodes/core-node ?core-node-id]]}

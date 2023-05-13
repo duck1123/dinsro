@@ -12,12 +12,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.tx-out/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.tx-out/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.tx-out/id _]]}))
 
 (>defn find-by-tx
   [tx-id]
   [::m.c.transactions/id => (s/coll-of ::m.c.tx-out/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?tx-in-id]
      :in    [[?tx-id]]
      :where [[?tx-in-id ::m.c.tx-out/transaction ?tx-id]]}
@@ -26,7 +26,7 @@
 (>defn read-record
   [id]
   [::m.c.tx-out/id => (? ::m.c.tx-out/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.tx-out/id)
       (dissoc record :xt/id))))
@@ -34,7 +34,7 @@
 (>defn create-record
   [params]
   [::m.c.tx-out/params => ::m.c.tx-out/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.tx-out/id id)
@@ -46,14 +46,14 @@
 (>defn delete!
   [id]
   [::m.c.tx-out/id => any?]
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
 
 (>defn find-by-tx-and-index
   [tx-id n]
   [::m.c.tx-out/transaction ::m.c.tx-out/n => (? ::m.c.tx-out/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?tx-out-id]
      :in    [[?tx-id ?n]]
      :where [[?tx-out-id ::m.c.tx-out/transaction ?tx-id]
@@ -63,7 +63,7 @@
 (>defn find-by-tx-id-and-index
   [tx-id n]
   [::m.c.transactions/tx-id ::m.c.tx-out/n => (? ::m.c.tx-out/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?tx-out-id]
      :in    [[?tx-id ?n]]
      :where [[?transaction-id ::m.c.transactions/tx-id           ?tx-id]
@@ -74,8 +74,8 @@
 (>defn update!
   [id params]
   [::m.c.tx-out/id ::m.c.tx-out/params => any?]
-  (let [node   (c.xtdb/main-node)
-        db     (c.xtdb/main-db)
+  (let [node   (c.xtdb/get-node)
+        db     (c.xtdb/get-db)
         old    (xt/pull db '[*] id)
         params (merge old params)
         tx     (xt/submit-tx node [[::xt/put params]])]

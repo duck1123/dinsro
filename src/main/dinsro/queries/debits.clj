@@ -19,7 +19,7 @@
   [::m.debits/params => ::m.debits/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
-        node   (c.xtdb/main-node)
+        node   (c.xtdb/get-node)
         params (assoc params ::m.debits/id id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
@@ -29,7 +29,7 @@
 (>defn read-record
   [id]
   [::m.debits/id => (? ::m.debits/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.debits/id)
       (dissoc record :xt/id))))
@@ -73,7 +73,7 @@
            params       (get-index-params query-params)
            query        (merge base-params limit-params)]
        (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-one query params)]
+       (let [n (c.xtdb/query-value query params)]
          (log/info :count-ids/finished {:n n})
          (or n 0))))))
 
@@ -92,14 +92,14 @@
            query                                            (merge base-params limit-params)
            params                                           (get-index-params query-params)]
        (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-many query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/info :index-ids/finished {:ids ids})
          ids)))))
 
 (>defn delete!
   [id]
   [::m.debits/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -107,7 +107,7 @@
   [account-id]
   [::m.accounts/id => (s/coll-of ::m.debits/id)]
   (log/info :find-by-account/starting {:account-id account-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?debit-id]
      :in    [[?account-id]]
      :where [[?debit-id ::m.debits/account ?account-id]]}
@@ -117,7 +117,7 @@
   [transaction-id]
   [::m.debits/transaction => (s/coll-of ::m.debits/id)]
   (log/info :find-by-transaction/starting {:transaction-id transaction-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?debit-id]
      :in    [[?transaction-id]]
      :where [[?debit-id ::m.debits/transaction ?transaction-id]]}
@@ -127,7 +127,7 @@
   [user-id]
   [::m.users/id => (s/coll-of ::m.debits/id)]
   (log/info :find-by-user/starting {:user-id user-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?debit-id]
      :in    [[?transaction-id]]
      :where [[?debit-id ::m.debits/account ?account-id]

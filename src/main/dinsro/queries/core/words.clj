@@ -13,12 +13,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.words/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.words/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.words/id _]]}))
 
 (>defn read-record
   [id]
   [::m.c.words/id => (? ::m.c.words/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.words/id)
       (dissoc record :xt/id))))
@@ -27,7 +27,7 @@
   [params]
   [::m.c.words/params => ::m.c.words/id]
   (s/assert ::m.c.words/params params)
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.words/id id)
@@ -40,7 +40,7 @@
 (>defn find-by-wallet
   [wallet-id]
   [::m.c.wallets/id => (s/coll-of ::m.c.words/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?word-id]
      :in    [[?wallet-id]]
      :where [[?word-id ::m.c.words/mnemonic ?mnemonic-id]
@@ -50,6 +50,6 @@
 (>defn delete!
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))

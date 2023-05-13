@@ -19,7 +19,7 @@
   [id]
   [::m.accounts/id => (s/coll-of ::m.transactions/id)]
   (log/info :find-by-account/starting {:account-id id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?id]
      :in    [[?account-id]]
      :where [[?id ::m.transactions/account ?account-id]]}
@@ -28,7 +28,7 @@
 (>defn find-by-category
   [id]
   [::m.categories/id => (s/coll-of ::m.transactions/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?transaction-id]
      :in    [[?category-id]]
      :where [[?transaction-id ::m.transactions/category ?category-id]]}
@@ -37,7 +37,7 @@
 (>defn find-by-currency
   [id]
   [::m.currencies/id => (s/coll-of ::m.transactions/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?transaction-id]
      :in    [[?user-id]]
      :where [[?transaction-id ::m.transactions/currency ?user-id]]}
@@ -47,7 +47,7 @@
   [user-id]
   [::m.users/id => (s/coll-of ::m.transactions/id)]
   (log/info :find-by-user/starting {:user-id user-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?transaction-id]
      :in    [[?user-id]]
      :where [[?debit-id ::m.debits/account ?account-id]
@@ -59,7 +59,7 @@
   [params]
   [::m.transactions/params => :xt/id]
   (log/info :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.transactions/id id)
@@ -71,7 +71,7 @@
 (>defn read-record
   [id]
   [:xt/id => (? ::m.transactions/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.transactions/id)
       (-> record
@@ -84,7 +84,7 @@
    (index-ids {}))
   ([_query-params]
    [map? => (s/coll-of :xt/id)]
-   (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.transactions/id _]]})))
+   (c.xtdb/query-values '{:find [?e] :where [[?e ::m.transactions/id _]]})))
 
 (>defn index-records
   []
@@ -94,7 +94,7 @@
 (>defn delete-record
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -106,7 +106,7 @@
 
 (defn find-by-account-and-user
   [account-id user-id]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?transaction-id]
      :in    [[?account-id ?user-id]]
      :where [[?account-id ::m.accounts/user ?user-id]

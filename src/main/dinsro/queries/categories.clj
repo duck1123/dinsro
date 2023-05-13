@@ -12,7 +12,7 @@
 (>defn find-by-user
   [user-id]
   [::m.users/id => (s/coll-of ::m.categories/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?category-id]
      :in    [[?user-id]]
      :where [[?category-id ::m.categories/user ?user-id]]}
@@ -21,7 +21,7 @@
 (>defn create-record
   [params]
   [::m.categories/params => :xt/id]
-  (let [node   (c.xtdb/main-node)
+  (let [node   (c.xtdb/get-node)
         id     (new-uuid)
         params (assoc params ::m.categories/id id)
         params (assoc params :xt/id id)]
@@ -31,7 +31,7 @@
 (>defn read-record
   [id]
   [:xt/id => (? ::m.categories/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     ;; FIXME: This is doing too much
     (when (get record ::m.categories/name)
@@ -43,13 +43,13 @@
 (>defn index-ids
   []
   [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-ids '{:find  [?e]
-                      :where [[?e ::m.categories/name _]]}))
+  (c.xtdb/query-values '{:find  [?e]
+                         :where [[?e ::m.categories/name _]]}))
 
 (>defn delete-record
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
   nil)
 

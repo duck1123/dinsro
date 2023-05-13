@@ -18,7 +18,7 @@
   [params]
   [::m.n.subscription-pubkeys/params => ::m.n.subscription-pubkeys/id]
   (log/info :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.n.subscription-pubkeys/id id)
@@ -31,12 +31,12 @@
   []
   [=> (s/coll-of ::m.n.subscription-pubkeys/id)]
   (log/info :index-ids/starting {})
-  (c.xtdb/query-ids '{:find [?id] :where [[?id ::m.n.subscription-pubkeys/id _]]}))
+  (c.xtdb/query-values '{:find [?id] :where [[?id ::m.n.subscription-pubkeys/id _]]}))
 
 (>defn read-record
   [id]
   [::m.n.subscription-pubkeys/id => (? ::m.n.subscription-pubkeys/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (log/info :read-record/starting {:record record})
     (when (get record ::m.n.subscription-pubkeys/id)
@@ -46,7 +46,7 @@
   [relay-id]
   [::m.n.relays/id => (s/coll-of ::m.n.subscription-pubkeys/id)]
   (log/info :index-by-relay/starting {:relay-id relay-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?id]
      :in    [[?relay-id]]
      :where [[?id ::m.n.subscription-pubkeys/relay ?relay-id]]}
@@ -55,7 +55,7 @@
 (>defn delete!
   [id]
   [::m.n.subscription-pubkeys/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -71,7 +71,7 @@
    => (? ::m.n.subscription-pubkeys/id)]
   (log/info :find-by-relay-and-code/starting {:subscription-id subscription-id
                                               :pubkey-id       pubkey-id})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?sp-id]
      :in    [[?subscription-id ?pubkey-id]]
      :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]
@@ -81,7 +81,7 @@
 (defn find-pubkeys-by-subscription
   [subscription-id]
   (log/info :find-pubkeys-by-subscription/starting {:subscription-id subscription-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?pubkey]
      :in    [[?subscription-id]]
      :where [[?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]

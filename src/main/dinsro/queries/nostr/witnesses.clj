@@ -22,7 +22,7 @@
   [params]
   [::m.n.witnesses/params => ::m.n.witnesses/id]
   (log/debug :create-record/starting {:params params})
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (merge
                          {::m.n.witnesses/id id
@@ -81,7 +81,7 @@
            params       (get-index-params query-params)
            query        (merge base-params limit-params)]
        (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-one query params)]
+       (let [n (c.xtdb/query-value query params)]
          (log/info :count-ids/finished {:n n})
          (or n 0))))))
 
@@ -100,14 +100,14 @@
            query                                            (merge base-params limit-params)
            params                                           (get-index-params query-params)]
        (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-many query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/info :index-ids/finished {:ids ids})
          ids)))))
 
 (>defn read-record
   [id]
   [::m.n.witnesses/id => (? ::m.n.witnesses/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (log/debug :read-record/starting {:record record})
     (when (get record ::m.n.witnesses/id)
@@ -116,7 +116,7 @@
 (>defn delete!
   [id]
   [::m.n.witnesses/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -124,7 +124,7 @@
   [event-id run-id]
   [::m.n.events/id  ::m.n.runs/id => (? ::m.n.witnesses/id)]
   (log/trace :find-by-event-and-run/starting {:event-id event-id :run-id run-id})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?witness-id]
      :in    [[?event-id ?run-id]]
      :where [[?witness-id ::m.n.witnesses/event ?event-id]

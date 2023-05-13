@@ -19,7 +19,7 @@
   "Create a relay record"
   [params]
   [::m.n.events/params => :xt/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.n.events/id id)
@@ -31,7 +31,7 @@
   "Read a relay record"
   [id]
   [::m.n.events/id => (? ::m.n.events/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.events/id)
       (dissoc record :xt/id))))
@@ -58,7 +58,7 @@
            query                        (merge (get-index-query query-params)
                                                {:find  ['(count ?event-id)]})]
        (log/info :count-ids/query {:query query})
-       (let [id (c.xtdb/query-id query [pubkey-id])]
+       (let [id (c.xtdb/query-value query [pubkey-id])]
          (log/trace :count-ids/finished {:id id})
          (or id 0))))))
 
@@ -84,7 +84,7 @@
                                    [['?event-id ::m.n.events/created-at '?created-at]]))}
            query                                   (merge base-params limit-params)]
        (log/info :index-ids/query {:query query})
-       (let [ids (c.xtdb/query-ids query [pubkey-id])]
+       (let [ids (c.xtdb/query-values [pubkey-id])]
          (log/trace :index-ids/finished {:ids ids})
          ids)))))
 
@@ -92,7 +92,7 @@
   [pubkey-id]
   [::m.n.pubkeys/id => (s/coll-of ::m.n.events/id)]
   (log/fine :find-by-author/starting {:pubkey-id pubkey-id})
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?event-id]
      :in    [[?pubkey-id]]
      :where [[?event-id ::m.n.events/pubkey ?pubkey-id]]}
@@ -102,7 +102,7 @@
   [note-id]
   [::m.n.events/note-id => (? ::m.n.events/id)]
   (log/trace :find-by-note-id/starting {:note-id note-id})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?event-id]
      :in    [[?note-id]]
      :where [[?event-id ::m.n.events/note-id ?note-id]]}

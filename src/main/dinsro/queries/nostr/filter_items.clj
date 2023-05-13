@@ -28,7 +28,7 @@
   [::m.n.filter-items/params => :xt/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
-        node   (c.xtdb/main-node)
+        node   (c.xtdb/get-node)
         params (assoc params ident-key id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
@@ -38,7 +38,7 @@
 (>defn read-record
   [id]
   [::m.n.filter-items/id => (? ::m.n.filter-items/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
       (dissoc record :xt/id))))
@@ -74,7 +74,7 @@
          query        (merge base-params limit-params)
          params       []]
      (log/info :count-ids/query {:query query :params params})
-     (let [c (c.xtdb/query-id query params)]
+     (let [c (c.xtdb/query-value query params)]
        (or c 0)))))
 
 (>defn index-ids
@@ -96,21 +96,21 @@
            query                                          (merge base-params limit-params)
            params                                         [pubkey-id event-id request-id kind]]
        (log/info :index-ids/running {:query query :params params})
-       (let [ids (c.xtdb/query-ids query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/trace :index-ids/finished {:ids ids})
          ids)))))
 
 (>defn delete!
   [id]
   [::m.n.filter-items/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
 (>defn find-by-filter
   [filter-id]
   [::m.n.filters/id => (s/coll-of ::m.n.filter-items/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?item-id]
      :in    [[?filter-id]]
      :where [[?item-id ::m.n.filter-items/filter ?filter-id]]}
@@ -119,7 +119,7 @@
 (>defn find-by-request
   [request-id]
   [::m.n.requests/id => (s/coll-of ::m.n.filter-items/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?item-id]
      :in    [[?request-id]]
      :where [[?item-id ::m.n.filter-items/filter ?filter-id]

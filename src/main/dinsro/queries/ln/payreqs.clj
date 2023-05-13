@@ -12,13 +12,13 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.payreqs/id)]
-  (c.xtdb/query-ids '{:find  [?id]
-                      :where [[?id ::m.ln.payreqs/id _]]}))
+  (c.xtdb/query-values '{:find  [?id]
+                         :where [[?id ::m.ln.payreqs/id _]]}))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.ln.payreqs/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.ln.payreqs/id)
       (dissoc record :xt/id))))
@@ -26,7 +26,7 @@
 (>defn create-record
   [params]
   [::m.ln.payreqs/params => ::m.ln.payreqs/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.ln.payreqs/id id)
@@ -37,7 +37,7 @@
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.payreqs/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?payment-id]
      :in    [[?node-id]]
      :where [[?payment-id ::m.ln.payreqs/node ?node-id]]}
@@ -46,6 +46,6 @@
 (>defn delete!
   [id]
   [::m.ln.payreqs/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
   nil)

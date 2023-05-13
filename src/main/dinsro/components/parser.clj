@@ -74,7 +74,7 @@
   []
   (log/info :start-parser!/starting {})
   (let [config    (c.config/get-config)
-        node      (c.xtdb/main-node)
+        node      (c.xtdb/get-node)
         plugins   [(attr/pathom-plugin all-attributes)
                    (form/pathom-plugin save/middleware delete/middleware)
                    (xt/pathom-plugin (fn [_env] {:production node}))

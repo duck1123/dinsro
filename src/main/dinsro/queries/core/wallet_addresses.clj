@@ -14,12 +14,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.c.wallet-addresses/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.c.wallet-addresses/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.c.wallet-addresses/id _]]}))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.c.wallet-addresses/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.wallet-addresses/id)
       (dissoc record :xt/id))))
@@ -27,7 +27,7 @@
 (>defn create-record
   [params]
   [::m.c.wallet-addresses/params => ::m.c.wallet-addresses/id]
-  (let [node            (c.xtdb/main-node)
+  (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.c.wallet-addresses/id id)
@@ -43,7 +43,7 @@
 (defn find-by-ln-node
   [ln-node-id]
   (log/debug :find-by-ln-node/starting {:ln-node-id ln-node-id})
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?wallet-address-id]
                :in    [[?ln-node-id]]
                :where [[?account-id ::m.ln.accounts/node ?ln-node-id]
@@ -56,7 +56,7 @@
 (>defn find-by-wallet
   [wallet-id]
   [::m.c.wallets/id => (s/coll-of ::m.c.wallet-addresses/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?address-id]
      :in    [?wallet-id]
      :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
@@ -65,7 +65,7 @@
 (>defn find-by-wallet-and-index
   [wallet-id index]
   [::m.c.wallets/id ::m.c.wallet-addresses/path-index => (? ::m.c.wallet-addresses/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?address-id]
      :in    [[?wallet-id ?index]]
      :where [[?address-id ::m.c.wallet-addresses/wallet ?wallet-id]

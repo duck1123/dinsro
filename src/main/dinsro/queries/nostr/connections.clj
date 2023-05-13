@@ -22,7 +22,7 @@
   [::m.n.connections/params => ::m.n.connections/id]
   (log/debug :create-record/starting {:params params})
   (let [id     (new-uuid)
-        node   (c.xtdb/main-node)
+        node   (c.xtdb/get-node)
         params (assoc params ident-key id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
@@ -32,7 +32,7 @@
 (>defn read-record
   [id]
   [::m.n.connections/id => (? ::m.n.connections/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
       (dissoc record :xt/id))))
@@ -69,7 +69,7 @@
            query       (merge base-query limit-query)
            params      (get-index-params query-params)]
        (log/info :count-ids/query {:query query :params params})
-       (let [n (c.xtdb/query-one query params)]
+       (let [n (c.xtdb/query-value query params)]
          (log/trace :count-ids/finished {:n n})
          n)))))
 
@@ -89,14 +89,14 @@
            limit-query                      {:limit limit :offset offset}
            query                            (merge base-query limit-query)]
        (log/info :index-ids/query {:query query :params params})
-       (let [ids (c.xtdb/query-many query params)]
+       (let [ids (c.xtdb/query-values query params)]
          (log/info :index-ids/finished {:ids ids})
          ids)))))
 
 (>defn delete!
   [id]
   [::m.n.connections/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -122,7 +122,7 @@
 
 (defn create-set-connecting!
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-connecting!
          :xt/fn '(fn [ctx eid]
@@ -137,7 +137,7 @@
 (defn create-set-disconnected!
   "create set-disconnected transaction"
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-disconnected!
          :xt/fn '(fn [ctx eid]
@@ -151,7 +151,7 @@
 
 (defn create-set-errored!
   []
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         query-def
         {:xt/id ::set-errored!
          :xt/fn '(fn [ctx eid]
@@ -171,12 +171,12 @@
                                    entity       (xtdb.api/entity db connection-id)
                                    updated-data (assoc entity ::m.n.connections/status status)]
                                [[::xt/put updated-data]]))}
-        node      (c.xtdb/main-node)]
+        node      (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put query-def]]))))
 
 (defn find-by-relay
   [relay-id]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?connection-id]
      :in    [[?relay-id]]
      :where [[?connection-id ::m.n.connections/relay ?relay-id]]}
@@ -184,7 +184,7 @@
 
 (defn find-connected
   []
-  (let [ids (c.xtdb/query-ids
+  (let [ids (c.xtdb/query-values
              '{:find  [?connection-id]
                :where [[?connection-id ::m.n.connections/status :connected]]})]
     (log/trace :find-connected/finished {:ids ids})
@@ -193,7 +193,7 @@
 (defn find-connected-by-relay
   [relay-id]
   (log/debug :find-connected-by-relay/starting {:relay-id relay-id})
-  (let [id (c.xtdb/query-id
+  (let [id (c.xtdb/query-value
             '{:find  [?connection-id]
               :in    [[?relay-id]]
               :where [[?connection-id ::m.n.connections/status :connected]

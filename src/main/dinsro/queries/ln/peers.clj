@@ -14,12 +14,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.ln.peers/id)]
-  (c.xtdb/query-ids '{:find  [?e] :where [[?e ::m.ln.peers/id _]]}))
+  (c.xtdb/query-values '{:find  [?e] :where [[?e ::m.ln.peers/id _]]}))
 
 (>defn read-record
   [id]
   [::m.ln.peers/id => (? ::m.ln.peers/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record  (xt/pull db '[*] id)]
     (when (get record ::m.ln.peers/id)
       (dissoc record :xt/id))))
@@ -27,7 +27,7 @@
 (>defn create-record
   [params]
   [::m.ln.peers/params => ::m.ln.peers/id]
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         id   (new-uuid)
         peer (-> params
                  (assoc ::m.ln.peers/id id)
@@ -45,7 +45,7 @@
   [node-id pubkey]
   [::m.ln.nodes/id ::m.ln.info/identity-pubkey => (? ::m.ln.peers/id)]
   (log/info :find-peer/starting {:node-id node-id :pubkey pubkey})
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?peer-id]
      :in    [[?node-id ?pubkey]]
      :where [[?peer-id ::m.ln.peers/node ?node-id]
@@ -62,15 +62,15 @@
 (>defn find-by-node
   [node-id]
   [::m.ln.nodes/id => (s/coll-of ::m.ln.peers/id)]
-  (c.xtdb/query-ids '{:find  [?peer-id]
-                      :in    [[?node-id]]
-                      :where [[?peer-id ::m.ln.peers/node ?node-id]]}
-                    [node-id]))
+  (c.xtdb/query-values '{:find  [?peer-id]
+                         :in    [[?node-id]]
+                         :where [[?peer-id ::m.ln.peers/node ?node-id]]}
+                       [node-id]))
 
 (>defn find-by-remote-node
   [remote-node-id]
   [::m.ln.peers/remote-node => (s/coll-of ::m.ln.peers/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find  [?peer-id]
      :in    [[?remote-node-id]]
      :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]]}
@@ -80,14 +80,14 @@
   [id]
   [::m.ln.peers/id => any?]
   (log/info :delete/starting {:id id})
-  (let [node (c.xtdb/main-node)
+  (let [node (c.xtdb/get-node)
         tx   (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
 
 (>defn update!
   [id params]
   [::m.ln.peers/id ::m.ln.peers/item => ::m.ln.peers/id]
-  (let [node   (c.xtdb/main-node)
+  (let [node   (c.xtdb/get-node)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
     id))
@@ -95,7 +95,7 @@
 (>defn find-by-node-and-remote-node
   [node-id remote-node-id]
   [::m.ln.nodes/id ::m.ln.peers/remote-node => (? ::m.ln.peers/id)]
-  (c.xtdb/query-id
+  (c.xtdb/query-value
    '{:find  [?peer-id]
      :in    [[?node-id ?remote-node-id]]
      :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]

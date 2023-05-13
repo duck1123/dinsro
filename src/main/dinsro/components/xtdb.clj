@@ -7,6 +7,7 @@
    [xtdb.api :as c.api]))
 
 (declare xtdb-nodes)
+(def db-key :main)
 
 (defn start-database!
   "Start the xtdb database"
@@ -31,60 +32,73 @@
   :start (start-database!)
   :stop (stop-database!))
 
-(defn main-node
+(defn get-node
   "Returns the main xtdb node"
-  []
-  (let [nodes @xtdb-nodes]
-    (log/trace :nodes/read {:nodes nodes})
-    (:main nodes)))
+  ([] (get-node db-key))
+  ([key]
+   (let [nodes @xtdb-nodes]
+     (log/trace :nodes/read {:nodes nodes})
+     (key nodes))))
 
-(defn main-db
+(defn get-db
   "Returns the main xtdb database"
-  []
-  (let [node (main-node)
-        db   (c.api/db node)]
-    (log/trace :db/read {:db db :node node})
-    db))
-
-(defn query-id
-  ([query]
-   (log/trace :query-id/starting {:query query})
-   (let [db      (main-db)
-         results (c.api/q db query)
-         id      (ffirst results)]
-     (log/trace :query-id/finished {:id id :results results})
-     id))
-  ([query params]
-   (log/trace :query-id/starting {:query query :params params})
-   (let [db      (main-db)
-         results (c.api/q db query params)
-         id      (ffirst results)]
-     (log/trace :query-id/finished {:id id :results results})
-     id)))
-
-(def query-one query-id)
-
-(defn query-ids
-  ([query]
-   (log/trace :query-ids/starting {:query query})
-   (let [db  (main-db)
-         ids (map first (c.api/q db query))]
-     (log/trace :query-ids/finished {:ids ids})
-     ids))
-  ([query params]
-   (log/trace :query-ids/starting {:query query :params params})
-   (let [db  (main-db)
-         ids (map first (c.api/q db query params))]
-     (log/trace :query-ids/finished {:ids ids})
-     ids)))
-
-(def query-many query-ids)
+  ([] (get-db db-key))
+  ([key]
+   (let [node (get-node key)
+         db   (c.api/db node)]
+     (log/trace :db/read {:db db :node node})
+     db)))
 
 (defn submit-tx!
+  "Submit a transaction to the main db"
   [k params]
-  (let [ops      [(concat [::c.api/fn k] params)]]
+  (let [ops [(concat [::c.api/fn k] params)]]
     (log/trace :submit-tx/starting {:ops ops})
-    (let [node     (main-node)
+    (let [node     (get-node)
           response (c.api/submit-tx node ops)]
       (log/trace :submit-tx!/finished {:response response})
       response)))
+
+(defn run-query
+  "Run a query against the main database"
+  ([query]
+   [query]
+   (log/trace :run-query/starting {:query query})
+   (let [db      (get-db)
+         results (c.api/q db query)]
+     (log/trace :run-query/finished {:results results})
+     results))
+  ([query params]
+   (log/trace :run-query/starting {:query query :params params})
+   (let [db      (get-db)
+         results (c.api/q db query params)]
+     (log/trace :run-query/finished {:results results})
+     results)))
+
+(defn query-value
+  "Run a query to produce a single value"
+  ([query]
+   (log/trace :query-value/starting {:query query})
+   (let [results (run-query query)
+         id      (ffirst results)]
+     (log/trace :query-value/finished {:id id :results results})
+     id))
+  ([query params]
+   (log/trace :query-value/starting {:query query :params params})
+   (let [results (run-query query params)
+         id      (ffirst results)]
+     (log/trace :query-value/finished {:id id :results results})
+     id)))
+
+(defn query-values
+  "Run a query to produce a sequence of single values"
+  ([query]
+   (log/trace :query-values/starting {:query query})
+   (let [ids (map first (run-query query))]
+     (log/trace :query-values/finished {:ids ids})
+     ids))
+  ([query params]
+   (log/trace :query-values/starting {:query query :params params})
+   (let [ids (map first (run-query query params))]
+     (log/trace :query-values/finished {:ids ids})
+     ids)))

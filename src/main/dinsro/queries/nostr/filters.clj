@@ -18,7 +18,7 @@
   [::m.n.filters/params => :xt/id]
   (log/info :create-record/starting {:params params})
   (let [id     (new-uuid)
-        node   (c.xtdb/main-node)
+        node   (c.xtdb/get-node)
         params (assoc params ident-key id)
         params (assoc params :xt/id id)]
     (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
@@ -28,7 +28,7 @@
 (>defn read-record
   [id]
   [::m.n.filters/id => (? ::m.n.filters/item)]
-  (let [db     (c.xtdb/main-db)
+  (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (when (get record ident-key)
       (dissoc record :xt/id))))
@@ -36,12 +36,12 @@
 (>defn index-ids
   []
   [=> (s/coll-of ::m.n.filters/id)]
-  (c.xtdb/query-ids '{:find [?e] :where [[?e ::m.n.filters/id _]]}))
+  (c.xtdb/query-values '{:find [?e] :where [[?e ::m.n.filters/id _]]}))
 
 (>defn delete!
   [id]
   [::m.n.filters/id => nil?]
-  (let [node (c.xtdb/main-node)]
+  (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
@@ -55,7 +55,7 @@
   "Returns the largest index of all filters matching this request"
   [request-id]
   [::m.n.requests/id => number?]
-  (let [db (c.xtdb/main-db)
+  (let [db (c.xtdb/get-db)
         query '{:find [?index]
                 :in [[?request-id]]
                 :where [[?filter-id ::m.n.filters/index ?index]
@@ -71,7 +71,7 @@
 (>defn find-by-request
   [request-id]
   [::m.n.requests/id => (s/coll-of ::m.n.filters/id)]
-  (c.xtdb/query-ids
+  (c.xtdb/query-values
    '{:find [?filter-id]
      :in [[?request-id]]
      :where [[?filter-id ::m.n.filters/request ?request-id]]}
