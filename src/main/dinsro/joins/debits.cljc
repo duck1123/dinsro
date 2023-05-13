@@ -1,5 +1,6 @@
 (ns dinsro.joins.debits
   (:require
+   [com.fulcrologic.guardrails.core :refer [=> >def]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
@@ -64,4 +65,10 @@
        {::currency ident}))
    ::report/column-EQL {::currency [::m.currencies/id ::m.currencies/name]}})
 
-(def attributes [index admin-index currency])
+(>def ::positive? boolean?)
+(defattr positive? ::positive? :boolean
+  {ao/pc-input #{::m.debits/id ::m.debits/value}
+   ao/pc-output [::positive?]
+   ao/pc-resolve (fn [_ {::m.debits/keys [value]}] {::positive? (pos? value)})})
+
+(def attributes [index admin-index currency positive?])
