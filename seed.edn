@@ -91,21 +91,161 @@
     {:name "Category C"}]
 
    :transactions
-   [{:date        "2022-09-03T16:30:00"
+   [{:date        "2021-10-09T00:00:00"
      :description "Initial deposit"
      :debits      [{:value 2000. :account "Alice's Bank Account"}]}
-    {:date        "2022-09-03T16:32:00"
+    {:date        "2021-10-09T00:05:00"
      :description "Transfer to exchange"
      :debits      [{:value -100. :account "Alice's Bank Account"}
                    {:value 100. :account "Exchange USD"}]}
-    {:date        "2022-09-03T16:35:00"
+    {:date        "2021-10-09T11:06:38"
      :description "Buy Bitcoin"
-     :debits      [{:value -50. :account "Exchange USD"}
-                   {:value 5000000000. :account "Exchange sats"}]}
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 18130. :account "Exchange sats"}]}
+    {:date        "2021-10-09T18:01:20"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 18230. :account "Exchange sats"}]}
+    {:date        "2021-10-10T07:41:47"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 18120. :account "Exchange sats"}]}
+    {:date        "2021-10-10T08:35:22"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 18200. :account "Exchange sats"}]}
+    {:date        "2021-10-10T14:30:14"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 18110. :account "Exchange sats"}]}
+    {:date        "2021-10-10T19:50:32"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 18310. :account "Exchange sats"}]}
+    {:date        "2021-10-11T11:29:31"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 17470. :account "Exchange sats"}]}
+    {:date        "2021-10-11T15:32:55"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 17360. :account "Exchange sats"}]}
+    {:date        "2021-10-16T07:15:11"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16240. :account "Exchange sats"}]}
+    {:date        "2021-11-07T01:06:38"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16080. :account "Exchange sats"}]}
+    {:date        "2021-11-07T12:38:45"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16080. :account "Exchange sats"}]}
+    {:date        "2021-11-07T12:36:28"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16170. :account "Exchange sats"}]}
+    {:date        "2021-11-07T13:05:16"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16012. :account "Exchange sats"}]}
+    {:date        "2021-11-07T12:10:16"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16024. :account "Exchange sats"}]}
+    {:date        "2021-11-07T12:15:16"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 16082. :account "Exchange sats"}]}
+    {:date        "2021-11-07T16:00:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 15950. :account "Exchange sats"}]}
+    {:date        "2021-11-10T18:07:37"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 15390. :account "Exchange sats"}]}
+    {:date        "2022-07-09T09:50:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 46470. :account "Exchange sats"}]}
+    {:date        "2022-08-20T09:13:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 47050. :account "Exchange sats"}]}
     {:date        "2022-09-03T16:38:00"
      :description "withdraw sats"
-     :debits      [{:value -5000000000. :account "Exchange sats"}
-                   {:value 5000000000. :account "Wallet A"}]}]
+     :debits      [{:value -10000. :account "Exchange sats"}
+                   {:value 10000. :account "Wallet A"}]}
+    {:date        "2022-09-03T18:50:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 50510. :account "Exchange sats"}]}
+    {:date        "2022-09-05T11:06:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 50270. :account "Exchange sats"}]}
+    {:date        "2022-09-16T16:55:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 50660. :account "Exchange sats"}]}
+    {:date        "2022-12-03T13:43:16"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 58870. :account "Exchange sats"}]}
+    {:date        "2023-01-28T14:35:25"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 43400. :account "Exchange sats"}]}
+    {:date        "2023-03-11T12:08:00"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 49510. :account "Exchange sats"}]}
+    {:date        "2023-03-18T11:26:32"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 36440. :account "Exchange sats"}]}
+    {:date        "2023-03-22T12:00:48"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 34990. :account "Exchange sats"}]}
+    {:date        "2023-03-22T17:52:52"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 36800. :account "Exchange sats"}]}
+    {:date        "2023-03-23T11:16:28"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 34780. :account "Exchange sats"}]}
+    {:date        "2023-03-23T18:26:04"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 35540. :account "Exchange sats"}]}
+    {:date        "2023-03-30T19:04:27"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 35810. :account "Exchange sats"}]}
+    {:date        "2023-04-02T08:02:58"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 35280. :account "Exchange sats"}]}
+    {:date        "2023-04-04T19:50:17"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 35560. :account "Exchange sats"}]}
+    {:date        "2023-04-28T20:31:58"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 34090. :account "Exchange sats"}]}
+    {:date        "2023-05-12T17:52:46"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 37410. :account "Exchange sats"}]}
+    {:date        "2023-05-13T10:22:17"
+     :description "Buy Bitcoin"
+     :debits      [{:value -10. :account "Exchange USD"}
+                   {:value 37300. :account "Exchange sats"}]}]
 
    :ln-nodes
    [{:name            "lnd-alice"
@@ -262,7 +402,9 @@
       {:date "2023-03-30T19:04:27" :rate 3581}
       {:date "2023-04-02T08:02:58" :rate 3528}
       {:date "2023-04-04T19:50:17" :rate 3556}
-      {:date "2023-04-28T20:31:58" :rate 3409}]}
+      {:date "2023-04-28T20:31:58" :rate 3409}
+      {:date "2023-05-12T17:52:46" :rate 3741}
+      {:date "2023-05-13T10:22:17" :rate 3730}]}
     {:name       "Leviathan"
      :url        "https://www.leviathan.localtest.me/prices"
      :isActive   false
