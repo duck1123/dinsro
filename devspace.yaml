@@ -362,6 +362,7 @@ deployments:
         - "target/dinsro_values.yaml"
       values:
         logLevel: ":${DINSRO_LOG_LEVEL}"
+        queryLogLevel: ":${DINSRO_QUERY_LOG_LEVEL}"
         devcards:
           enabled: false
           ingress:
