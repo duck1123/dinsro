@@ -354,10 +354,10 @@ deployments:
   dinsro:
     helm:
       chart:
-        # name: dinsro
-        # repo: https://chart.kronkltd.net/
-        # version: 0.1.4
-        name: ./resources/helm/dinsro/
+        name: dinsro
+        repo: https://chart.kronkltd.net/
+        version: 0.1.7
+        # name: ./resources/helm/dinsro/
       valuesFiles:
         - "target/dinsro_values.yaml"
       values:
