@@ -23,23 +23,25 @@
   [join-info {:keys [query-params]} _]
   [::join-info map? map? => ::index-result]
   (log/trace :make-indexer/starting {:join-info join-info :query-params query-params})
-  (let [indexer #?(:clj (:indexer join-info) :cljs (fn [_] []))
-        counter #?(:clj (:counter join-info) :cljs (fn [_] []))
-        idents  (:idents join-info)
-        ids     (indexer query-params)
-        total   (counter query-params)
-        results (idents ids)
-        indexed-result {:total total :results results}]
-    (log/trace :make-indexer/finished {:indexed-result indexed-result})
-    indexed-result))
+  (log/with-context {:indexer true}
+    (let [indexer #?(:clj (:indexer join-info) :cljs (fn [_] []))
+          counter #?(:clj (:counter join-info) :cljs (fn [_] []))
+          idents  (:idents join-info)
+          ids     (indexer query-params)
+          total   (counter query-params)
+          results (idents ids)
+          indexed-result {:total total :results results}]
+      (log/trace :make-indexer/finished {:indexed-result indexed-result})
+      indexed-result)))
 
 (>defn make-admin-indexer
   "Add admin flax then run make-indexer"
   [join-info env props]
   [::join-info map? map? => ::index-result]
   (log/trace :make-flat-admin-indexer/starting {:join-info join-info :prop props})
-  (let [env (assoc-in env [:query-params :actor/admin?] true)]
-    (make-indexer join-info env props)))
+  (log/with-context {:admin true}
+    (let [env (assoc-in env [:query-params :actor/admin?] true)]
+     (make-indexer join-info env props))))
 
 (>defn make-flat-indexer
   [join-info {:keys [query-params]} _]
